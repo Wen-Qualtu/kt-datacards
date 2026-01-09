@@ -148,7 +148,7 @@ def extract_pdf_pages_to_jpg(input_folder, output_folder, dpi=300, clean_output=
     if clean_output and output_path.exists():
         print(f"Cleaning output folder: {output_folder}")
         shutil.rmtree(output_path)
-        print(f"✓ Output folder cleaned\n")
+        print(f"OK Output folder cleaned\n")
     
     # Get all PDF files in the input folder
     pdf_files = list(input_path.glob("*.pdf"))
@@ -193,88 +193,153 @@ def extract_pdf_pages_to_jpg(input_folder, output_folder, dpi=300, clean_output=
             # Track used filenames to avoid duplicates
             used_names = set()
             
-            # For datacards, track consecutive pages with same operative name for front/back
-            if is_datacard:
-                # First pass: extract all operative names to detect front/back pairs
-                operative_pages = []
-                for page_num in range(len(pdf_document)):
-                    page = pdf_document[page_num]
-                    card_name = extract_card_name(page, is_datacard=True, team_name=team_name, pdf_base_name=base_name)
-                    operative_pages.append((page_num, card_name))
+            # First pass: analyze all pages to detect front/back relationships
+            card_pages = []
+            skip_next_page = False
+            
+            for page_num in range(len(pdf_document)):
+                if skip_next_page:
+                    skip_next_page = False
+                    continue
                 
-                # Detect which operatives have front/back by finding consecutive same names
-                operative_counts = {}
-                for page_num, card_name in operative_pages:
-                    if card_name:
-                        operative_counts[card_name] = operative_counts.get(card_name, 0) + 1
+                page = pdf_document[page_num]
+                text = page.get_text().upper()
+                
+                # Check if this page continues on the other side
+                has_continuation = 'CONTINUES ON OTHER SIDE' in text or 'CONTINUES ON THE OTHER SIDE' in text or 'RULES CONTINUE ON OTHER SIDE' in text
+                
+                # Extract card name
+                card_name = None
+                
+                if is_faction_rules:
+                    # Special handling for faction rules
+                    if 'MARKER' in text and 'TOKEN' in text and 'GUIDE' in text:
+                        card_name = "markertoken-guide"
+                    else:
+                        # Try to extract the faction rule name (usually size 14 text)
+                        text_dict = page.get_text("dict")
+                        text_by_size = []
+                        for block in text_dict["blocks"]:
+                            if block["type"] == 0:
+                                for line in block["lines"]:
+                                    for span in line["spans"]:
+                                        t = span["text"].strip()
+                                        size = span["size"]
+                                        if t and len(t) > 3:
+                                            text_by_size.append((size, t.upper()))
+                        text_by_size.sort(reverse=True, key=lambda x: x[0])
+                        
+                        # Look for the rule name (typically size 14, after "FACTION RULE" header)
+                        for size, t in text_by_size[:15]:
+                            if 13 <= size <= 15 and t not in ['FACTION RULE', 'FACTION RULES', team_name.upper().replace('-', ' ')]:
+                                # Skip if it's too short or contains generic words
+                                if len(t) >= 4 and 'RULE' not in t:
+                                    card_name = clean_filename(t)
+                                    break
+                else:
+                    card_name = extract_card_name(page, is_datacard=is_datacard, team_name=team_name, pdf_base_name=base_name)
+                
+                # Determine if this card has a back side
+                has_back = False
+                if has_continuation and page_num + 1 < len(pdf_document):
+                    has_back = True
+                    skip_next_page = True  # Skip the next page in this loop as it's the back
+                elif is_datacard:
+                    # For datacards, check if next page has same name
+                    if page_num + 1 < len(pdf_document):
+                        next_page = pdf_document[page_num + 1]
+                        next_card_name = extract_card_name(next_page, is_datacard=True, team_name=team_name, pdf_base_name=base_name)
+                        if next_card_name == card_name:
+                            has_back = True
+                            skip_next_page = True
+                
+                card_pages.append({
+                    'page_num': page_num,
+                    'card_name': card_name,
+                    'has_back': has_back
+                })
             
             # For faction rules, track which pages are faction rule pages vs marker guide
             faction_rule_counter = 0
             
-            # Extract each page
-            for page_num in range(len(pdf_document)):
+            # Second pass: extract pages with proper naming
+            page_index = 0
+            while page_index < len(card_pages):
+                card_info = card_pages[page_index]
+                page_num = card_info['page_num']
+                card_name = card_info['card_name']
+                has_back = card_info['has_back']
+                
                 # Get the page
                 page = pdf_document[page_num]
                 
-                # Special handling for faction rules
-                if is_faction_rules:
-                    # Check if this is the marker/token guide page
-                    text = page.get_text().upper()
-                    if 'MARKER' in text and 'TOKEN' in text and 'GUIDE' in text:
-                        output_filename = "markertoken-guide.jpg"
-                    else:
-                        # It's a faction rule page, number them sequentially
-                        faction_rule_counter += 1
-                        output_filename = f"faction-rule-{faction_rule_counter}.jpg"
-                else:
-                    # Try to extract card name from text
-                    card_name = extract_card_name(page, is_datacard=is_datacard, team_name=team_name, pdf_base_name=base_name)
+                # Generate filename
+                if is_faction_rules and not card_name:
+                    # It's a faction rule page without a name, number them sequentially
+                    faction_rule_counter += 1
+                    base_filename = f"faction-rule-{faction_rule_counter}"
                     
-                    # Create output filename
-                    if card_name:
-                        # For datacards, always add front/back suffix for consistency
-                        if is_datacard:
-                            # Check if this is first or second occurrence
-                            occurrence = sum(1 for p, n in operative_pages[:page_num + 1] if n == card_name)
-                            if occurrence == 1:
-                                output_filename = f"{card_name}_front.jpg"
-                            elif occurrence == 2:
-                                output_filename = f"{card_name}_back.jpg"
-                            else:
-                                output_filename = f"{card_name}_{occurrence}.jpg"
-                        else:
-                            output_filename = f"{card_name}.jpg"
-                        
-                        # Check for duplicates (shouldn't happen with front/back logic, but just in case)
-                        if output_filename in used_names:
-                            output_filename = f"{base_name}-{page_num + 1}.jpg"
-                        used_names.add(output_filename)
+                    if has_back:
+                        output_filename_front = f"{base_filename}_front.jpg"
+                        output_filename_back = f"{base_filename}_back.jpg"
                     else:
-                        # No card name extracted - this indicates a problem
-                        print(f"    ⚠ Warning: Could not extract card name for page {page_num + 1}")
-                        output_filename = f"{base_name}-{page_num + 1}.jpg"
+                        output_filename_front = f"{base_filename}_front.jpg"
+                        output_filename_back = None
+                elif card_name:
+                    base_filename = card_name
+                    
+                    if has_back:
+                        output_filename_front = f"{base_filename}_front.jpg"
+                        output_filename_back = f"{base_filename}_back.jpg"
+                    else:
+                        output_filename_front = f"{base_filename}_front.jpg"
+                        output_filename_back = None
+                else:
+                    # No card name extracted - this indicates a problem
+                    print(f"    ⚠ Warning: Could not extract card name for page {page_num + 1}")
+                    output_filename_front = f"{base_name}-{page_num + 1}.jpg"
+                    output_filename_back = None
                 
-                output_file = pdf_output_path / output_filename
-                
-                # Set the resolution (zoom factor)
-                zoom = dpi / 72  # 72 is the default DPI
+                # Save front page
+                output_file = pdf_output_path / output_filename_front
+                zoom = dpi / 72
                 mat = fitz.Matrix(zoom, zoom)
-                
-                # Render page to pixmap
                 pix = page.get_pixmap(matrix=mat)
                 
                 # Save as JPG
                 try:
                     pix.save(output_file)
-                    print(f"  ✓ Saved: {folder_name}/{output_filename}")
+                    print(f"  OK Saved: {folder_name}/{output_filename_front}")
                     total_pages += 1
                 except Exception as save_error:
                     # If filename too long or has issues, try with fallback name
-                    output_filename = f"{base_name}-{page_num + 1}.jpg"
-                    output_file = pdf_output_path / output_filename
+                    output_filename_front = f"{base_name}-{page_num + 1}.jpg"
+                    output_file = pdf_output_path / output_filename_front
                     pix.save(output_file)
-                    print(f"  ✓ Saved: {folder_name}/{output_filename} (fallback)")
+                    print(f"  OK Saved: {folder_name}/{output_filename_front} (fallback)")
                     total_pages += 1
+                
+                # Save back page if it exists
+                if output_filename_back and has_back:
+                    back_page_num = page_num + 1
+                    if back_page_num < len(pdf_document):
+                        back_page = pdf_document[back_page_num]
+                        back_pix = back_page.get_pixmap(matrix=mat)
+                        back_output_file = pdf_output_path / output_filename_back
+                        
+                        try:
+                            back_pix.save(back_output_file)
+                            print(f"  OK Saved: {folder_name}/{output_filename_back}")
+                            total_pages += 1
+                        except Exception as save_error:
+                            # If filename too long or has issues, try with fallback name
+                            output_filename_back = f"{base_name}-{back_page_num + 1}.jpg"
+                            back_output_file = pdf_output_path / output_filename_back
+                            back_pix.save(back_output_file)
+                            print(f"  OK Saved: {folder_name}/{output_filename_back} (fallback)")
+                            total_pages += 1
+                
+                page_index += 1
             
             # Close the PDF
             pdf_document.close()
