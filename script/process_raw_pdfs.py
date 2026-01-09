@@ -6,12 +6,24 @@ import yaml
 
 
 def load_team_mapping():
-    """Load team name mapping from YAML file."""
+    """Load team name mapping from YAML file.
+    Returns a dict where keys are variants and values are canonical names.
+    Also returns a reverse lookup where both canonical and variants map to canonical.
+    """
     mapping_file = Path('team-mapping.yaml')
     if mapping_file.exists():
         with open(mapping_file, 'r') as f:
             config = yaml.safe_load(f)
-            return config.get('team_names', {})
+            raw_mapping = config.get('team_names', {})
+            
+            # Flip the mapping: left side (key) is canonical, right side (value) is variant
+            # Create bidirectional lookup: both canonical and variant map to canonical
+            flipped_mapping = {}
+            for canonical, variant in raw_mapping.items():
+                flipped_mapping[variant] = canonical  # variant -> canonical
+                flipped_mapping[canonical] = canonical  # canonical -> canonical (identity)
+            
+            return flipped_mapping
     return {}
 
 
@@ -98,36 +110,43 @@ def identify_pdf_type(pdf_path):
             pdf_type = 'datacards'
             
             # Look for comma-separated line with faction info (usually has 3+ commas)
+            # The metadata line is ALL CAPS and contains faction keywords
+            faction_keywords = ['IMPERIUM', 'CHAOS', 'AELDARI', 'TYRANIDS', 'ORKS', 
+                              'T\'AU', 'NECRONS', 'LEAGUES OF VOTANN', 'GENESTEALER']
+            
             for line in lines[-15:]:
-                if ',' in line and line.count(',') >= 2:
-                    # This is likely the metadata line (e.g., "HEARTHKYN SALVAGER , LEAGUES OF VOTANN, LEADER, THEYN")
-                    parts = [p.strip() for p in line.split(',')]
-                    first_part = parts[0]
-                    
-                    # Check if first part contains role/character keywords - if so, extract just the team name
-                    role_keywords = ['LEADER', 'OPERATIVE', 'WARRIOR', 'SERGEANT', 'THEYN', 
-                                    'NOB', 'BOSS', 'PRIEST', 'TECH-PRIEST', 'TECHNOARCHEOLOGIST',
-                                    'ARCHAEOPTER', 'SERVITOR', 'IMMORTAL', 'WRAITH', 'CRYPTEK']
-                    
-                    # Split first part into words
-                    words = first_part.split()
-                    
-                    # If last word(s) are role keywords, exclude them
-                    team_words = []
-                    for word in words:
-                        # Stop adding words if we hit a role keyword
-                        if any(role in word.upper() for role in role_keywords):
+                # Check if line is ALL CAPS (metadata) vs mixed case (ability description)
+                if line.isupper() and ',' in line and line.count(',') >= 2:
+                    # Additional check: should contain a faction keyword
+                    if any(keyword in line for keyword in faction_keywords):
+                        # This is likely the metadata line (e.g., "HEARTHKYN SALVAGER , LEAGUES OF VOTANN, LEADER, THEYN")
+                        parts = [p.strip() for p in line.split(',')]
+                        first_part = parts[0]
+                        
+                        # Check if first part contains role/character keywords - if so, extract just the team name
+                        role_keywords = ['LEADER', 'OPERATIVE', 'WARRIOR', 'SERGEANT', 'THEYN', 
+                                        'NOB', 'BOSS', 'PRIEST', 'TECH-PRIEST', 'TECHNOARCHEOLOGIST',
+                                        'ARCHAEOPTER', 'SERVITOR', 'IMMORTAL', 'WRAITH', 'CRYPTEK']
+                        
+                        # Split first part into words
+                        words = first_part.split()
+                        
+                        # If last word(s) are role keywords, exclude them
+                        team_words = []
+                        for word in words:
+                            # Stop adding words if we hit a role keyword
+                            if any(role in word.upper() for role in role_keywords):
+                                break
+                            team_words.append(word)
+                        
+                        # If we have at least 1-2 words left, use as team name
+                        if len(team_words) >= 1:
+                            team_name = clean_filename(' '.join(team_words))
+                        elif len(words) >= 2:  # Fallback: use first part as-is if no roles found
+                            team_name = clean_filename(first_part)
+                        
+                        if team_name:
                             break
-                        team_words.append(word)
-                    
-                    # If we have at least 1-2 words left, use as team name
-                    if len(team_words) >= 1:
-                        team_name = clean_filename(' '.join(team_words))
-                    elif len(words) >= 2:  # Fallback: use first part as-is if no roles found
-                        team_name = clean_filename(first_part)
-                    
-                    if team_name:
-                        break
         
         # For non-datacards, look for team name in large text
         if not team_name:
@@ -137,14 +156,21 @@ def identify_pdf_type(pdf_path):
                 for size, text in text_by_size[:20]:
                     # For operatives, look for larger text (size 16-20) that represents team name
                     if pdf_type == 'operatives' and 16 <= size <= 20:
-                        skip_terms = ['archetypes', 'operatives']
+                        skip_terms = ['archetypes', 'operatives', 'faction rule', 'faction rules']
                         if not any(skip in text.lower() for skip in skip_terms):
                             # Remove "KILL TEAM" suffix if present
                             text_cleaned = text.upper().replace('KILL TEAM', '').strip()
                             team_name = clean_filename(text_cleaned)
                             break
-                    # For other types, look for size 10-14 text
-                    elif 10 <= size <= 14 and len(text.split()) <= 3:
+                    # For faction-rules, look for smaller text (size 10-13) which is the team name
+                    # The rule name is typically larger (size 14+)
+                    elif pdf_type == 'faction-rules' and 10 <= size <= 13:
+                        skip_terms = ['faction rule', 'faction rules']
+                        if not any(skip in text.lower() for skip in skip_terms) and len(text.split()) <= 5:
+                            team_name = clean_filename(text)
+                            break
+                    # For other types (equipment, ploys), look for size 10-14 text
+                    elif pdf_type not in ['operatives', 'faction-rules'] and 10 <= size <= 14 and len(text.split()) <= 3:
                         # Skip generic terms
                         skip_terms = ['faction equipment', 'strategy ploy', 'firefight ploy', 
                                      'faction rule', 'universal equipment', 'marker', 'token']
@@ -219,8 +245,15 @@ def process_raw_pdfs(raw_folder="input/_raw", base_output_folder="input"):
     # Load team name mapping
     team_mapping = load_team_mapping()
     
+    # Create archive folders
+    archive_folder = Path('input/_archive')
+    archive_folder.mkdir(parents=True, exist_ok=True)
+    archive_failed_folder = archive_folder / 'failed'
+    archive_failed_folder.mkdir(parents=True, exist_ok=True)
+    
     # Group files by team
     files_by_team = {}
+    unidentified_files = []
     
     for pdf_file in pdf_files:
         print(f"Processing: {pdf_file.name}")
@@ -242,6 +275,19 @@ def process_raw_pdfs(raw_folder="input/_raw", base_output_folder="input"):
             files_by_team[team_name].append((pdf_file, pdf_type))
         else:
             print(f"  ✗ Could not identify (team: {team_name}, type: {pdf_type})")
+            unidentified_files.append(pdf_file)
+    
+    # Archive unidentified files first
+    if unidentified_files:
+        print(f"\n{'='*60}")
+        print("Archiving unidentified files...")
+        print(f"{'='*60}\n")
+        
+        for pdf_file in unidentified_files:
+            # Keep GUID name and move to failed folder
+            archive_path = archive_failed_folder / pdf_file.name
+            shutil.copy2(str(pdf_file), str(archive_path))
+            print(f"  ✓ {pdf_file.name} → archived to _archive/failed/")
     
     # Move and rename files
     print(f"\n{'='*60}")
@@ -255,8 +301,24 @@ def process_raw_pdfs(raw_folder="input/_raw", base_output_folder="input"):
         print(f"Team: {team_name.upper()}")
         
         for pdf_file, pdf_type in files:
+            # Extract GUID from original filename using regex
+            import re
+            guid_pattern = r'([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})'
+            guid_matches = re.findall(guid_pattern, pdf_file.name, re.IGNORECASE)
+            guid = guid_matches[-1] if guid_matches else pdf_file.stem
+            
             new_filename = f"{team_name}-{pdf_type}.pdf"
             new_path = team_folder / new_filename
+            
+            # Archive with team subfolder and GUID as filename
+            team_archive_folder = archive_folder / team_name
+            team_archive_folder.mkdir(parents=True, exist_ok=True)
+            archive_filename = f"{guid}.pdf"
+            archive_path = team_archive_folder / archive_filename
+            
+            # Only archive if not already archived (avoid duplicates)
+            if not archive_path.exists():
+                shutil.copy2(str(pdf_file), str(archive_path))
             
             # Remove existing file if it exists (to allow overwrites)
             if new_path.exists():
@@ -272,6 +334,7 @@ def process_raw_pdfs(raw_folder="input/_raw", base_output_folder="input"):
     
     print(f"{'='*60}")
     print(f"Processing complete! Organized {len(pdf_files)} files into {len(files_by_team)} team(s)")
+    print(f"Archived originals to: {archive_folder}")
     print(f"{'='*60}")
 
 
