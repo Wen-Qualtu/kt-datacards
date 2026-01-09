@@ -292,8 +292,8 @@ if __name__ == "__main__":
     input_base = Path("input")
     output_base = Path("output")
     
-    # Get all team folders (subdirectories in input/)
-    team_folders = [d for d in input_base.iterdir() if d.is_dir()]
+    # Get all team folders (subdirectories in input/) - skip _raw folder
+    team_folders = [d for d in input_base.iterdir() if d.is_dir() and d.name != '_raw']
     
     if not team_folders:
         print("No team folders found in input/")
