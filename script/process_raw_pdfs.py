@@ -137,9 +137,11 @@ def identify_pdf_type(pdf_path):
                 for size, text in text_by_size[:20]:
                     # For operatives, look for larger text (size 16-20) that represents team name
                     if pdf_type == 'operatives' and 16 <= size <= 20:
-                        skip_terms = ['kill team', 'archetypes', 'operatives']
+                        skip_terms = ['archetypes', 'operatives']
                         if not any(skip in text.lower() for skip in skip_terms):
-                            team_name = clean_filename(text)
+                            # Remove "KILL TEAM" suffix if present
+                            text_cleaned = text.upper().replace('KILL TEAM', '').strip()
+                            team_name = clean_filename(text_cleaned)
                             break
                     # For other types, look for size 10-14 text
                     elif 10 <= size <= 14 and len(text.split()) <= 3:
