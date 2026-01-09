@@ -170,6 +170,12 @@ def extract_pdf_pages_to_jpg(input_folder, output_folder, dpi=300, clean_output=
             
             # Get the base name without extension and clean it for folder name
             base_name = pdf_file.stem
+            
+            # Remove team name prefix from base_name if present
+            # e.g., "hearthkyn-salvager-datacards" -> "datacards"
+            if base_name.startswith(team_name + '-'):
+                base_name = base_name[len(team_name) + 1:]
+            
             # Convert singular to plural for folder names (e.g., strategy-ploy -> strategy-ploys)
             folder_name = base_name.replace('-', ' ').strip()
             if not folder_name.endswith('s') and folder_name.split()[-1] not in ['rules', 'equipment']:
