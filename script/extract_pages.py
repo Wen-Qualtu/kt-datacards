@@ -182,7 +182,7 @@ def extract_pdf_pages_to_jpg(input_folder, output_folder, dpi=300, clean_output=
                     folder_name += 's'
             folder_name = folder_name.replace(' ', '-')
             
-            # Create subfolder for this PDF type
+            # Create subfolder for this PDF type (without team name prefix)
             pdf_output_path = output_path / folder_name
             pdf_output_path.mkdir(parents=True, exist_ok=True)
             

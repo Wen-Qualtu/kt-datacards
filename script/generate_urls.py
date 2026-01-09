@@ -29,11 +29,6 @@ def generate_url_csv():
             
             type_name = type_dir.name
             
-            # Clean up type name - remove team prefix if present
-            # e.g., "hearthkyn-salvager-datacards" -> "datacards"
-            if type_name.startswith(team_name + '-'):
-                type_name = type_name[len(team_name) + 1:]
-            
             # Get all JPG files
             for jpg_file in sorted(type_dir.glob('*.jpg')):
                 file_name = jpg_file.stem  # Name without extension
