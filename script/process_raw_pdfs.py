@@ -2,6 +2,17 @@ import fitz  # PyMuPDF
 import re
 from pathlib import Path
 import shutil
+import yaml
+
+
+def load_team_mapping():
+    """Load team name mapping from YAML file."""
+    mapping_file = Path('team-mapping.yaml')
+    if mapping_file.exists():
+        with open(mapping_file, 'r') as f:
+            config = yaml.safe_load(f)
+            return config.get('team_names', {})
+    return {}
 
 
 def clean_filename(text):
@@ -203,6 +214,9 @@ def process_raw_pdfs(raw_folder="input/_raw", base_output_folder="input"):
     
     print(f"Found {len(pdf_files)} PDF file(s) to process\n")
     
+    # Load team name mapping
+    team_mapping = load_team_mapping()
+    
     # Group files by team
     files_by_team = {}
     
@@ -212,7 +226,13 @@ def process_raw_pdfs(raw_folder="input/_raw", base_output_folder="input"):
         team_name, pdf_type = identify_pdf_type(pdf_file)
         
         if team_name and pdf_type:
-            print(f"  → Identified as: {team_name} - {pdf_type}")
+            # Apply team name mapping if exists
+            canonical_team_name = team_mapping.get(team_name, team_name)
+            if canonical_team_name != team_name:
+                print(f"  → Identified as: {team_name} - {pdf_type} (mapped to: {canonical_team_name})")
+                team_name = canonical_team_name
+            else:
+                print(f"  → Identified as: {team_name} - {pdf_type}")
             
             if team_name not in files_by_team:
                 files_by_team[team_name] = []
