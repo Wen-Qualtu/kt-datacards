@@ -48,46 +48,123 @@ def identify_pdf_type(pdf_path):
         team_name = None
         pdf_type = None
         
-        # Look through the text to find team name and type
-        for size, text in text_by_size[:30]:  # Check top 30 largest text
+        # Identify PDF type first from headers
+        for size, text in text_by_size[:30]:
             text_lower = text.lower()
             
-            # Identify PDF type from headers
             if 'faction equipment' in text_lower:
                 pdf_type = 'equipment'
+                break
             elif 'strategy ploy' in text_lower or 'strategic ploy' in text_lower:
                 pdf_type = 'strategy-ploy'
+                break
             elif 'firefight ploy' in text_lower:
                 pdf_type = 'firefight-ploy'
+                break
             elif 'faction rule' in text_lower:
                 pdf_type = 'faction-rules'
-            elif 'datacard' in text_lower:
-                pdf_type = 'datacards'
-            
-            # Extract team name (usually a large text that's not a generic header)
-            if not team_name and len(text) > 5 and len(text) < 30:
-                skip_generic = ['faction equipment', 'strategy ploy', 'firefight ploy', 
-                               'faction rule', 'datacard', 'marker', 'token', 'guide',
-                               'name', 'wounds', 'save', 'move']
-                if not any(skip in text_lower for skip in skip_generic):
-                    # Check if it looks like a team name
-                    if size > 10 or (size > 8 and pdf_type):  # Large text is likely team name
-                        team_name = clean_filename(text)
+                break
         
-        # For datacards, check bottom of page for team name (small text)
-        if pdf_type == 'datacards' and not team_name:
-            # Get all text and look at the bottom section
-            all_text = page.get_text()
-            lines = [line.strip() for line in all_text.split('\n') if line.strip()]
+        # For datacards, look at the bottom of the page first (comma-separated metadata)
+        all_text = page.get_text()
+        lines = [line.strip() for line in all_text.split('\n') if line.strip()]
+        
+        # Check if this is a datacard only if type not already determined
+        if not pdf_type:
+            is_likely_datacard = False
+            for line in lines[-10:]:
+                if any(keyword in line.upper() for keyword in ['RULES CONTINUE', 'APL', 'WOUNDS', 'SAVE', 'MOVE']):
+                    is_likely_datacard = True
+                    break
+        else:
+            is_likely_datacard = False
+        
+        # If looks like a datacard, search for team name in metadata
+        if is_likely_datacard:
+            pdf_type = 'datacards'
             
-            # Check last 20 lines for team name
-            for line in lines[-20:]:
-                line_lower = line.lower()
-                if len(line) > 5 and len(line) < 30:
-                    # Common keywords that appear with team name in datacards
-                    if any(keyword in line_lower for keyword in ['deathwatch', 'salvagers', 'wrecka', 'battleclade']):
-                        team_name = clean_filename(line.split(',')[0].strip())  # Take first part before comma
+            # Look for comma-separated line with faction info (usually has 3+ commas)
+            for line in lines[-15:]:
+                if ',' in line and line.count(',') >= 2:
+                    # This is likely the metadata line (e.g., "HEARTHKYN SALVAGER , LEAGUES OF VOTANN, LEADER, THEYN")
+                    parts = [p.strip() for p in line.split(',')]
+                    first_part = parts[0]
+                    
+                    # Check if first part contains role/character keywords - if so, extract just the team name
+                    role_keywords = ['LEADER', 'OPERATIVE', 'WARRIOR', 'SERGEANT', 'THEYN', 
+                                    'NOB', 'BOSS', 'PRIEST', 'TECH-PRIEST', 'TECHNOARCHEOLOGIST',
+                                    'ARCHAEOPTER', 'SERVITOR', 'IMMORTAL', 'WRAITH', 'CRYPTEK']
+                    
+                    # Split first part into words
+                    words = first_part.split()
+                    
+                    # If last word(s) are role keywords, exclude them
+                    team_words = []
+                    for word in words:
+                        # Stop adding words if we hit a role keyword
+                        if any(role in word.upper() for role in role_keywords):
+                            break
+                        team_words.append(word)
+                    
+                    # If we have at least 1-2 words left, use as team name
+                    if len(team_words) >= 1:
+                        team_name = clean_filename(' '.join(team_words))
+                    elif len(words) >= 2:  # Fallback: use first part as-is if no roles found
+                        team_name = clean_filename(first_part)
+                    
+                    if team_name:
                         break
+        
+        # For non-datacards, look for team name in large text
+        if not team_name:
+            # First try: look for team names near headers (equipment, ploys, faction rules)
+            if pdf_type in ['equipment', 'strategy-ploy', 'firefight-ploy', 'faction-rules']:
+                # For these types, team name is often size 12 text near the header
+                for size, text in text_by_size[:20]:
+                    if 10 <= size <= 14 and len(text.split()) <= 3:
+                        # Skip generic terms
+                        skip_terms = ['faction equipment', 'strategy ploy', 'firefight ploy', 
+                                     'faction rule', 'universal equipment', 'marker', 'token']
+                        if not any(skip in text.lower() for skip in skip_terms):
+                            # This looks like a team name
+                            team_name = clean_filename(text)
+                            break
+            
+            # Second try: look for multi-word phrases with team keywords
+            if not team_name:
+                potential_team_names = []
+                
+                for size, text in text_by_size[:40]:
+                    text_lower = text.lower()
+                    
+                    # Skip if it's too short or too long
+                    if len(text) < 8 or len(text) > 50:
+                        continue
+                    
+                    # Skip generic headers
+                    skip_generic = ['faction equipment', 'strategy ploy', 'firefight ploy', 
+                                   'faction rule', 'datacard', 'marker', 'token', 'guide',
+                                   'name', 'wounds', 'save', 'move', 'universal equipment',
+                                   'rules continue']
+                    if any(skip in text_lower for skip in skip_generic):
+                        continue
+                    
+                    # Count words (2-3 word phrases are usually team names)
+                    word_count = len(text.split())
+                    
+                    # For large text (size > 11), it's likely a team name if it's 2-3 words
+                    if size > 11 and 2 <= word_count <= 4:
+                        # Check if it contains common team keywords
+                        team_keywords = ['salvager', 'krew', 'battleclade', 'deathwatch', 
+                                        'canoptek', 'circle', 'hearthkyn', 'wrecka', 'astartes',
+                                        'veteran', 'necron', 'admech', 'mechanicus']
+                        if any(keyword in text_lower for keyword in team_keywords):
+                            potential_team_names.append((size, text))
+                
+                # Pick the largest team name candidate
+                if potential_team_names:
+                    potential_team_names.sort(reverse=True, key=lambda x: x[0])
+                    team_name = clean_filename(potential_team_names[0][1])
         
         pdf.close()
         
@@ -149,9 +226,15 @@ def process_raw_pdfs(raw_folder="input/_raw", base_output_folder="input"):
             new_filename = f"{team_name}-{pdf_type}.pdf"
             new_path = team_folder / new_filename
             
+            # Remove existing file if it exists (to allow overwrites)
+            if new_path.exists():
+                new_path.unlink()
+                print(f"  ✓ {pdf_file.name} → {new_filename} (overwritten)")
+            else:
+                print(f"  ✓ {pdf_file.name} → {new_filename}")
+            
             # Move and rename
             shutil.move(str(pdf_file), str(new_path))
-            print(f"  ✓ {pdf_file.name} → {new_filename}")
         
         print()
     
