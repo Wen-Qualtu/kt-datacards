@@ -232,8 +232,8 @@ def extract_pdf_pages_to_jpg(input_folder, output_folder, dpi=300, clean_output=
                     
                     # Create output filename
                     if card_name:
-                        # For datacards with multiple pages per operative, add front/back suffix
-                        if is_datacard and operative_counts.get(card_name, 1) > 1:
+                        # For datacards, always add front/back suffix for consistency
+                        if is_datacard:
                             # Check if this is first or second occurrence
                             occurrence = sum(1 for p, n in operative_pages[:page_num + 1] if n == card_name)
                             if occurrence == 1:
