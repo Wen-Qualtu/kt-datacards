@@ -52,7 +52,10 @@ def identify_pdf_type(pdf_path):
         for size, text in text_by_size[:30]:
             text_lower = text.lower()
             
-            if 'faction equipment' in text_lower:
+            if 'operatives' == text_lower.strip():
+                pdf_type = 'operatives'
+                break
+            elif 'faction equipment' in text_lower:
                 pdf_type = 'equipment'
                 break
             elif 'strategy ploy' in text_lower or 'strategic ploy' in text_lower:
@@ -117,11 +120,18 @@ def identify_pdf_type(pdf_path):
         
         # For non-datacards, look for team name in large text
         if not team_name:
-            # First try: look for team names near headers (equipment, ploys, faction rules)
-            if pdf_type in ['equipment', 'strategy-ploy', 'firefight-ploy', 'faction-rules']:
-                # For these types, team name is often size 12 text near the header
+            # First try: look for team names near headers (equipment, ploys, faction rules, operatives)
+            if pdf_type in ['equipment', 'strategy-ploy', 'firefight-ploy', 'faction-rules', 'operatives']:
+                # For these types, team name is often size 12-18 text near the header
                 for size, text in text_by_size[:20]:
-                    if 10 <= size <= 14 and len(text.split()) <= 3:
+                    # For operatives, look for larger text (size 16-20) that represents team name
+                    if pdf_type == 'operatives' and 16 <= size <= 20:
+                        skip_terms = ['kill team', 'archetypes', 'operatives']
+                        if not any(skip in text.lower() for skip in skip_terms):
+                            team_name = clean_filename(text)
+                            break
+                    # For other types, look for size 10-14 text
+                    elif 10 <= size <= 14 and len(text.split()) <= 3:
                         # Skip generic terms
                         skip_terms = ['faction equipment', 'strategy ploy', 'firefight ploy', 
                                      'faction rule', 'universal equipment', 'marker', 'token']

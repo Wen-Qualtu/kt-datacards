@@ -192,9 +192,10 @@ def extract_pdf_pages_to_jpg(input_folder, output_folder, dpi=300, clean_output=
             pdf_output_path = output_path / folder_name
             pdf_output_path.mkdir(parents=True, exist_ok=True)
             
-            # Check if this is a datacard or faction-rules PDF
+            # Check if this is a datacard, faction-rules, or operatives PDF
             is_datacard = 'datacard' in base_name.lower()
             is_faction_rules = 'faction-rule' in base_name.lower()
+            is_operatives = 'operative' in base_name.lower()
             
             # Track used filenames to avoid duplicates
             used_names = set()
@@ -217,7 +218,11 @@ def extract_pdf_pages_to_jpg(input_folder, output_folder, dpi=300, clean_output=
                 # Extract card name
                 card_name = None
                 
-                if is_faction_rules:
+                if is_operatives:
+                    # For operatives, just use "operatives" as the base name
+                    # Since there's typically only one card per PDF
+                    card_name = "operatives"
+                elif is_faction_rules:
                     # Special handling for faction rules
                     if 'MARKER' in text and 'TOKEN' in text and 'GUIDE' in text:
                         card_name = "markertoken-guide"
@@ -268,6 +273,17 @@ def extract_pdf_pages_to_jpg(input_folder, output_folder, dpi=300, clean_output=
             # For faction rules, track which pages are faction rule pages vs marker guide
             faction_rule_counter = 0
             
+            # For operatives, determine if we need numbering (more than one card)
+            operatives_cards = []
+            if is_operatives:
+                # Count how many operative cards we have (excluding backs)
+                for card_info in card_pages:
+                    if card_info['card_name'] == 'operatives':
+                        operatives_cards.append(card_info)
+            
+            operatives_need_numbering = len(operatives_cards) > 1
+            operatives_counter = 0
+            
             # Second pass: extract pages with proper naming
             page_index = 0
             while page_index < len(card_pages):
@@ -280,7 +296,23 @@ def extract_pdf_pages_to_jpg(input_folder, output_folder, dpi=300, clean_output=
                 page = pdf_document[page_num]
                 
                 # Generate filename
-                if is_faction_rules and not card_name:
+                if is_operatives and card_name == 'operatives':
+                    # Handle operatives numbering
+                    operatives_counter += 1
+                    if operatives_need_numbering and operatives_counter > 1:
+                        # Add number starting from 2
+                        base_filename = f"operatives-{operatives_counter}"
+                    else:
+                        # First card (or only card) gets no number
+                        base_filename = "operatives"
+                    
+                    if has_back:
+                        output_filename_front = f"{base_filename}_front.jpg"
+                        output_filename_back = f"{base_filename}_back.jpg"
+                    else:
+                        output_filename_front = f"{base_filename}_front.jpg"
+                        output_filename_back = None
+                elif is_faction_rules and not card_name:
                     # It's a faction rule page without a name, number them sequentially
                     faction_rule_counter += 1
                     base_filename = f"faction-rule-{faction_rule_counter}"
