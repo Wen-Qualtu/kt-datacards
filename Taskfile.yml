@@ -40,30 +40,32 @@ tasks:
   pipeline:process:
     desc: Process raw PDFs (identify and organize)
     cmds:
-      - "{{.PYTHON}} script/process_raw_pdfs.py {{.CLI_ARGS}}"
+      - "{{.PYTHON}} script/run_pipeline.py --step process {{.CLI_ARGS}}"
 
   pipeline:extract:
     desc: Extract individual cards as images
     cmds:
-      - "{{.PYTHON}} script/extract_pages.py {{.CLI_ARGS}}"
+      - "{{.PYTHON}} script/run_pipeline.py --step extract {{.CLI_ARGS}}"
 
   pipeline:backside:
     desc: Add default backsides to cards
     cmds:
-      - "{{.PYTHON}} script/add_default_backsides.py {{.CLI_ARGS}}"
+      - "{{.PYTHON}} script/run_pipeline.py --step backsides {{.CLI_ARGS}}"
 
   pipeline:urls:
     desc: Generate URL CSV for TTS
     cmds:
-      - "{{.PYTHON}} script/generate_urls.py {{.CLI_ARGS}}"
+      - "{{.PYTHON}} script/run_pipeline.py --step urls {{.CLI_ARGS}}"
 
   pipeline:all:
     desc: Run complete pipeline (process → extract → backside → urls)
     cmds:
-      - task: pipeline:process
-      - task: pipeline:extract
-      - task: pipeline:backside
-      - task: pipeline:urls
+      - "{{.PYTHON}} script/run_pipeline.py --step all {{.CLI_ARGS}}"
+  
+  pipeline:metadata:
+    desc: Generate output metadata YAML
+    cmds:
+      - "{{.PYTHON}} script/generate_metadata.py {{.CLI_ARGS}}"
 
   # ====================
   # Development Tools
