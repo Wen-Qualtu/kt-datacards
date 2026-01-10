@@ -33,11 +33,11 @@ class TeamIdentifier:
                 config = yaml.safe_load(f)
                 team_names = config.get('team_names', {})
                 
-                # team_names format: {detected_name: canonical_name}
-                # We need to build Team objects with aliases
+                # team_names format: {canonical_name: detected_variant}
+                # Keys are canonical names, values are variants to map
                 canonical_to_variants: Dict[str, List[str]] = {}
                 
-                for variant, canonical in team_names.items():
+                for canonical, variant in team_names.items():
                     canonical_norm = Team.normalize_name(canonical)
                     if canonical_norm not in canonical_to_variants:
                         canonical_to_variants[canonical_norm] = []
