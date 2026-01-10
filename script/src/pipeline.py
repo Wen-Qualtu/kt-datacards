@@ -142,12 +142,21 @@ class DatacardPipeline:
                 )
                 dest_path = dest_dir / clean_name
                 
-                # Copy file
+                # Copy file to processed
                 import shutil
                 shutil.copy2(pdf_file, dest_path)
                 
+                # Move original to archive
+                archive_dir = team.get_archive_path()
+                archive_dir.mkdir(parents=True, exist_ok=True)
+                archive_path = archive_dir / pdf_file.name
+                shutil.move(str(pdf_file), str(archive_path))
+                
                 self.logger.info(
                     f"Processed: {pdf_file.name} → {team.name}/{clean_name}"
+                )
+                self.logger.info(
+                    f"Archived: {pdf_file.name} → archive/{team.name}/"
                 )
                 
                 processed_pdfs.append((dest_path, team, card_type))

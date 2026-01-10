@@ -93,7 +93,16 @@ class PDFProcessor:
     
     def _identify_card_type(self, text_by_size, page) -> Optional[CardType]:
         """Identify card type from text"""
-        # Check headers for type keywords
+        # First check if it's a datacard (highest priority since abilities mention ploys)
+        all_text = page.get_text()
+        lines = [line.strip() for line in all_text.split('\n') if line.strip()]
+        
+        # Look for datacard indicators in bottom portion
+        for line in lines[-10:]:
+            if any(keyword in line.upper() for keyword in ['RULES CONTINUE', 'APL', 'WOUNDS', 'SAVE', 'MOVE']):
+                return CardType.DATACARDS
+        
+        # Then check headers for other type keywords
         for size, text in text_by_size[:30]:
             text_lower = text.lower()
             
@@ -107,15 +116,6 @@ class PDFProcessor:
                 return CardType.FIREFIGHT_PLOYS
             elif 'faction rule' in text_lower:
                 return CardType.FACTION_RULES
-        
-        # Check if it's a datacard by looking for stats keywords
-        all_text = page.get_text()
-        lines = [line.strip() for line in all_text.split('\n') if line.strip()]
-        
-        # Look for datacard indicators in bottom portion
-        for line in lines[-10:]:
-            if any(keyword in line.upper() for keyword in ['RULES CONTINUE', 'APL', 'WOUNDS', 'SAVE', 'MOVE']):
-                return CardType.DATACARDS
         
         return None
     
