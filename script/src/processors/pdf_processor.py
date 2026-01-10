@@ -125,7 +125,7 @@ class PDFProcessor:
             
             if 'operatives' == text_lower.strip():
                 return CardType.OPERATIVES
-            elif 'faction equipment' in text_lower:
+            elif 'faction equipment' in text_lower or 'equipment' == text_lower.strip():
                 return CardType.EQUIPMENT
             elif 'strategy ploy' in text_lower or 'strategic ploy' in text_lower:
                 return CardType.STRATEGY_PLOYS
@@ -149,11 +149,16 @@ class PDFProcessor:
         return self._extract_team_from_headers(lines)
     
     def _extract_team_from_datacard_metadata(self, lines: list) -> Optional[str]:
-        """Extract team name from datacard metadata line"""
+        """Extract team name from datacard metadata line (bottom tags section)"""
+        # The team name is in the first tag at the bottom (orange text on black background)
+        # It appears in the bottom section, typically the last few lines
+        
         faction_keywords = [
             'IMPERIUM', 'CHAOS', 'AELDARI', 'TYRANIDS', 'ORKS',
-            "T'AU", 'TAU', 'NECRONS', 'LEAGUES OF VOTANN', 'GENESTEALER'
+            'TAU', 'NECRONS', 'LEAGUES OF VOTANN', 'GENESTEALER'
         ]
+        # Add T'AU with regular apostrophe (will match after normalization)
+        faction_keywords.append('T' + chr(39) + 'AU')
         
         role_keywords = [
             'LEADER', 'OPERATIVE', 'WARRIOR', 'SERGEANT', 'THEYN',
@@ -161,31 +166,65 @@ class PDFProcessor:
             'ARCHAEOPTER', 'SERVITOR', 'IMMORTAL', 'WRAITH', 'CRYPTEK'
         ]
         
-        # Look in bottom portion for metadata line
-        for line in lines[-15:]:
-            # Normalize apostrophes for matching
-            line_normalized = line.replace(''', "'").replace(''', "'")
-            
-            # Check if ALL CAPS and has commas
-            if line.isupper() and ',' in line and line.count(',') >= 2:
-                # Check for faction keyword
-                if any(keyword in line_normalized for keyword in faction_keywords):
-                    parts = [p.strip() for p in line_normalized.split(',')]
-                    first_part = parts[0]
-                    
-                    # Remove role keywords from team name
-                    words = first_part.split()
-                    team_words = []
-                    for word in words:
-                        if any(role in word.upper() for role in role_keywords):
-                            break
-                        team_words.append(word)
-                    
-                    if team_words:
-                        team_name = ' '.join(team_words)
-                        return self._clean_filename(team_name)
+        # Look in bottom 20 lines for the tag section
+        # The first meaningful tag is usually the team name
+        candidate_teams = []
         
-        return None
+        for line in lines[-20:]:
+            # Normalize apostrophes for matching (replace curly quotes with regular)
+            line_normalized = line.replace(chr(8217), chr(39)).replace(chr(8216), chr(39))
+            line_upper = line_normalized.upper()
+            
+            # Skip if it's a stat line or common card elements
+            if any(stat in line_upper for stat in ['APL', 'WOUNDS', 'SAVE', 'MOVEMENT', 'GA', 'DF']):
+                continue
+            
+            # Check if line is uppercase and contains faction keyword
+            if not line_normalized.isupper():
+                continue
+                
+            # Check for faction keyword (check normalized line since we normalized apostrophes)
+            if not any(keyword in line_upper for keyword in faction_keywords):
+                continue
+            
+            # This line contains a faction keyword and is uppercase
+            # It could be either:
+            # 1. A comma-separated metadata line (TEAM, FACTION, ROLE, etc.)
+            # 2. A short tag (just team name, 1-5 words)
+            
+            if ',' in line_normalized and line_normalized.count(',') >= 2:
+                # Comma-separated format - first part is team name
+                parts = [p.strip() for p in line_normalized.split(',')]
+                first_part = parts[0]
+                
+                # Remove role keywords from team name
+                words = first_part.split()
+                team_words = []
+                for word in words:
+                    if any(role in word.upper() for role in role_keywords):
+                        break
+                    team_words.append(word)
+                
+                if team_words:
+                    team_name = ' '.join(team_words)
+                    candidate_teams.append(self._clean_filename(team_name))
+            
+            elif len(line_normalized.split()) <= 5:
+                # Short tag format - likely just team name
+                # Remove role keywords if present
+                words = line_normalized.split()
+                team_words = []
+                for word in words:
+                    if any(role in word.upper() for role in role_keywords):
+                        break
+                    team_words.append(word)
+                
+                if team_words:
+                    team_name = ' '.join(team_words)
+                    candidate_teams.append(self._clean_filename(team_name))
+        
+        # Return the first candidate found (closest to bottom)
+        return candidate_teams[0] if candidate_teams else None
     
     def _extract_team_from_headers(self, lines: list) -> Optional[str]:
         """Extract team name from header lines"""
