@@ -48,6 +48,27 @@
 - Use git history for version tracking
 - Commit frequently with clear messages
 
+### 4. **Feature Branch Workflow**
+**CRITICAL**: No direct commits to main branch
+- ✅ DO: Create a feature branch for each feature
+- ✅ DO: Name branch after the feature (e.g., `feature-03-enhanced-metadata`)
+- ✅ DO: Work on the branch until feature is complete
+- ✅ DO: Merge to main when feature is tested and approved
+- ❌ DON'T: Commit directly to main
+- 💡 Benefits: Multiple features in parallel, easy rollback, cleaner history
+
+**Example workflow:**
+```bash
+git checkout -b feature-03-enhanced-metadata
+# ... work on feature ...
+git add -A
+git commit -m "feat: add faction metadata to teams"
+# ... more commits ...
+git checkout main
+git merge feature-03-enhanced-metadata
+git branch -d feature-03-enhanced-metadata
+```
+
 ### 4. **Reproducibility Across Machines**
 - Use Poetry for dependency management
 - Lock dependencies with `poetry.lock`
