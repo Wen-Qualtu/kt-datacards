@@ -1,91 +1,107 @@
-# KT Datacards Processor
+# Datacard Processing Scripts
 
-This project processes Kill Team datacard PDFs and extracts individual cards as JPG images for use in Tabletop Simulator.
+This directory contains the refactored Kill Team datacard processing pipeline.
 
-## Setup
+## Quick Start
 
-1. Install Python dependencies:
+### Full Pipeline
+Process everything from raw PDFs to TTS-ready URLs:
 ```bash
-pip install -r requirements.txt
+poetry run python script/run_pipeline.py
 ```
 
-## Workflow
-
-### 1. Process Raw PDFs
-Place PDF files (exported from Kill Team mobile app) in the `input/` folder and run:
+### Individual Steps
+Run specific pipeline steps:
 ```bash
-python script/process_raw_pdfs.py
+# Process raw PDFs
+poetry run python script/run_pipeline.py --step process
+
+# Extract images
+poetry run python script/run_pipeline.py --step extract
+
+# Add backsides
+poetry run python script/run_pipeline.py --step backsides
+
+# Generate URLs
+poetry run python script/run_pipeline.py --step urls
 ```
 
-This script:
-- Identifies team names and card types from PDF content
-- Renames and organizes PDFs into `processed/<team-name>/` folders
-- Archives original files to `archive/<team-name>/` (keeps GUIDs)
-- Uses team name mapping from `input/config/team-name-mapping.yaml`
-
-### 2. Extract Card Images
-Once PDFs are organized in `processed/`, extract individual cards:
+### Options
 ```bash
-python script/extract_pages.py
+# Filter by teams
+poetry run python script/run_pipeline.py --teams kasrkin blooded
+
+# Custom DPI
+poetry run python script/run_pipeline.py --dpi 600
+
+# Verbose logging
+poetry run python script/run_pipeline.py -v
+
+# Log to file
+poetry run python script/run_pipeline.py --log-file pipeline.log
 ```
 
-This script:
-- Reads PDFs from `processed/<team-name>/` folders
-- Extracts each card as a separate JPG image
-- Saves to `output/<team-name>/<card-type>/` folders
-- Names cards based on extracted text (e.g., `trooper-gunner_front.jpg`)
+## Directory Structure
 
-### 3. Add Default Backsides
-Some cards don't have backs in the PDF. Add default backsides:
+```
+script/
+├── run_pipeline.py         # Main entry point
+├── README.md               # This file
+│
+├── src/                    # Source code
+│   ├── models/             # Data models (Team, CardType, Datacard)
+│   ├── processors/         # Processing logic (PDF, image, backside)
+│   ├── generators/         # Output generation (URLs)
+│   ├── utils/              # Utilities (logging, paths)
+│   └── pipeline.py         # Pipeline orchestration
+│
+├── scripts/                # Individual step scripts
+│   ├── process_pdfs.py     # Process raw PDFs
+│   ├── extract_images.py   # Extract card images
+│   ├── add_backsides.py    # Add backside images
+│   └── generate_urls.py    # Generate URLs CSV
+│
+└── tests/                  # Test scripts
+    ├── test_refactored.py  # Validation tests
+    └── check_pdf.py        # PDF content checker
+```
+
+## Architecture
+
+### Models
+- **Team** - Kill Team faction with name normalization and path management
+- **CardType** - Enum for card types (datacards, equipment, etc.)
+- **Datacard** - Individual card linking PDF source to output images
+
+### Processors
+- **TeamIdentifier** - Team name resolution from YAML mapping
+- **PDFProcessor** - PDF identification (filename + content analysis)
+- **ImageExtractor** - Card image extraction with front/back detection
+- **BacksideProcessor** - Backside image management (team-specific → default)
+
+### Generators
+- **URLGenerator** - GitHub raw URL CSV generation for TTS
+
+### Pipeline
+- **DatacardPipeline** - Main orchestrator coordinating all components
+
+## Key Features
+
+✅ **Clean Architecture** - Proper separation of concerns  
+✅ **Type Safety** - Type hints throughout  
+✅ **Error Handling** - Comprehensive logging and error recovery  
+✅ **Extensibility** - Easy to add new card types or processors  
+✅ **Maintainability** - Self-documenting code with clear module boundaries  
+
+## Testing
+
+Run validation tests:
 ```bash
-python script/add_default_backsides.py
+poetry run python script/tests/test_refactored.py
 ```
 
-This uses backsides from:
-- **Default**: `input/config/card-backside/default/default-backside-{portrait|landscape}.jpg`
-- **Team-specific** (optional): `input/config/card-backside/team/{team-name}/backside-{portrait|landscape}.jpg`
+## Documentation
 
-Team-specific backsides override defaults if present.
-
-### 4. Generate URL CSV
-Create a CSV with GitHub raw URLs for all cards:
-```bash
-python script/generate_urls.py
-```
-
-Generates `datacards-urls.csv` with URLs for use in Tabletop Simulator.
-
-## Folder Structure
-
-```
-kt-datacards/
-├── input/              # Raw PDF files (place new PDFs here)
-├── processed/          # Organized PDFs by team
-│   └── <team-name>/
-├── output/             # Final card images (referenced by TTS)
-│   └── <team-name>/
-│       ├── datacards/
-│       ├── equipment/
-│       └── ...
-├── archive/            # Original PDFs with GUIDs
-│   └── <team-name>/
-└── script/
-    ├── config/
-    │   ├── team-mapping.yaml
-    │   ├── defaults/               # Default backside images
-    │   │   ├── default-backside-portrait.jpg
-    │   │   └── default-backside-landscape.jpg
-    │   └── team-backsides/         # Team-specific backsides (optional)
-    │       └── <team-name>/
-    │           ├── backside-portrait.jpg
-    │           └── backside-landscape.jpg
-- **Custom Backsides**: Place team-specific backsides in `input/config/card-backside/team/{team-name}/`
-  - `backside-portrait.jpg` for equipment, ploys, etc.
-  - `backside-landscape.jpg` for datacards
-    └── ...
-```
-
-## Configuration
-
-- **DPI**: Adjust resolution in `extract_pages.py` (default: 300)
-- **Team Mapping**: Edit `input/config/team-name-mapping.yaml` to map team name variations
+For detailed development rules and guidelines, see:
+- [docs/DEVELOPMENT.md](../docs/DEVELOPMENT.md) - Development rules
+- [FEATURE-02-COMPLETION-REPORT.md](../FEATURE-02-COMPLETION-REPORT.md) - Implementation details

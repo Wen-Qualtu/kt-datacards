@@ -166,6 +166,11 @@ kt-datacards/
 - Use snake_case: `team_name`, `output_dir`
 - Descriptive, not abbreviated
 - Boolean variables: `is_`, `has_`, `should_` prefix
+- **Exception**: Python convention parameters (`self` for instance methods, `card_type_class` for @classmethod instead of `cls`)
+- **Rule**: Prefer full words over abbreviations - you type once but read many times
+  - ✅ GOOD: `team_identifier`, `card_type_class`, `configuration`
+  - ❌ BAD: `team_id`, `cls`, `cfg`
+  - Clarity trumps brevity
 
 #### Constants
 - Use UPPER_SNAKE_CASE: `DEFAULT_DPI`, `MAX_WORKERS`
