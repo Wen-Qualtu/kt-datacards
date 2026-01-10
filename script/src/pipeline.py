@@ -18,7 +18,7 @@ class DatacardPipeline:
     
     def __init__(
         self,
-        input_raw_dir: Path = Path('input/_raw'),
+        input_raw_dir: Path = Path('input'),
         processed_dir: Path = Path('processed'),
         output_dir: Path = Path('output'),
         config_dir: Path = Path('input/config'),
@@ -28,10 +28,10 @@ class DatacardPipeline:
         Initialize DatacardPipeline
         
         Args:
-            input_raw_dir: Directory with raw PDF files
+            input_raw_dir: Directory with raw PDF files (searches recursively)
             processed_dir: Directory for organized PDFs
             output_dir: Directory for extracted images
-            config_dir: Configuration directory
+            config_dir: Configuration directory (excluded from PDF search)
             dpi: Image resolution
         """
         self.input_raw_dir = input_raw_dir
@@ -112,8 +112,17 @@ class DatacardPipeline:
             self.logger.warning(f"Raw input directory not found: {self.input_raw_dir}")
             return processed_pdfs
         
-        # Get all PDF files
-        pdf_files = list(self.input_raw_dir.glob('*.pdf'))
+        # Get all PDF files recursively, excluding config directory
+        pdf_files = []
+        for pdf_path in self.input_raw_dir.rglob('*.pdf'):
+            # Skip files in config directory
+            try:
+                pdf_path.relative_to(self.config_dir)
+                self.logger.debug(f"Skipping config file: {pdf_path}")
+                continue
+            except ValueError:
+                # Not in config directory, include it
+                pdf_files.append(pdf_path)
         
         if not pdf_files:
             self.logger.info(f"No PDF files found in {self.input_raw_dir}")

@@ -68,6 +68,14 @@ script/
 
 ## Architecture
 
+### Input Directory Structure
+The pipeline recursively searches for PDFs in the `input/` directory:
+- ✅ Processes PDFs in `input/` root directory
+- ✅ Processes PDFs in any subdirectory (e.g., `input/_raw/`, `input/team-name/`)
+- ❌ **Excludes** `input/config/` directory (static configuration files)
+
+This allows flexible organization of source PDFs while keeping configuration separate.
+
 ### Models
 - **Team** - Kill Team faction with name normalization and path management
 - **CardType** - Enum for card types (datacards, equipment, etc.)
