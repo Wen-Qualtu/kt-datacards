@@ -9,24 +9,24 @@ def add_default_backsides():
     Checks for team-specific backside first, then falls back to common default.
     
     Backside priority:
-    1. Team-specific: script/config/card-backside/team/{team-name}/backside-{orientation}.jpg
-    2. Default: script/config/card-backside/default/default-backside-{orientation}.jpg
+    1. Team-specific: input/config/card-backside/team/{team-name}/backside-{orientation}.jpg
+    2. Default: input/config/card-backside/default/default-backside-{orientation}.jpg
     """
     output_dir = Path('output')
-    default_backside_portrait = Path('script/config/card-backside/default/default-backside-portrait.jpg')
-    default_backside_landscape = Path('script/config/card-backside/default/default-backside-landscape.jpg')
+    default_backside_portrait = Path('input/config/card-backside/default/default-backside-portrait.jpg')
+    default_backside_landscape = Path('input/config/card-backside/default/default-backside-landscape.jpg')
     
     if not default_backside_portrait.exists():
         print(f"[ERROR] Error: Default portrait backside image not found at {default_backside_portrait}")
-        print("Please save the default-backside-portrait.jpg image in script/config/card-backside/default/")
+        print("Please save the default-backside-portrait.jpg image in input/config/card-backside/default/")
         return
     
     if not default_backside_landscape.exists():
         print(f"[ERROR] Error: Default landscape backside image not found at {default_backside_landscape}")
-        print("Please save the default-backside-landscape.jpg image in script/config/card-backside/default/")
+        print("Please save the default-backside-landscape.jpg image in input/config/card-backside/default/")
         return
     
-    print(f"Default backsides location: script/config/card-backside/default/\n")
+    print(f"Default backsides location: input/config/card-backside/default/\n")
     
     added_count = 0
     
@@ -37,8 +37,8 @@ def add_default_backsides():
         
         team_name = team_dir.name
         
-        # Check if team has custom backsides in script/config/card-backside/team/{team}/
-        team_backside_dir = Path(f'script/config/card-backside/team/{team_name}')
+        # Check if team has custom backsides in input/config/card-backside/team/{team}/
+        team_backside_dir = Path(f'input/config/card-backside/team/{team_name}')
         team_backside_portrait = team_backside_dir / 'backside-portrait.jpg'
         team_backside_landscape = team_backside_dir / 'backside-landscape.jpg'
         

@@ -10,7 +10,7 @@ def load_team_mapping():
     Returns a dict where keys are variants and values are canonical names.
     Also returns a reverse lookup where both canonical and variants map to canonical.
     """
-    mapping_file = Path('team-mapping.yaml')
+    mapping_file = Path('input/config/team-name-mapping.yaml')
     if mapping_file.exists():
         with open(mapping_file, 'r') as f:
             config = yaml.safe_load(f)

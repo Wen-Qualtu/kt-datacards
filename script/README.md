@@ -21,7 +21,7 @@ This script:
 - Identifies team names and card types from PDF content
 - Renames and organizes PDFs into `processed/<team-name>/` folders
 - Archives original files to `archive/<team-name>/` (keeps GUIDs)
-- Uses team name mapping from `script/config/team-mapping.yaml`
+- Uses team name mapping from `input/config/team-name-mapping.yaml`
 
 ### 2. Extract Card Images
 Once PDFs are organized in `processed/`, extract individual cards:
@@ -42,8 +42,8 @@ python script/add_default_backsides.py
 ```
 
 This uses backsides from:
-- **Default**: `script/config/card-backside/default/default-backside-{portrait|landscape}.jpg`
-- **Team-specific** (optional): `script/config/card-backside/team/{team-name}/backside-{portrait|landscape}.jpg`
+- **Default**: `input/config/card-backside/default/default-backside-{portrait|landscape}.jpg`
+- **Team-specific** (optional): `input/config/card-backside/team/{team-name}/backside-{portrait|landscape}.jpg`
 
 Team-specific backsides override defaults if present.
 
@@ -79,7 +79,7 @@ kt-datacards/
     │       └── <team-name>/
     │           ├── backside-portrait.jpg
     │           └── backside-landscape.jpg
-- **Custom Backsides**: Place team-specific backsides in `script/config/team-backsides/{team-name}/`
+- **Custom Backsides**: Place team-specific backsides in `input/config/card-backside/team/{team-name}/`
   - `backside-portrait.jpg` for equipment, ploys, etc.
   - `backside-landscape.jpg` for datacards
     └── ...
@@ -88,4 +88,4 @@ kt-datacards/
 ## Configuration
 
 - **DPI**: Adjust resolution in `extract_pages.py` (default: 300)
-- **Team Mapping**: Edit `script/config/team-mapping.yaml` to map team name variations
+- **Team Mapping**: Edit `input/config/team-name-mapping.yaml` to map team name variations

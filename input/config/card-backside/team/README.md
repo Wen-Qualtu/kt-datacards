@@ -6,7 +6,7 @@ This folder contains custom backside images for specific teams.
 
 To add custom backsides for a team:
 
-1. Create a folder with the team name: `script/config/card-backside/team/{team-name}/`
+1. Create a folder with the team name: `input/config/card-backside/team/{team-name}/`
 2. Add custom backside images:
    - `backside-portrait.jpg` - Used for equipment, ploys, faction rules, operatives
    - `backside-landscape.jpg` - Used for datacards
@@ -34,7 +34,7 @@ script/config/card-backside/team/
 When `add_default_backsides.py` runs, it checks in this order:
 
 1. **Team-specific backside** (this folder) - if exists, use it
-2. **Default backside** (`script/config/card-backside/default/`) - fallback
+2. **Default backside** (`input/config/card-backside/default/`) - fallback
 
 ## Image Requirements
 

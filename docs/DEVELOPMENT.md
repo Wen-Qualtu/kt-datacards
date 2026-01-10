@@ -115,10 +115,10 @@ kt-datacards/
 - TTS cards reference these exact paths
 - Future: Create `output/v2/` for new structures
 
-#### `script/config/`
+#### `input/config/`
 - All configuration files here
-- `team-mapping.yaml` for team metadata
-- `settings.py` for application config
+- `team-name-mapping.yaml` for team name normalization
+- `settings.py` for application config (future)
 - `card-backside/default/` for default backside images
 - `card-backside/team/{teamname}/` for custom team backsides
 - Keep configs in git (except secrets)
