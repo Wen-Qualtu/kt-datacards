@@ -1,5 +1,53 @@
 # Development Rules & Guidelines
 
+## 🎯 Project Overview
+
+### What Is This Project?
+
+This is an automated pipeline for processing **Warhammer 40,000: Kill Team datacards** exported from the mobile app into a format usable in **Tabletop Simulator (TTS)**.
+
+**The Challenge:**
+- Kill Team mobile app exports PDFs with UUID filenames
+- PDFs contain multiple card types (datacards, equipment, ploys, faction rules, operatives, strategy)
+- TTS needs individual card images with specific URLs
+- Users want to quickly get new teams into TTS without manual image extraction
+
+**The Solution:**
+This pipeline automates the entire workflow:
+1. **Identify** - Analyze PDF content to determine team name and card type
+2. **Extract** - Split PDFs into individual card images (front/back detection)
+3. **Organize** - Store in TTS-compatible folder structure
+4. **Backsides** - Add default or team-specific card backsides
+5. **Generate URLs** - Create CSV mapping for TTS deck builder
+
+**Key Constraints:**
+- ⚠️ **IMMUTABLE output/ structure** - TTS cards reference exact paths via GitHub raw URLs
+- 🎯 **Accuracy over speed** - Wrong card data breaks gameplay
+- 🔄 **Reproducible** - Anyone should be able to run the pipeline and get same results
+
+**Current Status:**
+- ✅ Feature 00: Poetry + Task setup (complete)
+- ✅ Feature 01: Project restructuring (complete)
+- ✅ Feature 02: Code refactoring with clean architecture (complete)
+- 🔴 Feature 03: Enhanced metadata (not started)
+- 🔴 Feature 04: Stats extraction with OCR (not started)
+- 🔴 Feature 05: Parameterized execution (partially complete - CLI exists)
+
+**Tech Stack:**
+- Python 3.11+ with Poetry dependency management
+- PyMuPDF (fitz) for PDF processing
+- Pillow for image manipulation
+- pytesseract for OCR (future)
+- Task for workflow automation
+- Git for version control
+- GitHub for hosting output images (via raw URLs)
+
+**Users:**
+- Kill Team players who want their cards in TTS
+- Primary user: Wen (project owner, manages team datacards)
+
+---
+
 ## 📋 Core Principles
 
 ### 1. **Feature-First Development Workflow**
