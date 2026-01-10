@@ -10,7 +10,7 @@ from ..models.team import Team
 class TeamIdentifier:
     """Manages team identification and mapping"""
     
-    def __init__(self, mapping_file: Path = Path('input/config/team-name-mapping.yaml')):
+    def __init__(self, mapping_file: Path = Path('config/team-name-mapping.yaml')):
         """
         Initialize TeamIdentifier
         

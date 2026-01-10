@@ -115,7 +115,7 @@ kt-datacards/
 - TTS cards reference these exact paths
 - Future: Create `output/v2/` for new structures
 
-#### `input/config/`
+#### `config/`
 - All configuration files here
 - `team-name-mapping.yaml` for team name normalization
 - `settings.py` for application config (future)

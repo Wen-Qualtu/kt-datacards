@@ -58,7 +58,7 @@ def test_team_identifier():
     """Test TeamIdentifier"""
     print("\n=== Testing TeamIdentifier ===")
     
-    config_path = Path("input/config/team-name-mapping.yaml")
+    config_path = Path("config/team-name-mapping.yaml")
     if not config_path.exists():
         print(f"Config not found: {config_path}")
         return
@@ -87,7 +87,7 @@ def test_pdf_processor():
     """Test PDFProcessor"""
     print("\n=== Testing PDFProcessor ===")
     
-    config_path = Path("input/config/team-name-mapping.yaml")
+    config_path = Path("config/team-name-mapping.yaml")
     if not config_path.exists():
         print(f"Config not found: {config_path}")
         return

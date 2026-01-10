@@ -4,27 +4,19 @@ from pathlib import Path
 
 # Simulate the PDF discovery logic
 input_dir = Path('input')
-config_dir = Path('input/config')
 
 if not input_dir.exists():
     print(f"ERROR: {input_dir} does not exist")
     exit(1)
 
 print(f"\nSearching for PDFs in: {input_dir.absolute()}")
-print(f"Excluding config dir: {config_dir.absolute()}")
 print("-" * 60)
 
-pdf_files = []
-for pdf_path in input_dir.rglob('*.pdf'):
-    # Check if it's in config directory
-    try:
-        pdf_path.relative_to(config_dir)
-        print(f"[SKIP CONFIG] {pdf_path.relative_to(input_dir)}")
-        continue
-    except ValueError:
-        # Not in config directory, include it
-        pdf_files.append(pdf_path)
-        print(f"[FOUND] {pdf_path.relative_to(input_dir)}")
+# Get all PDF files recursively (simple, no exclusions needed)
+pdf_files = list(input_dir.rglob('*.pdf'))
+
+for pdf_path in pdf_files:
+    print(f"[FOUND] {pdf_path.relative_to(input_dir)}")
 
 print("-" * 60)
 print(f"\nTotal PDFs found: {len(pdf_files)}")

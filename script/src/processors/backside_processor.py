@@ -14,7 +14,7 @@ class BacksideProcessor:
     
     def __init__(
         self,
-        config_dir: Path = Path('input/config/card-backside')
+        config_dir: Path = Path('config/card-backside')
     ):
         """
         Initialize BacksideProcessor

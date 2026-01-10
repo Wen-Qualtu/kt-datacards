@@ -3,7 +3,7 @@
 ## Status
 ✅ Complete (January 10, 2026)
 
-**Note**: Configuration was later moved from `script/config/` to `input/config/` (see Feature 02) to ensure the input folder exists in the repository and to better organize configuration alongside input data.
+**Note**: Configuration was later moved from `script/config/` to root `config/` (see Feature 02) for cleaner separation of input data and configuration.
 
 ## Overview
 Reorganize the folder structure to better represent the processing pipeline and separate concerns.
