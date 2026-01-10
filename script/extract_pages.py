@@ -133,8 +133,8 @@ def extract_pdf_pages_to_jpg(input_folder, output_folder, dpi=300, clean_output=
     Creates subfolders based on PDF names and tries to extract card names.
     
     Args:
-        input_folder: Path to folder containing PDF files
-        output_folder: Path to folder where JPG files will be saved
+        input_folder: Path to folder containing PDF files (from processed/ folder)
+        output_folder: Path to folder where JPG files will be saved (output/ folder)
         dpi: Resolution for the output images (default: 300)
         clean_output: Whether to clean the output folder before extraction (default: True)
     """
@@ -391,15 +391,15 @@ def extract_pdf_pages_to_jpg(input_folder, output_folder, dpi=300, clean_output=
 
 
 if __name__ == "__main__":
-    # Process all team folders in the input directory
-    input_base = Path("input")
+    # Process all team folders in the processed directory
+    input_base = Path("processed")
     output_base = Path("output")
     
-    # Get all team folders (subdirectories in input/) - skip _raw folder
-    team_folders = [d for d in input_base.iterdir() if d.is_dir() and d.name != '_raw']
+    # Get all team folders (subdirectories in processed/)
+    team_folders = [d for d in input_base.iterdir() if d.is_dir()]
     
     if not team_folders:
-        print("No team folders found in input/")
+        print("No team folders found in processed/")
     else:
         print(f"Found {len(team_folders)} team folder(s): {', '.join([d.name for d in team_folders])}\n")
         

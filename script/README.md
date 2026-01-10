@@ -1,6 +1,6 @@
-# KT Datacards Extractor
+# KT Datacards Processor
 
-This project extracts individual pages from PDF files and saves them as JPG images for use in game applications.
+This project processes Kill Team datacard PDFs and extracts individual cards as JPG images for use in Tabletop Simulator.
 
 ## Setup
 
@@ -9,25 +9,83 @@ This project extracts individual pages from PDF files and saves them as JPG imag
 pip install -r requirements.txt
 ```
 
-## Usage
+## Workflow
 
-1. Place your PDF files in the `input/<team-name>` folder (e.g., `input/salvagers`)
-2. Run the extraction script:
+### 1. Process Raw PDFs
+Place PDF files (exported from Kill Team mobile app) in the `input/` folder and run:
 ```bash
-python extract_pages.py
+python script/process_raw_pdfs.py
 ```
-3. The extracted JPG images will be saved in `output/<team-name>` folder
 
-## Output Format
+This script:
+- Identifies team names and card types from PDF content
+- Renames and organizes PDFs into `processed/<team-name>/` folders
+- Archives original files to `archive/<team-name>/` (keeps GUIDs)
+- Uses team name mapping from `script/config/team-mapping.yaml`
 
-Each page is saved with the naming convention:
-`<pdf-filename>_page_<page-number>.jpg`
+### 2. Extract Card Images
+Once PDFs are organized in `processed/`, extract individual cards:
+```bash
+python script/extract_pages.py
+```
 
-For example:
-- `salvagers-datacards_page_001.jpg`
-- `salvagers-datacards_page_002.jpg`
-- `salvagers-equipment_page_001.jpg`
+This script:
+- Reads PDFs from `processed/<team-name>/` folders
+- Extracts each card as a separate JPG image
+- Saves to `output/<team-name>/<card-type>/` folders
+- Names cards based on extracted text (e.g., `trooper-gunner_front.jpg`)
+
+### 3. Add Default Backsides
+Some cards don't have backs in the PDF. Add default backsides:
+```bash
+python script/add_default_backsides.py
+```
+
+This uses backsides from:
+- **Default**: `script/config/backside/default/default-backside-{portrait|landscape}.jpg`
+- **Team-specific** (optional): `script/config/backside/team/{team-name}/backside-{portrait|landscape}.jpg`
+
+Team-specific backsides override defaults if present.
+
+### 4. Generate URL CSV
+Create a CSV with GitHub raw URLs for all cards:
+```bash
+python script/generate_urls.py
+```
+
+Generates `datacards-urls.csv` with URLs for use in Tabletop Simulator.
+
+## Folder Structure
+
+```
+kt-datacards/
+├── input/              # Raw PDF files (place new PDFs here)
+├── processed/          # Organized PDFs by team
+│   └── <team-name>/
+├── output/             # Final card images (referenced by TTS)
+│   └── <team-name>/
+│       ├── datacards/
+│       ├── equipment/
+│       └── ...
+├── archive/            # Original PDFs with GUIDs
+│   └── <team-name>/
+└── script/
+    ├── config/
+    │   ├── team-mapping.yaml
+    │   ├── defaults/               # Default backside images
+    │   │   ├── default-backside-portrait.jpg
+    │   │   └── default-backside-landscape.jpg
+    │   └── team-backsides/         # Team-specific backsides (optional)
+    │       └── <team-name>/
+    │           ├── backside-portrait.jpg
+    │           └── backside-landscape.jpg
+- **Custom Backsides**: Place team-specific backsides in `script/config/team-backsides/{team-name}/`
+  - `backside-portrait.jpg` for equipment, ploys, etc.
+  - `backside-landscape.jpg` for datacards
+    └── ...
+```
 
 ## Configuration
 
-You can adjust the DPI (resolution) in the script by modifying the `dpi` parameter in the `extract_pdf_pages_to_jpg()` function. Default is 300 DPI.
+- **DPI**: Adjust resolution in `extract_pages.py` (default: 300)
+- **Team Mapping**: Edit `script/config/team-mapping.yaml` to map team name variations

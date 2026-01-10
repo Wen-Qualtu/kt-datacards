@@ -224,9 +224,9 @@ def identify_pdf_type(pdf_path):
         return None, None
 
 
-def process_raw_pdfs(raw_folder="input/_raw", base_output_folder="input"):
+def process_raw_pdfs(raw_folder="input", base_output_folder="processed"):
     """
-    Process PDFs from raw folder, identify their type, rename and organize them.
+    Process PDFs from input folder recursively, identify their type, rename and organize them.
     """
     raw_path = Path(raw_folder)
     
@@ -246,7 +246,7 @@ def process_raw_pdfs(raw_folder="input/_raw", base_output_folder="input"):
     team_mapping = load_team_mapping()
     
     # Create archive folders
-    archive_folder = Path('input/_archive')
+    archive_folder = Path('archive')
     archive_folder.mkdir(parents=True, exist_ok=True)
     archive_failed_folder = archive_folder / 'failed'
     archive_failed_folder.mkdir(parents=True, exist_ok=True)

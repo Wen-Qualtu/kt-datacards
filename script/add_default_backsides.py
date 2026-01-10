@@ -7,24 +7,26 @@ def add_default_backsides():
     For all cards with only a _front image, copy the default backside image as _back.
     Uses landscape orientation for datacards, portrait for others.
     Checks for team-specific backside first, then falls back to common default.
+    
+    Backside priority:
+    1. Team-specific: script/config/backside/team/{team-name}/backside-{orientation}.jpg
+    2. Default: script/config/backside/default/default-backside-{orientation}.jpg
     """
     output_dir = Path('output')
-    default_backside_portrait = Path('input/default-backside-portrait.jpg')
-    default_backside_landscape = Path('input/default-backside-landscape.jpg')
+    default_backside_portrait = Path('script/config/backside/default/default-backside-portrait.jpg')
+    default_backside_landscape = Path('script/config/backside/default/default-backside-landscape.jpg')
     
     if not default_backside_portrait.exists():
         print(f"❌ Error: Default portrait backside image not found at {default_backside_portrait}")
-        print("Please save the default-backside.jpg image in the input folder.")
+        print("Please save the default-backside-portrait.jpg image in script/config/backside/default/")
         return
     
     if not default_backside_landscape.exists():
         print(f"❌ Error: Default landscape backside image not found at {default_backside_landscape}")
-        print("Please save the default-backside-landscape.jpg image in the input folder.")
+        print("Please save the default-backside-landscape.jpg image in script/config/backside/default/")
         return
     
-    print(f"Using default backsides:")
-    print(f"  Portrait: {default_backside_portrait}")
-    print(f"  Landscape: {default_backside_landscape}\n")
+    print(f"Default backsides location: script/config/backside/default/\n")
     
     added_count = 0
     
@@ -35,14 +37,18 @@ def add_default_backsides():
         
         team_name = team_dir.name
         
-        # Check if team has its own default backsides
-        team_backside_portrait = Path(f'input/{team_name}/default-backside-portrait.jpg')
-        team_backside_landscape = Path(f'input/{team_name}/default-backside-landscape.jpg')
+        # Check if team has custom backsides in script/config/backside/team/{team}/
+        team_backside_dir = Path(f'script/config/backside/team/{team_name}')
+        team_backside_portrait = team_backside_dir / 'backside-portrait.jpg'
+        team_backside_landscape = team_backside_dir / 'backside-landscape.jpg'
         
-        if team_backside_portrait.exists():
-            print(f"Using team-specific portrait backside for {team_name}")
-        if team_backside_landscape.exists():
-            print(f"Using team-specific landscape backside for {team_name}\n")
+        if team_backside_portrait.exists() or team_backside_landscape.exists():
+            print(f"✓ Team '{team_name}' has custom backsides:")
+            if team_backside_portrait.exists():
+                print(f"  - Portrait: {team_backside_portrait}")
+            if team_backside_landscape.exists():
+                print(f"  - Landscape: {team_backside_landscape}")
+            print()
         
         # Look for all card type folders
         for type_dir in team_dir.iterdir():
@@ -54,11 +60,13 @@ def add_default_backsides():
             # Determine if this is datacards (landscape) or other types (portrait)
             is_datacards = 'datacard' in type_dir.name.lower()
             
-            # Select appropriate backside
+            # Select appropriate backside (team-specific if available, else default)
             if is_datacards:
                 backside_to_use = team_backside_landscape if team_backside_landscape.exists() else default_backside_landscape
+                orientation = "landscape"
             else:
                 backside_to_use = team_backside_portrait if team_backside_portrait.exists() else default_backside_portrait
+                orientation = "portrait"
             
             # Get all _front images
             front_images = list(type_dir.glob('*_front.jpg'))
