@@ -94,9 +94,9 @@ teams:
         - name: "Reiver"
           max: 1
         - name: "Assault Intercessor Warrior"
-          max: null  # Unlimited
+          max: 9  # Fill remaining slots
         - name: "Intercessor Warrior"
-          max: null  # Unlimited
+          max: 9  # Fill remaining slots
       notes: "You must select 1 ASSAULT INTERCESSOR SERGEANT (Leader) and 9 other operatives from the list above. You can select up to 2 INTERCESSOR GUNNER operatives and any number of WARRIOR operatives."
     
     strategy-ploys:
@@ -191,7 +191,7 @@ teams:
         - name: "Kasrkin Heavy Gunner"
           max: 1
         - name: "Kasrkin Trooper"
-          max: null  # Unlimited
+          max: 9  # Fill remaining slots
       notes: "You must select 1 KASRKIN SERGEANT (Leader) and 9 other operatives. You can select up to 2 KASRKIN GUNNER operatives and any number of KASRKIN TROOPER operatives."
     
     strategy-ploys:
@@ -240,7 +240,7 @@ teams:
         - name: "Hearthkyn Salvager Marksman"
           max: 1
         - name: "Hearthkyn Salvager Warrior"
-          max: null  # Unlimited
+          max: 9  # Fill remaining slots
       notes: "You must select 1 HEARTHKYN SALVAGER THEYN (Leader) and 9 other HEARTHKYN SALVAGER operatives. You can select up to 3 HEARTHKYN SALVAGER GUNNER operatives and any number of HEARTHKYN SALVAGER WARRIOR operatives. Each other operative can be selected once."
     
     total_cards: 15
