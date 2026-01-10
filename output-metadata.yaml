@@ -1,10 +1,10 @@
-generated: '2026-01-10T20:03:05.943861'
+generated: '2026-01-10T20:56:34.794765'
 teams:
   angels-of-death:
     canonical_name: Angels Of Death
     faction: Unknown
     subfaction: Unknown
-    last_processed: '2026-01-10T20:03:05.944246'
+    last_processed: '2026-01-10T20:56:34.795085'
     source_pdfs: []
     datacards:
       count: 9
@@ -30,12 +30,12 @@ teams:
     equipment:
       count: 1
       cards:
-      - name: Angel Of Death
+      - name: '[NEEDS REVIEW] Angel Of Death'
         description: '...'
     faction-rules:
       count: 2
       cards:
-      - name: 7 Sharpshooter
+      - name: Sharpshooter
         description: '...'
       - name: Faction Rule
         description: '...'
@@ -43,25 +43,30 @@ teams:
       firefight:
         count: 1
         cards:
-        - name: Angel Of Death
+        - name: '[NEEDS REVIEW] Angel Of Death'
           description: '...'
       strategy:
         count: 1
         cards:
-        - name: Angel Of Death
+        - name: '[NEEDS REVIEW] Angel Of Death'
           description: '...'
     operative_selection:
-      count: 1
-      cards:
-      - name: Kill Team
-        description: '...'
+      total: 1
+      options:
+      - name: ASSAULT INTERCESSOR SERGEANT
+        max: 1
+      - name: INTERCESSOR SERGEANT
+        max: 1
+      - name: SPACE MARINE CAPTAIN
+        max: 1
+      notes: 'Roster: 1 operatives total. See card for weapon options and constraints.'
     total_cards: 15
     complete: true
   battleclade:
     canonical_name: Battleclade
     faction: Unknown
     subfaction: Unknown
-    last_processed: '2026-01-10T20:03:06.681375'
+    last_processed: '2026-01-10T20:56:35.391618'
     source_pdfs: []
     datacards:
       count: 7
@@ -124,17 +129,32 @@ teams:
         - name: Prioritised Acquisition
           description: '...'
     operative_selection:
-      count: 1
-      cards:
-      - name: Operatives
-        description: '...'
+      total: 10
+      options:
+      - name: BATTLECLADE TECHNOARCHEOLOGIST
+        max: 1
+        mandatory: true
+      - name: BATTLECLADE SERVITOR UNDERSEER
+        max: 1
+        mandatory: true
+      - name: AUTO-PROXY SERVITOR
+        max: 8
+      - name: BREACHER SERVITOR
+        max: 8
+      - name: COMBAT SERVITOR
+        max: 8
+      - name: GUN SERVITOR
+        max: 8
+      - name: TECHNOMEDIC SERVITOR
+        max: 8
+      notes: 'Roster: 10 operatives total. See card for weapon options and constraints.'
     total_cards: 23
     complete: true
   blooded:
     canonical_name: Blooded
     faction: Unknown
     subfaction: Unknown
-    last_processed: '2026-01-10T20:03:07.408019'
+    last_processed: '2026-01-10T20:56:35.960256'
     source_pdfs: []
     datacards:
       count: 13
@@ -209,19 +229,32 @@ teams:
         - name: Reckless Aspirant
           description: '...'
     operative_selection:
-      count: 2
-      cards:
-      - name: Kill Team
-        description: '...'
-      - name: Operatives
-        description: '...'
+      total: 20
+      options:
+      - name: BLOODED CHIEFTAIN
+        max: 1
+        mandatory: true
+      - name: BRIMSTONE GRENADIER
+        max: 9
+      - name: BUTCHER
+        max: 9
+      - name: COMMSMAN
+        max: 9
+      - name: CORPSEMAN
+        max: 9
+      - name: FLENSER
+        max: 9
+      - name: GUNNER
+        max: 9
+      notes: 'Roster: 10 operatives total. See card for weapon options and constraints.
+        Roster: 10 operatives total. See card for weapon options and constraints.'
     total_cards: 30
     complete: true
   canoptek-circle:
     canonical_name: Canoptek Circle
     faction: Unknown
     subfaction: Unknown
-    last_processed: '2026-01-10T20:03:08.312895'
+    last_processed: '2026-01-10T20:56:37.133944'
     source_pdfs: []
     datacards:
       count: 6
@@ -282,19 +315,17 @@ teams:
         - name: Transdynamic Amplification
           description: '...'
     operative_selection:
-      count: 2
-      cards:
-      - name: Kill Team
-        description: '...'
-      - name: Operatives
-        description: '...'
+      total: 0
+      options: []
+      notes: 'Roster: 0 operatives total. See card for weapon options and constraints.
+        Roster: 0 operatives total. See card for weapon options and constraints.'
     total_cards: 23
     complete: true
   deathwatch:
     canonical_name: Deathwatch
     faction: Unknown
     subfaction: Unknown
-    last_processed: '2026-01-10T20:03:09.031637'
+    last_processed: '2026-01-10T20:56:38.418289'
     source_pdfs: []
     datacards:
       count: 11
@@ -367,19 +398,39 @@ teams:
         - name: The Shield That Slays
           description: '...'
     operative_selection:
-      count: 2
-      cards:
-      - name: Kill Team
-        description: '...'
-      - name: Operatives
-        description: '...'
+      total: 10
+      options:
+      - name: WATCH SERGEANT
+        max: 5
+      - name: AEGIS
+        max: 5
+      - name: BLADEMASTER
+        max: 5
+      - name: BOMBARD
+        max: 5
+      - name: BREACHER
+        max: 5
+      - name: DEMOLISHER
+        max: 5
+      - name: DISRUPTOR
+        max: 5
+      - name: GUNNER
+        max: 5
+      - name: HEADTAKER
+        max: 5
+      - name: HORDE-SLAYER
+        max: 5
+      - name: MARKSMAN
+        max: 5
+      notes: 'Roster: 5 operatives total. See card for weapon options and constraints.
+        Roster: 5 operatives total. See card for weapon options and constraints.'
     total_cards: 29
     complete: true
   exaction-squad:
     canonical_name: Exaction Squad
     faction: Unknown
     subfaction: Unknown
-    last_processed: '2026-01-10T20:03:09.927743'
+    last_processed: '2026-01-10T20:56:39.294844'
     source_pdfs: []
     datacards:
       count: 12
@@ -456,19 +507,21 @@ teams:
         - name: Terminal Decree
           description: '...'
     operative_selection:
-      count: 2
-      cards:
-      - name: Kill Team
-        description: '...'
-      - name: Operatives
-        description: '...'
+      total: 20
+      options:
+      - name: MALOCATOR
+        max: 10
+      - name: GUNNER
+        max: 10
+      notes: 'Roster: 10 operatives total. See card for weapon options and constraints.
+        Roster: 10 operatives total. See card for weapon options and constraints.'
     total_cards: 31
     complete: true
   farstalker-kinband:
     canonical_name: Farstalker Kinband
     faction: Unknown
     subfaction: Unknown
-    last_processed: '2026-01-10T20:03:10.860578'
+    last_processed: '2026-01-10T20:56:40.531531'
     source_pdfs: []
     datacards:
       count: 11
@@ -537,17 +590,20 @@ teams:
         - name: Their Chosen Prey
           description: '...'
     operative_selection:
-      count: 1
-      cards:
-      - name: Kill Team
-        description: '...'
+      total: 11
+      options:
+      - name: HEAVY GUNNER
+        max: 11
+      - name: WARRIOR
+        max: 11
+      notes: 'Roster: 11 operatives total. See card for weapon options and constraints.'
     total_cards: 26
     complete: true
   hearthkyn-salvager:
     canonical_name: Hearthkyn Salvager
     faction: Unknown
     subfaction: Unknown
-    last_processed: '2026-01-10T20:03:11.638821'
+    last_processed: '2026-01-10T20:56:41.116156'
     source_pdfs: []
     datacards:
       count: 11
@@ -618,19 +674,25 @@ teams:
         - name: Wrought Defence
           description: '...'
     operative_selection:
-      count: 2
-      cards:
-      - name: Kill Team
-        description: '...'
-      - name: Operatives
-        description: '...'
+      total: 18
+      options:
+      - name: DOZR
+        max: 9
+      - name: FIELD MEDIC
+        max: 9
+      - name: GRENADIER
+        max: 9
+      - name: GUNNER
+        max: 9
+      notes: 'Roster: 9 operatives total. See card for weapon options and constraints.
+        Roster: 9 operatives total. See card for weapon options and constraints.'
     total_cards: 28
     complete: true
   hernkyn-yaegirs:
     canonical_name: Hernkyn Yaegirs
     faction: Unknown
     subfaction: Unknown
-    last_processed: '2026-01-10T20:03:12.484903'
+    last_processed: '2026-01-10T20:56:42.339600'
     source_pdfs: []
     datacards:
       count: 8
@@ -654,7 +716,7 @@ teams:
     equipment:
       count: 1
       cards:
-      - name: Hernkyn Yaegir
+      - name: '[NEEDS REVIEW] Hernkyn Yaegir'
         description: '...'
     faction-rules:
       count: 2
@@ -667,25 +729,38 @@ teams:
       firefight:
         count: 1
         cards:
-        - name: Hernkyn Yaegir
+        - name: '[NEEDS REVIEW] Hernkyn Yaegir'
           description: '...'
       strategy:
         count: 1
         cards:
-        - name: Hernkyn Yaegir
+        - name: '[NEEDS REVIEW] Hernkyn Yaegir'
           description: '...'
     operative_selection:
-      count: 1
-      cards:
-      - name: Kill Team
-        description: '...'
+      total: 9
+      options:
+      - name: BLADEKYN
+        max: 9
+      - name: BOMBAST
+        max: 9
+      - name: GUNNER
+        max: 9
+      - name: IRONBRAEK
+        max: 9
+      - name: RIFLEKYN
+        max: 9
+      - name: TRACKER
+        max: 9
+      - name: WARRIOR
+        max: 9
+      notes: 'Roster: 9 operatives total. See card for weapon options and constraints.'
     total_cards: 14
     complete: true
   kasrkin:
     canonical_name: Kasrkin
     faction: Unknown
     subfaction: Unknown
-    last_processed: '2026-01-10T20:03:12.910723'
+    last_processed: '2026-01-10T20:56:42.827846'
     source_pdfs: []
     datacards:
       count: 8
@@ -748,17 +823,27 @@ teams:
         - name: Relocate
           description: '...'
     operative_selection:
-      count: 1
-      cards:
-      - name: Kill Team
-        description: '...'
+      total: 10
+      options:
+      - name: KASRKIN SERGEANT
+        max: 1
+        mandatory: true
+      - name: COMBAT MEDIC
+        max: 9
+      - name: DEMO-TROOPER
+        max: 9
+      - name: GUNNER
+        max: 9
+      - name: RECON-TROOPER
+        max: 9
+      notes: 'Roster: 10 operatives total. See card for weapon options and constraints.'
     total_cards: 23
     complete: true
   ravener:
     canonical_name: Ravener
     faction: Unknown
     subfaction: Unknown
-    last_processed: '2026-01-10T20:03:13.591625'
+    last_processed: '2026-01-10T20:56:43.399728'
     source_pdfs: []
     datacards:
       count: 6
@@ -821,17 +906,26 @@ teams:
         - name: Writhe Out Of Sight
           description: '...'
     operative_selection:
-      count: 1
-      cards:
-      - name: Operatives
-        description: '...'
+      total: 4
+      options:
+      - name: FELLTALON
+        max: 4
+      - name: TREMORSCYTHE
+        max: 4
+      - name: VENOMSPITTER
+        max: 4
+      - name: WARRIOR
+        max: 4
+      - name: WRECKER
+        max: 4
+      notes: 'Roster: 4 operatives total. See card for weapon options and constraints.'
     total_cards: 23
     complete: true
   raveners:
     canonical_name: Raveners
     faction: Unknown
     subfaction: Unknown
-    last_processed: '2026-01-10T20:03:14.311970'
+    last_processed: '2026-01-10T20:56:43.769033'
     source_pdfs: []
     datacards:
       count: 6
@@ -851,7 +945,7 @@ teams:
     equipment:
       count: 1
       cards:
-      - name: Ravener
+      - name: '[NEEDS REVIEW] Ravener'
         description: '...'
     faction-rules:
       count: 2
@@ -864,25 +958,34 @@ teams:
       firefight:
         count: 1
         cards:
-        - name: Ravener
+        - name: '[NEEDS REVIEW] Ravener'
           description: '...'
       strategy:
         count: 1
         cards:
-        - name: Ravener
+        - name: '[NEEDS REVIEW] Ravener'
           description: '...'
     operative_selection:
-      count: 1
-      cards:
-      - name: Operatives
-        description: '...'
+      total: 4
+      options:
+      - name: FELLTALON
+        max: 4
+      - name: TREMORSCYTHE
+        max: 4
+      - name: VENOMSPITTER
+        max: 4
+      - name: WARRIOR
+        max: 4
+      - name: WRECKER
+        max: 4
+      notes: 'Roster: 4 operatives total. See card for weapon options and constraints.'
     total_cards: 12
     complete: true
   wolf-scouts:
     canonical_name: Wolf Scouts
     faction: Unknown
     subfaction: Unknown
-    last_processed: '2026-01-10T20:03:14.685353'
+    last_processed: '2026-01-10T20:56:44.135280'
     source_pdfs: []
     datacards:
       count: 8
@@ -906,7 +1009,7 @@ teams:
     equipment:
       count: 1
       cards:
-      - name: Wolf Scout
+      - name: '[NEEDS REVIEW] Wolf Scout'
         description: '...'
     faction-rules:
       count: 2
@@ -919,25 +1022,24 @@ teams:
       firefight:
         count: 1
         cards:
-        - name: Wolf Scout
+        - name: '[NEEDS REVIEW] Wolf Scout'
           description: '...'
       strategy:
         count: 1
         cards:
-        - name: Wolf Scout
+        - name: '[NEEDS REVIEW] Wolf Scout'
           description: '...'
     operative_selection:
-      count: 1
-      cards:
-      - name: Kill Team
-        description: '...'
+      total: 0
+      options: []
+      notes: 'Roster: 0 operatives total. See card for weapon options and constraints.'
     total_cards: 14
     complete: true
   wrecka-krew:
     canonical_name: Wrecka Krew
     faction: Unknown
     subfaction: Unknown
-    last_processed: '2026-01-10T20:03:15.126094'
+    last_processed: '2026-01-10T20:56:44.552000'
     source_pdfs: []
     datacards:
       count: 7
@@ -1002,9 +1104,21 @@ teams:
         - name: Waaagh
           description: '...'
     operative_selection:
-      count: 1
-      cards:
-      - name: Operatives
-        description: '...'
+      total: 6
+      options:
+      - name: WRECKA KREW BOSS NOB
+        max: 1
+        mandatory: true
+      - name: BREAKA BOY DEMOLISHA
+        max: 5
+      - name: BREAKA BOY FIGHTER
+        max: 5
+      - name: BREAKA BOY KRUSHA
+        max: 5
+      - name: TANKBUSTA GUNNER
+        max: 5
+      - name: TANKBUSTA ROKKITEER
+        max: 5
+      notes: 'Roster: 6 operatives total. See card for weapon options and constraints.'
     total_cards: 24
     complete: true
