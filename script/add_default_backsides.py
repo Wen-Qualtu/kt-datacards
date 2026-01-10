@@ -17,12 +17,12 @@ def add_default_backsides():
     default_backside_landscape = Path('script/config/backside/default/default-backside-landscape.jpg')
     
     if not default_backside_portrait.exists():
-        print(f"❌ Error: Default portrait backside image not found at {default_backside_portrait}")
+        print(f"[ERROR] Error: Default portrait backside image not found at {default_backside_portrait}")
         print("Please save the default-backside-portrait.jpg image in script/config/backside/default/")
         return
     
     if not default_backside_landscape.exists():
-        print(f"❌ Error: Default landscape backside image not found at {default_backside_landscape}")
+        print(f"[ERROR] Error: Default landscape backside image not found at {default_backside_landscape}")
         print("Please save the default-backside-landscape.jpg image in script/config/backside/default/")
         return
     
@@ -43,7 +43,7 @@ def add_default_backsides():
         team_backside_landscape = team_backside_dir / 'backside-landscape.jpg'
         
         if team_backside_portrait.exists() or team_backside_landscape.exists():
-            print(f"✓ Team '{team_name}' has custom backsides:")
+            print(f"[CUSTOM] Team '{team_name}' has custom backsides:")
             if team_backside_portrait.exists():
                 print(f"  - Portrait: {team_backside_portrait}")
             if team_backside_landscape.exists():
@@ -78,7 +78,7 @@ def add_default_backsides():
                 if not back_image.exists():
                     # Copy appropriate backside (team-specific or default)
                     shutil.copy2(backside_to_use, back_image)
-                    print(f"  ✓ Added: {back_image.name}")
+                    print(f"  [OK] Added: {back_image.name}")
                     added_count += 1
     
     print(f"\n{'='*60}")

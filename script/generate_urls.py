@@ -52,8 +52,8 @@ def generate_url_csv():
         for entry in entries:
             writer.writerow(entry)
     
-    print(f"✓ Generated {csv_path}")
-    print(f"✓ Total entries: {len(entries)}")
+    print(f"[OK] Generated {csv_path}")
+    print(f"[OK] Total entries: {len(entries)}")
     print(f"\nBreakdown by team:")
     
     # Count by team

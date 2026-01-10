@@ -4,63 +4,86 @@ vars:
   PYTHON: poetry run python
 
 tasks:
-  # Setup tasks
-  install:
+  # Default task - show help
+  default:
+    desc: Show available tasks (default)
+    cmds:
+      - task --list-all
+
+  # ====================
+  # Setup & Environment
+  # ====================
+  setup:install:
     desc: Install dependencies using Poetry
     cmds:
       - poetry install
 
-  update:
+  setup:update:
     desc: Update dependencies
     cmds:
       - poetry update
 
-  # Main processing tasks
-  process:
+  setup:info:
+    desc: Show environment info
+    cmds:
+      - poetry env info
+      - poetry show --tree
+
+  setup:shell:
+    desc: Start Poetry shell
+    cmds:
+      - poetry shell
+
+  # ====================
+  # Processing Pipeline
+  # ====================
+  pipeline:process:
     desc: Process raw PDFs (identify and organize)
     cmds:
       - "{{.PYTHON}} script/process_raw_pdfs.py {{.CLI_ARGS}}"
 
-  extract:
+  pipeline:extract:
     desc: Extract individual cards as images
     cmds:
       - "{{.PYTHON}} script/extract_pages.py {{.CLI_ARGS}}"
 
-  urls:
-    desc: Generate URL CSV for TTS
-    cmds:
-      - "{{.PYTHON}} script/generate_urls.py {{.CLI_ARGS}}"
-
-  backside:
+  pipeline:backside:
     desc: Add default backsides to cards
     cmds:
       - "{{.PYTHON}} script/add_default_backsides.py {{.CLI_ARGS}}"
 
-  all:
+  pipeline:urls:
+    desc: Generate URL CSV for TTS
+    cmds:
+      - "{{.PYTHON}} script/generate_urls.py {{.CLI_ARGS}}"
+
+  pipeline:all:
     desc: Run complete pipeline (process → extract → backside → urls)
     cmds:
-      - task: process
-      - task: extract
-      - task: backside
-      - task: urls
+      - task: pipeline:process
+      - task: pipeline:extract
+      - task: pipeline:backside
+      - task: pipeline:urls
 
-  # Development tasks
-  test:
+  # ====================
+  # Development Tools
+  # ====================
+  dev:test:
     desc: Run tests
     cmds:
       - poetry run pytest tests/
 
-  lint:
+  dev:lint:
     desc: Run linting
     cmds:
       - poetry run flake8 script/
 
-  format:
+  dev:format:
     desc: Format code with black
     cmds:
       - poetry run black script/
 
-  clean:
+  dev:clean:
     desc: Clean generated files and cache
     cmds:
       - cmd: powershell -Command "Remove-Item -Recurse -Force **/__pycache__ -ErrorAction SilentlyContinue"
@@ -68,20 +91,69 @@ tasks:
       - cmd: rm -rf **/__pycache__
         platforms: [linux, darwin]
 
-  # Utility tasks
-  shell:
-    desc: Start Poetry shell
+  # ====================
+  # Convenience Aliases
+  # ====================
+  install:
+    desc: "[Alias] Install dependencies"
     cmds:
-      - poetry shell
+      - task: setup:install
+
+  process:
+    desc: "[Alias] Process raw PDFs"
+    cmds:
+      - task: pipeline:process
+        vars: {CLI_ARGS: "{{.CLI_ARGS}}"}
+
+  extract:
+    desc: "[Alias] Extract cards as images"
+    cmds:
+      - task: pipeline:extract
+        vars: {CLI_ARGS: "{{.CLI_ARGS}}"}
+
+  backside:
+    desc: "[Alias] Add backsides"
+    cmds:
+      - task: pipeline:backside
+        vars: {CLI_ARGS: "{{.CLI_ARGS}}"}
+
+  urls:
+    desc: "[Alias] Generate URLs"
+    cmds:
+      - task: pipeline:urls
+        vars: {CLI_ARGS: "{{.CLI_ARGS}}"}
+
+  all:
+    desc: "[Alias] Run complete pipeline"
+    cmds:
+      - task: pipeline:all
+
+  test:
+    desc: "[Alias] Run tests"
+    cmds:
+      - task: dev:test
+
+  lint:
+    desc: "[Alias] Run linting"
+    cmds:
+      - task: dev:lint
+
+  format:
+    desc: "[Alias] Format code"
+    cmds:
+      - task: dev:format
+
+  clean:
+    desc: "[Alias] Clean cache"
+    cmds:
+      - task: dev:clean
 
   info:
-    desc: Show environment info
+    desc: "[Alias] Show environment info"
     cmds:
-      - poetry env info
-      - poetry show --tree
+      - task: setup:info
 
-  # Documentation
-  help:
-    desc: Show available tasks
+  shell:
+    desc: "[Alias] Start Poetry shell"
     cmds:
-      - task --list
+      - task: setup:shell

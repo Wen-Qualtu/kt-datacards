@@ -20,10 +20,20 @@
    - Features can be deferred, reordered, or modified
    - Implementation happens only with explicit approval
 
+4. **Confirm Before Closing**
+   - After completing implementation, **STOP**
+   - Explain what was accomplished and show results
+   - Ask: "Is this sufficient to close the feature?"
+   - Don't immediately suggest moving to the next feature
+   - Wait for user confirmation before marking feature complete
+
 **Example:**
 ```
 ❌ BAD: "I'll add team-specific backsides" → [implements immediately]
 ✅ GOOD: [Creates docs/06-team-backsides.md] → "Feature documented. Implement now or later?"
+
+❌ BAD: [Completes feature] → "Done! Ready for Feature 02?"
+✅ GOOD: [Completes feature] → "Here's what I implemented: [summary]. Is this sufficient to close Feature 00?"
 ```
 
 ### 2. **Never Break TTS References**

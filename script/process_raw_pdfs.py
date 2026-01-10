@@ -274,7 +274,7 @@ def process_raw_pdfs(raw_folder="input", base_output_folder="processed"):
             
             files_by_team[team_name].append((pdf_file, pdf_type))
         else:
-            print(f"  ✗ Could not identify (team: {team_name}, type: {pdf_type})")
+            print(f"  [FAIL] Could not identify (team: {team_name}, type: {pdf_type})")
             unidentified_files.append(pdf_file)
     
     # Archive unidentified files first
@@ -287,7 +287,7 @@ def process_raw_pdfs(raw_folder="input", base_output_folder="processed"):
             # Keep GUID name and move to failed folder
             archive_path = archive_failed_folder / pdf_file.name
             shutil.copy2(str(pdf_file), str(archive_path))
-            print(f"  ✓ {pdf_file.name} → archived to _archive/failed/")
+            print(f"  [OK] {pdf_file.name} → archived to _archive/failed/")
     
     # Move and rename files
     print(f"\n{'='*60}")
@@ -323,9 +323,9 @@ def process_raw_pdfs(raw_folder="input", base_output_folder="processed"):
             # Remove existing file if it exists (to allow overwrites)
             if new_path.exists():
                 new_path.unlink()
-                print(f"  ✓ {pdf_file.name} → {new_filename} (overwritten)")
+                print(f"  [OK] {pdf_file.name} → {new_filename} (overwritten)")
             else:
-                print(f"  ✓ {pdf_file.name} → {new_filename}")
+                print(f"  [OK] {pdf_file.name} → {new_filename}")
             
             # Move and rename
             shutil.move(str(pdf_file), str(new_path))

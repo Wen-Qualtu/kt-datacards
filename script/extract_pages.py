@@ -383,7 +383,7 @@ def extract_pdf_pages_to_jpg(input_folder, output_folder, dpi=300, clean_output=
             pdf_document.close()
             
         except Exception as e:
-            print(f"  ✗ Error processing {pdf_file.name}: {e}")
+            print(f"  [ERROR] Error processing {pdf_file.name}: {e}")
     
     print(f"\n{'='*50}")
     print(f"Extraction complete! {total_pages} pages saved to {output_folder}")
