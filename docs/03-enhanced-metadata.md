@@ -67,17 +67,44 @@ teams:
         - name: "Astartes"
         - name: "Chapter Tactics"
     
-    firefight-ploys:
-      count: 6
-      cards:
-        - name: "Shock Assault"
-        - name: "Death to the Traitors"
-        - name: "Armour of Contempt"
-        - name: "Covering Fire"
-        - name: "Storm of Fire"
-        - name: "Transhuman Physiology"
+    ploys:
+      firefight:
+        count: 6
+        cards:
+          - name: "Shock Assault"
+            description: "Use this Strategic Ploy when activating an operative. Until the end of that operative's activation, each time it fights in combat, in the Resolve Successful Hits step of that combat, your opponent can only parry with one dice."
+          - name: "Death to the Traitors"
+            description: "..."
+          - name: "Armour of Contempt"
+            description: "..."
+          - name: "Covering Fire"
+            description: "..."
+          - name: "Storm of Fire"
+            description: "..."
+          - name: "Transhuman Physiology"
+            description: "..."
+      
+      strategy:
+        count: 8
+        cards:
+          - name: "And They Shall Know No Fear"
+            description: "..."
+          - name: "Bolter Discipline"
+            description: "..."
+          - name: "Combat Squads"
+            description: "..."
+          - name: "Honor the Chapter"
+            description: "..."
+          - name: "Fury of the First"
+            description: "..."
+          - name: "Rapid Redeployment"
+            description: "..."
+          - name: "Angels of Death"
+            description: "..."
+          - name: "Blade Masters"
+            description: "..."
     
-    operatives:
+    operative_selection:
       total: 10
       options:
         - name: "Assault Intercessor Sergeant"
@@ -98,18 +125,6 @@ teams:
         - name: "Intercessor Warrior"
           max: 9  # Fill remaining slots
       notes: "You must select 1 ASSAULT INTERCESSOR SERGEANT (Leader) and 9 other operatives from the list above. You can select up to 2 INTERCESSOR GUNNER operatives and any number of WARRIOR operatives."
-    
-    strategy-ploys:
-      count: 8
-      cards:
-        - name: "And They Shall Know No Fear"
-        - name: "Bolter Discipline"
-        - name: "Combat Squads"
-        - name: "Honor the Chapter"
-        - name: "Fury of the First"
-        - name: "Rapid Redeployment"
-        - name: "Angels of Death"
-        - name: "Blade Masters"
     
     # Summary
     total_cards: 37
@@ -160,15 +175,36 @@ teams:
       cards:
         - name: "Skill at Arms"
     
-    firefight-ploys:
-      count: 4
-      cards:
-        - name: "Volley Fire"
-        - name: "Stand Firm"
-        - name: "Overwhelming Firepower"
-        - name: "Rapid Advance"
+    ploys:
+      firefight:
+        count: 4
+        cards:
+          - name: "Volley Fire"
+            description: "..."
+          - name: "Stand Firm"
+            description: "..."
+          - name: "Overwhelming Firepower"
+            description: "..."
+          - name: "Rapid Advance"
+            description: "..."
+      
+      strategy:
+        count: 6
+        cards:
+          - name: "Disciplined Fire"
+            description: "Use this Tactical Ploy when activating an operative. Until the end of that operative's activation, each time it performs a shooting attack, you can re-roll one of your attack dice."
+          - name: "Tactical Withdrawal"
+            description: "..."
+          - name: "Concentrated Fire"
+            description: "..."
+          - name: "Take Aim"
+            description: "..."
+          - name: "Shock Troops"
+            description: "..."
+          - name: "Elite Guard"
+            description: "..."
     
-    operatives:
+    operative_selection:
       total: 10
       options:
         - name: "Kasrkin Sergeant"
@@ -194,16 +230,6 @@ teams:
           max: 9  # Fill remaining slots
       notes: "You must select 1 KASRKIN SERGEANT (Leader) and 9 other operatives. You can select up to 2 KASRKIN GUNNER operatives and any number of KASRKIN TROOPER operatives."
     
-    strategy-ploys:
-      count: 6
-      cards:
-        - name: "Disciplined Fire"
-        - name: "Tactical Withdrawal"
-        - name: "Concentrated Fire"
-        - name: "Take Aim"
-        - name: "Shock Troops"
-        - name: "Elite Guard"
-    
     total_cards: 30
     complete: true
   
@@ -219,7 +245,7 @@ teams:
       - "hearthkyn-salvager-faction-rules.pdf"
       - "hearthkyn-salvager-operatives.pdf"
     
-    operatives:
+    operative_selection:
       total: 10
       options:
         - name: "Hearthkyn Salvager Theyn"
@@ -259,33 +285,43 @@ teams:
 ### 2. Card Inventory
 For each card type, track:
 - **count** or **total**: Number of cards/options of this type
-- **cards**: List of card names (for simple lists)
-  - Names extracted from image filenames (e.g., `assault-intercessor-grenadier_front.jpg`)
-  - Convert kebab-case to Title Case
+- **cards**: List of card names with descriptions
+  - **name**: Extracted from image filenames (e.g., `assault-intercessor-grenadier_front.jpg`), convert kebab-case to Title Case
+  - **description**: Text copied from the card (initially "..." placeholder, filled in manually or via OCR)
 
-### 3. Operatives Structure (Special Case)
-Operatives are tracked differently as they represent roster building rules:
+### 3. Ploys Structure (Grouped)
+Ploys are grouped together with firefight and strategy subsections:
+- **ploys**: Top-level grouping
+  - **firefight**: Firefight ploys with count and cards (with descriptions)
+  - **strategy**: Strategy ploys with count and cards (with descriptions)
+- This replaces the previous separate `firefight-ploys` and `strategy-ploys` sections
+- Better readability and logical grouping
+
+### 4. Operative Selection (Special Case)
+Operative selection is tracked differently as it represents roster building rules:
 - **total**: Total number of operative slots (e.g., 10)
 - **options**: List of operative choices with constraints:
   - **name**: Operative type name
-  - **max**: Maximum number that can be selected (null = unlimited)
+  - **max**: Maximum number that can be selected (actual number, not null)
   - **mandatory**: Boolean indicating if this operative must be selected
 - **notes**: Text copied from the operative card explaining selection rules
   - Captures special rules, weapon options info, limitations
+- Note: `datacards` will contain the actual operative datacards with stats (different from selection rules)
 
-### 4. Processing Information
+### 5. Processing Information
 - **last_processed**: ISO timestamp of when this team was last processed
 - **source_pdfs**: List of source PDF filenames in processed/ folder
 - **total_cards**: Sum of all cards across all types
 - **complete**: Boolean indicating if all expected card types are present
 
-### 5. Card Types Tracked
-- `datacards` - Individual operative datacards (simple list)
-- `equipment` - Equipment cards (simple list)
-- `faction-rules` - Faction rule cards (simple list)
-- `firefight-ploys` - Firefight ploy cards (simple list)
-- `operatives` - **Special structure** with roster building rules (total, options, constraints, notes)
-- `strategy-ploys` - Strategy ploy cards (simple list)
+### 6. Card Types Tracked
+- `datacards` - Individual operative datacards (will contain stats in future)
+- `equipment` - Equipment cards with descriptions
+- `faction-rules` - Faction rule cards (simple list for now)
+- `ploys` - **Grouped structure** containing:
+  - `firefight` - Firefight ploys with descriptions
+  - `strategy` - Strategy ploys with descriptions
+- `operative_selection` - **Special structure** with roster building rules (total, options, constraints, notes)
 
 ## Implementation Steps
 
@@ -302,31 +338,43 @@ Operatives are tracked differently as they represent roster building rules:
 - [ ] Convert kebab-case to Title Case (e.g., `assault-intercessor-grenadier` â†’ `Assault Intercessor Grenadier`)
 - [ ] Deduplicate (count front/back as one card)
 
-### Phase 3: Operatives Special Handling
-- [ ] Parse operative card images (OCR or manual input initially)
+### Phase 3: Operative Selection Special Handling
+- [ ] Parse operative selection card images (OCR or manual input initially)
 - [ ] Extract operative option names and constraints
 - [ ] Identify mandatory operatives (usually leader)
 - [ ] Determine max counts for each operative type
 - [ ] Extract notes/rules text from card
 - [ ] Handle weapon options markers (*, etc.) by including in notes
 
-### Phase 4: Faction/Subfaction Detection
+### Phase 4: Card Descriptions
+- [ ] For ploys and equipment, add description field
+- [ ] Initially populate with "..." placeholder
+- [ ] Support manual entry or OCR extraction of card text
+- [ ] Descriptions help with search and validation
+
+### Phase 4: Card Descriptions
+- [ ] For ploys and equipment, add description field
+- [ ] Initially populate with "..." placeholder
+- [ ] Support manual entry or OCR extraction of card text
+- [ ] Descriptions help with search and validation
+
+### Phase 5: Faction/Subfaction Detection
 - [ ] Create faction mapping (manual or auto-detect)
 - [ ] Infer faction from team name patterns where possible
 - [ ] Allow manual override in config
 
-### Phase 4: Auto-Generation on Pipeline Run
+### Phase 6: Auto-Generation on Pipeline Run
 - [ ] Integrate metadata generation into pipeline
 - [ ] Generate/update `output-metadata.yaml` after extraction step
 - [ ] Update timestamps automatically
-- [ ] Preserve manual edits (faction/subfaction)
+- [ ] Preserve manual edits (faction/subfaction, descriptions)
 
-### Phase 5: Metadata Reader Utility
+### Phase 7: Metadata Reader Utility
 - [ ] Create helper class to read metadata
 - [ ] Query methods: `get_team()`, `get_all_teams()`, `get_cards_by_type()`
 - [ ] Filter methods: `teams_by_faction()`, `incomplete_teams()`
 
-### Phase 6: Reporting & Validation
+### Phase 8: Reporting & Validation
 - [ ] Create status report script
 - [ ] Show team completeness (missing card types)
 - [ ] List all available content
