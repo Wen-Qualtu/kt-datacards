@@ -33,13 +33,12 @@ kt-datacards/
 │       ├── faction-rules/
 │       ├── firefight-ploys/
 │       ├── operatives/
-│       └── strategy-ploys/
+│       ├── strategy-ploys/
+│       └── datacards-urls.csv  # Generated URL mapping
 ├── script/                     # Python scripts
-│   ├── config/                 # Configuration files
-│   │   └── team-mapping.yaml
-│   └── ...
-├── docs/                       # Documentation
-└── datacards-urls.csv
+├── config/                     # Configuration files
+│   └── team-mapping.yaml
+└── docs/                       # Documentation
 ```
 
 ## Migration Steps

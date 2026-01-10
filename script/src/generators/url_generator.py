@@ -24,7 +24,7 @@ class URLGenerator:
         self.github_base = github_base
         self.logger = logging.getLogger(__name__)
     
-    def generate_csv(self, output_path: Path = Path('datacards-urls.csv')) -> int:
+    def generate_csv(self, output_path: Path = Path('output/datacards-urls.csv')) -> int:
         """
         Generate CSV file with all card image URLs
         

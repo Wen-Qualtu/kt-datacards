@@ -395,7 +395,7 @@ task process-team -- --teams kasrkin --force
 2. Save to `input/` folder (any name/structure)
 3. Run `task all`
 4. Verify output in `output/{teamname}/`
-5. Check URLs in `datacards-urls.csv`
+5. Check URLs in `output/datacards-urls.csv`
 6. Commit changes
 
 ---
