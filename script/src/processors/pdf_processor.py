@@ -246,6 +246,9 @@ class PDFProcessor:
         if not text:
             return ""
         
+        # Remove "KILL TEAM" suffix (common in operatives cards: "TEAM NAME KILL TEAM")
+        text = re.sub(r'\s+KILL[\s-]*TEAM\s*$', '', text, flags=re.IGNORECASE)
+        
         text = text.lower().strip()
         text = re.sub(r'[\s_]+', '-', text)
         text = re.sub(r'[^a-z0-9-]', '', text)
