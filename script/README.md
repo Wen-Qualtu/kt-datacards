@@ -42,8 +42,8 @@ python script/add_default_backsides.py
 ```
 
 This uses backsides from:
-- **Default**: `script/config/backside/default/default-backside-{portrait|landscape}.jpg`
-- **Team-specific** (optional): `script/config/backside/team/{team-name}/backside-{portrait|landscape}.jpg`
+- **Default**: `script/config/card-backside/default/default-backside-{portrait|landscape}.jpg`
+- **Team-specific** (optional): `script/config/card-backside/team/{team-name}/backside-{portrait|landscape}.jpg`
 
 Team-specific backsides override defaults if present.
 

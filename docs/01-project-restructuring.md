@@ -108,15 +108,15 @@ If issues arise:
 - ✅ `archive/` - Contains 8 team folders with archived PDFs
 - ✅ `processed/` - Contains 13 team folders with organized PDFs
 - ✅ `script/config/` - Contains configuration files
-- ✅ `script/config/backside/default/` - Default backside images
-- ✅ `script/config/backside/team/` - Team-specific custom backsides
+- ✅ `script/config/card-backside/default/` - Default backside images
+- ✅ `script/config/card-backside/team/` - Team-specific custom backsides
 
 **File Migrations:**
 - ✅ `input/_archive/*` → `archive/*`
 - ✅ `input/{teamname}/` → `processed/{teamname}/`
 - ✅ `input/_raw/*` → `input/*` (flattened)
 - ✅ `team-mapping.yaml` → `script/config/team-mapping.yaml`
-- ✅ Default backside images → `script/config/backside/default/`
+- ✅ Default backside images → `script/config/card-backside/default/`
 
 **Script Updates:**
 - ✅ `process_raw_pdfs.py` - Updated paths for processed/, archive/, team-mapping
@@ -127,7 +127,7 @@ If issues arise:
 **New Features Added:**
 - ✅ Team-specific custom backsides support
 - ✅ Priority logic: team-specific → default fallback
-- ✅ Organized backside configuration: `config/backside/default` and `config/backside/team`
+- ✅ Organized backside configuration: `config/card-backside/default` and `config/card-backside/team`
 
 ### Verification
 
@@ -136,8 +136,8 @@ If issues arise:
 ✅ archive/ exists with 8 team folders
 ✅ processed/ exists with 13 team folders  
 ✅ script/config/ exists with team-mapping.yaml
-✅ script/config/backside/default/ with default images
-✅ script/config/backside/team/ ready for custom backsides
+✅ script/config/card-backside/default/ with default images
+✅ script/config/card-backside/team/ ready for custom backsides
 ✅ input/ is clean and flat
 ✅ output/ unchanged (TTS safe!)
 ```
@@ -152,13 +152,13 @@ If issues arise:
 
 1. **Add New Cards**: Place PDF in `input/` → Run `process_raw_pdfs.py` → Organized in `processed/`, archived in `archive/`
 2. **Extract Images**: Run `extract_pages.py` → Reads from `processed/` → Outputs to `output/`
-3. **Add Backsides**: Run `add_default_backsides.py` → Uses `config/backside/default/` or `config/backside/team/{team}/`
+3. **Add Backsides**: Run `add_default_backsides.py` → Uses `config/card-backside/default/` or `config/card-backside/team/{team}/`
 4. **Generate URLs**: Run `generate_urls.py` → Creates CSV for TTS import
 
 ### Custom Backsides Feature
 
 **Implementation:**
-- Custom backsides stored in `script/config/backside/team/{teamname}/`
+- Custom backsides stored in `script/config/card-backside/team/{teamname}/`
 - Files: `backside-portrait.jpg` (for equipment/ploys) and `backside-landscape.jpg` (for datacards)
 - Priority: Check team folder first, fall back to defaults if not found
 - Example added: `angels-of-death-backside-landscape.jpg`
@@ -170,6 +170,6 @@ If issues arise:
 - Professional look for tournament play
 
 **Documentation:**
-- Added to `script/config/backside/team/README.md`
+- Added to `script/config/card-backside/team/README.md`
 - Updated DEVELOPMENT.md with folder structure
 - Complete usage examples and image requirements
