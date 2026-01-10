@@ -92,31 +92,26 @@ tasks:
         platforms: [linux, darwin]
 
   # ====================
-  # Convenience Aliases
+  # Convenience Aliases (hidden from list, but work when typed)
   # ====================
   install:
-    desc: "[Alias] Install dependencies"
     cmds:
       - task: setup:install
 
   process:
-    desc: "[Alias] Process raw PDFs"
     cmds:
       - task: pipeline:process
         vars: {CLI_ARGS: "{{.CLI_ARGS}}"}
 
   extract:
-    desc: "[Alias] Extract cards as images"
     cmds:
       - task: pipeline:extract
         vars: {CLI_ARGS: "{{.CLI_ARGS}}"}
 
   all:
-    desc: "[Alias] Run complete pipeline"
     cmds:
       - task: pipeline:all
 
   test:
-    desc: "[Alias] Run tests"
     cmds:
       - task: dev:test
