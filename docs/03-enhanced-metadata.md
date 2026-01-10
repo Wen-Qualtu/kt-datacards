@@ -132,8 +132,9 @@ teams:
 For each card type, track:
 - **count** or **total**: Number of cards/options of this type
 - **cards**: List of card names with descriptions
-  - **name**: Extracted from image filenames (e.g., `assault-intercessor-grenadier_front.jpg`), convert kebab-case to Title Case
-  - **description**: Text copied from the card (initially "..." placeholder, filled in manually or via OCR)
+  - **name**: Extracted via OCR from the card image itself (title/header text on the card)
+  - **description**: Text extracted from the card body (initially "..." placeholder, filled via OCR)
+- **Important**: Do not rely on filenames - extract all data from image content to avoid issues with renamed/corrupted files
 
 ### 3. Ploys Structure (Grouped)
 Ploys are grouped together with firefight and strategy subsections:
@@ -161,28 +162,30 @@ Operative selection is tracked differently as it represents roster building rule
 - **complete**: Boolean indicating if all expected card types are present
 
 ### 6. Card Types Tracked
-- `datacards` - Individual operative datacards (will contain stats in future)
-- `equipment` - Equipment cards with descriptions
 - `faction-rules` - Faction rule cards (simple list for now)
 - `ploys` - **Grouped structure** containing:
-  - `firefight` - Firefight ploys with descriptions
   - `strategy` - Strategy ploys with descriptions
+  - `firefight` - Firefight ploys with descriptions
+- `equipment` - Equipment cards with descriptions
 - `operative_selection` - **Special structure** with roster building rules (total, options, constraints, notes)
+- `datacards` - Individual operative datacards (will contain stats in future)
 
 ## Implementation Steps
 
 ### Phase 1: Metadata Generator
 - [ ] Create `OutputMetadataGenerator` class
 - [ ] Scan `output/` directory structure
-- [ ] Extract card names from filenames
+- [ ] Use OCR to extract card names from image content (not filenames)
 - [ ] Count cards per type per team
 - [ ] Generate YAML structure
 
-### Phase 2: Card Name Extraction
-- [ ] Parse image filenames to get card names
-- [ ] Handle `_front.jpg` and `_back.jpg` suffixes
-- [ ] Convert kebab-case to Title Case (e.g., `assault-intercessor-grenadier` â†’ `Assault Intercessor Grenadier`)
-- [ ] Deduplicate (count front/back as one card)
+### Phase 2: Card Name Extraction via OCR
+- [ ] Use pytesseract to read card image content
+- [ ] Extract card title/header text (usually at top of card)
+- [ ] Handle `_front.jpg` and `_back.jpg` - only process front images for names
+- [ ] Clean/normalize extracted text (trim whitespace, fix OCR artifacts)
+- [ ] Deduplicate cards (one entry per front/back pair)
+- [ ] Filenames are only used to identify front vs back and card type folders
 
 ### Phase 3: Operative Selection Special Handling
 - [ ] Parse operative selection card images (OCR or manual input initially)
@@ -192,16 +195,12 @@ Operative selection is tracked differently as it represents roster building rule
 - [ ] Extract notes/rules text from card
 - [ ] Handle weapon options markers (*, etc.) by including in notes
 
-### Phase 4: Card Descriptions
-- [ ] For ploys and equipment, add description field
-- [ ] Initially populate with "..." placeholder
-- [ ] Support manual entry or OCR extraction of card text
-- [ ] Descriptions help with search and validation
-
-### Phase 4: Card Descriptions
-- [ ] For ploys and equipment, add description field
-- [ ] Initially populate with "..." placeholder
-- [ ] Support manual entry or OCR extraction of card text
+### Phase 4: Card Descriptions via OCR
+- [ ] For ploys and equipment, extract description text from card body
+- [ ] Use pytesseract to read full card text
+- [ ] Initially populate with "..." placeholder if OCR quality is poor
+- [ ] Parse card layout to separate title from description text
+- [ ] Handle multi-line text and special formatting
 - [ ] Descriptions help with search and validation
 
 ### Phase 5: Faction/Subfaction Detection
