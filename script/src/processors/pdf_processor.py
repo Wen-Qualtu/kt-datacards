@@ -98,9 +98,26 @@ class PDFProcessor:
         lines = [line.strip() for line in all_text.split('\n') if line.strip()]
         
         # Look for datacard indicators in bottom portion
-        for line in lines[-10:]:
-            if any(keyword in line.upper() for keyword in ['RULES CONTINUE', 'APL', 'WOUNDS', 'SAVE', 'MOVE']):
+        # Datacards have multiple stat abbreviations in close proximity
+        stat_keywords = ['APL', 'WS', 'BS', 'STR', 'DF', 'GA', 'SV', 'WOUNDS', 'SAVE', 'MOVE']
+        stats_found = []
+        for line in lines[-15:]:
+            line_upper = line.upper().strip()
+            # Check if line is exactly a stat keyword (for vertically stacked stats)
+            if line_upper in stat_keywords:
+                stats_found.append(line_upper)
+            else:
+                # Check if stat appears as standalone word in line
+                for keyword in ['APL', 'WS', 'BS', 'STR', 'DF', 'GA', 'SV']:
+                    if f' {keyword} ' in f' {line_upper} ' or f' {keyword}:' in f' {line_upper} ':
+                        stats_found.append(keyword)
+            # Also check for specific datacard phrases
+            if 'RULES CONTINUE' in line_upper:
                 return CardType.DATACARDS
+        
+        # If we found 2+ different stats, it's likely a datacard
+        if len(set(stats_found)) >= 2:
+            return CardType.DATACARDS
         
         # Then check headers for other type keywords
         for size, text in text_by_size[:30]:
@@ -135,7 +152,7 @@ class PDFProcessor:
         """Extract team name from datacard metadata line"""
         faction_keywords = [
             'IMPERIUM', 'CHAOS', 'AELDARI', 'TYRANIDS', 'ORKS',
-            "T'AU", 'NECRONS', 'LEAGUES OF VOTANN', 'GENESTEALER'
+            "T'AU", 'TAU', 'NECRONS', 'LEAGUES OF VOTANN', 'GENESTEALER'
         ]
         
         role_keywords = [
@@ -146,11 +163,14 @@ class PDFProcessor:
         
         # Look in bottom portion for metadata line
         for line in lines[-15:]:
+            # Normalize apostrophes for matching
+            line_normalized = line.replace(''', "'").replace(''', "'")
+            
             # Check if ALL CAPS and has commas
             if line.isupper() and ',' in line and line.count(',') >= 2:
                 # Check for faction keyword
-                if any(keyword in line for keyword in faction_keywords):
-                    parts = [p.strip() for p in line.split(',')]
+                if any(keyword in line_normalized for keyword in faction_keywords):
+                    parts = [p.strip() for p in line_normalized.split(',')]
                     first_part = parts[0]
                     
                     # Remove role keywords from team name

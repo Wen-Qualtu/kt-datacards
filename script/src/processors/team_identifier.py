@@ -33,11 +33,11 @@ class TeamIdentifier:
                 config = yaml.safe_load(f)
                 team_names = config.get('team_names', {})
                 
-                # team_names format: {canonical: variant}
+                # team_names format: {detected_name: canonical_name}
                 # We need to build Team objects with aliases
                 canonical_to_variants: Dict[str, List[str]] = {}
                 
-                for canonical, variant in team_names.items():
+                for variant, canonical in team_names.items():
                     canonical_norm = Team.normalize_name(canonical)
                     if canonical_norm not in canonical_to_variants:
                         canonical_to_variants[canonical_norm] = []
@@ -77,7 +77,12 @@ class TeamIdentifier:
             if team.matches(text):
                 return team
         
-        return None
+        # If no match found in mapping, create a new team on-the-fly
+        # This handles teams that aren't explicitly mapped
+        self.logger.info(f"Creating unmapped team: {normalized} (from: {text})")
+        team = Team(name=normalized)
+        self.teams[normalized] = team
+        return team
     
     def get_or_create_team(self, name: str) -> Team:
         """
