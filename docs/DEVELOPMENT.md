@@ -119,8 +119,8 @@ kt-datacards/
 - All configuration files here
 - `team-mapping.yaml` for team metadata
 - `settings.py` for application config
-- `backside/default/` for default backside images
-- `backside/team/{teamname}/` for custom team backsides
+- `card-backside/default/` for default backside images
+- `card-backside/team/{teamname}/` for custom team backsides
 - Keep configs in git (except secrets)
 
 ---
