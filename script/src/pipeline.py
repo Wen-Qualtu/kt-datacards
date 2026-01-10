@@ -128,8 +128,13 @@ class DatacardPipeline:
                 
                 if not team or not card_type:
                     self.logger.warning(
-                        f"Could not identify {pdf_file.name}"
+                        f"Could not identify {pdf_file.name} - moving to input/failed"
                     )
+                    # Move to failed directory for manual review
+                    failed_dir = self.input_raw_dir / 'failed'
+                    failed_dir.mkdir(parents=True, exist_ok=True)
+                    import shutil
+                    shutil.move(str(pdf_file), str(failed_dir / pdf_file.name))
                     continue
                 
                 # Move to processed directory
@@ -142,12 +147,21 @@ class DatacardPipeline:
                 )
                 dest_path = dest_dir / clean_name
                 
-                # Copy file
+                # Copy file to processed
                 import shutil
                 shutil.copy2(pdf_file, dest_path)
                 
+                # Move original to archive
+                archive_dir = team.get_archive_path()
+                archive_dir.mkdir(parents=True, exist_ok=True)
+                archive_path = archive_dir / pdf_file.name
+                shutil.move(str(pdf_file), str(archive_path))
+                
                 self.logger.info(
                     f"Processed: {pdf_file.name} → {team.name}/{clean_name}"
+                )
+                self.logger.info(
+                    f"Archived: {pdf_file.name} → archive/{team.name}/"
                 )
                 
                 processed_pdfs.append((dest_path, team, card_type))
@@ -201,7 +215,7 @@ class DatacardPipeline:
                     
                     if not card_type:
                         self.logger.warning(
-                            f"Could not identify type for {pdf_file}"
+                            f"Could not identify type for {pdf_file.name} in {team_name}"
                         )
                         continue
                     
