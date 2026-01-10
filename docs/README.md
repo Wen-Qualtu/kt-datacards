@@ -4,7 +4,7 @@
 This project extracts and processes Kill Team datacards from PDF exports into individual PNG images for use in Tabletop Simulator (TTS).
 
 ## Current Workflow
-1. **Input**: PDF files placed in `input/_raw/` (named with GUIDs)
+1. **Input**: PDF files placed in `input/` (named with GUIDs or any name)
 2. **Processing**: Extract text to identify team and card type
 3. **Organization**: Files moved to `input/{teamname}/` folders with proper naming
 4. **Extraction**: Individual cards extracted as PNG images to `output/{teamname}/{cardtype}/`

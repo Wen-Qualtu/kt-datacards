@@ -46,14 +46,15 @@ kt-datacards/
 ### Phase 1: Create New Structure
 - [x] Create `archive/` folder at root
 - [x] Create `processed/` folder at root
-- [x] Create `script/config/` folder
+- [x] Create `config/` folder at root (moved from script/config in Feature 02)
 - [x] Keep `output/` exactly as-is (TTS dependency)
 
 ### Phase 2: Move Existing Files
 - [x] Move `input/_archive/*` → `archive/*` (8 teams)
 - [x] Move `input/{teamname}/` folders → `processed/{teamname}/` (13 teams)
-- [x] Move `team-mapping.yaml` → `script/config/team-mapping.yaml`
+- [x] Move `team-mapping.yaml` → `config/team-name-mapping.yaml` (later moved from script/config)
 - [x] Flattened `input/_raw/` to just `input/`
+- [x] Moved `input/config/` → `config/` (Feature 02)
 
 ### Phase 3: Update Scripts
 - [x] Update `process_raw_pdfs.py` to output to `processed/` instead of `input/`
@@ -106,27 +107,31 @@ If issues arise:
 ### Completed Changes
 
 **Folders Created:**
-- ✅ `archive/` - Contains 8 team folders with archived PDFs
-- ✅ `processed/` - Contains 13 team folders with organized PDFs
-- ✅ `script/config/` - Contains configuration files
-- ✅ `script/config/card-backside/default/` - Default backside images
-- ✅ `script/config/card-backside/team/` - Team-specific custom backsides
+- ✅ `archive/` - Contains archived PDFs (optional)
+- ✅ `processed/` - Contains team folders with organized PDFs (flat structure)
+- ✅ `config/` - Configuration files at root (moved from script/config in Feature 02)
+- ✅ `config/card-backside/default/` - Default backside images
+- ✅ `config/card-backside/team/` - Team-specific custom backsides
 
 **File Migrations:**
 - ✅ `input/_archive/*` → `archive/*`
 - ✅ `input/{teamname}/` → `processed/{teamname}/`
-- ✅ `input/_raw/*` → `input/*` (flattened)
-- ✅ `team-mapping.yaml` → `script/config/team-mapping.yaml`
-- ✅ Default backside images → `script/config/card-backside/default/`
+- ✅ `input/_raw/*` → `input/*` (flattened, now processes recursively)
+- ✅ `team-mapping.yaml` → `config/team-name-mapping.yaml` (initially script/config)
+- ✅ Default backside images → `config/card-backside/default/`
+- ✅ URL CSV → `output/datacards-urls.csv` (Feature 02)
 
 **Script Updates:**
-- ✅ `process_raw_pdfs.py` - Updated paths for processed/, archive/, team-mapping
-- ✅ `extract_pages.py` - Updated to read from processed/
-- ✅ `add_default_backsides.py` - Updated for new backside locations with team-specific support
-- ✅ `script/README.md` - Complete rewrite documenting new workflow
+- ✅ Complete refactor to modular architecture (Feature 02)
+- ✅ New `script/run_pipeline.py` - Main CLI entry point
+- ✅ `script/src/` - Modular source code (models, processors, generators)
+- ✅ Updated all path references to use config at root
+- ✅ Recursive input/ processing with no exclusions needed
 
 **New Features Added:**
 - ✅ Team-specific custom backsides support
+- ✅ Recursive subdirectory processing in input/
+- ✅ Clean separation of config from input data
 - ✅ Priority logic: team-specific → default fallback
 - ✅ Organized backside configuration: `config/card-backside/default` and `config/card-backside/team`
 

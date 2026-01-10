@@ -90,25 +90,31 @@ git branch -d feature-03-enhanced-metadata
 kt-datacards/
 ├── input/                      # Raw unprocessed files (any structure allowed)
 │   └── *.pdf                   # Process all PDFs recursively
-├── archive/                    # Archived processed files (keep forever)
-│   └── {teamname}/
+├── config/                     # Configuration files
+│   ├── team-name-mapping.yaml
+│   └── card-backside/
+│       ├── default/            # Default backside images
+│       └── team/               # Team-specific custom backsides
 ├── processed/                  # Intermediate processing stage
-│   └── {faction}/             # NEW: faction layer
-│       └── {army}/            # NEW: army layer
-│           └── {teamname}/
+│   └── {teamname}/             # Flat structure by team
 ├── output/                     # ⚠️ IMMUTABLE - TTS references these paths
+│   ├── {teamname}/
+│   │   ├── datacards/
+│   │   ├── equipment/
+│   │   ├── faction-rules/
+│   │   ├── firefight-ploys/
+│   │   ├── operatives/
+│   │   └── strategy-ploys/
+│   └── datacards-urls.csv      # Generated URL mapping
+├── archive/                    # Archived processed files (optional)
 │   └── {teamname}/
-│       ├── datacards/
-│       ├── equipment/
-│       ├── faction-rules/
-│       ├── firefight-ploys/
-│       ├── operatives/
-│       └── strategy-ploys/
 ├── script/
-│   ├── config/                # Configuration files
-│   │   └── team-mapping.yaml
-│   └── src/                   # Source code
-└── docs/                      # Documentation
+│   ├── src/                    # Source code
+│   ├── scripts/                # Individual step scripts
+│   ├── tests/                  # Test scripts
+│   ├── run_pipeline.py         # Main entry point
+│   └── README.md               # Script documentation
+└── docs/                       # Feature documentation
 ```
 
 ### Folder Rules
@@ -126,9 +132,10 @@ kt-datacards/
 - Storage growth is acceptable
 
 #### `processed/`
-- NEW hierarchical structure: `{faction}/{army}/{teamname}/`
-- Example: `xenos/leagues-of-votann/hearthkyn-salvagers/`
-- This structure prepares for future `output/v2/`
+- Flat structure by team: `{teamname}/`
+- Example: `kasrkin/`, `hearthkyn-salvager/`
+- Contains identified and renamed PDFs
+- Note: Future hierarchical structure (faction/army) deferred to Feature 03
 
 #### `output/` ⚠️
 - **NEVER change structure**
