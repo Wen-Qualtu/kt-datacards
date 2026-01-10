@@ -158,8 +158,10 @@ kt-datacards/
 ### File Names
 
 #### Raw Input Files
-- Original: `{guid}.pdf` (from mobile app export)
-- No renaming required in input
+- **Accept any filename** - Pipeline identifies content, not based on filename
+- Mobile app exports use GUIDs (e.g., `05ba2863-8395-4b11-8df9-e67b70feebde.pdf`)
+- Manual exports may use descriptive names (e.g., `kasrkin-datacards.pdf`)
+- No specific naming required - pipeline handles all cases
 
 #### Processed Files
 - Pattern: `{team-name}_{card-type}.pdf`
