@@ -43,18 +43,6 @@ teams:
         - name: "Skill at Arms"
     
     ploys:
-      firefight:
-        count: 4
-        cards:
-          - name: "Volley Fire"
-            description: "..."
-          - name: "Stand Firm"
-            description: "..."
-          - name: "Overwhelming Firepower"
-            description: "..."
-          - name: "Rapid Advance"
-            description: "..."
-      
       strategy:
         count: 4
         cards:
@@ -66,6 +54,18 @@ teams:
             description: "..."
           - name: "Relocate"
             description: "..."  
+      
+      firefight:
+        count: 4
+        cards:
+          - name: "Volley Fire"
+            description: "..."
+          - name: "Stand Firm"
+            description: "..."
+          - name: "Overwhelming Firepower"
+            description: "..."
+          - name: "Rapid Advance"
+            description: "..."
     
     equipment:
       count: 4
