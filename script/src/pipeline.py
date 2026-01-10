@@ -128,8 +128,13 @@ class DatacardPipeline:
                 
                 if not team or not card_type:
                     self.logger.warning(
-                        f"Could not identify {pdf_file.name}"
+                        f"Could not identify {pdf_file.name} - moving to input/failed"
                     )
+                    # Move to failed directory for manual review
+                    failed_dir = self.input_raw_dir / 'failed'
+                    failed_dir.mkdir(parents=True, exist_ok=True)
+                    import shutil
+                    shutil.move(str(pdf_file), str(failed_dir / pdf_file.name))
                     continue
                 
                 # Move to processed directory
@@ -210,7 +215,7 @@ class DatacardPipeline:
                     
                     if not card_type:
                         self.logger.warning(
-                            f"Could not identify type for {pdf_file}"
+                            f"Could not identify type for {pdf_file.name} in {team_name}"
                         )
                         continue
                     
