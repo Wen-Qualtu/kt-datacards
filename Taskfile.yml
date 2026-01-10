@@ -1,0 +1,87 @@
+version: '3'
+
+vars:
+  PYTHON: poetry run python
+
+tasks:
+  # Setup tasks
+  install:
+    desc: Install dependencies using Poetry
+    cmds:
+      - poetry install
+
+  update:
+    desc: Update dependencies
+    cmds:
+      - poetry update
+
+  # Main processing tasks
+  process:
+    desc: Process raw PDFs (identify and organize)
+    cmds:
+      - "{{.PYTHON}} script/process_raw_pdfs.py {{.CLI_ARGS}}"
+
+  extract:
+    desc: Extract individual cards as images
+    cmds:
+      - "{{.PYTHON}} script/extract_pages.py {{.CLI_ARGS}}"
+
+  urls:
+    desc: Generate URL CSV for TTS
+    cmds:
+      - "{{.PYTHON}} script/generate_urls.py {{.CLI_ARGS}}"
+
+  backside:
+    desc: Add default backsides to cards
+    cmds:
+      - "{{.PYTHON}} script/add_default_backsides.py {{.CLI_ARGS}}"
+
+  all:
+    desc: Run complete pipeline (process → extract → backside → urls)
+    cmds:
+      - task: process
+      - task: extract
+      - task: backside
+      - task: urls
+
+  # Development tasks
+  test:
+    desc: Run tests
+    cmds:
+      - poetry run pytest tests/
+
+  lint:
+    desc: Run linting
+    cmds:
+      - poetry run flake8 script/
+
+  format:
+    desc: Format code with black
+    cmds:
+      - poetry run black script/
+
+  clean:
+    desc: Clean generated files and cache
+    cmds:
+      - cmd: powershell -Command "Remove-Item -Recurse -Force **/__pycache__ -ErrorAction SilentlyContinue"
+        platforms: [windows]
+      - cmd: rm -rf **/__pycache__
+        platforms: [linux, darwin]
+
+  # Utility tasks
+  shell:
+    desc: Start Poetry shell
+    cmds:
+      - poetry shell
+
+  info:
+    desc: Show environment info
+    cmds:
+      - poetry env info
+      - poetry show --tree
+
+  # Documentation
+  help:
+    desc: Show available tasks
+    cmds:
+      - task --list
