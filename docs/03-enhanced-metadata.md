@@ -78,9 +78,26 @@ teams:
         - name: "Transhuman Physiology"
     
     operatives:
-      count: 1
-      cards:
-        - name: "Kill Team"  # Operative overview card
+      total: 10
+      options:
+        - name: "Assault Intercessor Sergeant"
+          max: 1
+          mandatory: true
+        - name: "Assault Intercessor Grenadier"
+          max: 1
+        - name: "Intercessor Gunner"
+          max: 2
+        - name: "Heavy Intercessor"
+          max: 1
+        - name: "Infiltrator"
+          max: 1
+        - name: "Reiver"
+          max: 1
+        - name: "Assault Intercessor Warrior"
+          max: null  # Unlimited
+        - name: "Intercessor Warrior"
+          max: null  # Unlimited
+      notes: "You must select 1 ASSAULT INTERCESSOR SERGEANT (Leader) and 9 other operatives from the list above. You can select up to 2 INTERCESSOR GUNNER operatives and any number of WARRIOR operatives."
     
     strategy-ploys:
       count: 8
@@ -152,9 +169,30 @@ teams:
         - name: "Rapid Advance"
     
     operatives:
-      count: 1
-      cards:
-        - name: "Kill Team"
+      total: 10
+      options:
+        - name: "Kasrkin Sergeant"
+          max: 1
+          mandatory: true
+        - name: "Kasrkin Marksman"
+          max: 1
+        - name: "Kasrkin Demolitions Expert"
+          max: 1
+        - name: "Kasrkin Comms Operative"
+          max: 1
+        - name: "Kasrkin Medic"
+          max: 1
+        - name: "Kasrkin Vox-Caster"
+          max: 1
+        - name: "Kasrkin Spotter"
+          max: 1
+        - name: "Kasrkin Gunner"
+          max: 2
+        - name: "Kasrkin Heavy Gunner"
+          max: 1
+        - name: "Kasrkin Trooper"
+          max: null  # Unlimited
+      notes: "You must select 1 KASRKIN SERGEANT (Leader) and 9 other operatives. You can select up to 2 KASRKIN GUNNER operatives and any number of KASRKIN TROOPER operatives."
     
     strategy-ploys:
       count: 6
@@ -169,6 +207,45 @@ teams:
     total_cards: 30
     complete: true
   
+  hearthkyn-salvager:
+    canonical_name: "Hearthkyn Salvager"
+    faction: "Xenos"
+    subfaction: "Leagues of Votann"
+    
+    last_processed: "2026-01-10T14:00:00"
+    source_pdfs:
+      - "hearthkyn-salvager-datacards.pdf"
+      - "hearthkyn-salvager-equipment.pdf"
+      - "hearthkyn-salvager-faction-rules.pdf"
+      - "hearthkyn-salvager-operatives.pdf"
+    
+    operatives:
+      total: 10
+      options:
+        - name: "Hearthkyn Salvager Theyn"
+          max: 1
+          mandatory: true
+        - name: "Hearthkyn Salvager Dozr"
+          max: 1
+        - name: "Hearthkyn Salvager Field Medic"
+          max: 1
+        - name: "Hearthkyn Salvager Grenadier"
+          max: 1
+        - name: "Hearthkyn Salvager Gunner"
+          max: 3
+        - name: "Hearthkyn Salvager Comms"
+          max: 1
+        - name: "Hearthkyn Salvager Scanner"
+          max: 1
+        - name: "Hearthkyn Salvager Marksman"
+          max: 1
+        - name: "Hearthkyn Salvager Warrior"
+          max: null  # Unlimited
+      notes: "You must select 1 HEARTHKYN SALVAGER THEYN (Leader) and 9 other HEARTHKYN SALVAGER operatives. You can select up to 3 HEARTHKYN SALVAGER GUNNER operatives and any number of HEARTHKYN SALVAGER WARRIOR operatives. Each other operative can be selected once."
+    
+    total_cards: 15
+    complete: false  # Missing some card types
+  
   # ... more teams
 ```
 
@@ -181,24 +258,34 @@ teams:
 
 ### 2. Card Inventory
 For each card type, track:
-- **count**: Number of cards of this type
-- **cards**: List of card names (extracted from filename or content)
-  - Each card entry includes just the name
+- **count** or **total**: Number of cards/options of this type
+- **cards**: List of card names (for simple lists)
   - Names extracted from image filenames (e.g., `assault-intercessor-grenadier_front.jpg`)
+  - Convert kebab-case to Title Case
 
-### 3. Processing Information
+### 3. Operatives Structure (Special Case)
+Operatives are tracked differently as they represent roster building rules:
+- **total**: Total number of operative slots (e.g., 10)
+- **options**: List of operative choices with constraints:
+  - **name**: Operative type name
+  - **max**: Maximum number that can be selected (null = unlimited)
+  - **mandatory**: Boolean indicating if this operative must be selected
+- **notes**: Text copied from the operative card explaining selection rules
+  - Captures special rules, weapon options info, limitations
+
+### 4. Processing Information
 - **last_processed**: ISO timestamp of when this team was last processed
 - **source_pdfs**: List of source PDF filenames in processed/ folder
 - **total_cards**: Sum of all cards across all types
 - **complete**: Boolean indicating if all expected card types are present
 
-### 4. Card Types Tracked
-- `datacards` - Individual operative datacards
-- `equipment` - Equipment cards
-- `faction-rules` - Faction rule cards
-- `firefight-ploys` - Firefight ploy cards
-- `operatives` - Operative overview card(s)
-- `strategy-ploys` - Strategy ploy cards
+### 5. Card Types Tracked
+- `datacards` - Individual operative datacards (simple list)
+- `equipment` - Equipment cards (simple list)
+- `faction-rules` - Faction rule cards (simple list)
+- `firefight-ploys` - Firefight ploy cards (simple list)
+- `operatives` - **Special structure** with roster building rules (total, options, constraints, notes)
+- `strategy-ploys` - Strategy ploy cards (simple list)
 
 ## Implementation Steps
 
@@ -215,7 +302,15 @@ For each card type, track:
 - [ ] Convert kebab-case to Title Case (e.g., `assault-intercessor-grenadier` â†’ `Assault Intercessor Grenadier`)
 - [ ] Deduplicate (count front/back as one card)
 
-### Phase 3: Faction/Subfaction Detection
+### Phase 3: Operatives Special Handling
+- [ ] Parse operative card images (OCR or manual input initially)
+- [ ] Extract operative option names and constraints
+- [ ] Identify mandatory operatives (usually leader)
+- [ ] Determine max counts for each operative type
+- [ ] Extract notes/rules text from card
+- [ ] Handle weapon options markers (*, etc.) by including in notes
+
+### Phase 4: Faction/Subfaction Detection
 - [ ] Create faction mapping (manual or auto-detect)
 - [ ] Infer faction from team name patterns where possible
 - [ ] Allow manual override in config
