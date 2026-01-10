@@ -2,25 +2,49 @@
 
 ## 📋 Core Principles
 
-### 1. **Never Break TTS References**
+### 1. **Feature-First Development Workflow**
+**CRITICAL**: All new features must follow this workflow to maintain control and organization:
+
+1. **Create Feature Document First**
+   - Use naming convention: `docs/{XX}-{shortname}.md`
+   - Number sequentially (00, 01, 02, etc.)
+   - Document idea, steps, requirements, and acceptance criteria
+   
+2. **Ask Before Implementation**
+   - After creating the feature document, **STOP**
+   - Ask: "Should we implement this now or later?"
+   - Respect the user's prioritization and workflow preferences
+   
+3. **User Controls the Queue**
+   - User decides which features to tackle and when
+   - Features can be deferred, reordered, or modified
+   - Implementation happens only with explicit approval
+
+**Example:**
+```
+❌ BAD: "I'll add team-specific backsides" → [implements immediately]
+✅ GOOD: [Creates docs/06-team-backsides.md] → "Feature documented. Implement now or later?"
+```
+
+### 2. **Never Break TTS References**
 **CRITICAL**: The `output/` folder structure is IMMUTABLE. TTS cards reference these exact paths.
 - ✅ DO: Keep `output/{teamname}/{cardtype}/` structure exactly as-is
 - ❌ DON'T: Rename, restructure, or move anything in `output/`
 - 💡 Future: Use `output/v2/` for new structures while keeping `output/` for backwards compatibility
 
-### 2. **Git as Source of Truth**
+### 3. **Git as Source of Truth**
 - All changes are tracked in git
 - No manual version numbers in files
 - Use git history for version tracking
 - Commit frequently with clear messages
 
-### 3. **Reproducibility Across Machines**
+### 4. **Reproducibility Across Machines**
 - Use Poetry for dependency management
 - Lock dependencies with `poetry.lock`
 - Use Task for consistent script execution
 - Virtual environments for isolation
 
-### 4. **Quality Over Speed**
+### 5. **Quality Over Speed**
 - Accuracy is paramount (especially for stats extraction)
 - Better to show warnings/errors than wrong data
 - Manual review is acceptable when accuracy is uncertain
@@ -85,6 +109,8 @@ kt-datacards/
 - All configuration files here
 - `team-mapping.yaml` for team metadata
 - `settings.py` for application config
+- `backside/default/` for default backside images
+- `backside/team/{teamname}/` for custom team backsides
 - Keep configs in git (except secrets)
 
 ---

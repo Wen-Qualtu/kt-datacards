@@ -22,7 +22,7 @@ This project extracts and processes Kill Team datacards from PDF exports into in
 | Feature | Status | Document | Priority |
 |---------|--------|----------|----------|
 | Poetry + Task Setup | 🔴 | [00-poetry-task-setup.md](00-poetry-task-setup.md) | **Critical** |
-| Project Restructuring | 🔴 | [01-project-restructuring.md](01-project-restructuring.md) | High |
+| Project Restructuring | � | [01-project-restructuring.md](01-project-restructuring.md) | High |
 | Code Refactoring | 🔴 | [02-code-refactoring.md](02-code-refactoring.md) | High |
 | Enhanced Metadata | 🔴 | [03-enhanced-metadata.md](03-enhanced-metadata.md) | Medium |
 | Stats Extraction | 🔴 | [04-stats-extraction.md](04-stats-extraction.md) | Medium |

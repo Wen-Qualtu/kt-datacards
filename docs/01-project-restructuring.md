@@ -1,7 +1,7 @@
 # Feature 01: Project Restructuring
 
 ## Status
-🔴 Not Started
+✅ Complete (January 10, 2026)
 
 ## Overview
 Reorganize the folder structure to better represent the processing pipeline and separate concerns.
@@ -43,29 +43,29 @@ kt-datacards/
 ## Migration Steps
 
 ### Phase 1: Create New Structure
-- [ ] Create `archive/` folder at root
-- [ ] Create `processed/` folder at root
-- [ ] Create `script/config/` folder
-- [ ] Keep `output/` exactly as-is (TTS dependency)
+- [x] Create `archive/` folder at root
+- [x] Create `processed/` folder at root
+- [x] Create `script/config/` folder
+- [x] Keep `output/` exactly as-is (TTS dependency)
 
 ### Phase 2: Move Existing Files
-- [ ] Move `input/_archive/*` → `archive/*`
-- [ ] Move `input/{teamname}/` folders → `processed/{teamname}/`
-- [ ] Move `team-mapping.yaml` → `script/config/team-mapping.yaml`
-- [ ] Keep only `_raw/` in `input/` initially
+- [x] Move `input/_archive/*` → `archive/*` (8 teams)
+- [x] Move `input/{teamname}/` folders → `processed/{teamname}/` (13 teams)
+- [x] Move `team-mapping.yaml` → `script/config/team-mapping.yaml`
+- [x] Flattened `input/_raw/` to just `input/`
 
 ### Phase 3: Update Scripts
-- [ ] Update `process_raw_pdfs.py` to output to `processed/` instead of `input/`
-- [ ] Update `extract_pages.py` to read from `processed/` instead of `input/`
-- [ ] Update all path references in scripts
-- [ ] Update team-mapping path references
-- [ ] Update archive logic to use new `archive/` folder
+- [x] Update `process_raw_pdfs.py` to output to `processed/` instead of `input/`
+- [x] Update `extract_pages.py` to read from `processed/` instead of `input/`
+- [x] Update all path references in scripts
+- [x] Update team-mapping path references
+- [x] Update archive logic to use new `archive/` folder
 
 ### Phase 4: Cleanup
-- [ ] Remove `input/_archive/` (empty)
-- [ ] Rename `input/_raw/` to just `input/` (or keep _raw if preferred)
-- [ ] Test full pipeline with new structure
-- [ ] Update README.md with new structure
+- [x] Remove `input/_archive/` (empty)
+- [x] Rename `input/_raw/` to just `input/`
+- [x] Test full pipeline with new structure
+- [x] Update README.md with new structure
 
 ## Impact Analysis
 
@@ -80,12 +80,12 @@ kt-datacards/
 - GitHub repository structure compatible
 
 ## Testing Checklist
-- [ ] Place test PDF in `input/`
-- [ ] Run processing pipeline
-- [ ] Verify files appear in `processed/{teamname}/`
-- [ ] Verify PNGs appear in `output/{teamname}/{cardtype}/`
-- [ ] Verify URLs in CSV are correct
-- [ ] Test archive functionality
+- [x] Place test PDF in `input/`
+- [x] Run processing pipeline
+- [x] Verify files appear in `processed/{teamname}/`
+- [x] Verify PNGs appear in `output/{teamname}/{cardtype}/`
+- [x] Verify URLs in CSV are correct
+- [x] Test archive functionality
 
 ## Rollback Plan
 If issues arise:
@@ -97,3 +97,79 @@ If issues arise:
 - **Complexity**: Medium
 - **Time**: 2-3 hours
 - **Risk**: Low (internal changes only)
+
+---
+
+## Implementation Summary
+
+### Completed Changes
+
+**Folders Created:**
+- ✅ `archive/` - Contains 8 team folders with archived PDFs
+- ✅ `processed/` - Contains 13 team folders with organized PDFs
+- ✅ `script/config/` - Contains configuration files
+- ✅ `script/config/backside/default/` - Default backside images
+- ✅ `script/config/backside/team/` - Team-specific custom backsides
+
+**File Migrations:**
+- ✅ `input/_archive/*` → `archive/*`
+- ✅ `input/{teamname}/` → `processed/{teamname}/`
+- ✅ `input/_raw/*` → `input/*` (flattened)
+- ✅ `team-mapping.yaml` → `script/config/team-mapping.yaml`
+- ✅ Default backside images → `script/config/backside/default/`
+
+**Script Updates:**
+- ✅ `process_raw_pdfs.py` - Updated paths for processed/, archive/, team-mapping
+- ✅ `extract_pages.py` - Updated to read from processed/
+- ✅ `add_default_backsides.py` - Updated for new backside locations with team-specific support
+- ✅ `script/README.md` - Complete rewrite documenting new workflow
+
+**New Features Added:**
+- ✅ Team-specific custom backsides support
+- ✅ Priority logic: team-specific → default fallback
+- ✅ Organized backside configuration: `config/backside/default` and `config/backside/team`
+
+### Verification
+
+**Structure Verified:**
+```
+✅ archive/ exists with 8 team folders
+✅ processed/ exists with 13 team folders  
+✅ script/config/ exists with team-mapping.yaml
+✅ script/config/backside/default/ with default images
+✅ script/config/backside/team/ ready for custom backsides
+✅ input/ is clean and flat
+✅ output/ unchanged (TTS safe!)
+```
+
+**No Breaking Changes:**
+- ✅ TTS card URLs still work (output/ unchanged)
+- ✅ GitHub structure compatible
+- ✅ All scripts updated and tested
+- ✅ CSV generation works with existing structure
+
+### Workflow After Restructuring
+
+1. **Add New Cards**: Place PDF in `input/` → Run `process_raw_pdfs.py` → Organized in `processed/`, archived in `archive/`
+2. **Extract Images**: Run `extract_pages.py` → Reads from `processed/` → Outputs to `output/`
+3. **Add Backsides**: Run `add_default_backsides.py` → Uses `config/backside/default/` or `config/backside/team/{team}/`
+4. **Generate URLs**: Run `generate_urls.py` → Creates CSV for TTS import
+
+### Custom Backsides Feature
+
+**Implementation:**
+- Custom backsides stored in `script/config/backside/team/{teamname}/`
+- Files: `backside-portrait.jpg` (for equipment/ploys) and `backside-landscape.jpg` (for datacards)
+- Priority: Check team folder first, fall back to defaults if not found
+- Example added: `angels-of-death-backside-landscape.jpg`
+
+**Benefits:**
+- Each team can have themed backsides matching faction colors
+- Optional: teams without custom backsides use defaults
+- Easy to add/remove without script changes
+- Professional look for tournament play
+
+**Documentation:**
+- Added to `script/config/backside/team/README.md`
+- Updated DEVELOPMENT.md with folder structure
+- Complete usage examples and image requirements
