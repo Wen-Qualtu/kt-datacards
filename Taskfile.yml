@@ -111,18 +111,6 @@ tasks:
       - task: pipeline:extract
         vars: {CLI_ARGS: "{{.CLI_ARGS}}"}
 
-  backside:
-    desc: "[Alias] Add backsides"
-    cmds:
-      - task: pipeline:backside
-        vars: {CLI_ARGS: "{{.CLI_ARGS}}"}
-
-  urls:
-    desc: "[Alias] Generate URLs"
-    cmds:
-      - task: pipeline:urls
-        vars: {CLI_ARGS: "{{.CLI_ARGS}}"}
-
   all:
     desc: "[Alias] Run complete pipeline"
     cmds:
@@ -132,28 +120,3 @@ tasks:
     desc: "[Alias] Run tests"
     cmds:
       - task: dev:test
-
-  lint:
-    desc: "[Alias] Run linting"
-    cmds:
-      - task: dev:lint
-
-  format:
-    desc: "[Alias] Format code"
-    cmds:
-      - task: dev:format
-
-  clean:
-    desc: "[Alias] Clean cache"
-    cmds:
-      - task: dev:clean
-
-  info:
-    desc: "[Alias] Show environment info"
-    cmds:
-      - task: setup:info
-
-  shell:
-    desc: "[Alias] Start Poetry shell"
-    cmds:
-      - task: setup:shell
