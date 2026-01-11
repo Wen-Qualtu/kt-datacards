@@ -51,7 +51,7 @@ class DatacardPipeline:
             config_dir / 'card-backside'
         )
         self.url_generator = URLGenerator(output_dir)
-        self.v2_processor = V2OutputProcessor(output_dir, output_dir / 'v2')
+        self.v2_processor = V2OutputProcessor(output_dir, Path('output_v2'))
         
         self.logger = logging.getLogger(__name__)
     
@@ -94,9 +94,9 @@ class DatacardPipeline:
             all_datacards
         )
         
-        # Step 4: Generate URLs CSV
+        # Step 4: Generate URLs JSON
         self.logger.info("Step 4: Generating URLs")
-        stats['urls_generated'] = self.url_generator.generate_csv()
+        stats['urls_generated'] = self.url_generator.generate_json()
         
         # Step 5: Generate V2 output with faction/army hierarchy
         self.logger.info("Step 5: Generating V2 output")
@@ -104,9 +104,9 @@ class DatacardPipeline:
         v2_stats = self.v2_processor.process_all_teams(all_teams)
         stats['v2_files_processed'] = v2_stats['files_processed']
         
-        # Step 6: Generate V2 URLs CSV
+        # Step 6: Generate V2 URLs JSON
         self.logger.info("Step 6: Generating V2 URLs")
-        stats['v2_urls_generated'] = self.v2_processor.generate_v2_urls_csv()
+        stats['v2_urls_generated'] = self.v2_processor.generate_v2_urls_json()
         
         # Step 7: Generate metadata
         self.logger.info("Step 7: Generating metadata")
@@ -285,12 +285,12 @@ class DatacardPipeline:
     
     def generate_urls(self) -> int:
         """
-        Generate URLs CSV
+        Generate URLs JSON
         
         Returns:
-            Number of entries generated
+            Number of URLs generated
         """
-        return self.url_generator.generate_csv()
+        return self.url_generator.generate_json()
     
     def _generate_clean_filename(
         self, 

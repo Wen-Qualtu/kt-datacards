@@ -3,7 +3,7 @@
 Generate output metadata YAML file - Enhanced Version
 
 This script scans the output directory structure and filenames to generate
-metadata. Loads card descriptions from JSON files created during extraction.
+metadata. Loads card descriptions from team_data.json files created during extraction.
 """
 import sys
 from pathlib import Path
@@ -103,7 +103,7 @@ class OutputMetadataGenerator:
     
     def _load_card_descriptions(self, team_slug: str) -> Dict[str, str]:
         """
-        Load card descriptions from JSON file for a team
+        Load card descriptions from team_data.json file for a team
         
         Args:
             team_slug: Team folder name
@@ -114,20 +114,29 @@ class OutputMetadataGenerator:
         if team_slug in self.card_descriptions:
             return self.card_descriptions[team_slug]
         
-        descriptions_file = self.output_dir / team_slug / 'card_descriptions.json'
+        team_data_file = self.output_dir / team_slug / 'team_data.json'
         
-        if not descriptions_file.exists():
-            self.logger.debug(f"No descriptions file found for {team_slug}")
+        if not team_data_file.exists():
+            self.logger.debug(f"No team_data.json file found for {team_slug}")
             self.card_descriptions[team_slug] = {}
             return {}
         
         try:
-            with open(descriptions_file, 'r', encoding='utf-8') as f:
-                descriptions = json.load(f)
+            with open(team_data_file, 'r', encoding='utf-8') as f:
+                team_data = json.load(f)
+                
+                # Convert team_data structure to old format for compatibility
+                # card_types -> { "datacards": { "card-name": { "content": { "description": "..." } } } }
+                descriptions = {}
+                for card_type, cards in team_data.get('card_types', {}).items():
+                    for card_name, card_data in cards.items():
+                        key = f"{card_type}/{card_name}"
+                        descriptions[key] = card_data.get('content', {}).get('description', '')
+                
                 self.card_descriptions[team_slug] = descriptions
                 return descriptions
         except Exception as e:
-            self.logger.warning(f"Could not load descriptions for {team_slug}: {e}")
+            self.logger.warning(f"Could not load team_data for {team_slug}: {e}")
             self.card_descriptions[team_slug] = {}
             return {}
     

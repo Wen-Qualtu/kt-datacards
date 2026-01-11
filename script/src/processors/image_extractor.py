@@ -4,11 +4,13 @@ import re
 import json
 from pathlib import Path
 from typing import Optional, List, Tuple
+from datetime import datetime
 import logging
 
 from ..models.team import Team
 from ..models.card_type import CardType
 from ..models.datacard import Datacard
+from ..managers import TeamDataManager, ExtractionMetadataManager
 
 
 class ImageExtractor:
@@ -60,10 +62,13 @@ class ImageExtractor:
                 card_type
             )
             
+            # Get page count before closing
+            page_count = len(pdf_document)
+            
             pdf_document.close()
             
-            # Save descriptions to JSON file
-            self._save_descriptions(datacards, team)
+            # Save data using new managers
+            self._save_team_data(datacards, team, pdf_path, page_count)
             
         except Exception as e:
             self.logger.error(f"Failed to extract from {pdf_path}: {e}")
@@ -510,49 +515,87 @@ class ImageExtractor:
         
         return text if text else None
     
-    def _save_descriptions(self, datacards: List[Datacard], team: Team):
+    def _save_team_data(self, datacards: List[Datacard], team: Team, pdf_path: Path, page_count: int):
         """
-        Save card descriptions to JSON file
+        Save card data and extraction metadata using new managers
         
         Args:
             datacards: List of datacards with descriptions
             team: Team the cards belong to
+            pdf_path: Path to the source PDF
+            page_count: Number of pages in the PDF
         """
         try:
-            print(f"[DEBUG] _save_descriptions called for {team.name} with {len(datacards)} datacards")
+            print(f"[DEBUG] _save_team_data called for {team.name} with {len(datacards)} cards")
             
-            # Create output directory if it doesn't exist
-            output_dir = Path('output') / team.name
-            output_dir.mkdir(parents=True, exist_ok=True)
+            # Initialize managers (they will load existing data if available)
+            team_data = TeamDataManager(
+                team_name=team.name,
+                team_display_name=team.name.replace('-', ' ').title(),
+                faction=None,  # Could be added from team config if needed
+                army=None  # Could be added from team config if needed
+            )
             
-            # Load existing descriptions if file exists
-            descriptions_file = output_dir / 'card_descriptions.json'
-            descriptions = {}
-            if descriptions_file.exists():
-                with open(descriptions_file, 'r', encoding='utf-8') as f:
-                    descriptions = json.load(f)
+            extraction_meta = ExtractionMetadataManager(
+                team_name=team.name,
+                team_display_name=team.name.replace('-', ' ').title()
+            )
             
-            # Add/update descriptions from current datacards
-            count_with_descriptions = 0
+            print(f"[DEBUG] Managers initialized for {team.name}")
+            
+            # Track PDF processing
+            extraction_meta.add_pdf_processed(
+                pdf_path=str(pdf_path),
+                pages_processed=page_count
+            )
+            
+            # Process each datacard
             for datacard in datacards:
-                if datacard.description:
-                    # Key format: card_type/card_name
-                    key = f"{datacard.card_type.value}/{datacard.card_name}"
-                    descriptions[key] = datacard.description
-                    count_with_descriptions += 1
-                    print(f"[DEBUG] Added description for {key}: {datacard.description[:50]}...")
+                # Prepare content dict - only cleaned/structured data
+                content = {
+                    "description": datacard.description if datacard.description else ""
+                }
+                
+                # Save card data (clean content only)
+                team_data.add_card(
+                    card_type=datacard.card_type.value,
+                    card_name=datacard.card_name,
+                    has_back=datacard.back_image is not None,
+                    content=content
+                )
+                
+                # Save extraction metadata (includes raw full_text)
+                extraction_meta.add_card_metadata(
+                    card_type=datacard.card_type.value,
+                    card_name=datacard.card_name,
+                    page_num=0,  # Page number would need to be tracked in datacard if needed
+                    extraction={
+                        "source_pdf": str(pdf_path),
+                        "extracted_at": datetime.now().isoformat(),
+                        "full_text": datacard.description if datacard.description else "",  # Raw extracted text
+                        "text_extracted": bool(datacard.description),
+                        "name_confidence": "high"  # Could be enhanced to track actual confidence
+                    },
+                    output={
+                        "front_image": str(datacard.front_image) if datacard.front_image else None,
+                        "back_image": str(datacard.back_image) if datacard.back_image else None,
+                        "image_format": "jpg",
+                        "image_dpi": self.dpi
+                    }
+                )
             
-            print(f"[DEBUG] Total cards with descriptions: {count_with_descriptions}")
-            print(f"[DEBUG] Saving to: {descriptions_file}")
+            print(f"[DEBUG] Processed {len(datacards)} cards, now saving...")
             
-            # Save updated descriptions
-            with open(descriptions_file, 'w', encoding='utf-8') as f:
-                json.dump(descriptions, f, indent=2, ensure_ascii=False)
+            # Save both files
+            team_data.save()
+            extraction_meta.save()
             
-            self.logger.info(f"Saved {len(descriptions)} card descriptions for {team.name}")
-            print(f"[DEBUG] Successfully saved {len(descriptions)} descriptions")
+            print(f"[DEBUG] Files saved successfully for {team.name}")
+            self.logger.info(f"Saved team data and metadata for {team.name}")
             
         except Exception as e:
-            self.logger.warning(f"Could not save descriptions for {team.name}: {e}")
-            print(f"[DEBUG] Error saving descriptions: {e}")
+            self.logger.error(f"Could not save team data for {team.name}: {e}")
+            print(f"[DEBUG] Error saving team data: {e}")
+            import traceback
+            traceback.print_exc()
 

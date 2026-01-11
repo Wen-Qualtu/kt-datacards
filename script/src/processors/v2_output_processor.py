@@ -51,6 +51,21 @@ class V2OutputProcessor:
         
         self.logger.info(f"Processing team {team.name} for v2 output")
         
+        # Copy team_data.json to v2 structure
+        team_data_file = v1_team_dir / 'team_data.json'
+        if team_data_file.exists():
+            v2_team_dir = team.get_v2_output_path(self.v2_output_dir)
+            v2_team_dir.mkdir(parents=True, exist_ok=True)
+            v2_team_data_path = v2_team_dir / 'team_data.json'
+            
+            try:
+                shutil.copy2(team_data_file, v2_team_data_path)
+                stats['files_processed'] += 1
+                self.logger.info(f"Copied team_data.json to {v2_team_data_path}")
+            except Exception as e:
+                self.logger.error(f"Error copying team_data.json: {e}")
+                stats['errors'] += 1
+        
         # Process each card type directory
         for card_type_dir in v1_team_dir.iterdir():
             if not card_type_dir.is_dir():
@@ -152,9 +167,9 @@ class V2OutputProcessor:
         # Add team prefix
         return f"{team_name}-{filename}"
     
-    def generate_v2_urls_csv(self, github_base: str = None) -> int:
+    def generate_v2_urls_json(self, github_base: str = None) -> int:
         """
-        Generate URLs CSV for v2 format
+        Generate URLs JSON for v2 format
         
         Args:
             github_base: Base GitHub URL (if None, uses default)
@@ -165,7 +180,7 @@ class V2OutputProcessor:
         if github_base is None:
             github_base = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2"
         
-        import csv
+        import json
         
         entries = []
         
@@ -215,16 +230,11 @@ class V2OutputProcessor:
                                 'url': url
                             })
         
-        # Write CSV
-        csv_path = self.v2_output_dir / 'datacards-urls.csv'
-        with open(csv_path, 'w', newline='', encoding='utf-8') as csvfile:
-            fieldnames = ['faction', 'army', 'team', 'type', 'name', 'url']
-            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-            
-            writer.writeheader()
-            for entry in entries:
-                writer.writerow(entry)
+        # Write JSON
+        json_path = self.v2_output_dir / 'datacards-urls.json'
+        with open(json_path, 'w', encoding='utf-8') as jsonfile:
+            json.dump(entries, jsonfile, indent=2, ensure_ascii=False)
         
-        self.logger.info(f"Generated {csv_path} with {len(entries)} entries")
+        self.logger.info(f"Generated {json_path} with {len(entries)} entries")
         
         return len(entries)

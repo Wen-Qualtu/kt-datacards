@@ -1,12 +1,12 @@
 """URL generation for GitHub raw access"""
-import csv
+import json
 from pathlib import Path
 from typing import List, Dict
 import logging
 
 
 class URLGenerator:
-    """Generates CSV file with URLs for card images"""
+    """Generates JSON file with URLs for card images"""
     
     def __init__(
         self,
@@ -24,26 +24,21 @@ class URLGenerator:
         self.github_base = github_base
         self.logger = logging.getLogger(__name__)
     
-    def generate_csv(self, output_path: Path = Path('output/datacards-urls.csv')) -> int:
+    def generate_json(self, output_path: Path = Path('output/datacards-urls.json')) -> int:
         """
-        Generate CSV file with all card image URLs
+        Generate JSON file with all card image URLs
         
         Args:
-            output_path: Path to output CSV file
+            output_path: Path to output JSON file
             
         Returns:
             Number of entries written
         """
         entries = self._collect_entries()
         
-        # Write CSV
-        with open(output_path, 'w', newline='', encoding='utf-8') as csvfile:
-            fieldnames = ['team', 'type', 'name', 'url']
-            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-            
-            writer.writeheader()
-            for entry in entries:
-                writer.writerow(entry)
+        # Write JSON
+        with open(output_path, 'w', encoding='utf-8') as jsonfile:
+            json.dump(entries, jsonfile, indent=2, ensure_ascii=False)
         
         self.logger.info(f"Generated {output_path} with {len(entries)} entries")
         
