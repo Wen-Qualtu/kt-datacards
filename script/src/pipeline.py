@@ -210,14 +210,28 @@ class DatacardPipeline:
             # Process all PDFs in team directory
             for pdf_file in team_dir.glob('*.pdf'):
                 try:
-                    # Identify card type from filename/content
-                    _, card_type = self.pdf_processor.identify_pdf(pdf_file)
+                    # Extract card type from filename instead of re-analyzing PDF
+                    # Processed PDFs are named: {team}-{card-type}.pdf
+                    # Example: hearthkyn-salvager-datacards.pdf
+                    filename_parts = pdf_file.stem.split('-')
                     
-                    if not card_type:
+                    # Find card type in filename (last part after removing team name)
+                    # Team name might have hyphens, so we need to find the card type suffix
+                    card_type_str = None
+                    for card_type in CardType:
+                        # Check if filename ends with -{card_type_value}
+                        if pdf_file.stem.endswith(f'-{card_type.value}'):
+                            card_type_str = card_type.value
+                            break
+                    
+                    if not card_type_str:
                         self.logger.warning(
-                            f"Could not identify type for {pdf_file.name} in {team_name}"
+                            f"Could not extract card type from filename: {pdf_file.name} in {team_name}"
                         )
                         continue
+                    
+                    # Convert to CardType enum
+                    card_type = CardType(card_type_str)
                     
                     # Extract images
                     datacards = self.image_extractor.extract_from_pdf(
