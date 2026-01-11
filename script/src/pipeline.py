@@ -128,8 +128,13 @@ class DatacardPipeline:
                 
                 if not team or not card_type:
                     self.logger.warning(
-                        f"Could not identify {pdf_file.name}"
+                        f"Could not identify {pdf_file.name} - moving to input/failed"
                     )
+                    # Move to failed directory for manual review
+                    failed_dir = self.input_raw_dir / 'failed'
+                    failed_dir.mkdir(parents=True, exist_ok=True)
+                    import shutil
+                    shutil.move(str(pdf_file), str(failed_dir / pdf_file.name))
                     continue
                 
                 # Move to processed directory
@@ -142,12 +147,21 @@ class DatacardPipeline:
                 )
                 dest_path = dest_dir / clean_name
                 
-                # Copy file
+                # Copy file to processed
                 import shutil
                 shutil.copy2(pdf_file, dest_path)
                 
+                # Move original to archive
+                archive_dir = team.get_archive_path()
+                archive_dir.mkdir(parents=True, exist_ok=True)
+                archive_path = archive_dir / pdf_file.name
+                shutil.move(str(pdf_file), str(archive_path))
+                
                 self.logger.info(
                     f"Processed: {pdf_file.name} → {team.name}/{clean_name}"
+                )
+                self.logger.info(
+                    f"Archived: {pdf_file.name} → archive/{team.name}/"
                 )
                 
                 processed_pdfs.append((dest_path, team, card_type))
@@ -196,14 +210,28 @@ class DatacardPipeline:
             # Process all PDFs in team directory
             for pdf_file in team_dir.glob('*.pdf'):
                 try:
-                    # Identify card type from filename/content
-                    _, card_type = self.pdf_processor.identify_pdf(pdf_file)
+                    # Extract card type from filename instead of re-analyzing PDF
+                    # Processed PDFs are named: {team}-{card-type}.pdf
+                    # Example: hearthkyn-salvager-datacards.pdf
+                    filename_parts = pdf_file.stem.split('-')
                     
-                    if not card_type:
+                    # Find card type in filename (last part after removing team name)
+                    # Team name might have hyphens, so we need to find the card type suffix
+                    card_type_str = None
+                    for card_type in CardType:
+                        # Check if filename ends with -{card_type_value}
+                        if pdf_file.stem.endswith(f'-{card_type.value}'):
+                            card_type_str = card_type.value
+                            break
+                    
+                    if not card_type_str:
                         self.logger.warning(
-                            f"Could not identify type for {pdf_file}"
+                            f"Could not extract card type from filename: {pdf_file.name} in {team_name}"
                         )
                         continue
+                    
+                    # Convert to CardType enum
+                    card_type = CardType(card_type_str)
                     
                     # Extract images
                     datacards = self.image_extractor.extract_from_pdf(
