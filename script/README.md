@@ -55,11 +55,10 @@ script/
 │   ├── utils/              # Utilities (logging, paths)
 │   └── pipeline.py         # Pipeline orchestration
 │
-├── scripts/                # Individual step scripts
-│   ├── process_pdfs.py     # Process raw PDFs
-│   ├── extract_images.py   # Extract card images
-│   ├── add_backsides.py    # Add backside images
-│   └── generate_urls.py    # Generate URLs CSV
+├── process_pdfs.py         # Process raw PDFs
+├── extract_images.py       # Extract card images
+├── add_backsides.py        # Add backside images
+├── generate_urls.py        # Generate URLs CSV
 │
 └── tests/                  # Test scripts
     ├── test_refactored.py  # Validation tests

@@ -140,7 +140,7 @@ kt-datacards/
 
 #### `config/`
 - All configuration files here
-- `team-name-mapping.yaml` for team name normalization
+- `team-config.yaml` for team configuration and metadata
 - `settings.py` for application config (future)
 - `card-backside/default/` for default backside images
 - `card-backside/team/{teamname}/` for custom team backsides
@@ -323,9 +323,9 @@ teams:
 ```
 
 ### Team Metadata Configuration
-The `config/team-name-mapping.yaml` file now includes faction and army metadata:
+The `config/team-config.yaml` file includes faction and army metadata:
 ```yaml
-team_metadata:
+teams:
   hearthkyn-salvagers:
     canonical_name: "Hearthkyn Salvagers"
     faction: "xenos"              # imperium, chaos, or xenos

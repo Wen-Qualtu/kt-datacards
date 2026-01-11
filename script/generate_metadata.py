@@ -44,16 +44,16 @@ class OutputMetadataGenerator:
         self.logger = logging.getLogger(__name__)
         self.team_mapping = self._load_team_mapping()
     
-    def _load_team_mapping(self) -> Dict[str, str]:
-        """Load team name mapping from config"""
-        mapping_file = self.config_dir / 'team-name-mapping.yaml'
+    def _load_team_mapping(self) -> Dict[str, Any]:
+        """Load team configuration from config"""
+        mapping_file = self.config_dir / 'team-config.yaml'
         if not mapping_file.exists():
-            self.logger.warning(f"Team mapping file not found: {mapping_file}")
-            return {}
+            self.logger.warning(f"Team config file not found: {mapping_file}")
+            return {'teams': {}}
         
         with open(mapping_file, 'r', encoding='utf-8') as f:
             data = yaml.safe_load(f)
-            return data.get('team_names', {})
+            return data
     
     def _extract_card_name_from_filename(self, image_path: Path, team_slug: str = None) -> str:
         """
@@ -109,15 +109,34 @@ class OutputMetadataGenerator:
         Returns:
             Canonical team name
         """
-        # Check if this is a mapped name
-        for key, value in self.team_mapping.items():
-            if key == team_slug:
-                return value.replace('-', ' ').title()
-            if value == team_slug:
-                return value.replace('-', ' ').title()
+        # Check teams configuration for canonical name
+        teams_config = self.team_mapping.get('teams', {})
+        if team_slug in teams_config:
+            team_data = teams_config[team_slug]
+            if 'canonical_name' in team_data:
+                return team_data['canonical_name']
         
         # Fallback: convert slug to title case
         return team_slug.replace('-', ' ').title()
+    
+    def _get_team_faction_info(self, team_slug: str) -> tuple[str, str]:
+        """
+        Get faction and army (subfaction) info for a team
+        
+        Args:
+            team_slug: Team folder name
+            
+        Returns:
+            Tuple of (faction, army)
+        """
+        teams_config = self.team_mapping.get('teams', {})
+        if team_slug in teams_config:
+            team_data = teams_config[team_slug]
+            faction = team_data.get('faction', 'Unknown')
+            army = team_data.get('army', 'Unknown')
+            return (faction, army)
+        
+        return ('Unknown', 'Unknown')
     
     def _scan_card_type_folder(self, folder_path: Path, team_slug: str = None) -> Dict[str, Any]:
         """
@@ -172,13 +191,14 @@ class OutputMetadataGenerator:
         """
         team_slug = team_path.name
         canonical_name = self._get_canonical_name(team_slug)
+        faction, army = self._get_team_faction_info(team_slug)
         
         self.logger.info(f"Scanning team: {canonical_name} ({team_slug})")
         
         metadata = {
             'canonical_name': canonical_name,
-            'faction': 'Unknown',  # Could be added to config file manually
-            'subfaction': 'Unknown',
+            'faction': faction,
+            'subfaction': army,
             'last_processed': datetime.now().isoformat(),
             'source_pdfs': []  # Could be tracked in processing phase
         }
@@ -269,6 +289,11 @@ class OutputMetadataGenerator:
                 continue
             
             team_slug = team_path.name
+            
+            # Skip v2 folder (contains hierarchical output)
+            if team_slug == 'v2':
+                continue
+            
             metadata['teams'][team_slug] = self._scan_team_folder(team_path)
         
         self.logger.info(f"Generated metadata for {len(metadata['teams'])} teams")

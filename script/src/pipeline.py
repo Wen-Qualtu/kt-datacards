@@ -43,7 +43,7 @@ class DatacardPipeline:
         
         # Initialize components
         self.team_identifier = TeamIdentifier(
-            config_dir / 'team-name-mapping.yaml'
+            config_dir / 'team-config.yaml'
         )
         self.pdf_processor = PDFProcessor(self.team_identifier)
         self.image_extractor = ImageExtractor(dpi=dpi)

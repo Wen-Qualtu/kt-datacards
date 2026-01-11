@@ -1,53 +1,49 @@
-# Team name mapping for inconsistent naming in source PDFs
-# Maps: detected_name -> canonical_name
-
-team_names:
-  hearthkyn-salvager: hearthkyn-salvagers
-  raveners: ravener
-  angels-of-death: angel-of-death
-  hernkyn-yaegirs: hernkyn-yaegir
-  farstalker-kinband: farstalker
-  wolf-scouts: wolf-scout
-
-# Team metadata including faction and army for v2 output format
+# Team configuration for Kill Team datacards
+# Defines team metadata including faction, army, and name aliases
 # faction: imperium, chaos, xenos
 # army: specific army within the faction
-team_metadata:
+# aliases: list of alternative names detected in source PDFs
+
+teams:
   battleclade:
     canonical_name: "Battleclade"
     faction: "imperium"
     army: "adeptus-mechanicus"
+    aliases: []
   
   deathwatch:
     canonical_name: "Deathwatch"
     faction: "imperium"
     army: "space-marines"
+    aliases: []
   
   exaction-squad:
     canonical_name: "Exaction Squad"
     faction: "imperium"
     army: "arbites"
+    aliases: []
   
   farstalker-kinband:
-    alias: farstalker
     canonical_name: "Farstalker Kinband"
     faction: "xenos"
     army: "T'au Empire"
+    aliases: ["farstalker"]
   
   hearthkyn-salvager:
-    alias: hearthkyn-salvagers
     canonical_name: "Hearthkyn Salvagers"
     faction: "xenos"
     army: "leagues-of-votann"
+    aliases: ["hearthkyn-salvagers"]
   
   wrecka-krew:
     canonical_name: "Wrecka Krew"
     faction: "xenos"
     army: "orks"
+    aliases: []
   
   angels-of-death:
-    alias: angel-of-death
     canonical_name: "Angels of Death"
     faction: "imperium"
     army: "space-marines"
+    aliases: ["angel-of-death"]
   

@@ -15,7 +15,7 @@ class V2OutputProcessor:
     def __init__(
         self,
         v1_output_dir: Path = Path('output'),
-        v2_output_dir: Path = Path('output/v2')
+        v2_output_dir: Path = Path('output_v2')
     ):
         """
         Initialize V2OutputProcessor
@@ -163,7 +163,7 @@ class V2OutputProcessor:
             Number of URLs generated
         """
         if github_base is None:
-            github_base = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/v2"
+            github_base = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2"
         
         import csv
         

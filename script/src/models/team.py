@@ -55,7 +55,7 @@ class Team:
         """Get the output folder for a specific card type"""
         return self.get_output_path(base_dir) / card_type.value
     
-    def get_v2_output_path(self, base_dir: Path = Path("output/v2")) -> Path:
+    def get_v2_output_path(self, base_dir: Path = Path("output_v2")) -> Path:
         """Get the v2 output path with faction/army hierarchy"""
         if self.faction and self.army:
             return base_dir / self.faction / self.army / self.name
@@ -63,7 +63,7 @@ class Team:
             # Fallback to uncategorized if metadata missing
             return base_dir / "uncategorized" / self.name
     
-    def get_v2_output_folder(self, card_type: CardType, base_dir: Path = Path("output/v2")) -> Path:
+    def get_v2_output_folder(self, card_type: CardType, base_dir: Path = Path("output_v2")) -> Path:
         """Get the v2 output folder for a specific card type"""
         # Convert 'operatives' to 'operative-selection' for v2
         folder_name = "operative-selection" if card_type.value == "operatives" else card_type.value

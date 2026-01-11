@@ -72,10 +72,10 @@ output/v2/
 
 ## Faction & Army Configuration
 
-Teams are configured with faction and army metadata in `config/team-name-mapping.yaml`:
+Teams are configured with faction and army metadata in `config/team-config.yaml`:
 
 ```yaml
-team_metadata:
+teams:
   hearthkyn-salvagers:
     canonical_name: "Hearthkyn Salvagers"
     faction: "xenos"                # imperium, chaos, or xenos
@@ -118,13 +118,14 @@ xenos,leagues-of-votann,hearthkyn-salvagers,operative-selection,hearthkyn-salvag
 
 ## Adding New Teams
 
-1. Add team metadata to `config/team-name-mapping.yaml`:
+1. Add team metadata to `config/team-config.yaml`:
    ```yaml
-   team_metadata:
+   teams:
      new-team:
        canonical_name: "New Team"
        faction: "imperium"
        army: "space-marines"
+       aliases: []
    ```
 
 2. Process team through pipeline (both v1 and v2 are generated automatically)
@@ -156,7 +157,7 @@ xenos,leagues-of-votann,hearthkyn-salvagers,operative-selection,hearthkyn-salvag
 ### Team in `uncategorized/` folder
 **Problem**: Team appears under `output/v2/uncategorized/{teamname}/`
 
-**Solution**: Add faction/army metadata to `config/team-name-mapping.yaml`
+**Solution**: Add faction/army metadata to `config/team-config.yaml`
 
 ### Card names missing team prefix
 **Problem**: Some cards in v2 don't have team prefix
