@@ -13,7 +13,8 @@ class Datacard:
         source_pdf: Path,
         team: Team,
         card_type: CardType,
-        card_name: Optional[str] = None
+        card_name: Optional[str] = None,
+        description: Optional[str] = None
     ):
         """
         Initialize a Datacard
@@ -23,11 +24,13 @@ class Datacard:
             team: The team this card belongs to
             card_type: Type of card (datacard, equipment, etc.)
             card_name: Optional name of the card (extracted from PDF)
+            description: Optional description text extracted from the card
         """
         self.source_pdf = source_pdf
         self.team = team
         self.card_type = card_type
         self.card_name = card_name
+        self.description = description
         self._front_image: Optional[Path] = None
         self._back_image: Optional[Path] = None
     

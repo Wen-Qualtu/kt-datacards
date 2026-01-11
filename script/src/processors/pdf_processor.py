@@ -85,8 +85,11 @@ class PDFProcessor:
             if team_name:
                 team = self.team_identifier.identify_team(team_name)
                 if not team:
-                    # Create new team if not found
-                    team = self.team_identifier.get_or_create_team(team_name)
+                    self.logger.error(
+                        f"FAILED: Team '{team_name}' not found in config for {pdf_path.name}. "
+                        f"Add to config/team-config.yaml before processing."
+                    )
+                    return None, None
             
             pdf.close()
             

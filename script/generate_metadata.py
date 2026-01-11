@@ -1,17 +1,18 @@
 #!/usr/bin/env python3
 """
-Generate output metadata YAML file - Simplified Version
+Generate output metadata YAML file - Enhanced Version
 
 This script scans the output directory structure and filenames to generate
-metadata. No OCR required - all information comes from the folder/file structure.
+metadata. Loads card descriptions from JSON files created during extraction.
 """
 import sys
 from pathlib import Path
-from typing import Dict, List, Any
+from typing import Dict, List, Any, Optional
 from datetime import datetime
 import logging
 import yaml
 import re
+import json
 
 
 class OutputMetadataGenerator:
@@ -43,6 +44,7 @@ class OutputMetadataGenerator:
         self.config_dir = Path(config_dir)
         self.logger = logging.getLogger(__name__)
         self.team_mapping = self._load_team_mapping()
+        self.card_descriptions = {}  # Cache for card descriptions
     
     def _load_team_mapping(self) -> Dict[str, Any]:
         """Load team configuration from config"""
@@ -98,6 +100,36 @@ class OutputMetadataGenerator:
         
         # Convert to title case
         return filename_base.replace('-', ' ').title()
+    
+    def _load_card_descriptions(self, team_slug: str) -> Dict[str, str]:
+        """
+        Load card descriptions from JSON file for a team
+        
+        Args:
+            team_slug: Team folder name
+            
+        Returns:
+            Dict mapping card keys (card_type/card_name) to descriptions
+        """
+        if team_slug in self.card_descriptions:
+            return self.card_descriptions[team_slug]
+        
+        descriptions_file = self.output_dir / team_slug / 'card_descriptions.json'
+        
+        if not descriptions_file.exists():
+            self.logger.debug(f"No descriptions file found for {team_slug}")
+            self.card_descriptions[team_slug] = {}
+            return {}
+        
+        try:
+            with open(descriptions_file, 'r', encoding='utf-8') as f:
+                descriptions = json.load(f)
+                self.card_descriptions[team_slug] = descriptions
+                return descriptions
+        except Exception as e:
+            self.logger.warning(f"Could not load descriptions for {team_slug}: {e}")
+            self.card_descriptions[team_slug] = {}
+            return {}
     
     def _get_canonical_name(self, team_slug: str) -> str:
         """
@@ -155,24 +187,33 @@ class OutputMetadataGenerator:
         # Extract card type from folder name
         card_type = folder_path.name
         
-        # Special handling for operative_selection (simplified - no OCR)
+        # Load card descriptions for this team
+        descriptions = self._load_card_descriptions(team_slug) if team_slug else {}
+        
+        # Special handling for operative_selection (simplified)
         if card_type == 'operatives':
             card_names = [self._extract_card_name_from_filename(img, team_slug) for img in front_images]
             return {
-                'total': 0,  # Would need OCR or manual entry for actual total
-                'options': [],  # Would need OCR or manual entry for options
+                'total': 0,  # Would need manual entry for actual total
+                'options': [],  # Would need manual entry for options
                 'notes': f"{len(front_images)} operative selection card(s) - see card files for roster details",
                 'card_count': len(front_images)
             }
         
-        # Regular card type handling
+        # Regular card type handling - load descriptions from JSON
         cards = []
         for front_image in front_images:
             card_name = self._extract_card_name_from_filename(front_image, team_slug)
+            
+            # Get description from JSON file
+            description_key = f"{card_type}/{front_image.stem.replace('_front', '')}"
+            description = descriptions.get(description_key, '...')
+            
             cards.append({
                 'name': card_name,
-                'description': '...'  # Placeholder - would need OCR for actual descriptions
+                'description': description
             })
+        
         
         return {
             'count': len(cards),
@@ -199,8 +240,7 @@ class OutputMetadataGenerator:
             'canonical_name': canonical_name,
             'faction': faction,
             'subfaction': army,
-            'last_processed': datetime.now().isoformat(),
-            'source_pdfs': []  # Could be tracked in processing phase
+            'last_processed': datetime.now().isoformat()
         }
         
         total_cards = 0

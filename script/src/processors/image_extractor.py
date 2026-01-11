@@ -1,6 +1,7 @@
 """Image extraction from PDF pages"""
 import fitz  # PyMuPDF
 import re
+import json
 from pathlib import Path
 from typing import Optional, List, Tuple
 import logging
@@ -42,6 +43,8 @@ class ImageExtractor:
         """
         datacards = []
         
+        print(f"[DEBUG extract_from_pdf] Called for {team.name} - {card_type.value} from {pdf_path}")
+        
         try:
             pdf_document = fitz.open(pdf_path)
             
@@ -58,6 +61,9 @@ class ImageExtractor:
             )
             
             pdf_document.close()
+            
+            # Save descriptions to JSON file
+            self._save_descriptions(datacards, team)
             
         except Exception as e:
             self.logger.error(f"Failed to extract from {pdf_path}: {e}")
@@ -174,25 +180,34 @@ class ImageExtractor:
                 else:
                     card_name = "operatives"
             elif card_type == CardType.FACTION_RULES:
-                # For faction rules, if no name extracted, use counter
+                # For faction rules, if no name extracted, fail
                 if not card_name:
-                    faction_rule_counter += 1
-                    card_name = f"faction-rule-{faction_rule_counter}"
-                    self.logger.warning(
-                        f"Could not extract faction rule name for {pdf_path} page {page_num + 1}, using: {card_name}"
+                    self.logger.error(
+                        f"FAILED: Could not extract faction rule name for {pdf_path} page {page_num + 1}. "
+                        f"Manual review required. Add to config or fix PDF."
                     )
+                    raise ValueError(f"Failed to extract card name for {pdf_path} page {page_num + 1}")
             elif not card_name:
-                self.logger.warning(
-                    f"Could not extract card name for {pdf_path} page {page_num + 1}"
+                self.logger.error(
+                    f"FAILED: Could not extract card name for {pdf_path} page {page_num + 1}. "
+                    f"Card type: {card_type.value}. Manual review required."
                 )
-                card_name = f"{card_type.value}-{page_num + 1}"
+                raise ValueError(f"Failed to extract card name for {pdf_path} page {page_num + 1}")
             
             # Create Datacard object
+            # Extract description from the front page
+            description = self._extract_card_description(
+                pdf_document[page_num],
+                card_name,
+                card_type
+            )
+            
             datacard = Datacard(
                 source_pdf=pdf_path,
                 team=team,
                 card_type=card_type,
-                card_name=card_name
+                card_name=card_name,
+                description=description
             )
             
             # Extract front image
@@ -337,6 +352,10 @@ class ImageExtractor:
                     team.name.replace('-', ' ').lower()
                 ])
             
+            # For operatives, skip "kill team" terms and just use "operatives"
+            if card_type == CardType.OPERATIVES:
+                return "operatives"
+            
             # Look through largest text
             for text, size, y_pos in text_candidates[:20]:
                 text_lower = text.lower()
@@ -373,10 +392,6 @@ class ImageExtractor:
                 if cleaned and len(cleaned) > 4:
                     return cleaned
             
-            # Special cases
-            if card_type == CardType.OPERATIVES:
-                return "operatives"
-            
             # Check for marker guide
             page_text = page.get_text().upper()
             if 'MARKER' in page_text and 'TOKEN' in page_text and 'GUIDE' in page_text:
@@ -386,6 +401,91 @@ class ImageExtractor:
             
         except Exception as e:
             self.logger.warning(f"Could not extract card name: {e}")
+            return None
+    
+    def _extract_card_description(
+        self,
+        page,
+        card_name: str,
+        card_type: CardType
+    ) -> Optional[str]:
+        """
+        Extract description text from card page
+        
+        For ploys and equipment, extracts all text after the card name.
+        For datacards, extracts stats and abilities.
+        
+        Args:
+            page: PyMuPDF page object
+            card_name: Name of the card
+            card_type: Type of card
+            
+        Returns:
+            Extracted description text
+        """
+        try:
+            # Get all text from the page
+            full_text = page.get_text()
+            
+            if not full_text:
+                return None
+            
+            # Clean up the text - remove excessive whitespace
+            lines = full_text.split('\n')
+            cleaned_lines = []
+            
+            # Skip empty lines and normalize spacing
+            for line in lines:
+                line = line.strip()
+                if line:
+                    cleaned_lines.append(line)
+            
+            if not cleaned_lines:
+                return None
+            
+            # For ploys and equipment, extract text after the title
+            if card_type in [CardType.STRATEGY_PLOYS, CardType.FIREFIGHT_PLOYS, CardType.EQUIPMENT]:
+                # Find the title line (usually the first few lines)
+                # Skip the title and take the description
+                description_lines = []
+                title_found = False
+                
+                for i, line in enumerate(cleaned_lines):
+                    # Convert card name to comparable format
+                    card_name_normalized = card_name.replace('-', ' ').upper()
+                    line_normalized = line.upper()
+                    
+                    # Check if this line contains the card title
+                    if not title_found:
+                        # Skip team names, card type headers, etc.
+                        skip_terms = ['STRATEGY PLOY', 'FIREFIGHT PLOY', 'EQUIPMENT', 'FACTION RULE']
+                        if any(term in line_normalized for term in skip_terms):
+                            continue
+                        
+                        # If we find the card name, mark title as found
+                        if card_name_normalized in line_normalized:
+                            title_found = True
+                            continue
+                    else:
+                        # After title, collect description lines
+                        # Stop if we hit common card end markers
+                        if line_normalized in ['FACTION RULES', 'DATACARDS', 'EQUIPMENT']:
+                            break
+                        description_lines.append(line)
+                
+                if description_lines:
+                    return ' '.join(description_lines)
+            
+            # For datacards, just return cleaned text (stats, abilities, etc.)
+            elif card_type == CardType.DATACARDS:
+                # Skip the first few lines (usually title/team name)
+                return ' '.join(cleaned_lines[3:]) if len(cleaned_lines) > 3 else None
+            
+            # For other types, return first substantial text block
+            return ' '.join(cleaned_lines[:10]) if cleaned_lines else None
+            
+        except Exception as e:
+            self.logger.warning(f"Could not extract description for {card_name}: {e}")
             return None
     
     def _clean_filename(self, text: str) -> Optional[str]:
@@ -409,3 +509,50 @@ class ImageExtractor:
         text = text.strip('-')
         
         return text if text else None
+    
+    def _save_descriptions(self, datacards: List[Datacard], team: Team):
+        """
+        Save card descriptions to JSON file
+        
+        Args:
+            datacards: List of datacards with descriptions
+            team: Team the cards belong to
+        """
+        try:
+            print(f"[DEBUG] _save_descriptions called for {team.name} with {len(datacards)} datacards")
+            
+            # Create output directory if it doesn't exist
+            output_dir = Path('output') / team.name
+            output_dir.mkdir(parents=True, exist_ok=True)
+            
+            # Load existing descriptions if file exists
+            descriptions_file = output_dir / 'card_descriptions.json'
+            descriptions = {}
+            if descriptions_file.exists():
+                with open(descriptions_file, 'r', encoding='utf-8') as f:
+                    descriptions = json.load(f)
+            
+            # Add/update descriptions from current datacards
+            count_with_descriptions = 0
+            for datacard in datacards:
+                if datacard.description:
+                    # Key format: card_type/card_name
+                    key = f"{datacard.card_type.value}/{datacard.card_name}"
+                    descriptions[key] = datacard.description
+                    count_with_descriptions += 1
+                    print(f"[DEBUG] Added description for {key}: {datacard.description[:50]}...")
+            
+            print(f"[DEBUG] Total cards with descriptions: {count_with_descriptions}")
+            print(f"[DEBUG] Saving to: {descriptions_file}")
+            
+            # Save updated descriptions
+            with open(descriptions_file, 'w', encoding='utf-8') as f:
+                json.dump(descriptions, f, indent=2, ensure_ascii=False)
+            
+            self.logger.info(f"Saved {len(descriptions)} card descriptions for {team.name}")
+            print(f"[DEBUG] Successfully saved {len(descriptions)} descriptions")
+            
+        except Exception as e:
+            self.logger.warning(f"Could not save descriptions for {team.name}: {e}")
+            print(f"[DEBUG] Error saving descriptions: {e}")
+

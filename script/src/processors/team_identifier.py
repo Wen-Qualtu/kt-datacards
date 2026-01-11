@@ -78,26 +78,25 @@ class TeamIdentifier:
             if team.matches(text):
                 return team
         
-        # If no match found in mapping, create a new team on-the-fly
-        # This handles teams that aren't explicitly mapped
-        self.logger.info(f"Creating unmapped team: {normalized} (from: {text})")
-        team = Team(name=normalized)
-        self.teams[normalized] = team
-        return team
+        # If no match found in mapping, fail explicitly
+        self.logger.error(
+            f"FAILED: Team '{text}' (normalized: '{normalized}') not found in config. "
+            f"Add team to config/team-config.yaml before processing."
+        )
+        return None
     
-    def get_or_create_team(self, name: str) -> Team:
+    def get_or_create_team(self, name: str) -> Optional[Team]:
         """
-        Get existing team or create a new one
+        Get existing team (no longer creates teams)
         
         Args:
             name: Team name
             
         Returns:
-            Team object
+            Team object if found, None otherwise
         """
         team = self.identify_team(name)
-        if team:
-            return team
+        return team
         
         # Create new team
         normalized = Team.normalize_name(name)
