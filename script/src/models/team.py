@@ -11,7 +11,9 @@ class Team:
         self,
         name: str,
         aliases: Optional[List[str]] = None,
-        metadata: Optional[Dict[str, Any]] = None
+        metadata: Optional[Dict[str, Any]] = None,
+        faction: Optional[str] = None,
+        army: Optional[str] = None
     ):
         """
         Initialize a Team
@@ -20,10 +22,14 @@ class Team:
             name: Canonical team name (normalized, lowercase with hyphens)
             aliases: List of alternative names for this team
             metadata: Additional team metadata
+            faction: Faction (imperium, chaos, xenos)
+            army: Army within faction (e.g., space-marines, orks)
         """
         self.name = name
         self.aliases = aliases or []
         self.metadata = metadata or {}
+        self.faction = faction
+        self.army = army
     
     @staticmethod
     def normalize_name(name: str) -> str:
@@ -48,6 +54,20 @@ class Team:
     def get_output_folder(self, card_type: CardType, base_dir: Path = Path("output")) -> Path:
         """Get the output folder for a specific card type"""
         return self.get_output_path(base_dir) / card_type.value
+    
+    def get_v2_output_path(self, base_dir: Path = Path("output/v2")) -> Path:
+        """Get the v2 output path with faction/army hierarchy"""
+        if self.faction and self.army:
+            return base_dir / self.faction / self.army / self.name
+        else:
+            # Fallback to uncategorized if metadata missing
+            return base_dir / "uncategorized" / self.name
+    
+    def get_v2_output_folder(self, card_type: CardType, base_dir: Path = Path("output/v2")) -> Path:
+        """Get the v2 output folder for a specific card type"""
+        # Convert 'operatives' to 'operative-selection' for v2
+        folder_name = "operative-selection" if card_type.value == "operatives" else card_type.value
+        return self.get_v2_output_path(base_dir) / folder_name
     
     def get_archive_path(self, base_dir: Path = Path("archive")) -> Path:
         """Get the archive path for this team"""

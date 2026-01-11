@@ -32,6 +32,7 @@ class TeamIdentifier:
             with open(self.mapping_file, 'r') as f:
                 config = yaml.safe_load(f)
                 team_names = config.get('team_names', {})
+                team_metadata = config.get('team_metadata', {})
                 
                 # team_names format: {canonical_name: detected_variant}
                 # Keys are canonical names, values are variants to map
@@ -45,8 +46,31 @@ class TeamIdentifier:
                 
                 # Create Team objects
                 for canonical, aliases in canonical_to_variants.items():
-                    team = Team(name=canonical, aliases=aliases)
+                    # Get metadata if available
+                    metadata = team_metadata.get(canonical, {})
+                    faction = metadata.get('faction')
+                    army = metadata.get('army')
+                    
+                    team = Team(
+                        name=canonical, 
+                        aliases=aliases,
+                        faction=faction,
+                        army=army,
+                        metadata=metadata
+                    )
                     self.teams[canonical] = team
+                
+                # Add teams from metadata that aren't in team_names
+                for team_key, metadata in team_metadata.items():
+                    team_key_norm = Team.normalize_name(team_key)
+                    if team_key_norm not in self.teams:
+                        team = Team(
+                            name=team_key_norm,
+                            faction=metadata.get('faction'),
+                            army=metadata.get('army'),
+                            metadata=metadata
+                        )
+                        self.teams[team_key_norm] = team
                     
                 self.logger.info(f"Loaded {len(self.teams)} teams from {self.mapping_file}")
         

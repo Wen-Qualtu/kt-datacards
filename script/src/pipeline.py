@@ -10,6 +10,7 @@ from .processors.team_identifier import TeamIdentifier
 from .processors.pdf_processor import PDFProcessor
 from .processors.image_extractor import ImageExtractor
 from .processors.backside_processor import BacksideProcessor
+from .processors.v2_output_processor import V2OutputProcessor
 from .generators.url_generator import URLGenerator
 
 
@@ -50,12 +51,13 @@ class DatacardPipeline:
             config_dir / 'card-backside'
         )
         self.url_generator = URLGenerator(output_dir)
+        self.v2_processor = V2OutputProcessor(output_dir, output_dir / 'v2')
         
         self.logger = logging.getLogger(__name__)
     
     def run_full_pipeline(self) -> dict:
         """
-        Run complete pipeline: process → extract → backsides → URLs
+        Run complete pipeline: process → extract → backsides → URLs → V2
         
         Returns:
             Statistics dictionary
@@ -64,7 +66,9 @@ class DatacardPipeline:
             'pdfs_processed': 0,
             'images_extracted': 0,
             'backsides_added': 0,
-            'urls_generated': 0
+            'urls_generated': 0,
+            'v2_files_processed': 0,
+            'v2_urls_generated': 0
         }
         
         self.logger.info("Starting full pipeline")
@@ -93,6 +97,20 @@ class DatacardPipeline:
         # Step 4: Generate URLs CSV
         self.logger.info("Step 4: Generating URLs")
         stats['urls_generated'] = self.url_generator.generate_csv()
+        
+        # Step 5: Generate V2 output with faction/army hierarchy
+        self.logger.info("Step 5: Generating V2 output")
+        all_teams = self.team_identifier.get_all_teams()
+        v2_stats = self.v2_processor.process_all_teams(all_teams)
+        stats['v2_files_processed'] = v2_stats['files_processed']
+        
+        # Step 6: Generate V2 URLs CSV
+        self.logger.info("Step 6: Generating V2 URLs")
+        stats['v2_urls_generated'] = self.v2_processor.generate_v2_urls_csv()
+        
+        # Step 7: Generate metadata
+        self.logger.info("Step 7: Generating metadata")
+        self.generate_metadata()
         
         self.logger.info("Pipeline complete")
         self._log_stats(stats)
@@ -350,12 +368,26 @@ class DatacardPipeline:
         
         return datacards
     
+    def generate_metadata(self):
+        """Generate metadata YAML file"""
+        import sys
+        sys.path.append(str(Path(__file__).parent.parent))
+        from generate_metadata import OutputMetadataGenerator
+        
+        generator = OutputMetadataGenerator(
+            output_dir=self.output_dir,
+            config_dir=self.config_dir
+        )
+        generator.generate_and_save(output_path=self.output_dir / 'metadata.yaml')
+    
     def _log_stats(self, stats: dict):
         """Log pipeline statistics"""
         self.logger.info("=" * 60)
         self.logger.info("Pipeline Statistics:")
-        self.logger.info(f"  PDFs Processed: {stats['pdfs_processed']}")
-        self.logger.info(f"  Images Extracted: {stats['images_extracted']}")
-        self.logger.info(f"  Backsides Added: {stats['backsides_added']}")
-        self.logger.info(f"  URLs Generated: {stats['urls_generated']}")
+        self.logger.info(f"  PDFs Processed: {stats.get('pdfs_processed', 0)}")
+        self.logger.info(f"  Images Extracted: {stats.get('images_extracted', 0)}")
+        self.logger.info(f"  Backsides Added: {stats.get('backsides_added', 0)}")
+        self.logger.info(f"  URLs Generated: {stats.get('urls_generated', 0)}")
+        self.logger.info(f"  V2 Files Processed: {stats.get('v2_files_processed', 0)}")
+        self.logger.info(f"  V2 URLs Generated: {stats.get('v2_urls_generated', 0)}")
         self.logger.info("=" * 60)

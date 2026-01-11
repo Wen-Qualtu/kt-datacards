@@ -275,7 +275,7 @@ class OutputMetadataGenerator:
         
         return metadata
     
-    def save(self, metadata: Dict[str, Any], output_path: Path = Path('output-metadata.yaml')):
+    def save(self, metadata: Dict[str, Any], output_path: Path = Path('output/metadata.yaml')):
         """
         Save metadata to YAML file
         
@@ -283,12 +283,15 @@ class OutputMetadataGenerator:
             metadata: Metadata dict to save
             output_path: Path to output YAML file
         """
+        # Create parent directory if it doesn't exist
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        
         with open(output_path, 'w', encoding='utf-8') as f:
             yaml.dump(metadata, f, default_flow_style=False, allow_unicode=True, sort_keys=False)
         
         self.logger.info(f"Saved metadata to: {output_path}")
     
-    def generate_and_save(self, output_path: Path = Path('output-metadata.yaml')):
+    def generate_and_save(self, output_path: Path = Path('output/metadata.yaml')):
         """
         Generate and save metadata in one step
         
@@ -311,7 +314,7 @@ def main():
     project_root = Path(__file__).parent.parent
     output_dir = project_root / 'output'
     config_dir = project_root / 'config'
-    output_file = project_root / 'output-metadata.yaml'
+    output_file = project_root / 'output' / 'metadata.yaml'
     
     # Generate metadata
     generator = OutputMetadataGenerator(

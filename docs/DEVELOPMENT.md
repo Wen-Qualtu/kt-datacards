@@ -25,14 +25,6 @@ This pipeline automates the entire workflow:
 - 🎯 **Accuracy over speed** - Wrong card data breaks gameplay
 - 🔄 **Reproducible** - Anyone should be able to run the pipeline and get same results
 
-**Current Status:**
-- ✅ Feature 00: Poetry + Task setup (complete)
-- ✅ Feature 01: Project restructuring (complete)
-- ✅ Feature 02: Code refactoring with clean architecture (complete)
-- 🔴 Feature 03: Enhanced metadata (not started)
-- 🔴 Feature 04: Stats extraction with OCR (not started)
-- 🔴 Feature 05: Parameterized execution (partially complete - CLI exists)
-
 **Tech Stack:**
 - Python 3.11+ with Poetry dependency management
 - PyMuPDF (fitz) for PDF processing
@@ -48,82 +40,27 @@ This pipeline automates the entire workflow:
 
 ---
 
-## 📋 Core Principles
+## 📋 Core Principles```
 
-### 1. **Feature-First Development Workflow**
-**CRITICAL**: All new features must follow this workflow to maintain control and organization:
-
-1. **Create Feature Document First**
-   - Use naming convention: `docs/{XX}-{shortname}.md`
-   - Number sequentially (00, 01, 02, etc.)
-   - Document idea, steps, requirements, and acceptance criteria
-   
-2. **Ask Before Implementation**
-   - After creating the feature document, **STOP**
-   - Ask: "Should we implement this now or later?"
-   - Respect the user's prioritization and workflow preferences
-   
-3. **User Controls the Queue**
-   - User decides which features to tackle and when
-   - Features can be deferred, reordered, or modified
-   - Implementation happens only with explicit approval
-
-4. **Confirm Before Closing**
-   - After completing implementation, **STOP**
-   - Explain what was accomplished and show results
-   - Ask: "Is this sufficient to close the feature?"
-   - Don't immediately suggest moving to the next feature
-   - Wait for user confirmation before marking feature complete
-
-**Example:**
-```
-❌ BAD: "I'll add team-specific backsides" → [implements immediately]
-✅ GOOD: [Creates docs/06-team-backsides.md] → "Feature documented. Implement now or later?"
-
-❌ BAD: [Completes feature] → "Done! Ready for Feature 02?"
-✅ GOOD: [Completes feature] → "Here's what I implemented: [summary]. Is this sufficient to close Feature 00?"
-```
-
-### 2. **Never Break TTS References**
+### 1 **Never Break TTS References**
 **CRITICAL**: The `output/` folder structure is IMMUTABLE. TTS cards reference these exact paths.
 - ✅ DO: Keep `output/{teamname}/{cardtype}/` structure exactly as-is
 - ❌ DON'T: Rename, restructure, or move anything in `output/`
 - 💡 Future: Use `output/v2/` for new structures while keeping `output/` for backwards compatibility
 
-### 3. **Git as Source of Truth**
+### 2. **Git as Source of Truth**
 - All changes are tracked in git
 - No manual version numbers in files
 - Use git history for version tracking
 - Commit frequently with clear messages
 
-### 4. **Feature Branch Workflow**
-**CRITICAL**: No direct commits to main branch
-- ✅ DO: Create a feature branch for each feature
-- ✅ DO: Name branch after the feature (e.g., `feature-03-enhanced-metadata`)
-- ✅ DO: Work on the branch until feature is complete
-- ✅ DO: Merge to main when feature is tested and approved
-- ❌ DON'T: Commit directly to main
-- 💡 Benefits: Multiple features in parallel, easy rollback, cleaner history
-
-**Example workflow:**
-```bash
-git checkout -b feature-03-enhanced-metadata
-# ... work on feature ...
-git add -A
-git commit -m "feat: add faction metadata to teams"
-# ... more commits ...
-git checkout main
-git merge feature-03-enhanced-metadata
-git branch -d feature-03-enhanced-metadata
-```
-
-### 4. **Reproducibility Across Machines**
+### 3. **Reproducibility Across Machines**
 - Use Poetry for dependency management
 - Lock dependencies with `poetry.lock`
 - Use Task for consistent script execution
 - Virtual environments for isolation
 
-### 5. **Quality Over Speed**
+### 4. **Quality Over Speed**
 - Accuracy is paramount (especially for stats extraction)
 - Better to show warnings/errors than wrong data
 - Manual review is acceptable when accuracy is uncertain
@@ -163,6 +100,7 @@ kt-datacards/
 │   ├── run_pipeline.py         # Main entry point
 │   └── README.md               # Script documentation
 └── docs/                       # Feature documentation
+└── dev/                        # One off and check files
 ```
 
 ### Folder Rules
@@ -190,6 +128,15 @@ kt-datacards/
 - Flat team structure: `{teamname}/{cardtype}/`
 - TTS cards reference these exact paths
 - Future: Create `output/v2/` for new structures
+
+#### `output/v2/` 🆕
+- **New hierarchical structure**
+- Organized by faction/army/team: `{faction}/{army}/{teamname}/{cardtype}/`
+- Card type `operatives` renamed to `operative-selection`
+- All card filenames include team prefix
+- Metadata moved to `output/metadata.yaml`
+- Separate URL CSV: `output/v2/datacards-urls.csv`
+- Does not affect legacy `output/` structure
 
 #### `config/`
 - All configuration files here
@@ -370,8 +317,19 @@ teams:
         source_hash: "abc123..."
     paths:
       processed: "processed/xenos/leagues-of-votann/hearthkyn-salvagers"
-      output: "output/hearthkyn-salvagers"  # Keep flat for TTS
+      output: "output/hearthkyn-salvagers"  # Keep flat for TTS (v1)
+      output_v2: "output/v2/xenos/leagues-of-votann/hearthkyn-salvagers"  # v2 hierarchy
       archive: "archive/hearthkyn-salvagers"
+```
+
+### Team Metadata Configuration
+The `config/team-name-mapping.yaml` file now includes faction and army metadata:
+```yaml
+team_metadata:
+  hearthkyn-salvagers:
+    canonical_name: "Hearthkyn Salvagers"
+    faction: "xenos"              # imperium, chaos, or xenos
+    army: "leagues-of-votann"     # Specific army within faction
 ```
 
 ### Factions
@@ -396,6 +354,13 @@ teams:
 team,card_type,card_name,side,url
 kasrkin,datacards,trooper-gunner,front,https://raw.githubusercontent.com/.../kasrkin/datacards/trooper-gunner_front.png
 kasrkin,datacards,trooper-gunner,back,https://raw.githubusercontent.com/.../kasrkin/datacards/trooper-gunner_back.png
+```
+
+### V2 URL CSV Format (Enhanced)
+```csv
+faction,army,team,type,name,url
+imperium,astra-militarum,kasrkin,datacards,kasrkin-trooper-gunner_front,https://raw.githubusercontent.com/.../v2/imperium/astra-militarum/kasrkin/datacards/kasrkin-trooper-gunner_front.jpg
+xenos,leagues-of-votann,hearthkyn-salvagers,operative-selection,hearthkyn-salvagers-operatives_front,https://raw.githubusercontent.com/.../v2/xenos/leagues-of-votann/hearthkyn-salvagers/operative-selection/hearthkyn-salvagers-operatives_front.jpg
 ```
 
 ### Stats YAML Format (Datacards)
@@ -523,16 +488,31 @@ Before committing code, verify:
 - [ ] `output/` structure is unchanged
 - [ ] Works in virtual environment
 - [ ] Formatted with Black
-- [ ] Passes linting
-- [ ] No sensitive data committed
-
----
-
-## 🔮 Future Considerations
-
-### Output v2 Structure
-When ready to implement hierarchical output:
+- [ ] Passes linting ✅ IMPLEMENTED
+The v2 output structure is now implemented with the following features:
 ```
+output/
+├── {teamname}/          # Legacy structure (unchanged - TTS compatible!)
+├── metadata.yaml        # Moved from root to output folder
+└── v2/                  # New hierarchical structure
+    ├── {faction}/
+    │   └── {army}/
+    │       └── {teamname}/
+    │           ├── datacards/
+    │           ├── equipment/
+    │           ├── faction-rules/
+    │           ├── firefight-ploys/
+    │           ├── operative-selection/  # Renamed from "operatives"
+    │           └── strategy-ploys/
+    └── datacards-urls.csv
+```
+
+**V2 Features:**
+- Faction/army hierarchy for better organization
+- Team-prefixed card names for clarity
+- `operatives` → `operative-selection` for consistency
+- Separate metadata and URL files
+- Fully backwards compatible with v1
 output/
 ├── {teamname}/          # Legacy structure (keep!)
 └── v2/                  # New structure
@@ -554,7 +534,7 @@ Future enhancements:
 - Stats comparison between versions
 - Web interface for browsing stats
 
----
+---1
 
 ## 📚 References
 

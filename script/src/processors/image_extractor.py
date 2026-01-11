@@ -113,6 +113,22 @@ class ImageExtractor:
                     if next_name == card_name:
                         has_back = True
                         skip_next_page = True
+            elif card_type == CardType.FACTION_RULES and card_name:
+                # For faction rules, check if next page has no extractable name
+                # (indicating it's a continuation page)
+                if page_num + 1 < len(pdf_document):
+                    next_page = pdf_document[page_num + 1]
+                    next_name = self._extract_card_name(
+                        next_page, 
+                        card_type, 
+                        team
+                    )
+                    # If next page has no name or is marker guide, current card might have back
+                    if not next_name or next_name == 'markertoken-guide':
+                        # Only treat as back if next page isn't a marker guide
+                        if next_name != 'markertoken-guide':
+                            has_back = True
+                            skip_next_page = True
             
             card_pages.append({
                 'page_num': page_num,
@@ -157,9 +173,14 @@ class ImageExtractor:
                     card_name = f"operatives-{operatives_counter}"
                 else:
                     card_name = "operatives"
-            elif card_type == CardType.FACTION_RULES and not card_name:
-                faction_rule_counter += 1
-                card_name = f"faction-rule-{faction_rule_counter}"
+            elif card_type == CardType.FACTION_RULES:
+                # For faction rules, if no name extracted, use counter
+                if not card_name:
+                    faction_rule_counter += 1
+                    card_name = f"faction-rule-{faction_rule_counter}"
+                    self.logger.warning(
+                        f"Could not extract faction rule name for {pdf_path} page {page_num + 1}, using: {card_name}"
+                    )
             elif not card_name:
                 self.logger.warning(
                     f"Could not extract card name for {pdf_path} page {page_num + 1}"
@@ -227,7 +248,7 @@ class ImageExtractor:
         try:
             text_dict = page.get_text("dict")
             
-            # Collect text with sizes
+            # Collect text with sizes and positions
             text_candidates = []
             for block in text_dict["blocks"]:
                 if block["type"] == 0:  # Text block
@@ -235,25 +256,79 @@ class ImageExtractor:
                         for span in line["spans"]:
                             text = span["text"].strip()
                             size = span["size"]
+                            y_pos = span["bbox"][1]  # Top position
                             
                             if len(text) > 3:
-                                text_candidates.append((text, size))
+                                text_candidates.append((text, size, y_pos))
             
             if not text_candidates:
                 return None
             
-            # Sort by size (largest first)
-            text_candidates.sort(key=lambda x: x[1], reverse=True)
+            # Sort by size (largest first), then by position (top to bottom)
+            text_candidates.sort(key=lambda x: (-x[1], x[2]))
             
-            # Define skip terms
+            # Define skip terms (base terms that appear on many cards)
             skip_terms = [
                 'rules continue', 'wounds', 'save', 'move', 'apl',
                 'strategy ploy', 'strategic ploy', 'tactical ploy',
                 'firefight ploy', 'firefight',
                 'faction equipment', 'equipment',
-                'faction rules', 'datacard', 'datacards',
+                'datacard', 'datacards',
                 'hit', 'dmg', 'name', 'atk'
             ]
+            
+            # Special handling for faction rules - skip the header but get the rule name
+            if card_type == CardType.FACTION_RULES:
+                # Look for the rule name which typically appears after "FACTION RULE" header
+                # It's usually the next largest text after team name and "FACTION RULE"
+                faction_rule_found = False
+                for text, size, y_pos in text_candidates[:30]:
+                    text_lower = text.lower()
+                    
+                    # Skip the "FACTION RULE" header itself
+                    if 'faction rule' in text_lower:
+                        faction_rule_found = True
+                        continue
+                    
+                    # Skip team name
+                    text_normalized = text_lower.replace(' ', '').replace('-', '')
+                    team_normalized = team.name.lower().replace(' ', '').replace('-', '')
+                    if text_normalized == team_normalized:
+                        continue
+                    
+                    # Skip if too short or too long
+                    if len(text) < 5 or len(text) > 60:
+                        continue
+                    
+                    # Skip common terms
+                    if any(skip in text_lower for skip in skip_terms):
+                        continue
+                    
+                    # Skip rule text indicators
+                    if ':' in text or '(' in text or ')' in text:
+                        continue
+                    
+                    # If we've seen "FACTION RULE" header and this is reasonable text, use it
+                    if faction_rule_found and size > 8:
+                        cleaned = self._clean_filename(text)
+                        if cleaned and len(cleaned) > 4:
+                            return cleaned
+                    
+                    # Even without seeing header, if text is large enough and looks like title
+                    if size > 10:
+                        cleaned = self._clean_filename(text)
+                        if cleaned and len(cleaned) > 4:
+                            return cleaned
+                
+                # Fallback: check for marker guide
+                page_text = page.get_text().upper()
+                if 'MARKER' in page_text and 'TOKEN' in page_text and 'GUIDE' in page_text:
+                    return "markertoken-guide"
+                
+                return None
+            
+            # Don't skip "faction rules" for non-faction-rule card types
+            skip_terms.append('faction rules')
             
             # Add team name to skip for non-datacards
             if card_type != CardType.DATACARDS:
@@ -263,7 +338,7 @@ class ImageExtractor:
                 ])
             
             # Look through largest text
-            for text, size in text_candidates[:20]:
+            for text, size, y_pos in text_candidates[:20]:
                 text_lower = text.lower()
                 
                 # Length checks
@@ -280,10 +355,13 @@ class ImageExtractor:
                 if any(skip in text_lower for skip in skip_terms):
                     continue
                 
-                # Size thresholds
+                # Size thresholds (more lenient for faction rules)
                 if card_type == CardType.DATACARDS and size < 10:
                     continue
-                elif card_type != CardType.DATACARDS and size < 7:
+                elif card_type == CardType.FACTION_RULES and size < 5:
+                    # Allow smaller text for faction rules as rule names can vary
+                    continue
+                elif card_type != CardType.DATACARDS and card_type != CardType.FACTION_RULES and size < 7:
                     continue
                 
                 # Skip rule text indicators
