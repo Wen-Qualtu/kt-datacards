@@ -1,33 +1,114 @@
-# KT Datacards Extractor
+# Datacard Processing Scripts
 
-This project extracts individual pages from PDF files and saves them as JPG images for use in game applications.
+This directory contains the refactored Kill Team datacard processing pipeline.
 
-## Setup
+## Quick Start
 
-1. Install Python dependencies:
+### Full Pipeline
+Process everything from raw PDFs to TTS-ready URLs:
 ```bash
-pip install -r requirements.txt
+poetry run python script/run_pipeline.py
 ```
 
-## Usage
-
-1. Place your PDF files in the `input/<team-name>` folder (e.g., `input/salvagers`)
-2. Run the extraction script:
+### Individual Steps
+Run specific pipeline steps:
 ```bash
-python extract_pages.py
+# Process raw PDFs
+poetry run python script/run_pipeline.py --step process
+
+# Extract images
+poetry run python script/run_pipeline.py --step extract
+
+# Add backsides
+poetry run python script/run_pipeline.py --step backsides
+
+# Generate URLs
+poetry run python script/run_pipeline.py --step urls
 ```
-3. The extracted JPG images will be saved in `output/<team-name>` folder
 
-## Output Format
+### Options
+```bash
+# Filter by teams
+poetry run python script/run_pipeline.py --teams kasrkin blooded
 
-Each page is saved with the naming convention:
-`<pdf-filename>_page_<page-number>.jpg`
+# Custom DPI
+poetry run python script/run_pipeline.py --dpi 600
 
-For example:
-- `salvagers-datacards_page_001.jpg`
-- `salvagers-datacards_page_002.jpg`
-- `salvagers-equipment_page_001.jpg`
+# Verbose logging
+poetry run python script/run_pipeline.py -v
 
-## Configuration
+# Log to file
+poetry run python script/run_pipeline.py --log-file pipeline.log
+```
 
-You can adjust the DPI (resolution) in the script by modifying the `dpi` parameter in the `extract_pdf_pages_to_jpg()` function. Default is 300 DPI.
+## Directory Structure
+
+```
+script/
+├── run_pipeline.py         # Main entry point
+├── README.md               # This file
+│
+├── src/                    # Source code
+│   ├── models/             # Data models (Team, CardType, Datacard)
+│   ├── processors/         # Processing logic (PDF, image, backside)
+│   ├── generators/         # Output generation (URLs)
+│   ├── utils/              # Utilities (logging, paths)
+│   └── pipeline.py         # Pipeline orchestration
+│
+├── scripts/                # Individual step scripts
+│   ├── process_pdfs.py     # Process raw PDFs
+│   ├── extract_images.py   # Extract card images
+│   ├── add_backsides.py    # Add backside images
+│   └── generate_urls.py    # Generate URLs CSV
+│
+└── tests/                  # Test scripts
+    ├── test_refactored.py  # Validation tests
+    └── check_pdf.py        # PDF content checker
+```
+
+## Architecture
+
+### Directory Structure
+The pipeline uses clear separation between input and configuration:
+- `input/` - Recursively processes all PDFs (root and any subdirectories)
+- `config/` - Static configuration files (team mappings, custom backsides)
+
+This allows flexible organization of source PDFs in `input/_raw/`, `input/team-name/`, etc.
+
+### Models
+- **Team** - Kill Team faction with name normalization and path management
+- **CardType** - Enum for card types (datacards, equipment, etc.)
+- **Datacard** - Individual card linking PDF source to output images
+
+### Processors
+- **TeamIdentifier** - Team name resolution from YAML mapping
+- **PDFProcessor** - PDF identification (filename + content analysis)
+- **ImageExtractor** - Card image extraction with front/back detection
+- **BacksideProcessor** - Backside image management (team-specific → default)
+
+### Generators
+- **URLGenerator** - GitHub raw URL CSV generation for TTS
+
+### Pipeline
+- **DatacardPipeline** - Main orchestrator coordinating all components
+
+## Key Features
+
+✅ **Clean Architecture** - Proper separation of concerns  
+✅ **Type Safety** - Type hints throughout  
+✅ **Error Handling** - Comprehensive logging and error recovery  
+✅ **Extensibility** - Easy to add new card types or processors  
+✅ **Maintainability** - Self-documenting code with clear module boundaries  
+
+## Testing
+
+Run validation tests:
+```bash
+poetry run python script/tests/test_refactored.py
+```
+
+## Documentation
+
+For detailed development rules and guidelines, see:
+- [docs/DEVELOPMENT.md](../docs/DEVELOPMENT.md) - Development rules
+- [FEATURE-02-COMPLETION-REPORT.md](../FEATURE-02-COMPLETION-REPORT.md) - Implementation details
