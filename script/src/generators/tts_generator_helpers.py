@@ -198,7 +198,7 @@ def create_deck(deck_nickname, team_tag, cards_data, starting_deck_id=1000):
     }
 
 
-def create_bag(team_name, team_tag, contained_objects, lua_script):
+def create_bag(team_name, team_tag, contained_objects, lua_script, texture_url=None):
     """Create a TTS Custom_Model_Bag containing decks and cards"""
     
     # Get team name from tag (remove leading underscore and convert to lowercase with hyphens)
@@ -209,21 +209,24 @@ def create_bag(team_name, team_tag, contained_objects, lua_script):
     team_box_dir = config_dir / "teams" / team_folder_name / "box"
     default_box_dir = config_dir / "defaults" / "box"
     
-    # Check if team-specific box exists
+    # Mesh always uses file:// URL to local config
     team_mesh = team_box_dir / "card-box.obj"
-    team_texture = team_box_dir / "card-box-texture.jpg"
-    
-    if team_mesh.exists() and team_texture.exists():
+    if team_mesh.exists():
         mesh_path = team_mesh.resolve()
-        texture_path = team_texture.resolve()
     else:
-        # Fall back to default
         mesh_path = (default_box_dir / "card-box.obj").resolve()
-        texture_path = (default_box_dir / "card-box-texture.jpg").resolve()
     
-    # Convert to file:// URLs for TTS
     mesh_url = mesh_path.as_uri()
-    texture_url = texture_path.as_uri()
+    
+    # Texture URL comes from parameter (GitHub URL) if provided, otherwise fallback to local file://
+    if not texture_url:
+        # Fallback: use local file path (for backwards compatibility)
+        team_texture = team_box_dir / "card-box-texture.jpg"
+        if team_texture.exists():
+            texture_path = team_texture.resolve()
+        else:
+            texture_path = (default_box_dir / "card-box-texture.jpg").resolve()
+        texture_url = texture_path.as_uri()
     
     # Create LuaScriptState with positions for each contained object
     memory_list = {}

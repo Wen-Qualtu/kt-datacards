@@ -10,6 +10,7 @@ from .processors.team_identifier import TeamIdentifier
 from .processors.pdf_processor import PDFProcessor
 from .processors.image_extractor import ImageExtractor
 from .processors.backside_processor import BacksideProcessor
+from .processors.box_texture_processor import BoxTextureProcessor
 from .processors.v2_output_processor import V2OutputProcessor
 
 
@@ -49,6 +50,10 @@ class DatacardPipeline:
         self.backside_processor = BacksideProcessor(
             config_dir
         )
+        self.box_texture_processor = BoxTextureProcessor(
+            config_dir,
+            output_v2_dir
+        )
         self.v2_processor = V2OutputProcessor(output_v2_dir)
         
         self.logger = logging.getLogger(__name__)
@@ -64,6 +69,7 @@ class DatacardPipeline:
             'pdfs_processed': 0,
             'images_extracted': 0,
             'backsides_added': 0,
+            'box_textures_processed': 0,
             'v2_urls_generated': 0
         }
         
@@ -98,6 +104,11 @@ class DatacardPipeline:
         stats['backsides_added'] = self.backside_processor.add_backsides(
             all_datacards
         )
+        
+        # Step 3.5: Process box textures
+        self.logger.info("Step 3.5: Processing box textures")
+        teams = self.team_identifier.get_all_teams()
+        stats['box_textures_processed'] = self.box_texture_processor.process_box_textures(teams)
         
         # Step 4: Generate V2 URLs JSON
         self.logger.info("Step 4: Generating V2 URLs")
