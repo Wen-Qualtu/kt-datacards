@@ -167,12 +167,14 @@ class PDFProcessor:
         text_items.sort(key=lambda x: x[0])
         lines_by_position = [text for _, text in text_items]
         
-        # Try datacards first (metadata at bottom)
-        all_text = page.get_text()
-        all_lines = [line.strip() for line in all_text.split('\n') if line.strip()]
-        team_from_metadata = self._extract_team_from_datacard_metadata(all_lines)
-        if team_from_metadata:
-            return team_from_metadata
+        # For datacards, try metadata at bottom first
+        # For other card types, use standard structure (top lines)
+        if card_type == CardType.DATACARDS:
+            all_text = page.get_text()
+            all_lines = [line.strip() for line in all_text.split('\n') if line.strip()]
+            team_from_metadata = self._extract_team_from_datacard_metadata(all_lines)
+            if team_from_metadata:
+                return team_from_metadata
         
         # Try standard card structure (ploys/equipment/rules/operatives)
         return self._extract_team_from_standard_structure(lines_by_position)

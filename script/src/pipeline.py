@@ -113,6 +113,10 @@ class DatacardPipeline:
         )
         stats['tts_objects_generated'] = tts_generator.generate_all_tts_objects()
         
+        # Step 5.5: Validate card counts
+        self.logger.info("Step 5.5: Validating card counts")
+        self._validate_card_counts()
+        
         # Step 6: Generate metadata
         self.logger.info("Step 6: Generating metadata")
         if self.output_v2_dir.exists():
@@ -429,6 +433,73 @@ class DatacardPipeline:
         )
         generator.generate_and_save(output_path=self.output_v2_dir / 'metadata.yaml')
     
+    def _validate_card_counts(self):
+        """Validate card counts for each team and warn about missing cards"""
+        import json
+        
+        urls_file = self.output_v2_dir / "datacards-urls.json"
+        if not urls_file.exists():
+            return
+        
+        with open(urls_file, 'r', encoding='utf-8') as f:
+            all_cards = json.load(f)
+        
+        # Group by team and type
+        from collections import defaultdict
+        teams = defaultdict(lambda: defaultdict(int))
+        for card in all_cards:
+            # Count unique cards (divide by 2 since we have front+back)
+            teams[card['team']][card['type']] += 1
+        
+        # Expected counts (most teams follow this pattern)
+        expected = {
+            'datacards': 6,  # Varies widely (6-13)
+            'equipment': 4,
+            'strategy-ploys': 4,
+            'firefight-ploys': 4,
+            'operative-selection': 1,
+            'faction-rules': 2,  # Varies (2-4, or 16+ for special cases)
+        }
+        
+        issues = []
+        for team_name in sorted(teams.keys()):
+            team_cards = teams[team_name]
+            # Divide by 2 since each card has front+back
+            actual_counts = {k: v // 2 for k, v in team_cards.items()}
+            
+            # Check for missing standard card types
+            if 'equipment' not in actual_counts:
+                issues.append(f"⚠️  {team_name}: Missing equipment cards")
+            elif actual_counts['equipment'] != expected['equipment']:
+                issues.append(f"⚠️  {team_name}: Has {actual_counts['equipment']} equipment cards (expected {expected['equipment']})")
+            
+            if 'strategy-ploys' not in actual_counts:
+                issues.append(f"⚠️  {team_name}: Missing strategy-ploys")
+            elif actual_counts['strategy-ploys'] != expected['strategy-ploys']:
+                issues.append(f"⚠️  {team_name}: Has {actual_counts['strategy-ploys']} strategy-ploys (expected {expected['strategy-ploys']})")
+            
+            if 'firefight-ploys' not in actual_counts:
+                issues.append(f"⚠️  {team_name}: Missing firefight-ploys")
+            elif actual_counts['firefight-ploys'] != expected['firefight-ploys']:
+                issues.append(f"⚠️  {team_name}: Has {actual_counts['firefight-ploys']} firefight-ploys (expected {expected['firefight-ploys']})")
+            
+            if 'operative-selection' not in actual_counts:
+                issues.append(f"⚠️  {team_name}: Missing operative-selection")
+            
+            if 'datacards' not in actual_counts:
+                issues.append(f"⚠️  {team_name}: Missing datacards")
+            elif actual_counts['datacards'] < 4:
+                issues.append(f"⚠️  {team_name}: Only has {actual_counts['datacards']} datacards (seems low)")
+        
+        if issues:
+            self.logger.warning("=" * 60)
+            self.logger.warning("Card count validation issues:")
+            for issue in issues:
+                self.logger.warning(f"  {issue}")
+            self.logger.warning("=" * 60)
+        else:
+            self.logger.info("✓ All teams have expected card counts")
+    
     def _log_stats(self, stats: dict):
         """Log pipeline statistics"""
         self.logger.info("=" * 60)
@@ -437,4 +508,5 @@ class DatacardPipeline:
         self.logger.info(f"  Images Extracted: {stats.get('images_extracted', 0)}")
         self.logger.info(f"  Backsides Added: {stats.get('backsides_added', 0)}")
         self.logger.info(f"  V2 URLs Generated: {stats.get('v2_urls_generated', 0)}")
+        self.logger.info(f"  TTS Objects Generated: {stats.get('tts_objects_generated', 0)}")
         self.logger.info("=" * 60)
