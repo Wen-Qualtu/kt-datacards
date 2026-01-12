@@ -16,14 +16,16 @@ from ..managers import TeamDataManager, ExtractionMetadataManager
 class ImageExtractor:
     """Extracts card images from PDFs"""
     
-    def __init__(self, dpi: int = 300):
+    def __init__(self, dpi: int = 300, output_v2_dir: Path = Path('output_v2')):
         """
         Initialize ImageExtractor
         
         Args:
-            dpi: Resolution for output images
+            dpi: Image resolution
+            output_v2_dir: V2 output directory with faction/army structure
         """
         self.dpi = dpi
+        self.output_v2_dir = output_v2_dir
         self.logger = logging.getLogger(__name__)
     
     def extract_from_pdf(
@@ -553,8 +555,8 @@ class ImageExtractor:
             team_data = TeamDataManager(
                 team_name=team.name,
                 team_display_name=team.name.replace('-', ' ').title(),
-                faction=None,  # Could be added from team config if needed
-                army=None  # Could be added from team config if needed
+                faction=team.faction,
+                army=team.army
             )
             
             extraction_meta = ExtractionMetadataManager(

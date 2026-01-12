@@ -11,7 +11,6 @@ from .processors.pdf_processor import PDFProcessor
 from .processors.image_extractor import ImageExtractor
 from .processors.backside_processor import BacksideProcessor
 from .processors.v2_output_processor import V2OutputProcessor
-from .generators.url_generator import URLGenerator
 
 
 class DatacardPipeline:
@@ -21,7 +20,7 @@ class DatacardPipeline:
         self,
         input_raw_dir: Path = Path('input'),
         processed_dir: Path = Path('processed'),
-        output_dir: Path = Path('output'),
+        output_v2_dir: Path = Path('output_v2'),
         config_dir: Path = Path('config'),
         dpi: int = 300
     ):
@@ -31,13 +30,13 @@ class DatacardPipeline:
         Args:
             input_raw_dir: Directory with raw PDF files (searches recursively)
             processed_dir: Directory for organized PDFs
-            output_dir: Directory for extracted images
+            output_v2_dir: Directory for extracted images with V2 structure
             config_dir: Configuration directory
             dpi: Image resolution
         """
         self.input_raw_dir = input_raw_dir
         self.processed_dir = processed_dir
-        self.output_dir = output_dir
+        self.output_v2_dir = output_v2_dir
         self.config_dir = config_dir
         self.dpi = dpi
         
@@ -46,12 +45,11 @@ class DatacardPipeline:
             config_dir / 'team-config.yaml'
         )
         self.pdf_processor = PDFProcessor(self.team_identifier)
-        self.image_extractor = ImageExtractor(dpi=dpi)
+        self.image_extractor = ImageExtractor(dpi=dpi, output_v2_dir=output_v2_dir)
         self.backside_processor = BacksideProcessor(
             config_dir / 'card-backside'
         )
-        self.url_generator = URLGenerator(output_dir)
-        self.v2_processor = V2OutputProcessor(output_dir, Path('output_v2'))
+        self.v2_processor = V2OutputProcessor(output_v2_dir)
         
         self.logger = logging.getLogger(__name__)
     
@@ -66,8 +64,6 @@ class DatacardPipeline:
             'pdfs_processed': 0,
             'images_extracted': 0,
             'backsides_added': 0,
-            'urls_generated': 0,
-            'v2_files_processed': 0,
             'v2_urls_generated': 0
         }
         
@@ -78,8 +74,17 @@ class DatacardPipeline:
         processed_pdfs = self.process_raw_pdfs()
         stats['pdfs_processed'] = len(processed_pdfs)
         
-        # Step 2: Extract images from processed PDFs
-        self.logger.info("Step 2: Extracting images")
+        # If no raw PDFs were processed, look for existing processed PDFs
+        if not processed_pdfs:
+            self.logger.info("No raw PDFs found, looking for existing processed PDFs")
+            processed_pdfs = self._find_processed_pdfs()
+            if processed_pdfs:
+                self.logger.info(f"Found {len(processed_pdfs)} existing processed PDFs")
+            else:
+                self.logger.warning("No processed PDFs found")
+        
+        # Step 2: Extract images from processed PDFs directly to V2 structure
+        self.logger.info("Step 2: Extracting images to V2 structure")
         all_datacards = []
         for pdf_path, team, card_type in processed_pdfs:
             datacards = self.image_extractor.extract_from_pdf(
@@ -94,23 +99,16 @@ class DatacardPipeline:
             all_datacards
         )
         
-        # Step 4: Generate URLs JSON
-        self.logger.info("Step 4: Generating URLs")
-        stats['urls_generated'] = self.url_generator.generate_json()
-        
-        # Step 5: Generate V2 output with faction/army hierarchy
-        self.logger.info("Step 5: Generating V2 output")
-        all_teams = self.team_identifier.get_all_teams()
-        v2_stats = self.v2_processor.process_all_teams(all_teams)
-        stats['v2_files_processed'] = v2_stats['files_processed']
-        
-        # Step 6: Generate V2 URLs JSON
-        self.logger.info("Step 6: Generating V2 URLs")
+        # Step 4: Generate V2 URLs JSON
+        self.logger.info("Step 4: Generating V2 URLs")
         stats['v2_urls_generated'] = self.v2_processor.generate_v2_urls_json()
         
-        # Step 7: Generate metadata
-        self.logger.info("Step 7: Generating metadata")
-        self.generate_metadata()
+        # Step 5: Generate metadata
+        self.logger.info("Step 5: Generating metadata")
+        if self.output_v2_dir.exists():
+            self.generate_metadata()
+        else:
+            self.logger.warning("Skipping metadata generation - no output files found")
         
         self.logger.info("Pipeline complete")
         self._log_stats(stats)
@@ -188,6 +186,47 @@ class DatacardPipeline:
                 self.logger.error(
                     f"Failed to process {pdf_file.name}: {e}"
                 )
+        
+        return processed_pdfs
+    
+    def _find_processed_pdfs(self) -> List[tuple]:
+        """
+        Find and identify existing processed PDFs
+        
+        Returns:
+            List of (pdf_path, team, card_type) tuples
+        """
+        processed_pdfs = []
+        
+        if not self.processed_dir.exists():
+            return processed_pdfs
+        
+        # Iterate through team directories
+        for team_dir in sorted(self.processed_dir.iterdir()):
+            if not team_dir.is_dir():
+                continue
+            
+            # Get team from directory name
+            team = self.team_identifier.get_or_create_team(team_dir.name)
+            if not team:
+                self.logger.warning(f"Unknown team directory: {team_dir.name}")
+                continue
+            
+            # Find all PDFs in this team directory
+            for pdf_file in sorted(team_dir.glob('*.pdf')):
+                # Parse card type from filename: team-name-cardtype.pdf
+                # Remove team name prefix and .pdf suffix
+                filename_lower = pdf_file.stem.lower()
+                team_prefix = f"{team.name}-"
+                if filename_lower.startswith(team_prefix):
+                    card_type_str = filename_lower[len(team_prefix):]
+                    try:
+                        card_type = CardType.from_string(card_type_str)
+                        processed_pdfs.append((pdf_file, team, card_type))
+                    except ValueError:
+                        self.logger.warning(f"Could not identify card type for {pdf_file.name}")
+                else:
+                    self.logger.warning(f"Unexpected filename format: {pdf_file.name}")
         
         return processed_pdfs
     
@@ -375,10 +414,10 @@ class DatacardPipeline:
         from generate_metadata import OutputMetadataGenerator
         
         generator = OutputMetadataGenerator(
-            output_dir=self.output_dir,
+            output_dir=self.output_v2_dir,
             config_dir=self.config_dir
         )
-        generator.generate_and_save(output_path=self.output_dir / 'metadata.yaml')
+        generator.generate_and_save(output_path=self.output_v2_dir / 'metadata.yaml')
     
     def _log_stats(self, stats: dict):
         """Log pipeline statistics"""
@@ -387,7 +426,5 @@ class DatacardPipeline:
         self.logger.info(f"  PDFs Processed: {stats.get('pdfs_processed', 0)}")
         self.logger.info(f"  Images Extracted: {stats.get('images_extracted', 0)}")
         self.logger.info(f"  Backsides Added: {stats.get('backsides_added', 0)}")
-        self.logger.info(f"  URLs Generated: {stats.get('urls_generated', 0)}")
-        self.logger.info(f"  V2 Files Processed: {stats.get('v2_files_processed', 0)}")
         self.logger.info(f"  V2 URLs Generated: {stats.get('v2_urls_generated', 0)}")
         self.logger.info("=" * 60)

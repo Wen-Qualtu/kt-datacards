@@ -47,13 +47,13 @@ class Team:
         """Get the path for processed PDFs for this team"""
         return base_dir / self.name
     
-    def get_output_path(self, base_dir: Path = Path("output")) -> Path:
-        """Get the base output path for this team"""
-        return base_dir / self.name
+    def get_output_path(self, base_dir: Path = Path("output_v2")) -> Path:
+        """Get the base output path for this team (V2 structure)"""
+        return self.get_v2_output_path(base_dir)
     
-    def get_output_folder(self, card_type: CardType, base_dir: Path = Path("output")) -> Path:
-        """Get the output folder for a specific card type"""
-        return self.get_output_path(base_dir) / card_type.value
+    def get_output_folder(self, card_type: CardType, base_dir: Path = Path("output_v2")) -> Path:
+        """Get the output folder for a specific card type (V2 structure)"""
+        return self.get_v2_output_path(base_dir) / card_type.value
     
     def get_v2_output_path(self, base_dir: Path = Path("output_v2")) -> Path:
         """Get the v2 output path with faction/army hierarchy"""

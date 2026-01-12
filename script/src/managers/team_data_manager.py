@@ -21,7 +21,12 @@ class TeamDataManager:
             army: Army name
         """
         self.team_name = team_name
-        self.data_file = Path(f"output/{team_name}/team_data.json")
+        # Use V2 structure: output_v2/faction/army/team_name/team_data.json
+        if faction and army:
+            self.data_file = Path(f"output_v2/{faction}/{army}/{team_name}/team_data.json")
+        else:
+            # Fallback for when faction/army not provided during init
+            self.data_file = Path(f"output_v2/{team_name}/team_data.json")
         self.logger = logging.getLogger(__name__)
         self.data = self._load_or_create()
         

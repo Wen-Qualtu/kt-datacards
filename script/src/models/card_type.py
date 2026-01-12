@@ -8,7 +8,7 @@ class CardType(Enum):
     EQUIPMENT = "equipment"
     FACTION_RULES = "faction-rules"
     FIREFIGHT_PLOYS = "firefight-ploys"
-    OPERATIVES = "operatives"
+    OPERATIVES = "operative-selection"
     STRATEGY_PLOYS = "strategy-ploys"
     
     @classmethod

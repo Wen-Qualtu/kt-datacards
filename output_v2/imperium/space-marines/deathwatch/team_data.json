@@ -1,7 +1,9 @@
 {
   "team": {
     "name": "deathwatch",
-    "display_name": "Deathwatch"
+    "display_name": "Deathwatch",
+    "faction": "imperium",
+    "army": "space-marines"
   },
   "card_types": {
     "datacards": {
@@ -128,6 +130,32 @@
         }
       }
     },
+    "faction-rules": {
+      "veteran-astartes": {
+        "card_name": "veteran-astartes",
+        "display_name": "Veteran Astartes",
+        "has_back": false,
+        "content": {
+          "description": "DEATHWATCH FACTION RULE VETERAN ASTARTES These genetically modified superhumans are made to wage unending war. Their skills have been honed over long years of battle and further refined with specialist knowledge through their Long Vigil. During each friendly DEATHWATCH  operative’s activation, it can perform either two Shoot actions or two Fight actions. If it’s two Shoot"
+        }
+      },
+      "special-issue-ammunition": {
+        "card_name": "special-issue-ammunition",
+        "display_name": "Special Issue Ammunition",
+        "has_back": false,
+        "content": {
+          "description": "DEATHWATCH FACTION RULE SPECIAL ISSUE AMMUNITION The Deathwatch utilise a range of specialised ammunition in many of their weapons. Each type is designed to eliminate specific xenos foes. Once per turning point, when a friendly DEATHWATCH  operative is performing the Shoot action, in the Select Weapon step, you can use this rule. If you do, select one of the"
+        }
+      },
+      "markertoken-guide": {
+        "card_name": "markertoken-guide",
+        "display_name": "Markertoken Guide",
+        "has_back": false,
+        "content": {
+          "description": "DEATHWATCH MARKER/TOKEN GUIDE Ammunition Reserve token Digital Weapons token Scrutavore Servo-Thrall token Vigilant Marksman token Advanced"
+        }
+      }
+    },
     "firefight-ploys": {
       "suffer-not-the-alien": {
         "card_name": "suffer-not-the-alien",
@@ -162,29 +190,13 @@
         }
       }
     },
-    "faction-rules": {
-      "veteran-astartes": {
-        "card_name": "veteran-astartes",
-        "display_name": "Veteran Astartes",
+    "operative-selection": {
+      "operatives": {
+        "card_name": "operatives",
+        "display_name": "Operatives",
         "has_back": false,
         "content": {
-          "description": "DEATHWATCH FACTION RULE VETERAN ASTARTES These genetically modified superhumans are made to wage unending war. Their skills have been honed over long years of battle and further refined with specialist knowledge through their Long Vigil. During each friendly DEATHWATCH  operative’s activation, it can perform either two Shoot actions or two Fight actions. If it’s two Shoot"
-        }
-      },
-      "special-issue-ammunition": {
-        "card_name": "special-issue-ammunition",
-        "display_name": "Special Issue Ammunition",
-        "has_back": false,
-        "content": {
-          "description": "DEATHWATCH FACTION RULE SPECIAL ISSUE AMMUNITION The Deathwatch utilise a range of specialised ammunition in many of their weapons. Each type is designed to eliminate specific xenos foes. Once per turning point, when a friendly DEATHWATCH  operative is performing the Shoot action, in the Select Weapon step, you can use this rule. If you do, select one of the"
-        }
-      },
-      "markertoken-guide": {
-        "card_name": "markertoken-guide",
-        "display_name": "Markertoken Guide",
-        "has_back": false,
-        "content": {
-          "description": "DEATHWATCH MARKER/TOKEN GUIDE Ammunition Reserve token Digital Weapons token Scrutavore Servo-Thrall token Vigilant Marksman token Advanced"
+          "description": "DEATHWATCH KILL TEAM ARCHETYPES: SEEK & DESTROY, SECURITY OPERATIVES ↘\u0007 5 DEATHWATCH  operatives selected from the following list: •\t \u0007WATCH SERGEANT •\t \u0007AEGIS •\t \u0007BLADEMASTER •\t \u0007BOMBARD"
         }
       }
     },
@@ -221,27 +233,17 @@
           "description": "Space Marines possess extraordinary courage and are utterly unflinching in the face of terrifying horrors and overwhelming odds. You can ignore any changes to the stats of friendly DEATHWATCH  operatives from being injured (including their weapons’ stats)."
         }
       }
-    },
-    "operatives": {
-      "operatives": {
-        "card_name": "operatives",
-        "display_name": "Operatives",
-        "has_back": false,
-        "content": {
-          "description": "DEATHWATCH KILL TEAM ARCHETYPES: SEEK & DESTROY, SECURITY OPERATIVES ↘\u0007 5 DEATHWATCH  operatives selected from the following list: •\t \u0007WATCH SERGEANT •\t \u0007AEGIS •\t \u0007BLADEMASTER •\t \u0007BOMBARD"
-        }
-      }
     }
   },
   "processing_summary": {
-    "total_cards": 27,
+    "total_cards": 28,
     "by_type": {
       "datacards": 11,
       "equipment": 4,
-      "firefight-ploys": 4,
       "faction-rules": 3,
-      "strategy-ploys": 4,
-      "operatives": 1
+      "firefight-ploys": 4,
+      "operative-selection": 2,
+      "strategy-ploys": 4
     }
   }
 }

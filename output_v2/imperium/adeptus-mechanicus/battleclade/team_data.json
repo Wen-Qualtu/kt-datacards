@@ -1,43 +1,11 @@
 {
   "team": {
     "name": "battleclade",
-    "display_name": "Battleclade"
+    "display_name": "Battleclade",
+    "faction": "imperium",
+    "army": "adeptus-mechanicus"
   },
   "card_types": {
-    "strategy-ploys": {
-      "noospheric-possession": {
-        "card_name": "noospheric-possession",
-        "display_name": "Noospheric Possession",
-        "has_back": false,
-        "content": {
-          "description": "By broadcasting portions of their neural architecture into their thralls, sometimes via a well-positioned relay, manipulative Servitor Underseers effectively possess their tools to better direct the Omnissiah’s wrath. SUPPORT. Whenever a friendly BATTLECLADE SERVITOR operative is within 6\" of a friendly BATTLECLADE  AUTO-PROXY or BATTLECLADE SERVITOR UNDERSEER operative, that friendly SERVITOR operative’s weapons have the Accurate 1 weapon rule. For the purposes of the Comms Device universal equipment, the operative the distance is being determined from must control that marker."
-        }
-      },
-      "duty-of-reclamation": {
-        "card_name": "duty-of-reclamation",
-        "display_name": "Duty Of Reclamation",
-        "has_back": false,
-        "content": {
-          "description": "Embedded in Battleclade operatives are lurking strands of enhanced binharic doctrine. These instructions await the moment to activate, triggered by the proximity of a Tech-Priest’s designated prize. Once per action, you can use the Command Re- roll firefight ploy for 0CP if the attack or defence dice was rolled for a friendly BATTLECLADE operative that contests an objective marker or one of your mission markers."
-        }
-      },
-      "incantation-of-the-iron-soul": {
-        "card_name": "incantation-of-the-iron-soul",
-        "display_name": "Incantation Of The Iron Soul",
-        "has_back": false,
-        "content": {
-          "description": "Through chanted binharic praise from the Tech-Priests, or sparked by holy subroutines, microactuators lock into bracing positions and reserve power cells are brought online. The flesh may be weak, but the sacred invulnerability of the Machine God’s augmetic blessings is evident to all. Whenever an attack dice inflicts damage of 3 or more on a friendly BATTLECLADE  operative, roll one D6: on a 5+, subtract 1 from that inflicted damage."
-        }
-      },
-      "prioritised-acquisition": {
-        "card_name": "prioritised-acquisition",
-        "display_name": "Prioritised Acquisition",
-        "has_back": false,
-        "content": {
-          "description": "Acquisition is a holy task to a Technoarcheologist, and their zealous fanaticism bleeds into their binharic instructions. Faced with the sacrilege of thieves, aggression protocols are initiated and biochemical stimulants are released in their thralls, endowing all with a measure of their master’s repugnance. Select one objective marker or one of your mission markers. •\t \u0007Whenever determining control of that marker, treat the total APL stat of friendly BATTLECLADE  operatives that contest it as 1 higher if at least one friendly BATTLECLADE operative contests that marker. Note this isn’t a change to the APL stat, so any changes are cumulative with this. •\t \u0007Whenever a friendly BATTLECLADE  operative is within 3\" of that marker, add 1 to the Atk stat of its melee weapons (to a maximum of 4)."
-        }
-      }
-    },
     "datacards": {
       "battleclade-technoarcheologist": {
         "card_name": "battleclade-technoarcheologist",
@@ -130,16 +98,6 @@
         }
       }
     },
-    "operatives": {
-      "operatives": {
-        "card_name": "operatives",
-        "display_name": "Operatives",
-        "has_back": true,
-        "content": {
-          "description": "BATTLECLADE KILL TEAM ARCHETYPES: INFILTRATION, RECON OPERATIVES ↘\u00071 BATTLECLADE  TECHNOARCHEOLOGIST operative ↘\u00071 BATTLECLADE  SERVITOR UNDERSEER operative ↘\u00078 BATTLECLADE  operatives selected from the following list: •\t \u0007AUTO-PROXY SERVITOR"
-        }
-      }
-    },
     "faction-rules": {
       "noospheric-network": {
         "card_name": "noospheric-network",
@@ -191,17 +149,61 @@
           "description": "Deeply woven into each thrall’s cybernetic programming is the instinct to bodily shield their masters should they be threatened. Use this firefight ploy when a friendly BATTLECLADE  TECH-PRIEST operative is selected as the valid target of a Shoot action or to fight against during the Fight action. Select one friendly BATTLECLADE  SERVITOR operative visible to and within 3\" of that first friendly operative to become the valid target or to be fought against (as appropriate) instead (even if it wouldn’t normally be valid for this). If it’s the Fight action, treat that SERVITOR operative as being within the fighting operative’s control range for the duration of that action. If it’s the Shoot action, that SERVITOR operative is only in cover or obscured if the original target was. This ploy has no effect if it’s the Shoot action and the ranged weapon has the Blast or Torrent weapon rule."
         }
       }
+    },
+    "operative-selection": {
+      "operatives": {
+        "card_name": "operatives",
+        "display_name": "Operatives",
+        "has_back": true,
+        "content": {
+          "description": "BATTLECLADE KILL TEAM ARCHETYPES: INFILTRATION, RECON OPERATIVES ↘\u00071 BATTLECLADE  TECHNOARCHEOLOGIST operative ↘\u00071 BATTLECLADE  SERVITOR UNDERSEER operative ↘\u00078 BATTLECLADE  operatives selected from the following list: •\t \u0007AUTO-PROXY SERVITOR"
+        }
+      }
+    },
+    "strategy-ploys": {
+      "noospheric-possession": {
+        "card_name": "noospheric-possession",
+        "display_name": "Noospheric Possession",
+        "has_back": false,
+        "content": {
+          "description": "By broadcasting portions of their neural architecture into their thralls, sometimes via a well-positioned relay, manipulative Servitor Underseers effectively possess their tools to better direct the Omnissiah’s wrath. SUPPORT. Whenever a friendly BATTLECLADE SERVITOR operative is within 6\" of a friendly BATTLECLADE  AUTO-PROXY or BATTLECLADE SERVITOR UNDERSEER operative, that friendly SERVITOR operative’s weapons have the Accurate 1 weapon rule. For the purposes of the Comms Device universal equipment, the operative the distance is being determined from must control that marker."
+        }
+      },
+      "duty-of-reclamation": {
+        "card_name": "duty-of-reclamation",
+        "display_name": "Duty Of Reclamation",
+        "has_back": false,
+        "content": {
+          "description": "Embedded in Battleclade operatives are lurking strands of enhanced binharic doctrine. These instructions await the moment to activate, triggered by the proximity of a Tech-Priest’s designated prize. Once per action, you can use the Command Re- roll firefight ploy for 0CP if the attack or defence dice was rolled for a friendly BATTLECLADE operative that contests an objective marker or one of your mission markers."
+        }
+      },
+      "incantation-of-the-iron-soul": {
+        "card_name": "incantation-of-the-iron-soul",
+        "display_name": "Incantation Of The Iron Soul",
+        "has_back": false,
+        "content": {
+          "description": "Through chanted binharic praise from the Tech-Priests, or sparked by holy subroutines, microactuators lock into bracing positions and reserve power cells are brought online. The flesh may be weak, but the sacred invulnerability of the Machine God’s augmetic blessings is evident to all. Whenever an attack dice inflicts damage of 3 or more on a friendly BATTLECLADE  operative, roll one D6: on a 5+, subtract 1 from that inflicted damage."
+        }
+      },
+      "prioritised-acquisition": {
+        "card_name": "prioritised-acquisition",
+        "display_name": "Prioritised Acquisition",
+        "has_back": false,
+        "content": {
+          "description": "Acquisition is a holy task to a Technoarcheologist, and their zealous fanaticism bleeds into their binharic instructions. Faced with the sacrilege of thieves, aggression protocols are initiated and biochemical stimulants are released in their thralls, endowing all with a measure of their master’s repugnance. Select one objective marker or one of your mission markers. •\t \u0007Whenever determining control of that marker, treat the total APL stat of friendly BATTLECLADE  operatives that contest it as 1 higher if at least one friendly BATTLECLADE operative contests that marker. Note this isn’t a change to the APL stat, so any changes are cumulative with this. •\t \u0007Whenever a friendly BATTLECLADE  operative is within 3\" of that marker, add 1 to the Atk stat of its melee weapons (to a maximum of 4)."
+        }
+      }
     }
   },
   "processing_summary": {
-    "total_cards": 22,
+    "total_cards": 23,
     "by_type": {
-      "strategy-ploys": 4,
       "datacards": 7,
       "equipment": 4,
-      "operatives": 1,
       "faction-rules": 2,
-      "firefight-ploys": 4
+      "firefight-ploys": 4,
+      "operative-selection": 2,
+      "strategy-ploys": 4
     }
   }
 }

@@ -1,43 +1,11 @@
 {
   "team": {
     "name": "wolf-scouts",
-    "display_name": "Wolf Scouts"
+    "display_name": "Wolf Scouts",
+    "faction": "imperium",
+    "army": "space-marines"
   },
   "card_types": {
-    "equipment": {
-      "frost-weapons": {
-        "card_name": "frost-weapons",
-        "display_name": "Frost Weapons",
-        "has_back": false,
-        "content": {
-          "description": "These blisteringly cold weapons are crafted by a master Iron Priest and boast lethal edges. Some incorporate ice kraken fangs while others are shards of energised diamond, appearing as if forged from purest ice. Friendly WOLF SCOUT  operatives’ combat blades have the Lethal 5+ weapon rule, and one friendly WOLF SCOUT  PACK LEADER operative’s power weapon has the Lethal 4+ weapon rule (if any)."
-        }
-      },
-      "runic-charms": {
-        "card_name": "runic-charms",
-        "display_name": "Runic Charms",
-        "has_back": false,
-        "content": {
-          "description": "Many pieces of a warrior’s wargear are artfully inscribed with runes, but only the enigmatic Rune Priests know the secrets of etching these more potent charms, which the Space Wolves believe can ward their very souls. Once per turning point, when an operative is shooting a friendly WOLF SCOUT  operative (excluding FENRISIAN WOLF), at the start of the Roll Defence Dice step, you can use this rule. If you do, worsen the x of the Piercing weapon rule by 1 (if any) until the end of that sequence. Note that Piercing 1 would therefore be ignored."
-        }
-      },
-      "wolfteeth-necklaces": {
-        "card_name": "wolfteeth-necklaces",
-        "display_name": "Wolfteeth Necklaces",
-        "has_back": false,
-        "content": {
-          "description": "The right to wear one of these fetishes may be earned in the contests of might held in the Chapter’s fortress monastery: the Fang. They recognise the bearer’s martial skill, and their capacity to draw upon great reserves of genetically augmented strength and perseverance. Once per turning point, when a friendly WOLF SCOUT  operative (excluding FENRISIAN WOLF) is shooting, fighting or retaliating, if you roll two or more fails, you can discard one of them to retain another as a normal success instead."
-        }
-      },
-      "talismanic-trophies": {
-        "card_name": "talismanic-trophies",
-        "display_name": "Talismanic Trophies",
-        "has_back": false,
-        "content": {
-          "description": "Thick pelts, skulls and tails adorn these sons of Russ. These trophies – taken from huge lupine beasts they have tracked and killed on Fenris – are seen as potent tokens of luck and protection against malign attacks. Whenever a friendly WOLF SCOUT  operative (excluding FENRISIAN WOLF) is fighting or retaliating, in the Resolve Attack Dice step, you can subtract 1 from the damage inflicted on it from one success."
-        }
-      }
-    },
     "datacards": {
       "wolf-scout-pack-leader": {
         "card_name": "wolf-scout-pack-leader",
@@ -104,6 +72,66 @@
         }
       }
     },
+    "equipment": {
+      "frost-weapons": {
+        "card_name": "frost-weapons",
+        "display_name": "Frost Weapons",
+        "has_back": false,
+        "content": {
+          "description": "These blisteringly cold weapons are crafted by a master Iron Priest and boast lethal edges. Some incorporate ice kraken fangs while others are shards of energised diamond, appearing as if forged from purest ice. Friendly WOLF SCOUT  operatives’ combat blades have the Lethal 5+ weapon rule, and one friendly WOLF SCOUT  PACK LEADER operative’s power weapon has the Lethal 4+ weapon rule (if any)."
+        }
+      },
+      "runic-charms": {
+        "card_name": "runic-charms",
+        "display_name": "Runic Charms",
+        "has_back": false,
+        "content": {
+          "description": "Many pieces of a warrior’s wargear are artfully inscribed with runes, but only the enigmatic Rune Priests know the secrets of etching these more potent charms, which the Space Wolves believe can ward their very souls. Once per turning point, when an operative is shooting a friendly WOLF SCOUT  operative (excluding FENRISIAN WOLF), at the start of the Roll Defence Dice step, you can use this rule. If you do, worsen the x of the Piercing weapon rule by 1 (if any) until the end of that sequence. Note that Piercing 1 would therefore be ignored."
+        }
+      },
+      "wolfteeth-necklaces": {
+        "card_name": "wolfteeth-necklaces",
+        "display_name": "Wolfteeth Necklaces",
+        "has_back": false,
+        "content": {
+          "description": "The right to wear one of these fetishes may be earned in the contests of might held in the Chapter’s fortress monastery: the Fang. They recognise the bearer’s martial skill, and their capacity to draw upon great reserves of genetically augmented strength and perseverance. Once per turning point, when a friendly WOLF SCOUT  operative (excluding FENRISIAN WOLF) is shooting, fighting or retaliating, if you roll two or more fails, you can discard one of them to retain another as a normal success instead."
+        }
+      },
+      "talismanic-trophies": {
+        "card_name": "talismanic-trophies",
+        "display_name": "Talismanic Trophies",
+        "has_back": false,
+        "content": {
+          "description": "Thick pelts, skulls and tails adorn these sons of Russ. These trophies – taken from huge lupine beasts they have tracked and killed on Fenris – are seen as potent tokens of luck and protection against malign attacks. Whenever a friendly WOLF SCOUT  operative (excluding FENRISIAN WOLF) is fighting or retaliating, in the Resolve Attack Dice step, you can subtract 1 from the damage inflicted on it from one success."
+        }
+      }
+    },
+    "faction-rules": {
+      "elemental-storm": {
+        "card_name": "elemental-storm",
+        "display_name": "Elemental Storm",
+        "has_back": false,
+        "content": {
+          "description": "WOLF SCOUT FACTION RULE ELEMENTAL STORM It is said by some battle-brothers that their Chapter’s Wolf Scouts take the storm with them. In many cases, these tempestuous upheavals truly are supernatural, called into being by accompanying Rune Priest Skjalds. At other times, Wolf Scouts skilfully time their hunts to coincide with local atmospheric phenomena or instigate them with arcane technologies. Wolf Scouts can operate"
+        }
+      },
+      "hunting-astartes": {
+        "card_name": "hunting-astartes",
+        "display_name": "Hunting Astartes",
+        "has_back": false,
+        "content": {
+          "description": "WOLF SCOUT FACTION RULE HUNTING ASTARTES Wolf Scouts are experienced Space Marines who are utterly lethal on the hunt. These genetically modified superhumans are merciless warriors capable of exploiting strange climatic events to conceal their approach. During each friendly WOLF SCOUT  operative’s activation, it can perform either two Shoot actions"
+        }
+      },
+      "markertoken-guide": {
+        "card_name": "markertoken-guide",
+        "display_name": "Markertoken Guide",
+        "has_back": false,
+        "content": {
+          "description": "MARKER/TOKEN GUIDE WOLF SCOUT Runic Charms token Wolfteeth Necklaces token Storm marker Cast the Runes"
+        }
+      }
+    },
     "firefight-ploys": {
       "acute-senses": {
         "card_name": "acute-senses",
@@ -135,6 +163,16 @@
         "has_back": false,
         "content": {
           "description": "The genetically modified physiology of the Space Wolves is capable of resisting wounds that would kill a lesser being. Use this firefight ploy when an operative is shooting a friendly WOLF SCOUT  operative (excluding FENRISIAN WOLF), in the Roll Defence Dice step. You can retain one of your normal successes as a critical success instead."
+        }
+      }
+    },
+    "operative-selection": {
+      "operatives": {
+        "card_name": "operatives",
+        "display_name": "Operatives",
+        "has_back": false,
+        "content": {
+          "description": "WOLF SCOUTS KILL TEAM ARCHETYPES: RECON, SEEK & DESTROY OPERATIVES ↘\u0007 1 WOLF SCOUT  FENRISIAN WOLF ↘\u0007 5 WOLF SCOUT  operatives selected from the following list: •\t \u0007PACK LEADER •\t \u0007FANGBEARER •\t \u0007FROSTEYE"
         }
       }
     },
@@ -171,53 +209,17 @@
           "description": "Once their prey have been cornered, the Wolf Scouts savagely sustain the pressure, ensuring no opportunity is missed to weaken their quarry. Whenever a friendly WOLF SCOUT  operative finishes fighting or retaliating, if it wasn’t incapacitated, you can inflict D3+1 damage on the enemy operative in that sequence."
         }
       }
-    },
-    "faction-rules": {
-      "elemental-storm": {
-        "card_name": "elemental-storm",
-        "display_name": "Elemental Storm",
-        "has_back": false,
-        "content": {
-          "description": "WOLF SCOUT FACTION RULE ELEMENTAL STORM It is said by some battle-brothers that their Chapter’s Wolf Scouts take the storm with them. In many cases, these tempestuous upheavals truly are supernatural, called into being by accompanying Rune Priest Skjalds. At other times, Wolf Scouts skilfully time their hunts to coincide with local atmospheric phenomena or instigate them with arcane technologies. Wolf Scouts can operate"
-        }
-      },
-      "hunting-astartes": {
-        "card_name": "hunting-astartes",
-        "display_name": "Hunting Astartes",
-        "has_back": false,
-        "content": {
-          "description": "WOLF SCOUT FACTION RULE HUNTING ASTARTES Wolf Scouts are experienced Space Marines who are utterly lethal on the hunt. These genetically modified superhumans are merciless warriors capable of exploiting strange climatic events to conceal their approach. During each friendly WOLF SCOUT  operative’s activation, it can perform either two Shoot actions"
-        }
-      },
-      "markertoken-guide": {
-        "card_name": "markertoken-guide",
-        "display_name": "Markertoken Guide",
-        "has_back": false,
-        "content": {
-          "description": "MARKER/TOKEN GUIDE WOLF SCOUT Runic Charms token Wolfteeth Necklaces token Storm marker Cast the Runes"
-        }
-      }
-    },
-    "operatives": {
-      "operatives": {
-        "card_name": "operatives",
-        "display_name": "Operatives",
-        "has_back": false,
-        "content": {
-          "description": "WOLF SCOUTS KILL TEAM ARCHETYPES: RECON, SEEK & DESTROY OPERATIVES ↘\u0007 1 WOLF SCOUT  FENRISIAN WOLF ↘\u0007 5 WOLF SCOUT  operatives selected from the following list: •\t \u0007PACK LEADER •\t \u0007FANGBEARER •\t \u0007FROSTEYE"
-        }
-      }
     }
   },
   "processing_summary": {
-    "total_cards": 48,
+    "total_cards": 25,
     "by_type": {
-      "equipment": 8,
-      "datacards": 16,
-      "firefight-ploys": 8,
-      "strategy-ploys": 8,
-      "faction-rules": 6,
-      "operatives": 2
+      "datacards": 8,
+      "equipment": 4,
+      "faction-rules": 3,
+      "firefight-ploys": 4,
+      "operative-selection": 2,
+      "strategy-ploys": 4
     }
   }
 }

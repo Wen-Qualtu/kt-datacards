@@ -54,21 +54,29 @@ class Datacard:
         """Set the path to the back image"""
         self._back_image = path
     
-    def get_output_folder(self, base_dir: Path = Path("output")) -> Path:
-        """Get the output folder for this datacard"""
+    def get_output_folder(self, base_dir: Path = Path("output_v2")) -> Path:
+        """Get the output folder for this datacard (V2 structure)"""
         return self.team.get_output_folder(self.card_type, base_dir)
     
     def get_expected_front_filename(self) -> str:
-        """Get the expected filename for the front image"""
+        """Get the expected filename for the front image (V2 with team prefix)"""
         if self.card_name:
-            return f"{self.card_name}_front.jpg"
-        return f"{self.source_pdf.stem}_front.jpg"
+            # Add team prefix if not already present
+            card_name = self.card_name
+            if not card_name.lower().startswith(self.team.name.lower()):
+                card_name = f"{self.team.name}-{card_name}"
+            return f"{card_name}_front.jpg"
+        return f"{self.team.name}-{self.source_pdf.stem}_front.jpg"
     
     def get_expected_back_filename(self) -> str:
-        """Get the expected filename for the back image"""
+        """Get the expected filename for the back image (V2 with team prefix)"""
         if self.card_name:
-            return f"{self.card_name}_back.jpg"
-        return f"{self.source_pdf.stem}_back.jpg"
+            # Add team prefix if not already present
+            card_name = self.card_name
+            if not card_name.lower().startswith(self.team.name.lower()):
+                card_name = f"{self.team.name}-{card_name}"
+            return f"{card_name}_back.jpg"
+        return f"{self.team.name}-{self.source_pdf.stem}_back.jpg"
     
     def has_images(self) -> bool:
         """Check if both front and back images exist"""
