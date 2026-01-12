@@ -103,8 +103,18 @@ class DatacardPipeline:
         self.logger.info("Step 4: Generating V2 URLs")
         stats['v2_urls_generated'] = self.v2_processor.generate_v2_urls_json()
         
-        # Step 5: Generate metadata
-        self.logger.info("Step 5: Generating metadata")
+        # Step 5: Generate TTS objects
+        self.logger.info("Step 5: Generating TTS objects")
+        from .generators.tts_generator import TTSGenerator
+        tts_generator = TTSGenerator(
+            output_v2_dir=self.output_v2_dir,
+            tts_output_dir=self.output_v2_dir.parent / 'tts_objects',
+            config_dir=self.config_dir
+        )
+        stats['tts_objects_generated'] = tts_generator.generate_all_tts_objects()
+        
+        # Step 6: Generate metadata
+        self.logger.info("Step 6: Generating metadata")
         if self.output_v2_dir.exists():
             self.generate_metadata()
         else:
