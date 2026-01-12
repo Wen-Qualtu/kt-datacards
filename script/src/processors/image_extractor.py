@@ -88,6 +88,7 @@ class ImageExtractor:
         skip_next_page = False
         last_faction_rule_name = None
         faction_rule_counter = {}
+        options_on_own_cards_mode = False  # Special mode for option cards
         
         for page_num in range(len(pdf_document)):
             if skip_next_page:
@@ -96,6 +97,7 @@ class ImageExtractor:
             
             page = pdf_document[page_num]
             text = page.get_text().upper()
+            text_normalized = ' '.join(text.split())  # Remove all whitespace/newlines and replace with single space
             
             # Check for continuation markers
             has_continuation = any(marker in text for marker in [
@@ -104,6 +106,10 @@ class ImageExtractor:
                 'RULES CONTINUE ON OTHER SIDE'
             ])
             
+            # Check for special "options on their own cards" pattern
+            if card_type == CardType.FACTION_RULES and ('GIFT OPTIONS ARE PRESENTED ON THEIR OWN CARDS' in text_normalized or 'ORDERS OPTIONS ARE PRESENTED ON THEIR OWN CARDS' in text_normalized):
+                options_on_own_cards_mode = True
+            
             # Extract card name
             card_name = self._extract_card_name(
                 page, 
@@ -111,8 +117,29 @@ class ImageExtractor:
                 team
             )
             
+            # For faction rules with "options on own cards", number subsequent pages
+            if card_type == CardType.FACTION_RULES and options_on_own_cards_mode:
+                if not card_name and last_faction_rule_name:
+                    # No name extracted - this is an option card
+                    base_name = last_faction_rule_name
+                    if base_name not in faction_rule_counter:
+                        faction_rule_counter[base_name] = 2  # Start at 2 for first option
+                    else:
+                        faction_rule_counter[base_name] += 1
+                    card_name = f"{base_name}_{faction_rule_counter[base_name]}"
+                elif card_name and card_name == last_faction_rule_name:
+                    # Same name as previous - this is an option card variant
+                    base_name = card_name
+                    if base_name not in faction_rule_counter:
+                        faction_rule_counter[base_name] = 2  # Start at 2 for first option
+                    else:
+                        faction_rule_counter[base_name] += 1
+                    card_name = f"{base_name}_{faction_rule_counter[base_name]}"
+                elif card_name:
+                    # New named card found - track it
+                    last_faction_rule_name = card_name
             # For faction rules, if no name extracted, reuse previous card name with suffix
-            if card_type == CardType.FACTION_RULES and not card_name and last_faction_rule_name:
+            elif card_type == CardType.FACTION_RULES and not card_name and last_faction_rule_name:
                 base_name = last_faction_rule_name
                 if base_name not in faction_rule_counter:
                     faction_rule_counter[base_name] = 2  # Start at 2 for first continuation
@@ -141,8 +168,8 @@ class ImageExtractor:
                     if next_name == card_name:
                         has_back = True
                         skip_next_page = True
-            elif card_type == CardType.FACTION_RULES and card_name:
-                # For faction rules, check if next page has same name or no name (continuation)
+            elif card_type == CardType.FACTION_RULES and card_name and not options_on_own_cards_mode:
+                # For faction rules (not in options mode), check if next page has same name or no name (continuation)
                 if page_num + 1 < len(pdf_document):
                     next_page = pdf_document[page_num + 1]
                     next_name = self._extract_card_name(
@@ -158,6 +185,7 @@ class ImageExtractor:
                     elif not next_name:
                         has_back = True
                         skip_next_page = True
+            # In options_on_own_cards_mode, each page is a separate front-only card
             
             card_pages.append({
                 'page_num': page_num,
