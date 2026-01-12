@@ -334,18 +334,29 @@ function click_update_rules()
     return
   end
   
-  broadcastToAll("Updating rules... Please wait and do NOT click other buttons.", {1, 1, 0})
+  broadcastToAll("Updating rules and box texture... Please wait and do NOT click other buttons.", {1, 1, 0})
   
+  -- Update the bag texture itself
   local cacheBust = math.random(1, 999999)
-  local processedCount = 0
-  local totalToProcess = #bagObjList
-  local initialBagCount = totalToProcess
-  
-  -- Clone the bag contents list
-  local objectsToUpdate = {}
-  for _, obj in ipairs(bagObjList) do
-    table.insert(objectsToUpdate, obj.guid)
+  local bagCustom = self.getCustomObject()
+  if bagCustom and bagCustom.diffuse then
+    bagCustom.diffuse = bagCustom.diffuse .. "?v=" .. cacheBust
+    self.setCustomObject(bagCustom)
+    self.reload()
+    broadcastToAll("Box texture refreshed!", {0, 1, 0})
   end
+  
+  -- Wait a moment for bag to finish reloading before processing cards
+  Wait.time(function()
+    local processedCount = 0
+    local totalToProcess = #bagObjList
+    local initialBagCount = totalToProcess
+    
+    -- Clone the bag contents list
+    local objectsToUpdate = {}
+    for _, obj in ipairs(bagObjList) do
+      table.insert(objectsToUpdate, obj.guid)
+    end
   
   -- Helper function to check if object is in bag by GUID
   local function isObjectInBag(newGuid)
@@ -486,4 +497,5 @@ function click_update_rules()
   
   -- Start processing first object
   processNextObject(1)
+  end, 1)  -- Wait 1 second for bag reload to complete
 end

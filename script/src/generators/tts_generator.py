@@ -75,8 +75,8 @@ class TTSGenerator:
         return count
     
     def _load_lua_script(self) -> str:
-        """Load the Lua script from docs folder"""
-        script_path = self.config_dir.parent / "docs" / "tts-update-rules-in-box-script.lua"
+        """Load the Lua script from config defaults folder"""
+        script_path = self.config_dir / "defaults" / "tts-script" / "tts-update-rules-in-box-script.lua"
         try:
             with open(script_path, 'r', encoding='utf-8') as f:
                 content = f.read()
