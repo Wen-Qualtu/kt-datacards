@@ -174,10 +174,18 @@ class PDFProcessor:
             all_lines = [line.strip() for line in all_text.split('\n') if line.strip()]
             team_from_metadata = self._extract_team_from_datacard_metadata(all_lines)
             if team_from_metadata:
+                self.logger.debug(f"Extracted team from datacard metadata: {team_from_metadata}")
                 return team_from_metadata
+            else:
+                self.logger.debug("No team found in datacard metadata, trying standard structure")
         
         # Try standard card structure (ploys/equipment/rules/operatives)
-        return self._extract_team_from_standard_structure(lines_by_position)
+        team_from_standard = self._extract_team_from_standard_structure(lines_by_position)
+        if team_from_standard:
+            self.logger.debug(f"Extracted team from standard structure: {team_from_standard}")
+        else:
+            self.logger.debug("No team found in standard structure either")
+        return team_from_standard
 
 
     
@@ -187,8 +195,8 @@ class PDFProcessor:
         # It appears in the bottom section, typically the last few lines
         
         faction_keywords = [
-            'IMPERIUM', 'CHAOS', 'AELDARI', 'TYRANIDS', 'ORKS', 'ORK',  # Added ORK singular
-            'TAU', 'NECRONS', 'LEAGUES OF VOTANN', 'GENESTEALER'
+            'IMPERIUM', 'CHAOS', 'AELDARI', 'TYRANIDS', 'TYRANID', 'ORKS', 'ORK',
+            'TAU', 'NECRONS', 'NECRON', 'LEAGUES OF VOTANN', 'GENESTEALER'
         ]
         # Add T'AU with regular apostrophe (will match after normalization)
         faction_keywords.append('T' + chr(39) + 'AU')
