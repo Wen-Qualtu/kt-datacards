@@ -84,6 +84,8 @@ class ImageExtractor:
         """Analyze pages to detect card names and front/back relationships"""
         card_pages = []
         skip_next_page = False
+        last_faction_rule_name = None
+        faction_rule_counter = {}
         
         for page_num in range(len(pdf_document)):
             if skip_next_page:
@@ -107,6 +109,19 @@ class ImageExtractor:
                 team
             )
             
+            # For faction rules, if no name extracted, reuse previous card name with suffix
+            if card_type == CardType.FACTION_RULES and not card_name and last_faction_rule_name:
+                base_name = last_faction_rule_name
+                if base_name not in faction_rule_counter:
+                    faction_rule_counter[base_name] = 2  # Start at 2 for first continuation
+                else:
+                    faction_rule_counter[base_name] += 1
+                card_name = f"{base_name}_{faction_rule_counter[base_name]}"
+            elif card_type == CardType.FACTION_RULES and card_name:
+                # Track this faction rule name for potential continuation cards
+                last_faction_rule_name = card_name
+                # Don't initialize counter yet - will be set when we encounter first continuation
+            
             # Determine if card has back side
             has_back = False
             if has_continuation and page_num + 1 < len(pdf_document):
@@ -125,8 +140,7 @@ class ImageExtractor:
                         has_back = True
                         skip_next_page = True
             elif card_type == CardType.FACTION_RULES and card_name:
-                # For faction rules, check if next page has no extractable name
-                # (indicating it's a continuation page)
+                # For faction rules, check if next page has same name or no name (continuation)
                 if page_num + 1 < len(pdf_document):
                     next_page = pdf_document[page_num + 1]
                     next_name = self._extract_card_name(
@@ -134,12 +148,14 @@ class ImageExtractor:
                         card_type, 
                         team
                     )
-                    # If next page has no name or is marker guide, current card might have back
-                    if not next_name or next_name == 'markertoken-guide':
-                        # Only treat as back if next page isn't a marker guide
-                        if next_name != 'markertoken-guide':
-                            has_back = True
-                            skip_next_page = True
+                    # If next page has same name, treat as front/back pair (like datacards)
+                    if next_name == card_name:
+                        has_back = True
+                        skip_next_page = True
+                    # If next page has no name (not marker guide), also treat as back
+                    elif not next_name:
+                        has_back = True
+                        skip_next_page = True
             
             card_pages.append({
                 'page_num': page_num,
@@ -365,11 +381,20 @@ class ImageExtractor:
                 # Team name filtering - handle plural/singular variations
                 text_normalized = text_lower.replace(' ', '').replace('-', '')
                 team_normalized = team.name.lower().replace(' ', '').replace('-', '')
-                # Check exact match or singular/plural variants
-                if (text_normalized == team_normalized or 
-                    text_normalized == team_normalized.rstrip('s') or
-                    text_normalized + 's' == team_normalized):
+                # Check exact match
+                if text_normalized == team_normalized:
                     continue
+                # Check if they differ by exactly one 's' at the end
+                if text_normalized + 's' == team_normalized or text_normalized == team_normalized.rstrip('s'):
+                    continue
+                # For compound words like "angel of death" vs "angels-of-death", split on both spaces and dashes
+                import re
+                text_parts = re.split(r'[-\s]+', text_lower.strip())
+                team_parts = re.split(r'[-\s]+', team.name.lower().strip())
+                if len(text_parts) == len(team_parts) and len(text_parts) > 1:
+                    # Try adding 's' to first part: "angel" vs "angels"
+                    if text_parts[0] + 's' == team_parts[0] and text_parts[1:] == team_parts[1:]:
+                        continue
                 
                 # Skip generic terms (substring match)
                 if any(skip in text_lower for skip in skip_terms):

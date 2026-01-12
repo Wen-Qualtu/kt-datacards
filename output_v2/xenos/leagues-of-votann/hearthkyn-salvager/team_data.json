@@ -128,21 +128,37 @@
         }
       }
     },
-    "faction-rules": {
-      "grudge": {
-        "card_name": "grudge",
-        "display_name": "Grudge",
+    "strategy-ploys": {
+      "need-keeps": {
+        "card_name": "need-keeps",
+        "display_name": "Need Keeps",
         "has_back": false,
         "content": {
-          "description": "HEARTHKYN SALVAGER FACTION RULE GRUDGE If a particular foe shames or insults the Kin gravely enough, they will become the subject of a Grudge. To destroy this most hated enemy, the Kin will go to any lengths, even if it is to their own detriment. Whenever an enemy operative incapacitates a friendly HEARTHKYN SALVAGER  operative, that enemy operative gains one of your Grudge tokens"
+          "description": "Those whose need is greatest shall fight hardest for their prize. Select one objective marker or one of your mission markers. •\t \u0007Whenever determining control of that marker, treat the total APL stat of friendly HEARTHKYN SALVAGER  operatives that contest it as 1 higher if at least one friendly HEARTHKYN SALVAGER  operative contests that marker. Note this isn’t a change to the APL stat, so any changes are cumulative with this. •\t \u0007Whenever a friendly HEARTHKYN SALVAGER operative is within 3\" of that marker, add 1 to the Atk stat of its melee weapons (to a maximum of 4). HEARTHKYN SALVAGER"
         }
       },
-      "markertoken-guide": {
-        "card_name": "markertoken-guide",
-        "display_name": "Markertoken Guide",
+      "toil-earns": {
+        "card_name": "toil-earns",
+        "display_name": "Toil Earns",
         "has_back": false,
         "content": {
-          "description": "MARKER/TOKEN GUIDE HEARTHKYN SALVAGER Grudge tokens (Values 1 & 2) Need Keeps token Toil Earns token Medic token System Jam"
+          "description": "The harder the prize is won, the greater the reward. Select one objective marker or one of your mission markers. Whenever an enemy operative is within 3\" of that marker, treat it as having one additional Grudge token. HEARTHKYN SALVAGER"
+        }
+      },
+      "wrought-defence": {
+        "card_name": "wrought-defence",
+        "display_name": "Wrought Defence",
+        "has_back": false,
+        "content": {
+          "description": "Artificers of consummate skill, the Kin forge armour of great quality and resilience. Whenever an operative is shooting a friendly HEARTHKYN SALVAGER  operative, if you rolled one or less successes (including any re-rolls), you can retain one of your fails as a normal success instead of discarding it. HEARTHKYN SALVAGER"
+        }
+      },
+      "proximate-firepower": {
+        "card_name": "proximate-firepower",
+        "display_name": "Proximate Firepower",
+        "has_back": false,
+        "content": {
+          "description": "Hearthkyn Salvagers are supremely effective in close-quarters environments. Whenever a friendly HEARTHKYN SALVAGER operative is shooting an enemy operative within 6\" of it, improve the Hit stat of that friendly operative’s ranged weapons by 1 (to a maximum of 3+). This can allow you to apply or remove the Hit stat change during an action (this takes precedence over the core rules). HEARTHKYN SALVAGER"
         }
       }
     },
@@ -180,6 +196,24 @@
         }
       }
     },
+    "faction-rules": {
+      "grudge": {
+        "card_name": "grudge",
+        "display_name": "Grudge",
+        "has_back": false,
+        "content": {
+          "description": "HEARTHKYN SALVAGER FACTION RULE GRUDGE If a particular foe shames or insults the Kin gravely enough, they will become the subject of a Grudge. To destroy this most hated enemy, the Kin will go to any lengths, even if it is to their own detriment. Whenever an enemy operative incapacitates a friendly HEARTHKYN SALVAGER  operative, that enemy operative gains one of your Grudge tokens"
+        }
+      },
+      "markertoken-guide": {
+        "card_name": "markertoken-guide",
+        "display_name": "Markertoken Guide",
+        "has_back": false,
+        "content": {
+          "description": "MARKER/TOKEN GUIDE HEARTHKYN SALVAGER Grudge tokens (Values 1 & 2) Need Keeps token Toil Earns token Medic token System Jam"
+        }
+      }
+    },
     "operatives": {
       "operatives": {
         "card_name": "operatives",
@@ -189,51 +223,17 @@
           "description": "HEARTHKYN SALVAGERS KILL TEAM ARCHETYPES: RECON, SECURITY OPERATIVES ↘\u00071 HEARTHKYN SALVAGER  THEYN operative with one option from each of the following: •\t \u0007Autoch-pattern bolt pistol, Autoch-pattern bolter, bolt revolver, EtaCarn plasma pistol, ion blaster or ion pistol •\t \u0007Concussion gauntlet or plasma weapon"
         }
       }
-    },
-    "strategy-ploys": {
-      "need-keeps": {
-        "card_name": "need-keeps",
-        "display_name": "Need Keeps",
-        "has_back": false,
-        "content": {
-          "description": "Those whose need is greatest shall fight hardest for their prize. Select one objective marker or one of your mission markers. •\t \u0007Whenever determining control of that marker, treat the total APL stat of friendly HEARTHKYN SALVAGER  operatives that contest it as 1 higher if at least one friendly HEARTHKYN SALVAGER  operative contests that marker. Note this isn’t a change to the APL stat, so any changes are cumulative with this. •\t \u0007Whenever a friendly HEARTHKYN SALVAGER operative is within 3\" of that marker, add 1 to the Atk stat of its melee weapons (to a maximum of 4). HEARTHKYN SALVAGER"
-        }
-      },
-      "toil-earns": {
-        "card_name": "toil-earns",
-        "display_name": "Toil Earns",
-        "has_back": false,
-        "content": {
-          "description": "The harder the prize is won, the greater the reward. Select one objective marker or one of your mission markers. Whenever an enemy operative is within 3\" of that marker, treat it as having one additional Grudge token. HEARTHKYN SALVAGER"
-        }
-      },
-      "wrought-defence": {
-        "card_name": "wrought-defence",
-        "display_name": "Wrought Defence",
-        "has_back": false,
-        "content": {
-          "description": "Artificers of consummate skill, the Kin forge armour of great quality and resilience. Whenever an operative is shooting a friendly HEARTHKYN SALVAGER  operative, if you rolled one or less successes (including any re-rolls), you can retain one of your fails as a normal success instead of discarding it. HEARTHKYN SALVAGER"
-        }
-      },
-      "proximate-firepower": {
-        "card_name": "proximate-firepower",
-        "display_name": "Proximate Firepower",
-        "has_back": false,
-        "content": {
-          "description": "Hearthkyn Salvagers are supremely effective in close-quarters environments. Whenever a friendly HEARTHKYN SALVAGER operative is shooting an enemy operative within 6\" of it, improve the Hit stat of that friendly operative’s ranged weapons by 1 (to a maximum of 3+). This can allow you to apply or remove the Hit stat change during an action (this takes precedence over the core rules). HEARTHKYN SALVAGER"
-        }
-      }
     }
   },
   "processing_summary": {
-    "total_cards": 52,
+    "total_cards": 26,
     "by_type": {
-      "datacards": 22,
-      "equipment": 8,
-      "faction-rules": 4,
-      "firefight-ploys": 8,
-      "operatives": 2,
-      "strategy-ploys": 8
+      "datacards": 11,
+      "equipment": 4,
+      "strategy-ploys": 4,
+      "firefight-ploys": 4,
+      "faction-rules": 2,
+      "operatives": 1
     }
   }
 }

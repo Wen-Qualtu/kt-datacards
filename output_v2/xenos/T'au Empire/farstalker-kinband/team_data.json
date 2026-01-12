@@ -4,6 +4,68 @@
     "display_name": "Farstalker Kinband"
   },
   "card_types": {
+    "operatives": {
+      "operatives": {
+        "card_name": "operatives",
+        "display_name": "Operatives",
+        "has_back": true,
+        "content": {
+          "description": "FARSTALKER KINBAND KILL TEAM ARCHETYPES: INFILTRATION, RECON OPERATIVES ↘\u00071 FARSTALKER KINBAND  KILL-BROKER operative with one of the following options: •\t \u0007Kroot rifle; ritual blade •\t \u0007Pulse weapon; ritual blade ↘\u000711 FARSTALKER KINBAND  operatives selected from the following list:"
+        }
+      }
+    },
+    "faction-rules": {
+      "farstalker": {
+        "card_name": "farstalker",
+        "display_name": "Farstalker",
+        "has_back": false,
+        "content": {
+          "description": "FARSTALKER KINBAND FACTION RULE FARSTALKER Farstalker Kindbands move and fight instinctively, reacting to developing battlefield conditions with an inhuman speed of thought. In the Ready step of each Strategy phase, you can change the order of up to three friendly FARSTALKER KINBAND  operatives that are not within control range of enemy operatives."
+        }
+      },
+      "markertoken-guide": {
+        "card_name": "markertoken-guide",
+        "display_name": "Markertoken Guide",
+        "has_back": false,
+        "content": {
+          "description": "MARKER/TOKEN GUIDE Quick Draw token Call the Kill token Victory Shriek token FARSTALKER KINBAND Ready for Anything token"
+        }
+      }
+    },
+    "equipment": {
+      "piercing-shot": {
+        "card_name": "piercing-shot",
+        "display_name": "Piercing Shot",
+        "has_back": false,
+        "content": {
+          "description": "The Kroot make use of many forms of specially crafted ammunition. Bullets tipped with hardened alloys can punch through cover and armour alike. Once per turning point, when a friendly FARSTALKER KINBAND  operative is performing the Shoot action and you select a Kroot rifle, Kroot scattergun or dual Kroot pistols (focused), you can use this rule. If you do, until the end of that action, that weapon has the Piercing 1 weapon rule. You cannot use the Piercing Shot and Toxin Shot rule during the same action."
+        }
+      },
+      "toxin-shot": {
+        "card_name": "toxin-shot",
+        "display_name": "Toxin Shot",
+        "has_back": false,
+        "content": {
+          "description": "Kroot toxin bullets contain reservoirs of venom extracted from various alien fauna, all of which is incredibly lethal. Once per turning point, when a friendly FARSTALKER KINBAND  operative is performing the Shoot action and you select a Kroot rifle, Kroot scattergun or dual Kroot pistols (focused), you can use this rule. If you do, until the end of that action, that weapon has the Lethal 5+ and Stun weapon rules. You cannot use the Piercing Shot and Toxin Shot rule during the same action."
+        }
+      },
+      "bolster-their-regenerative-abilities": {
+        "card_name": "bolster-their-regenerative-abilities",
+        "display_name": "Bolster Their Regenerative Abilities",
+        "has_back": false,
+        "content": {
+          "description": "Once per turning point, when a friendly FARSTALKER KINBAND  operative (excluding HOUND) is activated, if it’s not within control range of enemy operatives, you can use this rule. If you do, that friendly operative regains up to D3+1 lost wounds."
+        }
+      },
+      "trophy": {
+        "card_name": "trophy",
+        "display_name": "Trophy",
+        "has_back": false,
+        "content": {
+          "description": "Kroot Farstalkers seek to cut down the most powerful of foes. They will aggressively pursue any enemy they judge worthy and harvest trophies from the corpse. Once per battle, during a friendly FARSTALKER KINBAND  operative’s activation (excluding HOUND), before or after it performs an action, if it’s not within control range of enemy operatives, you can use this rule. If you do, add 1 to that friendly operative’s APL stat until the end of its activation."
+        }
+      }
+    },
     "datacards": {
       "kroot-kill-broker": {
         "card_name": "kroot-kill-broker",
@@ -94,55 +156,37 @@
         }
       }
     },
-    "equipment": {
-      "piercing-shot": {
-        "card_name": "piercing-shot",
-        "display_name": "Piercing Shot",
+    "strategy-ploys": {
+      "cut-throats": {
+        "card_name": "cut-throats",
+        "display_name": "Cut Throats",
         "has_back": false,
         "content": {
-          "description": "The Kroot make use of many forms of specially crafted ammunition. Bullets tipped with hardened alloys can punch through cover and armour alike. Once per turning point, when a friendly FARSTALKER KINBAND  operative is performing the Shoot action and you select a Kroot rifle, Kroot scattergun or dual Kroot pistols (focused), you can use this rule. If you do, until the end of that action, that weapon has the Piercing 1 weapon rule. You cannot use the Piercing Shot and Toxin Shot rule during the same action."
+          "description": "FARSTALKER KINBAND STRATEGY PLOY CUT-THROATS Kroot warriors are lethal melee combatants. Their bladed weapons are capable of tearing through exposed flesh with ease. Add 1 to the Atk stat of friendly FARSTALKER KINBAND  operatives’ melee weapons (to a maximum of 5)."
         }
       },
-      "toxin-shot": {
-        "card_name": "toxin-shot",
-        "display_name": "Toxin Shot",
+      "rogue": {
+        "card_name": "rogue",
+        "display_name": "Rogue",
         "has_back": false,
         "content": {
-          "description": "Kroot toxin bullets contain reservoirs of venom extracted from various alien fauna, all of which is incredibly lethal. Once per turning point, when a friendly FARSTALKER KINBAND  operative is performing the Shoot action and you select a Kroot rifle, Kroot scattergun or dual Kroot pistols (focused), you can use this rule. If you do, until the end of that action, that weapon has the Lethal 5+ and Stun weapon rules. You cannot use the Piercing Shot and Toxin Shot rule during the same action."
+          "description": "Kroot Farstalkers are naturally gifted hunters, using cover and shadow to their advantage as they close in upon their prey. Whenever an operative is shooting a friendly FARSTALKER KINBAND  operative: •\t \u0007Ignore the Saturate weapon rule. •\t \u0007If you can retain any cover saves, you can retain one additional cover save, or you can retain one cover save as a critical success instead. This isn’t cumulative with improved cover saves from Vantage terrain."
         }
       },
-      "bolster-their-regenerative-abilities": {
-        "card_name": "bolster-their-regenerative-abilities",
-        "display_name": "Bolster Their Regenerative Abilities",
+      "their-chosen-prey": {
+        "card_name": "their-chosen-prey",
+        "display_name": "Their Chosen Prey",
         "has_back": false,
         "content": {
-          "description": "Once per turning point, when a friendly FARSTALKER KINBAND  operative (excluding HOUND) is activated, if it’s not within control range of enemy operatives, you can use this rule. If you do, that friendly operative regains up to D3+1 lost wounds."
+          "description": "Whenever a friendly FARSTALKER KINBAND operative is shooting during an activation in which it hasn’t performed the Charge, Fall Back or Reposition action, its ranged weapons have the Balanced and Severe weapon rules; if the weapon already has the Balanced weapon rule, it has the Ceaseless and Severe weapon rules instead. Note that operative isn’t restricted from performing those actions after shooting."
         }
       },
-      "trophy": {
-        "card_name": "trophy",
-        "display_name": "Trophy",
+      "bound": {
+        "card_name": "bound",
+        "display_name": "Bound",
         "has_back": false,
         "content": {
-          "description": "Kroot Farstalkers seek to cut down the most powerful of foes. They will aggressively pursue any enemy they judge worthy and harvest trophies from the corpse. Once per battle, during a friendly FARSTALKER KINBAND  operative’s activation (excluding HOUND), before or after it performs an action, if it’s not within control range of enemy operatives, you can use this rule. If you do, add 1 to that friendly operative’s APL stat until the end of its activation."
-        }
-      }
-    },
-    "faction-rules": {
-      "farstalker": {
-        "card_name": "farstalker",
-        "display_name": "Farstalker",
-        "has_back": false,
-        "content": {
-          "description": "FARSTALKER KINBAND FACTION RULE FARSTALKER Farstalker Kindbands move and fight instinctively, reacting to developing battlefield conditions with an inhuman speed of thought. In the Ready step of each Strategy phase, you can change the order of up to three friendly FARSTALKER KINBAND  operatives that are not within control range of enemy operatives."
-        }
-      },
-      "markertoken-guide": {
-        "card_name": "markertoken-guide",
-        "display_name": "Markertoken Guide",
-        "has_back": false,
-        "content": {
-          "description": "MARKER/TOKEN GUIDE Quick Draw token Call the Kill token Victory Shriek token FARSTALKER KINBAND Ready for Anything token"
+          "description": "The long, muscular legs of the Kroot allow them to cover great distances in a single, bounding leap. During each friendly FARSTALKER KINBAND operative’s activation, you can ignore the first vertical distance of 2\" they move during one climb up."
         }
       }
     },
@@ -179,61 +223,17 @@
           "description": "Farstalker Kinbands are bonded by blood. The death of an ally awakes within the survivors a vengeful fury. Use this firefight ploy when a friendly FARSTALKER KINBAND  operative is incapacitated by an enemy operative. Until the end of the battle, whenever another friendly FARSTALKER KINBAND  operative is shooting against, fighting against or retaliating against that enemy operative, that other friendly operative's weapons have the Relentless weapon rule. You cannot use this ploy again during the battle until that enemy operative is incapacitated."
         }
       }
-    },
-    "operatives": {
-      "operatives": {
-        "card_name": "operatives",
-        "display_name": "Operatives",
-        "has_back": true,
-        "content": {
-          "description": "FARSTALKER KINBAND KILL TEAM ARCHETYPES: INFILTRATION, RECON OPERATIVES ↘\u00071 FARSTALKER KINBAND  KILL-BROKER operative with one of the following options: •\t \u0007Kroot rifle; ritual blade •\t \u0007Pulse weapon; ritual blade ↘\u000711 FARSTALKER KINBAND  operatives selected from the following list:"
-        }
-      }
-    },
-    "strategy-ploys": {
-      "cut-throats": {
-        "card_name": "cut-throats",
-        "display_name": "Cut Throats",
-        "has_back": false,
-        "content": {
-          "description": "FARSTALKER KINBAND STRATEGY PLOY CUT-THROATS Kroot warriors are lethal melee combatants. Their bladed weapons are capable of tearing through exposed flesh with ease. Add 1 to the Atk stat of friendly FARSTALKER KINBAND  operatives’ melee weapons (to a maximum of 5)."
-        }
-      },
-      "rogue": {
-        "card_name": "rogue",
-        "display_name": "Rogue",
-        "has_back": false,
-        "content": {
-          "description": "Kroot Farstalkers are naturally gifted hunters, using cover and shadow to their advantage as they close in upon their prey. Whenever an operative is shooting a friendly FARSTALKER KINBAND  operative: •\t \u0007Ignore the Saturate weapon rule. •\t \u0007If you can retain any cover saves, you can retain one additional cover save, or you can retain one cover save as a critical success instead. This isn’t cumulative with improved cover saves from Vantage terrain."
-        }
-      },
-      "their-chosen-prey": {
-        "card_name": "their-chosen-prey",
-        "display_name": "Their Chosen Prey",
-        "has_back": false,
-        "content": {
-          "description": "Whenever a friendly FARSTALKER KINBAND operative is shooting during an activation in which it hasn’t performed the Charge, Fall Back or Reposition action, its ranged weapons have the Balanced and Severe weapon rules; if the weapon already has the Balanced weapon rule, it has the Ceaseless and Severe weapon rules instead. Note that operative isn’t restricted from performing those actions after shooting."
-        }
-      },
-      "bound": {
-        "card_name": "bound",
-        "display_name": "Bound",
-        "has_back": false,
-        "content": {
-          "description": "The long, muscular legs of the Kroot allow them to cover great distances in a single, bounding leap. During each friendly FARSTALKER KINBAND operative’s activation, you can ignore the first vertical distance of 2\" they move during one climb up."
-        }
-      }
     }
   },
   "processing_summary": {
-    "total_cards": 52,
+    "total_cards": 26,
     "by_type": {
-      "datacards": 22,
-      "equipment": 8,
-      "faction-rules": 4,
-      "firefight-ploys": 8,
-      "operatives": 2,
-      "strategy-ploys": 8
+      "operatives": 1,
+      "faction-rules": 2,
+      "equipment": 4,
+      "datacards": 11,
+      "strategy-ploys": 4,
+      "firefight-ploys": 4
     }
   }
 }
