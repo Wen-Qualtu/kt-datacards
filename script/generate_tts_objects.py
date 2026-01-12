@@ -238,16 +238,16 @@ def create_bag(team_name, team_tag, contained_objects, lua_script):
     
     # Create LuaScriptState with positions for each contained object
     # This allows the buttons to show up immediately
-    # Layout: Top row: Faction Rules, Operatives, Markertokens, Datacards (wider)
-    #         Bottom row: Strategy Ploys, Firefight Ploys, Equipment
+    # Layout: Top row: Faction Rules, Operative Selection, Datacards (wider)
+    #         Bottom row: Strategy Ploys, Firefight Ploys, Equipment, Markertokens
     memory_list = {}
     
-    # The order contained_objects are added: operatives(0), faction-rules(1), markertokens(2), datacards(3), equipment(4), firefight-ploys(5), strategy-ploys(6)
+    # The order contained_objects are added: operative-selection(0), faction-rules(1), markertokens(2), datacards(3), equipment(4), firefight-ploys(5), strategy-ploys(6)
     # Position mapping based on user's manual placement, aligned precisely
-    # Top row: Faction Rules, Operatives, Datacards (wide)
+    # Top row: Faction Rules, Operative Selection, Datacards (wide)
     # Bottom row: Strategy Ploys, Firefight Ploys, Equipment, Markertokens
     position_map = {
-        0: {"x": -1.01, "y": -2.486, "z": -4.1},     # Operatives - top middle (single card)
+        0: {"x": -1.01, "y": -2.486, "z": -4.1},     # Operative Selection - top middle (single card)
         1: {"x": -3.02, "y": -2.486, "z": -4.1},     # Faction Rules - top left (single card)
         2: {"x": 3.0, "y": -2.486, "z": -7.39},      # Markertokens - bottom far right (single card)
         3: {"x": 3.01, "y": -2.426, "z": -4.08},     # Datacards - top right (deck, thicker)
@@ -351,8 +351,8 @@ def create_bag(team_name, team_tag, contained_objects, lua_script):
     }
 
 def main():
-    # Read the datacards-urls.json file
-    urls_file = Path(__file__).parent.parent / "output" / "datacards-urls.json"
+    # Read the datacards-urls.json file (V2 structure)
+    urls_file = Path(__file__).parent.parent / "output_v2" / "datacards-urls.json"
     
     if not urls_file.exists():
         print(f"Error: {urls_file} not found!")
@@ -393,7 +393,7 @@ def main():
         
         # Define the order of card types (like in the example)
         # Note: markertokens will be extracted from faction-rules
-        type_order = ['operatives', 'faction-rules', 'markertokens', 'datacards', 'equipment', 'firefight-ploys', 'strategy-ploys']
+        type_order = ['operative-selection', 'faction-rules', 'markertokens', 'datacards', 'equipment', 'firefight-ploys', 'strategy-ploys']
         
         # Extract markertoken cards from faction-rules
         if 'faction-rules' in cards_by_type:
