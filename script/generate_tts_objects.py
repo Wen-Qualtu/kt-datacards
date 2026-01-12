@@ -9,6 +9,7 @@ import json
 from pathlib import Path
 from collections import defaultdict
 import random
+import shutil
 
 def generate_guid():
     """Generate a 6-character hex GUID like TTS uses"""
@@ -22,6 +23,35 @@ def load_lua_script():
         # Convert to Windows line endings for TTS
         content = content.replace('\n', '\r\n')
         return content
+
+def copy_preview_image(team_folder_name, output_dir, tts_json_filename):
+    """
+    Copy the preview image for a team to the TTS objects directory.
+    
+    For TTS saved objects, a .png with the same name as the .json will be
+    used as the preview image in the TTS interface.
+    
+    Args:
+        team_folder_name: Team folder name (e.g., 'battleclade')
+        output_dir: Directory where TTS objects are saved
+        tts_json_filename: Name of the TTS JSON file (without extension)
+    """
+    config_dir = Path(__file__).parent.parent / "config"
+    
+    # Check for team-specific preview first
+    team_preview = config_dir / "teams" / team_folder_name / "tts-image" / f"{team_folder_name}-preview.png"
+    default_preview = config_dir / "defaults" / "tts-image" / "default-preview.png"
+    
+    source_preview = team_preview if team_preview.exists() else default_preview
+    
+    if source_preview.exists():
+        dest_preview = output_dir / f"{tts_json_filename}.png"
+        shutil.copy2(source_preview, dest_preview)
+        print(f"  ✓ Copied preview image: {dest_preview.name}")
+        return True
+    else:
+        print(f"  ⚠ No preview image found for {team_folder_name}")
+        return False
 
 def create_single_card(card_name, front_url, back_url, team_tag, deck_id="100"):
     """Create a single TTS card object"""
@@ -217,8 +247,8 @@ def create_bag(team_name, team_tag, contained_objects, lua_script):
     
     # Check for team-specific box files first, then fall back to default
     config_dir = Path(__file__).parent.parent / "config"
-    team_box_dir = config_dir / "box" / "team" / team_folder_name
-    default_box_dir = config_dir / "box" / "default"
+    team_box_dir = config_dir / "teams" / team_folder_name / "box"
+    default_box_dir = config_dir / "defaults" / "box"
     
     # Check if team-specific box exists
     team_mesh = team_box_dir / "card-box.obj"
@@ -486,6 +516,9 @@ def main():
         total_cards = sum(len(cards_by_type[t]) for t in cards_by_type)
         print(f"  ✓ Created {output_file}")
         print(f"    Total: {len(contained_objects)} decks/cards containing {total_cards // 2} unique cards")
+        
+        # Copy the preview image
+        copy_preview_image(team_name, output_dir, f"{team_display_name} Cards")
     
     print(f"\n✓ Done! TTS objects saved to {output_dir}")
     print(f"✓ Total teams processed: {len(teams)}")

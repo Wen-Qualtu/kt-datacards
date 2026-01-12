@@ -40,7 +40,7 @@ def download_file(url, output_path):
 def main():
     # Get the example directory
     example_dir = Path(__file__).parent.parent / "tts_objects" / "example"
-    config_dir = Path(__file__).parent.parent / "config" / "box" / "team"
+    config_dir = Path(__file__).parent.parent / "config" / "teams"
     
     if not example_dir.exists():
         print(f"Error: {example_dir} not found!")
@@ -74,7 +74,7 @@ def main():
             
             # Convert team name to folder name (lowercase with hyphens)
             team_folder = team_name.lower().replace(' ', '-')
-            team_dir = config_dir / team_folder
+            team_dir = config_dir / team_folder / "box"
             
             print(f"  Team: {team_name} → {team_folder}")
             

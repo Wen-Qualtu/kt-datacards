@@ -41,6 +41,16 @@ poetry run python script/run_pipeline.py -v
 poetry run python script/run_pipeline.py --log-file pipeline.log
 ```
 
+### TTS Objects
+Generate Tabletop Simulator objects:
+```bash
+# Generate TTS JSON objects with preview images
+poetry run python script/generate_tts_objects.py
+
+# Extract preview images from box textures (run once when adding new teams)
+poetry run python script/extract_tts_preview_images.py
+```
+
 ## Directory Structure
 
 ```
@@ -59,6 +69,8 @@ script/
 ├── extract_images.py       # Extract card images
 ├── add_backsides.py        # Add backside images
 ├── generate_urls.py        # Generate URLs CSV
+├── generate_tts_objects.py # Generate TTS JSON objects
+├── extract_tts_preview_images.py # Extract preview images from box textures
 │
 └── tests/                  # Test scripts
     ├── test_refactored.py  # Validation tests

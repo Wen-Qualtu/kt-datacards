@@ -14,17 +14,17 @@ class BacksideProcessor:
     
     def __init__(
         self,
-        config_dir: Path = Path('config/card-backside')
+        config_dir: Path = Path('config')
     ):
         """
         Initialize BacksideProcessor
         
         Args:
-            config_dir: Directory containing backside images
+            config_dir: Directory containing config files
         """
         self.config_dir = config_dir
-        self.default_dir = config_dir / 'default'
-        self.team_dir = config_dir / 'team'
+        self.default_dir = config_dir / 'defaults' / 'card-backside'
+        self.teams_dir = config_dir / 'teams'
         self.logger = logging.getLogger(__name__)
         
         # Cache for backside paths
@@ -90,8 +90,9 @@ class BacksideProcessor:
         
         # Priority 1: Team-specific backside
         team_backside = (
-            self.team_dir / 
+            self.teams_dir / 
             datacard.team.name / 
+            'card-backside' /
             f'{datacard.team.name}-backside-{orientation}.jpg'
         )
         if team_backside.exists():

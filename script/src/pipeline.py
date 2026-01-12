@@ -47,7 +47,7 @@ class DatacardPipeline:
         self.pdf_processor = PDFProcessor(self.team_identifier)
         self.image_extractor = ImageExtractor(dpi=dpi, output_v2_dir=output_v2_dir)
         self.backside_processor = BacksideProcessor(
-            config_dir / 'card-backside'
+            config_dir
         )
         self.v2_processor = V2OutputProcessor(output_v2_dir)
         

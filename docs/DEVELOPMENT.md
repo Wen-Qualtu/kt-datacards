@@ -76,10 +76,18 @@ kt-datacards/
 ├── input/                      # Raw unprocessed files (any structure allowed)
 │   └── *.pdf                   # Process all PDFs recursively
 ├── config/                     # Configuration files
-│   ├── team-name-mapping.yaml
-│   └── card-backside/
-│       ├── default/            # Default backside images
-│       └── team/               # Team-specific custom backsides
+│   ├── team-config.yaml        # Team name mappings
+│   ├── defaults/               # Default assets for all teams
+│   │   ├── box/                # Default 3D box mesh
+│   │   ├── card-backside/      # Default backside images
+│   │   └── tts-image/          # Default preview image
+│   ├── teams/                  # Team-specific configurations
+│   │   └── {teamname}/         # Each team's assets
+│   │       ├── box/            # Custom 3D box (optional)
+│   │       ├── card-backside/  # Custom backsides (optional)
+│   │       └── tts-image/      # TTS preview image
+│   ├── team-icons/             # Processed team icons
+│   └── team-icons-raw/         # Raw downloaded icons
 ├── processed/                  # Intermediate processing stage
 │   └── {teamname}/             # Flat structure by team
 ├── output/                     # ⚠️ IMMUTABLE - TTS references these paths
@@ -521,9 +529,38 @@ output/
             └── {teamname}/
 ```
 
+### TTS Objects Generation
+
+The pipeline generates TTS Custom_Model_Bag JSON objects that can be imported directly into Tabletop Simulator.
+
+**Features:**
+- Automatic bag creation with all cards organized by type (datacards, equipment, ploys, etc.)
+- Team-specific or default 3D box meshes and textures from `config/teams/{teamname}/box/` or `config/defaults/box/`
+- Preview images automatically extracted from box textures
+- Lua scripting support for in-game functionality
+
+**Preview Images:**
+- TTS displays a .png file with the same name as the .json in the saved objects interface
+- Preview images are automatically extracted from `config/teams/{teamname}/box/card-box-texture.jpg`
+- The extraction uses the same UV mapping as the 3D box front face
+- Stored in `config/teams/{teamname}/tts-image/` and copied to `tts_objects/` with matching names
+
+**Commands:**
+```bash
+# Extract preview images from box textures (one-time setup)
+poetry run python script/extract_tts_preview_images.py
+
+# Generate TTS objects (includes preview image copying)
+poetry run python script/generate_tts_objects.py
+```
+
 ### TTS Scripting
+Current features:
+- Automate TTS object creation ✅
+- Custom 3D box models per team ✅
+- Preview images for saved objects ✅
+
 Future feature to investigate:
-- Automate TTS object creation
 - Auto-update card URLs in TTS
 - Would enable easier migrations
 
