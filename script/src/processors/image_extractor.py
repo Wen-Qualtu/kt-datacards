@@ -350,13 +350,6 @@ class ImageExtractor:
             # Don't skip "faction rules" for non-faction-rule card types
             skip_terms.append('faction rules')
             
-            # Add team name to skip for non-datacards
-            if card_type != CardType.DATACARDS:
-                skip_terms.extend([
-                    team.name.lower(), 
-                    team.name.replace('-', ' ').lower()
-                ])
-            
             # For operatives, skip "kill team" terms and just use "operatives"
             if card_type == CardType.OPERATIVES:
                 return "operatives"
@@ -369,13 +362,16 @@ class ImageExtractor:
                 if len(text) < 5 or len(text) > 50:
                     continue
                 
-                # Team name filtering (exact match)
+                # Team name filtering - handle plural/singular variations
                 text_normalized = text_lower.replace(' ', '').replace('-', '')
                 team_normalized = team.name.lower().replace(' ', '').replace('-', '')
-                if text_normalized == team_normalized:
+                # Check exact match or singular/plural variants
+                if (text_normalized == team_normalized or 
+                    text_normalized == team_normalized.rstrip('s') or
+                    text_normalized + 's' == team_normalized):
                     continue
                 
-                # Skip generic terms
+                # Skip generic terms (substring match)
                 if any(skip in text_lower for skip in skip_terms):
                     continue
                 
