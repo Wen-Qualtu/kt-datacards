@@ -25,7 +25,10 @@ class OutputMetadataGenerator:
         'firefight-ploys': ('ploys', 'firefight'),
         'equipment': 'equipment',
         'operatives': 'operative_selection',
-        'datacards': 'datacards'
+        'operative-selection': 'operative_selection',
+        'datacards': 'datacards',
+        'tts': None,  # Skip TTS folder (internal use only)
+        'team_data.json': None  # Skip team data file
     }
     
     def __init__(
@@ -101,20 +104,21 @@ class OutputMetadataGenerator:
         # Convert to title case
         return filename_base.replace('-', ' ').title()
     
-    def _load_card_descriptions(self, team_slug: str) -> Dict[str, str]:
+    def _load_card_descriptions(self, team_path: Path) -> Dict[str, str]:
         """
         Load card descriptions from team_data.json file for a team
         
         Args:
-            team_slug: Team folder name
+            team_path: Path to team folder
             
         Returns:
             Dict mapping card keys (card_type/card_name) to descriptions
         """
+        team_slug = team_path.name
         if team_slug in self.card_descriptions:
             return self.card_descriptions[team_slug]
         
-        team_data_file = self.output_dir / team_slug / 'team_data.json'
+        team_data_file = team_path / 'team_data.json'
         
         if not team_data_file.exists():
             self.logger.debug(f"No team_data.json file found for {team_slug}")
@@ -179,13 +183,13 @@ class OutputMetadataGenerator:
         
         return ('Unknown', 'Unknown')
     
-    def _scan_card_type_folder(self, folder_path: Path, team_slug: str = None) -> Dict[str, Any]:
+    def _scan_card_type_folder(self, folder_path: Path, team_path: Path = None) -> Dict[str, Any]:
         """
         Scan a card type folder and extract card information
         
         Args:
             folder_path: Path to card type folder (e.g., output/kasrkin/datacards/)
-            team_slug: Team identifier for context
+            team_path: Path to team folder for description lookup
             
         Returns:
             Dict with count and cards list
@@ -197,7 +201,8 @@ class OutputMetadataGenerator:
         card_type = folder_path.name
         
         # Load card descriptions for this team
-        descriptions = self._load_card_descriptions(team_slug) if team_slug else {}
+        team_slug = team_path.name if team_path else None
+        descriptions = self._load_card_descriptions(team_path) if team_path else {}
         
         # Special handling for operative_selection (simplified)
         if card_type == 'operatives':
@@ -257,6 +262,9 @@ class OutputMetadataGenerator:
         # Scan each card type folder
         for card_type_folder in sorted(team_path.iterdir()):
             if not card_type_folder.is_dir():
+                # Skip non-folder items like team_data.json
+                if card_type_folder.name in self.CARD_TYPE_MAPPING:
+                    continue  # Silently skip known files
                 continue
             
             folder_name = card_type_folder.name
@@ -264,8 +272,12 @@ class OutputMetadataGenerator:
                 self.logger.warning(f"Unknown card type folder: {folder_name}")
                 continue
             
+            # Skip folders that map to None (internal use only)
+            if self.CARD_TYPE_MAPPING[folder_name] is None:
+                continue
+            
             # Get card data
-            card_data = self._scan_card_type_folder(card_type_folder, team_slug)
+            card_data = self._scan_card_type_folder(card_type_folder, team_path)
             
             # Add to total card count
             card_count = card_data.get('count', card_data.get('card_count', 0))
@@ -332,18 +344,27 @@ class OutputMetadataGenerator:
             'teams': {}
         }
         
-        # Scan each team folder
-        for team_path in sorted(self.output_dir.iterdir()):
-            if not team_path.is_dir():
+        # Scan hierarchical structure: faction/army/team/
+        for faction_path in sorted(self.output_dir.iterdir()):
+            if not faction_path.is_dir():
                 continue
             
-            team_slug = team_path.name
-            
-            # Skip v2 folder (contains hierarchical output)
-            if team_slug == 'v2':
+            # Skip non-faction folders
+            if faction_path.name in ['v2', 'metadata.yaml', 'datacards-urls.json']:
                 continue
             
-            metadata['teams'][team_slug] = self._scan_team_folder(team_path)
+            # Iterate through army folders
+            for army_path in sorted(faction_path.iterdir()):
+                if not army_path.is_dir():
+                    continue
+                
+                # Iterate through team folders
+                for team_path in sorted(army_path.iterdir()):
+                    if not team_path.is_dir():
+                        continue
+                    
+                    team_slug = team_path.name
+                    metadata['teams'][team_slug] = self._scan_team_folder(team_path)
         
         self.logger.info(f"Generated metadata for {len(metadata['teams'])} teams")
         
