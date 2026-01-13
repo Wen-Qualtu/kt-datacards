@@ -198,35 +198,22 @@ def create_deck(deck_nickname, team_tag, cards_data, starting_deck_id=1000):
     }
 
 
-def create_bag(team_name, team_tag, contained_objects, lua_script, texture_url=None):
+def create_bag(team_name, team_tag, contained_objects, lua_script, texture_url=None, mesh_url=None):
     """Create a TTS Custom_Model_Bag containing decks and cards"""
     
-    # Get team name from tag (remove leading underscore and convert to lowercase with hyphens)
-    team_folder_name = team_tag.strip('_').lower().replace(' ', '-')
+    # If mesh_url not provided, construct default GitHub URL
+    if not mesh_url:
+        # Get team name from tag (remove leading underscore and convert to lowercase with hyphens)
+        team_folder_name = team_tag.strip('_').lower().replace(' ', '-')
+        
+        # Default to using GitHub URL for mesh file
+        # This will be updated by the caller if a team-specific mesh exists
+        mesh_url = f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/config/defaults/box/card-box.obj"
     
-    # Check for team-specific box files first, then fall back to default
-    config_dir = Path(__file__).parent.parent.parent.parent / "config"
-    team_box_dir = config_dir / "teams" / team_folder_name / "box"
-    default_box_dir = config_dir / "defaults" / "box"
-    
-    # Mesh always uses file:// URL to local config
-    team_mesh = team_box_dir / "card-box.obj"
-    if team_mesh.exists():
-        mesh_path = team_mesh.resolve()
-    else:
-        mesh_path = (default_box_dir / "card-box.obj").resolve()
-    
-    mesh_url = mesh_path.as_uri()
-    
-    # Texture URL comes from parameter (GitHub URL) if provided, otherwise fallback to local file://
+    # Texture URL should always come from parameter (GitHub URL from datacards-urls.json)
     if not texture_url:
-        # Fallback: use local file path (for backwards compatibility)
-        team_texture = team_box_dir / "card-box-texture.jpg"
-        if team_texture.exists():
-            texture_path = team_texture.resolve()
-        else:
-            texture_path = (default_box_dir / "card-box-texture.jpg").resolve()
-        texture_url = texture_path.as_uri()
+        # Fallback: use GitHub default (this shouldn't normally happen)
+        texture_url = f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/config/defaults/box/card-box-texture.jpg"
     
     # Create LuaScriptState with positions for each contained object
     memory_list = {}

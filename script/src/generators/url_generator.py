@@ -85,6 +85,20 @@ class URLGenerator:
                         'name': file_name,
                         'url': url
                     })
+                
+                # Also collect .obj mesh files from tts directories
+                for obj_file in sorted(type_dir.glob('*.obj')):
+                    file_name = obj_file.name  # Keep full name with extension for .obj files
+                    
+                    # Construct GitHub raw URL (use forward slashes)
+                    url = f"{self.github_base}/{team_name}/{type_name}/{obj_file.name}"
+                    
+                    entries.append({
+                        'team': team_name,
+                        'type': type_name,
+                        'name': file_name,
+                        'url': url
+                    })
         
         return entries
     

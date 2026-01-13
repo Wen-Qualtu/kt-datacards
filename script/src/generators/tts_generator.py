@@ -50,14 +50,19 @@ class TTSGenerator:
         # Load Lua script
         lua_script = self._load_lua_script()
         
-        # Group cards by team and separate box textures
+        # Group cards by team and separate box assets
         teams = defaultdict(list)
         team_textures = {}
+        team_meshes = {}
         for card in all_cards:
             team_key = card['team']
-            if card['type'] == 'tts' and 'card-box-texture' in card['name']:
-                # Store texture URL for this team
-                team_textures[team_key] = card['url']
+            if card['type'] == 'tts':
+                if 'card-box-texture' in card['name']:
+                    # Store texture URL for this team
+                    team_textures[team_key] = card['url']
+                elif 'card-box.obj' in card['name']:
+                    # Store mesh URL for this team
+                    team_meshes[team_key] = card['url']
             else:
                 teams[team_key].append(card)
         
@@ -69,7 +74,8 @@ class TTSGenerator:
         for team_name, cards in teams.items():
             self.logger.info(f"Generating TTS object for {team_name}")
             texture_url = team_textures.get(team_name)
-            self._generate_team_tts_object(team_name, cards, lua_script, texture_url)
+            mesh_url = team_meshes.get(team_name)
+            self._generate_team_tts_object(team_name, cards, lua_script, texture_url, mesh_url)
             count += 1
         
         return count
@@ -87,7 +93,7 @@ class TTSGenerator:
             self.logger.warning(f"Could not load Lua script: {e}")
             return ""
     
-    def _generate_team_tts_object(self, team_name: str, cards: list, lua_script: str, texture_url: str = None):
+    def _generate_team_tts_object(self, team_name: str, cards: list, lua_script: str, texture_url: str = None, mesh_url: str = None):
         """Generate TTS object for a single team"""
         from ..generators.tts_generator_helpers import (
             create_bag, create_deck, create_single_card
@@ -170,7 +176,7 @@ class TTSGenerator:
         # Create the bag
         team_display_name = team_name.replace('-', ' ').title()
         team_tag = f"_{team_name.replace('-', '_').title().replace('_', ' ')}"
-        bag_obj = create_bag(team_display_name, team_tag, contained_objects, lua_script, texture_url)
+        bag_obj = create_bag(team_display_name, team_tag, contained_objects, lua_script, texture_url, mesh_url)
         
         # Save to file
         output_file = self.tts_output_dir / f"{team_display_name} Cards.json"

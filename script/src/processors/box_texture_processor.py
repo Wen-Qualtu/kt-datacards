@@ -1,4 +1,4 @@
-"""Box texture management for TTS objects"""
+"""Box texture and mesh management for TTS objects"""
 import shutil
 from pathlib import Path
 from typing import List
@@ -8,7 +8,7 @@ from ..models.team import Team
 
 
 class BoxTextureProcessor:
-    """Manages box texture images for TTS objects"""
+    """Manages box texture images and mesh files for TTS objects"""
     
     def __init__(
         self,
@@ -30,21 +30,30 @@ class BoxTextureProcessor:
     
     def process_box_textures(self, teams: List[Team]) -> int:
         """
-        Copy box textures to output_v2 folder structure
+        Copy box textures and mesh files to output_v2 folder structure
         
         Args:
             teams: List of Team objects
             
         Returns:
-            Number of box textures processed
+            Number of box assets processed
         """
         processed_count = 0
         
         for team in teams:
+            # Process texture
             texture_path = self._get_texture_for_team(team)
             if not texture_path:
                 self.logger.warning(
                     f"No box texture found for {team.name}"
+                )
+                continue
+            
+            # Process mesh
+            mesh_path = self._get_mesh_for_team(team)
+            if not mesh_path:
+                self.logger.warning(
+                    f"No box mesh found for {team.name}"
                 )
                 continue
             
@@ -56,15 +65,25 @@ class BoxTextureProcessor:
             team_output_dir.mkdir(parents=True, exist_ok=True)
             
             # Copy texture with team name prefix
-            output_file = team_output_dir / f"{team.name}-card-box-texture.jpg"
-            
+            output_texture = team_output_dir / f"{team.name}-card-box-texture.jpg"
             try:
-                shutil.copy2(texture_path, output_file)
-                processed_count += 1
-                self.logger.info(f"Copied box texture: {output_file}")
+                shutil.copy2(texture_path, output_texture)
+                self.logger.info(f"Copied box texture: {output_texture}")
             except Exception as e:
                 self.logger.error(
-                    f"Failed to copy box texture to {output_file}: {e}"
+                    f"Failed to copy box texture to {output_texture}: {e}"
+                )
+                continue
+            
+            # Copy mesh with team name prefix
+            output_mesh = team_output_dir / f"{team.name}-card-box.obj"
+            try:
+                shutil.copy2(mesh_path, output_mesh)
+                processed_count += 1
+                self.logger.info(f"Copied box mesh: {output_mesh}")
+            except Exception as e:
+                self.logger.error(
+                    f"Failed to copy box mesh to {output_mesh}: {e}"
                 )
         
         return processed_count
@@ -92,17 +111,47 @@ class BoxTextureProcessor:
         )
         return None
     
+    def _get_mesh_for_team(self, team: Team) -> Path:
+        """Get appropriate box mesh for team"""
+        # Priority 1: Team-specific mesh
+        team_mesh = (
+            self.teams_dir / 
+            team.name / 
+            'box' /
+            'card-box.obj'
+        )
+        if team_mesh.exists():
+            return team_mesh
+        
+        # Priority 2: Default mesh
+        default_mesh = self.default_dir / 'card-box.obj'
+        if default_mesh.exists():
+            return default_mesh
+        
+        # No mesh found
+        self.logger.error(
+            f"No box mesh found for team {team.name}"
+        )
+        return None
+    
     def validate_textures(self) -> bool:
         """
-        Validate that default box texture exists
+        Validate that default box texture and mesh exist
         
         Returns:
             True if valid, False otherwise
         """
-        default_path = self.default_dir / 'card-box-texture.jpg'
-        if not default_path.exists():
+        default_texture = self.default_dir / 'card-box-texture.jpg'
+        if not default_texture.exists():
             self.logger.error(
-                f"Missing default box texture: {default_path}"
+                f"Missing default box texture: {default_texture}"
+            )
+            return False
+        
+        default_mesh = self.default_dir / 'card-box.obj'
+        if not default_mesh.exists():
+            self.logger.error(
+                f"Missing default box mesh: {default_mesh}"
             )
             return False
         
