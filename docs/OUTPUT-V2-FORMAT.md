@@ -9,14 +9,13 @@ The V2 output format provides an enhanced, hierarchical organization of Kill Tea
 ```
 output/v2/
 ├── {faction}/
-│   └── {army}/
-│       └── {teamname}/
-│           ├── datacards/
-│           ├── equipment/
-│           ├── faction-rules/
-│           ├── firefight-ploys/
-│           ├── operative-selection/     # Renamed from "operatives"
-│           └── strategy-ploys/
+│   └── {teamname}/
+│       ├── datacards/
+│       ├── equipment/
+│       ├── faction-rules/
+│       ├── firefight-ploys/
+│       ├── operative-selection/     # Renamed from "operatives"
+│       └── strategy-ploys/
 └── datacards-urls.csv
 ```
 
@@ -25,33 +24,34 @@ output/v2/
 ```
 output/v2/
 ├── imperium/
-│   ├── adeptus-mechanicus/
-│   │   └── battleclade/
-│   │       ├── datacards/
-│   │       │   ├── battleclade-auto-proxy-servitor_front.jpg
-│   │       │   ├── battleclade-auto-proxy-servitor_back.jpg
-│   │       │   └── ...
-│   │       ├── equipment/
-│   │       ├── faction-rules/
-│   │       ├── firefight-ploys/
-│   │       ├── operative-selection/
-│   │       └── strategy-ploys/
-│   └── space-marines/
-│       └── deathwatch/
-│           └── ...
+│   ├── battleclade/
+│   │   ├── datacards/
+│   │   │   ├── battleclade-auto-proxy-servitor_front.jpg
+│   │   │   ├── battleclade-auto-proxy-servitor_back.jpg
+│   │   │   └── ...
+│   │   ├── equipment/
+│   │   ├── faction-rules/
+│   │   ├── firefight-ploys/
+│   │   ├── operative-selection/
+│   │   └── strategy-ploys/
+│   ├── deathwatch/
+│   │   └── ...
+│   └── angels-of-death/
+│       └── ...
 └── xenos/
-    ├── leagues-of-votann/
-    │   ├── farstalker/
-    │   └── hearthkyn-salvagers/
-    └── orks/
-        └── wrecka-krew/
+    ├── hearthkyn-salvagers/
+    │   └── ...
+    ├── farstalker-kinband/
+    │   └── ...
+    └── wrecka-krew/
+        └── ...
 ```
 
 ## Key Differences from V1
 
 ### 1. Hierarchical Organization
 - **V1**: Flat structure `output/{teamname}/{cardtype}/`
-- **V2**: Hierarchical `output/v2/{faction}/{army}/{teamname}/{cardtype}/`
+- **V2**: Hierarchical `output/v2/{faction}/{teamname}/{cardtype}/`
 
 ### 2. Card Type Naming
 - **V1**: Uses `operatives/` folder
@@ -68,18 +68,18 @@ output/v2/
 
 ### 5. URL CSV Format
 - **V1**: `team,type,name,url`
-- **V2**: `faction,army,team,type,name,url` (includes hierarchy)
+- **V2**: `faction,team,type,name,url` (includes faction hierarchy)
 
-## Faction & Army Configuration
+## Faction Configuration
 
-Teams are configured with faction and army metadata in `config/team-config.yaml`:
+Teams are configured with faction metadata in `config/team-config.yaml`:
 
 ```yaml
 teams:
   hearthkyn-salvagers:
     canonical_name: "Hearthkyn Salvagers"
     faction: "xenos"                # imperium, chaos, or xenos
-    army: "leagues-of-votann"       # Specific army
+    army: "leagues-of-votann"       # Army metadata (for reference, not used in path)
 ```
 
 ### Supported Factions
@@ -88,26 +88,27 @@ teams:
 - **xenos** - Alien forces (Orks, Leagues of Votann, Tau, etc.)
 
 ### Uncategorized Teams
-Teams without faction/army metadata are placed in `output/v2/uncategorized/` until configured.
+Teams without faction metadata are placed in `output/v2/uncategorized/` until configured.
 
 ## URL CSV Format
 
 The V2 URLs CSV includes full hierarchy information:
 
 ```csv
-faction,army,team,type,name,url
-imperium,adeptus-mechanicus,battleclade,datacards,battleclade-auto-proxy-servitor_front,https://raw.githubusercontent.com/.../v2/imperium/adeptus-mechanicus/battleclade/datacards/battleclade-auto-proxy-servitor_front.jpg
-xenos,leagues-of-votann,hearthkyn-salvagers,operative-selection,hearthkyn-salvagers-operatives_front,https://raw.githubusercontent.com/.../v2/xenos/leagues-of-votann/hearthkyn-salvagers/operative-selection/hearthkyn-salvagers-operatives_front.jpg
+faction,team,type,name,url
+imperium,battleclade,datacards,battleclade-auto-proxy-servitor_front,https://raw.githubusercontent.com/.../v2/imperium/battleclade/datacards/battleclade-auto-proxy-servitor_front.jpg
+xenos,hearthkyn-salvagers,operative-selection,hearthkyn-salvagers-operatives_front,https://raw.githubusercontent.com/.../v2/xenos/hearthkyn-salvagers/operative-selection/hearthkyn-salvagers-operatives_front.jpg
 ```
 
 ## Benefits of V2 Format
 
-1. **Better Organization**: Hierarchical structure makes it easier to find teams by faction/army
-2. **Clear Naming**: All cards prefixed with team name prevents confusion
-3. **Consistency**: `operative-selection` is more descriptive than `operatives`
-4. **Enhanced Metadata**: Includes faction/army information in URLs and structure
-5. **Future-Proof**: Easier to extend with additional organizational levels
-6. **Backwards Compatible**: Original v1 format remains untouched for TTS compatibility
+1. **Better Organization**: Hierarchical structure makes it easier to find teams by faction
+2. **Simpler Structure**: Two-level hierarchy (faction/team) is easier to navigate than three levels
+3. **Clear Naming**: All cards prefixed with team name prevents confusion
+4. **Consistency**: `operative-selection` is more descriptive than `operatives`
+5. **Enhanced Metadata**: Includes faction information in URLs and structure
+6. **Future-Proof**: Can extend with additional organizational approaches
+7. **Backwards Compatible**: Original v1 format remains untouched for TTS compatibility
 
 ## Migration Notes
 
@@ -132,7 +133,7 @@ xenos,leagues-of-votann,hearthkyn-salvagers,operative-selection,hearthkyn-salvag
 
 3. Output appears in:
    - `output/new-team/` (v1 - flat structure)
-   - `output/v2/imperium/space-marines/new-team/` (v2 - hierarchical)
+   - `output/v2/imperium/new-team/` (v2 - hierarchical)
 
 ## Technical Details
 
@@ -157,7 +158,7 @@ xenos,leagues-of-votann,hearthkyn-salvagers,operative-selection,hearthkyn-salvag
 ### Team in `uncategorized/` folder
 **Problem**: Team appears under `output/v2/uncategorized/{teamname}/`
 
-**Solution**: Add faction/army metadata to `config/team-config.yaml`
+**Solution**: Add faction metadata to `config/team-config.yaml`
 
 ### Card names missing team prefix
 **Problem**: Some cards in v2 don't have team prefix

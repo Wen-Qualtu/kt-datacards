@@ -344,7 +344,7 @@ class OutputMetadataGenerator:
             'teams': {}
         }
         
-        # Scan hierarchical structure: faction/army/team/
+        # Scan hierarchical structure: faction/team/
         for faction_path in sorted(self.output_dir.iterdir()):
             if not faction_path.is_dir():
                 continue
@@ -353,18 +353,13 @@ class OutputMetadataGenerator:
             if faction_path.name in ['v2', 'metadata.yaml', 'datacards-urls.json']:
                 continue
             
-            # Iterate through army folders
-            for army_path in sorted(faction_path.iterdir()):
-                if not army_path.is_dir():
+            # Iterate through team folders
+            for team_path in sorted(faction_path.iterdir()):
+                if not team_path.is_dir():
                     continue
                 
-                # Iterate through team folders
-                for team_path in sorted(army_path.iterdir()):
-                    if not team_path.is_dir():
-                        continue
-                    
-                    team_slug = team_path.name
-                    metadata['teams'][team_slug] = self._scan_team_folder(team_path)
+                team_slug = team_path.name
+                metadata['teams'][team_slug] = self._scan_team_folder(team_path)
         
         self.logger.info(f"Generated metadata for {len(metadata['teams'])} teams")
         

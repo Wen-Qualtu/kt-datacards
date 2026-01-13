@@ -18,14 +18,14 @@ class TeamDataManager:
             team_name: Team slug/identifier
             team_display_name: Human-readable team name
             faction: Faction name
-            army: Army name
+            army: Army name (kept for backwards compatibility but not used in path)
         """
         self.team_name = team_name
-        # Use V2 structure: output_v2/faction/army/team_name/team_data.json
-        if faction and army:
-            self.data_file = Path(f"output_v2/{faction}/{army}/{team_name}/team_data.json")
+        # Use V2 structure: output_v2/faction/team_name/team_data.json
+        if faction:
+            self.data_file = Path(f"output_v2/{faction}/{team_name}/team_data.json")
         else:
-            # Fallback for when faction/army not provided during init
+            # Fallback for when faction not provided during init
             self.data_file = Path(f"output_v2/{team_name}/team_data.json")
         self.logger = logging.getLogger(__name__)
         self.data = self._load_or_create()

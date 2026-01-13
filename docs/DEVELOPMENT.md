@@ -21,7 +21,7 @@ This pipeline automates the entire workflow:
 5. **Generate URLs** - Create CSV mapping for TTS deck builder
 
 **Key Constraints:**
-- ⚠️ **IMMUTABLE output/ structure** - TTS cards reference exact paths via GitHub raw URLs
+- ⚠️ **IMMUTABLE output/ & output_2/ structure** - TTS cards reference exact paths via GitHub raw URLs
 - 🎯 **Accuracy over speed** - Wrong card data breaks gameplay
 - 🔄 **Reproducible** - Anyone should be able to run the pipeline and get same results
 
@@ -139,7 +139,7 @@ kt-datacards/
 
 #### `output/v2/` 🆕
 - **New hierarchical structure**
-- Organized by faction/army/team: `{faction}/{army}/{teamname}/{cardtype}/`
+- Organized by faction/team: `{faction}/{teamname}/{cardtype}/`
 - Card type `operatives` renamed to `operative-selection`
 - All card filenames include team prefix
 - Metadata moved to `output/metadata.yaml`
@@ -312,8 +312,8 @@ kt-datacards/
 teams:
   hearthkyn-salvagers:
     canonical_name: "Hearthkyn Salvagers"
-    faction: "xenos"                    # Top level
-    army: "leagues-of-votann"           # Mid level
+    faction: "xenos"                    # Faction level
+    army: "leagues-of-votann"           # Army metadata (for reference)
     aliases:
       - "hearthkyn salvagers"
       - "salvagers"
@@ -326,7 +326,7 @@ teams:
     paths:
       processed: "processed/xenos/leagues-of-votann/hearthkyn-salvagers"
       output: "output/hearthkyn-salvagers"  # Keep flat for TTS (v1)
-      output_v2: "output/v2/xenos/leagues-of-votann/hearthkyn-salvagers"  # v2 hierarchy
+      output_v2: "output/v2/xenos/hearthkyn-salvagers"  # v2 hierarchy (faction/team)
       archive: "archive/hearthkyn-salvagers"
 ```
 
@@ -366,9 +366,9 @@ kasrkin,datacards,trooper-gunner,back,https://raw.githubusercontent.com/.../kasr
 
 ### V2 URL CSV Format (Enhanced)
 ```csv
-faction,army,team,type,name,url
-imperium,astra-militarum,kasrkin,datacards,kasrkin-trooper-gunner_front,https://raw.githubusercontent.com/.../v2/imperium/astra-militarum/kasrkin/datacards/kasrkin-trooper-gunner_front.jpg
-xenos,leagues-of-votann,hearthkyn-salvagers,operative-selection,hearthkyn-salvagers-operatives_front,https://raw.githubusercontent.com/.../v2/xenos/leagues-of-votann/hearthkyn-salvagers/operative-selection/hearthkyn-salvagers-operatives_front.jpg
+faction,team,type,name,url
+imperium,kasrkin,datacards,kasrkin-trooper-gunner_front,https://raw.githubusercontent.com/.../v2/imperium/kasrkin/datacards/kasrkin-trooper-gunner_front.jpg
+xenos,hearthkyn-salvagers,operative-selection,hearthkyn-salvagers-operatives_front,https://raw.githubusercontent.com/.../v2/xenos/hearthkyn-salvagers/operative-selection/hearthkyn-salvagers-operatives_front.jpg
 ```
 
 ### Stats YAML Format (Datacards)

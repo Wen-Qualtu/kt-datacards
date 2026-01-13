@@ -56,9 +56,9 @@ class Team:
         return self.get_v2_output_path(base_dir) / card_type.value
     
     def get_v2_output_path(self, base_dir: Path = Path("output_v2")) -> Path:
-        """Get the v2 output path with faction/army hierarchy"""
-        if self.faction and self.army:
-            return base_dir / self.faction / self.army / self.name
+        """Get the v2 output path with faction/team hierarchy (no army layer)"""
+        if self.faction:
+            return base_dir / self.faction / self.name
         else:
             # Fallback to uncategorized if metadata missing
             return base_dir / "uncategorized" / self.name

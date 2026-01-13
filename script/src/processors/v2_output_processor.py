@@ -46,47 +46,40 @@ class V2OutputProcessor:
             self.logger.warning(f"V2 output directory not found: {self.v2_output_dir}")
             return 0
         
-        # Walk through faction/army/team structure
+        # Walk through faction/team structure
         for faction_dir in sorted(self.v2_output_dir.iterdir()):
             if not faction_dir.is_dir():
                 continue
             
             faction_name = faction_dir.name
             
-            for army_dir in sorted(faction_dir.iterdir()):
-                if not army_dir.is_dir():
+            for team_dir in sorted(faction_dir.iterdir()):
+                if not team_dir.is_dir():
                     continue
                 
-                army_name = army_dir.name
+                team_name = team_dir.name
                 
-                for team_dir in sorted(army_dir.iterdir()):
-                    if not team_dir.is_dir():
+                # Walk through card type directories
+                for type_dir in sorted(team_dir.iterdir()):
+                    if not type_dir.is_dir():
                         continue
                     
-                    team_name = team_dir.name
+                    type_name = type_dir.name
                     
-                    # Walk through card type directories
-                    for type_dir in sorted(team_dir.iterdir()):
-                        if not type_dir.is_dir():
-                            continue
+                    # Collect all JPG files
+                    for jpg_file in sorted(type_dir.glob('*.jpg')):
+                        file_name = jpg_file.stem  # Name without extension
                         
-                        type_name = type_dir.name
+                        # Construct GitHub raw URL (use forward slashes)
+                        url = f"{github_base}/{faction_name}/{team_name}/{type_name}/{jpg_file.name}"
                         
-                        # Collect all JPG files
-                        for jpg_file in sorted(type_dir.glob('*.jpg')):
-                            file_name = jpg_file.stem  # Name without extension
-                            
-                            # Construct GitHub raw URL (use forward slashes)
-                            url = f"{github_base}/{faction_name}/{army_name}/{team_name}/{type_name}/{jpg_file.name}"
-                            
-                            entries.append({
-                                'faction': faction_name,
-                                'army': army_name,
-                                'team': team_name,
-                                'type': type_name,
-                                'name': file_name,
-                                'url': url
-                            })
+                        entries.append({
+                            'faction': faction_name,
+                            'team': team_name,
+                            'type': type_name,
+                            'name': file_name,
+                            'url': url
+                        })
         
         # Write JSON
         json_path = self.v2_output_dir / 'datacards-urls.json'

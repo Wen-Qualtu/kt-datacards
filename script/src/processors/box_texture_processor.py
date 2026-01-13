@@ -48,8 +48,11 @@ class BoxTextureProcessor:
                 )
                 continue
             
-            # Determine output path using team's faction and army
-            team_output_dir = self.output_v2_dir / team.faction / team.army / team.name / "tts"
+            # Determine output path using team's faction
+            if team.faction:
+                team_output_dir = self.output_v2_dir / team.faction / team.name / "tts"
+            else:
+                team_output_dir = self.output_v2_dir / "uncategorized" / team.name / "tts"
             team_output_dir.mkdir(parents=True, exist_ok=True)
             
             # Copy texture with team name prefix
