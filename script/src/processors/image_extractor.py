@@ -417,6 +417,12 @@ class ImageExtractor:
                 # Check if they differ by exactly one 's' at the end
                 if text_normalized + 's' == team_normalized or text_normalized == team_normalized.rstrip('s'):
                     continue
+                # Check if one ends in 'y' and the other is the plural form ending in 'ies'
+                # e.g., "legionary" vs "legionaries"
+                if text_normalized.endswith('y') and team_normalized == text_normalized[:-1] + 'ies':
+                    continue
+                if team_normalized.endswith('y') and text_normalized == team_normalized[:-1] + 'ies':
+                    continue
                 # For compound words like "angel of death" vs "angels-of-death", split on both spaces and dashes
                 import re
                 text_parts = re.split(r'[-\s]+', text_lower.strip())

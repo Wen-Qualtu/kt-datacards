@@ -455,10 +455,23 @@ class DatacardPipeline:
         with open(urls_file, 'r', encoding='utf-8') as f:
             all_cards = json.load(f)
         
+        # Get list of valid teams from config (using team.name)
+        valid_teams = set(team.name for team in self.team_identifier.get_all_teams())
+        
+        # Filter out cards from teams no longer in config and save back
+        filtered_cards = [card for card in all_cards if card['team'] in valid_teams]
+        removed_count = len(all_cards) - len(filtered_cards)
+        
+        if removed_count > 0:
+            removed_teams = set(card['team'] for card in all_cards) - valid_teams
+            self.logger.info(f"Removed {removed_count} cards from {len(removed_teams)} obsolete teams: {', '.join(sorted(removed_teams))}")
+            with open(urls_file, 'w', encoding='utf-8') as f:
+                json.dump(filtered_cards, f, indent=2)
+        
         # Group by team and type, also track card names
         from collections import defaultdict
         teams = defaultdict(lambda: defaultdict(list))
-        for card in all_cards:
+        for card in filtered_cards:
             teams[card['team']][card['type']].append(card['name'])
         
         # Expected counts (most teams follow this pattern)
@@ -477,7 +490,8 @@ class DatacardPipeline:
         # Teams with known exceptions
         teams_without_markertoken = {
             'angels-of-death', 'chaos-cult', 'elucidian-starstriders', 
-            'gellerpox-infected', 'hunter-clade'
+            'gellerpox-infected', 'hunter-clade', 'plague-marines',
+            'void-dancer-troupe', 'warpcoven', 'wyrmblade'
         }
         teams_with_multiple_operative_selection = {'hunter-clade'}
         
