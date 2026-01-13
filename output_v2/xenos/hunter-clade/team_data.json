@@ -1,0 +1,273 @@
+{
+  "team": {
+    "name": "hunter-clade",
+    "display_name": "Hunter Clade",
+    "faction": "xenos",
+    "army": "T'au Empire"
+  },
+  "card_types": {
+    "firefight-ploys": {
+      "control-edict": {
+        "card_name": "control-edict",
+        "display_name": "Control Edict",
+        "has_back": false,
+        "content": {
+          "description": "The leader of a Hunter Clade assumes partial control of another member of their kill team, coordinating precision strikes with the nearby operative. Use this firefight ploy when it’s your turn to activate a friendly operative. Select one friendly HUNTER CLADE  LEADER operative and one other ready friendly HUNTER CLADE  operative visible to and within 3\" of that LEADER operative; activate one of them as normal. When that first friendly operative you activate is expended, you can activate the other friendly operative before your opponent activates. When that other operative is expended, your opponent then activates as normal. Whenever you use this ploy, you cannot select more than one HUNTER CLADE  SICARIAN operative."
+        }
+      },
+      "scrapcode-overload": {
+        "card_name": "scrapcode-overload",
+        "display_name": "Scrapcode Overload",
+        "has_back": false,
+        "content": {
+          "description": "The Hunter Clade’s Infiltrator releases an enormous bombardment of static and scrapcode that disrupts communication channels, reduces enemy coordination and allows the kill team to seize objectives and materiel from under their foe's nose. Use this firefight ploy when a friendly HUNTER CLADE  INFILTRATOR operative is activated. Alternatively, use this firefight ploy when a friendly HUNTER CLADE  INFILTRATOR operative, or an enemy operative within 3\" of that friendly operative, would perform the Pick Up Marker or a mission action (excluding Operate Hatch). Until the start of that friendly operative’s next activation, whenever determining control of a marker, treat the total APL stat of enemy operatives that contest it as 1 lower if at least one of those enemy operatives is within 3\" of that friendly operative. Note this isn’t a change to the APL stat, so any changes are cumulative with this, and this can change control of a marker before performing the action."
+        }
+      },
+      "command-override": {
+        "card_name": "command-override",
+        "display_name": "Command Override",
+        "has_back": false,
+        "content": {
+          "description": "By activating command overrides, the imperatives of individual operatives can be altered in response to ever- shifting mission parameters. Use this firefight ploy when you activate a friendly HUNTER CLADE  operative. Select a DOCTRINA IMPERATIVE for that operative to have instead of its current one (if any) until the Ready step of the next Strategy phase."
+        }
+      },
+      "omnissiahs-imperative": {
+        "card_name": "omnissiahs-imperative",
+        "display_name": "Omnissiahs Imperative",
+        "has_back": true,
+        "content": {
+          "description": "HUNTER CLADE FIREFIGHT PLOY OMNISSIAH’S IMPERATIVE The most extreme form of doctrina imperative, this protocol pushes an operative’s wiring beyond safe limits, providing additional combat power at the cost of burned circuitry and charred flesh. Use this firefight ploy during a friendly HUNTER CLADE  operative’s activation. Alternatively, use it when an enemy operative is shooting a friendly"
+        }
+      }
+    },
+    "faction-rules": {
+      "doctrina-imperatives": {
+        "card_name": "doctrina-imperatives",
+        "display_name": "Doctrina Imperatives",
+        "has_back": true,
+        "content": {
+          "description": "HUNTER CLADE FACTION RULE DOCTRINA IMPERATIVES Tech-Priests dictate protocols for the Hunter Clade to follow as they move through their mission, straining the programming of the Skitarii and Sicarians in order to optimise their current status, to the detriment of all else. At the end of the Select Operatives step, select one DOCTRINA IMPERATIVE to be a Primary"
+        }
+      },
+      "doctrina-imperatives_2": {
+        "card_name": "doctrina-imperatives_2",
+        "display_name": "Doctrina Imperatives_2",
+        "has_back": false,
+        "content": {
+          "description": "Aggressor Imperative Optimisation: Add 1\" to the Move stat of friendly HUNTER CLADE  operatives. Deprecation: Worsen the Save stat of friendly HUNTER CLADE  operatives by 1. Neutral Imperative Optimisation: None. Deprecation: None."
+        }
+      }
+    },
+    "operative-selection": {
+      "operatives": {
+        "card_name": "operatives",
+        "display_name": "Operatives",
+        "has_back": true,
+        "content": {
+          "description": "HUNTER CLADE KILL TEAM ARCHETYPE: RECON, SEEK & DESTROY OPERATIVES ↘\u00071 HUNTER CLADE  operative selected from the following list: •\t \u0007SICARIAN INFILTRATOR PRINCEPS with one option from each of the following: ○\u0007Flechette blaster or stubcarbine ○\u0007Power weapon or taser goad •\t \u0007SICARIAN RUSTSTALKER PRINCEPS"
+        }
+      },
+      "operatives-2": {
+        "card_name": "operatives-2",
+        "display_name": "Operatives 2",
+        "has_back": false,
+        "content": {
+          "description": "Other than GUNNER and WARRIOR operatives, your kill team can only include each operative on this list once. Your kill team can only include up to one DIKTAT operative, up to one SURVEYOR operative and up to five SICARIAN operatives. Your kill team can only include up to one arc rifle, up to one plasma caliver and up to one transuranic arquebus. \u0007You cannot select more than seven of these operatives combined."
+        }
+      }
+    },
+    "equipment": {
+      "rad-bombardment": {
+        "card_name": "rad-bombardment",
+        "display_name": "Rad Bombardment",
+        "has_back": false,
+        "content": {
+          "description": "With a short binharic transmission, the Hunter Clade call down a radioactive bombardment. Mortar rounds rain down, emitting swathes of irradiating energy that flush the enemy from cover or force them to retreat from critical objectives. Once per battle STRATEGIC GAMBIT in any turning point after the first. Select one objective marker or your opponent’s drop zone. Roll one D6 separately for each enemy operative within control range of that selected objective marker or within that drop zone, and subtract 1 if any part of that enemy operative's base is underneath Vantage terrain: on a 4+, subtract 1 from that operative's APL stat until the end of its next activation; on a 6, also inflict D3 damage on it (roll separately for each)."
+        }
+      },
+      "redundancy-systems": {
+        "card_name": "redundancy-systems",
+        "display_name": "Redundancy Systems",
+        "has_back": false,
+        "content": {
+          "description": "Expected to operate behind enemy lines for extended periods, Hunter Clade operatives are often upgraded with redundancy augmetics such as backup lungs and emergency blood packs, ensuring that they remain capable of functioning even after suffering terrible damage. Once per turning point, when a friendly HUNTER CLADE  operative is activated, if it’s not within control range of enemy operatives, you can use this rule. If you do, that friendly operative regains up to D3+2 lost wounds."
+        }
+      },
+      "refractor-field": {
+        "card_name": "refractor-field",
+        "display_name": "Refractor Field",
+        "has_back": false,
+        "content": {
+          "description": "A miniaturised shield generator given to key warriors of the Adeptus Mechanicus, this device projects a barrier of energy that deflects shots and preserves the machine form of the bearer. Once per turning point, when an operative is shooting a friendly HUNTER CLADE  operative, at the start of the Roll Defence Dice step, you can use this rule. If you do, worsen the x of the Piercing weapon rule by 1 (if any) until the end of that sequence. Note that Piercing 1 would therefore be ignored."
+        }
+      },
+      "extremis-mind-link": {
+        "card_name": "extremis-mind-link",
+        "display_name": "Extremis Mind Link",
+        "has_back": false,
+        "content": {
+          "description": "HUNTER CLADE FACTION EQUIPMENT EXTREMIS MIND-LINK This technology allows Hunter Clade leaders to retain close control over their Skitarii and Sicarian soldiers. In turn, the soldiery see the mind-link as a blessed thing, for the edicts transmitted to them are surely the will of the Omnissiah. Once per battle, you can use the Control Edict firefight ploy for 0CP, but instead of activating"
+        }
+      }
+    },
+    "strategy-ploys": {
+      "debilitating-irradiation": {
+        "card_name": "debilitating-irradiation",
+        "display_name": "Debilitating Irradiation",
+        "has_back": false,
+        "content": {
+          "description": "The Skitarii Vanguard push forward, shrouded in clouds of radiation. Those caught in this lethal miasma find their combat abilities greatly degraded. Whenever an enemy operative is shooting against, fighting against or retaliating against a friendly HUNTER CLADE  VANGUARD operative, if that enemy operative is under the effects of the Rad-Saturation rule (see VANGUARD operatives), subtract 1 from the Normal Dmg stat of its weapons (to a minimum of 3)."
+        }
+      },
+      "neurostatic-interference": {
+        "card_name": "neurostatic-interference",
+        "display_name": "Neurostatic Interference",
+        "has_back": false,
+        "content": {
+          "description": "Sicarian Infiltrators confound their foes by emitting hissing static and electromagnetic pulses that cloud minds and interfere with vox-networks. Whenever an enemy operative within 6\" of a friendly HUNTER CLADE  INFILTRATOR operative is shooting, fighting or retaliating, your opponent cannot re-roll their attack dice."
+        }
+      },
+      "scouting-protocol": {
+        "card_name": "scouting-protocol",
+        "display_name": "Scouting Protocol",
+        "has_back": false,
+        "content": {
+          "description": "Operating as advanced scouts, Skitarii Rangers avoid close combat, darting from cover to cover to evade the attention of their enemies. Each friendly HUNTER CLADE  RANGER operative that has a Conceal order and is more than 6\" from enemy operatives can immediately perform a free Dash action in an order of your choice. You cannot use this ploy during the first turning point."
+        }
+      },
+      "accelerant-agents": {
+        "card_name": "accelerant-agents",
+        "display_name": "Accelerant Agents",
+        "has_back": false,
+        "content": {
+          "description": "Sicarian Ruststalkers are flooded with aggression- inducing binharic code, inciting within them a lust for violence and enabling them to strike with blinding speed and nightmarish force. During each friendly HUNTER CLADE RUSTSTALKER operative’s activation, it can perform two Fight actions, and one of them can be free."
+        }
+      }
+    },
+    "datacards": {
+      "sicarian-ruststalker-princeps": {
+        "card_name": "sicarian-ruststalker-princeps",
+        "display_name": "Sicarian Ruststalker Princeps",
+        "has_back": false,
+        "content": {
+          "description": "WR \u0007\t Chordclaw & transonic blades 5 3+ 4/6 \u0007Balanced, Rending Canticle of Destruction: Whenever a friendly HUNTER CLADE  RUSTSTALKER operative within 3\" of this operative is fighting, the first time you strike with a critical success during that sequence, inflict 1 additional damage. Wasteland Stalker: Whenever an operative is shooting this operative, if you can retain any cover saves, you can retain one additional cover save, or you can retain one cover save as a critical success instead. This isn’t cumulative with improved cover saves from Vantage terrain. Control Protocol: You can use the Command Override firefight ploy for 0CP if the specified friendly HUNTER CLADE operative is visible to this operative. HUNTER CLADE , IMPERIUM, ADEPTUS MECHANICUS, LEADER, SICARIAN, RUSTSTALKER, PRINCEPS SICARIAN RUSTSTALKER PRINCEPS 2 APL WOUNDS SAVE MOVE 6\" 4+ 11 40"
+        }
+      },
+      "sicarian-infiltrator-princeps": {
+        "card_name": "sicarian-infiltrator-princeps",
+        "display_name": "Sicarian Infiltrator Princeps",
+        "has_back": false,
+        "content": {
+          "description": "WR \u0007 Flechette blaster 5 3+ 2/2 \u0007Range 8\", Saturate, Silent \u0007 Stubcarbine 4 3+ 3/4 \u0007Ceaseless \u0007\t Power weapon 4 3+ 4/6 \u0007Lethal 5+ \u0007\t Taser goad 4 3+ 3/4 \u0007Lethal 5+, Shock Canticle of Shroudpsalm: Whenever a friendly HUNTER CLADE  INFILTRATOR operative is within 3\" of this operative, has a Conceal order and is in cover, that friendly operative cannot be selected as a valid target, taking precedence over all other rules (e.g. Seek, Vantage terrain) except being within 2\". Control Protocol: You can use the Command Override firefight ploy for 0CP if the specified friendly HUNTER CLADE operative is visible to this operative. HUNTER CLADE , IMPERIUM, ADEPTUS MECHANICUS, LEADER, SICARIAN, INFILTRATOR, PRINCEPS SICARIAN INFILTRATOR PRINCEPS 2 APL WOUNDS SAVE MOVE 6\" 4+ 11 40"
+        }
+      },
+      "skitarii-ranger-alpha": {
+        "card_name": "skitarii-ranger-alpha",
+        "display_name": "Skitarii Ranger Alpha",
+        "has_back": true,
+        "content": {
+          "description": "WR \u0007 Arc pistol 4 3+ 4/5 \u0007Range 8\", Piercing 1, Stun \u0007 Galvanic rifle 4 3+ 3/4 \u0007Heavy (Reposition only), Piercing Crits 1 \u0007 Master-crafted radium pistol 4 3+ 2/4 \u0007Range 8\", Balanced, Rending \u0007 Phosphor blast pistol 4 3+ 3/4 \u0007Range 8\", Blast 1\", Severe \u0007\t Arc maul 4 4+ 4/5 \u0007Shock \u0007\t Gun butt 3 4+ 2/3 \u0007- \u0007\t Power weapon 4 4+ 4/6 \u0007Lethal 5+ \u0007\t Taser goad 4 4+ 3/4 \u0007Lethal 5+, Shock HUNTER CLADE , IMPERIUM, ADEPTUS MECHANICUS, LEADER, SKITARII, RANGER, ALPHA SKITARII RANGER ALPHA 2 APL WOUNDS SAVE MOVE 6\" 4+ 8 25 RULES CONTINUE ON OTHER SIDE"
+        }
+      },
+      "skitarii-vanguard-alpha": {
+        "card_name": "skitarii-vanguard-alpha",
+        "display_name": "Skitarii Vanguard Alpha",
+        "has_back": true,
+        "content": {
+          "description": "WR \u0007 Arc pistol 4 3+ 4/5 \u0007Range 8\", Piercing 1, Stun \u0007 Master-crafted radium pistol 4 3+ 2/4 \u0007Range 8\", Balanced, Rending \u0007 Phosphor blast pistol 4 3+ 3/4 \u0007Range 8\", Blast 1\", Severe \u0007 Radium carbine 4 3+ 2/4 \u0007Rending \u0007\t Arc maul 4 4+ 4/5 \u0007Shock \u0007\t Gun butt 3 4+ 2/3 \u0007- \u0007\t Power weapon 4 4+ 4/6 \u0007Lethal 5+ \u0007\t Taser goad 4 4+ 3/4 \u0007Lethal 5+, Shock HUNTER CLADE , IMPERIUM, ADEPTUS MECHANICUS, LEADER, SKITARII, VANGUARD, ALPHA SKITARII VANGUARD ALPHA 2 APL WOUNDS SAVE MOVE 6\" 4+ 8 25 RULES CONTINUE ON OTHER SIDE"
+        }
+      },
+      "sicarian-infiltrator-warrior": {
+        "card_name": "sicarian-infiltrator-warrior",
+        "display_name": "Sicarian Infiltrator Warrior",
+        "has_back": false,
+        "content": {
+          "description": "WR \u0007 Flechette blaster 5 3+ 2/2 \u0007Range 8\", Saturate, Silent \u0007 Stubcarbine 4 3+ 3/4 \u0007Ceaseless \u0007\t Power weapon 4 3+ 4/6 \u0007Lethal 5+ \u0007\t Taser goad 4 3+ 3/4 \u0007Lethal 5+, Shock HUNTER CLADE , IMPERIUM, ADEPTUS MECHANICUS, SICARIAN, INFILTRATOR, WARRIOR SICARIAN INFILTRATOR WARRIOR 2 APL WOUNDS SAVE MOVE 6\" 4+ 10 40"
+        }
+      },
+      "sicarian-ruststalker-warrior": {
+        "card_name": "sicarian-ruststalker-warrior",
+        "display_name": "Sicarian Ruststalker Warrior",
+        "has_back": false,
+        "content": {
+          "description": "WR \u0007\t Chordclaw & transonic razor 5 3+ 4/5 \u0007Balanced \u0007\t Transonic blades 5 3+ 4/6 \u0007Rending Wasteland Stalker: Whenever an operative is shooting this operative, if you can retain any cover saves, you can retain one additional cover save, or you can retain one cover save as a critical success instead. This isn’t cumulative with improved cover saves from Vantage terrain. HUNTER CLADE , IMPERIUM, ADEPTUS MECHANICUS, SICARIAN, RUSTSTALKER, WARRIOR SICARIAN RUSTSTALKER WARRIOR 2 APL WOUNDS SAVE MOVE 6\" 4+ 10 40"
+        }
+      },
+      "skitarii-ranger-diktat": {
+        "card_name": "skitarii-ranger-diktat",
+        "display_name": "Skitarii Ranger Diktat",
+        "has_back": false,
+        "content": {
+          "description": "WR \u0007 Galvanic rifle 4 3+ 3/4 \u0007Heavy (Reposition only), Piercing Crits 1 \u0007\t Gun butt 3 4+ 2/3 \u0007- Targeting Protocol: Whenever this operative is shooting, if it hasn’t moved during the activation, or if it’s a counteraction, ranged weapons on its datacard have the Lethal 5+ weapon rule. Note this operative isn’t restricted from moving after shooting. SIGNAL\b 1AP \u0007SUPPORT. Select one other friendly HUNTER CLADE operative visible to and within 6\" of this operative. Until the end of that operative’s next activation, add 1 to its APL stat. \u0007This operative cannot perform this action while within control range of an enemy operative. HUNTER CLADE , IMPERIUM, ADEPTUS MECHANICUS, SKITARII, RANGER, DIKTAT SKITARII RANGER DIKTAT 2 APL WOUNDS SAVE MOVE 6\" 4+ 7 25"
+        }
+      },
+      "skitarii-ranger-gunner": {
+        "card_name": "skitarii-ranger-gunner",
+        "display_name": "Skitarii Ranger Gunner",
+        "has_back": false,
+        "content": {
+          "description": "WR \u0007 Arc rifle1 4 3+ 4/5 \u0007Piercing 1, Stun \u0007 Plasma caliver (standard)1 4 3+ 4/6 \u0007Piercing 1 \u0007 Plasma caliver (supercharge)1 4 3+ 5/6 \u0007Hot, Lethal 5+, Piercing 1 \u0007 Transuranic arquebus (mobile)2\t 4 3+ 4/3 \u0007Devastating 2, Heavy (Dash only), Piercing 1 \u0007 \u0007Transuranic arquebus 4 2+ 4/3 \u0007Devastating 3, Heavy, Piercing 1, Severe (stationary)2 \u0007\t Gun butt 3 4+ 2/3 \u0007- Targeting Protocol: Whenever this operative is shooting, if it hasn’t moved during the activation, or if it’s a counteraction, ranged weapons on its datacard have the Lethal 5+ weapon rule. Note this operative isn’t restricted from moving after shooting. HUNTER CLADE , IMPERIUM, ADEPTUS MECHANICUS, SKITARII, RANGER, GUNNER SKITARII RANGER GUNNER 2 APL WOUNDS SAVE MOVE 6\" 4+ 7 60x35 25 1 2"
+        }
+      },
+      "skitarii-ranger-surveyor": {
+        "card_name": "skitarii-ranger-surveyor",
+        "display_name": "Skitarii Ranger Surveyor",
+        "has_back": false,
+        "content": {
+          "description": "WR \u0007 Galvanic rifle 4 3+ 3/4 \u0007Heavy (Reposition only), Piercing Crits 1 \u0007\t Gun butt 3 4+ 2/3 \u0007- Targeting Protocol: Whenever this operative is shooting, if it hasn’t moved during the activation, or if it’s a counteraction, ranged weapons on its datacard have the Lethal 5+ weapon rule. Note this operative isn’t restricted from moving after shooting. SPOT\b 1AP \u0007SUPPORT. Select one enemy operative visible to this operative. Until the end of the turning point, whenever a friendly HUNTER CLADE  operative within 3\" of this operative is shooting that enemy operative, you can use this effect. If you do: •\t \u0007That friendly operative’s ranged weapons have the Seek Light weapon rule. •\t \u0007That enemy operative cannot be obscured. \u0007This operative cannot perform this action while within control range of an enemy operative. HUNTER CLADE , IMPERIUM, ADEPTUS MECHANICUS, SKITARII, RANGER, SURVEYOR SKITARII RANGER SURVEYOR 2 APL WOUNDS SAVE MOVE 6\" 4+ 7 25"
+        }
+      },
+      "skitarii-ranger-warrior": {
+        "card_name": "skitarii-ranger-warrior",
+        "display_name": "Skitarii Ranger Warrior",
+        "has_back": false,
+        "content": {
+          "description": "WR \u0007 Galvanic rifle 4 3+ 3/4 \u0007Heavy (Reposition only), Piercing Crits 1 \u0007\t Gun butt 3 4+ 2/3 \u0007- Targeting Protocol: Whenever this operative is shooting, if it hasn’t moved during the activation, or if it’s a counteraction, ranged weapons on its datacard have the Lethal 5+ weapon rule. Note this operative isn’t restricted from moving after shooting. HUNTER CLADE , IMPERIUM, ADEPTUS MECHANICUS, SKITARII, RANGER, WARRIOR SKITARII RANGER WARRIOR 2 APL WOUNDS SAVE MOVE 6\" 4+ 7 25"
+        }
+      },
+      "skitarii-vanguard-diktat": {
+        "card_name": "skitarii-vanguard-diktat",
+        "display_name": "Skitarii Vanguard Diktat",
+        "has_back": false,
+        "content": {
+          "description": "WR \u0007 Radium carbine 4 3+ 2/4 \u0007Rending \u0007\t Gun butt 3 4+ 2/3 \u0007- Rad-Saturation: Whenever an enemy operative is within 2\" of friendly HUNTER CLADE  VANGUARD operatives, worsen the Hit stat of that enemy operative’s weapons by 1. This isn’t cumulative with being injured. SIGNAL\b 1AP \u0007SUPPORT. Select one other friendly HUNTER CLADE operative visible to and within 6\" of this operative. Until the end of that operative’s next activation, add 1 to its APL stat. \u0007This operative cannot perform this action while within control range of an enemy operative. HUNTER CLADE , IMPERIUM, ADEPTUS MECHANICUS, SKITARII, VANGUARD, DIKTAT SKITARII VANGUARD DIKTAT 2 APL WOUNDS SAVE MOVE 6\" 4+ 7 25"
+        }
+      },
+      "skitarii-vanguard-gunner": {
+        "card_name": "skitarii-vanguard-gunner",
+        "display_name": "Skitarii Vanguard Gunner",
+        "has_back": false,
+        "content": {
+          "description": "WR \u0007 Arc rifle1 4 3+ 4/5 \u0007Piercing 1, Stun \u0007 Plasma caliver (standard)1 4 3+ 4/6 \u0007Piercing 1 \u0007 Plasma caliver (supercharge)1 4 3+ 5/6 \u0007Hot, Lethal 5+, Piercing 1 \u0007 Transuranic arquebus (mobile)2\t 4 3+ 4/3 \u0007Devastating 2, Heavy (Dash only), Piercing 1 \u0007 \u0007Transuranic arquebus 4 2+ 4/3 \u0007Devastating 3, Heavy, Piercing 1, Severe (stationary)2 \u0007\t Gun butt 3 4+ 2/3 \u0007- Rad-Saturation: Whenever an enemy operative is within 2\" of friendly HUNTER CLADE  VANGUARD operatives, worsen the Hit stat of that enemy operative’s weapons by 1. This isn’t cumulative with being injured. HUNTER CLADE , IMPERIUM, ADEPTUS MECHANICUS, SKITARII, VANGUARD, GUNNER SKITARII VANGUARD GUNNER 2 APL WOUNDS SAVE MOVE 6\" 4+ 7 60x35 25 1 2"
+        }
+      },
+      "skitarii-vanguard-surveyor": {
+        "card_name": "skitarii-vanguard-surveyor",
+        "display_name": "Skitarii Vanguard Surveyor",
+        "has_back": false,
+        "content": {
+          "description": "WR \u0007 Radium carbine 4 3+ 2/4 \u0007Rending \u0007\t Gun butt 3 4+ 2/3 \u0007- Rad-Saturation: Whenever an enemy operative is within 2\" of friendly HUNTER CLADE  VANGUARD operatives, worsen the Hit stat of that enemy operative’s weapons by 1. This isn’t cumulative with being injured. SPOT\b 1AP \u0007SUPPORT. Select one enemy operative visible to this operative. Until the end of the turning point, whenever a friendly HUNTER CLADE  operative within 3\" of this operative is shooting that enemy operative, you can use this effect. If you do: •\t \u0007That friendly operative’s ranged weapons have the Seek Light weapon rule. •\t \u0007That enemy operative cannot be obscured. \u0007This operative cannot perform this action while within control range of an enemy operative. HUNTER CLADE , IMPERIUM, ADEPTUS MECHANICUS, SKITARII, VANGUARD, SURVEYOR SKITARII VANGUARD SURVEYOR 2 APL WOUNDS SAVE MOVE 6\" 4+ 7 25"
+        }
+      },
+      "skitarii-vanguard-warrior": {
+        "card_name": "skitarii-vanguard-warrior",
+        "display_name": "Skitarii Vanguard Warrior",
+        "has_back": false,
+        "content": {
+          "description": "WR \u0007 Radium carbine 4 3+ 2/4 \u0007Rending \u0007\t Gun butt 3 4+ 2/3 \u0007- Rad-Saturation: Whenever an enemy operative is within 2\" of friendly HUNTER CLADE  VANGUARD operatives, worsen the Hit stat of that enemy operative’s weapons by 1. This isn’t cumulative with being injured. HUNTER CLADE , IMPERIUM, ADEPTUS MECHANICUS, SKITARII, VANGUARD, WARRIOR SKITARII VANGUARD WARRIOR 2 APL WOUNDS SAVE MOVE 6\" 4+ 7 25"
+        }
+      }
+    }
+  },
+  "processing_summary": {
+    "total_cards": 394,
+    "by_type": {
+      "firefight-ploys": 52,
+      "faction-rules": 26,
+      "operative-selection": 26,
+      "equipment": 56,
+      "strategy-ploys": 52,
+      "datacards": 182
+    }
+  }
+}

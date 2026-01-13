@@ -455,12 +455,11 @@ class DatacardPipeline:
         with open(urls_file, 'r', encoding='utf-8') as f:
             all_cards = json.load(f)
         
-        # Group by team and type
+        # Group by team and type, also track card names
         from collections import defaultdict
-        teams = defaultdict(lambda: defaultdict(int))
+        teams = defaultdict(lambda: defaultdict(list))
         for card in all_cards:
-            # Count unique cards (divide by 2 since we have front+back)
-            teams[card['team']][card['type']] += 1
+            teams[card['team']][card['type']].append(card['name'])
         
         # Expected counts (most teams follow this pattern)
         expected = {
@@ -473,10 +472,31 @@ class DatacardPipeline:
         }
         
         issues = []
+        info_messages = []
+        
+        # Teams with known exceptions
+        teams_without_markertoken = {
+            'angels-of-death', 'chaos-cult', 'elucidian-starstriders', 
+            'gellerpox-infected', 'hunter-clade'
+        }
+        teams_with_multiple_operative_selection = {'hunter-clade'}
+        
         for team_name in sorted(teams.keys()):
             team_cards = teams[team_name]
-            # Divide by 2 since each card has front+back
-            actual_counts = {k: v // 2 for k, v in team_cards.items()}
+            
+            # Count unique cards (each card has _front and _back, so divide by 2)
+            actual_counts = {}
+            for card_type, card_names in team_cards.items():
+                # Count unique base names (without _front/_back suffix)
+                unique_names = set()
+                for name in card_names:
+                    if name.endswith('_front'):
+                        unique_names.add(name[:-6])
+                    elif name.endswith('_back'):
+                        unique_names.add(name[:-5])
+                    else:
+                        unique_names.add(name)
+                actual_counts[card_type] = len(unique_names)
             
             # Check for missing standard card types
             if 'equipment' not in actual_counts:
@@ -496,11 +516,31 @@ class DatacardPipeline:
             
             if 'operative-selection' not in actual_counts:
                 issues.append(f"⚠️  {team_name}: Missing operative-selection")
+            elif actual_counts['operative-selection'] != expected['operative-selection']:
+                if team_name in teams_with_multiple_operative_selection:
+                    info_messages.append(f"ℹ️  {team_name}: Has {actual_counts['operative-selection']} operative-selection cards (expected {expected['operative-selection']}, but known exception)")
+                else:
+                    issues.append(f"⚠️  {team_name}: Has {actual_counts['operative-selection']} operative-selection cards (expected {expected['operative-selection']})")
             
             if 'datacards' not in actual_counts:
                 issues.append(f"⚠️  {team_name}: Missing datacards")
             elif actual_counts['datacards'] < 4:
                 issues.append(f"⚠️  {team_name}: Only has {actual_counts['datacards']} datacards (seems low)")
+            
+            # Check for markertoken-guide in faction-rules
+            if 'faction-rules' in team_cards:
+                faction_rule_names = [name.lower() for name in team_cards['faction-rules']]
+                has_markertoken = any('markertoken' in name for name in faction_rule_names)
+                if not has_markertoken:
+                    if team_name in teams_without_markertoken:
+                        info_messages.append(f"ℹ️  {team_name}: No markertoken-guide in faction-rules (known older team)")
+                    else:
+                        issues.append(f"⚠️  {team_name}: Missing markertoken-guide in faction-rules")
+        
+        if info_messages:
+            self.logger.info("Known team exceptions:")
+            for msg in info_messages:
+                self.logger.info(f"  {msg}")
         
         if issues:
             self.logger.warning("=" * 60)

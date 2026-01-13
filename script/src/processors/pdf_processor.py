@@ -194,19 +194,6 @@ class PDFProcessor:
         # The team name is in the first tag at the bottom (orange text on black background)
         # It appears in the bottom section, typically the last few lines
         
-        faction_keywords = [
-            'IMPERIUM', 'CHAOS', 'AELDARI', 'TYRANIDS', 'TYRANID', 'ORKS', 'ORK',
-            'TAU', 'NECRONS', 'NECRON', 'LEAGUES OF VOTANN', 'GENESTEALER'
-        ]
-        # Add T'AU with regular apostrophe (will match after normalization)
-        faction_keywords.append('T' + chr(39) + 'AU')
-        
-        role_keywords = [
-            'LEADER', 'OPERATIVE', 'WARRIOR', 'SERGEANT', 'THEYN',
-            'NOB', 'BOSS', 'PRIEST', 'TECH-PRIEST', 'TECHNOARCHEOLOGIST',
-            'ARCHAEOPTER', 'SERVITOR', 'IMMORTAL', 'WRAITH', 'CRYPTEK'
-        ]
-        
         # Look in bottom 20 lines for the tag section
         # The first meaningful tag is usually the team name
         candidate_teams = []
@@ -216,53 +203,21 @@ class PDFProcessor:
             line_normalized = line.replace(chr(8217), chr(39)).replace(chr(8216), chr(39))
             line_upper = line_normalized.upper()
             
-            # Skip if it's a stat line or common card elements
-            if any(stat in line_upper for stat in ['APL', 'WOUNDS', 'SAVE', 'MOVEMENT', 'GA', 'DF']):
+            # Skip standalone stat lines (exact matches only - current edition stats)
+            if line_upper in ['APL', 'WOUNDS', 'SAVE', 'MOVE'] or line_upper.isdigit():
                 continue
             
-            # Check if line is uppercase and contains faction keyword
+            # Check if line is uppercase (metadata lines are all caps)
             if not line_normalized.isupper():
                 continue
-                
-            # Check for faction keyword (check normalized line since we normalized apostrophes)
-            if not any(keyword in line_upper for keyword in faction_keywords):
-                continue
             
-            # This line contains a faction keyword and is uppercase
-            # It could be either:
-            # 1. A comma-separated metadata line (TEAM, FACTION, ROLE, etc.)
-            # 2. A short tag (just team name, 1-5 words)
-            
+            # Only accept comma-separated format with multiple parts (metadata format)
+            # This avoids picking up ability names like "INCITE" or "SIGNAL"
             if ',' in line_normalized and line_normalized.count(',') >= 2:
-                # Comma-separated format - first part is team name
+                # Comma-separated format - first part before comma is the team name
                 parts = [p.strip() for p in line_normalized.split(',')]
-                first_part = parts[0]
-                
-                # Remove role keywords from team name
-                words = first_part.split()
-                team_words = []
-                for word in words:
-                    if any(role in word.upper() for role in role_keywords):
-                        break
-                    team_words.append(word)
-                
-                if team_words:
-                    team_name = ' '.join(team_words)
-                    candidate_teams.append(self._clean_filename(team_name))
-            
-            elif len(line_normalized.split()) <= 5:
-                # Short tag format - likely just team name
-                # Remove role keywords if present
-                words = line_normalized.split()
-                team_words = []
-                for word in words:
-                    if any(role in word.upper() for role in role_keywords):
-                        break
-                    team_words.append(word)
-                
-                if team_words:
-                    team_name = ' '.join(team_words)
-                    candidate_teams.append(self._clean_filename(team_name))
+                team_name = parts[0]
+                candidate_teams.append(self._clean_filename(team_name))
         
         # Return the first candidate found (closest to bottom)
         return candidate_teams[0] if candidate_teams else None

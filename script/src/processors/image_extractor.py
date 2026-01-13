@@ -107,7 +107,7 @@ class ImageExtractor:
             ])
             
             # Check for special "options on their own cards" pattern
-            if card_type == CardType.FACTION_RULES and ('GIFT OPTIONS ARE PRESENTED ON THEIR OWN CARDS' in text_normalized or 'ORDERS OPTIONS ARE PRESENTED ON THEIR OWN CARDS' in text_normalized):
+            if card_type == CardType.FACTION_RULES and ('OPTIONS ARE PRESENTED ON THEIR OWN CARDS' in text_normalized):
                 options_on_own_cards_mode = True
             
             # Extract card name
