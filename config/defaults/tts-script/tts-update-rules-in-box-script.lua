@@ -336,28 +336,17 @@ function click_update_rules()
   
   broadcastToAll("Updating rules and box texture... Please wait and do NOT click other buttons.", {1, 1, 0})
   
-  -- Update the bag texture itself
   local cacheBust = math.random(1, 999999)
-  local bagCustom = self.getCustomObject()
-  if bagCustom and bagCustom.diffuse then
-    bagCustom.diffuse = bagCustom.diffuse .. "?v=" .. cacheBust
-    self.setCustomObject(bagCustom)
-    self.reload()
-    broadcastToAll("Box texture refreshed!", {0, 1, 0})
+  local processedCount = 0
+  local totalToProcess = #bagObjList
+  local initialBagCount = totalToProcess
+  
+  -- Clone the bag contents list
+  local objectsToUpdate = {}
+  for _, obj in ipairs(bagObjList) do
+    table.insert(objectsToUpdate, obj.guid)
   end
-  
-  -- Wait a moment for bag to finish reloading before processing cards
-  Wait.time(function()
-    local processedCount = 0
-    local totalToProcess = #bagObjList
-    local initialBagCount = totalToProcess
-    
-    -- Clone the bag contents list
-    local objectsToUpdate = {}
-    for _, obj in ipairs(bagObjList) do
-      table.insert(objectsToUpdate, obj.guid)
-    end
-  
+
   -- Helper function to check if object is in bag by GUID
   local function isObjectInBag(newGuid)
     local bagContents = self.getObjects()
@@ -372,17 +361,16 @@ function click_update_rules()
   -- Process objects one at a time sequentially
   local function processNextObject(index)
     if index > #objectsToUpdate then
-      -- All done - verify all objects are back
-      Wait.condition(
-        function()
-          local finalCount = #self.getObjects()
-          broadcastToAll("Update complete! All " .. processedCount .. " cards refreshed. Bag has " .. finalCount .. " items.", {0, 1, 0})
-        end,
-        function()
-          return #self.getObjects() >= initialBagCount
-        end,
-        10  -- 10 second timeout for final check
-      )
+      -- All done - now update the bag texture last
+      Wait.time(function()
+        local bagCustom = self.getCustomObject()
+        if bagCustom and bagCustom.diffuse then
+          bagCustom.diffuse = bagCustom.diffuse .. "?v=" .. cacheBust
+          self.setCustomObject(bagCustom)
+          self.reload()
+        end
+        broadcastToAll("Update complete! All " .. processedCount .. " cards and box texture refreshed.", {0, 1, 0})
+      end, 0.5)
       return
     end
     
@@ -409,18 +397,16 @@ function click_update_rules()
                 newGuid = newDeck.getGUID()
                 self.putObject(newDeck)
                 processedCount = processedCount + 1
-                broadcastToAll("Updated " .. processedCount .. " of " .. totalToProcess .. " - waiting for it to enter bag...", {0, 0.7, 1})
+                broadcastToAll("Updated " .. processedCount .. " of " .. totalToProcess, {0, 0.7, 1})
                 
-                -- Wait until this specific object is actually in the bag
                 Wait.condition(
                   function()
-                    broadcastToAll("Card in bag, processing next...", {0, 0.7, 1})
                     processNextObject(index + 1)
                   end,
                   function()
                     return isObjectInBag(newGuid)
                   end,
-                  10  -- 10 second timeout
+                  10
                 )
               end,
               function() return newDeck ~= nil and not newDeck.spawning end,
@@ -431,7 +417,6 @@ function click_update_rules()
             self.putObject(obj)
             processedCount = processedCount + 1
             
-            -- Wait until this object is in the bag
             Wait.condition(
               function()
                 processNextObject(index + 1)
@@ -458,12 +443,10 @@ function click_update_rules()
               newGuid = obj.getGUID()
               self.putObject(obj)
               processedCount = processedCount + 1
-              broadcastToAll("Updated " .. processedCount .. " of " .. totalToProcess .. " - waiting for it to enter bag...", {0, 0.7, 1})
+              broadcastToAll("Updated " .. processedCount .. " of " .. totalToProcess, {0, 0.7, 1})
               
-              -- Wait until this object is in the bag
               Wait.condition(
                 function()
-                  broadcastToAll("Card in bag, processing next...", {0, 0.7, 1})
                   processNextObject(index + 1)
                 end,
                 function()
@@ -477,7 +460,6 @@ function click_update_rules()
             self.putObject(obj)
             processedCount = processedCount + 1
             
-            -- Wait until this object is in the bag
             Wait.condition(
               function()
                 processNextObject(index + 1)
@@ -497,5 +479,4 @@ function click_update_rules()
   
   -- Start processing first object
   processNextObject(1)
-  end, 1)  -- Wait 1 second for bag reload to complete
 end
