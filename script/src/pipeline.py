@@ -374,50 +374,55 @@ class DatacardPipeline:
         """Collect Datacard objects from existing output directory"""
         datacards = []
         
-        if not self.output_dir.exists():
+        if not self.output_v2_dir.exists():
             return datacards
         
-        for team_dir in self.output_dir.iterdir():
-            if not team_dir.is_dir():
+        # Iterate through faction folders, then team folders
+        for faction_dir in self.output_v2_dir.iterdir():
+            if not faction_dir.is_dir():
                 continue
             
-            team_name = team_dir.name
-            
-            # Apply filter
-            if team_filter and team_name not in team_filter:
-                continue
-            
-            team = self.team_identifier.get_or_create_team(team_name)
-            
-            # Process card type directories
-            for type_dir in team_dir.iterdir():
-                if not type_dir.is_dir():
+            for team_dir in faction_dir.iterdir():
+                if not team_dir.is_dir():
                     continue
                 
-                # Skip directories with team name prefix (inconsistency from old scripts)
-                # Check both full team name and first part of hyphenated name
-                dir_name = type_dir.name
+                team_name = team_dir.name
                 
-                # Try to parse as card type
-                try:
-                    card_type = CardType.from_string(dir_name)
-                except ValueError:
-                    # Not a recognized card type, skip this directory
+                # Apply filter
+                if team_filter and team_name not in team_filter:
                     continue
                 
-                if not card_type:
-                    continue
+                team = self.team_identifier.get_or_create_team(team_name)
                 
-                # Collect front images
-                for front_image in type_dir.glob('*_front.jpg'):
-                    card_name = front_image.stem.replace('_front', '')
+                # Process card type directories
+                for type_dir in team_dir.iterdir():
+                    if not type_dir.is_dir():
+                        continue
                     
-                    # Create Datacard object
-                    datacard = Datacard(
-                        source_pdf=None,  # Unknown at this point
-                        team=team,
-                        card_type=card_type,
-                        card_name=card_name
+                    # Skip directories with team name prefix (inconsistency from old scripts)
+                    # Check both full team name and first part of hyphenated name
+                    dir_name = type_dir.name
+                    
+                    # Try to parse as card type
+                    try:
+                        card_type = CardType.from_string(dir_name)
+                    except ValueError:
+                        # Not a recognized card type, skip this directory
+                        continue
+                    
+                    if not card_type:
+                        continue
+                    
+                    # Collect front images
+                    for front_image in type_dir.glob('*_front.jpg'):
+                        card_name = front_image.stem.replace('_front', '')
+                        
+                        # Create Datacard object
+                        datacard = Datacard(
+                            source_pdf=None,  # Unknown at this point
+                            team=team,
+                            card_type=card_type,
+                            card_name=card_name
                     )
                     datacard.front_image = front_image
                     

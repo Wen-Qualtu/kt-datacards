@@ -17,7 +17,7 @@
   "XmlUI": "",
   "ObjectStates": [
     {
-      "GUID": "cbce71",
+      "GUID": "e6362e",
       "Name": "Custom_Model_Bag",
       "Transform": {
         "posX": 0.0,
@@ -76,11 +76,11 @@
         "Order": 0
       },
       "LuaScript": "\ufeff-- constants\r\nlocal BUTTON_SETUP_TOKENS = {\r\n  label=\"Setup\",\r\n  click_function=\"click_setup\", function_owner=self,\r\n  position={0,0.3,-2}, rotation={0,180,0},\r\n  height=350, width=800,\r\n  font_size=250, color={0,0,0}, font_color={1,1,1}\r\n}\r\nlocal BUTTON_SETUP_BOX = {\r\n  label=\"Setup\",\r\n  click_function=\"click_setup\",\r\n  function_owner=self,\r\n  position={-2,-2.5,-1}, rotation={0,270,0},\r\n  height=350, width=800,\r\n  font_size=250, color={0,0,0}, font_color={1,1,1}\r\n}\r\nlocal BUTTON_RECALL = {\r\n  label=\"Recall\",\r\n  click_function=\"click_recall\", function_owner=self,\r\n  position={1.75,-2.5,-1}, rotation={0,270,0},\r\n  height=350, width=800,\r\n  font_size=250, color={1,0,0}, font_color={1,1,1}\r\n}\r\nlocal BUTTON_PLACE = {\r\n  label=\"Place\",\r\n  click_function=\"click_place\",\r\n  function_owner=self,\r\n  position={1.75,-2.5,1}, rotation={0,270,0},\r\n  height=350, width=800,\r\n  font_size=250, color={0.2,0.95,0}, font_color={0,0,0}\r\n}\r\nlocal BUTTON_UPDATE = {\r\n  label=\"Update\",\r\n  click_function=\"click_update_rules\",\r\n  function_owner=self,\r\n  position={-2,-2.5,1}, rotation={0,270,0},\r\n  height=350, width=800,\r\n  font_size=250, color={0,0.5,1}, font_color={1,1,1}\r\n}\r\nlocal BUTTON_CANCEL = {\r\n  label=\"Cancel\",\r\n  click_function=\"click_cancel\",\r\n  function_owner=self,\r\n  position={0,0.3,-2}, rotation={0,180,0},\r\n  height=350, width=1100,\r\n  font_size=250, color={0,0,0}, font_color={1,1,1}\r\n}\r\nlocal BUTTON_SUBMIT = {\r\n  label=\"Submit\",\r\n  click_function=\"click_submit\", function_owner=self,\r\n  position={0,0.3,-2.8}, rotation={0,180,0},\r\n  height=350, width=1100,\r\n  font_size=250, color={0,0,0}, font_color={1,1,1}\r\n}\r\nlocal BUTTON_RESET = {\r\n  label=\"Reset\",\r\n  click_function=\"click_reset\",\r\n  function_owner=self,\r\n  position={-2,0.3,0}, rotation={0,270,0},\r\n  height=350, width=800,\r\n  font_size=250, color={0,0,0}, font_color={1,1,1}\r\n}\r\n\r\n-- functional utils\r\nlocal function transmute(t, vfn, kfn)\r\n    local out = {}\r\n    local c = 1\r\n    for k,v in pairs(t) do\r\n        local value = vfn(v,c,t)\r\n        local key = kfn ~= nil and kfn(v,c,t) or k\r\n        if (value and key) then\r\n            out[key] = value\r\n        end\r\n        c = c + 1\r\n    end\r\n    return out\r\nend\r\n\r\nlocal function duplicateTable(oldTable)\r\n  local newTable = {}\r\n  for k, v in pairs(oldTable) do\r\n    newTable[k] = v\r\n  end\r\n  return newTable\r\nend\r\n\r\nlocal function round(num, dec)\r\n  local mult = 10^(dec or 0)\r\n  return math.floor(num * mult + 0.5) / mult\r\nend\r\n\r\n-- object utils\r\nlocal function setOutline(list, enabled)\r\n  local count = 0\r\n\r\n  if (next(list) == nil) then\r\n    return count\r\n  end\r\n\r\n  for guid in pairs(list) do\r\n    count = count + 1\r\n    local obj = getObjectFromGUID(guid)\r\n    if (obj ~= nil and enabled == false) then obj.highlightOff() end\r\n    if (obj ~= nil and enabled == true) then obj.highlightOn({1,1,1}) end\r\n  end\r\n\r\n  return count\r\nend\r\n\r\nlocal function readRotation()\r\n  local r1, r2, r3 = self.getRotation():get()\r\n  return round(r2)\r\nend\r\n\r\nlocal function changeButtons(variant)\r\n  self.clearButtons()\r\n\r\n  if(variant == 'before_setup') then\r\n    self.createButton(BUTTON_SETUP_TOKENS)\r\n  elseif (variant == 'in_setup') then\r\n    self.createButton(BUTTON_CANCEL)\r\n    self.createButton(BUTTON_SUBMIT)\r\n    self.createButton(BUTTON_RESET)\r\n  elseif (variant == 'done_setup') then\r\n    self.createButton(BUTTON_PLACE)\r\n    self.createButton(BUTTON_RECALL)\r\n    self.createButton(BUTTON_SETUP_BOX)\r\n    self.createButton(BUTTON_UPDATE)\r\n  end\r\nend\r\n\r\nfunction compare_coords(p1, p2, rotation)\r\n  local deltaPos = {}\r\n  r = math.rad(rotation)\r\n\r\n  z = ((-p2.x * math.sin(r) + p2.z * math.cos(r)))\r\n  x = ((p2.x * math.cos(r) + p2.z * math.sin(r)))\r\n\r\n  deltaPos.x = (p1.x+x)\r\n  deltaPos.y = (p1.y+p2.y)\r\n  deltaPos.z = (p1.z+z)\r\n\r\n  return deltaPos\r\nend\r\n\r\n--state utils\r\nlocal function readList()\r\n  return transmute(\r\n    getObjectsWithTag(self.getGMNotes()),\r\n    function(obj)\r\n      local selfPos = self.getPosition()\r\n      local objPos = obj.getPosition()\r\n      local deltaPos = {}\r\n      deltaPos.x = (objPos.x-selfPos.x)\r\n      deltaPos.y = (objPos.y-selfPos.y)\r\n      deltaPos.z = (objPos.z-selfPos.z)\r\n      local pos, rot = deltaPos, obj.getRotation()\r\n\r\n      return {\r\n        pos={x=round(pos.x,4), y=round(pos.y,4), z=round(pos.z,4)},\r\n        rot={x=round(rot.x,4), y=round(rot.y,4), z=round(rot.z,4)},\r\n        lock=obj.getLock()\r\n      }\r\n    end,\r\n    function(obj)\r\n      return obj.guid\r\n    end\r\n  )\r\nend\r\n\r\nfunction updateSave()\r\n  local data_to_save = {[\"ml\"]=memoryList, [\"rr\"]=relativeRotation}\r\n  saved_data = JSON.encode(data_to_save)\r\n  self.script_state = saved_data\r\nend\r\n\r\nfunction onload(saved_data)\r\n  if saved_data ~= \"\" then\r\n    local loaded_data = JSON.decode(saved_data)\r\n    memoryList = loaded_data.ml\r\n    relativeRotation = loaded_data.rr\r\n  else\r\n    memoryList = {}\r\n    relativeRotation = readRotation()\r\n  end\r\n\r\n  if next(memoryList) == nil then\r\n    changeButtons('before_setup')\r\n  else\r\n    changeButtons('done_setup')\r\n  end\r\nend\r\n\r\n-- handlers for buttons\r\nfunction click_setup()\r\n  local tagTarget = self.getGMNotes()\r\n\r\n  if (tagTarget == nil or tagTarget == '') then\r\n    broadcastToAll('please specify a tag to target in GM notes')\r\n    return\r\n  end\r\n\r\n  memoryListBackup = duplicateTable(memoryList)\r\n  memoryList = readList()\r\n\r\n  if (next(memoryList) == nil) then\r\n    broadcastToAll('The tag you specified yielded in 0 objects')\r\n    return\r\n  end\r\n\r\n  setOutline(memoryList, true)\r\n\r\n  relativeRotationBackup = relativeRotation\r\n  relativeRotation = readRotation()\r\n\r\n  changeButtons('in_setup')\r\nend\r\n\r\nfunction click_cancel()\r\n  setOutline(memoryList, false)\r\n\r\n  memoryList = memoryListBackup\r\n  relativeRotation = relativeRotationBackup\r\n\r\n  if next(memoryList) == nil then\r\n    changeButtons('before_setup')\r\n  else\r\n    changeButtons('done_setup')\r\n  end\r\n\r\n  broadcastToAll(\"Selection Canceled\", {1,1,1})\r\nend\r\n\r\nfunction click_submit()\r\n  memoryList = readList()\r\n  if (next(memoryList) == nil) then\r\n    broadcastToAll(\"You cannot submit without any selections.\", {0.75, 0.25, 0.25})\r\n  else\r\n    changeButtons('done_setup')\r\n\r\n    local count = setOutline(memoryList, false)\r\n    broadcastToAll(count..\" Objects Saved\", {1,1,1})\r\n\r\n    updateSave()\r\n  end\r\nend\r\n\r\nfunction click_reset()\r\n  setOutline(memoryList, false)\r\n  memoryList = {}\r\n\r\n  relativeRotation = readRotation()\r\n\r\n  changeButtons('before_setup')\r\n\r\n  broadcastToAll(\"Tool Reset\", {1,1,1})\r\n  updateSave()\r\nend\r\n\r\nfunction click_place()\r\n  local bagObjList = self.getObjects()\r\n  local currentRotation = readRotation()\r\n\r\n  local newMemoryList = {}\r\n  for guid, entry in pairs(memoryList) do\r\n    local obj = getObjectFromGUID(guid)\r\n    local selfPos = self.getPosition()\r\n    local rot = { x=entry.rot.x, y=entry.rot.y, z=entry.rot.z }\r\n    local rotationAdjustment = currentRotation - relativeRotation\r\n\r\n    rot.y = rot.y + rotationAdjustment\r\n    if (rot.y > 360) then\r\n      rot.y = rot.y - 360\r\n    elseif (rot.y < 0) then\r\n      rot.y = rot.y + 360\r\n    end\r\n\r\n    if obj ~= nil then\r\n      local deltaPos = compare_coords(selfPos, entry.pos, rotationAdjustment)\r\n      obj.setPosition(deltaPos)\r\n      obj.setRotation(rot)\r\n      obj.setLock(entry.lock)\r\n      newMemoryList[obj.guid] = memoryList[obj.guid]\r\n    else\r\n      for _, bagObj in ipairs(bagObjList) do\r\n        if bagObj.guid == guid then\r\n          local deltaPos = compare_coords(selfPos, entry.pos, rotationAdjustment)\r\n          local item = self.takeObject({\r\n            guid=guid,\r\n            position=deltaPos,\r\n            rotation=rot,\r\n            smooth=false\r\n          })\r\n\r\n          newItem = item.clone({\r\n            position=deltaPos,\r\n            rotation=rot,\r\n            smooth=false\r\n          })\r\n          item.destruct()\r\n\r\n          newItem.setLock(entry.lock)\r\n          newItem.setPosition(deltaPos)\r\n          newMemoryList[newItem.guid] = memoryList[guid]\r\n          break\r\n        end\r\n      end\r\n    end\r\n  end\r\n\r\n  memoryList = {}\r\n  for k,v in pairs(newMemoryList) do\r\n   memoryList[k] = v\r\n  end\r\n  broadcastToAll(\"Objects Placed\", {1,1,1})\r\n  updateSave()\r\nend\r\n\r\nfunction click_recall()\r\n  for guid, entry in pairs(memoryList) do\r\n    local obj = getObjectFromGUID(guid)\r\n    if obj ~= nil then\r\n      self.putObject(obj)\r\n    end\r\n  end\r\n  broadcastToAll(\"Objects Recalled\", {1,1,1})\r\nend\r\n\r\nfunction click_update_rules()\r\n  local bagObjList = self.getObjects()\r\n  \r\n  if #bagObjList == 0 then\r\n    broadcastToAll(\"Bag is empty. Click Recall first, then Update.\", {1, 0.5, 0})\r\n    return\r\n  end\r\n  \r\n  broadcastToAll(\"Updating rules and box texture... Please wait and do NOT click other buttons.\", {1, 1, 0})\r\n  \r\n  local cacheBust = math.random(1, 999999)\r\n  local processedCount = 0\r\n  local totalToProcess = #bagObjList\r\n  local initialBagCount = totalToProcess\r\n  \r\n  -- Clone the bag contents list\r\n  local objectsToUpdate = {}\r\n  for _, obj in ipairs(bagObjList) do\r\n    table.insert(objectsToUpdate, obj.guid)\r\n  end\r\n\r\n  -- Helper function to check if object is in bag by GUID\r\n  local function isObjectInBag(newGuid)\r\n    local bagContents = self.getObjects()\r\n    for _, item in ipairs(bagContents) do\r\n      if item.guid == newGuid then\r\n        return true\r\n      end\r\n    end\r\n    return false\r\n  end\r\n  \r\n  -- Process objects one at a time sequentially\r\n  local function processNextObject(index)\r\n    if index > #objectsToUpdate then\r\n      -- All done - now update the bag texture last\r\n      Wait.time(function()\r\n        local bagCustom = self.getCustomObject()\r\n        if bagCustom and bagCustom.diffuse then\r\n          bagCustom.diffuse = bagCustom.diffuse .. \"?v=\" .. cacheBust\r\n          self.setCustomObject(bagCustom)\r\n          self.reload()\r\n        end\r\n        broadcastToAll(\"Update complete! All \" .. processedCount .. \" cards and box texture refreshed.\", {0, 1, 0})\r\n      end, 0.5)\r\n      return\r\n    end\r\n    \r\n    local guid = objectsToUpdate[index]\r\n    local obj = self.takeObject({guid = guid, position = self.getPosition() + Vector(0, 10, 0), smooth = false})\r\n    \r\n    Wait.condition(\r\n      function()\r\n        local newGuid = nil\r\n        \r\n        if obj.type == \"Deck\" then\r\n          local deckData = obj.getData()\r\n          if deckData.CustomDeck then\r\n            for deckID, deck in pairs(deckData.CustomDeck) do\r\n              deck.FaceURL = deck.FaceURL .. \"?v=\" .. cacheBust\r\n              deck.BackURL = deck.BackURL .. \"?v=\" .. cacheBust\r\n            end\r\n            \r\n            obj.destruct()\r\n            local newDeck = spawnObjectData({data = deckData, position = self.getPosition() + Vector(0, 10, 0)})\r\n            \r\n            Wait.condition(\r\n              function()\r\n                newGuid = newDeck.getGUID()\r\n                self.putObject(newDeck)\r\n                processedCount = processedCount + 1\r\n                broadcastToAll(\"Updated \" .. processedCount .. \" of \" .. totalToProcess, {0, 0.7, 1})\r\n                \r\n                Wait.condition(\r\n                  function()\r\n                    processNextObject(index + 1)\r\n                  end,\r\n                  function()\r\n                    return isObjectInBag(newGuid)\r\n                  end,\r\n                  10\r\n                )\r\n              end,\r\n              function() return newDeck ~= nil and not newDeck.spawning end,\r\n              5\r\n            )\r\n          else\r\n            newGuid = obj.getGUID()\r\n            self.putObject(obj)\r\n            processedCount = processedCount + 1\r\n            \r\n            Wait.condition(\r\n              function()\r\n                processNextObject(index + 1)\r\n              end,\r\n              function()\r\n                return isObjectInBag(newGuid)\r\n              end,\r\n              10\r\n            )\r\n          end\r\n        else\r\n          local customObj = obj.getCustomObject()\r\n          if customObj and (customObj.face or customObj.back) then\r\n            if customObj.face then\r\n              customObj.face = customObj.face .. \"?v=\" .. cacheBust\r\n            end\r\n            if customObj.back then\r\n              customObj.back = customObj.back .. \"?v=\" .. cacheBust\r\n            end\r\n            obj.setCustomObject(customObj)\r\n            obj.reload()\r\n            \r\n            Wait.time(function()\r\n              newGuid = obj.getGUID()\r\n              self.putObject(obj)\r\n              processedCount = processedCount + 1\r\n              broadcastToAll(\"Updated \" .. processedCount .. \" of \" .. totalToProcess, {0, 0.7, 1})\r\n              \r\n              Wait.condition(\r\n                function()\r\n                  processNextObject(index + 1)\r\n                end,\r\n                function()\r\n                  return isObjectInBag(newGuid)\r\n                end,\r\n                10\r\n              )\r\n            end, 0.5)\r\n          else\r\n            newGuid = obj.getGUID()\r\n            self.putObject(obj)\r\n            processedCount = processedCount + 1\r\n            \r\n            Wait.condition(\r\n              function()\r\n                processNextObject(index + 1)\r\n              end,\r\n              function()\r\n                return isObjectInBag(newGuid)\r\n              end,\r\n              10\r\n            )\r\n          end\r\n        end\r\n      end,\r\n      function() return obj ~= nil and not obj.spawning end,\r\n      5\r\n    )\r\n  end\r\n  \r\n  -- Start processing first object\r\n  processNextObject(1)\r\nend\r\n",
-      "LuaScriptState": "{\"ml\": {\"b06584\": {\"lock\": false, \"pos\": {\"x\": -1.01, \"y\": -2.486, \"z\": -4.1}, \"rot\": {\"x\": 0.0169, \"y\": 179.9995, \"z\": 0.0799}}, \"893c66\": {\"lock\": false, \"pos\": {\"x\": -3.02, \"y\": -2.486, \"z\": -4.1}, \"rot\": {\"x\": 0.0169, \"y\": 179.9995, \"z\": 0.0799}}, \"cd6a1e\": {\"lock\": false, \"pos\": {\"x\": 3.0, \"y\": -2.486, \"z\": -7.39}, \"rot\": {\"x\": 0.0169, \"y\": 179.9995, \"z\": 0.0799}}, \"c451ee\": {\"lock\": false, \"pos\": {\"x\": 3.01, \"y\": -2.426, \"z\": -4.08}, \"rot\": {\"x\": 0.0169, \"y\": 179.9995, \"z\": 0.0799}}, \"3add58\": {\"lock\": false, \"pos\": {\"x\": 1.05, \"y\": -2.46, \"z\": -7.39}, \"rot\": {\"x\": 0.0169, \"y\": 179.9995, \"z\": 0.0799}}, \"1042f5\": {\"lock\": false, \"pos\": {\"x\": -0.96, \"y\": -2.46, \"z\": -7.38}, \"rot\": {\"x\": 0.0169, \"y\": 179.9995, \"z\": 0.0799}}, \"ab0f2a\": {\"lock\": false, \"pos\": {\"x\": -2.94, \"y\": -2.46, \"z\": -7.39}, \"rot\": {\"x\": 0.0169, \"y\": 179.9995, \"z\": 0.0799}}}, \"rr\": 270}",
+      "LuaScriptState": "{\"ml\": {\"cc4afd\": {\"lock\": false, \"pos\": {\"x\": -1.01, \"y\": -2.486, \"z\": -4.1}, \"rot\": {\"x\": 0.0169, \"y\": 179.9995, \"z\": 0.0799}}, \"cedab2\": {\"lock\": false, \"pos\": {\"x\": -3.02, \"y\": -2.486, \"z\": -4.1}, \"rot\": {\"x\": 0.0169, \"y\": 179.9995, \"z\": 0.0799}}, \"3a7e17\": {\"lock\": false, \"pos\": {\"x\": 3.0, \"y\": -2.486, \"z\": -7.39}, \"rot\": {\"x\": 0.0169, \"y\": 179.9995, \"z\": 0.0799}}, \"77965b\": {\"lock\": false, \"pos\": {\"x\": 3.01, \"y\": -2.426, \"z\": -4.08}, \"rot\": {\"x\": 0.0169, \"y\": 179.9995, \"z\": 0.0799}}, \"296489\": {\"lock\": false, \"pos\": {\"x\": 1.05, \"y\": -2.46, \"z\": -7.39}, \"rot\": {\"x\": 0.0169, \"y\": 179.9995, \"z\": 0.0799}}, \"ac8be4\": {\"lock\": false, \"pos\": {\"x\": -0.96, \"y\": -2.46, \"z\": -7.38}, \"rot\": {\"x\": 0.0169, \"y\": 179.9995, \"z\": 0.0799}}, \"60b447\": {\"lock\": false, \"pos\": {\"x\": -2.94, \"y\": -2.46, \"z\": -7.39}, \"rot\": {\"x\": 0.0169, \"y\": 179.9995, \"z\": 0.0799}}}, \"rr\": 270}",
       "XmlUI": "",
       "ContainedObjects": [
         {
-          "GUID": "b06584",
+          "GUID": "cc4afd",
           "Name": "Card",
           "Transform": {
             "posX": 0.0,
@@ -141,7 +141,7 @@
           "XmlUI": ""
         },
         {
-          "GUID": "893c66",
+          "GUID": "cedab2",
           "Name": "Deck",
           "Transform": {
             "posX": 0.0,
@@ -234,7 +234,7 @@
           "XmlUI": "",
           "ContainedObjects": [
             {
-              "GUID": "2092fc",
+              "GUID": "86810f",
               "Name": "Card",
               "Transform": {
                 "posX": 0.0,
@@ -278,7 +278,7 @@
               "SidewaysCard": false
             },
             {
-              "GUID": "30c8e3",
+              "GUID": "bb1698",
               "Name": "Card",
               "Transform": {
                 "posX": 0.0,
@@ -322,7 +322,7 @@
               "SidewaysCard": false
             },
             {
-              "GUID": "ef4ed8",
+              "GUID": "4156b7",
               "Name": "Card",
               "Transform": {
                 "posX": 0.0,
@@ -366,7 +366,7 @@
               "SidewaysCard": false
             },
             {
-              "GUID": "374afd",
+              "GUID": "3c61c5",
               "Name": "Card",
               "Transform": {
                 "posX": 0.0,
@@ -412,7 +412,7 @@
           ]
         },
         {
-          "GUID": "cd6a1e",
+          "GUID": "3a7e17",
           "Name": "Card",
           "Transform": {
             "posX": 0.0,
@@ -473,7 +473,7 @@
           "XmlUI": ""
         },
         {
-          "GUID": "c451ee",
+          "GUID": "77965b",
           "Name": "Deck",
           "Transform": {
             "posX": 0.0,
@@ -586,7 +586,7 @@
           "XmlUI": "",
           "ContainedObjects": [
             {
-              "GUID": "26a4f6",
+              "GUID": "35ff1f",
               "Name": "Card",
               "Transform": {
                 "posX": 0.0,
@@ -630,7 +630,7 @@
               "SidewaysCard": false
             },
             {
-              "GUID": "8dba8b",
+              "GUID": "f34261",
               "Name": "Card",
               "Transform": {
                 "posX": 0.0,
@@ -674,7 +674,7 @@
               "SidewaysCard": false
             },
             {
-              "GUID": "3c891a",
+              "GUID": "750aa5",
               "Name": "Card",
               "Transform": {
                 "posX": 0.0,
@@ -718,7 +718,7 @@
               "SidewaysCard": false
             },
             {
-              "GUID": "a2b7df",
+              "GUID": "061ddc",
               "Name": "Card",
               "Transform": {
                 "posX": 0.0,
@@ -762,7 +762,7 @@
               "SidewaysCard": false
             },
             {
-              "GUID": "895a57",
+              "GUID": "164ee7",
               "Name": "Card",
               "Transform": {
                 "posX": 0.0,
@@ -806,7 +806,7 @@
               "SidewaysCard": false
             },
             {
-              "GUID": "eccec4",
+              "GUID": "5041a6",
               "Name": "Card",
               "Transform": {
                 "posX": 0.0,
@@ -852,7 +852,7 @@
           ]
         },
         {
-          "GUID": "3add58",
+          "GUID": "296489",
           "Name": "Deck",
           "Transform": {
             "posX": 0.0,
@@ -945,7 +945,7 @@
           "XmlUI": "",
           "ContainedObjects": [
             {
-              "GUID": "77ebd1",
+              "GUID": "90b237",
               "Name": "Card",
               "Transform": {
                 "posX": 0.0,
@@ -989,7 +989,7 @@
               "SidewaysCard": false
             },
             {
-              "GUID": "6339cf",
+              "GUID": "5c40b0",
               "Name": "Card",
               "Transform": {
                 "posX": 0.0,
@@ -1033,7 +1033,7 @@
               "SidewaysCard": false
             },
             {
-              "GUID": "57d22f",
+              "GUID": "07aacf",
               "Name": "Card",
               "Transform": {
                 "posX": 0.0,
@@ -1077,7 +1077,7 @@
               "SidewaysCard": false
             },
             {
-              "GUID": "29a3df",
+              "GUID": "75e3fe",
               "Name": "Card",
               "Transform": {
                 "posX": 0.0,
@@ -1123,7 +1123,7 @@
           ]
         },
         {
-          "GUID": "1042f5",
+          "GUID": "ac8be4",
           "Name": "Deck",
           "Transform": {
             "posX": 0.0,
@@ -1216,7 +1216,7 @@
           "XmlUI": "",
           "ContainedObjects": [
             {
-              "GUID": "87500d",
+              "GUID": "6999fd",
               "Name": "Card",
               "Transform": {
                 "posX": 0.0,
@@ -1260,7 +1260,7 @@
               "SidewaysCard": false
             },
             {
-              "GUID": "4dd69e",
+              "GUID": "3087b6",
               "Name": "Card",
               "Transform": {
                 "posX": 0.0,
@@ -1304,7 +1304,7 @@
               "SidewaysCard": false
             },
             {
-              "GUID": "9181d4",
+              "GUID": "241bd6",
               "Name": "Card",
               "Transform": {
                 "posX": 0.0,
@@ -1348,7 +1348,7 @@
               "SidewaysCard": false
             },
             {
-              "GUID": "c67225",
+              "GUID": "895b1a",
               "Name": "Card",
               "Transform": {
                 "posX": 0.0,
@@ -1394,7 +1394,7 @@
           ]
         },
         {
-          "GUID": "ab0f2a",
+          "GUID": "60b447",
           "Name": "Deck",
           "Transform": {
             "posX": 0.0,
@@ -1487,7 +1487,7 @@
           "XmlUI": "",
           "ContainedObjects": [
             {
-              "GUID": "14af8d",
+              "GUID": "618345",
               "Name": "Card",
               "Transform": {
                 "posX": 0.0,
@@ -1531,7 +1531,7 @@
               "SidewaysCard": false
             },
             {
-              "GUID": "6fdc24",
+              "GUID": "e0971b",
               "Name": "Card",
               "Transform": {
                 "posX": 0.0,
@@ -1575,7 +1575,7 @@
               "SidewaysCard": false
             },
             {
-              "GUID": "84d0c4",
+              "GUID": "667ce1",
               "Name": "Card",
               "Transform": {
                 "posX": 0.0,
@@ -1619,7 +1619,7 @@
               "SidewaysCard": false
             },
             {
-              "GUID": "9b9bfe",
+              "GUID": "065701",
               "Name": "Card",
               "Transform": {
                 "posX": 0.0,
