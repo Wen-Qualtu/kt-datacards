@@ -145,7 +145,7 @@ function refreshFromGitHub()
                         
                         Wait.time(function()
                             fetchNext(index + 1)
-                        end, 0.5)
+                        end, 0.1)
                     end,
                     function() return spawnedObj ~= nil and not spawnedObj.spawning end,
                     5
@@ -209,7 +209,7 @@ function placeTeamsOnTable()
                     local relativePos = {
                         x = bagPos.x + posData.pos.x,
                         y = bagPos.y + posData.pos.y,
-                        z = bagPos.z + posData.pos.z - 20.0  -- Offset since bag is at Z=20
+                        z = bagPos.z + posData.pos.z - 30.0  -- Offset since bag is at Z=30
                     }
                     
                     local bagObj = self.takeObject({
@@ -303,10 +303,10 @@ def get_manager_bag_xml_ui() -> str:
     <VerticalLayout spacing="20" padding="20 20 20 20">
         <Text fontSize="64" 
               color="#FFFFFF" 
-              alignment="MiddleCenter">Kill Team Display Manager</Text>
+              alignment="MiddleCenter">Kill Team Card Boxes</Text>
         <Text fontSize="40" 
               color="#AAAAAA" 
-              alignment="MiddleCenter">Manage all team bags from this container</Text>
+              alignment="MiddleCenter">Take out individual team card boxes (rightclick and search) or use 'Place on Table' for the full display. Click 'Reload All Teams' to update with the latest teams.</Text>
         <HorizontalLayout spacing="50" 
                           childForceExpandWidth="true" 
                           childForceExpandHeight="false"
@@ -366,7 +366,7 @@ def load_base_structure() -> Dict[str, Any]:
         "Gravity": 0.5,
         "PlayArea": 0.5,
         "Table": "Table_Custom",
-        "TableURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/tts_objects/display-table/tts_grid_background.png",
+        "TableURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/tts_objects/display-table/tts_grid_background.jpg",
         "Sky": "Sky_Cathedral",
         "Note": "",
         "TabStates": {
@@ -982,7 +982,7 @@ def create_manager_bag(team_bags: List[Dict[str, Any]]) -> Dict[str, Any]:
         "Transform": {
             "posX": 0.0,
             "posY": 3.5,
-            "posZ": 20.0,
+            "posZ": 30.0,
             "rotX": 0.0,
             "rotY": 0.0,
             "rotZ": 0.0,
