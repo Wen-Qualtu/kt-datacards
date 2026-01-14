@@ -58,47 +58,56 @@ class URLGenerator:
             self.logger.warning(f"Output directory not found: {self.output_dir}")
             return entries
         
-        # Walk through team directories
-        for team_dir in sorted(self.output_dir.iterdir()):
-            if not team_dir.is_dir():
+        # Walk through faction directories, then team directories
+        for faction_dir in sorted(self.output_dir.iterdir()):
+            if not faction_dir.is_dir():
                 continue
             
-            team_name = team_dir.name
+            faction_name = faction_dir.name
             
-            # Walk through card type directories
-            for type_dir in sorted(team_dir.iterdir()):
-                if not type_dir.is_dir():
+            # Walk through team directories within faction
+            for team_dir in sorted(faction_dir.iterdir()):
+                if not team_dir.is_dir():
                     continue
                 
-                type_name = type_dir.name
+                team_name = team_dir.name
                 
-                # Collect all JPG files
-                for jpg_file in sorted(type_dir.glob('*.jpg')):
-                    file_name = jpg_file.stem  # Name without extension
+                # Walk through card type directories
+                for type_dir in sorted(team_dir.iterdir()):
+                    if not type_dir.is_dir():
+                        continue
                     
-                    # Construct GitHub raw URL (use forward slashes)
-                    url = f"{self.github_base}/{team_name}/{type_name}/{jpg_file.name}"
+                    type_name = type_dir.name
                     
-                    entries.append({
-                        'team': team_name,
-                        'type': type_name,
-                        'name': file_name,
-                        'url': url
-                    })
-                
-                # Also collect .obj mesh files from tts directories
-                for obj_file in sorted(type_dir.glob('*.obj')):
-                    file_name = obj_file.name  # Keep full name with extension for .obj files
+                    # Collect all JPG files
+                    for jpg_file in sorted(type_dir.glob('*.jpg')):
+                        file_name = jpg_file.stem  # Name without extension
+                        
+                        # Construct GitHub raw URL (use forward slashes)
+                        url = f"{self.github_base}/{faction_name}/{team_name}/{type_name}/{jpg_file.name}"
+                        
+                        entries.append({
+                            'faction': faction_name,
+                            'team': team_name,
+                            'type': type_name,
+                            'name': file_name,
+                            'url': url
+                        })
                     
-                    # Construct GitHub raw URL (use forward slashes)
-                    url = f"{self.github_base}/{team_name}/{type_name}/{obj_file.name}"
-                    
-                    entries.append({
-                        'team': team_name,
-                        'type': type_name,
-                        'name': file_name,
-                        'url': url
-                    })
+                    # Also collect .obj mesh files from tts directories
+                    for obj_file in sorted(type_dir.glob('*.obj')):
+                        file_name = obj_file.name  # Keep full name with extension for .obj files
+                        
+                        # Construct GitHub raw URL (use forward slashes)
+                        url = f"{self.github_base}/{faction_name}/{team_name}/{type_name}/{obj_file.name}"
+                        
+                        entries.append({
+                            'faction': faction_name,
+                            'team': team_name,
+                            'type': type_name,
+                            'name': file_name,
+                            'url': url
+                        })
         
         return entries
     

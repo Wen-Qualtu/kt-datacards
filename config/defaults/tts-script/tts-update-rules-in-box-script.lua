@@ -361,15 +361,20 @@ function click_update_rules()
   -- Process objects one at a time sequentially
   local function processNextObject(index)
     if index > #objectsToUpdate then
-      -- All done - now update the bag texture last
+      -- All done - now update the bag texture and mesh last
       Wait.time(function()
         local bagCustom = self.getCustomObject()
-        if bagCustom and bagCustom.diffuse then
-          bagCustom.diffuse = bagCustom.diffuse .. "?v=" .. cacheBust
+        if bagCustom then
+          if bagCustom.diffuse then
+            bagCustom.diffuse = bagCustom.diffuse .. "?v=" .. cacheBust
+          end
+          if bagCustom.mesh then
+            bagCustom.mesh = bagCustom.mesh .. "?v=" .. cacheBust
+          end
           self.setCustomObject(bagCustom)
           self.reload()
         end
-        broadcastToAll("Update complete! All " .. processedCount .. " cards and box texture refreshed.", {0, 1, 0})
+        broadcastToAll("Update complete! All " .. processedCount .. " cards, box texture, and mesh refreshed.", {0, 1, 0})
       end, 0.5)
       return
     end

@@ -84,8 +84,11 @@ class TTSGenerator:
         """Load the Lua script from config defaults folder"""
         script_path = self.config_dir / "defaults" / "tts-script" / "tts-update-rules-in-box-script.lua"
         try:
-            with open(script_path, 'r', encoding='utf-8') as f:
+            with open(script_path, 'r', encoding='utf-8-sig') as f:
                 content = f.read()
+                # Remove BOM if present (shouldn't be needed with utf-8-sig, but being safe)
+                if content.startswith('\ufeff'):
+                    content = content[1:]
                 # Convert to Windows line endings for TTS
                 content = content.replace('\n', '\r\n')
                 return content
@@ -98,6 +101,15 @@ class TTSGenerator:
         from ..generators.tts_generator_helpers import (
             create_bag, create_deck, create_single_card
         )
+        
+        # Extract faction from first card's URL (format: output_v2/{faction}/{team}/...)
+        faction = None
+        if cards:
+            first_url = cards[0].get('url', '')
+            if '/output_v2/' in first_url:
+                parts = first_url.split('/output_v2/')[1].split('/')
+                if len(parts) > 0:
+                    faction = parts[0]
         
         # Group cards by type
         cards_by_type = defaultdict(list)
@@ -176,7 +188,7 @@ class TTSGenerator:
         # Create the bag
         team_display_name = team_name.replace('-', ' ').title()
         team_tag = f"_{team_name.replace('-', '_').title().replace('_', ' ')}"
-        bag_obj = create_bag(team_display_name, team_tag, contained_objects, lua_script, texture_url, mesh_url)
+        bag_obj = create_bag(team_display_name, team_tag, contained_objects, lua_script, texture_url, mesh_url, faction)
         
         # Save to file
         output_file = self.tts_output_dir / f"{team_display_name} Cards.json"
