@@ -209,7 +209,7 @@ function placeTeamsOnTable()
                     local relativePos = {
                         x = bagPos.x + posData.pos.x,
                         y = bagPos.y + posData.pos.y,
-                        z = bagPos.z + posData.pos.z - 30.0  -- Offset since bag is at Z=30
+                        z = bagPos.z + posData.pos.z - 20.0  -- Offset since bag is at Z=20
                     }
                     
                     local bagObj = self.takeObject({
@@ -295,38 +295,38 @@ def get_manager_bag_xml_ui() -> str:
     """
     return '''<!-- Display Table Manager UI -->
 <Panel position="0 0 -40" 
-       height="200" 
-       width="800" 
+       height="400" 
+       width="1600" 
        color="#000000DD"
        rectAlignment="UpperCenter"
-       offsetXY="0 -20">
-    <VerticalLayout spacing="10" padding="10 10 10 10">
-        <Text fontSize="32" 
+       offsetXY="0 -100">
+    <VerticalLayout spacing="20" padding="20 20 20 20">
+        <Text fontSize="64" 
               color="#FFFFFF" 
               alignment="MiddleCenter">Kill Team Display Manager</Text>
-        <Text fontSize="20" 
+        <Text fontSize="40" 
               color="#AAAAAA" 
               alignment="MiddleCenter">Manage all team bags from this container</Text>
-        <HorizontalLayout spacing="25" 
+        <HorizontalLayout spacing="50" 
                           childForceExpandWidth="true" 
                           childForceExpandHeight="false"
-                          preferredHeight="70">
+                          preferredHeight="140">
             <Button onClick="refreshFromGitHub" 
-                    minWidth="220" 
-                    preferredHeight="70" 
-                    fontSize="22"
+                    minWidth="440" 
+                    preferredHeight="140" 
+                    fontSize="44"
                     color="#1976D2"
                     textColor="#FFFFFF">Reload All Teams</Button>
             <Button onClick="placeTeamsOnTable" 
-                    minWidth="220" 
-                    preferredHeight="70" 
-                    fontSize="22"
+                    minWidth="440" 
+                    preferredHeight="140" 
+                    fontSize="44"
                     color="#388E3C"
                     textColor="#FFFFFF">Place on Table</Button>
             <Button onClick="recallTeamsToManager" 
-                    minWidth="220" 
-                    preferredHeight="70" 
-                    fontSize="22"
+                    minWidth="440" 
+                    preferredHeight="140" 
+                    fontSize="44"
                     color="#F57C00"
                     textColor="#FFFFFF">Recall All Teams</Button>
         </HorizontalLayout>
@@ -982,7 +982,7 @@ def create_manager_bag(team_bags: List[Dict[str, Any]]) -> Dict[str, Any]:
         "Transform": {
             "posX": 0.0,
             "posY": 3.5,
-            "posZ": 30.0,
+            "posZ": 20.0,
             "rotX": 0.0,
             "rotY": 0.0,
             "rotZ": 0.0,
