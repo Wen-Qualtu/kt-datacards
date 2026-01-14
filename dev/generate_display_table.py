@@ -41,6 +41,299 @@ GRID_START_X = -37.5753365   # Starting X position (left side)
 GRID_START_Z = 22.3820934    # Starting Z position (top)
 GRID_Y = 3.460002            # Y position (height above table)
 
+# GitHub URL for the display table JSON
+GITHUB_JSON_URL = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/tts_objects/display-table/kt_all_teams_grid.json"
+
+
+def get_manager_bag_lua_script() -> str:
+    """
+    Generate the Lua script for the Display Table Manager bag.
+    This script can be attached to any bag to manage refreshing the display table.
+    """
+    return '''-- Kill Team Display Table Manager
+-- Attach this to a bag to manage the display table
+
+local GITHUB_JSON_URL = "''' + GITHUB_JSON_URL + '''"
+local isUpdating = false
+local positions = {}
+
+function onLoad(script_state)
+    print("[KT Display Manager] Ready. Buttons: Refresh from GitHub | Place/Recall Teams")
+    self.setName("KT Display Manager")
+    self.setDescription("Manages Kill Team display table. Refresh from GitHub or Place/Recall all teams.")
+    
+    -- Load stored positions
+    if script_state ~= "" then
+        positions = JSON.decode(script_state)
+    end
+end
+
+function refreshFromGitHub()
+    if isUpdating then
+        broadcastToAll("Refresh already in progress...", {1, 0.5, 0})
+        return
+    end
+    
+    isUpdating = true
+    broadcastToAll("Fetching latest team list from GitHub...", {0.2, 0.8, 1})
+    
+    -- List of all team names (alphabetically sorted)
+    local teamNames = {
+        "Angels Of Death", "Battleclade", "Blades Of Khaine", "Blooded", "Brood Brothers",
+        "Canoptek Circle", "Chaos Cult", "Corsair Voidscarred", "Death Korps", "Deathwatch",
+        "Elucidian Starstriders", "Exaction Squad", "Farstalker Kinband", "Fellgor Ravagers",
+        "Gellerpox Infected", "Goremongers", "Hand Of The Archon", "Hearthkyn Salvagers",
+        "Hernkyn Yaegirs", "Hierotek Circle", "Hunter Clade", "Imperial Navy Breachers",
+        "Inquisitorial Agents", "Kasrkin", "Kommandos", "Legionaries", "Mandrakes",
+        "Nemesis Claw", "Novitiates", "Pathfinders", "Phobos Strike Team", "Plague Marines",
+        "Ratlings", "Raveners", "Sanctifiers", "Scout Squad", "Tempestus Aquilons",
+        "Vespid Stingwings", "Void Dancer Troupe", "Warpcoven", "Wolf Scouts",
+        "Wrecka Krew", "Wyrmblade", "Xv26 Stealth Battlesuits"
+    }
+    
+    broadcastToAll("Clearing current contents...", {0.2, 0.8, 1})
+    
+    -- Clear current contents
+    for _, obj in ipairs(self.getObjects()) do
+        self.takeObject({guid = obj.guid}).destruct()
+    end
+    
+    Wait.time(function()
+        broadcastToAll("Fetching " .. #teamNames .. " team bags...", {0.2, 0.8, 1})
+        
+        local added = 0
+        local cacheBust = math.random(1, 999999)
+        
+        -- Fetch and add each team bag sequentially
+        local function fetchNext(index)
+            if index > #teamNames then
+                broadcastToAll("✓ Manager bag updated with " .. added .. " teams!", {0, 1, 0})
+                isUpdating = false
+                return
+            end
+            
+            local teamName = teamNames[index]
+            local fileName = teamName .. " Cards.json"
+            local url = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/tts_objects/" .. fileName .. "?v=" .. cacheBust
+            
+            WebRequest.get(url, function(webReturn)
+                if webReturn.is_error then
+                    print("[Warning] Failed to fetch " .. teamName .. ": " .. webReturn.error)
+                    fetchNext(index + 1)
+                    return
+                end
+                
+                local success, decoded = pcall(function() return JSON.decode(webReturn.text) end)
+                if not success or not decoded.ObjectStates or #decoded.ObjectStates == 0 then
+                    print("[Warning] Invalid JSON for " .. teamName)
+                    fetchNext(index + 1)
+                    return
+                end
+                
+                -- Get the team bag (first object)
+                local teamBag = decoded.ObjectStates[1]
+                local spawnedObj = spawnObjectJSON({
+                    json = JSON.encode(teamBag),
+                    position = self.getPosition() + Vector(0, 5, 0)
+                })
+                
+                Wait.condition(
+                    function()
+                        self.putObject(spawnedObj)
+                        added = added + 1
+                        broadcastToAll("Added " .. teamName .. " (" .. added .. "/" .. #teamNames .. ")", {0.5, 0.5, 1})
+                        
+                        Wait.time(function()
+                            fetchNext(index + 1)
+                        end, 0.5)
+                    end,
+                    function() return spawnedObj ~= nil and not spawnedObj.spawning end,
+                    5
+                )
+            end)
+        end
+        
+        fetchNext(1)
+    end, 1.0)
+end
+
+function placeTeamsOnTable()
+    local contents = self.getObjects()
+    
+    if #contents == 0 then
+        broadcastToAll("Manager bag is empty! Click 'Reload All Teams' first.", {1, 0.5, 0})
+        return
+    end
+    
+    broadcastToAll("Recalling any existing teams first...", {0.8, 0.8, 0.2})
+    
+    -- First, recall any existing team bags and clean up labels
+    local recalled = 0
+    for _, obj in ipairs(getAllObjects()) do
+        if obj.type == "Bag" and obj ~= self and obj.getName() ~= "" then
+            local name = obj.getName()
+            if name ~= "KT Display Manager" and obj.getGUID() ~= self.getGUID() then
+                self.putObject(obj)
+                recalled = recalled + 1
+            end
+        end
+    end
+    
+    -- Clean up old text labels
+    for _, obj in ipairs(getAllObjects()) do
+        if obj.getGMNotes() == "_team_label" then
+            obj.destruct()
+        end
+    end
+    
+    if recalled > 0 then
+        broadcastToAll("Recalled " .. recalled .. " existing teams.", {0.5, 0.5, 0.5})
+    end
+    
+    -- Wait a moment before placing to ensure recall is complete
+    Wait.time(function()
+        broadcastToAll("Placing " .. #contents .. " teams on display table...", {0.2, 0.8, 1})
+        
+        -- Get manager bag position as reference point
+        local bagPos = self.getPosition()
+        
+        -- Take out each team bag and spawn label
+        local placed = 0
+        for i, item in ipairs(contents) do
+            Wait.time(function()
+                local guid = item.guid
+                local posData = positions[guid]
+                
+                if posData then
+                    -- Calculate position relative to manager bag
+                    local relativePos = {
+                        x = bagPos.x + posData.pos.x,
+                        y = bagPos.y + posData.pos.y,
+                        z = bagPos.z + posData.pos.z - 30.0  -- Offset since bag is at Z=30
+                    }
+                    
+                    local bagObj = self.takeObject({
+                        guid = guid,
+                        position = Vector(relativePos.x, relativePos.y, relativePos.z),
+                        rotation = Vector(posData.rot.x, posData.rot.y, posData.rot.z),
+                        smooth = false
+                    })
+                    
+                    -- Spawn text label for this team
+                    Wait.time(function()
+                        if bagObj then
+                            local teamName = bagObj.getName()
+                            if teamName and teamName ~= "" then
+                                spawnObject({
+                                    type = "3DText",
+                                    position = Vector(relativePos.x, relativePos.y - 2.2, relativePos.z + 3.0),
+                                    rotation = Vector(90, 0, 0),
+                                    scale = Vector(0.015, 0.015, 0.015),
+                                    callback_function = function(obj)
+                                        obj.TextTool.setValue(teamName)
+                                        obj.TextTool.setFontSize(50)
+                                        obj.setColorTint({r=1, g=1, b=1})
+                                        obj.setLock(true)
+                                        obj.setGMNotes("_team_label")
+                                    end
+                                })
+                            end
+                        end
+                    end, 0.2)
+                else
+                    self.takeObject({
+                        guid = guid,
+                        smooth = false
+                    })
+                end
+                
+                placed = placed + 1
+                if placed == #contents then
+                    Wait.time(function()
+                        broadcastToAll("✓ All teams placed on table!", {0, 1, 0})
+                    end, 0.5)
+                end
+            end, i * 0.15)
+        end
+    end, 0.5)
+end
+
+function recallTeamsToManager()
+    local recalled = 0
+    
+    -- Recall team bags
+    for _, obj in ipairs(getAllObjects()) do
+        if obj.type == "Bag" and obj ~= self and obj.getName() ~= "" then
+            -- Check if it's a team bag (has specific tag pattern or name)
+            local name = obj.getName()
+            if name ~= "KT Display Manager" and obj.getGUID() ~= self.getGUID() then
+                self.putObject(obj)
+                recalled = recalled + 1
+            end
+        end
+    end
+    
+    -- Clean up text labels
+    for _, obj in ipairs(getAllObjects()) do
+        if obj.getGMNotes() == "_team_label" then
+            obj.destruct()
+        end
+    end
+    
+    if recalled > 0 then
+        broadcastToAll("✓ Recalled " .. recalled .. " teams to manager bag.", {0, 1, 0})
+    else
+        broadcastToAll("No team bags found on table to recall.", {1, 0.5, 0})
+    end
+end
+'''
+
+
+def get_manager_bag_xml_ui() -> str:
+    """
+    Generate the XML UI for the manager bag buttons.
+    """
+    return '''<!-- Display Table Manager UI -->
+<Panel position="0 0 -40" 
+       height="200" 
+       width="800" 
+       color="#000000DD"
+       rectAlignment="UpperCenter"
+       offsetXY="0 -20">
+    <VerticalLayout spacing="10" padding="10 10 10 10">
+        <Text fontSize="32" 
+              color="#FFFFFF" 
+              alignment="MiddleCenter">Kill Team Display Manager</Text>
+        <Text fontSize="20" 
+              color="#AAAAAA" 
+              alignment="MiddleCenter">Manage all team bags from this container</Text>
+        <HorizontalLayout spacing="25" 
+                          childForceExpandWidth="true" 
+                          childForceExpandHeight="false"
+                          preferredHeight="70">
+            <Button onClick="refreshFromGitHub" 
+                    minWidth="220" 
+                    preferredHeight="70" 
+                    fontSize="22"
+                    color="#1976D2"
+                    textColor="#FFFFFF">Reload All Teams</Button>
+            <Button onClick="placeTeamsOnTable" 
+                    minWidth="220" 
+                    preferredHeight="70" 
+                    fontSize="22"
+                    color="#388E3C"
+                    textColor="#FFFFFF">Place on Table</Button>
+            <Button onClick="recallTeamsToManager" 
+                    minWidth="220" 
+                    preferredHeight="70" 
+                    fontSize="22"
+                    color="#F57C00"
+                    textColor="#FFFFFF">Recall All Teams</Button>
+        </HorizontalLayout>
+    </VerticalLayout>
+</Panel>
+'''
+
 
 def load_base_structure() -> Dict[str, Any]:
     """
@@ -668,6 +961,68 @@ def update_component_tags(base_structure: Dict[str, Any], team_names: List[str])
     base_structure["ComponentTags"]["labels"] = labels
 
 
+def create_manager_bag(team_bags: List[Dict[str, Any]]) -> Dict[str, Any]:
+    """
+    Create the Display Table Manager bag that contains all team bags.
+    Uses a simple TTS Bag object.
+    """
+    # Build position lookup table for LuaScriptState
+    positions = {}
+    for bag in team_bags:
+        guid = bag["GUID"]
+        transform = bag["Transform"]
+        positions[guid] = {
+            "pos": {"x": transform["posX"], "y": transform["posY"], "z": transform["posZ"]},
+            "rot": {"x": transform["rotX"], "y": transform["rotY"], "z": transform["rotZ"]}
+        }
+    
+    manager_bag = {
+        "GUID": "ktmngr",
+        "Name": "Bag",
+        "Transform": {
+            "posX": 0.0,
+            "posY": 3.5,
+            "posZ": 30.0,
+            "rotX": 0.0,
+            "rotY": 0.0,
+            "rotZ": 0.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+        },
+        "Nickname": "KT Display Manager",
+        "Description": "Contains all Kill Team card bags. Use buttons to refresh from GitHub or place teams on table.",
+        "GMNotes": "",
+        "AltLookAngle": {"x": 0.0, "y": 0.0, "z": 0.0},
+        "ColorDiffuse": {"r": 0.2, "g": 0.4, "b": 0.9},
+        "LayoutGroupSortIndex": 0,
+        "Value": 0,
+        "Locked": False,
+        "Grid": True,
+        "Snap": True,
+        "IgnoreFoW": False,
+        "MeasureMovement": False,
+        "DragSelectable": True,
+        "Autoraise": True,
+        "Sticky": True,
+        "Tooltip": True,
+        "GridProjection": False,
+        "HideWhenFaceDown": False,
+        "Hands": False,
+        "MaterialIndex": -1,
+        "MeshIndex": -1,
+        "Bag": {
+            "Order": 0
+        },
+        "LuaScript": get_manager_bag_lua_script(),
+        "LuaScriptState": json.dumps(positions),
+        "XmlUI": get_manager_bag_xml_ui(),
+        "ContainedObjects": team_bags
+    }
+    
+    return manager_bag
+
+
 def main():
     """
     Main function to generate the display table JSON.
@@ -715,8 +1070,10 @@ def main():
         else:
             print(f"  WARNING: Could not load team bag from {team_file}")
     
-    base_structure["ObjectStates"].extend(team_bags)
-    print(f"  Added {len(team_bags)} team bags")
+    # Create manager bag containing all teams
+    manager_bag = create_manager_bag(team_bags)
+    base_structure["ObjectStates"].append(manager_bag)
+    print(f"  Created manager bag containing {len(team_bags)} teams")
     
     # Update component tags
     update_component_tags(base_structure, team_names)
@@ -733,7 +1090,7 @@ def main():
     print(f"  File size: {OUTPUT_FILE.stat().st_size / 1024 / 1024:.2f} MB")
     print(f"  Total objects: {len(base_structure['ObjectStates'])}")
     print(f"    - Hand triggers: {len(hand_triggers)}")
-    print(f"    - Team bags: {len(team_bags)}")
+    print(f"    - Manager bag: 1 (containing {len(team_bags)} team bags)")
     print()
     print("=" * 70)
 
