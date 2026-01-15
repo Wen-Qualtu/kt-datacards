@@ -14,7 +14,7 @@ with open(token_bag_path, 'r', encoding='utf-8') as f:
     token_bag = token_data['ObjectStates'][0]  # Get the bag object
 
 # Load Farstalker TTS object
-with open(farstalker_tts_path, 'r', encoding='utf-8') as f:
+with open(farstalker_tts_path, 'r', encoding='utf-8-sig') as f:
     farstalker_data = json.load(f)
 
 # Get the main bag
@@ -25,13 +25,14 @@ if 'ContainedObjects' not in main_bag:
     main_bag['ContainedObjects'] = []
 
 # Remove any existing token bag (in case we run this multiple times)
+# But keep the markertoken-guide card!
 main_bag['ContainedObjects'] = [
     obj for obj in main_bag['ContainedObjects'] 
-    if 'token' not in obj.get('Nickname', '').lower()
+    if not (obj.get('Nickname', '') == 'Farstalker Kinband tokens')
 ]
 
-# Add token bag at the start
-main_bag['ContainedObjects'].insert(0, token_bag)
+# Add token bag at the END (not beginning) to avoid interfering with card layout
+main_bag['ContainedObjects'].append(token_bag)
 
 # Save back to file
 with open(farstalker_tts_path, 'w', encoding='utf-8') as f:
