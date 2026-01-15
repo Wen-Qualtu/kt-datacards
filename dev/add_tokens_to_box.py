@@ -94,7 +94,7 @@ def add_tokens_to_box(box_file: Path, token_bag_file: Path):
         },
         "rot": {
             "x": 0.0169,
-            "y": 179.9995,
+            "y": 269.9995,  # 90 degrees to the right from cards (270 instead of 180)
             "z": 0.0799
         }
     }
