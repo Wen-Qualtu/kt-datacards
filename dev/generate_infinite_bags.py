@@ -56,12 +56,13 @@ class InfiniteBagGenerator:
         return ''.join(random.choices('0123456789abcdef', k=6))
     
     def copy_mesh_to_output(self, shape: str, team_name: str, token_name: str, output_token_dir: Path) -> Path:
-        """Copy template mesh file to output directory."""
+        """Copy template mesh file to output directory (all tokens of same shape use same mesh)."""
         template_mesh = self.TEMPLATE_MESH_PATHS[shape]
         
         if not template_mesh.exists():
-            raise FileNotFoundError(f"Template mesh not found: {template_mesh}")
+            raise FileNotFoundError(f"Template mesh not found: {template_mesh}\nCreate a good mesh manually at this location!")
         
+        # Use same mesh file for all tokens of this shape
         output_mesh = output_token_dir / f"{team_name}-{token_name}.obj"
         output_mesh.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(template_mesh, output_mesh)
