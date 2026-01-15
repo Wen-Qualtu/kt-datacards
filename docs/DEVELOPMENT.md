@@ -21,7 +21,7 @@ This pipeline automates the entire workflow:
 5. **Generate URLs** - Create CSV mapping for TTS deck builder
 
 **Key Constraints:**
-- ⚠️ **IMMUTABLE output/ & output_2/ structure** - TTS cards reference exact paths via GitHub raw URLs
+- ⚠️ **IMMUTABLE output/ & output_2/ & tts_objects structure** - TTS cards reference exact paths via GitHub raw URLs
 - 🎯 **Accuracy over speed** - Wrong card data breaks gameplay
 - 🔄 **Reproducible** - Anyone should be able to run the pipeline and get same results
 
@@ -579,7 +579,37 @@ Future enhancements:
 - [Poetry Documentation](https://python-poetry.org/docs/)
 - [Task Documentation](https://taskfile.dev/)
 - [Kill Team Official Rules](https://www.warhammer-community.com/kill-team/)
-- Project Feature Docs: `docs/00-*.md` through `docs/05-*.md`
+- Project Feature Docs: 
+  - `docs/card-structure.md` - Card data structure
+  - `docs/extracted-data-structure.md` - PDF extraction format
+  - `docs/display-table-generation.md` - TTS display table
+  - `docs/OUTPUT-V2-FORMAT.md` - New output structure
+  - `docs/token-generation.md` - TTS token generation **NEW**
+
+---
+
+## 🎲 Token Generation
+
+The project now supports automated token extraction and TTS object generation:
+
+1. **Extract tokens** from marker/token guide PDFs
+2. **Apply transparency** to remove backgrounds
+3. **Generate infinite bags** for TTS with master bag support
+
+See [Token Generation Documentation](token-generation.md) for complete workflow.
+
+**Quick Start:**
+```bash
+# Extract tokens with transparency (single pass!)
+python dev/extract_tokens_v2.py --team farstalker-kinband --dpi 300 --threshold 50
+
+# Generate TTS bags
+python dev/generate_infinite_bags.py --team farstalker-kinband --create-master-bag
+```
+
+**Output:**
+- `output_v2/{faction}/{team}/tts/token/` - Token images
+- `tts_objects/tokens/{team}/` - TTS JSON bags
 
 ---
 
@@ -594,6 +624,6 @@ If you're unsure about something:
 
 ---
 
-**Last Updated**: January 10, 2026
+**Last Updated**: January 15, 2026
 **Maintainer**: Project Team
 **Review Schedule**: Update after each major feature implementation
