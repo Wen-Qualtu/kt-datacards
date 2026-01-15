@@ -22,9 +22,9 @@ class TokenShapeAnalyzer:
     def __init__(self):
         # Shape categories based on circularity
         # Circularity = 4π × area / perimeter²
-        # Circle = 1.0, Square ≈ 0.785, Complex shapes < 0.7
+        # Circle = 1.0, Square ≈ 0.785, Operative shapes < 0.7
         self.ROUND_THRESHOLD = 0.75  # Higher = more circular
-        self.COMPLEX_THRESHOLD = 0.75  # Lower = more complex shape
+        self.OPERATIVE_THRESHOLD = 0.75  # Lower = more operative shape
     
     def analyze_token(self, image_path: Path) -> Dict:
         """
@@ -73,7 +73,7 @@ class TokenShapeAnalyzer:
         if circularity >= self.ROUND_THRESHOLD and 0.9 <= aspect_ratio <= 1.1:
             shape_category = "round"
         else:
-            shape_category = "complex"
+            shape_category = "operative"
         
         return {
             'shape': shape_category,
@@ -96,12 +96,12 @@ class TokenShapeAnalyzer:
             'team': team_dir.name,
             'tokens': {
                 'round': [],
-                'complex': []
+                'operative': []
             },
             'summary': {
                 'total': 0,
                 'round_count': 0,
-                'complex_count': 0
+                'operative_count': 0
             }
         }
         
@@ -177,7 +177,7 @@ def main():
             
             # Print summary
             print(f"  Round: {results['summary']['round_count']}, " 
-                  f"Complex: {results['summary']['complex_count']}")
+                  f"Operative: {results['summary']['operative_count']}")
     
     # Save results to JSON
     output_path = Path(args.output)
@@ -193,13 +193,13 @@ def main():
     if args.all:
         total_tokens = sum(r['summary']['total'] for r in all_results)
         total_round = sum(r['summary']['round_count'] for r in all_results)
-        total_complex = sum(r['summary']['complex_count'] for r in all_results)
+        total_operative = sum(r['summary']['operative_count'] for r in all_results)
         
         print(f"\nOverall Summary:")
         print(f"  Teams analyzed: {len(all_results)}")
         print(f"  Total tokens: {total_tokens}")
         print(f"  Round tokens: {total_round}")
-        print(f"  Complex tokens: {total_complex}")
+        print(f"  Operative tokens: {total_operative}")
 
 
 if __name__ == '__main__':
