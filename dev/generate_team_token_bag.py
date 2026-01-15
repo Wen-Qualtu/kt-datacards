@@ -253,14 +253,27 @@ def main():
                        help='Team name (e.g., farstalker-kinband)')
     parser.add_argument('--tokens-dir', type=str, default='tts_objects/tokens',
                        help='Directory with individual token JSON files')
-    parser.add_argument('--output', type=str, default='tts_objects/team-bags',
-                       help='Output directory for team bag')
+    parser.add_argument('--output-dir', type=str, default='output_v2',
+                       help='Output directory (default: output_v2)')
     
     args = parser.parse_args()
     
     tokens_dir = Path(args.tokens_dir) / args.team
-    output_dir = Path(args.output)
-    output_dir.mkdir(exist_ok=True, parents=True)
+    output_dir = Path(args.output_dir)
+    
+    generator = TeamTokenBagGenerator()
+    
+    print(f"\nGenerating team token bag for: {args.team}")
+    print("=" * 60)
+    
+    # Get faction for output path
+    faction = generator.get_faction(args.team)
+    if faction == 'unknown':
+        print(f"Warning: Faction not found for {args.team}, using 'unknown'")
+    
+    # Output to output_v2/{faction}/{team}/tts/token/
+    team_output_dir = output_dir / faction / args.team / 'tts' / 'token'
+    team_output_dir.mkdir(exist_ok=True, parents=True)
     
     generator = TeamTokenBagGenerator()
     
@@ -317,8 +330,8 @@ def main():
         "ObjectStates": [team_bag]
     }
     
-    # Save team bag
-    output_file = output_dir / f"{args.team}-tokens.json"
+    # Save team bag to output_v2
+    output_file = team_output_dir / f"{args.team}-tokens.json"
     with open(output_file, 'w') as f:
         json.dump(tts_save, f, indent=2)
     
