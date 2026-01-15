@@ -58,9 +58,13 @@ class DatacardPipeline:
         
         # Import and initialize URL generator
         from .generators.url_generator import URLGenerator
+        # Get project root (3 levels up from this file: script/src/pipeline.py)
+        project_root = Path(__file__).parent.parent.parent
+        tts_objects_path = project_root / 'tts_objects'
         self.url_generator = URLGenerator(
             output_dir=output_v2_dir,
-            github_base="https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2"
+            github_base="https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2",
+            tts_objects_dir=tts_objects_path
         )
         
         self.logger = logging.getLogger(__name__)

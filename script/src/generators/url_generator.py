@@ -11,7 +11,8 @@ class URLGenerator:
     def __init__(
         self,
         output_dir: Path = Path('output'),
-        github_base: str = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output"
+        github_base: str = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output",
+        tts_objects_dir: Path = Path('tts_objects')
     ):
         """
         Initialize URLGenerator
@@ -19,10 +20,15 @@ class URLGenerator:
         Args:
             output_dir: Base output directory containing team folders
             github_base: Base GitHub raw URL
+            tts_objects_dir: Directory containing TTS saved object files
         """
         self.output_dir = output_dir
         self.github_base = github_base
+        self.tts_objects_dir = tts_objects_dir
         self.logger = logging.getLogger(__name__)
+        
+        print(f"DEBUG URLGenerator init: output_dir={output_dir}, exists={output_dir.exists()}")
+        print(f"DEBUG URLGenerator init: tts_objects_dir={tts_objects_dir}, exists={tts_objects_dir.exists()}")
     
     def generate_json(self, output_path: Path = Path('output/datacards-urls.json')) -> int:
         """
@@ -35,6 +41,16 @@ class URLGenerator:
             Number of entries written
         """
         entries = self._collect_entries()
+        print(f"DEBUG: Collected {len(entries)} entries from output_v2")
+        
+        # Add TTS object entries
+        tts_entries = self._collect_tts_objects()
+        print(f"DEBUG: Collected {len(tts_entries)} TTS entries")
+        entries.extend(tts_entries)
+        print(f"DEBUG: Total entries: {len(entries)}")
+        
+        # Ensure output directory exists
+        output_path.parent.mkdir(parents=True, exist_ok=True)
         
         # Write JSON
         with open(output_path, 'w', encoding='utf-8') as jsonfile:
@@ -54,12 +70,18 @@ class URLGenerator:
         """Collect all entries from output directory"""
         entries = []
         
+        print(f"DEBUG _collect_entries: output_dir={self.output_dir}, exists={self.output_dir.exists()}")
+        
         if not self.output_dir.exists():
             self.logger.warning(f"Output directory not found: {self.output_dir}")
             return entries
         
         # Walk through faction directories, then team directories
-        for faction_dir in sorted(self.output_dir.iterdir()):
+        faction_dirs = list(self.output_dir.iterdir())
+        print(f"DEBUG _collect_entries: Found {len(faction_dirs)} items in output_dir")
+        
+        for faction_dir in sorted(faction_dirs):
+            print(f"DEBUG _collect_entries: Checking {faction_dir.name}, is_dir={faction_dir.is_dir()}")
             if not faction_dir.is_dir():
                 continue
             
@@ -109,6 +131,44 @@ class URLGenerator:
                             'url': url
                         })
         
+        return entries
+    
+    def _collect_tts_objects(self) -> List[Dict[str, str]]:
+        """Collect TTS saved object files from tts_objects directory"""
+        entries = []
+        
+        print(f"DEBUG: Looking for TTS objects in: {self.tts_objects_dir}")
+        print(f"DEBUG: TTS objects directory exists: {self.tts_objects_dir.exists()}")
+        
+        if not self.tts_objects_dir.exists():
+            print(f"DEBUG: TTS objects directory not found!")
+            self.logger.warning(f"TTS objects directory not found: {self.tts_objects_dir}")
+            return entries
+        
+        # Find all *Cards.json files
+        json_files = list(self.tts_objects_dir.glob('*Cards.json'))
+        print(f"DEBUG: Found {len(json_files)} *Cards.json files")
+        
+        for json_file in sorted(json_files):
+            print(f"DEBUG: Processing: {json_file.name}")
+            # Extract team name from filename (e.g., "Farstalker Kinband Cards.json" -> "farstalker-kinband")
+            team_display_name = json_file.stem.replace(' Cards', '')
+            team_id = team_display_name.lower().replace(' ', '-')
+            
+            # Construct GitHub raw URL
+            url = f"{self.github_base.replace('/output_v2', '')}/tts_objects/{json_file.name.replace(' ', '%20')}"
+            
+            entries.append({
+                'faction': '',  # Not applicable for TTS objects
+                'team': team_id,
+                'type': 'tts_card_box_object',
+                'name': team_display_name,
+                'url': url
+            })
+            
+            self.logger.debug(f"Added TTS object: {team_display_name}")
+        
+        self.logger.info(f"Collected {len(entries)} TTS object files")
         return entries
     
     def _count_by_team(self, entries: List[Dict[str, str]]) -> Dict[str, int]:
