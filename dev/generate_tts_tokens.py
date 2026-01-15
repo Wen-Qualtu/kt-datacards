@@ -17,11 +17,14 @@ from typing import Dict, List, Optional
 class TTSTokenGenerator:
     """Generate TTS token objects and infinite bags."""
     
-    # Template mesh paths in dev/token-meshes
+    # Template mesh paths
     TEMPLATE_MESH_PATHS = {
         'operative': Path('dev/token-meshes/token-operative.obj'),
         'round': Path('dev/token-meshes/token-round.obj')
     }
+    
+    # Bag mesh template path
+    BAG_MESH_TEMPLATE = Path('config/defaults/tts-token/token-mesh.obj')
     
     # GitHub repo base URL (from existing project)
     GITHUB_BASE = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main"
@@ -150,7 +153,7 @@ class TTSTokenGenerator:
                 "WidthScale": 0.0,
                 "CustomToken": {
                     "Thickness": 0.1,
-                    "MergeDistancePixels": 10.0,
+                    "MergeDistancePixels": 5.0,
                     "StandUp": False,
                     "Stackable": False
                 }
@@ -163,24 +166,77 @@ class TTSTokenGenerator:
     def generate_infinite_bag(self,
                              token_name: str,
                              token_obj: Dict,
-                             bag_mesh_url: str) -> Dict:
+                             token_image_url: str,
+                             mesh_url: str) -> Dict:
         """
-        Generate an infinite bag containing a single token type.
+        Generate an infinite bag using Custom_Model_Infinite_Bag.
+        The bag uses a mesh and displays a contained token on top.
         
         Args:
             token_name: Name of the token
-            token_obj: Token object to include
-            bag_mesh_url: URL for the bag's mesh (container mesh, not token mesh)
+            token_obj: Token object to use as template
+            token_image_url: URL for the token image
+            mesh_url: URL for the bag mesh
         
         Returns:
             TTS infinite bag object
         """
-        # Create child token template (defines what spawns)
-        child_token_template = token_obj.copy()
-        child_token_template["Transform"] = {
-            "posX": 0.0, "posY": 0.0, "posZ": 0.0,
-            "rotX": 0.0, "rotY": 270.0, "rotZ": 0.0,
-            "scaleX": 1.0, "scaleY": 1.0, "scaleZ": 1.0
+        # Contained token (visible on the bag)
+        contained_token = {
+            "GUID": "53bd29",
+            "Name": "Custom_Token",
+            "Transform": {
+                "posX": 0.0,
+                "posY": 1.63,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 0.0,
+                "rotZ": 0.0,
+                "scaleX": token_obj['Transform']['scaleX'],
+                "scaleY": 1.0,
+                "scaleZ": token_obj['Transform']['scaleZ']
+            },
+            "Nickname": token_name,
+            "Description": token_name,
+            "ColorDiffuse": {"r": 1.0, "g": 1.0, "b": 1.0},
+            "Tags": token_obj.get('Tags', []),
+            "Locked": False,
+            "Grid": True,
+            "Snap": False,
+            "Autoraise": True,
+            "Sticky": False,
+            "Tooltip": False,
+            "Hands": False,
+            "CustomImage": token_obj['CustomImage']
+        }
+        
+        # Child token template (what spawns)
+        child_token_template = {
+            "GUID": "333a8b",
+            "Name": "Custom_Token",
+            "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 0.0,
+                "rotZ": 0.0,
+                "scaleX": token_obj['Transform']['scaleX'],
+                "scaleY": 1.0,
+                "scaleZ": token_obj['Transform']['scaleZ']
+            },
+            "Nickname": token_name,
+            "Description": "",
+            "ColorDiffuse": {"r": 1.0, "g": 1.0, "b": 1.0},
+            "Tags": token_obj.get('Tags', []),
+            "Locked": False,
+            "Grid": True,
+            "Snap": False,
+            "Autoraise": True,
+            "Sticky": False,
+            "Tooltip": False,
+            "Hands": False,
+            "CustomImage": token_obj['CustomImage']
         }
         
         return {
@@ -188,39 +244,28 @@ class TTSTokenGenerator:
             "Name": "Custom_Model_Infinite_Bag",
             "Transform": {
                 "posX": 0.0,
-                "posY": 3.5,
+                "posY": 1.03,
                 "posZ": 0.0,
                 "rotX": 0.0,
-                "rotY": 270.0,
+                "rotY": 180.0,
                 "rotZ": 0.0,
-                "scaleX": 1.25,
+                "scaleX": 1.17,
                 "scaleY": 0.1,
-                "scaleZ": 1.25
+                "scaleZ": 1.13
             },
-            "Nickname": f"{token_name} tokens",
-            "Description": "",
-            "GMNotes": f"_{token_name}_tokens_infi",
-            "AltLookAngle": {"x": 0.0, "y": 0.0, "z": 0.0},
+            "Nickname": token_name,
+            "Description": f"Infinite {token_name} tokens",
             "ColorDiffuse": {"r": 1.0, "g": 1.0, "b": 1.0, "a": 0.0},
-            "Tags": [f"_{token_name}_tokens"],
-            "LayoutGroupSortIndex": 0,
-            "Value": 0,
-            "Locked": True,
+            "Tags": ["KTUIToken"],
+            "Locked": False,
             "Grid": True,
             "Snap": True,
-            "IgnoreFoW": False,
-            "MeasureMovement": False,
-            "DragSelectable": True,
             "Autoraise": True,
-            "Sticky": True,
+            "Sticky": True,  # Sticky to keep in place
             "Tooltip": True,
-            "GridProjection": False,
-            "HideWhenFaceDown": False,
             "Hands": False,
-            "MaterialIndex": -1,
-            "MeshIndex": -1,
             "CustomMesh": {
-                "MeshURL": bag_mesh_url,
+                "MeshURL": mesh_url,
                 "DiffuseURL": "",
                 "NormalURL": "",
                 "ColliderURL": "",
@@ -229,10 +274,7 @@ class TTSTokenGenerator:
                 "TypeIndex": 7,
                 "CastShadows": True
             },
-            "LuaScript": "",
-            "LuaScriptState": "",
-            "XmlUI": "",
-            "ContainedObjects": [token_obj],
+            "ContainedObjects": [contained_token],
             "ChildObjects": [child_token_template]
         }
     
@@ -291,20 +333,58 @@ class TTSTokenGenerator:
             dest_image = output_token_dir / f"{team_name}-{clean_name}.png"
             
             if source_image.exists():
-                # Copy PNG directly to preserve transparency
-                shutil.copy2(source_image, dest_image)
+                from PIL import Image
+                import numpy as np
+                
+                # Load image and boost alpha for colored pixels
+                img = Image.open(source_image)
+                if img.mode == 'RGBA':
+                    img_array = np.array(img)
+                    
+                    # Get alpha channel
+                    alpha = img_array[:, :, 3]
+                    
+                    # For pixels that are already somewhat visible (alpha > 50),
+                    # make them fully opaque to preserve colors
+                    # This prevents light colors from being treated as transparent
+                    boosted_alpha = np.where(alpha > 50, 255, alpha)
+                    
+                    # Apply boosted alpha
+                    img_array[:, :, 3] = boosted_alpha
+                    
+                    # Save with boosted alpha
+                    img_boosted = Image.fromarray(img_array)
+                    img_boosted.save(dest_image, 'PNG')
+                else:
+                    # Not RGBA, just copy
+                    shutil.copy2(source_image, dest_image)
             
-            # Generate URL for texture
+            # Copy bag mesh to output with token-specific name
+            mesh_dest = output_token_dir / f"{team_name}-{clean_name}.obj"
+            if self.BAG_MESH_TEMPLATE.exists():
+                shutil.copy2(self.BAG_MESH_TEMPLATE, mesh_dest)
+            
+            # Generate URLs for texture and mesh
             texture_url = f"{self.GITHUB_BASE}/output_v2/{faction}/{team_name}/tts/token/{dest_image.name}"
+            mesh_url = f"{self.GITHUB_BASE}/output_v2/{faction}/{team_name}/tts/token/{mesh_dest.name}"
             
-            # Create token object (no mesh needed for Custom_Token)
+            # Create token object
             token_obj = self.generate_token_object(
                 token_name=nickname,
                 token_texture_url=texture_url,
                 shape=shape
             )
             
+            # Create infinite bag containing the token
+            bag = self.generate_infinite_bag(
+                token_name=nickname,
+                token_obj=token_obj,
+                token_image_url=texture_url,
+                mesh_url=mesh_url
+            )
+            
             tokens.append({
+                'bag': bag,
                 'token': token_obj,
                 'filename': f"{clean_name}.json",
                 'token_name': nickname,
@@ -365,7 +445,7 @@ def main():
         print(f"\nFaction: {faction}")
         print(f"Tokens generated:")
         
-        # Save each token as standalone JSON
+        # Save each token bag as standalone JSON
         for token_data in tokens_data:
             # Save to tts_objects for testing
             json_output_file = team_json_dir / token_data['filename']
@@ -388,22 +468,18 @@ def main():
                 "LuaScript": "",
                 "LuaScriptState": "",
                 "XmlUI": "",
-                "ObjectStates": [token_data['token']]
+                "ObjectStates": [token_data['bag']]
             }
             
             with open(json_output_file, 'w') as f:
                 json.dump(tts_save, f, indent=2)
             
             print(f"  ✓ {token_data['token_name']} ({token_data['shape']})")
-            print(f"    Image: {token_data['image_path'].relative_to(output_dir)}")
-            print(f"    JSON:  {json_output_file.name}")
         
-        print(f"\n✓ Generated {len(tokens_data)} tokens")
+        print(f"\n✓ Generated {len(tokens_data)} token bags")
         print(f"\nOutput locations:")
         print(f"  TTS assets: {output_token_dir.absolute()}")
-        print(f"  JSON files: {team_json_dir.absolute()} (temp)")
-        print(f"\nNote: Tokens use Custom_Token with 2D cutout style")
-        print(f"      To load in TTS: Objects → Saved Objects → select JSON file")
+        print(f"  JSON files: {team_json_dir.absolute()}")
         
     except Exception as e:
         print(f"\n✗ Error: {e}")
