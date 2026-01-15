@@ -98,8 +98,10 @@ class TTSTokenGenerator:
             TTS token object dict
         """
         # Adjust scale based on shape
-        if shape == 'round' and scale == 0.24:
+        if shape == 'round':
             scale = 0.228
+        else:
+            scale = 0.24
         
         # Set tags based on shape
         if shape == 'round':
