@@ -71,12 +71,34 @@ class TTSGenerator:
         
         # Generate TTS object for each team
         count = 0
+        tts_object_entries = []  # Collect entries for datacards-urls.json
+        
         for team_name, cards in teams.items():
             self.logger.info(f"Generating TTS object for {team_name}")
             texture_url = team_textures.get(team_name)
             mesh_url = team_meshes.get(team_name)
+            
+            # Get team display name from config
+            team_display_name = self._get_team_display_name(team_name)
+            output_filename = f"{team_display_name} Cards.json"
+            
             self._generate_team_tts_object(team_name, cards, lua_script, texture_url, mesh_url)
+            
+            # Add entry for this TTS object
+            tts_object_entries.append({
+                'faction': '',  # Not applicable for TTS objects
+                'team': team_name,
+                'type': 'tts_card_box_object',
+                'name': team_display_name,
+                'url': f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/tts_objects/{output_filename.replace(' ', '%20')}"
+            })
+            
             count += 1
+        
+        # Append TTS object entries to datacards-urls.json
+        if tts_object_entries:
+            self._append_to_urls_json(all_cards, tts_object_entries)
+            self._generate_tts_boxes_json(tts_object_entries)
         
         return count
     
@@ -210,3 +232,42 @@ class TTSGenerator:
             shutil.copy2(source_preview, dest_preview)
         else:
             self.logger.warning(f"No preview image found for {team_folder_name}")
+    
+    def _get_team_display_name(self, team_name: str) -> str:
+        """Convert team slug to display name (e.g., 'farstalker-kinband' -> 'Farstalker Kinband')"""
+        return team_name.replace('-', ' ').title()
+    
+    def _append_to_urls_json(self, existing_cards: list, tts_entries: list):
+        """Append TTS object entries to datacards-urls.json"""
+        urls_file = self.output_v2_dir / "datacards-urls.json"
+        
+        # Remove any existing tts_card_box_object entries
+        filtered_cards = [card for card in existing_cards if card.get('type') != 'tts_card_box_object']
+        
+        # Add new TTS entries
+        filtered_cards.extend(tts_entries)
+        
+        # Write back to file
+        with open(urls_file, 'w', encoding='utf-8') as f:
+            json.dump(filtered_cards, f, indent=2, ensure_ascii=False)
+        
+        self.logger.info(f"Added {len(tts_entries)} TTS object entries to datacards-urls.json")
+    
+    def _generate_tts_boxes_json(self, tts_entries: list):
+        """Generate a minimal tts-card-boxes.json with just the TTS box data"""
+        tts_boxes = []
+        
+        for entry in tts_entries:
+            tts_boxes.append({
+                'team': entry['team'],
+                'name': entry['name'],
+                'url': entry['url']
+            })
+        
+        # Write to tts-card-boxes.json
+        output_file = self.output_v2_dir / 'tts-card-boxes.json'
+        with open(output_file, 'w', encoding='utf-8') as f:
+            json.dump(tts_boxes, f, indent=2, ensure_ascii=False)
+        
+        self.logger.info(f"Generated tts-card-boxes.json with {len(tts_boxes)} entries")
+

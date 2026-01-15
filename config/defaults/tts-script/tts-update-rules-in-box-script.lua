@@ -1,4 +1,6 @@
 ﻿-- constants
+local DATACARDS_URLS_JSON_URL = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/datacards-urls.json"
+
 local BUTTON_SETUP_TOKENS = {
   label="Setup",
   click_function="click_setup", function_owner=self,
