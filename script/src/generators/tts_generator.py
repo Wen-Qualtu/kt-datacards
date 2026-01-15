@@ -152,6 +152,12 @@ class TTSGenerator:
         deck_id_counter = 1000
         type_order = ['operative-selection', 'faction-rules', 'markertokens', 'datacards', 'equipment', 'firefight-ploys', 'strategy-ploys']
         
+        # Add token bag if tokens exist for this team
+        token_bag = self._load_token_bag(team_name, faction)
+        if token_bag:
+            contained_objects.append(token_bag)
+            self.logger.info(f"Added token bag for {team_name}")
+        
         for card_type in type_order:
             if card_type not in cards_by_type:
                 continue
@@ -270,4 +276,37 @@ class TTSGenerator:
             json.dump(tts_boxes, f, indent=2, ensure_ascii=False)
         
         self.logger.info(f"Generated tts-card-boxes.json with {len(tts_boxes)} entries")
-
+    
+    def _load_token_bag(self, team_name: str, faction: str) -> dict | None:
+        """
+        Load token bag object from the team's tts/token folder if it exists.
+        
+        Args:
+            team_name: Team slug (e.g., 'farstalker-kinband')
+            faction: Faction name (e.g., 'xenos', 'imperium')
+        
+        Returns:
+            Token bag object dict or None if no tokens exist
+        """
+        if not faction:
+            return None
+        
+        # Check if token JSON exists
+        token_json_path = self.output_v2_dir / faction / team_name / 'tts' / 'token' / f'{team_name}-tokens.json'
+        
+        if not token_json_path.exists():
+            return None
+        
+        try:
+            with open(token_json_path, 'r', encoding='utf-8') as f:
+                token_data = json.load(f)
+            
+            # Extract the token bag object (first ObjectState)
+            if 'ObjectStates' in token_data and len(token_data['ObjectStates']) > 0:
+                token_bag = token_data['ObjectStates'][0]
+                self.logger.info(f"Loaded token bag for {team_name} with {len(token_bag.get('ContainedObjects', []))} tokens")
+                return token_bag
+        except Exception as e:
+            self.logger.warning(f"Failed to load token bag for {team_name}: {e}")
+        
+        return None
