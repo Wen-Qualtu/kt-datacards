@@ -542,7 +542,7 @@ class TokenExtractor:
             
             
             # Draw OCR text positions
-            if token_names_ocr:
+            if debug and token_names_ocr:
                 for (text_x, text_y), text in token_names_ocr.items():
                     cv2.circle(debug_img, (text_x, text_y), 5, (255, 0, 0), -1)
                     cv2.putText(debug_img, text[:20], (text_x + 10, text_y), 

@@ -86,7 +86,7 @@ class TTSTokenGenerator:
                              shape: str = 'operative',
                              scale: float = 0.24) -> Dict:
         """
-        Generate a single token object.
+        Generate a single token object using Custom_Token (2D cutout style).
         
         Args:
             token_name: Name/nickname for the token
@@ -112,10 +112,10 @@ class TTSTokenGenerator:
             "Name": "Custom_Token",
             "Transform": {
                 "posX": 0.0,
-                "posY": 0.0,
+                "posY": 1.0,
                 "posZ": 0.0,
                 "rotX": 0.0,
-                "rotY": 270.0,
+                "rotY": 180.0,
                 "rotZ": 0.0,
                 "scaleX": scale,
                 "scaleY": 1.0,
@@ -235,13 +235,13 @@ class TTSTokenGenerator:
         }
     
     
-    def generate_individual_token_bags(self,
-                                      team_name: str,
-                                      metadata_file: Path,
-                                      token_images_dir: Path,
-                                      output_dir: Path) -> List[Dict]:
+    def generate_individual_tokens(self,
+                                  team_name: str,
+                                  metadata_file: Path,
+                                  token_images_dir: Path,
+                                  output_dir: Path) -> List[Dict]:
         """
-        Generate individual infinite bags for each token with mesh files copied to output.
+        Generate individual token objects with mesh files copied to output.
         
         Args:
             team_name: Team name (e.g., 'farstalker-kinband')
@@ -284,58 +284,29 @@ class TTSTokenGenerator:
             else:
                 nickname = clean_name.replace('-', ' ').title()
             
-            # Copy extracted token image to output and convert to JPG
+            # Copy extracted token image to output as PNG (KEEP TRANSPARENCY!)
             source_image = token_images_dir / team_name / filename
-            dest_image = output_token_dir / f"{team_name}-{clean_name}.jpg"
+            dest_image = output_token_dir / f"{team_name}-{clean_name}.png"
             
             if source_image.exists():
-                # Convert PNG to JPG
-                from PIL import Image
-                img = Image.open(source_image)
-                # Convert RGBA to RGB if needed
-                if img.mode in ('RGBA', 'LA', 'P'):
-                    # Create white background
-                    background = Image.new('RGB', img.size, (255, 255, 255))
-                    if img.mode == 'P':
-                        img = img.convert('RGBA')
-                    background.paste(img, mask=img.split()[-1] if img.mode in ('RGBA', 'LA') else None)
-                    img = background
-                img.save(dest_image, 'JPEG', quality=95)
+                # Copy PNG directly to preserve transparency
+                shutil.copy2(source_image, dest_image)
             
-            # Copy mesh file to output with token-specific name
-            mesh_output_path = self.copy_mesh_to_output(shape, team_name, clean_name, output_token_dir)
-            
-            # Generate URLs
+            # Generate URL for texture
             texture_url = f"{self.GITHUB_BASE}/output_v2/{faction}/{team_name}/tts/token/{dest_image.name}"
-            mesh_url = f"{self.GITHUB_BASE}/output_v2/{faction}/{team_name}/tts/token/{mesh_output_path.name}"
             
-            # Use the bag mesh URL from tts_generator_helpers
-            bag_mesh_url = f"{self.GITHUB_BASE}/config/defaults/box/card-box.obj"
-            
-            # Create token object
+            # Create token object (no mesh needed for Custom_Token)
             token_obj = self.generate_token_object(
                 token_name=nickname,
                 token_texture_url=texture_url,
                 shape=shape
             )
             
-            # Update token's mesh URL to point to the copied mesh
-            # Note: Custom_Token doesn't have a mesh, the shape comes from the CustomImage
-            # The mesh is only used by the bag container
-            
-            # Create infinite bag for this token
-            bag = self.generate_infinite_bag(
-                token_name=nickname,
-                token_obj=token_obj,
-                bag_mesh_url=bag_mesh_url
-            )
-            
             tokens.append({
-                'bag': bag,
+                'token': token_obj,
                 'filename': f"{clean_name}.json",
                 'token_name': nickname,
                 'shape': shape,
-                'mesh_path': mesh_output_path,
                 'image_path': dest_image
             })
         
@@ -374,7 +345,7 @@ def main():
             raise FileNotFoundError(f"Metadata file not found: {metadata_path}")
         
         # Generate tokens with mesh files copied to output
-        tokens_data = generator.generate_individual_token_bags(
+        tokens_data = generator.generate_individual_tokens(
             team_name=args.team,
             metadata_file=metadata_path,
             token_images_dir=tokens_dir,
@@ -392,7 +363,7 @@ def main():
         print(f"\nFaction: {faction}")
         print(f"Tokens generated:")
         
-        # Save each token bag as standalone JSON
+        # Save each token as standalone JSON
         for token_data in tokens_data:
             # Save to tts_objects for testing
             json_output_file = team_json_dir / token_data['filename']
@@ -415,7 +386,7 @@ def main():
                 "LuaScript": "",
                 "LuaScriptState": "",
                 "XmlUI": "",
-                "ObjectStates": [token_data['bag']]
+                "ObjectStates": [token_data['token']]
             }
             
             with open(json_output_file, 'w') as f:
@@ -423,14 +394,14 @@ def main():
             
             print(f"  ✓ {token_data['token_name']} ({token_data['shape']})")
             print(f"    Image: {token_data['image_path'].relative_to(output_dir)}")
-            print(f"    Mesh:  {token_data['mesh_path'].relative_to(output_dir)}")
             print(f"    JSON:  {json_output_file.name}")
         
-        print(f"\n✓ Generated {len(tokens_data)} token bags")
+        print(f"\n✓ Generated {len(tokens_data)} tokens")
         print(f"\nOutput locations:")
         print(f"  TTS assets: {output_token_dir.absolute()}")
         print(f"  JSON files: {team_json_dir.absolute()} (temp)")
-        print(f"\nNote: Images converted to JPG and mesh files are in output_v2/*/tts/token/")
+        print(f"\nNote: Tokens use Custom_Token with 2D cutout style")
+        print(f"      To load in TTS: Objects → Saved Objects → select JSON file")
         
     except Exception as e:
         print(f"\n✗ Error: {e}")
