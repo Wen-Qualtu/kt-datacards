@@ -3,6 +3,9 @@
 # faction: imperium, chaos, xenos
 # army: specific army within the faction
 # aliases: list of alternative names detected in source PDFs
+# tokens_ready: optional boolean (default: false)
+#   - false: tokens are still being iterated/tuned and are NOT included in TTS box/state
+#   - true:  tokens are considered "locked" and will be included in TTS box/state
 
 teams:
   angels-of-death:
@@ -16,12 +19,14 @@ teams:
     faction: "imperium"
     army: "adeptus-mechanicus"
     aliases: []
+    tokens_ready: true
   
   blades-of-khaine:
     canonical_name: "Blades of Khaine"
     faction: "xenos"
     army: "aeldari"
     aliases: ["blade-of-khaine"]
+    tokens_ready: true
     
   blooded:
     canonical_name: "Blooded"
@@ -58,12 +63,14 @@ teams:
     faction: "imperium"
     army: "imperial-guard"
     aliases: ["death-korp"]
+    tokens_ready: true
   
   deathwatch:
     canonical_name: "Deathwatch"
     faction: "imperium"
     army: "space-marines"
     aliases: []
+    tokens_ready: true
 
   elucidian-starstriders:
     canonical_name: "Elucidian Starstriders"
@@ -142,6 +149,7 @@ teams:
     faction: "imperium"
     army: "inquisition"
     aliases: ["inquisitorial-agent"]
+    tokens_ready: true
   
   kasrkin:
     canonical_name: "Kasrkin"
@@ -160,6 +168,7 @@ teams:
     faction: "chaos"
     army: "chaos-space-marines"
     aliases: ["legionary"]
+    tokens_ready: true
   
   mandrakes:
     canonical_name: "Mandrakes"
@@ -226,6 +235,7 @@ teams:
     faction: "imperium"
     army: "imperial-guard"
     aliases: ["tempestus-aquilon"]
+    tokens_ready: true
   
   vespid-stingwings:
     canonical_name: "Vespid Stingwings"

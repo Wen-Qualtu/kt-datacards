@@ -135,6 +135,27 @@ class DatacardPipeline:
             config_dir=self.config_dir
         )
         stats['tts_objects_generated'] = tts_generator.generate_all_tts_objects()
+
+        # Step 5.25: Embed ready team tokens (locked teams only)
+        self.logger.info("Step 5.25: Embedding ready team tokens")
+        try:
+            from .processors.token_integration import TokenIntegrator
+
+            project_root = Path(__file__).parent.parent.parent
+            integrator = TokenIntegrator(
+                project_root=project_root,
+                config_path=self.config_dir / 'team-config.yaml',
+                extracted_tokens_dir=project_root / 'processed' / 'extracted-tokens',
+                output_v2_dir=self.output_v2_dir,
+                tts_objects_dir=project_root / 'tts_objects',
+                tts_token_json_dir=project_root / 'tts_objects' / 'tokens',
+            )
+            token_stats = integrator.embed_ready_tokens()
+            stats['tokens_ready'] = token_stats.get('ready', 0)
+            stats['tokens_embedded'] = token_stats.get('embedded', 0)
+            stats['tokens_skipped'] = token_stats.get('skipped_missing', 0)
+        except Exception as e:
+            self.logger.warning(f"Token embedding skipped: {e}")
         
         # Step 5.5: Validate card counts
         self.logger.info("Step 5.5: Validating card counts")
@@ -147,9 +168,9 @@ class DatacardPipeline:
         else:
             self.logger.warning("Skipping metadata generation - no output files found")
         
-        # Step 7: Generate display table
-        self.logger.info("Step 7: Generating display table")
-        stats['display_table_generated'] = self._generate_display_table()
+        # Step 7: Display table generation is intentionally not part of the normal
+        # pipeline. It is updated only for deployments.
+        stats['display_table_generated'] = False
         
         self.logger.info("Pipeline complete")
         self._log_stats(stats)
@@ -596,7 +617,7 @@ class DatacardPipeline:
         self.logger.info(f"  Backsides Added: {stats.get('backsides_added', 0)}")
         self.logger.info(f"  V2 URLs Generated: {stats.get('v2_urls_generated', 0)}")
         self.logger.info(f"  TTS Objects Generated: {stats.get('tts_objects_generated', 0)}")
-        self.logger.info(f"  Display Table Generated: {'Yes' if stats.get('display_table_generated', False) else 'No'}")
+        # Display table generation is deploy-time only.
         self.logger.info("=" * 60)
     
     def _generate_display_table(self) -> bool:
@@ -606,34 +627,6 @@ class DatacardPipeline:
         Returns:
             True if successful, False otherwise
         """
-        try:
-            import sys
-            import importlib.util
-            
-            # Import the display table generation script
-            script_path = Path(__file__).parent.parent.parent / 'dev' / 'generate_display_table.py'
-            
-            if not script_path.exists():
-                self.logger.warning(f"Display table script not found: {script_path}")
-                return False
-            
-            # Load the module dynamically
-            spec = importlib.util.spec_from_file_location("generate_display_table", script_path)
-            if spec is None or spec.loader is None:
-                self.logger.error("Could not load display table generation module")
-                return False
-            
-            module = importlib.util.module_from_spec(spec)
-            sys.modules["generate_display_table"] = module
-            spec.loader.exec_module(module)
-            
-            # Run the main function
-            self.logger.info("Generating display table JSON...")
-            module.main()
-            
-            self.logger.info("✓ Display table generated successfully")
-            return True
-            
-        except Exception as e:
-            self.logger.error(f"Failed to generate display table: {e}")
-            return False
+        self.logger.info("Display table generation is not wired into this repo build.")
+        self.logger.info("(Previously this was a dev-only script; it has been removed during cleanup.)")
+        return False

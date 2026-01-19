@@ -183,8 +183,8 @@ poetry run python script/run_pipeline.py --step all --team legionaries kommandos
 
 ```
 kt-datacards/
-├── input/                          # Place your PDF exports here
-├── processed/                      # Intermediate processing files
+├── input/                          # Place your PDF exports here (transient/import only)
+├── processed/                      # Intermediate processing files (incl. extracted tokens)
 ├── output_v2/                      # Final organized card images
 │   └── {teamname}/
 │       ├── datacards/
@@ -212,10 +212,10 @@ kt-datacards/
 │       ├── box/                    # Custom 3D box (optional)
 │       ├── card-backside/          # Custom card backs (optional)
 │       └── tts-image/              # Custom preview (optional)
-├── dev/                            # Development utility scripts
 ├── script/                         # Main pipeline scripts
 │   ├── run_pipeline.py             # Main entry point
 │   └── src/                        # Pipeline implementation
+│   └── tools/                      # Maintenance utilities (token extraction/transparency)
 └── docs/                           # Project documentation
     ├── README.md                   # Documentation index
     ├── DEVELOPMENT.md              # Development guidelines

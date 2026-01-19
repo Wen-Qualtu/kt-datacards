@@ -111,7 +111,7 @@ function spawnTeamBoxes(teamBoxes, index)
             self.putObject(spawnedObj)
             -- Process next box
             spawnTeamBoxes(teamBoxes, index + 1)
-          end, 0.5)
+          end, 0.05)
         else
           broadcastToAll("Failed to spawn: " .. box.name, {1, 0, 0})
           -- Continue with next box even if this one failed

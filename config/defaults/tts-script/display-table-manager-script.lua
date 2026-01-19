@@ -10,10 +10,24 @@ function onLoad(script_state)
     self.setName("KT Display Manager")
     self.setDescription("Manages Kill Team display table. Refresh from GitHub or Place/Recall all teams.")
     
-    -- Load stored positions
-    if script_state ~= "" then
-        positions = JSON.decode(script_state)
+    -- Load stored positions (keyed by team name, not GUID)
+    if script_state ~= "" and script_state ~= nil then
+        local success, decoded = pcall(function() return JSON.decode(script_state) end)
+        if success and decoded then
+            positions = decoded
+            print("[KT Display Manager] Loaded " .. getTableSize(positions) .. " saved positions")
+        end
     end
+end
+
+function onSave()
+    return JSON.encode(positions)
+end
+
+function getTableSize(t)
+    local count = 0
+    for _ in pairs(t) do count = count + 1 end
+    return count
 end
 
 function refreshFromGitHub()
@@ -147,7 +161,8 @@ function placeTeamsOnTable()
         for i, item in ipairs(contents) do
             Wait.time(function()
                 local guid = item.guid
-                local posData = positions[guid]
+                local teamName = item.name  -- Use team name from item
+                local posData = positions[teamName]  -- Look up by name, not GUID
                 
                 if posData then
                     -- Calculate position relative to manager bag
@@ -166,26 +181,24 @@ function placeTeamsOnTable()
                     
                     -- Spawn text label for this team
                     Wait.time(function()
-                        if bagObj then
-                            local teamName = bagObj.getName()
-                            if teamName and teamName ~= "" then
-                                spawnObject({
-                                    type = "3DText",
-                                    position = Vector(relativePos.x, relativePos.y - 2.2, relativePos.z + 3.0),
-                                    rotation = Vector(90, 0, 0),
-                                    scale = Vector(0.015, 0.015, 0.015),
-                                    callback_function = function(obj)
-                                        obj.TextTool.setValue(teamName)
-                                        obj.TextTool.setFontSize(50)
-                                        obj.setColorTint({r=1, g=1, b=1})
-                                        obj.setLock(true)
-                                        obj.setGMNotes("_team_label")
-                                    end
-                                })
-                            end
+                        if bagObj and teamName and teamName ~= "" then
+                            spawnObject({
+                                type = "3DText",
+                                position = Vector(relativePos.x, relativePos.y - 2.2, relativePos.z + 3.0),
+                                rotation = Vector(90, 0, 0),
+                                scale = Vector(0.015, 0.015, 0.015),
+                                callback_function = function(obj)
+                                    obj.TextTool.setValue(teamName)
+                                    obj.TextTool.setFontSize(50)
+                                    obj.setColorTint({r=1, g=1, b=1})
+                                    obj.setLock(true)
+                                    obj.setGMNotes("_team_label")
+                                end
+                            })
                         end
                     end, 0.2)
                 else
+                    -- No saved position, just take out
                     self.takeObject({
                         guid = guid,
                         smooth = false
@@ -206,12 +219,25 @@ end
 function recallTeamsToManager()
     local recalled = 0
     
-    -- Recall team bags
+    -- Save positions before recalling (keyed by team name)
     for _, obj in ipairs(getAllObjects()) do
         if obj.type == "Bag" and obj ~= self and obj.getName() ~= "" then
-            -- Check if it's a team bag (has specific tag pattern or name)
             local name = obj.getName()
             if name ~= "KT Display Manager" and obj.getGUID() ~= self.getGUID() then
+                -- Store position relative to manager bag
+                local bagPos = self.getPosition()
+                local objPos = obj.getPosition()
+                local objRot = obj.getRotation()
+                
+                positions[name] = {
+                    pos = {
+                        x = objPos.x - bagPos.x,
+                        y = objPos.y - bagPos.y,
+                        z = objPos.z - bagPos.z + 30.0  -- Reverse the offset
+                    },
+                    rot = {x = objRot.x, y = objRot.y, z = objRot.z}
+                }
+                
                 self.putObject(obj)
                 recalled = recalled + 1
             end
@@ -226,7 +252,7 @@ function recallTeamsToManager()
     end
     
     if recalled > 0 then
-        broadcastToAll("✓ Recalled " .. recalled .. " teams to manager bag.", {0, 1, 0})
+        broadcastToAll("✓ Recalled " .. recalled .. " teams and saved positions.", {0, 1, 0})
     else
         broadcastToAll("No team bags found on table to recall.", {1, 0.5, 0})
     end

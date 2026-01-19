@@ -108,7 +108,7 @@ kt-datacards/
 │   ├── run_pipeline.py         # Main entry point
 │   └── README.md               # Script documentation
 └── docs/                       # Feature documentation
-└── dev/                        # One off and check files
+└── script/tools/               # Maintenance utilities (optional)
 ```
 
 ### Folder Rules
@@ -600,11 +600,15 @@ See [Token Generation Documentation](token-generation.md) for complete workflow.
 
 **Quick Start:**
 ```bash
-# Extract tokens with transparency (single pass!)
-python dev/extract_tokens_v2.py --team farstalker-kinband --dpi 300 --threshold 50
+# Extract raw token PNGs from marker/token guides
+poetry run python script/tools/extract_tokens.py --team farstalker-kinband
 
-# Generate TTS bags
-python dev/generate_infinite_bags.py --team farstalker-kinband --create-master-bag
+# Apply transparency to extracted token PNGs (in-place)
+poetry run python script/tools/add_token_transparency_bg_sample.py --team farstalker-kinband \
+  --bg-sample config/defaults/token-bg-sample.png
+
+# Package/embed tokens via the main pipeline
+poetry run python script/run_pipeline.py --step all
 ```
 
 **Output:**
