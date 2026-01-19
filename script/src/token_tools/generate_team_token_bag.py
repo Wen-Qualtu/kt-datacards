@@ -58,11 +58,11 @@ class TeamTokenBagGenerator:
         operative_tokens = []
 
         for token in tokens:
-            # Determine shape by scale (round=0.228, operative=0.24)
-            scale = token['Transform']['scaleX']
-            if abs(scale - 0.228) < 0.01:  # round token
+            # Determine shape by tags (more robust than scale-based heuristics).
+            tags = set(token.get('Tags') or [])
+            if 'KTUIMarker' in tags:
                 round_tokens.append(token)
-            else:  # operative token
+            else:
                 operative_tokens.append(token)
 
         # Layout parameters

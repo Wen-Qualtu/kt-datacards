@@ -25,7 +25,7 @@ def main():
     
     parser.add_argument(
         '--step',
-        choices=['process', 'extract', 'backsides', 'urls', 'all'],
+        choices=['process', 'extract', 'backsides', 'urls', 'tokens', 'all'],
         default='all',
         help='Pipeline step to run (default: all)'
     )
@@ -34,6 +34,12 @@ def main():
         '--teams',
         nargs='+',
         help='Filter by team names (e.g., --teams kasrkin blooded)'
+    )
+
+    parser.add_argument(
+        '--force-overwrite-ready-tokens',
+        action='store_true',
+        help='Overwrite token JSON for tokens_ready teams (use for one-time migrations)'
     )
     
     parser.add_argument(
@@ -93,6 +99,31 @@ def main():
             logger.info("Generating URLs")
             count = pipeline.generate_urls()
             logger.info(f"Generated {count} URL(s)")
+
+        elif args.step == 'tokens':
+            logger.info("Packaging tokens and embedding ready teams")
+            from src.processors.token_integration import TokenIntegrator
+
+            project_root = Path(__file__).parent.parent
+            integrator = TokenIntegrator(
+                project_root=project_root,
+                config_path=project_root / 'config' / 'team-config.yaml',
+                extracted_tokens_dir=project_root / 'processed' / 'extracted-tokens',
+                output_v2_dir=project_root / 'output_v2',
+                tts_objects_dir=project_root / 'tts_objects',
+                tts_token_json_dir=project_root / 'tts_objects' / 'tokens',
+            )
+            token_stats = integrator.embed_ready_tokens(
+                team_filter=args.teams,
+                force_overwrite_ready=args.force_overwrite_ready_tokens,
+            )
+            logger.info(
+                "Tokens: packaged=%s ready=%s embedded=%s skipped_missing=%s",
+                token_stats.get('packaged', 0),
+                token_stats.get('ready', 0),
+                token_stats.get('embedded', 0),
+                token_stats.get('skipped_missing', 0),
+            )
         
         logger.info("Done!")
         return 0

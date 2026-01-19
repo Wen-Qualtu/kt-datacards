@@ -40,6 +40,14 @@ class TTSTokenGenerator:
     # prior behavior seen with ~200px token images at 5px.
     MERGE_DISTANCE_PX = max(5.0, float(int(round(TOKEN_CANVAS_PX / 40))))
 
+    # Token size in Tabletop Simulator.
+    #
+    # The previous values (round=0.228, operative=0.24) spawn noticeably small
+    # tokens in TTS; users commonly "Reset Scale" to get expected sizing.
+    # Increasing by ~4x makes tokens spawn at the intended tabletop size.
+    TOKEN_SCALE_ROUND = 0.228 * 4.0
+    TOKEN_SCALE_OPERATIVE = 0.24 * 4.0
+
     def _load_rgba(self, path: Path):
         im = cv2.imread(str(path), cv2.IMREAD_UNCHANGED)
         if im is None:
@@ -145,14 +153,14 @@ class TTSTokenGenerator:
         token_name: str,
         token_texture_url: str,
         shape: str = 'operative',
-        scale: float = 0.24,
+        scale: float | None = None,
     ) -> Dict:
         """Generate a single token object using Custom_Token (2D cutout style)."""
-        # Adjust scale based on shape
-        if shape == 'round':
-            scale = 0.228
+        # Adjust scale based on shape (unless explicitly overridden).
+        if scale is None:
+            scale = self.TOKEN_SCALE_ROUND if shape == 'round' else self.TOKEN_SCALE_OPERATIVE
         else:
-            scale = 0.24
+            scale = float(scale)
 
         # Set tags based on shape
         if shape == 'round':
