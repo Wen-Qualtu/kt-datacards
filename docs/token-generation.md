@@ -8,37 +8,29 @@ This document describes the automated pipeline for generating Kill Team token ob
 
 ### Components
 
-1. **Token Extraction with Transparency** (`extract_tokens_v2.py`) ⭐ NEW
-   - Extracts directly from PDF marker guide (last page)
-   - Renders PDF at high DPI for maximum quality
-   - Identifies token names from PDF text
-   - Detects token shapes (operative vs round)
-   - **Applies transparency immediately** (single pass)
-   - Outputs PNG images with metadata
+1. **Token Extraction** (`script/tools/extract_tokens.py`)
+  - Extracts individual token images from marker/token guide pages
+  - Uses PDF text extraction for token names (falls back to OCR)
+  - Writes extracted PNGs under `processed/extracted-tokens/{team}/`
 
-2. **Legacy Extraction** (`extract_tokens.py` + `add_token_transparency.py`)
-   - Old two-step process (extract from JPG, then add transparency)
-   - Still available but not recommended
+2. **Transparency Pass** (`script/tools/add_token_transparency_bg_sample.py`)
+  - Learns the background greys from `config/defaults/token-bg-sample.png`
+  - Removes only border-connected background (avoids punching holes in art)
+  - Overwrites extracted token PNGs in-place (adds/updates alpha)
 
-3. **Infinite Bag Generation** (`generate_infinite_bags.py`)
-   - Creates TTS infinite bag objects for each token
-   - Generates master bag containing all token bags
-   - Outputs TTS-compatible JSON files
+3. **Packaging + Embedding** (main pipeline)
+  - Packages ready tokens into `output_v2/{faction}/{team}/tts/token/`
+  - Embeds token bags into ready team boxes during `script/run_pipeline.py`
 
 ### Data Flow
 
-**New Single-Pass Method (Recommended):**
+**Current Method:**
 ```
-PDF (Faction Rules) → extract_tokens_v2.py → Transparent Token PNGs
+PDF marker/token guide → script/tools/extract_tokens.py → processed/extracted-tokens/{team}/*.png
                                                       ↓
-                                          generate_infinite_bags.py
+                             script/tools/add_token_transparency_bg_sample.py (in-place alpha)
                                                       ↓
-                                          TTS JSON bags + output_v2 assets
-```
-
-**Legacy Two-Pass Method:**
-```
-PDF → JPG extraction → extract_tokens.py → PNGs → add_token_transparency.py → Transparent PNGs
+                                   script/run_pipeline.py (packages + embeds into output_v2)
 ```
 
 ## Token Types
@@ -59,27 +51,19 @@ PDF → JPG extraction → extract_tokens.py → PNGs → add_token_transparency
 
 ### 1. Extract Tokens from PDF (with Transparency)
 
-**Recommended - Single Pass:**
+**Extract tokens:**
 ```bash
-python dev/extract_tokens_v2.py --team farstalker-kinband --dpi 300 --threshold 50
+poetry run python script/tools/extract_tokens.py --team farstalker-kinband
 ```
 
-**Parameters:**
-- `--dpi`: PDF rendering resolution (default: 300)
-  - Higher DPI = better quality but larger files
-  - 300 DPI recommended for tokens
-- `--threshold`: Transparency threshold (default: 50)
-- `--no-transparency`: Skip transparency (extract only)
-
 **Output:**
-- `dev/extracted-tokens/{team}/*.png` - Individual token images (with transparency)
-- `dev/extracted-tokens/{team}/extraction-metadata.json` - Token metadata
+- `processed/extracted-tokens/{team}/*.png` - Individual token images
+- `processed/extracted-tokens/{team}/extraction-metadata.json` - Token metadata
 
 **Benefits:**
 - ✅ Extracts directly from PDF (better quality)
 - ✅ No JPG intermediate (no double conversion)
-- ✅ Transparency applied immediately
-- ✅ Single command instead of two
+- ✅ Deterministic output for downstream tooling
 
 **Metadata Format:**
 ```json
@@ -97,27 +81,20 @@ python dev/extract_tokens_v2.py --team farstalker-kinband --dpi 300 --threshold 
 }
 ```
 
-### 2. ~~Add Transparency~~ (No longer needed!)
+### 2. Add Transparency
 
-**Not needed with extract_tokens_v2.py** - transparency is applied during extraction!
-
-If using legacy `extract_tokens.py`, you can still use:
+Apply alpha to extracted token PNGs (in-place):
 ```bash
-python dev/add_token_transparency.py --team farstalker-kinband --threshold 50
+poetry run python script/tools/add_token_transparency_bg_sample.py --team farstalker-kinband \
+  --bg-sample config/defaults/token-bg-sample.png
 ```
 
-See legacy workflow section below for details.
+### 3. Package + Embed Tokens
 
-### 2. Generate Infinite Bags
-
+Run the pipeline to package/embed ready tokens:
 ```bash
-python dev/generate_infinite_bags.py --team farstalker-kinband --create-master-bag
+poetry run python script/run_pipeline.py --step all
 ```
-
-**Options:**
-- `--create-master-bag`: Create a master bag containing all token bags
-- `--output-dir`: Base output directory (default: output_v2)
-- `--tts-json-dir`: TTS JSON output (default: tts_objects/tokens)
 
 **Output:**
 - `output_v2/{faction}/{team}/tts/token/*.png` - Token images (GitHub hosted)
@@ -184,10 +161,10 @@ tts_objects/
       {token-name}-bag.json        # Individual infinite bags
       {team}-all-tokens.json       # Master bag (optional)
 
-dev/
+assets/
   extracted-tokens/
     {team}/
-      {token-name}.png             # Extracted tokens (with transparency)
+      {token-name}.png             # Extracted tokens
       extraction-metadata.json     # Metadata
 ```
 
@@ -249,13 +226,12 @@ teams:
 **Testing different thresholds:**
 ```bash
 # Less aggressive (keeps more detail, may leave some background)
-python dev/add_token_transparency.py --team farstalker-kinband --threshold 30
+poetry run python script/tools/add_token_transparency_bg_sample.py --team farstalker-kinband \
+  --bg-sample config/defaults/token-bg-sample.png --threshold 14
 
 # More aggressive (removes more background, may lose some detail)
-python dev/add_token_transparency.py --team farstalker-kinband --threshold 70
-
-# Use simple brightness method
-python dev/add_token_transparency.py --team farstalker-kinband --threshold 235 --simple
+poetry run python script/tools/add_token_transparency_bg_sample.py --team farstalker-kinband \
+  --bg-sample config/defaults/token-bg-sample.png --threshold 22
 ```
 
 ### Bags Not Working in TTS
@@ -268,11 +244,15 @@ python dev/add_token_transparency.py --team farstalker-kinband --threshold 235 -
 Complete workflow for a new team:
 
 ```bash
-# 1. Extract tokens with transparency (single command!)
-python dev/extract_tokens_v2.py --team farstalker-kinband --dpi 300 --threshold 50
+# 1. Extract token PNGs
+poetry run python script/tools/extract_tokens.py --team farstalker-kinband
 
-# 2. Generate bags
-python dev/generate_infinite_bags.py --team farstalker-kinband --create-master-bag
+# 2. Apply transparency (in-place)
+poetry run python script/tools/add_token_transparency_bg_sample.py --team farstalker-kinband \
+  --bg-sample config/defaults/token-bg-sample.png
+
+# 3. Package + embed tokens
+poetry run python script/run_pipeline.py --step all
 
 # 4. Commit to GitHub
 git add output_v2/xenos/farstalker-kinband/tts/token/*.png
@@ -282,7 +262,7 @@ git push
 
 # 5. Test in TTS
 # Objects → Saved Objects → Import
-# Select: tts_objects/tokens/farstalker-kinband/farstalker-kinband-all-tokens.json
+# Select the generated team object(s) under tts_objects/
 ```
 
 ## Technical Details
