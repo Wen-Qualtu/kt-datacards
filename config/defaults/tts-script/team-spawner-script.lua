@@ -132,8 +132,12 @@ function showTeamSelector(obj, playerColor, altClick)
     
     for i, team in ipairs(allTeams) do
         local faction = "xenos" -- default
-        if teamMetadata[team.team] and teamMetadata[team.team].faction then
-            faction = teamMetadata[team.team].faction:lower()
+        
+        -- Safely access metadata
+        if teamMetadata and team.team and teamMetadata[team.team] then
+            if teamMetadata[team.team].faction then
+                faction = teamMetadata[team.team].faction:lower()
+            end
         end
         
         if factionGroups[faction] then
