@@ -82,24 +82,12 @@ function showTeamSelector(obj, playerColor, altClick)
         return
     end
     
-    -- Print team list to chat for easy reference
-    printToAll("=== KILL TEAM SPAWNER - AVAILABLE TEAMS ===", {0.2, 0.8, 1})
-    local col1 = ""
-    local col2 = ""
-    for i, team in ipairs(allTeams) do
-        local line = string.format("%2d. %s", i, team.name)
-        if i <= 22 then
-            col1 = col1 .. line .. "\n"
-        else
-            col2 = col2 .. line .. "\n"
-        end
-    end
-    printToAll(col1, {1, 1, 1})
-    printToAll(col2, {1, 1, 1})
-    printToAll("Type number (1-44) or name. Chat: /spawn <team>", {0.2, 0.8, 1})
+    -- Show input dialog with instructions to hover for team list
+    local message = "Enter team number (1-44) or name.\n\n"
+    message = message .. "Hover over the spawner token to see the full team list in its description.\n\n"
+    message = message .. "You can also use chat: /spawn <team>"
     
-    -- Show simple input dialog
-    Player[playerColor].showInputDialog("Spawn Kill Team", "Enter team number (1-44) or name:", function(input, color)
+    Player[playerColor].showInputDialog("Spawn Kill Team", message, function(input, color)
         spawnTeam(input, color)
     end)
 end
