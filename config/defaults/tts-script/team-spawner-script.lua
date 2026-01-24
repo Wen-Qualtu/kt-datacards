@@ -9,7 +9,7 @@ local teamsByName = {}
 function onLoad()
     print("[KT Spawner] Ready - Click button to spawn a team")
     self.setName("Kill Team Spawner")
-    self.setDescription("Click button to spawn any Kill Team card box.\nSupports team number (1-44) or name.")
+    updateDescription()
     
     -- Create spawn button
     self.createButton({
@@ -26,6 +26,18 @@ function onLoad()
     
     -- Load team list from GitHub
     loadTeamList()
+end
+
+function updateDescription()
+    if #allTeams == 0 then
+        self.setDescription("Click button to spawn any Kill Team card box.\nSupports team number (1-44) or name.\nChat: /spawn <team>\n\nLoading team list...")
+    else
+        local desc = "Click button to spawn a team. Type number or name.\nChat: /spawn <team>\n\nAVAILABLE TEAMS:\n"
+        for i, team in ipairs(allTeams) do
+            desc = desc .. string.format("%2d. %s\n", i, team.name)
+        end
+        self.setDescription(desc)
+    end
 end
 
 function loadTeamList()
@@ -60,6 +72,7 @@ function loadTeamList()
         end
         
         print("[KT Spawner] Loaded " .. #allTeams .. " teams")
+        updateDescription()
     end)
 end
 
@@ -69,16 +82,24 @@ function showTeamSelector(obj, playerColor, altClick)
         return
     end
     
-    -- Build numbered list message
-    local message = "Enter team number or name:\n\n"
-    
+    -- Print team list to chat for easy reference
+    printToAll("=== KILL TEAM SPAWNER - AVAILABLE TEAMS ===", {0.2, 0.8, 1})
+    local col1 = ""
+    local col2 = ""
     for i, team in ipairs(allTeams) do
-        message = message .. string.format("%2d. %s\n", i, team.name)
+        local line = string.format("%2d. %s", i, team.name)
+        if i <= 22 then
+            col1 = col1 .. line .. "\n"
+        else
+            col2 = col2 .. line .. "\n"
+        end
     end
+    printToAll(col1, {1, 1, 1})
+    printToAll(col2, {1, 1, 1})
+    printToAll("Type number (1-44) or name. Chat: /spawn <team>", {0.2, 0.8, 1})
     
-    message = message .. "\nTip: Type number (e.g., '5') or name (e.g., 'kasrkin')"
-    
-    Player[playerColor].showInputDialog("Spawn Kill Team", message, function(input, color)
+    -- Show simple input dialog
+    Player[playerColor].showInputDialog("Spawn Kill Team", "Enter team number (1-44) or name:", function(input, color)
         spawnTeam(input, color)
     end)
 end
@@ -136,20 +157,13 @@ function spawnTeam(input, playerColor)
         
         local teamBox = decoded.ObjectStates[1]
         
-        -- Spawn in front of the player
-        local spawnPos = Player[playerColor].getPointerPosition()
-        if not spawnPos or spawnPos.y < -5 then
-            -- If no valid pointer position, spawn relative to spawner token
-            spawnPos = self.getPosition() + Vector(0, 2, 5)
-        else
-            -- Spawn slightly above pointer position
-            spawnPos.y = spawnPos.y + 2
-        end
+        -- Spawn just below the spawner token
+        local spawnPos = self.getPosition() + Vector(0, 2, -3)
         
         local spawnedObj = spawnObjectJSON({
             json = JSON.encode(teamBox),
             position = spawnPos,
-            rotation = {0, 180, 0}
+            rotation = {0, 270, 0}  -- 90 degrees to the right
         })
         
         if spawnedObj then
