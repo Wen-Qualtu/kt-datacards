@@ -82,40 +82,53 @@ function showTeamSelector(obj, playerColor, altClick)
         return
     end
     
-    -- Build team list in 2 columns side by side
-    local teamList = "AVAILABLE KILL TEAMS - DELETE THIS and type number or name\n\n"
-    
-    -- Split into 2 columns
-    local col1 = ""
-    local col2 = ""
-    
+    -- Build list of team names for button options
+    local teamNames = {}
     for i, team in ipairs(allTeams) do
-        local line = string.format("%2d. %s", i, team.name)
-        if i <= 22 then
-            col1 = col1 .. line .. "\n"
-        else
-            col2 = col2 .. line .. "\n"
+        teamNames[i] = string.format("%2d. %s", i, team.name)
+    end
+    
+    -- Show options dialog with all teams as buttons
+    Player[playerColor].showOptionsDialog("Select Kill Team to Spawn", teamNames, 1, function(selectedOption, color)
+        if selectedOption and allTeams[selectedOption] then
+            local team = allTeams[selectedOption]
+            spawnTeamByObject(team, color)
         end
-    end
+    end)
+end
+
+function spawnTeamByObject(team, playerColor)
+    -- Show loading message
+    Player[playerColor].broadcast("Loading " .. team.name .. "...", {0.2, 0.8, 1})
     
-    -- Combine columns side by side
-    local col1Lines = {}
-    local col2Lines = {}
-    for line in col1:gmatch("[^\n]+") do table.insert(col1Lines, line) end
-    for line in col2:gmatch("[^\n]+") do table.insert(col2Lines, line) end
-    
-    for i = 1, math.max(#col1Lines, #col2Lines) do
-        local c1 = col1Lines[i] or ""
-        local c2 = col2Lines[i] or ""
-        teamList = teamList .. string.format("%-35s    %s\n", c1, c2)
-    end
-    
-    teamList = teamList .. "\nExamples: 5 | kasrkin | death korps | /spawn <team> in chat"
-    
-    -- Use memo dialog which supports multi-line text display
-    Player[playerColor].showMemoDialog("Spawn Kill Team", teamList, function(input, color)
-        if input and input ~= "" and input ~= teamList then
-            spawnTeam(input, color)
+    -- Fetch and spawn the team box
+    WebRequest.get(team.url, function(request)
+        if request.is_error then
+            Player[playerColor].broadcast("Failed to load " .. team.name .. ": " .. request.error, {1, 0, 0})
+            return
+        end
+        
+        local success, decoded = pcall(function() return JSON.decode(request.text) end)
+        if not success or not decoded or not decoded.ObjectStates or not decoded.ObjectStates[1] then
+            Player[playerColor].broadcast("Failed to parse " .. team.name, {1, 0, 0})
+            return
+        end
+        
+        local teamBox = decoded.ObjectStates[1]
+        
+        -- Spawn just below the spawner token
+        local spawnPos = self.getPosition() + Vector(0, 2, -3)
+        
+        local spawnedObj = spawnObjectJSON({
+            json = JSON.encode(teamBox),
+            position = spawnPos,
+            rotation = {0, 270, 0}  -- 90 degrees to the right
+        })
+        
+        if spawnedObj then
+            Player[playerColor].broadcast("✓ Spawned " .. team.name, {0, 1, 0})
+        else
+            Player[playerColor].broadcast("Failed to spawn " .. team.name, {1, 0, 0})
         end
     end)
 end
