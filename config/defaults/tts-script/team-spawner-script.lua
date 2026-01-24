@@ -82,20 +82,35 @@ function showTeamSelector(obj, playerColor, altClick)
         return
     end
     
-    -- Build team list in 2 columns for better readability
-    local teamList = "╔══════════════════════════════════════════════════════════════╗\n"
-    teamList = teamList .. "║  AVAILABLE KILL TEAMS - Enter number or name below          ║\n"
-    teamList = teamList .. "╠══════════════════════════════════════════════════════════════╣\n"
+    -- Build team list in 2 columns side by side
+    local teamList = "AVAILABLE KILL TEAMS - DELETE THIS and type number or name\n\n"
+    
+    -- Split into 2 columns
+    local col1 = ""
+    local col2 = ""
     
     for i, team in ipairs(allTeams) do
-        local line = string.format("║  %2d. %-55s║", i, team.name)
-        teamList = teamList .. line .. "\n"
+        local line = string.format("%2d. %s", i, team.name)
+        if i <= 22 then
+            col1 = col1 .. line .. "\n"
+        else
+            col2 = col2 .. line .. "\n"
+        end
     end
     
-    teamList = teamList .. "╚══════════════════════════════════════════════════════════════╝\n\n"
-    teamList = teamList .. "DELETE THIS LIST and type team number (1-44) or name\n"
-    teamList = teamList .. "Example: 5  OR  kasrkin  OR  death korps\n"
-    teamList = teamList .. "Chat command: /spawn <team>"
+    -- Combine columns side by side
+    local col1Lines = {}
+    local col2Lines = {}
+    for line in col1:gmatch("[^\n]+") do table.insert(col1Lines, line) end
+    for line in col2:gmatch("[^\n]+") do table.insert(col2Lines, line) end
+    
+    for i = 1, math.max(#col1Lines, #col2Lines) do
+        local c1 = col1Lines[i] or ""
+        local c2 = col2Lines[i] or ""
+        teamList = teamList .. string.format("%-35s    %s\n", c1, c2)
+    end
+    
+    teamList = teamList .. "\nExamples: 5 | kasrkin | death korps | /spawn <team> in chat"
     
     -- Use memo dialog which supports multi-line text display
     Player[playerColor].showMemoDialog("Spawn Kill Team", teamList, function(input, color)
