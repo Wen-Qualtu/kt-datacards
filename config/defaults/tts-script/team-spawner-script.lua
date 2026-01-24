@@ -104,8 +104,6 @@ function showTeamSelector(obj, playerColor, altClick)
         end
     end)
 end
-    end)
-end
 
 function spawnTeam(input, playerColor)
     if not input or input == "" then
