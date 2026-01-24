@@ -126,12 +126,12 @@ function showTeamSelector(obj, playerColor, altClick)
         return
     end
     
-    -- Group teams by faction using metadata
-    local factionGroups = {chaos = {}, imperium = {}, xenos = {}}
-    local factionNames = {"Chaos", "Imperium", "Xenos"}
+    -- Dynamically discover factions and group teams
+    local factionGroups = {}
+    local factionSet = {}
     
     for i, team in ipairs(allTeams) do
-        local faction = "xenos" -- default
+        local faction = "uncategorized" -- default
         
         -- Safely access metadata
         if teamMetadata and team.team and teamMetadata[team.team] then
@@ -140,10 +140,21 @@ function showTeamSelector(obj, playerColor, altClick)
             end
         end
         
-        if factionGroups[faction] then
-            table.insert(factionGroups[faction], team)
+        -- Create faction group if it doesn't exist
+        if not factionGroups[faction] then
+            factionGroups[faction] = {}
+            factionSet[faction] = true
         end
+        
+        table.insert(factionGroups[faction], team)
     end
+    
+    -- Build sorted list of faction names (capitalize first letter)
+    local factionNames = {}
+    for faction in pairs(factionSet) do
+        table.insert(factionNames, faction:sub(1,1):upper() .. faction:sub(2))
+    end
+    table.sort(factionNames)
     
     -- Show faction selection
     Player[playerColor].showOptionsDialog("Select Faction", factionNames, 1, function(factionChoice, altChoice, callbackPlayerColor)
