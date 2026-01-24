@@ -121,6 +121,28 @@ function loadTeamList()
 end
 
 function showTeamSelector(obj, playerColor, altClick)
+    print("[KT Spawner] === showTeamSelector called ===")
+    print("[KT Spawner] playerColor type: " .. type(playerColor))
+    print("[KT Spawner] playerColor value: " .. tostring(playerColor))
+    print("[KT Spawner] Player global type: " .. type(Player))
+    
+    if playerColor then
+        local playerObj = Player[playerColor]
+        print("[KT Spawner] Player[playerColor] type: " .. type(playerObj))
+        print("[KT Spawner] Player[playerColor] value: " .. tostring(playerObj))
+        
+        if playerObj then
+            print("[KT Spawner] Player object exists, checking showOptionsDialog method")
+            print("[KT Spawner] showOptionsDialog type: " .. type(playerObj.showOptionsDialog))
+        else
+            print("[KT Spawner] ERROR: Player[playerColor] is nil!")
+            return
+        end
+    else
+        print("[KT Spawner] ERROR: playerColor is nil!")
+        return
+    end
+    
     if #allTeams == 0 then
         Player[playerColor].broadcast("Team list not loaded yet, please wait...", {1, 0.5, 0})
         return
@@ -166,8 +188,15 @@ function showTeamSelector(obj, playerColor, altClick)
         print("  " .. i .. ": " .. name)
     end
     
+    -- Cache player reference before callbacks
+    local playerObj = Player[playerColor]
+    if not playerObj then
+        print("[KT Spawner] ERROR: Player[" .. tostring(playerColor) .. "] is nil!")
+        return
+    end
+    
     -- Show faction selection
-    Player[playerColor].showOptionsDialog("Select Faction", factionNames, 1, function(factionChoice)
+    playerObj.showOptionsDialog("Select Faction", factionNames, 1, function(factionChoice)
         if not factionChoice then 
             print("[KT Spawner] No faction selected")
             return 
@@ -177,7 +206,7 @@ function showTeamSelector(obj, playerColor, altClick)
         
         local factionDisplayName = factionNames[factionChoice]
         if not factionDisplayName then
-            Player[playerColor].broadcast("Invalid faction selection", {1, 0, 0})
+            playerObj.broadcast("Invalid faction selection", {1, 0, 0})
             return
         end
         
@@ -190,7 +219,7 @@ function showTeamSelector(obj, playerColor, altClick)
         print("[KT Spawner] factionTeams is nil: " .. tostring(factionTeams == nil))
         
         if not factionTeams or #factionTeams == 0 then
-            Player[playerColor].broadcast("No teams found for " .. factionDisplayName, {1, 0.5, 0})
+            playerObj.broadcast("No teams found for " .. factionDisplayName, {1, 0.5, 0})
             return
         end
         
@@ -205,7 +234,7 @@ function showTeamSelector(obj, playerColor, altClick)
         end
         
         -- Show team selection for chosen faction
-        Player[playerColor].showOptionsDialog("Select " .. factionDisplayName .. " Team", teamNames, 1, function(teamChoice)
+        playerObj.showOptionsDialog("Select " .. factionDisplayName .. " Team", teamNames, 1, function(teamChoice)
             if not teamChoice then 
                 print("[KT Spawner] No team selected")
                 return 
