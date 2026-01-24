@@ -156,14 +156,25 @@ function showTeamSelector(obj, playerColor, altClick)
     end
     table.sort(factionNames)
     
+    -- Debug: Print available factions
+    print("[KT Spawner] Available factions:")
+    for k, v in pairs(factionGroups) do
+        print("  - " .. k .. ": " .. #v .. " teams")
+    end
+    print("[KT Spawner] Faction names for dialog:")
+    for i, name in ipairs(factionNames) do
+        print("  " .. i .. ": " .. name)
+    end
+    
     -- Show faction selection
-    Player[playerColor].showOptionsDialog("Select Faction", factionNames, 1, function(factionChoice, altChoice, callbackPlayerColor)
+    Player[playerColor].showOptionsDialog("Select Faction", factionNames, 1, function(factionChoice, callbackPlayerColor)
         if not factionChoice then 
             print("[KT Spawner] No faction selected")
             return 
         end
         
         print("[KT Spawner] Faction choice index: " .. tostring(factionChoice))
+        print("[KT Spawner] Player color: " .. tostring(callbackPlayerColor))
         
         local factionDisplayName = factionNames[factionChoice]
         if not factionDisplayName then
@@ -195,7 +206,7 @@ function showTeamSelector(obj, playerColor, altClick)
         end
         
         -- Show team selection for chosen faction
-        Player[callbackPlayerColor].showOptionsDialog("Select " .. factionDisplayName .. " Team", teamNames, 1, function(teamChoice, altChoice2, callbackPlayerColor2)
+        Player[callbackPlayerColor].showOptionsDialog("Select " .. factionDisplayName .. " Team", teamNames, 1, function(teamChoice, callbackPlayerColor2)
             if not teamChoice then 
                 print("[KT Spawner] No team selected")
                 return 
