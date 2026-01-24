@@ -167,18 +167,17 @@ function showTeamSelector(obj, playerColor, altClick)
     end
     
     -- Show faction selection
-    Player[playerColor].showOptionsDialog("Select Faction", factionNames, 1, function(factionChoice, callbackPlayerColor)
+    Player[playerColor].showOptionsDialog("Select Faction", factionNames, 1, function(factionChoice)
         if not factionChoice then 
             print("[KT Spawner] No faction selected")
             return 
         end
         
         print("[KT Spawner] Faction choice index: " .. tostring(factionChoice))
-        print("[KT Spawner] Player color: " .. tostring(callbackPlayerColor))
         
         local factionDisplayName = factionNames[factionChoice]
         if not factionDisplayName then
-            Player[callbackPlayerColor].broadcast("Invalid faction selection", {1, 0, 0})
+            Player[playerColor].broadcast("Invalid faction selection", {1, 0, 0})
             return
         end
         
@@ -191,7 +190,7 @@ function showTeamSelector(obj, playerColor, altClick)
         print("[KT Spawner] factionTeams is nil: " .. tostring(factionTeams == nil))
         
         if not factionTeams or #factionTeams == 0 then
-            Player[callbackPlayerColor].broadcast("No teams found for " .. factionDisplayName, {1, 0.5, 0})
+            Player[playerColor].broadcast("No teams found for " .. factionDisplayName, {1, 0.5, 0})
             return
         end
         
@@ -206,7 +205,7 @@ function showTeamSelector(obj, playerColor, altClick)
         end
         
         -- Show team selection for chosen faction
-        Player[callbackPlayerColor].showOptionsDialog("Select " .. factionDisplayName .. " Team", teamNames, 1, function(teamChoice, callbackPlayerColor2)
+        Player[playerColor].showOptionsDialog("Select " .. factionDisplayName .. " Team", teamNames, 1, function(teamChoice)
             if not teamChoice then 
                 print("[KT Spawner] No team selected")
                 return 
@@ -215,7 +214,7 @@ function showTeamSelector(obj, playerColor, altClick)
             print("[KT Spawner] Team choice: " .. tostring(teamChoice))
             
             if teamChoice and factionTeams and factionTeams[teamChoice] then
-                spawnTeamByObject(factionTeams[teamChoice], callbackPlayerColor2)
+                spawnTeamByObject(factionTeams[teamChoice], playerColor)
             else
                 print("[KT Spawner] ERROR: Invalid team choice or factionTeams is nil")
                 if factionTeams then
