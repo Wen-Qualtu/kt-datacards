@@ -142,14 +142,14 @@ function showTeamSelector(obj, playerColor, altClick)
     end
     
     -- Show faction selection
-    Player[playerColor].showOptionsDialog("Select Faction", factionNames, 1, function(factionChoice, color)
+    Player[playerColor].showOptionsDialog("Select Faction", factionNames, 1, function(factionChoice, playerColorCallback)
         if not factionChoice then return end
         
         local factionKey = factionNames[factionChoice]:lower()
         local factionTeams = factionGroups[factionKey]
         
         if not factionTeams or #factionTeams == 0 then
-            Player[color].broadcast("No teams found for " .. factionNames[factionChoice], {1, 0.5, 0})
+            Player[playerColorCallback].broadcast("No teams found for " .. factionNames[factionChoice], {1, 0.5, 0})
             return
         end
         
@@ -160,9 +160,9 @@ function showTeamSelector(obj, playerColor, altClick)
         end
         
         -- Show team selection for chosen faction
-        Player[color].showOptionsDialog("Select " .. factionNames[factionChoice] .. " Team", teamNames, 1, function(teamChoice, c)
+        Player[playerColorCallback].showOptionsDialog("Select " .. factionNames[factionChoice] .. " Team", teamNames, 1, function(teamChoice, playerColorCallback2)
             if teamChoice and factionTeams[teamChoice] then
-                spawnTeamByObject(factionTeams[teamChoice], c)
+                spawnTeamByObject(factionTeams[teamChoice], playerColorCallback2)
             end
         end)
     end)
