@@ -82,12 +82,41 @@ function showTeamSelector(obj, playerColor, altClick)
         return
     end
     
-    -- Show input dialog with instructions to hover for team list
-    local message = "Enter team number (1-44) or name.\n\n"
-    message = message .. "Hover over the spawner token to see the full team list in its description.\n\n"
-    message = message .. "You can also use chat: /spawn <team>"
+    -- Build title with team list in 3 columns
+    local title = "SPAWN KILL TEAM - Select by number or name\n\n"
     
-    Player[playerColor].showInputDialog("Spawn Kill Team", message, function(input, color)
+    -- Split teams into 3 columns of ~15 teams each
+    local col1, col2, col3 = "", "", ""
+    for i, team in ipairs(allTeams) do
+        local line = string.format("%2d.%-24s", i, team.name)
+        if i <= 15 then
+            col1 = col1 .. line .. "\n"
+        elseif i <= 30 then
+            col2 = col2 .. line .. "\n"
+        else
+            col3 = col3 .. line .. "\n"
+        end
+    end
+    
+    -- Combine columns side by side
+    local col1Lines = {}
+    local col2Lines = {}
+    local col3Lines = {}
+    
+    for line in col1:gmatch("[^\n]+") do table.insert(col1Lines, line) end
+    for line in col2:gmatch("[^\n]+") do table.insert(col2Lines, line) end
+    for line in col3:gmatch("[^\n]+") do table.insert(col3Lines, line) end
+    
+    for i = 1, math.max(#col1Lines, #col2Lines, #col3Lines) do
+        local c1 = col1Lines[i] or string.rep(" ", 27)
+        local c2 = col2Lines[i] or string.rep(" ", 27)
+        local c3 = col3Lines[i] or ""
+        title = title .. c1 .. "  " .. c2 .. "  " .. c3 .. "\n"
+    end
+    
+    title = title .. "\nType number (1-44) or team name. Chat: /spawn <team>"
+    
+    Player[playerColor].showInputDialog(title, "", function(input, color)
         spawnTeam(input, color)
     end)
 end
