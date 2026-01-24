@@ -2,9 +2,11 @@
 -- Click button to spawn any Kill Team card box
 
 local TTS_BOXES_URL = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/tts-card-boxes.json"
+local METADATA_URL = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/metadata.yaml"
 local allTeams = {}
 local teamsByNumber = {}
 local teamsByName = {}
+local teamMetadata = {}
 
 function onLoad()
     print("[KT Spawner] Ready - Click button to spawn a team")
@@ -24,8 +26,50 @@ function onLoad()
         font_color={1, 1, 1}
     })
     
-    -- Load team list from GitHub
+    -- Load team list and metadata from GitHub
+    loadMetadata()
     loadTeamList()
+end
+
+function loadMetadata()
+    WebRequest.get(METADATA_URL, function(request)
+        if request.is_error then
+            print("[KT Spawner] Error loading metadata: " .. request.error)
+            return
+        end
+        
+        -- Parse YAML metadata (simplified parsing for faction only)
+        local lines = {}
+        for line in request.text:gmatch("[^\r\n]+") do
+            table.insert(lines, line)
+        end
+        
+        local currentTeam = nil
+        for _, line in ipairs(lines) do
+            -- Match team ID
+            local teamId = line:match("^  ([%w%-]+):")
+            if teamId then
+                currentTeam = teamId
+                teamMetadata[teamId] = {}
+            end
+            
+            -- Match faction within a team
+            if currentTeam and line:match("^    faction:") then
+                local faction = line:match("faction:%s*(.+)")
+                if faction then
+                    teamMetadata[currentTeam].faction = faction
+                end
+            end
+        end
+        
+        print("[KT Spawner] Loaded metadata for " .. getTableSize(teamMetadata) .. " teams")
+    end)
+end
+
+function getTableSize(t)
+    local count = 0
+    for _ in pairs(t) do count = count + 1 end
+    return count
 end
 
 function updateDescription()
@@ -82,18 +126,45 @@ function showTeamSelector(obj, playerColor, altClick)
         return
     end
     
-    -- Build list of team names for button options
-    local teamNames = {}
+    -- Group teams by faction using metadata
+    local factionGroups = {chaos = {}, imperium = {}, xenos = {}}
+    local factionNames = {"Chaos", "Imperium", "Xenos"}
+    
     for i, team in ipairs(allTeams) do
-        teamNames[i] = string.format("%2d. %s", i, team.name)
+        local faction = "xenos" -- default
+        if teamMetadata[team.team] and teamMetadata[team.team].faction then
+            faction = teamMetadata[team.team].faction:lower()
+        end
+        
+        if factionGroups[faction] then
+            table.insert(factionGroups[faction], team)
+        end
     end
     
-    -- Show options dialog with all teams as buttons
-    Player[playerColor].showOptionsDialog("Select Kill Team to Spawn", teamNames, 1, function(selectedOption, color)
-        if selectedOption and allTeams[selectedOption] then
-            local team = allTeams[selectedOption]
-            spawnTeamByObject(team, color)
+    -- Show faction selection
+    Player[playerColor].showOptionsDialog("Select Faction", factionNames, 1, function(factionChoice, color)
+        if not factionChoice then return end
+        
+        local factionKey = factionNames[factionChoice]:lower()
+        local factionTeams = factionGroups[factionKey]
+        
+        if not factionTeams or #factionTeams == 0 then
+            Player[color].broadcast("No teams found for " .. factionNames[factionChoice], {1, 0.5, 0})
+            return
         end
+        
+        -- Build team names for this faction
+        local teamNames = {}
+        for _, team in ipairs(factionTeams) do
+            table.insert(teamNames, team.name)
+        end
+        
+        -- Show team selection for chosen faction
+        Player[color].showOptionsDialog("Select " .. factionNames[factionChoice] .. " Team", teamNames, 1, function(teamChoice, c)
+            if teamChoice and factionTeams[teamChoice] then
+                spawnTeamByObject(factionTeams[teamChoice], c)
+            end
+        end)
     end)
 end
 
