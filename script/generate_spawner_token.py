@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate spawner image with team list"""
+"""Generate spawner token image for config/defaults/tts-image/"""
 
 import json
 from pathlib import Path
@@ -67,9 +67,10 @@ inst_bbox = draw.textbbox((0, 0), instructions, font=text_font)
 inst_width = inst_bbox[2] - inst_bbox[0]
 draw.text(((img_width - inst_width) // 2, img_height - 60), instructions, fill=title_color, font=text_font)
 
-# Save image
-output_path = output_dir / "team-spawner-image.png"
+# Save image to config/defaults/tts-image/
+output_path = Path(__file__).parent.parent / "config/defaults/tts-image/spawner-token.png"
+output_path.parent.mkdir(parents=True, exist_ok=True)
 img.save(output_path)
-print(f"✓ Created spawner image: {output_path}")
+print(f"✓ Created spawner token: {output_path}")
 print(f"  Size: {img_width}x{img_height}")
 print(f"  Teams: {len(teams)}")
