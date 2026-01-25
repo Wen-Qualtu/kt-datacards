@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Add backside images to cards
-Compatible with script/add_default_backsides.py
+Extract card images from processed PDFs
+Compatible with script/extract_pages.py
 """
 import sys
 from pathlib import Path
@@ -13,20 +13,20 @@ sys.path.insert(0, str(project_root / 'script'))
 import os
 os.chdir(project_root)
 
-from pipeline.pipeline import DatacardPipeline
+from script.pipeline import DatacardPipeline
 from utils import setup_logger
 
 
 def main():
     """Main entry point"""
-    logger = setup_logger(name='add_backsides', level='INFO')
+    logger = setup_logger(name='extract_images', level='INFO')
     
-    logger.info("Adding backside images")
+    logger.info("Extracting card images")
     
     pipeline = DatacardPipeline()
-    count = pipeline.add_backsides()
+    datacards = pipeline.extract_images()
     
-    logger.info(f"Added {count} backside(s)")
+    logger.info(f"Extracted {len(datacards)} card(s)")
     
     logger.info("Done!")
 

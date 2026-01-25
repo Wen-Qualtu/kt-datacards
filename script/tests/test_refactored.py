@@ -12,12 +12,10 @@ sys.path.insert(0, str(project_root / 'script'))
 import os
 os.chdir(project_root)
 
-from src.models.team import Team
-from src.models.card_type import CardType
-from src.models.datacard import Datacard
-from src.processors.team_identifier import TeamIdentifier
-from src.processors.pdf_processor import PDFProcessor
-from src.utils.logger import setup_logger
+from models import Team, CardType, Datacard
+from pipeline.team_identifier import TeamIdentifier
+from pipeline.pdf_processor import PDFProcessor
+from utils import setup_logger
 
 
 def test_models():

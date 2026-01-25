@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Add backside images to cards
-Compatible with script/add_default_backsides.py
+Generate URLs CSV for TTS access
+Compatible with script/generate_urls.py
 """
 import sys
 from pathlib import Path
@@ -19,14 +19,14 @@ from utils import setup_logger
 
 def main():
     """Main entry point"""
-    logger = setup_logger(name='add_backsides', level='INFO')
+    logger = setup_logger(name='generate_urls', level='INFO')
     
-    logger.info("Adding backside images")
+    logger.info("Generating URLs CSV")
     
     pipeline = DatacardPipeline()
-    count = pipeline.add_backsides()
+    count = pipeline.generate_urls()
     
-    logger.info(f"Added {count} backside(s)")
+    logger.info(f"Generated {count} URL(s)")
     
     logger.info("Done!")
 

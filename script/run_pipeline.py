@@ -13,8 +13,8 @@ project_root = script_dir.parent
 sys.path.insert(0, str(script_dir))
 os.chdir(project_root)
 
-from src.pipeline import DatacardPipeline
-from src.utils.logger import setup_logger
+from script.pipeline import DatacardPipeline
+from utils import setup_logger
 
 
 def main():
@@ -102,7 +102,7 @@ def main():
 
         elif args.step == 'tokens':
             logger.info("Packaging tokens and embedding ready teams")
-            from src.processors.token_integration import TokenIntegrator
+            from pipeline.token_integration import TokenIntegrator
 
             project_root = Path(__file__).parent.parent
             integrator = TokenIntegrator(
