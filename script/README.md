@@ -55,7 +55,7 @@ poetry run python script/extract_tts_preview_images.py
 
 ```
 script/
-├── run_pipeline.py              # Main entry point
+├── run_pipeline.py              # Main entry point (ONLY script in root)
 ├── README.md                    # This file
 │
 ├── src/                         # Source code
@@ -65,13 +65,18 @@ script/
 │   ├── utils/                   # Utilities (logging, paths)
 │   └── pipeline.py              # Pipeline orchestration
 │
-├── process_pdfs.py              # Process raw PDFs
-├── extract_images.py            # Extract card images
-├── generate_urls.py             # Generate URLs CSV
-├── generate_tts_objects.py      # Generate TTS JSON objects
-├── generate_tts_metadata.py     # Generate TTS metadata files
-├── generate_metadata.py         # Generate output metadata YAML
-├── create_manager_metadata.py   # Create Manager bag metadata
+├── processing/                  # PDF and image processing
+│   ├── README.md
+│   ├── process_pdfs.py              # Process raw PDFs (step 1)
+│   └── extract_images.py            # Extract card images (step 2)
+│
+├── metadata_generation/         # Metadata and URL generation
+│   ├── README.md
+│   ├── generate_metadata.py         # Generate output metadata YAML
+│   ├── generate_tts_metadata.py     # Generate TTS metadata files
+│   ├── generate_tts_objects.py      # Generate TTS JSON objects
+│   ├── generate_urls.py             # Generate datacards-urls.json
+│   └── create_manager_metadata.py   # Create Manager bag metadata
 │
 ├── spawner/                     # Team spawner token
 │   ├── README.md
@@ -89,6 +94,7 @@ script/
 │
 ├── maintenance/                 # Legacy migration scripts (⚠️ historical)
 │   ├── README.md
+│   ├── verify_timestamps.py         # Verify timestamp implementation
 │   └── [various update/migration scripts]
 │
 ├── tests/                       # Test scripts
