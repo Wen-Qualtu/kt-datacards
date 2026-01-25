@@ -55,26 +55,47 @@ poetry run python script/extract_tts_preview_images.py
 
 ```
 script/
-├── run_pipeline.py         # Main entry point
-├── README.md               # This file
+├── run_pipeline.py              # Main entry point
+├── README.md                    # This file
 │
-├── src/                    # Source code
-│   ├── models/             # Data models (Team, CardType, Datacard)
-│   ├── processors/         # Processing logic (PDF, image, backside)
-│   ├── generators/         # Output generation (URLs)
-│   ├── utils/              # Utilities (logging, paths)
-│   └── pipeline.py         # Pipeline orchestration
+├── src/                         # Source code
+│   ├── models/                  # Data models (Team, CardType, Datacard)
+│   ├── processors/              # Processing logic (PDF, image, backside)
+│   ├── generators/              # Output generation (URLs)
+│   ├── utils/                   # Utilities (logging, paths)
+│   └── pipeline.py              # Pipeline orchestration
 │
-├── process_pdfs.py         # Process raw PDFs
-├── extract_images.py       # Extract card images
-├── add_backsides.py        # Add backside images
-├── generate_urls.py        # Generate URLs CSV
-├── generate_tts_objects.py # Generate TTS JSON objects
-├── extract_tts_preview_images.py # Extract preview images from box textures
+├── process_pdfs.py              # Process raw PDFs
+├── extract_images.py            # Extract card images
+├── generate_urls.py             # Generate URLs CSV
+├── generate_tts_objects.py      # Generate TTS JSON objects
+├── generate_tts_metadata.py     # Generate TTS metadata files
+├── generate_metadata.py         # Generate output metadata YAML
+├── create_manager_metadata.py   # Create Manager bag metadata
 │
-└── tests/                  # Test scripts
-    ├── test_refactored.py  # Validation tests
-    └── check_pdf.py        # PDF content checker
+├── spawner/                     # Team spawner token
+│   ├── README.md
+│   ├── generate_spawner_image.py    # Generate team list image
+│   └── generate_team_spawner.py     # Generate spawner token
+│
+├── display_table/               # Display table management
+│   ├── README.md
+│   ├── extract_manager_bag.py       # Extract Manager from table
+│   └── generate_display_table.py    # Regenerate display table
+│
+├── tokens/                      # Token management
+│   ├── README.md
+│   └── extract_token_bags.py        # Extract token bags
+│
+├── maintenance/                 # Legacy migration scripts (⚠️ historical)
+│   ├── README.md
+│   └── [various update/migration scripts]
+│
+├── tests/                       # Test scripts
+│   ├── test_refactored.py           # Validation tests
+│   └── check_pdf.py                 # PDF content checker
+│
+└── tools/                       # Additional utilities
 ```
 
 ## Architecture
