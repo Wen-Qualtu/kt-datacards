@@ -92,10 +92,17 @@ script/
 │   ├── README.md
 │   └── extract_token_bags.py        # Extract token bags
 │
-├── maintenance/                 # Legacy migration scripts (⚠️ historical)
+├── tools/                       # Utility tools for TTS object updates
 │   ├── README.md
-│   ├── verify_timestamps.py         # Verify timestamp implementation
-│   └── [various update/migration scripts]
+│   ├── update_manager.py            # Update Manager bag Lua
+│   ├── update_cardbox_features.py   # Update card box features
+│   ├── update_token_timestamps.py   # Add token timestamp checking
+│   ├── verify_timestamps.py         # Verify timestamps
+│   └── add_backsides.py             # Add backside images
+│
+├── archive/                     # Historical scripts (reference only)
+│   ├── README.md
+│   └── fix_onload.py                # One-time corruption fix
 │
 ├── tests/                       # Test scripts
 │   ├── test_refactored.py           # Validation tests
