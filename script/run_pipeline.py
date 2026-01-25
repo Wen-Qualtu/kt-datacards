@@ -9,11 +9,12 @@ import os
 
 # Add script directory to path and change to project root
 script_dir = Path(__file__).parent
-project_root = script_dir.parent
 sys.path.insert(0, str(script_dir))
-os.chdir(project_root)
 
-from script.pipeline import DatacardPipeline
+from config import PROJECT_ROOT
+os.chdir(PROJECT_ROOT)
+
+from pipeline.pipeline import DatacardPipeline
 from utils import setup_logger
 
 
@@ -34,6 +35,13 @@ def main():
         '--teams',
         nargs='+',
         help='Filter by team names (e.g., --teams kasrkin blooded)'
+    )
+    
+    parser.add_argument(
+        '--branch',
+        type=str,
+        default='main',
+        help='GitHub branch for URLs (default: main, e.g., --branch acc for testing)'
     )
 
     parser.add_argument(
@@ -63,6 +71,11 @@ def main():
     
     args = parser.parse_args()
     
+    # Set branch environment variable if provided
+    if args.branch:
+        import os
+        os.environ['KT_BRANCH'] = args.branch
+    
     # Setup logging
     log_level = 'DEBUG' if args.verbose else 'INFO'
     logger = setup_logger(
@@ -70,6 +83,8 @@ def main():
         level=log_level,
         log_file=args.log_file
     )
+    
+    logger.info(f"Using branch: {args.branch}")
     
     # Create pipeline
     pipeline = DatacardPipeline(dpi=args.dpi)
@@ -103,15 +118,15 @@ def main():
         elif args.step == 'tokens':
             logger.info("Packaging tokens and embedding ready teams")
             from pipeline.token_integration import TokenIntegrator
+            from config import PROJECT_ROOT, TEAM_CONFIG_PATH, PROCESSED_DIR, OUTPUT_V2_DIR, TTS_OBJECTS_DIR, TOKENS_DIR
 
-            project_root = Path(__file__).parent.parent
             integrator = TokenIntegrator(
-                project_root=project_root,
-                config_path=project_root / 'config' / 'team-config.yaml',
-                extracted_tokens_dir=project_root / 'processed' / 'extracted-tokens',
-                output_v2_dir=project_root / 'output_v2',
-                tts_objects_dir=project_root / 'tts_objects',
-                tts_token_json_dir=project_root / 'tts_objects' / 'tokens',
+                project_root=PROJECT_ROOT,
+                config_path=TEAM_CONFIG_PATH,
+                extracted_tokens_dir=PROCESSED_DIR / 'extracted-tokens',
+                output_v2_dir=OUTPUT_V2_DIR,
+                tts_objects_dir=TTS_OBJECTS_DIR,
+                tts_token_json_dir=TOKENS_DIR,
             )
             token_stats = integrator.embed_ready_tokens(
                 team_filter=args.teams,

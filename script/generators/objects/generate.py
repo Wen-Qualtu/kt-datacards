@@ -20,7 +20,7 @@ sys.path.insert(0, str(script_dir))
 
 def cmd_display_table(args):
     """Generate the KT display table."""
-    from generators.objects.display_table import DisplayTableGenerator
+    from generators.tts_objects import DisplayTableGenerator
     
     workspace_dir = Path(__file__).parent.parent.parent
     gen = DisplayTableGenerator(

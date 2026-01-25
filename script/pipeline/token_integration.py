@@ -26,9 +26,8 @@ from typing import Any, Dict, Iterable, Optional
 import json
 import yaml
 
-from generators.objects.cardboxes import add_tokens_to_box
+from generators.objects.tts_objects import add_tokens_to_box, TTSTokenGenerator
 from generators.objects.team_token_bag import TeamTokenBagGenerator
-from generators.objects.tokens import TTSTokenGenerator
 
 
 @dataclass
@@ -103,7 +102,7 @@ class TokenIntegrator:
         packaged = 0
         skipped_missing = 0
 
-        token_generator = TTSTokenGenerator(team_config_path=self.config_path)
+        token_generator = TTSTokenGenerator()
         bag_generator = TeamTokenBagGenerator(team_config_path=self.config_path)
 
         for s in statuses:

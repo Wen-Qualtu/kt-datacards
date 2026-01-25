@@ -4,6 +4,8 @@ from pathlib import Path
 from typing import List, Dict
 import logging
 
+from config import get_github_url, GITHUB_BRANCH
+
 
 class URLGenerator:
     """Generates JSON file with URLs for card images"""
@@ -11,24 +13,25 @@ class URLGenerator:
     def __init__(
         self,
         output_dir: Path = Path('output'),
-        github_base: str = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output",
-        tts_objects_dir: Path = Path('tts_objects')
+        tts_objects_dir: Path = Path('tts_objects'),
+        branch: str = None
     ):
         """
         Initialize URLGenerator
         
         Args:
             output_dir: Base output directory containing team folders
-            github_base: Base GitHub raw URL
             tts_objects_dir: Directory containing TTS saved object files
+            branch: GitHub branch for URLs (default: from config/env)
         """
         self.output_dir = output_dir
-        self.github_base = github_base
         self.tts_objects_dir = tts_objects_dir
+        self.branch = branch or GITHUB_BRANCH
         self.logger = logging.getLogger(__name__)
         
-        print(f"DEBUG URLGenerator init: output_dir={output_dir}, exists={output_dir.exists()}")
-        print(f"DEBUG URLGenerator init: tts_objects_dir={tts_objects_dir}, exists={tts_objects_dir.exists()}")
+        self.logger.debug(f"URLGenerator init: output_dir={output_dir}, exists={output_dir.exists()}")
+        self.logger.debug(f"URLGenerator init: tts_objects_dir={tts_objects_dir}, exists={tts_objects_dir.exists()}")
+        self.logger.debug(f"URLGenerator init: branch={self.branch}")
     
     def generate_json(self, output_path: Path = Path('output/datacards-urls.json')) -> int:
         """
@@ -41,13 +44,13 @@ class URLGenerator:
             Number of entries written
         """
         entries = self._collect_entries()
-        print(f"DEBUG: Collected {len(entries)} entries from output_v2")
+        self.logger.debug(f"Collected {len(entries)} entries from output_v2")
         
         # Add TTS object entries
         tts_entries = self._collect_tts_objects()
-        print(f"DEBUG: Collected {len(tts_entries)} TTS entries")
+        self.logger.debug(f"Collected {len(tts_entries)} TTS entries")
         entries.extend(tts_entries)
-        print(f"DEBUG: Total entries: {len(entries)}")
+        self.logger.debug(f"Total entries: {len(entries)}")
         
         # Ensure output directory exists
         output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -70,7 +73,7 @@ class URLGenerator:
         """Collect all entries from output directory"""
         entries = []
         
-        print(f"DEBUG _collect_entries: output_dir={self.output_dir}, exists={self.output_dir.exists()}")
+        self.logger.debug(f"_collect_entries: output_dir={self.output_dir}, exists={self.output_dir.exists()}")
         
         if not self.output_dir.exists():
             self.logger.warning(f"Output directory not found: {self.output_dir}")
@@ -78,10 +81,10 @@ class URLGenerator:
         
         # Walk through faction directories, then team directories
         faction_dirs = list(self.output_dir.iterdir())
-        print(f"DEBUG _collect_entries: Found {len(faction_dirs)} items in output_dir")
+        self.logger.debug(f"_collect_entries: Found {len(faction_dirs)} items in output_dir")
         
         for faction_dir in sorted(faction_dirs):
-            print(f"DEBUG _collect_entries: Checking {faction_dir.name}, is_dir={faction_dir.is_dir()}")
+            self.logger.debug(f"_collect_entries: Checking {faction_dir.name}, is_dir={faction_dir.is_dir()}")
             if not faction_dir.is_dir():
                 continue
             
@@ -105,8 +108,9 @@ class URLGenerator:
                     for jpg_file in sorted(type_dir.glob('*.jpg')):
                         file_name = jpg_file.stem  # Name without extension
                         
-                        # Construct GitHub raw URL (use forward slashes)
-                        url = f"{self.github_base}/{faction_name}/{team_name}/{type_name}/{jpg_file.name}"
+                        # Construct GitHub raw URL using branch-aware helper
+                        relative_path = f"output_v2/{faction_name}/{team_name}/{type_name}/{jpg_file.name}"
+                        url = get_github_url(relative_path, branch=self.branch)
                         
                         entries.append({
                             'faction': faction_name,
@@ -120,8 +124,9 @@ class URLGenerator:
                     for obj_file in sorted(type_dir.glob('*.obj')):
                         file_name = obj_file.name  # Keep full name with extension for .obj files
                         
-                        # Construct GitHub raw URL (use forward slashes)
-                        url = f"{self.github_base}/{faction_name}/{team_name}/{type_name}/{obj_file.name}"
+                        # Construct GitHub raw URL using branch-aware helper
+                        relative_path = f"output_v2/{faction_name}/{team_name}/{type_name}/{obj_file.name}"
+                        url = get_github_url(relative_path, branch=self.branch)
                         
                         entries.append({
                             'faction': faction_name,
@@ -155,8 +160,9 @@ class URLGenerator:
             team_display_name = json_file.stem.replace(' Cards', '')
             team_id = team_display_name.lower().replace(' ', '-')
             
-            # Construct GitHub raw URL
-            url = f"{self.github_base.replace('/output_v2', '')}/tts_objects/{json_file.name.replace(' ', '%20')}"
+            # Construct GitHub raw URL using branch-aware helper
+            relative_path = f"tts_objects/{json_file.name}"
+            url = get_github_url(relative_path, branch=self.branch).replace(' ', '%20')
             
             entries.append({
                 'faction': '',  # Not applicable for TTS objects

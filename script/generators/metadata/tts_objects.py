@@ -14,7 +14,7 @@ import sys
 script_dir = Path(__file__).parent
 sys.path.insert(0, str(script_dir))
 
-from generators.objects.cardboxes import TTSGenerator
+from generators.objects.tts_objects import TTSCardBoxGenerator as TTSGenerator
 
 
 def main():

@@ -5,13 +5,13 @@ import logging
 from concurrent.futures import ProcessPoolExecutor, as_completed
 import multiprocessing
 
+from config import OUTPUT_V2_DIR, CONFIG_DIR, TTS_OBJECTS_DIR, TEAM_CONFIG_PATH
 from models import Team, CardType, Datacard
 from .team_identifier import TeamIdentifier
 from .pdf_processor import PDFProcessor
 from .image_extractor import ImageExtractor
 from .backside_processor import BacksideProcessor
 from .box_texture_processor import BoxTextureProcessor
-from .v2_output_processor import V2OutputProcessor
 
 
 class DatacardPipeline:
@@ -21,8 +21,8 @@ class DatacardPipeline:
         self,
         input_raw_dir: Path = Path('input'),
         processed_dir: Path = Path('processed'),
-        output_v2_dir: Path = Path('output_v2'),
-        config_dir: Path = Path('config'),
+        output_v2_dir: Optional[Path] = None,
+        config_dir: Optional[Path] = None,
         dpi: int = 300
     ):
         """
@@ -37,34 +37,29 @@ class DatacardPipeline:
         """
         self.input_raw_dir = input_raw_dir
         self.processed_dir = processed_dir
-        self.output_v2_dir = output_v2_dir
-        self.config_dir = config_dir
+        self.output_v2_dir = output_v2_dir or OUTPUT_V2_DIR
+        self.config_dir = config_dir or CONFIG_DIR
         self.dpi = dpi
         
         # Initialize components
         self.team_identifier = TeamIdentifier(
-            config_dir / 'team-config.yaml'
+            TEAM_CONFIG_PATH
         )
         self.pdf_processor = PDFProcessor(self.team_identifier)
         self.image_extractor = ImageExtractor(dpi=dpi, output_v2_dir=output_v2_dir)
         self.backside_processor = BacksideProcessor(
-            config_dir
+            self.config_dir
         )
         self.box_texture_processor = BoxTextureProcessor(
-            config_dir,
-            output_v2_dir
+            self.config_dir,
+            self.output_v2_dir
         )
-        self.v2_processor = V2OutputProcessor(output_v2_dir)
         
         # Import and initialize URL generator
-        from .generators.url_generator import URLGenerator
-        # Get project root (3 levels up from this file: script/src/pipeline.py)
-        project_root = Path(__file__).parent.parent.parent
-        tts_objects_path = project_root / 'tts_objects'
+        from generators.objects.urls import URLGenerator
         self.url_generator = URLGenerator(
-            output_dir=output_v2_dir,
-            github_base="https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2",
-            tts_objects_dir=tts_objects_path
+            output_dir=self.output_v2_dir,
+            tts_objects_dir=TTS_OBJECTS_DIR
         )
         
         self.logger = logging.getLogger(__name__)
@@ -153,33 +148,35 @@ class DatacardPipeline:
         teams = self.team_identifier.get_all_teams()
         stats['box_textures_processed'] = self.box_texture_processor.process_box_textures(teams)
         
-        # Step 4: Generate V2 URLs JSON
-        self.logger.info("Step 4: Generating V2 URLs")
-        stats['v2_urls_generated'] = self.v2_processor.generate_v2_urls_json()
+        # Step 4: Generate URLs JSON
+        self.logger.info("Step 4: Generating URLs")
+        output_path = self.output_v2_dir / "datacards-urls.json"
+        stats['urls_generated'] = self.url_generator.generate_json(output_path=output_path)
         
         # Step 5: Generate TTS objects
         self.logger.info("Step 5: Generating TTS objects")
-        from .generators.tts_generator import TTSGenerator
-        tts_generator = TTSGenerator(
+        from generators.objects.tts_objects import TTSObjectGenerator
+        tts_generator = TTSObjectGenerator(
             output_v2_dir=self.output_v2_dir,
-            tts_output_dir=self.output_v2_dir.parent / 'tts_objects',
+            tts_output_dir=TTS_OBJECTS_DIR,
             config_dir=self.config_dir
         )
-        stats['tts_objects_generated'] = tts_generator.generate_all_tts_objects()
+        tts_stats = tts_generator.generate_all()
+        stats['tts_objects_generated'] = tts_stats.get('card_boxes', 0)
 
         # Step 5.25: Embed ready team tokens (locked teams only)
         self.logger.info("Step 5.25: Embedding ready team tokens")
         try:
-            from .processors.token_integration import TokenIntegrator
+            from pipeline.token_integration import TokenIntegrator
+            from config import PROJECT_ROOT, PROCESSED_DIR, TOKENS_DIR
 
-            project_root = Path(__file__).parent.parent.parent
             integrator = TokenIntegrator(
-                project_root=project_root,
-                config_path=self.config_dir / 'team-config.yaml',
-                extracted_tokens_dir=project_root / 'processed' / 'extracted-tokens',
+                project_root=PROJECT_ROOT,
+                config_path=TEAM_CONFIG_PATH,
+                extracted_tokens_dir=PROCESSED_DIR / 'extracted-tokens',
                 output_v2_dir=self.output_v2_dir,
-                tts_objects_dir=project_root / 'tts_objects',
-                tts_token_json_dir=project_root / 'tts_objects' / 'tokens',
+                tts_objects_dir=TTS_OBJECTS_DIR,
+                tts_token_json_dir=TOKENS_DIR,
             )
             token_stats = integrator.embed_ready_tokens()
             stats['tokens_ready'] = token_stats.get('ready', 0)
@@ -194,18 +191,21 @@ class DatacardPipeline:
         
         # Step 6: Generate metadata
         self.logger.info("Step 6: Generating metadata")
-        if self.output_v2_dir.exists():
-            self.generate_metadata()
-        else:
-            self.logger.warning("Skipping metadata generation - no output files found")
+        # TODO: Re-implement metadata generation if needed
+        # if self.output_v2_dir.exists():
+        #     self.generate_metadata()
+        # else:
+        #     self.logger.warning("Skipping metadata generation - no output files found")
         
         # Step 6.5: Generate TTS metadata with timestamps
         self.logger.info("Step 6.5: Generating TTS metadata with timestamps")
         try:
             import subprocess
+            # Use the new unified generate.py script
             result = subprocess.run(
                 [str(Path(__file__).parent.parent.parent / '.venv' / 'Scripts' / 'python.exe'),
-                 str(Path(__file__).parent.parent / 'generate_tts_metadata.py')],
+                 str(Path(__file__).parent.parent / 'generators' / 'generate.py'),
+                 'metadata', 'tts'],
                 cwd=str(Path(__file__).parent.parent.parent),
                 capture_output=True,
                 text=True
@@ -528,9 +528,7 @@ class DatacardPipeline:
     
     def generate_metadata(self):
         """Generate metadata YAML file"""
-        import sys
-        sys.path.append(str(Path(__file__).parent.parent))
-        from generate_metadata import OutputMetadataGenerator
+        from generators.metadata.generate_metadata import OutputMetadataGenerator
         
         generator = OutputMetadataGenerator(
             output_dir=self.output_v2_dir,

@@ -6,6 +6,8 @@ from pathlib import Path
 from datetime import datetime
 from typing import Dict, Any, Optional
 
+from config import OUTPUT_V2_DIR, METADATA_DIR
+
 
 class TeamDataManager:
     """Manages card content data in output folder (team_data.json)."""
@@ -24,10 +26,10 @@ class TeamDataManager:
         self.team_name = team_name
         # Use V2 structure: output_v2/faction/team_name/team_data.json
         if faction:
-            self.data_file = Path(f"output_v2/{faction}/{team_name}/team_data.json")
+            self.data_file = OUTPUT_V2_DIR / faction / team_name / "team_data.json"
         else:
             # Fallback for when faction not provided during init
-            self.data_file = Path(f"output_v2/{team_name}/team_data.json")
+            self.data_file = OUTPUT_V2_DIR / team_name / "team_data.json"
         self.logger = logging.getLogger(__name__)
         self.data = self._load_or_create()
         
@@ -42,8 +44,17 @@ class TeamDataManager:
     def _load_or_create(self) -> Dict[str, Any]:
         """Load existing data or create new structure."""
         if self.data_file.exists():
-            with open(self.data_file, 'r', encoding='utf-8') as f:
-                return json.load(f)
+            try:
+                with open(self.data_file, 'r', encoding='utf-8') as f:
+                    return json.load(f)
+            except (json.JSONDecodeError, ValueError) as e:
+                # If JSON is corrupted, log warning and start fresh
+                self.logger.warning(f"Corrupted team data file for {self.team_name}, starting fresh: {e}")
+                # Backup the corrupted file
+                backup_path = self.data_file.with_suffix('.json.backup')
+                if backup_path.exists():
+                    backup_path.unlink()  # Delete old backup
+                self.data_file.rename(backup_path)
         return {
             "team": {
                 "name": self.team_name
@@ -105,7 +116,7 @@ class ExtractionMetadataManager:
             team_display_name: Human-readable team name
         """
         self.team_name = team_name
-        self.metadata_file = Path(f"metadata/{team_name}/extraction_metadata.json")
+        self.metadata_file = METADATA_DIR / team_name / "extraction_metadata.json"
         self.logger = logging.getLogger(__name__)
         self.metadata = self._load_or_create()
         
@@ -125,8 +136,17 @@ class ExtractionMetadataManager:
     def _load_or_create(self) -> Dict[str, Any]:
         """Load existing metadata or create new structure."""
         if self.metadata_file.exists():
-            with open(self.metadata_file, 'r', encoding='utf-8') as f:
-                return json.load(f)
+            try:
+                with open(self.metadata_file, 'r', encoding='utf-8') as f:
+                    return json.load(f)
+            except (json.JSONDecodeError, ValueError) as e:
+                # If JSON is corrupted, log warning and start fresh
+                self.logger.warning(f"Corrupted metadata file for {self.team_name}, starting fresh: {e}")
+                # Backup the corrupted file
+                backup_path = self.metadata_file.with_suffix('.json.backup')
+                if backup_path.exists():
+                    backup_path.unlink()  # Delete old backup
+                self.metadata_file.rename(backup_path)
         return {
             "team": {
                 "name": self.team_name,

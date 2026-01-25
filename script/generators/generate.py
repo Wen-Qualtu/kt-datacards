@@ -77,12 +77,12 @@ def main():
 
 def cmd_display_table(args):
     """Generate the KT display table."""
-    from generators.objects.display_table import DisplayTableGenerator
+    from generators.objects.tts_objects import DisplayTableGenerator
+    from config import PROJECT_ROOT, TTS_OBJECTS_DIR
     
-    workspace_dir = Path(__file__).parent.parent
     gen = DisplayTableGenerator(
-        tts_objects_dir=workspace_dir / "tts_objects",
-        display_table_path=workspace_dir / "tts_objects" / "display-table" / "kt_all_teams_grid.json",
+        tts_objects_dir=TTS_OBJECTS_DIR,
+        display_table_path=TTS_OBJECTS_DIR / "display-table" / "kt_all_teams_grid.json",
     )
     count = gen.regenerate()
     print(f"\n✓ Display table regenerated with {count} teams")
@@ -92,10 +92,10 @@ def cmd_manager_bag(args):
     """Generate the minimal Manager bag."""
     import json
     from datetime import datetime
+    from config import CONFIG_DIR, TTS_OBJECTS_DIR
     
-    workspace_dir = Path(__file__).parent.parent
-    lua_template_path = workspace_dir / "config" / "defaults" / "tts-script" / "display-table-manager-script.lua"
-    manager_output_path = workspace_dir / "tts_objects" / "display-table" / "kt_manager_only.json"
+    lua_template_path = CONFIG_DIR / "defaults" / "tts-script" / "display-table-manager-script.lua"
+    manager_output_path = TTS_OBJECTS_DIR / "display-table" / "kt_manager_only.json"
     
     with open(lua_template_path, 'r', encoding='utf-8') as f:
         lua_script = f.read()
@@ -142,10 +142,10 @@ def cmd_manager_bag(args):
 def cmd_spawner(args):
     """Generate the team spawner token."""
     import json
+    from config import CONFIG_DIR, TTS_OBJECTS_DIR
     
-    workspace_dir = Path(__file__).parent.parent
-    spawner_template_path = workspace_dir / "tts_objects" / "display-table" / "kt_team_spawner.json"
-    spawner_script_path = workspace_dir / "config" / "defaults" / "tts-script" / "team-spawner-script.lua"
+    spawner_template_path = TTS_OBJECTS_DIR / "display-table" / "kt_team_spawner.json"
+    spawner_script_path = CONFIG_DIR / "defaults" / "tts-script" / "team-spawner-script.lua"
     
     with open(spawner_script_path, 'r', encoding='utf-8') as f:
         lua_script = f.read()
@@ -166,15 +166,16 @@ def cmd_spawner_image(args):
     """Generate the spawner button image."""
     from PIL import Image, ImageDraw, ImageFont
     import json
+    from config import OUTPUT_V2_DIR
     
-    workspace_dir = Path(__file__).parent.parent
-    output_path = workspace_dir / "output_v2" / "team-spawner-image.png"
-    tts_card_boxes_path = workspace_dir / "output_v2" / "tts-card-boxes.json"
+    output_path = OUTPUT_V2_DIR / "team-spawner-image.png"
+    tts_card_boxes_path = OUTPUT_V2_DIR / "tts-card-boxes.json"
     
     with open(tts_card_boxes_path, 'r', encoding='utf-8') as f:
         data = json.load(f)
     
-    teams = sorted(data.get('teams', []))
+    # Extract team names from list of box objects
+    teams = sorted([box.get('team', box.get('name', 'unknown')) for box in data])
     num_teams = len(teams)
     
     num_cols = 4

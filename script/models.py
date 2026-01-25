@@ -89,8 +89,14 @@ class Team:
         """Get the path for processed PDFs for this team"""
         return base_dir / self.name
     
+    def get_archive_path(self, base_dir: Path = Path("archive")) -> Path:
+        """Get the path for archived PDFs for this team"""
+        return base_dir / self.name
+    
     def get_output_path(self, base_dir: Path = Path("output_v2")) -> Path:
         """Get the path for output images for this team"""
+        if self.faction:
+            return base_dir / self.faction / self.name
         return base_dir / self.name
     
     def __str__(self) -> str:
@@ -170,6 +176,35 @@ class Datacard:
             stem_parts.append(clean_name)
         
         return "_".join(stem_parts)
+    
+    def get_output_folder(self) -> Path:
+        """Get the output folder for this card's images"""
+        from config import OUTPUT_V2_DIR
+        if self.team.faction:
+            return OUTPUT_V2_DIR / self.team.faction / self.team.name / self.card_type.value
+        return OUTPUT_V2_DIR / self.team.name / self.card_type.value
+    
+    def get_expected_front_filename(self) -> str:
+        """Get the expected front image filename"""
+        if not self.card_name:
+            raise ValueError(
+                f"Cannot generate filename: card_name is missing for {self.source_pdf}. "
+                f"Card name extraction failed - check PDF or extraction logic."
+            )
+        # Use the extracted card name
+        clean_name = self.card_name.lower().replace(" ", "-")
+        return f"{self.team.name}-{clean_name}_front.jpg"
+    
+    def get_expected_back_filename(self) -> str:
+        """Get the expected back image filename"""
+        if not self.card_name:
+            raise ValueError(
+                f"Cannot generate filename: card_name is missing for {self.source_pdf}. "
+                f"Card name extraction failed - check PDF or extraction logic."
+            )
+        # Use the extracted card name
+        clean_name = self.card_name.lower().replace(" ", "-")
+        return f"{self.team.name}-{clean_name}_back.jpg"
     
     def __str__(self) -> str:
         return f"{self.team.name}/{self.card_type.value}"

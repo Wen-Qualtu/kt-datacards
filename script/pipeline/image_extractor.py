@@ -45,7 +45,7 @@ class ImageExtractor:
         """
         datacards = []
         
-        print(f"[DEBUG extract_from_pdf] Called for {team.name} - {card_type.value} from {pdf_path}")
+        self.logger.debug(f"extract_from_pdf called for {team.name} - {card_type.value} from {pdf_path}")
         
         try:
             pdf_document = fitz.open(pdf_path)
@@ -581,7 +581,7 @@ class ImageExtractor:
             page_count: Number of pages in the PDF
         """
         try:
-            print(f"[DEBUG] _save_team_data called for {team.name} with {len(datacards)} cards")
+            self.logger.debug(f"_save_team_data called for {team.name} with {len(datacards)} cards")
             
             # Initialize managers (they will load existing data if available)
             team_data = TeamDataManager(
@@ -596,7 +596,7 @@ class ImageExtractor:
                 team_display_name=team.name.replace('-', ' ').title()
             )
             
-            print(f"[DEBUG] Managers initialized for {team.name}")
+            self.logger.debug(f"Managers initialized for {team.name}")
             
             # Track PDF processing
             extraction_meta.add_pdf_processed(
@@ -632,25 +632,22 @@ class ImageExtractor:
                         "name_confidence": "high"  # Could be enhanced to track actual confidence
                     },
                     output={
-                        "front_image": str(datacard.front_image) if datacard.front_image else None,
-                        "back_image": str(datacard.back_image) if datacard.back_image else None,
+                        "front_image": str(datacard.front_image.relative_to(Path.cwd())) if datacard.front_image else None,
+                        "back_image": str(datacard.back_image.relative_to(Path.cwd())) if datacard.back_image else None,
                         "image_format": "jpg",
                         "image_dpi": self.dpi
                     }
                 )
             
-            print(f"[DEBUG] Processed {len(datacards)} cards, now saving...")
+            self.logger.debug(f"Processed {len(datacards)} cards, now saving...")
             
             # Save both files
             team_data.save()
             extraction_meta.save()
             
-            print(f"[DEBUG] Files saved successfully for {team.name}")
+            self.logger.debug(f"Files saved successfully for {team.name}")
             self.logger.info(f"Saved team data and metadata for {team.name}")
             
         except Exception as e:
-            self.logger.error(f"Could not save team data for {team.name}: {e}")
-            print(f"[DEBUG] Error saving team data: {e}")
-            import traceback
-            traceback.print_exc()
+            self.logger.error(f"Could not save team data for {team.name}: {e}", exc_info=True)
 

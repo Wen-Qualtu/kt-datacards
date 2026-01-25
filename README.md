@@ -141,7 +141,35 @@ pyenv local 3.12.5
 
 ## 📖 Usage
 
-### Basic Usage: Process All PDFs
+### Quick Start with Task Runner (Recommended)
+
+Install [Task](https://taskfile.dev/) for simplified pipeline management:
+
+```bash
+# Install Task (Windows)
+choco install go-task
+# or: scoop install task
+
+# Run full pipeline
+task all
+
+# Process specific teams
+task team TEAMS="kasrkin blooded"
+
+# Deploy with branch-specific URLs for testing
+task deploy-acc
+
+# See all available tasks
+task --list
+```
+
+📚 **See [Taskfile Guide](docs/TASKFILE-GUIDE.md) for complete documentation on:**
+- Branch deployment workflows
+- Team-specific processing
+- Testing strategies
+- Common task examples
+
+### Manual Usage: Direct Python Commands
 
 Place your Kill Team PDF exports in the `input/` directory, then run:
 
@@ -149,25 +177,31 @@ Place your Kill Team PDF exports in the `input/` directory, then run:
 poetry run python script/run_pipeline.py --step all
 ```
 
-This executes all 7 steps automatically. Progress is displayed in real-time, and results are saved to:
+This executes all steps automatically. Progress is displayed in real-time, and results are saved to:
 - `output_v2/{teamname}/` - Organized card images
 - `metadata/{teamname}/` - Card metadata JSON
 - `tts_objects/` - TTS-ready JSON objects
 
-### Process Specific Steps
-
-Run individual pipeline steps:
+### Available Command Line Options
 
 ```bash
-# Extract cards from PDFs only
-poetry run python script/run_pipeline.py --step 1
+# Process specific teams only
+python script/run_pipeline.py --teams kasrkin blooded
 
-# Generate TTS objects only (steps 1-5 must be complete)
-poetry run python script/run_pipeline.py --step 6
+# Use custom branch for GitHub URLs (for testing deployments)
+python script/run_pipeline.py --branch acc
 
-# Generate display table grid only
-poetry run python script/run_pipeline.py --step 7
+# Run specific pipeline step
+python script/run_pipeline.py --step extract
+
+# Verbose logging
+python script/run_pipeline.py -v
+
+# Combine options
+python script/run_pipeline.py --teams ratlings --branch dev -v
 ```
+
+**Available steps:** `process`, `extract`, `backsides`, `urls`, `tokens`, `all`
 
 ### Process Specific Teams
 
