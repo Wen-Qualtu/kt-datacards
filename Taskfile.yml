@@ -2,7 +2,9 @@ version: '3'
 
 # Kill Team Datacards Pipeline Task Runner
 # Install: https://taskfile.dev/installation/
-# Usage: task <task-name>
+# Usage: task all                       # Run full pipeline
+#        task pipeline:extract          # Run specific step
+#        task infra:check-env           # Setup/utility tasks
 
 vars:
   PYTHON:
@@ -19,158 +21,142 @@ env:
 
 tasks:
   # ============================================================================
-  # MAIN PIPELINE TASKS
+  # MAIN TASK - Run everything
   # ============================================================================
   
   all:
-    desc: Run full pipeline (all steps)
+    desc: πŸš€ Run full pipeline (all steps)
     cmds:
       - '{{.PYTHON}} script/run_pipeline.py --step all --branch {{.BRANCH}}'
 
-  process:
-    desc: Process PDFs and identify teams
+  # ============================================================================
+  # PIPELINE STEPS - Individual pipeline operations
+  # ============================================================================
+
+  pipeline:process:
+    desc: πŸ"„ Process PDFs and identify teams
     cmds:
       - '{{.PYTHON}} script/run_pipeline.py --step process --branch {{.BRANCH}}'
 
-  extract:
-    desc: Extract card images from PDFs
+  pipeline:extract:
+    desc: πŸ–ΌοΈ  Extract card images from PDFs
     cmds:
       - '{{.PYTHON}} script/run_pipeline.py --step extract --branch {{.BRANCH}}'
 
-  backsides:
-    desc: Add backsides to cards
+  pipeline:backsides:
+    desc: πŸ"™ Add backsides to cards
     cmds:
       - '{{.PYTHON}} script/run_pipeline.py --step backsides --branch {{.BRANCH}}'
 
-  urls:
-    desc: Generate datacards-urls.json
+  pipeline:urls:
+    desc: πŸ"— Generate datacards-urls.json
     cmds:
       - '{{.PYTHON}} script/run_pipeline.py --step urls --branch {{.BRANCH}}'
 
-  tokens:
-    desc: Generate token integration
+  pipeline:tokens:
+    desc: 🎲 Generate token integration
     cmds:
       - '{{.PYTHON}} script/run_pipeline.py --step tokens --branch {{.BRANCH}}'
 
-  # ============================================================================
-  # TEAM-SPECIFIC TASKS
-  # ============================================================================
-
-  team:
-    desc: Run pipeline for specific team(s) (e.g., task team TEAMS="kasrkin blooded")
+  pipeline:team:
+    desc: πŸ'₯ Run pipeline for specific team(s) (e.g., task pipeline:team TEAMS="kasrkin")
     cmds:
       - '{{.PYTHON}} script/run_pipeline.py --step all --teams {{.TEAMS}} --branch {{.BRANCH}}'
     requires:
       vars: [TEAMS]
 
-  team-extract:
+  pipeline:team-extract:
     desc: Extract images for specific team(s)
     cmds:
       - '{{.PYTHON}} script/run_pipeline.py --step extract --teams {{.TEAMS}} --branch {{.BRANCH}}'
     requires:
       vars: [TEAMS]
 
-  # ============================================================================
-  # BRANCH DEPLOYMENT TASKS
-  # ============================================================================
-
-  deploy-acc:
-    desc: Run full pipeline with acc branch URLs
+  pipeline:deploy-acc:
+    desc: πŸš€ Deploy with acc branch URLs
     cmds:
       - task: all
         vars:
           BRANCH: acc
 
-  deploy-dev:
-    desc: Run full pipeline with dev branch URLs
+  pipeline:deploy-dev:
+    desc: πŸš€ Deploy with dev branch URLs
     cmds:
       - task: all
         vars:
           BRANCH: dev
 
-  deploy-main:
-    desc: Run full pipeline with main branch URLs (default)
+  pipeline:deploy-main:
+    desc: πŸš€ Deploy with main branch URLs (default)
     cmds:
       - task: all
         vars:
           BRANCH: main
 
   # ============================================================================
-  # TESTING & VALIDATION
+  # INFRA & SETUP - Environment and utility commands
   # ============================================================================
 
-  test-imports:
-    desc: Test all Python imports
+  infra:check-env:
+    desc: βœ… Check environment setup
+    cmds:
+      - '{{.PYTHON}} --version'
+      - '{{.PYTHON}} -c "import fitz; import yaml; import PIL; print(''✓ Core dependencies installed'')"'
+
+  infra:test-imports:
+    desc: πŸ§ͺ Test all Python imports
     cmds:
       - '{{.PYTHON}} -c "import sys; sys.path.insert(0, ''script''); from pipeline.pipeline import DatacardPipeline; print(''✓ Pipeline imports successful'')"'
       - '{{.PYTHON}} -c "import sys; sys.path.insert(0, ''script''); from generators.objects.tts_objects import TTSObjectGenerator; print(''✓ TTS generators imports successful'')"'
       - '{{.PYTHON}} -c "import sys; sys.path.insert(0, ''script''); from config import GITHUB_BRANCH, get_github_url; print(f''✓ Config imports successful (branch: {GITHUB_BRANCH})'')"'
 
-  test-team:
-    desc: Test pipeline on a small team (kasrkin by default)
+  infra:test-team:
+    desc: πŸ§ͺ Test pipeline on a small team (kasrkin by default)
     vars:
       TEST_TEAM: '{{.TEST_TEAM | default "kasrkin"}}'
     cmds:
       - '{{.PYTHON}} script/run_pipeline.py --step all --teams {{.TEST_TEAM}} --branch {{.BRANCH}} -v'
 
-  # ============================================================================
-  # UTILITY TASKS
-  # ============================================================================
-
-  clean-logs:
-    desc: Clean log files
+  infra:clean-logs:
+    desc: 🧹 Clean log files
     cmds:
       - cmd: Remove-Item -Path "*.log" -ErrorAction SilentlyContinue
         platforms: [windows]
       - cmd: rm -f *.log
         platforms: [linux, darwin]
 
-  check-env:
-    desc: Check environment setup
-    cmds:
-      - '{{.PYTHON}} --version'
-      - '{{.PYTHON}} -c "import fitz; import yaml; import PIL; print(''✓ Core dependencies installed'')"'
-
-  help:
-    desc: Show available tasks
-    cmds:
-      - task --list
-
-  # ============================================================================
-  # GENERATOR TASKS
-  # ============================================================================
-
-  gen-tts:
+  infra:gen-tts:
     desc: Generate TTS objects for all teams
     cmds:
       - '{{.PYTHON}} script/generators/generate.py --branch {{.BRANCH}}'
 
-  gen-metadata:
+  infra:gen-metadata:
     desc: Generate metadata files
     cmds:
       - '{{.PYTHON}} script/generators/metadata/generate.py --branch {{.BRANCH}}'
 
-  # ============================================================================
-  # DEVELOPMENT TASKS
-  # ============================================================================
-
-  format:
-    desc: Format Python code (requires black)
+  infra:format:
+    desc: πŸ"§ Format Python code (requires black)
     cmds:
       - '{{.PYTHON}} -m black script/'
 
-  lint:
-    desc: Lint Python code (requires pylint)
+  infra:lint:
+    desc: πŸ"§ Lint Python code (requires pylint)
     cmds:
       - '{{.PYTHON}} -m pylint script/'
 
+  infra:help:
+    desc: πŸ"– Show available tasks
+    cmds:
+      - task --list
+
   # ============================================================================
-  # EXAMPLES
+  # USAGE EXAMPLES
   # ============================================================================
-  # task all                          # Run full pipeline with main branch
-  # task deploy-acc                   # Run pipeline with acc branch
-  # task team TEAMS="kasrkin"         # Process single team
-  # task team TEAMS="kasrkin blooded" # Process multiple teams
-  # task test-team                    # Quick test on kasrkin
-  # task urls BRANCH=dev              # Generate URLs with dev branch
+  # task all                               # Run full pipeline
+  # task pipeline:extract                  # Run specific step
+  # task pipeline:team TEAMS="kasrkin"     # Process single team
+  # task pipeline:deploy-acc               # Deploy with acc branch
+  # task infra:check-env                   # Verify environment
+  # task infra:test-team                   # Quick test run
   # ============================================================================
