@@ -111,6 +111,16 @@ This allows flexible organization of source PDFs in `input/_raw/`, `input/team-n
 ✅ **Extensibility** - Easy to add new card types or processors  
 ✅ **Maintainability** - Self-documenting code with clear module boundaries  
 
+## Token Extraction
+
+For token extraction from PDFs, see [extract_tokens.py](extract_tokens.py) which provides:
+- OCR-based text detection and contour matching
+- Shape classification (round vs operative tokens)
+- Template-based cleanup for artifact removal
+- 500x500 RGBA output suitable for TTS
+
+See usage examples in the script file.
+
 ## Testing
 
 Run validation tests:
