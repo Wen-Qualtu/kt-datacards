@@ -1,4 +1,4 @@
-"""Background-sample-based token transparency (experimental).
+﻿"""Background-sample-based token transparency (experimental).
 
 This script replaces the older two-pass transparency helpers.
 
@@ -280,7 +280,7 @@ def _fill_transparent_holes_within_template(
             boundary (distance-to-outside), we fill it.
 
         This fixes cases where an interior icon/panel got keyed out and the resulting hole is
-        connected to the edge by a 1px “channel”, which would otherwise prevent hole filling.
+        connected to the edge by a 1px ΓÇ£channelΓÇ¥, which would otherwise prevent hole filling.
     """
     if alpha is None or alpha.size == 0:
         return alpha
@@ -1230,7 +1230,7 @@ def main() -> int:
 
     for team_dir in team_dirs:
         if not team_dir.exists() or not team_dir.is_dir():
-            print(f"⚠ Team dir missing, skipping: {team_dir}")
+            print(f"ΓÜá Team dir missing, skipping: {team_dir}")
             continue
 
         if sample_path is not None and sample_path.exists():
@@ -1306,7 +1306,7 @@ def main() -> int:
             if ok:
                 changed += 1
             else:
-                print(f"⚠ Failed: {png}")
+                print(f"ΓÜá Failed: {png}")
 
     print(f"Done. Wrote alpha for {changed}/{total} PNGs")
     return 0

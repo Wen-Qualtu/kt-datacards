@@ -141,43 +141,91 @@ pyenv local 3.12.5
 
 ## 📖 Usage
 
-### Basic Usage: Process All PDFs
+### Quick Start with Task Runner (Recommended)
+
+Install [Task](https://taskfile.dev/) for simplified pipeline management:
+
+```bash
+# Install Task (Windows)
+choco install go-task
+# or: scoop install task
+
+# Run full pipeline
+task all
+
+# Run specific pipeline steps
+task pipeline:process      # Process PDFs and identify teams
+task pipeline:extract      # Extract card images from PDFs
+task pipeline:backsides    # Add backsides to cards
+task pipeline:urls         # Generate datacards-urls.json
+task pipeline:tokens       # Generate token integration
+
+# Process specific teams
+task pipeline:team TEAMS="kasrkin blooded"
+
+# Deploy with branch-specific URLs for testing
+task pipeline:deploy-acc
+task pipeline:deploy-dev
+task pipeline:deploy-main
+
+# Infrastructure & utilities
+task infra:check-env       # Check environment setup
+task infra:test-imports    # Test Python imports
+task infra:test-team       # Quick test on single team
+
+# See all available tasks
+task --list
+```
+
+See [Taskfile Guide](docs/TASKFILE-GUIDE.md) for complete documentation on branch deployment workflows, team-specific processing, and testing strategies.
+
+### Manual Usage: Direct Python Commands
 
 Place your Kill Team PDF exports in the `input/` directory, then run:
 
 ```bash
+# Full pipeline
 poetry run python script/run_pipeline.py --step all
+
+# Individual steps
+poetry run python script/run_pipeline.py --step process
+poetry run python script/run_pipeline.py --step extract
+poetry run python script/run_pipeline.py --step backsides
+poetry run python script/run_pipeline.py --step urls
+poetry run python script/run_pipeline.py --step tokens
 ```
 
-This executes all 7 steps automatically. Progress is displayed in real-time, and results are saved to:
+This executes all steps automatically. Progress is displayed in real-time, and results are saved to:
 - `output_v2/{teamname}/` - Organized card images
 - `metadata/{teamname}/` - Card metadata JSON
 - `tts_objects/` - TTS-ready JSON objects
 
-### Process Specific Steps
-
-Run individual pipeline steps:
+### Available Command Line Options
 
 ```bash
-# Extract cards from PDFs only
-poetry run python script/run_pipeline.py --step 1
+# Process specific teams only
+python script/run_pipeline.py --teams kasrkin blooded
 
-# Generate TTS objects only (steps 1-5 must be complete)
-poetry run python script/run_pipeline.py --step 6
+# Use custom branch for GitHub URLs (for testing deployments)
+python script/run_pipeline.py --branch acc
 
-# Generate display table grid only
-poetry run python script/run_pipeline.py --step 7
+# Run specific pipeline step
+python script/run_pipeline.py --step extract
+
+# Custom DPI for image extraction
+python script/run_pipeline.py --dpi 600
+
+# Verbose logging
+python script/run_pipeline.py -v
+
+# Log to file
+python script/run_pipeline.py --log-file pipeline.log
+
+# Combine options
+python script/run_pipeline.py --teams ratlings --branch dev -v
 ```
 
-### Process Specific Teams
-
-```bash
-# Process only one team
-poetry run python script/run_pipeline.py --step all --team legionaries
-
-# Process multiple teams
-poetry run python script/run_pipeline.py --step all --team legionaries kommandos kasrkin
-```
+**Available steps:** `process`, `extract`, `backsides`, `urls`, `tokens`, `all`
 
 ## 📁 Project Structure
 
@@ -214,8 +262,26 @@ kt-datacards/
 │       └── tts-image/              # Custom preview (optional)
 ├── script/                         # Main pipeline scripts
 │   ├── run_pipeline.py             # Main entry point
-│   └── src/                        # Pipeline implementation
-│   └── tools/                      # Maintenance utilities (token extraction/transparency)
+│   ├── config.py                   # Centralized configuration
+│   ├── models.py                   # Data models (Team, CardType, Datacard)
+│   ├── managers.py                 # Data management (TeamDataManager, etc.)
+│   ├── pipeline/                   # Pipeline implementation
+│   │   ├── pipeline.py             # Pipeline orchestration
+│   │   ├── pdf_processor.py       # PDF identification
+│   │   ├── image_extractor.py     # Card extraction
+│   │   ├── backside_processor.py  # Backside management
+│   │   └── token_integration.py   # Token generation
+│   ├── generators/                 # TTS object generation
+│   │   ├── generate.py             # Main generator entry point
+│   │   └── objects/
+│   │       └── tts_objects.py      # TTS JSON generation
+│   ├── tools/                      # Maintenance utilities
+│   │   ├── extract_tokens.py       # Token extraction from PDFs
+│   │   └── add_token_transparency_bg_sample.py  # Token transparency
+│   └── token_tools/                # Token generation
+│       ├── generate_tts_tokens.py  # Generate TTS token objects
+│       ├── generate_team_token_bag.py  # Team token bags
+│       └── add_tokens_to_box.py    # Embed tokens in card boxes
 └── docs/                           # Project documentation
     ├── README.md                   # Documentation index
     ├── DEVELOPMENT.md              # Development guidelines
@@ -225,10 +291,28 @@ kt-datacards/
 
 ### Key Directories
 
-- **`input/`**: Drop your PDF exports here (any filename works)
+- **`input/`**: Drop your PDF exports here (any filename works, supports subdirectories)
 - **`output_v2/`**: Organized card images ready for TTS
 - **`tts_objects/`**: Complete TTS JSON objects you can import directly
 - **`config/teams/`**: Add team-specific assets (custom backsides, box models, icons)
+- **`script/`**: Pipeline implementation with clean separation of concerns
+
+### Architecture
+
+The pipeline uses clear separation between input and configuration:
+- **Input**: `input/` - Recursively processes all PDFs (root and any subdirectories)
+- **Config**: `config/` - Static configuration files (team mappings, custom backsides)
+- **Models**: Data models (Team, CardType, Datacard) with type safety
+- **Processors**: PDF processing, image extraction, backside management
+- **Generators**: URL and TTS object generation
+- **Pipeline**: Main orchestrator coordinating all components
+
+Key features:
+- Clean architecture with proper separation of concerns
+- Type safety with type hints throughout
+- Comprehensive error handling and logging
+- Easy to extend with new card types or processors
+- Self-documenting code with clear module boundaries
 
 ## 🤝 Contributing
 

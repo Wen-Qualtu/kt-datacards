@@ -1,4 +1,4 @@
-"""
+﻿"""
 Token Extraction Script for Kill Team Datacards
 
 Extracts individual token images from marker/token guide cards.
@@ -112,7 +112,7 @@ class TokenExtractor:
             mask_path = out_dir / f"_debug_cutout_{tag}_mask.png"
             cv2.imwrite(str(overlay_path), vis)
             cv2.imwrite(str(mask_path), mask)
-            print(f"  ℹ Cutout debug saved: {overlay_path}")
+            print(f"  Γä╣ Cutout debug saved: {overlay_path}")
         except Exception:
             # Debug output must never break extraction.
             return
@@ -1140,7 +1140,7 @@ class TokenExtractor:
             doc.close()
             
         except Exception as e:
-            print(f"  ⚠ Could not extract text from PDF: {e}")
+            print(f"  ΓÜá Could not extract text from PDF: {e}")
         
         return text_positions
     
@@ -1953,20 +1953,20 @@ class TokenExtractor:
             # skip them - they should be manually placed in config/teams/{team}/custom-tokens/
             is_unpaired_values1 = (idx in skip_unpaired_values1 and token_name and token_name.lower() != 'unknown')
             if is_unpaired_values1:
-                print(f"  ⚠ Skipping double-stacked token (add to custom-tokens/): {token_name}")
+                print(f"  ΓÜá Skipping double-stacked token (add to custom-tokens/): {token_name}")
                 continue
                 # Continue with normal extraction using the cropped dimensions
 
             if idx in skip_overlapped_numbered_duo and token_name and token_name.lower() != 'unknown':
                 base = skip_overlapped_numbered_duo.get(idx, '')
                 base_disp = base if base else token_name
-                print(f"  ⚠ Skipping overlapped numbered duo-token for now: {base_disp}")
+                print(f"  ΓÜá Skipping overlapped numbered duo-token for now: {base_disp}")
                 continue
 
             # Skip long measuring guides / templates for now (low value and often mis-detected).
             if token_name and token_name.lower() != 'unknown':
                 if re.search(r"\btemplate\b", token_name, flags=re.IGNORECASE):
-                    print(f"  ⚠ Skipping template token for now: {token_name}")
+                    print(f"  ΓÜá Skipping template token for now: {token_name}")
                     continue
 
             # Plural "tokens" labels (not Values/Points and not MARKERTOKEN) are usually
@@ -1978,14 +1978,14 @@ class TokenExtractor:
                     and not re.search(r"\bmarkertoken\b", token_name, flags=re.IGNORECASE)
                     and not re.search(r"\b(values?|points?)\b", token_name, flags=re.IGNORECASE)
                 ):
-                    print(f"  ⚠ Skipping plural-tokens label for now: {token_name}")
+                    print(f"  ΓÜá Skipping plural-tokens label for now: {token_name}")
                     continue
 
             # Wrecka-Krew: "Wrecka 2" appears as a combined/double marker on the guide.
             # Prefer skipping rather than exporting an incorrect cutout.
             if token_name and token_name.lower() != 'unknown':
                 if re.fullmatch(r"\s*wrecka\s*2\s*", token_name, flags=re.IGNORECASE):
-                    print(f"  ⚠ Skipping known double-token label for now: {token_name}")
+                    print(f"  ΓÜá Skipping known double-token label for now: {token_name}")
                     continue
 
             # Add padding
@@ -2069,9 +2069,9 @@ class TokenExtractor:
                 # We currently prefer skipping these rather than exporting incorrect cutouts.
                 if self._looks_like_side_by_side_double(token_img):
                     if token_name and token_name.lower() != 'unknown':
-                        print(f"  ⚠ Skipping side-by-side double-token for now: {token_name}")
+                        print(f"  ΓÜá Skipping side-by-side double-token for now: {token_name}")
                     else:
-                        print(f"  ⚠ Skipping side-by-side double-token for now: token-{idx:02d}")
+                        print(f"  ΓÜá Skipping side-by-side double-token for now: token-{idx:02d}")
                     if debug:
                         try:
                             raw_path = output_dir / f"_debug_double_raw_{idx:02d}.png"
@@ -2092,7 +2092,7 @@ class TokenExtractor:
                 if split_imgs is not None:
                     # If we get here, CV found a single contour that likely contains 2 adjacent tokens.
                     # Until we can reliably cut these to the true token silhouette, it's safer to skip.
-                    print(f"  ⚠ Skipping merged double-token for now: {token_name}")
+                    print(f"  ΓÜá Skipping merged double-token for now: {token_name}")
                     if debug:
                         try:
                             raw_path = output_dir / f"_debug_split_raw_{idx:02d}.png"
@@ -2137,7 +2137,7 @@ class TokenExtractor:
             # Wrecka-Krew: the item labeled "Wrecka 2" is a combined/double marker on the guide.
             # Skip it rather than exporting an incorrect cutout.
             if token_name and token_name.lower() != 'unknown' and safe_name == 'wrecka_2':
-                print(f"  ⚠ Skipping known double-token for now: {token_name}")
+                print(f"  ΓÜá Skipping known double-token for now: {token_name}")
                 continue
             
             # Determine shape based on circularity
@@ -2262,7 +2262,7 @@ class TokenExtractor:
                           cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 255, 0), 1)
             
             
-            print(f"  ✓ Extracted: {token_name} ({shape}) -> {output_path.name}")
+            print(f"  Γ£ô Extracted: {token_name} ({shape}) -> {output_path.name}")
 
         # Draw OCR text positions (once)
         if debug and token_names_ocr:
@@ -2279,7 +2279,7 @@ class TokenExtractor:
             
             debug_path = output_dir / "_debug_detection.png"
             cv2.imwrite(str(debug_path), debug_img)
-            print(f"  ℹ Debug image saved: {debug_path}")
+            print(f"  Γä╣ Debug image saved: {debug_path}")
 
         # Always restore debug dir, even on successful return.
         self._debug_output_dir = prev_debug_dir
@@ -2331,7 +2331,7 @@ class TokenExtractor:
         # Find marker guide
         marker_guide_path = self.find_marker_guide(team_name)
         if not marker_guide_path:
-            print(f"  ✗ No marker/token guide found for {team_name}")
+            print(f"  Γ£ù No marker/token guide found for {team_name}")
             return False
         
         print(f"  Found marker guide: {marker_guide_path}")
@@ -2345,7 +2345,7 @@ class TokenExtractor:
         if extracted is None:
             return False
 
-        print(f"  ✓ Extracted {len(extracted)} tokens")
+        print(f"  Γ£ô Extracted {len(extracted)} tokens")
         return True
 
     def process_team_auto_tuned(
@@ -2369,7 +2369,7 @@ class TokenExtractor:
 
         marker_guide_path = self.find_marker_guide(team_name)
         if not marker_guide_path:
-            print(f"  ✗ No marker/token guide found for {team_name}")
+            print(f"  Γ£ù No marker/token guide found for {team_name}")
             return False
 
         print(f"  Found marker guide: {marker_guide_path}")
@@ -2401,7 +2401,7 @@ class TokenExtractor:
         shutil.rmtree(tuning_root, ignore_errors=True)
 
         print(
-            f"  ✓ Extracted {best_metrics['tokens_extracted']} tokens (auto-tuned; unknown={best_metrics['unknown_count']}, numeric={best_metrics['numeric_only_count']})"
+            f"  Γ£ô Extracted {best_metrics['tokens_extracted']} tokens (auto-tuned; unknown={best_metrics['unknown_count']}, numeric={best_metrics['numeric_only_count']})"
         )
         return True
 
@@ -2417,7 +2417,7 @@ class TokenExtractor:
         output_dir.mkdir(exist_ok=True, parents=True)
 
         if method != 'auto':
-            print(f"  ✗ Manual extraction not implemented")
+            print(f"  Γ£ù Manual extraction not implemented")
             return None
 
         extracted = self.extract_tokens_auto(marker_guide_path, output_dir, debug=debug)
@@ -2463,7 +2463,7 @@ class TokenExtractor:
                     'source': 'custom'
                 })
                 
-                print(f"  ✓ Added custom token: {filename}")
+                print(f"  Γ£ô Added custom token: {filename}")
 
         # Save metadata
         metadata = {
@@ -2486,7 +2486,7 @@ class TokenExtractor:
         with open(metadata_path, 'w', encoding='utf-8') as f:
             json.dump(metadata, f, indent=2)
 
-        print(f"  ✓ Metadata saved: {metadata_path}")
+        print(f"  Γ£ô Metadata saved: {metadata_path}")
         return extracted
 
     def _compute_quality_metrics(self, extracted: List[Dict], *, expected_token_count: int | None) -> Dict[str, int]:
@@ -2687,7 +2687,7 @@ def main():
         print(f"Summary: {success_count}/{len(teams)} teams processed successfully")
         print(f"{'='*60}")
     
-    print(f"\n✓ Token extraction complete!")
+    print(f"\nΓ£ô Token extraction complete!")
     print(f"  Output directory: {output_base.absolute()}")
 
 
