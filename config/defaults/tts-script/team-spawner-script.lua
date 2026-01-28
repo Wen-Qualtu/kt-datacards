@@ -83,7 +83,7 @@ function updateDescription()
     local desc = "🎯 KILL TEAM SPAWNER 🎯\n\n"
     desc = desc .. "All " .. #allTeams .. " teams shown above\n"
     desc = desc .. "Click button and enter:\n"
-    desc = desc .. "  • Team number (1-44)\n"
+    desc = desc .. "  • Team number (1-" .. #allTeams .. ")\n"
     desc = desc .. "  • Partial name ('kas', 'death')"
     
     self.setDescription(desc)
@@ -148,7 +148,7 @@ function handleTeamInput(input, playerColor)
     
     if not team then
         Player[playerColor].broadcast("❌ No match for: '" .. input .. "'", {1, 0.3, 0.3})
-        Player[playerColor].broadcast("Try a team number (1-44) or partial name", {1, 0.5, 0.5})
+        Player[playerColor].broadcast("Try a team number (1-" .. #allTeams .. ") or partial name", {1, 0.5, 0.5})
         return
     end
     
