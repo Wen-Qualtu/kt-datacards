@@ -2,7 +2,9 @@
 -- Click button to spawn any Kill Team card box
 
 local TTS_BOXES_URL = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/tts-card-boxes.json"
+local TTS_METADATA_URL = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/tts-metadata.json"
 local allTeams = {}
+local teamMetadata = {}
 
 function onLoad()
     print("[Spawner] Initializing Kill Team Spawner")
@@ -23,39 +25,57 @@ function onLoad()
         font_color = {1, 1, 1}
     })
     
-    -- Load team list from GitHub
+    -- Load team list and metadata from GitHub
     loadTeamList()
 end
 
 function loadTeamList()
     print("[Spawner] Fetching team list from GitHub...")
     
-    WebRequest.get(TTS_BOXES_URL, function(request)
-        if request.is_error then
-            print("[Spawner] Error: " .. request.error)
-            broadcastToAll("Failed to load team list", {1, 0, 0})
-            return
+    -- First load metadata for timestamps
+    WebRequest.get(TTS_METADATA_URL, function(metaRequest)
+        if not metaRequest.is_error then
+            local success, metaData = pcall(function() 
+                return JSON.decode(metaRequest.text) 
+            end)
+            
+            if success and metaData then
+                -- Index metadata by team slug
+                for _, meta in ipairs(metaData) do
+                    teamMetadata[meta.team] = meta
+                end
+                print("[Spawner] Loaded metadata for " .. #metaData .. " teams")
+            end
         end
         
-        local success, data = pcall(function() 
-            return JSON.decode(request.text) 
+        -- Then load the team list
+        WebRequest.get(TTS_BOXES_URL, function(request)
+            if request.is_error then
+                print("[Spawner] Error: " .. request.error)
+                broadcastToAll("Failed to load team list", {1, 0, 0})
+                return
+            end
+            
+            local success, data = pcall(function() 
+                return JSON.decode(request.text) 
+            end)
+            
+            if not success or not data then
+                print("[Spawner] Error: Failed to parse JSON")
+                broadcastToAll("Failed to parse team list", {1, 0, 0})
+                return
+            end
+            
+            -- Sort teams alphabetically
+            table.sort(data, function(a, b)
+                return a.name:lower() < b.name:lower()
+            end)
+            
+            allTeams = data
+            
+            print("[Spawner] Loaded " .. #allTeams .. " teams")
+            updateDescription()
         end)
-        
-        if not success or not data then
-            print("[Spawner] Error: Failed to parse JSON")
-            broadcastToAll("Failed to parse team list", {1, 0, 0})
-            return
-        end
-        
-        -- Sort teams alphabetically
-        table.sort(data, function(a, b)
-            return a.name:lower() < b.name:lower()
-        end)
-        
-        allTeams = data
-        
-        print("[Spawner] Loaded " .. #allTeams .. " teams")
-        updateDescription()
     end)
 end
 
@@ -153,6 +173,82 @@ function spawnTeam(team, playerColor)
             return
         end
         
+        local boxData = data.ObjectStates[1]
+        
+        -- Use timestamp from metadata for cache busting (efficient caching)
+        -- Use the latest of cards or tokens timestamp
+        local cacheBust = ""
+        local meta = teamMetadata[team.team]
+        if meta then
+            local cardsTs = meta.cards_last_modified or ""
+            local tokensTs = meta.tokens_last_modified or ""
+            local latestTs = cardsTs
+            -- Only compare if both have values
+            if tokensTs ~= "" and cardsTs ~= "" then
+                if tokensTs > cardsTs then
+                    latestTs = tokensTs
+                end
+            elseif tokensTs ~= "" then
+                -- Only tokens timestamp exists
+                latestTs = tokensTs
+            end
+            
+            if latestTs ~= "" then
+                -- Strip to numbers only for cleaner URLs
+                cacheBust = latestTs:gsub("[^%d]", "")
+            else
+                -- Fallback to current time if no timestamp available
+                cacheBust = tostring(os.time())
+            end
+        else
+            -- Fallback to current time if no metadata available
+            cacheBust = tostring(os.time())
+        end
+        
+        -- Update bag mesh and texture URLs
+        if boxData.CustomMesh then
+            if boxData.CustomMesh.MeshURL then
+                boxData.CustomMesh.MeshURL = boxData.CustomMesh.MeshURL .. "?v=" .. cacheBust
+            end
+            if boxData.CustomMesh.DiffuseURL then
+                boxData.CustomMesh.DiffuseURL = boxData.CustomMesh.DiffuseURL .. "?v=" .. cacheBust
+            end
+        end
+        
+        -- Update all contained objects (cards, decks, tokens)
+        if boxData.ContainedObjects then
+            for _, obj in ipairs(boxData.ContainedObjects) do
+                -- Handle decks
+                if obj.CustomDeck then
+                    for deckID, deck in pairs(obj.CustomDeck) do
+                        if deck.FaceURL then
+                            deck.FaceURL = deck.FaceURL .. "?v=" .. cacheBust
+                        end
+                        if deck.BackURL then
+                            deck.BackURL = deck.BackURL .. "?v=" .. cacheBust
+                        end
+                    end
+                end
+                
+                -- Handle individual cards/tokens
+                if obj.CustomImage then
+                    if obj.CustomImage.ImageURL then
+                        obj.CustomImage.ImageURL = obj.CustomImage.ImageURL .. "?v=" .. cacheBust
+                    end
+                    if obj.CustomImage.ImageSecondaryURL then
+                        obj.CustomImage.ImageSecondaryURL = obj.CustomImage.ImageSecondaryURL .. "?v=" .. cacheBust
+                    end
+                end
+                
+                -- Handle custom objects (tokens, etc.)
+                if obj.CustomTile and obj.CustomTile.CustomImage then
+                    if obj.CustomTile.CustomImage.ImageURL then
+                        obj.CustomTile.CustomImage.ImageURL = obj.CustomTile.CustomImage.ImageURL .. "?v=" .. cacheBust
+                    end
+                end
+            end
+        end
+        
         -- Spawn position: in front of spawner
         local basePos = self.getPosition() + Vector(0, 2, -5)
         local spawnPos = basePos
@@ -199,7 +295,7 @@ function spawnTeam(team, playerColor)
         end
         
         local spawnedObj = spawnObjectJSON({
-            json = JSON.encode(data.ObjectStates[1]),
+            json = JSON.encode(boxData),
             position = spawnPos,
             rotation = {0, 270, 0}
         })

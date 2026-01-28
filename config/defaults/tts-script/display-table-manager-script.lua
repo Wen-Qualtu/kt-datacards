@@ -36,13 +36,26 @@ end
 function createButtons(mode)
     self.clearButtons()
     
+    -- Description box always visible (non-clickable button for visual consistency)
+    self.createButton({
+        label="Kill Team Card Boxes\nTake out individual team card boxes (rightclick and search) or use 'Place on Table' for\nthe full display. Click 'Reload All Teams' to update with the latest teams.",
+        click_function="doNothing",
+        function_owner=self,
+        position={0, 0.3, -1.8},
+        rotation={0, 180, 0},
+        height=600, width=4800,
+        font_size=120,
+        color={0, 0, 0},
+        font_color={1, 1, 1}
+    })
+    
     if mode == "updating" then
         -- Show only cancel button during update (centered in grid)
         self.createButton({
             label="Cancel Reload",
             click_function="cancelReload",
             function_owner=self,
-            position={0, 0.3, -2.6875},
+            position={0, 0.3, -3.5625},
             rotation={0, 180, 0},
             height=500, width=1400,
             font_size=180,
@@ -51,12 +64,12 @@ function createButtons(mode)
         })
     else
         -- Normal 2x2 button grid with proper spacing
-        -- Top-left: Update Manager
+        -- Top-left: Update Manager (swapped X for correct display)
         self.createButton({
             label="Update Manager",
             click_function="selfUpdate",
             function_owner=self,
-            position={1.6, 0.3, -2.125},
+            position={1.6, 0.3, -3.0},
             rotation={0, 180, 0},
             height=400, width=1200,
             font_size=150,
@@ -64,12 +77,12 @@ function createButtons(mode)
             font_color={1, 1, 1}
         })
         
-        -- Top-right: Reload Teams
+        -- Top-right: Reload Teams (swapped X for correct display)
         self.createButton({
             label="Reload Teams",
             click_function="refreshFromGitHub",
             function_owner=self,
-            position={-1.6, 0.3, -2.125},
+            position={-1.6, 0.3, -3.0},
             rotation={0, 180, 0},
             height=400, width=1200,
             font_size=150,
@@ -77,12 +90,12 @@ function createButtons(mode)
             font_color={1, 1, 1}
         })
         
-        -- Bottom-left: Place Teams
+        -- Bottom-left: Place Teams (swapped X for correct display)
         self.createButton({
             label="Place Teams",
             click_function="placeTeamsOnTable",
             function_owner=self,
-            position={1.6, 0.3, -3.25},
+            position={1.6, 0.3, -4.125},
             rotation={0, 180, 0},
             height=400, width=1200,
             font_size=150,
@@ -90,12 +103,12 @@ function createButtons(mode)
             font_color={1, 1, 1}
         })
         
-        -- Bottom-right: Recall Teams
+        -- Bottom-right: Recall Teams (swapped X for correct display)
         self.createButton({
             label="Recall Teams",
             click_function="recallTeamsToManager",
             function_owner=self,
-            position={-1.6, 0.3, -3.25},
+            position={-1.6, 0.3, -4.125},
             rotation={0, 180, 0},
             height=400, width=1200,
             font_size=150,
@@ -170,196 +183,188 @@ function refreshFromGitHub()
         -- Build lookup table of remote teams by name
         local remoteTeams = {}
         for _, box in ipairs(teamBoxes) do
+            -- Use the latest timestamp (max of cards and tokens)
+            local cardsTs = box.cards_last_modified or ""
+            local tokensTs = box.tokens_last_modified or ""
+            local latestTs = cardsTs
+            -- Only compare if both have values
+            if tokensTs ~= "" and cardsTs ~= "" then
+                if tokensTs > cardsTs then
+                    latestTs = tokensTs
+                end
+            elseif tokensTs ~= "" then
+                -- Only tokens timestamp exists
+                latestTs = tokensTs
+            end
+            
             remoteTeams[box.name] = {
                 url = box.cards_url,
                 team = box.team,
-                last_modified = box.cards_last_modified or ""
+                last_modified = latestTs
             }
         end
         
         -- Check existing teams in bag
         local contents = self.getObjects()
-        broadcastToAll("Checking " .. #contents .. " teams in bag...", {0.5, 0.5, 1})
         
-        -- Process each team: check timestamp, update if needed
-        checkNextTeam(remoteTeams, contents, 1, 0, 0, 0)
+        -- Build sorted list of all remote teams (alphabetical)
+        local allRemoteTeams = {}
+        for teamName, teamData in pairs(remoteTeams) do
+            table.insert(allRemoteTeams, {name = teamName, data = teamData})
+        end
+        table.sort(allRemoteTeams, function(a, b) return a.name < b.name end)
+        
+        broadcastToAll("Analyzing " .. #allRemoteTeams .. " remote teams vs " .. #contents .. " local teams...", {0.5, 0.5, 1})
+        
+        -- Quick pass: categorize all teams
+        analyzeTeams(remoteTeams, allRemoteTeams, contents, 1, {}, {}, {})
     end)
 end
 
-function checkNextTeam(remoteTeams, contents, index, updated, kept, added)
+function analyzeTeams(remoteTeams, allRemoteTeams, contents, index, toAdd, toUpdate, toSkip)
     -- Check if user cancelled
     if cancelRequested then
-        broadcastToAll("✓ Reload cancelled. Updated: " .. updated .. ", Current: " .. kept .. ", Added: " .. added, {1, 0.8, 0})
+        broadcastToAll("✓ Reload cancelled.", {1, 0.8, 0})
         isUpdating = false
         cancelRequested = false
-        createButtons()  -- Restore normal buttons
+        createButtons()
         return
     end
     
-    -- After checking all existing teams, add any missing teams
-    if index > #contents then
-        -- Now check for teams in remote but not in bag
-        local missingTeams = {}
-        for teamName, teamData in pairs(remoteTeams) do
-            local found = false
-            for _, item in ipairs(contents) do
-                if item.name == teamName then
-                    found = true
-                    break
-                end
-            end
-            if not found then
-                table.insert(missingTeams, {name = teamName, data = teamData})
-            end
-        end
+    -- Done analyzing, report summary and start processing
+    if index > #allRemoteTeams then
+        local total = #allRemoteTeams
+        broadcastToAll("━━━━━━━━━━━━━━━━━━━━━━━━━━━━", {0.7, 0.7, 0.7})
+        broadcastToAll("Total: " .. total .. " | Add: " .. #toAdd .. " | Update: " .. #toUpdate .. " | Skip: " .. #toSkip, {0.2, 0.8, 1})
+        broadcastToAll("━━━━━━━━━━━━━━━━━━━━━━━━━━━━", {0.7, 0.7, 0.7})
         
-        if #missingTeams > 0 and not cancelRequested then
-            broadcastToAll("Adding " .. #missingTeams .. " new teams...", {0.2, 0.8, 1})
-            addMissingTeams(missingTeams, 1, added, updated, kept)
+        -- Process in order: add new teams, then update existing teams
+        if #toAdd > 0 then
+            processAdds(toAdd, 1, remoteTeams, toUpdate, toSkip)
+        elseif #toUpdate > 0 then
+            processUpdates(toUpdate, 1, remoteTeams, toSkip)
         else
-            local total = updated + kept
-            broadcastToAll("✓ Done! Updated: " .. updated .. ", Current: " .. kept .. ", Added: " .. added, {0, 1, 0})
+            broadcastToAll("✓ All teams are up to date!", {0, 1, 0})
             isUpdating = false
             cancelRequested = false
-            createButtons()  -- Restore normal buttons
+            createButtons()
         end
         return
     end
     
-    local item = contents[index]
-    local teamName = item.name
-    local remoteTeam = remoteTeams[teamName]
+    local remoteTeam = allRemoteTeams[index]
+    local teamName = remoteTeam.name
+    local teamData = remoteTeam.data
     
-    if not remoteTeam then
-        -- Team no longer exists in remote, skip it (or could remove)
-        print("[Warning] Team " .. teamName .. " not found in remote metadata")
-        Wait.time(function()
-            checkNextTeam(remoteTeams, contents, index + 1, updated, kept, added)
-        end, 0.1)
-        return
+    -- Find this team in local contents
+    local localItem = nil
+    for _, item in ipairs(contents) do
+        if item.name == teamName then
+            localItem = item
+            break
+        end
     end
     
-    -- Take out the team to check its timestamp
-    local takenObj = self.takeObject({
-        guid = item.guid,
-        position = self.getPosition() + Vector(0, 3, 0),
-        smooth = false
-    })
-    
-    Wait.condition(
-        function()
-            -- Read the object's LuaScriptState to get its timestamp
-            local scriptState = takenObj.script_state
-            local localTimestamp = ""
-            
-            if scriptState and scriptState ~= "" then
-                local success, decoded = pcall(function() return JSON.decode(scriptState) end)
-                if success and decoded then
-                    localTimestamp = decoded.lastCardUpdate or ""
+    if not localItem then
+        -- Team is missing, needs to be added
+        table.insert(toAdd, {name = teamName, data = teamData})
+        Wait.time(function()
+            analyzeTeams(remoteTeams, allRemoteTeams, contents, index + 1, toAdd, toUpdate, toSkip)
+        end, 0.05)
+    else
+        -- Team exists, check if it needs updating
+        local takenObj = self.takeObject({
+            guid = localItem.guid,
+            position = self.getPosition() + Vector(0, 3, 0),
+            smooth = false
+        })
+        
+        Wait.condition(
+            function()
+                local scriptState = takenObj.script_state
+                local localTimestamp = ""
+                
+                if scriptState and scriptState ~= "" then
+                    local success, decoded = pcall(function() return JSON.decode(scriptState) end)
+                    if success and decoded then
+                        -- Use the latest of card or token timestamps
+                        local cardTs = decoded.lastCardUpdate or ""
+                        local tokenTs = decoded.lastTokenUpdate or ""
+                        localTimestamp = cardTs
+                        -- Only compare if both have values
+                        if tokenTs ~= "" and cardTs ~= "" then
+                            if tokenTs > cardTs then
+                                localTimestamp = tokenTs
+                            end
+                        elseif tokenTs ~= "" then
+                            -- Only tokens timestamp exists
+                            localTimestamp = tokenTs
+                        end
+                    end
                 end
-            end
-            
-            local remoteTimestamp = remoteTeam.last_modified
-            
-            -- Truncate timestamps to minute precision (ignore seconds)
-            -- Format: "2026-01-23T16:24:31" -> "2026-01-23T16:24"
-            local localTrunc = localTimestamp:sub(1, 16)
-            local remoteTrunc = remoteTimestamp:sub(1, 16)
-            
-            -- Compare timestamps
-            if localTrunc == remoteTrunc and localTimestamp ~= "" then
-                -- Up to date, put it back
+                
+                local remoteTimestamp = teamData.last_modified
+                local localTrunc = localTimestamp:sub(1, 16)
+                local remoteTrunc = remoteTimestamp:sub(1, 16)
+                
+                -- Put it back
                 self.putObject(takenObj)
-                broadcastToAll("✓ " .. teamName .. " is current (" .. kept + 1 .. "/" .. #contents .. ")", {0, 0.8, 0})
+                
+                if localTrunc == remoteTrunc and localTimestamp ~= "" then
+                    -- Up to date, skip
+                    table.insert(toSkip, {name = teamName, guid = localItem.guid})
+                else
+                    -- Needs update
+                    table.insert(toUpdate, {name = teamName, guid = localItem.guid, data = teamData, localTs = localTimestamp, remoteTs = remoteTimestamp})
+                end
+                
                 Wait.time(function()
-                    checkNextTeam(remoteTeams, contents, index + 1, updated, kept + 1, added)
-                end, 0.2)
-            else
-                -- Needs update, destroy old and download new
-                broadcastToAll("↻ Updating " .. teamName .. "... (Local: " .. (localTimestamp ~= "" and localTimestamp or "none") .. " → Remote: " .. remoteTimestamp .. ")", {1, 0.8, 0})
-                takenObj.destruct()
-                
-                -- Download and spawn new version
-                local cacheBust = remoteTimestamp:gsub("[^%d]", "")
-                local url = remoteTeam.url .. "?v=" .. cacheBust
-                
-                WebRequest.get(url, function(webReturn)
-                    if webReturn.is_error then
-                        print("[Error] Failed to fetch " .. teamName .. ": " .. webReturn.error)
-                        Wait.time(function()
-                            checkNextTeam(remoteTeams, contents, index + 1, updated, kept, added)
-                        end, 0.1)
-                        return
-                    end
-                    
-                    local success, decoded = pcall(function() return JSON.decode(webReturn.text) end)
-                    if not success or not decoded.ObjectStates or #decoded.ObjectStates == 0 then
-                        print("[Error] Invalid JSON for " .. teamName)
-                        Wait.time(function()
-                            checkNextTeam(remoteTeams, contents, index + 1, updated, kept, added)
-                        end, 0.1)
-                        return
-                    end
-                    
-                    -- Spawn new version
-                    local teamBag = decoded.ObjectStates[1]
-                    local spawnedObj = spawnObjectJSON({
-                        json = JSON.encode(teamBag),
-                        position = self.getPosition() + Vector(0, 5, 0)
-                    })
-                    
-                    Wait.condition(
-                        function()
-                            self.putObject(spawnedObj)
-                            broadcastToAll("✓ Updated " .. teamName .. " (" .. updated + 1 .. " updated)", {0.2, 0.8, 1})
-                            Wait.time(function()
-                                checkNextTeam(remoteTeams, contents, index + 1, updated + 1, kept, added)
-                            end, 0.2)
-                        end,
-                        function() return spawnedObj ~= nil and not spawnedObj.spawning end,
-                        5
-                    )
-                end)
-            end
-        end,
-        function() return takenObj ~= nil and not takenObj.spawning end,
-        5
-    )
+                    analyzeTeams(remoteTeams, allRemoteTeams, contents, index + 1, toAdd, toUpdate, toSkip)
+                end, 0.05)
+            end,
+            function() return takenObj ~= nil and not takenObj.spawning end,
+            5
+        )
+    end
 end
 
-function addMissingTeams(missingTeams, index, added, updated, kept)
+function processAdds(toAdd, index, remoteTeams, toUpdate, toSkip)
     -- Check if user cancelled
     if cancelRequested then
-        broadcastToAll("✓ Reload cancelled. Updated: " .. updated .. ", Current: " .. kept .. ", Added: " .. added, {1, 0.8, 0})
+        broadcastToAll("✓ Reload cancelled.", {1, 0.8, 0})
         isUpdating = false
         cancelRequested = false
-        createButtons()  -- Restore normal buttons
+        createButtons()
         return
     end
     
-    if index > #missingTeams then
-        local total = updated + kept + added
-        broadcastToAll("✓ Done! Updated: " .. updated .. ", Current: " .. kept .. ", Added: " .. added, {0, 1, 0})
-        isUpdating = false
-        cancelRequested = false
-        createButtons()  -- Restore normal buttons
+    if index > #toAdd then
+        -- Done adding, move to updates
+        if #toUpdate > 0 then
+            processUpdates(toUpdate, 1, remoteTeams, toSkip)
+        else
+            broadcastToAll("✓ Done! Added: " .. #toAdd .. " | Skip: " .. #toSkip, {0, 1, 0})
+            isUpdating = false
+            cancelRequested = false
+            createButtons()
+        end
         return
     end
     
-    local team = missingTeams[index]
+    local team = toAdd[index]
     local teamName = team.name
     local teamData = team.data
     
     local cacheBust = (teamData.last_modified or ""):gsub("[^%d]", "")
     local url = teamData.url .. "?v=" .. cacheBust
     
-    broadcastToAll("+ Adding " .. teamName .. "...", {0.5, 1, 0.5})
+    broadcastToAll("+ Adding " .. teamName .. "... (" .. index .. "/" .. #toAdd .. ")", {0.5, 1, 0.5})
     
     WebRequest.get(url, function(webReturn)
         if webReturn.is_error then
             print("[Error] Failed to fetch " .. teamName .. ": " .. webReturn.error)
             Wait.time(function()
-                addMissingTeams(missingTeams, index + 1, added, updated, kept)
+                processAdds(toAdd, index + 1, remoteTeams, toUpdate, toSkip)
             end, 0.1)
             return
         end
@@ -368,12 +373,32 @@ function addMissingTeams(missingTeams, index, added, updated, kept)
         if not success or not decoded.ObjectStates or #decoded.ObjectStates == 0 then
             print("[Error] Invalid JSON for " .. teamName)
             Wait.time(function()
-                addMissingTeams(missingTeams, index + 1, added, updated, kept)
+                processAdds(toAdd, index + 1, remoteTeams, toUpdate, toSkip)
             end, 0.1)
             return
         end
         
         local teamBag = decoded.ObjectStates[1]
+        
+        -- Apply cache busting to all token URLs inside the bag
+        if teamBag.ContainedObjects then
+            for _, obj in ipairs(teamBag.ContainedObjects) do
+                if obj.CustomImage then
+                    if obj.CustomImage.ImageURL and not obj.CustomImage.ImageURL:find("?v=") then
+                        obj.CustomImage.ImageURL = obj.CustomImage.ImageURL .. "?v=" .. cacheBust
+                    end
+                    if obj.CustomImage.ImageSecondaryURL and not obj.CustomImage.ImageSecondaryURL:find("?v=") then
+                        obj.CustomImage.ImageSecondaryURL = obj.CustomImage.ImageSecondaryURL .. "?v=" .. cacheBust
+                    end
+                end
+                if obj.CustomTile and obj.CustomTile.CustomImage then
+                    if obj.CustomTile.CustomImage.ImageURL and not obj.CustomTile.CustomImage.ImageURL:find("?v=") then
+                        obj.CustomTile.CustomImage.ImageURL = obj.CustomTile.CustomImage.ImageURL .. "?v=" .. cacheBust
+                    end
+                end
+            end
+        end
+        
         local spawnedObj = spawnObjectJSON({
             json = JSON.encode(teamBag),
             position = self.getPosition() + Vector(0, 5, 0)
@@ -381,16 +406,145 @@ function addMissingTeams(missingTeams, index, added, updated, kept)
         
         Wait.condition(
             function()
-                self.putObject(spawnedObj)
-                broadcastToAll("✓ Added " .. teamName .. " (" .. added + 1 .. " added)", {0.5, 1, 0.5})
+                -- Wait a moment for the object's script state to fully initialize
                 Wait.time(function()
-                    addMissingTeams(missingTeams, index + 1, added + 1, updated, kept)
-                end, 0.2)
+                    self.putObject(spawnedObj)
+                    Wait.time(function()
+                        processAdds(toAdd, index + 1, remoteTeams, toUpdate, toSkip)
+                    end, 0.2)
+                end, 0.3)
             end,
             function() return spawnedObj ~= nil and not spawnedObj.spawning end,
             5
         )
     end)
+end
+
+function processUpdates(toUpdate, index, remoteTeams, toSkip)
+    -- Check if user cancelled
+    if cancelRequested then
+        broadcastToAll("✓ Reload cancelled.", {1, 0.8, 0})
+        isUpdating = false
+        cancelRequested = false
+        createButtons()
+        return
+    end
+    
+    if index > #toUpdate then
+        -- Done updating, process skips
+        processSkips(toSkip, 1)
+        return
+    end
+    
+    local team = toUpdate[index]
+    local teamName = team.name
+    local teamData = team.data
+    
+    broadcastToAll("↻ Updating " .. teamName .. "... (" .. index .. "/" .. #toUpdate .. ")", {1, 0.8, 0})
+    
+    -- Take out old version and destroy it
+    local takenObj = self.takeObject({
+        guid = team.guid,
+        position = self.getPosition() + Vector(0, 3, 0),
+        smooth = false
+    })
+    
+    Wait.condition(
+        function()
+            takenObj.destruct()
+            
+            -- Download and spawn new version
+            local cacheBust = teamData.last_modified:gsub("[^%d]", "")
+            local url = teamData.url .. "?v=" .. cacheBust
+            
+            WebRequest.get(url, function(webReturn)
+                if webReturn.is_error then
+                    print("[Error] Failed to fetch " .. teamName .. ": " .. webReturn.error)
+                    Wait.time(function()
+                        processUpdates(toUpdate, index + 1, remoteTeams, toSkip)
+                    end, 0.1)
+                    return
+                end
+                
+                local success, decoded = pcall(function() return JSON.decode(webReturn.text) end)
+                if not success or not decoded.ObjectStates or #decoded.ObjectStates == 0 then
+                    print("[Error] Invalid JSON for " .. teamName)
+                    Wait.time(function()
+                        processUpdates(toUpdate, index + 1, remoteTeams, toSkip)
+                    end, 0.1)
+                    return
+                end
+                
+                local teamBag = decoded.ObjectStates[1]
+                
+                -- Apply cache busting to all token URLs inside the bag
+                if teamBag.ContainedObjects then
+                    for _, obj in ipairs(teamBag.ContainedObjects) do
+                        if obj.CustomImage then
+                            if obj.CustomImage.ImageURL and not obj.CustomImage.ImageURL:find("?v=") then
+                                obj.CustomImage.ImageURL = obj.CustomImage.ImageURL .. "?v=" .. cacheBust
+                            end
+                            if obj.CustomImage.ImageSecondaryURL and not obj.CustomImage.ImageSecondaryURL:find("?v=") then
+                                obj.CustomImage.ImageSecondaryURL = obj.CustomImage.ImageSecondaryURL .. "?v=" .. cacheBust
+                            end
+                        end
+                        if obj.CustomTile and obj.CustomTile.CustomImage then
+                            if obj.CustomTile.CustomImage.ImageURL and not obj.CustomTile.CustomImage.ImageURL:find("?v=") then
+                                obj.CustomTile.CustomImage.ImageURL = obj.CustomTile.CustomImage.ImageURL .. "?v=" .. cacheBust
+                            end
+                        end
+                    end
+                end
+                
+                local spawnedObj = spawnObjectJSON({
+                    json = JSON.encode(teamBag),
+                    position = self.getPosition() + Vector(0, 5, 0)
+                })
+                
+                Wait.condition(
+                    function()
+                        -- Wait a moment for the object's script state to fully initialize
+                        Wait.time(function()
+                            self.putObject(spawnedObj)
+                            Wait.time(function()
+                                processUpdates(toUpdate, index + 1, remoteTeams, toSkip)
+                            end, 0.2)
+                        end, 0.3)
+                    end,
+                    function() return spawnedObj ~= nil and not spawnedObj.spawning end,
+                    5
+                )
+            end)
+        end,
+        function() return takenObj ~= nil and not takenObj.spawning end,
+        5
+    )
+end
+
+function processSkips(toSkip, index)
+    -- Check if user cancelled
+    if cancelRequested then
+        broadcastToAll("✓ Reload cancelled.", {1, 0.8, 0})
+        isUpdating = false
+        cancelRequested = false
+        createButtons()
+        return
+    end
+    
+    if index > #toSkip then
+        broadcastToAll("✓ All done!", {0, 1, 0})
+        isUpdating = false
+        cancelRequested = false
+        createButtons()
+        return
+    end
+    
+    local team = toSkip[index]
+    broadcastToAll("⊙ Skipping " .. team.name .. " (current) (" .. index .. "/" .. #toSkip .. ")", {0.5, 0.5, 0.5})
+    
+    Wait.time(function()
+        processSkips(toSkip, index + 1)
+    end, 0.1)
 end
 
 function placeTeamsOnTable()

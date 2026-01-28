@@ -15,13 +15,38 @@ import os
 
 
 def get_file_timestamp(file_path: Path) -> str:
-    """Get ISO format timestamp of file's last modification."""
+    """Get ISO format timestamp from file's modification time (fallback only)."""
     if not file_path.exists():
         return ""
     
     timestamp = os.path.getmtime(file_path)
     dt = datetime.fromtimestamp(timestamp)
     return dt.strftime("%Y-%m-%dT%H:%M:%S")
+
+
+def extract_timestamp_from_json(json_file: Path, timestamp_key: str) -> str:
+    """Extract timestamp from LuaScriptState inside a TTS JSON file."""
+    if not json_file.exists():
+        return ""
+    
+    try:
+        with open(json_file, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        
+        # Get the first ObjectState (the bag/deck)
+        if not data.get('ObjectStates') or len(data['ObjectStates']) == 0:
+            return ""
+        
+        lua_script_state = data['ObjectStates'][0].get('LuaScriptState', '')
+        if not lua_script_state:
+            return ""
+        
+        # Parse the LuaScriptState JSON
+        state = json.loads(lua_script_state)
+        return state.get(timestamp_key, "")
+    except Exception as e:
+        print(f"    Warning: Could not extract {timestamp_key} from {json_file.name}: {e}")
+        return ""
 
 
 def generate_combined_metadata():
@@ -45,9 +70,14 @@ def generate_combined_metadata():
         team_slug = entry['team']
         team_name = entry['name']
         
-        # Find the card box file for timestamp
-        card_box_file = tts_objects_dir / f"{team_name} Cards.json"
-        cards_timestamp = get_file_timestamp(card_box_file)
+        # Find the card box file and extract timestamp from LuaScriptState
+        card_box_file = tts_objects_dir / team_slug / f"{team_name} Cards.json"
+        cards_timestamp = extract_timestamp_from_json(card_box_file, 'lastCardUpdate')
+        
+        # Fallback to file modification time if extraction fails
+        if not cards_timestamp:
+            cards_timestamp = get_file_timestamp(card_box_file)
+            print(f"    Warning: Using file mtime for {team_name} (no LuaScriptState)")
         
         metadata_dict[team_slug] = {
             "team": team_slug,
@@ -56,34 +86,39 @@ def generate_combined_metadata():
             "cards_last_modified": cards_timestamp
         }
         
-        print(f"  ✓ {team_name}: cards={cards_timestamp[:16]}")
+        print(f"  ✓ {team_name}: cards={cards_timestamp[:16] if cards_timestamp else 'N/A'}")
     
     # Now add token information
-    tokens_dir = Path('tts_objects/tokens')
+    tts_teams_dir = Path('tts_objects')
     
-    if tokens_dir.exists():
+    if tts_teams_dir.exists():
         print("\nProcessing token bags...")
-        for team_dir in sorted(tokens_dir.iterdir()):
-            if not team_dir.is_dir():
+        for team_dir in sorted(tts_teams_dir.iterdir()):
+            if not team_dir.is_dir() or team_dir.name == 'display-table':
                 continue
             
             team_slug = team_dir.name
-            token_bag_file = team_dir / f"{team_slug}-tokenbag.json"
+            token_bag_file = team_dir / 'tokens' / f"{team_slug}-tokenbag.json"
             
             if not token_bag_file.exists():
                 continue
             
-            # Get timestamp
-            tokens_timestamp = get_file_timestamp(token_bag_file)
+            # Extract timestamp from LuaScriptState
+            tokens_timestamp = extract_timestamp_from_json(token_bag_file, 'lastTokenUpdate')
+            
+            # Fallback to file modification time if extraction fails
+            if not tokens_timestamp:
+                tokens_timestamp = get_file_timestamp(token_bag_file)
+                print(f"    Warning: Using file mtime for {team_slug} tokens (no LuaScriptState)")
             
             # Build URL
-            tokens_url = f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/tts_objects/tokens/{team_slug}/{team_slug}-tokenbag.json"
+            tokens_url = f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/tts_objects/{team_slug}/tokens/{team_slug}-tokenbag.json"
             
             # Add to existing entry or create new one
             if team_slug in metadata_dict:
                 metadata_dict[team_slug]["tokens_url"] = tokens_url
                 metadata_dict[team_slug]["tokens_last_modified"] = tokens_timestamp
-                print(f"  ✓ {metadata_dict[team_slug]['name']}: tokens={tokens_timestamp[:16]}")
+                print(f"  ✓ {metadata_dict[team_slug]['name']}: tokens={tokens_timestamp[:16] if tokens_timestamp else 'N/A'}")
             else:
                 # Token-only team (shouldn't happen but handle it)
                 team_name = team_slug.replace('-', ' ').title()
@@ -93,7 +128,7 @@ def generate_combined_metadata():
                     "tokens_url": tokens_url,
                     "tokens_last_modified": tokens_timestamp
                 }
-                print(f"  ✓ {team_name} (tokens only): {tokens_timestamp[:16]}")
+                print(f"  ✓ {team_name} (tokens only): {tokens_timestamp[:16] if tokens_timestamp else 'N/A'}")
     
     # Convert dict to sorted list
     metadata = [metadata_dict[slug] for slug in sorted(metadata_dict.keys())]

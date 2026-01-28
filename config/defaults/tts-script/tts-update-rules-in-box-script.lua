@@ -463,10 +463,16 @@ function performUpdate(newTimestamp)
         
         broadcastToAll("✓ Cards updated! (" .. processedCount .. " cards, box texture, mesh). Now updating tokens...", {0, 1, 0})
         
-        -- After cards are done, update tokens
-        Wait.time(function()
-          click_update_tokens()
-        end, 1.0)
+        -- Wait for reload to complete before updating tokens
+        Wait.condition(
+          function()
+            click_update_tokens()
+          end,
+          function()
+            return not self.spawning
+          end,
+          5
+        )
       end, 0.5)
       return
     end
