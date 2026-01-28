@@ -28,7 +28,7 @@
         "display_name": "Neutralise Target",
         "has_back": false,
         "content": {
-          "description": "Designating an exposed enemy operative as a priority target, this operative levels their weapon and fires a volley of rounds. Use this firefight ploy after rolling your attack dice for a friendly KASRKIN  operative, if it’s shooting an operative that’s either not in cover or is being scanned (see RECON-TROOPER). You can re-roll any of your attack dice."
+          "description": "Designating an exposed enemy operative as a priority target, this operative levels their weapon and fires a volley of rounds. Use this firefight ploy after rolling your attack dice for a friendly KASRKIN  operative, if it’s shooting an operative that either cannot retain any cover saves or is being scanned (see RECON-TROOPER). You can re-roll any of your attack dice."
         }
       },
       "give-no-ground": {
@@ -46,7 +46,7 @@
         "display_name": "Elimination Pattern",
         "has_back": false,
         "content": {
-          "description": "Having already outmanoeuvred the foe, the Kasrkin attempt to fell their target in a single volley. Whenever a friendly KASRKIN  operative is shooting with a hot-shot weapon against an operative that’s not in cover or is being scanned (see RECON-TROOPER), that weapon has the Piercing Crits 1 weapon rule, or Piercing 1 instead if it’s a hot-shot volley gun."
+          "description": "Having already outmanoeuvred the foe, the Kasrkin attempt to fell their target in a single volley. Whenever a friendly KASRKIN  operative is shooting with a hot-shot weapon against an operative that cannot retain any cover saves or is being scanned (see RECON-TROOPER), that weapon has the Piercing Crits 1 weapon rule, or Piercing 1 instead if it’s a hot-shot volley gun."
         }
       },
       "engage-from-cover": {
@@ -206,7 +206,7 @@
         "display_name": "Skill At Arms_2",
         "has_back": false,
         "content": {
-          "description": "KASRKIN FACTION RULE SKILL AT ARMS Light ’Em Up Establishing overlapping fields of fire as they advance, the Kasrkin react to any enemy movement with a lethal volley of fire. Whenever a friendly KASRKIN  operative is shooting, its ranged weapons have the Severe weapon rule if any of the following are true for"
+          "description": "KASRKIN FACTION RULE SKILL AT ARMS Light ’Em Up Establishing overlapping fields of fire as they advance, the Kasrkin react to any enemy movement with a lethal volley of fire. Friendly KASRKIN  operatives’ ranged weapons have the Severe weapon rule."
         }
       },
       "skill-at-arms_3": {
@@ -232,18 +232,26 @@
         "content": {
           "description": "KASRKIN FACTION RULE SKILL AT ARMS For Cadia! All Kasrkin strive to uphold the honour of their dead homeworld. Add 1 to the Atk stat of friendly KASRKIN operatives’ melee weapons (to a maximum of 4). Whenever a friendly KASRKIN  operative is fighting, the first time you strike during that"
         }
+      },
+      "rapid-fire": {
+        "card_name": "rapid-fire",
+        "display_name": "Rapid Fire",
+        "has_back": false,
+        "content": {
+          "description": "KASRKIN FACTION RULE RAPID FIRE Ruthlessly drilled and murderously efficient, Kasrkin lay down hails of high-powered fire against the foe. Each friendly KASRKIN  operative that doesn’t perform an action in which it moves during its activation can perform two Shoot actions (excluding Guard) during that activation, but a bolt pistol, hot-shot lasgun or hot-shot laspistol"
+        }
       }
     }
   },
   "processing_summary": {
-    "total_cards": 27,
+    "total_cards": 28,
     "by_type": {
       "firefight-ploys": 4,
       "strategy-ploys": 4,
       "datacards": 8,
       "operative-selection": 1,
       "equipment": 4,
-      "faction-rules": 6
+      "faction-rules": 7
     }
   }
 }
