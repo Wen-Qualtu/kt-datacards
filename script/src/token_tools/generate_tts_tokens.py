@@ -745,7 +745,7 @@ def main():
     parser.add_argument(
         '--tts-json-dir',
         type=str,
-        default='tts_objects/tokens',
+        default='tts_objects',
         help='Directory for standalone TTS JSON files (temp)',
     )
 

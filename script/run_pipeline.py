@@ -111,7 +111,7 @@ def main():
                 extracted_tokens_dir=project_root / 'processed' / 'extracted-tokens',
                 output_v2_dir=project_root / 'output_v2',
                 tts_objects_dir=project_root / 'tts_objects',
-                tts_token_json_dir=project_root / 'tts_objects' / 'tokens',
+                tts_token_json_dir=project_root / 'tts_objects',
             )
             token_stats = integrator.embed_ready_tokens(
                 team_filter=args.teams,

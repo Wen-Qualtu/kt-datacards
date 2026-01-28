@@ -261,7 +261,7 @@ def main():
     parser.add_argument(
         '--tokens-dir',
         type=str,
-        default='tts_objects/tokens',
+        default='tts_objects',
         help='Directory with individual token JSON files',
     )
     parser.add_argument('--output-dir', type=str, default='output_v2', help='Output directory (default: output_v2)')

@@ -125,8 +125,8 @@ class TokenIntegrator:
             )
             packaged += 1
 
-            # Write individual token bags to tts_objects/tokens/<team>/ (only if missing)
-            team_json_dir = self.tts_token_json_dir / s.team
+            # Write individual token bags to tts_objects/<team>/tokens/ (only if missing)
+            team_json_dir = self.tts_token_json_dir / s.team / 'tokens'
             team_json_dir.mkdir(parents=True, exist_ok=True)
 
             for t in tokens_data:

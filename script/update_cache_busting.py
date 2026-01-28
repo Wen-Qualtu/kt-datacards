@@ -73,7 +73,7 @@ def update_card_box(file_path: Path):
 
 def main():
     tts_dir = Path('tts_objects')
-    card_boxes = list(tts_dir.glob('*Cards.json'))
+    card_boxes = list(tts_dir.glob('*/*Cards.json'))
     
     print(f"Found {len(card_boxes)} card boxes\\n")
     

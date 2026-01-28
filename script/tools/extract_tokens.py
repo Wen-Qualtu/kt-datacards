@@ -411,6 +411,31 @@ class TokenExtractor:
         out[mask == 0] = (255, 255, 255)
         return out
 
+    def _normalize_background_to_white(self, token_img: np.ndarray) -> np.ndarray:
+        """Normalize grey/off-white background pixels to pure white.
+        
+        This is important for template fitting to work correctly - the cutter needs
+        clean white backgrounds to accurately detect token content vs background.
+        """
+        if token_img is None or token_img.size == 0:
+            return token_img
+        
+        # Convert to HSV for better background detection
+        hsv = cv2.cvtColor(token_img, cv2.COLOR_BGR2HSV)
+        h, s, v = cv2.split(hsv)
+        
+        # Background characteristics:
+        # - Low saturation (grey/white, not colored)
+        # - High value (bright, not dark)
+        # More aggressive thresholds to catch more grey shades
+        is_background = (s < 35) & (v > 160)  # Increased from s<25, v>180
+        
+        # Apply whitening
+        out = token_img.copy()
+        out[is_background] = (255, 255, 255)
+        
+        return out
+
     def _infer_round_marker_from_image(self, token_img: np.ndarray) -> float | None:
         """Infer whether an extracted token image likely represents a round marker.
 
@@ -1822,7 +1847,7 @@ class TokenExtractor:
 
         # Determine a typical output canvas size (after padding) so smaller "value" tokens
         # can be upscaled to match the rest.
-        padding = 10
+        padding = 10  # Match extraction padding
         typical_canvas_w: int | None = None
         typical_canvas_h: int | None = None
         if token_bboxes and extract_names:
@@ -1988,7 +2013,8 @@ class TokenExtractor:
                     print(f"  ⚠ Skipping known double-token label for now: {token_name}")
                     continue
 
-            # Add padding
+            # Add padding to ensure white background is away from image edges
+            # This helps template fitting distinguish background from white token details
             padding = 10
             x_pad = max(0, x - padding)
             y_pad = max(0, y_actual - padding)
@@ -2152,9 +2178,9 @@ class TokenExtractor:
             if (w_pad >= 60 and h_pad >= 60) and (0.85 <= (w_pad / float(h_pad) if h_pad > 0 else 0.0) <= 1.15):
                 ring_conf = self._infer_round_marker_from_image(token_img)
 
-            if ring_conf is not None and float(ring_conf) >= 0.35:
+            if ring_conf is not None and float(ring_conf) >= 0.35 and 0.95 <= aspect_ratio <= 1.05:
                 shape = "round"
-            elif circularity >= 0.75 and 0.9 <= aspect_ratio <= 1.1:
+            elif circularity >= 0.75 and 0.95 <= aspect_ratio <= 1.05:
                 shape = "round"
             else:
                 shape = "operative"
@@ -2239,6 +2265,10 @@ class TokenExtractor:
 
             if should_skip_current:
                 continue
+            
+            # Equalize background to white
+            # Many token guides have grey/off-white backgrounds that need to be normalized
+            token_img = self._normalize_background_to_white(token_img)
             
             # Save
             output_path = output_dir / f"{safe_name}.png"
@@ -2337,7 +2367,7 @@ class TokenExtractor:
         print(f"  Found marker guide: {marker_guide_path}")
         
         # Create output directory
-        output_dir = self.output_base_dir / team_name
+        output_dir = self.output_base_dir / team_name / "token"
         if clean and output_dir.exists():
             shutil.rmtree(output_dir)
 
@@ -2374,7 +2404,7 @@ class TokenExtractor:
 
         print(f"  Found marker guide: {marker_guide_path}")
 
-        output_dir = self.output_base_dir / team_name
+        output_dir = self.output_base_dir / team_name / "token"
         if clean and output_dir.exists():
             shutil.rmtree(output_dir)
 
@@ -2610,8 +2640,8 @@ def main():
                        help='Extraction method (default: auto)')
     parser.add_argument('--debug', action='store_true', help='Save debug images')
     parser.add_argument('--clean', action='store_true', help='Delete existing extracted tokens for the team(s) before extracting')
-    parser.add_argument('--output-dir', type=str, default='processed/extracted-tokens',
-                       help='Output directory for extracted tokens')
+    parser.add_argument('--output-dir', type=str, default='processed',
+                       help='Output directory for extracted tokens (tokens go in {output-dir}/{team}/token/)')
     parser.add_argument('--text-gap-max', type=float, default=6.0,
                        help='Max horizontal gap (PDF units) to group words on the same label line (default: 6.0)')
     parser.add_argument('--same-line-y-max', type=float, default=15.0,

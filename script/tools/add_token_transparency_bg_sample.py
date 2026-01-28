@@ -166,6 +166,9 @@ def _fit_template_mask(
         base_scale = float(0.55 * bbox_scale + 0.45 * area_scale)
     else:
         base_scale = area_scale
+    
+    # Scale template DOWN by 5% to ensure it fits inside the content without capturing white edges
+    base_scale = base_scale * 0.95
     base_scale = float(np.clip(base_scale, 0.4, 2.2))
 
     scale_band = float(max(0.0, scale_band))
@@ -313,12 +316,16 @@ def _fill_transparent_holes_within_template(
 
 
 def _iter_team_dirs(tokens_dir: Path) -> Iterable[Path]:
+    """Iterate over team token directories (processed/{team}/token/)."""
     for child in sorted(tokens_dir.iterdir()):
         if not child.is_dir():
             continue
         if child.name.startswith("_"):
             continue
-        yield child
+        # Look for the token subdirectory
+        token_dir = child / "token"
+        if token_dir.exists() and token_dir.is_dir():
+            yield token_dir
 
 
 def _iter_token_pngs(team_dir: Path) -> Iterable[Path]:
@@ -863,6 +870,7 @@ def _write_debug(
 def process_file(
     path: Path,
     *,
+    output_path: Path | None = None,
     bg_centers: np.ndarray,
     threshold: int,
     speck_min_area: int,
@@ -931,61 +939,324 @@ def process_file(
     alpha = _remove_small_alpha_components(alpha, min_area=int(speck_min_area))
 
     if bool(template_fit) and template_oper is not None and template_round is not None:
-        # Candidate mask from current alpha; keep multiple islands to avoid split-mask failures.
-        cand = (alpha > 0).astype(np.uint8)
-        cand = _mask_fill_holes(cand)
-        cand = _mask_keep_components(cand, min_area=180, min_rel=0.04)
-        el = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
-        cand = cv2.morphologyEx(cand, cv2.MORPH_CLOSE, el, iterations=1)
-        cand = _mask_fill_holes(cand)
-
-        fit_o, met_o = _fit_template_mask(
-            cand=cand,
-            templ=template_oper,
-            scale_band=float(template_scale_band),
-            scale_steps=int(template_scale_steps),
-            shift=int(template_shift),
-            shift_step=int(template_shift_step),
-        )
-        fit_r, met_r = _fit_template_mask(
-            cand=cand,
-            templ=template_round,
-            scale_band=float(template_scale_band),
-            scale_steps=int(template_scale_steps),
-            shift=int(template_shift),
-            shift_step=int(template_shift_step),
-        )
-
-        best_fit = None
-        best_met = None
-        if met_o is None and met_r is None:
-            best_fit = None
-        elif met_o is None:
-            best_fit, best_met = fit_r, met_r
-        elif met_r is None:
-            best_fit, best_met = fit_o, met_o
-        else:
-            if float(met_r["iou"]) > float(met_o["iou"]):
-                best_fit, best_met = fit_r, met_r
+        # Pass 1: Simple white removal - trust the extraction
+        hsv = cv2.cvtColor(bgr, cv2.COLOR_BGR2HSV)
+        v = hsv[:, :, 2]
+        s = hsv[:, :, 1]
+        
+        # Remove white/near-white background
+        is_white = ((v > 235) & (s < 20)) | ((bgr[:, :, 0] > 235) & (bgr[:, :, 1] > 235) & (bgr[:, :, 2] > 235))
+        simple_mask = (~is_white) & (alpha > 0)
+        simple_mask = simple_mask.astype(np.uint8)
+        
+        # Keep largest component
+        num_labels, labels, stats, _ = cv2.connectedComponentsWithStats(simple_mask, connectivity=8)
+        if num_labels > 1:
+            largest_label = 1 + np.argmax(stats[1:, cv2.CC_STAT_AREA])
+            simple_mask = (labels == largest_label).astype(np.uint8)
+        
+        simple_mask = _mask_fill_holes(simple_mask * 255)
+        simple_mask = (simple_mask > 0).astype(np.uint8)
+        
+        # Check if this simple mask is already good
+        bbox_simple = _mask_bbox(simple_mask)
+        cand_expanded = None
+        detection_method = None
+        
+        if bbox_simple is not None:
+            sx, sy, sw, sh = bbox_simple
+            img_h, img_w = alpha.shape
+            coverage = (sw * sh) / (img_w * img_h)
+            aspect = sw / float(sh) if sh > 0 else 1.0
+            
+            if debug_dir:
+                print(f"  Simple detection: coverage={coverage:.3f}, aspect={aspect:.3f}, bbox=({sx},{sy},{sw},{sh}), img={img_w}x{img_h}")
+            
+            # If shape has reasonable coverage and aspect ratio, accept it
+            # Coverage up to 0.9 is fine - extraction adds padding so high coverage is expected
+            if 0.2 < coverage < 0.9 and 0.6 < aspect < 1.8:
+                # Use simple mask with minimal cleanup
+                el = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3))
+                cand_expanded = cv2.morphologyEx(simple_mask, cv2.MORPH_CLOSE, el, iterations=1)
+                detection_method = f"Simple white removal (coverage: {coverage:.2f}, aspect: {aspect:.2f})"
+        
+        # Pass 2: Advanced detection if simple method failed
+        if cand_expanded is None:
+            candidates = []
+            
+            # Strategy 1: Tight thresholds, minimal dilation
+            is_content = ((v < 220) | (s > 30)) & (alpha > 0)
+            cand = is_content.astype(np.uint8)
+            if cand.sum() > 0:
+                num_labels, labels, stats, _ = cv2.connectedComponentsWithStats(cand, connectivity=8)
+                if num_labels > 1:
+                    largest_label = 1 + np.argmax(stats[1:, cv2.CC_STAT_AREA])
+                    cand = (labels == largest_label).astype(np.uint8)
+                
+                el = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (7, 7))
+                result = cv2.dilate(cand, el, iterations=1)
+                result = result & (alpha > 0).astype(np.uint8)
+                result = _mask_fill_holes(result * 255)
+                result = (result > 0).astype(np.uint8)
+                candidates.append(("Tight+Minimal", result))
+            
+            # Strategy 2: Tight thresholds, moderate dilation
+            if cand.sum() > 0:
+                el = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (15, 15))
+                result = cv2.dilate(cand, el, iterations=1)
+                result = result & (alpha > 0).astype(np.uint8)
+                result = _mask_fill_holes(result * 255)
+                result = (result > 0).astype(np.uint8)
+                candidates.append(("Tight+Moderate", result))
+            
+            # Strategy 3: Loose thresholds, minimal dilation
+            is_content = ((v < 230) | (s > 25)) & (alpha > 0)
+            cand = is_content.astype(np.uint8)
+            if cand.sum() > 0:
+                num_labels, labels, stats, _ = cv2.connectedComponentsWithStats(cand, connectivity=8)
+                if num_labels > 1:
+                    largest_label = 1 + np.argmax(stats[1:, cv2.CC_STAT_AREA])
+                    cand = (labels == largest_label).astype(np.uint8)
+                
+                el = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (7, 7))
+                result = cv2.dilate(cand, el, iterations=1)
+                result = result & (alpha > 0).astype(np.uint8)
+                result = _mask_fill_holes(result * 255)
+                result = (result > 0).astype(np.uint8)
+                candidates.append(("Loose+Minimal", result))
+            
+            # Strategy 4: Loose thresholds, moderate dilation
+            if cand.sum() > 0:
+                el = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (15, 15))
+                result = cv2.dilate(cand, el, iterations=1)
+                result = result & (alpha > 0).astype(np.uint8)
+                result = _mask_fill_holes(result * 255)
+                result = (result > 0).astype(np.uint8)
+                candidates.append(("Loose+Moderate", result))
+            
+            # Strategy 5: Very loose, larger dilation
+            is_content = ((v < 235) | (s > 20)) & (alpha > 0)
+            cand = is_content.astype(np.uint8)
+            if cand.sum() > 0:
+                num_labels, labels, stats, _ = cv2.connectedComponentsWithStats(cand, connectivity=8)
+                if num_labels > 1:
+                    largest_label = 1 + np.argmax(stats[1:, cv2.CC_STAT_AREA])
+                    cand = (labels == largest_label).astype(np.uint8)
+                
+                el = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (21, 21))
+                result = cv2.dilate(cand, el, iterations=1)
+                result = result & (alpha > 0).astype(np.uint8)
+                result = _mask_fill_holes(result * 255)
+                result = (result > 0).astype(np.uint8)
+                candidates.append(("VeryLoose+Large", result))
+            
+            # Evaluate and pick best
+            best_score = -1
+            img_h, img_w = alpha.shape
+            total_pixels = img_w * img_h
+            
+            for name, candidate in candidates:
+                bbox = _mask_bbox(candidate)
+                if bbox is None:
+                    continue
+                
+                cx, cy, cw, ch = bbox
+                coverage = (cw * ch) / total_pixels
+                aspect = cw / float(ch) if ch > 0 else 1.0
+                
+                score = 0.0
+                if 0.2 < coverage < 0.7:
+                    score += 100
+                elif 0.15 < coverage < 0.8:
+                    score += 50
+                elif 0.1 < coverage < 0.9:
+                    score += 20
+                
+                if 0.7 < aspect < 1.4:
+                    score += 50
+                elif 0.5 < aspect < 2.0:
+                    score += 30
+                elif 0.4 < aspect < 2.5:
+                    score += 10
+                
+                edge_margin = 5
+                if cx < edge_margin or cy < edge_margin or (cx + cw) > (img_w - edge_margin) or (cy + ch) > (img_h - edge_margin):
+                    score -= 30
+                
+                if "Minimal" in name:
+                    score += 10
+                elif "Moderate" in name:
+                    score += 5
+                
+                if score > best_score:
+                    best_score = score
+                    cand_expanded = candidate
+                    detection_method = f"Advanced: {name} (score: {score:.0f})"
+        
+        # Fallback
+        if cand_expanded is None:
+            cand_expanded = (alpha > 0).astype(np.uint8)
+            detection_method = "Fallback: Full alpha"
+        
+        # Get bounding box of EXPANDED content (includes white interior)
+        content_bbox = _mask_bbox(cand_expanded)
+        if content_bbox is not None:
+            cx, cy, cw, ch = content_bbox
+            
+            # Try to read shape from extraction metadata
+            metadata_path = path.parent / "extraction-metadata.json"
+            is_round = True  # Default to round
+            aspect = cw / float(ch) if ch > 0 else 1.0
+            
+            # First check metadata
+            shape_from_metadata = None
+            if metadata_path.exists():
+                try:
+                    import json
+                    with open(metadata_path, 'r') as f:
+                        metadata = json.load(f)
+                    for token in metadata.get('tokens', []):
+                        if token.get('filename') == path.name:
+                            shape_from_metadata = token.get('shape')
+                            break
+                except Exception:
+                    pass
+            
+            # If metadata says round, verify by checking if we can detect a circle
+            # This catches cases where extraction misclassified operative tokens as round
+            if shape_from_metadata == 'round':
+                # Check if the content mask is actually circular
+                # A circle should have high circularity when we compute it from the content mask
+                contours, _ = cv2.findContours(cand_expanded, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+                if contours:
+                    largest_contour = max(contours, key=cv2.contourArea)
+                    area = cv2.contourArea(largest_contour)
+                    perimeter = cv2.arcLength(largest_contour, True)
+                    circularity = (4 * np.pi * area) / (perimeter ** 2) if perimeter > 0 else 0
+                    
+                    # Only override metadata if it's REALLY not circular (< 0.5)
+                    # Tokens with small white gaps at edges can have low circularity but are still round
+                    if circularity < 0.5 and aspect < 0.85:
+                        # Low circularity AND elongated aspect - probably operative
+                        is_round = False
+                    else:
+                        # Trust metadata - could just have edge artifacts
+                        is_round = True
+                else:
+                    is_round = True
+            elif shape_from_metadata == 'operative':
+                is_round = False
             else:
-                best_fit, best_met = fit_o, met_o
-
-        if best_fit is not None and best_met is not None:
-            iou_ok = float(best_met["iou"]) >= float(template_min_iou)
-            cov_ok = float(best_met["coverage"]) >= float(template_min_coverage)
-            rec_ok = float(best_met["recall"]) >= float(template_min_recall)
-
-            if iou_ok and cov_ok:
-                # Strong match: clamp and then fill interior holes.
-                alpha = np.where(best_fit > 0, alpha, 0).astype(np.uint8)
-                alpha = _fill_transparent_holes_within_template(alpha, best_fit)
-            elif rec_ok:
-                # Soft match: do NOT clamp (avoid preserving extra background if misaligned),
-                # but DO fill interior holes within the boundary to prevent icon cutouts.
-                alpha = _fill_transparent_holes_within_template(alpha, best_fit)
+                # No metadata or unknown shape - fall back to aspect ratio
+                is_round = 0.85 <= aspect <= 1.15
+            
+            # Create perfect shape mask directly from content bounds
+            h, w = bgr.shape[:2]
+            best_fit = np.zeros((h, w), dtype=np.uint8)
+            
+            center_x = cx + cw / 2.0
+            center_y = cy + ch / 2.0
+            
+            if is_round:
+                # Create perfect circle
+                radius = min(cw, ch) / 2.0
+                Y, X = np.ogrid[:h, :w]
+                dist = np.sqrt((X - center_x)**2 + (Y - center_y)**2)
+                best_fit[dist <= radius] = 1
+            else:
+                # Create cone shape (from operative template)
+                # Scale the operative template to match content size
+                templ_bbox = _mask_bbox(template_oper)
+                if templ_bbox is not None:
+                    tx, ty, tw, th = templ_bbox
+                    scale_x = cw / float(tw)
+                    scale_y = ch / float(th)
+                    
+                    templ_resized = cv2.resize(
+                        (template_oper > 0).astype(np.uint8),
+                        (int(tw * scale_x), int(th * scale_y)),
+                        interpolation=cv2.INTER_LINEAR
+                    )
+                    
+                    # Place at content center
+                    th_new, tw_new = templ_resized.shape
+                    x0 = int(center_x - tw_new / 2.0)
+                    y0 = int(center_y - th_new / 2.0)
+                    
+                    x0 = max(0, x0)
+                    y0 = max(0, y0)
+                    x1 = min(w, x0 + tw_new)
+                    y1 = min(h, y0 + th_new)
+                    
+                    tw_crop = x1 - x0
+                    th_crop = y1 - y0
+                    
+                    best_fit[y0:y1, x0:x1] = templ_resized[:th_crop, :tw_crop]
+            
+            # DEBUG: Save both overlays only
+            if debug_dir is not None:
+                debug_dir.mkdir(parents=True, exist_ok=True)
+                
+                debug_vis = bgr.copy()
+                # Show expanded area in green, template in red
+                debug_vis[cand_expanded > 0] = debug_vis[cand_expanded > 0] * 0.5 + np.array([0, 255, 0], dtype=np.uint8) * 0.5
+                debug_vis[best_fit > 0] = debug_vis[best_fit > 0] * 0.5 + np.array([255, 0, 0], dtype=np.uint8) * 0.5
+                cv2.imwrite(str(debug_dir / f"{path.stem}_3_both_overlays.png"), debug_vis)
+                
+                with open(debug_dir / f"{path.stem}_metrics.txt", 'w') as f:
+                    f.write(f"Detection: {detection_method}\n")
+                    f.write(f"Template: {'round' if is_round else 'operative'}\n")
+                    f.write(f"Content bbox: {cx}, {cy}, {cw}, {ch}\n")
+                    f.write(f"Aspect ratio: {aspect:.3f}\n")
+                    if is_round:
+                        f.write(f"Circle radius: {radius:.1f}px\n")
+                    f.write(f"Match quality: DIRECT_FIT\n")
+            
+            # Apply template
+            alpha = np.where(best_fit > 0, alpha, 0).astype(np.uint8)
+            
+            # Mask out white pixels within template
+            is_white = ((v > 235) & (s < 20)) | ((bgr[:, :, 0] > 235) & (bgr[:, :, 1] > 235) & (bgr[:, :, 2] > 235))
+            alpha = np.where(is_white, 0, alpha).astype(np.uint8)
+            
+            alpha = _fill_transparent_holes_within_template(alpha, best_fit)
+            alpha = _fill_transparent_holes_within_template(alpha, best_fit)
+            
+            # Crop to template bounds and resize to 512x512
+            template_bbox = _mask_bbox(best_fit)
+            if template_bbox is not None:
+                x, y, w, h = template_bbox
+                # Crop both BGR and alpha to template region
+                bgr = bgr[y:y+h, x:x+w]
+                alpha = alpha[y:y+h, x:x+w]
+                
+                # Resize to fit within 490x490 maintaining aspect ratio (10px padding)
+                max_dim = 490
+                scale = min(max_dim / w, max_dim / h)
+                new_w = int(w * scale)
+                new_h = int(h * scale)
+                
+                bgr = cv2.resize(bgr, (new_w, new_h), interpolation=cv2.INTER_AREA)
+                alpha = cv2.resize(alpha, (new_w, new_h), interpolation=cv2.INTER_AREA)
+                
+                # Center on 512x512 canvas
+                canvas_bgr = np.full((512, 512, 3), 255, dtype=np.uint8)
+                canvas_alpha = np.zeros((512, 512), dtype=np.uint8)
+                
+                offset_x = (512 - new_w) // 2
+                offset_y = (512 - new_h) // 2
+                
+                canvas_bgr[offset_y:offset_y+new_h, offset_x:offset_x+new_w] = bgr
+                canvas_alpha[offset_y:offset_y+new_h, offset_x:offset_x+new_w] = alpha
+                
+                bgr = canvas_bgr
+                alpha = canvas_alpha
 
     out = np.dstack([bgr, alpha])
-    ok = bool(cv2.imwrite(str(path), out))
+    
+    # Write to output_path if provided, otherwise overwrite original
+    write_path = output_path if output_path is not None else path
+    ok = bool(cv2.imwrite(str(write_path), out))
 
     if ok and debug_dir is not None:
         _write_debug(debug_dir, name=path.stem, bgr=bgr, alpha=alpha, bg_centers=bg_centers)
@@ -995,7 +1266,7 @@ def process_file(
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Experimental transparency using a background screenshot")
-    parser.add_argument("--tokens-dir", type=str, default="processed/extracted-tokens")
+    parser.add_argument("--tokens-dir", type=str, default="processed")
     parser.add_argument("--team", type=str, default=None)
     parser.add_argument("--all", action="store_true")
 
@@ -1073,13 +1344,13 @@ def main() -> int:
     parser.add_argument(
         "--operative-template",
         type=str,
-        default="processed/extracted-tokens/hearthkyn-salvagers/c8-hx-charge.png",
+        default="config/defaults/template-operative-cutter.png",
         help="Template PNG for the operative token shape (uses its alpha).",
     )
     parser.add_argument(
         "--round-template",
         type=str,
-        default="processed/extracted-tokens/hearthkyn-salvagers/defence.png",
+        default="config/defaults/template-round-cutter.png",
         help="Template PNG for the round token shape (uses its alpha).",
     )
     parser.add_argument("--template-scale-band", type=float, default=0.22)
@@ -1213,7 +1484,7 @@ def main() -> int:
         raise SystemExit("Use only one of --team or --all")
 
     if args.team:
-        team_dirs = [tokens_dir / args.team]
+        team_dirs = [tokens_dir / args.team / "token"]
     else:
         team_dirs = list(_iter_team_dirs(tokens_dir))
 
@@ -1232,6 +1503,11 @@ def main() -> int:
         if not team_dir.exists() or not team_dir.is_dir():
             print(f"⚠ Team dir missing, skipping: {team_dir}")
             continue
+
+        # Create output directory for cut tokens (don't overwrite originals)
+        team_name = team_dir.parent.name  # Get team name from path
+        output_token_dir = team_dir.parent / "token-cut"
+        output_token_dir.mkdir(exist_ok=True, parents=True)
 
         if sample_path is not None and sample_path.exists():
             sample_img = cv2.imread(str(sample_path), cv2.IMREAD_COLOR)
@@ -1271,8 +1547,11 @@ def main() -> int:
 
         for png in _iter_token_pngs(team_dir):
             total += 1
+            # Save to token-cut folder to preserve originals
+            output_png = output_token_dir / png.name
             ok = process_file(
                 png,
+                output_path=output_png,
                 bg_centers=bg_centers,
                 threshold=int(args.threshold),
                 speck_min_area=int(args.speck_min_area),

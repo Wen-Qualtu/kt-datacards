@@ -348,7 +348,7 @@ def main():
         return
     
     # Find all card box JSON files
-    card_box_files = list(tts_objects_dir.glob('*Cards.json'))
+    card_box_files = list(tts_objects_dir.glob('*/*Cards.json'))
     
     if not card_box_files:
         print("No card box files found")
