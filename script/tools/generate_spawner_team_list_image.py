@@ -90,8 +90,7 @@ def generate_team_list_image():
     note_y = height - padding_bottom + 20
     note_lines = [
         "Click the 'Spawn Team' button above to select a team",
-        f"Enter team number (1-{len(team_names)}) or partial name (e.g., 'kasrkin', 'death')",
-        "Team box will spawn at your pointer location"
+        f"Enter team number (1-{len(team_names)}) or partial name (e.g., 'kasrkin', 'death')"
     ]
     
     for i, note_line in enumerate(note_lines):
