@@ -235,8 +235,10 @@ class TTSGenerator:
         team_display_name = team_name.replace('-', ' ').title()
         team_tag = f"_{team_name.replace('-', '_').title().replace('_', ' ')}"
         
-        # Get output file path
-        output_file = self.tts_output_dir / f"{team_display_name} Cards.json"
+        # Get output file path in team subfolder
+        team_output_dir = self.tts_output_dir / team_name
+        team_output_dir.mkdir(exist_ok=True)
+        output_file = team_output_dir / f"{team_display_name} Cards.json"
         
         # Initially use a placeholder timestamp (will be set after file is written)
         from datetime import datetime
@@ -282,7 +284,9 @@ class TTSGenerator:
             source_preview = default_preview
         
         if source_preview.exists():
-            dest_preview = self.tts_output_dir / f"{team_display_name} Cards.png"
+            team_output_dir = self.tts_output_dir / team_folder_name
+            team_output_dir.mkdir(exist_ok=True)
+            dest_preview = team_output_dir / f"{team_display_name} Cards.png"
             shutil.copy2(source_preview, dest_preview)
         else:
             self.logger.warning(f"No preview/icon image found for {team_folder_name}")

@@ -71,8 +71,8 @@ def generate_combined_metadata():
         team_name = entry['name']
         
         # Find the card box file and extract timestamp from LuaScriptState
-        # Files are stored as: tts_objects/{Team Name} Cards.json (not in subfolders)
-        card_box_file = tts_objects_dir / f"{team_name} Cards.json"
+        # Files are stored in team subfolders: tts_objects/{team_slug}/{Team Name} Cards.json
+        card_box_file = tts_objects_dir / team_slug / f"{team_name} Cards.json"
         cards_timestamp = extract_timestamp_from_json(card_box_file, 'lastCardUpdate')
         
         # Fallback to file modification time if extraction fails
