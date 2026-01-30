@@ -71,7 +71,8 @@ def generate_combined_metadata():
         team_name = entry['name']
         
         # Find the card box file and extract timestamp from LuaScriptState
-        card_box_file = tts_objects_dir / team_slug / f"{team_name} Cards.json"
+        # Files are stored as: tts_objects/{Team Name} Cards.json (not in subfolders)
+        card_box_file = tts_objects_dir / f"{team_name} Cards.json"
         cards_timestamp = extract_timestamp_from_json(card_box_file, 'lastCardUpdate')
         
         # Fallback to file modification time if extraction fails
@@ -86,7 +87,7 @@ def generate_combined_metadata():
             "cards_last_modified": cards_timestamp
         }
         
-        print(f"  ✓ {team_name}: cards={cards_timestamp[:16] if cards_timestamp else 'N/A'}")
+        print(f"  * {team_name}: cards={cards_timestamp[:16] if cards_timestamp else 'N/A'}")
     
     # Now add token information
     tts_teams_dir = Path('tts_objects')
@@ -118,7 +119,7 @@ def generate_combined_metadata():
             if team_slug in metadata_dict:
                 metadata_dict[team_slug]["tokens_url"] = tokens_url
                 metadata_dict[team_slug]["tokens_last_modified"] = tokens_timestamp
-                print(f"  ✓ {metadata_dict[team_slug]['name']}: tokens={tokens_timestamp[:16] if tokens_timestamp else 'N/A'}")
+                print(f"  * {metadata_dict[team_slug]['name']}: tokens={tokens_timestamp[:16] if tokens_timestamp else 'N/A'}")
             else:
                 # Token-only team (shouldn't happen but handle it)
                 team_name = team_slug.replace('-', ' ').title()
@@ -128,7 +129,7 @@ def generate_combined_metadata():
                     "tokens_url": tokens_url,
                     "tokens_last_modified": tokens_timestamp
                 }
-                print(f"  ✓ {team_name} (tokens only): {tokens_timestamp[:16] if tokens_timestamp else 'N/A'}")
+                print(f"  * {team_name} (tokens only): {tokens_timestamp[:16] if tokens_timestamp else 'N/A'}")
     
     # Convert dict to sorted list
     metadata = [metadata_dict[slug] for slug in sorted(metadata_dict.keys())]
@@ -140,7 +141,7 @@ def generate_combined_metadata():
     with open(output_file, 'w', encoding='utf-8') as f:
         json.dump(metadata, f, indent=2)
     
-    print(f"\n✓ Generated {output_file}")
+    print(f"\nGenerated {output_file}")
     print(f"  Total teams: {len(metadata)}")
     teams_with_tokens = sum(1 for t in metadata if "tokens_url" in t)
     print(f"  Teams with tokens: {teams_with_tokens}")
@@ -152,7 +153,7 @@ def main():
     generate_combined_metadata()
     
     print("\n" + "=" * 60)
-    print("✓ Metadata generation complete!")
+    print("Metadata generation complete!")
 
 
 if __name__ == '__main__':

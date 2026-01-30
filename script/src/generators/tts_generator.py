@@ -15,7 +15,8 @@ class TTSGenerator:
         self,
         output_v2_dir: Path = Path('output_v2'),
         tts_output_dir: Path = Path('tts_objects'),
-        config_dir: Path = Path('config')
+        config_dir: Path = Path('config'),
+        team_filter: list = None
     ):
         """
         Initialize TTSGenerator
@@ -24,10 +25,12 @@ class TTSGenerator:
             output_v2_dir: Directory containing datacards-urls.json
             tts_output_dir: Directory to save TTS objects
             config_dir: Configuration directory for assets
+            team_filter: Optional list of team names to regenerate (if None, regenerate all)
         """
         self.output_v2_dir = output_v2_dir
         self.tts_output_dir = tts_output_dir
         self.config_dir = config_dir
+        self.team_filter = team_filter
         self.logger = logging.getLogger(__name__)
 
     def generate_all_tts_objects(self) -> int:
@@ -71,15 +74,27 @@ class TTSGenerator:
         
         # Generate TTS object for each team
         count = 0
+        skipped = 0
         tts_object_entries = []  # Collect entries for datacards-urls.json
         
         for team_name, cards in teams.items():
+            # Skip if team filter is active and this team is not in the filter
+            if self.team_filter and team_name not in self.team_filter:
+                self.logger.debug(f"Skipping {team_name} (not in team filter)")
+                skipped += 1
+                continue
+                
             self.logger.info(f"Generating TTS object for {team_name}")
             texture_url = team_textures.get(team_name)
             mesh_url = team_meshes.get(team_name)
             
             # Get team display name from config
             team_display_name = self._get_team_display_name(team_name)
+            output_filename = f"{team_display_name} Cards.json"
+            
+            self._generate_team_tts_object(team_name, cards, lua_script, texture_url, mesh_url)
+            
+            # Add entry for this TTS object
             output_filename = f"{team_display_name} Cards.json"
             
             self._generate_team_tts_object(team_name, cards, lua_script, texture_url, mesh_url)
@@ -94,6 +109,9 @@ class TTSGenerator:
             })
             
             count += 1
+        if skipped > 0:
+            self.logger.info(f"Skipped {skipped} team(s) (no changes or filtered out)")
+        
         
         # Append TTS object entries to datacards-urls.json
         if tts_object_entries:
@@ -290,22 +308,39 @@ class TTSGenerator:
         self.logger.info(f"Added {len(tts_entries)} TTS object entries to datacards-urls.json")
     
     def _generate_tts_boxes_json(self, tts_entries: list):
-        """Generate a minimal tts-card-boxes.json with just the TTS box data"""
-        tts_boxes = []
+        """
+        Generate/update tts-card-boxes.json with TTS box data.
+        Merges with existing entries to preserve teams that weren't regenerated.
+        """
+        output_file = self.output_v2_dir / 'tts-card-boxes.json'
         
+        # Load existing tts-card-boxes.json if it exists
+        existing_boxes = {}
+        if output_file.exists():
+            try:
+                with open(output_file, 'r', encoding='utf-8') as f:
+                    existing_data = json.load(f)
+                    # Convert to dict keyed by team for easy lookup
+                    existing_boxes = {entry['team']: entry for entry in existing_data}
+            except Exception as e:
+                self.logger.warning(f"Could not load existing tts-card-boxes.json: {e}")
+        
+        # Update with new entries (overwrites existing entries for same teams)
         for entry in tts_entries:
-            tts_boxes.append({
+            existing_boxes[entry['team']] = {
                 'team': entry['team'],
                 'name': entry['name'],
                 'url': entry['url']
-            })
+            }
+        
+        # Convert back to list, sorted by team name
+        tts_boxes = sorted(existing_boxes.values(), key=lambda x: x['team'])
 
         # Write to tts-card-boxes.json
-        output_file = self.output_v2_dir / 'tts-card-boxes.json'
         with open(output_file, 'w', encoding='utf-8') as f:
             json.dump(tts_boxes, f, indent=2, ensure_ascii=False)
         
-        self.logger.info(f"Generated tts-card-boxes.json with {len(tts_boxes)} entries")
+        self.logger.info(f"Updated tts-card-boxes.json ({len(tts_boxes)} total teams, {len(tts_entries)} updated)")
     
     def _load_token_bag(self, team_name: str, faction: str) -> dict | None:
         """

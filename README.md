@@ -179,6 +179,23 @@ poetry run python script/run_pipeline.py --step all --team legionaries
 poetry run python script/run_pipeline.py --step all --team legionaries kommandos kasrkin
 ```
 
+### Generate Tokens
+
+To generate tokens for a team with `tokens_ready: true` in config:
+
+```bash
+# Generate tokens for one team
+poetry run python script/generate_team_tokens.py --team murderwings
+
+# Generate tokens for multiple teams
+poetry run python script/generate_team_tokens.py --team murderwings celestian-insidiant
+
+# Extract from PDF and generate tokens
+poetry run python script/generate_team_tokens.py --team murderwings --extract
+```
+
+**See [docs/token-generation-workflow.md](docs/token-generation-workflow.md) for the complete token workflow.**
+
 ## 📁 Project Structure
 
 ```
