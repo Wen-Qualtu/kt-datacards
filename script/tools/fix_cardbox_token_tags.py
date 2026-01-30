@@ -3,8 +3,8 @@
 Fix KTUI tags for token bags and tokens inside main card box files.
 
 Rules:
-- Tokens with names ending in "marker": ["KTUIToken", "KTUIMarker"]
-- All other tokens: ["KTUIStackable", "KTUIToken"]
+- Tokens with type="marker": ["KTUIToken", "KTUIMarker"]
+- Tokens with type="token": ["KTUIStackable", "KTUIToken"]
 - Bags/dispensers should NOT have KTUI tags
 """
 
@@ -15,19 +15,19 @@ from typing import Dict, List
 
 
 def load_team_config() -> Dict:
-    """Load team configuration to get token shapes."""
+    """Load team configuration to get token types."""
     config_path = Path("config/team-config.yaml")
     with open(config_path, 'r', encoding='utf-8') as f:
         return yaml.safe_load(f)
 
 
-def get_token_shapes(team_config: Dict) -> Dict[str, Dict[str, str]]:
-    """Extract token shapes for all teams from config.
+def get_token_types(team_config: Dict) -> Dict[str, Dict[str, str]]:
+    """Extract token types for all teams from config.
     
     Returns:
-        Dict mapping team slug to dict of token_name: shape
+        Dict mapping team slug to dict of token_name: type
     """
-    token_shapes = {}
+    token_types = {}
     
     teams = team_config.get('teams', {})
     for team_slug, team_info in teams.items():
@@ -39,26 +39,26 @@ def get_token_shapes(team_config: Dict) -> Dict[str, Dict[str, str]]:
         team_tokens = {}
         for token in tokens:
             token_name = token.get('name', '')
-            shape = token.get('shape', 'round')  # default to round if not specified
+            token_type = token.get('type', 'token')  # default to token if not specified
             if token_name:
-                team_tokens[token_name] = shape
+                team_tokens[token_name] = token_type
         
-        token_shapes[team_slug] = team_tokens
+        token_types[team_slug] = team_tokens
     
-    return token_shapes
+    return token_types
 
 
-def get_tags_for_token_name(token_name: str) -> List[str]:
-    """Get the correct KTUI tags based on the token name.
+def get_tags_for_token_type(token_type: str) -> List[str]:
+    """Get the correct KTUI tags based on token type from config.
     
     Args:
-        token_name: The full token name (e.g., "Medic", "Vantage Point Marker")
+        token_type: The token type from config ('marker' or 'token')
     
     Returns:
         List of KTUI tag strings
     """
-    # Check if the name ends with "marker" (case-insensitive)
-    if token_name.lower().endswith('marker'):
+    # Marker tokens get marker tags, all others get stackable token tags
+    if token_type == 'marker':
         return ["KTUIToken", "KTUIMarker"]
     else:
         return ["KTUIStackable", "KTUIToken"]
@@ -69,12 +69,11 @@ def normalize_token_name(name: str) -> str:
     return name.lower().replace(' ', '-').replace('_', '-')
 
 
-def fix_token_bag_in_cardbox(cardbox_path: Path, token_shapes: Dict[str, str]) -> bool:
-    """Fix KTUI tags for token bag inside a card box file.
+def fix_token_bag_in_cardbox(cardbox_path: Path) -> bool:
+    """Fix KTUI tags for token bag inside a card box file - sets all to default stackable tags.
     
     Args:
         cardbox_path: Path to the card box JSON file
-        token_shapes: Dict mapping token names to shapes for this team
     
     Returns:
         True if file was modified, False otherwise
@@ -110,8 +109,8 @@ def fix_token_bag_in_cardbox(cardbox_path: Path, token_shapes: Dict[str, str]) -
                 if not bag_nickname:
                     continue
                 
-                # Get correct tags based on the token name
-                correct_tags = get_tags_for_token_name(bag_nickname)
+                # Set all tokens to default stackable tags
+                correct_tags = ['KTUIStackable', 'KTUIToken']
                 
                 # Remove KTUI tags from the infinite bag itself
                 current_bag_tags = infinite_bag.get('Tags', [])
@@ -151,35 +150,24 @@ def fix_token_bag_in_cardbox(cardbox_path: Path, token_shapes: Dict[str, str]) -
 
 
 def main():
-    """Main function to fix token tags in card box files."""
-    print("Loading team configuration...")
-    team_config = load_team_config()
-    token_shapes = get_token_shapes(team_config)
-    
-    print(f"\nFound token shapes for {len(token_shapes)} teams")
-    
+    """Main function to fix token tags in card box files - sets all to default stackable tags."""
     # Find all card box files
     tts_objects_dir = Path("tts_objects")
     cardbox_files = list(tts_objects_dir.glob("*/*Cards.json"))
     # Filter to only team subfolders (exclude root level if any exist)
     cardbox_files = [f for f in cardbox_files if f.parent.name != 'tts_objects']
     
-    print(f"\nProcessing {len(cardbox_files)} card box files...")
+    print(f"Processing {len(cardbox_files)} card box files...")
+    print("Setting all tokens to default stackable tags: ['KTUIStackable', 'KTUIToken']\n")
     
     modified_count = 0
     for cardbox_path in sorted(cardbox_files):
         team_slug = cardbox_path.parent.name
         
-        print(f"\n{team_slug}:")
-        
-        # Get token shapes for this team
-        team_tokens = token_shapes.get(team_slug, {})
-        if not team_tokens:
-            print(f"  ✓ No tokens configured for {team_slug}")
-            continue
+        print(f"{team_slug}:")
         
         # Fix tags
-        was_modified = fix_token_bag_in_cardbox(cardbox_path, team_tokens)
+        was_modified = fix_token_bag_in_cardbox(cardbox_path)
         if was_modified:
             modified_count += 1
             print(f"  ✓ Modified {cardbox_path.name}")

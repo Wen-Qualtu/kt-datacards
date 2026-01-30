@@ -3,8 +3,8 @@
 Fix KTUI tags for tokens in TTS token bag files.
 
 Rules:
-- Tokens with names ending in "marker": ["KTUIToken", "KTUIMarker"]
-- All other tokens: ["KTUIStackable", "KTUIToken"]
+- Tokens with type="marker": ["KTUIToken", "KTUIMarker"]
+- Tokens with type="token": ["KTUIStackable", "KTUIToken"]
 """
 
 import json
@@ -14,19 +14,19 @@ from typing import Dict, List
 
 
 def load_team_config() -> Dict:
-    """Load team configuration to get token shapes."""
+    """Load team configuration to get token types."""
     config_path = Path("config/team-config.yaml")
     with open(config_path, 'r', encoding='utf-8') as f:
         return yaml.safe_load(f)
 
 
-def get_token_shapes(team_config: Dict) -> Dict[str, Dict[str, str]]:
-    """Extract token shapes for all teams from config.
+def get_token_types(team_config: Dict) -> Dict[str, Dict[str, str]]:
+    """Extract token types for all teams from config.
     
     Returns:
-        Dict mapping team slug to dict of token_name: shape
+        Dict mapping team slug to dict of token_name: type
     """
-    token_shapes = {}
+    token_types = {}
     
     teams = team_config.get('teams', {})
     for team_slug, team_info in teams.items():
@@ -38,26 +38,25 @@ def get_token_shapes(team_config: Dict) -> Dict[str, Dict[str, str]]:
         team_tokens = {}
         for token in tokens:
             token_name = token.get('name', '')
-            shape = token.get('shape', 'round')  # default to round if not specified
+            token_type = token.get('type', 'token')  # default to token if not specified
             if token_name:
-                team_tokens[token_name] = shape
+                team_tokens[token_name] = token_type
         
-        token_shapes[team_slug] = team_tokens
+        token_types[team_slug] = team_tokens
     
-    return token_shapes
+    return token_types
 
 
-def get_tags_for_token_name(token_name: str) -> List[str]:
-    """Get the correct KTUI tags based on the token name.
+def get_tags_for_token_type(token_type: str) -> List[str]:
+    """Get the correct KTUI tags based on the token type from config.
     
     Args:
-        token_name: The full token name (e.g., "Medic", "Vantage Point Marker")
+        token_type: The token type from config ('marker' or 'token')
     
     Returns:
         List of KTUI tag strings
     """
-    # Check if the name ends with "marker" (case-insensitive)
-    if token_name.lower().endswith('marker'):
+    if token_type == 'marker':
         return ["KTUIToken", "KTUIMarker"]
     else:
         return ["KTUIStackable", "KTUIToken"]
@@ -68,12 +67,12 @@ def normalize_token_name(name: str) -> str:
     return name.lower().replace(' ', '-').replace('_', '-')
 
 
-def fix_token_tags(tokenbag_path: Path, token_shapes: Dict[str, str]) -> bool:
+def fix_token_tags(tokenbag_path: Path, token_types: Dict[str, str]) -> bool:
     """Fix KTUI tags in a token bag file.
     
     Args:
         tokenbag_path: Path to the token bag JSON file
-        token_shapes: Dict mapping token names to shapes for this team
+        token_types: Dict mapping token names to types for this team
     
     Returns:
         True if file was modified, False otherwise
@@ -98,8 +97,22 @@ def fix_token_tags(tokenbag_path: Path, token_shapes: Dict[str, str]) -> bool:
         if not nickname:
             continue
         
-        # Get correct tags based on the token name
-        correct_tags = get_tags_for_token_name(nickname)
+        # Normalize name for lookup
+        normalized_name = normalize_token_name(nickname)
+        
+        # Find matching token type from config
+        token_type = None
+        for config_name, config_type in token_types.items():
+            if normalize_token_name(config_name) == normalized_name:
+                token_type = config_type
+                break
+        
+        if not token_type:
+            # Token not in config, skip
+            continue
+        
+        # Get correct tags based on the token type
+        correct_tags = get_tags_for_token_type(token_type)
         
         # Remove KTUI tags from the infinite bag itself (bags should not have these tags)
         current_bag_tags = infinite_bag.get('Tags', [])
@@ -139,11 +152,11 @@ def fix_token_tags(tokenbag_path: Path, token_shapes: Dict[str, str]) -> bool:
 
 def main():
     """Main function to fix token tags across all teams."""
-    print("Loading team configuration...")
+    print("Loading team configuration...\n")
     team_config = load_team_config()
-    token_shapes = get_token_shapes(team_config)
+    token_types_by_team = get_token_types(team_config)
     
-    print(f"\nFound token shapes for {len(token_shapes)} teams")
+    print(f"Found token types for {len(token_types_by_team)} teams\n")
     
     # Find all token bag files
     tts_objects_dir = Path("tts_objects")
@@ -157,8 +170,8 @@ def main():
         
         print(f"\n{team_slug}:")
         
-        # Get token shapes for this team
-        team_tokens = token_shapes.get(team_slug, {})
+        # Get token types for this team
+        team_tokens = token_types_by_team.get(team_slug, {})
         if not team_tokens:
             print(f"  Warning: No token configuration found for {team_slug}")
             continue
