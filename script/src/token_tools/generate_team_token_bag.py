@@ -98,6 +98,61 @@ class TeamTokenBagGenerator:
         """Get faction for a team from config."""
         team_data = self.team_config.get(team_name, {})
         return team_data.get('faction', 'unknown')
+    
+    def get_token_type(self, team_name: str, token_name: str) -> str:
+        """Get token type from team config ('token', 'marker', or 'custom')."""
+        team_data = self.team_config.get(team_name, {})
+        tokens = team_data.get('tokens', [])
+        
+        # Normalize token name for comparison
+        token_name_lower = token_name.strip().lower()
+        
+        for token in tokens:
+            config_name = token.get('name', '').strip().lower()
+            if config_name == token_name_lower:
+                return token.get('type', 'token')
+        
+        # Default to 'token' if not found
+        return 'token'
+    
+    def get_custom_tags(self, team_name: str, token_name: str) -> list:
+        """Get custom tags from team config for tokens with type='custom'."""
+        team_data = self.team_config.get(team_name, {})
+        tokens = team_data.get('tokens', [])
+        
+        # Normalize token name for comparison
+        token_name_lower = token_name.strip().lower()
+        
+        for token in tokens:
+            config_name = token.get('name', '').strip().lower()
+            if config_name == token_name_lower:
+                custom_tags = token.get('tags', [])
+                return custom_tags if isinstance(custom_tags, list) else []
+        
+        return []
+    
+    def get_tags_for_token(self, team_name: str, token_name: str) -> list:
+        """Get correct KTUI tags based on token type from config.
+        
+        Args:
+            team_name: Team slug
+            token_name: Token name
+        
+        Returns:
+            List of KTUI tag strings
+        """
+        token_type = self.get_token_type(team_name, token_name)
+        
+        if token_type == 'marker':
+            return ['KTUIToken', 'KTUIMarker']
+        elif token_type == 'custom':
+            base_tags = ['KTUIToken']
+            custom_tags = self.get_custom_tags(team_name, token_name)
+            if custom_tags:
+                base_tags.extend(custom_tags)
+            return base_tags
+        else:  # 'token' or default
+            return ['KTUIStackable', 'KTUIToken']
 
     def generate_guid(self, seed: str) -> str:
         """Generate a deterministic 6-character hexadecimal GUID from a seed."""
