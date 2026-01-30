@@ -86,10 +86,6 @@ class TTSTokenGenerator:
     # invisible after the texture loads. We therefore generate an *opaque* variant
     # (flattened onto a solid background) for the bag mesh only.
     # NOTE: This background must be bright enough to be visible on dark tables.
-    DISPENSER_BG_BGR = (96, 96, 96)
-    DISPENSER_BORDER_OUTER_BGR = (245, 245, 245)
-    DISPENSER_BORDER_INNER_BGR = (20, 20, 20)
-    DISPENSER_BORDER_PX = 10
 
     # Scale overrides for specific tokens that are physically larger on the battlefield.
     # Format: {team_name: {token_safe_name: scale_multiplier}}
@@ -103,7 +99,7 @@ class TTSTokenGenerator:
     def _copy_token_mesh(self, output_token_dir: Path, team_name: str, faction: str, token_name: str) -> str:
         """Copy token mesh to output_v2/{faction}/{team}/tts/token/ and return URL.
         
-        Creates individual mesh file per token for proper dispenser rendering.
+        Creates individual mesh file per token for infinite bag rendering.
         Always overwrites to ensure updates are applied.
         """
         import shutil
@@ -125,28 +121,6 @@ class TTSTokenGenerator:
         bg = np.array(background_bgr, dtype=np.float32).reshape(1, 1, 3)
         out = (src * alpha) + (bg * (1.0 - alpha))
         return np.clip(out, 0, 255).astype(np.uint8)
-
-    def _add_dispenser_border(self, bgr: np.ndarray) -> np.ndarray:
-        if bgr is None or bgr.ndim != 3 or bgr.shape[2] != 3:
-            raise ValueError(f"Expected BGR image, got shape {None if bgr is None else bgr.shape}")
-        h, w = bgr.shape[:2]
-        thickness = int(self.DISPENSER_BORDER_PX)
-        thickness = max(2, min(thickness, min(h, w) // 10))
-
-        out = bgr.copy()
-
-        # High-contrast frame so the placeholder stays visible even when the
-        # token artwork is small or mostly dark.
-        cv2.rectangle(out, (0, 0), (w - 1, h - 1), self.DISPENSER_BORDER_OUTER_BGR, thickness=thickness)
-        inner_thickness = max(1, thickness // 2)
-        cv2.rectangle(
-            out,
-            (thickness, thickness),
-            (w - 1 - thickness, h - 1 - thickness),
-            self.DISPENSER_BORDER_INNER_BGR,
-            thickness=inner_thickness,
-        )
-        return out
 
     def _load_rgba(self, path: Path):
         im = cv2.imread(str(path), cv2.IMREAD_UNCHANGED)
@@ -461,7 +435,6 @@ class TTSTokenGenerator:
         token_obj: Dict,
         token_image_url: str,
         mesh_url: str,
-        dispenser_image_url: str = "",
         shape: str = "operative",
     ) -> Dict:
         """Generate an infinite bag using Custom_Model_Infinite_Bag."""
@@ -687,26 +660,6 @@ class TTSTokenGenerator:
             )
             mesh_url = self._copy_token_mesh(output_token_dir, team_name, faction, clean_name)
 
-            # Create dispenser image (flatten alpha and add border for visibility)
-            dispenser_image_url = ""
-            if has_image:
-                dispenser_dest = output_token_dir / f"{team_name}-{clean_name}-dispenser.png"
-                if overwrite_assets or not dispenser_dest.exists():
-                    # Load the padded token image
-                    if padded is None:
-                        padded = self._load_rgba(dest_image) if dest_image.exists() else None
-                    
-                    if padded is not None:
-                        # Flatten alpha to opaque background
-                        bgr = self._flatten_alpha_to_bgr(padded, background_bgr=self.DISPENSER_BG_BGR)
-                        # Add visible border frame
-                        bgr_with_border = self._add_dispenser_border(bgr)
-                        # Save as PNG
-                        if not cv2.imwrite(str(dispenser_dest), bgr_with_border):
-                            raise IOError(f"Failed to write dispenser image: {dispenser_dest}")
-                
-                dispenser_image_url = f"{self.GITHUB_BASE}/output_v2/{faction}/{team_name}/tts/token/{dispenser_dest.name}"
-
             # Calculate scale for custom tokens based on actual image dimensions
             # Custom tokens are NOT rescaled - their pixel size determines TTS scale
             scale_override = None
@@ -758,7 +711,6 @@ class TTSTokenGenerator:
                 token_obj=token_obj,
                 token_image_url=token_texture_url,
                 mesh_url=mesh_url,
-                dispenser_image_url=dispenser_image_url,
                 shape=shape,
             )
 

@@ -4,7 +4,7 @@ Generate complete token workflow for Kill Team datacards.
 This script handles the full token generation pipeline:
 1. Extract tokens from PDFs (if --extract flag)
 2. Process tokens (background removal, etc.)
-3. Generate TTS token assets (.png, .obj, -dispenser.png)
+3. Generate TTS token assets (.png, .obj)
 4. Generate individual token infinite bags (JSON)
 5. Generate master token bag with Lua scripts
 6. Embed token bag in card box
@@ -114,7 +114,7 @@ def process_tokens(team_slug):
 
 
 def generate_token_assets(team_slug, config):
-    """Generate TTS token assets - PNG, OBJ, dispenser (Step 3)"""
+    """Generate TTS token assets - PNG and OBJ (Step 3)"""
     print(f"\n{'='*60}")
     print(f"STEP 3: Generating TTS token assets")
     print(f"{'='*60}")
@@ -158,11 +158,6 @@ def generate_token_assets(team_slug, config):
         dest_obj = output_dir / f'{team_slug}-{token_slug}.obj'
         shutil.copy2(template_obj, dest_obj)
         print(f"  ✓ Created {dest_obj.name}")
-        
-        # Create dispenser PNG
-        dest_dispenser = output_dir / f'{team_slug}-{token_slug}-dispenser.png'
-        shutil.copy2(src_png, dest_dispenser)
-        print(f"  ✓ Created {dest_dispenser.name}")
     
     print("✅ Token assets generated")
     return True
