@@ -89,9 +89,11 @@ teams:
     - brood-brother
     tokens_ready: true
     tokens:
-    - name: Crissfire
-      shape: custom
-      type: token
+    - name: Crossfire
+      shape: operative
+      type: custom
+      tags:
+      - Stackable
     - name: Devoted
       shape: operative
       type: token
@@ -113,12 +115,15 @@ teams:
     - name: Jam
       shape: operative
       type: token
-    - name: Jam
-      shape: Explosives
+    - name: Explosives
+      shape: round
       type: marker
     - name: Cult Talisman
       shape: round
       type: token
+    - name: explosives
+      shape: ''
+      type: ''
   canoptek-circle:
     canonical_name: Canoptek Circle
     faction: xenos
@@ -201,29 +206,23 @@ teams:
     aliases: []
     tokens_ready: true
     tokens:
-    - name: Avenge The Prince
+    - name: erudite hunter
       shape: operative
       type: token
-    - name: Back To The Ship
+    - name: faolchs bond
       shape: operative
       type: token
-    - name: Cyanobolt Stinger
+    - name: mistfield
       shape: operative
       type: token
-    - name: Get The Loot
+    - name: one step ahead
       shape: operative
       type: token
-    - name: Last Stand
-      shape: operative
+    - name: runes of guidance
+      shape: round
       type: token
-    - name: Soulburst
-      shape: operative
-      type: token
-    - name: Webway Gate
-      shape: operative
-      type: token
-    - name: White Jade Rune
-      shape: operative
+    - name: warding shield
+      shape: round
       type: token
   death-korps:
     canonical_name: Death Korps
@@ -237,22 +236,22 @@ teams:
       shape: operative
       type: token
     - name: Dig In
-      shape: operative
+      shape: round
       type: token
     - name: Fix Bayonets
-      shape: operative
+      shape: round
       type: token
     - name: Gas
-      shape: operative
+      shape: round
       type: marker
     - name: Medic
       shape: operative
       type: token
     - name: Mine
-      shape: operative
+      shape: round
       type: marker
     - name: Move Move Move
-      shape: operative
+      shape: round
       type: token
     - name: Remote Detonator
       shape: operative
@@ -261,7 +260,7 @@ teams:
       shape: operative
       type: token
     - name: Take Aim
-      shape: operative
+      shape: round
       type: token
   deathwatch:
     canonical_name: Deathwatch
@@ -270,19 +269,13 @@ teams:
     aliases: []
     tokens_ready: true
     tokens:
-    - name: Advanced Omni Scrambler
-      shape: operative
-      type: token
     - name: Ammunition Reserve
-      shape: operative
+      shape: round
       type: token
     - name: Digital Weapons
-      shape: operative
+      shape: round
       type: token
     - name: Melta Bomb
-      shape: operative
-      type: token
-    - name: Scrutavore Servo Thrall
       shape: operative
       type: token
     - name: Strategic Command Firefight Ploy
@@ -293,6 +286,12 @@ teams:
       type: token
     - name: Vigilant Marksman
       shape: operative
+      type: token
+    - name: advanced omni-scrambler
+      shape: operative
+      type: token
+    - name: scrutavore servo-thrall
+      shape: round
       type: token
   elucidian-starstriders:
     canonical_name: Elucidian Starstriders
@@ -322,9 +321,6 @@ teams:
     - name: Medic
       shape: operative
       type: token
-    - name: Nuncio Aquila
-      shape: operative
-      type: token
     - name: Spot
       shape: operative
       type: token
@@ -334,6 +330,9 @@ teams:
     - name: Veriscant
       shape: operative
       type: token
+    - name: nuncio-aquila
+      shape: round
+      type: marker
   farstalker-kinband:
     canonical_name: Farstalker Kinband
     faction: xenos
@@ -381,10 +380,10 @@ teams:
     tokens_ready: true
     tokens:
     - name: Brass Adornments
-      shape: operative
+      shape: round
       type: token
     - name: Chaos Sigil
-      shape: operative
+      shape: round
       type: token
     - name: Frenzy
       shape: operative
@@ -393,7 +392,7 @@ teams:
       shape: operative
       type: token
     - name: Gore Marks
-      shape: operative
+      shape: round
       type: token
     - name: Mantle Of Darkness
       shape: operative
@@ -418,10 +417,10 @@ teams:
       shape: operative
       type: token
     - name: Bloody Cadaver
-      shape: operative
+      shape: round
       type: marker
     - name: Chaos Sigil
-      shape: operative
+      shape: round
       type: marker
     - name: Claim Skull
       shape: operative
@@ -433,14 +432,14 @@ teams:
       shape: operative
       type: token
     - name: Gory Totem
-      shape: operative
+      shape: round
       type: marker
     - name: Impending Apotheosis
       shape: operative
       type: token
     - name: Wrist Chains
-      shape: operative
-      type: marker
+      shape: round
+      type: token
   hand-of-the-archon:
     canonical_name: Hand of the Archon
     faction: xenos
@@ -448,6 +447,9 @@ teams:
     aliases: []
     tokens_ready: true
     tokens:
+    - name: Pain
+      shape: round
+      type: operative
     - name: Brutal Display
       shape: operative
       type: token
@@ -464,13 +466,13 @@ teams:
       shape: operative
       type: token
     - name: Refined Poison
-      shape: operative
+      shape: round
       type: token
     - name: Sadistic Competition
-      shape: operative
+      shape: round
       type: token
     - name: Toxin Coating
-      shape: operative
+      shape: round
       type: token
   hearthkyn-salvagers:
     canonical_name: Hearthkyn Salvagers
@@ -490,8 +492,10 @@ teams:
       shape: round
       type: marker
     - name: Grudge
-      shape: operative
-      type: marker
+      shape: round
+      type: custom
+      tags:
+      - KTUIStackable
     - name: Medic
       shape: operative
       type: token
@@ -525,22 +529,19 @@ teams:
     tokens_ready: true
     tokens:
     - name: Fallen Kin
-      shape: operative
+      shape: round
       type: marker
     - name: Firestorm Bolt Shells
-      shape: operative
+      shape: round
       type: token
-    - name: Hy Pex Mine
-      shape: operative
-      type: marker
     - name: Minefield
-      shape: operative
+      shape: round
       type: marker
     - name: Outright Conviction
       shape: operative
       type: token
     - name: Stabilised Bolt Shells
-      shape: operative
+      shape: round
       type: token
     - name: Throwing Hatchet
       shape: operative
@@ -548,6 +549,9 @@ teams:
     - name: Throwing Plasma Knife
       shape: operative
       type: token
+    - name: hy-pex mine
+      shape: round
+      type: marker
   hierotek-circle:
     canonical_name: Hierotek Circle
     faction: xenos
@@ -563,36 +567,36 @@ teams:
       shape: operative
       type: token
     - name: Countertemporal Nanomine
-      shape: operative
+      shape: round
       type: marker
     - name: Deathmarked
       shape: operative
       type: token
     - name: Despair
-      shape: operative
+      shape: round
       type: marker
     - name: Madness
       shape: operative
       type: token
     - name: Magnification Conduits
-      shape: operative
-      type: token
-    - name: Multi Dimensional Vision
-      shape: operative
+      shape: round
       type: token
     - name: Nightmare Shroud
       shape: operative
       type: token
     - name: Phase Shifter
-      shape: operative
+      shape: round
       type: token
     - name: Reanimation
-      shape: operative
+      shape: round
       type: marker
     - name: Reinforce Metal
       shape: operative
       type: token
     - name: Timesplinter
+      shape: operative
+      type: token
+    - name: multi- dimensional vision
       shape: operative
       type: token
   hunter-clade:
@@ -610,13 +614,13 @@ teams:
     tokens_ready: true
     tokens:
     - name: Attack Order
-      shape: operative
+      shape: round
       type: marker
     - name: Breach
       shape: round
       type: marker
     - name: Defence Order
-      shape: operative
+      shape: round
       type: marker
     - name: Demolition Charge
       shape: operative
@@ -626,22 +630,22 @@ teams:
       type: token
     - name: Gheistskull Detonator
       shape: operative
-      type: marker
+      type: token
     - name: Lock It Down
       shape: operative
       type: token
     - name: Slugs
-      shape: operative
+      shape: round
       type: token
     - name: Spot
       shape: operative
       type: token
     - name: System Override Device
-      shape: operative
+      shape: round
       type: token
     - name: Weld Shut
-      shape: operative
-      type: token
+      shape: round
+      type: marker
   inquisitorial-agents:
     canonical_name: Inquisitorial Agents
     faction: imperium
@@ -663,7 +667,7 @@ teams:
       shape: operative
       type: token
     - name: Inquisitorial Rosette
-      shape: operative
+      shape: round
       type: token
     - name: Medic
       shape: operative
@@ -677,15 +681,15 @@ teams:
     - name: Sanctification
       shape: operative
       type: token
-    - name: Servo Skull
-      shape: operative
-      type: token
-    - name: Tome Skull
-      shape: operative
-      type: token
     - name: Weathered
       shape: operative
       type: token
+    - name: servo-skull
+      shape: round
+      type: token
+    - name: tome-skull
+      shape: round
+      type: marker
   kasrkin:
     canonical_name: Kasrkin
     faction: imperium
@@ -697,13 +701,13 @@ teams:
       shape: operative
       type: token
     - name: Clearance Sweep
-      shape: operative
+      shape: round
       type: marker
     - name: Medic
-      shape: operative
+      shape: round
       type: token
     - name: Melta Mine
-      shape: operative
+      shape: round
       type: marker
     - name: Relics Of Cadia
       shape: operative
@@ -720,22 +724,22 @@ teams:
     tokens_ready: true
     tokens:
     - name: Breach
-      shape: operative
+      shape: round
       type: marker
     - name: Dynamite
-      shape: operative
+      shape: round
       type: token
     - name: Explosives
       shape: operative
       type: token
     - name: Harpoon
-      shape: operative
+      shape: round
       type: token
-    - name: Smoke Grenade
-      shape: operative
+    - name: Smoke GrenadeW
+      shape: round
       type: token
     - name: Stun Grenade
-      shape: operative
+      shape: round
       type: token
   legionaries:
     canonical_name: Legionaries
@@ -746,10 +750,10 @@ teams:
     tokens_ready: true
     tokens:
     - name: Grisly
-      shape: operative
+      shape: round
       type: marker
     - name: Mark Of Chaos Khorne
-      shape: operative
+      shape: round
       type: token
     - name: Mark Of Chaos Nurgle
       shape: operative
@@ -764,7 +768,7 @@ teams:
       shape: operative
       type: token
     - name: Tainted Rounds
-      shape: operative
+      shape: round
       type: token
     - name: Unleash Daemon
       shape: operative
@@ -796,17 +800,22 @@ teams:
       shape: operative
       type: token
     - name: Shadow Portal
-      shape: operative
+      shape: round
       type: marker
     - name: Soul Gem
-      shape: operative
-      type: token
-    - name: Soul_Harvest_2
-      shape: operative
+      shape: round
       type: token
     - name: Weave Darkness
-      shape: operative
+      shape: round
       type: marker
+    - name: Shadow Glyph
+      shape: round
+      type: token
+    - name: soul harvest
+      shape: round
+      type: custom
+      tags:
+      - KTUIStackable
   murderwings:
     canonical_name: Murderwings
     faction: chaos
@@ -859,6 +868,9 @@ teams:
     - name: Terrorchem
       shape: operative
       type: token
+    - name: Prescience
+      shape: round
+      type: custom
   novitiates:
     canonical_name: Novitiates
     faction: imperium
@@ -867,19 +879,10 @@ teams:
     - novitiate
     tokens_ready: true
     tokens:
-    - name: Auto Broadcaster
-      shape: operative
-      type: token
-    - name: Auto Chastisers
-      shape: operative
-      type: token
     - name: Blaze
       shape: operative
       type: token
     - name: Divine Acquisition
-      shape: operative
-      type: token
-    - name: Faith_2
       shape: operative
       type: token
     - name: Icon Of Faith
@@ -891,6 +894,17 @@ teams:
     - name: Whip Into Frenzy
       shape: operative
       type: token
+    - name: auto- chastisers
+      shape: round
+      type: token
+    - name: auto-broadcaster
+      shape: round
+      type: marker
+    - name: faith
+      shape: round
+      type: custom
+      tags:
+      - KTUIStackable
   pathfinders:
     canonical_name: Pathfinders
     faction: xenos
@@ -899,10 +913,15 @@ teams:
     - pathfinder
     tokens_ready: true
     tokens:
-    - name: Fusion Grenade
+    - name: Markerlight
       shape: operative
-      type: token
-    - name: High Intensity Markerlight
+      type: custom
+      tags:
+      - KTUIStackable
+    - name: Saviour Protocols
+      shape: operative
+      type: custom
+    - name: Fusion Grenade
       shape: operative
       type: token
     - name: Kauyon
@@ -914,11 +933,8 @@ teams:
     - name: Montka
       shape: operative
       type: token
-    - name: Multi Dimensional
-      shape: operative
-      type: token
     - name: Orbital Survey Uplink
-      shape: operative
+      shape: round
       type: token
     - name: Photon Grenade
       shape: operative
@@ -927,6 +943,12 @@ teams:
       shape: operative
       type: token
     - name: Target Analysis Optic
+      shape: round
+      type: token
+    - name: high- intensity markerlight
+      shape: round
+      type: token
+    - name: multi- dimensional
       shape: operative
       type: token
   phobos-strike-team:
@@ -941,30 +963,30 @@ teams:
       shape: operative
       type: token
     - name: Explosives
-      shape: operative
+      shape: round
       type: marker
     - name: Haywire Mine
-      shape: operative
+      shape: round
       type: marker
     - name: Medic
       shape: operative
       type: token
-    - name: Omni Scrambler
-      shape: operative
-      type: token
     - name: Purity Seals
-      shape: operative
+      shape: round
       type: token
     - name: Remote Detonator
       shape: operative
       type: token
     - name: Special Issue Ammunition
-      shape: operative
+      shape: round
       type: token
     - name: Tactical Advantage
       shape: operative
       type: token
     - name: Vanguard
+      shape: operative
+      type: token
+    - name: omni- scrambler
       shape: operative
       type: token
   plague-marines:
@@ -991,13 +1013,13 @@ teams:
       shape: operative
       type: token
     - name: Lucky Round
-      shape: operative
+      shape: round
       type: token
     - name: Optics
       shape: operative
       type: token
     - name: Purloined Rations
-      shape: operative
+      shape: round
       type: token
     - name: Scarper
       shape: operative
@@ -1009,8 +1031,8 @@ teams:
       shape: operative
       type: token
     - name: Tripwire
-      shape: operative
-      type: token
+      shape: round
+      type: marker
   raveners:
     canonical_name: Raveners
     faction: xenos
@@ -1019,11 +1041,14 @@ teams:
     - ravener
     tokens_ready: true
     tokens:
+    - name: Tunnel
+      shape: round
+      type: custom
     - name: Distend Dorsal Sac
       shape: operative
       type: token
     - name: Heightened Senses
-      shape: operative
+      shape: round
       type: token
     - name: Poison
       shape: operative
@@ -1059,7 +1084,7 @@ teams:
       shape: operative
       type: token
     - name: Imperial Cult Symbols
-      shape: operative
+      shape: round
       type: token
     - name: Miracle
       shape: operative
@@ -1068,10 +1093,10 @@ teams:
       shape: operative
       type: token
     - name: Purity Seals
-      shape: operative
+      shape: round
       type: token
     - name: Sanctification Orbs
-      shape: operative
+      shape: round
       type: token
     - name: Wreathe In Fire
       shape: operative
@@ -1088,8 +1113,8 @@ teams:
       shape: operative
       type: token
     - name: Booby Trap
-      shape: operative
-      type: token
+      shape: round
+      type: marker
     - name: Designate Target
       shape: operative
       type: token
@@ -1097,17 +1122,17 @@ teams:
       shape: operative
       type: token
     - name: Smoke Grenade
-      shape: operative
+      shape: round
       type: token
     - name: Stun Grenade
-      shape: operative
+      shape: round
       type: token
     - name: Track Enemy
       shape: operative
       type: token
     - name: Trip Alarm
-      shape: operative
-      type: token
+      shape: round
+      type: marker
   tempestus-aquilons:
     canonical_name: Tempestus Aquilons
     faction: imperium
@@ -1120,7 +1145,7 @@ teams:
       shape: operative
       type: token
     - name: Drop
-      shape: operative
+      shape: round
       type: marker
     - name: Drop And Secure
       shape: operative
@@ -1150,7 +1175,7 @@ teams:
       type: token
     - name: Skytorch
       shape: round
-      type: marker
+      type: custom
   void-dancer-troupe:
     canonical_name: Void Dancer Troupe
     faction: xenos
@@ -1181,8 +1206,8 @@ teams:
       shape: operative
       type: token
     - name: Haywire Mine
-      shape: operative
-      type: token
+      shape: round
+      type: marker
     - name: Hunters Senses
       shape: operative
       type: token
@@ -1196,7 +1221,7 @@ teams:
       shape: operative
       type: token
     - name: Storm
-      shape: operative
+      shape: round
       type: marker
     - name: Wolfteeth Necklaces
       shape: operative
@@ -1209,22 +1234,22 @@ teams:
     tokens_ready: true
     tokens:
     - name: Breach
-      shape: operative
+      shape: round
       type: marker
     - name: Demolition
-      shape: operative
+      shape: round
       type: marker
     - name: Drill Rokkits
-      shape: operative
+      shape: round
       type: token
     - name: Engine Oil
-      shape: operative
+      shape: round
       type: token
     - name: Explosives
       shape: operative
       type: token
     - name: Pulsa
-      shape: operative
+      shape: round
       type: marker
     - name: Pulsa Point
       shape: operative
@@ -1253,8 +1278,8 @@ teams:
     tokens_ready: true
     tokens:
     - name: Ambush
-      shape: operative
-      type: token
+      shape: round
+      type: marker
     - name: Electrochaff Launcher
       shape: operative
       type: token
@@ -1262,7 +1287,7 @@ teams:
       shape: operative
       type: token
     - name: Homing Beacon
-      shape: operative
+      shape: round
       type: marker
     - name: Multispectrum Sensor Package
       shape: operative
