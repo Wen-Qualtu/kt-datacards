@@ -3,8 +3,8 @@
 Fix KTUI tags for token bags and tokens inside main card box files.
 
 Rules:
-- operative, octagon, diamond tokens: ["KTUIStackable", "KTUIToken"]
-- round tokens: ["KTUIToken", "KTUIMarker"]
+- Tokens with names ending in "marker": ["KTUIToken", "KTUIMarker"]
+- All other tokens: ["KTUIStackable", "KTUIToken"]
 - Bags/dispensers should NOT have KTUI tags
 """
 
@@ -48,19 +48,20 @@ def get_token_shapes(team_config: Dict) -> Dict[str, Dict[str, str]]:
     return token_shapes
 
 
-def get_tags_for_shape(shape: str) -> List[str]:
-    """Get the correct KTUI tags for a given token shape.
+def get_tags_for_token_name(token_name: str) -> List[str]:
+    """Get the correct KTUI tags based on the token name.
     
     Args:
-        shape: Token shape (operative, octagon, diamond, or round)
+        token_name: The full token name (e.g., "Medic", "Vantage Point Marker")
     
     Returns:
         List of KTUI tag strings
     """
-    if shape in ['operative', 'octagon', 'diamond']:
-        return ["KTUIStackable", "KTUIToken"]
-    else:  # round or any other shape
+    # Check if the name ends with "marker" (case-insensitive)
+    if token_name.lower().endswith('marker'):
         return ["KTUIToken", "KTUIMarker"]
+    else:
+        return ["KTUIStackable", "KTUIToken"]
 
 
 def normalize_token_name(name: str) -> str:
@@ -109,22 +110,8 @@ def fix_token_bag_in_cardbox(cardbox_path: Path, token_shapes: Dict[str, str]) -
                 if not bag_nickname:
                     continue
                 
-                # Normalize for matching
-                normalized_name = normalize_token_name(bag_nickname)
-                
-                # Find matching shape in config
-                shape = None
-                for config_name, config_shape in token_shapes.items():
-                    if normalize_token_name(config_name) == normalized_name:
-                        shape = config_shape
-                        break
-                
-                if shape is None:
-                    print(f"    Warning: No shape configured for token '{bag_nickname}' - defaulting to round")
-                    shape = 'round'
-                
-                # Get correct tags for this shape
-                correct_tags = get_tags_for_shape(shape)
+                # Get correct tags based on the token name
+                correct_tags = get_tags_for_token_name(bag_nickname)
                 
                 # Remove KTUI tags from the infinite bag itself
                 current_bag_tags = infinite_bag.get('Tags', [])
