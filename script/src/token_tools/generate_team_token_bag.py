@@ -268,7 +268,7 @@ def main():
 
     args = parser.parse_args()
 
-    tokens_dir = Path(args.tokens_dir) / args.team
+    tokens_dir = Path(args.tokens_dir) / args.team / 'tokens'
     output_dir = Path(args.output_dir)
 
     generator = TeamTokenBagGenerator()
@@ -292,6 +292,9 @@ def main():
         return
 
     for json_file in sorted(tokens_dir.glob('*.json')):
+        # Skip the tokenbag file itself
+        if json_file.name.endswith('-tokenbag.json'):
+            continue
         with open(json_file) as f:
             data = json.load(f)
             # Extract the infinite bag object itself (so users can take infinite tokens)

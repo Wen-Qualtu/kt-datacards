@@ -22,6 +22,7 @@ import pytesseract
 import fitz  # PyMuPDF
 import re
 import time
+import yaml
 
 
 class TokenExtractor:
@@ -58,6 +59,10 @@ class TokenExtractor:
         # Cache template alpha masks for shape-cutout (keyed by path)
         self._template_alpha_cache: Dict[str, np.ndarray] = {}
 
+        # Cache team config for token shapes
+        self._team_config_cache: Dict = {}
+        self._load_team_config()
+
         # Reference token silhouettes (used as a cookie-cutter).
         # These are *examples* with a good alpha channel that represent the intended shape.
         self._operative_template_path = Path(
@@ -68,6 +73,53 @@ class TokenExtractor:
         self._debug_output_dir: Path | None = None
         self._debug_token_tag: str | None = None
         self._last_cutout_debug: dict | None = None
+
+    def _load_team_config(self) -> None:
+        """Load team configuration from config/team-config.yaml."""
+        config_path = Path('config/team-config.yaml')
+        if config_path.exists():
+            try:
+                with open(config_path, 'r', encoding='utf-8') as f:
+                    data = yaml.safe_load(f)
+                    self._team_config_cache = data.get('teams', {}) if data else {}
+            except Exception as e:
+                print(f"  ⚠ Could not load team config: {e}")
+                self._team_config_cache = {}
+        else:
+            self._team_config_cache = {}
+
+    def _get_token_shape_from_config(self, team_name: str, token_name: str) -> str | None:
+        """Get the configured shape for a token from team config.
+        
+        Args:
+            team_name: Team slug (e.g., 'murderwings')
+            token_name: Token name (e.g., 'Damnation Points')
+        
+        Returns:
+            Shape string ('round', 'octagon', 'diamond', 'operative') or None if not configured
+        """
+        if not self._team_config_cache:
+            return None
+        
+        team_config = self._team_config_cache.get(team_name)
+        if not team_config:
+            return None
+        
+        tokens_config = team_config.get('tokens', [])
+        if not tokens_config:
+            return None
+        
+        # Normalize token name for matching (case-insensitive, whitespace-normalized)
+        normalized_search = ' '.join(token_name.lower().split())
+        
+        for token_cfg in tokens_config:
+            token_cfg_name = token_cfg.get('name', '')
+            normalized_cfg = ' '.join(token_cfg_name.lower().split())
+            
+            if normalized_search == normalized_cfg:
+                return token_cfg.get('shape')
+        
+        return None
 
     def _write_cutout_debug_overlay(self, *, token_img: np.ndarray, mask: np.ndarray, meta: dict) -> None:
         if self._debug_output_dir is None or self._debug_token_tag is None:
@@ -436,6 +488,95 @@ class TokenExtractor:
         
         return out
 
+    def _detect_octagon(self, contour: np.ndarray, token_img: np.ndarray) -> bool:
+        """Detect if a contour is an octagon shape.
+        
+        Octagons have 8 vertices with distinct flat edges.
+        Must distinguish from circles which may have many vertices due to approximation.
+        """
+        if contour is None or len(contour) < 8:
+            return False
+        
+        # Approximate the contour to a polygon with stricter epsilon for clearer edge detection
+        epsilon = 0.015 * cv2.arcLength(contour, True)  # Stricter than 0.02
+        approx = cv2.approxPolyDP(contour, epsilon, True)
+        
+        # Octagons should have exactly 8 vertices (allow 7-9 for imperfect shapes)
+        num_vertices = len(approx)
+        if 7 <= num_vertices <= 9:
+            # Check circularity - octagons are more circular than rectangles but distinctly less than circles
+            area = cv2.contourArea(contour)
+            perimeter = cv2.arcLength(contour, True)
+            if perimeter > 0:
+                circularity = (4 * np.pi * area) / (perimeter ** 2)
+                # Octagons typically have circularity between 0.88 and 0.93
+                # Circles are > 0.94, squares are ~0.785
+                # This narrower range avoids catching circles
+                if 0.88 <= circularity <= 0.93:
+                    # Additional check: octagons should have relatively uniform edge lengths
+                    # Calculate variance in edge lengths
+                    if len(approx) >= 7:
+                        edges = []
+                        for i in range(len(approx)):
+                            p1 = approx[i][0]
+                            p2 = approx[(i + 1) % len(approx)][0]
+                            edge_len = np.sqrt((p2[0] - p1[0])**2 + (p2[1] - p1[1])**2)
+                            edges.append(edge_len)
+                        
+                        if edges:
+                            mean_edge = np.mean(edges)
+                            std_edge = np.std(edges)
+                            # Octagons have relatively uniform edges (low coefficient of variation)
+                            # Circles approximated as polygons have more variable edge lengths
+                            cv_edges = std_edge / mean_edge if mean_edge > 0 else 1.0
+                            if cv_edges < 0.15:  # Uniform edges
+                                return True
+        
+        return False
+    
+    def _detect_diamond(self, contour: np.ndarray, token_img: np.ndarray) -> bool:
+        """Detect if a contour is a diamond shape (square rotated 45 degrees).
+        
+        Diamonds have 4 vertices and are roughly square-shaped.
+        The key distinction is the rotation angle.
+        """
+        if contour is None or len(contour) < 4:
+            return False
+        
+        # Get the minimum area rectangle (which gives us rotation info)
+        rect = cv2.minAreaRect(contour)
+        (cx, cy), (width, height), angle = rect
+        
+        # Check if roughly square-shaped
+        if width > 0 and height > 0:
+            aspect_ratio = max(width, height) / min(width, height)
+            # Should be roughly square (allow some tolerance)
+            if aspect_ratio <= 1.35:
+                # Check if rotated ~45 degrees
+                # The angle from minAreaRect is between -90 and 0
+                # A diamond rotated 45 degrees will have angle around -45
+                # Allow tolerance for imperfect shapes
+                angle_normalized = abs(angle + 45)  # Distance from -45 degrees
+                if angle_normalized <= 15:  # Within 15 degrees of 45-degree rotation
+                    # Also verify it has approximately 4 corners using polygon approximation
+                    epsilon = 0.02 * cv2.arcLength(contour, True)
+                    approx = cv2.approxPolyDP(contour, epsilon, True)
+                    num_vertices = len(approx)
+                    # Allow 4-5 vertices (sometimes noise adds an extra corner)
+                    if 4 <= num_vertices <= 5:
+                        return True
+                
+                # Also check the other rotation (could be rotated the other way)
+                angle_normalized_alt = abs(angle + 135) if angle < -90 else abs(angle - 45)
+                if angle_normalized_alt <= 15:
+                    epsilon = 0.02 * cv2.arcLength(contour, True)
+                    approx = cv2.approxPolyDP(contour, epsilon, True)
+                    num_vertices = len(approx)
+                    if 4 <= num_vertices <= 5:
+                        return True
+        
+        return False
+    
     def _infer_round_marker_from_image(self, token_img: np.ndarray) -> float | None:
         """Infer whether an extracted token image likely represents a round marker.
 
@@ -1050,6 +1191,40 @@ class TokenExtractor:
         canvas[y0:y0 + new_h, x0:x0 + new_w] = resized
         return canvas
     
+    def find_marker_guide_pages(self, pdf_path: Path) -> List[int]:
+        """
+        Find all pages in a PDF that contain 'MARKER/TOKEN GUIDE' text.
+        
+        Args:
+            pdf_path: Path to the PDF file
+        
+        Returns:
+            List of page numbers (0-indexed) containing marker/token guide content
+        """
+        marker_pages = []
+        
+        try:
+            doc = fitz.open(pdf_path)
+            
+            for page_num in range(len(doc)):
+                page = doc[page_num]
+                page_text = page.get_text("text").upper()
+                
+                # Check if this page has the marker/token guide header
+                if 'MARKER' in page_text and 'TOKEN' in page_text and 'GUIDE' in page_text:
+                    marker_pages.append(page_num)
+            
+            doc.close()
+            
+            # If no pages found, fall back to last page (backward compatibility)
+            if not marker_pages:
+                marker_pages = [len(doc) - 1] if len(doc) > 0 else []
+                
+        except Exception as e:
+            print(f"  ⚠ Could not find marker/token guide pages: {e}")
+        
+        return marker_pages
+    
     def extract_text_from_pdf(self, pdf_path: Path, page_num: int = -1, target_image_path: Path = None) -> Dict[Tuple[int, int], str]:
         """
         Extract text with positions from a PDF page (marker guide page).
@@ -1179,33 +1354,95 @@ class TokenExtractor:
         return None
     
     def _extract_team_from_path(self, image_path: Path) -> str:
-        """Extract team name from image path."""
+        """Extract team name from image path or PDF path."""
         parts = image_path.parts
+        
+        # Check for output_v2 structure (legacy JPG images)
         if 'output_v2' in parts:
             faction_idx = parts.index('output_v2') + 1
             if faction_idx + 1 < len(parts):
                 return parts[faction_idx + 1]
+        
+        # Check for processed structure (PDF files)
+        if 'processed' in parts:
+            processed_idx = parts.index('processed') + 1
+            if processed_idx < len(parts):
+                return parts[processed_idx]
+        
         return None
     
-    def find_marker_guide(self, team_name: str) -> Path | None:
-        """Find the marker/token guide image for a team."""
-        # Search in output_v2 structure
-        search_paths = [
-            Path("output_v2") / "chaos" / team_name / "faction-rules",
-            Path("output_v2") / "imperium" / team_name / "faction-rules",
-            Path("output_v2") / "xenos" / team_name / "faction-rules",
-        ]
+    def find_marker_guides(self, team_name: str) -> List[Dict]:
+        """Find all marker/token guide pages for a team directly from the PDF.
         
-        for search_path in search_paths:
-            if search_path.exists():
-                # Look for marker/token guide files
-                marker_files = list(search_path.glob("*markertoken-guide*_front.jpg")) + \
-                              list(search_path.glob("*marker-token-guide*_front.jpg")) + \
-                              list(search_path.glob("*token-guide*_front.jpg"))
-                if marker_files:
-                    return marker_files[0]
+        Returns list of dicts with 'pdf_path' and 'page_num' for each marker guide page.
+        """
+        # Find the faction-rules PDF
+        pdf_path = self.find_faction_rules_pdf(team_name)
+        if not pdf_path or not pdf_path.exists():
+            return []
         
-        return None
+        marker_pages = []
+        try:
+            doc = fitz.open(pdf_path)
+            for page_num in range(len(doc)):
+                page = doc[page_num]
+                page_text = page.get_text("text").upper()
+                
+                # Check if this page has the marker/token guide header
+                if 'MARKER' in page_text and 'TOKEN' in page_text and 'GUIDE' in page_text:
+                    marker_pages.append({
+                        'pdf_path': pdf_path,
+                        'page_num': page_num,
+                        'page_index': len(marker_pages) + 1  # 1-indexed for display
+                    })
+            doc.close()
+        except Exception as e:
+            print(f"  ⚠ Error finding marker guide pages: {e}")
+        
+        return marker_pages
+    
+    def find_marker_guide(self, team_name: str) -> Dict | None:
+        """Find the first marker/token guide page for a team (backward compatibility)."""
+        guides = self.find_marker_guides(team_name)
+        return guides[0] if guides else None
+    
+    def _render_pdf_page_to_image(self, pdf_path: Path, page_num: int, dpi: int = 300) -> np.ndarray | None:
+        """Render a PDF page to a high-resolution image.
+        
+        Args:
+            pdf_path: Path to the PDF file
+            page_num: Page number (0-indexed)
+            dpi: Resolution for rendering (default 300 for high quality)
+        
+        Returns:
+            Image as numpy array (BGR format) or None if failed
+        """
+        try:
+            doc = fitz.open(pdf_path)
+            if page_num >= len(doc) or page_num < 0:
+                doc.close()
+                return None
+            
+            page = doc[page_num]
+            # Render at high DPI for better quality
+            mat = fitz.Matrix(dpi / 72, dpi / 72)  # 72 DPI is the default
+            pix = page.get_pixmap(matrix=mat)
+            
+            # Convert to numpy array
+            img_data = pix.samples
+            img = np.frombuffer(img_data, dtype=np.uint8).reshape(pix.height, pix.width, pix.n)
+            
+            # Convert from RGB to BGR (OpenCV format)
+            if pix.n == 3:  # RGB
+                img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
+            elif pix.n == 4:  # RGBA
+                img = cv2.cvtColor(img, cv2.COLOR_RGBA2BGR)
+            
+            doc.close()
+            return img
+        except Exception as e:
+            print(f"  ⚠ Error rendering PDF page: {e}")
+            return None
     
     def extract_token_names_from_image(self, image_path: Path) -> Dict[Tuple[int, int], str]:
         """
@@ -1468,8 +1705,9 @@ class TokenExtractor:
         return names
     
     def extract_tokens_auto(self, 
-                           image_path: Path, 
-                           output_dir: Path,
+                           image_path: Path | None = None,
+                           pdf_page_info: Dict | None = None,
+                           output_dir: Path = None,
                            debug: bool = False,
                            skip_header_percent: float = 15.0,
                            extract_names: bool = True) -> List[Dict]:
@@ -1477,7 +1715,8 @@ class TokenExtractor:
         Automatically detect and extract tokens using computer vision.
         
         Args:
-            image_path: Path to the marker guide image
+            image_path: Path to the marker guide image (legacy, lower quality)
+            pdf_page_info: Dict with 'pdf_path' and 'page_num' to render directly from PDF
             output_dir: Directory to save extracted tokens
             debug: If True, save debug images showing detection
             skip_header_percent: Percentage of image height to skip from top (header row)
@@ -1490,11 +1729,28 @@ class TokenExtractor:
         prev_debug_dir = self._debug_output_dir
         self._debug_output_dir = output_dir if debug else None
 
-        # Load image first (needed for global OCR)
-        img = cv2.imread(str(image_path))
-        if img is None:
+        # Load or render image
+        if pdf_page_info:
+            # Render directly from PDF at high resolution
+            img = self._render_pdf_page_to_image(
+                pdf_page_info['pdf_path'],
+                pdf_page_info['page_num'],
+                dpi=300
+            )
+            if img is None:
+                self._debug_output_dir = prev_debug_dir
+                raise ValueError(f"Could not render PDF page: {pdf_page_info}")
+            # Create a pseudo path for team extraction
+            image_path = pdf_page_info['pdf_path']
+        elif image_path:
+            # Load from pre-extracted image (legacy)
+            img = cv2.imread(str(image_path))
+            if img is None:
+                self._debug_output_dir = prev_debug_dir
+                raise ValueError(f"Could not load image: {image_path}")
+        else:
             self._debug_output_dir = prev_debug_dir
-            raise ValueError(f"Could not load image: {image_path}")
+            raise ValueError("Must provide either image_path or pdf_page_info")
         
         # Try to extract token names from PDF first
         token_names_ocr = {}
@@ -1503,19 +1759,73 @@ class TokenExtractor:
             team_name = self._extract_team_from_path(image_path)
             pdf_path = self.find_faction_rules_pdf(team_name) if team_name else None
             
+            # Determine which page to use
+            target_page_num = pdf_page_info['page_num'] if pdf_page_info else -1
+            
             if pdf_path and pdf_path.exists():
-                cache_key = (str(pdf_path), str(image_path))
+                cache_key = (str(pdf_path), f"page_{target_page_num}")
                 if cache_key in self._pdf_text_cache:
                     token_names_ocr = self._pdf_text_cache[cache_key]
                 else:
                     print(f"  Extracting text from PDF: {pdf_path.name}")
-                    token_names_ocr = self.extract_text_from_pdf(pdf_path, target_image_path=image_path)
-                    self._pdf_text_cache[cache_key] = token_names_ocr
-                    print(f"  Found {len(token_names_ocr)} text labels from PDF")
+                    
+                    if pdf_page_info:
+                        # We know the exact page
+                        print(f"  Using page {target_page_num + 1}")
+                        # Extract text from the specific page
+                        token_names_ocr = self.extract_text_from_pdf(
+                            pdf_path,
+                            page_num=target_page_num,
+                            target_image_path=None  # We'll scale based on rendered image
+                        )
+                        # Scale coordinates from PDF to rendered image
+                        if token_names_ocr:
+                            doc = fitz.open(pdf_path)
+                            page = doc[target_page_num]
+                            pdf_width = page.rect.width
+                            pdf_height = page.rect.height
+                            doc.close()
+                            
+                            img_height, img_width = img.shape[:2]
+                            scale_x = img_width / pdf_width
+                            scale_y = img_height / pdf_height
+                            
+                            # Rescale all coordinates
+                            scaled_names = {}
+                            for (x, y), text in token_names_ocr.items():
+                                scaled_x = int(x * scale_x)
+                                scaled_y = int(y * scale_y)
+                                scaled_names[(scaled_x, scaled_y)] = text
+                            token_names_ocr = scaled_names
+                        
+                        self._pdf_text_cache[cache_key] = token_names_ocr
+                        print(f"  Found {len(token_names_ocr)} text labels from PDF (page {target_page_num + 1})")
+                    else:
+                        # Legacy: try to match image to PDF page
+                        marker_pages = self.find_marker_guide_pages(pdf_path)
+                        print(f"  Found {len(marker_pages)} marker/token guide page(s) in PDF")
+                        
+                        page_num_to_use = marker_pages[0] if marker_pages else -1
+                        
+                        if page_num_to_use >= 0:
+                            token_names_ocr = self.extract_text_from_pdf(pdf_path, page_num=page_num_to_use, target_image_path=image_path)
+                            self._pdf_text_cache[cache_key] = token_names_ocr
+                            print(f"  Found {len(token_names_ocr)} text labels from PDF (page {page_num_to_use + 1})")
+                        else:
+                            print(f"  \u26a0 Could not match image to a PDF page, falling back to OCR")
+                            token_names_ocr = self.extract_token_names_from_image(image_path)
+                            print(f"  Found {len(token_names_ocr)} text regions from OCR")
             else:
                 # Fallback to OCR on image
                 print(f"  No PDF found, using OCR on image...")
-                token_names_ocr = self.extract_token_names_from_image(image_path)
+                # For OCR, we need to save the rendered image temporarily if from PDF
+                if pdf_page_info and img is not None:
+                    temp_img_path = output_dir / "_temp_rendered.jpg"
+                    cv2.imwrite(str(temp_img_path), img)
+                    token_names_ocr = self.extract_token_names_from_image(temp_img_path)
+                    temp_img_path.unlink()  # Clean up
+                elif image_path:
+                    token_names_ocr = self.extract_token_names_from_image(image_path)
                 print(f"  Found {len(token_names_ocr)} text regions from OCR")
 
         if extract_names and token_names_ocr:
@@ -2166,24 +2476,43 @@ class TokenExtractor:
                 print(f"  ⚠ Skipping known double-token for now: {token_name}")
                 continue
             
-            # Determine shape based on circularity
+            # Calculate shape metrics (needed for metadata)
             area = cv2.contourArea(contour)
             perimeter = cv2.arcLength(contour, True)
             circularity = (4 * np.pi * area) / (perimeter ** 2) if perimeter > 0 else 0
             aspect_ratio = w / h if h > 0 else 0
+            
+            # Determine shape - first check team config, then fall back to detection
+            team_name = self._extract_team_from_path(image_path)
+            shape = None
+            
+            if team_name and token_name and token_name.lower() != 'unknown':
+                shape = self._get_token_shape_from_config(team_name, token_name)
+            
+            # Fall back to shape detection if not configured
+            if shape is None:
+                # Check for circle/round tokens FIRST
+                # Round tokens have very high circularity (>= 0.87) and are roughly square
+                # For near-square crops, try explicit circle-ring detection
+                ring_conf = None
+                if (w_pad >= 60 and h_pad >= 60) and (0.85 <= (w_pad / float(h_pad) if h_pad > 0 else 0.0) <= 1.15):
+                    ring_conf = self._infer_round_marker_from_image(token_img)
 
-            # Prefer explicit circle-ring detection for near-square crops. This is much less
-            # likely than contour circularity to misclassify compact operative tokens as round.
-            ring_conf = None
-            if (w_pad >= 60 and h_pad >= 60) and (0.85 <= (w_pad / float(h_pad) if h_pad > 0 else 0.0) <= 1.15):
-                ring_conf = self._infer_round_marker_from_image(token_img)
-
-            if ring_conf is not None and float(ring_conf) >= 0.35 and 0.95 <= aspect_ratio <= 1.05:
-                shape = "round"
-            elif circularity >= 0.75 and 0.95 <= aspect_ratio <= 1.05:
-                shape = "round"
-            else:
-                shape = "operative"
+                if ring_conf is not None and float(ring_conf) >= 0.35 and 0.90 <= aspect_ratio <= 1.10:
+                    shape = "round"
+                elif circularity >= 0.87 and 0.90 <= aspect_ratio <= 1.10:
+                    # High circularity indicates round token
+                    # This catches most circles before octagon detection
+                    shape = "round"
+                # Check for octagon tokens (8 sides with distinct flat edges, circularity 0.88-0.93)
+                elif self._detect_octagon(contour, token_img):
+                    shape = "octagon"
+                # Check for diamond tokens (square rotated 45 degrees)
+                elif self._detect_diamond(contour, token_img):
+                    shape = "diamond"
+                # Default to operative (rectangular/complex shape)
+                else:
+                    shape = "operative"
 
             # If this contour is largely contained within an already-extracted token, it's
             # usually a fragment (e.g., a high-contrast icon touching the border). Prefer keeping
@@ -2359,19 +2688,19 @@ class TokenExtractor:
         print(f"{'='*60}")
         
         # Find marker guide
-        marker_guide_path = self.find_marker_guide(team_name)
-        if not marker_guide_path:
+        marker_guide_info = self.find_marker_guide(team_name)
+        if not marker_guide_info:
             print(f"  ✗ No marker/token guide found for {team_name}")
             return False
         
-        print(f"  Found marker guide: {marker_guide_path}")
+        print(f"  Found marker guide: PDF page {marker_guide_info['page_num'] + 1}")
         
         # Create output directory
         output_dir = self.output_base_dir / team_name / "token"
         if clean and output_dir.exists():
             shutil.rmtree(output_dir)
 
-        extracted = self._process_team_to_dir(team_name, marker_guide_path, output_dir, method=method, debug=debug)
+        extracted = self._process_team_to_dir(team_name, marker_guide_info, output_dir, method=method, debug=debug)
         if extracted is None:
             return False
 
@@ -2397,48 +2726,99 @@ class TokenExtractor:
         print(f"Processing: {team_name}")
         print(f"{'='*60}")
 
-        marker_guide_path = self.find_marker_guide(team_name)
-        if not marker_guide_path:
-            print(f"  ✗ No marker/token guide found for {team_name}")
+        # Find all marker guide pages directly from PDF
+        marker_guide_pages = self.find_marker_guides(team_name)
+        if not marker_guide_pages:
+            print(f"  ✗ No marker/token guide pages found in PDF for {team_name}")
             return False
 
-        print(f"  Found marker guide: {marker_guide_path}")
+        print(f"  Found {len(marker_guide_pages)} marker guide page(s) in PDF")
+        for page_info in marker_guide_pages:
+            print(f"    Page {page_info['page_index']}: PDF page {page_info['page_num'] + 1}")
 
         output_dir = self.output_base_dir / team_name / "token"
         if clean and output_dir.exists():
             shutil.rmtree(output_dir)
 
-        # Auto-tune sweep
-        best = self._auto_tune_team(
-            team_name,
-            marker_guide_path,
-            method=method,
-            debug=debug,
-            expected_token_count=expected_token_count,
-        )
+        # Process each marker guide page with auto-tuning
+        all_best_metrics = []
+        for page_info in marker_guide_pages:
+            page_idx = page_info['page_index']
+            print(f"\n  Processing page {page_idx}/{len(marker_guide_pages)}: PDF page {page_info['page_num'] + 1}")
+            
+            # Auto-tune sweep for this page
+            best = self._auto_tune_team(
+                team_name,
+                page_info,  # Pass page info instead of image path
+                method=method,
+                debug=debug,
+                expected_token_count=expected_token_count,
+            )
 
-        if best is None:
-            return False
+            if best is None:
+                print(f"    \u26a0 Failed to extract tokens from page {page_idx}")
+                continue
 
-        best_dir, best_metrics = best
-        # Replace final output directory with the best tuning run
-        if output_dir.exists():
-            shutil.rmtree(output_dir)
-        shutil.move(str(best_dir), str(output_dir))
+            best_dir, best_metrics = best
+            all_best_metrics.append(best_metrics)
+            
+            # Move extracted tokens from best tuning run to final output
+            # For the first page, move the entire directory; for subsequent pages, merge
+            if page_idx == 1:
+                if output_dir.exists():
+                    shutil.rmtree(output_dir)
+                shutil.move(str(best_dir), str(output_dir))
+            else:
+                # Merge tokens from this page into the main output directory
+                output_dir.mkdir(exist_ok=True, parents=True)
+                for token_file in best_dir.glob("*.png"):
+                    # Skip debug files
+                    if token_file.name.startswith("_debug"):
+                        continue
+                    dest = output_dir / token_file.name
+                    # If duplicate filename, append page number
+                    if dest.exists():
+                        stem = token_file.stem
+                        dest = output_dir / f"{stem}_page{page_idx}.png"
+                    shutil.copy2(token_file, dest)
+                
+                # Merge metadata
+                metadata_src = best_dir / 'extraction-metadata.json'
+                metadata_dst = output_dir / 'extraction-metadata.json'
+                if metadata_src.exists() and metadata_dst.exists():
+                    with open(metadata_dst, 'r', encoding='utf-8') as f:
+                        metadata_main = json.load(f)
+                    with open(metadata_src, 'r', encoding='utf-8') as f:
+                        metadata_page = json.load(f)
+                    # Append tokens from this page
+                    metadata_main['tokens'].extend(metadata_page.get('tokens', []))
+                    metadata_main['tokens_extracted'] = len(metadata_main['tokens'])
+                    with open(metadata_dst, 'w', encoding='utf-8') as f:
+                        json.dump(metadata_main, f, indent=2)
+            
+            print(
+                f"    ✓ Extracted {best_metrics['tokens_extracted']} tokens from page {page_idx} (auto-tuned; unknown={best_metrics['unknown_count']}, numeric={best_metrics['numeric_only_count']})"
+            )
 
         # Clean up global tuning temp (kept outside output_dir)
         tuning_root = self.output_base_dir / "_tuning" / team_name
         shutil.rmtree(tuning_root, ignore_errors=True)
 
-        print(
-            f"  ✓ Extracted {best_metrics['tokens_extracted']} tokens (auto-tuned; unknown={best_metrics['unknown_count']}, numeric={best_metrics['numeric_only_count']})"
-        )
+        if not all_best_metrics:
+            print(f"  ✗ No tokens extracted")
+            return False
+        
+        total_tokens = sum(m['tokens_extracted'] for m in all_best_metrics)
+        total_unknown = sum(m['unknown_count'] for m in all_best_metrics)
+        total_numeric = sum(m['numeric_only_count'] for m in all_best_metrics)
+        
+        print(f"\n  ✓ Total: {total_tokens} tokens extracted across {len(marker_guide_pages)} page(s) (unknown={total_unknown}, numeric={total_numeric})")
         return True
 
     def _process_team_to_dir(
         self,
         team_name: str,
-        marker_guide_path: Path,
+        marker_guide_info: Dict,  # Changed from marker_guide_path
         output_dir: Path,
         *,
         method: str,
@@ -2450,7 +2830,12 @@ class TokenExtractor:
             print(f"  ✗ Manual extraction not implemented")
             return None
 
-        extracted = self.extract_tokens_auto(marker_guide_path, output_dir, debug=debug)
+        # Extract using PDF page info for high quality
+        extracted = self.extract_tokens_auto(
+            pdf_page_info=marker_guide_info,
+            output_dir=output_dir,
+            debug=debug
+        )
 
         # Copy custom tokens from config/teams/{team}/custom-tokens/
         custom_tokens_dir = Path(f"config/teams/{team_name}/custom-tokens")
@@ -2498,7 +2883,8 @@ class TokenExtractor:
         # Save metadata
         metadata = {
             'team': team_name,
-            'source_image': str(marker_guide_path),
+            'source_pdf': str(marker_guide_info['pdf_path']),
+            'source_page': marker_guide_info['page_num'] + 1,  # 1-indexed for display
             'extraction_method': method,
             'tokens_extracted': len(extracted),
             'tokens': [
@@ -2555,7 +2941,7 @@ class TokenExtractor:
     def _auto_tune_team(
         self,
         team_name: str,
-        marker_guide_path: Path,
+        marker_guide_info: Dict,  # Changed from marker_guide_path
         *,
         method: str,
         debug: bool,
@@ -2593,7 +2979,7 @@ class TokenExtractor:
 
             out_dir = tuning_root / f"run_{i:02d}_gap{gap:g}_dist{dist:g}"
             started = time.time()
-            extracted = self._process_team_to_dir(team_name, marker_guide_path, out_dir, method=method, debug=debug)
+            extracted = self._process_team_to_dir(team_name, marker_guide_info, out_dir, method=method, debug=debug)
             if extracted is None:
                 continue
 

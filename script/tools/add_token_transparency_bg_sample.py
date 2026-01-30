@@ -892,6 +892,8 @@ def process_file(
     template_fit: bool,
     template_oper: np.ndarray | None,
     template_round: np.ndarray | None,
+    template_octagon: np.ndarray | None,
+    template_diamond: np.ndarray | None,
     template_scale_band: float,
     template_scale_steps: int,
     template_shift: int,
@@ -1105,7 +1107,7 @@ def process_file(
             
             # Try to read shape from extraction metadata
             metadata_path = path.parent / "extraction-metadata.json"
-            is_round = True  # Default to round
+            detected_shape = 'operative'  # Default to operative
             aspect = cw / float(ch) if ch > 0 else 1.0
             
             # First check metadata
@@ -1122,9 +1124,11 @@ def process_file(
                 except Exception:
                     pass
             
-            # If metadata says round, verify by checking if we can detect a circle
-            # This catches cases where extraction misclassified operative tokens as round
-            if shape_from_metadata == 'round':
+            # Use metadata shape if available, with validation for round
+            if shape_from_metadata in ['octagon', 'diamond', 'operative']:
+                # Trust these shapes from metadata
+                detected_shape = shape_from_metadata
+            elif shape_from_metadata == 'round':
                 # Check if the content mask is actually circular
                 # A circle should have high circularity when we compute it from the content mask
                 contours, _ = cv2.findContours(cand_expanded, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -1138,17 +1142,15 @@ def process_file(
                     # Tokens with small white gaps at edges can have low circularity but are still round
                     if circularity < 0.5 and aspect < 0.85:
                         # Low circularity AND elongated aspect - probably operative
-                        is_round = False
+                        detected_shape = 'operative'
                     else:
                         # Trust metadata - could just have edge artifacts
-                        is_round = True
+                        detected_shape = 'round'
                 else:
-                    is_round = True
-            elif shape_from_metadata == 'operative':
-                is_round = False
+                    detected_shape = 'round'
             else:
                 # No metadata or unknown shape - fall back to aspect ratio
-                is_round = 0.85 <= aspect <= 1.15
+                detected_shape = 'round' if (0.85 <= aspect <= 1.15) else 'operative'
             
             # Create perfect shape mask directly from content bounds
             h, w = bgr.shape[:2]
@@ -1157,41 +1159,53 @@ def process_file(
             center_x = cx + cw / 2.0
             center_y = cy + ch / 2.0
             
-            if is_round:
+            # Select appropriate template based on detected shape
+            if detected_shape == 'round':
                 # Create perfect circle
                 radius = min(cw, ch) / 2.0
                 Y, X = np.ogrid[:h, :w]
                 dist = np.sqrt((X - center_x)**2 + (Y - center_y)**2)
                 best_fit[dist <= radius] = 1
             else:
-                # Create cone shape (from operative template)
-                # Scale the operative template to match content size
-                templ_bbox = _mask_bbox(template_oper)
-                if templ_bbox is not None:
-                    tx, ty, tw, th = templ_bbox
-                    scale_x = cw / float(tw)
-                    scale_y = ch / float(th)
-                    
-                    templ_resized = cv2.resize(
-                        (template_oper > 0).astype(np.uint8),
-                        (int(tw * scale_x), int(th * scale_y)),
-                        interpolation=cv2.INTER_LINEAR
-                    )
-                    
-                    # Place at content center
-                    th_new, tw_new = templ_resized.shape
-                    x0 = int(center_x - tw_new / 2.0)
-                    y0 = int(center_y - th_new / 2.0)
-                    
-                    x0 = max(0, x0)
-                    y0 = max(0, y0)
-                    x1 = min(w, x0 + tw_new)
-                    y1 = min(h, y0 + th_new)
-                    
-                    tw_crop = x1 - x0
-                    th_crop = y1 - y0
-                    
-                    best_fit[y0:y1, x0:x1] = templ_resized[:th_crop, :tw_crop]
+                # Use appropriate template (operative, octagon, or diamond)
+                template_to_use = None
+                if detected_shape == 'operative':
+                    template_to_use = template_oper
+                elif detected_shape == 'octagon':
+                    template_to_use = template_octagon if template_octagon is not None else template_oper
+                elif detected_shape == 'diamond':
+                    template_to_use = template_diamond if template_diamond is not None else template_oper
+                else:
+                    template_to_use = template_oper  # fallback
+                
+                # Scale the template to match content size
+                if template_to_use is not None:
+                    templ_bbox = _mask_bbox(template_to_use)
+                    if templ_bbox is not None:
+                        tx, ty, tw, th = templ_bbox
+                        scale_x = cw / float(tw)
+                        scale_y = ch / float(th)
+                        
+                        templ_resized = cv2.resize(
+                            (template_to_use > 0).astype(np.uint8),
+                            (int(tw * scale_x), int(th * scale_y)),
+                            interpolation=cv2.INTER_LINEAR
+                        )
+                        
+                        # Place at content center
+                        th_new, tw_new = templ_resized.shape
+                        x0 = int(center_x - tw_new / 2.0)
+                        y0 = int(center_y - th_new / 2.0)
+                        
+                        x0 = max(0, x0)
+                        y0 = max(0, y0)
+                        x1 = min(w, x0 + tw_new)
+                        y1 = min(h, y0 + th_new)
+                        
+                        tw_crop = x1 - x0
+                        th_crop = y1 - y0
+                        
+                        best_fit[y0:y1, x0:x1] = templ_resized[:th_crop, :tw_crop]
             
             # DEBUG: Save both overlays only
             if debug_dir is not None:
@@ -1230,8 +1244,8 @@ def process_file(
                 bgr = bgr[y:y+h, x:x+w]
                 alpha = alpha[y:y+h, x:x+w]
                 
-                # Resize to fit within 490x490 maintaining aspect ratio (10px padding)
-                max_dim = 490
+                # Resize to fit within 480x480 maintaining aspect ratio (10px padding each side)
+                max_dim = 480
                 scale = min(max_dim / w, max_dim / h)
                 new_w = int(w * scale)
                 new_h = int(h * scale)
@@ -1239,12 +1253,12 @@ def process_file(
                 bgr = cv2.resize(bgr, (new_w, new_h), interpolation=cv2.INTER_AREA)
                 alpha = cv2.resize(alpha, (new_w, new_h), interpolation=cv2.INTER_AREA)
                 
-                # Center on 512x512 canvas
-                canvas_bgr = np.full((512, 512, 3), 255, dtype=np.uint8)
-                canvas_alpha = np.zeros((512, 512), dtype=np.uint8)
+                # Center on 500x500 canvas
+                canvas_bgr = np.full((500, 500, 3), 255, dtype=np.uint8)
+                canvas_alpha = np.zeros((500, 500), dtype=np.uint8)
                 
-                offset_x = (512 - new_w) // 2
-                offset_y = (512 - new_h) // 2
+                offset_x = (500 - new_w) // 2
+                offset_y = (500 - new_h) // 2
                 
                 canvas_bgr[offset_y:offset_y+new_h, offset_x:offset_x+new_w] = bgr
                 canvas_alpha[offset_y:offset_y+new_h, offset_x:offset_x+new_w] = alpha
@@ -1352,6 +1366,18 @@ def main() -> int:
         type=str,
         default="config/defaults/template-round-cutter.png",
         help="Template PNG for the round token shape (uses its alpha).",
+    )
+    parser.add_argument(
+        "--octagon-template",
+        type=str,
+        default="config/defaults/template-octagon-cutter.png",
+        help="Template PNG for the octagon token shape (uses its alpha).",
+    )
+    parser.add_argument(
+        "--diamond-template",
+        type=str,
+        default="config/defaults/template-diamond-cutter.png",
+        help="Template PNG for the diamond token shape (uses its alpha).",
     )
     parser.add_argument("--template-scale-band", type=float, default=0.22)
     parser.add_argument("--template-scale-steps", type=int, default=9)
@@ -1490,9 +1516,13 @@ def main() -> int:
 
     template_oper = None
     template_round = None
+    template_octagon = None
+    template_diamond = None
     if bool(args.template_fit):
         template_oper = _load_template_mask(Path(args.operative_template))
         template_round = _load_template_mask(Path(args.round_template))
+        template_octagon = _load_template_mask(Path(args.octagon_template))
+        template_diamond = _load_template_mask(Path(args.diamond_template))
 
     sample_path = Path(str(args.bg_sample)) if str(args.bg_sample).strip() else None
 
@@ -1573,6 +1603,8 @@ def main() -> int:
                 template_fit=bool(args.template_fit),
                 template_oper=template_oper,
                 template_round=template_round,
+                template_octagon=template_octagon,
+                template_diamond=template_diamond,
                 template_scale_band=float(args.template_scale_band),
                 template_scale_steps=int(args.template_scale_steps),
                 template_shift=int(args.template_shift),
