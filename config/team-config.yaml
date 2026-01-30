@@ -1,19 +1,10 @@
-# Team configuration for Kill Team datacards
-# Defines team metadata including faction, army, and name aliases
-# faction: imperium, chaos, xenos
-# army: specific army within the faction
-# aliases: list of alternative names detected in source PDFs
-# tokens_ready: optional boolean (default: false)
-#   - false: tokens are still being iterated/tuned and are NOT included in TTS box/state
-#   - true:  tokens are considered "locked" and will be included in TTS box/state
-
 teams:
   angels-of-death:
     canonical_name: Angels of Death
     faction: imperium
     army: space-marines
-    aliases: [angel-of-death]
-  
+    aliases:
+    - angel-of-death
   battleclade:
     canonical_name: Battleclade
     faction: imperium
@@ -21,47 +12,41 @@ teams:
     aliases: []
     tokens_ready: true
     tokens:
-      - name: Breach
-        shape: operative
-      - name: Gaze Of The Omnissiah
-        shape: operative
-      - name: Mechanosuture Array
-        shape: operative
-      - name: Network Counteract
-        shape: operative
-      - name: Omniscanner
-        shape: operative
-      - name: Prioritised Acquisition
-        shape: operative
-  
+    - name: Breach
+      shape: round
+      type: marker
+    - name: Gaze Of The Omnissiah
+      shape: operative
+      type: token
+    - name: Mechanosuture Array
+      shape: operative
+      type: token
+    - name: Network Counteract
+      shape: operative
+      type: token
+    - name: Omniscanner
+      shape: operative
+      type: token
+    - name: Prioritised Acquisition
+      shape: operative
+      type: token
   blades-of-khaine:
     canonical_name: Blades of Khaine
     faction: xenos
     army: aeldari
-    aliases: [blade-of-khaine]
+    aliases:
+    - blade-of-khaine
     tokens_ready: true
     tokens:
-      - name: Abomination
-        shape: operative
-      - name: Acrobatics
-        shape: operative
-      - name: Bloody Mayhem
-        shape: operative
-      - name: Daemonic Sword
-        shape: operative
-      - name: Grisly Remains
-        shape: operative
-      - name: Haemonculus Experiment
-        shape: operative
-      - name: Hunting Blade
-        shape: operative
-      - name: Phantasm Grenade Launcher
-        shape: operative
-      - name: Trophy Taking
-        shape: operative
-      - name: Vlesh Cutter Dispenser
-        shape: round
-    
+    - name: Wraithbone Talisman
+      shape: round
+      type: token
+    - name: Rune of Shielding
+      shape: round
+      type: token
+    - name: Rune of Prophecy
+      shape: round
+      type: token
   blooded:
     canonical_name: Blooded
     faction: chaos
@@ -69,49 +54,71 @@ teams:
     aliases: []
     tokens_ready: true
     tokens:
-      - name: A Name Whispered In Blood
-        shape: operative
-      - name: Blooded
-        shape: operative
-      - name: Blooded Icon
-        shape: operative
-      - name: Diabolyk Bomb
-        shape: operative
-      - name: Enraged Stimm
-        shape: operative
-      - name: Fortified Stimm
-        shape: operative
-      - name: Glory Kill
-        shape: operative
-      - name: Shielding
-        shape: operative
-      - name: Under The Gaze Of The Gods
-        shape: operative
-    
+    - name: A Name Whispered In Blood
+      shape: operative
+      type: token
+    - name: Blooded
+      shape: operative
+      type: token
+    - name: Blooded Icon
+      shape: operative
+      type: token
+    - name: Diabolyk Bomb
+      shape: operative
+      type: token
+    - name: Enraged Stimm
+      shape: operative
+      type: token
+    - name: Fortified Stimm
+      shape: operative
+      type: token
+    - name: Glory Kill
+      shape: operative
+      type: token
+    - name: Shielding
+      shape: operative
+      type: token
+    - name: Under The Gaze Of The Gods
+      shape: operative
+      type: token
   brood-brothers:
     canonical_name: Brood Brothers
     faction: xenos
     army: tyranids
-    aliases: [brood-brother]
+    aliases:
+    - brood-brother
     tokens_ready: true
     tokens:
-      - name: Autogun Barrage
-        shape: operative
-      - name: Bomb
-        shape: operative
-      - name: Coordinated Fire
-        shape: operative
-      - name: Demolitions
-        shape: operative
-      - name: Grenade Trap
-        shape: operative
-      - name: Infiltrate
-        shape: operative
-      - name: Mobile Nest
-        shape: operative
-      - name: Network
-        shape: operative
-    
+    - name: Crissfire
+      shape: custom
+      type: token
+    - name: Devoted
+      shape: operative
+      type: token
+    - name: Broodmind Devotion
+      shape: operative
+      type: token
+    - name: Mind Control
+      shape: operative
+      type: token
+    - name: Medic
+      shape: operative
+      type: token
+    - name: Demolition Charge
+      shape: operative
+      type: token
+    - name: Gene-needler
+      shape: operative
+      type: token
+    - name: Jam
+      shape: operative
+      type: token
+    - name: Jam
+      shape: Explosives
+      type: marker
+    - name: Cult Talisman
+      shape: round
+      type: token
   canoptek-circle:
     canonical_name: Canoptek Circle
     faction: xenos
@@ -119,59 +126,77 @@ teams:
     aliases: []
     tokens_ready: true
     tokens:
-      - name: Disruption Stave
-        shape: operative
-      - name: Eradication Protocols
-        shape: operative
-      - name: Hardwired For Destruction
-        shape: operative
-      - name: Overcharge Scarab
-        shape: operative
-      - name: Phase Transit
-        shape: operative
-      - name: Power Transfer
-        shape: operative
-      - name: Self Destruct
-        shape: operative
-  
+    - name: Disruption Stave
+      shape: operative
+      type: token
+    - name: Eradication Protocols
+      shape: operative
+      type: token
+    - name: Hardwired For Destruction
+      shape: operative
+      type: token
+    - name: Overcharge Scarab
+      shape: operative
+      type: token
+    - name: Phase Transit
+      shape: operative
+      type: token
+    - name: Power Transfer
+      shape: operative
+      type: token
+    - name: Self Destruct
+      shape: operative
+      type: token
   celestian-insidiant:
     canonical_name: Celestian Insidiant
     faction: chaos
     army: chaos-space-marines
-    aliases: [celestian-insidiants]
+    aliases:
+    - celestian-insidiants
     tokens_ready: true
     tokens:
-      - name: Psyk-Out Grenades
-        shape: round
-      - name: Vocifera Mortis
-        shape: diamond
-      - name: Saintly Relics
-        shape: diamond
-      - name: Inspiring
-        shape: operative
-      - name: Zealous Ultimatum
-        shape: operative
-      - name: Suspicion
-        shape: operative
-      - name: Holy Defender
-        shape: operative
-      - name: Ardour Benediction
-        shape: operative
-      - name: Nullification
-        shape: operative
-      - name: Inspirational Pyre
-        shape: operative
-      - name: Wrath Benediction
-        shape: operative
-      - name: Holy Example
-        shape: operative
-  
+    - name: Psyk-Out Grenades
+      shape: round
+      type: token
+    - name: Vocifera Mortis
+      shape: diamond
+      type: token
+    - name: Saintly Relics
+      shape: diamond
+      type: token
+    - name: Inspiring
+      shape: operative
+      type: token
+    - name: Zealous Ultimatum
+      shape: operative
+      type: token
+    - name: Suspicion
+      shape: operative
+      type: token
+    - name: Holy Defender
+      shape: operative
+      type: token
+    - name: Ardour Benediction
+      shape: operative
+      type: token
+    - name: Nullification
+      shape: operative
+      type: token
+    - name: Inspirational Pyre
+      shape: operative
+      type: token
+    - name: Wrath Benediction
+      shape: operative
+      type: token
+    - name: Holy Example
+      shape: operative
+      type: token
   chaos-cult:
     canonical_name: Chaos Cult
     faction: chaos
     army: chaos-cultists
-    aliases: [chaos-cultist]
-  
+    aliases:
+    - chaos-cultist
   corsair-voidscarred:
     canonical_name: Corsair Voidscarred
     faction: xenos
@@ -179,51 +204,68 @@ teams:
     aliases: []
     tokens_ready: true
     tokens:
-      - name: Avenge The Prince
-        shape: operative
-      - name: Back To The Ship
-        shape: operative
-      - name: Cyanobolt Stinger
-        shape: operative
-      - name: Get The Loot
-        shape: operative
-      - name: Last Stand
-        shape: operative
-      - name: Soulburst
-        shape: operative
-      - name: Webway Gate
-        shape: operative
-      - name: White Jade Rune
-        shape: operative
-
+    - name: Avenge The Prince
+      shape: operative
+      type: token
+    - name: Back To The Ship
+      shape: operative
+      type: token
+    - name: Cyanobolt Stinger
+      shape: operative
+      type: token
+    - name: Get The Loot
+      shape: operative
+      type: token
+    - name: Last Stand
+      shape: operative
+      type: token
+    - name: Soulburst
+      shape: operative
+      type: token
+    - name: Webway Gate
+      shape: operative
+      type: token
+    - name: White Jade Rune
+      shape: operative
+      type: token
   death-korps:
     canonical_name: Death Korps
     faction: imperium
     army: imperial-guard
-    aliases: [death-korp]
+    aliases:
+    - death-korp
     tokens_ready: true
     tokens:
-      - name: Bruiser
-        shape: operative
-      - name: Dig In
-        shape: operative
-      - name: Fix Bayonets
-        shape: operative
-      - name: Gas
-        shape: operative
-      - name: Medic
-        shape: operative
-      - name: Mine
-        shape: operative
-      - name: Move Move Move
-        shape: operative
-      - name: Remote Detonator
-        shape: operative
-      - name: Spot
-        shape: operative
-      - name: Take Aim
-        shape: operative
-  
+    - name: Bruiser
+      shape: operative
+      type: token
+    - name: Dig In
+      shape: operative
+      type: token
+    - name: Fix Bayonets
+      shape: operative
+      type: token
+    - name: Gas
+      shape: operative
+      type: marker
+    - name: Medic
+      shape: operative
+      type: token
+    - name: Mine
+      shape: operative
+      type: marker
+    - name: Move Move Move
+      shape: operative
+      type: token
+    - name: Remote Detonator
+      shape: operative
+      type: token
+    - name: Spot
+      shape: operative
+      type: token
+    - name: Take Aim
+      shape: operative
+      type: token
   deathwatch:
     canonical_name: Deathwatch
     faction: imperium
@@ -231,29 +273,36 @@ teams:
     aliases: []
     tokens_ready: true
     tokens:
-      - name: Advanced Omni Scrambler
-        shape: operative
-      - name: Ammunition Reserve
-        shape: operative
-      - name: Digital Weapons
-        shape: operative
-      - name: Melta Bomb
-        shape: operative
-      - name: Scrutavore Servo Thrall
-        shape: operative
-      - name: Strategic Command Firefight Ploy
-        shape: operative
-      - name: Strategic Command Strategy Ploy
-        shape: operative
-      - name: Vigilant Marksman
-        shape: operative
-
+    - name: Advanced Omni Scrambler
+      shape: operative
+      type: token
+    - name: Ammunition Reserve
+      shape: operative
+      type: token
+    - name: Digital Weapons
+      shape: operative
+      type: token
+    - name: Melta Bomb
+      shape: operative
+      type: token
+    - name: Scrutavore Servo Thrall
+      shape: operative
+      type: token
+    - name: Strategic Command Firefight Ploy
+      shape: operative
+      type: token
+    - name: Strategic Command Strategy Ploy
+      shape: operative
+      type: token
+    - name: Vigilant Marksman
+      shape: operative
+      type: token
   elucidian-starstriders:
     canonical_name: Elucidian Starstriders
     faction: imperium
     army: agents-of-the-imperium
-    aliases: [elucidian-starstrider]
-  
+    aliases:
+    - elucidian-starstrider
   exaction-squad:
     canonical_name: Exaction Squad
     faction: imperium
@@ -261,107 +310,140 @@ teams:
     aliases: []
     tokens_ready: true
     tokens:
-      - name: Aggressive
-        shape: operative
-      - name: Apprehend
-        shape: operative
-      - name: Defensive
-        shape: operative
-      - name: Marked For Justice
-        shape: operative
-      - name: Medic
-        shape: operative
-      - name: Nuncio Aquila
-        shape: operative
-      - name: Spot
-        shape: operative
-      - name: Swift
-        shape: operative
-      - name: Veriscant
-        shape: operative
-  
+    - name: Aggressive
+      shape: operative
+      type: token
+    - name: Apprehend
+      shape: operative
+      type: token
+    - name: Defensive
+      shape: operative
+      type: token
+    - name: Marked For Justice
+      shape: operative
+      type: token
+    - name: Medic
+      shape: operative
+      type: token
+    - name: Nuncio Aquila
+      shape: operative
+      type: token
+    - name: Spot
+      shape: operative
+      type: token
+    - name: Swift
+      shape: operative
+      type: token
+    - name: Veriscant
+      shape: operative
+      type: token
   farstalker-kinband:
     canonical_name: Farstalker Kinband
     faction: xenos
     army: T'au Empire
-    aliases: [farstalker]
+    aliases:
+    - farstalker
     tokens_ready: true
     tokens:
-      - name: Call The Kill
-        shape: operative
-      - name: Meat
-        shape: operative
-      - name: Pechra
-        shape: operative
-      - name: Piercing Shot
-        shape: operative
-      - name: Quick Draw
-        shape: operative
-      - name: Ready For Anything
-        shape: operative
-      - name: Toxin Shot
-        shape: operative
-      - name: Trophy
-        shape: operative
-      - name: Vengeance For The Kinband
-        shape: operative
-      - name: Victory Shriek
-        shape: operative
-
+    - name: Call The Kill
+      shape: operative
+      type: token
+    - name: Meat
+      shape: round
+      type: token
+    - name: Pechra
+      shape: round
+      type: marker
+    - name: Piercing Shot
+      shape: round
+      type: token
+    - name: Quick Draw
+      shape: operative
+      type: token
+    - name: Ready For Anything
+      shape: operative
+      type: token
+    - name: Toxin Shot
+      shape: round
+      type: token
+    - name: Trophy
+      shape: round
+      type: token
+    - name: Vengeance For The Kinband
+      shape: operative
+      type: token
+    - name: Victory Shriek
+      shape: operative
+      type: token
   fellgor-ravagers:
     canonical_name: Fellgor Ravagers
     faction: chaos
     army: chaos-space-marines
-    aliases: [fellgor-ravager]
+    aliases:
+    - fellgor-ravager
     tokens_ready: true
     tokens:
-      - name: Brass Adornments
-        shape: operative
-      - name: Chaos Sigil
-        shape: operative
-      - name: Frenzy
-        shape: operative
-      - name: Gong Knell
-        shape: operative
-      - name: Gore Marks
-        shape: operative
-      - name: Mantle Of Darkness
-        shape: operative
-      - name: Pelting Firepower
-        shape: operative
-
+    - name: Brass Adornments
+      shape: operative
+      type: token
+    - name: Chaos Sigil
+      shape: operative
+      type: token
+    - name: Frenzy
+      shape: operative
+      type: token
+    - name: Gong Knell
+      shape: operative
+      type: token
+    - name: Gore Marks
+      shape: operative
+      type: token
+    - name: Mantle Of Darkness
+      shape: operative
+      type: token
+    - name: Pelting Firepower
+      shape: operative
+      type: token
   gellerpox-infected:
     canonical_name: Gellerpox Infected
     faction: chaos
     army: plague-zombies
     aliases: []
-
   goremongers:
     canonical_name: Goremongers
     faction: chaos
     army: demons
-    aliases: [goremonger]
+    aliases:
+    - goremonger
     tokens_ready: true
     tokens:
-      - name: Bleeding
-        shape: operative
-      - name: Bloody Cadaver
-        shape: operative
-      - name: Chaos Sigil
-        shape: operative
-      - name: Claim Skull
-        shape: operative
-      - name: Gore Tank Full
-        shape: operative
-      - name: Gore Tank Half
-        shape: operative
-      - name: Gory Totem
-        shape: operative
-      - name: Impending Apotheosis
-        shape: operative
-      - name: Wrist Chains
-        shape: operative
-
+    - name: Bleeding
+      shape: operative
+      type: token
+    - name: Bloody Cadaver
+      shape: operative
+      type: marker
+    - name: Chaos Sigil
+      shape: operative
+      type: marker
+    - name: Claim Skull
+      shape: operative
+      type: token
+    - name: Gore Tank Full
+      shape: operative
+      type: token
+    - name: Gore Tank Half
+      shape: operative
+      type: token
+    - name: Gory Totem
+      shape: operative
+      type: marker
+    - name: Impending Apotheosis
+      shape: operative
+      type: token
+    - name: Wrist Chains
+      shape: operative
+      type: marker
   hand-of-the-archon:
     canonical_name: Hand of the Archon
     faction: xenos
@@ -369,181 +451,244 @@ teams:
     aliases: []
     tokens_ready: true
     tokens:
-      - name: Brutal Display
-        shape: operative
-      - name: Hypex
-        shape: operative
-      - name: Omen
-        shape: operative
-      - name: Painbringer
-        shape: operative
-      - name: Poison
-        shape: operative
-      - name: Refined Poison
-        shape: operative
-      - name: Sadistic Competition
-        shape: operative
-      - name: Toxin Coating
-        shape: operative
-  
+    - name: Brutal Display
+      shape: operative
+      type: token
+    - name: Hypex
+      shape: operative
+      type: token
+    - name: Omen
+      shape: operative
+      type: token
+    - name: Painbringer
+      shape: operative
+      type: token
+    - name: Poison
+      shape: operative
+      type: token
+    - name: Refined Poison
+      shape: operative
+      type: token
+    - name: Sadistic Competition
+      shape: operative
+      type: token
+    - name: Toxin Coating
+      shape: operative
+      type: token
   hearthkyn-salvagers:
     canonical_name: Hearthkyn Salvagers
     faction: xenos
     army: leagues-of-votann
-    aliases: [hearthkyn-salvager]
+    aliases:
+    - hearthkyn-salvager
     tokens_ready: true
     tokens:
-      - name: Attack
-        shape: round
-      - name: C8 Hx Charge
-        shape: operative
-      - name: Defence
-        shape: round
-      - name: Grudge
-        shape: operative
-      - name: Medic
-        shape: operative
-      - name: Need Keeps
-        shape: operative
-      - name: Pan Spectral Scan
-        shape: operative
-      - name: Spot
-        shape: operative
-      - name: System Jam
-        shape: operative
-      - name: Toil Earns
-        shape: operative
-      - name: Utility Grenade
-        shape: round
-      - name: Writ Of Claim
-        shape: round
-
+    - name: Attack
+      shape: round
+      type: marker
+    - name: C8 Hx Charge
+      shape: operative
+      type: token
+    - name: Defence
+      shape: round
+      type: marker
+    - name: Grudge
+      shape: operative
+      type: marker
+    - name: Medic
+      shape: operative
+      type: token
+    - name: Need Keeps
+      shape: operative
+      type: token
+    - name: Pan Spectral Scan
+      shape: operative
+      type: marker
+    - name: Spot
+      shape: operative
+      type: token
+    - name: System Jam
+      shape: operative
+      type: token
+    - name: Toil Earns
+      shape: operative
+      type: token
+    - name: Utility Grenade
+      shape: round
+      type: marker
+    - name: Writ Of Claim
+      shape: round
+      type: token
   hernkyn-yaegirs:
     canonical_name: Hernkyn Yaegirs
     faction: xenos
     army: leagues-of-votann
-    aliases: [hernkyn-yaegir]
+    aliases:
+    - hernkyn-yaegir
     tokens_ready: true
     tokens:
-      - name: Fallen Kin
-        shape: operative
-      - name: Firestorm Bolt Shells
-        shape: operative
-      - name: Hy Pex Mine
-        shape: operative
-      - name: Minefield
-        shape: operative
-      - name: Outright Conviction
-        shape: operative
-      - name: Stabilised Bolt Shells
-        shape: operative
-      - name: Throwing Hatchet
-        shape: operative
-      - name: Throwing Plasma Knife
-        shape: operative
-  
+    - name: Fallen Kin
+      shape: operative
+      type: marker
+    - name: Firestorm Bolt Shells
+      shape: operative
+      type: token
+    - name: Hy Pex Mine
+      shape: operative
+      type: marker
+    - name: Minefield
+      shape: operative
+      type: marker
+    - name: Outright Conviction
+      shape: operative
+      type: token
+    - name: Stabilised Bolt Shells
+      shape: operative
+      type: token
+    - name: Throwing Hatchet
+      shape: operative
+      type: token
+    - name: Throwing Plasma Knife
+      shape: operative
+      type: token
   hierotek-circle:
     canonical_name: Hierotek Circle
     faction: xenos
     army: necrons
-    aliases: [hierotek-circle]
+    aliases:
+    - hierotek-circle
     tokens_ready: true
     tokens:
-      - name: Augment Weapon
-        shape: operative
-      - name: Chronometron
-        shape: operative
-      - name: Countertemporal Nanomine
-        shape: operative
-      - name: Deathmarked
-        shape: operative
-      - name: Despair
-        shape: operative
-      - name: Madness
-        shape: operative
-      - name: Magnification Conduits
-        shape: operative
-      - name: Multi Dimensional Vision
-        shape: operative
-      - name: Nightmare Shroud
-        shape: operative
-      - name: Phase Shifter
-        shape: operative
-      - name: Reanimation
-        shape: operative
-      - name: Reinforce Metal
-        shape: operative
-      - name: Timesplinter
-        shape: operative
-  
+    - name: Augment Weapon
+      shape: operative
+      type: token
+    - name: Chronometron
+      shape: operative
+      type: token
+    - name: Countertemporal Nanomine
+      shape: operative
+      type: marker
+    - name: Deathmarked
+      shape: operative
+      type: token
+    - name: Despair
+      shape: operative
+      type: marker
+    - name: Madness
+      shape: operative
+      type: token
+    - name: Magnification Conduits
+      shape: operative
+      type: token
+    - name: Multi Dimensional Vision
+      shape: operative
+      type: token
+    - name: Nightmare Shroud
+      shape: operative
+      type: token
+    - name: Phase Shifter
+      shape: operative
+      type: token
+    - name: Reanimation
+      shape: operative
+      type: marker
+    - name: Reinforce Metal
+      shape: operative
+      type: token
+    - name: Timesplinter
+      shape: operative
+      type: token
   hunter-clade:
     canonical_name: Hunter Clade
     faction: xenos
     army: T'au Empire
-    aliases: [hunter-clade]
-  
+    aliases:
+    - hunter-clade
   imperial-navy-breachers:
     canonical_name: Imperial Navy Breachers
     faction: imperium
     army: imperial-navy
-    aliases: [imperial-navy-breacher]
+    aliases:
+    - imperial-navy-breacher
     tokens_ready: true
     tokens:
-      - name: Attack Order
-        shape: operative
-      - name: Breach
-        shape: operative
-      - name: Defence Order
-        shape: operative
-      - name: Demolition Charge
-        shape: operative
-      - name: Emboldened
-        shape: operative
-      - name: Gheistskull Detonator
-        shape: operative
-      - name: Lock It Down
-        shape: operative
-      - name: Slugs
-        shape: operative
-      - name: Spot
-        shape: operative
-      - name: System Override Device
-        shape: operative
-      - name: Weld Shut
-        shape: operative
-  
+    - name: Attack Order
+      shape: operative
+      type: marker
+    - name: Breach
+      shape: round
+      type: marker
+    - name: Defence Order
+      shape: operative
+      type: marker
+    - name: Demolition Charge
+      shape: operative
+      type: token
+    - name: Emboldened
+      shape: operative
+      type: token
+    - name: Gheistskull Detonator
+      shape: operative
+      type: marker
+    - name: Lock It Down
+      shape: operative
+      type: token
+    - name: Slugs
+      shape: operative
+      type: token
+    - name: Spot
+      shape: operative
+      type: token
+    - name: System Override Device
+      shape: operative
+      type: token
+    - name: Weld Shut
+      shape: operative
+      type: token
   inquisitorial-agents:
     canonical_name: Inquisitorial Agents
     faction: imperium
     army: inquisition
-    aliases: [inquisitorial-agent]
+    aliases:
+    - inquisitorial-agent
     tokens_ready: true
     tokens:
-      - name: Chasten
-        shape: operative
-      - name: Denounce
-        shape: operative
-      - name: Denunciation
-        shape: operative
-      - name: Guidance
-        shape: operative
-      - name: Inquisitorial Rosette
-        shape: operative
-      - name: Medic
-        shape: operative
-      - name: Protection
-        shape: operative
-      - name: Quarry
-        shape: operative
-      - name: Sanctification
-        shape: operative
-      - name: Servo Skull
-        shape: operative
-      - name: Tome Skull
-        shape: operative
-      - name: Weathered
-        shape: operative
-  
+    - name: Chasten
+      shape: operative
+      type: token
+    - name: Denounce
+      shape: operative
+      type: token
+    - name: Denunciation
+      shape: operative
+      type: token
+    - name: Guidance
+      shape: operative
+      type: token
+    - name: Inquisitorial Rosette
+      shape: operative
+      type: token
+    - name: Medic
+      shape: operative
+      type: token
+    - name: Protection
+      shape: operative
+      type: token
+    - name: Quarry
+      shape: operative
+      type: token
+    - name: Sanctification
+      shape: operative
+      type: token
+    - name: Servo Skull
+      shape: operative
+      type: token
+    - name: Tome Skull
+      shape: operative
+      type: token
+    - name: Weathered
+      shape: operative
+      type: token
   kasrkin:
     canonical_name: Kasrkin
     faction: imperium
@@ -551,391 +696,514 @@ teams:
     aliases: []
     tokens_ready: true
     tokens:
-      - name: Auspex Scan
-        shape: operative
-      - name: Clearance Sweep
-        shape: operative
-      - name: Medic
-        shape: operative
-      - name: Melta Mine
-        shape: operative
-      - name: Relics Of Cadia
-        shape: operative
-      - name: Tactical Command
-        shape: operative
-  
+    - name: Auspex Scan
+      shape: operative
+      type: token
+    - name: Clearance Sweep
+      shape: operative
+      type: marker
+    - name: Medic
+      shape: operative
+      type: token
+    - name: Melta Mine
+      shape: operative
+      type: marker
+    - name: Relics Of Cadia
+      shape: operative
+      type: token
+    - name: Tactical Command
+      shape: operative
+      type: token
   kommandos:
     canonical_name: Kommandos
     faction: xenos
     army: orks
-    aliases: [kommando]
+    aliases:
+    - kommando
     tokens_ready: true
     tokens:
-      - name: Breach
-        shape: operative
-      - name: Dynamite
-        shape: operative
-      - name: Explosives
-        shape: operative
-      - name: Harpoon
-        shape: operative
-      - name: Smoke Grenade
-        shape: operative
-      - name: Stun Grenade
-        shape: operative
-  
+    - name: Breach
+      shape: operative
+      type: marker
+    - name: Dynamite
+      shape: operative
+      type: token
+    - name: Explosives
+      shape: operative
+      type: token
+    - name: Harpoon
+      shape: operative
+      type: token
+    - name: Smoke Grenade
+      shape: operative
+      type: token
+    - name: Stun Grenade
+      shape: operative
+      type: token
   legionaries:
     canonical_name: Legionaries
     faction: chaos
     army: chaos-space-marines
-    aliases: [legionary]
+    aliases:
+    - legionary
     tokens_ready: true
     tokens:
-      - name: Grisly
-        shape: operative
-      - name: Mark Of Chaos Khorne
-        shape: operative
-      - name: Mark Of Chaos Nurgle
-        shape: operative
-      - name: Mark Of Chaos Slaanesh
-        shape: operative
-      - name: Mark Of Chaos Tzeentch
-        shape: operative
-      - name: Mark Of Chaos Undivided
-        shape: operative
-      - name: Tainted Rounds
-        shape: operative
-      - name: Unleash Daemon
-        shape: operative
-      - name: Warded Armour
-        shape: operative
-  
+    - name: Grisly
+      shape: operative
+      type: marker
+    - name: Mark Of Chaos Khorne
+      shape: operative
+      type: token
+    - name: Mark Of Chaos Nurgle
+      shape: operative
+      type: token
+    - name: Mark Of Chaos Slaanesh
+      shape: operative
+      type: token
+    - name: Mark Of Chaos Tzeentch
+      shape: operative
+      type: token
+    - name: Mark Of Chaos Undivided
+      shape: operative
+      type: token
+    - name: Tainted Rounds
+      shape: operative
+      type: token
+    - name: Unleash Daemon
+      shape: operative
+      type: token
+    - name: Warded Armour
+      shape: operative
+      type: token
   mandrakes:
     canonical_name: Mandrakes
     faction: xenos
     army: aeldari
-    aliases: [mandrake]
+    aliases:
+    - mandrake
     tokens_ready: true
     tokens:
-      - name: Balefire
-        shape: operative
-      - name: Haunting Focus
-        shape: operative
-      - name: Oubliex
-        shape: operative
-      - name: Pareidolic Projection
-        shape: operative
-      - name: Shadow Passage
-        shape: operative
-      - name: Shadow Portal
-        shape: operative
-      - name: Soul Gem
-        shape: operative
-      - name: Soul_Harvest_2
-        shape: operative
-      - name: Weave Darkness
-        shape: operative
-  
+    - name: Balefire
+      shape: operative
+      type: token
+    - name: Haunting Focus
+      shape: operative
+      type: token
+    - name: Oubliex
+      shape: operative
+      type: token
+    - name: Pareidolic Projection
+      shape: operative
+      type: token
+    - name: Shadow Passage
+      shape: operative
+      type: token
+    - name: Shadow Portal
+      shape: operative
+      type: marker
+    - name: Soul Gem
+      shape: operative
+      type: token
+    - name: Soul_Harvest_2
+      shape: operative
+      type: token
+    - name: Weave Darkness
+      shape: operative
+      type: marker
   murderwings:
     canonical_name: Murderwings
     faction: chaos
     army: chaos-space-marines
-    aliases: [murderwing]
+    aliases:
+    - murderwing
     tokens_ready: true
     tokens:
-      - name: Damnation Points
-        shape: octagon
-      - name: Warp
-        shape: round
-      - name: Warp Fuel
-        shape: diamond
-      - name: Challenge
-        shape: operative
-      - name: Vox-casters
-        shape: diamond
-      - name: Vox-casters
-        shape: diamond
-  
+    - name: Damnation Points
+      shape: octagon
+      type: marker
+    - name: Warp
+      shape: round
+      type: marker
+    - name: Warp Fuel
+      shape: diamond
+      type: token
+    - name: Challenge
+      shape: operative
+      type: token
+    - name: Vox-casters
+      shape: diamond
+      type: token
+    - name: Vox-casters
+      shape: diamond
+      type: token
   nemesis-claw:
     canonical_name: Nemesis Claw
     faction: xenos
     army: aeldari
-    aliases: [nemesis-claw]
+    aliases:
+    - nemesis-claw
     tokens_ready: true
     tokens:
-      - name: Disconcerting Mimicry
-        shape: operative
-      - name: Flay Them Alive
-        shape: operative
-      - name: Grisly Trophy
-        shape: operative
-      - name: Poison Objective
-        shape: operative
-      - name: Portent
-        shape: operative
-      - name: Terrorchem
-        shape: operative
-  
+    - name: Disconcerting Mimicry
+      shape: operative
+      type: token
+    - name: Flay Them Alive
+      shape: operative
+      type: token
+    - name: Grisly Trophy
+      shape: operative
+      type: token
+    - name: Poison Objective
+      shape: operative
+      type: token
+    - name: Portent
+      shape: operative
+      type: token
+    - name: Terrorchem
+      shape: operative
+      type: token
   novitiates:
     canonical_name: Novitiates
     faction: imperium
     army: adeptus-astrates
-    aliases: [novitiate]
+    aliases:
+    - novitiate
     tokens_ready: true
     tokens:
-      - name: Auto Broadcaster
-        shape: operative
-      - name: Auto Chastisers
-        shape: operative
-      - name: Blaze
-        shape: operative
-      - name: Divine Acquisition
-        shape: operative
-      - name: Faith_2
-        shape: operative
-      - name: Icon Of Faith
-        shape: operative
-      - name: Medic
-        shape: operative
-      - name: Whip Into Frenzy
-        shape: operative
-  
+    - name: Auto Broadcaster
+      shape: operative
+      type: token
+    - name: Auto Chastisers
+      shape: operative
+      type: token
+    - name: Blaze
+      shape: operative
+      type: token
+    - name: Divine Acquisition
+      shape: operative
+      type: token
+    - name: Faith_2
+      shape: operative
+      type: token
+    - name: Icon Of Faith
+      shape: operative
+      type: token
+    - name: Medic
+      shape: operative
+      type: token
+    - name: Whip Into Frenzy
+      shape: operative
+      type: token
   pathfinders:
     canonical_name: Pathfinders
     faction: xenos
     army: T'au Empire
-    aliases: [pathfinder]
+    aliases:
+    - pathfinder
     tokens_ready: true
     tokens:
-      - name: Fusion Grenade
-        shape: operative
-      - name: High Intensity Markerlight
-        shape: operative
-      - name: Kauyon
-        shape: operative
-      - name: Medic
-        shape: operative
-      - name: Montka
-        shape: operative
-      - name: Multi Dimensional
-        shape: operative
-      - name: Orbital Survey Uplink
-        shape: operative
-      - name: Photon Grenade
-        shape: operative
-      - name: Pulse Accelerator
-        shape: operative
-      - name: Target Analysis Optic
-        shape: operative
-  
+    - name: Fusion Grenade
+      shape: operative
+      type: token
+    - name: High Intensity Markerlight
+      shape: operative
+      type: token
+    - name: Kauyon
+      shape: operative
+      type: token
+    - name: Medic
+      shape: operative
+      type: token
+    - name: Montka
+      shape: operative
+      type: token
+    - name: Multi Dimensional
+      shape: operative
+      type: token
+    - name: Orbital Survey Uplink
+      shape: operative
+      type: token
+    - name: Photon Grenade
+      shape: operative
+      type: token
+    - name: Pulse Accelerator
+      shape: operative
+      type: token
+    - name: Target Analysis Optic
+      shape: operative
+      type: token
   phobos-strike-team:
     canonical_name: Phobos Strike Team
     faction: imperium
     army: space-marines
-    aliases: [phobos-strike-team]
+    aliases:
+    - phobos-strike-team
     tokens_ready: true
     tokens:
-      - name: Auspex Scan
-        shape: operative
-      - name: Explosives
-        shape: operative
-      - name: Haywire Mine
-        shape: operative
-      - name: Medic
-        shape: operative
-      - name: Omni Scrambler
-        shape: operative
-      - name: Purity Seals
-        shape: operative
-      - name: Remote Detonator
-        shape: operative
-      - name: Special Issue Ammunition
-        shape: operative
-      - name: Tactical Advantage
-        shape: operative
-      - name: Vanguard
-        shape: operative
-  
+    - name: Auspex Scan
+      shape: operative
+      type: token
+    - name: Explosives
+      shape: operative
+      type: marker
+    - name: Haywire Mine
+      shape: operative
+      type: marker
+    - name: Medic
+      shape: operative
+      type: token
+    - name: Omni Scrambler
+      shape: operative
+      type: token
+    - name: Purity Seals
+      shape: operative
+      type: token
+    - name: Remote Detonator
+      shape: operative
+      type: token
+    - name: Special Issue Ammunition
+      shape: operative
+      type: token
+    - name: Tactical Advantage
+      shape: operative
+      type: token
+    - name: Vanguard
+      shape: operative
+      type: token
   plague-marines:
     canonical_name: Plague Marines
     faction: chaos
     army: chaos-space-marines
-    aliases: [plague-marine]
-  
+    aliases:
+    - plague-marine
   ratlings:
     canonical_name: Ratlings
     faction: imperium
     army: imperial-guard
-    aliases: [ratling]
+    aliases:
+    - ratling
     tokens_ready: true
     tokens:
-      - name: Early Warning
-        shape: operative
-      - name: Evade
-        shape: operative
-      - name: Explosive Arsenal
-        shape: operative
-      - name: Lucky Round
-        shape: operative
-      - name: Optics
-        shape: operative
-      - name: Purloined Rations
-        shape: operative
-      - name: Scarper
-        shape: operative
-      - name: Spot
-        shape: operative
-      - name: Target Designation
-        shape: operative
-      - name: Tripwire
-        shape: operative
-  
+    - name: Early Warning
+      shape: operative
+      type: token
+    - name: Evade
+      shape: operative
+      type: token
+    - name: Explosive Arsenal
+      shape: operative
+      type: token
+    - name: Lucky Round
+      shape: operative
+      type: token
+    - name: Optics
+      shape: operative
+      type: token
+    - name: Purloined Rations
+      shape: operative
+      type: token
+    - name: Scarper
+      shape: operative
+      type: token
+    - name: Spot
+      shape: operative
+      type: token
+    - name: Target Designation
+      shape: operative
+      type: token
+    - name: Tripwire
+      shape: operative
+      type: token
   raveners:
     canonical_name: Raveners
     faction: xenos
     army: tyranids
-    aliases: [ravener]
+    aliases:
+    - ravener
     tokens_ready: true
     tokens:
-      - name: Distend Dorsal Sac
-        shape: operative
-      - name: Heightened Senses
-        shape: operative
-      - name: Poison
-        shape: operative
-      - name: Subterranean Ambush
-        shape: operative
-  
+    - name: Distend Dorsal Sac
+      shape: operative
+      type: token
+    - name: Heightened Senses
+      shape: operative
+      type: token
+    - name: Poison
+      shape: operative
+      type: token
+    - name: Subterranean Ambush
+      shape: operative
+      type: token
   sanctifiers:
     canonical_name: Sanctifiers
     faction: imperium
     army: adeptus-astrates
-    aliases: [sanctifier, sancifier]
+    aliases:
+    - sanctifier
+    - sancifier
     tokens_ready: true
     tokens:
-      - name: Blaze
-        shape: operative
-      - name: Burning Hands
-        shape: operative
-      - name: Commanding Declamation
-        shape: operative
-      - name: Doused
-        shape: operative
-      - name: Holy Light
-        shape: operative
-      - name: Imperial Cult Devotion
-        shape: operative
-      - name: Imperial Cult Symbols
-        shape: operative
-      - name: Miracle
-        shape: operative
-      - name: Orator
-        shape: operative
-      - name: Purity Seals
-        shape: operative
-      - name: Sanctification Orbs
-        shape: operative
-      - name: Wreathe In Fire
-        shape: operative
-  
+    - name: Blaze
+      shape: operative
+      type: token
+    - name: Burning Hands
+      shape: operative
+      type: token
+    - name: Commanding Declamation
+      shape: operative
+      type: token
+    - name: Doused
+      shape: operative
+      type: token
+    - name: Holy Light
+      shape: operative
+      type: token
+    - name: Imperial Cult Devotion
+      shape: operative
+      type: token
+    - name: Imperial Cult Symbols
+      shape: operative
+      type: token
+    - name: Miracle
+      shape: operative
+      type: token
+    - name: Orator
+      shape: operative
+      type: token
+    - name: Purity Seals
+      shape: operative
+      type: token
+    - name: Sanctification Orbs
+      shape: operative
+      type: token
+    - name: Wreathe In Fire
+      shape: operative
+      type: token
   scout-squad:
     canonical_name: Scout Squad
     faction: imperium
     army: space-marines
-    aliases: [scout-squad]
+    aliases:
+    - scout-squad
     tokens_ready: true
     tokens:
-      - name: Auspex Scan
-        shape: operative
-      - name: Booby Trap
-        shape: operative
-      - name: Designate Target
-        shape: operative
-      - name: Optics
-        shape: operative
-      - name: Smoke Grenade
-        shape: operative
-      - name: Stun Grenade
-        shape: operative
-      - name: Track Enemy
-        shape: operative
-      - name: Trip Alarm
-        shape: operative
-  
+    - name: Auspex Scan
+      shape: operative
+      type: token
+    - name: Booby Trap
+      shape: operative
+      type: token
+    - name: Designate Target
+      shape: operative
+      type: token
+    - name: Optics
+      shape: operative
+      type: token
+    - name: Smoke Grenade
+      shape: operative
+      type: token
+    - name: Stun Grenade
+      shape: operative
+      type: token
+    - name: Track Enemy
+      shape: operative
+      type: token
+    - name: Trip Alarm
+      shape: operative
+      type: token
   tempestus-aquilons:
     canonical_name: Tempestus Aquilons
     faction: imperium
     army: imperial-guard
-    aliases: [tempestus-aquilon]
+    aliases:
+    - tempestus-aquilon
     tokens_ready: true
     tokens:
-      - name: Detected
-        shape: operative
-      - name: Drop
-        shape: operative
-      - name: Drop And Secure
-        shape: operative
-      - name: Melta Bomb
-        shape: operative
-  
+    - name: Detected
+      shape: operative
+      type: token
+    - name: Drop
+      shape: operative
+      type: marker
+    - name: Drop And Secure
+      shape: operative
+      type: token
+    - name: Melta Bomb
+      shape: operative
+      type: token
   vespid-stingwings:
     canonical_name: Vespid Stingwings
     faction: xenos
     army: aeldari
-    aliases: [vespid-stingwing]
+    aliases:
+    - vespid-stingwing
     tokens_ready: true
     tokens:
-      - name: Communion Point
-        shape: round
-      - name: Neutron Fallout
-        shape: round
-      - name: Neutron Fragment
-        shape: operative
-      - name: Neutron Grenade
-        shape: operative
-      - name: Skytorch
-        shape: round
-  
+    - name: Communion Point
+      shape: round
+      type: token
+    - name: Neutron Fallout
+      shape: round
+      type: marker
+    - name: Neutron Fragment
+      shape: operative
+      type: token
+    - name: Neutron Grenade
+      shape: operative
+      type: token
+    - name: Skytorch
+      shape: round
+      type: marker
   void-dancer-troupe:
     canonical_name: Void Dancer Troupe
     faction: xenos
     army: aeldari
-    aliases: [void-dancer-troupe]
-  
+    aliases:
+    - void-dancer-troupe
   warpcoven:
     canonical_name: Warpcoven
     faction: chaos
     army: chaos-demons
-    aliases: [warpcoven]
-    
+    aliases:
+    - warpcoven
   wolf-scouts:
     canonical_name: Wolf Scouts
     faction: imperium
     army: space-marines
-    aliases: [wolf-scout]
+    aliases:
+    - wolf-scout
     tokens_ready: true
     tokens:
-      - name: Call The Storm
-        shape: operative
-      - name: Cast The Runes
-        shape: operative
-      - name: Guard
-        shape: operative
-      - name: Haywire Mine
-        shape: operative
-      - name: Hunters Senses
-        shape: operative
-      - name: Lupine Guile
-        shape: operative
-      - name: Pounce
-        shape: operative
-      - name: Runic Charms
-        shape: operative
-      - name: Storm
-        shape: operative
-      - name: Wolfteeth Necklaces
-        shape: operative
-  
+    - name: Call The Storm
+      shape: operative
+      type: token
+    - name: Cast The Runes
+      shape: operative
+      type: token
+    - name: Guard
+      shape: operative
+      type: token
+    - name: Haywire Mine
+      shape: operative
+      type: token
+    - name: Hunters Senses
+      shape: operative
+      type: token
+    - name: Lupine Guile
+      shape: operative
+      type: token
+    - name: Pounce
+      shape: operative
+      type: token
+    - name: Runic Charms
+      shape: operative
+      type: token
+    - name: Storm
+      shape: operative
+      type: marker
+    - name: Wolfteeth Necklaces
+      shape: operative
+      type: token
   wrecka-krew:
     canonical_name: Wrecka Krew
     faction: xenos
@@ -943,51 +1211,68 @@ teams:
     aliases: []
     tokens_ready: true
     tokens:
-      - name: Breach
-        shape: operative
-      - name: Demolition
-        shape: operative
-      - name: Drill Rokkits
-        shape: operative
-      - name: Engine Oil
-        shape: operative
-      - name: Explosives
-        shape: operative
-      - name: Pulsa
-        shape: operative
-      - name: Pulsa Point
-        shape: operative
-      - name: Pulsa Rokkit
-        shape: operative
-      - name: Rokkit Rack
-        shape: operative
-      - name: Tankhammer
-        shape: operative
-
+    - name: Breach
+      shape: operative
+      type: marker
+    - name: Demolition
+      shape: operative
+      type: marker
+    - name: Drill Rokkits
+      shape: operative
+      type: token
+    - name: Engine Oil
+      shape: operative
+      type: token
+    - name: Explosives
+      shape: operative
+      type: token
+    - name: Pulsa
+      shape: operative
+      type: marker
+    - name: Pulsa Point
+      shape: operative
+      type: token
+    - name: Pulsa Rokkit
+      shape: operative
+      type: token
+    - name: Rokkit Rack
+      shape: operative
+      type: token
+    - name: Tankhammer
+      shape: operative
+      type: token
   wyrmblade:
     canonical_name: Wyrmblade
     faction: xenos
     army: aeldari
-    aliases: [wyrmblade]
-
+    aliases:
+    - wyrmblade
   xv26-stealth-battlesuits:
     canonical_name: XV26 Stealth Battlesuits
     faction: xenos
     army: T'au Empire
-    aliases: [xv26-stealth-battlesuit]
+    aliases:
+    - xv26-stealth-battlesuit
     tokens_ready: true
     tokens:
-      - name: Ambush
-        shape: operative
-      - name: Electrochaff Launcher
-        shape: operative
-      - name: Emp Bomb
-        shape: operative
-      - name: Homing Beacon
-        shape: operative
-      - name: Multispectrum Sensor Package
-        shape: operative
-      - name: Multitracker
-        shape: operative
-      - name: Photon Grenade Launcher
-        shape: operative
+    - name: Ambush
+      shape: operative
+      type: token
+    - name: Electrochaff Launcher
+      shape: operative
+      type: token
+    - name: Emp Bomb
+      shape: operative
+      type: token
+    - name: Homing Beacon
+      shape: operative
+      type: marker
+    - name: Multispectrum Sensor Package
+      shape: operative
+      type: token
+    - name: Multitracker
+      shape: operative
+      type: token
+    - name: Photon Grenade Launcher
+      shape: operative
+      type: token
