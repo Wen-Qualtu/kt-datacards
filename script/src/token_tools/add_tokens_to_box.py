@@ -81,9 +81,9 @@ def add_tokens_to_box(box_file: Path, token_bag_file: Path):
     state_data['ml'][token_bag_guid] = {
         "lock": False,
         "pos": {
-            "x": 5.5,
-            "y": -2.46,
-            "z": -8.5,
+            "x": 4.0,
+            "y": -2.50,
+            "z": -8.0,
         },
         "rot": {
             "x": 0.0169,
@@ -94,7 +94,7 @@ def add_tokens_to_box(box_file: Path, token_bag_file: Path):
 
     # Update LuaScriptState
     box_obj['LuaScriptState'] = json.dumps(state_data)
-    print("Added token bag to LuaScriptState at position x=5.5, z=-8.5")
+    print("Added token bag to LuaScriptState at position x=4.0, z=-8.0")
 
     # Save updated box
     with open(box_file, 'w') as f:

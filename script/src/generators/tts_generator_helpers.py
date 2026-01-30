@@ -297,16 +297,17 @@ def create_bag(team_name, team_tag, contained_objects, lua_script, texture_url=N
     memory_list = {}
 
     position_by_type = {
-        # Card decks
-        "operative-selection": {"x": -1.01, "y": -2.486, "z": -4.1},
-        "faction-rules": {"x": -3.02, "y": -2.486, "z": -4.1},
-        "markertokens": {"x": 3.0, "y": -2.486, "z": -7.39},
-        "datacards": {"x": 3.01, "y": -2.426, "z": -4.08},
-        "equipment": {"x": 1.05, "y": -2.46, "z": -7.39},
-        "firefight-ploys": {"x": -0.96, "y": -2.46, "z": -7.38},
-        "strategy-ploys": {"x": -2.94, "y": -2.46, "z": -7.39},
+        # Card decks - Row 1 (z = -4.0)
+        "faction-rules": {"x": -4.0, "y": -2.50, "z": -4.0, "rot_y": 179.9995},
+        "operative-selection": {"x": -2.0, "y": -2.50, "z": -4.0, "rot_y": 179.9995},
+        "datacards": {"x": 2.0, "y": -2.50, "z": -4.0, "rot_y": 179.9995},
+        # Card decks - Row 2 (z = -7.40)
+        "strategy-ploys": {"x": -4.0, "y": -2.50, "z": -7.40, "rot_y": 179.9995},
+        "firefight-ploys": {"x": -2.0, "y": -2.50, "z": -7.40, "rot_y": 179.9995},
+        "equipment": {"x": 0.0, "y": -2.50, "z": -7.40, "rot_y": 179.9995},
+        "markertokens": {"x": 2.0, "y": -2.50, "z": -7.40, "rot_y": 179.9995},
         # Optional token bag (added by token pipeline)
-        "tokens": {"x": 5.5, "y": -2.46, "z": -8.5},
+        "tokens": {"x": 4.0, "y": -2.50, "z": -8.0, "rot_y": 270.0},
     }
 
     nickname_to_type = {
@@ -392,8 +393,8 @@ def create_bag(team_name, team_tag, contained_objects, lua_script, texture_url=N
 
         memory_list[guid] = {
             "lock": False,
-            "pos": pos,
-            "rot": {"x": 0.0169, "y": 179.9995, "z": 0.0799},
+            "pos": {"x": pos["x"], "y": pos["y"], "z": pos["z"]},
+            "rot": {"x": 0.0169, "y": pos["rot_y"], "z": 0.0799},
         }
 
     # Include creation timestamp in state if provided
