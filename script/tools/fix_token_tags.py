@@ -114,21 +114,32 @@ def fix_token_tags(tokenbag_path: Path, token_shapes: Dict[str, str]) -> bool:
         # Get correct tags for this shape
         correct_tags = get_tags_for_shape(shape)
         
-        # Update tags on the infinite bag itself
-        current_tags = infinite_bag.get('Tags', [])
-        if current_tags != correct_tags:
-            infinite_bag['Tags'] = correct_tags
+        # Remove KTUI tags from the infinite bag itself (bags should not have these tags)
+        current_bag_tags = infinite_bag.get('Tags', [])
+        # Remove any KTUI tags from the bag
+        cleaned_bag_tags = [tag for tag in current_bag_tags if not tag.startswith('KTUI')]
+        if current_bag_tags != cleaned_bag_tags:
+            infinite_bag['Tags'] = cleaned_bag_tags
             modified = True
-            print(f"  Updated {nickname} infinite bag: {current_tags} -> {correct_tags}")
+            print(f"  Removed KTUI tags from {nickname} bag: {current_bag_tags} -> {cleaned_bag_tags}")
         
-        # Update tags on the contained token template
+        # Update tags on the contained token template (ContainedObjects)
         contained_tokens = infinite_bag.get('ContainedObjects', [])
         for token in contained_tokens:
             token_current_tags = token.get('Tags', [])
             if token_current_tags != correct_tags:
                 token['Tags'] = correct_tags
                 modified = True
-                print(f"  Updated {nickname} token: {token_current_tags} -> {correct_tags}")
+                print(f"  Updated {nickname} token (ContainedObjects): {token_current_tags} -> {correct_tags}")
+        
+        # Update tags on child token templates (ChildObjects) - some bags have these too
+        child_tokens = infinite_bag.get('ChildObjects', [])
+        for token in child_tokens:
+            token_current_tags = token.get('Tags', [])
+            if token_current_tags != correct_tags:
+                token['Tags'] = correct_tags
+                modified = True
+                print(f"  Updated {nickname} token (ChildObjects): {token_current_tags} -> {correct_tags}")
     
     # Save if modified
     if modified:
