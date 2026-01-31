@@ -251,6 +251,22 @@ class TTSTokenGenerator:
         
         # Default to 'token' if not found
         return 'token'
+
+    def get_token_shape(self, team_name: str, token_name: str) -> str | None:
+        """Get token shape from team config if explicitly defined."""
+        team_data = self.team_config.get(team_name, {})
+        tokens = team_data.get('tokens', [])
+
+        token_name_lower = token_name.strip().lower()
+
+        for token in tokens:
+            config_name = token.get('name', '').strip().lower()
+            if config_name == token_name_lower:
+                shape = token.get('shape')
+                if isinstance(shape, str) and shape.strip():
+                    return shape.strip()
+
+        return None
     
     def get_custom_tags(self, team_name: str, token_name: str) -> list:
         """Get custom tags from team config for tokens with type='custom'."""
@@ -582,6 +598,12 @@ class TTSTokenGenerator:
             token_name = token_data['name']
             shape = token_data['shape']
 
+            # Prefer explicit config shape over extracted metadata.
+            config_shape = self.get_token_shape(team_name, token_name)
+            config_shape_set = config_shape is not None
+            if config_shape_set:
+                shape = config_shape
+
             # Handle legacy 'complex' shape name
             if shape == 'complex':
                 shape = 'operative'
@@ -619,10 +641,11 @@ class TTSTokenGenerator:
                     canvas_size = self._get_canvas_for_shape(shape)
                     padded = self._resize_to_canvas(src, size=canvas_size)
 
-                # Infer shape from alpha silhouette (keeps metadata as tie-breaker).
-                inferred = self._infer_shape_from_alpha(padded)
-                if inferred is not None:
-                    shape = inferred
+                # Infer shape from alpha silhouette only when config is not explicit.
+                if not config_shape_set:
+                    inferred = self._infer_shape_from_alpha(padded)
+                    if inferred is not None:
+                        shape = inferred
 
             has_image = dest_image.exists()
             if not has_image:
@@ -631,9 +654,10 @@ class TTSTokenGenerator:
                 # Even if we are not overwriting the image, we still want consistent
                 # shape selection for the generated token/bag JSON.
                 existing = self._load_rgba(dest_image) if dest_image.exists() else None
-                inferred = self._infer_shape_from_alpha(existing) if existing is not None else None
-                if inferred is not None:
-                    shape = inferred
+                if not config_shape_set:
+                    inferred = self._infer_shape_from_alpha(existing) if existing is not None else None
+                    if inferred is not None:
+                        shape = inferred
 
             # Write/refresh token image.
             if source_image.exists():

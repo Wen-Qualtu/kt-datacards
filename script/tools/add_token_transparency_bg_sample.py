@@ -33,6 +33,7 @@ from typing import Sequence
 
 import cv2
 import numpy as np
+import yaml
 
 
 def _ensure_bgr_alpha(img: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
@@ -887,6 +888,44 @@ def _write_debug(
     cv2.imwrite(str(out_dir / f"{name}_rgba.png"), rgba)
 
 
+_TEAM_CONFIG_CACHE: dict | None = None
+
+
+def _load_team_config() -> dict:
+    global _TEAM_CONFIG_CACHE
+    if _TEAM_CONFIG_CACHE is not None:
+        return _TEAM_CONFIG_CACHE
+    config_path = Path("config/team-config.yaml")
+    if not config_path.exists():
+        _TEAM_CONFIG_CACHE = {}
+        return _TEAM_CONFIG_CACHE
+    try:
+        with open(config_path, "r", encoding="utf-8") as f:
+            data = yaml.safe_load(f) or {}
+        _TEAM_CONFIG_CACHE = data.get("teams", {}) or {}
+    except Exception:
+        _TEAM_CONFIG_CACHE = {}
+    return _TEAM_CONFIG_CACHE
+
+
+def _get_token_shape_from_config(team_name: str, token_name: str) -> str | None:
+    if not team_name or not token_name:
+        return None
+    teams = _load_team_config()
+    team_cfg = teams.get(team_name) or {}
+    tokens = team_cfg.get("tokens", []) or []
+
+    token_name_norm = " ".join(str(token_name).lower().split())
+
+    for token_cfg in tokens:
+        cfg_name = " ".join(str(token_cfg.get("name", "")).lower().split())
+        if cfg_name and cfg_name == token_name_norm:
+            shape = token_cfg.get("shape")
+            if isinstance(shape, str) and shape.strip():
+                return shape.strip()
+    return None
+
+
 def process_file(
     path: Path,
     *,
@@ -1132,6 +1171,7 @@ def process_file(
             
             # First check metadata
             shape_from_metadata = None
+            token_name_from_metadata = None
             if metadata_path.exists():
                 try:
                     import json
@@ -1140,37 +1180,47 @@ def process_file(
                     for token in metadata.get('tokens', []):
                         if token.get('filename') == path.name:
                             shape_from_metadata = token.get('shape')
+                            token_name_from_metadata = token.get('name')
                             break
                 except Exception:
                     pass
-            
-            # Use metadata shape if available, with validation for round
-            if shape_from_metadata in ['octagon', 'diamond', 'operative']:
-                # Trust these shapes from metadata
-                detected_shape = shape_from_metadata
-            elif shape_from_metadata == 'round':
-                # Check if the content mask is actually circular
-                # A circle should have high circularity when we compute it from the content mask
-                contours, _ = cv2.findContours(cand_expanded, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-                if contours:
-                    largest_contour = max(contours, key=cv2.contourArea)
-                    area = cv2.contourArea(largest_contour)
-                    perimeter = cv2.arcLength(largest_contour, True)
-                    circularity = (4 * np.pi * area) / (perimeter ** 2) if perimeter > 0 else 0
-                    
-                    # Only override metadata if it's REALLY not circular (< 0.5)
-                    # Tokens with small white gaps at edges can have low circularity but are still round
-                    if circularity < 0.5 and aspect < 0.85:
-                        # Low circularity AND elongated aspect - probably operative
-                        detected_shape = 'operative'
+
+            # Prefer explicit config shape when available
+            team_name = path.parent.parent.name if path.parent.name == "token" else path.parent.name
+            shape_from_config = None
+            if token_name_from_metadata:
+                shape_from_config = _get_token_shape_from_config(team_name, token_name_from_metadata)
+
+            if shape_from_config in ['round', 'octagon', 'diamond', 'operative']:
+                detected_shape = shape_from_config
+            else:
+                # Use metadata shape if available, with validation for round
+                if shape_from_metadata in ['octagon', 'diamond', 'operative']:
+                    # Trust these shapes from metadata
+                    detected_shape = shape_from_metadata
+                elif shape_from_metadata == 'round':
+                    # Check if the content mask is actually circular
+                    # A circle should have high circularity when we compute it from the content mask
+                    contours, _ = cv2.findContours(cand_expanded, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+                    if contours:
+                        largest_contour = max(contours, key=cv2.contourArea)
+                        area = cv2.contourArea(largest_contour)
+                        perimeter = cv2.arcLength(largest_contour, True)
+                        circularity = (4 * np.pi * area) / (perimeter ** 2) if perimeter > 0 else 0
+                        
+                        # Only override metadata if it's REALLY not circular (< 0.5)
+                        # Tokens with small white gaps at edges can have low circularity but are still round
+                        if circularity < 0.5 and aspect < 0.85:
+                            # Low circularity AND elongated aspect - probably operative
+                            detected_shape = 'operative'
+                        else:
+                            # Trust metadata - could just have edge artifacts
+                            detected_shape = 'round'
                     else:
-                        # Trust metadata - could just have edge artifacts
                         detected_shape = 'round'
                 else:
-                    detected_shape = 'round'
-            else:
-                # No metadata or unknown shape - fall back to aspect ratio
-                detected_shape = 'round' if (0.85 <= aspect <= 1.15) else 'operative'
+                    # No metadata or unknown shape - fall back to aspect ratio
+                    detected_shape = 'round' if (0.85 <= aspect <= 1.15) else 'operative'
             
             # Create perfect shape mask directly from content bounds
             h, w = bgr.shape[:2]
