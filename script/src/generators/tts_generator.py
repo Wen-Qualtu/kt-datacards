@@ -105,7 +105,7 @@ class TTSGenerator:
                 'team': team_name,
                 'type': 'tts_card_box_object',
                 'name': team_display_name,
-                'url': f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/tts_objects/{team_name}/{output_filename.replace(' ', '%20')}"
+                'url': f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/fix/correct-celestians/tts_objects/{team_name}/{output_filename.replace(' ', '%20')}"
             })
             
             count += 1

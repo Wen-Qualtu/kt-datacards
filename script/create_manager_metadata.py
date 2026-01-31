@@ -23,7 +23,7 @@ def create_manager_metadata():
     
     # Create metadata
     metadata = {
-        "url": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/dev/examples/KT Display Manager.json",
+        "url": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/fix/correct-celestians/dev/examples/KT Display Manager.json",
         "last_modified": timestamp
     }
     

@@ -153,7 +153,8 @@ class ImageExtractor:
             
             # Determine if card has back side
             has_back = False
-            if has_continuation and page_num + 1 < len(pdf_document):
+            is_marker_guide = card_name == 'markertoken-guide'
+            if has_continuation and page_num + 1 < len(pdf_document) and not is_marker_guide:
                 has_back = True
                 skip_next_page = True
             elif card_type == CardType.DATACARDS:
@@ -178,11 +179,11 @@ class ImageExtractor:
                         team
                     )
                     # If next page has same name, treat as front/back pair (like datacards)
-                    if next_name == card_name:
+                    if next_name == card_name and not is_marker_guide:
                         has_back = True
                         skip_next_page = True
                     # If next page has no name (not marker guide), also treat as back
-                    elif not next_name:
+                    elif not next_name and not is_marker_guide:
                         has_back = True
                         skip_next_page = True
             # In options_on_own_cards_mode, each page is a separate front-only card
@@ -209,12 +210,19 @@ class ImageExtractor:
         # Track card counters for numbering
         operatives_counter = 0
         faction_rule_counter = 0
+        markertoken_guide_counter = 0
         
         # Determine if operatives need numbering
         operatives_need_numbering = False
         if card_type == CardType.OPERATIVES:
             operatives_cards = [c for c in card_pages if c['card_name'] == 'operatives']
             operatives_need_numbering = len(operatives_cards) > 1
+
+        # Determine if marker/token guides need numbering
+        markertoken_guides_need_numbering = False
+        if card_type == CardType.FACTION_RULES:
+            markertoken_guides = [c for c in card_pages if c['card_name'] == 'markertoken-guide']
+            markertoken_guides_need_numbering = len(markertoken_guides) > 1
         
         page_index = 0
         while page_index < len(card_pages):
@@ -222,6 +230,7 @@ class ImageExtractor:
             page_num = card_info['page_num']
             card_name = card_info['card_name']
             has_back = card_info['has_back']
+            back_page_num = None
             
             # Generate card name and filename
             if card_type == CardType.OPERATIVES and card_name == 'operatives':
@@ -230,6 +239,12 @@ class ImageExtractor:
                     card_name = f"operatives-{operatives_counter}"
                 else:
                     card_name = "operatives"
+            elif card_type == CardType.FACTION_RULES and card_name == 'markertoken-guide':
+                markertoken_guide_counter += 1
+                if markertoken_guides_need_numbering and markertoken_guide_counter > 1:
+                    card_name = f"markertoken-guide-{markertoken_guide_counter}"
+                else:
+                    card_name = "markertoken-guide"
             elif card_type == CardType.FACTION_RULES:
                 # For faction rules, if no name extracted, fail
                 if not card_name:
@@ -245,6 +260,19 @@ class ImageExtractor:
                 )
                 raise ValueError(f"Failed to extract card name for {pdf_path} page {page_num + 1}")
             
+            # Handle operatives back side when only one operatives card exists
+            if (
+                card_type == CardType.OPERATIVES and
+                card_name == 'operatives' and
+                not operatives_need_numbering and
+                not has_back and
+                page_index + 1 < len(card_pages)
+            ):
+                next_card_info = card_pages[page_index + 1]
+                if next_card_info['card_name'] == 'operatives':
+                    has_back = True
+                    back_page_num = next_card_info['page_num']
+
             # Create Datacard object
             # Extract description from the front page
             description = self._extract_card_description(
@@ -271,15 +299,24 @@ class ImageExtractor:
             
             # Extract back image if exists
             if has_back:
+                if back_page_num is None:
+                    back_page_num = page_num + 1
                 back_path = self._extract_page_image(
-                    pdf_document[page_num + 1],
+                    pdf_document[back_page_num],
                     datacard.get_output_folder() / datacard.get_expected_back_filename()
                 )
                 if back_path:
                     datacard.back_image = back_path
             
             datacards.append(datacard)
-            page_index += 1
+            if (
+                back_page_num is not None and
+                page_index + 1 < len(card_pages) and
+                card_pages[page_index + 1]['page_num'] == back_page_num
+            ):
+                page_index += 2
+            else:
+                page_index += 1
         
         return datacards
     

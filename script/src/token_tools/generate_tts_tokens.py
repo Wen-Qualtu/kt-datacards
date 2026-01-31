@@ -31,14 +31,17 @@ class TTSTokenGenerator:
     # (e.g. MergeDistancePixels) when generating the cutout mesh. If token images have
     # different resolutions across teams, the effective cutout behavior differs.
     #
-    # We therefore package all token PNGs onto a fixed-size transparent canvas.
-    # This pads/centers without scaling the artwork.
-    TOKEN_CANVAS_PX = 512
+    # We therefore resize all extracted token PNGs to fixed sizes
+    # that match the reference token templates (no extra padding).
+    # Round template: dev/references/Bomb_red_white.png
+    # Operative template: dev/references/Generic_status_red_04_white.png
+    TOKEN_CANVAS_ROUND = (235, 235)
+    TOKEN_CANVAS_OPERATIVE = (439, 414)
 
     # TTS cutout mesh generation is sensitive to pixel-space parameters.
-    # With a 512px canvas, a MergeDistancePixels of ~13 roughly matches the
-    # prior behavior seen with ~200px token images at 5px.
-    MERGE_DISTANCE_PX = max(5.0, float(int(round(TOKEN_CANVAS_PX / 40))))
+    # Use per-shape merge distances derived from the reference canvas sizes.
+    MERGE_DISTANCE_PX_ROUND = max(5.0, float(int(round(max(TOKEN_CANVAS_ROUND) / 40))))
+    MERGE_DISTANCE_PX_OPERATIVE = max(5.0, float(int(round(max(TOKEN_CANVAS_OPERATIVE) / 40))))
 
     # GitHub repo base URL
     GITHUB_BASE = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main"
@@ -69,16 +72,16 @@ class TTSTokenGenerator:
     #   - New bag scale: 0.598 × 2.506 = 1.499 (keeps bag at original 3cm size)
     # ====================================================================================
     
-    # Scale values compensating for TTS auto-scaling bags relative to tokens
-    # Tokens scaled down to 2cm, bags compensated to stay at 3cm
-    # Operative (rectangular) - token at 2cm
-    TOKEN_SCALE_OPERATIVE = 0.260  # 0.651 * (2/5)
-    BAG_SCALE_OPERATIVE_X = 1.499  # 0.598 * (0.651/0.260) to keep at 3cm
-    BAG_SCALE_OPERATIVE_Z = 1.446  # 0.577 * (0.651/0.260)
-    # Round (circular) - token at 2cm
-    TOKEN_SCALE_ROUND = 0.235  # 0.5301 * (2/4.5)
-    BAG_SCALE_ROUND_X = 1.641  # 0.727 * (0.5301/0.235) to keep at 3cm
-    BAG_SCALE_ROUND_Z = 1.584  # 0.702 * (0.5301/0.235)
+    # Scale values aligned to TTS reference token templates.
+    # Reference JSON scale: 0.21 (both round and operative)
+    TOKEN_SCALE_OPERATIVE = 0.21
+    TOKEN_SCALE_ROUND = 0.21
+    # Bag scales compensated to keep bag size consistent after token scaling.
+    # Formula: new_bag_scale = old_bag_scale × (old_token_scale / new_token_scale)
+    BAG_SCALE_OPERATIVE_X = 1.8538  # 0.598 * (0.651/0.21)
+    BAG_SCALE_OPERATIVE_Z = 1.7887  # 0.577 * (0.651/0.21)
+    BAG_SCALE_ROUND_X = 1.8351557   # 0.727 * (0.5301/0.21)
+    BAG_SCALE_ROUND_Z = 1.7720486   # 0.702 * (0.5301/0.21)
 
     # Placeholder/infinite-bag mesh visibility:
     # The infinite bag object uses the token image as a diffuse texture on a 3D mesh.
@@ -158,26 +161,22 @@ class TTSTokenGenerator:
         cropped = bgra[y_min:y_max+1, x_min:x_max+1]
         return cropped
 
-    def _pad_to_canvas(self, bgra, *, size_px: int):
-        # First, resize to fit within target size (with padding margin)
-        # Reference tokens fill ~90% of canvas (224/248), so we target ~460px for 512px canvas
-        fit_size = int(size_px * 0.9)  # 90% fill matches reference tokens
+    def _resize_to_canvas(self, bgra, *, size: tuple[int, int]) -> np.ndarray:
+        canvas_w, canvas_h = size
         h, w = bgra.shape[:2]
-        
-        # Always resize to fit the target size while preserving aspect ratio
-        scale = fit_size / float(max(h, w))
-        new_w = max(1, int(round(w * scale)))
-        new_h = max(1, int(round(h * scale)))
-        bgra = cv2.resize(bgra, (new_w, new_h), interpolation=cv2.INTER_AREA)
-        h, w = new_h, new_w
+        if (w, h) == (canvas_w, canvas_h):
+            return bgra
+        return cv2.resize(bgra, (canvas_w, canvas_h), interpolation=cv2.INTER_AREA)
 
-        # Now center on the canvas
-        canvas = np.zeros((size_px, size_px, 4), dtype=bgra.dtype)
+    def _get_canvas_for_shape(self, shape: str) -> tuple[int, int]:
+        if shape == 'operative':
+            return self.TOKEN_CANVAS_OPERATIVE
+        return self.TOKEN_CANVAS_ROUND
 
-        y0 = (size_px - h) // 2
-        x0 = (size_px - w) // 2
-        canvas[y0 : y0 + h, x0 : x0 + w] = bgra
-        return canvas
+    def _get_merge_distance_px(self, shape: str) -> float:
+        if shape == 'operative':
+            return self.MERGE_DISTANCE_PX_OPERATIVE
+        return self.MERGE_DISTANCE_PX_ROUND
 
     def _infer_shape_from_alpha(self, bgra) -> str | None:
         """Infer token shape from the alpha silhouette.
@@ -360,7 +359,7 @@ class TTSTokenGenerator:
                 "WidthScale": 0.0,
                 "CustomToken": {
                     "Thickness": 0.1,
-                    "MergeDistancePixels": self.MERGE_DISTANCE_PX,
+                    "MergeDistancePixels": self._get_merge_distance_px(shape),
                     "StandUp": False,
                     "Stackable": False,
                 },
@@ -596,7 +595,11 @@ class TTSTokenGenerator:
                 nickname = clean_name.replace('-', ' ').title()
 
             # Copy extracted token image to output as PNG (KEEP TRANSPARENCY!)
-            source_image = token_images_dir / team_name / filename
+            token_cut_dir = token_images_dir / team_name / "token-cut"
+            token_raw_dir = token_images_dir / team_name / "token"
+            source_image = token_cut_dir / filename
+            if not source_image.exists():
+                source_image = token_raw_dir / filename
             dest_image = output_token_dir / f"{team_name}-{clean_name}.png"
 
             is_custom = token_data.get('source') == 'custom'
@@ -612,9 +615,8 @@ class TTSTokenGenerator:
                 if is_custom:
                     padded = src  # Keep original dimensions
                 else:
-                    # Crop transparent borders first for consistent sizing
-                    cropped = self._crop_transparent_borders(src)
-                    padded = self._pad_to_canvas(cropped, size_px=self.TOKEN_CANVAS_PX)
+                    canvas_size = self._get_canvas_for_shape(shape)
+                    padded = self._resize_to_canvas(src, size=canvas_size)
 
                 # Infer shape from alpha silhouette (keeps metadata as tie-breaker).
                 inferred = self._infer_shape_from_alpha(padded)
@@ -734,13 +736,13 @@ def main():
     parser.add_argument(
         '--metadata',
         type=str,
-        default='processed/extracted-tokens/{team}/extraction-metadata.json',
+        default='processed/{team}/token/extraction-metadata.json',
         help='Path to extraction metadata file',
     )
     parser.add_argument(
         '--tokens-dir',
         type=str,
-        default='processed/extracted-tokens',
+        default='processed',
         help='Directory with extracted token images',
     )
     parser.add_argument('--output-dir', type=str, default='output_v2', help='Output directory (default: output_v2)')
@@ -783,8 +785,21 @@ def main():
         output_token_dir = output_dir / faction / args.team / 'tts' / 'token'
 
         # Also save standalone JSON files for testing (temp location)
-        team_json_dir = tts_json_dir / args.team
+        team_root_dir = tts_json_dir / args.team
+        team_json_dir = team_root_dir / 'tokens'
         team_json_dir.mkdir(exist_ok=True, parents=True)
+
+        # Cleanup/move any legacy token JSONs that were written to the team root
+        # (should live under tts_objects/<team>/tokens/)
+        if team_root_dir.exists():
+            for stray in team_root_dir.glob('*.json'):
+                if stray.name.endswith(' Cards.json') or stray.name.endswith('-tokenbag.json'):
+                    continue
+                target = team_json_dir / stray.name
+                if target.exists():
+                    stray.unlink()
+                else:
+                    shutil.move(str(stray), str(target))
 
         print(f"\nFaction: {faction}")
         print("Tokens generated:")

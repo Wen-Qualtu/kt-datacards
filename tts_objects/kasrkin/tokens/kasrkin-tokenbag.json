@@ -51,7 +51,7 @@
       "Hands": false,
       "Number": 0,
       "CustomMesh": {
-        "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/kasrkin/tts/kasrkin-token-bag.obj",
+        "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/fix/correct-celestians/output_v2/imperium/kasrkin/tts/kasrkin-token-bag.obj",
         "DiffuseURL": "",
         "NormalURL": "",
         "ColliderURL": "",
@@ -63,160 +63,22 @@
       "Bag": {
         "Order": 0
       },
-      "LuaScript": "-- constants\n\nlocal BUTTON_SETUP = {\n\n  label=\"Setup\",\n\n  click_function=\"click_setup\", function_owner=self,\n\n  position={0,0.3,-2}, rotation={0,180,0},\n\n  height=350, width=800,\n\n  font_size=250, color={0,0,0}, font_color={1,1,1}\n\n}\n\nlocal BUTTON_SETUP_2 = {\n\n  label=\"Setup\",\n\n  click_function=\"click_setup\",\n\n  function_owner=self,\n\n  position={-1,0.5,0}, rotation={0,270,0},\n\n  height=350, width=800,\n\n  font_size=250, color={0,0,0}, font_color={1,1,1}\n\n}\n\nlocal BUTTON_RECALL = {\n\n  label=\"Recall\",\n\n  click_function=\"click_recall\", function_owner=self,\n\n  position={1,0,-1}, rotation={0,270,0},\n\n  height=350, width=800,\n\n  font_size=250, color={1,0,0}, font_color={1,1,1}\n\n}\n\nlocal BUTTON_PLACE = {\n\n  label=\"Place\",\n\n  click_function=\"click_place\",\n\n  function_owner=self,\n\n  position={1,0,1}, rotation={0,270,0},\n\n  height=350, width=800,\n\n  font_size=250, color={0.2,0.95,0}, font_color={0,0,0}\n\n}\n\nlocal BUTTON_CANCEL = {\n\n  label=\"Cancel\",\n\n  click_function=\"click_cancel\",\n\n  function_owner=self,\n\n  position={0,0.3,-2}, rotation={0,180,0},\n\n  height=350, width=1100,\n\n  font_size=250, color={0,0,0}, font_color={1,1,1}\n\n}\n\nlocal BUTTON_SUBMIT = {\n\n  label=\"Submit\",\n\n  click_function=\"click_submit\", function_owner=self,\n\n  position={0,0.3,-2.8}, rotation={0,180,0},\n\n  height=350, width=1100,\n\n  font_size=250, color={0,0,0}, font_color={1,1,1}\n\n}\n\nlocal BUTTON_RESET = {\n\n  label=\"Reset\",\n\n  click_function=\"click_reset\",\n\n  function_owner=self,\n\n  position={-2,0.3,0}, rotation={0,270,0},\n\n  height=350, width=800,\n\n  font_size=250, color={0,0,0}, font_color={1,1,1}\n\n}\n\n\n\n-- functional utils\n\nlocal function transmute(t, vfn, kfn)\n\n    local out = {}\n\n    local c = 1\n\n    for k,v in pairs(t) do\n\n        local value = vfn(v,c,t)\n\n        local key = kfn != nil and kfn(v,c,t) or k\n\n        if (value and key) then\n\n            out[key] = value\n\n        end\n\n        c = c + 1\n\n    end\n\n    return out\n\nend\n\n\n\nlocal function duplicateTable(oldTable)\n\n  local newTable = {}\n\n  for k, v in pairs(oldTable) do\n\n    newTable[k] = v\n\n  end\n\n  return newTable\n\nend\n\n\n\nlocal function round(num, dec)\n\n  local mult = 10^(dec or 0)\n\n  return math.floor(num * mult + 0.5) / mult\n\nend\n\n\n\n-- object utils\n\nlocal function setOutline(list, enabled)\n\n  local count = 0\n\n\n\n  if (next(list) == nil) then\n\n    return count\n\n  end\n\n\n\n  for guid in pairs(list) do\n\n    count = count + 1\n\n    local obj = getObjectFromGUID(guid)\n\n    if (obj ~= nil and enabled == false) then obj.highlightOff() end\n\n    if (obj ~= nil and enabled == true) then obj.highlightOn({1,1,1}) end\n\n  end\n\n\n\n  return count\n\nend\n\n\n\nlocal function readRotation()\n\n  local r1, r2, r3 = self.getRotation():get()\n\n  return round(r2)\n\nend\n\n\n\nlocal function changeButtons(variant)\n\n  self.clearButtons()\n\n\n\n  if(variant == 'before_setup') then\n\n    self.createButton(BUTTON_SETUP)\n\n  elseif (variant == 'in_setup') then\n\n    self.createButton(BUTTON_CANCEL)\n\n    self.createButton(BUTTON_SUBMIT)\n\n    self.createButton(BUTTON_RESET)\n\n  elseif (variant == 'done_setup') then\n\n    self.createButton(BUTTON_PLACE)\n\n    self.createButton(BUTTON_RECALL)\n\n    self.createButton(BUTTON_SETUP_2)\n\n  end\n\nend\n\n\n\nfunction compare_coords(p1, p2, rotation)\n\n  local deltaPos = {}\n\n  r = math.rad(rotation)\n\n\n\n  z = ((-p2.x * math.sin(r) + p2.z * math.cos(r)))\n\n  x = ((p2.x * math.cos(r) + p2.z * math.sin(r)))\n\n\n\n  deltaPos.x = (p1.x+x)\n\n  deltaPos.y = (p1.y+p2.y)\n\n  deltaPos.z = (p1.z+z)\n\n\n\n  return deltaPos\n\nend\n\n\n\n\n\n--state utils\n\nlocal function readList()\n\n  return transmute(\n\n    getObjectsWithTag(self.getGMNotes()),\n\n    function(obj)\n\n      local selfPos = self.getPosition()\n\n      local objPos = obj.getPosition()\n\n      local deltaPos = {}\n\n      deltaPos.x = (objPos.x-selfPos.x)\n\n      deltaPos.y = (objPos.y-selfPos.y)\n\n      deltaPos.z = (objPos.z-selfPos.z)\n\n      local pos, rot = deltaPos, obj.getRotation()\n\n\n\n      return {\n\n        pos={x=round(pos.x,4), y=round(pos.y,4), z=round(pos.z,4)},\n\n        rot={x=round(rot.x,4), y=round(rot.y,4), z=round(rot.z,4)},\n\n        lock=obj.getLock()\n\n      }\n\n    end,\n\n    function(obj)\n\n      return obj.guid\n\n    end\n\n  )\n\nend\n\n\n\n\n\nfunction updateSave()\n\n  local data_to_save = {[\"ml\"]=memoryList, [\"rr\"]=relativeRotation}\n\n  saved_data = JSON.encode(data_to_save)\n\n  self.script_state = saved_data\n\nend\n\n\n\nfunction onload(saved_data)\n\n  if saved_data ~= \"\" then\n\n    local loaded_data = JSON.decode(saved_data)\n\n    --Set up information off of loaded_data\n\n    memoryList = loaded_data.ml\n\n    relativeRotation = loaded_data.rr\n\n  else\n\n    --Set up information for if there is no saved saved data\n\n    memoryList = {}\n\n\n\n    relativeRotation = readRotation()\n\n  end\n\n\n\n  if next(memoryList) == nil then\n\n    changeButtons('before_setup')\n\n  else\n\n    changeButtons('done_setup')\n\n  end\n\nend\n\n\n\n-- handlers for buttons\n\nfunction click_setup()\n\n  local tagTarget = self.getGMNotes()\n\n\n\n  if (tagTarget == nil or tagTarget == '') then\n\n    broadcastToAll('please specify a tag to target in GM notes')\n\n    return\n\n  end\n\n\n\n  memoryListBackup = duplicateTable(memoryList)\n\n  memoryList = readList()\n\n\n\n  if (next(memoryList) == nil) then\n\n    broadcastToAll('The tag you specified yielded in 0 objects')\n\n    return\n\n  end\n\n\n\n  setOutline(memoryList, true)\n\n\n\n  relativeRotationBackup = relativeRotation\n\n  relativeRotation = readRotation()\n\n\n\n  changeButtons('in_setup')\n\nend\n\n\n\nfunction click_cancel()\n\n  setOutline(memoryList, false)\n\n\n\n  memoryList = memoryListBackup\n\n  relativeRotation = relativeRotationBackup\n\n\n\n  if next(memoryList) == nil then\n\n    changeButtons('before_setup')\n\n  else\n\n    changeButtons('done_setup')\n\n  end\n\n\n\n  broadcastToAll(\"Selection Canceled\", {1,1,1})\n\nend\n\n\n\nfunction click_submit()\n\n  memoryList = readList()\n\n  if (next(memoryList) == nil) then\n\n    broadcastToAll(\"You cannot submit without any selections.\", {0.75, 0.25, 0.25})\n\n  else\n\n    changeButtons('done_setup')\n\n\n\n    local count = setOutline(memoryList, false)\n\n    broadcastToAll(count..\" Objects Saved\", {1,1,1})\n\n\n\n    updateSave()\n\n  end\n\nend\n\n\n\nfunction click_reset()\n\n  setOutline(memoryList, false)\n\n  memoryList = {}\n\n\n\n  relativeRotation = readRotation()\n\n\n\n  changeButtons('before_setup')\n\n\n\n  broadcastToAll(\"Tool Reset\", {1,1,1})\n\n  updateSave()\n\nend\n\n\n\nfunction click_place()\n\n\n\n  local bagObjList = self.getObjects()\n\n  local currentRotation = readRotation()\n\n\n\n  local newMemoryList = {}\n\n  local printed = false\n\n  for guid, entry in pairs(memoryList) do\n\n    local obj = getObjectFromGUID(guid)\n\n    local selfPos = self.getPosition()\n\n    local rot = { x=entry.rot.x, y=entry.rot.y, z=entry.rot.z }\n\n    local rotationAdjustment = currentRotation - relativeRotation\n\n\n\n    rot.y = rot.y + rotationAdjustment\n\n    if (rot.y > 360) then\n\n      rot.y = rot.y - 360\n\n    elseif (rot.y < 0) then\n\n      rot.y = rot.y + 360\n\n    end\n\n\n\n    --If obj is out on the table, move it to the saved pos/rot\n\n    if obj ~= nil then\n\n      local deltaPos = compare_coords(selfPos, entry.pos, rotationAdjustment)\n\n      obj.setPosition(deltaPos)\n\n      obj.setRotation(rot)\n\n      obj.setLock(entry.lock)\n\n      newMemoryList[obj.guid] = memoryList[obj.guid]\n\n    else\n\n      --If obj is inside of the bag\n\n      for _, bagObj in ipairs(bagObjList) do\n\n\n\n        if bagObj.guid == guid then\n\n\n\n            local deltaPos = compare_coords(selfPos, entry.pos, rotationAdjustment)\n\n            local item = self.takeObject({\n\n              guid=guid,\n\n              position=deltaPos,\n\n              rotation=rot,\n\n              smooth=false\n\n            })\n\n\n\n            newItem = item.clone({\n\n              position=deltaPos,\n\n              rotation=rot,\n\n              smooth=false\n\n            })\n\n            item.destruct()\n\n\n\n            newItem.setLock(entry.lock)\n\n            newItem.setPosition(deltaPos)\n\n            newMemoryList[newItem.guid] = memoryList[guid]\n\n          break\n\n        end\n\n      end\n\n    end\n\n  end\n\n\n\n  memoryList = {}\n\n  for k,v in pairs(newMemoryList) do\n\n   memoryList[k] = v\n\n  end\n\n  broadcastToAll(\"Objects Placed\", {1,1,1})\n\nupdateSave()\n\nend\n\n\n\nfunction click_recall()\n\n  for guid, entry in pairs(memoryList) do\n\n    local obj = getObjectFromGUID(guid)\n\n    if obj ~= nil then\n\n      self.putObject(obj)\n\n    end\n\n  end\n\n  broadcastToAll(\"Objects Recalled\", {1,1,1})\n\nend",
-      "LuaScriptState": "{\"ml\": {\"8b3639\": {\"lock\": false, \"pos\": {\"x\": -3.0, \"y\": 0.0213, \"z\": -4.5}, \"rot\": {\"x\": 0.0, \"y\": 180.0, \"z\": 0.0}}, \"85bb0b\": {\"lock\": false, \"pos\": {\"x\": -1.5, \"y\": 0.0213, \"z\": -4.5}, \"rot\": {\"x\": 0.0, \"y\": 180.0, \"z\": 0.0}}, \"ce2b17\": {\"lock\": false, \"pos\": {\"x\": 0.0, \"y\": 0.0213, \"z\": -4.5}, \"rot\": {\"x\": 0.0, \"y\": 180.0, \"z\": 0.0}}, \"335b72\": {\"lock\": false, \"pos\": {\"x\": 1.5, \"y\": 0.0213, \"z\": -4.5}, \"rot\": {\"x\": 0.0, \"y\": 180.0, \"z\": 0.0}}, \"7f414d\": {\"lock\": false, \"pos\": {\"x\": 3.0, \"y\": 0.0213, \"z\": -4.5}, \"rot\": {\"x\": 0.0, \"y\": 180.0, \"z\": 0.0}}, \"3d90aa\": {\"lock\": false, \"pos\": {\"x\": -3.0, \"y\": 0.0213, \"z\": -6.0}, \"rot\": {\"x\": 0.0, \"y\": 180.0, \"z\": 0.0}}}, \"rr\": 270}",
+      "LuaScript": "-- constants\n\nlocal BUTTON_SETUP = {\n\n  label=\"Setup\",\n\n  click_function=\"click_setup\", function_owner=self,\n\n  position={0,0.3,-2}, rotation={0,180,0},\n\n  height=350, width=800,\n\n  font_size=250, color={0,0,0}, font_color={1,1,1}\n\n}\n\nlocal BUTTON_SETUP_2 = {\n\n  label=\"Setup\",\n\n  click_function=\"click_setup\",\n\n  function_owner=self,\n\n  position={-1,0.5,0}, rotation={0,270,0},\n\n  height=350, width=800,\n\n  font_size=250, color={0,0,0}, font_color={1,1,1}\n\n}\n\nlocal BUTTON_RECALL = {\n\n  label=\"Recall\",\n\n  click_function=\"click_recall\", function_owner=self,\n\n  position={1,0,-1}, rotation={0,270,0},\n\n  height=350, width=800,\n\n  font_size=250, color={1,0,0}, font_color={1,1,1}\n\n}\n\nlocal BUTTON_PLACE = {\n\n  label=\"Place\",\n\n  click_function=\"click_place\",\n\n  function_owner=self,\n\n  position={1,0,1}, rotation={0,270,0},\n\n  height=350, width=800,\n\n  font_size=250, color={0.2,0.95,0}, font_color={0,0,0}\n\n}\n\nlocal BUTTON_CANCEL = {\n\n  label=\"Cancel\",\n\n  click_function=\"click_cancel\",\n\n  function_owner=self,\n\n  position={0,0.3,-2}, rotation={0,180,0},\n\n  height=350, width=1100,\n\n  font_size=250, color={0,0,0}, font_color={1,1,1}\n\n}\n\nlocal BUTTON_SUBMIT = {\n\n  label=\"Submit\",\n\n  click_function=\"click_submit\", function_owner=self,\n\n  position={0,0.3,-2.8}, rotation={0,180,0},\n\n  height=350, width=1100,\n\n  font_size=250, color={0,0,0}, font_color={1,1,1}\n\n}\n\nlocal BUTTON_RESET = {\n\n  label=\"Reset\",\n\n  click_function=\"click_reset\",\n\n  function_owner=self,\n\n  position={-2,0.3,0}, rotation={0,270,0},\n\n  height=350, width=800,\n\n  font_size=250, color={0,0,0}, font_color={1,1,1}\n\n}\n\n\n\n-- functional utils\n\nlocal function transmute(t, vfn, kfn)\n\n    local out = {}\n\n    local c = 1\n\n    for k,v in pairs(t) do\n\n        local value = vfn(v,c,t)\n\n        local key = kfn != nil and kfn(v,c,t) or k\n\n        if (value and key) then\n\n            out[key] = value\n\n        end\n\n        c = c + 1\n\n    end\n\n    return out\n\nend\n\n\n\nlocal function duplicateTable(oldTable)\n\n  local newTable = {}\n\n  for k, v in pairs(oldTable) do\n\n    newTable[k] = v\n\n  end\n\n  return newTable\n\nend\n\n\n\nlocal function round(num, dec)\n\n  local mult = 10^(dec or 0)\n\n  return math.floor(num * mult + 0.5) / mult\n\nend\n\n\n\n-- object utils\n\nlocal function setOutline(list, enabled)\n\n  local count = 0\n\n\n\n  if (next(list) == nil) then\n\n    return count\n\n  end\n\n\n\n  for guid in pairs(list) do\n\n    count = count + 1\n\n    local obj = getObjectFromGUID(guid)\n\n    if (obj ~= nil and enabled == false) then obj.highlightOff() end\n\n    if (obj ~= nil and enabled == true) then obj.highlightOn({1,1,1}) end\n\n  end\n\n\n\n  return count\n\nend\n\n\n\nlocal function readRotation()\n\n  local r1, r2, r3 = self.getRotation():get()\n\n  return round(r2)\n\nend\n\n\n\nlocal function changeButtons(variant)\n\n  self.clearButtons()\n\n\n\n  if(variant == 'before_setup') then\n\n    self.createButton(BUTTON_SETUP)\n\n  elseif (variant == 'in_setup') then\n\n    self.createButton(BUTTON_CANCEL)\n\n    self.createButton(BUTTON_SUBMIT)\n\n    self.createButton(BUTTON_RESET)\n\n  elseif (variant == 'done_setup') then\n\n    self.createButton(BUTTON_PLACE)\n\n    self.createButton(BUTTON_RECALL)\n\n    self.createButton(BUTTON_SETUP_2)\n\n  end\n\nend\n\n\n\nfunction compare_coords(p1, p2, rotation)\n\n  local deltaPos = {}\n\n  r = math.rad(rotation)\n\n\n\n  z = ((-p2.x * math.sin(r) + p2.z * math.cos(r)))\n\n  x = ((p2.x * math.cos(r) + p2.z * math.sin(r)))\n\n\n\n  deltaPos.x = (p1.x+x)\n\n  deltaPos.y = (p1.y+p2.y)\n\n  deltaPos.z = (p1.z+z)\n\n\n\n  return deltaPos\n\nend\n\n\n\n\n\n--state utils\n\nlocal function readList()\n\n  return transmute(\n\n    getObjectsWithTag(self.getGMNotes()),\n\n    function(obj)\n\n      local selfPos = self.getPosition()\n\n      local objPos = obj.getPosition()\n\n      local deltaPos = {}\n\n      deltaPos.x = (objPos.x-selfPos.x)\n\n      deltaPos.y = (objPos.y-selfPos.y)\n\n      deltaPos.z = (objPos.z-selfPos.z)\n\n      local pos, rot = deltaPos, obj.getRotation()\n\n\n\n      return {\n\n        pos={x=round(pos.x,4), y=round(pos.y,4), z=round(pos.z,4)},\n\n        rot={x=round(rot.x,4), y=round(rot.y,4), z=round(rot.z,4)},\n\n        lock=obj.getLock()\n\n      }\n\n    end,\n\n    function(obj)\n\n      return obj.guid\n\n    end\n\n  )\n\nend\n\n\n\n\n\nfunction updateSave()\n\n  local data_to_save = {[\"ml\"]=memoryList, [\"rr\"]=relativeRotation}\n\n  saved_data = JSON.encode(data_to_save)\n\n  self.script_state = saved_data\n\nend\n\n\n\nfunction onload(saved_data)\n\n  if saved_data ~= \"\" then\n\n    local loaded_data = JSON.decode(saved_data)\n\n    --Set up information off of loaded_data\n\n    memoryList = loaded_data.ml\n\n    relativeRotation = loaded_data.rr\n\n  else\n\n    --Set up information for if there is no saved saved data\n\n    memoryList = {}\n\n\n\n    relativeRotation = readRotation()\n\n  end\n\n\n\n  if next(memoryList) == nil then\n\n    changeButtons('before_setup')\n\n  else\n\n    changeButtons('done_setup')\n\n  end\n\nend\n\n\n\n-- handlers for buttons\n\nfunction click_setup()\n\n  local tagTarget = self.getGMNotes()\n\n\n\n  if (tagTarget == nil or tagTarget == '') then\n\n    broadcastToAll('please specify a tag to target in GM notes')\n\n    return\n\n  end\n\n\n\n  memoryListBackup = duplicateTable(memoryList)\n\n  memoryList = readList()\n\n\n\n  if (next(memoryList) == nil) then\n\n    broadcastToAll('The tag you specified yielded in 0 objects')\n\n    return\n\n  end\n\n\n\n  setOutline(memoryList, true)\n\n\n\n  relativeRotationBackup = relativeRotation\n\n  relativeRotation = readRotation()\n\n\n\n  changeButtons('in_setup')\n\nend\n\n\n\nfunction click_cancel()\n\n  setOutline(memoryList, false)\n\n\n\n  memoryList = memoryListBackup\n\n  relativeRotation = relativeRotationBackup\n\n\n\n  if next(memoryList) == nil then\n\n    changeButtons('before_setup')\n\n  else\n\n    changeButtons('done_setup')\n\n  end\n\n\n\n  broadcastToAll(\"Selection Canceled\", {1,1,1})\n\nend\n\n\n\nfunction click_submit()\n\n  memoryList = readList()\n\n  if (next(memoryList) == nil) then\n\n    broadcastToAll(\"You cannot submit without any selections.\", {0.75, 0.25, 0.25})\n\n  else\n\n    changeButtons('done_setup')\n\n\n\n    local count = setOutline(memoryList, false)\n\n    broadcastToAll(count..\" Objects Saved\", {1,1,1})\n\n\n\n    updateSave()\n\n  end\n\nend\n\n\n\nfunction click_reset()\n\n  setOutline(memoryList, false)\n\n  memoryList = {}\n\n\n\n  relativeRotation = readRotation()\n\n\n\n  changeButtons('before_setup')\n\n\n\n  broadcastToAll(\"Tool Reset\", {1,1,1})\n\n  updateSave()\n\nend\n\n\n\nfunction click_place()\n\n  local bagObjList = {}\n  local success, result = pcall(function() return self.getObjects() end)\n  if success and result ~= nil then\n    bagObjList = result\n  end\n\n  local currentRotation = readRotation()\n\n\n\n  local newMemoryList = {}\n\n  local printed = false\n\n  for guid, entry in pairs(memoryList) do\n\n    local obj = getObjectFromGUID(guid)\n\n    local selfPos = self.getPosition()\n\n    local rot = { x=entry.rot.x, y=entry.rot.y, z=entry.rot.z }\n\n    local rotationAdjustment = currentRotation - relativeRotation\n\n\n\n    rot.y = rot.y + rotationAdjustment\n\n    if (rot.y > 360) then\n\n      rot.y = rot.y - 360\n\n    elseif (rot.y < 0) then\n\n      rot.y = rot.y + 360\n\n    end\n\n\n\n    --If obj is out on the table, move it to the saved pos/rot\n\n    if obj ~= nil then\n\n      local deltaPos = compare_coords(selfPos, entry.pos, rotationAdjustment)\n\n      obj.setPosition(deltaPos)\n\n      obj.setRotation(rot)\n\n      obj.setLock(entry.lock)\n\n      newMemoryList[obj.guid] = memoryList[obj.guid]\n\n    else\n\n      --If obj is inside of the bag\n\n      for _, bagObj in ipairs(bagObjList) do\n\n\n\n        if bagObj.guid == guid then\n\n\n\n            local deltaPos = compare_coords(selfPos, entry.pos, rotationAdjustment)\n\n            local item = self.takeObject({\n\n              guid=guid,\n\n              position=deltaPos,\n\n              rotation=rot,\n\n              smooth=false\n\n            })\n\n\n\n            newItem = item.clone({\n\n              position=deltaPos,\n\n              rotation=rot,\n\n              smooth=false\n\n            })\n\n            item.destruct()\n\n\n\n            newItem.setLock(entry.lock)\n\n            newItem.setPosition(deltaPos)\n\n            newMemoryList[newItem.guid] = memoryList[guid]\n\n          break\n\n        end\n\n      end\n\n    end\n\n  end\n\n\n\n  memoryList = {}\n\n  for k,v in pairs(newMemoryList) do\n\n   memoryList[k] = v\n\n  end\n\n  broadcastToAll(\"Objects Placed\", {1,1,1})\n\nupdateSave()\n\nend\n\n\n\nfunction click_recall()\n\n  for guid, entry in pairs(memoryList) do\n\n    local obj = getObjectFromGUID(guid)\n\n    if obj ~= nil then\n\n      self.putObject(obj)\n\n    end\n\n  end\n\n  broadcastToAll(\"Objects Recalled\", {1,1,1})\n\nend\n\n",
+      "LuaScriptState": "{\"ml\": {\"a35783\": {\"lock\": false, \"pos\": {\"x\": -3.0, \"y\": 0.0213, \"z\": -3.0}, \"rot\": {\"x\": 0.0, \"y\": 180.0, \"z\": 0.0}}, \"24bd4e\": {\"lock\": false, \"pos\": {\"x\": -1.5, \"y\": 0.0213, \"z\": -3.0}, \"rot\": {\"x\": 0.0, \"y\": 180.0, \"z\": 0.0}}, \"cf9452\": {\"lock\": false, \"pos\": {\"x\": 0.0, \"y\": 0.0213, \"z\": -3.0}, \"rot\": {\"x\": 0.0, \"y\": 180.0, \"z\": 0.0}}, \"0a7de2\": {\"lock\": false, \"pos\": {\"x\": 1.5, \"y\": 0.0213, \"z\": -3.0}, \"rot\": {\"x\": 0.0, \"y\": 180.0, \"z\": 0.0}}, \"ed5bfa\": {\"lock\": false, \"pos\": {\"x\": 3.0, \"y\": 0.0213, \"z\": -3.0}, \"rot\": {\"x\": 0.0, \"y\": 180.0, \"z\": 0.0}}, \"f7e344\": {\"lock\": false, \"pos\": {\"x\": -3.0, \"y\": 0.0213, \"z\": -4.5}, \"rot\": {\"x\": 0.0, \"y\": 180.0, \"z\": 0.0}}}, \"rr\": 270}",
       "ContainedObjects": [
         {
-          "GUID": "8b3639",
+          "GUID": "a35783",
           "Name": "Custom_Model_Infinite_Bag",
           "Transform": {
             "posX": 0.0,
             "posY": 1.03,
             "posZ": 0.0,
             "rotX": 0.0,
-            "rotY": 180.0,
+            "rotY": 270.0,
             "rotZ": 0.0,
-            "scaleX": 0.23131425000000003,
+            "scaleX": 1.8538,
             "scaleY": 0.1,
-            "scaleZ": 0.22340925
-          },
-          "Nickname": "Medic",
-          "Description": "Infinite Medic tokens",
-          "ColorDiffuse": {
-            "r": 1.0,
-            "g": 1.0,
-            "b": 1.0,
-            "a": 0.0
-          },
-          "Tags": [],
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "Hands": false,
-          "CustomMesh": {
-            "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/kasrkin/tts/token/kasrkin-medic.obj",
-            "DiffuseURL": "",
-            "NormalURL": "",
-            "ColliderURL": "",
-            "Convex": true,
-            "MaterialIndex": 0,
-            "TypeIndex": 7,
-            "CastShadows": true
-          },
-          "Bag": {
-            "Order": 0
-          },
-          "ContainedObjects": [
-            {
-              "GUID": "e6570b",
-              "Name": "Custom_Token",
-              "Transform": {
-                "posX": 0.0,
-                "posY": 1.63,
-                "posZ": 0.0,
-                "rotX": 0.0,
-                "rotY": 0.0,
-                "rotZ": 0.0,
-                "scaleX": 0.11625,
-                "scaleY": 1.0,
-                "scaleZ": 0.11625
-              },
-              "Nickname": "Medic",
-              "Description": "Medic",
-              "ColorDiffuse": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0
-              },
-              "Tags": [
-                "KTUIStackable",
-                "KTUIToken"
-              ],
-              "Locked": false,
-              "Grid": true,
-              "Snap": false,
-              "Autoraise": true,
-              "Sticky": false,
-              "Tooltip": false,
-              "Hands": false,
-              "CustomImage": {
-                "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/kasrkin/tts/token/kasrkin-medic.png",
-                "ImageSecondaryURL": "",
-                "ImageScalar": 1.0,
-                "WidthScale": 0.0,
-                "CustomToken": {
-                  "Thickness": 0.1,
-                  "MergeDistancePixels": 13.0,
-                  "StandUp": false,
-                  "Stackable": false
-                }
-              }
-            }
-          ],
-          "ChildObjects": [
-            {
-              "GUID": "fb7166",
-              "Name": "Custom_Token",
-              "Transform": {
-                "posX": 0.0,
-                "posY": 0.0,
-                "posZ": 0.0,
-                "rotX": 0.0,
-                "rotY": 0.0,
-                "rotZ": 0.0,
-                "scaleX": 0.11625,
-                "scaleY": 1.0,
-                "scaleZ": 0.11625
-              },
-              "Nickname": "Medic",
-              "Description": "Medic",
-              "ColorDiffuse": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0
-              },
-              "Tags": [
-                "KTUIStackable",
-                "KTUIToken"
-              ],
-              "Locked": true,
-              "Grid": true,
-              "Snap": false,
-              "Autoraise": true,
-              "Sticky": false,
-              "Tooltip": false,
-              "Hands": false,
-              "CustomImage": {
-                "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/kasrkin/tts/token/kasrkin-medic.png",
-                "ImageSecondaryURL": "",
-                "ImageScalar": 1.0,
-                "WidthScale": 0.0,
-                "CustomToken": {
-                  "Thickness": 0.1,
-                  "MergeDistancePixels": 13.0,
-                  "StandUp": false,
-                  "Stackable": false
-                }
-              }
-            }
-          ]
-        },
-        {
-          "GUID": "85bb0b",
-          "Name": "Custom_Model_Infinite_Bag",
-          "Transform": {
-            "posX": 0.0,
-            "posY": 1.03,
-            "posZ": 0.0,
-            "rotX": 0.0,
-            "rotY": 180.0,
-            "rotZ": 0.0,
-            "scaleX": 0.23131425000000003,
-            "scaleY": 0.1,
-            "scaleZ": 0.22340925
+            "scaleZ": 1.7887
           },
           "Nickname": "Auspex Scan",
           "Description": "Infinite Auspex Scan tokens",
@@ -226,7 +88,11 @@
             "b": 1.0,
             "a": 0.0
           },
-          "Tags": [],
+          "Tags": [
+            "KTUIStackable",
+            "KTUIToken",
+            "_kasrkin_tokens"
+          ],
           "Locked": false,
           "Grid": true,
           "Snap": true,
@@ -235,7 +101,7 @@
           "Tooltip": true,
           "Hands": false,
           "CustomMesh": {
-            "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/kasrkin/tts/token/kasrkin-auspex-scan.obj",
+            "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/fix/correct-celestians/output_v2/imperium/kasrkin/tts/token/kasrkin-auspex-scan.obj",
             "DiffuseURL": "",
             "NormalURL": "",
             "ColliderURL": "",
@@ -258,9 +124,9 @@
                 "rotX": 0.0,
                 "rotY": 0.0,
                 "rotZ": 0.0,
-                "scaleX": 0.11625,
+                "scaleX": 0.21,
                 "scaleY": 1.0,
-                "scaleZ": 0.11625
+                "scaleZ": 0.21
               },
               "Nickname": "Auspex Scan",
               "Description": "Auspex Scan",
@@ -281,13 +147,13 @@
               "Tooltip": false,
               "Hands": false,
               "CustomImage": {
-                "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/kasrkin/tts/token/kasrkin-auspex-scan.png",
+                "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/fix/correct-celestians/output_v2/imperium/kasrkin/tts/token/kasrkin-auspex-scan.png",
                 "ImageSecondaryURL": "",
                 "ImageScalar": 1.0,
                 "WidthScale": 0.0,
                 "CustomToken": {
                   "Thickness": 0.1,
-                  "MergeDistancePixels": 13.0,
+                  "MergeDistancePixels": 11.0,
                   "StandUp": false,
                   "Stackable": false
                 }
@@ -305,9 +171,9 @@
                 "rotX": 0.0,
                 "rotY": 0.0,
                 "rotZ": 0.0,
-                "scaleX": 0.11625,
+                "scaleX": 0.21,
                 "scaleY": 1.0,
-                "scaleZ": 0.11625
+                "scaleZ": 0.21
               },
               "Nickname": "Auspex Scan",
               "Description": "Auspex Scan",
@@ -328,13 +194,13 @@
               "Tooltip": false,
               "Hands": false,
               "CustomImage": {
-                "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/kasrkin/tts/token/kasrkin-auspex-scan.png",
+                "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/fix/correct-celestians/output_v2/imperium/kasrkin/tts/token/kasrkin-auspex-scan.png",
                 "ImageSecondaryURL": "",
                 "ImageScalar": 1.0,
                 "WidthScale": 0.0,
                 "CustomToken": {
                   "Thickness": 0.1,
-                  "MergeDistancePixels": 13.0,
+                  "MergeDistancePixels": 11.0,
                   "StandUp": false,
                   "Stackable": false
                 }
@@ -343,156 +209,18 @@
           ]
         },
         {
-          "GUID": "ce2b17",
+          "GUID": "24bd4e",
           "Name": "Custom_Model_Infinite_Bag",
           "Transform": {
             "posX": 0.0,
             "posY": 1.03,
             "posZ": 0.0,
             "rotX": 0.0,
-            "rotY": 180.0,
+            "rotY": 270.0,
             "rotZ": 0.0,
-            "scaleX": 0.23131425000000003,
+            "scaleX": 1.8351557,
             "scaleY": 0.1,
-            "scaleZ": 0.22340925
-          },
-          "Nickname": "Relics of Cadia",
-          "Description": "Infinite Relics of Cadia tokens",
-          "ColorDiffuse": {
-            "r": 1.0,
-            "g": 1.0,
-            "b": 1.0,
-            "a": 0.0
-          },
-          "Tags": [],
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "Hands": false,
-          "CustomMesh": {
-            "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/kasrkin/tts/token/kasrkin-relics-of-cadia.obj",
-            "DiffuseURL": "",
-            "NormalURL": "",
-            "ColliderURL": "",
-            "Convex": true,
-            "MaterialIndex": 0,
-            "TypeIndex": 7,
-            "CastShadows": true
-          },
-          "Bag": {
-            "Order": 0
-          },
-          "ContainedObjects": [
-            {
-              "GUID": "cde581",
-              "Name": "Custom_Token",
-              "Transform": {
-                "posX": 0.0,
-                "posY": 1.63,
-                "posZ": 0.0,
-                "rotX": 0.0,
-                "rotY": 0.0,
-                "rotZ": 0.0,
-                "scaleX": 0.11625,
-                "scaleY": 1.0,
-                "scaleZ": 0.11625
-              },
-              "Nickname": "Relics of Cadia",
-              "Description": "Relics of Cadia",
-              "ColorDiffuse": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0
-              },
-              "Tags": [
-                "KTUIStackable",
-                "KTUIToken"
-              ],
-              "Locked": false,
-              "Grid": true,
-              "Snap": false,
-              "Autoraise": true,
-              "Sticky": false,
-              "Tooltip": false,
-              "Hands": false,
-              "CustomImage": {
-                "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/kasrkin/tts/token/kasrkin-relics-of-cadia.png",
-                "ImageSecondaryURL": "",
-                "ImageScalar": 1.0,
-                "WidthScale": 0.0,
-                "CustomToken": {
-                  "Thickness": 0.1,
-                  "MergeDistancePixels": 13.0,
-                  "StandUp": false,
-                  "Stackable": false
-                }
-              }
-            }
-          ],
-          "ChildObjects": [
-            {
-              "GUID": "83293b",
-              "Name": "Custom_Token",
-              "Transform": {
-                "posX": 0.0,
-                "posY": 0.0,
-                "posZ": 0.0,
-                "rotX": 0.0,
-                "rotY": 0.0,
-                "rotZ": 0.0,
-                "scaleX": 0.11625,
-                "scaleY": 1.0,
-                "scaleZ": 0.11625
-              },
-              "Nickname": "Relics of Cadia",
-              "Description": "Relics of Cadia",
-              "ColorDiffuse": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 1.0
-              },
-              "Tags": [
-                "KTUIStackable",
-                "KTUIToken"
-              ],
-              "Locked": true,
-              "Grid": true,
-              "Snap": false,
-              "Autoraise": true,
-              "Sticky": false,
-              "Tooltip": false,
-              "Hands": false,
-              "CustomImage": {
-                "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/kasrkin/tts/token/kasrkin-relics-of-cadia.png",
-                "ImageSecondaryURL": "",
-                "ImageScalar": 1.0,
-                "WidthScale": 0.0,
-                "CustomToken": {
-                  "Thickness": 0.1,
-                  "MergeDistancePixels": 13.0,
-                  "StandUp": false,
-                  "Stackable": false
-                }
-              }
-            }
-          ]
-        },
-        {
-          "GUID": "335b72",
-          "Name": "Custom_Model_Infinite_Bag",
-          "Transform": {
-            "posX": 0.0,
-            "posY": 1.03,
-            "posZ": 0.0,
-            "rotX": 0.0,
-            "rotY": 180.0,
-            "rotZ": 0.0,
-            "scaleX": 0.2197495324,
-            "scaleY": 0.1,
-            "scaleZ": 0.21223974839999998
+            "scaleZ": 1.7720486
           },
           "Nickname": "Clearance Sweep",
           "Description": "Infinite Clearance Sweep tokens",
@@ -502,7 +230,11 @@
             "b": 1.0,
             "a": 0.0
           },
-          "Tags": [],
+          "Tags": [
+            "KTUIToken",
+            "KTUIMarker",
+            "_kasrkin_tokens"
+          ],
           "Locked": false,
           "Grid": true,
           "Snap": true,
@@ -511,7 +243,7 @@
           "Tooltip": true,
           "Hands": false,
           "CustomMesh": {
-            "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/kasrkin/tts/token/kasrkin-clearance-sweep.obj",
+            "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/fix/correct-celestians/output_v2/imperium/kasrkin/tts/token/kasrkin-clearance-sweep.obj",
             "DiffuseURL": "",
             "NormalURL": "",
             "ColliderURL": "",
@@ -534,9 +266,9 @@
                 "rotX": 0.0,
                 "rotY": 0.0,
                 "rotZ": 0.0,
-                "scaleX": 0.110438,
+                "scaleX": 0.21,
                 "scaleY": 1.0,
-                "scaleZ": 0.110438
+                "scaleZ": 0.21
               },
               "Nickname": "Clearance Sweep",
               "Description": "Clearance Sweep",
@@ -557,13 +289,13 @@
               "Tooltip": false,
               "Hands": false,
               "CustomImage": {
-                "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/kasrkin/tts/token/kasrkin-clearance-sweep.png",
+                "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/fix/correct-celestians/output_v2/imperium/kasrkin/tts/token/kasrkin-clearance-sweep.png",
                 "ImageSecondaryURL": "",
                 "ImageScalar": 1.0,
                 "WidthScale": 0.0,
                 "CustomToken": {
                   "Thickness": 0.1,
-                  "MergeDistancePixels": 13.0,
+                  "MergeDistancePixels": 6.0,
                   "StandUp": false,
                   "Stackable": false
                 }
@@ -581,9 +313,9 @@
                 "rotX": 0.0,
                 "rotY": 0.0,
                 "rotZ": 0.0,
-                "scaleX": 0.110438,
+                "scaleX": 0.21,
                 "scaleY": 1.0,
-                "scaleZ": 0.110438
+                "scaleZ": 0.21
               },
               "Nickname": "Clearance Sweep",
               "Description": "Clearance Sweep",
@@ -604,13 +336,13 @@
               "Tooltip": false,
               "Hands": false,
               "CustomImage": {
-                "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/kasrkin/tts/token/kasrkin-clearance-sweep.png",
+                "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/fix/correct-celestians/output_v2/imperium/kasrkin/tts/token/kasrkin-clearance-sweep.png",
                 "ImageSecondaryURL": "",
                 "ImageScalar": 1.0,
                 "WidthScale": 0.0,
                 "CustomToken": {
                   "Thickness": 0.1,
-                  "MergeDistancePixels": 13.0,
+                  "MergeDistancePixels": 6.0,
                   "StandUp": false,
                   "Stackable": false
                 }
@@ -619,28 +351,32 @@
           ]
         },
         {
-          "GUID": "7f414d",
+          "GUID": "cf9452",
           "Name": "Custom_Model_Infinite_Bag",
           "Transform": {
             "posX": 0.0,
             "posY": 1.03,
             "posZ": 0.0,
             "rotX": 0.0,
-            "rotY": 180.0,
+            "rotY": 270.0,
             "rotZ": 0.0,
-            "scaleX": 0.2197495324,
+            "scaleX": 1.8351557,
             "scaleY": 0.1,
-            "scaleZ": 0.21223974839999998
+            "scaleZ": 1.7720486
           },
-          "Nickname": "Tactical Command",
-          "Description": "Infinite Tactical Command tokens",
+          "Nickname": "Medic",
+          "Description": "Infinite Medic tokens",
           "ColorDiffuse": {
             "r": 1.0,
             "g": 1.0,
             "b": 1.0,
             "a": 0.0
           },
-          "Tags": [],
+          "Tags": [
+            "KTUIStackable",
+            "KTUIToken",
+            "_kasrkin_tokens"
+          ],
           "Locked": false,
           "Grid": true,
           "Snap": true,
@@ -649,7 +385,7 @@
           "Tooltip": true,
           "Hands": false,
           "CustomMesh": {
-            "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/kasrkin/tts/token/kasrkin-tactical-command.obj",
+            "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/fix/correct-celestians/output_v2/imperium/kasrkin/tts/token/kasrkin-medic.obj",
             "DiffuseURL": "",
             "NormalURL": "",
             "ColliderURL": "",
@@ -663,7 +399,7 @@
           },
           "ContainedObjects": [
             {
-              "GUID": "9036d1",
+              "GUID": "e6570b",
               "Name": "Custom_Token",
               "Transform": {
                 "posX": 0.0,
@@ -672,12 +408,12 @@
                 "rotX": 0.0,
                 "rotY": 0.0,
                 "rotZ": 0.0,
-                "scaleX": 0.110438,
+                "scaleX": 0.21,
                 "scaleY": 1.0,
-                "scaleZ": 0.110438
+                "scaleZ": 0.21
               },
-              "Nickname": "Tactical Command",
-              "Description": "Tactical Command",
+              "Nickname": "Medic",
+              "Description": "Medic",
               "ColorDiffuse": {
                 "r": 1.0,
                 "g": 1.0,
@@ -695,13 +431,13 @@
               "Tooltip": false,
               "Hands": false,
               "CustomImage": {
-                "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/kasrkin/tts/token/kasrkin-tactical-command.png",
+                "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/fix/correct-celestians/output_v2/imperium/kasrkin/tts/token/kasrkin-medic.png",
                 "ImageSecondaryURL": "",
                 "ImageScalar": 1.0,
                 "WidthScale": 0.0,
                 "CustomToken": {
                   "Thickness": 0.1,
-                  "MergeDistancePixels": 13.0,
+                  "MergeDistancePixels": 6.0,
                   "StandUp": false,
                   "Stackable": false
                 }
@@ -710,7 +446,7 @@
           ],
           "ChildObjects": [
             {
-              "GUID": "b51560",
+              "GUID": "fb7166",
               "Name": "Custom_Token",
               "Transform": {
                 "posX": 0.0,
@@ -719,12 +455,12 @@
                 "rotX": 0.0,
                 "rotY": 0.0,
                 "rotZ": 0.0,
-                "scaleX": 0.110438,
+                "scaleX": 0.21,
                 "scaleY": 1.0,
-                "scaleZ": 0.110438
+                "scaleZ": 0.21
               },
-              "Nickname": "Tactical Command",
-              "Description": "Tactical Command",
+              "Nickname": "Medic",
+              "Description": "Medic",
               "ColorDiffuse": {
                 "r": 1.0,
                 "g": 1.0,
@@ -742,13 +478,13 @@
               "Tooltip": false,
               "Hands": false,
               "CustomImage": {
-                "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/kasrkin/tts/token/kasrkin-tactical-command.png",
+                "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/fix/correct-celestians/output_v2/imperium/kasrkin/tts/token/kasrkin-medic.png",
                 "ImageSecondaryURL": "",
                 "ImageScalar": 1.0,
                 "WidthScale": 0.0,
                 "CustomToken": {
                   "Thickness": 0.1,
-                  "MergeDistancePixels": 13.0,
+                  "MergeDistancePixels": 6.0,
                   "StandUp": false,
                   "Stackable": false
                 }
@@ -757,18 +493,18 @@
           ]
         },
         {
-          "GUID": "3d90aa",
+          "GUID": "0a7de2",
           "Name": "Custom_Model_Infinite_Bag",
           "Transform": {
             "posX": 0.0,
             "posY": 1.03,
             "posZ": 0.0,
             "rotX": 0.0,
-            "rotY": 180.0,
+            "rotY": 270.0,
             "rotZ": 0.0,
-            "scaleX": 0.2197495324,
+            "scaleX": 1.8351557,
             "scaleY": 0.1,
-            "scaleZ": 0.21223974839999998
+            "scaleZ": 1.7720486
           },
           "Nickname": "Melta Mine",
           "Description": "Infinite Melta Mine tokens",
@@ -778,7 +514,11 @@
             "b": 1.0,
             "a": 0.0
           },
-          "Tags": [],
+          "Tags": [
+            "KTUIToken",
+            "KTUIMarker",
+            "_kasrkin_tokens"
+          ],
           "Locked": false,
           "Grid": true,
           "Snap": true,
@@ -787,7 +527,7 @@
           "Tooltip": true,
           "Hands": false,
           "CustomMesh": {
-            "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/kasrkin/tts/token/kasrkin-melta-mine.obj",
+            "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/fix/correct-celestians/output_v2/imperium/kasrkin/tts/token/kasrkin-melta-mine.obj",
             "DiffuseURL": "",
             "NormalURL": "",
             "ColliderURL": "",
@@ -810,9 +550,9 @@
                 "rotX": 0.0,
                 "rotY": 0.0,
                 "rotZ": 0.0,
-                "scaleX": 0.110438,
+                "scaleX": 0.21,
                 "scaleY": 1.0,
-                "scaleZ": 0.110438
+                "scaleZ": 0.21
               },
               "Nickname": "Melta Mine",
               "Description": "Melta Mine",
@@ -833,13 +573,13 @@
               "Tooltip": false,
               "Hands": false,
               "CustomImage": {
-                "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/kasrkin/tts/token/kasrkin-melta-mine.png",
+                "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/fix/correct-celestians/output_v2/imperium/kasrkin/tts/token/kasrkin-melta-mine.png",
                 "ImageSecondaryURL": "",
                 "ImageScalar": 1.0,
                 "WidthScale": 0.0,
                 "CustomToken": {
                   "Thickness": 0.1,
-                  "MergeDistancePixels": 13.0,
+                  "MergeDistancePixels": 6.0,
                   "StandUp": false,
                   "Stackable": false
                 }
@@ -857,9 +597,9 @@
                 "rotX": 0.0,
                 "rotY": 0.0,
                 "rotZ": 0.0,
-                "scaleX": 0.110438,
+                "scaleX": 0.21,
                 "scaleY": 1.0,
-                "scaleZ": 0.110438
+                "scaleZ": 0.21
               },
               "Nickname": "Melta Mine",
               "Description": "Melta Mine",
@@ -880,13 +620,297 @@
               "Tooltip": false,
               "Hands": false,
               "CustomImage": {
-                "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/kasrkin/tts/token/kasrkin-melta-mine.png",
+                "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/fix/correct-celestians/output_v2/imperium/kasrkin/tts/token/kasrkin-melta-mine.png",
                 "ImageSecondaryURL": "",
                 "ImageScalar": 1.0,
                 "WidthScale": 0.0,
                 "CustomToken": {
                   "Thickness": 0.1,
-                  "MergeDistancePixels": 13.0,
+                  "MergeDistancePixels": 6.0,
+                  "StandUp": false,
+                  "Stackable": false
+                }
+              }
+            }
+          ]
+        },
+        {
+          "GUID": "ed5bfa",
+          "Name": "Custom_Model_Infinite_Bag",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 1.03,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 270.0,
+            "rotZ": 0.0,
+            "scaleX": 1.8538,
+            "scaleY": 0.1,
+            "scaleZ": 1.7887
+          },
+          "Nickname": "Relics of Cadia",
+          "Description": "Infinite Relics of Cadia tokens",
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0,
+            "a": 0.0
+          },
+          "Tags": [
+            "KTUIStackable",
+            "KTUIToken",
+            "_kasrkin_tokens"
+          ],
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/fix/correct-celestians/output_v2/imperium/kasrkin/tts/token/kasrkin-relics-of-cadia.obj",
+            "DiffuseURL": "",
+            "NormalURL": "",
+            "ColliderURL": "",
+            "Convex": true,
+            "MaterialIndex": 0,
+            "TypeIndex": 7,
+            "CastShadows": true
+          },
+          "Bag": {
+            "Order": 0
+          },
+          "ContainedObjects": [
+            {
+              "GUID": "cde581",
+              "Name": "Custom_Token",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 1.63,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 0.0,
+                "rotZ": 0.0,
+                "scaleX": 0.21,
+                "scaleY": 1.0,
+                "scaleZ": 0.21
+              },
+              "Nickname": "Relics of Cadia",
+              "Description": "Relics of Cadia",
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0
+              },
+              "Tags": [
+                "KTUIStackable",
+                "KTUIToken"
+              ],
+              "Locked": false,
+              "Grid": true,
+              "Snap": false,
+              "Autoraise": true,
+              "Sticky": false,
+              "Tooltip": false,
+              "Hands": false,
+              "CustomImage": {
+                "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/fix/correct-celestians/output_v2/imperium/kasrkin/tts/token/kasrkin-relics-of-cadia.png",
+                "ImageSecondaryURL": "",
+                "ImageScalar": 1.0,
+                "WidthScale": 0.0,
+                "CustomToken": {
+                  "Thickness": 0.1,
+                  "MergeDistancePixels": 11.0,
+                  "StandUp": false,
+                  "Stackable": false
+                }
+              }
+            }
+          ],
+          "ChildObjects": [
+            {
+              "GUID": "83293b",
+              "Name": "Custom_Token",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 0.0,
+                "rotZ": 0.0,
+                "scaleX": 0.21,
+                "scaleY": 1.0,
+                "scaleZ": 0.21
+              },
+              "Nickname": "Relics of Cadia",
+              "Description": "Relics of Cadia",
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0
+              },
+              "Tags": [
+                "KTUIStackable",
+                "KTUIToken"
+              ],
+              "Locked": true,
+              "Grid": true,
+              "Snap": false,
+              "Autoraise": true,
+              "Sticky": false,
+              "Tooltip": false,
+              "Hands": false,
+              "CustomImage": {
+                "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/fix/correct-celestians/output_v2/imperium/kasrkin/tts/token/kasrkin-relics-of-cadia.png",
+                "ImageSecondaryURL": "",
+                "ImageScalar": 1.0,
+                "WidthScale": 0.0,
+                "CustomToken": {
+                  "Thickness": 0.1,
+                  "MergeDistancePixels": 11.0,
+                  "StandUp": false,
+                  "Stackable": false
+                }
+              }
+            }
+          ]
+        },
+        {
+          "GUID": "f7e344",
+          "Name": "Custom_Model_Infinite_Bag",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 1.03,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 270.0,
+            "rotZ": 0.0,
+            "scaleX": 1.8538,
+            "scaleY": 0.1,
+            "scaleZ": 1.7887
+          },
+          "Nickname": "Tactical Command",
+          "Description": "Infinite Tactical Command tokens",
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0,
+            "a": 0.0
+          },
+          "Tags": [
+            "KTUIStackable",
+            "KTUIToken",
+            "_kasrkin_tokens"
+          ],
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/fix/correct-celestians/output_v2/imperium/kasrkin/tts/token/kasrkin-tactical-command.obj",
+            "DiffuseURL": "",
+            "NormalURL": "",
+            "ColliderURL": "",
+            "Convex": true,
+            "MaterialIndex": 0,
+            "TypeIndex": 7,
+            "CastShadows": true
+          },
+          "Bag": {
+            "Order": 0
+          },
+          "ContainedObjects": [
+            {
+              "GUID": "9036d1",
+              "Name": "Custom_Token",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 1.63,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 0.0,
+                "rotZ": 0.0,
+                "scaleX": 0.21,
+                "scaleY": 1.0,
+                "scaleZ": 0.21
+              },
+              "Nickname": "Tactical Command",
+              "Description": "Tactical Command",
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0
+              },
+              "Tags": [
+                "KTUIStackable",
+                "KTUIToken"
+              ],
+              "Locked": false,
+              "Grid": true,
+              "Snap": false,
+              "Autoraise": true,
+              "Sticky": false,
+              "Tooltip": false,
+              "Hands": false,
+              "CustomImage": {
+                "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/fix/correct-celestians/output_v2/imperium/kasrkin/tts/token/kasrkin-tactical-command.png",
+                "ImageSecondaryURL": "",
+                "ImageScalar": 1.0,
+                "WidthScale": 0.0,
+                "CustomToken": {
+                  "Thickness": 0.1,
+                  "MergeDistancePixels": 11.0,
+                  "StandUp": false,
+                  "Stackable": false
+                }
+              }
+            }
+          ],
+          "ChildObjects": [
+            {
+              "GUID": "b51560",
+              "Name": "Custom_Token",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 0.0,
+                "rotZ": 0.0,
+                "scaleX": 0.21,
+                "scaleY": 1.0,
+                "scaleZ": 0.21
+              },
+              "Nickname": "Tactical Command",
+              "Description": "Tactical Command",
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0
+              },
+              "Tags": [
+                "KTUIStackable",
+                "KTUIToken"
+              ],
+              "Locked": true,
+              "Grid": true,
+              "Snap": false,
+              "Autoraise": true,
+              "Sticky": false,
+              "Tooltip": false,
+              "Hands": false,
+              "CustomImage": {
+                "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/fix/correct-celestians/output_v2/imperium/kasrkin/tts/token/kasrkin-tactical-command.png",
+                "ImageSecondaryURL": "",
+                "ImageScalar": 1.0,
+                "WidthScale": 0.0,
+                "CustomToken": {
+                  "Thickness": 0.1,
+                  "MergeDistancePixels": 11.0,
                   "StandUp": false,
                   "Stackable": false
                 }
@@ -925,8 +949,8 @@
           "Tooltip": true,
           "Hands": false,
           "CustomImage": {
-            "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/kasrkin/tts/kasrkin-icon.png",
-            "ImageSecondaryURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/kasrkin/tts/kasrkin-icon.png",
+            "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/fix/correct-celestians/output_v2/imperium/kasrkin/tts/kasrkin-icon.png",
+            "ImageSecondaryURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/fix/correct-celestians/output_v2/imperium/kasrkin/tts/kasrkin-icon.png",
             "ImageScalar": 1.0,
             "WidthScale": 0.0,
             "CustomTile": {
