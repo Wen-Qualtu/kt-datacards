@@ -10,12 +10,12 @@ Goal
   interior artwork that happens to be similar grey).
 
 Usage
-  # 1) Save your background screenshot somewhere in the repo, e.g.:
-    #    config/defaults/token-bg-sample.png
+    # 1) Save your background screenshot somewhere in the repo, e.g.:
+    #    config/defaults/tts-token/token-bg-sample.png
   # 2) Run:
     poetry run python script/tools/add_token_transparency_bg_sample.py \
     --team farstalker-kinband \
-        --bg-sample config/defaults/token-bg-sample.png \
+        --bg-sample config/defaults/tts-token/token-bg-sample.png \
     --threshold 18
 
 Notes
@@ -120,6 +120,26 @@ def _load_template_mask(path: Path) -> np.ndarray:
     m = cv2.morphologyEx(m, cv2.MORPH_CLOSE, el, iterations=1)
     m = _mask_fill_holes(m)
     return m
+
+
+def _apply_inset_to_mask(mask: np.ndarray, *, scale: float) -> np.ndarray:
+    if mask is None or mask.size == 0:
+        return mask
+    s = float(scale)
+    if s >= 1.0:
+        return mask
+    h, w = mask.shape[:2]
+    nh = max(3, int(round(h * s)))
+    nw = max(3, int(round(w * s)))
+    if nh >= h or nw >= w:
+        return mask
+    bin_mask = (mask > 0).astype(np.uint8)
+    scaled = cv2.resize(bin_mask, (nw, nh), interpolation=cv2.INTER_NEAREST)
+    inset = np.zeros_like(bin_mask, dtype=np.uint8)
+    y0 = (h - nh) // 2
+    x0 = (w - nw) // 2
+    inset[y0 : y0 + nh, x0 : x0 + nw] = scaled
+    return inset
 
 
 def _fit_template_mask(
@@ -1227,6 +1247,8 @@ def process_file(
                     f.write(f"Match quality: DIRECT_FIT\n")
             
             # Apply template
+            # Inset the template mask by 5% before applying.
+            best_fit = _apply_inset_to_mask(best_fit, scale=0.95)
             alpha = np.where(best_fit > 0, alpha, 0).astype(np.uint8)
             
             # Mask out white pixels within template
@@ -1236,35 +1258,29 @@ def process_file(
             alpha = _fill_transparent_holes_within_template(alpha, best_fit)
             alpha = _fill_transparent_holes_within_template(alpha, best_fit)
             
-            # Crop to template bounds and resize to 512x512
+            # Crop to template bounds and resize to template size (no padding)
             template_bbox = _mask_bbox(best_fit)
             if template_bbox is not None:
                 x, y, w, h = template_bbox
                 # Crop both BGR and alpha to template region
                 bgr = bgr[y:y+h, x:x+w]
                 alpha = alpha[y:y+h, x:x+w]
-                
-                # Resize to fit within 480x480 maintaining aspect ratio (10px padding each side)
-                max_dim = 480
-                scale = min(max_dim / w, max_dim / h)
-                new_w = int(w * scale)
-                new_h = int(h * scale)
-                
-                bgr = cv2.resize(bgr, (new_w, new_h), interpolation=cv2.INTER_AREA)
-                alpha = cv2.resize(alpha, (new_w, new_h), interpolation=cv2.INTER_AREA)
-                
-                # Center on 500x500 canvas
-                canvas_bgr = np.full((500, 500, 3), 255, dtype=np.uint8)
-                canvas_alpha = np.zeros((500, 500), dtype=np.uint8)
-                
-                offset_x = (500 - new_w) // 2
-                offset_y = (500 - new_h) // 2
-                
-                canvas_bgr[offset_y:offset_y+new_h, offset_x:offset_x+new_w] = bgr
-                canvas_alpha[offset_y:offset_y+new_h, offset_x:offset_x+new_w] = alpha
-                
-                bgr = canvas_bgr
-                alpha = canvas_alpha
+
+                # Resize directly to the template image size for this shape
+                target_w = w
+                target_h = h
+                if detected_shape == 'round' and template_round is not None:
+                    target_h, target_w = template_round.shape[:2]
+                elif detected_shape == 'operative' and template_oper is not None:
+                    target_h, target_w = template_oper.shape[:2]
+                elif detected_shape == 'octagon' and template_octagon is not None:
+                    target_h, target_w = template_octagon.shape[:2]
+                elif detected_shape == 'diamond' and template_diamond is not None:
+                    target_h, target_w = template_diamond.shape[:2]
+
+                if (w, h) != (target_w, target_h):
+                    bgr = cv2.resize(bgr, (target_w, target_h), interpolation=cv2.INTER_AREA)
+                    alpha = cv2.resize(alpha, (target_w, target_h), interpolation=cv2.INTER_AREA)
 
     out = np.dstack([bgr, alpha])
     
@@ -1287,7 +1303,7 @@ def main() -> int:
     parser.add_argument(
         "--bg-sample",
         type=str,
-        default="config/defaults/token-bg-sample.png",
+        default="config/defaults/tts-token/token-bg-sample.png",
         help=(
             "Path to a screenshot/crop containing only the card background tones. "
             "If omitted, the script learns background tones from token border pixels (less robust)."
@@ -1358,25 +1374,25 @@ def main() -> int:
     parser.add_argument(
         "--operative-template",
         type=str,
-        default="config/defaults/template-operative-cutter.png",
+        default="dev/references/Generic_status_red_04_white.png",
         help="Template PNG for the operative token shape (uses its alpha).",
     )
     parser.add_argument(
         "--round-template",
         type=str,
-        default="config/defaults/template-round-cutter.png",
+        default="dev/references/Bomb_red_white.png",
         help="Template PNG for the round token shape (uses its alpha).",
     )
     parser.add_argument(
         "--octagon-template",
         type=str,
-        default="config/defaults/template-octagon-cutter.png",
+        default="config/defaults/tts-token/template-octagon-cutter.png",
         help="Template PNG for the octagon token shape (uses its alpha).",
     )
     parser.add_argument(
         "--diamond-template",
         type=str,
-        default="config/defaults/template-diamond-cutter.png",
+        default="config/defaults/tts-token/template-diamond-cutter.png",
         help="Template PNG for the diamond token shape (uses its alpha).",
     )
     parser.add_argument("--template-scale-band", type=float, default=0.22)

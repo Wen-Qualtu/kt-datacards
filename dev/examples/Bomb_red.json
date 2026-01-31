@@ -1,0 +1,755 @@
+{
+  "SaveName": "",
+  "Date": "",
+  "VersionNumber": "",
+  "GameMode": "",
+  "GameType": "",
+  "GameComplexity": "",
+  "Tags": [],
+  "Gravity": 0.5,
+  "PlayArea": 0.5,
+  "Table": "",
+  "Sky": "",
+  "Note": "",
+  "TabStates": {},
+  "LuaScript": "",
+  "LuaScriptState": "",
+  "XmlUI": "",
+  "ObjectStates": [
+    {
+      "GUID": "4c5e65",
+      "Name": "Custom_Token",
+      "Transform": {
+        "posX": 17.4232674,
+        "posY": 0.2500004,
+        "posZ": 1.09298873,
+        "rotX": 9.208757E-07,
+        "rotY": 269.99176,
+        "rotZ": 5.695598E-06,
+        "scaleX": 0.21,
+        "scaleY": 1.0,
+        "scaleZ": 0.21
+      },
+      "Nickname": "Bomb_red",
+      "Description": "Bomb_red",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
+      },
+      "Tags": [
+        "KTUIToken",
+        "KTUITokenSimple"
+      ],
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": false,
+      "Grid": true,
+      "Snap": false,
+      "IgnoreFoW": false,
+      "MeasureMovement": true,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": false,
+      "Tooltip": false,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "CustomImage": {
+        "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/1857171492582454592/4D26CEAA0C0837CC2CB9E7106BE07350A053A425/",
+        "ImageSecondaryURL": "",
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
+        "CustomToken": {
+          "Thickness": 0.1,
+          "MergeDistancePixels": 15.0,
+          "StandUp": false,
+          "Stackable": false
+        }
+      },
+      "LuaScript": "--123123  \r\n          self.max_typed_number = 2\r\n\r\n            modelMeasureLineRadius = 0.05\r\n            base                   = {}\r\n            baseLineRadius         = 0.0125\r\n            baseLineHeight         = 0.01\r\n            \r\n            rangeShown             = true\r\n            measureColor           = {0.5, 0.5, 0.5}\r\n            measureRange           = 1\r\n            \r\n            function onNumberTyped( pc, n )\r\n                rangeShown = n > 0\r\n                measureColor = Color.fromString(pc)\r\n                measureRange = n\r\n            \r\n                scaleFactor = 1/self.getScale().x\r\n            \r\n                if lastRange == measureRange then\r\n                    sphereRange = getCircleVectorPoints(measureRange + 0.05, 0.125, 1)[1].x * 2 / scaleFactor\r\n                    Physics.cast({\r\n                        origin       = self.getPosition(),\r\n                        direction    = {0,1,0},\r\n                        type         = 2,\r\n                        size         = {sphereRange,sphereRange,sphereRange},\r\n                        max_distance = 0,\r\n                        debug        = true,\r\n                    })\r\n                end\r\n                lastRange = measureRange\r\n                refreshVectors(pc)\r\n            end\r\n            \r\n            function refreshVectors(pc, norotate)\r\n                local op = pc and Player[pc]\r\n                local circ = {}\r\n                local scaleFactor = 1/self.getScale().x\r\n            \r\n                local rotation = self.getRotation()\r\n                norotate = true\r\n            \r\n                local newLines = {\r\n                {\r\n                    points = getCircleVectorPoints(0 - baseLineRadius, baseLineHeight),\r\n                    color = op and Color.fromString(op.color) or {0.3, 0.3, 0.3},\r\n                    thickness = baseLineRadius*1*scaleFactor\r\n                }\r\n                }\r\n            \r\n                if rangeShown then\r\n                    if measureRange > 0 then\r\n                        table.insert(newLines,{\r\n                        points=getCircleVectorPoints(measureRange - modelMeasureLineRadius + 0.05, 0.01),\r\n                        color = measureColor,\r\n                        thickness = modelMeasureLineRadius*1*scaleFactor,\r\n                        rotation = (norotate and {0, 0, 0} or {-rotation.x, 0, -rotation.z})\r\n                        })\r\n                    else\r\n                        for _,r in pairs(ranges) do\r\n                            local range = r.range\r\n                            table.insert(newLines,{\r\n                                points=getCircleVectorPoints(range - modelMeasureLineRadius + 0.05, 0.01),\r\n                                color = r.color,\r\n                                thickness = modelMeasureLineRadius*1*scaleFactor,\r\n                                rotation = (norotate and {0, 0, 0} or {-rotation.x, 0, -rotation.z})\r\n                                }\r\n                            )\r\n                        end\r\n                    end\r\n                end\r\n            \r\n                self.setVectorLines(newLines)\r\n            end\r\n            \r\n            function getCircleVectorPoints(radius, height, segments)\r\n                local result = {}\r\n                local scaleFactorX = 1/self.getScale().x\r\n                local scaleFactorY = 1/self.getScale().y\r\n                local scaleFactorZ = 1/self.getScale().z\r\n                local steps = segments or 64\r\n                local degrees,sin,cos,toRads = 360/steps, math.sin, math.cos, math.rad\r\n                local modelBase = {x=20,y=0,z=20}\r\n            \r\n                local mtoi = 0.0393701\r\n                local baseX = modelBase.x * 0.5 * mtoi\r\n                local baseZ = modelBase.z * 0.5 * mtoi\r\n            \r\n                for i = 0,steps do\r\n                    table.insert(result,{\r\n                        x = cos(toRads(degrees*i))*((radius+baseX)*scaleFactorX),\r\n                        z = sin(toRads(degrees*i))*((radius+baseZ)*scaleFactorZ),\r\n                        y = height*scaleFactorY\r\n                    })\r\n                end\r\n            \r\n                return result\r\n            end\r\n            \r\n            refreshVectors()\r\n        ",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "AttachedVectorLines": [
+        {
+          "OwnerSteamID": 0,
+          "points3": [
+            {
+              "x": 1.81524289,
+              "y": 0.01,
+              "z": 0.0
+            },
+            {
+              "x": 1.806502,
+              "y": 0.01,
+              "z": 0.177924916
+            },
+            {
+              "x": 1.78036356,
+              "y": 0.01,
+              "z": 0.354136318
+            },
+            {
+              "x": 1.73707914,
+              "y": 0.01,
+              "z": 0.5269372
+            },
+            {
+              "x": 1.67706573,
+              "y": 0.01,
+              "z": 0.6946634
+            },
+            {
+              "x": 1.60090137,
+              "y": 0.01,
+              "z": 0.8556996
+            },
+            {
+              "x": 1.50931931,
+              "y": 0.01,
+              "z": 1.008495
+            },
+            {
+              "x": 1.4032017,
+              "y": 0.01,
+              "z": 1.151578
+            },
+            {
+              "x": 1.28357053,
+              "y": 0.01,
+              "z": 1.28357053
+            },
+            {
+              "x": 1.151578,
+              "y": 0.01,
+              "z": 1.4032017
+            },
+            {
+              "x": 1.008495,
+              "y": 0.01,
+              "z": 1.50931931
+            },
+            {
+              "x": 0.8556996,
+              "y": 0.01,
+              "z": 1.60090137
+            },
+            {
+              "x": 0.6946634,
+              "y": 0.01,
+              "z": 1.67706573
+            },
+            {
+              "x": 0.5269372,
+              "y": 0.01,
+              "z": 1.73707914
+            },
+            {
+              "x": 0.354136318,
+              "y": 0.01,
+              "z": 1.78036356
+            },
+            {
+              "x": 0.177924916,
+              "y": 0.01,
+              "z": 1.806502
+            },
+            {
+              "x": 1.11151568E-16,
+              "y": 0.01,
+              "z": 1.81524289
+            },
+            {
+              "x": -0.177924916,
+              "y": 0.01,
+              "z": 1.806502
+            },
+            {
+              "x": -0.354136318,
+              "y": 0.01,
+              "z": 1.78036356
+            },
+            {
+              "x": -0.5269372,
+              "y": 0.01,
+              "z": 1.73707914
+            },
+            {
+              "x": -0.6946634,
+              "y": 0.01,
+              "z": 1.67706573
+            },
+            {
+              "x": -0.8556996,
+              "y": 0.01,
+              "z": 1.60090137
+            },
+            {
+              "x": -1.008495,
+              "y": 0.01,
+              "z": 1.50931931
+            },
+            {
+              "x": -1.151578,
+              "y": 0.01,
+              "z": 1.4032017
+            },
+            {
+              "x": -1.28357053,
+              "y": 0.01,
+              "z": 1.28357053
+            },
+            {
+              "x": -1.4032017,
+              "y": 0.01,
+              "z": 1.151578
+            },
+            {
+              "x": -1.50931931,
+              "y": 0.01,
+              "z": 1.008495
+            },
+            {
+              "x": -1.60090137,
+              "y": 0.01,
+              "z": 0.8556996
+            },
+            {
+              "x": -1.67706573,
+              "y": 0.01,
+              "z": 0.6946634
+            },
+            {
+              "x": -1.73707914,
+              "y": 0.01,
+              "z": 0.5269372
+            },
+            {
+              "x": -1.78036356,
+              "y": 0.01,
+              "z": 0.354136318
+            },
+            {
+              "x": -1.806502,
+              "y": 0.01,
+              "z": 0.177924916
+            },
+            {
+              "x": -1.81524289,
+              "y": 0.01,
+              "z": 2.22303135E-16
+            },
+            {
+              "x": -1.806502,
+              "y": 0.01,
+              "z": -0.177924916
+            },
+            {
+              "x": -1.78036356,
+              "y": 0.01,
+              "z": -0.354136318
+            },
+            {
+              "x": -1.73707914,
+              "y": 0.01,
+              "z": -0.5269372
+            },
+            {
+              "x": -1.67706573,
+              "y": 0.01,
+              "z": -0.6946634
+            },
+            {
+              "x": -1.60090137,
+              "y": 0.01,
+              "z": -0.8556996
+            },
+            {
+              "x": -1.50931931,
+              "y": 0.01,
+              "z": -1.008495
+            },
+            {
+              "x": -1.4032017,
+              "y": 0.01,
+              "z": -1.151578
+            },
+            {
+              "x": -1.28357053,
+              "y": 0.01,
+              "z": -1.28357053
+            },
+            {
+              "x": -1.151578,
+              "y": 0.01,
+              "z": -1.4032017
+            },
+            {
+              "x": -1.008495,
+              "y": 0.01,
+              "z": -1.50931931
+            },
+            {
+              "x": -0.8556996,
+              "y": 0.01,
+              "z": -1.60090137
+            },
+            {
+              "x": -0.6946634,
+              "y": 0.01,
+              "z": -1.67706573
+            },
+            {
+              "x": -0.5269372,
+              "y": 0.01,
+              "z": -1.73707914
+            },
+            {
+              "x": -0.354136318,
+              "y": 0.01,
+              "z": -1.78036356
+            },
+            {
+              "x": -0.177924916,
+              "y": 0.01,
+              "z": -1.806502
+            },
+            {
+              "x": -3.33454716E-16,
+              "y": 0.01,
+              "z": -1.81524289
+            },
+            {
+              "x": 0.177924916,
+              "y": 0.01,
+              "z": -1.806502
+            },
+            {
+              "x": 0.354136318,
+              "y": 0.01,
+              "z": -1.78036356
+            },
+            {
+              "x": 0.5269372,
+              "y": 0.01,
+              "z": -1.73707914
+            },
+            {
+              "x": 0.6946634,
+              "y": 0.01,
+              "z": -1.67706573
+            },
+            {
+              "x": 0.8556996,
+              "y": 0.01,
+              "z": -1.60090137
+            },
+            {
+              "x": 1.008495,
+              "y": 0.01,
+              "z": -1.50931931
+            },
+            {
+              "x": 1.151578,
+              "y": 0.01,
+              "z": -1.4032017
+            },
+            {
+              "x": 1.28357053,
+              "y": 0.01,
+              "z": -1.28357053
+            },
+            {
+              "x": 1.4032017,
+              "y": 0.01,
+              "z": -1.151578
+            },
+            {
+              "x": 1.50931931,
+              "y": 0.01,
+              "z": -1.008495
+            },
+            {
+              "x": 1.60090137,
+              "y": 0.01,
+              "z": -0.8556996
+            },
+            {
+              "x": 1.67706573,
+              "y": 0.01,
+              "z": -0.6946634
+            },
+            {
+              "x": 1.73707914,
+              "y": 0.01,
+              "z": -0.5269372
+            },
+            {
+              "x": 1.78036356,
+              "y": 0.01,
+              "z": -0.354136318
+            },
+            {
+              "x": 1.806502,
+              "y": 0.01,
+              "z": -0.177924916
+            },
+            {
+              "x": 1.81524289,
+              "y": 0.01,
+              "z": -4.44606271E-16
+            }
+          ],
+          "color": {
+            "r": 0.3,
+            "g": 0.3,
+            "b": 0.3
+          },
+          "thickness": 0.05952381
+        },
+        {
+          "OwnerSteamID": 0,
+          "points3": [
+            {
+              "x": 6.63667154,
+              "y": 0.01,
+              "z": 0.0
+            },
+            {
+              "x": 6.60471439,
+              "y": 0.01,
+              "z": 0.650507569
+            },
+            {
+              "x": 6.50915,
+              "y": 0.01,
+              "z": 1.29475045
+            },
+            {
+              "x": 6.35089874,
+              "y": 0.01,
+              "z": 1.926524
+            },
+            {
+              "x": 6.131485,
+              "y": 0.01,
+              "z": 2.53974438
+            },
+            {
+              "x": 5.85302162,
+              "y": 0.01,
+              "z": 3.12850547
+            },
+            {
+              "x": 5.518191,
+              "y": 0.01,
+              "z": 3.68713713
+            },
+            {
+              "x": 5.1302166,
+              "y": 0.01,
+              "z": 4.21026
+            },
+            {
+              "x": 4.69283533,
+              "y": 0.01,
+              "z": 4.69283533
+            },
+            {
+              "x": 4.21026,
+              "y": 0.01,
+              "z": 5.1302166
+            },
+            {
+              "x": 3.68713713,
+              "y": 0.01,
+              "z": 5.518191
+            },
+            {
+              "x": 3.12850547,
+              "y": 0.01,
+              "z": 5.85302162
+            },
+            {
+              "x": 2.53974438,
+              "y": 0.01,
+              "z": 6.131485
+            },
+            {
+              "x": 1.926524,
+              "y": 0.01,
+              "z": 6.35089874
+            },
+            {
+              "x": 1.29475045,
+              "y": 0.01,
+              "z": 6.50915
+            },
+            {
+              "x": 0.650507569,
+              "y": 0.01,
+              "z": 6.60471439
+            },
+            {
+              "x": 4.06378932E-16,
+              "y": 0.01,
+              "z": 6.63667154
+            },
+            {
+              "x": -0.650507569,
+              "y": 0.01,
+              "z": 6.60471439
+            },
+            {
+              "x": -1.29475045,
+              "y": 0.01,
+              "z": 6.50915
+            },
+            {
+              "x": -1.926524,
+              "y": 0.01,
+              "z": 6.35089874
+            },
+            {
+              "x": -2.53974438,
+              "y": 0.01,
+              "z": 6.131485
+            },
+            {
+              "x": -3.12850547,
+              "y": 0.01,
+              "z": 5.85302162
+            },
+            {
+              "x": -3.68713713,
+              "y": 0.01,
+              "z": 5.518191
+            },
+            {
+              "x": -4.21026,
+              "y": 0.01,
+              "z": 5.1302166
+            },
+            {
+              "x": -4.69283533,
+              "y": 0.01,
+              "z": 4.69283533
+            },
+            {
+              "x": -5.1302166,
+              "y": 0.01,
+              "z": 4.21026
+            },
+            {
+              "x": -5.518191,
+              "y": 0.01,
+              "z": 3.68713713
+            },
+            {
+              "x": -5.85302162,
+              "y": 0.01,
+              "z": 3.12850547
+            },
+            {
+              "x": -6.131485,
+              "y": 0.01,
+              "z": 2.53974438
+            },
+            {
+              "x": -6.35089874,
+              "y": 0.01,
+              "z": 1.926524
+            },
+            {
+              "x": -6.50915,
+              "y": 0.01,
+              "z": 1.29475045
+            },
+            {
+              "x": -6.60471439,
+              "y": 0.01,
+              "z": 0.650507569
+            },
+            {
+              "x": -6.63667154,
+              "y": 0.01,
+              "z": 8.12757865E-16
+            },
+            {
+              "x": -6.60471439,
+              "y": 0.01,
+              "z": -0.650507569
+            },
+            {
+              "x": -6.50915,
+              "y": 0.01,
+              "z": -1.29475045
+            },
+            {
+              "x": -6.35089874,
+              "y": 0.01,
+              "z": -1.926524
+            },
+            {
+              "x": -6.131485,
+              "y": 0.01,
+              "z": -2.53974438
+            },
+            {
+              "x": -5.85302162,
+              "y": 0.01,
+              "z": -3.12850547
+            },
+            {
+              "x": -5.518191,
+              "y": 0.01,
+              "z": -3.68713713
+            },
+            {
+              "x": -5.1302166,
+              "y": 0.01,
+              "z": -4.21026
+            },
+            {
+              "x": -4.69283533,
+              "y": 0.01,
+              "z": -4.69283533
+            },
+            {
+              "x": -4.21026,
+              "y": 0.01,
+              "z": -5.1302166
+            },
+            {
+              "x": -3.68713713,
+              "y": 0.01,
+              "z": -5.518191
+            },
+            {
+              "x": -3.12850547,
+              "y": 0.01,
+              "z": -5.85302162
+            },
+            {
+              "x": -2.53974438,
+              "y": 0.01,
+              "z": -6.131485
+            },
+            {
+              "x": -1.926524,
+              "y": 0.01,
+              "z": -6.35089874
+            },
+            {
+              "x": -1.29475045,
+              "y": 0.01,
+              "z": -6.50915
+            },
+            {
+              "x": -0.650507569,
+              "y": 0.01,
+              "z": -6.60471439
+            },
+            {
+              "x": -1.21913685E-15,
+              "y": 0.01,
+              "z": -6.63667154
+            },
+            {
+              "x": 0.650507569,
+              "y": 0.01,
+              "z": -6.60471439
+            },
+            {
+              "x": 1.29475045,
+              "y": 0.01,
+              "z": -6.50915
+            },
+            {
+              "x": 1.926524,
+              "y": 0.01,
+              "z": -6.35089874
+            },
+            {
+              "x": 2.53974438,
+              "y": 0.01,
+              "z": -6.131485
+            },
+            {
+              "x": 3.12850547,
+              "y": 0.01,
+              "z": -5.85302162
+            },
+            {
+              "x": 3.68713713,
+              "y": 0.01,
+              "z": -5.518191
+            },
+            {
+              "x": 4.21026,
+              "y": 0.01,
+              "z": -5.1302166
+            },
+            {
+              "x": 4.69283533,
+              "y": 0.01,
+              "z": -4.69283533
+            },
+            {
+              "x": 5.1302166,
+              "y": 0.01,
+              "z": -4.21026
+            },
+            {
+              "x": 5.518191,
+              "y": 0.01,
+              "z": -3.68713713
+            },
+            {
+              "x": 5.85302162,
+              "y": 0.01,
+              "z": -3.12850547
+            },
+            {
+              "x": 6.131485,
+              "y": 0.01,
+              "z": -2.53974438
+            },
+            {
+              "x": 6.35089874,
+              "y": 0.01,
+              "z": -1.926524
+            },
+            {
+              "x": 6.50915,
+              "y": 0.01,
+              "z": -1.29475045
+            },
+            {
+              "x": 6.60471439,
+              "y": 0.01,
+              "z": -0.650507569
+            },
+            {
+              "x": 6.63667154,
+              "y": 0.01,
+              "z": -1.62551573E-15
+            }
+          ],
+          "color": {
+            "r": 0.5,
+            "g": 0.5,
+            "b": 0.5
+          },
+          "thickness": 0.238095239
+        }
+      ]
+    }
+  ]
+}

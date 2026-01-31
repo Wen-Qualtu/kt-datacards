@@ -1,8 +1,8 @@
 -- Kill Team Display Table Manager
 -- Attach this to a bag to manage the display table
 
-local TTS_METADATA_URL = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/tts-metadata.json"
-local MANAGER_METADATA_URL = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/tts-manager.json"
+local TTS_METADATA_URL = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/fix/correct-celestians/output_v2/tts-metadata.json"
+local MANAGER_METADATA_URL = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/fix/correct-celestians/output_v2/tts-manager.json"
 local isUpdating = false
 local cancelRequested = false
 local positions = {}

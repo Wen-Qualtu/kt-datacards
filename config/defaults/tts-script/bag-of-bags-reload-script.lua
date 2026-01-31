@@ -2,7 +2,7 @@
 -- This script reloads team card boxes from the tts-card-boxes.json file
 -- It fetches the JSON and spawns each team box
 
-local DATACARDS_URLS_JSON_URL = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/datacards-urls.json"
+local DATACARDS_URLS_JSON_URL = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/fix/correct-celestians/output_v2/datacards-urls.json"
 
 function onload(saved_data)
   Wait.time(function()

@@ -13,7 +13,8 @@ This script handles the full token generation pipeline:
 Usage:
     python script/generate_team_tokens.py --team murderwings
     python script/generate_team_tokens.py --team murderwings --extract
-    python script/generate_team_tokens.py --team murderwings celestian-insidiant
+    python script/generate_team_tokens.py --team murderwings celestian-insidiants
+    python script/generate_team_tokens.py --all
 """
 
 import argparse
@@ -64,11 +65,11 @@ def extract_tokens(team_slug):
     print(f"STEP 1: Extracting tokens from PDF")
     print(f"{'='*60}")
     
-    input_pdf = Path(f'input/{team_slug}.pdf')
-    if not input_pdf.exists():
-        print(f"⚠️  No PDF found at {input_pdf}, skipping extraction")
+    processed_pdf = Path(f'processed/{team_slug}/{team_slug}-faction-rules.pdf')
+    if not processed_pdf.exists():
+        print(f"⚠️  No processed faction-rules PDF found at {processed_pdf}, skipping extraction")
         return True
-    
+
     cmd = ['poetry', 'run', 'python', 'script/tools/extract_tokens.py', '--team', team_slug]
     result = subprocess.run(cmd, capture_output=False)
     
@@ -86,28 +87,23 @@ def process_tokens(team_slug):
     print(f"STEP 2: Processing tokens (background removal)")
     print(f"{'='*60}")
     
-    # Check if tokens exist in dev/extracted-tokens-pdf/{team}/
-    extracted_dir = Path(f'dev/extracted-tokens-pdf/{team_slug}')
+    # Check if tokens exist in processed/{team}/token/
+    extracted_dir = Path(f'processed/{team_slug}/token')
     if not extracted_dir.exists() or not list(extracted_dir.glob('*.png')):
-        print(f"⚠️  No extracted tokens found in {extracted_dir}, skipping processing")
-        return True
+        print(f"❌ Error: No extracted tokens found in {extracted_dir}")
+        return False
     
-    cmd = ['poetry', 'run', 'python', 'script/tools/add_token_transparency_bg_sample.py', '--team', team_slug]
+    cmd = [
+        'poetry', 'run', 'python',
+        'script/tools/add_token_transparency_bg_sample.py',
+        '--team', team_slug,
+        '--tokens-dir', 'processed'
+    ]
     result = subprocess.run(cmd, capture_output=False)
     
     if result.returncode != 0:
         print("❌ Token processing failed")
         return False
-    
-    # Move to processed folder
-    processed_dir = Path(f'processed/{team_slug}/token')
-    processed_dir.mkdir(parents=True, exist_ok=True)
-    
-    # Copy processed tokens
-    for token_file in Path(f'dev/extracted-tokens-pdf/{team_slug}').glob('*.png'):
-        dest = processed_dir / token_file.name
-        shutil.copy2(token_file, dest)
-        print(f"  ✓ Moved {token_file.name} to processed/")
     
     print("✅ Token processing complete")
     return True
@@ -129,12 +125,13 @@ def generate_token_assets(team_slug, config):
     output_dir.mkdir(parents=True, exist_ok=True)
     
     processed_dir = Path(f'processed/{team_slug}/token')
+    processed_cut_dir = Path(f'processed/{team_slug}/token-cut')
     if not processed_dir.exists():
         print(f"❌ Error: No processed tokens found at {processed_dir}")
         return False
     
     # Copy/generate assets for each token
-    template_obj = Path('output_v2/chaos/blooded/tts/token/blooded-scavenged.obj')
+    template_obj = Path('config/defaults/tts-token/token-mesh.obj')
     if not template_obj.exists():
         print(f"❌ Error: Template OBJ file not found: {template_obj}")
         return False
@@ -143,8 +140,10 @@ def generate_token_assets(team_slug, config):
         token_name = token['name']
         token_slug = token_name.lower().replace(' ', '-')
         
-        # Source PNG from processed
-        src_png = processed_dir / f'{token_slug}.png'
+        # Source PNG from processed (prefer token-cut when present)
+        src_png = processed_cut_dir / f'{token_slug}.png'
+        if not src_png.exists():
+            src_png = processed_dir / f'{token_slug}.png'
         if not src_png.exists():
             print(f"⚠️  Warning: Token PNG not found: {src_png}")
             continue
@@ -366,14 +365,20 @@ def main():
         epilog='Examples:\n'
                '  python script/generate_team_tokens.py --team murderwings\n'
                '  python script/generate_team_tokens.py --team murderwings --extract\n'
-               '  python script/generate_team_tokens.py --team murderwings celestian-insidiant',
+               '  python script/generate_team_tokens.py --team murderwings celestian-insidiants\n'
+               '  python script/generate_team_tokens.py --all',
         formatter_class=argparse.RawDescriptionHelpFormatter
     )
     parser.add_argument(
         '--team',
         nargs='+',
-        required=True,
-        help='Team slug(s) to process (e.g., murderwings celestian-insidiant)'
+        required=False,
+        help='Team slug(s) to process (e.g., murderwings celestian-insidiants)'
+    )
+    parser.add_argument(
+        '--all',
+        action='store_true',
+        help='Process all teams with tokens_ready: true'
     )
     parser.add_argument(
         '--extract',
@@ -385,12 +390,28 @@ def main():
     
     # Load config
     config = load_team_config()
+    teams_config = config.get('teams', {})
     
+    # Determine teams to process
+    if args.all:
+        team_list = [
+            team_slug
+            for team_slug, team_data in teams_config.items()
+            if team_data.get('tokens_ready') and team_data.get('tokens')
+        ]
+        team_list.sort()
+    else:
+        team_list = args.team or []
+
+    if not team_list:
+        print("❌ Error: No teams specified. Use --team or --all.")
+        sys.exit(1)
+
     # Process each team
     failed_teams = []
     successful_teams = []
     
-    for team_slug in args.team:
+    for team_slug in team_list:
         if process_team(team_slug, config, extract=args.extract):
             successful_teams.append(team_slug)
         else:
