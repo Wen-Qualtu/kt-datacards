@@ -14,7 +14,7 @@ Contains metadata for all card boxes:
   {
     "team": "legionaries",
     "name": "Legionaries",
-    "url": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/fix/correct-celestians/tts_objects/Legionaries%20Cards.json",
+    "url": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/tts_objects/Legionaries%20Cards.json",
     "last_modified": "2026-01-23T13:29:42"
   },
   ...
@@ -28,7 +28,7 @@ Contains metadata for all token bags:
   {
     "team": "legionaries",
     "name": "Legionaries",
-    "url": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/fix/correct-celestians/tts_objects/tokens/legionaries/legionaries-tokenbag.json",
+    "url": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/tts_objects/tokens/legionaries/legionaries-tokenbag.json",
     "last_modified": "2026-01-23T13:28:26"
   },
   ...

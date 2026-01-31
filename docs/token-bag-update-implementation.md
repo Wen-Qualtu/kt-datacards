@@ -95,7 +95,7 @@ Created `script/add_token_update_to_cardboxes.py` which:
 
 ### GitHub URL Pattern:
 ```
-https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/fix/correct-celestians/tts_objects/tokens/{team}/{team}-tokenbag.json?v={random}
+https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/tts_objects/tokens/{team}/{team}-tokenbag.json?v={random}
 ```
 
 The `?v={random}` parameter forces TTS to bypass its cache and fetch the latest version.

@@ -1,8 +1,8 @@
 -- Kill Team Spawner Token
 -- Click button to spawn any Kill Team card box
 
-local TTS_BOXES_URL = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/fix/correct-celestians/output_v2/tts-card-boxes.json"
-local TTS_METADATA_URL = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/fix/correct-celestians/output_v2/tts-metadata.json"
+local TTS_BOXES_URL = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/tts-card-boxes.json"
+local TTS_METADATA_URL = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/tts-metadata.json"
 local allTeams = {}
 local teamMetadata = {}
 
