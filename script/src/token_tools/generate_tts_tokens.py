@@ -437,6 +437,7 @@ class TTSTokenGenerator:
         shape: str = "operative",
     ) -> Dict:
         """Generate an infinite bag using Custom_Model_Infinite_Bag."""
+        bag_tags = [tag for tag in (token_obj.get('Tags') or []) if not str(tag).startswith('KTUI')]
         # Token inside the bag. If the token image is missing, token_obj may be a
         # built-in Chip with no CustomImage.
         contained_token = {
@@ -529,7 +530,7 @@ class TTSTokenGenerator:
             "Nickname": token_name,
             "Description": f"Infinite {token_name} tokens",
             "ColorDiffuse": {"r": 1.0, "g": 1.0, "b": 1.0, "a": 0.0},
-            "Tags": token_obj.get('Tags', []) or ["KTUIToken"],
+            "Tags": bag_tags,
             "Locked": False,
             "Grid": True,
             "Snap": True,
