@@ -75,6 +75,11 @@ def extract_template_markers(template: dict) -> list:
     return list(set(markers))
 
 
+def scale_markers(markers: list, scale: float) -> list:
+    """Scale marker coordinates by a factor."""
+    return [(int(x * scale), int(y * scale)) for x, y in markers]
+
+
 def match_markers_to_template(detected_markers: list, template_markers: list, tolerance: int = 5) -> float:
     """
     Calculate how well detected markers match template markers.
@@ -100,7 +105,7 @@ def match_markers_to_template(detected_markers: list, template_markers: list, to
     return total_score
 
 
-def detect_page_template(img: np.ndarray, templates: dict, marker_template: np.ndarray) -> str:
+def detect_page_template(img: np.ndarray, templates: dict, marker_template: np.ndarray, dpi_scale: float = 0.5) -> str:
     """
     Detect which template (landscape/portrait/none) best fits the page by matching markers.
     Returns 'landscape', 'portrait', or None.
@@ -111,17 +116,26 @@ def detect_page_template(img: np.ndarray, templates: dict, marker_template: np.n
     if len(detected_markers) < 5:
         return None  # Not enough markers
     
-    # Extract expected marker positions from both templates
+    # Extract expected marker positions from both templates (at 300 DPI)
     landscape_markers = extract_template_markers(templates['landscape'])
     portrait_markers = extract_template_markers(templates['portrait'])
+    
+    # Scale template markers to match current DPI
+    landscape_markers = scale_markers(landscape_markers, dpi_scale)
+    portrait_markers = scale_markers(portrait_markers, dpi_scale)
     
     # Calculate match score for each template (sum of confidence scores)
     landscape_score = match_markers_to_template(detected_markers, landscape_markers, tolerance=5)
     portrait_score = match_markers_to_template(detected_markers, portrait_markers, tolerance=5)
     
-    # Return the template with the highest score
-    if landscape_score == 0 and portrait_score == 0:
-        return None  # No matches found
+    # Require strong match - at least 70% of expected markers with avg confidence > 0.5
+    # Landscape has 10 markers, portrait has 9
+    landscape_min_score = len(landscape_markers) * 0.7 * 0.5  # 70% markers × 0.5 confidence
+    portrait_min_score = len(portrait_markers) * 0.7 * 0.5
+    
+    # Return the template with the highest score if it meets minimum
+    if landscape_score < landscape_min_score and portrait_score < portrait_min_score:
+        return None  # No good match
     
     if landscape_score > portrait_score:
         return 'landscape'
@@ -144,13 +158,13 @@ def render_page_to_image(page: fitz.Page, dpi: int = 300) -> np.ndarray:
     return img
 
 
-def extract_card_region(img: np.ndarray, card_coords: dict) -> np.ndarray:
+def extract_card_region(img: np.ndarray, card_coords: dict, dpi_scale: float = 1.0) -> np.ndarray:
     """Extract a card region from a page image using corner coordinates."""
-    # Extract coordinates
-    x1, y1 = card_coords['top_left']
-    x2, y2 = card_coords['top_right']
-    x3, y3 = card_coords['bottom_left']
-    x4, y4 = card_coords['bottom_right']
+    # Extract coordinates and scale them
+    x1, y1 = int(card_coords['top_left'][0] * dpi_scale), int(card_coords['top_left'][1] * dpi_scale)
+    x2, y2 = int(card_coords['top_right'][0] * dpi_scale), int(card_coords['top_right'][1] * dpi_scale)
+    x3, y3 = int(card_coords['bottom_left'][0] * dpi_scale), int(card_coords['bottom_left'][1] * dpi_scale)
+    x4, y4 = int(card_coords['bottom_right'][0] * dpi_scale), int(card_coords['bottom_right'][1] * dpi_scale)
     
     # Crop the rectangle (use min/max to handle any orientation)
     left = min(x1, x3)
@@ -163,7 +177,8 @@ def extract_card_region(img: np.ndarray, card_coords: dict) -> np.ndarray:
     return card
 
 
-def extract_cards_from_pdf(pdf_path: Path, templates: dict, output_dir: Path, dpi: int = 150):
+def extract_cards_from_pdf(pdf_path: Path, templates: dict, output_dir: Path, dpi: int = 150, 
+                          start_page: int = 1, end_page: int = None):
     """Extract all cards from PDF using templates with auto-detection."""
     # Clean output directory
     if output_dir.exists():
@@ -172,6 +187,11 @@ def extract_cards_from_pdf(pdf_path: Path, templates: dict, output_dir: Path, dp
     output_dir.mkdir(parents=True, exist_ok=True)
     
     doc = fitz.open(pdf_path)
+    
+    if end_page is None:
+        end_page = len(doc)
+    else:
+        end_page = min(end_page, len(doc))
     
     landscape_template = templates['landscape']
     portrait_template = templates['portrait']
@@ -184,12 +204,13 @@ def extract_cards_from_pdf(pdf_path: Path, templates: dict, output_dir: Path, dp
     ], dtype=np.uint8) * 255
     
     total_cards = 0
+    skipped_count = 0
     
     # Process all pages
     print("\nProcessing pages:")
     print("-" * 60)
     
-    for page_num in range(1, len(doc) + 1):
+    for page_num in range(start_page, end_page + 1):
         page = doc[page_num - 1]
         
         # Render page once
@@ -198,10 +219,17 @@ def extract_cards_from_pdf(pdf_path: Path, templates: dict, output_dir: Path, dp
         
         # Detect which template to use
         print(" Detecting template...", end='', flush=True)
-        template_type = detect_page_template(page_img, templates, marker_template)
+        dpi_scale = dpi / 300.0  # Templates are at 300 DPI
+        template_type = detect_page_template(page_img, templates, marker_template, dpi_scale)
         
         if template_type is None:
             print(f"\r  Page {page_num}: Skipped (no cards detected)")
+            skipped_count += 1
+            # Stop processing after first skipped page - no more cards after this
+            if skipped_count >= 1:
+                print(f"\n  Stopping: No more cards expected after first non-card page")
+                break
+            del page_img
             continue
         
         # Select appropriate template
@@ -216,7 +244,7 @@ def extract_cards_from_pdf(pdf_path: Path, templates: dict, output_dir: Path, dp
         
         # Extract cards using selected template
         for card_idx, card_coords in enumerate(card_template['cards'], 1):
-            card_img = extract_card_region(page_img, card_coords)
+            card_img = extract_card_region(page_img, card_coords, dpi_scale)
             
             # Save card
             filename = f"page{page_num:02d}_card{card_idx}_{template_name}.png"
@@ -225,6 +253,9 @@ def extract_cards_from_pdf(pdf_path: Path, templates: dict, output_dir: Path, dp
             
             print(f"    ✓ Card {card_idx}: {card_img.shape[1]}x{card_img.shape[0]}px")
             total_cards += 1
+        
+        # Reset skip counter - we found cards on this page
+        skipped_count = 0
         
         # Free memory
         del page_img
@@ -241,8 +272,12 @@ def main():
                        help='Path to templates JSON (default: dev/card_templates.json)')
     parser.add_argument('--output', type=Path, default=Path('dev/extracted_cards'),
                        help='Output directory (default: dev/extracted_cards)')
-    parser.add_argument('--dpi', type=int, default=300,
-                       help='DPI for rendering (default: 300)')
+    parser.add_argument('--dpi', type=int, default=150,
+                       help='DPI for rendering (default: 150)')
+    parser.add_argument('--start-page', type=int, default=1,
+                       help='First page to process (default: 1)')
+    parser.add_argument('--end-page', type=int, default=None,
+                       help='Last page to process (default: all pages)')
     
     args = parser.parse_args()
     
@@ -267,7 +302,8 @@ def main():
     print(f"  Portrait: {len(templates['portrait']['cards'])} cards per page")
     
     # Extract cards
-    total_cards = extract_cards_from_pdf(args.pdf, templates, args.output, args.dpi)
+    total_cards = extract_cards_from_pdf(args.pdf, templates, args.output, args.dpi, 
+                                         args.start_page, args.end_page)
     
     print("\n" + "=" * 60)
     print(f"✓ Extraction complete!")
