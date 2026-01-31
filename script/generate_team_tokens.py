@@ -279,8 +279,8 @@ def embed_token_bag_in_box(team_slug, config):
     token_bag_guid = token_bag_obj.get('GUID', 'unknown')
     state_data['ml'][token_bag_guid] = {
         "lock": False,
-        "pos": {"x": 5.5, "y": -2.46, "z": -8.5},
-        "rot": {"x": 0.0169, "y": 269.9995, "z": 0.0799},
+        "pos": {"x": 4.0, "y": -2.50, "z": -8.0},
+        "rot": {"x": 0.0, "y": 270.0, "z": 0.0},
     }
     
     box_obj['LuaScriptState'] = json.dumps(state_data)

@@ -86,9 +86,9 @@ def add_tokens_to_box(box_file: Path, token_bag_file: Path):
             "z": -8.0,
         },
         "rot": {
-            "x": 0.0169,
+            "x": 0.0,
             "y": 270.0,
-            "z": 0.0799,
+            "z": 0.0,
         },
     }
 
