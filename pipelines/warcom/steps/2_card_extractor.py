@@ -67,6 +67,10 @@ def extract_team_name_from_pdf(pdf_path: Path) -> str:
     """
     Extract team name from PDF by finding large text near 'KILL TEAM' on later pages.
     Returns the extracted team name or the PDF filename stem as fallback.
+    
+    NOTE: This function is fragile and may extract incorrect text. It works for now but
+    should be improved for better reliability - consider checking multiple pages or using
+    more specific patterns to identify team names vs other large text.
     """
     try:
         doc = fitz.open(pdf_path)

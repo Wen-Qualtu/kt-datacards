@@ -209,82 +209,64 @@ class CardClassifier:
         self,
         card_path: Path,
         pdf_text: Optional[Dict[int, str]] = None
-    ) -> Tuple[Optional[str], Optional[str]]:
+    ) -> Tuple[Optional[str], Optional[str], str]:
         """
         Classify a single card and extract its name.
         
         Key rules:
-        - LANDSCAPE cards are ALWAYS datacards (unless NOTES)
-        - PORTRAIT cards are classified by text extracted from the card PDF
+        - Skip NOTES cards first (before any processing)
+        - Orientation is determined from filename (contains 'landscape' or not)
+        - LANDSCAPE cards are ALWAYS datacards
+        - PORTRAIT cards are classified by text from line 2 of the card
         
         Args:
             card_path: Path to card PDF
             pdf_text: DEPRECATED - Not used anymore, kept for compatibility
         
         Returns:
-            Tuple of (card_type, card_name) or (None, None) if should be skipped
+            Tuple of (card_type, card_name, orientation)
+            - card_type: Type of card or None if should be skipped
+            - card_name: Name of card or None if should be skipped
+            - orientation: 'landscape' or 'portrait'
         """
-        # Extract orientation from filename
-        filename = card_path.name
-        is_landscape = 'landscape' in filename.lower()
-        is_portrait = 'portrait' in filename.lower()
+        # Extract orientation from filename (from previous step)
+        orientation = 'landscape' if 'landscape' in card_path.name.lower() else 'portrait'
         
-        # Extract text from THIS specific card PDF
+        # Extract text once and check for NOTES cards first (before any other processing)
         card_text = self.extract_text_from_card_pdf(card_path)
-        
-        # Skip NOTES cards (can be either orientation)
         if self.is_notes_card(card_text):
-            return (None, None)
+            return ('notes', None, orientation)
         
         # LANDSCAPE cards are ALWAYS datacards
-        if is_landscape:
+        if orientation == 'landscape':
             # For datacards, extract text blocks sorted by position
             lines = self.extract_text_blocks_sorted(card_path)
-            card_name = self._extract_operative_name(lines)
-            
-            # Check if this card continues on the other side
-            # If so, mark it so the next landscape card will be treated as the back
-            if 'CONTINU' in card_text.upper():
-                # Card continues, so name should not have -back suffix
-                # The sequential detection will handle the next card as back
-                pass
-            
-            return ('datacards', card_name)
+            card_name = self._extract_name_from_card(lines, is_landscape=True)
+            return ('datacards', card_name, orientation)
         
         # PORTRAIT cards: classify by header structure
-        if is_portrait:
-            text_upper = card_text.upper()
-            
-            # Edge case 1: Operative selection (special pattern detection)
-            # Row 1-2: Team name with "KILL TEAM", followed by "ARCHETYPES:"
-            first_part = text_upper[:300]  # Check first ~300 chars for team name
-            has_kill = 'KILL' in first_part
-            has_team = 'TEAM' in first_part
-            has_archetypes = 'ARCHETYPE' in text_upper  # Matches ARCHETYPE or ARCHETYPES
-            
-            if has_kill and has_team and has_archetypes:
-                return ('operative-selection', 'operative-selection')
-            
-            # All other portrait cards: extract type from line 1 (index 1)
-            lines = self.extract_text_blocks_sorted(card_path)
-            card_type = self._extract_card_type_from_header(lines)
-            
-            if card_type:
-                # Extract name from line 2 (index 2)
-                if card_type == 'faction-rules':
-                    card_name = self._extract_faction_rule_name(lines)
-                elif card_type == 'token-guide':
-                    card_name = 'token-guide'
-                else:
-                    card_name = self._extract_name_from_header(lines)
-                
-                return (card_type, card_name)
-            
-            # No recognized type found
-            return (None, None)
+        # Check for operative selection first (special pattern detection)
+        # Pattern: Team name with "KILL TEAM" on line 1-2, followed by "ARCHETYPES"
+        text_upper = card_text.upper()
+        first_part = text_upper[:300]  # Check first ~300 chars for team name
+        has_kill = 'KILL' in first_part
+        has_team = 'TEAM' in first_part
+        has_archetypes = 'ARCHETYPE' in text_upper  # Matches ARCHETYPE or ARCHETYPES
         
-        # Unknown orientation
-        return (None, None)
+        if has_kill and has_team and has_archetypes:
+            return ('operative-selection', 'operative-selection', orientation)
+        
+        # All other portrait cards: extract type from line 2
+        lines = self.extract_text_blocks_sorted(card_path)
+        card_type = self._extract_card_type_from_header(lines)
+        
+        if card_type:
+            # Extract name from card (handles all types including token-guide)
+            card_name = self._extract_name_from_card(lines, is_landscape=False)
+            return (card_type, card_name, orientation)
+        
+        # No recognized type found
+        return (None, None, orientation)
     
     def _extract_card_type_from_header(self, lines: List[str]) -> Optional[str]:
         """
@@ -315,91 +297,89 @@ class CardClassifier:
         
         return None
     
-    def _extract_name_from_header(self, lines: List[str]) -> str:
+    def _extract_name_from_card(self, lines: List[str], is_landscape: bool = False) -> str:
         """
-        Extract card name from header structure.
-        Portrait cards have: line 0 = TEAM, line 1 = TYPE, line 2 = NAME
+        Extract card name from text lines.
+        
+        Name extraction depends on card type:
+        - Datacards (landscape): Name is the first meaningful text block (line 1)
+        - Portrait cards: Name is at line 3 (line 0=TEAM, line 1=TYPE, line 2=NAME)
+        - Token-guide: Always returns 'token-guide'
+        - Faction rules: May have special multi-option format
         
         Args:
             lines: Text lines from the card
+            is_landscape: True if this is a datacard (landscape orientation)
         
         Returns:
             Formatted card name or None if not found
         """
-        # For portrait cards, name is always at line 2 (index 2)
-        if len(lines) >= 3:
-            name = lines[2]
-            # Clean and format
-            name = re.sub(r'[^A-Z0-9\s\-]', '', name)
-            name = name.strip()
-            if name:
-                return name.lower().replace(' ', '-')
-        return None
-    
-    def _extract_faction_rule_name(self, lines: List[str]) -> str:
-        """Extract faction rule name from text lines."""
-        # Check for multi-option cards (ACCURSED GIFTS, SANGUAVITAE)
-        # These have the main rule name at the TOP, followed by numbered options
-        first_line = lines[0] if lines else ''
-        
-        if first_line in ['ACCURSED GIFTS', 'SANGUAVITAE']:
-            # Look for option number or name in the next few lines
-            for line in lines[1:6]:
-                # Check for numbered option like "1. Deformed Wings"
-                option_match = re.match(r'^(\d+)\.?\s+(.+)', line)
-                if option_match:
-                    option_name = option_match.group(2).strip()
-                    option_name = re.sub(r'[^A-Z0-9\s\-]', '', option_name)
-                    if option_name:
-                        return f"{first_line.lower().replace(' ', '-')}-{option_name.lower().replace(' ', '-')}"
-                # Check for non-numbered option name (like "Rejuvenate")
-                elif line and line not in ['WHEN', 'EFFECT', 'GOREMONGER', 'CHAOS CULT']:
-                    option_name = re.sub(r'[^A-Z0-9\s\-]', '', line)
-                    if option_name:
-                        return f"{first_line.lower().replace(' ', '-')}-{option_name.lower().replace(' ', '-')}"
-            # Fallback: return base name if no option found
-            return first_line.lower().replace(' ', '-')
-        
-        # Regular faction rule: name is at line 2
-        return self._extract_name_from_header(lines)
-    
-    def _extract_operative_name(self, lines: List[str]) -> str:
-        """
-        Extract operative name from datacard text blocks sorted by position.
-        
-        The operative name is the very first text at the top-left of the card.
-        """
-        # The first substantial line should be the operative name
-        for line in lines[:10]:  # Check first 10 lines
-            line_upper = line.upper()
-            
-            # Skip stat keywords that might appear at top
-            if line_upper in ['APL', 'WOUNDS', 'SAVE', 'MOVE', 'GA', 'DF', 'SV']:
-                continue
-            
-            # Skip pure numbers or stat values
-            if line_upper.replace('"', '').replace("'", '').replace('+', '').strip().isdigit():
-                continue
-            if line_upper in ['3+', '4+', '5+', '6"', '7"', '8"', '5"', '4"']:
-                continue
-            
-            # This should be the operative name (first meaningful text)
-            if len(line) > 3 and any(c.isalpha() for c in line):
-                name = line_upper
+        if is_landscape:
+            # DATACARDS: Extract name from first meaningful text block
+            for line in lines[:10]:  # Check first 10 lines
+                line_upper = line.upper()
                 
-                # Remove team prefix if present
-                for prefix in ['BATTLECLADE', 'KOMMANDOS', 'LEGIONARIES', 'PATHFINDERS', 'KASRKIN', 'BLOODED', 'NOVITIATES', 'WYRMBLADE']:
-                    if name.startswith(prefix + ' '):
-                        name = name[len(prefix) + 1:].strip()
-                        break
+                # Skip stat keywords that might appear at top
+                if line_upper in ['APL', 'WOUNDS', 'SAVE', 'MOVE', 'GA', 'DF', 'SV']:
+                    continue
                 
+                # Skip pure numbers or stat values
+                if line_upper.replace('"', '').replace("'", '').replace('+', '').strip().isdigit():
+                    continue
+                if line_upper in ['3+', '4+', '5+', '6"', '7"', '8"', '5"', '4"']:
+                    continue
+                
+                # This should be the operative name (first meaningful text)
+                if len(line) > 3 and any(c.isalpha() for c in line):
+                    name = line_upper
+                    
+                    # Clean and format (keep full name as it appears on card)
+                    name = re.sub(r'[^A-Z0-9\s\-]', '', name)
+                    name = name.strip()
+                    if name and len(name) > 2:
+                        return name.lower().replace(' ', '-')
+            
+            return None
+        else:
+            # PORTRAIT CARDS: Name at line 3 (index 2)
+            
+            # Special case: token-guide cards always have hardcoded name
+            if len(lines) >= 2:
+                type_line = lines[1].upper().strip()
+                if 'MARKER' in type_line and 'TOKEN' in type_line:
+                    return 'token-guide'
+            
+            # Check for multi-option faction rules (ACCURSED GIFTS, SANGUAVITAE)
+            first_line = lines[0] if lines else ''
+            
+            if first_line in ['ACCURSED GIFTS', 'SANGUAVITAE']:
+                # Look for option number or name in the next few lines
+                for line in lines[1:6]:
+                    # Check for numbered option like "1. Deformed Wings"
+                    option_match = re.match(r'^(\d+)\.?\s+(.+)', line)
+                    if option_match:
+                        option_name = option_match.group(2).strip()
+                        option_name = re.sub(r'[^A-Z0-9\s\-]', '', option_name)
+                        if option_name:
+                            return f"{first_line.lower().replace(' ', '-')}-{option_name.lower().replace(' ', '-')}"
+                    # Check for non-numbered option name (like "Rejuvenate")
+                    elif line and line not in ['WHEN', 'EFFECT', 'GOREMONGER', 'CHAOS CULT']:
+                        option_name = re.sub(r'[^A-Z0-9\s\-]', '', line)
+                        if option_name:
+                            return f"{first_line.lower().replace(' ', '-')}-{option_name.lower().replace(' ', '-')}"
+                # Fallback: return base name if no option found
+                return first_line.lower().replace(' ', '-')
+            
+            # Regular portrait card: name is at line 3 (index 2)
+            if len(lines) >= 3:
+                name = lines[2]
                 # Clean and format
                 name = re.sub(r'[^A-Z0-9\s\-]', '', name)
                 name = name.strip()
-                if name and len(name) > 2:
+                if name:
                     return name.lower().replace(' ', '-')
-        
-        return None
+            
+            return None
 
 
 def extract_pdf_text(pdf_path: Path) -> Dict[int, str]:
@@ -462,6 +442,243 @@ def _get_backside_image(team_name: str, orientation: str, config_dir: Path) -> O
         return default_backside
     
     return None
+
+
+def _has_backside_continue(card_text: str) -> bool:
+    """
+    Check if a card explicitly states it continues on the other side.
+    
+    Matches variations:
+    - CONTINUE ON THE OTHER SIDE
+    - CONTINUE ON OTHER SIDE
+    - CONTINUES ON THE OTHER SIDE
+    - CONTINUES ON OTHER SIDE
+    
+    Args:
+        card_text: Text content of the card
+    
+    Returns:
+        True if card has a continue statement
+    """
+    return bool(re.search(r'CONTINUES?\s+ON\s+(?:THE\s+)?OTHER\s+SIDE', card_text.upper()))
+
+
+def _is_angels_of_death_special_case(card_text: str) -> bool:
+    """
+    Check if card is part of Angels of Death special ordering.
+    
+    Angels of Death Chapter Tactics have wrong card order in PDF:
+    card3 (front), card4 (front), card1 (back of card4), card2 (back of card3)
+    Should be: card3+card2, card4+card1
+    
+    Args:
+        card_text: Text content of the card
+    
+    Returns:
+        True if this is an AoD Chapter Tactics card
+    """
+    # Remove line breaks for multi-line text matching
+    card_text_no_breaks = ' '.join(card_text.upper().split())
+    return 'CHAPTER TACTIC OPTIONS ARE PRESENTED ON THEIR OWN CARD' in card_text_no_breaks
+
+
+def _process_angels_of_death_cards(
+    team_name: str,
+    card_files: List[Path],
+    idx: int,
+    card_type: str,
+    card_name: str,
+    team_output_dir: Path,
+    classifier,
+    seen_names: Dict,
+    log_buffer: List[str]
+) -> Tuple[int, int]:
+    """
+    Process Angels of Death special card ordering.
+    
+    Handles the misordered Chapter Tactics cards:
+    - card at idx (current): front
+    - card at idx+3: back of current
+    - card at idx+1: another front
+    - card at idx+2: back of idx+1
+    
+    Args:
+        team_name: Team slug
+        card_files: List of all card files
+        idx: Current index in card_files
+        card_type: Type of current card
+        card_name: Name of current card
+        team_output_dir: Output directory for team
+        classifier: CardClassifier instance
+        seen_names: Dict tracking duplicate names
+        log_buffer: List for log messages
+    
+    Returns:
+        Tuple of (classified_count, skip_count) - how many cards processed and how many to skip
+    """
+    classified_count = 0
+    type_output_dir = team_output_dir / card_type
+    type_output_dir.mkdir(parents=True, exist_ok=True)
+    
+    # Process current card (idx) with back at idx+3
+    if idx + 3 < len(card_files):
+        back_card_path = card_files[idx + 3]
+        back_final_name = f"{team_name}-{card_name}-back"
+        back_output_path = type_output_dir / f"{back_final_name}.png"
+        
+        try:
+            doc = fitz.open(back_card_path)
+            if len(doc) > 0:
+                page = doc[0]
+                mat = fitz.Matrix(300 / 72, 300 / 72)
+                pix = page.get_pixmap(matrix=mat)
+                pix.save(str(back_output_path))
+            doc.close()
+            apply_rounded_corners(back_output_path, 'portrait')
+            log_buffer.append(f"Processed AoD back card: {back_final_name}.png")
+        except Exception as e:
+            log_buffer.append(f"WARNING: Failed to process AoD back card: {e}")
+        
+        # Process next card (idx+1) as front with card at idx+2 as back
+        if idx + 2 < len(card_files):
+            next_front_path = card_files[idx + 1]
+            next_back_path = card_files[idx + 2]
+            
+            # Classify next front card
+            next_card_type, next_card_name, _ = classifier.classify_card(next_front_path, None)
+            if next_card_type and next_card_name:
+                # Handle duplicate name
+                name_key = f"{next_card_type}:{next_card_name}"
+                if name_key in seen_names:
+                    seen_names[name_key] += 1
+                    next_card_name = f"{next_card_name}-{seen_names[name_key]}"
+                else:
+                    seen_names[name_key] = 1
+                
+                # Create front
+                next_type_output_dir = team_output_dir / next_card_type
+                next_type_output_dir.mkdir(parents=True, exist_ok=True)
+                next_front_final = f"{team_name}-{next_card_name}-front"
+                next_front_output = next_type_output_dir / f"{next_front_final}.png"
+                
+                try:
+                    doc = fitz.open(next_front_path)
+                    if len(doc) > 0:
+                        page = doc[0]
+                        mat = fitz.Matrix(300 / 72, 300 / 72)
+                        pix = page.get_pixmap(matrix=mat)
+                        pix.save(str(next_front_output))
+                    doc.close()
+                    apply_rounded_corners(next_front_output, 'portrait')
+                    
+                    # Create back
+                    next_back_final = f"{team_name}-{next_card_name}-back"
+                    next_back_output = next_type_output_dir / f"{next_back_final}.png"
+                    doc = fitz.open(next_back_path)
+                    if len(doc) > 0:
+                        page = doc[0]
+                        mat = fitz.Matrix(300 / 72, 300 / 72)
+                        pix = page.get_pixmap(matrix=mat)
+                        pix.save(str(next_back_output))
+                    doc.close()
+                    apply_rounded_corners(next_back_output, 'portrait')
+                    
+                    classified_count += 1
+                    log_buffer.append(f"Processed AoD card pair: {next_front_final}.png + {next_back_final}.png")
+                except Exception as e:
+                    log_buffer.append(f"WARNING: Failed to process AoD card pair: {e}")
+    
+    # Return how many cards were processed and how many to skip (3: idx+1, idx+2, idx+3)
+    return classified_count, 3
+
+
+def _process_card_backside(
+    card_path: Path,
+    next_card_path: Path,
+    team_name: str,
+    card_name: str,
+    card_type: str,
+    orientation: str,
+    type_output_dir: Path,
+    log_buffer: List[str]
+) -> bool:
+    """
+    Process a card that continues on the other side.
+    
+    Args:
+        card_path: Path to front card
+        next_card_path: Path to back card
+        team_name: Team slug
+        card_name: Card name
+        card_type: Card type
+        orientation: Card orientation
+        type_output_dir: Output directory for this card type
+        log_buffer: List for log messages
+    
+    Returns:
+        True if successfully processed backside
+    """
+    back_final_name = f"{team_name}-{card_name}-back"
+    back_output_path = type_output_dir / f"{back_final_name}.png"
+    
+    try:
+        doc = fitz.open(next_card_path)
+        if len(doc) > 0:
+            page = doc[0]
+            mat = fitz.Matrix(300 / 72, 300 / 72)
+            pix = page.get_pixmap(matrix=mat)
+            pix.save(str(back_output_path))
+        doc.close()
+        
+        # Apply rounded corners to back card
+        apply_rounded_corners(back_output_path, orientation)
+        log_buffer.append(f"Processed back card: {back_final_name}.png")
+        return True
+    except Exception as e:
+        log_buffer.append(f"WARNING: Failed to convert back card {next_card_path.name} to PNG: {e}")
+        return False
+
+
+def _create_default_backside(
+    team_name: str,
+    card_name: str,
+    orientation: str,
+    type_output_dir: Path,
+    config_dir: Path,
+    log_buffer: List[str]
+) -> bool:
+    """
+    Create a default backside for a card.
+    
+    Args:
+        team_name: Team slug
+        card_name: Card name
+        orientation: Card orientation
+        type_output_dir: Output directory for this card type
+        config_dir: Path to config directory
+        log_buffer: List for log messages
+    
+    Returns:
+        True if successfully created backside
+    """
+    backside_path = _get_backside_image(team_name, orientation, config_dir)
+    
+    if backside_path and backside_path.exists():
+        back_filename = f"{team_name}-{card_name}-back.png"
+        back_output_path = type_output_dir / back_filename
+        
+        try:
+            shutil.copy2(backside_path, back_output_path)
+            # Apply rounded corners to default backside
+            apply_rounded_corners(back_output_path, orientation)
+            log_buffer.append(f"Created default backside: {back_filename}")
+            return True
+        except Exception as e:
+            log_buffer.append(f"WARNING: Failed to create back for {card_name}: {e}")
+            return False
+    else:
+        log_buffer.append(f"WARNING: No backside image found for {team_name} ({orientation})")
+        return False
 
 
 def classify_team_cards(
@@ -533,9 +750,7 @@ def classify_team_cards(
     skipped_count = 0
     type_counts = {}
     
-    # Track previous card to detect front/back relationships and create backsides immediately
-    prev_card_type = None
-    prev_card_name = None
+    # Skip tracking for cards already processed as backsides
     skip_next_card = 0  # Counter for how many cards to skip (0 = don't skip)
     
     # Track seen names to handle duplicates (first keeps original name, subsequent get -2, -3, etc.)
@@ -548,64 +763,47 @@ def classify_team_cards(
                 skip_next_card -= 1
                 continue
             
-            # Extract orientation from filename once
-            is_landscape = 'landscape' in card_path.name.lower()
-            orientation = 'landscape' if is_landscape else 'portrait'
+            # Classify the card (returns type, name, and orientation)
+            card_type, card_name, orientation = classifier.classify_card(card_path, pdf_text)
             
-            # Classify the card
-            card_type, card_name = classifier.classify_card(card_path, pdf_text)
-            
-            # Skip if None (NOTES cards or unrecognized card types)
-            if card_type is None:
-                log_buffer.append(f"Skipping unrecognized card: {card_path.name}")
+            # Handle NOTES cards separately (expected, not an error)
+            if card_type == 'notes':
                 skipped_count += 1
                 continue
             
-            # Extract page and card numbers for fallback naming
-            page_match = re.search(r'page(\d+)', card_path.name)
-            card_match = re.search(r'card(\d+)', card_path.name)
-            page_num = page_match.group(1) if page_match else "00"
-            card_num = card_match.group(1) if card_match else "0"
+            # Skip if classification failed (this is an error condition)
+            if card_type is None:
+                failed_dir = Path('layers/warcom/failed') / team_name
+                failed_dir.mkdir(parents=True, exist_ok=True)
+                failed_card_path = failed_dir / card_path.name
+                shutil.copy2(card_path, failed_card_path)
+                log_buffer.append(f"ERROR: Card classification failed, copied to failed folder: {card_path.name}")
+                skipped_count += 1
+                continue
             
-            # Check for naming issues - copy to failed folder for investigation
+            # Check for naming issues - fail the card if name extraction failed
             if card_name is None or (card_name and 'none' in card_name.lower()):
                 failed_dir = Path('layers/warcom/failed') / team_name
                 failed_dir.mkdir(parents=True, exist_ok=True)
                 failed_card_path = failed_dir / card_path.name
                 shutil.copy2(card_path, failed_card_path)
-                log_buffer.append(f"WARNING: Card with naming issue copied to failed: {card_path.name} (type={card_type}, name={card_name})")
+                log_buffer.append(f"ERROR: Card naming failed, copied to failed folder: {card_path.name} (type={card_type}, name={card_name})")
+                skipped_count += 1
+                continue
             
             # Handle duplicate names: first keeps original, subsequent get -2, -3, etc.
-            if card_name:
-                # Create a unique key combining type and name for tracking
-                name_key = f"{card_type}:{card_name}"
-                if name_key in seen_names:
-                    # This is a duplicate - increment counter and add suffix
-                    seen_names[name_key] += 1
-                    card_name = f"{card_name}-{seen_names[name_key]}"
-                else:
-                    # First occurrence - track it
-                    seen_names[name_key] = 1
-            
-            # Build final card name with team prefix and -front suffix
-            has_back_suffix = card_name and card_name.endswith('-back')
-            
-            if card_name:
-                # If card already has -back suffix, use as-is
-                if has_back_suffix:
-                    final_name = f"{team_name}-{card_name}"
-                else:
-                    final_name = f"{team_name}-{card_name}-front"
+            # Create a unique key combining type and name for tracking
+            name_key = f"{card_type}:{card_name}"
+            if name_key in seen_names:
+                # This is a duplicate - increment counter and add suffix
+                seen_names[name_key] += 1
+                card_name = f"{card_name}-{seen_names[name_key]}"
             else:
-                # Check if this might be a back card (follows a front card)
-                if prev_card_type and prev_card_name:
-                    # Back card inherits type from previous card
-                    card_type = prev_card_type
-                    final_name = f"{team_name}-{prev_card_name}-back"
-                    has_back_suffix = True
-                else:
-                    # Fallback to team + page/card identifier
-                    final_name = f"{team_name}-p{page_num}c{card_num}-front"
+                # First occurrence - track it
+                seen_names[name_key] = 1
+            
+            # Build final card name: {team}-{name}-front (backsides are processed separately)
+            final_name = f"{team_name}-{card_name}-front"
             
             # Create output directory
             type_output_dir = team_output_dir / card_type
@@ -634,135 +832,35 @@ def classify_team_cards(
             classified_count += 1
             type_counts[card_type] = type_counts.get(card_type, 0) + 1
             
-            # Special handling for Angels of Death Chapter Tactics
-            # Cards are in wrong order: card3 (front), card4 (front), card1 (back of card4), card2 (back of card3)
-            # Should be: card3+card2, card4+card1
+            # Extract card text for special case detection
             card_text = classifier.extract_text_from_card_pdf(card_path)
-            # Remove line breaks for multi-line text matching
-            card_text_no_breaks = ' '.join(card_text.upper().split())
-            if 'CHAPTER TACTIC OPTIONS ARE PRESENTED ON THEIR OWN CARD' in card_text_no_breaks:
-                if idx + 3 < len(card_files):
-                    # Process current card (front) with card at idx+3 (back)
-                    back_card_path = card_files[idx + 3]
-                    back_final_name = f"{team_name}-{card_name}-back"
-                    back_output_path = type_output_dir / f"{back_final_name}.png"
-                    
-                    try:
-                        doc = fitz.open(back_card_path)
-                        if len(doc) > 0:
-                            page = doc[0]
-                            mat = fitz.Matrix(300 / 72, 300 / 72)
-                            pix = page.get_pixmap(matrix=mat)
-                            pix.save(str(back_output_path))
-                        doc.close()
-                        apply_rounded_corners(back_output_path, 'portrait')
-                        log_buffer.append(f"DEBUG: Processed back card (AoD special): {back_final_name}.png")
-                    except Exception as e:
-                        log_buffer.append(f"WARNING: Failed to process AoD back card: {e}")
-                    
-                    # Now process next card (idx+1) as front with card at idx+2 as back
-                    if idx + 2 < len(card_files):
-                        next_front_path = card_files[idx + 1]
-                        next_back_path = card_files[idx + 2]
-                        
-                        # Classify next front card
-                        next_card_type, next_card_name = classifier.classify_card(next_front_path, pdf_text)
-                        if next_card_type and next_card_name:
-                            # Handle duplicate name
-                            name_key = f"{next_card_type}:{next_card_name}"
-                            if name_key in seen_names:
-                                seen_names[name_key] += 1
-                                next_card_name = f"{next_card_name}-{seen_names[name_key]}"
-                            else:
-                                seen_names[name_key] = 1
-                            
-                            # Create front
-                            next_type_output_dir = team_output_dir / next_card_type
-                            next_type_output_dir.mkdir(parents=True, exist_ok=True)
-                            next_front_final = f"{team_name}-{next_card_name}-front"
-                            next_front_output = next_type_output_dir / f"{next_front_final}.png"
-                            
-                            try:
-                                doc = fitz.open(next_front_path)
-                                if len(doc) > 0:
-                                    page = doc[0]
-                                    mat = fitz.Matrix(300 / 72, 300 / 72)
-                                    pix = page.get_pixmap(matrix=mat)
-                                    pix.save(str(next_front_output))
-                                doc.close()
-                                apply_rounded_corners(next_front_output, 'portrait')
-                                
-                                # Create back
-                                next_back_final = f"{team_name}-{next_card_name}-back"
-                                next_back_output = next_type_output_dir / f"{next_back_final}.png"
-                                doc = fitz.open(next_back_path)
-                                if len(doc) > 0:
-                                    page = doc[0]
-                                    mat = fitz.Matrix(300 / 72, 300 / 72)
-                                    pix = page.get_pixmap(matrix=mat)
-                                    pix.save(str(next_back_output))
-                                doc.close()
-                                apply_rounded_corners(next_back_output, 'portrait')
-                                
-                                classified_count += 1
-                                type_counts[next_card_type] = type_counts.get(next_card_type, 0) + 1
-                                log_buffer.append(f"DEBUG: Processed AoD card pair: {next_front_final}.png + {next_back_final}.png")
-                            except Exception as e:
-                                log_buffer.append(f"WARNING: Failed to process AoD card pair: {e}")
-                        
-                        # Skip next 3 cards (they've all been processed)
-                        skip_next_card = 3
-                        prev_card_type = card_type
-                        prev_card_name = card_name
-                        continue
-                        
-            # Check if this card continues on the other side
-            # Match 'CONTINUE(S) ON (THE) OTHER SIDE' - THE is optional
-            has_continues = re.search(r'CONTINUES?\s+ON\s+(?:THE\s+)?OTHER\s+SIDE', card_text.upper())
             
-            if has_continues and idx + 1 < len(card_files):
+            # Special case: Angels of Death Chapter Tactics (misordered cards)
+            if _is_angels_of_death_special_case(card_text):
+                aod_classified, aod_skip = _process_angels_of_death_cards(
+                    team_name, card_files, idx, card_type, card_name,
+                    team_output_dir, classifier, seen_names, log_buffer
+                )
+                classified_count += aod_classified
+                skip_next_card = aod_skip
+                continue
+            
+            # Check if this card continues on the other side
+            if _has_backside_continue(card_text) and idx + 1 < len(card_files):
                 # Next card is the back of this card
                 next_card_path = card_files[idx + 1]
-                
-                # Process back card
-                back_final_name = f"{team_name}-{card_name}-back"
-                back_output_path = type_output_dir / f"{back_final_name}.png"
-                
-                try:
-                    doc = fitz.open(next_card_path)
-                    if len(doc) > 0:
-                        page = doc[0]
-                        mat = fitz.Matrix(300 / 72, 300 / 72)
-                        pix = page.get_pixmap(matrix=mat)
-                        pix.save(str(back_output_path))
-                    doc.close()
-                    
-                    # Apply rounded corners to back card
-                    apply_rounded_corners(back_output_path, orientation)
-                    log_buffer.append(f"DEBUG: Processed back card: {back_final_name}.png")
-                except Exception as e:
-                    log_buffer.append(f"WARNING: Failed to convert back card {next_card_path.name} to PNG: {e}")
-                
-                # Mark to skip the next card since we just processed it
+                _process_card_backside(
+                    card_path, next_card_path, team_name, card_name, card_type,
+                    orientation, type_output_dir, log_buffer
+                )
+                # Skip the next card since we just processed it as the back
                 skip_next_card = 1
-            elif not has_back_suffix:
-                # This is a front card with no continue tag
-                # Create default backside immediately
-                backside_path = _get_backside_image(team_name, orientation, Path('config'))
-                
-                if backside_path and backside_path.exists():
-                    back_filename = f"{team_name}-{card_name}-back.png"
-                    back_output_path = type_output_dir / back_filename
-                    
-                    try:
-                        shutil.copy2(backside_path, back_output_path)
-                        # Apply rounded corners to default backside
-                        apply_rounded_corners(back_output_path, orientation)
-                        log_buffer.append(f"DEBUG: Created default backside: {back_filename}")
-                    except Exception as e:
-                        log_buffer.append(f"WARNING: Failed to create back for {card_name}: {e}")
-                else:
-                    log_buffer.append(f"WARNING: No backside image found for {team_name} ({orientation})")
+            else:
+                # No continue statement - create default backside
+                _create_default_backside(
+                    team_name, card_name, orientation,
+                    type_output_dir, Path('config'), log_buffer
+                )
             
         except Exception as e:
             log_buffer.append(f"ERROR: Error classifying {card_path.name}: {e}")
