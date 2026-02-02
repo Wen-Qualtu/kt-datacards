@@ -284,10 +284,11 @@ class CardClassifier:
             type_line = lines[1].upper().strip()
             
             # Map type header text to folder names
-            if 'FACTION RULE' in type_line:
-                return 'faction-rules'
-            elif 'MARKER' in type_line and 'TOKEN' in type_line:
+            # Check token-guide FIRST before faction-rules (more specific pattern)
+            if 'MARKER/TOKEN GUIDE' in type_line:
                 return 'token-guide'
+            elif 'FACTION RULE' in type_line:
+                return 'faction-rules'
             elif 'EQUIPMENT' in type_line:
                 return 'equipment'
             elif 'FIREFIGHT PLOY' in type_line:
@@ -609,7 +610,6 @@ def _combine_front_and_back(
         doc.close()
         apply_rounded_corners(back_output_path, orientation)
         
-        log_buffer.append(f"Combined pair: {front_final_name}.png + {back_final_name}.png")
         return True
     except Exception as e:
         log_buffer.append(f"WARNING: Failed to combine front/back pair: {e}")
@@ -822,15 +822,17 @@ def _process_inquisitorial_requisition(
     Process Inquisitorial Agents special 11-card INQUISITORIAL REQUISITION.
     
     Structure:
-    - idx+0: Front with continue tag
-    - idx+1: Back of idx+0
-    - idx+2/idx+3: Double-sided card 1
-    - idx+4/idx+5: Double-sided card 2
-    - idx+6/idx+7: Double-sided card 3
-    - idx+8/idx+9: Double-sided card 4
-    - idx+10: Single card with default back
-    - idx+11: Single card with default back
-    - idx+12: Single card with default back
+    - idx+0: Front with continue tag (page7card3)
+    - idx+1: Back of idx+0 (page7card4)
+    - idx+2/idx+3: Requisitioned operative pair 1 (page8card1-2)
+    - idx+4/idx+5: Requisitioned operative pair 2 (page8card3-4)
+    - idx+6/idx+7: Requisitioned operative pair 3 (page9card1-2)
+    - idx+8: Single operative 1 (page9card3)
+    - idx+9: Single operative 2 (page9card4)
+    - idx+10: Single operative 3 (page10card1)
+    
+    Cards idx+11 (page10card2 = token-guide) and idx+12 (page10card3 = denounce) 
+    are NOT part of this group and should be processed normally.
     
     Args:
         team_name: Team slug
@@ -852,43 +854,45 @@ def _process_inquisitorial_requisition(
     type_output_dir = team_output_dir / card_type
     type_output_dir.mkdir(parents=True, exist_ok=True)
     
-    # Process first 10 cards as 5 pairs: main faction rule (idx, idx+1) + 4 operative pairs (idx+2 through idx+9)
+    # Process first 8 cards as 4 pairs: main faction rule (idx, idx+1) + 3 operative pairs (idx+2 through idx+7)
     group_classified, _ = _process_card_group(
-        team_name, card_files, idx, 10,
+        team_name, card_files, idx, 8,
         card_type, card_name, orientation,
         team_output_dir, classifier, seen_names, config_dir, log_buffer
     )
     classified_count += group_classified
     
-    # Process 3 single operative cards (idx+10, idx+11, idx+12) with default backs
+    # Process 3 single operative cards (idx+8, idx+9, idx+10) with default backs
+    # All cards in the group use the SAME type as the first card (card_type)
     for single_idx in range(3):
-        card_idx = idx + 10 + single_idx
+        card_idx = idx + 8 + single_idx
         
         if card_idx >= len(card_files):
             break
         
         single_path = card_files[card_idx]
         
-        # Classify single card
-        single_type, single_name, single_orientation = classifier.classify_card(single_path, None)
-        if single_type and single_name:
+        # Extract name from card, but use the group's card_type (not individual classification)
+        _, single_name, single_orientation = classifier.classify_card(single_path, None)
+        if single_name:
             # Handle duplicate name
-            name_key = f"{single_type}:{single_name}"
+            name_key = f"{card_type}:{single_name}"
             if name_key in seen_names:
                 seen_names[name_key] += 1
                 single_name = f"{single_name}-{seen_names[name_key]}"
             else:
                 seen_names[name_key] = 1
             
-            # Process single card with default back (uses same type as main faction rule)
+            # Use the group's type_output_dir (all cards share same type)
+            # Process single card with default back
             if _process_single_card(
                 single_path, team_name, single_name, single_orientation,
                 type_output_dir, config_dir, log_buffer
             ):
                 classified_count += 1
     
-    # Skip next 12 cards (idx+1 through idx+12)
-    return classified_count, 12
+    # Skip next 10 cards (idx+1 through idx+10)
+    return classified_count, 10
 
 
 def _process_card_backside(
@@ -931,7 +935,6 @@ def _process_card_backside(
         
         # Apply rounded corners to back card
         apply_rounded_corners(back_output_path, orientation)
-        log_buffer.append(f"Processed back card: {back_final_name}.png")
         return True
     except Exception as e:
         log_buffer.append(f"WARNING: Failed to convert back card {next_card_path.name} to PNG: {e}")
@@ -970,7 +973,6 @@ def _create_default_backside(
             shutil.copy2(backside_path, back_output_path)
             # Apply rounded corners to default backside
             apply_rounded_corners(back_output_path, orientation)
-            log_buffer.append(f"Created default backside: {back_filename}")
             return True
         except Exception as e:
             log_buffer.append(f"WARNING: Failed to create back for {card_name}: {e}")
@@ -1000,7 +1002,7 @@ def classify_team_cards(
     Returns:
         Dict with classification statistics and log messages
     """
-    # Buffer log messages to output atomically at the end
+    # Buffer only ERROR/WARNING messages for final reporting
     log_buffer = []
     
     team_cards_dir = extracted_dir / team_name / 'cards'
@@ -1018,7 +1020,6 @@ def classify_team_cards(
     team_output_dir = output_dir / team_name / 'cards'
     if team_output_dir.exists():
         shutil.rmtree(team_output_dir)
-        log_buffer.append(f"Cleaned old output for {team_name}")
     
     # Find archived PDF for text extraction
     pdf_text = {}
@@ -1026,7 +1027,6 @@ def classify_team_cards(
     if team_archive.exists():
         pdfs = list(team_archive.glob('*.pdf'))
         if pdfs:
-            log_buffer.append(f"Extracting text from PDF: {pdfs[0].name}")
             pdf_text = extract_pdf_text(pdfs[0])
     
     # Get all card PDFs
@@ -1040,8 +1040,6 @@ def classify_team_cards(
             'cards_classified': 0,
             'logs': log_buffer
         }
-    
-    log_buffer.append(f"Cards to classify: {len(card_files)}")
     
     # Classify and organize cards
     team_output_dir = output_dir / team_name / 'cards'
@@ -1090,6 +1088,49 @@ def classify_team_cards(
                 skipped_count += 1
                 continue
             
+            # Extract card text for special case detection BEFORE processing
+            card_text = classifier.extract_text_from_card_pdf(card_path)
+            
+            # Special case: Inquisitorial Agents 13-card INQUISITORIAL REQUISITION
+            # Must be checked BEFORE rendering to avoid double-processing
+            if _is_inquisitorial_requisition_case(team_name, card_text):
+                inq_classified, inq_skip = _process_inquisitorial_requisition(
+                    team_name, card_files, idx, card_type, card_name, orientation,
+                    team_output_dir, classifier, seen_names, Path('config'), log_buffer
+                )
+                classified_count += inq_classified
+                # Update type counts for all cards processed by special function
+                for _ in range(inq_classified):
+                    type_counts[card_type] = type_counts.get(card_type, 0) + 1
+                skip_next_card = inq_skip
+                continue
+            
+            # Special case: 4-card groups (Angels of Death, Warpcoven)
+            if _is_four_card_special_case(team_name, card_text):
+                group_classified, group_skip = _process_card_group(
+                    team_name, card_files, idx, 4,
+                    card_type, card_name, orientation,
+                    team_output_dir, classifier, seen_names, Path('config'), log_buffer
+                )
+                classified_count += group_classified
+                for _ in range(group_classified):
+                    type_counts[card_type] = type_counts.get(card_type, 0) + 1
+                skip_next_card = group_skip
+                continue
+            
+            # Special case: 3-card groups (multiple teams)
+            if _is_three_card_special_case(team_name, card_text, card_type):
+                group_classified, group_skip = _process_card_group(
+                    team_name, card_files, idx, 3,
+                    card_type, card_name, orientation,
+                    team_output_dir, classifier, seen_names, Path('config'), log_buffer
+                )
+                classified_count += group_classified
+                for _ in range(group_classified):
+                    type_counts[card_type] = type_counts.get(card_type, 0) + 1
+                skip_next_card = group_skip
+                continue
+            
             # Handle duplicate names: first keeps original, subsequent get -2, -3, etc.
             # Create a unique key combining type and name for tracking
             name_key = f"{card_type}:{card_name}"
@@ -1131,41 +1172,6 @@ def classify_team_cards(
             classified_count += 1
             type_counts[card_type] = type_counts.get(card_type, 0) + 1
             
-            # Extract card text for special case detection
-            card_text = classifier.extract_text_from_card_pdf(card_path)
-            
-            # Special case: Inquisitorial Agents 11-card INQUISITORIAL REQUISITION
-            if _is_inquisitorial_requisition_case(team_name, card_text):
-                inq_classified, inq_skip = _process_inquisitorial_requisition(
-                    team_name, card_files, idx, card_type, card_name, orientation,
-                    team_output_dir, classifier, seen_names, Path('config'), log_buffer
-                )
-                classified_count += inq_classified
-                skip_next_card = inq_skip
-                continue
-            
-            # Special case: 4-card groups (Angels of Death, Warpcoven)
-            if _is_four_card_special_case(team_name, card_text):
-                group_classified, group_skip = _process_card_group(
-                    team_name, card_files, idx, 4,
-                    card_type, card_name, orientation,
-                    team_output_dir, classifier, seen_names, Path('config'), log_buffer
-                )
-                classified_count += group_classified
-                skip_next_card = group_skip
-                continue
-            
-            # Special case: 3-card groups (multiple teams)
-            if _is_three_card_special_case(team_name, card_text, card_type):
-                group_classified, group_skip = _process_card_group(
-                    team_name, card_files, idx, 3,
-                    card_type, card_name, orientation,
-                    team_output_dir, classifier, seen_names, Path('config'), log_buffer
-                )
-                classified_count += group_classified
-                skip_next_card = group_skip
-                continue
-            
             # Check if this card continues on the other side
             if _has_backside_continue(card_text) and idx + 1 < len(card_files):
                 # Next card is the back of this card
@@ -1186,12 +1192,6 @@ def classify_team_cards(
         except Exception as e:
             log_buffer.append(f"ERROR: Error classifying {card_path.name}: {e}")
             continue
-    
-    log_buffer.append(f"Classified {classified_count} cards:")
-    for card_type, count in sorted(type_counts.items()):
-        log_buffer.append(f"  {card_type}: {count}")
-    if skipped_count > 0:
-        log_buffer.append(f"Skipped {skipped_count} NOTES cards")
     
     return {
         'team': team_name,
@@ -1263,6 +1263,7 @@ def run(
     if workers == 1:
         # Sequential processing
         for team_dir in team_dirs:
+            logger.info(f"Processing team: {team_dir.name}...")
             result = classify_team_cards(
                 team_dir.name,
                 extracted_path,
@@ -1272,13 +1273,13 @@ def run(
             )
             results.append(result)
             
-            # Output team logs atomically
-            logger.info("=" * 60)
-            logger.info(f"[TEAM: {team_dir.name}]")
-            logger.info("=" * 60)
-            for log_line in result.get('logs', []):
-                logger.info(f"  {log_line}")
-            logger.info("")
+            # Show quick summary for this team
+            if result.get('status') == 'success':
+                logger.info(f"  ✓ {team_dir.name}: {result.get('cards_classified', 0)} cards classified")
+            elif result.get('status') == 'failed':
+                logger.error(f"  ✗ {team_dir.name}: FAILED - {result.get('reason', 'unknown')}")
+            elif result.get('status') == 'skipped':
+                logger.warning(f"  ⊘ {team_dir.name}: SKIPPED - {result.get('reason', 'unknown')}")
     else:
         # Concurrent processing
         with ThreadPoolExecutor(max_workers=workers) as executor:
@@ -1300,12 +1301,13 @@ def run(
                     result = future.result()
                     results.append(result)
                     
-                    # Output team logs atomically
-                    logger.info("=" * 60)
-                    logger.info(f"[TEAM: {team_name}]")
-                    logger.info("=" * 60)
-                    for log_line in result.get('logs', []):
-                        logger.info(f"  {log_line}")
+                    # Show quick summary for this team
+                    if result.get('status') == 'success':
+                        logger.info(f"  ✓ {team_name}: {result.get('cards_classified', 0)} cards classified")
+                    elif result.get('status') == 'failed':
+                        logger.error(f"  ✗ {team_name}: FAILED - {result.get('reason', 'unknown')}")
+                    elif result.get('status') == 'skipped':
+                        logger.warning(f"  ⊘ {team_name}: SKIPPED - {result.get('reason', 'unknown')}")
                     logger.info("")
                     
                 except Exception as e:
@@ -1331,30 +1333,48 @@ def run(
         for card_type, count in r.get('types', {}).items():
             all_type_counts[card_type] = all_type_counts.get(card_type, 0) + count
     
+    logger.info("")
     logger.info("=" * 60)
     logger.info("Card Classification Complete")
     logger.info("=" * 60)
     logger.info(f"Teams processed: {len(results)}")
-    logger.info(f"Successful: {len(successful)}")
-    logger.info(f"Failed: {len(failed)}")
-    logger.info(f"Skipped teams: {len(skipped)}")
+    logger.info(f"  ✓ Successful: {len(successful)}")
+    logger.info(f"  ✗ Failed: {len(failed)}")
+    logger.info(f"  ⊘ Skipped: {len(skipped)}")
     logger.info(f"Total cards classified: {total_cards}")
-    logger.info(f"Total cards skipped: {total_skipped}")
+    logger.info(f"Total cards skipped (NOTES): {total_skipped}")
+    logger.info("")
     
     if all_type_counts:
         logger.info("Cards by type:")
         for card_type, count in sorted(all_type_counts.items()):
             logger.info(f"  {card_type}: {count}")
+        logger.info("")
+    
+    # Collect and show failed cards from logs
+    failed_cards = []
+    for r in successful:
+        for log_line in r.get('logs', []):
+            if 'ERROR:' in log_line and 'copied to failed folder' in log_line:
+                failed_cards.append(f"{r['team']}: {log_line.replace('ERROR: ', '')}")
+    
+    if failed_cards:
+        logger.error("Failed cards (classification or naming errors):")
+        for card_info in failed_cards:
+            logger.error(f"  - {card_info}")
+        logger.info("")
     
     if failed:
-        logger.warning("Failed teams:")
+        logger.error("Failed teams (processing errors):")
         for r in failed:
-            logger.warning(f"  - {r['team']}: {r.get('reason', 'unknown error')}")
+            logger.error(f"  - {r['team']}: {r.get('reason', 'unknown error')}")
+        logger.info("")
     
     if skipped:
-        logger.info("Skipped teams:")
+        logger.warning("Skipped teams:")
         for r in skipped:
-            logger.info(f"  - {r['team']}: {r.get('reason', 'unknown reason')}")
+            logger.warning(f"  - {r['team']}: {r.get('reason', 'unknown reason')}")
+        logger.info("")
     
     return {
         'status': 'success',

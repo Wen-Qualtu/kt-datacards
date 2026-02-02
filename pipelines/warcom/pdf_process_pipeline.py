@@ -312,12 +312,20 @@ def main():
     logger.info("PIPELINE COMPLETE")
     logger.info("=" * 70)
     
-    # Show results for each step
+    # Show summary results for each step (not detailed internals)
     for step_num, result in results.items():
         logger.info(f"\nStep {step_num}:")
-        for key, value in result.items():
-            if key != 'successful_teams':  # Don't show internal tracking
-                logger.info(f"  {key}: {value}")
+        # Only show key summary stats, not the entire results dict
+        if 'status' in result:
+            logger.info(f"  status: {result['status']}")
+        if 'teams_processed' in result:
+            logger.info(f"  teams processed: {result['teams_processed']}")
+        if 'total_cards_classified' in result:
+            logger.info(f"  cards classified: {result['total_cards_classified']}")
+        if 'failed' in result and result['failed'] > 0:
+            logger.error(f"  failed: {result['failed']}")
+        if 'skipped' in result and result['skipped'] > 0:
+            logger.warning(f"  skipped: {result['skipped']}")
     
     # Show comprehensive failure summary
     if failures:
