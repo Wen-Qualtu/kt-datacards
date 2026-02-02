@@ -41,70 +41,124 @@ except ImportError:
     logger.warning("pytesseract not available, OCR will be limited")
 
 
-def apply_rounded_corners(image_path: Path, orientation: str = 'portrait') -> None:
+# NOTE: Transparency/rounded corners disabled - using JPG output to match kt-app pipeline
+# def apply_rounded_corners(image_path: Path, orientation: str = 'portrait') -> None:
+#     """
+#     Apply rounded corners to a card image using template masks.
+#     Shrinks template by 1% and centers it to prevent white edges.
+#     
+#     Args:
+#         image_path: Path to the PNG image to process
+#         orientation: 'landscape' for datacards, 'portrait' for other cards
+#     """
+#     try:
+#         # Read image with alpha channel
+#         img = cv2.imread(str(image_path), cv2.IMREAD_UNCHANGED)
+#         if img is None:
+#             logger.warning(f"Failed to load image for rounding: {image_path}")
+#             return
+#         
+#         # Get image dimensions
+#         height, width = img.shape[:2]
+#         
+#         # Load appropriate template
+#         template_name = f"template-card-{orientation}-cutter.png"
+#         template_path = Path('config/pipelines/warcom') / template_name
+#         
+#         if not template_path.exists():
+#             logger.warning(f"Template not found: {template_path}")
+#             return
+#         
+#         # Load template
+#         template = cv2.imread(str(template_path), cv2.IMREAD_UNCHANGED)
+#         if template is None:
+#             logger.warning(f"Failed to load template: {template_path}")
+#             return
+#         
+#         # Shrink template by 1% and center it
+#         scale = 0.99  # 1% smaller
+#         new_width = int(width * scale)
+#         new_height = int(height * scale)
+#         
+#         # Resize template to 99% of card dimensions
+#         template_resized = cv2.resize(template, (new_width, new_height), interpolation=cv2.INTER_AREA)
+#         
+#         # Create full-size template with the smaller template centered
+#         template_centered = np.zeros((height, width, 4), dtype=np.uint8)
+#         
+#         # Calculate offset to center the template
+#         offset_y = (height - new_height) // 2
+#         offset_x = (width - new_width) // 2
+#         
+#         # Place resized template in center
+#         template_centered[offset_y:offset_y+new_height, offset_x:offset_x+new_width] = template_resized
+#         
+#         # Convert image to BGRA if needed
+#         if img.shape[2] == 3:
+#             img = cv2.cvtColor(img, cv2.COLOR_BGR2BGRA)
+#         
+#         # Apply template's alpha channel to card image
+#         # Where template is transparent, make card transparent
+#         img[:, :, 3] = template_centered[:, :, 3]
+#         
+#         # Save the image with rounded corners
+#         cv2.imwrite(str(image_path), img)
+#         
+#     except Exception as e:
+#         logger.warning(f"Failed to apply rounded corners to {image_path.name}: {e}")
+
+
+def apply_corner_overlay(image_path: Path, orientation: str = 'portrait') -> None:
     """
-    Apply rounded corners to a card image using template masks.
-    Shrinks template by 1% and centers it to prevent white edges.
+    Apply corner overlay to a card image to cover white corners.
+    The overlay has colored corners and transparent center.
     
     Args:
-        image_path: Path to the PNG image to process
+        image_path: Path to the JPG image to process
         orientation: 'landscape' for datacards, 'portrait' for other cards
     """
     try:
-        # Read image with alpha channel
-        img = cv2.imread(str(image_path), cv2.IMREAD_UNCHANGED)
-        if img is None:
-            logger.warning(f"Failed to load image for rounding: {image_path}")
+        # Read card image
+        card_img = cv2.imread(str(image_path))
+        if card_img is None:
+            logger.warning(f"Failed to load image for overlay: {image_path}")
             return
         
-        # Get image dimensions
-        height, width = img.shape[:2]
+        # Load appropriate overlay template
+        overlay_name = f"corner-overlay-{orientation}.png"
+        overlay_path = Path('config/pipelines/warcom') / overlay_name
         
-        # Load appropriate template
-        template_name = f"template-card-{orientation}-cutter.png"
-        template_path = Path('config/pipelines/warcom') / template_name
-        
-        if not template_path.exists():
-            logger.warning(f"Template not found: {template_path}")
+        if not overlay_path.exists():
+            logger.warning(f"Overlay template not found: {overlay_path}")
             return
         
-        # Load template
-        template = cv2.imread(str(template_path), cv2.IMREAD_UNCHANGED)
-        if template is None:
-            logger.warning(f"Failed to load template: {template_path}")
+        # Load overlay with alpha channel
+        overlay = cv2.imread(str(overlay_path), cv2.IMREAD_UNCHANGED)
+        if overlay is None:
+            logger.warning(f"Failed to load overlay: {overlay_path}")
             return
         
-        # Shrink template by 1% and center it
-        scale = 0.99  # 1% smaller
-        new_width = int(width * scale)
-        new_height = int(height * scale)
+        # Resize overlay to match card dimensions if needed
+        card_height, card_width = card_img.shape[:2]
+        overlay_height, overlay_width = overlay.shape[:2]
         
-        # Resize template to 99% of card dimensions
-        template_resized = cv2.resize(template, (new_width, new_height), interpolation=cv2.INTER_AREA)
+        if (overlay_width, overlay_height) != (card_width, card_height):
+            overlay = cv2.resize(overlay, (card_width, card_height), interpolation=cv2.INTER_AREA)
         
-        # Create full-size template with the smaller template centered
-        template_centered = np.zeros((height, width, 4), dtype=np.uint8)
+        # Extract alpha channel from overlay
+        if overlay.shape[2] == 4:
+            overlay_bgr = overlay[:, :, :3]
+            alpha = overlay[:, :, 3] / 255.0  # Normalize to 0-1
+            
+            # Blend overlay onto card where overlay is not transparent
+            for c in range(3):
+                card_img[:, :, c] = card_img[:, :, c] * (1 - alpha) + overlay_bgr[:, :, c] * alpha
         
-        # Calculate offset to center the template
-        offset_y = (height - new_height) // 2
-        offset_x = (width - new_width) // 2
-        
-        # Place resized template in center
-        template_centered[offset_y:offset_y+new_height, offset_x:offset_x+new_width] = template_resized
-        
-        # Convert image to BGRA if needed
-        if img.shape[2] == 3:
-            img = cv2.cvtColor(img, cv2.COLOR_BGR2BGRA)
-        
-        # Apply template's alpha channel to card image
-        # Where template is transparent, make card transparent
-        img[:, :, 3] = template_centered[:, :, 3]
-        
-        # Save the image with rounded corners
-        cv2.imwrite(str(image_path), img)
+        # Save result
+        cv2.imwrite(str(image_path), card_img, [cv2.IMWRITE_JPEG_QUALITY, 95])
         
     except Exception as e:
-        logger.warning(f"Failed to apply rounded corners to {image_path.name}: {e}")
+        logger.warning(f"Failed to apply corner overlay to {image_path.name}: {e}")
 
 
 class CardClassifier:
@@ -584,31 +638,44 @@ def _combine_front_and_back(
         True if successfully created pair
     """
     try:
+        # Hardcoded dimensions to match output_v2
+        if orientation == 'landscape':
+            target_width, target_height = 1430, 827
+        else:  # portrait
+            target_width, target_height = 827, 1430
+        
         # Create front
         front_final_name = f"{team_name}-{card_name}-front"
-        front_output_path = output_dir / f"{front_final_name}.png"
+        front_output_path = output_dir / f"{front_final_name}.jpg"
         
         doc = fitz.open(front_path)
         if len(doc) > 0:
             page = doc[0]
-            mat = fitz.Matrix(300 / 72, 300 / 72)
+            # Calculate matrix to achieve target dimensions
+            page_rect = page.rect
+            zoom_x = target_width / page_rect.width
+            zoom_y = target_height / page_rect.height
+            mat = fitz.Matrix(zoom_x, zoom_y)
             pix = page.get_pixmap(matrix=mat)
-            pix.save(str(front_output_path))
+            pix.pil_save(str(front_output_path), format="JPEG", optimize=True, quality=95)
         doc.close()
-        apply_rounded_corners(front_output_path, orientation)
+        apply_corner_overlay(front_output_path, orientation)
         
         # Create back
         back_final_name = f"{team_name}-{card_name}-back"
-        back_output_path = output_dir / f"{back_final_name}.png"
+        back_output_path = output_dir / f"{back_final_name}.jpg"
         
         doc = fitz.open(back_path)
         if len(doc) > 0:
             page = doc[0]
-            mat = fitz.Matrix(300 / 72, 300 / 72)
+            page_rect = page.rect
+            zoom_x = target_width / page_rect.width
+            zoom_y = target_height / page_rect.height
+            mat = fitz.Matrix(zoom_x, zoom_y)
             pix = page.get_pixmap(matrix=mat)
-            pix.save(str(back_output_path))
+            pix.pil_save(str(back_output_path), format="JPEG", optimize=True, quality=95)
         doc.close()
-        apply_rounded_corners(back_output_path, orientation)
+        apply_corner_overlay(back_output_path, orientation)
         
         return True
     except Exception as e:
@@ -641,18 +708,28 @@ def _process_single_card(
         True if successfully processed
     """
     try:
+        # Hardcoded dimensions to match output_v2
+        if orientation == 'landscape':
+            target_width, target_height = 1430, 827
+        else:  # portrait
+            target_width, target_height = 827, 1430
+        
         # Create front
         front_final_name = f"{team_name}-{card_name}-front"
-        front_output_path = output_dir / f"{front_final_name}.png"
+        front_output_path = output_dir / f"{front_final_name}.jpg"
         
         doc = fitz.open(card_path)
         if len(doc) > 0:
             page = doc[0]
-            mat = fitz.Matrix(300 / 72, 300 / 72)
+            # Calculate matrix to achieve target dimensions
+            page_rect = page.rect
+            zoom_x = target_width / page_rect.width
+            zoom_y = target_height / page_rect.height
+            mat = fitz.Matrix(zoom_x, zoom_y)
             pix = page.get_pixmap(matrix=mat)
-            pix.save(str(front_output_path))
+            pix.pil_save(str(front_output_path), format="JPEG", optimize=True, quality=95)
         doc.close()
-        apply_rounded_corners(front_output_path, orientation)
+        apply_corner_overlay(front_output_path, orientation)
         
         # Create default back
         _create_default_backside(
@@ -921,20 +998,29 @@ def _process_card_backside(
     Returns:
         True if successfully processed backside
     """
+    # Hardcoded dimensions to match output_v2
+    if orientation == 'landscape':
+        target_width, target_height = 1430, 827
+    else:  # portrait
+        target_width, target_height = 827, 1430
+    
     back_final_name = f"{team_name}-{card_name}-back"
-    back_output_path = type_output_dir / f"{back_final_name}.png"
+    back_output_path = type_output_dir / f"{back_final_name}.jpg"
     
     try:
         doc = fitz.open(next_card_path)
         if len(doc) > 0:
             page = doc[0]
-            mat = fitz.Matrix(300 / 72, 300 / 72)
+            # Calculate matrix to achieve target dimensions
+            page_rect = page.rect
+            zoom_x = target_width / page_rect.width
+            zoom_y = target_height / page_rect.height
+            mat = fitz.Matrix(zoom_x, zoom_y)
             pix = page.get_pixmap(matrix=mat)
-            pix.save(str(back_output_path))
+            pix.pil_save(str(back_output_path), format="JPEG", optimize=True, quality=95)
         doc.close()
+        apply_corner_overlay(back_output_path, orientation)
         
-        # Apply rounded corners to back card
-        apply_rounded_corners(back_output_path, orientation)
         return True
     except Exception as e:
         log_buffer.append(f"WARNING: Failed to convert back card {next_card_path.name} to PNG: {e}")
@@ -966,7 +1052,7 @@ def _create_default_backside(
     backside_path = _get_backside_image(team_name, orientation, config_dir)
     
     if backside_path and backside_path.exists():
-        back_filename = f"{team_name}-{card_name}-back.png"
+        back_filename = f"{team_name}-{card_name}-back.jpg"
         back_output_path = type_output_dir / back_filename
         
         try:
@@ -1149,22 +1235,31 @@ def classify_team_cards(
             type_output_dir = team_output_dir / card_type
             type_output_dir.mkdir(parents=True, exist_ok=True)
             
-            # Convert PDF to PNG and save to output location
-            output_path = type_output_dir / f"{final_name}.png"
+            # Convert PDF to JPG and save to output location
+            output_path = type_output_dir / f"{final_name}.jpg"
             
-            # Render PDF to PNG for front card
+            # Hardcoded dimensions to match output_v2
+            if orientation == 'landscape':
+                target_width, target_height = 1430, 827
+            else:  # portrait
+                target_width, target_height = 827, 1430
+            
+            # Render PDF to JPG for front card
             try:
                 doc = fitz.open(card_path)
                 if len(doc) > 0:
                     page = doc[0]
-                    # Render at 300 DPI for high quality
-                    mat = fitz.Matrix(300 / 72, 300 / 72)
+                    # Calculate matrix to achieve target dimensions
+                    page_rect = page.rect
+                    zoom_x = target_width / page_rect.width
+                    zoom_y = target_height / page_rect.height
+                    mat = fitz.Matrix(zoom_x, zoom_y)
                     pix = page.get_pixmap(matrix=mat)
-                    pix.save(str(output_path))
+                    pix.pil_save(str(output_path), format="JPEG", optimize=True, quality=95)
                 doc.close()
                 
-                # Apply rounded corners using template
-                apply_rounded_corners(output_path, orientation)
+                # Apply corner overlay
+                apply_corner_overlay(output_path, orientation)
             except Exception as e:
                 log_buffer.append(f"WARNING: Failed to convert {card_path.name} to PNG: {e}")
                 continue
