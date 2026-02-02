@@ -41,7 +41,13 @@ This pipeline automates the entire workflow:
 ---
 
 ## 📋 Core Principles```
-
+### 0. **Logging Standard**
+**CRITICAL**: All pipeline scripts must use Python's logging module exclusively.
+- ✅ DO: Use `logging.info()`, `logging.warning()`, `logging.error()`, `logging.debug()`
+- ❌ DON'T: Use `print()` statements in any pipeline scripts
+- 💡 Why: Logging allows configurable output levels, consistent formatting, and proper error handling
+- 🔧 Configuration: Use `--log-level` flag (DEBUG, INFO, WARNING, ERROR) to control verbosity
+- 📝 Format: Use `'%(levelname)s: %(message)s'` for consistency
 ### 1 **Never Break TTS References**
 **CRITICAL**: The `output/` folder structure is IMMUTABLE. TTS cards reference these exact paths.
 - ✅ DO: Keep `output/{teamname}/{cardtype}/` structure exactly as-is

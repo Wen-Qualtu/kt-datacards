@@ -10,8 +10,12 @@ import cv2
 import json
 import re
 import shutil
+import yaml
 from typing import Optional, Tuple, Dict
 from concurrent.futures import ThreadPoolExecutor, as_completed
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def load_templates(template_file: Path):
@@ -20,38 +24,41 @@ def load_templates(template_file: Path):
         return json.load(f)
 
 
-def load_team_config(config_file: Path = None) -> Dict[str, str]:
-    """Load team configuration mapping team names to GUIDs."""
+def load_team_config(config_file: Path = None) -> Dict[str, dict]:
+    """Load team configuration with aliases from team-config.yaml."""
     if config_file is None:
-        config_file = Path('config/team-guids.json')
+        config_file = Path('config/team-config.yaml')
     
     if not config_file.exists():
         return {}
     
     with open(config_file) as f:
-        return json.load(f)
+        data = yaml.safe_load(f)
+        return data.get('teams', {})
 
 
-def match_team_name(extracted_name: str, team_config: Dict[str, str]) -> Optional[str]:
-    """Match extracted team name against config. Returns normalized team name or None."""
+def match_team_name(extracted_name: str, team_config: Dict[str, dict]) -> Optional[str]:
+    """Match extracted team name against config including aliases. Returns normalized team name or None."""
     if not team_config:
         return None
     
     # Normalize extracted name for comparison
     normalized_extracted = extracted_name.lower().replace('-', ' ').replace('_', ' ').strip()
     
-    # Try exact match first
-    for config_name in team_config.keys():
-        normalized_config = config_name.lower().replace('-', ' ').replace('_', ' ').strip()
-        if normalized_extracted == normalized_config:
-            # Return the config name in lowercase with hyphens (standard format)
-            return config_name.lower().replace(' ', '-')
+    # Try exact match against canonical names
+    for config_key, config_data in team_config.items():
+        canonical = config_data.get('canonical_name', config_key)
+        normalized_canonical = canonical.lower().replace('-', ' ').replace('_', ' ').strip()
+        if normalized_extracted == normalized_canonical:
+            return config_key.lower().replace(' ', '-')
     
-    # Try partial match (extracted name contains or is contained in config name)
-    for config_name in team_config.keys():
-        normalized_config = config_name.lower().replace('-', ' ').replace('_', ' ').strip()
-        if normalized_extracted in normalized_config or normalized_config in normalized_extracted:
-            return config_name.lower().replace(' ', '-')
+    # Try matching against aliases
+    for config_key, config_data in team_config.items():
+        aliases = config_data.get('aliases', [])
+        for alias in aliases:
+            normalized_alias = alias.lower().replace('-', ' ').replace('_', ' ').strip()
+            if normalized_extracted == normalized_alias:
+                return config_key.lower().replace(' ', '-')
     
     return None
 
@@ -118,7 +125,7 @@ def extract_team_name_from_pdf(pdf_path: Path) -> str:
             return best_team_name
         
     except Exception as e:
-        print(f"  Warning: Could not extract team name: {e}")
+        logger.warning(f"  Warning: Could not extract team name: {e}")
     
     # Fallback to filename
     return pdf_path.stem
@@ -470,44 +477,46 @@ def run(input_dir: Path = None, output_dir: Path = None, templates_file: Path = 
     if templates_file is None:
         templates_file = Path('config/pipelines/warcom/card_templates.json')
     
-    print("=" * 70)
-    print("Step 2: Extract Cards from PDFs")
-    print("=" * 70)
-    print()
+    logger.info("=" * 70)
+    logger.info("Step 2: Extract Cards from PDFs")
+    logger.info("=" * 70)
+    logger.info("")
     
-    # Load templates
+    # Load card templates
     if not templates_file.exists():
-        print(f"Error: Templates not found: {templates_file}")
-        return {'success': False, 'files_processed': 0, 'total_cards': 0, 'failed': 1}
+        logger.error(f"Error: Templates not found: {templates_file}")
+        return {'success': False, 'extracted': 0, 'failed': 0}
     
-    templates = load_templates(templates_file)
-    print(f"Templates: {templates_file}")
-    print(f"  Landscape: {len(templates['landscape']['cards'])} cards per page")
-    print(f"  Portrait: {len(templates['portrait']['cards'])} cards per page")
-    print()
+    templates = load_card_templates(templates_file)
+    logger.info(f"Templates: {templates_file}")
+    logger.info(f"  Landscape: {len(templates['landscape']['cards'])} cards per page")
+    logger.info(f"  Portrait: {len(templates['portrait']['cards'])} cards per page")
+    logger.info("")
     
     # Load team config for name matching
     team_config = load_team_config()
     if team_config:
-        print(f"Loaded {len(team_config)} teams from config")
+        logger.info(f"Loaded {len(team_config)} teams from config")
     else:
-        print("Warning: No team config found, using extracted names as-is")
-    print()
+        logger.warning("Warning: No team config found, using extracted names as-is")
+    logger.info("")
     
     # Find all PDFs
     pdf_files = sorted(input_dir.glob('*.pdf'))
     
     if not pdf_files:
-        print(f"No PDF files found in {input_dir}")
+        logger.error(f"No PDF files found in {input_dir}")
         return {'success': True, 'files_processed': 0, 'total_cards': 0, 'failed': 0}
     
-    print(f"Found {len(pdf_files)} PDF files")
-    print(f"Output: {output_dir}")
-    print(f"DPI: {dpi}")
-    print(f"Workers: {max_workers if max_workers else 'auto'}")
-    print()
-    print("Processing PDFs concurrently:")
-    print("-" * 70)
+    logger.info(f"Found {len(pdf_files)} PDF files")
+    logger.info(f"Output: {output_dir}")
+    logger.info(f"DPI: {dpi}")
+    # Limit workers to avoid overwhelming system with 46 PDFs
+    actual_workers = max_workers if max_workers else 4
+    logger.info(f"Workers: {actual_workers} (limited for stability)")
+    logger.info("")
+    logger.info("Processing PDFs concurrently:")
+    logger.info("-" * 70)
     
     files_processed = 0
     total_cards = 0
@@ -518,44 +527,78 @@ def run(input_dir: Path = None, output_dir: Path = None, templates_file: Path = 
     archive_dir = Path('layers/archive')
     failed_dir = Path('layers/warcom/staging/failed')
     
-    # Process PDFs concurrently
-    with ThreadPoolExecutor(max_workers=max_workers) as executor:
-        # Submit all PDF processing tasks with team name extraction
-        future_to_pdf = {}
-        future_to_extracted_name = {}
-        for pdf_file in pdf_files:
+    # Helper function to process one PDF (includes setup)
+    def process_single_pdf(pdf_file):
+        """Process one PDF: extract team name, setup folders, extract cards."""
+        pdf_name = pdf_file.stem  # Filename without extension for logging
+        try:
+            print(f"\n[STARTING] {pdf_file.name}")
+            
             # Extract team name from PDF content
+            print(f"  [{pdf_name}] Extracting team name...")
             extracted_name = extract_team_name_from_pdf(pdf_file)
             # Match against config
             team_name = match_team_name(extracted_name, team_config) if team_config else extracted_name
+            print(f"  [{pdf_name}] Team: {team_name} (from '{extracted_name}')")
             
             # Delete existing team folder to start fresh (per-team overwrite)
             team_folder = output_dir / (team_name if team_name else extracted_name)
             if team_folder.exists():
+                print(f"  [{pdf_name}] Cleaning existing output...")
                 shutil.rmtree(team_folder)
             
             # Create cards subdirectory within team folder
             team_output_dir = team_folder / 'cards'
-            future = executor.submit(process_pdf_and_extract_all_cards, pdf_file, templates, team_output_dir, dpi)
-            future_to_pdf[future] = pdf_file
-            future_to_extracted_name[future] = (extracted_name, team_name)
+            
+            # Process and extract cards
+            print(f"  [{pdf_name}] Extracting cards from PDF...")
+            result = process_pdf_and_extract_all_cards(pdf_file, templates, team_output_dir, dpi)
+            print(f"  [{pdf_name}] Done: {result['total_cards']} cards from {result['pages_processed']} pages")
+            
+            return {
+                'pdf_file': pdf_file,
+                'extracted_name': extracted_name,
+                'team_name': team_name,
+                'result': result,
+                'error': None
+            }
+        except Exception as e:
+            print(f"  [{pdf_name}] ✗ ERROR: {e}")
+            return {
+                'pdf_file': pdf_file,
+                'extracted_name': None,
+                'team_name': None,
+                'result': None,
+                'error': str(e)
+            }
+    
+    # Process PDFs concurrently (limited workers for stability)
+    actual_workers = max_workers if max_workers else 4
+    with ThreadPoolExecutor(max_workers=actual_workers) as executor:
+        # Submit all PDF processing tasks
+        future_to_pdf = {
+            executor.submit(process_single_pdf, pdf_file): pdf_file
+            for pdf_file in pdf_files
+        }
         
         # Process results as they complete
-        for future in as_completed(future_to_pdf):
+        for i, future in enumerate(as_completed(future_to_pdf), 1):
             pdf_file = future_to_pdf[future]
-            extracted_name, team_name = future_to_extracted_name[future]
-            print(f"\n{pdf_file.name}:")
             
             try:
-                result = future.result()
+                data = future.result()
                 
-                if team_name:
-                    print(f"  + Team: {team_name} (matched from '{extracted_name}')")
-                else:
-                    print(f"  + Team: {extracted_name} (NOT MATCHED - will move to failed)")
+                # Check for errors
+                if data['error']:
+                    logger.error(f"\n[{i}/{len(pdf_files)}] ✗ FAILED: {pdf_file.name}")
+                    failed_count += 1
+                    continue
                 
-                print(f"  + Extracted {result['total_cards']} cards from {result['pages_processed']} pages")
-                print(f"  + Output: {output_dir / (team_name if team_name else extracted_name) / 'cards'}")
+                extracted_name = data['extracted_name']
+                team_name = data['team_name']
+                result = data['result']
+                
+                logger.info(f"\n[{i}/{len(pdf_files)}] ✓ COMPLETED: {pdf_file.name}")
                 
                 # Archive the PDF
                 if team_name:
@@ -564,31 +607,31 @@ def run(input_dir: Path = None, output_dir: Path = None, templates_file: Path = 
                     team_archive_dir.mkdir(parents=True, exist_ok=True)
                     archive_path = team_archive_dir / pdf_file.name
                     shutil.move(str(pdf_file), str(archive_path))
-                    print(f"  + Archived: {archive_path}")
+                    logger.info(f"  + Archived: {archive_path}")
                     archived_count += 1
+                    files_processed += 1
+                    total_cards += result['total_cards']
                 else:
                     # Move to staging/failed/
                     failed_dir.mkdir(parents=True, exist_ok=True)
                     failed_path = failed_dir / pdf_file.name
                     shutil.move(str(pdf_file), str(failed_path))
-                    print(f"  + Moved to failed: {failed_path}")
-                
-                files_processed += 1
-                total_cards += result['total_cards']
+                    logger.warning(f"  + Moved to failed: {failed_path}")
+                    failed_count += 1
                 
             except Exception as e:
-                print(f"  x Error: {e}")
+                logger.error(f"  ✗ Unexpected error: {e}")
                 failed_count += 1
     
-    print()
-    print("=" * 70)
-    print(f"Extraction complete!")
-    print(f"  Files processed: {files_processed}")
-    print(f"  Total cards: {total_cards}")
-    print(f"  Archived: {archived_count}")
-    print(f"  Failed: {failed_count}")
-    print(f"  Output: {output_dir}")
-    print("=" * 70)
+    logger.info("")
+    logger.info("=" * 70)
+    logger.info(f"Extraction complete!")
+    logger.info(f"  Files processed: {files_processed}")
+    logger.info(f"  Total cards: {total_cards}")
+    logger.info(f"  Archived: {archived_count}")
+    logger.info(f"  Failed: {failed_count}")
+    logger.info(f"  Output: {output_dir}")
+    logger.info("=" * 70)
     
     return {
         'success': failed_count == 0,

@@ -41,6 +41,72 @@ except ImportError:
     logger.warning("pytesseract not available, OCR will be limited")
 
 
+def apply_rounded_corners(image_path: Path, orientation: str = 'portrait') -> None:
+    """
+    Apply rounded corners to a card image using template masks.
+    Shrinks template by 1% and centers it to prevent white edges.
+    
+    Args:
+        image_path: Path to the PNG image to process
+        orientation: 'landscape' for datacards, 'portrait' for other cards
+    """
+    try:
+        # Read image with alpha channel
+        img = cv2.imread(str(image_path), cv2.IMREAD_UNCHANGED)
+        if img is None:
+            logger.warning(f"Failed to load image for rounding: {image_path}")
+            return
+        
+        # Get image dimensions
+        height, width = img.shape[:2]
+        
+        # Load appropriate template
+        template_name = f"template-card-{orientation}-cutter.png"
+        template_path = Path('config/pipelines/warcom') / template_name
+        
+        if not template_path.exists():
+            logger.warning(f"Template not found: {template_path}")
+            return
+        
+        # Load template
+        template = cv2.imread(str(template_path), cv2.IMREAD_UNCHANGED)
+        if template is None:
+            logger.warning(f"Failed to load template: {template_path}")
+            return
+        
+        # Shrink template by 1% and center it
+        scale = 0.99  # 1% smaller
+        new_width = int(width * scale)
+        new_height = int(height * scale)
+        
+        # Resize template to 99% of card dimensions
+        template_resized = cv2.resize(template, (new_width, new_height), interpolation=cv2.INTER_AREA)
+        
+        # Create full-size template with the smaller template centered
+        template_centered = np.zeros((height, width, 4), dtype=np.uint8)
+        
+        # Calculate offset to center the template
+        offset_y = (height - new_height) // 2
+        offset_x = (width - new_width) // 2
+        
+        # Place resized template in center
+        template_centered[offset_y:offset_y+new_height, offset_x:offset_x+new_width] = template_resized
+        
+        # Convert image to BGRA if needed
+        if img.shape[2] == 3:
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2BGRA)
+        
+        # Apply template's alpha channel to card image
+        # Where template is transparent, make card transparent
+        img[:, :, 3] = template_centered[:, :, 3]
+        
+        # Save the image with rounded corners
+        cv2.imwrite(str(image_path), img)
+        
+    except Exception as e:
+        logger.warning(f"Failed to apply rounded corners to {image_path.name}: {e}")
+
+
 class CardClassifier:
     """Classifies Kill Team cards by type using text analysis and pattern matching."""
     
@@ -185,116 +251,117 @@ class CardClassifier:
             
             return ('datacards', card_name)
         
-        # PORTRAIT cards: classify by content from PDF text
+        # PORTRAIT cards: classify by header structure
         if is_portrait:
             text_upper = card_text.upper()
-            text_normalized = ' '.join(text_upper.split())
-            lines = [l.strip() for l in text_upper.split('\n') if l.strip()]
             
-            # Priority order classification for portrait cards
-            # 1. Token/Marker Guide
-            if any(pattern in text_normalized for pattern in [
-                'MARKER/TOKEN GUIDE',
-                'MARKERTOKEN GUIDE',
-                'MARKER & TOKEN GUIDE'
-            ]):
-                return ('token-guide', 'token-guide')
+            # Edge case 1: Operative selection (special pattern detection)
+            # Row 1-2: Team name with "KILL TEAM", followed by "ARCHETYPES:"
+            first_part = text_upper[:300]  # Check first ~300 chars for team name
+            has_kill = 'KILL' in first_part
+            has_team = 'TEAM' in first_part
+            has_archetypes = 'ARCHETYPE' in text_upper  # Matches ARCHETYPE or ARCHETYPES
             
-            # 2. Operative Selection (front/back cards)
-            # Front card has: TEAMNAME KILL TEAM, then ARCHETYPES:, then OPERATIVES
-            elif 'KILL TEAM' in text_normalized and 'ARCHETYPES' in text_normalized and 'OPERATIVES' in text_normalized:
-                card_name = 'operative-selection'
-                return ('operative-selection', card_name)
+            if has_kill and has_team and has_archetypes:
+                return ('operative-selection', 'operative-selection')
             
-            # 3. Equipment (check before ploys as FACTION EQUIPMENT is more specific)
-            elif re.search(r'FACTION\s+EQUIPMENT|RARE\s+EQUIPMENT', text_normalized):
-                card_name = self._extract_equipment_name(lines)
-                return ('equipment', card_name)
+            # All other portrait cards: extract type from line 1 (index 1)
+            lines = self.extract_text_blocks_sorted(card_path)
+            card_type = self._extract_card_type_from_header(lines)
             
-            # 4. Strategy Ploys
-            elif re.search(r'STRATEGY\s+PLOY', text_normalized):
-                card_name = self._extract_ploy_name(lines, 'STRATEGY PLOY')
-                return ('ploys/strategy', card_name)
+            if card_type:
+                # Extract name from line 2 (index 2)
+                if card_type == 'faction-rules':
+                    card_name = self._extract_faction_rule_name(lines)
+                elif card_type == 'token-guide':
+                    card_name = 'token-guide'
+                else:
+                    card_name = self._extract_name_from_header(lines)
+                
+                return (card_type, card_name)
             
-            # 5. Firefight Ploys
-            elif re.search(r'FIREFIGHT\s+PLOY', text_normalized):
-                card_name = self._extract_ploy_name(lines, 'FIREFIGHT PLOY')
-                return ('ploys/firefight', card_name)
-            
-            # 6. Faction Rules (front/back cards)
-            # Front cards have "CONTINUES ON OTHER SIDE" or "FACTION RULE" header
-            elif re.search(r'FACTION\s+RULE|TAC\s+OP|CONTINUES\s+ON\s+OTHER\s+SIDE', text_normalized):
-                card_name = self._extract_faction_rule_name(lines)
-                # Check if this is a back card (no FACTION RULE header, follows a front card)
-                is_back_card = 'CONTINUES' not in text_normalized and 'FACTION RULE' not in text_normalized
-                if is_back_card:
-                    # Back cards get 'back' suffix
-                    return ('faction-rules', f"{card_name}-back" if card_name else None)
-                return ('faction-rules', card_name)
-            
-            # Default for unrecognized portrait cards
-            # Return None for card_name so back-card detection can work
-            else:
-                return ('faction-rules', None)
+            # No recognized type found
+            return (None, None)
         
         # Unknown orientation
         return (None, None)
     
-    def _looks_like_datacard(self, text: str) -> bool:
-        """Check if text looks like a datacard with operative stats."""
-        # Datacards have weapon tables with specific headers
-        if re.search(r'NAME\s+ATK\s+HIT\s+DMG', text):
-            return True
-        # Or they have movement/AP stats
-        if re.search(r'\d+AP', text) and re.search(r'\d+"?\s+MOVE', text):
-            return True
-        # Or Group Activation stat
-        if re.search(r'GA\s+\d+', text):
-            return True
-        return False
+    def _extract_card_type_from_header(self, lines: List[str]) -> Optional[str]:
+        """
+        Extract card type from header structure.
+        Portrait cards have: line 0 = TEAM, line 1 = TYPE, line 2 = NAME
+        
+        Args:
+            lines: Text lines from the card
+        
+        Returns:
+            Card type folder name or None if not recognized
+        """
+        # For portrait cards, type is always at line 1 (index 1)
+        if len(lines) >= 2:
+            type_line = lines[1].upper().strip()
+            
+            # Map type header text to folder names
+            if 'FACTION RULE' in type_line:
+                return 'faction-rules'
+            elif 'MARKER' in type_line and 'TOKEN' in type_line:
+                return 'token-guide'
+            elif 'EQUIPMENT' in type_line:
+                return 'equipment'
+            elif 'FIREFIGHT PLOY' in type_line:
+                return 'ploys/firefight'
+            elif 'STRATEGY PLOY' in type_line:
+                return 'ploys/strategy'
+        
+        return None
     
-    def _extract_ploy_name(self, lines: List[str], ploy_type: str) -> str:
-        """Extract ploy name from text lines."""
-        # Ploy name is usually RIGHT AFTER the "PLOY" marker line
-        for i, line in enumerate(lines):
-            if ploy_type in line:
-                # Next line after PLOY marker is the ploy name
-                if i + 1 < len(lines):
-                    name = lines[i + 1]
-                    # Clean up the name
-                    name = re.sub(r'[^A-Z0-9\s\-]', '', name)
-                    name = name.strip()
-                    # Skip if it's too short or looks like a description
-                    if name and len(name) > 3 and not any(skip in name for skip in ['DEEPLY', 'USING', 'THE', 'A ', 'AN ']):
-                        return name.lower().replace(' ', '-')
-        return None  # Return None if no name found
-    
-    def _extract_equipment_name(self, lines: List[str]) -> str:
-        """Extract equipment name from text lines."""
-        # Equipment name is usually RIGHT AFTER the "EQUIPMENT" marker line
-        for i, line in enumerate(lines):
-            if 'EQUIPMENT' in line and 'FACTION' in line:
-                # Next line after EQUIPMENT marker is the equipment name
-                if i + 1 < len(lines):
-                    name = lines[i + 1]
-                    name = re.sub(r'[^A-Z0-9\s\-]', '', name)
-                    name = name.strip()
-                    if name and len(name) > 3:
-                        return name.lower().replace(' ', '-')
+    def _extract_name_from_header(self, lines: List[str]) -> str:
+        """
+        Extract card name from header structure.
+        Portrait cards have: line 0 = TEAM, line 1 = TYPE, line 2 = NAME
+        
+        Args:
+            lines: Text lines from the card
+        
+        Returns:
+            Formatted card name or None if not found
+        """
+        # For portrait cards, name is always at line 2 (index 2)
+        if len(lines) >= 3:
+            name = lines[2]
+            # Clean and format
+            name = re.sub(r'[^A-Z0-9\s\-]', '', name)
+            name = name.strip()
+            if name:
+                return name.lower().replace(' ', '-')
         return None
     
     def _extract_faction_rule_name(self, lines: List[str]) -> str:
         """Extract faction rule name from text lines."""
-        # Faction rule name is usually RIGHT AFTER the "FACTION RULE" marker line
-        for i, line in enumerate(lines):
-            if 'FACTION RULE' in line or 'TAC OP' in line:
-                if i + 1 < len(lines):
-                    name = lines[i + 1]
-                    name = re.sub(r'[^A-Z0-9\s\-]', '', name)
-                    name = name.strip()
-                    if name and len(name) > 3:
-                        return name.lower().replace(' ', '-')
-        return None
+        # Check for multi-option cards (ACCURSED GIFTS, SANGUAVITAE)
+        # These have the main rule name at the TOP, followed by numbered options
+        first_line = lines[0] if lines else ''
+        
+        if first_line in ['ACCURSED GIFTS', 'SANGUAVITAE']:
+            # Look for option number or name in the next few lines
+            for line in lines[1:6]:
+                # Check for numbered option like "1. Deformed Wings"
+                option_match = re.match(r'^(\d+)\.?\s+(.+)', line)
+                if option_match:
+                    option_name = option_match.group(2).strip()
+                    option_name = re.sub(r'[^A-Z0-9\s\-]', '', option_name)
+                    if option_name:
+                        return f"{first_line.lower().replace(' ', '-')}-{option_name.lower().replace(' ', '-')}"
+                # Check for non-numbered option name (like "Rejuvenate")
+                elif line and line not in ['WHEN', 'EFFECT', 'GOREMONGER', 'CHAOS CULT']:
+                    option_name = re.sub(r'[^A-Z0-9\s\-]', '', line)
+                    if option_name:
+                        return f"{first_line.lower().replace(' ', '-')}-{option_name.lower().replace(' ', '-')}"
+            # Fallback: return base name if no option found
+            return first_line.lower().replace(' ', '-')
+        
+        # Regular faction rule: name is at line 2
+        return self._extract_name_from_header(lines)
     
     def _extract_operative_name(self, lines: List[str]) -> str:
         """
@@ -415,8 +482,11 @@ def classify_team_cards(
         classifier: CardClassifier instance
     
     Returns:
-        Dict with classification statistics
+        Dict with classification statistics and log messages
     """
+    # Buffer log messages to output atomically at the end
+    log_buffer = []
+    
     team_cards_dir = extracted_dir / team_name / 'cards'
     
     if not team_cards_dir.exists():
@@ -424,8 +494,15 @@ def classify_team_cards(
             'team': team_name,
             'status': 'skipped',
             'reason': 'No cards directory found',
-            'cards_classified': 0
+            'cards_classified': 0,
+            'logs': []
         }
+    
+    # Clean up old output for this team to avoid confusion with stale files
+    team_output_dir = output_dir / team_name / 'cards'
+    if team_output_dir.exists():
+        shutil.rmtree(team_output_dir)
+        log_buffer.append(f"Cleaned old output for {team_name}")
     
     # Find archived PDF for text extraction
     pdf_text = {}
@@ -433,7 +510,7 @@ def classify_team_cards(
     if team_archive.exists():
         pdfs = list(team_archive.glob('*.pdf'))
         if pdfs:
-            logger.info(f"Extracting text from PDF: {pdfs[0].name}")
+            log_buffer.append(f"Extracting text from PDF: {pdfs[0].name}")
             pdf_text = extract_pdf_text(pdfs[0])
     
     # Get all card PDFs
@@ -444,13 +521,11 @@ def classify_team_cards(
             'team': team_name,
             'status': 'skipped',
             'reason': 'No card PDFs found',
-            'cards_classified': 0
+            'cards_classified': 0,
+            'logs': log_buffer
         }
     
-    logger.info("=" * 60)
-    logger.info(f"Processing: {team_name}")
-    logger.info("=" * 60)
-    logger.info(f"Cards to classify: {len(card_files)}")
+    log_buffer.append(f"Cards to classify: {len(card_files)}")
     
     # Classify and organize cards
     team_output_dir = output_dir / team_name / 'cards'
@@ -461,21 +536,28 @@ def classify_team_cards(
     # Track previous card to detect front/back relationships and create backsides immediately
     prev_card_type = None
     prev_card_name = None
-    skip_next_card = False  # Flag to skip next card if we already processed it as a back
+    skip_next_card = 0  # Counter for how many cards to skip (0 = don't skip)
+    
+    # Track seen names to handle duplicates (first keeps original name, subsequent get -2, -3, etc.)
+    seen_names = {}  # {base_name: count}
     
     for idx, card_path in enumerate(card_files):
         try:
             # Skip if this card was already processed as a back card
-            if skip_next_card:
-                skip_next_card = False
+            if skip_next_card > 0:
+                skip_next_card -= 1
                 continue
+            
+            # Extract orientation from filename once
+            is_landscape = 'landscape' in card_path.name.lower()
+            orientation = 'landscape' if is_landscape else 'portrait'
             
             # Classify the card
             card_type, card_name = classifier.classify_card(card_path, pdf_text)
             
-            # Skip if None (e.g., NOTES cards)
+            # Skip if None (NOTES cards or unrecognized card types)
             if card_type is None:
-                logger.info(f"Skipping NOTES card: {card_path.name}")
+                log_buffer.append(f"Skipping unrecognized card: {card_path.name}")
                 skipped_count += 1
                 continue
             
@@ -484,6 +566,26 @@ def classify_team_cards(
             card_match = re.search(r'card(\d+)', card_path.name)
             page_num = page_match.group(1) if page_match else "00"
             card_num = card_match.group(1) if card_match else "0"
+            
+            # Check for naming issues - copy to failed folder for investigation
+            if card_name is None or (card_name and 'none' in card_name.lower()):
+                failed_dir = Path('layers/warcom/failed') / team_name
+                failed_dir.mkdir(parents=True, exist_ok=True)
+                failed_card_path = failed_dir / card_path.name
+                shutil.copy2(card_path, failed_card_path)
+                log_buffer.append(f"WARNING: Card with naming issue copied to failed: {card_path.name} (type={card_type}, name={card_name})")
+            
+            # Handle duplicate names: first keeps original, subsequent get -2, -3, etc.
+            if card_name:
+                # Create a unique key combining type and name for tracking
+                name_key = f"{card_type}:{card_name}"
+                if name_key in seen_names:
+                    # This is a duplicate - increment counter and add suffix
+                    seen_names[name_key] += 1
+                    card_name = f"{card_name}-{seen_names[name_key]}"
+                else:
+                    # First occurrence - track it
+                    seen_names[name_key] = 1
             
             # Build final card name with team prefix and -front suffix
             has_back_suffix = card_name and card_name.endswith('-back')
@@ -497,14 +599,10 @@ def classify_team_cards(
             else:
                 # Check if this might be a back card (follows a front card)
                 if prev_card_type and prev_card_name:
-                    # Inherit the type from previous card for back cards
-                    if card_type == 'faction-rules' or card_type == prev_card_type:
-                        card_type = prev_card_type  # Back card gets same type as front
-                        final_name = f"{team_name}-{prev_card_name}-back"
-                        has_back_suffix = True
-                    else:
-                        # Fallback to team + page/card identifier
-                        final_name = f"{team_name}-p{page_num}c{card_num}-front"
+                    # Back card inherits type from previous card
+                    card_type = prev_card_type
+                    final_name = f"{team_name}-{prev_card_name}-back"
+                    has_back_suffix = True
                 else:
                     # Fallback to team + page/card identifier
                     final_name = f"{team_name}-p{page_num}c{card_num}-front"
@@ -526,17 +624,103 @@ def classify_team_cards(
                     pix = page.get_pixmap(matrix=mat)
                     pix.save(str(output_path))
                 doc.close()
+                
+                # Apply rounded corners using template
+                apply_rounded_corners(output_path, orientation)
             except Exception as e:
-                logger.warning(f"Failed to convert {card_path.name} to PNG: {e}")
+                log_buffer.append(f"WARNING: Failed to convert {card_path.name} to PNG: {e}")
                 continue
             
             classified_count += 1
             type_counts[card_type] = type_counts.get(card_type, 0) + 1
             
-            # Check if this card continues on the other side
-            # If so, immediately process the next card as its back
+            # Special handling for Angels of Death Chapter Tactics
+            # Cards are in wrong order: card3 (front), card4 (front), card1 (back of card4), card2 (back of card3)
+            # Should be: card3+card2, card4+card1
             card_text = classifier.extract_text_from_card_pdf(card_path)
-            if 'CONTINU' in card_text.upper() and idx + 1 < len(card_files):
+            # Remove line breaks for multi-line text matching
+            card_text_no_breaks = ' '.join(card_text.upper().split())
+            if 'CHAPTER TACTIC OPTIONS ARE PRESENTED ON THEIR OWN CARD' in card_text_no_breaks:
+                if idx + 3 < len(card_files):
+                    # Process current card (front) with card at idx+3 (back)
+                    back_card_path = card_files[idx + 3]
+                    back_final_name = f"{team_name}-{card_name}-back"
+                    back_output_path = type_output_dir / f"{back_final_name}.png"
+                    
+                    try:
+                        doc = fitz.open(back_card_path)
+                        if len(doc) > 0:
+                            page = doc[0]
+                            mat = fitz.Matrix(300 / 72, 300 / 72)
+                            pix = page.get_pixmap(matrix=mat)
+                            pix.save(str(back_output_path))
+                        doc.close()
+                        apply_rounded_corners(back_output_path, 'portrait')
+                        log_buffer.append(f"DEBUG: Processed back card (AoD special): {back_final_name}.png")
+                    except Exception as e:
+                        log_buffer.append(f"WARNING: Failed to process AoD back card: {e}")
+                    
+                    # Now process next card (idx+1) as front with card at idx+2 as back
+                    if idx + 2 < len(card_files):
+                        next_front_path = card_files[idx + 1]
+                        next_back_path = card_files[idx + 2]
+                        
+                        # Classify next front card
+                        next_card_type, next_card_name = classifier.classify_card(next_front_path, pdf_text)
+                        if next_card_type and next_card_name:
+                            # Handle duplicate name
+                            name_key = f"{next_card_type}:{next_card_name}"
+                            if name_key in seen_names:
+                                seen_names[name_key] += 1
+                                next_card_name = f"{next_card_name}-{seen_names[name_key]}"
+                            else:
+                                seen_names[name_key] = 1
+                            
+                            # Create front
+                            next_type_output_dir = team_output_dir / next_card_type
+                            next_type_output_dir.mkdir(parents=True, exist_ok=True)
+                            next_front_final = f"{team_name}-{next_card_name}-front"
+                            next_front_output = next_type_output_dir / f"{next_front_final}.png"
+                            
+                            try:
+                                doc = fitz.open(next_front_path)
+                                if len(doc) > 0:
+                                    page = doc[0]
+                                    mat = fitz.Matrix(300 / 72, 300 / 72)
+                                    pix = page.get_pixmap(matrix=mat)
+                                    pix.save(str(next_front_output))
+                                doc.close()
+                                apply_rounded_corners(next_front_output, 'portrait')
+                                
+                                # Create back
+                                next_back_final = f"{team_name}-{next_card_name}-back"
+                                next_back_output = next_type_output_dir / f"{next_back_final}.png"
+                                doc = fitz.open(next_back_path)
+                                if len(doc) > 0:
+                                    page = doc[0]
+                                    mat = fitz.Matrix(300 / 72, 300 / 72)
+                                    pix = page.get_pixmap(matrix=mat)
+                                    pix.save(str(next_back_output))
+                                doc.close()
+                                apply_rounded_corners(next_back_output, 'portrait')
+                                
+                                classified_count += 1
+                                type_counts[next_card_type] = type_counts.get(next_card_type, 0) + 1
+                                log_buffer.append(f"DEBUG: Processed AoD card pair: {next_front_final}.png + {next_back_final}.png")
+                            except Exception as e:
+                                log_buffer.append(f"WARNING: Failed to process AoD card pair: {e}")
+                        
+                        # Skip next 3 cards (they've all been processed)
+                        skip_next_card = 3
+                        prev_card_type = card_type
+                        prev_card_name = card_name
+                        continue
+                        
+            # Check if this card continues on the other side
+            # Match 'CONTINUE(S) ON (THE) OTHER SIDE' - THE is optional
+            has_continues = re.search(r'CONTINUES?\s+ON\s+(?:THE\s+)?OTHER\s+SIDE', card_text.upper())
+            
+            if has_continues and idx + 1 < len(card_files):
                 # Next card is the back of this card
                 next_card_path = card_files[idx + 1]
                 
@@ -552,16 +736,18 @@ def classify_team_cards(
                         pix = page.get_pixmap(matrix=mat)
                         pix.save(str(back_output_path))
                     doc.close()
-                    logger.debug(f"Processed back card: {back_final_name}.png")
+                    
+                    # Apply rounded corners to back card
+                    apply_rounded_corners(back_output_path, orientation)
+                    log_buffer.append(f"DEBUG: Processed back card: {back_final_name}.png")
                 except Exception as e:
-                    logger.warning(f"Failed to convert back card {next_card_path.name} to PNG: {e}")
+                    log_buffer.append(f"WARNING: Failed to convert back card {next_card_path.name} to PNG: {e}")
                 
                 # Mark to skip the next card since we just processed it
-                skip_next_card = True
+                skip_next_card = 1
             elif not has_back_suffix:
                 # This is a front card with no continue tag
                 # Create default backside immediately
-                orientation = 'landscape' if card_type == 'datacards' else 'portrait'
                 backside_path = _get_backside_image(team_name, orientation, Path('config'))
                 
                 if backside_path and backside_path.exists():
@@ -570,21 +756,23 @@ def classify_team_cards(
                     
                     try:
                         shutil.copy2(backside_path, back_output_path)
-                        logger.debug(f"Created default backside: {back_filename}")
+                        # Apply rounded corners to default backside
+                        apply_rounded_corners(back_output_path, orientation)
+                        log_buffer.append(f"DEBUG: Created default backside: {back_filename}")
                     except Exception as e:
-                        logger.warning(f"Failed to create back for {card_name}: {e}")
+                        log_buffer.append(f"WARNING: Failed to create back for {card_name}: {e}")
                 else:
-                    logger.warning(f"No backside image found for {team_name} ({orientation})")
+                    log_buffer.append(f"WARNING: No backside image found for {team_name} ({orientation})")
             
         except Exception as e:
-            logger.error(f"Error classifying {card_path.name}: {e}")
+            log_buffer.append(f"ERROR: Error classifying {card_path.name}: {e}")
             continue
     
-    logger.info(f"Classified {classified_count} cards:")
+    log_buffer.append(f"Classified {classified_count} cards:")
     for card_type, count in sorted(type_counts.items()):
-        logger.info(f"  {card_type}: {count}")
+        log_buffer.append(f"  {card_type}: {count}")
     if skipped_count > 0:
-        logger.info(f"Skipped {skipped_count} NOTES cards")
+        log_buffer.append(f"Skipped {skipped_count} NOTES cards")
     
     return {
         'team': team_name,
@@ -592,7 +780,8 @@ def classify_team_cards(
         'cards_classified': classified_count,
         'cards_skipped': skipped_count,
         'types': type_counts,
-        'output_dir': str(team_output_dir)
+        'output_dir': str(team_output_dir),
+        'logs': log_buffer
     }
 
 
@@ -663,6 +852,14 @@ def run(
                 classifier
             )
             results.append(result)
+            
+            # Output team logs atomically
+            logger.info("=" * 60)
+            logger.info(f"[TEAM: {team_dir.name}]")
+            logger.info("=" * 60)
+            for log_line in result.get('logs', []):
+                logger.info(f"  {log_line}")
+            logger.info("")
     else:
         # Concurrent processing
         with ThreadPoolExecutor(max_workers=workers) as executor:
@@ -683,13 +880,23 @@ def run(
                 try:
                     result = future.result()
                     results.append(result)
+                    
+                    # Output team logs atomically
+                    logger.info("=" * 60)
+                    logger.info(f"[TEAM: {team_name}]")
+                    logger.info("=" * 60)
+                    for log_line in result.get('logs', []):
+                        logger.info(f"  {log_line}")
+                    logger.info("")
+                    
                 except Exception as e:
                     logger.error(f"Error processing {team_name}: {e}")
                     results.append({
                         'team': team_name,
                         'status': 'failed',
                         'reason': str(e),
-                        'cards_classified': 0
+                        'cards_classified': 0,
+                        'logs': []
                     })
     
     # Summary
