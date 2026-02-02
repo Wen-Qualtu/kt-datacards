@@ -491,7 +491,7 @@ def run(input_dir: Path = None, output_dir: Path = None, templates_file: Path = 
         logger.error(f"Error: Templates not found: {templates_file}")
         return {'success': False, 'extracted': 0, 'failed': 0}
     
-    templates = load_card_templates(templates_file)
+    templates = load_templates(templates_file)
     logger.info(f"Templates: {templates_file}")
     logger.info(f"  Landscape: {len(templates['landscape']['cards'])} cards per page")
     logger.info(f"  Portrait: {len(templates['portrait']['cards'])} cards per page")

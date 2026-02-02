@@ -463,133 +463,432 @@ def _has_backside_continue(card_text: str) -> bool:
     return bool(re.search(r'CONTINUES?\s+ON\s+(?:THE\s+)?OTHER\s+SIDE', card_text.upper()))
 
 
-def _is_angels_of_death_special_case(card_text: str) -> bool:
+def _is_three_card_special_case(team_name: str, card_text: str, card_type: str) -> bool:
     """
-    Check if card is part of Angels of Death special ordering.
+    Check if card is part of a 3-card special case.
     
-    Angels of Death Chapter Tactics have wrong card order in PDF:
-    card3 (front), card4 (front), card1 (back of card4), card2 (back of card3)
-    Should be: card3+card2, card4+card1
+    Several teams have 3-card groups that need special handling:
+    - Elucidian Starstriders: WARRANT OF TRADE faction rule (3 cards)
+    - Gellerpox: TECHNO-CURSE faction rule (3 cards)
+    - Hunter Clade: Operative Selection (3 cards)
+    - Hunter Clade: DOCTRINA IMPERATIVES faction rule (3 cards)
+    - Pathfinders: MARKERLIGHTS faction rule (3 cards)
     
     Args:
+        team_name: Team slug
+        card_text: Text content of the card
+        card_type: Type of the card
+    
+    Returns:
+        True if this is a 3-card special case
+    """
+    card_text_upper = card_text.upper()
+    
+    # Elucidian Starstriders - WARRANT OF TRADE
+    if team_name == 'elucidian-starstriders' and 'WARRANT OF TRADE' in card_text_upper:
+        return True
+    
+    # Gellerpox - TECHNO-CURSE
+    if team_name == 'gellerpox-infected' and 'TECHNO-CURSE' in card_text_upper:
+        return True
+    
+    # Hunter Clade - Operative Selection
+    if team_name == 'hunter-clade' and card_type == 'operative-selection':
+        return True
+    
+    # Hunter Clade - DOCTRINA IMPERATIVES
+    if team_name == 'hunter-clade' and 'DOCTRINA IMPERATIVES' in card_text_upper:
+        return True
+    
+    # Pathfinders - MARKERLIGHTS
+    if team_name == 'pathfinders' and 'MARKERLIGHTS' in card_text_upper:
+        return True
+    
+    return False
+
+
+def _is_four_card_special_case(team_name: str, card_text: str) -> bool:
+    """
+    Check if card is part of a 4-card special case.
+    
+    Two teams have 4-card groups:
+    - Angels of Death: CHAPTER TACTICS faction rule (4 cards)
+    - Warpcoven: BOONS OF TZEENTCH faction rule (4 cards)
+    
+    Args:
+        team_name: Team slug
         card_text: Text content of the card
     
     Returns:
-        True if this is an AoD Chapter Tactics card
+        True if this is a 4-card special case
     """
-    # Remove line breaks for multi-line text matching
-    card_text_no_breaks = ' '.join(card_text.upper().split())
-    return 'CHAPTER TACTIC OPTIONS ARE PRESENTED ON THEIR OWN CARD' in card_text_no_breaks
+    card_text_upper = card_text.upper()
+    
+    # Angels of Death - CHAPTER TACTICS
+    if team_name == 'angels-of-death' and 'CHAPTER TACTICS' in card_text_upper:
+        return True
+    
+    # Warpcoven - BOONS OF TZEENTCH
+    if team_name == 'warpcoven' and 'BOONS OF TZEENTCH' in card_text_upper:
+        return True
+    
+    return False
 
 
-def _process_angels_of_death_cards(
+def _is_inquisitorial_requisition_case(team_name: str, card_text: str) -> bool:
+    """
+    Check if card is the Inquisitorial Agents special 11-card case.
+    
+    This team has INQUISITORIAL REQUISITION faction rule that spans 11 cards:
+    - 1 front card with continue tag
+    - 1 back card
+    - 4 double-sided cards (8 cards total)
+    - 3 single-sided cards
+    
+    Args:
+        team_name: Team slug
+        card_text: Text content of the card
+    
+    Returns:
+        True if this is the Inquisitorial Requisition special case
+    """
+    return (team_name == 'inquisitorial-agents' and 
+            'INQUISITORIAL REQUISITION' in card_text.upper())
+
+
+def _combine_front_and_back(
+    front_path: Path,
+    back_path: Path,
+    team_name: str,
+    card_name: str,
+    card_type: str,
+    orientation: str,
+    output_dir: Path,
+    log_buffer: List[str]
+) -> bool:
+    """
+    Combine two cards as front and back pair.
+    
+    Args:
+        front_path: Path to front card PDF
+        back_path: Path to back card PDF
+        team_name: Team slug
+        card_name: Card name
+        card_type: Card type
+        orientation: Card orientation
+        output_dir: Output directory for this card type
+        log_buffer: List for log messages
+    
+    Returns:
+        True if successfully created pair
+    """
+    try:
+        # Create front
+        front_final_name = f"{team_name}-{card_name}-front"
+        front_output_path = output_dir / f"{front_final_name}.png"
+        
+        doc = fitz.open(front_path)
+        if len(doc) > 0:
+            page = doc[0]
+            mat = fitz.Matrix(300 / 72, 300 / 72)
+            pix = page.get_pixmap(matrix=mat)
+            pix.save(str(front_output_path))
+        doc.close()
+        apply_rounded_corners(front_output_path, orientation)
+        
+        # Create back
+        back_final_name = f"{team_name}-{card_name}-back"
+        back_output_path = output_dir / f"{back_final_name}.png"
+        
+        doc = fitz.open(back_path)
+        if len(doc) > 0:
+            page = doc[0]
+            mat = fitz.Matrix(300 / 72, 300 / 72)
+            pix = page.get_pixmap(matrix=mat)
+            pix.save(str(back_output_path))
+        doc.close()
+        apply_rounded_corners(back_output_path, orientation)
+        
+        log_buffer.append(f"Combined pair: {front_final_name}.png + {back_final_name}.png")
+        return True
+    except Exception as e:
+        log_buffer.append(f"WARNING: Failed to combine front/back pair: {e}")
+        return False
+
+
+def _process_single_card(
+    card_path: Path,
+    team_name: str,
+    card_name: str,
+    orientation: str,
+    output_dir: Path,
+    config_dir: Path,
+    log_buffer: List[str]
+) -> bool:
+    """
+    Process a single card with default backside.
+    
+    Args:
+        card_path: Path to card PDF
+        team_name: Team slug
+        card_name: Card name
+        orientation: Card orientation
+        output_dir: Output directory for this card type
+        config_dir: Path to config directory
+        log_buffer: List for log messages
+    
+    Returns:
+        True if successfully processed
+    """
+    try:
+        # Create front
+        front_final_name = f"{team_name}-{card_name}-front"
+        front_output_path = output_dir / f"{front_final_name}.png"
+        
+        doc = fitz.open(card_path)
+        if len(doc) > 0:
+            page = doc[0]
+            mat = fitz.Matrix(300 / 72, 300 / 72)
+            pix = page.get_pixmap(matrix=mat)
+            pix.save(str(front_output_path))
+        doc.close()
+        apply_rounded_corners(front_output_path, orientation)
+        
+        # Create default back
+        _create_default_backside(
+            team_name, card_name, orientation,
+            output_dir, config_dir, log_buffer
+        )
+        
+        return True
+    except Exception as e:
+        log_buffer.append(f"WARNING: Failed to process single card: {e}")
+        return False
+
+
+def _process_card_group(
+    team_name: str,
+    card_files: List[Path],
+    idx: int,
+    card_count: int,
+    first_card_type: str,
+    first_card_name: str,
+    first_orientation: str,
+    team_output_dir: Path,
+    classifier,
+    seen_names: Dict,
+    config_dir: Path,
+    log_buffer: List[str]
+) -> Tuple[int, int]:
+    """
+    Process N-card groups generically.
+    
+    For 3 cards: Creates two versions with different backs: (1,2) and (1,3)
+    For even numbers (4, 6, 8, etc.): Pairs cards sequentially (1,2), (3,4), (5,6), etc.
+    For odd numbers > 3 (5, 7, 9, etc.): Pairs even portion, then processes last card as single with default back
+    
+    Args:
+        team_name: Team slug
+        card_files: List of all card files
+        idx: Current index in card_files (first card already classified)
+        card_count: Total number of cards in group (including first)
+        first_card_type: Type of first card
+        first_card_name: Name of first card
+        first_orientation: Orientation of first card
+        team_output_dir: Output directory for team
+        classifier: CardClassifier instance
+        seen_names: Dict tracking duplicate names
+        config_dir: Path to config directory
+        log_buffer: List for log messages
+    
+    Returns:
+        Tuple of (classified_count, skip_count)
+    """
+    classified_count = 0
+    
+    if card_count == 3:
+        # Special case: 3 cards = front with 2 different backs
+        type_output_dir = team_output_dir / first_card_type
+        type_output_dir.mkdir(parents=True, exist_ok=True)
+        
+        # First pair: card 1 + card 2
+        if idx + 1 < len(card_files):
+            if _combine_front_and_back(
+                card_files[idx], card_files[idx + 1], team_name, first_card_name,
+                first_card_type, first_orientation, type_output_dir, log_buffer
+            ):
+                classified_count += 1
+        
+        # Second pair: card 1 + card 3 (with -2 suffix)
+        if idx + 2 < len(card_files):
+            second_name = f"{first_card_name}-2"
+            if _combine_front_and_back(
+                card_files[idx], card_files[idx + 2], team_name, second_name,
+                first_card_type, first_orientation, type_output_dir, log_buffer
+            ):
+                classified_count += 1
+        
+        return classified_count, 2  # Skip next 2 cards
+    
+    else:
+        # Process pairs for even portion: (1,2), (3,4), (5,6), etc.
+        pairs = card_count // 2
+        
+        for pair_idx in range(pairs):
+            front_idx = idx + (pair_idx * 2)
+            back_idx = front_idx + 1
+            
+            if back_idx >= len(card_files):
+                break
+            
+            front_path = card_files[front_idx]
+            back_path = card_files[back_idx]
+            
+            # For first pair, use already-classified first card info
+            if pair_idx == 0:
+                card_type = first_card_type
+                card_name = first_card_name
+                orientation = first_orientation
+            else:
+                # Classify subsequent cards
+                card_type, card_name, orientation = classifier.classify_card(front_path, None)
+                if not card_type or not card_name:
+                    continue
+                
+                # Handle duplicate names
+                name_key = f"{card_type}:{card_name}"
+                if name_key in seen_names:
+                    seen_names[name_key] += 1
+                    card_name = f"{card_name}-{seen_names[name_key]}"
+                else:
+                    seen_names[name_key] = 1
+            
+            # Create output directory
+            type_output_dir = team_output_dir / card_type
+            type_output_dir.mkdir(parents=True, exist_ok=True)
+            
+            # Combine front and back
+            if _combine_front_and_back(
+                front_path, back_path, team_name, card_name,
+                card_type, orientation, type_output_dir, log_buffer
+            ):
+                classified_count += 1
+        
+        # Handle odd card count: process last card as single with default back
+        if card_count % 2 == 1:
+            last_idx = idx + (pairs * 2)
+            if last_idx < len(card_files):
+                last_path = card_files[last_idx]
+                
+                # Classify last card
+                last_type, last_name, last_orientation = classifier.classify_card(last_path, None)
+                if last_type and last_name:
+                    # Handle duplicate names
+                    name_key = f"{last_type}:{last_name}"
+                    if name_key in seen_names:
+                        seen_names[name_key] += 1
+                        last_name = f"{last_name}-{seen_names[name_key]}"
+                    else:
+                        seen_names[name_key] = 1
+                    
+                    # Create output directory
+                    last_output_dir = team_output_dir / last_type
+                    last_output_dir.mkdir(parents=True, exist_ok=True)
+                    
+                    # Process as single card with default back
+                    if _process_single_card(
+                        last_path, team_name, last_name, last_orientation,
+                        last_output_dir, config_dir, log_buffer
+                    ):
+                        classified_count += 1
+        
+        return classified_count, card_count - 1  # Skip all but first card
+
+
+def _process_inquisitorial_requisition(
     team_name: str,
     card_files: List[Path],
     idx: int,
     card_type: str,
     card_name: str,
+    orientation: str,
     team_output_dir: Path,
     classifier,
     seen_names: Dict,
+    config_dir: Path,
     log_buffer: List[str]
 ) -> Tuple[int, int]:
     """
-    Process Angels of Death special card ordering.
+    Process Inquisitorial Agents special 11-card INQUISITORIAL REQUISITION.
     
-    Handles the misordered Chapter Tactics cards:
-    - card at idx (current): front
-    - card at idx+3: back of current
-    - card at idx+1: another front
-    - card at idx+2: back of idx+1
+    Structure:
+    - idx+0: Front with continue tag
+    - idx+1: Back of idx+0
+    - idx+2/idx+3: Double-sided card 1
+    - idx+4/idx+5: Double-sided card 2
+    - idx+6/idx+7: Double-sided card 3
+    - idx+8/idx+9: Double-sided card 4
+    - idx+10: Single card with default back
+    - idx+11: Single card with default back
+    - idx+12: Single card with default back
     
     Args:
         team_name: Team slug
         card_files: List of all card files
-        idx: Current index in card_files
+        idx: Current index in card_files (the main requisition card)
         card_type: Type of current card
         card_name: Name of current card
+        orientation: Card orientation
         team_output_dir: Output directory for team
         classifier: CardClassifier instance
         seen_names: Dict tracking duplicate names
+        config_dir: Path to config directory
         log_buffer: List for log messages
     
     Returns:
-        Tuple of (classified_count, skip_count) - how many cards processed and how many to skip
+        Tuple of (classified_count, skip_count)
     """
     classified_count = 0
     type_output_dir = team_output_dir / card_type
     type_output_dir.mkdir(parents=True, exist_ok=True)
     
-    # Process current card (idx) with back at idx+3
-    if idx + 3 < len(card_files):
-        back_card_path = card_files[idx + 3]
-        back_final_name = f"{team_name}-{card_name}-back"
-        back_output_path = type_output_dir / f"{back_final_name}.png"
-        
-        try:
-            doc = fitz.open(back_card_path)
-            if len(doc) > 0:
-                page = doc[0]
-                mat = fitz.Matrix(300 / 72, 300 / 72)
-                pix = page.get_pixmap(matrix=mat)
-                pix.save(str(back_output_path))
-            doc.close()
-            apply_rounded_corners(back_output_path, 'portrait')
-            log_buffer.append(f"Processed AoD back card: {back_final_name}.png")
-        except Exception as e:
-            log_buffer.append(f"WARNING: Failed to process AoD back card: {e}")
-        
-        # Process next card (idx+1) as front with card at idx+2 as back
-        if idx + 2 < len(card_files):
-            next_front_path = card_files[idx + 1]
-            next_back_path = card_files[idx + 2]
-            
-            # Classify next front card
-            next_card_type, next_card_name, _ = classifier.classify_card(next_front_path, None)
-            if next_card_type and next_card_name:
-                # Handle duplicate name
-                name_key = f"{next_card_type}:{next_card_name}"
-                if name_key in seen_names:
-                    seen_names[name_key] += 1
-                    next_card_name = f"{next_card_name}-{seen_names[name_key]}"
-                else:
-                    seen_names[name_key] = 1
-                
-                # Create front
-                next_type_output_dir = team_output_dir / next_card_type
-                next_type_output_dir.mkdir(parents=True, exist_ok=True)
-                next_front_final = f"{team_name}-{next_card_name}-front"
-                next_front_output = next_type_output_dir / f"{next_front_final}.png"
-                
-                try:
-                    doc = fitz.open(next_front_path)
-                    if len(doc) > 0:
-                        page = doc[0]
-                        mat = fitz.Matrix(300 / 72, 300 / 72)
-                        pix = page.get_pixmap(matrix=mat)
-                        pix.save(str(next_front_output))
-                    doc.close()
-                    apply_rounded_corners(next_front_output, 'portrait')
-                    
-                    # Create back
-                    next_back_final = f"{team_name}-{next_card_name}-back"
-                    next_back_output = next_type_output_dir / f"{next_back_final}.png"
-                    doc = fitz.open(next_back_path)
-                    if len(doc) > 0:
-                        page = doc[0]
-                        mat = fitz.Matrix(300 / 72, 300 / 72)
-                        pix = page.get_pixmap(matrix=mat)
-                        pix.save(str(next_back_output))
-                    doc.close()
-                    apply_rounded_corners(next_back_output, 'portrait')
-                    
-                    classified_count += 1
-                    log_buffer.append(f"Processed AoD card pair: {next_front_final}.png + {next_back_final}.png")
-                except Exception as e:
-                    log_buffer.append(f"WARNING: Failed to process AoD card pair: {e}")
+    # Process first 10 cards as 5 pairs: main faction rule (idx, idx+1) + 4 operative pairs (idx+2 through idx+9)
+    group_classified, _ = _process_card_group(
+        team_name, card_files, idx, 10,
+        card_type, card_name, orientation,
+        team_output_dir, classifier, seen_names, config_dir, log_buffer
+    )
+    classified_count += group_classified
     
-    # Return how many cards were processed and how many to skip (3: idx+1, idx+2, idx+3)
-    return classified_count, 3
+    # Process 3 single operative cards (idx+10, idx+11, idx+12) with default backs
+    for single_idx in range(3):
+        card_idx = idx + 10 + single_idx
+        
+        if card_idx >= len(card_files):
+            break
+        
+        single_path = card_files[card_idx]
+        
+        # Classify single card
+        single_type, single_name, single_orientation = classifier.classify_card(single_path, None)
+        if single_type and single_name:
+            # Handle duplicate name
+            name_key = f"{single_type}:{single_name}"
+            if name_key in seen_names:
+                seen_names[name_key] += 1
+                single_name = f"{single_name}-{seen_names[name_key]}"
+            else:
+                seen_names[name_key] = 1
+            
+            # Process single card with default back (uses same type as main faction rule)
+            if _process_single_card(
+                single_path, team_name, single_name, single_orientation,
+                type_output_dir, config_dir, log_buffer
+            ):
+                classified_count += 1
+    
+    # Skip next 12 cards (idx+1 through idx+12)
+    return classified_count, 12
 
 
 def _process_card_backside(
@@ -835,14 +1134,36 @@ def classify_team_cards(
             # Extract card text for special case detection
             card_text = classifier.extract_text_from_card_pdf(card_path)
             
-            # Special case: Angels of Death Chapter Tactics (misordered cards)
-            if _is_angels_of_death_special_case(card_text):
-                aod_classified, aod_skip = _process_angels_of_death_cards(
-                    team_name, card_files, idx, card_type, card_name,
-                    team_output_dir, classifier, seen_names, log_buffer
+            # Special case: Inquisitorial Agents 11-card INQUISITORIAL REQUISITION
+            if _is_inquisitorial_requisition_case(team_name, card_text):
+                inq_classified, inq_skip = _process_inquisitorial_requisition(
+                    team_name, card_files, idx, card_type, card_name, orientation,
+                    team_output_dir, classifier, seen_names, Path('config'), log_buffer
                 )
-                classified_count += aod_classified
-                skip_next_card = aod_skip
+                classified_count += inq_classified
+                skip_next_card = inq_skip
+                continue
+            
+            # Special case: 4-card groups (Angels of Death, Warpcoven)
+            if _is_four_card_special_case(team_name, card_text):
+                group_classified, group_skip = _process_card_group(
+                    team_name, card_files, idx, 4,
+                    card_type, card_name, orientation,
+                    team_output_dir, classifier, seen_names, Path('config'), log_buffer
+                )
+                classified_count += group_classified
+                skip_next_card = group_skip
+                continue
+            
+            # Special case: 3-card groups (multiple teams)
+            if _is_three_card_special_case(team_name, card_text, card_type):
+                group_classified, group_skip = _process_card_group(
+                    team_name, card_files, idx, 3,
+                    card_type, card_name, orientation,
+                    team_output_dir, classifier, seen_names, Path('config'), log_buffer
+                )
+                classified_count += group_classified
+                skip_next_card = group_skip
                 continue
             
             # Check if this card continues on the other side
