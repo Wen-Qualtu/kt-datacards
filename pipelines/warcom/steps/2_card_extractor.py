@@ -18,6 +18,25 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+# Icon extraction coordinates (as percentage of page dimensions)
+# Page 1 - Card backside icons
+PORTRAIT_ICON_X1 = 0.0243
+PORTRAIT_ICON_Y1 = 0.0006
+PORTRAIT_ICON_X2 = 0.1620
+PORTRAIT_ICON_Y2 = 0.1324
+
+LANDSCAPE_ICON_X1 = 0.0008
+LANDSCAPE_ICON_Y1 = 0.0232
+LANDSCAPE_ICON_X2 = 0.1839
+LANDSCAPE_ICON_Y2 = 0.1027
+
+# Token bag icon page
+TOKEN_ICON_X1 = 0.1288
+TOKEN_ICON_Y1 = 0.1625
+TOKEN_ICON_X2 = 0.2724
+TOKEN_ICON_Y2 = 0.2613
+
+
 def load_templates(template_file: Path):
     """Load card extraction templates."""
     with open(template_file) as f:
@@ -200,6 +219,150 @@ def extract_template_markers(template: dict) -> list:
             unique.append(marker)
     
     return unique
+
+
+def find_kill_team_page(pdf_path: Path) -> int:
+    """
+    Find the page with large "KILL TEAM" text (operatives list page).
+    
+    This page has:
+    - Team name followed by "KILL TEAM" in large text
+    - Dark background
+    - Operative list
+    
+    Args:
+        pdf_path: Path to team PDF
+    
+    Returns:
+        Page number (0-indexed) or -1 if not found
+    """
+    try:
+        doc = fitz.open(pdf_path)
+        
+        for page_num in range(len(doc)):
+            page = doc[page_num]
+            
+            # Get text with font information
+            text_dict = page.get_text("dict")
+            
+            # Look for large text containing "KILL TEAM"
+            for block in text_dict.get("blocks", []):
+                if block.get("type") == 0:  # Text block
+                    for line in block.get("lines", []):
+                        # Check if line has large font size (typically > 20)
+                        for span in line.get("spans", []):
+                            text = span.get("text", "").upper()
+                            size = span.get("size", 0)
+                            
+                            # Look for "KILL TEAM" in large text (size > 20)
+                            if "KILL TEAM" in text and size > 20:
+                                doc.close()
+                                return page_num
+        
+        doc.close()
+        return -1
+        
+    except Exception as e:
+        logger.warning(f"Error finding KILL TEAM page: {e}")
+        return -1
+
+
+def extract_icons_from_pdf(pdf_path: Path, output_dir: Path, team_name: str) -> dict:
+    """
+    Extract team icons from PDF for card backsides and token bag.
+    
+    Extracts:
+    - Portrait icon from page 1 (for portrait card backsides)
+    - Landscape icon from page 1 (for landscape card backsides)
+    - Token bag icon from KILL TEAM page
+    
+    Args:
+        pdf_path: Path to team PDF
+        output_dir: Directory to save icons (will create icons/ subdirectory)
+        team_name: Team slug name
+    
+    Returns:
+        Dict with extraction results
+    """
+    icons_dir = output_dir / 'icons'
+    icons_dir.mkdir(parents=True, exist_ok=True)
+    
+    extracted = {
+        'portrait': False,
+        'landscape': False,
+        'token': False
+    }
+    
+    try:
+        doc = fitz.open(pdf_path)
+        
+        # Extract from page 1 (card backside icons)
+        if len(doc) > 0:
+            page = doc[0]
+            
+            # Render at 2x DPI for better quality
+            mat = fitz.Matrix(2.0, 2.0)
+            pix = page.get_pixmap(matrix=mat)
+            img = np.frombuffer(pix.samples, dtype=np.uint8).reshape(pix.height, pix.width, pix.n)
+            img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
+            
+            page_width = pix.width
+            page_height = pix.height
+            
+            # Extract portrait icon
+            port_x1 = int(page_width * PORTRAIT_ICON_X1)
+            port_y1 = int(page_height * PORTRAIT_ICON_Y1)
+            port_x2 = int(page_width * PORTRAIT_ICON_X2)
+            port_y2 = int(page_height * PORTRAIT_ICON_Y2)
+            
+            portrait_icon = img[port_y1:port_y2, port_x1:port_x2]
+            portrait_path = icons_dir / f'{team_name}-icon-portrait.jpg'
+            cv2.imwrite(str(portrait_path), portrait_icon, [cv2.IMWRITE_JPEG_QUALITY, 95])
+            extracted['portrait'] = True
+            
+            # Extract landscape icon
+            land_x1 = int(page_width * LANDSCAPE_ICON_X1)
+            land_y1 = int(page_height * LANDSCAPE_ICON_Y1)
+            land_x2 = int(page_width * LANDSCAPE_ICON_X2)
+            land_y2 = int(page_height * LANDSCAPE_ICON_Y2)
+            
+            landscape_icon = img[land_y1:land_y2, land_x1:land_x2]
+            landscape_path = icons_dir / f'{team_name}-icon-landscape.jpg'
+            cv2.imwrite(str(landscape_path), landscape_icon, [cv2.IMWRITE_JPEG_QUALITY, 95])
+            extracted['landscape'] = True
+        
+        # Find and extract token bag icon
+        page_num = find_kill_team_page(pdf_path)
+        
+        if page_num != -1:
+            page = doc[page_num]
+            
+            # Render at 2x DPI for better quality
+            mat = fitz.Matrix(2.0, 2.0)
+            pix = page.get_pixmap(matrix=mat)
+            img = np.frombuffer(pix.samples, dtype=np.uint8).reshape(pix.height, pix.width, pix.n)
+            img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
+            
+            page_width = pix.width
+            page_height = pix.height
+            
+            # Extract token bag icon
+            tok_x1 = int(page_width * TOKEN_ICON_X1)
+            tok_y1 = int(page_height * TOKEN_ICON_Y1)
+            tok_x2 = int(page_width * TOKEN_ICON_X2)
+            tok_y2 = int(page_height * TOKEN_ICON_Y2)
+            
+            token_icon = img[tok_y1:tok_y2, tok_x1:tok_x2]
+            token_path = icons_dir / f'{team_name}-icon-token.jpg'
+            cv2.imwrite(str(token_path), token_icon, [cv2.IMWRITE_JPEG_QUALITY, 95])
+            extracted['token'] = True
+        
+        doc.close()
+        
+    except Exception as e:
+        logger.warning(f"Error extracting icons for {team_name}: {e}")
+    
+    return extracted
 
 
 def scale_markers(markers: list, scale: float) -> list:
@@ -559,11 +722,18 @@ def run(input_dir: Path = None, output_dir: Path = None, templates_file: Path = 
             result = process_pdf_and_extract_all_cards(pdf_file, templates, team_output_dir, dpi)
             print(f"  [{pdf_name}] Done: {result['total_cards']} cards from {result['pages_processed']} pages")
             
+            # Extract icons
+            print(f"  [{pdf_name}] Extracting team icons...")
+            icons_result = extract_icons_from_pdf(pdf_file, team_folder, team_name if team_name else extracted_name)
+            icons_extracted = sum(1 for v in icons_result.values() if v)
+            print(f"  [{pdf_name}] Icons: {icons_extracted}/3 extracted")
+            
             return {
                 'pdf_file': pdf_file,
                 'extracted_name': extracted_name,
                 'team_name': team_name,
                 'result': result,
+                'icons': icons_result,
                 'error': None
             }
         except Exception as e:
