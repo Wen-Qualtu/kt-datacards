@@ -624,7 +624,7 @@ def _combine_front_and_back(
             pix = page.get_pixmap(matrix=mat)
             pix.pil_save(str(back_output_path), format="JPEG", optimize=True, quality=95)
         doc.close()
-        _inpaint_card_corners(back_output_path, orientation, card_type)
+        # Skip corner inpainting on backside (it's a clean icon or default)
         
         return True
     except Exception as e:

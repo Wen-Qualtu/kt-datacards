@@ -300,8 +300,8 @@ def extract_icons_from_pdf(pdf_path: Path, output_dir: Path, team_name: str) -> 
         if len(doc) > 0:
             page = doc[0]
             
-            # Render at 2x DPI for better quality
-            mat = fitz.Matrix(2.0, 2.0)
+            # Render at 5x DPI for high quality card backsides
+            mat = fitz.Matrix(5.0, 5.0)
             pix = page.get_pixmap(matrix=mat)
             img = np.frombuffer(pix.samples, dtype=np.uint8).reshape(pix.height, pix.width, pix.n)
             img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
@@ -337,8 +337,8 @@ def extract_icons_from_pdf(pdf_path: Path, output_dir: Path, team_name: str) -> 
         if page_num != -1:
             page = doc[page_num]
             
-            # Render at 2x DPI for better quality
-            mat = fitz.Matrix(2.0, 2.0)
+            # Render at 5x DPI for high quality
+            mat = fitz.Matrix(5.0, 5.0)
             pix = page.get_pixmap(matrix=mat)
             img = np.frombuffer(pix.samples, dtype=np.uint8).reshape(pix.height, pix.width, pix.n)
             img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
