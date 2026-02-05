@@ -3,6 +3,7 @@ Generate card box texture for teams by compositing:
 - Base box template (dev/examples/box-side.png)
 - Landscape icon (from extracted icons)
 - Portrait icon (from extracted icons)
+- Team name text overlay
 
 Output: 1024x1024 texture suitable for TTS card boxes
 """
@@ -10,6 +11,130 @@ import cv2
 import numpy as np
 from pathlib import Path
 import argparse
+from PIL import Image, ImageDraw, ImageFont
+
+
+def add_team_name_to_texture(
+    canvas: np.ndarray,
+    team_name: str,
+    text_area: tuple = (533, 15, 999, 120)
+) -> np.ndarray:
+    """
+    Add team name text to the box texture.
+    
+    Args:
+        canvas: Canvas image (numpy array in BGR)
+        team_name: Team name to display
+        text_area: (x1, y1, x2, y2) bounds for text placement
+    
+    Returns:
+        Canvas with text added
+    """
+    # Convert BGR to RGB for PIL
+    canvas_rgb = cv2.cvtColor(canvas, cv2.COLOR_BGR2RGB)
+    pil_img = Image.fromarray(canvas_rgb)
+    draw = ImageDraw.Draw(pil_img)
+    
+    x1, y1, x2, y2 = text_area
+    text_width = x2 - x1
+    text_height = y2 - y1
+    
+    # Format team name (replace hyphens with spaces, title case)
+    display_name = team_name.replace('-', ' ').upper()
+    
+    # Use fixed font size (same as angels-of-death would use)
+    font_size = 50
+    
+    # Try to use a bold sans-serif font
+    font_options = [
+        "C:/Windows/Fonts/arialbd.ttf",  # Arial Bold
+        "C:/Windows/Fonts/impact.ttf",   # Impact
+        "C:/Windows/Fonts/arial.ttf",     # Arial
+    ]
+    
+    font = None
+    font_path = None
+    for path in font_options:
+        try:
+            font = ImageFont.truetype(path, font_size)
+            font_path = path
+            break
+        except:
+            continue
+    
+    if font is None:
+        # Fallback to default font
+        font = ImageFont.load_default()
+    
+    # Try single line first
+    bbox = draw.textbbox((0, 0), display_name, font=font)
+    text_w = bbox[2] - bbox[0]
+    text_h = bbox[3] - bbox[1]
+    
+    lines = [display_name]
+    
+    # If text is too wide, split into two lines
+    if text_w > text_width:
+        words = display_name.split()
+        if len(words) > 1:
+            # Find best split point by trying each position
+            best_split = len(words) // 2
+            best_diff = float('inf')
+            
+            for i in range(1, len(words)):
+                line1 = ' '.join(words[:i])
+                line2 = ' '.join(words[i:])
+                
+                bbox1 = draw.textbbox((0, 0), line1, font=font)
+                bbox2 = draw.textbbox((0, 0), line2, font=font)
+                w1 = bbox1[2] - bbox1[0]
+                w2 = bbox2[2] - bbox2[0]
+                
+                # Both lines must fit, and prefer balanced widths
+                if w1 <= text_width and w2 <= text_width:
+                    diff = abs(w1 - w2)
+                    if diff < best_diff:
+                        best_diff = diff
+                        best_split = i
+            
+            line1 = ' '.join(words[:best_split])
+            line2 = ' '.join(words[best_split:])
+            lines = [line1, line2]
+    
+    # Text color: orange/red to match screenshot
+    text_color = (219, 87, 24)  # RGB orange-red
+    
+    if len(lines) == 1:
+        # Single line - center vertically and horizontally
+        bbox = draw.textbbox((0, 0), lines[0], font=font)
+        text_w = bbox[2] - bbox[0]
+        text_h = bbox[3] - bbox[1]
+        
+        x = x1 + (text_width - text_w) // 2
+        y = y1 + (text_height - text_h) // 2
+        
+        draw.text((x, y), lines[0], fill=text_color, font=font)
+    else:
+        # Two lines - center as a block
+        line_heights = []
+        line_widths = []
+        for line in lines:
+            bbox = draw.textbbox((0, 0), line, font=font)
+            line_widths.append(bbox[2] - bbox[0])
+            line_heights.append(bbox[3] - bbox[1])
+        
+        total_text_height = sum(line_heights)
+        y_start = y1 + (text_height - total_text_height) // 2
+        
+        y_current = y_start
+        for i, line in enumerate(lines):
+            x = x1 + (text_width - line_widths[i]) // 2
+            draw.text((x, y_current), line, fill=text_color, font=font)
+            y_current += line_heights[i]
+    
+    # Convert back to BGR for OpenCV
+    canvas_with_text = cv2.cvtColor(np.array(pil_img), cv2.COLOR_RGB2BGR)
+    return canvas_with_text
 
 
 def composite_box_texture(
@@ -17,16 +142,18 @@ def composite_box_texture(
     landscape_icon_path: Path,
     portrait_icon_path: Path,
     output_path: Path,
+    team_name: str,
     output_size: tuple = (1024, 1024)
 ) -> bool:
     """
-    Create card box texture by compositing template with team icons.
+    Create card box texture by compositing template with team icons and name.
     
     Args:
         template_path: Path to box-side.png template
         landscape_icon_path: Path to team landscape icon
         portrait_icon_path: Path to team portrait icon
         output_path: Path to save output texture
+        team_name: Team slug name for text overlay
         output_size: Output dimensions (width, height)
     
     Returns:
@@ -68,6 +195,9 @@ def composite_box_texture(
         landscape_resized = cv2.resize(landscape, (508, 294), interpolation=cv2.INTER_LANCZOS4)
         canvas[728:1022, 0:508] = landscape_resized
         
+        # 4. Add team name text overlay
+        canvas = add_team_name_to_texture(canvas, team_name, text_area=(533, 15, 999, 120))
+        
         # Save output
         output_path.parent.mkdir(parents=True, exist_ok=True)
         cv2.imwrite(str(output_path), canvas, [cv2.IMWRITE_JPEG_QUALITY, 95])
@@ -85,7 +215,7 @@ def generate_for_team(team_name: str, extracted_dir: Path = None, config_dir: Pa
     Generate box texture for a specific team.
     
     Args:
-        team_name: Team slug name
+        team_name: Team slug name (will be displayed as title-cased with spaces)
         extracted_dir: Root of extracted directory (default: layers/warcom/extracted)
         config_dir: Root of config directory (default: config)
     
@@ -114,7 +244,7 @@ def generate_for_team(team_name: str, extracted_dir: Path = None, config_dir: Pa
         print(f"ERROR: Template not found: {template_path}")
         return False
     
-    return composite_box_texture(template_path, landscape_icon, portrait_icon, output_path)
+    return composite_box_texture(template_path, landscape_icon, portrait_icon, output_path, team_name)
 
 
 def main():

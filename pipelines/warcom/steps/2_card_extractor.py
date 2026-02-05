@@ -365,6 +365,325 @@ def extract_icons_from_pdf(pdf_path: Path, output_dir: Path, team_name: str) -> 
     return extracted
 
 
+def is_token_guide_card(page: fitz.Page, card_coords: dict) -> bool:
+    """
+    Detect if a portrait card is a token/marker guide card.
+    
+    Checks if the first line of text equals "MARKER/TOKEN GUIDE".
+    
+    Args:
+        page: PyMuPDF page object
+        card_coords: Card corner coordinates
+    
+    Returns:
+        True if this is a token guide card
+    """
+    # Calculate card bounding box in PDF points
+    x1, y1 = card_coords['top_left']
+    x2, y2 = card_coords['top_right']
+    x3, y3 = card_coords['bottom_left']
+    x4, y4 = card_coords['bottom_right']
+    
+    pdf_scale = 72 / 300.0  # Convert from template coords (300 DPI) to PDF points (72 DPI)
+    left = min(x1, x3) * pdf_scale
+    top = min(y1, y2) * pdf_scale
+    right = max(x2, x4) * pdf_scale
+    bottom = max(y3, y4) * pdf_scale
+    
+    clip_rect = fitz.Rect(left, top, right, bottom)
+    
+    # Extract text from card
+    text = page.get_text("text", clip=clip_rect)
+    
+    # Split into lines and check first row
+    lines = [line.strip() for line in text.split('\n') if line.strip()]
+    
+    if len(lines) >= 1:
+        first_line = lines[0].upper()
+        # Check if first line contains "MARKER/TOKEN GUIDE"
+        return 'MARKER' in first_line or 'TOKEN GUIDE' in first_line
+    
+    return False
+
+
+def extract_tokens_from_card(
+    card_img: np.ndarray,
+    page: fitz.Page,
+    card_coords: dict,
+    output_dir: Path,
+    card_filename_base: str,
+    skip_header_percent: float = 15.0,
+    min_token_area: int = 3000,
+    extract_dpi: int = 300
+) -> dict:
+    """
+    Extract individual tokens from a token guide card at high resolution.
+    
+    Detects token locations using the rendered card image, then extracts
+    the actual token regions directly from the PDF at higher DPI.
+    
+    Args:
+        card_img: Card image for detection (BGR, typically 150 DPI)
+        page: PyMuPDF page object
+        card_coords: Card corner coordinates (at template 300 DPI)
+        output_dir: Directory to save extracted tokens
+        card_filename_base: Base filename (e.g., "page06_card1")
+        skip_header_percent: Percentage of top to skip
+        min_token_area: Minimum contour area
+        extract_dpi: DPI for extracting final tokens from PDF
+    
+    Returns:
+        Dict with extraction metadata
+    """
+    height, width = card_img.shape[:2]
+    
+    # Skip header area for detection
+    skip_rows = int(height * (skip_header_percent / 100))
+    img_no_header = card_img[skip_rows:, :]
+    
+    # Convert to grayscale
+    gray = cv2.cvtColor(img_no_header, cv2.COLOR_BGR2GRAY)
+    
+    # Apply threshold
+    _, binary = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
+    
+    # Morphological operations
+    kernel = np.ones((5, 5), np.uint8)
+    binary = cv2.morphologyEx(binary, cv2.MORPH_CLOSE, kernel, iterations=3)
+    binary = cv2.morphologyEx(binary, cv2.MORPH_OPEN, kernel, iterations=2)
+    
+    # Find contours
+    contours, _ = cv2.findContours(binary, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    
+    # Filter by area and aspect ratio
+    token_contours = []
+    for contour in contours:
+        area = cv2.contourArea(contour)
+        if area >= min_token_area:
+            x, y, w, h = cv2.boundingRect(contour)
+            aspect_ratio = w / h if h > 0 else 0
+            
+            if 0.3 <= aspect_ratio <= 2.5:
+                token_contours.append((contour, area, x, y, w, h))
+    
+    # Sort by position (top to bottom, left to right)
+    token_contours.sort(key=lambda x: (x[3], x[2]))
+    
+    # Calculate card region in PDF coordinates
+    x1, y1 = card_coords['top_left']
+    x2, y2 = card_coords['top_right']
+    x3, y3 = card_coords['bottom_left']
+    x4, y4 = card_coords['bottom_right']
+    
+    pdf_scale = 72 / 300.0
+    card_left = min(x1, x3) * pdf_scale
+    card_top = min(y1, y2) * pdf_scale
+    card_right = max(x2, x4) * pdf_scale
+    card_bottom = max(y3, y4) * pdf_scale
+    card_rect = fitz.Rect(card_left, card_top, card_right, card_bottom)
+    
+    # Render card at high DPI for extraction
+    mat = fitz.Matrix(extract_dpi / 72, extract_dpi / 72)
+    pix = page.get_pixmap(matrix=mat, clip=card_rect)
+    high_res_img = np.frombuffer(pix.samples, dtype=np.uint8).reshape(pix.height, pix.width, pix.n)
+    
+    if pix.n == 4:  # RGBA
+        high_res_img = cv2.cvtColor(high_res_img, cv2.COLOR_RGBA2BGR)
+    elif pix.n == 3:  # RGB
+        high_res_img = cv2.cvtColor(high_res_img, cv2.COLOR_RGB2BGR)
+    
+    hr_height, hr_width = high_res_img.shape[:2]
+    
+    # Extract each token at high resolution
+    tokens_metadata = []
+    scale_factor = hr_width / width
+    
+    for idx, (contour, area, x, y, w, h) in enumerate(token_contours, 1):
+        # Adjust for skipped header and scale to high-res
+        y_abs = y + skip_rows
+        
+        padding = int(10 * scale_factor)
+        x1_hr = max(0, int(x * scale_factor) - padding)
+        y1_hr = max(0, int(y_abs * scale_factor) - padding)
+        x2_hr = min(hr_width, int((x + w) * scale_factor) + padding)
+        y2_hr = min(hr_height, int((y_abs + h) * scale_factor) + padding)
+        
+        # Extract token from high-res image
+        token_img = high_res_img[y1_hr:y2_hr, x1_hr:x2_hr]
+        
+        # Save token with page and card prefix
+        token_filename = f'{card_filename_base}_token{idx:02d}.png'
+        token_path = output_dir / token_filename
+        cv2.imwrite(str(token_path), token_img)
+        
+        # Store metadata with original detection coordinates
+        tokens_metadata.append({
+            'filename': token_filename,
+            'index': idx,
+            'bbox': {
+                'x': x,
+                'y': y_abs,
+                'width': w,
+                'height': h
+            },
+            'area': int(area)
+        })
+    
+    return {
+        'tokens_extracted': len(tokens_metadata),
+        'tokens': tokens_metadata
+    }
+
+
+def extract_text_from_token_guide(
+    page: fitz.Page,
+    card_coords: dict,
+    skip_header_percent: float = 15.0
+) -> list:
+    """
+    Extract all text blocks with locations from a token guide card.
+    
+    Uses text blocks to preserve multi-line names as they appear in the PDF.
+    
+    Args:
+        page: PyMuPDF page object
+        card_coords: Card corner coordinates
+        skip_header_percent: Percentage of top to skip
+    
+    Returns:
+        List of dicts with 'text' and 'bbox' (x, y, width, height in card coords)
+    """
+    # Calculate card bounding box in PDF points
+    x1, y1 = card_coords['top_left']
+    x2, y2 = card_coords['top_right']
+    x3, y3 = card_coords['bottom_left']
+    x4, y4 = card_coords['bottom_right']
+    
+    pdf_scale = 72 / 300.0
+    card_left = min(x1, x3) * pdf_scale
+    card_top = min(y1, y2) * pdf_scale
+    card_right = max(x2, x4) * pdf_scale
+    card_bottom = max(y3, y4) * pdf_scale
+    card_height = card_bottom - card_top
+    
+    # Skip header area
+    skip_height = card_height * (skip_header_percent / 100)
+    content_top = card_top + skip_height
+    card_rect = fitz.Rect(card_left, content_top, card_right, card_bottom)
+    
+    # Extract text with positions using words method (same as tools/extract_tokens.py)
+    text_data = page.get_text("words", clip=card_rect)
+    
+    # Heuristics from tools/extract_tokens.py
+    text_gap_max = 6.0
+    same_line_y_max = 15.0
+    next_line_y_min = 5.0
+    next_line_y_max = 25.0
+    next_line_x_overlap_ratio = 0.25
+    
+    text_positions = {}
+    current_group = []
+    current_pos = None
+    
+    for item in text_data:
+        x0, y0, x1_word, y1, word, block_no, line_no, word_no = item
+        
+        # Calculate center position
+        center_x = (x0 + x1_word) / 2
+        center_y = (y0 + y1) / 2
+        
+        # Clean up word
+        word = re.sub(r'[^a-zA-Z0-9\s\'-]', '', word)
+        if not word or word.lower() in ['marker', 'guide']:
+            continue
+        
+        # Group words that are close together
+        if current_pos is None:
+            current_pos = (center_x, center_y)
+            current_group = [word]
+            last_x1 = x1_word
+            group_x_min = x0
+            group_x_max = x1_word
+        else:
+            prev_x, prev_y = current_pos
+            
+            # Calculate gap from previous word's right edge to this word's left edge
+            gap = abs(x0 - last_x1)
+            y_diff = abs(center_y - prev_y)
+            
+            # Check if x positions overlap with current group (for multi-line names)
+            overlap_len = max(0.0, min(x1_word, group_x_max) - max(x0, group_x_min))
+            group_width = max(1.0, group_x_max - group_x_min)
+            word_width = max(1.0, x1_word - x0)
+            overlap_ratio = overlap_len / min(group_width, word_width)
+            x_overlap = overlap_ratio >= next_line_x_overlap_ratio
+            
+            # Same line with small gap = same token name
+            same_line = y_diff < same_line_y_max and gap < text_gap_max
+            
+            # Next line with overlapping x = continuation of multi-line token name
+            next_line_continuation = (
+                y_diff > next_line_y_min
+                and y_diff < next_line_y_max
+                and x_overlap
+            )
+            
+            if same_line or next_line_continuation:
+                current_group.append(word)
+                current_pos = ((prev_x + center_x) / 2, (prev_y + center_y) / 2)
+                last_x1 = x1_word
+                # Update group x range
+                group_x_min = min(group_x_min, x0)
+                group_x_max = max(group_x_max, x1_word)
+            else:
+                # Save previous group
+                if current_group:
+                    text_positions[current_pos] = ' '.join(current_group)
+                current_pos = (center_x, center_y)
+                current_group = [word]
+                last_x1 = x1_word
+                group_x_min = x0
+                group_x_max = x1_word
+    
+    # Save last group
+    if current_group and current_pos:
+        text_positions[current_pos] = ' '.join(current_group)
+    
+    # Now split each text element by "token" or "marker" delimiter
+    text_elements = []
+    for (center_x, center_y), text in text_positions.items():
+        # Split by token/marker
+        parts = re.split(r'\s+(token|marker)\s*', text, flags=re.IGNORECASE)
+        
+        # Recombine with delimiter
+        current = ""
+        for i, part in enumerate(parts):
+            if i % 2 == 0:  # Text part
+                current += part
+            else:  # Delimiter (token/marker)
+                current += " " + part
+                # Complete token name - save it
+                token_name = current.strip()
+                if token_name:
+                    # Convert position from PDF to card coordinates
+                    rel_x = int((center_x - card_left) / pdf_scale)
+                    rel_y = int((center_y - card_top) / pdf_scale)
+                    
+                    text_elements.append({
+                        'text': token_name,
+                        'bbox': {
+                            'x': rel_x,
+                            'y': rel_y,
+                            'width': 100,  # Approximate - will be refined by matching
+                            'height': 45
+                        },
+                        'font_size': 8.5
+                    })
+                current = ""
+    
+    return text_elements
+
+
 def scale_markers(markers: list, scale: float) -> list:
     """Scale marker positions by a factor."""
     return [(int(x * scale), int(y * scale), conf) for x, y, conf in markers]
@@ -562,6 +881,10 @@ def process_pdf_and_extract_all_cards(pdf_path: Path, templates: dict, output_di
     skipped_count = 0
     pages_processed = 0
     
+    # Accumulate tokens across all token guide cards
+    all_tokens_metadata = []
+    all_text_elements = []
+    
     # Process all pages
     for page_num in range(start_page, end_page + 1):
         page = doc[page_num - 1]
@@ -602,6 +925,46 @@ def process_pdf_and_extract_all_cards(pdf_path: Path, templates: dict, output_di
             output_path_pdf = output_dir / filename_pdf
             save_single_card_as_pdf(page, card_coords, output_path_pdf, dpi)
             
+            # Check if this is a token guide card and extract tokens
+            if template_type == 'portrait' and is_token_guide_card(page, card_coords):
+                card_base = f"page{page_num:02d}_card{card_idx}"
+                tokens_dir = output_dir.parent / 'tokens'
+                tokens_dir.mkdir(parents=True, exist_ok=True)
+                
+                print(f"  → Detected token guide card: {card_base}")
+                
+                # Extract tokens at high resolution from PDF
+                tokens_metadata = extract_tokens_from_card(
+                    card_img=card_img,
+                    page=page,
+                    card_coords=card_coords,
+                    output_dir=tokens_dir,
+                    card_filename_base=card_base,
+                    skip_header_percent=15.0,
+                    min_token_area=3000,
+                    extract_dpi=300
+                )
+                
+                # Extract text elements from card for later name matching
+                text_elements = extract_text_from_token_guide(
+                    page=page,
+                    card_coords=card_coords,
+                    skip_header_percent=15.0
+                )
+                
+                # Add source_card identifier to each token and accumulate
+                for token in tokens_metadata.get('tokens', []):
+                    token['source_card'] = card_base
+                    all_tokens_metadata.append(token)
+                
+                # Add source_card identifier to each text element and accumulate
+                for text_elem in text_elements:
+                    text_elem['source_card'] = card_base
+                    all_text_elements.append(text_elem)
+                
+                print(f"  → Extracted {tokens_metadata['tokens_extracted']} tokens at 300 DPI")
+                print(f"  → Found {len(text_elements)} text elements for name matching")
+            
             total_cards += 1
         
         pages_processed += 1
@@ -613,6 +976,22 @@ def process_pdf_and_extract_all_cards(pdf_path: Path, templates: dict, output_di
         del page_img
     
     doc.close()
+    
+    # Save accumulated tokens metadata from all token guide cards
+    if all_tokens_metadata or all_text_elements:
+        tokens_dir = output_dir.parent / 'tokens'
+        tokens_dir.mkdir(parents=True, exist_ok=True)
+        metadata_path = tokens_dir / 'tokens_metadata.json'
+        
+        combined_metadata = {
+            'tokens': all_tokens_metadata,
+            'text_elements': all_text_elements
+        }
+        
+        with open(metadata_path, 'w', encoding='utf-8') as f:
+            json.dump(combined_metadata, f, indent=2, ensure_ascii=False)
+        
+        print(f"\n✓ Saved tokens metadata: {len(all_tokens_metadata)} tokens, {len(all_text_elements)} text elements")
     
     return {
         'total_cards': total_cards,
