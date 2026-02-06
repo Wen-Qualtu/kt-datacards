@@ -1,6 +1,9 @@
 ﻿-- constants
 local TTS_METADATA_URL = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/tts-metadata.json"
 
+-- TEST VERSION MARKER - Should appear after update!
+local SCRIPT_VERSION = "v2.0-TEST-UPDATE"
+
 -- Workshop table detection - looks for unique tag on that specific table
 local WORKSHOP_TABLE_TAG = "KT_Ploy_Holders"
 
@@ -20,7 +23,7 @@ local WORKSHOP_POSITIONS = {
       {x=-4.25, y=1, z=-37.69}
     },
     faction_rules = {
-      {x=1.33, y=0.61, z=-37.63}, -- First: Astartes
+      {x=1.83, y=0.61, z=-37.63}, -- First: Astartes
       {x=5.61, y=0.61, z=-37.63}, -- Second: Marks of Chaos
       {x=9.88, y=0.64, z=-37.63}  -- Rest: Deck at this position
     },
@@ -267,6 +270,8 @@ function updateSave()
 end
 
 function onload(saved_data)
+  broadcastToAll("Card box loaded: " .. SCRIPT_VERSION, {0, 1, 1})
+  
   if saved_data ~= "" then
     local loaded_data = JSON.decode(saved_data)
     memoryList = loaded_data.ml
@@ -279,8 +284,8 @@ function onload(saved_data)
   else
     memoryList = {}
     relativeRotation = readRotation()
-    -- Will be initialized from metadata on first setup
-    lastCardUpdate = ""
+    -- Force old timestamp to always trigger updates
+    lastCardUpdate = "1900-01-01T00:00:00"
     lastTokenUpdate = ""
     teamSlug = ""
     tokenBagPositions = {}
@@ -755,234 +760,109 @@ function click_recall()
 end
 
 function click_update_rules()
-  local bagObjList = self.getObjects()
-  
-  if #bagObjList == 0 then
-    broadcastToAll("Bag is empty. Click Recall first, then Update.", {1, 0.5, 0})
+  -- Check if we need to update by comparing timestamps
+  if teamSlug == "" then
+    broadcastToAll("Cannot update: team slug not configured", {1, 0.5, 0})
     return
   end
   
-  -- Check if we need to update by comparing timestamps
-  if teamSlug ~= "" and lastCardUpdate ~= "" then
-    broadcastToAll("Checking for updates...", {1, 1, 0})
-    
-    -- Fetch tts-metadata.json to check if update is needed
-    WebRequest.get(TTS_METADATA_URL, function(request)
-      if request.is_error then
-        broadcastToAll("Could not check for updates. Forcing refresh...", {1, 0.5, 0})
-        performUpdate()
-        return
-      end
-      
-      -- Parse JSON to find this team's last_modified timestamp
-      local success, ttsBoxes = pcall(function() return JSON.decode(request.text) end)
-      if not success or not ttsBoxes then
-        broadcastToAll("Could not parse update info. Forcing refresh...", {1, 0.5, 0})
-        performUpdate()
-        return
-      end
-      
-      -- Find our team in the list
-      local remoteTimestamp = ""
-      for _, box in ipairs(ttsBoxes) do
-        if box.team == teamSlug then
-          remoteTimestamp = box.cards_last_modified or ""
-          break
-        end
-      end
-      
-      if remoteTimestamp == "" then
-        broadcastToAll("Could not find team in update list. Forcing refresh...", {1, 0.5, 0})
-        performUpdate()
-        return
-      end
-      
-      -- Compare timestamps
-      if remoteTimestamp == lastCardUpdate then
-        broadcastToAll("Cards already up to date! (Last: " .. lastCardUpdate .. ")", {0, 1, 0})
-        return
-      else
-        broadcastToAll("Card update available! Local: " .. lastCardUpdate .. " | Remote: " .. remoteTimestamp, {0, 0.7, 1})
-        performUpdate(remoteTimestamp)
-      end
-    end)
-  else
-    -- No timestamp info, force update
-    broadcastToAll("No card timestamp info. Forcing refresh...", {1, 1, 0})
-    performUpdate()
-  end
-end
-
-function performUpdate(newTimestamp)
-  local bagObjList = self.getObjects()
-  broadcastToAll("Updating rules and box texture... Please wait and do NOT click other buttons.", {1, 1, 0})
+  broadcastToAll("Checking for updates...", {1, 1, 0})
   
-  local cacheBust = math.random(1, 999999)
-  local processedCount = 0
-  local totalToProcess = #bagObjList
-  local initialBagCount = totalToProcess
-  
-  -- Clone the bag contents list
-  local objectsToUpdate = {}
-  for _, obj in ipairs(bagObjList) do
-    table.insert(objectsToUpdate, obj.guid)
-  end
-
-  -- Helper function to check if object is in bag by GUID
-  local function isObjectInBag(newGuid)
-    local bagContents = self.getObjects()
-    for _, item in ipairs(bagContents) do
-      if item.guid == newGuid then
-        return true
-      end
-    end
-    return false
-  end
-  
-  -- Process objects one at a time sequentially
-  local function processNextObject(index)
-    if index > #objectsToUpdate then
-      -- All done - now update the bag texture and mesh last
-      Wait.time(function()
-        local bagCustom = self.getCustomObject()
-        if bagCustom then
-          if bagCustom.diffuse then
-            bagCustom.diffuse = bagCustom.diffuse .. "?v=" .. cacheBust
-          end
-          if bagCustom.mesh then
-            bagCustom.mesh = bagCustom.mesh .. "?v=" .. cacheBust
-          end
-          self.setCustomObject(bagCustom)
-          self.reload()
-        end
-        
-        -- Update timestamp if we got a new one
-        if newTimestamp then
-          lastCardUpdate = newTimestamp
-          updateSave()
-        end
-        
-        broadcastToAll("✓ Cards updated! (" .. processedCount .. " cards, box texture, mesh). Now updating tokens...", {0, 1, 0})
-        
-        -- Wait for reload to complete before updating tokens
-        Wait.condition(
-          function()
-            click_update_tokens()
-          end,
-          function()
-            return not self.spawning
-          end,
-          5
-        )
-      end, 0.5)
+  -- Fetch tts-metadata.json to check if update is needed
+  WebRequest.get(TTS_METADATA_URL, function(request)
+    if request.is_error then
+      broadcastToAll("Could not check for updates: " .. request.error, {1, 0.5, 0})
       return
     end
     
-    local guid = objectsToUpdate[index]
-    local obj = self.takeObject({guid = guid, position = self.getPosition() + Vector(0, 10, 0), smooth = false})
+    -- Parse JSON to find this team's last_modified timestamp and URL
+    local success, ttsBoxes = pcall(function() return JSON.decode(request.text) end)
+    if not success or not ttsBoxes then
+      broadcastToAll("Could not parse update info.", {1, 0.5, 0})
+      return
+    end
     
-    Wait.condition(
-      function()
-        local newGuid = nil
-        
-        if obj.type == "Deck" then
-          local deckData = obj.getData()
-          if deckData.CustomDeck then
-            for deckID, deck in pairs(deckData.CustomDeck) do
-              deck.FaceURL = deck.FaceURL .. "?v=" .. cacheBust
-              deck.BackURL = deck.BackURL .. "?v=" .. cacheBust
-            end
+    -- Find our team in the list
+    local remoteTimestamp = ""
+    local cardsUrl = ""
+    for _, box in ipairs(ttsBoxes) do
+      if box.team == teamSlug then
+        remoteTimestamp = box.cards_last_modified or ""
+        cardsUrl = box.cards_url or ""
+        break
+      end
+    end
+    
+    if remoteTimestamp == "" or cardsUrl == "" then
+      broadcastToAll("Could not find team in update list.", {1, 0.5, 0})
+      return
+    end
+    
+    -- Compare timestamps
+    if lastCardUpdate ~= "" and remoteTimestamp == lastCardUpdate then
+      broadcastToAll("Already up to date! (Last: " .. lastCardUpdate .. ")", {0, 1, 0})
+      return
+    end
+    
+    -- Update needed
+    broadcastToAll("Update available! Downloading new version...", {0, 0.7, 1})
+    broadcastToAll("Local: " .. (lastCardUpdate ~= "" and lastCardUpdate or "unknown") .. " | Remote: " .. remoteTimestamp, {0.7, 0.7, 0.7})
+    
+    -- Download and spawn new version
+    local cacheBust = remoteTimestamp:gsub("[^%d]", "")
+    local url = cardsUrl .. "?v=" .. cacheBust
+    
+    WebRequest.get(url, function(webReturn)
+      if webReturn.is_error then
+        broadcastToAll("Failed to download update: " .. webReturn.error, {1, 0.5, 0})
+        return
+      end
+      
+      local success, decoded = pcall(function() return JSON.decode(webReturn.text) end)
+      if not success or not decoded.ObjectStates or #decoded.ObjectStates == 0 then
+        broadcastToAll("Invalid update data received.", {1, 0.5, 0})
+        return
+      end
+      
+      local newBoxData = decoded.ObjectStates[1]
+      
+      -- Store current position, rotation, and lock state
+      local currentPos = self.getPosition()
+      local currentRot = self.getRotation()
+      local currentLock = self.getLock()
+      
+      broadcastToAll("Spawning updated card box...", {1, 1, 0})
+      
+      -- Apply position and rotation to new box data
+      newBoxData.Transform.posX = currentPos.x
+      newBoxData.Transform.posY = currentPos.y
+      newBoxData.Transform.posZ = currentPos.z
+      newBoxData.Transform.rotX = currentRot.x
+      newBoxData.Transform.rotY = currentRot.y
+      newBoxData.Transform.rotZ = currentRot.z
+      
+      -- Spawn new box at current location
+      local spawnedObj = spawnObjectJSON({
+        json = JSON.encode(newBoxData),
+        position = currentPos
+      })
+      
+      Wait.condition(
+        function()
+          -- Wait a moment for script state to initialize
+          Wait.time(function()
+            spawnedObj.setLock(currentLock)
+            broadcastToAll("✓ Card box updated successfully!", {0, 1, 0})
             
-            obj.destruct()
-            local newDeck = spawnObjectData({data = deckData, position = self.getPosition() + Vector(0, 10, 0)})
-            
-            Wait.condition(
-              function()
-                newGuid = newDeck.getGUID()
-                self.putObject(newDeck)
-                processedCount = processedCount + 1
-                broadcastToAll("Updated " .. processedCount .. " of " .. totalToProcess, {0, 0.7, 1})
-                
-                Wait.condition(
-                  function()
-                    processNextObject(index + 1)
-                  end,
-                  function()
-                    return isObjectInBag(newGuid)
-                  end,
-                  10
-                )
-              end,
-              function() return newDeck ~= nil and not newDeck.spawning end,
-              5
-            )
-          else
-            newGuid = obj.getGUID()
-            self.putObject(obj)
-            processedCount = processedCount + 1
-            
-            Wait.condition(
-              function()
-                processNextObject(index + 1)
-              end,
-              function()
-                return isObjectInBag(newGuid)
-              end,
-              10
-            )
-          end
-        else
-          local customObj = obj.getCustomObject()
-          if customObj and (customObj.face or customObj.back) then
-            if customObj.face then
-              customObj.face = customObj.face .. "?v=" .. cacheBust
-            end
-            if customObj.back then
-              customObj.back = customObj.back .. "?v=" .. cacheBust
-            end
-            obj.setCustomObject(customObj)
-            obj.reload()
-            
-            Wait.time(function()
-              newGuid = obj.getGUID()
-              self.putObject(obj)
-              processedCount = processedCount + 1
-              broadcastToAll("Updated " .. processedCount .. " of " .. totalToProcess, {0, 0.7, 1})
-              
-              Wait.condition(
-                function()
-                  processNextObject(index + 1)
-                end,
-                function()
-                  return isObjectInBag(newGuid)
-                end,
-                10
-              )
-            end, 0.5)
-          else
-            newGuid = obj.getGUID()
-            self.putObject(obj)
-            processedCount = processedCount + 1
-            
-            Wait.condition(
-              function()
-                processNextObject(index + 1)
-              end,
-              function()
-                return isObjectInBag(newGuid)
-              end,
-              10
-            )
-          end
-        end
-      end,
-      function() return obj ~= nil and not obj.spawning end,
-      5
-    )
-  end
-  
-  -- Start processing first object
-  processNextObject(1)
+            -- Destroy old box after new one is ready
+            self.destruct()
+          end, 0.5)
+        end,
+        function() return spawnedObj ~= nil and not spawnedObj.spawning end,
+        10
+      )
+    end)
+  end)
 end
 
 -- Token Bag Update Function
