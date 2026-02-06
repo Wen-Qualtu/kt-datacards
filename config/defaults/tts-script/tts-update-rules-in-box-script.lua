@@ -831,210 +831,35 @@ function click_update_rules()
       local currentRot = self.getRotation()
       local currentLock = self.getLock()
       
-      broadcastToAll("⏳ Spawning updated card box (empty shell)...", {1, 1, 0})
+      broadcastToAll("Spawning updated card box...", {1, 1, 0})
       
-      -- Spawn new box to the side to avoid collision
-      local spawnOffset = Vector(0, 3, 8)  -- Spawn above and to the side
-      local spawnPos = currentPos + spawnOffset
-      
-      -- Extract contained objects and script state for later
-      local containedObjects = newBoxData.ContainedObjects or {}
-      local newScriptState = newBoxData.LuaScriptState or ""
-      
-      -- Remove contained objects from box data (spawn empty box first)
-      newBoxData.ContainedObjects = {}
-      
-      -- Apply spawn position and rotation to new box data
-      newBoxData.Transform.posX = spawnPos.x
-      newBoxData.Transform.posY = spawnPos.y
-      newBoxData.Transform.posZ = spawnPos.z
+      -- Apply position and rotation to new box data
+      newBoxData.Transform.posX = currentPos.x
+      newBoxData.Transform.posY = currentPos.y
+      newBoxData.Transform.posZ = currentPos.z
       newBoxData.Transform.rotX = currentRot.x
       newBoxData.Transform.rotY = currentRot.y
       newBoxData.Transform.rotZ = currentRot.z
       
-      -- Spawn empty box at offset location
+      -- Spawn new box at current location
       local spawnedObj = spawnObjectJSON({
         json = JSON.encode(newBoxData),
-        position = spawnPos
+        position = currentPos
       })
-      
-      -- Lock old box immediately to reduce load
-      self.setLock(true)
       
       Wait.condition(
         function()
-          if not spawnedObj or spawnedObj.isDestroyed() then
-            broadcastToAll("Update failed - box spawn failed", {1, 0, 0})
-            self.setLock(currentLock)
-            return
-          end
-          
-          -- Get existing objects from old box to compare
-          local oldObjects = self.getObjects()
-          local oldObjectsByKey = {}
-          
-          -- Build lookup table: key = Nickname for quick matching
-          for _, oldObjData in ipairs(oldObjects) do
-            local key = oldObjData.nickname or ""
-            if key ~= "" then
-              oldObjectsByKey[key] = oldObjData
-            end
-          end
-          
-          broadcastToAll("🔍 Comparing old vs new cards...", {0, 0.7, 1})
-          
-          -- Categorize new objects: reuse vs spawn
-          local objectsToSpawn = {}
-          local objectsToReuse = {}
-          
-          for _, newObjData in ipairs(containedObjects) do
-            local key = newObjData.Nickname or ""
-            local oldMatch = oldObjectsByKey[key]
+          -- Wait a moment for script state to initialize
+          Wait.time(function()
+            spawnedObj.setLock(currentLock)
+            broadcastToAll("✓ Card box updated successfully!", {0, 1, 0})
             
-            if oldMatch then
-              -- Found matching object, check if it changed
-              -- Compare CustomDeck URLs (textures) as proxy for "has this card changed"
-              local oldDeck = oldMatch.description or ""
-              local newDeck = newObjData.Description or ""
-              
-              if oldDeck == newDeck then
-                -- Same card, reuse it
-                table.insert(objectsToReuse, {guid = oldMatch.guid, newData = newObjData})
-                oldObjectsByKey[key] = nil  -- Mark as used
-              else
-                -- Card changed, need to spawn new
-                table.insert(objectsToSpawn, newObjData)
-              end
-            else
-              -- New card, need to spawn
-              table.insert(objectsToSpawn, newObjData)
-            end
-          end
-          
-          -- Remaining objects in oldObjectsByKey are deleted (not in new version)
-          local objectsToDelete = {}
-          for _, oldObjData in pairs(oldObjectsByKey) do
-            table.insert(objectsToDelete, oldObjData.guid)
-          end
-          
-          local reuseCount = #objectsToReuse
-          local spawnCount = #objectsToSpawn
-          local deleteCount = #objectsToDelete
-          
-          broadcastToAll("📦 Reusing: " .. reuseCount .. " | Spawning: " .. spawnCount .. " | Deleting: " .. deleteCount, {0, 1, 1})
-          
-          local processedCount = 0
-          local totalObjects = reuseCount + spawnCount
-          
-          if totalObjects == 0 then
-            -- No objects to process, finish immediately
-            finishUpdate()
-            return
-          end
-          
-          -- First, move reused objects to new box
-          local function processReuseObjects(index)
-            if index > reuseCount then
-              -- Done reusing, start spawning new objects
-              spawnNewObjects(1)
-              return
-            end
-            
-            local reuseData = objectsToReuse[index]
-            local oldObj = getObjectFromGUID(reuseData.guid)
-            
-            if oldObj and not oldObj.isDestroyed() then
-              spawnedObj.putObject(oldObj)
-              processedCount = processedCount + 1
-              
-              if processedCount % 5 == 0 or processedCount == totalObjects then
-                broadcastToAll("Processing... " .. processedCount .. "/" .. totalObjects, {0.7, 0.7, 0.7})
-              end
-            end
-            
-            Wait.time(function() processReuseObjects(index + 1) end, 0.05)
-          end
-          
-          -- Then spawn new/changed objects
-          local function spawnNewObjects(index)
-            if index > spawnCount then
-              -- All objects processed, finish update
-              finishUpdate()
-              return
-            end
-            
-            local objData = objectsToSpawn[index]
-            
-            -- Spawn object above the new box
-            local objSpawnPos = spawnedObj.getPosition() + Vector(0, 2, 0)
-            objData.Transform.posX = objSpawnPos.x
-            objData.Transform.posY = objSpawnPos.y
-            objData.Transform.posZ = objSpawnPos.z
-            
-            local tempObj = spawnObjectJSON({
-              json = JSON.encode(objData),
-              position = objSpawnPos
-            })
-            
-            Wait.condition(
-              function()
-                if tempObj and not tempObj.isDestroyed() then
-                  spawnedObj.putObject(tempObj)
-                  processedCount = processedCount + 1
-                  
-                  if processedCount % 5 == 0 or processedCount == totalObjects then
-                    broadcastToAll("Processing... " .. processedCount .. "/" .. totalObjects, {0.7, 0.7, 0.7})
-                  end
-                end
-                
-                Wait.time(function() spawnNewObjects(index + 1) end, 0.1)
-              end,
-              function() return tempObj ~= nil and not tempObj.spawning end,
-              3
-            )
-          end
-          
-          -- Start the process with reused objects
-          if reuseCount > 0 then
-            processReuseObjects(1)
-          else
-            spawnNewObjects(1)
-          end
-          
-          local function finishUpdate()
-            -- Update the script state
-            if newScriptState ~= "" then
-              spawnedObj.script_state = newScriptState
-              Wait.frames(function()
-                spawnedObj.reload()
-              end, 1)
-            end
-            
-            Wait.time(function()
-              -- Delete old box
-              if not self.isDestroyed() then
-                self.destruct()
-              end
-              
-              -- Move new box to final position
-              broadcastToAll("Moving updated box to position...", {0, 0.7, 1})
-              Wait.time(function()
-                spawnedObj.setPositionSmooth(currentPos, false, true)
-                spawnedObj.setRotationSmooth(currentRot, false, true)
-                broadcastToAll("✓ Card box updated! Save the object to keep changes.", {0, 1, 0})
-              end, 1.5)
-            end, 0.5)
-          end
-          
-          -- Start processing: reuse then spawn
-          if reuseCount > 0 then
-            processReuseObjects(1)
-          else
-            spawnNewObjects(1)
-          end
+            -- Destroy old box after new one is ready
+            self.destruct()
+          end, 0.5)
         end,
         function() return spawnedObj ~= nil and not spawnedObj.spawning end,
-        15
+        10
       )
     end)
   end)
