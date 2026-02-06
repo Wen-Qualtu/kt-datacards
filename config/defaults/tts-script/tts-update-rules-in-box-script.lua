@@ -766,8 +766,9 @@ function click_update_rules()
   
   broadcastToAll("Checking for updates...", {1, 1, 0})
   
-  -- Fetch tts-metadata.json to check if update is needed
-  WebRequest.get(TTS_METADATA_URL, function(request)
+  -- Fetch tts-metadata.json to check if update is needed (cache-busted)
+  local metadataUrl = TTS_METADATA_URL .. "?v=" .. tostring(os.time())
+  WebRequest.get(metadataUrl, function(request)
     if request.is_error then
       broadcastToAll("Could not check for updates: " .. request.error, {1, 0.5, 0})
       return
@@ -796,8 +797,15 @@ function click_update_rules()
       return
     end
     
-    -- Compare timestamps
-    if lastCardUpdate ~= "" and remoteTimestamp == lastCardUpdate then
+    -- Compare timestamps (treat remote <= local as up to date)
+    local function toTimestampNumber(ts)
+      local num = tostring(ts or ""):gsub("[^%d]", "")
+      return tonumber(num) or 0
+    end
+    local localStamp = toTimestampNumber(lastCardUpdate)
+    local remoteStamp = toTimestampNumber(remoteTimestamp)
+    
+    if lastCardUpdate ~= "" and remoteStamp ~= 0 and localStamp >= remoteStamp then
       broadcastToAll("Already up to date! (Last: " .. lastCardUpdate .. ")", {0, 1, 0})
       return
     end
