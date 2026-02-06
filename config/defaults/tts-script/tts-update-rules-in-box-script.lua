@@ -826,6 +826,23 @@ function click_update_rules()
       
       local newBoxData = decoded.ObjectStates[1]
       
+      -- Ensure the new box state matches the remote timestamp to avoid repeated updates
+      if newBoxData.LuaScriptState ~= nil and newBoxData.LuaScriptState ~= "" then
+        local ok, state = pcall(function() return JSON.decode(newBoxData.LuaScriptState) end)
+        if ok and state then
+          state.lastCardUpdate = remoteTimestamp
+          if not state.teamSlug or state.teamSlug == "" then
+            state.teamSlug = teamSlug
+          end
+          newBoxData.LuaScriptState = JSON.encode(state)
+        end
+      else
+        newBoxData.LuaScriptState = JSON.encode({
+          lastCardUpdate = remoteTimestamp,
+          teamSlug = teamSlug
+        })
+      end
+      
       -- Store current position, rotation, and lock state
       local currentPos = self.getPosition()
       local currentRot = self.getRotation()
