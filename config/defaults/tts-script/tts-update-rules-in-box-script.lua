@@ -1,8 +1,7 @@
 ﻿-- constants
 local TTS_METADATA_URL = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/tts-metadata.json"
 
--- TEST VERSION MARKER - Should appear after update!
-local SCRIPT_VERSION = "v2.0-TEST-UPDATE"
+local SCRIPT_VERSION = "v2.0"
 
 -- Workshop table detection - looks for unique tag on that specific table
 local WORKSHOP_TABLE_TAG = "KT_Ploy_Holders"
@@ -270,7 +269,6 @@ function updateSave()
 end
 
 function onload(saved_data)
-  broadcastToAll("Card box loaded: " .. SCRIPT_VERSION, {0, 1, 1})
   
   if saved_data ~= "" then
     local loaded_data = JSON.decode(saved_data)
