@@ -365,10 +365,8 @@ local function isWorkshopTable()
   local workshopObjects = getObjectsWithTag(WORKSHOP_TABLE_TAG)
   
   if workshopObjects and #workshopObjects > 0 then
-    broadcastToAll("DEBUG: Workshop table detected (found " .. #workshopObjects .. " objects with tag '" .. WORKSHOP_TABLE_TAG .. "')", {0, 1, 0})
     return true
   else
-    broadcastToAll("DEBUG: Not on workshop table (no objects with tag '" .. WORKSHOP_TABLE_TAG .. "')", {1, 0.5, 0})
     return false
   end
 end
@@ -472,44 +470,59 @@ function click_place(obj, player_color, alt_click)
   local useWorkshopPositions = isWorkshopTable()
   
   if useWorkshopPositions then
-    broadcastToAll("Using workshop table placement for " .. player_color .. " player", {0.2, 1, 0.2})
-    
-    -- Check for existing cards at workshop positions
-    local hasCollision = false
-    local collisionPositions = {}
-    
-    for cardType, positions in pairs(WORKSHOP_POSITIONS[player_color]) do
-      for _, pos in ipairs(positions) do
-        local objectsAtPos = Physics.cast({
-          origin = pos,
-          direction = {0, 1, 0},
-          type = 1, -- Box cast
-          size = {2, 2, 0.5},
-          max_distance = 0
-        })
-        
-        for _, hit in ipairs(objectsAtPos) do
-          local hitObj = hit.hit_object
-          if hitObj and (hitObj.type == "Card" or hitObj.type == "Deck") and hitObj ~= self then
-            hasCollision = true
-            table.insert(collisionPositions, string.format("%.1f, %.1f, %.1f", pos.x, pos.y, pos.z))
-            break
+    -- Only use workshop positions if we have them defined for this player color
+    if WORKSHOP_POSITIONS[player_color] then
+      broadcastToAll("Placement for " .. player_color .. " player", {0.2, 1, 0.2})
+      
+      -- Check for existing cards at workshop positions
+      local hasCollision = false
+      local collisionCount = 0
+      
+      for cardType, positions in pairs(WORKSHOP_POSITIONS[player_color]) do
+        for _, pos in ipairs(positions) do
+          -- Search for objects near this position (larger radius to catch decks/bags)
+          local nearbyObjects = Physics.cast({
+            origin = {pos.x, pos.y + 2, pos.z},
+            direction = {0, -1, 0},
+            type = 2, -- Sphere cast
+            size = {2, 2, 2},
+            max_distance = 3
+          })
+          
+          for _, hit in ipairs(nearbyObjects) do
+            local hitObj = hit.hit_object
+            -- Check for Card, Deck, or Custom_Model_Bag
+            if hitObj and (hitObj.type == "Card" or hitObj.type == "Deck" or hitObj.type == "Custom_Model_Bag") and hitObj ~= self then
+              hasCollision = true
+              collisionCount = collisionCount + 1
+              break
+            end
           end
+          if hasCollision then break end
         end
+        if hasCollision then break end
       end
+      
+      if hasCollision then
+        broadcastToAll("Cannot place cards: Workshop positions occupied (" .. collisionCount .. " found). Please recall cards first.", {1, 0.2, 0.2})
+        return
+      end
+    else
+      -- No workshop positions defined for this color, use normal placement
+      useWorkshopPositions = false
     end
-    
-    if hasCollision then
-      broadcastToAll("Cannot place cards: Workshop positions already occupied. Please recall cards first.", {1, 0.2, 0.2})
-      return
-    end
-  else
-    broadcastToAll("Using normal placement (not on workshop table)", {1, 1, 0.2})
   end
 
   local newMemoryList = {}
   -- Track card indices per type for proper placement
   local cardTypeIndices = {}
+  
+  -- Count total objects to place
+  local totalObjects = 0
+  for _ in pairs(memoryList) do
+    totalObjects = totalObjects + 1
+  end
+  local processedObjects = 0
   
   for guid, entry in pairs(memoryList) do
     local obj = getObjectFromGUID(guid)
@@ -545,7 +558,10 @@ function click_place(obj, player_color, alt_click)
         -- Determine card type
         local cardType = determineCardType(obj)
         
-        if useWorkshopPositions and player_color and cardType then
+        -- Check if we should use workshop positions (must have table detected AND positions defined for player)
+        local shouldUseWorkshop = useWorkshopPositions and player_color and cardType and WORKSHOP_POSITIONS[player_color] ~= nil
+        
+        if shouldUseWorkshop then
           -- Initialize index for this card type if not exists
           if not cardTypeIndices[cardType] then
             cardTypeIndices[cardType] = 1
@@ -553,33 +569,106 @@ function click_place(obj, player_color, alt_click)
           
           -- Check if this is a deck
           if obj.type == "Deck" then
-            -- Unpack deck and place cards individually
-            local deckSize = #obj.getObjects()
-            for i = 1, deckSize do
+            -- For datacards and equipment, keep as deck. For faction_rules, unpack first 2 then keep rest as deck
+            if cardType == "datacards" or cardType == "equipment" or cardType == "token_guide" or cardType == "token_bag" then
+              -- Place entire deck at position
               local customPos = getWorkshopPosition(player_color, cardType, cardTypeIndices[cardType])
               if customPos then
-                -- Set rotation face-up (rotZ = 0 instead of 180)
-                -- For Red player, rotate 180 degrees so text faces Red side
+                obj.setPosition(customPos)
                 local rotY = rot.y
                 if player_color == "Red" then
                   rotY = rotY + 180
                   if rotY >= 360 then rotY = rotY - 360 end
                 end
                 local faceUpRot = {x=rot.x, y=rotY, z=0}
-                local card = obj.takeObject({
-                  position = customPos,
-                  rotation = faceUpRot,
-                  smooth = false
-                })
-                if card then
-                  card.setLock(entry.lock)
-                  newMemoryList[card.guid] = {
+                obj.setRotation(faceUpRot)
+                obj.setLock(entry.lock)
+                newMemoryList[obj.guid] = {
+                  pos = {x=customPos.x - selfPos.x, y=customPos.y - selfPos.y, z=customPos.z - selfPos.z},
+                  rot = entry.rot,
+                  lock = entry.lock
+                }
+                cardTypeIndices[cardType] = cardTypeIndices[cardType] + 1
+              end
+            elseif cardType == "faction_rules" then
+              -- Unpack first 2 cards, keep rest as deck at position 3
+              local deckSize = #obj.getObjects()
+              local cardsToUnpack = math.min(2, deckSize)
+              
+              -- Unpack first 2 cards individually
+              for i = 1, cardsToUnpack do
+                local customPos = getWorkshopPosition(player_color, cardType, cardTypeIndices[cardType])
+                if customPos then
+                  local rotY = rot.y
+                  if player_color == "Red" then
+                    rotY = rotY + 180
+                    if rotY >= 360 then rotY = rotY - 360 end
+                  end
+                  local faceUpRot = {x=rot.x, y=rotY, z=0}
+                  local card = obj.takeObject({
+                    position = customPos,
+                    rotation = faceUpRot,
+                    smooth = false
+                  })
+                  if card then
+                    card.setLock(entry.lock)
+                    newMemoryList[card.guid] = {
+                      pos = {x=customPos.x - selfPos.x, y=customPos.y - selfPos.y, z=customPos.z - selfPos.z},
+                      rot = entry.rot,
+                      lock = entry.lock
+                    }
+                  end
+                  cardTypeIndices[cardType] = cardTypeIndices[cardType] + 1
+                end
+              end
+              
+              -- If there are remaining cards, place them as deck at position 3
+              if deckSize > 2 and obj and not obj.isDestroyed() then
+                local customPos = getWorkshopPosition(player_color, cardType, 3)
+                if customPos then
+                  obj.setPosition(customPos)
+                  local rotY = rot.y
+                  if player_color == "Red" then
+                    rotY = rotY + 180
+                    if rotY >= 360 then rotY = rotY - 360 end
+                  end
+                  local faceUpRot = {x=rot.x, y=rotY, z=0}
+                  obj.setRotation(faceUpRot)
+                  obj.setLock(entry.lock)
+                  newMemoryList[obj.guid] = {
                     pos = {x=customPos.x - selfPos.x, y=customPos.y - selfPos.y, z=customPos.z - selfPos.z},
                     rot = entry.rot,
                     lock = entry.lock
                   }
                 end
-                cardTypeIndices[cardType] = cardTypeIndices[cardType] + 1
+              end
+            else
+              -- Unpack all cards for ploys and other types
+              local deckSize = #obj.getObjects()
+              for i = 1, deckSize do
+                local customPos = getWorkshopPosition(player_color, cardType, cardTypeIndices[cardType])
+                if customPos then
+                  local rotY = rot.y
+                  if player_color == "Red" then
+                    rotY = rotY + 180
+                    if rotY >= 360 then rotY = rotY - 360 end
+                  end
+                  local faceUpRot = {x=rot.x, y=rotY, z=0}
+                  local card = obj.takeObject({
+                    position = customPos,
+                    rotation = faceUpRot,
+                    smooth = false
+                  })
+                  if card then
+                    card.setLock(entry.lock)
+                    newMemoryList[card.guid] = {
+                      pos = {x=customPos.x - selfPos.x, y=customPos.y - selfPos.y, z=customPos.z - selfPos.z},
+                      rot = entry.rot,
+                      lock = entry.lock
+                    }
+                  end
+                  cardTypeIndices[cardType] = cardTypeIndices[cardType] + 1
+                end
               end
             end
           else
@@ -618,78 +707,51 @@ function click_place(obj, player_color, alt_click)
             newMemoryList[obj.guid] = memoryList[guid]
           end
         end
+        
+        -- Track completion
+        processedObjects = processedObjects + 1
+        if processedObjects >= totalObjects then
+          -- All objects processed, update memoryList
+          memoryList = {}
+          for k,v in pairs(newMemoryList) do
+            memoryList[k] = v
+          end
+          broadcastToAll("Objects Placed", {1,1,1})
+          updateSave()
+        end
       end, 2)
     end
   end
-
-  memoryList = {}
-  for k,v in pairs(newMemoryList) do
-   memoryList[k] = v
-  end
-  broadcastToAll("Objects Placed", {1,1,1})
-  updateSave()
 end
 
 function click_recall()
   local recalledCount = 0
+  local totalInList = 0
   
-  -- First try to recall objects by GUID from memoryList
+  -- Count total entries in memoryList
+  for _ in pairs(memoryList) do
+    totalInList = totalInList + 1
+  end
+  
+  if totalInList == 0 then
+    broadcastToAll("No objects to recall. Memory list is empty.", {1, 0.5, 0})
+    return
+  end
+  
+  broadcastToAll("Attempting to recall " .. totalInList .. " objects...", {1, 1, 0})
+  
+  -- Recall all objects by GUID from memoryList
   for guid, entry in pairs(memoryList) do
     local obj = getObjectFromGUID(guid)
     if obj ~= nil then
       self.putObject(obj)
       recalledCount = recalledCount + 1
+    else
+      broadcastToAll("Could not find object with GUID: " .. guid, {1, 0.5, 0})
     end
   end
   
-  -- Also search for cards at workshop positions if on workshop table
-  local workshopTable = isWorkshopTable()
-  if workshopTable then
-    broadcastToAll("Searching for cards at workshop positions...", {0.2, 1, 0.2})
-    
-    -- Check both Blue and Red positions
-    for playerColor, cardTypes in pairs(WORKSHOP_POSITIONS) do
-      for cardType, positions in pairs(cardTypes) do
-        for _, pos in ipairs(positions) do
-          local objectsAtPos = Physics.cast({
-            origin = pos,
-            direction = {0, 1, 0},
-            type = 1, -- Box cast
-            size = {2, 2, 0.5},
-            max_distance = 0
-          })
-          
-          for _, hit in ipairs(objectsAtPos) do
-            local hitObj = hit.hit_object
-            if hitObj and (hitObj.type == "Card" or hitObj.type == "Deck") and hitObj ~= self then
-              -- Check if it's a legionaries card (has our team tag or legionaries in name)
-              local tags = hitObj.getTags()
-              local nickname = hitObj.getName()
-              local isOurs = false
-              
-              for _, tag in ipairs(tags) do
-                if string.find(tag, "_Legionaries") or string.find(tag, "_legionaries") then
-                  isOurs = true
-                  break
-                end
-              end
-              
-              if not isOurs and string.find(nickname:lower(), "legionaries") then
-                isOurs = true
-              end
-              
-              if isOurs then
-                self.putObject(hitObj)
-                recalledCount = recalledCount + 1
-              end
-            end
-          end
-        end
-      end
-    end
-  end
-  
-  broadcastToAll("Objects Recalled (" .. recalledCount .. " items)", {1,1,1})
+  broadcastToAll("Objects Recalled (" .. recalledCount .. " of " .. totalInList .. " items)", {1,1,1})
 end
 
 function click_update_rules()
