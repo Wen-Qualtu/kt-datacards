@@ -244,6 +244,7 @@ class TTSGenerator:
         # Initially use a placeholder timestamp (will be set after file is written)
         from datetime import datetime
         import os
+        import re
         placeholder_timestamp = "2000-01-01T00:00:00"
         
         bag_obj = create_bag(team_display_name, team_tag, contained_objects, lua_script, texture_url, mesh_url, faction, placeholder_timestamp)
@@ -252,14 +253,36 @@ class TTSGenerator:
         with open(output_file, 'w', encoding='utf-8') as f:
             json.dump(bag_obj, f, indent=2)
         
-        # NOW read the actual file modification time and update the embedded timestamp
+        # NOW read the actual file modification time and update all URLs with this timestamp
         file_mtime = os.path.getmtime(output_file)
         actual_timestamp = datetime.fromtimestamp(file_mtime).strftime('%Y-%m-%dT%H:%M:%S')
+        cache_bust_param = f"?v={int(file_mtime)}"
         
-        # Update the bag object with the actual file timestamp
+        # Update all URLs in the bag object to use the box file's timestamp for cache busting
+        def update_urls_in_object(obj):
+            """Recursively update all URLs with the box file's cache-busting parameter"""
+            if isinstance(obj, dict):
+                for key, value in obj.items():
+                    if key in ['FaceURL', 'BackURL', 'ImageURL', 'MeshURL'] and isinstance(value, str):
+                        # Replace existing ?v= parameter with box file's timestamp
+                        obj[key] = re.sub(r'\?v=\d+', cache_bust_param, value)
+                        if '?v=' not in obj[key]:
+                            obj[key] += cache_bust_param
+                    else:
+                        update_urls_in_object(value)
+            elif isinstance(obj, list):
+                for item in obj:
+                    update_urls_in_object(item)
+        
+        update_urls_in_object(bag_obj)
+        
+        # Update the bag object with the actual file timestamp in LuaScriptState
         bag_obj = create_bag(team_display_name, team_tag, contained_objects, lua_script, texture_url, mesh_url, faction, actual_timestamp)
         
-        # Re-save with the correct timestamp
+        # Apply URL updates again after recreating bag
+        update_urls_in_object(bag_obj)
+        
+        # Re-save with the correct timestamp and updated URLs
         with open(output_file, 'w', encoding='utf-8') as f:
             json.dump(bag_obj, f, indent=2)
         
