@@ -1,9 +1,6 @@
 ﻿-- constants
 local TTS_METADATA_URL = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/tts-metadata.json"
 
--- TEST VERSION MARKER - Should appear after update!
-local SCRIPT_VERSION = "v2.0-TEST-UPDATE"
-
 -- Workshop table detection - looks for unique tag on that specific table
 local WORKSHOP_TABLE_TAG = "KT_Ploy_Holders"
 
@@ -270,8 +267,6 @@ function updateSave()
 end
 
 function onload(saved_data)
-  broadcastToAll("Card box loaded: " .. SCRIPT_VERSION, {0, 1, 1})
-  
   if saved_data ~= "" then
     local loaded_data = JSON.decode(saved_data)
     memoryList = loaded_data.ml
@@ -284,8 +279,8 @@ function onload(saved_data)
   else
     memoryList = {}
     relativeRotation = readRotation()
-    -- Force old timestamp to always trigger updates
-    lastCardUpdate = "1900-01-01T00:00:00"
+    -- Will be initialized from metadata on first setup
+    lastCardUpdate = ""
     lastTokenUpdate = ""
     teamSlug = ""
     tokenBagPositions = {}
@@ -572,6 +567,14 @@ function click_place(obj, player_color, alt_click)
             cardTypeIndices[cardType] = 1
           end
           
+          -- For workshop, use absolute rotation (ignore box rotation)
+          local absoluteRotY = entry.rot.y
+          if player_color == "Red" then
+            absoluteRotY = absoluteRotY + 180
+            if absoluteRotY >= 360 then absoluteRotY = absoluteRotY - 360 end
+          end
+          local faceUpRot = {x=entry.rot.x, y=absoluteRotY, z=0}
+          
           -- Check if this is a deck
           if obj.type == "Deck" then
             -- For datacards and equipment, keep as deck. For faction_rules, unpack first 2 then keep rest as deck
@@ -580,12 +583,6 @@ function click_place(obj, player_color, alt_click)
               local customPos = getWorkshopPosition(player_color, cardType, cardTypeIndices[cardType])
               if customPos then
                 obj.setPosition(customPos)
-                local rotY = rot.y
-                if player_color == "Red" then
-                  rotY = rotY + 180
-                  if rotY >= 360 then rotY = rotY - 360 end
-                end
-                local faceUpRot = {x=rot.x, y=rotY, z=0}
                 obj.setRotation(faceUpRot)
                 obj.setLock(entry.lock)
                 newMemoryList[obj.guid] = {
@@ -604,12 +601,6 @@ function click_place(obj, player_color, alt_click)
               for i = 1, cardsToUnpack do
                 local customPos = getWorkshopPosition(player_color, cardType, cardTypeIndices[cardType])
                 if customPos then
-                  local rotY = rot.y
-                  if player_color == "Red" then
-                    rotY = rotY + 180
-                    if rotY >= 360 then rotY = rotY - 360 end
-                  end
-                  local faceUpRot = {x=rot.x, y=rotY, z=0}
                   local card = obj.takeObject({
                     position = customPos,
                     rotation = faceUpRot,
@@ -632,12 +623,6 @@ function click_place(obj, player_color, alt_click)
                 local customPos = getWorkshopPosition(player_color, cardType, 3)
                 if customPos then
                   obj.setPosition(customPos)
-                  local rotY = rot.y
-                  if player_color == "Red" then
-                    rotY = rotY + 180
-                    if rotY >= 360 then rotY = rotY - 360 end
-                  end
-                  local faceUpRot = {x=rot.x, y=rotY, z=0}
                   obj.setRotation(faceUpRot)
                   obj.setLock(entry.lock)
                   newMemoryList[obj.guid] = {
@@ -653,12 +638,6 @@ function click_place(obj, player_color, alt_click)
               for i = 1, deckSize do
                 local customPos = getWorkshopPosition(player_color, cardType, cardTypeIndices[cardType])
                 if customPos then
-                  local rotY = rot.y
-                  if player_color == "Red" then
-                    rotY = rotY + 180
-                    if rotY >= 360 then rotY = rotY - 360 end
-                  end
-                  local faceUpRot = {x=rot.x, y=rotY, z=0}
                   local card = obj.takeObject({
                     position = customPos,
                     rotation = faceUpRot,
@@ -681,14 +660,6 @@ function click_place(obj, player_color, alt_click)
             local customPos = getWorkshopPosition(player_color, cardType, cardTypeIndices[cardType])
             if customPos then
               obj.setPosition(customPos)
-              -- Set rotation face-up (rotZ = 0 instead of 180)
-              -- For Red player, rotate 180 degrees so text faces Red side
-              local rotY = rot.y
-              if player_color == "Red" then
-                rotY = rotY + 180
-                if rotY >= 360 then rotY = rotY - 360 end
-              end
-              local faceUpRot = {x=rot.x, y=rotY, z=0}
               obj.setRotation(faceUpRot)
               obj.setLock(entry.lock)
               newMemoryList[obj.guid] = memoryList[guid]
