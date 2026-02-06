@@ -474,6 +474,22 @@ function click_place(obj, player_color, alt_click)
   local currentRotation = readRotation()
   local selfPos = self.getPosition()
   
+  -- Check if we're switching from KT table mode to regular mode
+  if placementMetadata and placementMetadata.mode == "kt_table" then
+    broadcastToAll("Switching from KT table to regular placement - clearing old memory", {1, 0.7, 0})
+    memoryList = {}
+    -- Rebuild memory list from bag contents for fresh placement
+    for _, bagEntry in ipairs(bagObjList) do
+      if not memoryList[bagEntry.guid] then
+        memoryList[bagEntry.guid] = {
+          pos = {x=bagEntry.position.x, y=bagEntry.position.y, z=bagEntry.position.z},
+          rot = {x=bagEntry.rotation.x, y=bagEntry.rotation.y, z=bagEntry.rotation.z},
+          lock = bagEntry.lock or false
+        }
+      end
+    end
+  end
+  
   -- Always use relative positioning (old behavior)
   local newMemoryList = {}
   
@@ -532,6 +548,11 @@ function click_place(obj, player_color, alt_click)
         for k,v in pairs(newMemoryList) do
           memoryList[k] = v
         end
+        -- Track placement metadata
+        placementMetadata = {
+          mode = "regular",
+          timestamp = os.time()
+        }
         broadcastToAll("Objects Placed", {1,1,1})
         updateSave()
       end
@@ -546,6 +567,37 @@ function click_place_kt_table(obj, player_color, alt_click)
   -- Get the player color from the clicking player
   if not player_color or player_color == "" then
     player_color = Player.getPlayers()[1] and Player.getPlayers()[1].color or "White"
+  end
+  
+  -- Check if we're switching modes or colors - warn and clear if needed
+  if placementMetadata then
+    if placementMetadata.mode == "regular" then
+      broadcastToAll("Switching from regular to KT table placement - clearing old memory", {1, 0.7, 0})
+      memoryList = {}
+      -- Rebuild memory list from bag contents
+      for _, bagEntry in ipairs(bagObjList) do
+        if not memoryList[bagEntry.guid] then
+          memoryList[bagEntry.guid] = {
+            pos = {x=bagEntry.position.x, y=bagEntry.position.y, z=bagEntry.position.z},
+            rot = {x=bagEntry.rotation.x, y=bagEntry.rotation.y, z=bagEntry.rotation.z},
+            lock = bagEntry.lock or false
+          }
+        end
+      end
+    elseif placementMetadata.player_color and placementMetadata.player_color ~= player_color then
+      broadcastToAll("Switching from " .. placementMetadata.player_color .. " to " .. player_color .. " - clearing old memory", {1, 0.7, 0})
+      memoryList = {}
+      -- Rebuild memory list from bag contents
+      for _, bagEntry in ipairs(bagObjList) do
+        if not memoryList[bagEntry.guid] then
+          memoryList[bagEntry.guid] = {
+            pos = {x=bagEntry.position.x, y=bagEntry.position.y, z=bagEntry.position.z},
+            rot = {x=bagEntry.rotation.x, y=bagEntry.rotation.y, z=bagEntry.rotation.z},
+            lock = bagEntry.lock or false
+          }
+        end
+      end
+    end
   end
   
   -- Check if we're on the workshop table
@@ -615,6 +667,9 @@ function click_place_kt_table(obj, player_color, alt_click)
   for guid, entry in pairs(memoryList) do
     local obj = getObjectFromGUID(guid)
     local selfPos = self.getPosition()
+    
+    -- For workshop placement, we'll use absolute rotations (not relative to box)
+    -- We'll still take objects out with temporary relative rotation, but fix it later
     local rot = { x=entry.rot.x, y=entry.rot.y, z=entry.rot.z }
     local rotationAdjustment = currentRotation - relativeRotation
 
@@ -655,21 +710,24 @@ function click_place_kt_table(obj, player_color, alt_click)
             cardTypeIndices[cardType] = 1
           end
           
+          -- For workshop placement, use ABSOLUTE rotation (ignore box rotation)
+          -- Blue faces north (Y=180), Red faces south (Y=0)
+          local absoluteRotY = (player_color == "Red") and 0 or 180
+          local absoluteRot = {x=0, y=absoluteRotY, z=0}
+          
+          -- Token bags need 90 degree rotation adjustment
+          local tokenBagRotY = (player_color == "Red") and 90 or 270
+          local tokenBagRot = {x=0, y=tokenBagRotY, z=0}
+          
           -- Check if this is a deck
           if obj.type == "Deck" then
             -- For datacards and equipment, keep as deck. For faction_rules, unpack first 2 then keep rest as deck
-            if cardType == "datacards" or cardType == "equipment" or cardType == "token_guide" or cardType == "token_bag" then
+            if cardType == "datacards" or cardType == "equipment" or cardType == "token_guide" then
               -- Place entire deck at position
               local customPos = getWorkshopPosition(player_color, cardType, cardTypeIndices[cardType])
               if customPos then
                 obj.setPosition(customPos)
-                local rotY = rot.y
-                if player_color == "Red" then
-                  rotY = rotY + 180
-                  if rotY >= 360 then rotY = rotY - 360 end
-                end
-                local faceUpRot = {x=rot.x, y=rotY, z=0}
-                obj.setRotation(faceUpRot)
+                obj.setRotation(absoluteRot)
                 obj.setLock(entry.lock)
                 newMemoryList[obj.guid] = {
                   pos = {x=customPos.x - selfPos.x, y=customPos.y - selfPos.y, z=customPos.z - selfPos.z},
@@ -687,15 +745,9 @@ function click_place_kt_table(obj, player_color, alt_click)
               for i = 1, cardsToUnpack do
                 local customPos = getWorkshopPosition(player_color, cardType, cardTypeIndices[cardType])
                 if customPos then
-                  local rotY = rot.y
-                  if player_color == "Red" then
-                    rotY = rotY + 180
-                    if rotY >= 360 then rotY = rotY - 360 end
-                  end
-                  local faceUpRot = {x=rot.x, y=rotY, z=0}
                   local card = obj.takeObject({
                     position = customPos,
-                    rotation = faceUpRot,
+                    rotation = absoluteRot,
                     smooth = false
                   })
                   if card then
@@ -715,13 +767,7 @@ function click_place_kt_table(obj, player_color, alt_click)
                 local customPos = getWorkshopPosition(player_color, cardType, 3)
                 if customPos then
                   obj.setPosition(customPos)
-                  local rotY = rot.y
-                  if player_color == "Red" then
-                    rotY = rotY + 180
-                    if rotY >= 360 then rotY = rotY - 360 end
-                  end
-                  local faceUpRot = {x=rot.x, y=rotY, z=0}
-                  obj.setRotation(faceUpRot)
+                  obj.setRotation(absoluteRot)
                   obj.setLock(entry.lock)
                   newMemoryList[obj.guid] = {
                     pos = {x=customPos.x - selfPos.x, y=customPos.y - selfPos.y, z=customPos.z - selfPos.z},
@@ -736,15 +782,9 @@ function click_place_kt_table(obj, player_color, alt_click)
               for i = 1, deckSize do
                 local customPos = getWorkshopPosition(player_color, cardType, cardTypeIndices[cardType])
                 if customPos then
-                  local rotY = rot.y
-                  if player_color == "Red" then
-                    rotY = rotY + 180
-                    if rotY >= 360 then rotY = rotY - 360 end
-                  end
-                  local faceUpRot = {x=rot.x, y=rotY, z=0}
                   local card = obj.takeObject({
                     position = customPos,
-                    rotation = faceUpRot,
+                    rotation = absoluteRot,
                     smooth = false
                   })
                   if card then
@@ -764,15 +804,13 @@ function click_place_kt_table(obj, player_color, alt_click)
             local customPos = getWorkshopPosition(player_color, cardType, cardTypeIndices[cardType])
             if customPos then
               obj.setPosition(customPos)
-              -- Set rotation face-up (rotZ = 0 instead of 180)
-              -- For Red player, rotate 180 degrees so text faces Red side
-              local rotY = rot.y
-              if player_color == "Red" then
-                rotY = rotY + 180
-                if rotY >= 360 then rotY = rotY - 360 end
+              -- Token bags need 90 degree rotation adjustment
+              if cardType == "token_bag" then
+                obj.setRotation(tokenBagRot)
+              else
+                -- Use absolute rotation (Blue=180°, Red=0°)
+                obj.setRotation(absoluteRot)
               end
-              local faceUpRot = {x=rot.x, y=rotY, z=0}
-              obj.setRotation(faceUpRot)
               obj.setLock(entry.lock)
               newMemoryList[obj.guid] = memoryList[guid]
               cardTypeIndices[cardType] = cardTypeIndices[cardType] + 1
@@ -804,6 +842,12 @@ function click_place_kt_table(obj, player_color, alt_click)
           for k,v in pairs(newMemoryList) do
             memoryList[k] = v
           end
+          -- Track placement metadata
+          placementMetadata = {
+            mode = "kt_table",
+            player_color = player_color,
+            timestamp = os.time()
+          }
           broadcastToAll("Objects Placed on KT table", {1,1,1})
           updateSave()
         end
@@ -828,18 +872,33 @@ function click_recall()
   
   broadcastToAll("Attempting to recall " .. totalInList .. " objects...", {1, 1, 0})
   
-  -- Recall all objects by GUID from memoryList
+  -- Collect all objects to recall first (to handle deck reconstruction)
+  local objectsToRecall = {}
   for guid, entry in pairs(memoryList) do
     local obj = getObjectFromGUID(guid)
     if obj ~= nil then
-      self.putObject(obj)
-      recalledCount = recalledCount + 1
+      table.insert(objectsToRecall, obj)
     else
-      broadcastToAll("Could not find object with GUID: " .. guid, {1, 0.5, 0})
+      -- Object doesn't exist anymore (could be unpacked cards)
+      broadcastToAll("Skipping missing object: " .. guid, {1, 0.7, 0})
     end
   end
   
+  -- Recall all objects
+  for _, obj in ipairs(objectsToRecall) do
+    self.putObject(obj)
+    recalledCount = recalledCount + 1
+  end
+  
+  -- IMPORTANT: Clear memory list completely after recall
+  -- This prevents stale references when switching placement modes or player colors
+  memoryList = {}
+  placementMetadata = nil
+  
   broadcastToAll("Objects Recalled (" .. recalledCount .. " of " .. totalInList .. " items)", {1,1,1})
+  broadcastToAll("Memory cleared - ready for fresh placement", {0.7, 0.7, 1})
+  
+  updateSave()
 end
 
 function click_update_rules()
