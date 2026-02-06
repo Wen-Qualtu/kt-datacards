@@ -1023,7 +1023,6 @@ function click_update_rules()
                 spawnedObj.setRotationSmooth(currentRot, false, true)
                 broadcastToAll("✓ Card box updated! Save the object to keep changes.", {0, 1, 0})
               end, 1.5)
-            end, 0.3)
             end, 0.5)
           end
           
