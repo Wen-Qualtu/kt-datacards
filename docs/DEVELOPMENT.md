@@ -617,6 +617,36 @@ poetry run python script/run_pipeline.py --step all
 
 ---
 
+## ⚠️ Common Issues & Troubleshooting
+
+### UTF-8 BOM in TTS Lua Scripts
+
+**Problem:** TTS spawner fails with "unexpected symbol near '>'" error when spawning card boxes.
+
+**Cause:** The Lua script template file has a UTF-8 BOM (Byte Order Mark `\ufeff`) at the start. When the pipeline generates card box JSON files, this BOM gets embedded in the `LuaScript` field. While manually copying these files to TTS works fine, the spawner fails when trying to re-encode and spawn them programmatically.
+
+**Solution:**
+1. Remove the BOM from `config/defaults/tts-script/tts-update-rules-in-box-script.lua`
+2. Regenerate all card boxes using the pipeline
+
+**PowerShell commands to check and fix:**
+```powershell
+# Check if BOM exists
+$bytes = [System.IO.File]::ReadAllBytes("config/defaults/tts-script/tts-update-rules-in-box-script.lua")
+if ($bytes[0] -eq 0xEF -and $bytes[1] -eq 0xBB -and $bytes[2] -eq 0xBF) { 
+    Write-Output "BOM found - needs fixing" 
+}
+
+# Remove BOM
+$content = Get-Content "config/defaults/tts-script/tts-update-rules-in-box-script.lua" -Raw
+$content = $content.TrimStart([char]0xFEFF)
+[System.IO.File]::WriteAllText("config/defaults/tts-script/tts-update-rules-in-box-script.lua", $content, (New-Object System.Text.UTF8Encoding $false))
+```
+
+**Prevention:** Always save Lua template files with UTF-8 encoding **without BOM**. In VS Code: Click the encoding in the status bar → "Save with Encoding" → "UTF-8" (not "UTF-8 with BOM").
+
+---
+
 ## ❓ Questions?
 
 If you're unsure about something:
