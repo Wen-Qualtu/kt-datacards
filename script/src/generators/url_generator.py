@@ -105,8 +105,12 @@ class URLGenerator:
                     for jpg_file in sorted(type_dir.glob('*.jpg')):
                         file_name = jpg_file.stem  # Name without extension
                         
-                        # Construct GitHub raw URL (use forward slashes)
-                        url = f"{self.github_base}/{faction_name}/{team_name}/{type_name}/{jpg_file.name}"
+                        # Get file modification time for cache busting
+                        mtime = jpg_file.stat().st_mtime
+                        cache_param = f"?v={int(mtime)}"
+                        
+                        # Construct GitHub raw URL (use forward slashes) with cache-busting parameter
+                        url = f"{self.github_base}/{faction_name}/{team_name}/{type_name}/{jpg_file.name}{cache_param}"
                         
                         entries.append({
                             'faction': faction_name,
