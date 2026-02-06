@@ -841,10 +841,16 @@ function click_update_rules()
       newBoxData.Transform.rotY = currentRot.y
       newBoxData.Transform.rotZ = currentRot.z
       
-      -- Spawn new box at current location
+      -- Spawn new box next to the current one to avoid overlap
+      local spawnOffset = Vector(5, 0, 0)
+      local spawnPos = currentPos + spawnOffset
+      newBoxData.Transform.posX = spawnPos.x
+      newBoxData.Transform.posY = spawnPos.y
+      newBoxData.Transform.posZ = spawnPos.z
+      
       local spawnedObj = spawnObjectJSON({
         json = JSON.encode(newBoxData),
-        position = currentPos
+        position = spawnPos
       })
       
       Wait.condition(
@@ -852,10 +858,16 @@ function click_update_rules()
           -- Wait a moment for script state to initialize
           Wait.time(function()
             spawnedObj.setLock(currentLock)
-            broadcastToAll("✓ Card box updated successfully!", {0, 1, 0})
             
             -- Destroy old box after new one is ready
             self.destruct()
+            
+            -- Move new box to original position
+            Wait.time(function()
+              spawnedObj.setPositionSmooth(currentPos, false, true)
+              spawnedObj.setRotationSmooth(currentRot, false, true)
+              broadcastToAll("✓ Card box updated successfully!", {0, 1, 0})
+            end, 0.5)
           end, 0.5)
         end,
         function() return spawnedObj ~= nil and not spawnedObj.spawning end,
