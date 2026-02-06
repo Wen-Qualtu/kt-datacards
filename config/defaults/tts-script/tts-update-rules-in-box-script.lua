@@ -22,58 +22,58 @@ local WORKSHOP_POSITIONS = {
       {x=-4.25, y=1, z=-37.69}
     },
     faction_rules = {
-      {x=1.83, y=1, z=-37.63}, -- First: Astartes
-      {x=5.61, y=1, z=-37.63}, -- Second: Marks of Chaos
-      {x=9.88, y=1, z=-37.63}  -- Rest: Deck at this position
+      {x=1.83, y=0.61, z=-37.63}, -- First: Astartes
+      {x=5.61, y=0.61, z=-37.63}, -- Second: Marks of Chaos
+      {x=9.88, y=0.64, z=-37.63}  -- Rest: Deck at this position
     },
     equipment = {
-      {x=1.07, y=1, z=-27.04}
+      {x=1.07, y=0.76, z=-27.04}
     },
     datacards = {
-      {x=-26.88, y=1, z=-22.71}
+      {x=-26.88, y=0.62, z=-22.71}
     },
     token_guide = {
-      {x=-28.41, y=1, z=-27.87}
+      {x=-28.41, y=0.57, z=-27.87}
     },
     token_bag = {
-      {x=-26.41, y=1, z=-28.47}
+      {x=-26.41, y=0.61, z=-28.47}
     },
     operative_selection = {
-      {x=-31.18, y=1, z=-22.63}
+      {x=-31.18, y=0.57, z=-22.63}
     }
   },
   Red = {
     strategy_ploys = {
-      {x=-18.01, y=1, z=27.00},
-      {x=-13.51, y=1, z=27.00},
-      {x=-9.01, y=1, z=27.00},
-      {x=-4.51, y=1, z=27.00}
+      {x=-18.01, y=0.61, z=27.00},
+      {x=-13.51, y=0.61, z=27.00},
+      {x=-9.01, y=0.61, z=27.00},
+      {x=-4.51, y=0.61, z=27.00}
     },
     firefight_ploys = {
-      {x=-17.95, y=1, z=37.58},
-      {x=-13.45, y=1, z=37.58},
-      {x=-8.95, y=1, z=37.59},
-      {x=-4.45, y=1, z=37.58}
+      {x=-17.95, y=0.61, z=37.58},
+      {x=-13.45, y=0.61, z=37.58},
+      {x=-8.95, y=0.61, z=37.59},
+      {x=-4.45, y=0.61, z=37.58}
     },
     faction_rules = {
-      {x=1.27, y=1, z=37.59}, -- First: Astartes
-      {x=5.46, y=1, z=37.56}, -- Second: Khorne (marks of chaos)
-      {x=9.66, y=1, z=37.56}  -- Rest: Deck at this position
+      {x=1.27, y=0.61, z=37.59}, -- First: Astartes
+      {x=5.46, y=0.61, z=37.56}, -- Second: Khorne (marks of chaos)
+      {x=9.66, y=0.64, z=37.56}  -- Rest: Deck at this position
     },
     equipment = {
-      {x=0.73, y=1, z=27.08}
+      {x=0.73, y=0.87, z=27.08}
     },
     datacards = {
-      {x=-26.50, y=1, z=22.21}
+      {x=-26.50, y=0.63, z=22.21}
     },
     token_guide = {
-      {x=-29.98, y=1, z=25.45}
+      {x=-29.98, y=0.58, z=25.45}
     },
     token_bag = {
-      {x=-27.76, y=1, z=26.15}
+      {x=-27.76, y=0.61, z=26.15}
     },
     operative_selection = {
-      {x=-30.27, y=1, z=22.32}
+      {x=-30.27, y=0.58, z=22.32}
     }
   }
 }
@@ -107,14 +107,6 @@ local BUTTON_PLACE = {
   position={1.75,-2.5,1}, rotation={0,270,0},
   height=350, width=800,
   font_size=250, color={0.2,0.95,0}, font_color={0,0,0}
-}
-local BUTTON_PLACE_KT_TABLE = {
-  label="KT table",
-  click_function="click_place_kt_table",
-  function_owner=self,
-  position={0,-2.5,2.5}, rotation={0,180,0},
-  height=350, width=800,
-  font_size=200, color={0.95,0.6,0}, font_color={0,0,0}
 }
 local BUTTON_UPDATE = {
   label="Update",
@@ -220,7 +212,6 @@ local function changeButtons(variant)
     self.createButton(BUTTON_PLACE)
     self.createButton(BUTTON_RECALL)
     self.createButton(BUTTON_SETUP_BOX)
-    self.createButton(BUTTON_PLACE_KT_TABLE)
     self.createButton(BUTTON_UPDATE)
   end
 end
@@ -472,76 +463,6 @@ end
 function click_place(obj, player_color, alt_click)
   local bagObjList = self.getObjects()
   local currentRotation = readRotation()
-  local selfPos = self.getPosition()
-  
-  -- Always use relative positioning (old behavior)
-  local newMemoryList = {}
-  
-  -- Count total objects to place
-  local totalObjects = 0
-  for _ in pairs(memoryList) do
-    totalObjects = totalObjects + 1
-  end
-  local processedObjects = 0
-  
-  for guid, entry in pairs(memoryList) do
-    local obj = getObjectFromGUID(guid)
-    local rot = { x=entry.rot.x, y=entry.rot.y, z=entry.rot.z }
-    local rotationAdjustment = currentRotation - relativeRotation
-
-    rot.y = rot.y + rotationAdjustment
-    if (rot.y > 360) then
-      rot.y = rot.y - 360
-    elseif (rot.y < 0) then
-      rot.y = rot.y + 360
-    end
-    
-    -- If object is in bag, take it out first
-    if obj == nil then
-      for _, bagObj in ipairs(bagObjList) do
-        if bagObj.guid == guid then
-          obj = self.takeObject({
-            guid=guid,
-            position=selfPos + Vector(0, 5, 0),
-            rotation=rot,
-            smooth=false
-          })
-          break
-        end
-      end
-    end
-    
-    -- Always process (wait for takeObject to complete if needed)
-    Wait.frames(function()
-      -- Re-get the object in case it was just taken from bag
-      local placedObj = getObjectFromGUID(guid)
-      if placedObj and not placedObj.isDestroyed() then
-        -- Use relative positioning
-        local deltaPos = compare_coords(selfPos, entry.pos, rotationAdjustment)
-        placedObj.setPosition(deltaPos)
-        placedObj.setRotation(rot)
-        placedObj.setLock(entry.lock)
-        newMemoryList[guid] = entry
-      end
-      
-      -- Track completion
-      processedObjects = processedObjects + 1
-      if processedObjects >= totalObjects then
-        -- All objects processed, update memoryList
-        memoryList = {}
-        for k,v in pairs(newMemoryList) do
-          memoryList[k] = v
-        end
-        broadcastToAll("Objects Placed", {1,1,1})
-        updateSave()
-      end
-    end, 2)
-  end
-end
-
-function click_place_kt_table(obj, player_color, alt_click)
-  local bagObjList = self.getObjects()
-  local currentRotation = readRotation()
   
   -- Get the player color from the clicking player
   if not player_color or player_color == "" then
@@ -551,15 +472,10 @@ function click_place_kt_table(obj, player_color, alt_click)
   -- Check if we're on the workshop table
   local useWorkshopPositions = isWorkshopTable()
   
-  if not useWorkshopPositions then
-    broadcastToAll("KT table not detected. Use 'Place' button for standard placement.", {1, 0.5, 0})
-    return
-  end
-  
   if useWorkshopPositions then
     -- Only use workshop positions if we have them defined for this player color
     if WORKSHOP_POSITIONS[player_color] then
-      broadcastToAll("Placement for " .. player_color .. " player on KT table", {0.2, 1, 0.2})
+      broadcastToAll("Placement for " .. player_color .. " player", {0.2, 1, 0.2})
       
       -- Check for existing cards at workshop positions
       local hasCollision = false
@@ -595,9 +511,8 @@ function click_place_kt_table(obj, player_color, alt_click)
         return
       end
     else
-      -- No workshop positions defined for this color
-      broadcastToAll("No KT table positions defined for " .. player_color .. " player.", {1, 0.5, 0})
-      return
+      -- No workshop positions defined for this color, use normal placement
+      useWorkshopPositions = false
     end
   end
 
@@ -646,7 +561,7 @@ function click_place_kt_table(obj, player_color, alt_click)
         -- Determine card type
         local cardType = determineCardType(obj)
         
-        -- Use workshop positions
+        -- Check if we should use workshop positions (must have table detected AND positions defined for player)
         local shouldUseWorkshop = useWorkshopPositions and player_color and cardType and WORKSHOP_POSITIONS[player_color] ~= nil
         
         if shouldUseWorkshop then
@@ -786,7 +701,7 @@ function click_place_kt_table(obj, player_color, alt_click)
             end
           end
         else
-          -- Fallback to relative positioning
+          -- Not workshop table or couldn't determine type - use relative positioning
           local deltaPos = compare_coords(selfPos, entry.pos, rotationAdjustment)
           if obj and not obj.isDestroyed() then
             obj.setPosition(deltaPos)
@@ -804,7 +719,7 @@ function click_place_kt_table(obj, player_color, alt_click)
           for k,v in pairs(newMemoryList) do
             memoryList[k] = v
           end
-          broadcastToAll("Objects Placed on KT table", {1,1,1})
+          broadcastToAll("Objects Placed", {1,1,1})
           updateSave()
         end
       end, 2)
