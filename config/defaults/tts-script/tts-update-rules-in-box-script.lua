@@ -1,6 +1,81 @@
 ﻿-- constants
 local TTS_METADATA_URL = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/tts-metadata.json"
 
+-- Workshop table detection - looks for unique tag on that specific table
+local WORKSHOP_TABLE_TAG = "KT_Ploy_Holders"
+
+-- Custom placement positions for workshop table
+local WORKSHOP_POSITIONS = {
+  Blue = {
+    strategy_ploys = {
+      {x=-18.00, y=1, z=-27.00},
+      {x=-13.23, y=1, z=-27.05},
+      {x=-8.73, y=1, z=-27.05},
+      {x=-4.23, y=1, z=-27.05}
+    },
+    firefight_ploys = {
+      {x=-17.75, y=1, z=-37.69},
+      {x=-13.25, y=1, z=-37.69},
+      {x=-8.75, y=1, z=-37.69},
+      {x=-4.25, y=1, z=-37.69}
+    },
+    faction_rules = {
+      {x=1.33, y=0.61, z=-37.63}, -- First: Astartes
+      {x=5.61, y=0.61, z=-37.63}, -- Second: Marks of Chaos
+      {x=9.88, y=0.64, z=-37.63}  -- Rest: Deck at this position
+    },
+    equipment = {
+      {x=1.07, y=0.76, z=-27.04}
+    },
+    datacards = {
+      {x=-26.88, y=0.62, z=-22.71}
+    },
+    token_guide = {
+      {x=-28.41, y=0.57, z=-27.87}
+    },
+    token_bag = {
+      {x=-26.41, y=0.61, z=-28.47}
+    },
+    operative_selection = {
+      {x=-31.18, y=0.57, z=-22.63}
+    }
+  },
+  Red = {
+    strategy_ploys = {
+      {x=-18.01, y=0.61, z=27.00},
+      {x=-13.51, y=0.61, z=27.00},
+      {x=-9.01, y=0.61, z=27.00},
+      {x=-4.51, y=0.61, z=27.00}
+    },
+    firefight_ploys = {
+      {x=-17.95, y=0.61, z=37.58},
+      {x=-13.45, y=0.61, z=37.58},
+      {x=-8.95, y=0.61, z=37.59},
+      {x=-4.45, y=0.61, z=37.58}
+    },
+    faction_rules = {
+      {x=1.27, y=0.61, z=37.59}, -- First: Astartes
+      {x=5.46, y=0.61, z=37.56}, -- Second: Khorne (marks of chaos)
+      {x=9.66, y=0.64, z=37.56}  -- Rest: Deck at this position
+    },
+    equipment = {
+      {x=0.73, y=0.87, z=27.08}
+    },
+    datacards = {
+      {x=-26.50, y=0.63, z=22.21}
+    },
+    token_guide = {
+      {x=-29.98, y=0.58, z=25.45}
+    },
+    token_bag = {
+      {x=-27.76, y=0.61, z=26.15}
+    },
+    operative_selection = {
+      {x=-30.27, y=0.58, z=22.32}
+    }
+  }
+}
+
 local BUTTON_SETUP_TOKENS = {
   label="Setup",
   click_function="click_setup", function_owner=self,
@@ -284,11 +359,158 @@ function click_reset()
   updateSave()
 end
 
-function click_place()
+-- Helper function to check if we're on the workshop table
+local function isWorkshopTable()
+  -- Check for objects with the workshop-specific tag
+  local workshopObjects = getObjectsWithTag(WORKSHOP_TABLE_TAG)
+  
+  if workshopObjects and #workshopObjects > 0 then
+    broadcastToAll("DEBUG: Workshop table detected (found " .. #workshopObjects .. " objects with tag '" .. WORKSHOP_TABLE_TAG .. "')", {0, 1, 0})
+    return true
+  else
+    broadcastToAll("DEBUG: Not on workshop table (no objects with tag '" .. WORKSHOP_TABLE_TAG .. "')", {1, 0.5, 0})
+    return false
+  end
+end
+
+-- Helper function to determine card type from object tags or name
+local function determineCardType(obj)
+  if not obj then
+    return nil
+  end
+  
+  -- First try to get type from tags (most reliable)
+  local tags = obj.getTags()
+  for _, tag in ipairs(tags) do
+    if tag == "KTCardsStrategyPloy" or tag == "KTCardsStrategicPloy" then
+      return "strategy_ploys"
+    elseif tag == "KTCardsFirefightPloy" or tag == "KTCardsTacticalPloy" then
+      return "firefight_ploys"
+    elseif tag == "KTCardsFactionRule" or tag == "KTCardsTacOp" then
+      return "faction_rules"
+    elseif tag == "KTCardsEquipment" or tag == "KTCardsEquipments" then
+      return "equipment"
+    elseif tag == "KTCardsDatacard" or tag == "KTCardsDatacards" then
+      return "datacards"
+    elseif tag == "KTCardsTokenGuide" then
+      return "token_guide"
+    elseif tag == "KTCardsTokenBag" then
+      return "token_bag"
+    elseif tag == "KTCardsOperativeSelection" then
+      return "operative_selection"
+    end
+  end
+  
+  -- Fallback: try to determine from object name
+  local name = obj.getName()
+  if not name or name == "" then
+    return nil
+  end
+  
+  local nameLower = string.lower(name)
+  
+  -- Check for specific card types based on name patterns
+  if string.find(nameLower, "strategic ploy") or string.find(nameLower, "strategy ploy") then
+    return "strategy_ploys"
+  elseif string.find(nameLower, "tactical ploy") or string.find(nameLower, "firefight ploy") then
+    return "firefight_ploys"
+  elseif string.find(nameLower, "faction rule") or string.find(nameLower, "tac op") then
+    return "faction_rules"
+  elseif string.find(nameLower, "equipment") then
+    return "equipment"
+  elseif string.find(nameLower, "datacard") then
+    return "datacards"
+  elseif string.find(nameLower, "markertoken") and string.find(nameLower, "guide") then
+    return "token_guide"
+  elseif string.find(nameLower, "token") then
+    return "token_bag"
+  elseif string.find(nameLower, "operative selection") then
+    return "operative_selection"
+  end
+  
+  return nil
+end
+
+-- Helper function to get custom position for workshop table
+local function getWorkshopPosition(playerColor, cardType, index)
+  local positions = WORKSHOP_POSITIONS[playerColor]
+  if not positions then
+    return nil
+  end
+  
+  local areaPositions = positions[cardType]
+  if not areaPositions or #areaPositions == 0 then
+    return nil
+  end
+  
+  -- For faction_rules: first card in slot 1, second in slot 2, rest in slot 3
+  if cardType == "faction_rules" then
+    if index == 1 then
+      return areaPositions[1]
+    elseif index == 2 then
+      return areaPositions[2]
+    else
+      return areaPositions[3]
+    end
+  end
+  
+  -- For other types, use modulo to wrap around if we have more cards than positions
+  local posIndex = ((index - 1) % #areaPositions) + 1
+  return areaPositions[posIndex]
+end
+
+function click_place(obj, player_color, alt_click)
   local bagObjList = self.getObjects()
   local currentRotation = readRotation()
+  
+  -- Get the player color from the clicking player
+  if not player_color or player_color == "" then
+    player_color = Player.getPlayers()[1] and Player.getPlayers()[1].color or "White"
+  end
+  
+  -- Check if we're on the workshop table
+  local useWorkshopPositions = isWorkshopTable()
+  
+  if useWorkshopPositions then
+    broadcastToAll("Using workshop table placement for " .. player_color .. " player", {0.2, 1, 0.2})
+    
+    -- Check for existing cards at workshop positions
+    local hasCollision = false
+    local collisionPositions = {}
+    
+    for cardType, positions in pairs(WORKSHOP_POSITIONS[player_color]) do
+      for _, pos in ipairs(positions) do
+        local objectsAtPos = Physics.cast({
+          origin = pos,
+          direction = {0, 1, 0},
+          type = 1, -- Box cast
+          size = {2, 2, 0.5},
+          max_distance = 0
+        })
+        
+        for _, hit in ipairs(objectsAtPos) do
+          local hitObj = hit.hit_object
+          if hitObj and (hitObj.type == "Card" or hitObj.type == "Deck") and hitObj ~= self then
+            hasCollision = true
+            table.insert(collisionPositions, string.format("%.1f, %.1f, %.1f", pos.x, pos.y, pos.z))
+            break
+          end
+        end
+      end
+    end
+    
+    if hasCollision then
+      broadcastToAll("Cannot place cards: Workshop positions already occupied. Please recall cards first.", {1, 0.2, 0.2})
+      return
+    end
+  else
+    broadcastToAll("Using normal placement (not on workshop table)", {1, 1, 0.2})
+  end
 
   local newMemoryList = {}
+  -- Track card indices per type for proper placement
+  local cardTypeIndices = {}
+  
   for guid, entry in pairs(memoryList) do
     local obj = getObjectFromGUID(guid)
     local selfPos = self.getPosition()
@@ -301,37 +523,102 @@ function click_place()
     elseif (rot.y < 0) then
       rot.y = rot.y + 360
     end
-
-    if obj ~= nil then
-      local deltaPos = compare_coords(selfPos, entry.pos, rotationAdjustment)
-      obj.setPosition(deltaPos)
-      obj.setRotation(rot)
-      obj.setLock(entry.lock)
-      newMemoryList[obj.guid] = memoryList[obj.guid]
-    else
+    
+    -- If object is in bag, take it out first
+    if obj == nil then
       for _, bagObj in ipairs(bagObjList) do
         if bagObj.guid == guid then
-          local deltaPos = compare_coords(selfPos, entry.pos, rotationAdjustment)
-          local item = self.takeObject({
+          obj = self.takeObject({
             guid=guid,
-            position=deltaPos,
+            position=selfPos + Vector(0, 5, 0),
             rotation=rot,
             smooth=false
           })
-
-          newItem = item.clone({
-            position=deltaPos,
-            rotation=rot,
-            smooth=false
-          })
-          item.destruct()
-
-          newItem.setLock(entry.lock)
-          newItem.setPosition(deltaPos)
-          newMemoryList[newItem.guid] = memoryList[guid]
           break
         end
       end
+    end
+    
+    -- Wait for object to exist
+    if obj ~= nil then
+      Wait.frames(function()
+        -- Determine card type
+        local cardType = determineCardType(obj)
+        
+        if useWorkshopPositions and player_color and cardType then
+          -- Initialize index for this card type if not exists
+          if not cardTypeIndices[cardType] then
+            cardTypeIndices[cardType] = 1
+          end
+          
+          -- Check if this is a deck
+          if obj.type == "Deck" then
+            -- Unpack deck and place cards individually
+            local deckSize = #obj.getObjects()
+            for i = 1, deckSize do
+              local customPos = getWorkshopPosition(player_color, cardType, cardTypeIndices[cardType])
+              if customPos then
+                -- Set rotation face-up (rotZ = 0 instead of 180)
+                -- For Red player, rotate 180 degrees so text faces Red side
+                local rotY = rot.y
+                if player_color == "Red" then
+                  rotY = rotY + 180
+                  if rotY >= 360 then rotY = rotY - 360 end
+                end
+                local faceUpRot = {x=rot.x, y=rotY, z=0}
+                local card = obj.takeObject({
+                  position = customPos,
+                  rotation = faceUpRot,
+                  smooth = false
+                })
+                if card then
+                  card.setLock(entry.lock)
+                  newMemoryList[card.guid] = {
+                    pos = {x=customPos.x - selfPos.x, y=customPos.y - selfPos.y, z=customPos.z - selfPos.z},
+                    rot = entry.rot,
+                    lock = entry.lock
+                  }
+                end
+                cardTypeIndices[cardType] = cardTypeIndices[cardType] + 1
+              end
+            end
+          else
+            -- Single card or other object
+            local customPos = getWorkshopPosition(player_color, cardType, cardTypeIndices[cardType])
+            if customPos then
+              obj.setPosition(customPos)
+              -- Set rotation face-up (rotZ = 0 instead of 180)
+              -- For Red player, rotate 180 degrees so text faces Red side
+              local rotY = rot.y
+              if player_color == "Red" then
+                rotY = rotY + 180
+                if rotY >= 360 then rotY = rotY - 360 end
+              end
+              local faceUpRot = {x=rot.x, y=rotY, z=0}
+              obj.setRotation(faceUpRot)
+              obj.setLock(entry.lock)
+              newMemoryList[obj.guid] = memoryList[guid]
+              cardTypeIndices[cardType] = cardTypeIndices[cardType] + 1
+            else
+              -- Fallback to relative positioning
+              local deltaPos = compare_coords(selfPos, entry.pos, rotationAdjustment)
+              obj.setPosition(deltaPos)
+              obj.setRotation(rot)
+              obj.setLock(entry.lock)
+              newMemoryList[obj.guid] = memoryList[guid]
+            end
+          end
+        else
+          -- Not workshop table or couldn't determine type - use relative positioning
+          local deltaPos = compare_coords(selfPos, entry.pos, rotationAdjustment)
+          if obj and not obj.isDestroyed() then
+            obj.setPosition(deltaPos)
+            obj.setRotation(rot)
+            obj.setLock(entry.lock)
+            newMemoryList[obj.guid] = memoryList[guid]
+          end
+        end
+      end, 2)
     end
   end
 
@@ -344,13 +631,65 @@ function click_place()
 end
 
 function click_recall()
+  local recalledCount = 0
+  
+  -- First try to recall objects by GUID from memoryList
   for guid, entry in pairs(memoryList) do
     local obj = getObjectFromGUID(guid)
     if obj ~= nil then
       self.putObject(obj)
+      recalledCount = recalledCount + 1
     end
   end
-  broadcastToAll("Objects Recalled", {1,1,1})
+  
+  -- Also search for cards at workshop positions if on workshop table
+  local workshopTable = isWorkshopTable()
+  if workshopTable then
+    broadcastToAll("Searching for cards at workshop positions...", {0.2, 1, 0.2})
+    
+    -- Check both Blue and Red positions
+    for playerColor, cardTypes in pairs(WORKSHOP_POSITIONS) do
+      for cardType, positions in pairs(cardTypes) do
+        for _, pos in ipairs(positions) do
+          local objectsAtPos = Physics.cast({
+            origin = pos,
+            direction = {0, 1, 0},
+            type = 1, -- Box cast
+            size = {2, 2, 0.5},
+            max_distance = 0
+          })
+          
+          for _, hit in ipairs(objectsAtPos) do
+            local hitObj = hit.hit_object
+            if hitObj and (hitObj.type == "Card" or hitObj.type == "Deck") and hitObj ~= self then
+              -- Check if it's a legionaries card (has our team tag or legionaries in name)
+              local tags = hitObj.getTags()
+              local nickname = hitObj.getName()
+              local isOurs = false
+              
+              for _, tag in ipairs(tags) do
+                if string.find(tag, "_Legionaries") or string.find(tag, "_legionaries") then
+                  isOurs = true
+                  break
+                end
+              end
+              
+              if not isOurs and string.find(nickname:lower(), "legionaries") then
+                isOurs = true
+              end
+              
+              if isOurs then
+                self.putObject(hitObj)
+                recalledCount = recalledCount + 1
+              end
+            end
+          end
+        end
+      end
+    end
+  end
+  
+  broadcastToAll("Objects Recalled (" .. recalledCount .. " items)", {1,1,1})
 end
 
 function click_update_rules()

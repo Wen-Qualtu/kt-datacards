@@ -78,9 +78,30 @@ def get_team_guid(team_name: str) -> str:
     return new_guid
 
 
-def create_single_card(card_name, front_url, back_url, team_tag, deck_id="100"):
+def get_card_type_tag(card_type):
+    """Get KTCards tag for a given card type"""
+    type_tag_map = {
+        "strategy-ploys": "KTCardsStrategyPloy",
+        "firefight-ploys": "KTCardsFirefightPloy",
+        "equipment": "KTCardsEquipment",
+        "datacards": "KTCardsDatacard",
+        "faction-rules": "KTCardsFactionRule",
+        "operative-selection": "KTCardsOperativeSelection",
+        "markertokens": "KTCardsMarkertoken"
+    }
+    return type_tag_map.get(card_type)
+
+def create_single_card(card_name, front_url, back_url, team_tag, deck_id="100", card_type=None):
     """Create a single TTS card object"""
     card_id = int(deck_id + "00")
+    
+    # Build tags list
+    tags = [team_tag]
+    if card_type:
+        type_tag = get_card_type_tag(card_type)
+        if type_tag:
+            tags.append(type_tag)
+    
     return {
         "GUID": generate_guid(f"{team_tag}:card:{card_name}"),
         "Name": "Card",
@@ -90,7 +111,7 @@ def create_single_card(card_name, front_url, back_url, team_tag, deck_id="100"):
             "posZ": 0.0,
             "rotX": 0.0,
             "rotY": 180.0,
-            "rotZ": 180.0,
+            "rotZ": 0.0,
             "scaleX": 1.0,
             "scaleY": 1.0,
             "scaleZ": 1.0
@@ -108,7 +129,7 @@ def create_single_card(card_name, front_url, back_url, team_tag, deck_id="100"):
             "g": 0.713235259,
             "b": 0.713235259
         },
-        "Tags": [team_tag],
+        "Tags": tags,
         "LayoutGroupSortIndex": 0,
         "Value": 0,
         "Locked": False,
@@ -142,12 +163,19 @@ def create_single_card(card_name, front_url, back_url, team_tag, deck_id="100"):
     }
 
 
-def create_deck(deck_nickname, team_tag, cards_data, starting_deck_id=1000):
+def create_deck(deck_nickname, team_tag, cards_data, starting_deck_id=1000, card_type=None):
     """Create a TTS deck object containing multiple cards"""
     # Generate CustomDeck entries
     custom_deck = {}
     deck_ids = []
     contained_objects = []
+    
+    # Build tags list
+    tags = [team_tag]
+    if card_type:
+        type_tag = get_card_type_tag(card_type)
+        if type_tag:
+            tags.append(type_tag)
     
     for idx, card_data in enumerate(cards_data):
         deck_id = str(starting_deck_id + idx)
@@ -177,7 +205,7 @@ def create_deck(deck_nickname, team_tag, cards_data, starting_deck_id=1000):
                 "posZ": 0.0,
                 "rotX": 0.0,
                 "rotY": 180.0,
-                "rotZ": 180.0,
+                "rotZ": 0.0,
                 "scaleX": 1.0,
                 "scaleY": 1.0,
                 "scaleZ": 1.0
@@ -214,6 +242,11 @@ def create_deck(deck_nickname, team_tag, cards_data, starting_deck_id=1000):
         }
         contained_objects.append(card_obj)
     
+    # Reverse the order so that when TTS takes cards from the top,
+    # they come out in the correct order (first card in list = first taken)
+    contained_objects.reverse()
+    deck_ids.reverse()
+    
     return {
         "GUID": generate_guid(f"{team_tag}:deck:{deck_nickname}"),
         "Name": "Deck",
@@ -241,7 +274,7 @@ def create_deck(deck_nickname, team_tag, cards_data, starting_deck_id=1000):
             "g": 0.713235259,
             "b": 0.713235259
         },
-        "Tags": [team_tag],
+        "Tags": tags,
         "LayoutGroupSortIndex": 0,
         "Value": 0,
         "Locked": False,

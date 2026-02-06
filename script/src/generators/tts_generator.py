@@ -221,13 +221,14 @@ class TTSGenerator:
                     card_data['front'],
                     card_data['back'],
                     team_tag,
-                    str(deck_id_counter)
+                    str(deck_id_counter),
+                    card_type
                 )
                 contained_objects.append(card_obj)
                 deck_id_counter += 1
             elif len(type_cards_data) > 1:
                 type_nickname = card_type.replace('-', ' ').title()
-                deck_obj = create_deck(type_nickname, team_tag, type_cards_data, deck_id_counter)
+                deck_obj = create_deck(type_nickname, team_tag, type_cards_data, deck_id_counter, card_type)
                 contained_objects.append(deck_obj)
                 deck_id_counter += len(type_cards_data)
         
