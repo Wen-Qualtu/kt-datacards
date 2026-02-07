@@ -17,21 +17,21 @@
   "XmlUI": "",
   "ObjectStates": [
     {
-      "GUID": "25172b",
+      "GUID": "3d2f13",
       "Name": "Custom_Model_Infinite_Bag",
       "Transform": {
         "posX": 0.0,
         "posY": 1.03,
         "posZ": 0.0,
         "rotX": 0.0,
-        "rotY": 180.0,
+        "rotY": 270.0,
         "rotZ": 0.0,
-        "scaleX": 1.17,
+        "scaleX": 1.8538,
         "scaleY": 0.1,
-        "scaleZ": 1.13
+        "scaleZ": 1.7887
       },
-      "Nickname": "Shadow Glyph",
-      "Description": "Infinite Shadow Glyph tokens",
+      "Nickname": "Shadow-Glyph",
+      "Description": "Infinite Shadow-Glyph tokens",
       "ColorDiffuse": {
         "r": 1.0,
         "g": 1.0,
@@ -56,9 +56,12 @@
         "TypeIndex": 7,
         "CastShadows": true
       },
+      "Bag": {
+        "Order": 0
+      },
       "ContainedObjects": [
         {
-          "GUID": "53bd29",
+          "GUID": "553f7f",
           "Name": "Custom_Token",
           "Transform": {
             "posX": 0.0,
@@ -67,12 +70,12 @@
             "rotX": 0.0,
             "rotY": 0.0,
             "rotZ": 0.0,
-            "scaleX": 0.228,
+            "scaleX": 0.21,
             "scaleY": 1.0,
-            "scaleZ": 0.228
+            "scaleZ": 0.21
           },
-          "Nickname": "Shadow Glyph",
-          "Description": "Shadow Glyph",
+          "Nickname": "Shadow-Glyph",
+          "Description": "Shadow-Glyph",
           "ColorDiffuse": {
             "r": 1.0,
             "g": 1.0,
@@ -80,8 +83,7 @@
           },
           "Tags": [
             "KTUIStackable",
-            "KTUIToken",
-            "KTUITokenSimple"
+            "KTUIToken"
           ],
           "Locked": false,
           "Grid": true,
@@ -97,7 +99,7 @@
             "WidthScale": 0.0,
             "CustomToken": {
               "Thickness": 0.1,
-              "MergeDistancePixels": 13.0,
+              "MergeDistancePixels": 11.0,
               "StandUp": false,
               "Stackable": false
             }
@@ -106,7 +108,7 @@
       ],
       "ChildObjects": [
         {
-          "GUID": "333a8b",
+          "GUID": "ae5ddf",
           "Name": "Custom_Token",
           "Transform": {
             "posX": 0.0,
@@ -115,12 +117,12 @@
             "rotX": 0.0,
             "rotY": 0.0,
             "rotZ": 0.0,
-            "scaleX": 0.228,
+            "scaleX": 0.21,
             "scaleY": 1.0,
-            "scaleZ": 0.228
+            "scaleZ": 0.21
           },
-          "Nickname": "Shadow Glyph",
-          "Description": "",
+          "Nickname": "Shadow-Glyph",
+          "Description": "Shadow-Glyph",
           "ColorDiffuse": {
             "r": 1.0,
             "g": 1.0,
@@ -128,10 +130,9 @@
           },
           "Tags": [
             "KTUIStackable",
-            "KTUIToken",
-            "KTUITokenSimple"
+            "KTUIToken"
           ],
-          "Locked": false,
+          "Locked": true,
           "Grid": true,
           "Snap": false,
           "Autoraise": true,
@@ -145,7 +146,7 @@
             "WidthScale": 0.0,
             "CustomToken": {
               "Thickness": 0.1,
-              "MergeDistancePixels": 13.0,
+              "MergeDistancePixels": 11.0,
               "StandUp": false,
               "Stackable": false
             }

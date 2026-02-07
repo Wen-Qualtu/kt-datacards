@@ -218,7 +218,19 @@ class TokenExtractor:
             )
             updated[(x, y)] = new_text
 
-        return updated
+        # Filter out "Soul Harvest" related labels from extraction matching
+        # These are handled by custom tokens and should not interfere with other token detection
+        filtered = {}
+        for pos, text in updated.items():
+            # Skip labels matching "Soul Harvest points Values X" or similar patterns
+            if re.search(r"\bsoul\s+harvest\b.*\bvalues?\b", text, flags=re.IGNORECASE):
+                continue
+            # Skip standalone "Soul Harvest X" numbered labels
+            if re.search(r"\bsoul\s+harvest\s+\d+\b", text, flags=re.IGNORECASE):
+                continue
+            filtered[pos] = text
+
+        return filtered
 
     def _split_double_token_image(self, token_img: np.ndarray) -> List[np.ndarray] | None:
         """Try to split a single extracted image that actually contains 2 adjacent tokens.
