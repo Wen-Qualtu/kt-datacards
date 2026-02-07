@@ -79,14 +79,14 @@ local WORKSHOP_POSITIONS = {
 }
 
 local BUTTON_SETUP_TOKENS = {
-  label="Setup",
+  label="Reset",
   click_function="click_setup", function_owner=self,
   position={0,0.3,-2}, rotation={0,180,0},
   height=350, width=800,
   font_size=250, color={0,0,0}, font_color={1,1,1}
 }
 local BUTTON_SETUP_BOX = {
-  label="Setup",
+  label="Reset",
   click_function="click_setup",
   function_owner=self,
   position={-2,-2.5,-1}, rotation={0,270,0},
@@ -271,13 +271,19 @@ function updateSave()
     ["lastCardUpdate"]=lastCardUpdate,
     ["lastTokenUpdate"]=lastTokenUpdate,
     ["teamSlug"]=teamSlug,
-    ["tokenBagPositions"]=tokenBagPositions
+    ["tokenBagPositions"]=tokenBagPositions,
+    ["deckUnpackTracking"]=deckUnpackTracking
   }
   saved_data = JSON.encode(data_to_save)
   self.script_state = saved_data
 end
 
 function onload(saved_data)
+  
+  -- Save original box state for reset functionality
+  if not originalBoxJSON then
+    originalBoxJSON = self.getJSON()
+  end
   
   if saved_data ~= "" then
     local loaded_data = JSON.decode(saved_data)
@@ -288,6 +294,7 @@ function onload(saved_data)
     lastTokenUpdate = loaded_data.lastTokenUpdate or ""
     teamSlug = loaded_data.teamSlug or ""
     tokenBagPositions = loaded_data.tokenBagPositions or {}
+    deckUnpackTracking = loaded_data.deckUnpackTracking or {}
   else
     memoryList = {}
     relativeRotation = readRotation()
@@ -296,6 +303,7 @@ function onload(saved_data)
     lastTokenUpdate = ""
     teamSlug = ""
     tokenBagPositions = {}
+    deckUnpackTracking = {}
   end
 
   if next(memoryList) == nil then
@@ -307,27 +315,121 @@ end
 
 -- handlers for buttons
 function click_setup()
-  local tagTarget = self.getGMNotes()
-
-  if (tagTarget == nil or tagTarget == '') then
-    broadcastToAll('please specify a tag to target in GM notes')
+  -- Reset: Only works after recall - clears bag contents and respawns fresh objects
+  
+  -- Check if we have a setup (memoryList exists)
+  if next(memoryList) == nil then
+    broadcastToAll("No setup found. Please use Update button to get latest version.", {1, 0.5, 0})
     return
   end
-
-  memoryListBackup = duplicateTable(memoryList)
-  memoryList = readList()
-
-  if (next(memoryList) == nil) then
-    broadcastToAll('The tag you specified yielded in 0 objects')
+  
+  if not originalBoxJSON then
+    broadcastToAll("ERROR: No original box data available", {1, 0, 0})
     return
   end
-
-  setOutline(memoryList, true)
-
-  relativeRotationBackup = relativeRotation
-  relativeRotation = readRotation()
-
-  changeButtons('in_setup')
+  
+  broadcastToAll("Resetting box to original state...", {1, 1, 0})
+  
+  -- Step 1: Delete any placed objects on table
+  local deletedCount = 0
+  for guid, entry in pairs(memoryList) do
+    local obj = getObjectFromGUID(guid)
+    if obj ~= nil and not obj.isDestroyed() then
+      obj.destruct()
+      deletedCount = deletedCount + 1
+    end
+  end
+  
+  -- Delete unpacked cards
+  if next(deckUnpackTracking) ~= nil then
+    for originalDeckGuid, trackingData in pairs(deckUnpackTracking) do
+      for _, cardGuid in ipairs(trackingData.cardGuids) do
+        local card = getObjectFromGUID(cardGuid)
+        if card ~= nil and not card.isDestroyed() then
+          card.destruct()
+          deletedCount = deletedCount + 1
+        end
+      end
+    end
+  end
+  
+  if deletedCount > 0 then
+    broadcastToAll("Deleted " .. deletedCount .. " placed objects", {0.7, 0.7, 0.7})
+  end
+  
+  -- Step 2: Clear bag contents
+  Wait.time(function()
+    local bagContents = self.getObjects()
+    for _, item in ipairs(bagContents) do
+      local obj = self.takeObject({guid = item.guid})
+      if obj then
+        obj.destruct()
+      end
+    end
+    
+    broadcastToAll("Cleared bag contents", {0.7, 0.7, 0.7})
+    
+    -- Step 3: Parse original box and respawn fresh objects
+    Wait.time(function()
+      local success, parsed = pcall(function() return JSON.decode(originalBoxJSON) end)
+      if not success or not parsed then
+        broadcastToAll("ERROR: Could not parse original box JSON", {1, 0, 0})
+        return
+      end
+      
+      local boxData = parsed.ObjectStates and parsed.ObjectStates[1] or parsed
+      local expectedObjects = boxData.ContainedObjects or {}
+      
+      if #expectedObjects == 0 then
+        broadcastToAll("ERROR: No objects in original box", {1, 0, 0})
+        return
+      end
+      
+      broadcastToAll("Spawning " .. #expectedObjects .. " fresh objects...", {1, 1, 0})
+      
+      -- Spawn each object back into the bag
+      for _, objData in ipairs(expectedObjects) do
+        self.putObject(spawnObjectData({
+          data = objData
+        }))
+      end
+      
+      -- Step 4: Rebuild memoryList from original box data
+      Wait.time(function()
+        -- Restore memoryList from original box's LuaScriptState
+        if boxData.LuaScriptState and boxData.LuaScriptState ~= "" then
+          local success, savedState = pcall(function() return JSON.decode(boxData.LuaScriptState) end)
+          if success and savedState and savedState.ml then
+            memoryList = {}
+            local count = 0
+            for k, v in pairs(savedState.ml) do
+              memoryList[k] = {
+                pos = {x=v.pos.x, y=v.pos.y, z=v.pos.z},
+                rot = {x=v.rot.x, y=v.rot.y, z=v.rot.z},
+                lock = v.lock
+              }
+              count = count + 1
+            end
+            relativeRotation = savedState.rr or readRotation()
+            broadcastToAll("Restored " .. count .. " object positions", {0.7, 0.7, 0.7})
+          else
+            memoryList = {}
+            relativeRotation = readRotation()
+          end
+        else
+          memoryList = {}
+          relativeRotation = readRotation()
+        end
+        
+        placementMetadata = nil
+        deckUnpackTracking = {}
+        
+        changeButtons('done_setup')
+        updateSave()
+        broadcastToAll("✓ Reset complete - ready to place!", {0, 1, 0})
+      end, 1.0)
+    end, 0.5)
+  end, 0.5)
 end
 
 function click_cancel()
@@ -474,20 +576,16 @@ function click_place(obj, player_color, alt_click)
   local currentRotation = readRotation()
   local selfPos = self.getPosition()
   
+  -- If memory list is empty, cannot place (need to Setup first)
+  if next(memoryList) == nil then
+    broadcastToAll("Memory list empty - please click Setup first", {1, 0.5, 0})
+    return
+  end
+  
   -- Check if we're switching from KT table mode to regular mode
   if placementMetadata and placementMetadata.mode == "kt_table" then
-    broadcastToAll("Switching from KT table to regular placement - clearing old memory", {1, 0.7, 0})
-    memoryList = {}
-    -- Rebuild memory list from bag contents for fresh placement
-    for _, bagEntry in ipairs(bagObjList) do
-      if not memoryList[bagEntry.guid] then
-        memoryList[bagEntry.guid] = {
-          pos = {x=bagEntry.position.x, y=bagEntry.position.y, z=bagEntry.position.z},
-          rot = {x=bagEntry.rotation.x, y=bagEntry.rotation.y, z=bagEntry.rotation.z},
-          lock = bagEntry.lock or false
-        }
-      end
-    end
+    broadcastToAll("Cannot switch from KT table to regular - please Recall first", {1, 0.5, 0})
+    return
   end
   
   -- Always use relative positioning (old behavior)
@@ -569,34 +667,20 @@ function click_place_kt_table(obj, player_color, alt_click)
     player_color = Player.getPlayers()[1] and Player.getPlayers()[1].color or "White"
   end
   
-  -- Check if we're switching modes or colors - warn and clear if needed
+  -- If memory list is empty, cannot place (need to Setup first)
+  if next(memoryList) == nil then
+    broadcastToAll("Memory list empty - please click Setup first", {1, 0.5, 0})
+    return
+  end
+  
+  -- Check if we're switching modes or colors - block these operations
   if placementMetadata then
     if placementMetadata.mode == "regular" then
-      broadcastToAll("Switching from regular to KT table placement - clearing old memory", {1, 0.7, 0})
-      memoryList = {}
-      -- Rebuild memory list from bag contents
-      for _, bagEntry in ipairs(bagObjList) do
-        if not memoryList[bagEntry.guid] then
-          memoryList[bagEntry.guid] = {
-            pos = {x=bagEntry.position.x, y=bagEntry.position.y, z=bagEntry.position.z},
-            rot = {x=bagEntry.rotation.x, y=bagEntry.rotation.y, z=bagEntry.rotation.z},
-            lock = bagEntry.lock or false
-          }
-        end
-      end
+      broadcastToAll("Cannot switch from regular placement to KT table - please Recall first", {1, 0, 0})
+      return
     elseif placementMetadata.player_color and placementMetadata.player_color ~= player_color then
-      broadcastToAll("Switching from " .. placementMetadata.player_color .. " to " .. player_color .. " - clearing old memory", {1, 0.7, 0})
-      memoryList = {}
-      -- Rebuild memory list from bag contents
-      for _, bagEntry in ipairs(bagObjList) do
-        if not memoryList[bagEntry.guid] then
-          memoryList[bagEntry.guid] = {
-            pos = {x=bagEntry.position.x, y=bagEntry.position.y, z=bagEntry.position.z},
-            rot = {x=bagEntry.rotation.x, y=bagEntry.rotation.y, z=bagEntry.rotation.z},
-            lock = bagEntry.lock or false
-          }
-        end
-      end
+      broadcastToAll("Cannot switch from " .. placementMetadata.player_color .. " to " .. player_color .. " - please Recall first", {1, 0, 0})
+      return
     end
   end
   
@@ -738,8 +822,14 @@ function click_place_kt_table(obj, player_color, alt_click)
               end
             elseif cardType == "faction_rules" then
               -- Unpack first 2 cards, keep rest as deck at position 3
+              local originalDeckGuid = guid
               local deckSize = #obj.getObjects()
               local cardsToUnpack = math.min(2, deckSize)
+              deckUnpackTracking[originalDeckGuid] = {
+                name = obj.getName(),
+                description = obj.getDescription(),
+                cardGuids = {}
+              }
               
               -- Unpack first 2 cards individually
               for i = 1, cardsToUnpack do
@@ -752,6 +842,7 @@ function click_place_kt_table(obj, player_color, alt_click)
                   })
                   if card then
                     card.setLock(entry.lock)
+                    table.insert(deckUnpackTracking[originalDeckGuid].cardGuids, card.guid)
                     newMemoryList[card.guid] = {
                       pos = {x=customPos.x - selfPos.x, y=customPos.y - selfPos.y, z=customPos.z - selfPos.z},
                       rot = entry.rot,
@@ -769,6 +860,7 @@ function click_place_kt_table(obj, player_color, alt_click)
                   obj.setPosition(customPos)
                   obj.setRotation(absoluteRot)
                   obj.setLock(entry.lock)
+                  table.insert(deckUnpackTracking[originalDeckGuid].cardGuids, obj.guid)
                   newMemoryList[obj.guid] = {
                     pos = {x=customPos.x - selfPos.x, y=customPos.y - selfPos.y, z=customPos.z - selfPos.z},
                     rot = entry.rot,
@@ -778,7 +870,14 @@ function click_place_kt_table(obj, player_color, alt_click)
               end
             else
               -- Unpack all cards for ploys and other types
+              local originalDeckGuid = guid
               local deckSize = #obj.getObjects()
+              deckUnpackTracking[originalDeckGuid] = {
+                name = obj.getName(),
+                description = obj.getDescription(),
+                cardGuids = {}
+              }
+              
               for i = 1, deckSize do
                 local customPos = getWorkshopPosition(player_color, cardType, cardTypeIndices[cardType])
                 if customPos then
@@ -789,6 +888,7 @@ function click_place_kt_table(obj, player_color, alt_click)
                   })
                   if card then
                     card.setLock(entry.lock)
+                    table.insert(deckUnpackTracking[originalDeckGuid].cardGuids, card.guid)
                     newMemoryList[card.guid] = {
                       pos = {x=customPos.x - selfPos.x, y=customPos.y - selfPos.y, z=customPos.z - selfPos.z},
                       rot = entry.rot,
@@ -856,11 +956,10 @@ function click_place_kt_table(obj, player_color, alt_click)
   end
 end
 
+-- Rebuild decks from individual cards after recall
 function click_recall()
-  local recalledCount = 0
   local totalInList = 0
   
-  -- Count total entries in memoryList
   for _ in pairs(memoryList) do
     totalInList = totalInList + 1
   end
@@ -870,35 +969,23 @@ function click_recall()
     return
   end
   
-  broadcastToAll("Attempting to recall " .. totalInList .. " objects...", {1, 1, 0})
+  broadcastToAll("Recalling " .. totalInList .. " objects...", {1, 1, 0})
   
-  -- Collect all objects to recall first (to handle deck reconstruction)
-  local objectsToRecall = {}
   for guid, entry in pairs(memoryList) do
     local obj = getObjectFromGUID(guid)
     if obj ~= nil then
-      table.insert(objectsToRecall, obj)
-    else
-      -- Object doesn't exist anymore (could be unpacked cards)
-      broadcastToAll("Skipping missing object: " .. guid, {1, 0.7, 0})
+      self.putObject(obj)
     end
   end
   
-  -- Recall all objects
-  for _, obj in ipairs(objectsToRecall) do
-    self.putObject(obj)
-    recalledCount = recalledCount + 1
-  end
-  
-  -- IMPORTANT: Clear memory list completely after recall
-  -- This prevents stale references when switching placement modes or player colors
-  memoryList = {}
+  -- Keep memoryList so we can place again
+  -- Just clear tracking data that prevents re-placement
   placementMetadata = nil
+  deckUnpackTracking = {}
   
-  broadcastToAll("Objects Recalled (" .. recalledCount .. " of " .. totalInList .. " items)", {1,1,1})
-  broadcastToAll("Memory cleared - ready for fresh placement", {0.7, 0.7, 1})
-  
+  changeButtons('done_setup')
   updateSave()
+  broadcastToAll("✓ Objects recalled - ready to place again!", {0, 1, 0})
 end
 
 function click_update_rules()

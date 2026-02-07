@@ -15,6 +15,8 @@ import shutil
 import yaml
 import hashlib
 from typing import Dict, List, Optional
+from datetime import datetime
+import time
 
 import cv2
 import numpy as np
@@ -680,8 +682,10 @@ class TTSTokenGenerator:
                         raise IOError(f"Failed to write token image: {dest_image}")
 
             # Generate URL for texture and mesh (copy mesh to output_v2)
+            # Add cache busting parameter using current timestamp
+            cache_bust = int(time.time())
             token_texture_url = (
-                f"{self.GITHUB_BASE}/output_v2/{faction}/{team_name}/tts/token/{dest_image.name}"
+                f"{self.GITHUB_BASE}/output_v2/{faction}/{team_name}/tts/token/{dest_image.name}?v={cache_bust}"
                 if has_image
                 else ""
             )

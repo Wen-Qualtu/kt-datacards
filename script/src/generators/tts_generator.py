@@ -171,7 +171,7 @@ class TTSGenerator:
         type_order = ['operative-selection', 'faction-rules', 'markertokens', 'datacards', 'equipment', 'firefight-ploys', 'strategy-ploys']
         
         # Add token bag if tokens exist for this team
-        token_bag = self._load_token_bag(team_name, faction)
+        token_bag, token_timestamp = self._load_token_bag(team_name, faction)
         if token_bag:
             contained_objects.append(token_bag)
             self.logger.info(f"Added token bag for {team_name}")
@@ -246,8 +246,9 @@ class TTSGenerator:
         import os
         import re
         placeholder_timestamp = "2000-01-01T00:00:00"
+        placeholder_token_timestamp = ""
         
-        bag_obj = create_bag(team_display_name, team_tag, contained_objects, lua_script, texture_url, mesh_url, faction, placeholder_timestamp)
+        bag_obj = create_bag(team_display_name, team_tag, contained_objects, lua_script, texture_url, mesh_url, faction, placeholder_timestamp, placeholder_token_timestamp)
         
         # Save to file
         with open(output_file, 'w', encoding='utf-8') as f:
@@ -277,7 +278,7 @@ class TTSGenerator:
         update_urls_in_object(bag_obj)
         
         # Update the bag object with the actual file timestamp in LuaScriptState
-        bag_obj = create_bag(team_display_name, team_tag, contained_objects, lua_script, texture_url, mesh_url, faction, actual_timestamp)
+        bag_obj = create_bag(team_display_name, team_tag, contained_objects, lua_script, texture_url, mesh_url, faction, actual_timestamp, token_timestamp or "")
         
         # Apply URL updates again after recreating bag
         update_urls_in_object(bag_obj)
@@ -370,7 +371,7 @@ class TTSGenerator:
         
         self.logger.info(f"Updated tts-card-boxes.json ({len(tts_boxes)} total teams, {len(tts_entries)} updated)")
     
-    def _load_token_bag(self, team_name: str, faction: str) -> dict | None:
+    def _load_token_bag(self, team_name: str, faction: str) -> tuple[dict, str] | tuple[None, None]:
         """
         Load token bag object from the team's tts/token folder if it exists.
         
@@ -379,16 +380,16 @@ class TTSGenerator:
             faction: Faction name (e.g., 'xenos', 'imperium')
         
         Returns:
-            Token bag object dict or None if no tokens exist
+            Tuple of (token bag object dict, token timestamp) or (None, None) if no tokens exist
         """
         if not faction:
-            return None
+            return None, None
         
         # Check if token JSON exists
         token_json_path = self.output_v2_dir / faction / team_name / 'tts' / 'token' / f'{team_name}-tokens.json'
         
         if not token_json_path.exists():
-            return None
+            return None, None
         
         try:
             with open(token_json_path, 'r', encoding='utf-8') as f:
@@ -398,8 +399,19 @@ class TTSGenerator:
             if 'ObjectStates' in token_data and len(token_data['ObjectStates']) > 0:
                 token_bag = token_data['ObjectStates'][0]
                 self.logger.info(f"Loaded token bag for {team_name} with {len(token_bag.get('ContainedObjects', []))} tokens")
-                return token_bag
+                
+                # Extract token timestamp from LuaScriptState
+                token_timestamp = ""
+                lua_script_state = token_bag.get('LuaScriptState', '')
+                if lua_script_state:
+                    try:
+                        state_data = json.loads(lua_script_state)
+                        token_timestamp = state_data.get('lastUpdate', '')
+                    except:
+                        pass
+                
+                return token_bag, token_timestamp
         except Exception as e:
             self.logger.warning(f"Failed to load token bag for {team_name}: {e}")
         
-        return None
+        return None, None

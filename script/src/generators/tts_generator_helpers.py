@@ -299,7 +299,7 @@ def create_deck(deck_nickname, team_tag, cards_data, starting_deck_id=1000, card
     }
 
 
-def create_bag(team_name, team_tag, contained_objects, lua_script, texture_url=None, mesh_url=None, faction=None, last_modified=None):
+def create_bag(team_name, team_tag, contained_objects, lua_script, texture_url=None, mesh_url=None, faction=None, last_modified=None, last_token_modified=None):
     """Create a TTS Custom_Model_Bag containing decks and cards"""
     
     # Get team folder name from tag
@@ -434,6 +434,8 @@ def create_bag(team_name, team_tag, contained_objects, lua_script, texture_url=N
     state_data = {"ml": memory_list, "rr": 270, "teamSlug": team_folder_name}
     if last_modified:
         state_data["lastCardUpdate"] = last_modified
+    if last_token_modified:
+        state_data["lastTokenUpdate"] = last_token_modified
     lua_script_state = json.dumps(state_data)
 
     return {
