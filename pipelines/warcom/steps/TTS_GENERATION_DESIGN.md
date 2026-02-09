@@ -5,30 +5,18 @@ System for generating Tabletop Simulator (TTS) JSON objects with incremental upd
 
 ## Architecture Components
 
-### 1. Core Generation System (`dev/tts-v2-generation/`)
+### 1. Core Generation System (`pipelines/warcom/steps/5_generate_tts_objects.py`)
 
-Located in development folder with modular component-based architecture:
-
-```
-dev/tts-v2-generation/
-├── components/
-│   ├── base.py           # TTSCard, TTSDeck, TTSToken, TTSTokenDispenser
-│   └── tagging.py        # TTSTagGenerator for card/token tags
-├── containers/
-│   └── cardbox.py        # TTSCardBox, TTSTokenBag (containers)
-├── tracking/
-│   └── change_detector.py  # ChangeDetector, ComponentRegistry
-└── generate_from_output_v2.py  # Reference implementation
-```
+All generation logic is self-contained in Step 5 to keep the pipeline independent.
 
 ### 2. Pipeline Integration (`pipelines/warcom/steps/`)
 
 Step 5 integrates the core system into the warcom pipeline:
 - **Input**: `output/{team}/cards/**/*.jpg` (extracted cards from steps 1-3)
 - **Output**: 
-  - `tts_objects/{team}/cardbox/*.json` (nested TTS objects)
-  - `tts_objects/.tts-metadata.json` (full hierarchical tracking)
-  - `tts_objects/.tts-manifest.json` (lightweight for TTS Lua)
+  - `output/{team}/tts/cardbox/*.json` (nested TTS objects)
+  - `output/.tts-metadata.json` (full hierarchical tracking)
+  - `output/.tts-manifest.json` (lightweight for TTS Lua)
 
 ## Metadata Structure
 
@@ -41,19 +29,19 @@ Complete hierarchical structure with ALL components for repository tracking:
   "kommandos": {
     "cardbox": {
       "guid": "abc123",
-      "url": "https://raw.githubusercontent.com/.../cardbox.json",
+      "url": "https://raw.githubusercontent.com/.../output/{team}/tts/cardbox.json",
       "component_type": "cardbox",
       "content_hash": "...",
       "last_modified": "2026-02-03T21:00:00+00:00",
       "datacards": {
         "guid": "def456",
-        "url": "https://raw.githubusercontent.com/.../datacards.json",
+        "url": "https://raw.githubusercontent.com/.../output/{team}/tts/cardbox/decks/{team}-datacards.json",
         "component_type": "deck",
         "content_hash": "...",
         "last_modified": "2026-02-03T21:00:00+00:00",
         "kommando-boy": {
           "guid": "ghi789",
-          "url": "https://raw.githubusercontent.com/.../kommando-boy.json",
+          "url": "https://raw.githubusercontent.com/.../output/{team}/tts/cardbox/decks/datacards/{team}-kommando-boy.json",
           "component_type": "card",
           "content_hash": "...",
           "last_modified": "2026-02-03T21:00:00+00:00"
@@ -61,19 +49,19 @@ Complete hierarchical structure with ALL components for repository tracking:
       },
       "token-bag": {
         "guid": "jkl012",
-        "url": "https://raw.githubusercontent.com/.../token-bag.json",
+        "url": "https://raw.githubusercontent.com/.../output/{team}/tts/cardbox/token-bag/token-bag.json",
         "component_type": "token_bag",
         "content_hash": "...",
         "last_modified": "2026-02-03T21:00:00+00:00",
         "breach": {
           "guid": "mno345",
-          "url": "https://raw.githubusercontent.com/.../breach.json",
+          "url": "https://raw.githubusercontent.com/.../output/{team}/tts/cardbox/token-bag/breach/{team}-breach.json",
           "component_type": "token_dispenser",
           "content_hash": "...",
           "last_modified": "2026-02-03T21:00:00+00:00",
           "breach": {
             "guid": "pqr678",
-            "url": "https://raw.githubusercontent.com/.../breach/breach.json",
+              "url": "https://raw.githubusercontent.com/.../output/{team}/tts/cardbox/token-bag/breach/{team}-breach-token.json",
             "component_type": "token",
             "content_hash": "...",
             "last_modified": "2026-02-03T21:00:00+00:00"
@@ -92,7 +80,6 @@ Complete hierarchical structure with ALL components for repository tracking:
 - **No `file_size`**: Removed as unnecessary overhead
 
 ### Lightweight Manifest (`.tts-manifest.json`)
-
 Simplified structure for TTS Lua scripts (prevents choking on large JSON):
 
 ```json
@@ -100,14 +87,14 @@ Simplified structure for TTS Lua scripts (prevents choking on large JSON):
   "kommandos": {
     "cardbox": {
       "guid": "abc123",
-      "url": "https://raw.githubusercontent.com/.../cardbox.json",
+      "url": "https://raw.githubusercontent.com/.../output/{team}/tts/cardbox.json",
       "content_hash": "...",
       "last_modified": "2026-02-03T21:00:00+00:00"
     },
     "decks": {
       "datacards": {
         "guid": "def456",
-        "url": "https://raw.githubusercontent.com/.../datacards.json",
+        "url": "https://raw.githubusercontent.com/.../output/{team}/tts/cardbox/decks/{team}-datacards.json",
         "content_hash": "...",
         "last_modified": "2026-02-03T21:00:00+00:00"
       },
@@ -120,7 +107,7 @@ Simplified structure for TTS Lua scripts (prevents choking on large JSON):
     },
     "token_bag": {
       "guid": "jkl012",
-      "url": "https://raw.githubusercontent.com/.../token-bag.json",
+      "url": "https://raw.githubusercontent.com/.../output/{team}/tts/cardbox/token-bag/token-bag.json",
       "content_hash": "...",
       "last_modified": "2026-02-03T21:00:00+00:00"
     }
@@ -210,29 +197,28 @@ This ensures TTS recognizes objects across updates (no duplicate spawning).
 
 ### TTS Objects Output
 ```
-tts_objects/
+output/
 ├── .tts-metadata.json          # Full hierarchical metadata
 ├── .tts-manifest.json          # Lightweight summary for Lua
 └── kommandos/
+  └── tts/
+    ├── cardbox.json        # Container with all decks + token bag
     └── cardbox/
-        ├── cardbox.json        # Container with all decks + token bag
-        ├── datacards/
-        │   ├── datacards.json  # Deck object
-        │   └── kommando-boy.json
-        ├── equipment/
-        │   └── equipment.json
-        └── token-bag/
-            ├── token-bag.json  # Bag container
-            └── breach/
-                ├── breach.json # Dispenser
-                └── breach/
-                    └── breach.json  # Token
+      ├── decks/
+      │   ├── kommandos-datacards.json  # Deck object
+      │   └── datacards/
+      │       └── kommandos-kommando-boy.json
+      └── token-bag/
+        ├── token-bag.json  # Bag container
+        └── breach/
+          ├── kommandos-breach.json # Dispenser
+          └── kommandos-breach-token.json  # Token
 ```
 
 ### GitHub Raw URLs
 All `url` fields point to GitHub raw URLs for the component's JSON file:
 ```
-https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/tts_objects/kommandos/cardbox/datacards/kommando-boy.json
+https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/kommandos/tts/cardbox/decks/datacards/kommandos-kommando-boy.json
 ```
 
 ## Current Status
@@ -248,7 +234,7 @@ https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/tts_objects/komma
 
 ### 🚧 In Progress
 - Token extraction (Step 4 in pipeline)
-- Token bag generation (commented out in Step 5 until tokens ready)
+- Token bag generation (Step 5 integration, working on naming and mesh polish)
 
 ### 📋 TODO
 - Test with multiple teams
@@ -271,8 +257,6 @@ python pipelines/warcom/steps/5_generate_tts_objects.py --teams kommandos pathfi
 # Force regeneration (ignore change detection)
 python pipelines/warcom/steps/5_generate_tts_objects.py --force
 
-# Custom output directory
-python pipelines/warcom/steps/5_generate_tts_objects.py --output-dir my_tts_output
 ```
 
 ### TTS Lua Integration (Planned)
@@ -280,7 +264,7 @@ python pipelines/warcom/steps/5_generate_tts_objects.py --output-dir my_tts_outp
 ```lua
 -- In TTS mod, fetch manifest periodically
 manifest = JSON.decode(WebRequest.get(
-  "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/tts_objects/.tts-manifest.json"
+  "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/.tts-manifest.json"
 ))
 
 -- Check for deck updates

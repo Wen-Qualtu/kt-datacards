@@ -12,15 +12,19 @@ Output: layers/warcom/extracted/{team}/tokens/*.png
 
 import argparse
 import json
+import logging
 import shutil
 import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
-# Add kt-app tools to path to reuse TokenExtractor
-sys.path.insert(0, str(Path(__file__).parent.parent.parent / 'kt-app' / 'tools'))
+# Add tools directory to path to reuse TokenExtractor
+sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent / 'tools'))
 from extract_tokens import TokenExtractor
+
+
+logger = logging.getLogger(__name__)
 
 
 def find_token_guide_cards(team_dir: Path) -> List[Path]:
@@ -103,7 +107,18 @@ def extract_tokens_for_team(
         Dict with extraction statistics
     """
     team_dir = extracted_dir / team_name
-    
+    tokens_output = output_dir / team_name / 'tokens'
+
+    existing_tokens = sorted(tokens_output.glob('*.png')) if tokens_output.exists() else []
+    if existing_tokens:
+        return {
+            'team': team_name,
+            'status': 'success',
+            'tokens_extracted': len(existing_tokens),
+            'output_dir': str(tokens_output),
+            'reason': 'tokens already extracted'
+        }
+
     # Find token guide cards
     token_guide_cards = find_token_guide_cards(team_dir)
     
@@ -126,7 +141,6 @@ def extract_tokens_for_team(
         }
     
     # Setup output directory
-    tokens_output = output_dir / team_name / 'tokens'
     tokens_output.mkdir(parents=True, exist_ok=True)
     
     # Initialize extractor
@@ -134,15 +148,15 @@ def extract_tokens_for_team(
     
     all_tokens = []
     
-    print(f"\n{'='*60}")
-    print(f"Processing: {team_name}")
-    print(f"{'='*60}")
-    print(f"  Token guide cards: {len(token_guide_cards)}")
-    print(f"  PDF: {pdf_path.name}")
+    logger.info("=" * 60)
+    logger.info("Processing: %s", team_name)
+    logger.info("=" * 60)
+    logger.info("  Token guide cards: %d", len(token_guide_cards))
+    logger.info("  PDF: %s", pdf_path.name)
     
     # Process each token guide card
     for card_idx, card_path in enumerate(token_guide_cards, 1):
-        print(f"\n  Processing card {card_idx}/{len(token_guide_cards)}: {card_path.name}")
+        logger.info("  Processing card %d/%d: %s", card_idx, len(token_guide_cards), card_path.name)
         
         try:
             # We need to find which PDF page this card came from
@@ -161,12 +175,12 @@ def extract_tokens_for_team(
             
             if extracted:
                 all_tokens.extend(extracted)
-                print(f"    ✓ Extracted {len(extracted)} tokens")
+                logger.info("    ✓ Extracted %d tokens", len(extracted))
             else:
-                print(f"    ⚠ No tokens extracted")
+                logger.warning("    ⚠ No tokens extracted")
                 
         except Exception as e:
-            print(f"    ✗ Error extracting tokens: {e}")
+            logger.error("    ✗ Error extracting tokens: %s", e)
             if debug:
                 import traceback
                 traceback.print_exc()
@@ -186,8 +200,8 @@ def extract_tokens_for_team(
     with open(metadata_file, 'w', encoding='utf-8') as f:
         json.dump(metadata, f, indent=2)
     
-    print(f"\n✓ Total tokens extracted: {len(all_tokens)}")
-    print(f"  Saved to: {tokens_output}")
+    logger.info("✓ Total tokens extracted: %d", len(all_tokens))
+    logger.info("  Saved to: %s", tokens_output)
     
     return {
         'team': team_name,
@@ -224,11 +238,11 @@ def run(
     output_path = Path(output_dir)
     
     if not extracted_path.exists():
-        print(f"✗ Extracted directory not found: {extracted_path}")
+        logger.error("Extracted directory not found: %s", extracted_path)
         return {'status': 'failed', 'reason': 'extracted directory not found'}
     
     if not archive_path.exists():
-        print(f"✗ Archive directory not found: {archive_path}")
+        logger.error("Archive directory not found: %s", archive_path)
         return {'status': 'failed', 'reason': 'archive directory not found'}
     
     # Find teams to process
@@ -238,18 +252,18 @@ def run(
         team_dirs = [d for d in extracted_path.iterdir() if d.is_dir()]
     
     if not team_dirs:
-        print(f"✗ No teams found in {extracted_path}")
+        logger.error("No teams found in %s", extracted_path)
         return {'status': 'failed', 'reason': 'no teams found'}
     
-    print(f"\n{'='*60}")
-    print(f"Token Extraction (Step 3)")
-    print(f"{'='*60}")
-    print(f"Extracted dir: {extracted_path}")
-    print(f"Archive dir: {archive_path}")
-    print(f"Output dir: {output_path}")
-    print(f"Teams: {len(team_dirs)}")
-    print(f"Workers: {workers}")
-    print(f"{'='*60}")
+    logger.info("=" * 60)
+    logger.info("Token Extraction (Step 4)")
+    logger.info("=" * 60)
+    logger.info("Extracted dir: %s", extracted_path)
+    logger.info("Archive dir: %s", archive_path)
+    logger.info("Output dir: %s", output_path)
+    logger.info("Teams: %d", len(team_dirs))
+    logger.info("Workers: %s", workers)
+    logger.info("=" * 60)
     
     results = []
     
@@ -285,7 +299,7 @@ def run(
                     result = future.result()
                     results.append(result)
                 except Exception as e:
-                    print(f"\n✗ Error processing {team_name}: {e}")
+                    logger.error("Error processing %s: %s", team_name, e)
                     results.append({
                         'team': team_name,
                         'status': 'failed',
@@ -299,24 +313,24 @@ def run(
     skipped = [r for r in results if r.get('status') == 'skipped']
     total_tokens = sum(r.get('tokens_extracted', 0) for r in results)
     
-    print(f"\n{'='*60}")
-    print(f"Token Extraction Complete")
-    print(f"{'='*60}")
-    print(f"  Teams processed: {len(results)}")
-    print(f"  Successful: {len(successful)}")
-    print(f"  Failed: {len(failed)}")
-    print(f"  Skipped: {len(skipped)}")
-    print(f"  Total tokens: {total_tokens}")
+    logger.info("=" * 60)
+    logger.info("Token Extraction Complete")
+    logger.info("=" * 60)
+    logger.info("  Teams processed: %d", len(results))
+    logger.info("  Successful: %d", len(successful))
+    logger.info("  Failed: %d", len(failed))
+    logger.info("  Skipped: %d", len(skipped))
+    logger.info("  Total tokens: %d", total_tokens)
     
     if failed:
-        print(f"\nFailed teams:")
+        logger.error("Failed teams:")
         for r in failed:
-            print(f"  - {r['team']}: {r.get('reason', 'unknown error')}")
+            logger.error("  - %s: %s", r['team'], r.get('reason', 'unknown error'))
     
     if skipped:
-        print(f"\nSkipped teams:")
+        logger.warning("Skipped teams:")
         for r in skipped:
-            print(f"  - {r['team']}: {r.get('reason', 'unknown reason')}")
+            logger.warning("  - %s: %s", r['team'], r.get('reason', 'unknown reason'))
     
     return {
         'status': 'success',
@@ -343,9 +357,14 @@ if __name__ == '__main__':
                         help='Number of concurrent workers (default: 1)')
     parser.add_argument('--debug', action='store_true',
                         help='Save debug images')
+    parser.add_argument('--log-level', default='INFO',
+                        choices=['DEBUG', 'INFO', 'WARNING', 'ERROR'],
+                        help='Logging level (default: INFO)')
     
     args = parser.parse_args()
     
+    logging.basicConfig(level=getattr(logging, args.log_level), format='%(levelname)s: %(message)s')
+
     result = run(
         extracted_dir=args.extracted_dir,
         archive_dir=args.archive_dir,

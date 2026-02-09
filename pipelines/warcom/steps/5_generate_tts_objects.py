@@ -24,11 +24,16 @@ Note: This file is self-contained - all TTS generation code is inlined to keep
 import argparse
 import json
 import hashlib
+import logging
+import re
 from pathlib import Path
 from datetime import datetime, timezone
 from typing import Dict, List, Optional, Any, Tuple
 from dataclasses import dataclass
 from abc import ABC, abstractmethod
+
+
+logger = logging.getLogger(__name__)
 
 
 # ===================================================================
@@ -184,8 +189,9 @@ class ChangeDetector:
 class ComponentRegistry:
     """Registry of generated components with their metadata."""
     
-    def __init__(self, change_detector: ChangeDetector):
+    def __init__(self, change_detector: ChangeDetector, force_update: bool = False):
         self.detector = change_detector
+        self.force_update = force_update
         self.generated_components: Dict[str, ComponentMetadata] = {}
     
     def register(
@@ -200,7 +206,7 @@ class ComponentRegistry:
         """Register a component for generation."""
         changed, existing_meta = self.detector.has_changed(component_path, content, component_type)
         
-        if changed or force_update:
+        if changed or force_update or self.force_update:
             metadata = self.detector.update_metadata(component_path, content, component_type, guid, url)
             self.generated_components[component_path] = metadata
             return True, metadata
@@ -232,7 +238,7 @@ class TTSTagGenerator:
     }
     
     @classmethod
-    def get_card_tags(cls, team_name: str, card_type: str, has_back: bool = True) -> List[str]:
+    def get_card_tags(card_type_class, team_name: str, card_type: str, has_back: bool = True) -> List[str]:
         """Generate tags for a card."""
         tags = []
         
@@ -241,7 +247,7 @@ class TTSTagGenerator:
         tags.append(f"KT{team_pascal}")
         
         # Card type tag
-        type_tag = cls.CARD_TYPE_TAGS.get(card_type)
+        type_tag = card_type_class.CARD_TYPE_TAGS.get(card_type)
         if type_tag:
             tags.append(type_tag)
         
@@ -253,6 +259,106 @@ class TTSTagGenerator:
             tags.append("KTCardDoubleSided")
         
         return tags
+
+
+def load_text_file(file_path: Path) -> str:
+    """Load text from a file, returning an empty string if missing."""
+    if not file_path.exists():
+        logger.warning("Missing script file: %s", file_path)
+        return ""
+    return file_path.read_text(encoding="utf-8")
+
+
+def normalize_token_display_name(text: str) -> str:
+    """Normalize token display names from OCR text."""
+    cleaned = text.strip()
+    if not cleaned:
+        return ""
+    cleaned = re.sub(r"\s+token$", "", cleaned, flags=re.IGNORECASE).strip()
+    cleaned = cleaned.replace("\n", " ")
+    return cleaned
+
+
+def slugify(value: str) -> str:
+    """Create a stable slug for filenames and metadata keys."""
+    normalized = re.sub(r"[^a-zA-Z0-9]+", "-", value.strip().lower())
+    normalized = re.sub(r"-+", "-", normalized).strip("-")
+    return normalized or "token"
+
+
+def build_token_name_map(tokens_metadata_path: Path) -> Dict[str, str]:
+    """Map token image filenames to display names using extraction metadata."""
+    if not tokens_metadata_path.exists():
+        return {}
+
+    try:
+        data = json.loads(tokens_metadata_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        logger.warning("Failed to parse token metadata %s: %s", tokens_metadata_path, exc)
+        return {}
+
+    tokens = data.get("tokens", [])
+    text_elements = data.get("text_elements", [])
+    tokens_by_card: Dict[str, List[Dict[str, Any]]] = {}
+    text_by_card: Dict[str, List[Dict[str, Any]]] = {}
+
+    for token in tokens:
+        source_card = token.get("source_card") or "_"
+        tokens_by_card.setdefault(source_card, []).append(token)
+
+    for text_element in text_elements:
+        source_card = text_element.get("source_card") or "_"
+        text_by_card.setdefault(source_card, []).append(text_element)
+
+    name_map: Dict[str, str] = {}
+    for source_card, token_list in tokens_by_card.items():
+        text_list = text_by_card.get(source_card, [])
+        token_list_sorted = sorted(
+            token_list,
+            key=lambda token_item: (
+                token_item.get("bbox", {}).get("y", 0),
+                token_item.get("bbox", {}).get("x", 0)
+            )
+        )
+        text_list_sorted = sorted(
+            text_list,
+            key=lambda text_item: (
+                text_item.get("bbox", {}).get("y", 0),
+                text_item.get("bbox", {}).get("x", 0)
+            )
+        )
+
+        for index, token_item in enumerate(token_list_sorted):
+            filename = token_item.get("filename")
+            if not filename:
+                continue
+            display_name = ""
+            if index < len(text_list_sorted):
+                display_name = normalize_token_display_name(text_list_sorted[index].get("text", ""))
+            if display_name:
+                name_map[filename] = display_name
+
+    return name_map
+
+
+def find_tokens_dir(team_name: str, workspace_root: Path) -> Optional[Path]:
+    """Locate the tokens directory for a team if it exists."""
+    output_tokens = workspace_root / "output" / team_name / "tokens"
+    if output_tokens.exists():
+        return output_tokens
+
+    extracted_tokens = workspace_root / "layers" / "warcom" / "extracted" / team_name / "tokens"
+    if extracted_tokens.exists():
+        return extracted_tokens
+
+    return None
+
+
+def build_raw_url(file_path: Path, workspace_root: Path) -> str:
+    """Build a GitHub raw URL for a local file path."""
+    repo_base = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main"
+    rel_path = file_path.relative_to(workspace_root).as_posix()
+    return f"{repo_base}/{rel_path}"
 
 
 # ===================================================================
@@ -325,12 +431,21 @@ class TTSComponent(ABC):
         if len(path_parts) == 3 and path_parts[2] == "_self":
             # team.cardbox._self -> output/{team}/tts/cardbox.json
             return output_dir / "cardbox.json"
+        elif len(path_parts) == 4 and path_parts[2] == "token-bag" and path_parts[3] == "_self":
+            # team.cardbox.token-bag._self -> output/{team}/tts/cardbox/token-bag/token-bag.json
+            return output_dir / "cardbox" / "token-bag" / "token-bag.json"
         elif len(path_parts) == 4 and path_parts[3] == "_self":
             # team.cardbox.TYPE._self -> output/{team}/tts/cardbox/decks/{team}-TYPE.json
             return output_dir / "cardbox" / "decks" / f"{team_name}-{path_parts[2]}.json"
+        elif len(path_parts) == 5 and path_parts[2] == "token-bag" and path_parts[4] == "_self":
+            # team.cardbox.token-bag.NAME._self -> output/{team}/tts/cardbox/token-bag/NAME/{team}-NAME.json
+            return output_dir / "cardbox" / "token-bag" / path_parts[3] / f"{team_name}-{path_parts[3]}.json"
         elif len(path_parts) == 4:
             # team.cardbox.TYPE.NAME -> output/{team}/tts/cardbox/decks/TYPE/{team}-NAME.json
             return output_dir / "cardbox" / "decks" / path_parts[2] / f"{team_name}-{path_parts[3]}.json"
+        elif len(path_parts) == 5 and path_parts[2] == "token-bag":
+            # team.cardbox.token-bag.NAME.TOKEN -> output/{team}/tts/cardbox/token-bag/NAME/{team}-TOKEN.json
+            return output_dir / "cardbox" / "token-bag" / path_parts[3] / f"{team_name}-{path_parts[4]}.json"
         elif len(path_parts) == 3:
             # team.cardbox.NAME (single card) -> output/{team}/tts/cardbox/{team}-NAME.json
             return output_dir / "cardbox" / f"{team_name}-{path_parts[2]}.json"
@@ -498,6 +613,270 @@ class TTSDeck(TTSComponent):
         return hash_hex[:6]
 
 
+class TTSToken(TTSComponent):
+    """TTS Token component"""
+
+    def __init__(
+        self,
+        registry: ComponentRegistry,
+        team_name: str,
+        token_name: str,
+        image_url: str,
+        tags: Optional[List[str]] = None
+    ):
+        super().__init__(registry)
+        self.team_name = team_name
+        self.token_name = token_name
+        self.image_url = image_url
+        self.tags = tags or ["KTUIStackable", "KTUIToken"]
+
+    def get_component_path(self) -> str:
+        token_slug = slugify(self.token_name)
+        return f"{self.team_name}.cardbox.token-bag.{token_slug}.{token_slug}-token"
+
+    def get_component_type(self) -> str:
+        return "token"
+
+    def generate(self) -> Dict[str, Any]:
+        return {
+            "GUID": self._generate_guid(),
+            "Name": "Custom_Token",
+            "Transform": {
+                "posX": 0.0,
+                "posY": 1.63,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 0.0,
+                "rotZ": 0.0,
+                "scaleX": 0.21,
+                "scaleY": 1.0,
+                "scaleZ": 0.21
+            },
+            "Nickname": self.token_name,
+            "Description": self.token_name,
+            "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0
+            },
+            "Tags": self.tags,
+            "Locked": False,
+            "Grid": True,
+            "Snap": False,
+            "Autoraise": True,
+            "Sticky": False,
+            "Tooltip": False,
+            "Hands": False,
+            "CustomImage": {
+                "ImageURL": self.image_url,
+                "ImageSecondaryURL": "",
+                "ImageScalar": 1.0,
+                "WidthScale": 0.0,
+                "CustomToken": {
+                    "Thickness": 0.1,
+                    "MergeDistancePixels": 11.0,
+                    "StandUp": False,
+                    "Stackable": False
+                }
+            }
+        }
+
+    def _generate_guid(self) -> str:
+        stored_guid = self.registry.detector.get_guid(self.get_component_path())
+        if stored_guid:
+            return stored_guid
+
+        hash_input = f"{self.team_name}_{self.token_name}_token".encode("utf-8")
+        hash_hex = hashlib.md5(hash_input).hexdigest()
+        return hash_hex[:6]
+
+
+class TTSTokenDispenser(TTSComponent):
+    """TTS Token Dispenser (infinite bag) component"""
+
+    def __init__(
+        self,
+        registry: ComponentRegistry,
+        team_name: str,
+        dispenser_name: str,
+        token: TTSToken,
+        mesh_url: str
+    ):
+        super().__init__(registry)
+        self.team_name = team_name
+        self.dispenser_name = dispenser_name
+        self.token = token
+        self.mesh_url = mesh_url
+
+    def get_component_path(self) -> str:
+        dispenser_slug = slugify(self.dispenser_name)
+        return f"{self.team_name}.cardbox.token-bag.{dispenser_slug}._self"
+
+    def get_component_type(self) -> str:
+        return "token_dispenser"
+
+    def generate(self) -> Dict[str, Any]:
+        token_content, _ = self.token.build()
+        locked_child = json.loads(json.dumps(token_content))
+        locked_child["Locked"] = True
+        locked_child["Transform"] = {
+            "posX": 0.0,
+            "posY": 0.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 0.0,
+            "rotZ": 0.0,
+            "scaleX": token_content["Transform"]["scaleX"],
+            "scaleY": token_content["Transform"]["scaleY"],
+            "scaleZ": token_content["Transform"]["scaleZ"]
+        }
+
+        return {
+            "GUID": self._generate_guid(),
+            "Name": "Custom_Model_Infinite_Bag",
+            "Transform": {
+                "posX": 0.0,
+                "posY": 1.03,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 270.0,
+                "rotZ": 0.0,
+                "scaleX": 1.85,
+                "scaleY": 0.1,
+                "scaleZ": 1.78
+            },
+            "Nickname": self.dispenser_name,
+            "Description": f"Infinite {self.dispenser_name} tokens",
+            "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 0.0
+            },
+            "Tags": [f"_{self.team_name}_tokens"],
+            "Locked": False,
+            "Grid": True,
+            "Snap": True,
+            "Autoraise": True,
+            "Sticky": True,
+            "Tooltip": True,
+            "Hands": False,
+            "CustomMesh": {
+                "MeshURL": self.mesh_url,
+                "DiffuseURL": "",
+                "NormalURL": "",
+                "ColliderURL": "",
+                "Convex": True,
+                "MaterialIndex": 0,
+                "TypeIndex": 7,
+                "CastShadows": True
+            },
+            "Bag": {
+                "Order": 0
+            },
+            "ContainedObjects": [token_content],
+            "ChildObjects": [locked_child]
+        }
+
+    def _generate_guid(self) -> str:
+        stored_guid = self.registry.detector.get_guid(self.get_component_path())
+        if stored_guid:
+            return stored_guid
+
+        hash_input = f"{self.team_name}_{self.dispenser_name}_dispenser".encode("utf-8")
+        hash_hex = hashlib.md5(hash_input).hexdigest()
+        return hash_hex[:6]
+
+
+class TTSTokenBag(TTSComponent):
+    """TTS Token Bag container component"""
+
+    def __init__(
+        self,
+        registry: ComponentRegistry,
+        team_name: str,
+        dispensers: List[TTSTokenDispenser],
+        mesh_url: str,
+        lua_script: str
+    ):
+        super().__init__(registry)
+        self.team_name = team_name
+        self.dispensers = dispensers
+        self.mesh_url = mesh_url
+        self.lua_script = lua_script
+
+    def get_component_path(self) -> str:
+        return f"{self.team_name}.cardbox.token-bag._self"
+
+    def get_component_type(self) -> str:
+        return "token_bag"
+
+    def generate(self) -> Dict[str, Any]:
+        dispenser_objects = []
+        for dispenser in self.dispensers:
+            dispenser_content, _ = dispenser.build()
+            dispenser_objects.append(dispenser_content)
+
+        return {
+            "GUID": self._generate_guid(),
+            "Name": "Custom_Model_Bag",
+            "Transform": {
+                "posX": 0.0,
+                "posY": 1.01,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 270.0,
+                "rotZ": 0.0,
+                "scaleX": 1.47,
+                "scaleY": 0.1,
+                "scaleZ": 1.47
+            },
+            "Nickname": f"{self.team_name.replace('-', ' ').title()} tokens",
+            "Description": "If errors pop up, just wait for few sec and try again",
+            "GMNotes": f"_{self.team_name}_tokens",
+            "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 0.0
+            },
+            "Tags": [f"_{self.team_name}"],
+            "Locked": False,
+            "Grid": True,
+            "Snap": True,
+            "Autoraise": True,
+            "Sticky": True,
+            "Tooltip": True,
+            "Hands": False,
+            "Number": 0,
+            "CustomMesh": {
+                "MeshURL": self.mesh_url,
+                "DiffuseURL": "",
+                "NormalURL": "",
+                "ColliderURL": "",
+                "Convex": True,
+                "MaterialIndex": 0,
+                "TypeIndex": 6,
+                "CastShadows": True
+            },
+            "Bag": {
+                "Order": 0
+            },
+            "LuaScript": self.lua_script,
+            "LuaScriptState": "",
+            "ContainedObjects": dispenser_objects
+        }
+
+    def _generate_guid(self) -> str:
+        stored_guid = self.registry.detector.get_guid(self.get_component_path())
+        if stored_guid:
+            return stored_guid
+
+        hash_input = f"{self.team_name}_token_bag".encode("utf-8")
+        hash_hex = hashlib.md5(hash_input).hexdigest()
+        return hash_hex[:6]
+
+
 class TTSCardBox(TTSComponent):
     """Complete TTS card box containing all decks for a team."""
     
@@ -565,6 +944,21 @@ class TTSCardBox(TTSComponent):
                         for card_key, card_data in value.items():
                             if card_key not in metadata_fields and isinstance(card_data, dict) and "last_modified" in card_data:
                                 card_timestamps.append(card_data["last_modified"])
+
+                if "token-bag" in cardbox_meta and isinstance(cardbox_meta["token-bag"], dict):
+                    token_bag_meta = cardbox_meta["token-bag"]
+                    if "last_modified" in token_bag_meta:
+                        token_timestamps.append(token_bag_meta["last_modified"])
+                    for dispenser_key, dispenser_data in token_bag_meta.items():
+                        if dispenser_key in metadata_fields:
+                            continue
+                        if isinstance(dispenser_data, dict) and "last_modified" in dispenser_data:
+                            token_timestamps.append(dispenser_data["last_modified"])
+                        for token_key, token_data in dispenser_data.items():
+                            if token_key in metadata_fields:
+                                continue
+                            if isinstance(token_data, dict) and "last_modified" in token_data:
+                                token_timestamps.append(token_data["last_modified"])
         
         card_timestamp = max(card_timestamps) if card_timestamps else ""
         token_timestamp = max(token_timestamps) if token_timestamps else ""
@@ -801,6 +1195,34 @@ def organize_cards_by_type(cards_dir: Path) -> Dict[str, List[str]]:
     return cards_by_type
 
 
+def register_lua_script_component(
+    team_name: str,
+    registry: ComponentRegistry,
+    script_text: str,
+    component_path: str,
+    script_output_path: Path,
+    workspace_root: Path
+) -> bool:
+    """Register a Lua script as a metadata component and write it to disk."""
+    content = {"lua_script": script_text}
+    script_url = build_raw_url(script_output_path, workspace_root)
+
+    was_updated, _ = registry.register(
+        component_path,
+        content,
+        "lua_script",
+        guid="",
+        url=script_url,
+        force_update=False
+    )
+
+    if was_updated or not script_output_path.exists():
+        script_output_path.parent.mkdir(parents=True, exist_ok=True)
+        script_output_path.write_text(script_text, encoding="utf-8")
+
+    return was_updated
+
+
 def generate_team_tts(team_dir: Path, output_dir: Path, registry: ComponentRegistry) -> bool:
     """
     Generate TTS objects for a single team.
@@ -813,17 +1235,18 @@ def generate_team_tts(team_dir: Path, output_dir: Path, registry: ComponentRegis
     Returns:
         True if any components were updated
     """
+    workspace_root = Path(__file__).parent.parent.parent.parent
     team_meta = get_team_metadata(team_dir)
     team_name = team_meta['team_name']
     cards_dir = team_dir / 'cards'
-    
-    print(f"\nProcessing {team_name}...")
+
+    logger.info("Processing %s...", team_name)
     
     # Organize cards by type
     cards_by_type = organize_cards_by_type(cards_dir)
     
     if not cards_by_type:
-        print(f"  ⚠ No cards found for {team_name}")
+        logger.warning("No cards found for %s", team_name)
         return False
     
     # Map card types to deck types
@@ -859,7 +1282,7 @@ def generate_team_tts(team_dir: Path, output_dir: Path, registry: ComponentRegis
                     tags=TTSTagGenerator.get_card_tags(team_name, deck_type, bool(images['back']))
                 )
                 single_cards.append(card)
-                print(f"  ✓ Created single card: {card_name}")
+                logger.info("Created single card: %s", card_name)
             continue
         
         # Create deck for this type
@@ -868,7 +1291,7 @@ def generate_team_tts(team_dir: Path, output_dir: Path, registry: ComponentRegis
             images = find_card_images(cards_dir, card_type, f"{team_name}-{card_name}")
             
             if not images['front']:
-                print(f"  ⚠ Missing front image for {card_name}")
+                logger.warning("Missing front image for %s", card_name)
                 continue
             
             card = TTSCard(
@@ -891,23 +1314,60 @@ def generate_team_tts(team_dir: Path, output_dir: Path, registry: ComponentRegis
                 cards=cards_in_deck
             )
             all_decks.append(deck)
-            print(f"  ✓ Created {deck_type} deck with {len(cards_in_deck)} cards")
+            logger.info("Created %s deck with %d cards", deck_type, len(cards_in_deck))
     
-    # TODO: Token bag generation (commented out until tokens are extracted)
-    # token_bag = None
-    # tokens_dir = team_dir / 'tokens'
-    # if tokens_dir.exists():
-    #     dispensers = []
-    #     for token_path in tokens_dir.glob('*.png'):
-    #         token_name = token_path.stem
-    #         # Create token dispenser...
-    #     if dispensers:
-    #         token_bag = TTSTokenBag(
-    #             team_name=team_name,
-    #             dispensers=dispensers,
-    #             registry=registry
-    #         )
-    #         print(f"  ✓ Created token bag with {len(dispensers)} dispensers")
+    token_bag = None
+    tokens_dir = find_tokens_dir(team_name, workspace_root)
+    if tokens_dir:
+        token_images = sorted(tokens_dir.glob('*.png'))
+        if token_images:
+            token_name_map = build_token_name_map(tokens_dir / 'tokens_metadata.json')
+            dispenser_mesh_path = workspace_root / "config" / "defaults" / "tts-token" / "square-bag-mesh.obj"
+            dispenser_mesh_url = build_raw_url(dispenser_mesh_path, workspace_root)
+            token_bag_script_path = workspace_root / "config" / "defaults" / "tts-token" / "token-bag-script.lua"
+            token_bag_script = load_text_file(token_bag_script_path)
+
+            dispensers = []
+            seen_slugs = set()
+
+            for token_path in token_images:
+                display_name = token_name_map.get(token_path.name, "")
+                if not display_name:
+                    display_name = token_path.stem.replace("_", " ").replace("-", " ").title()
+
+                token_slug = slugify(display_name)
+                if token_slug in seen_slugs:
+                    logger.warning("Duplicate token name '%s' in %s", display_name, tokens_dir)
+                    continue
+                seen_slugs.add(token_slug)
+
+                image_url = build_raw_url(token_path, workspace_root)
+                token = TTSToken(
+                    registry=registry,
+                    team_name=team_name,
+                    token_name=display_name,
+                    image_url=image_url
+                )
+                dispenser = TTSTokenDispenser(
+                    registry=registry,
+                    team_name=team_name,
+                    dispenser_name=display_name,
+                    token=token,
+                    mesh_url=dispenser_mesh_url
+                )
+                dispensers.append(dispenser)
+
+            if dispensers:
+                token_bag_mesh_path = workspace_root / "config" / "defaults" / "tts-token" / "square-bag-mesh.obj"
+                token_bag_mesh_url = build_raw_url(token_bag_mesh_path, workspace_root)
+                token_bag = TTSTokenBag(
+                    registry=registry,
+                    team_name=team_name,
+                    dispensers=dispensers,
+                    mesh_url=token_bag_mesh_url,
+                    lua_script=token_bag_script
+                )
+                logger.info("Created token bag with %d dispensers", len(dispensers))
     
     # Create cardbox (container for all decks and token bag)
     # TODO: Extract proper faction and display name from metadata
@@ -917,6 +1377,9 @@ def generate_team_tts(team_dir: Path, output_dir: Path, registry: ComponentRegis
     # Default box mesh/texture (can be customized per team later)
     mesh_url = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/layers/kt-app/assets/cardbox-mesh.obj"
     texture_url = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/layers/kt-app/assets/cardbox-texture.png"
+
+    cardbox_script_path = workspace_root / "config" / "defaults" / "tts-script" / "tts-update-rules-in-box-script.lua"
+    cardbox_script = load_text_file(cardbox_script_path)
     
     cardbox = TTSCardBox(
         registry=registry,
@@ -925,22 +1388,43 @@ def generate_team_tts(team_dir: Path, output_dir: Path, registry: ComponentRegis
         faction=faction,
         decks=all_decks,
         single_cards=single_cards,
-        token_bag=None,  # Will be added when tokens are ready
+        token_bag=token_bag,
         mesh_url=mesh_url,
-        texture_url=texture_url
+        texture_url=texture_url,
+        lua_script=cardbox_script
     )
-    
+
+    # Register Lua script components for metadata tracking
+    register_lua_script_component(
+        team_name=team_name,
+        registry=registry,
+        script_text=cardbox_script,
+        component_path=f"{team_name}.cardbox.lua-script",
+        script_output_path=output_dir / team_name / "tts" / "cardbox" / "lua-script.lua",
+        workspace_root=workspace_root
+    )
+
+    if token_bag:
+        register_lua_script_component(
+            team_name=team_name,
+            registry=registry,
+            script_text=token_bag.lua_script,
+            component_path=f"{team_name}.cardbox.token-bag.lua-script",
+            script_output_path=output_dir / team_name / "tts" / "cardbox" / "token-bag" / "token-bag.lua",
+            workspace_root=workspace_root
+        )
+
     # Build all components (triggers change detection)
-    print(f"\nBuilding components...")
+    logger.info("Building components...")
     cardbox_content, was_updated = cardbox.build()
     
     if was_updated:
-        print(f"  ✓ Cardbox was UPDATED")
+        logger.info("Cardbox was updated")
     else:
-        print(f"  ○ Cardbox unchanged")
+        logger.info("Cardbox unchanged")
     
     # Save all component JSONs
-    print(f"\nSaving component JSONs...")
+    logger.info("Saving component JSONs...")
     team_output = output_dir / team_name / "tts"
     
     # Save cardbox container
@@ -973,8 +1457,29 @@ def generate_team_tts(team_dir: Path, output_dir: Path, registry: ComponentRegis
         if card._content:
             with open(card_file, 'w', encoding='utf-8') as f:
                 json.dump(card._content, f, indent=2, ensure_ascii=False)
+
+    # Save token bag, dispensers, and tokens
+    if token_bag and token_bag._content:
+        token_bag_file = team_output / "cardbox" / "token-bag" / "token-bag.json"
+        token_bag_file.parent.mkdir(parents=True, exist_ok=True)
+        with open(token_bag_file, 'w', encoding='utf-8') as f:
+            json.dump(token_bag._content, f, indent=2, ensure_ascii=False)
+
+        for dispenser in token_bag.dispensers:
+            dispenser_slug = slugify(dispenser.dispenser_name)
+            dispenser_file = team_output / "cardbox" / "token-bag" / dispenser_slug / f"{team_name}-{dispenser_slug}.json"
+            dispenser_file.parent.mkdir(parents=True, exist_ok=True)
+            if dispenser._content:
+                with open(dispenser_file, 'w', encoding='utf-8') as f:
+                    json.dump(dispenser._content, f, indent=2, ensure_ascii=False)
+
+            if dispenser.token and dispenser.token._content:
+                token_slug = slugify(dispenser.token.token_name)
+                token_file = dispenser_file.parent / f"{team_name}-{token_slug}-token.json"
+                with open(token_file, 'w', encoding='utf-8') as f:
+                    json.dump(dispenser.token._content, f, indent=2, ensure_ascii=False)
     
-    print(f"  ✓ Saved to {team_output}")
+    logger.info("Saved to %s", team_output)
     
     return was_updated
 
@@ -1050,7 +1555,7 @@ def generate_tts_manifest(metadata: Dict, output_file: Path):
     with open(output_file, 'w', encoding='utf-8') as f:
         json.dump(manifest, f, indent=2, ensure_ascii=False)
     
-    print(f"\n✓ TTS manifest saved to {output_file}")
+    logger.info("TTS manifest saved to %s", output_file)
 
 
 def main():
@@ -1058,9 +1563,14 @@ def main():
     parser.add_argument('--teams', nargs='+', help='Specific teams to process (default: all)')
     parser.add_argument('--force', action='store_true',
                        help='Force regeneration even if unchanged')
+    parser.add_argument('--log-level', default='INFO',
+                       choices=['DEBUG', 'INFO', 'WARNING', 'ERROR'],
+                       help='Logging level (default: INFO)')
     
     args = parser.parse_args()
     
+    logging.basicConfig(level=getattr(logging, args.log_level), format='%(levelname)s: %(message)s')
+
     # Setup paths
     workspace_dir = Path(__file__).parent.parent.parent.parent
     output_dir = workspace_dir / 'output'
@@ -1069,11 +1579,11 @@ def main():
     
     # Initialize change detection
     detector = ChangeDetector(metadata_file)
-    registry = ComponentRegistry(detector)
+    registry = ComponentRegistry(detector, force_update=args.force)
     
-    print("=" * 60)
-    print("TTS Object Generation - Warcom Pipeline")
-    print("=" * 60)
+    logger.info("=" * 60)
+    logger.info("TTS Object Generation - Warcom Pipeline")
+    logger.info("=" * 60)
     
     # Find teams to process
     if args.teams:
@@ -1082,10 +1592,10 @@ def main():
         teams = find_all_teams(output_dir)
     
     if not teams:
-        print("\n⚠ No teams found to process")
+        logger.warning("No teams found to process")
         return
     
-    print(f"\nFound {len(teams)} team(s) to process")
+    logger.info("Found %d team(s) to process", len(teams))
     
     # Process each team
     updated_count = 0
@@ -1095,27 +1605,27 @@ def main():
             if was_updated:
                 updated_count += 1
         except Exception as e:
-            print(f"\n✗ Error processing {team_dir.name}: {e}")
+            logger.error("Error processing %s: %s", team_dir.name, e)
             import traceback
             traceback.print_exc()
             continue
     
     # Save metadata
     detector.save_metadata()
-    print(f"\n✓ Full metadata saved to {metadata_file}")
+    logger.info("Full metadata saved to %s", metadata_file)
     
     # Generate lightweight manifest for TTS
     generate_tts_manifest(detector.metadata, manifest_file)
     
     # Summary
-    print("\n" + "=" * 60)
-    print("Generation Complete")
-    print("=" * 60)
-    print(f"Teams processed: {len(teams)}")
-    print(f"Teams updated: {updated_count}")
-    print(f"Output: {output_dir}")
-    print(f"Metadata: {metadata_file}")
-    print(f"Manifest: {manifest_file}")
+    logger.info("=" * 60)
+    logger.info("Generation Complete")
+    logger.info("=" * 60)
+    logger.info("Teams processed: %d", len(teams))
+    logger.info("Teams updated: %d", updated_count)
+    logger.info("Output: %s", output_dir)
+    logger.info("Metadata: %s", metadata_file)
+    logger.info("Manifest: %s", manifest_file)
 
 
 if __name__ == '__main__':

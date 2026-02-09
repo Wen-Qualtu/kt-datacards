@@ -8,14 +8,47 @@ from pathlib import Path
 import numpy as np
 import cv2
 import json
+import os
 import re
 import shutil
+import stat
+import time
 import yaml
 from typing import Optional, Tuple, Dict
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import logging
 
 logger = logging.getLogger(__name__)
+
+
+def _handle_remove_readonly(func, path, exc_info):
+    """Retry removal after making a file writable."""
+    try:
+        os.chmod(path, stat.S_IWRITE)
+    except OSError:
+        pass
+    try:
+        func(path)
+    except OSError as exc:
+        logger.warning("Failed to remove %s: %s", path, exc)
+
+
+def _safe_unlink(path: Path, retries: int = 3, delay: float = 0.2) -> None:
+    """Remove a file if it exists, retrying on access errors."""
+    if not path.exists():
+        return
+    for attempt in range(retries):
+        try:
+            os.chmod(path, stat.S_IWRITE)
+        except OSError:
+            pass
+        try:
+            path.unlink()
+            return
+        except PermissionError as exc:
+            if attempt == retries - 1:
+                raise exc
+            time.sleep(delay)
 
 
 # Icon extraction coordinates (as percentage of page dimensions)
@@ -317,6 +350,7 @@ def extract_icons_from_pdf(pdf_path: Path, output_dir: Path, team_name: str) -> 
             
             portrait_icon = img[port_y1:port_y2, port_x1:port_x2]
             portrait_path = icons_dir / f'{team_name}-icon-portrait.jpg'
+            _safe_unlink(portrait_path)
             cv2.imwrite(str(portrait_path), portrait_icon, [cv2.IMWRITE_JPEG_QUALITY, 95])
             extracted['portrait'] = True
             
@@ -328,6 +362,7 @@ def extract_icons_from_pdf(pdf_path: Path, output_dir: Path, team_name: str) -> 
             
             landscape_icon = img[land_y1:land_y2, land_x1:land_x2]
             landscape_path = icons_dir / f'{team_name}-icon-landscape.jpg'
+            _safe_unlink(landscape_path)
             cv2.imwrite(str(landscape_path), landscape_icon, [cv2.IMWRITE_JPEG_QUALITY, 95])
             extracted['landscape'] = True
         
@@ -354,6 +389,7 @@ def extract_icons_from_pdf(pdf_path: Path, output_dir: Path, team_name: str) -> 
             
             token_icon = img[tok_y1:tok_y2, tok_x1:tok_x2]
             token_path = icons_dir / f'{team_name}-icon-token.jpg'
+            _safe_unlink(token_path)
             cv2.imwrite(str(token_path), token_icon, [cv2.IMWRITE_JPEG_QUALITY, 95])
             extracted['token'] = True
         
@@ -514,6 +550,7 @@ def extract_tokens_from_card(
         # Save token with page and card prefix
         token_filename = f'{card_filename_base}_token{idx:02d}.png'
         token_path = output_dir / token_filename
+        _safe_unlink(token_path)
         cv2.imwrite(str(token_path), token_img)
         
         # Store metadata with original detection coordinates
@@ -844,6 +881,8 @@ def save_single_card_as_pdf(page: fitz.Page, card_coords: dict, output_path: Pat
         clip=crop_rect  # Clip to card region
     )
     
+    _safe_unlink(output_path)
+
     # Save the new PDF
     new_doc.save(str(output_path))
     new_doc.close()
@@ -918,6 +957,7 @@ def process_pdf_and_extract_all_cards(pdf_path: Path, templates: dict, output_di
             # Save as PNG
             filename_png = f"page{page_num:02d}_card{card_idx}_{template_type}.png"
             output_path_png = output_dir / filename_png
+            _safe_unlink(output_path_png)
             cv2.imwrite(str(output_path_png), card_img)
             
             # Save as PDF (preserving text layer)
@@ -931,7 +971,7 @@ def process_pdf_and_extract_all_cards(pdf_path: Path, templates: dict, output_di
                 tokens_dir = output_dir.parent / 'tokens'
                 tokens_dir.mkdir(parents=True, exist_ok=True)
                 
-                print(f"  → Detected token guide card: {card_base}")
+                logger.info("  → Detected token guide card: %s", card_base)
                 
                 # Extract tokens at high resolution from PDF
                 tokens_metadata = extract_tokens_from_card(
@@ -962,8 +1002,8 @@ def process_pdf_and_extract_all_cards(pdf_path: Path, templates: dict, output_di
                     text_elem['source_card'] = card_base
                     all_text_elements.append(text_elem)
                 
-                print(f"  → Extracted {tokens_metadata['tokens_extracted']} tokens at 300 DPI")
-                print(f"  → Found {len(text_elements)} text elements for name matching")
+                logger.info("  → Extracted %s tokens at 300 DPI", tokens_metadata['tokens_extracted'])
+                logger.info("  → Found %d text elements for name matching", len(text_elements))
             
             total_cards += 1
         
@@ -991,7 +1031,7 @@ def process_pdf_and_extract_all_cards(pdf_path: Path, templates: dict, output_di
         with open(metadata_path, 'w', encoding='utf-8') as f:
             json.dump(combined_metadata, f, indent=2, ensure_ascii=False)
         
-        print(f"\n✓ Saved tokens metadata: {len(all_tokens_metadata)} tokens, {len(all_text_elements)} text elements")
+        logger.info("✓ Saved tokens metadata: %d tokens, %d text elements", len(all_tokens_metadata), len(all_text_elements))
     
     return {
         'total_cards': total_cards,
@@ -1078,34 +1118,34 @@ def run(input_dir: Path = None, output_dir: Path = None, templates_file: Path = 
         """Process one PDF: extract team name, setup folders, extract cards."""
         pdf_name = pdf_file.stem  # Filename without extension for logging
         try:
-            print(f"\n[STARTING] {pdf_file.name}")
+            logger.info("\n[STARTING] %s", pdf_file.name)
             
             # Extract team name from PDF content
-            print(f"  [{pdf_name}] Extracting team name...")
+            logger.info("  [%s] Extracting team name...", pdf_name)
             extracted_name = extract_team_name_from_pdf(pdf_file)
             # Match against config
             team_name = match_team_name(extracted_name, team_config) if team_config else extracted_name
-            print(f"  [{pdf_name}] Team: {team_name} (from '{extracted_name}')")
+            logger.info("  [%s] Team: %s (from '%s')", pdf_name, team_name, extracted_name)
             
             # Delete existing team folder to start fresh (per-team overwrite)
             team_folder = output_dir / (team_name if team_name else extracted_name)
             if team_folder.exists():
-                print(f"  [{pdf_name}] Cleaning existing output...")
-                shutil.rmtree(team_folder)
+                logger.info("  [%s] Cleaning existing output...", pdf_name)
+                shutil.rmtree(team_folder, onerror=_handle_remove_readonly)
             
             # Create cards subdirectory within team folder
             team_output_dir = team_folder / 'cards'
             
             # Process and extract cards
-            print(f"  [{pdf_name}] Extracting cards from PDF...")
+            logger.info("  [%s] Extracting cards from PDF...", pdf_name)
             result = process_pdf_and_extract_all_cards(pdf_file, templates, team_output_dir, dpi)
-            print(f"  [{pdf_name}] Done: {result['total_cards']} cards from {result['pages_processed']} pages")
+            logger.info("  [%s] Done: %s cards from %s pages", pdf_name, result['total_cards'], result['pages_processed'])
             
             # Extract icons
-            print(f"  [{pdf_name}] Extracting team icons...")
+            logger.info("  [%s] Extracting team icons...", pdf_name)
             icons_result = extract_icons_from_pdf(pdf_file, team_folder, team_name if team_name else extracted_name)
             icons_extracted = sum(1 for v in icons_result.values() if v)
-            print(f"  [{pdf_name}] Icons: {icons_extracted}/3 extracted")
+            logger.info("  [%s] Icons: %d/3 extracted", pdf_name, icons_extracted)
             
             return {
                 'pdf_file': pdf_file,
@@ -1116,7 +1156,7 @@ def run(input_dir: Path = None, output_dir: Path = None, templates_file: Path = 
                 'error': None
             }
         except Exception as e:
-            print(f"  [{pdf_name}] ✗ ERROR: {e}")
+            logger.error("  [%s] ✗ ERROR: %s", pdf_name, e)
             return {
                 'pdf_file': pdf_file,
                 'extracted_name': None,

@@ -18,9 +18,12 @@ Output: output/{team}/cards/{type}/*.png
 import argparse
 import json
 import logging
+import os
 import re
 import shutil
+import stat
 import sys
+import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
@@ -31,6 +34,36 @@ import numpy as np
 
 # Configure logging
 logger = logging.getLogger(__name__)
+
+
+def _handle_remove_readonly(func, path, exc_info):
+    """Retry removal after making a file writable."""
+    try:
+        os.chmod(path, stat.S_IWRITE)
+    except OSError:
+        pass
+    try:
+        func(path)
+    except OSError as exc:
+        logger.warning("Failed to remove %s: %s", path, exc)
+
+
+def _safe_unlink(path: Path, retries: int = 3, delay: float = 0.2) -> None:
+    """Remove a file if it exists, retrying on access errors."""
+    if not path.exists():
+        return
+    for attempt in range(retries):
+        try:
+            os.chmod(path, stat.S_IWRITE)
+        except OSError:
+            pass
+        try:
+            path.unlink()
+            return
+        except PermissionError as exc:
+            if attempt == retries - 1:
+                raise exc
+            time.sleep(delay)
 
 try:
     import pytesseract
@@ -596,6 +629,7 @@ def _combine_front_and_back(
         # Create front
         front_final_name = f"{team_name}-{card_name}-front"
         front_output_path = output_dir / f"{front_final_name}.jpg"
+        _safe_unlink(front_output_path)
         
         doc = fitz.open(front_path)
         if len(doc) > 0:
@@ -613,6 +647,7 @@ def _combine_front_and_back(
         # Create back
         back_final_name = f"{team_name}-{card_name}-back"
         back_output_path = output_dir / f"{back_final_name}.jpg"
+        _safe_unlink(back_output_path)
         
         doc = fitz.open(back_path)
         if len(doc) > 0:
@@ -666,6 +701,7 @@ def _process_single_card(
         # Create front
         front_final_name = f"{team_name}-{card_name}-front"
         front_output_path = output_dir / f"{front_final_name}.jpg"
+        _safe_unlink(front_output_path)
         
         doc = fitz.open(card_path)
         if len(doc) > 0:
@@ -955,6 +991,7 @@ def _process_card_backside(
     
     back_final_name = f"{team_name}-{card_name}-back"
     back_output_path = type_output_dir / f"{back_final_name}.jpg"
+    _safe_unlink(back_output_path)
     
     try:
         doc = fitz.open(next_card_path)
@@ -1003,6 +1040,7 @@ def _create_default_backside(
     if backside_path and backside_path.exists():
         back_filename = f"{team_name}-{card_name}-back.jpg"
         back_output_path = type_output_dir / back_filename
+        _safe_unlink(back_output_path)
         
         try:
             shutil.copy2(backside_path, back_output_path)
@@ -1054,7 +1092,7 @@ def classify_team_cards(
     # Clean up old output for this team to avoid confusion with stale files
     team_output_dir = output_dir / team_name / 'cards'
     if team_output_dir.exists():
-        shutil.rmtree(team_output_dir)
+        shutil.rmtree(team_output_dir, onerror=_handle_remove_readonly)
     
     # Find archived PDF for text extraction
     pdf_text = {}
@@ -1186,6 +1224,7 @@ def classify_team_cards(
             
             # Convert PDF to JPG and save to output location
             output_path = type_output_dir / f"{final_name}.jpg"
+            _safe_unlink(output_path)
             
             # Hardcoded dimensions to match output_v2
             if orientation == 'landscape':
