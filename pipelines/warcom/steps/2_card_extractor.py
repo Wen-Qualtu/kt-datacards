@@ -401,11 +401,40 @@ def extract_icons_from_pdf(pdf_path: Path, output_dir: Path, team_name: str) -> 
     return extracted
 
 
-def is_token_guide_card(page: fitz.Page, card_coords: dict) -> bool:
+def count_token_contours(card_img: np.ndarray, skip_header_percent: float = 15.0, min_token_area: int = 3000) -> int:
+    """Count likely token contours on a card image for guide detection."""
+    height, width = card_img.shape[:2]
+
+    skip_rows = int(height * (skip_header_percent / 100))
+    img_no_header = card_img[skip_rows:, :]
+
+    gray = cv2.cvtColor(img_no_header, cv2.COLOR_BGR2GRAY)
+    _, binary = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
+
+    kernel = np.ones((5, 5), np.uint8)
+    binary = cv2.morphologyEx(binary, cv2.MORPH_CLOSE, kernel, iterations=3)
+    binary = cv2.morphologyEx(binary, cv2.MORPH_OPEN, kernel, iterations=2)
+
+    contours, _ = cv2.findContours(binary, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+    count = 0
+    for contour in contours:
+        area = cv2.contourArea(contour)
+        if area < min_token_area:
+            continue
+        x, y, w, h = cv2.boundingRect(contour)
+        aspect_ratio = w / h if h > 0 else 0
+        if 0.3 <= aspect_ratio <= 2.5:
+            count += 1
+
+    return count
+
+
+def is_token_guide_card(page: fitz.Page, card_coords: dict, card_img: Optional[np.ndarray] = None) -> bool:
     """
     Detect if a portrait card is a token/marker guide card.
     
-    Checks if the first line of text equals "MARKER/TOKEN GUIDE".
+    Checks card text for marker/token guide headers, with image-based fallback.
     
     Args:
         page: PyMuPDF page object
@@ -433,12 +462,20 @@ def is_token_guide_card(page: fitz.Page, card_coords: dict) -> bool:
     
     # Split into lines and check first row
     lines = [line.strip() for line in text.split('\n') if line.strip()]
-    
-    if len(lines) >= 1:
-        first_line = lines[0].upper()
-        # Check if first line contains "MARKER/TOKEN GUIDE"
-        return 'MARKER' in first_line or 'TOKEN GUIDE' in first_line
-    
+    header_lines = lines[:3]
+    header_text = ' '.join(header_lines).upper()
+    header_text = re.sub(r'\s+', ' ', header_text).strip()
+
+    if header_text:
+        if 'MARKER/TOKEN GUIDE' in header_text:
+            return True
+
+    if card_img is not None:
+        token_count = count_token_contours(card_img)
+        if token_count >= 4:
+            logger.debug("Token guide detected by contours: %d", token_count)
+            return True
+
     return False
 
 
@@ -966,7 +1003,7 @@ def process_pdf_and_extract_all_cards(pdf_path: Path, templates: dict, output_di
             save_single_card_as_pdf(page, card_coords, output_path_pdf, dpi)
             
             # Check if this is a token guide card and extract tokens
-            if template_type == 'portrait' and is_token_guide_card(page, card_coords):
+            if template_type == 'portrait' and is_token_guide_card(page, card_coords, card_img):
                 card_base = f"page{page_num:02d}_card{card_idx}"
                 tokens_dir = output_dir.parent / 'tokens'
                 tokens_dir.mkdir(parents=True, exist_ok=True)

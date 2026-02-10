@@ -63,6 +63,14 @@ def find_token_guide_cards(team_dir: Path) -> List[Path]:
     return sorted(token_guides)
 
 
+def find_token_guide_cards_in_output(output_dir: Path, team_name: str) -> List[Path]:
+    """Find token guide cards from classified output (output/{team}/cards/token-guide)."""
+    token_dir = output_dir / team_name / 'cards' / 'token-guide'
+    if not token_dir.exists():
+        return []
+    return sorted(token_dir.glob('*.jpg'))
+
+
 def find_team_pdf(team_name: str, archive_dir: Path) -> Optional[Path]:
     """
     Find the archived PDF for a team.
@@ -106,6 +114,7 @@ def extract_tokens_for_team(
     Returns:
         Dict with extraction statistics
     """
+    workspace_root = Path(__file__).parent.parent.parent.parent
     team_dir = extracted_dir / team_name
     tokens_output = output_dir / team_name / 'tokens'
 
@@ -119,14 +128,16 @@ def extract_tokens_for_team(
             'reason': 'tokens already extracted'
         }
 
-    # Find token guide cards
+    # Find token guide cards (prefer extracted PNGs, fallback to classified JPGs)
     token_guide_cards = find_token_guide_cards(team_dir)
+    if not token_guide_cards:
+        token_guide_cards = find_token_guide_cards_in_output(workspace_root / 'output', team_name)
     
     if not token_guide_cards:
         return {
             'team': team_name,
             'status': 'skipped',
-            'reason': 'No token guide cards found',
+            'reason': 'No token guide cards found in extracted or output',
             'tokens_extracted': 0
         }
     
