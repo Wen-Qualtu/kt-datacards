@@ -138,7 +138,7 @@ def run_step_4(args, successful_teams=None):
     result = step4.run(
         extracted_dir=args.extracted or workspace_root / 'layers/warcom/extracted',
         archive_dir=args.archive or workspace_root / 'layers/archive',
-        output_dir=args.tokens_output or workspace_root / 'layers/warcom/extracted',
+        output_dir=args.tokens_output or workspace_root / 'output',
         teams=successful_teams or args.teams,  # Use successful teams from previous steps
         workers=args.workers,
         debug=args.debug
@@ -197,7 +197,7 @@ def main():
     
     # Step 4 arguments
     parser.add_argument('--tokens-output', type=Path,
-                       help='Output directory for extracted tokens (Step 4, default: layers/warcom/extracted)')
+                       help='Output directory for extracted tokens (Step 4, default: output)')
     parser.add_argument('--debug', action='store_true',
                        help='Save debug images (Step 4)')
     

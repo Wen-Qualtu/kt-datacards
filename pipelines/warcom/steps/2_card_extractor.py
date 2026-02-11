@@ -118,7 +118,7 @@ def match_team_name(extracted_name: str, team_config: Dict[str, dict]) -> Option
 def extract_team_name_from_pdf(pdf_path: Path) -> str:
     """
     Extract team name from PDF by finding large text near 'KILL TEAM' on later pages.
-    Returns the extracted team name or the PDF filename stem as fallback.
+    Returns the extracted team name or an empty string if not found.
     
     NOTE: This function is fragile and may extract incorrect text. It works for now but
     should be improved for better reliability - consider checking multiple pages or using
@@ -183,8 +183,8 @@ def extract_team_name_from_pdf(pdf_path: Path) -> str:
     except Exception as e:
         logger.warning(f"  Warning: Could not extract team name: {e}")
     
-    # Fallback to filename
-    return pdf_path.stem
+    # No fallback: return empty to avoid false positives
+    return ""
 
 
 def find_markers(img: np.ndarray, marker_template: np.ndarray, threshold: float = 0.55) -> list:
@@ -583,6 +583,7 @@ def extract_tokens_from_card(
         
         # Extract token from high-res image
         token_img = high_res_img[y1_hr:y2_hr, x1_hr:x2_hr]
+        token_img = _tight_crop_token_image(token_img)
         
         # Save token with page and card prefix
         token_filename = f'{card_filename_base}_token{idx:02d}.png'
@@ -607,6 +608,49 @@ def extract_tokens_from_card(
         'tokens_extracted': len(tokens_metadata),
         'tokens': tokens_metadata
     }
+
+
+def _mask_bbox(mask: np.ndarray) -> Optional[Tuple[int, int, int, int]]:
+    ys, xs = np.where(mask > 0)
+    if xs.size == 0:
+        return None
+    x0 = int(xs.min())
+    x1 = int(xs.max())
+    y0 = int(ys.min())
+    y1 = int(ys.max())
+    return x0, y0, (x1 - x0 + 1), (y1 - y0 + 1)
+
+
+def _tight_crop_token_image(img: np.ndarray, padding: int = 6) -> np.ndarray:
+    """Tightly crop to the largest non-white component to drop label text."""
+    if img is None or img.size == 0:
+        return img
+
+    hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+    v = hsv[:, :, 2]
+    s = hsv[:, :, 1]
+    white = ((v > 235) & (s < 20)) | (
+        (img[:, :, 0] > 235) & (img[:, :, 1] > 235) & (img[:, :, 2] > 235)
+    )
+    mask = (~white).astype(np.uint8)
+
+    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
+    mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel, iterations=1)
+
+    num_labels, labels, stats, _ = cv2.connectedComponentsWithStats(mask, connectivity=8)
+    if num_labels > 1:
+        largest_label = 1 + int(np.argmax(stats[1:, cv2.CC_STAT_AREA]))
+        mask = (labels == largest_label).astype(np.uint8)
+
+    bbox = _mask_bbox(mask)
+    if bbox is None:
+        return img
+    x, y, w, h = bbox
+    x0 = max(0, x - padding)
+    y0 = max(0, y - padding)
+    x1 = min(img.shape[1], x + w + padding)
+    y1 = min(img.shape[0], y + h + padding)
+    return img[y0:y1, x0:x1]
 
 
 def extract_text_from_token_guide(
@@ -668,7 +712,7 @@ def extract_text_from_token_guide(
         
         # Clean up word
         word = re.sub(r'[^a-zA-Z0-9\s\'-]', '', word)
-        if not word or word.lower() in ['marker', 'guide']:
+        if not word or word.lower() in ['guide']:
             continue
         
         # Group words that are close together
@@ -1160,8 +1204,13 @@ def run(input_dir: Path = None, output_dir: Path = None, templates_file: Path = 
             # Extract team name from PDF content
             logger.info("  [%s] Extracting team name...", pdf_name)
             extracted_name = extract_team_name_from_pdf(pdf_file)
+            if not extracted_name:
+                raise ValueError("No team name extracted from PDF content")
+
             # Match against config
             team_name = match_team_name(extracted_name, team_config) if team_config else extracted_name
+            if team_config and not team_name:
+                raise ValueError(f"No team match for extracted name '{extracted_name}'")
             logger.info("  [%s] Team: %s (from '%s')", pdf_name, team_name, extracted_name)
             
             # Delete existing team folder to start fresh (per-team overwrite)
@@ -1272,6 +1321,38 @@ def run(input_dir: Path = None, output_dir: Path = None, templates_file: Path = 
     }
 
 
+def populate_staging_from_archive(archive_dir: Path, staging_dir: Path) -> None:
+    """Copy only team-matched PDFs from archive into staging."""
+    team_config = load_team_config()
+    if not team_config:
+        logger.error("No team config found; refusing to build staging from archive")
+        return
+
+    staging_dir.mkdir(parents=True, exist_ok=True)
+
+    pdf_files = sorted(archive_dir.rglob("*.pdf"))
+    copied = 0
+    skipped = 0
+    for pdf_file in pdf_files:
+        try:
+            extracted_name = extract_team_name_from_pdf(pdf_file)
+            if not extracted_name:
+                skipped += 1
+                continue
+            team_name = match_team_name(extracted_name, team_config)
+            if not team_name:
+                skipped += 1
+                continue
+            dest = staging_dir / pdf_file.name
+            shutil.copy2(pdf_file, dest)
+            copied += 1
+        except Exception as exc:
+            logger.warning("Skipping %s: %s", pdf_file.name, exc)
+            skipped += 1
+
+    logger.info("Staging populated from archive: %d copied, %d skipped", copied, skipped)
+
+
 def main():
     import argparse
     
@@ -1288,9 +1369,16 @@ def main():
                        help='DPI for rendering (default: 150)')
     parser.add_argument('--workers', type=int, default=None,
                        help='Max concurrent workers (default: auto)')
+    parser.add_argument('--build-staging', action='store_true',
+                       help='Populate staging from layers/archive using strict team matching')
+    parser.add_argument('--archive', type=Path, default=Path('layers/archive'),
+                       help='Archive directory for --build-staging (default: layers/archive)')
     
     args = parser.parse_args()
     
+    if args.build_staging:
+        populate_staging_from_archive(args.archive, args.input)
+
     result = run(
         input_dir=args.input,
         output_dir=args.output,

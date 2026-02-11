@@ -11,11 +11,9 @@ Uses a self-contained TTS generation system with:
 Input:  output/{team}/cards/**/*.jpg
 Output: tts_objects/{team}/cardbox/*.json (nested structure)
         tts_objects/.tts-metadata.json (full tracking)
-        tts_objects/.tts-manifest.json (lightweight for TTS Lua)
 
 Architecture:
 - Full metadata: Complete hierarchical structure with all components for repo tracking
-- Manifest: Lightweight summary for TTS Lua scripts to check updates without choking
 
 Note: This file is self-contained - all TTS generation code is inlined to keep
       each pipeline step independent without external dependencies.
@@ -26,6 +24,10 @@ import json
 import hashlib
 import logging
 import re
+import shutil
+import yaml
+import cv2
+import numpy as np
 from pathlib import Path
 from datetime import datetime, timezone
 from typing import Dict, List, Optional, Any, Tuple
@@ -269,12 +271,124 @@ def load_text_file(file_path: Path) -> str:
     return file_path.read_text(encoding="utf-8")
 
 
+def _ensure_bgr_alpha(img: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+    """Return (bgr, alpha) from a possibly alpha-less image."""
+    if img.ndim == 2:
+        bgr = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
+        alpha = np.full((img.shape[0], img.shape[1]), 255, dtype=np.uint8)
+        return bgr, alpha
+    if img.shape[2] == 4:
+        bgr = img[:, :, :3]
+        alpha = img[:, :, 3]
+        return bgr, alpha
+    return img, np.full((img.shape[0], img.shape[1]), 255, dtype=np.uint8)
+
+
+def _mask_bbox(mask: np.ndarray) -> Optional[Tuple[int, int, int, int]]:
+    ys, xs = np.where(mask > 0)
+    if xs.size == 0:
+        return None
+    x0 = int(xs.min())
+    x1 = int(xs.max())
+    y0 = int(ys.min())
+    y1 = int(ys.max())
+    return x0, y0, (x1 - x0 + 1), (y1 - y0 + 1)
+
+
+def _alpha_from_white_bg(bgr: np.ndarray, existing_alpha: np.ndarray) -> np.ndarray:
+    """Create alpha by removing near-white background while respecting existing alpha."""
+    hsv = cv2.cvtColor(bgr, cv2.COLOR_BGR2HSV)
+    v = hsv[:, :, 2]
+    s = hsv[:, :, 1]
+    white = ((v > 235) & (s < 20)) | (
+        (bgr[:, :, 0] > 235) & (bgr[:, :, 1] > 235) & (bgr[:, :, 2] > 235)
+    )
+    alpha = np.where(white, 0, 255).astype(np.uint8)
+    if existing_alpha is not None:
+        alpha = np.minimum(alpha, existing_alpha)
+    return alpha
+
+
+def _fit_template_mask(
+    content_alpha: np.ndarray,
+    template_mask: np.ndarray,
+) -> np.ndarray:
+    """Scale and center template mask to content bounds."""
+    bbox = _mask_bbox(content_alpha)
+    if bbox is None:
+        return np.zeros_like(content_alpha, dtype=np.uint8)
+    x, y, w, h = bbox
+    if w <= 1 or h <= 1:
+        return np.zeros_like(content_alpha, dtype=np.uint8)
+
+    resized = cv2.resize(
+        (template_mask > 0).astype(np.uint8),
+        (w, h),
+        interpolation=cv2.INTER_NEAREST,
+    )
+    out = np.zeros_like(content_alpha, dtype=np.uint8)
+    x0 = max(0, x)
+    y0 = max(0, y)
+    x1 = min(out.shape[1], x0 + w)
+    y1 = min(out.shape[0], y0 + h)
+    rw = x1 - x0
+    rh = y1 - y0
+    if rw > 0 and rh > 0:
+        out[y0:y1, x0:x1] = resized[:rh, :rw]
+    return out
+
+
+def _apply_template_and_save(
+    src_path: Path,
+    dest_path: Path,
+    template_mask: np.ndarray,
+    target_size: Tuple[int, int],
+) -> bool:
+    img = cv2.imread(str(src_path), cv2.IMREAD_UNCHANGED)
+    if img is None:
+        return False
+    bgr, existing_alpha = _ensure_bgr_alpha(img)
+    alpha = _alpha_from_white_bg(bgr, existing_alpha)
+    content_mask = (alpha > 0).astype(np.uint8)
+
+    fitted = _fit_template_mask(content_mask, template_mask)
+    if fitted is None or fitted.sum() == 0:
+        return False
+    alpha = np.where(fitted > 0, alpha, 0).astype(np.uint8)
+
+    # Crop to template bounds
+    bbox = _mask_bbox(fitted)
+    if bbox is not None:
+        x, y, w, h = bbox
+        bgr = bgr[y : y + h, x : x + w]
+        alpha = alpha[y : y + h, x : x + w]
+
+    target_w, target_h = target_size
+    if (bgr.shape[1], bgr.shape[0]) != (target_w, target_h):
+        bgr = cv2.resize(bgr, (target_w, target_h), interpolation=cv2.INTER_AREA)
+        alpha = cv2.resize(alpha, (target_w, target_h), interpolation=cv2.INTER_AREA)
+
+    rgba = np.dstack([bgr, alpha])
+    dest_path.parent.mkdir(parents=True, exist_ok=True)
+    return bool(cv2.imwrite(str(dest_path), rgba))
+
+
+def _load_template_with_size(path: Path) -> Tuple[np.ndarray, Tuple[int, int]]:
+    img = cv2.imread(str(path), cv2.IMREAD_UNCHANGED)
+    if img is None:
+        raise ValueError(f"Failed to read template: {path}")
+    _bgr, alpha = _ensure_bgr_alpha(img)
+    mask = (alpha > 0).astype(np.uint8)
+    h, w = alpha.shape[:2]
+    return mask, (w, h)
+
+
 def normalize_token_display_name(text: str) -> str:
     """Normalize token display names from OCR text."""
     cleaned = text.strip()
     if not cleaned:
         return ""
-    cleaned = re.sub(r"\s+token$", "", cleaned, flags=re.IGNORECASE).strip()
+    cleaned = re.sub(r"\s+(token|marker)$", "", cleaned, flags=re.IGNORECASE).strip()
     cleaned = cleaned.replace("\n", " ")
     return cleaned
 
@@ -283,7 +397,44 @@ def slugify(value: str) -> str:
     """Create a stable slug for filenames and metadata keys."""
     normalized = re.sub(r"[^a-zA-Z0-9]+", "-", value.strip().lower())
     normalized = re.sub(r"-+", "-", normalized).strip("-")
+    if not normalized:
+        return "token"
+    if len(normalized) > 80:
+        normalized = normalized[:80].rstrip("-")
     return normalized or "token"
+
+
+def is_probable_token_label(text: str) -> bool:
+    """Heuristic filter to keep token name labels and drop rule text blocks."""
+    if not text or not text.strip():
+        return False
+    if re.search(r"\b(token|marker)\b", text, flags=re.IGNORECASE) is None:
+        return False
+    cleaned = normalize_token_display_name(text)
+    return bool(cleaned) and len(cleaned) <= 60
+
+
+def load_team_config() -> Dict[str, Any]:
+    config_path = Path("config/team-config.yaml")
+    if not config_path.exists():
+        return {}
+    return yaml.safe_load(config_path.read_text(encoding="utf-8")) or {}
+
+
+def get_token_shape_from_config(team_name: str, token_name: str, config: Dict[str, Any]) -> Optional[str]:
+    teams = config.get("teams", {}) if config else {}
+    team_data = teams.get(team_name, {}) if teams else {}
+    tokens = team_data.get("tokens", []) if team_data else []
+    normalized = " ".join((token_name or "").strip().lower().split())
+    if not normalized:
+        return None
+    for token in tokens:
+        name = " ".join(str(token.get("name", "")).strip().lower().split())
+        if name == normalized:
+            shape = token.get("shape")
+            if shape in {"round", "octagon", "diamond", "operative"}:
+                return shape
+    return None
 
 
 def build_token_name_map(tokens_metadata_path: Path) -> Dict[str, str]:
@@ -313,32 +464,193 @@ def build_token_name_map(tokens_metadata_path: Path) -> Dict[str, str]:
     name_map: Dict[str, str] = {}
     for source_card, token_list in tokens_by_card.items():
         text_list = text_by_card.get(source_card, [])
-        token_list_sorted = sorted(
-            token_list,
-            key=lambda token_item: (
-                token_item.get("bbox", {}).get("y", 0),
-                token_item.get("bbox", {}).get("x", 0)
-            )
-        )
-        text_list_sorted = sorted(
-            text_list,
-            key=lambda text_item: (
-                text_item.get("bbox", {}).get("y", 0),
-                text_item.get("bbox", {}).get("x", 0)
-            )
-        )
 
-        for index, token_item in enumerate(token_list_sorted):
-            filename = token_item.get("filename")
-            if not filename:
+        filtered_text_list = [t for t in text_list if is_probable_token_label(t.get("text", ""))]
+        if not filtered_text_list:
+            continue
+
+        token_items = [t for t in token_list if t.get("bbox")]
+        text_items = [t for t in filtered_text_list if t.get("bbox")]
+        if not token_items or not text_items:
+            continue
+
+        def _center(bbox: Dict[str, Any]) -> Tuple[float, float]:
+            x = float(bbox.get("x", 0.0))
+            y = float(bbox.get("y", 0.0))
+            w = float(bbox.get("width", 0.0))
+            h = float(bbox.get("height", 0.0))
+            return x + (w / 2.0), y + (h / 2.0)
+
+        def _max_extent(items: List[Dict[str, Any]]) -> Tuple[float, float]:
+            max_x = 0.0
+            max_y = 0.0
+            for item in items:
+                bbox = item.get("bbox", {})
+                x = float(bbox.get("x", 0.0))
+                y = float(bbox.get("y", 0.0))
+                w = float(bbox.get("width", 0.0))
+                h = float(bbox.get("height", 0.0))
+                max_x = max(max_x, x + w)
+                max_y = max(max_y, y + h)
+            return max_x, max_y
+
+        token_max_x, token_max_y = _max_extent(token_items)
+        text_max_x, text_max_y = _max_extent(text_items)
+        scale_x = text_max_x / token_max_x if token_max_x > 0 else 1.0
+        scale_y = text_max_y / token_max_y if token_max_y > 0 else 1.0
+        if not (1.25 <= scale_x <= 3.0):
+            scale_x = 1.0
+        if not (1.25 <= scale_y <= 3.0):
+            scale_y = 1.0
+
+        token_centers = []
+        for idx, t in enumerate(token_items):
+            bbox = t.get("bbox", {})
+            cx, cy = _center(bbox)
+            tw = float(bbox.get("width", 0.0)) * scale_x
+            th = float(bbox.get("height", 0.0)) * scale_y
+            token_centers.append((idx, (cx * scale_x, cy * scale_y), tw, th, t))
+
+        text_centers = [(idx, _center(t.get("bbox", {})), t) for idx, t in enumerate(text_items)]
+
+        # Build candidate pairs with a directional preference: labels should be right or below tokens.
+        pairs: List[Tuple[float, int, int]] = []
+        valid_label_map: Dict[int, bool] = {}
+        for ti, (tx, ty), tw, th, _ in token_centers:
+            has_valid = False
+            for _li, (lx, ly), _ in text_centers:
+                if (lx - tx) >= (-0.2 * max(1.0, tw)) and (ly - ty) >= (-0.2 * max(1.0, th)):
+                    has_valid = True
+                    break
+            valid_label_map[ti] = has_valid
+
+        for ti, (tx, ty), tw, th, _ in token_centers:
+            require_direction = valid_label_map.get(ti, False)
+            for li, (lx, ly), _ in text_centers:
+                dx = lx - tx
+                dy = ly - ty
+                direction_ok = (dx >= (-0.2 * max(1.0, tw))) and (dy >= (-0.2 * max(1.0, th)))
+                if require_direction and not direction_ok:
+                    continue
+                dist = (dx * dx + dy * dy) ** 0.5
+                pairs.append((dist, ti, li))
+        pairs.sort(key=lambda p: p[0])
+
+        assigned_tokens = set()
+        assigned_labels = set()
+        assignment: Dict[int, int] = {}
+        for dist, ti, li in pairs:
+            if ti in assigned_tokens or li in assigned_labels:
                 continue
-            display_name = ""
-            if index < len(text_list_sorted):
-                display_name = normalize_token_display_name(text_list_sorted[index].get("text", ""))
-            if display_name:
+            assignment[ti] = li
+            assigned_tokens.add(ti)
+            assigned_labels.add(li)
+
+        for ti, _center_pt, _tw, _th, token_item in token_centers:
+            li = assignment.get(ti)
+            if li is None:
+                continue
+            text_item = text_centers[li][2]
+            display_name = normalize_token_display_name(text_item.get("text", ""))
+            filename = token_item.get("filename")
+            if filename and display_name:
                 name_map[filename] = display_name
 
     return name_map
+
+
+def prepare_clean_tokens(team_name: str, workspace_root: Path) -> Tuple[Optional[Path], Dict[str, str]]:
+    """Generate cleaned/transparent tokens in output/{team}/tokens from extracted metadata."""
+    extracted_team_dir = workspace_root / "layers" / "warcom" / "extracted" / team_name
+    extracted_tokens_dir = extracted_team_dir / "tokens"
+    metadata_path = extracted_tokens_dir / "tokens_metadata.json"
+    if not extracted_tokens_dir.exists() or not metadata_path.exists():
+        return None, {}
+
+    name_map = build_token_name_map(metadata_path)
+    if not name_map:
+        return None, {}
+    final_tokens_dir = workspace_root / "output" / team_name / "tokens"
+    if final_tokens_dir.exists():
+        shutil.rmtree(final_tokens_dir, ignore_errors=True)
+    final_tokens_dir.mkdir(parents=True, exist_ok=True)
+
+    # Build extraction-metadata.json for template selection
+    config = load_team_config()
+    tokens_meta = []
+    missing_names = []
+    for token_path in sorted(extracted_tokens_dir.glob("*.png")):
+        display_name = name_map.get(token_path.name, "").strip()
+        display_name = normalize_token_display_name(display_name)
+        if not display_name:
+            missing_names.append(token_path.name)
+            continue
+        shape = get_token_shape_from_config(team_name, display_name, config)
+        tokens_meta.append({
+            "filename": token_path.name,
+            "name": display_name,
+            "shape": shape,
+        })
+
+    if missing_names:
+        logger.error("Missing token name mappings for %s: %s", team_name, ", ".join(missing_names))
+        return None, {}
+
+    extraction_meta_path = extracted_tokens_dir / "extraction-metadata.json"
+    extraction_meta_path.write_text(
+        json.dumps({"tokens": tokens_meta}, indent=2),
+        encoding="utf-8",
+    )
+
+    template_dir = workspace_root / "config" / "defaults" / "tts-token"
+    template_paths = {
+        "operative": template_dir / "template-operative-cutter.png",
+        "round": template_dir / "template-round-cutter.png",
+        "octagon": template_dir / "template-octagon-cutter.png",
+        "diamond": template_dir / "template-diamond-cutter.png",
+    }
+    templates: Dict[str, Tuple[np.ndarray, Tuple[int, int]]] = {}
+    for key, path in template_paths.items():
+        if not path.exists():
+            logger.error("Missing token template: %s", path)
+            return None, {}
+        templates[key] = _load_template_with_size(path)
+
+    # Apply transparency + template-fit directly in step 5
+    for token_path in sorted(extracted_tokens_dir.glob("*.png")):
+        display_name = name_map.get(token_path.name, "").strip()
+        display_name = normalize_token_display_name(display_name)
+        if not display_name:
+            logger.error("Missing token name for %s (%s)", team_name, token_path.name)
+            return None, {}
+        shape = get_token_shape_from_config(team_name, display_name, config) or "operative"
+        template_mask, target_size = templates.get(shape, templates["operative"])
+        dest_path = final_tokens_dir / token_path.name
+        if not _apply_template_and_save(token_path, dest_path, template_mask, target_size):
+            logger.error("Failed to process token image %s for %s", token_path.name, team_name)
+            return None, {}
+
+    output_name_map: Dict[str, str] = {}
+    used_slugs: Dict[str, int] = {}
+    for token_path in sorted(final_tokens_dir.glob("*.png")):
+        display_name = name_map.get(token_path.name, "").strip()
+        if not display_name:
+            logger.error("Missing token name for %s (%s)", team_name, token_path.name)
+            return None, {}
+        display_name = normalize_token_display_name(display_name)
+        slug = slugify(display_name)
+        count = used_slugs.get(slug, 0) + 1
+        used_slugs[slug] = count
+        if count > 1:
+            slug = f"{slug}-{count}"
+        dest = final_tokens_dir / f"{slug}.png"
+        if dest != token_path:
+            if dest.exists():
+                dest.unlink()
+            token_path.rename(dest)
+        output_name_map[dest.name] = display_name
+
+    return final_tokens_dir, output_name_map
 
 
 def find_tokens_dir(team_name: str, workspace_root: Path) -> Optional[Path]:
@@ -1317,11 +1629,10 @@ def generate_team_tts(team_dir: Path, output_dir: Path, registry: ComponentRegis
             logger.info("Created %s deck with %d cards", deck_type, len(cards_in_deck))
     
     token_bag = None
-    tokens_dir = find_tokens_dir(team_name, workspace_root)
+    tokens_dir, token_name_map = prepare_clean_tokens(team_name, workspace_root)
     if tokens_dir:
         token_images = sorted(tokens_dir.glob('*.png'))
         if token_images:
-            token_name_map = build_token_name_map(tokens_dir / 'tokens_metadata.json')
             dispenser_mesh_path = workspace_root / "config" / "defaults" / "tts-token" / "square-bag-mesh.obj"
             dispenser_mesh_url = build_raw_url(dispenser_mesh_path, workspace_root)
             token_bag_script_path = workspace_root / "config" / "defaults" / "tts-token" / "token-bag-script.lua"
@@ -1368,6 +1679,9 @@ def generate_team_tts(team_dir: Path, output_dir: Path, registry: ComponentRegis
                     lua_script=token_bag_script
                 )
                 logger.info("Created token bag with %d dispensers", len(dispensers))
+    else:
+        logger.error("Token processing failed for %s; missing name mapping.", team_name)
+        return False
     
     # Create cardbox (container for all decks and token bag)
     # TODO: Extract proper faction and display name from metadata
@@ -1484,80 +1798,6 @@ def generate_team_tts(team_dir: Path, output_dir: Path, registry: ComponentRegis
     return was_updated
 
 
-def generate_tts_manifest(metadata: Dict, output_file: Path):
-    """
-    Generate lightweight manifest for TTS Lua scripts.
-    
-    Extracts only deck/bag level metadata to avoid choking TTS.
-    Format:
-    {
-      "team_name": {
-        "cardbox": {
-          "guid": "...",
-          "url": "...",
-          "content_hash": "...",
-          "last_modified": "..."
-        },
-        "decks": {
-          "datacards": {"guid": "...", "url": "...", "content_hash": "...", "last_modified": "..."},
-          "equipment": {...}
-        },
-        "token_bag": {"guid": "...", "url": "...", "content_hash": "...", "last_modified": "..."}
-      }
-    }
-    """
-    manifest = {}
-    
-    for team_name, team_data in metadata.items():
-        if 'cardbox' not in team_data:
-            continue
-        
-        cardbox_data = team_data['cardbox']
-        team_manifest = {
-            'cardbox': {
-                'guid': cardbox_data.get('guid', ''),
-                'url': cardbox_data.get('url', ''),
-                'content_hash': cardbox_data.get('content_hash', ''),
-                'last_modified': cardbox_data.get('last_modified', '')
-            },
-            'decks': {},
-            'token_bag': {}
-        }
-        
-        # Extract deck-level metadata (skip individual cards)
-        metadata_fields = {'guid', 'url', 'component_type', 'content_hash', 'last_modified'}
-        for key, value in cardbox_data.items():
-            if key in metadata_fields or key == 'token-bag':
-                continue
-            
-            if isinstance(value, dict) and value.get('component_type') == 'deck':
-                team_manifest['decks'][key] = {
-                    'guid': value.get('guid', ''),
-                    'url': value.get('url', ''),
-                    'content_hash': value.get('content_hash', ''),
-                    'last_modified': value.get('last_modified', '')
-                }
-        
-        # Extract token bag metadata
-        if 'token-bag' in cardbox_data:
-            token_bag = cardbox_data['token-bag']
-            team_manifest['token_bag'] = {
-                'guid': token_bag.get('guid', ''),
-                'url': token_bag.get('url', ''),
-                'content_hash': token_bag.get('content_hash', ''),
-                'last_modified': token_bag.get('last_modified', '')
-            }
-        
-        manifest[team_name] = team_manifest
-    
-    # Save manifest
-    output_file.parent.mkdir(parents=True, exist_ok=True)
-    with open(output_file, 'w', encoding='utf-8') as f:
-        json.dump(manifest, f, indent=2, ensure_ascii=False)
-    
-    logger.info("TTS manifest saved to %s", output_file)
-
-
 def main():
     parser = argparse.ArgumentParser(description='Generate TTS objects from extracted cards')
     parser.add_argument('--teams', nargs='+', help='Specific teams to process (default: all)')
@@ -1575,7 +1815,6 @@ def main():
     workspace_dir = Path(__file__).parent.parent.parent.parent
     output_dir = workspace_dir / 'output'
     metadata_file = output_dir / '.tts-metadata.json'
-    manifest_file = output_dir / '.tts-manifest.json'
     
     # Initialize change detection
     detector = ChangeDetector(metadata_file)
@@ -1614,8 +1853,6 @@ def main():
     detector.save_metadata()
     logger.info("Full metadata saved to %s", metadata_file)
     
-    # Generate lightweight manifest for TTS
-    generate_tts_manifest(detector.metadata, manifest_file)
     
     # Summary
     logger.info("=" * 60)
@@ -1625,7 +1862,6 @@ def main():
     logger.info("Teams updated: %d", updated_count)
     logger.info("Output: %s", output_dir)
     logger.info("Metadata: %s", metadata_file)
-    logger.info("Manifest: %s", manifest_file)
 
 
 if __name__ == '__main__':

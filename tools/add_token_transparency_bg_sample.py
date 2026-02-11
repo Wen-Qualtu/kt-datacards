@@ -126,169 +126,33 @@ def _load_template_mask(path: Path) -> np.ndarray:
 def _apply_inset_to_mask(mask: np.ndarray, *, scale: float) -> np.ndarray:
     if mask is None or mask.size == 0:
         return mask
-    s = float(scale)
-    if s >= 1.0:
+    if scale >= 1.0:
         return mask
-    h, w = mask.shape[:2]
-    nh = max(3, int(round(h * s)))
-    nw = max(3, int(round(w * s)))
-    if nh >= h or nw >= w:
+
+    h, w = mask.shape
+    bbox = _mask_bbox(mask)
+    if bbox is None:
         return mask
-    bin_mask = (mask > 0).astype(np.uint8)
-    scaled = cv2.resize(bin_mask, (nw, nh), interpolation=cv2.INTER_NEAREST)
-    inset = np.zeros_like(bin_mask, dtype=np.uint8)
-    y0 = (h - nh) // 2
-    x0 = (w - nw) // 2
-    inset[y0 : y0 + nh, x0 : x0 + nw] = scaled
-    return inset
+    x, y, bw, bh = bbox
+    new_w = max(1, int(round(bw * float(scale))))
+    new_h = max(1, int(round(bh * float(scale))))
+    if new_w == bw and new_h == bh:
+        return mask
 
+    crop = (mask[y : y + bh, x : x + bw] > 0).astype(np.uint8)
+    resized = cv2.resize(crop, (new_w, new_h), interpolation=cv2.INTER_NEAREST)
 
-def _fit_template_mask(
-    *,
-    cand: np.ndarray,
-    templ: np.ndarray,
-    scale_band: float,
-    scale_steps: int,
-    shift: int,
-    shift_step: int,
-) -> tuple[np.ndarray, dict] | tuple[None, None]:
-    h, w = cand.shape
-    cand_area = int((cand > 0).sum())
-    if cand_area <= 0:
-        return None, None
-
-    bb = _mask_bbox(cand)
-    cb = _mask_centroid(cand)
-    if bb is not None:
-        bx, by, bw, bh = bb
-        cx0 = float(bx + bw / 2)
-        cy0 = float(by + bh / 2)
-    else:
-        cx0 = float(w / 2)
-        cy0 = float(h / 2)
-    if cb is not None and not (cb[0] == 0.0 and cb[1] == 0.0):
-        cx, cy = cb
-    else:
-        cx, cy = cx0, cy0
-
-    templ_area = int((templ > 0).sum())
-    if templ_area <= 0:
-        return None, None
-
-    # Blend area-scale with bbox-scale (more stable for split masks).
-    area_scale = float(np.sqrt(cand_area / templ_area))
-    tb = _mask_bbox(templ)
-    if bb is not None and tb is not None:
-        _tx, _ty, tw, th = tb
-        _bx, _by, bw, bh = bb
-        ws = float(bw / max(1, tw))
-        hs = float(bh / max(1, th))
-        bbox_scale = float((ws + hs) / 2.0)
-        base_scale = float(0.55 * bbox_scale + 0.45 * area_scale)
-    else:
-        base_scale = area_scale
-    
-    # Scale template DOWN by 5% to ensure it fits inside the content without capturing white edges
-    base_scale = base_scale * 0.95
-    base_scale = float(np.clip(base_scale, 0.4, 2.2))
-
-    scale_band = float(max(0.0, scale_band))
-    steps = int(max(1, scale_steps))
-    if steps == 1 or scale_band == 0:
-        scales = [base_scale]
-    else:
-        lo = base_scale * (1.0 - scale_band)
-        hi = base_scale * (1.0 + scale_band)
-        scales = list(np.linspace(lo, hi, steps).astype(np.float32))
-
-    best = None
-    best_mask = None
-    cand_area_f = float(cand_area)
-
-    for sc in scales:
-        th, tw = templ.shape
-        nh = int(max(5, round(th * float(sc))))
-        nw = int(max(5, round(tw * float(sc))))
-        if nh >= h * 2 or nw >= w * 2:
-            continue
-
-        resized = cv2.resize((templ > 0).astype(np.uint8), (nw, nh), interpolation=cv2.INTER_NEAREST)
-
-        for dy in range(-shift, shift + 1, shift_step):
-            for dx in range(-shift, shift + 1, shift_step):
-                x0 = int(round(cx - (nw / 2) + dx))
-                y0 = int(round(cy - (nh / 2) + dy))
-
-                tx0 = 0
-                ty0 = 0
-                x1 = x0 + nw
-                y1 = y0 + nh
-                if x0 < 0:
-                    tx0 = -x0
-                    x0 = 0
-                if y0 < 0:
-                    ty0 = -y0
-                    y0 = 0
-                if x1 > w:
-                    x1 = w
-                if y1 > h:
-                    y1 = h
-
-                rw = x1 - x0
-                rh = y1 - y0
-                if rw <= 2 or rh <= 2:
-                    continue
-
-                templ_roi = resized[ty0 : ty0 + rh, tx0 : tx0 + rw]
-                if templ_roi.size == 0:
-                    continue
-
-                cand_roi = (cand[y0:y1, x0:x1] > 0)
-                templ_roi_b = templ_roi > 0
-
-                inter = int(np.logical_and(cand_roi, templ_roi_b).sum())
-                templ_area_eff = int(templ_roi_b.sum())
-                union = int(cand_area + templ_area_eff - inter)
-                if union <= 0 or templ_area_eff <= 0:
-                    continue
-
-                iou = float(inter / union)
-                coverage = float(inter / templ_area_eff)
-                recall = float(inter / cand_area_f)
-
-                if best is None:
-                    better = True
-                else:
-                    better = bool(
-                        (iou > best["iou"] + 1e-9)
-                        or (abs(iou - best["iou"]) < 1e-9 and coverage > best["coverage"] + 1e-9)
-                        or (
-                            abs(iou - best["iou"]) < 1e-9
-                            and abs(coverage - best["coverage"]) < 1e-9
-                            and recall > best["recall"] + 1e-9
-                        )
-                    )
-
-                if better:
-                    best = {
-                        "iou": iou,
-                        "coverage": coverage,
-                        "recall": recall,
-                        "scale": float(sc),
-                        "dx": int(dx),
-                        "dy": int(dy),
-                        "x0": int(x0),
-                        "y0": int(y0),
-                        "w": int(rw),
-                        "h": int(rh),
-                    }
-                    placed = np.zeros((h, w), dtype=np.uint8)
-                    placed[y0:y1, x0:x1] = templ_roi_b.astype(np.uint8)
-                    best_mask = placed
-
-    if best is None or best_mask is None:
-        return None, None
-    return best_mask, best
+    out = np.zeros_like(mask, dtype=np.uint8)
+    x0 = int(round(x + (bw - new_w) / 2.0))
+    y0 = int(round(y + (bh - new_h) / 2.0))
+    x0 = max(0, x0)
+    y0 = max(0, y0)
+    x1 = min(w, x0 + new_w)
+    y1 = min(h, y0 + new_h)
+    rw = x1 - x0
+    rh = y1 - y0
+    out[y0:y1, x0:x1] = resized[:rh, :rw]
+    return out.astype(np.uint8)
 
 
 def _fill_transparent_holes_within_template(
@@ -1186,7 +1050,12 @@ def process_file(
                     pass
 
             # Prefer explicit config shape when available
-            team_name = path.parent.parent.name if path.parent.name == "token" else path.parent.name
+            if team_name_override:
+                team_name = team_name_override
+            elif path.parent.name in {"token", "tokens"}:
+                team_name = path.parent.parent.name
+            else:
+                team_name = path.parent.name
             shape_from_config = None
             if token_name_from_metadata:
                 shape_from_config = _get_token_shape_from_config(team_name, token_name_from_metadata)
@@ -1347,6 +1216,10 @@ def process_file(
 def main() -> int:
     parser = argparse.ArgumentParser(description="Experimental transparency using a background screenshot")
     parser.add_argument("--tokens-dir", type=str, default="layers/kt-app/processed")
+    parser.add_argument("--input-dir", type=str, default=None,
+                        help="Optional direct input directory of token PNGs")
+    parser.add_argument("--output-dir", type=str, default=None,
+                        help="Optional output directory for processed token PNGs")
     parser.add_argument("--team", type=str, default=None)
     parser.add_argument("--all", action="store_true")
 
@@ -1424,13 +1297,13 @@ def main() -> int:
     parser.add_argument(
         "--operative-template",
         type=str,
-        default="dev/references/Generic_status_red_04_white.png",
+        default="config/defaults/tts-token/template-operative-cutter.png",
         help="Template PNG for the operative token shape (uses its alpha).",
     )
     parser.add_argument(
         "--round-template",
         type=str,
-        default="dev/references/Bomb_red_white.png",
+        default="config/defaults/tts-token/template-round-cutter.png",
         help="Template PNG for the round token shape (uses its alpha).",
     )
     parser.add_argument(
@@ -1570,12 +1443,20 @@ def main() -> int:
     if not tokens_dir.exists():
         raise SystemExit(f"Tokens dir not found: {tokens_dir}")
 
-    if not args.all and not args.team:
-        raise SystemExit("Provide --team TEAM or --all")
-    if args.team and args.all:
-        raise SystemExit("Use only one of --team or --all")
+    if args.input_dir:
+        if not args.team:
+            raise SystemExit("Provide --team TEAM when using --input-dir")
+        if args.all:
+            raise SystemExit("Use only --team when using --input-dir")
+    else:
+        if not args.all and not args.team:
+            raise SystemExit("Provide --team TEAM or --all")
+        if args.team and args.all:
+            raise SystemExit("Use only one of --team or --all")
 
-    if args.team:
+    if args.input_dir:
+        team_dirs = [Path(args.input_dir)]
+    elif args.team:
         team_dirs = [tokens_dir / args.team / "token"]
     else:
         team_dirs = list(_iter_team_dirs(tokens_dir))
@@ -1601,8 +1482,12 @@ def main() -> int:
             continue
 
         # Create output directory for cut tokens (don't overwrite originals)
-        team_name = team_dir.parent.name  # Get team name from path
-        output_token_dir = team_dir.parent / "token-cut"
+        if args.input_dir:
+            team_name = args.team
+            output_token_dir = Path(args.output_dir) if args.output_dir else team_dir.parent / "token-cut"
+        else:
+            team_name = team_dir.parent.name  # Get team name from path
+            output_token_dir = team_dir.parent / "token-cut"
         output_token_dir.mkdir(exist_ok=True, parents=True)
 
         if sample_path is not None and sample_path.exists():
@@ -1679,6 +1564,7 @@ def main() -> int:
                 template_min_coverage=float(args.template_min_coverage),
                 template_min_recall=float(args.template_min_recall),
                 debug_dir=debug_dir,
+                team_name_override=team_name,
             )
             if ok:
                 changed += 1
