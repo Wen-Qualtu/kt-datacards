@@ -863,8 +863,8 @@ def extract_text_from_token_guide(
     # Now split each text element by "token" or "marker" delimiter
     text_elements = []
     for (center_x, center_y), text in text_positions.items():
-        # Split by token/marker
-        parts = re.split(r'\s+(token|marker)\s*', text, flags=re.IGNORECASE)
+        # Split by token/marker/points
+        parts = re.split(r'\s+(token|marker|points)\s*', text, flags=re.IGNORECASE)
         
         # Recombine with delimiter
         current = ""
