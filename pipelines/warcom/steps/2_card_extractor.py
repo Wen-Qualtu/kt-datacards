@@ -460,22 +460,17 @@ def is_token_guide_card(page: fitz.Page, card_coords: dict, card_img: Optional[n
     # Extract text from card
     text = page.get_text("text", clip=clip_rect)
     
-    # Split into lines and check first row
+    # Split into lines and check ALL lines for EXACT match
+    # This text should only appear on token guide cards, so it's safe to check the entire card
     lines = [line.strip() for line in text.split('\n') if line.strip()]
-    header_lines = lines[:3]
-    header_text = ' '.join(header_lines).upper()
-    header_text = re.sub(r'\s+', ' ', header_text).strip()
-
-    if header_text:
-        if 'MARKER/TOKEN GUIDE' in header_text:
+    
+    # Check if any line exactly equals 'MARKER/TOKEN GUIDE'
+    for line in lines:
+        line_upper = line.upper().strip()
+        if line_upper == 'MARKER/TOKEN GUIDE':
             return True
-
-    if card_img is not None:
-        token_count = count_token_contours(card_img)
-        if token_count >= 4:
-            logger.debug("Token guide detected by contours: %d", token_count)
-            return True
-
+    
+    # No exact match found
     return False
 
 
@@ -517,27 +512,65 @@ def extract_tokens_from_card(
     # Convert to grayscale
     gray = cv2.cvtColor(img_no_header, cv2.COLOR_BGR2GRAY)
     
-    # Apply threshold
-    _, binary = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
+    # Apply FIXED threshold (like kt-app pipeline) - NOT OTSU
+    _, binary = cv2.threshold(gray, 200, 255, cv2.THRESH_BINARY_INV)
     
-    # Morphological operations
-    kernel = np.ones((5, 5), np.uint8)
-    binary = cv2.morphologyEx(binary, cv2.MORPH_CLOSE, kernel, iterations=3)
-    binary = cv2.morphologyEx(binary, cv2.MORPH_OPEN, kernel, iterations=2)
+    # Light morphological operations (like kt-app pipeline)
+    # Only use CLOSE with small kernel to repair breaks in token silhouettes
+    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3))
+    binary = cv2.morphologyEx(binary, cv2.MORPH_CLOSE, kernel, iterations=1)
     
     # Find contours
     contours, _ = cv2.findContours(binary, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     
-    # Filter by area and aspect ratio
+    # Filter contours by area and aspect ratio (like kt-app pipeline)
+    min_area = 1000  # Lower threshold to catch smaller tokens
+    max_aspect_ratio = 3.0  # Filter out very wide elements (like headers)
+    
     token_contours = []
     for contour in contours:
         area = cv2.contourArea(contour)
-        if area >= min_token_area:
-            x, y, w, h = cv2.boundingRect(contour)
-            aspect_ratio = w / h if h > 0 else 0
+        if area < min_area:
+            continue
+        
+        x, y, w, h = cv2.boundingRect(contour)
+        aspect_ratio = w / h if h > 0 else 0
+        
+        # Skip if too wide (likely a header or text row)
+        if aspect_ratio > max_aspect_ratio:
+            continue
             
-            if 0.3 <= aspect_ratio <= 2.5:
-                token_contours.append((contour, area, x, y, w, h))
+        token_contours.append((contour, area, x, y, w, h))
+    
+    # Additional filter: remove contours that look like text rows (like kt-app pipeline)
+    # Text rows are typically shorter and wider than tokens
+    if len(token_contours) >= 5:
+        bbs = [(area, x, y, w, h) for (_, area, x, y, w, h) in token_contours]
+        hs = np.array([bb[4] for bb in bbs if bb[4] > 0], dtype=np.float32)
+        areas = np.array([float(bb[3] * bb[4]) for bb in bbs if bb[3] > 0 and bb[4] > 0], dtype=np.float32)
+        
+        if hs.size >= 3 and areas.size >= 3:
+            med_h = float(np.median(hs))
+            med_area = float(np.median(areas))
+            filtered = []
+            
+            for (contour, area, x, y, w, h) in token_contours:
+                if w <= 0 or h <= 0:
+                    continue
+                ar = w / float(h)
+                a = float(w * h)
+                
+                # Text rows are typically short (relative to tokens) and wide-ish
+                is_text_like = (
+                    (h < (med_h * 0.62))
+                    and (ar >= 1.25)
+                    and (a < (med_area * 0.80))
+                )
+                if is_text_like:
+                    continue
+                filtered.append((contour, area, x, y, w, h))
+            
+            token_contours = filtered
     
     # Sort by position (top to bottom, left to right)
     token_contours.sort(key=lambda x: (x[3], x[2]))
@@ -621,36 +654,96 @@ def _mask_bbox(mask: np.ndarray) -> Optional[Tuple[int, int, int, int]]:
     return x0, y0, (x1 - x0 + 1), (y1 - y0 + 1)
 
 
-def _tight_crop_token_image(img: np.ndarray, padding: int = 6) -> np.ndarray:
-    """Tightly crop to the largest non-white component to drop label text."""
+def _normalize_background_to_white(token_img: np.ndarray) -> np.ndarray:
+    """
+    Normalize grey/off-white background pixels to pure white.
+    
+    This is important for proper token extraction - the cropping needs
+    clean white backgrounds to accurately detect token content vs background.
+    
+    Args:
+        token_img: Input token image
+    
+    Returns:
+        Image with normalized white background
+    """
+    if token_img is None or token_img.size == 0:
+        return token_img
+    
+    # Convert to HSV for better background detection
+    hsv = cv2.cvtColor(token_img, cv2.COLOR_BGR2HSV)
+    h, s, v = cv2.split(hsv)
+    
+    # Background characteristics:
+    # - Low saturation (grey/white, not colored)
+    # - High value (bright, not dark)
+    # More aggressive thresholds to catch more grey shades
+    is_background = (s < 35) & (v > 160)
+    
+    # Apply whitening
+    out = token_img.copy()
+    out[is_background] = (255, 255, 255)
+    
+    return out
+
+
+def _tight_crop_token_image(img: np.ndarray, padding: int = 10) -> np.ndarray:
+    """
+    Crop token image to actual foreground with padding.
+    
+    Uses contour detection to find the actual token boundaries, then crops
+    to that bounding box with padding. This properly handles tokens of varying
+    sizes (unlike fixed-size cropping).
+    
+    Args:
+        img: Input image (already roughly cropped around token area)
+        padding: Extra pixels around the detected foreground
+    
+    Returns:
+        Cropped image sized to actual token dimensions + padding
+    """
     if img is None or img.size == 0:
         return img
-
-    hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-    v = hsv[:, :, 2]
-    s = hsv[:, :, 1]
-    white = ((v > 235) & (s < 20)) | (
-        (img[:, :, 0] > 235) & (img[:, :, 1] > 235) & (img[:, :, 2] > 235)
-    )
-    mask = (~white).astype(np.uint8)
-
-    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
-    mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel, iterations=1)
-
-    num_labels, labels, stats, _ = cv2.connectedComponentsWithStats(mask, connectivity=8)
-    if num_labels > 1:
-        largest_label = 1 + int(np.argmax(stats[1:, cv2.CC_STAT_AREA]))
-        mask = (labels == largest_label).astype(np.uint8)
-
-    bbox = _mask_bbox(mask)
-    if bbox is None:
+    
+    h, w = img.shape[:2]
+    
+    # Convert to grayscale for contour detection
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    
+    # Apply threshold to get binary image (threshold 200 like kt-app pipeline)
+    _, binary = cv2.threshold(gray, 200, 255, cv2.THRESH_BINARY_INV)
+    
+    # Repair small breaks in token silhouettes with morphology
+    # This ensures each token becomes a single connected component
+    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3))
+    binary = cv2.morphologyEx(binary, cv2.MORPH_CLOSE, kernel, iterations=1)
+    
+    # Find contours
+    contours, _ = cv2.findContours(binary, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    
+    if not contours:
+        # No foreground found - return original
         return img
-    x, y, w, h = bbox
+    
+    # Get the largest contour (should be the token)
+    largest_contour = max(contours, key=cv2.contourArea)
+    
+    # Get bounding box
+    x, y, cw, ch = cv2.boundingRect(largest_contour)
+    
+    # Apply padding
     x0 = max(0, x - padding)
     y0 = max(0, y - padding)
-    x1 = min(img.shape[1], x + w + padding)
-    y1 = min(img.shape[0], y + h + padding)
-    return img[y0:y1, x0:x1]
+    x1 = min(w, x + cw + padding)
+    y1 = min(h, y + ch + padding)
+    
+    # Crop to actual bounding box with padding
+    cropped = img[y0:y1, x0:x1]
+    
+    # Normalize background to white
+    cropped = _normalize_background_to_white(cropped)
+    
+    return cropped
 
 
 def extract_text_from_token_guide(
@@ -1355,6 +1448,13 @@ def populate_staging_from_archive(archive_dir: Path, staging_dir: Path) -> None:
 
 def main():
     import argparse
+    
+    # Configure logging
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(message)s',
+        handlers=[logging.StreamHandler()]
+    )
     
     parser = argparse.ArgumentParser(
         description='Step 2: Extract datacards from Kill Team PDFs'
