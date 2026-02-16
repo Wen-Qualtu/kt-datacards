@@ -741,11 +741,11 @@ class TTSComponent(ABC):
         team_name = path_parts[0]
         
         if len(path_parts) == 3 and path_parts[2] == "_self":
-            # team.cardbox._self -> output/{team}/tts/cardbox.json
-            return output_dir / "cardbox.json"
+            # team.cardbox._self -> output/{team}/tts/{team}-cardbox.json
+            return output_dir / f"{team_name}-cardbox.json"
         elif len(path_parts) == 4 and path_parts[2] == "token-bag" and path_parts[3] == "_self":
-            # team.cardbox.token-bag._self -> output/{team}/tts/cardbox/token-bag/token-bag.json
-            return output_dir / "cardbox" / "token-bag" / "token-bag.json"
+            # team.cardbox.token-bag._self -> output/{team}/tts/cardbox/token-bag/{team}-token-bag.json
+            return output_dir / "cardbox" / "token-bag" / f"{team_name}-token-bag.json"
         elif len(path_parts) == 4 and path_parts[3] == "_self":
             # team.cardbox.TYPE._self -> output/{team}/tts/cardbox/decks/{team}-TYPE.json
             return output_dir / "cardbox" / "decks" / f"{team_name}-{path_parts[2]}.json"
@@ -1714,7 +1714,7 @@ def generate_team_tts(team_dir: Path, output_dir: Path, registry: ComponentRegis
         registry=registry,
         script_text=cardbox_script,
         component_path=f"{team_name}.cardbox.lua-script",
-        script_output_path=output_dir / team_name / "tts" / "cardbox" / "lua-script.lua",
+        script_output_path=output_dir / team_name / "tts" / "cardbox" / f"{team_name}-lua-script.lua",
         workspace_root=workspace_root
     )
 
@@ -1724,7 +1724,7 @@ def generate_team_tts(team_dir: Path, output_dir: Path, registry: ComponentRegis
             registry=registry,
             script_text=token_bag.lua_script,
             component_path=f"{team_name}.cardbox.token-bag.lua-script",
-            script_output_path=output_dir / team_name / "tts" / "cardbox" / "token-bag" / "token-bag.lua",
+            script_output_path=output_dir / team_name / "tts" / "cardbox" / "token-bag" / f"{team_name}-token-bag.lua",
             workspace_root=workspace_root
         )
 

@@ -721,6 +721,7 @@ def process_token(
     token_name: Optional[str],
     shape: str,
     template_mask: Optional[np.ndarray],
+    team_slug: str,
     debug_dir: Path = None
 ) -> Tuple[Optional[np.ndarray], str]:
     """Process a single token.
@@ -731,6 +732,7 @@ def process_token(
         token_name: Token name (e.g., 'Breach marker')
         shape: Token shape ('round', 'octagon', 'diamond', 'operative')
         template_mask: Template binary mask
+        team_slug: Team slug for filename prefix
         debug_dir: Optional debug output directory
     
     Returns:
@@ -762,12 +764,12 @@ def process_token(
     # Apply template mask (includes cropping and resizing to template size ~200px)
     img = apply_template_mask(img, template_mask, shape, token_name, debug_path)
     
-    # Generate output filename
+    # Generate output filename with team prefix
     if token_name:
-        output_name = slugify(token_name) + '.png'
+        output_name = f'{team_slug}-{slugify(token_name)}.png'
     else:
-        # Fallback to original filename
-        output_name = token_path.name
+        # Fallback to original filename with prefix
+        output_name = f'{team_slug}-{token_path.name}'
     
     return img, output_name
 
@@ -961,6 +963,7 @@ def process_team(team_slug: str, team_config: Dict, all_teams_config: Dict) -> D
             token_name,
             shape,
             template_mask,
+            team_slug,
             debug_dir
         )
         

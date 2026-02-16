@@ -650,7 +650,8 @@ def extract_tokens_from_card(
     card_filename_base: str,
     skip_header_percent: float = 15.0,
     min_token_area: int = 3000,
-    extract_dpi: int = 300
+    extract_dpi: int = 300,
+    team_name: str = None
 ) -> dict:
     """
     Extract individual tokens from a token guide card at high resolution.
@@ -667,6 +668,7 @@ def extract_tokens_from_card(
         skip_header_percent: Percentage of top to skip
         min_token_area: Minimum contour area
         extract_dpi: DPI for extracting final tokens from PDF
+        team_name: Team name for filename prefix
     
     Returns:
         Dict with extraction metadata
@@ -795,8 +797,11 @@ def extract_tokens_from_card(
         token_img = high_res_img[y1_hr:y2_hr, x1_hr:x2_hr]
         token_img = _tight_crop_token_image(token_img)
         
-        # Save token with page and card prefix
-        token_filename = f'{card_filename_base}_token{idx:02d}.png'
+        # Save token with team, page, and card prefix
+        if team_name:
+            token_filename = f'{team_name}_{card_filename_base}_token{idx:02d}.png'
+        else:
+            token_filename = f'{card_filename_base}_token{idx:02d}.png'
         token_path = output_dir / token_filename
         _safe_unlink(token_path)
         cv2.imwrite(str(token_path), token_img)
@@ -1241,7 +1246,7 @@ def save_single_card_as_pdf(page: fitz.Page, card_coords: dict, output_path: Pat
 
 def process_pdf_and_extract_all_cards(pdf_path: Path, templates: dict, output_dir: Path, 
                                       dpi: int = 150, start_page: int = 1, 
-                                      end_page: Optional[int] = None) -> dict:
+                                      end_page: Optional[int] = None, team_name: str = None) -> dict:
     """
     Process a PDF file and extract all cards from it using templates.
     Saves both PNG and PDF versions of each card.
@@ -1333,7 +1338,8 @@ def process_pdf_and_extract_all_cards(pdf_path: Path, templates: dict, output_di
                     card_filename_base=card_base,
                     skip_header_percent=15.0,
                     min_token_area=3000,
-                    extract_dpi=300
+                    extract_dpi=300,
+                    team_name=team_name
                 )
                 
                 # Extract text elements from card for later name matching
@@ -1372,7 +1378,13 @@ def process_pdf_and_extract_all_cards(pdf_path: Path, templates: dict, output_di
     if all_tokens_metadata or all_text_elements:
         tokens_dir = output_dir.parent / 'tokens'
         tokens_dir.mkdir(parents=True, exist_ok=True)
-        metadata_path = tokens_dir / 'tokens_metadata.json'
+        
+        # Use team-prefixed metadata filename
+        if team_name:
+            metadata_filename = f'{team_name}_tokens_metadata.json'
+        else:
+            metadata_filename = 'tokens_metadata.json'
+        metadata_path = tokens_dir / metadata_filename
         
         combined_metadata = {
             'tokens': all_tokens_metadata,
@@ -1494,7 +1506,7 @@ def run(input_dir: Path = None, output_dir: Path = None, templates_file: Path = 
             
             # Process and extract cards
             logger.info("  [%s] Extracting cards from PDF...", pdf_name)
-            result = process_pdf_and_extract_all_cards(pdf_file, templates, team_output_dir, dpi)
+            result = process_pdf_and_extract_all_cards(pdf_file, templates, team_output_dir, dpi, team_name=team_name)
             logger.info("  [%s] Done: %s cards from %s pages", pdf_name, result['total_cards'], result['pages_processed'])
             
             # Extract icons
