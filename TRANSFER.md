@@ -1,7 +1,54 @@
 # Transfer Notes: Token Extraction Pipeline (Step 4)
 
-**Date:** February 15, 2026  
-**Status:** Step 4 rewrite complete - 292/311 tokens processed (93.9%)
+**Date:** February 16, 2026  
+**Status:** Step 4 processing at 93.9% - Step 2 improved with size-aware contour merging
+
+---
+
+## Latest Session (Feb 16, 2026): Split Token Merging Fix ✓ COMPLETE
+
+**Issue:** corsair-voidscarred token split by white diagonal band into 2 contours  
+- Token at page06_card1_token02 (area=5174) and token03 (area=2217) should be merged
+- White diagonal bands split some tokens during contour detection
+- Simple distance-based merging broke grid layouts by merging normal adjacent tokens
+
+**Solution Implemented:** Size-aware intelligent contour merging in Step 2 ✓  
+Location: `pipelines/warcom/steps/2_card_extractor.py::_merge_nearby_contours()`
+
+Key improvements:
+1. **Pre-filtering noise contours:**  
+   - Filter out contours < 500 area BEFORE merge calculation
+   - Prevents tiny fragments from polluting the median (was getting median_area ≈ 2, now ≈ 10000)
+   - Critical fix: median was 0.4 causing all merges to fail
+
+2. **Size-based filtering:**  
+   - Calculate median area from top 60% of contours (prevents small pieces from skewing median)
+   - Only consider merging if at least ONE contour is undersized (< 70% of median)
+   - This prevents merging normal tokens in grid layouts
+
+3. **Improved overlap detection:**  
+   - Added explicit overlap check in distance calculation
+   - If bounding boxes overlap in both dimensions, distance = 0
+   - Fixes issue where overlapping fragments weren't recognized as close
+
+4. **Smart distance threshold:**  
+   - Scaled to 30% of median token size (adaptive to token scale)
+   - Ensures merge only happens for genuinely split pieces
+
+5. **Additional safety checks:**  
+   - Size similarity: area ratio must be < 3.0x
+   - Aspect ratio: merged result must be < 2.5:1
+   - Prevents unreasonable merges
+
+**Results:** ✓ Tested and verified on corsair-voidscarred  
+- Before: 7 tokens extracted (token02 + token03 split)
+- After: **6 tokens extracted** (token02 merged with combined bbox)
+- Token02 dimensions: width=113 (was 96), height=107, area=11872
+- **Fixed off-by-one error**: Contour corners now use inclusive coordinates (max_x-1, max_y-1)
+- Merge uses outermost corners correctly: min(x1,x2), min(y1,y2) to max(x1+w1, x2+w2), max(y1+h1, y2+h2)
+- No regression on other teams (grid layouts unaffected due to size filtering)
+
+**Impact:** Expected to fix 2-4 of the remaining 8-11 unmatched tokens
 
 ---
 

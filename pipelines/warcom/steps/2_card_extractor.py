@@ -416,6 +416,9 @@ def count_token_contours(card_img: np.ndarray, skip_header_percent: float = 15.0
     binary = cv2.morphologyEx(binary, cv2.MORPH_OPEN, kernel, iterations=2)
 
     contours, _ = cv2.findContours(binary, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    
+    # Merge split tokens based on size and proximity
+    contours = _merge_nearby_contours(contours)
 
     count = 0
     for contour in contours:
@@ -474,6 +477,171 @@ def is_token_guide_card(page: fitz.Page, card_coords: dict, card_img: Optional[n
     return False
 
 
+def _merge_nearby_contours(contours: list, max_distance: int = 15) -> list:
+    """
+    Merge contours that are likely split parts of the same token.
+    
+    Some tokens have white diagonal bands that split them into multiple contours.
+    This uses intelligent criteria to only merge genuinely split tokens, not separate
+    tokens in grid layouts.
+    
+    Strategy: Only merge contours that are BOTH undersized (smaller than typical tokens)
+    AND very close together. This prevents merging normal tokens in grids.
+    
+    Args:
+        contours: List of contours from cv2.findContours
+        max_distance: Base maximum distance (scaled by median size)
+        
+    Returns:
+        List of merged contours
+    """
+    if len(contours) <= 1:
+        return contours
+    
+    # Get bounding boxes and areas for all contours
+    bboxes = [cv2.boundingRect(c) for c in contours]
+    areas = [cv2.contourArea(c) for c in contours]
+    
+    # Calculate median area using only larger contours (upper 60%) 
+    # This prevents small split pieces from lowering the median
+    if not areas:
+        return contours
+    sorted_areas = sorted(areas, reverse=True)
+    top_60_count = max(1, int(len(sorted_areas) * 0.6))
+    median_area = np.median(sorted_areas[:top_60_count])
+    median_size = np.sqrt(median_area)  # Approximate size from area
+    
+    # Scale merge distance based on token size
+    scaled_distance = median_size * 0.3  # 30% of typical token size
+    
+    # Build merge groups using union-find approach
+    parent = list(range(len(contours)))
+    
+    def find(i):
+        if parent[i] != i:
+            parent[i] = find(parent[i])
+        return parent[i]
+    
+    def union(i, j):
+        pi, pj = find(i), find(j)
+        if pi != pj:
+            parent[pj] = pi
+    
+    # Check all pairs for intelligent merging
+    merges_performed = 0
+    for i in range(len(bboxes)):
+        for j in range(i + 1, len(bboxes)):
+            # ONLY consider merging if at least ONE contour is undersized
+            # Undersized = less than 70% of median (typical token area)
+            # This catches split tokens without merging normal grid tokens
+            area_i, area_j = areas[i], areas[j]
+            is_undersized_i = area_i < median_area * 0.7
+            is_undersized_j = area_j < median_area * 0.7
+            
+            if not (is_undersized_i or is_undersized_j):
+                # Both are normal-sized, don't merge even if close
+                continue
+            
+            x1, y1, w1, h1 = bboxes[i]
+            x2, y2, w2, h2 = bboxes[j]
+            
+            # Calculate overlap/distance between bounding boxes  
+            # For split tokens, they often overlap or are touching
+            # Horizontal overlap
+            h_overlap = min(x1 + w1, x2 + w2) - max(x1, x2)
+            # Vertical overlap
+            v_overlap = min(y1 + h1, y2 + h2) - max(y1, y2)
+            
+            # If they overlap in both dimensions, distance is 0
+            if h_overlap > 0 and v_overlap > 0:
+                distance = 0
+            else:
+                # Calculate minimum distance between bounding boxes
+                if x1 + w1 < x2:
+                    dx = x2 - (x1 + w1)
+                elif x2 + w2 < x1:
+                    dx = x1 - (x2 + w2)
+                else:
+                    dx = 0
+                
+                if y1 + h1 < y2:
+                    dy = y2 - (y1 + h1)
+                elif y2 + h2 < y1:
+                    dy = y1 - (y2 + h2)
+                else:
+                    dy = 0
+                
+                distance = (dx**2 + dy**2)**0.5
+            
+            # Only merge if very close
+            if distance > scaled_distance:
+                continue
+            
+            # Check size similarity (prevent merging tiny fragments with medium pieces)
+            if area_i == 0 or area_j == 0:
+                continue
+            area_ratio = max(area_i, area_j) / min(area_i, area_j)
+            if area_ratio > 3.0:  # Contours must be similar size
+                continue
+            
+            # Check if merged result would have reasonable aspect ratio
+            merged_x = min(x1, x2)
+            merged_y = min(y1, y2)
+            merged_w = max(x1 + w1, x2 + w2) - merged_x
+            merged_h = max(y1 + h1, y2 + h2) - merged_y
+            
+            if merged_w > 0 and merged_h > 0:
+                merged_aspect = max(merged_w, merged_h) / min(merged_w, merged_h)
+                if merged_aspect > 2.5:  # Merged result would be too elongated
+                    continue
+            
+            # All checks passed - merge these contours
+            union(i, j)
+    
+    # Group contours by their root parent
+    groups = {}
+    for i in range(len(contours)):
+        root = find(i)
+        if root not in groups:
+            groups[root] = []
+        groups[root].append(i)
+    
+    # Merge contours in each group by combining their bounding boxes
+    merged_contours = []
+    for group_indices in groups.values():
+        if len(group_indices) == 1:
+            # No merge needed
+            merged_contours.append(contours[group_indices[0]])
+        else:
+            # Merge by creating a contour from combined bounding box
+            xs, ys, ws, hs = [], [], [], []
+            for idx in group_indices:
+                x, y, w, h = bboxes[idx]
+                xs.append(x)
+                ys.append(y)
+                ws.append(w)
+                hs.append(h)
+            
+            # Combined bounding box
+            min_x = min(xs)
+            min_y = min(ys)
+            max_x = max(x + w for x, w in zip(xs, ws))
+            max_y = max(y + h for y, h in zip(ys, hs))
+            
+            # Create a new contour from the combined bounding box
+            # Note: max_x and max_y are exclusive ends, so subtract 1 for the corner coordinates
+            merged_contour = np.array([
+                [[min_x, min_y]],
+                [[max_x - 1, min_y]],
+                [[max_x - 1, max_y - 1]],
+                [[min_x, max_y - 1]]
+            ], dtype=np.int32)
+            
+            merged_contours.append(merged_contour)
+    
+    return merged_contours
+
+
 def extract_tokens_from_card(
     card_img: np.ndarray,
     page: fitz.Page,
@@ -523,12 +691,21 @@ def extract_tokens_from_card(
     # Find contours
     contours, _ = cv2.findContours(binary, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     
-    # Filter contours by area and aspect ratio (like kt-app pipeline)
+    # Pre-filter out noise/tiny contours before merging
+    # This prevents them from polluting the median calculation
+    min_area_for_merge = 500  # Reasonable minimum for token pieces
+    contours_to_merge = [c for c in contours if cv2.contourArea(c) >= min_area_for_merge]
+    
+    # Merge split tokens based on size and proximity
+    # If contours are smaller than expected AND close together, merge them
+    merged_contours = _merge_nearby_contours(contours_to_merge) if contours_to_merge else []
+    
+    # Filter merged contours by area and aspect ratio (like kt-app pipeline)
     min_area = 1000  # Lower threshold to catch smaller tokens
     max_aspect_ratio = 3.0  # Filter out very wide elements (like headers)
     
     token_contours = []
-    for contour in contours:
+    for contour in merged_contours:
         area = cv2.contourArea(contour)
         if area < min_area:
             continue
@@ -1145,7 +1322,7 @@ def process_pdf_and_extract_all_cards(pdf_path: Path, templates: dict, output_di
                 tokens_dir = output_dir.parent / 'tokens'
                 tokens_dir.mkdir(parents=True, exist_ok=True)
                 
-                logger.info("  → Detected token guide card: %s", card_base)
+                logger.info("  > Detected token guide card: %s", card_base)
                 
                 # Extract tokens at high resolution from PDF
                 tokens_metadata = extract_tokens_from_card(
@@ -1176,8 +1353,8 @@ def process_pdf_and_extract_all_cards(pdf_path: Path, templates: dict, output_di
                     text_elem['source_card'] = card_base
                     all_text_elements.append(text_elem)
                 
-                logger.info("  → Extracted %s tokens at 300 DPI", tokens_metadata['tokens_extracted'])
-                logger.info("  → Found %d text elements for name matching", len(text_elements))
+                logger.info("  > Extracted %s tokens at 300 DPI", tokens_metadata['tokens_extracted'])
+                logger.info("  > Found %d text elements for name matching", len(text_elements))
             
             total_cards += 1
         
