@@ -268,7 +268,10 @@ def load_text_file(file_path: Path) -> str:
     if not file_path.exists():
         logger.warning("Missing script file: %s", file_path)
         return ""
-    return file_path.read_text(encoding="utf-8")
+    # Read with UTF-8 BOM handling
+    text = file_path.read_text(encoding="utf-8-sig")
+    # Clean up any remaining BOM or special characters
+    return text.replace('\ufeff', '').replace('\u200b', '')
 
 
 def _ensure_bgr_alpha(img: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
@@ -563,7 +566,7 @@ def prepare_clean_tokens(team_name: str, workspace_root: Path) -> Tuple[Optional
     """Generate cleaned/transparent tokens in output/{team}/tokens from extracted metadata."""
     extracted_team_dir = workspace_root / "layers" / "warcom" / "extracted" / team_name
     extracted_tokens_dir = extracted_team_dir / "tokens"
-    metadata_path = extracted_tokens_dir / "tokens_metadata.json"
+    metadata_path = extracted_tokens_dir / f"{team_name}_tokens_metadata.json"
     if not extracted_tokens_dir.exists() or not metadata_path.exists():
         return None, {}
 
@@ -666,9 +669,9 @@ def find_tokens_dir(team_name: str, workspace_root: Path) -> Optional[Path]:
     return None
 
 
-def build_raw_url(file_path: Path, workspace_root: Path) -> str:
+def build_raw_url(file_path: Path, workspace_root: Path, branch: str = "main") -> str:
     """Build a GitHub raw URL for a local file path."""
-    repo_base = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main"
+    repo_base = f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/{branch}"
     rel_path = file_path.relative_to(workspace_root).as_posix()
     return f"{repo_base}/{rel_path}"
 
@@ -799,6 +802,15 @@ class TTSCard(TTSComponent):
     
     def generate(self) -> Dict[str, Any]:
         """Generate TTS Card object"""
+        # Generate unique CardID based on card path hash
+        # TTS uses custom_deck_id (first 3+ digits) + card_number (last 2 digits)
+        # We'll use a hash of the card path to ensure uniqueness
+        hash_input = f"{self.team_name}_{self.card_type}_{self.card_name}".encode('utf-8')
+        hash_hex = hashlib.md5(hash_input).hexdigest()
+        # Use first 4 chars of hash for custom deck ID (1000-FFFF range)
+        custom_deck_id = str(int(hash_hex[:4], 16) % 9000 + 1000)  # Keep in 1000-9999 range
+        card_id = int(custom_deck_id + "00")  # Card 00 in this deck
+        
         return {
             "GUID": self._generate_guid(),
             "Name": "Card",
@@ -823,10 +835,10 @@ class TTSCard(TTSComponent):
             "Autoraise": True,
             "Sticky": True,
             "Tooltip": True,
-            "CardID": 100000,
+            "CardID": card_id,
             "SidewaysCard": False,
             "CustomDeck": {
-                "1000": {
+                custom_deck_id: {
                     "FaceURL": self.front_url,
                     "BackURL": self.back_url,
                     "NumWidth": 1,
@@ -1384,7 +1396,7 @@ def get_team_metadata(team_dir: Path) -> Dict[str, str]:
     }
 
 
-def find_card_images(cards_dir: Path, card_type: str, card_name: str) -> Dict[str, str]:
+def find_card_images(cards_dir: Path, card_type: str, card_name: str, branch: str = "main") -> Dict[str, str]:
     """
     Find front and back images for a card.
     
@@ -1392,6 +1404,7 @@ def find_card_images(cards_dir: Path, card_type: str, card_name: str) -> Dict[st
         cards_dir: Base cards directory (output/{team}/cards/)
         card_type: Type of card (datacards, equipment, firefight-ploys, etc.)
         card_name: Card name
+        branch: Git branch for GitHub raw URLs (default: main)
     
     Returns:
         Dict with 'front' and 'back' GitHub raw URLs (back may be empty)
@@ -1408,7 +1421,7 @@ def find_card_images(cards_dir: Path, card_type: str, card_name: str) -> Dict[st
         return {'front': '', 'back': ''}
     
     # Build GitHub raw URL base
-    repo_base = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main"
+    repo_base = f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/{branch}"
     team_name = cards_dir.parent.name
     
     # Look for front and back images
@@ -1513,11 +1526,12 @@ def register_lua_script_component(
     script_text: str,
     component_path: str,
     script_output_path: Path,
-    workspace_root: Path
+    workspace_root: Path,
+    branch: str = "main"
 ) -> bool:
     """Register a Lua script as a metadata component and write it to disk."""
     content = {"lua_script": script_text}
-    script_url = build_raw_url(script_output_path, workspace_root)
+    script_url = build_raw_url(script_output_path, workspace_root, branch)
 
     was_updated, _ = registry.register(
         component_path,
@@ -1535,7 +1549,7 @@ def register_lua_script_component(
     return was_updated
 
 
-def generate_team_tts(team_dir: Path, output_dir: Path, registry: ComponentRegistry) -> bool:
+def generate_team_tts(team_dir: Path, output_dir: Path, registry: ComponentRegistry, branch: str = "main") -> bool:
     """
     Generate TTS objects for a single team.
     
@@ -1543,6 +1557,7 @@ def generate_team_tts(team_dir: Path, output_dir: Path, registry: ComponentRegis
         team_dir: Path to team directory (output/{team}/)
         output_dir: Base TTS output directory (tts_objects/)
         registry: Component registry for change detection
+        branch: Git branch for GitHub raw URLs (default: main)
     
     Returns:
         True if any components were updated
@@ -1580,7 +1595,7 @@ def generate_team_tts(team_dir: Path, output_dir: Path, registry: ComponentRegis
         # If only one card of this type, make it a single card
         if len(card_names) == 1:
             card_name = card_names[0]
-            images = find_card_images(cards_dir, card_type, f"{team_name}-{card_name}")
+            images = find_card_images(cards_dir, card_type, f"{team_name}-{card_name}", branch)
             
             if images['front']:
                 card = TTSCard(
@@ -1600,7 +1615,7 @@ def generate_team_tts(team_dir: Path, output_dir: Path, registry: ComponentRegis
         # Create deck for this type (multiple cards)
         cards_in_deck = []
         for card_name in card_names:
-            images = find_card_images(cards_dir, card_type, f"{team_name}-{card_name}")
+            images = find_card_images(cards_dir, card_type, f"{team_name}-{card_name}", branch)
             
             if not images['front']:
                 logger.warning("Missing front image for %s", card_name)
@@ -1634,7 +1649,7 @@ def generate_team_tts(team_dir: Path, output_dir: Path, registry: ComponentRegis
         token_images = sorted(tokens_dir.glob('*.png'))
         if token_images:
             dispenser_mesh_path = workspace_root / "config" / "defaults" / "tts-token" / "square-bag-mesh.obj"
-            dispenser_mesh_url = build_raw_url(dispenser_mesh_path, workspace_root)
+            dispenser_mesh_url = build_raw_url(dispenser_mesh_path, workspace_root, branch)
             token_bag_script_path = workspace_root / "config" / "defaults" / "tts-script" / "token-bag-script.lua"
             token_bag_script = load_text_file(token_bag_script_path)
 
@@ -1652,7 +1667,7 @@ def generate_team_tts(team_dir: Path, output_dir: Path, registry: ComponentRegis
                     continue
                 seen_slugs.add(token_slug)
 
-                image_url = build_raw_url(token_path, workspace_root)
+                image_url = build_raw_url(token_path, workspace_root, branch)
                 token = TTSToken(
                     registry=registry,
                     team_name=team_name,
@@ -1670,7 +1685,7 @@ def generate_team_tts(team_dir: Path, output_dir: Path, registry: ComponentRegis
 
             if dispensers:
                 token_bag_mesh_path = workspace_root / "config" / "defaults" / "tts-token" / "square-bag-mesh.obj"
-                token_bag_mesh_url = build_raw_url(token_bag_mesh_path, workspace_root)
+                token_bag_mesh_url = build_raw_url(token_bag_mesh_path, workspace_root, branch)
                 token_bag = TTSTokenBag(
                     registry=registry,
                     team_name=team_name,
@@ -1684,14 +1699,22 @@ def generate_team_tts(team_dir: Path, output_dir: Path, registry: ComponentRegis
         # Don't return early - continue to save cards even if tokens fail
         # return False
     
-    # Create cardbox (container for all decks and token bag)
+    # Create card box (container for all decks and token bag)
     # TODO: Extract proper faction and display name from metadata
     team_display_name = team_name.replace('-', ' ').title()
     faction = "Unknown"  # Will be extracted from metadata in future
     
-    # Default box mesh/texture (can be customized per team later)
-    mesh_url = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/add-warcom-pdf-processor/layers/kt-app/assets/cardbox-mesh.obj"
-    texture_url = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/add-warcom-pdf-processor/layers/kt-app/assets/cardbox-texture.png"
+    # Check for team-specific box, otherwise use default
+    team_box_dir = workspace_root / "config" / "teams" / team_name / "box"
+    if team_box_dir.exists():
+        mesh_path = team_box_dir / "card-box.obj"
+        texture_path = team_box_dir / "card-box-texture.jpg"
+    else:
+        mesh_path = workspace_root / "config" / "defaults" / "box" / "card-box.obj"
+        texture_path = workspace_root / "config" / "defaults" / "box" / "card-box-texture.jpg"
+    
+    mesh_url = build_raw_url(mesh_path, workspace_root, branch)
+    texture_url = build_raw_url(texture_path, workspace_root, branch)
 
     cardbox_script_path = workspace_root / "config" / "defaults" / "tts-script" / "tts-update-rules-in-box-script.lua"
     cardbox_script = load_text_file(cardbox_script_path)
@@ -1716,7 +1739,8 @@ def generate_team_tts(team_dir: Path, output_dir: Path, registry: ComponentRegis
         script_text=cardbox_script,
         component_path=f"{team_name}.cardbox.lua-script",
         script_output_path=output_dir / team_name / "tts" / "cardbox" / f"{team_name}-lua-script.lua",
-        workspace_root=workspace_root
+        workspace_root=workspace_root,
+        branch=branch
     )
 
     if token_bag:
@@ -1726,7 +1750,8 @@ def generate_team_tts(team_dir: Path, output_dir: Path, registry: ComponentRegis
             script_text=token_bag.lua_script,
             component_path=f"{team_name}.cardbox.token-bag.lua-script",
             script_output_path=output_dir / team_name / "tts" / "cardbox" / "token-bag" / f"{team_name}-token-bag.lua",
-            workspace_root=workspace_root
+            workspace_root=workspace_root,
+            branch=branch
         )
 
     # Build all components (triggers change detection)
@@ -1809,6 +1834,8 @@ def main():
     parser.add_argument('--teams', nargs='+', help='Specific teams to process (default: all)')
     parser.add_argument('--force', action='store_true',
                        help='Force regeneration even if unchanged')
+    parser.add_argument('--branch', default='main',
+                       help='Git branch for GitHub raw URLs (default: main)')
     parser.add_argument('--log-level', default='INFO',
                        choices=['DEBUG', 'INFO', 'WARNING', 'ERROR'],
                        help='Logging level (default: INFO)')
@@ -1846,7 +1873,7 @@ def main():
     updated_count = 0
     for team_dir in teams:
         try:
-            was_updated = generate_team_tts(team_dir, output_dir, registry)
+            was_updated = generate_team_tts(team_dir, output_dir, registry, args.branch)
             if was_updated:
                 updated_count += 1
         except Exception as e:
