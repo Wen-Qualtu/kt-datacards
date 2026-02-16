@@ -42,7 +42,7 @@ class TeamTokenBagGenerator:
 
     def _load_lua_script(self) -> str:
         """Load Lua script from default location."""
-        lua_file = Path('config/defaults/tts-token/token-bag-script.lua')
+        lua_file = Path('config/defaults/tts-script/token-bag-script.lua')
         if lua_file.exists():
             with open(lua_file) as f:
                 return f.read()

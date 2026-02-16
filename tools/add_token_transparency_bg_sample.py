@@ -11,11 +11,11 @@ Goal
 
 Usage
     # 1) Save your background screenshot somewhere in the repo, e.g.:
-    #    config/defaults/tts-token/token-bg-sample.png
+    #    config/defaults/tts-token/input/token-bg-sample.png
   # 2) Run:
     poetry run python script/tools/add_token_transparency_bg_sample.py \
     --team farstalker-kinband \
-        --bg-sample config/defaults/tts-token/token-bg-sample.png \
+        --bg-sample config/defaults/tts-token/input/token-bg-sample.png \
     --threshold 18
 
 Notes
@@ -1226,7 +1226,7 @@ def main() -> int:
     parser.add_argument(
         "--bg-sample",
         type=str,
-        default="config/defaults/tts-token/token-bg-sample.png",
+        default="config/defaults/tts-token/input/token-bg-sample.png",
         help=(
             "Path to a screenshot/crop containing only the card background tones. "
             "If omitted, the script learns background tones from token border pixels (less robust)."
@@ -1297,25 +1297,25 @@ def main() -> int:
     parser.add_argument(
         "--operative-template",
         type=str,
-        default="config/defaults/tts-token/template-operative-cutter.png",
+        default="config/defaults/tts-token/input/template-operative-cutter.png",
         help="Template PNG for the operative token shape (uses its alpha).",
     )
     parser.add_argument(
         "--round-template",
         type=str,
-        default="config/defaults/tts-token/template-round-cutter.png",
+        default="config/defaults/tts-token/input/template-round-cutter.png",
         help="Template PNG for the round token shape (uses its alpha).",
     )
     parser.add_argument(
         "--octagon-template",
         type=str,
-        default="config/defaults/tts-token/template-octagon-cutter.png",
+        default="config/defaults/tts-token/input/template-octagon-cutter.png",
         help="Template PNG for the octagon token shape (uses its alpha).",
     )
     parser.add_argument(
         "--diamond-template",
         type=str,
-        default="config/defaults/tts-token/template-diamond-cutter.png",
+        default="config/defaults/tts-token/input/template-diamond-cutter.png",
         help="Template PNG for the diamond token shape (uses its alpha).",
     )
     parser.add_argument("--template-scale-band", type=float, default=0.22)

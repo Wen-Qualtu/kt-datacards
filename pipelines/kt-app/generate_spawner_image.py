@@ -60,7 +60,7 @@ def generate_spawner_image():
     draw.text((x2, y2), text2, fill='#ffffff', font=font)
     
     # Save
-    output_path = Path(__file__).parent.parent / "config" / "defaults" / "tts-image" / "spawner-token.png"
+    output_path = Path(__file__).parent.parent / "config" / "defaults" / "tts-spawner" / "spawner-overview.png"
     output_path.parent.mkdir(parents=True, exist_ok=True)
     img.save(output_path, 'PNG')
     

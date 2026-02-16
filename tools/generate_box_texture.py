@@ -1,6 +1,6 @@
 """
 Generate card box texture for teams by compositing:
-- Base box template (dev/examples/box-side.png)
+- Base box template (tools/resources/box-side.png)
 - Landscape icon (from extracted icons)
 - Portrait icon (from extracted icons)
 - Team name text overlay
@@ -228,7 +228,7 @@ def generate_for_team(team_name: str, extracted_dir: Path = None, config_dir: Pa
         config_dir = Path('config')
     
     # Paths
-    template_path = Path('dev/examples/box-side.png')
+    template_path = Path('tools/resources/box-side.png')
     landscape_icon = extracted_dir / team_name / 'icons' / f'{team_name}-icon-landscape.jpg'
     portrait_icon = extracted_dir / team_name / 'icons' / f'{team_name}-icon-portrait.jpg'
     output_path = config_dir / 'teams' / team_name / 'box' / 'card-box-texture.jpg'

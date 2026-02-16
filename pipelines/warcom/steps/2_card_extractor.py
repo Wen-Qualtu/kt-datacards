@@ -622,11 +622,11 @@ def _merge_nearby_contours(contours: list, max_distance: int = 15) -> list:
                 ws.append(w)
                 hs.append(h)
             
-            # Combined bounding box
-            min_x = min(xs)
-            min_y = min(ys)
-            max_x = max(x + w for x, w in zip(xs, ws))
-            max_y = max(y + h for y, h in zip(ys, hs))
+            # Combined bounding box with 2-pixel padding to ensure we capture all pixels
+            min_x = max(0, min(xs) - 2)
+            min_y = max(0, min(ys) - 2)
+            max_x = max(x + w for x, w in zip(xs, ws)) + 2
+            max_y = max(y + h for y, h in zip(ys, hs)) + 2
             
             # Create a new contour from the combined bounding box
             # Note: max_x and max_y are exclusive ends, so subtract 1 for the corner coordinates
@@ -797,11 +797,8 @@ def extract_tokens_from_card(
         token_img = high_res_img[y1_hr:y2_hr, x1_hr:x2_hr]
         token_img = _tight_crop_token_image(token_img)
         
-        # Save token with team, page, and card prefix
-        if team_name:
-            token_filename = f'{team_name}_{card_filename_base}_token{idx:02d}.png'
-        else:
-            token_filename = f'{card_filename_base}_token{idx:02d}.png'
+        # Save token - card_filename_base already includes team prefix
+        token_filename = f'{card_filename_base}_token{idx:02d}.png'
         token_path = output_dir / token_filename
         _safe_unlink(token_path)
         cv2.imwrite(str(token_path), token_img)
@@ -1311,19 +1308,28 @@ def process_pdf_and_extract_all_cards(pdf_path: Path, templates: dict, output_di
             card_img = extract_card_region(page_img, card_coords, dpi_scale)
             
             # Save as PNG
-            filename_png = f"page{page_num:02d}_card{card_idx}_{template_type}.png"
+            if team_name:
+                filename_png = f"{team_name}_page{page_num:02d}_card{card_idx}_{template_type}.png"
+            else:
+                filename_png = f"page{page_num:02d}_card{card_idx}_{template_type}.png"
             output_path_png = output_dir / filename_png
             _safe_unlink(output_path_png)
             cv2.imwrite(str(output_path_png), card_img)
             
             # Save as PDF (preserving text layer)
-            filename_pdf = f"page{page_num:02d}_card{card_idx}_{template_type}.pdf"
+            if team_name:
+                filename_pdf = f"{team_name}_page{page_num:02d}_card{card_idx}_{template_type}.pdf"
+            else:
+                filename_pdf = f"page{page_num:02d}_card{card_idx}_{template_type}.pdf"
             output_path_pdf = output_dir / filename_pdf
             save_single_card_as_pdf(page, card_coords, output_path_pdf, dpi)
             
             # Check if this is a token guide card and extract tokens
             if template_type == 'portrait' and is_token_guide_card(page, card_coords, card_img):
-                card_base = f"page{page_num:02d}_card{card_idx}"
+                if team_name:
+                    card_base = f"{team_name}_page{page_num:02d}_card{card_idx}"
+                else:
+                    card_base = f"page{page_num:02d}_card{card_idx}"
                 tokens_dir = output_dir.parent / 'tokens'
                 tokens_dir.mkdir(parents=True, exist_ok=True)
                 

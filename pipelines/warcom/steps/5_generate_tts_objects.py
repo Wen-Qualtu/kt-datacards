@@ -604,10 +604,10 @@ def prepare_clean_tokens(team_name: str, workspace_root: Path) -> Tuple[Optional
 
     template_dir = workspace_root / "config" / "defaults" / "tts-token"
     template_paths = {
-        "operative": template_dir / "template-operative-cutter.png",
-        "round": template_dir / "template-round-cutter.png",
-        "octagon": template_dir / "template-octagon-cutter.png",
-        "diamond": template_dir / "template-diamond-cutter.png",
+        "operative": template_dir / "input" / "template-operative-cutter.png",
+        "round": template_dir / "input" / "template-round-cutter.png",
+        "octagon": template_dir / "input" / "template-octagon-cutter.png",
+        "diamond": template_dir / "input" / "template-diamond-cutter.png",
     }
     templates: Dict[str, Tuple[np.ndarray, Tuple[int, int]]] = {}
     for key, path in template_paths.items():
@@ -1577,8 +1577,8 @@ def generate_team_tts(team_dir: Path, output_dir: Path, registry: ComponentRegis
     for card_type, card_names in cards_by_type.items():
         deck_type = type_mapping.get(card_type, card_type)
         
-        # Special handling for operative-selection (usually single card)
-        if deck_type == 'operative-selection' and len(card_names) == 1:
+        # If only one card of this type, make it a single card
+        if len(card_names) == 1:
             card_name = card_names[0]
             images = find_card_images(cards_dir, card_type, f"{team_name}-{card_name}")
             
@@ -1594,10 +1594,10 @@ def generate_team_tts(team_dir: Path, output_dir: Path, registry: ComponentRegis
                     tags=TTSTagGenerator.get_card_tags(team_name, deck_type, bool(images['back']))
                 )
                 single_cards.append(card)
-                logger.info("Created single card: %s", card_name)
+                logger.info("Created single card: %s (%s)", card_name, deck_type)
             continue
         
-        # Create deck for this type
+        # Create deck for this type (multiple cards)
         cards_in_deck = []
         for card_name in card_names:
             images = find_card_images(cards_dir, card_type, f"{team_name}-{card_name}")
@@ -1635,7 +1635,7 @@ def generate_team_tts(team_dir: Path, output_dir: Path, registry: ComponentRegis
         if token_images:
             dispenser_mesh_path = workspace_root / "config" / "defaults" / "tts-token" / "square-bag-mesh.obj"
             dispenser_mesh_url = build_raw_url(dispenser_mesh_path, workspace_root)
-            token_bag_script_path = workspace_root / "config" / "defaults" / "tts-token" / "token-bag-script.lua"
+            token_bag_script_path = workspace_root / "config" / "defaults" / "tts-script" / "token-bag-script.lua"
             token_bag_script = load_text_file(token_bag_script_path)
 
             dispensers = []
@@ -1681,7 +1681,8 @@ def generate_team_tts(team_dir: Path, output_dir: Path, registry: ComponentRegis
                 logger.info("Created token bag with %d dispensers", len(dispensers))
     else:
         logger.error("Token processing failed for %s; missing name mapping.", team_name)
-        return False
+        # Don't return early - continue to save cards even if tokens fail
+        # return False
     
     # Create cardbox (container for all decks and token bag)
     # TODO: Extract proper faction and display name from metadata
@@ -1741,8 +1742,13 @@ def generate_team_tts(team_dir: Path, output_dir: Path, registry: ComponentRegis
     logger.info("Saving component JSONs...")
     team_output = output_dir / team_name / "tts"
     
+    # Clean up old TTS directory to remove stale files
+    cardbox_dir = team_output / "cardbox"
+    if cardbox_dir.exists():
+        shutil.rmtree(cardbox_dir, ignore_errors=True)
+    
     # Save cardbox container
-    cardbox_file = team_output / "cardbox.json"
+    cardbox_file = team_output / f"{team_name}-cardbox.json"
     cardbox_file.parent.mkdir(parents=True, exist_ok=True)
     with open(cardbox_file, 'w', encoding='utf-8') as f:
         json.dump(cardbox_content, f, indent=2, ensure_ascii=False)
@@ -1766,7 +1772,7 @@ def generate_team_tts(team_dir: Path, output_dir: Path, registry: ComponentRegis
     
     # Save single cards
     for card in single_cards:
-        card_file = team_output / "cardbox" / f"{team_name}-{card.card_type}.json"
+        card_file = team_output / "cardbox" / "single-cards" / f"{team_name}-{card.card_type}.json"
         card_file.parent.mkdir(parents=True, exist_ok=True)
         if card._content:
             with open(card_file, 'w', encoding='utf-8') as f:

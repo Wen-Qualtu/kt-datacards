@@ -36,7 +36,7 @@ logger = logging.getLogger(__name__)
 TARGET_SIZE = 512  # Target resolution for tokens
 BASE_DIR = Path("layers/warcom/extracted")
 CONFIG_PATH = Path("config/team-config.yaml")
-TEMPLATE_DIR = Path("config/defaults/tts-token")
+TEMPLATE_DIR = Path("config/defaults/tts-token/input")
 
 
 def slugify(text: str) -> str:
@@ -782,7 +782,7 @@ def process_team(team_slug: str, team_config: Dict, all_teams_config: Dict) -> D
     """
     team_path = BASE_DIR / team_slug
     tokens_dir = team_path / "tokens"
-    metadata_path = tokens_dir / 'tokens_metadata.json'
+    metadata_path = tokens_dir / f'{team_slug}_tokens_metadata.json'
     output_dir = Path("output") / team_slug / "tokens"
     
     stats = {'processed': 0, 'skipped': 0, 'failed': 0}

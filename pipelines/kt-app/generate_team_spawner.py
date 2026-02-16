@@ -12,7 +12,7 @@ def generate_spawner():
     # Paths
     script_dir = Path(__file__).parent.parent
     spawner_template_path = script_dir / "tts_objects" / "display-table" / "kt_team_spawner.json"
-    spawner_script_path = script_dir / "config" / "defaults" / "tts-script" / "team-spawner-script.lua"
+    spawner_script_path = script_dir / "config" / "defaults" / "tts-spawner" / "team-spawner-script.lua"
     output_path = script_dir / "tts_objects" / "display-table" / "kt_team_spawner.json"
     
     print(f"Loading spawner template from: {spawner_template_path}")
