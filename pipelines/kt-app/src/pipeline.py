@@ -65,7 +65,7 @@ class DatacardPipeline:
         tts_objects_path = project_root / 'tts_objects'
         self.url_generator = URLGenerator(
             output_dir=output_v2_dir,
-            github_base="https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2",
+            github_base="https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/add-warcom-pdf-processor/output_v2",
             tts_objects_dir=tts_objects_path
         )
         

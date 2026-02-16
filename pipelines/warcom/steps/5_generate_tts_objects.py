@@ -1690,8 +1690,8 @@ def generate_team_tts(team_dir: Path, output_dir: Path, registry: ComponentRegis
     faction = "Unknown"  # Will be extracted from metadata in future
     
     # Default box mesh/texture (can be customized per team later)
-    mesh_url = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/layers/kt-app/assets/cardbox-mesh.obj"
-    texture_url = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/layers/kt-app/assets/cardbox-texture.png"
+    mesh_url = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/add-warcom-pdf-processor/layers/kt-app/assets/cardbox-mesh.obj"
+    texture_url = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/add-warcom-pdf-processor/layers/kt-app/assets/cardbox-texture.png"
 
     cardbox_script_path = workspace_root / "config" / "defaults" / "tts-script" / "tts-update-rules-in-box-script.lua"
     cardbox_script = load_text_file(cardbox_script_path)

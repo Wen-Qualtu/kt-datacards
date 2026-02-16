@@ -277,18 +277,18 @@ def create_bag(team_name, team_tag, contained_objects, lua_script, texture_url=N
         # Always use team-specific mesh URL (even if it's a copy of default)
         # This allows backend updates per team
         if faction:
-            mesh_url = f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/{faction}/{team_folder_name}/tts/{team_folder_name}-card-box.obj"
+            mesh_url = f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/add-warcom-pdf-processor/output_v2/{faction}/{team_folder_name}/tts/{team_folder_name}-card-box.obj"
         else:
             # Fallback if faction not provided
-            mesh_url = f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/config/defaults/box/card-box.obj"
+            mesh_url = f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/add-warcom-pdf-processor/config/defaults/box/card-box.obj"
     
     # Texture URL should always come from parameter (GitHub URL from datacards-urls.json)
     if not texture_url:
         # Fallback: construct team-specific texture URL
         if faction:
-            texture_url = f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/{faction}/{team_folder_name}/tts/{team_folder_name}-card-box-texture.jpg"
+            texture_url = f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/add-warcom-pdf-processor/output_v2/{faction}/{team_folder_name}/tts/{team_folder_name}-card-box-texture.jpg"
         else:
-            texture_url = f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/config/defaults/box/card-box-texture.jpg"
+            texture_url = f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/add-warcom-pdf-processor/config/defaults/box/card-box-texture.jpg"
     
     # Create LuaScriptState with positions for each contained object.
     # IMPORTANT: Placement must be stable across teams.

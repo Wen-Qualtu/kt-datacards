@@ -286,7 +286,7 @@ guid = hashlib.md5(f"{team}_{component_name}".encode()).hexdigest()[:6]
 ```python
 def build_raw_url(file_path: Path, workspace_root: Path) -> str:
     rel_path = file_path.relative_to(workspace_root)
-    return f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/{rel_path}"
+    return f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/add-warcom-pdf-processor/{rel_path}"
 ```
 
 **Examples:**

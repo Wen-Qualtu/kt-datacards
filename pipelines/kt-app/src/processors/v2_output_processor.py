@@ -36,7 +36,7 @@ class V2OutputProcessor:
             Number of URLs generated
         """
         if github_base is None:
-            github_base = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2"
+            github_base = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/add-warcom-pdf-processor/output_v2"
         
         import json
         

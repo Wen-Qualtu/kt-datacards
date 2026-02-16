@@ -113,7 +113,7 @@ def generate_combined_metadata():
                 print(f"    Warning: Using file mtime for {team_slug} tokens (no LuaScriptState)")
             
             # Build URL
-            tokens_url = f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/tts_objects/{team_slug}/tokens/{team_slug}-tokenbag.json"
+            tokens_url = f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/add-warcom-pdf-processor/tts_objects/{team_slug}/tokens/{team_slug}-tokenbag.json"
             
             # Add to existing entry or create new one
             if team_slug in metadata_dict:

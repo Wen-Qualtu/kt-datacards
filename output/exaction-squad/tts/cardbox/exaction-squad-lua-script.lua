@@ -1,5 +1,5 @@
 ﻿-- constants
-local TTS_METADATA_URL = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/tts-metadata.json"
+local TTS_METADATA_URL = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/add-warcom-pdf-processor/output_v2/tts-metadata.json"
 
 local BUTTON_SETUP_TOKENS = {
   label="Setup",

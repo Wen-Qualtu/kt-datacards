@@ -11,7 +11,7 @@ class URLGenerator:
     def __init__(
         self,
         output_dir: Path = Path('output'),
-        github_base: str = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output",
+        github_base: str = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/add-warcom-pdf-processor/output",
         tts_objects_dir: Path = Path('tts_objects')
     ):
         """
