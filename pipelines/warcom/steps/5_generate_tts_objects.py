@@ -578,33 +578,7 @@ def prepare_clean_tokens(team_name: str, workspace_root: Path) -> Tuple[Optional
         shutil.rmtree(final_tokens_dir, ignore_errors=True)
     final_tokens_dir.mkdir(parents=True, exist_ok=True)
 
-    # Build extraction-metadata.json for template selection
     config = load_team_config()
-    tokens_meta = []
-    missing_names = []
-    for token_path in sorted(extracted_tokens_dir.glob("*.png")):
-        display_name = name_map.get(token_path.name, "").strip()
-        display_name = normalize_token_display_name(display_name)
-        if not display_name:
-            missing_names.append(token_path.name)
-            continue
-        shape = get_token_shape_from_config(team_name, display_name, config)
-        tokens_meta.append({
-            "filename": token_path.name,
-            "name": display_name,
-            "shape": shape,
-        })
-
-    if missing_names:
-        logger.error("Missing token name mappings for %s: %s", team_name, ", ".join(missing_names))
-        return None, {}
-
-    extraction_meta_path = extracted_tokens_dir / "extraction-metadata.json"
-    extraction_meta_path.write_text(
-        json.dumps({"tokens": tokens_meta}, indent=2),
-        encoding="utf-8",
-    )
-
     template_dir = workspace_root / "config" / "defaults" / "tts-token"
     template_paths = {
         "operative": template_dir / "input" / "template-operative-cutter.png",
@@ -1805,7 +1779,7 @@ def generate_team_tts(team_dir: Path, output_dir: Path, registry: ComponentRegis
 
     # Save token bag, dispensers, and tokens
     if token_bag and token_bag._content:
-        token_bag_file = team_output / "cardbox" / "token-bag" / "token-bag.json"
+        token_bag_file = team_output / "cardbox" / "token-bag" / f"{team_name}-token-bag.json"
         token_bag_file.parent.mkdir(parents=True, exist_ok=True)
         with open(token_bag_file, 'w', encoding='utf-8') as f:
             json.dump(token_bag._content, f, indent=2, ensure_ascii=False)

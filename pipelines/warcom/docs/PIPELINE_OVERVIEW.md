@@ -58,6 +58,9 @@ poetry run python pipelines/warcom/steps/4_token_extraction.py --teams kommandos
 
 # Step 5
 poetry run python pipelines/warcom/steps/5_generate_tts_objects.py --teams kommandos --force
+
+# Step 5 with custom branch for GitHub URLs (for testing)
+poetry run python pipelines/warcom/steps/5_generate_tts_objects.py --branch dev --force
 ```
 
 ### Parallel Processing

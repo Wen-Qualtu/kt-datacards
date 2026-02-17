@@ -284,14 +284,21 @@ guid = hashlib.md5(f"{team}_{component_name}".encode()).hexdigest()[:6]
 **GitHub Raw URLs:**
 
 ```python
-def build_raw_url(file_path: Path, workspace_root: Path) -> str:
+def build_raw_url(file_path: Path, workspace_root: Path, branch: str = "main") -> str:
     rel_path = file_path.relative_to(workspace_root)
-    return f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/add-warcom-pdf-processor/{rel_path}"
+    return f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/{branch}/{rel_path}"
 ```
 
+**Branch Parameter:**
+- Default: `main` (production branch)
+- Used for all card images, mesh/texture files, and Lua scripts
+- Allows testing changes on feature branches before merging
+- Pass via CLI: `--branch feature-branch-name`
+
 **Examples:**
-- Card image: `https://raw.githubusercontent.com/.../output/kommandos/cards/datacards/kommandos-kommando-boy-front.jpg`
-- Deck JSON: `https://raw.githubusercontent.com/.../output/kommandos/tts/cardbox/decks/kommandos-datacards.json`
+- Card image: `https://raw.githubusercontent.com/.../main/output/kommandos/cards/datacards/kommandos-kommando-boy-front.jpg`
+- Deck JSON: `https://raw.githubusercontent.com/.../main/output/kommandos/tts/cardbox/decks/kommandos-datacards.json`
+- Feature branch: `https://raw.githubusercontent.com/.../add-warcom-pdf-processor/output/...`
 
 **Why GitHub Raw?**
 - Direct file access (no HTML wrapper)
@@ -454,8 +461,14 @@ python ... --teams kommandos pathfinders
 # Force regeneration (ignore change detection)
 python ... --force
 
+# Use specific Git branch for GitHub raw URLs (default: main)
+python ... --branch add-warcom-pdf-processor
+
 # Debug logging
 python ... --log-level DEBUG
+
+# Combined example
+python ... --teams battleclade --branch dev --force
 ```
 
 ---
@@ -584,4 +597,4 @@ python ... --teams kommandos --force --log-level DEBUG
 
 ---
 
-**Last Updated**: February 16, 2026
+**Last Updated**: February 17, 2026
