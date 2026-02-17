@@ -1209,7 +1209,7 @@ class TTSTokenBag(TTSComponent):
                 "rotY": 270.0,
                 "rotZ": 0.0,
                 "scaleX": 1.47,
-                "scaleY": 0.1,
+                "scaleY": 1.0,
                 "scaleZ": 1.47
             },
             "Nickname": f"{self.team_name.replace('-', ' ').title()} tokens",
