@@ -274,6 +274,41 @@ def load_text_file(file_path: Path) -> str:
     return text.replace('\ufeff', '').replace('\u200b', '')
 
 
+def get_team_icon_url(team_name: str, workspace_root: Path, output_dir: Path, branch: str) -> str:
+    """Copy team icon to output folder and return GitHub raw URL.
+    
+    Looks for team-specific icon in config/teams/{team}/tts-image/,
+    falls back to default-icon.png if not found.
+    """
+    team_icon_dir = workspace_root / "config" / "teams" / team_name / "tts-image"
+    icon_source = None
+    
+    # Check for team-specific icon
+    if team_icon_dir.exists():
+        exact_match = team_icon_dir / f"{team_name}-icon.png"
+        if exact_match.exists():
+            icon_source = exact_match
+        else:
+            # Look for any file with 'icon' in the name
+            icon_matches = sorted(team_icon_dir.glob('*icon*.png'))
+            if icon_matches:
+                icon_source = icon_matches[0]
+    
+    # Fallback to default icon
+    if not icon_source:
+        icon_source = workspace_root / "config" / "defaults" / "tts-image" / "default-icon.png"
+    
+    # Copy to output folder
+    team_tts_dir = output_dir / team_name / "tts"
+    team_tts_dir.mkdir(parents=True, exist_ok=True)
+    dest_file = team_tts_dir / f"{team_name}-icon.png"
+    
+    shutil.copy2(icon_source, dest_file)
+    
+    # Return GitHub raw URL
+    return build_raw_url(dest_file, workspace_root, branch)
+
+
 def _ensure_bgr_alpha(img: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
     """Return (bgr, alpha) from a possibly alpha-less image."""
     if img.ndim == 2:
@@ -1095,12 +1130,14 @@ class TTSTokenBag(TTSComponent):
         team_name: str,
         dispensers: List[TTSTokenDispenser],
         mesh_url: str,
+        icon_url: str,
         lua_script: str
     ):
         super().__init__(registry)
         self.team_name = team_name
         self.dispensers = dispensers
         self.mesh_url = mesh_url
+        self.icon_url = icon_url
         self.lua_script = lua_script
 
     def get_component_path(self) -> str:
@@ -1149,7 +1186,7 @@ class TTSTokenBag(TTSComponent):
             "Number": 0,
             "CustomMesh": {
                 "MeshURL": self.mesh_url,
-                "DiffuseURL": "",
+                "DiffuseURL": self.icon_url,
                 "NormalURL": "",
                 "ColliderURL": "",
                 "Convex": True,
@@ -1261,8 +1298,11 @@ class TTSCardBox(TTSComponent):
         card_timestamp = max(card_timestamps) if card_timestamps else ""
         token_timestamp = max(token_timestamps) if token_timestamps else ""
         
+        # Build memory list with positions for each contained object
+        memory_list = self._build_memory_list(deck_objects)
+        
         lua_script_state = {
-            "ml": {},
+            "ml": memory_list,
             "rr": 270,
             "teamSlug": self.team_name,
             "lastCardUpdate": card_timestamp,
@@ -1327,6 +1367,81 @@ class TTSCardBox(TTSComponent):
                 }
             ]
         }
+    
+    def _build_memory_list(self, deck_objects: List[Dict]) -> Dict[str, Dict]:
+        """Build memory list mapping GUIDs to positions for TTS Lua script.
+        
+        This tells the cardbox where to place each deck when 'Place' button is clicked.
+        """
+        # Define positions for each deck type
+        position_by_type = {
+            # Card decks - Row 1 (z = -4.0)
+            "faction-rules": {"x": -4.0, "y": -2.50, "z": -4.0, "rot_y": 180.0},
+            "operative-selection": {"x": -2.0, "y": -2.50, "z": -4.0, "rot_y": 180.0},
+            "datacards": {"x": 2.0, "y": -2.50, "z": -4.0, "rot_y": 180.0},
+            # Card decks - Row 2 (z = -7.40)
+            "strategy-ploys": {"x": -4.0, "y": -2.50, "z": -7.40, "rot_y": 180.0},
+            "firefight-ploys": {"x": -2.0, "y": -2.50, "z": -7.40, "rot_y": 180.0},
+            "equipment": {"x": 0.0, "y": -2.50, "z": -7.40, "rot_y": 180.0},
+            "token-guide": {"x": 2.0, "y": -2.50, "z": -7.40, "rot_y": 180.0},
+            # Token bag
+            "token-bag": {"x": 4.0, "y": -2.50, "z": -8.0, "rot_y": 270.0},
+        }
+        
+        # Normalize nickname for matching
+        def normalize_nickname(nickname: str) -> str:
+            return nickname.lower().strip().replace("_", " ").replace("-", " ")
+        
+        # Match deck type from nickname
+        nickname_to_type = {
+            "operative selection": "operative-selection",
+            "faction rules": "faction-rules",
+            "datacards": "datacards",
+            "equipment": "equipment",
+            "firefight ploys": "firefight-ploys",
+            "strategy ploys": "strategy-ploys",
+            "token guide": "token-guide",
+        }
+        
+        memory_list = {}
+        
+        for obj in deck_objects:
+            guid = obj.get("GUID")
+            nickname = obj.get("Nickname", "")
+            name = obj.get("Name", "")
+            
+            if not guid:
+                continue
+            
+            # Determine object type
+            obj_type = None
+            
+            # Check if it's a token bag
+            if name == "Custom_Model_Bag" and "token" in normalize_nickname(nickname):
+                obj_type = "token-bag"
+            else:
+                # Try to match by nickname
+                norm_nickname = normalize_nickname(nickname)
+                if norm_nickname in nickname_to_type:
+                    obj_type = nickname_to_type[norm_nickname]
+                elif "deck" in norm_nickname:
+                    # Extract type from nickname like "datacards deck"
+                    parts = norm_nickname.split()
+                    if parts:
+                        potential_type = parts[0]
+                        if potential_type in position_by_type:
+                            obj_type = potential_type
+            
+            # Get position for this type
+            if obj_type and obj_type in position_by_type:
+                pos = position_by_type[obj_type]
+                memory_list[guid] = {
+                    "lock": False,
+                    "pos": {"x": pos["x"], "y": pos["y"], "z": pos["z"]},
+                    "rot": {"x": 0.0169, "y": pos["rot_y"], "z": 0.0799},
+                }
+        
+        return memory_list
     
     def _generate_guid(self) -> str:
         """Generate deterministic GUID"""
@@ -1660,11 +1775,13 @@ def generate_team_tts(team_dir: Path, output_dir: Path, registry: ComponentRegis
             if dispensers:
                 token_bag_mesh_path = workspace_root / "config" / "defaults" / "tts-token" / "square-bag-mesh.obj"
                 token_bag_mesh_url = build_raw_url(token_bag_mesh_path, workspace_root, branch)
+                token_bag_icon_url = get_team_icon_url(team_name, workspace_root, output_dir, branch)
                 token_bag = TTSTokenBag(
                     registry=registry,
                     team_name=team_name,
                     dispensers=dispensers,
                     mesh_url=token_bag_mesh_url,
+                    icon_url=token_bag_icon_url,
                     lua_script=token_bag_script
                 )
                 logger.info("Created token bag with %d dispensers", len(dispensers))
