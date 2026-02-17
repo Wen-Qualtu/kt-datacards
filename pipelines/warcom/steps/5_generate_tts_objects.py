@@ -298,14 +298,16 @@ def get_team_icon_url(team_name: str, workspace_root: Path, output_dir: Path, br
     if not icon_source:
         icon_source = workspace_root / "config" / "defaults" / "tts-image" / "default-icon.png"
     
-    # Copy to output folder
-    team_tts_dir = output_dir / team_name / "tts"
-    team_tts_dir.mkdir(parents=True, exist_ok=True)
-    dest_file = team_tts_dir / f"{team_name}-icon.png"
+    # Don't copy yet - will be copied after cardbox directory cleanup
+    # Just determine the destination path and return the URL
+    dest_file = output_dir / team_name / "tts" / "cardbox" / "token-bag" / f"{team_name}-icon.png"
     
-    shutil.copy2(icon_source, dest_file)
+    # Store source path for later copying (attached to function for retrieval)
+    if not hasattr(get_team_icon_url, '_pending_copies'):
+        get_team_icon_url._pending_copies = {}
+    get_team_icon_url._pending_copies[team_name] = (icon_source, dest_file)
     
-    # Return GitHub raw URL
+    # Return GitHub raw URL (file will be copied later)
     return build_raw_url(dest_file, workspace_root, branch)
 
 
@@ -1480,10 +1482,17 @@ class TTSCardBox(TTSComponent):
             # Get position for this type
             if obj_type and obj_type in position_by_type:
                 pos = position_by_type[obj_type]
+                
+                # Token bags need flat rotation (x=0, z=0), card decks use tilted rotation
+                if obj_type == "token-bag":
+                    rot = {"x": 0.0, "y": pos["rot_y"], "z": 0.0}
+                else:
+                    rot = {"x": 0.0169, "y": pos["rot_y"], "z": 0.0799}
+                
                 memory_list[guid] = {
                     "lock": False,
                     "pos": {"x": pos["x"], "y": pos["y"], "z": pos["z"]},
-                    "rot": {"x": 0.0169, "y": pos["rot_y"], "z": 0.0799},
+                    "rot": rot,
                 }
         
         return memory_list
@@ -1703,6 +1712,9 @@ def generate_team_tts(team_dir: Path, output_dir: Path, registry: ComponentRegis
 
     logger.info("Processing %s...", team_name)
     
+    # Initialize pending mesh copy variable
+    pending_mesh_copy = None
+    
     # Organize cards by type
     cards_by_type = organize_cards_by_type(cards_dir)
     
@@ -1818,13 +1830,12 @@ def generate_team_tts(team_dir: Path, output_dir: Path, registry: ComponentRegis
                 dispensers.append(dispenser)
 
             if dispensers:
-                # Copy token bag mesh to output folder (TTS should only reference output, never config)
+                # Don't copy mesh yet - will be copied after cardbox directory cleanup
                 source_bag_mesh = workspace_root / "config" / "defaults" / "tts-token" / "square-bag-mesh.obj"
-                team_tts_dir = output_dir / team_name / "tts"
-                team_tts_dir.mkdir(parents=True, exist_ok=True)
-                output_bag_mesh = team_tts_dir / f"{team_name}-token-bag.obj"
+                output_bag_mesh = output_dir / team_name / "tts" / "cardbox" / "token-bag" / f"{team_name}-token-bag.obj"
                 
-                shutil.copy2(source_bag_mesh, output_bag_mesh)
+                # Store for later copying
+                pending_mesh_copy = (source_bag_mesh, output_bag_mesh)
                 
                 token_bag_mesh_url = build_raw_url(output_bag_mesh, workspace_root, branch)
                 token_bag_icon_url = get_team_icon_url(team_name, workspace_root, output_dir, branch)
@@ -1851,11 +1862,15 @@ def generate_team_tts(team_dir: Path, output_dir: Path, registry: ComponentRegis
     team_mesh_path = workspace_root / "config" / "teams" / team_name / "box" / "card-box.obj"
     team_texture_path = workspace_root / "config" / "teams" / team_name / "box" / "card-box-texture.jpg"
     
-    if team_mesh_path.exists() and team_texture_path.exists():
+    # Check mesh and texture independently - allow mixing team/default files
+    if team_mesh_path.exists():
         source_mesh_path = team_mesh_path
-        source_texture_path = team_texture_path
     else:
         source_mesh_path = workspace_root / "config" / "defaults" / "box" / "card-box.obj"
+    
+    if team_texture_path.exists():
+        source_texture_path = team_texture_path
+    else:
         source_texture_path = workspace_root / "config" / "defaults" / "box" / "card-box-texture.jpg"
     
     # Copy box assets to output folder (TTS should only reference output, never config)
@@ -1978,6 +1993,22 @@ def generate_team_tts(team_dir: Path, output_dir: Path, registry: ComponentRegis
                 token_file = dispenser_file.parent / f"{team_name}-{token_slug}-token.json"
                 with open(token_file, 'w', encoding='utf-8') as f:
                     json.dump(dispenser.token._content, f, indent=2, ensure_ascii=False)
+        
+        # NOW copy the token bag mesh and icon files after cardbox directory is set up
+        token_bag_dir = team_output / "cardbox" / "token-bag"
+        
+        # Copy icon file if pending
+        if hasattr(get_team_icon_url, '_pending_copies') and team_name in get_team_icon_url._pending_copies:
+            icon_source, icon_dest = get_team_icon_url._pending_copies[team_name]
+            shutil.copy2(icon_source, icon_dest)
+            logger.info("Copied token bag icon to %s", icon_dest)
+            del get_team_icon_url._pending_copies[team_name]
+        
+        # Copy mesh file if pending
+        if 'pending_mesh_copy' in locals():
+            mesh_source, mesh_dest = pending_mesh_copy
+            shutil.copy2(mesh_source, mesh_dest)
+            logger.info("Copied token bag mesh to %s", mesh_dest)
     
     logger.info("Saved to %s", team_output)
     
