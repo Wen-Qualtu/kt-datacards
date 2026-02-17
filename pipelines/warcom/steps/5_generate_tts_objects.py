@@ -1151,6 +1151,50 @@ class TTSTokenBag(TTSComponent):
         for dispenser in self.dispensers:
             dispenser_content, _ = dispenser.build()
             dispenser_objects.append(dispenser_content)
+        
+        # Create icon tile as a child object (displays team icon on top of bag)
+        icon_tile_guid = hashlib.md5(f"{self.team_name}_icon_tile".encode('utf-8')).hexdigest()[:6]
+        icon_tile = {
+            "GUID": icon_tile_guid,
+            "Name": "Custom_Tile",
+            "Transform": {
+                "posX": 0.0,
+                "posY": -0.5,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 270.0,
+                "rotZ": 0.0,
+                "scaleX": 0.5,
+                "scaleY": 10.0,
+                "scaleZ": 0.5
+            },
+            "Nickname": "",
+            "Description": "",
+            "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0
+            },
+            "Locked": False,
+            "Grid": True,
+            "Snap": True,
+            "Autoraise": True,
+            "Sticky": True,
+            "Tooltip": True,
+            "Hands": False,
+            "CustomImage": {
+                "ImageURL": self.icon_url,
+                "ImageSecondaryURL": self.icon_url,
+                "ImageScalar": 1.0,
+                "WidthScale": 0.0,
+                "CustomTile": {
+                    "Type": 0,
+                    "Thickness": 0.1,
+                    "Stackable": False,
+                    "Stretch": True
+                }
+            }
+        }
 
         return {
             "GUID": self._generate_guid(),
@@ -1186,7 +1230,7 @@ class TTSTokenBag(TTSComponent):
             "Number": 0,
             "CustomMesh": {
                 "MeshURL": self.mesh_url,
-                "DiffuseURL": self.icon_url,
+                "DiffuseURL": "",
                 "NormalURL": "",
                 "ColliderURL": "",
                 "Convex": True,
@@ -1199,7 +1243,8 @@ class TTSTokenBag(TTSComponent):
             },
             "LuaScript": self.lua_script,
             "LuaScriptState": "",
-            "ContainedObjects": dispenser_objects
+            "ContainedObjects": dispenser_objects,
+            "ChildObjects": [icon_tile]
         }
 
     def _generate_guid(self) -> str:
