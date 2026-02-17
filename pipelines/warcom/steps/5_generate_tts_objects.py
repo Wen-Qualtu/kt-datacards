@@ -1773,8 +1773,15 @@ def generate_team_tts(team_dir: Path, output_dir: Path, registry: ComponentRegis
                 dispensers.append(dispenser)
 
             if dispensers:
-                token_bag_mesh_path = workspace_root / "config" / "defaults" / "tts-token" / "square-bag-mesh.obj"
-                token_bag_mesh_url = build_raw_url(token_bag_mesh_path, workspace_root, branch)
+                # Copy token bag mesh to output folder (TTS should only reference output, never config)
+                source_bag_mesh = workspace_root / "config" / "defaults" / "tts-token" / "square-bag-mesh.obj"
+                team_tts_dir = output_dir / team_name / "tts"
+                team_tts_dir.mkdir(parents=True, exist_ok=True)
+                output_bag_mesh = team_tts_dir / f"{team_name}-token-bag.obj"
+                
+                shutil.copy2(source_bag_mesh, output_bag_mesh)
+                
+                token_bag_mesh_url = build_raw_url(output_bag_mesh, workspace_root, branch)
                 token_bag_icon_url = get_team_icon_url(team_name, workspace_root, output_dir, branch)
                 token_bag = TTSTokenBag(
                     registry=registry,
