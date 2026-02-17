@@ -1678,17 +1678,29 @@ def generate_team_tts(team_dir: Path, output_dir: Path, registry: ComponentRegis
     team_display_name = team_name.replace('-', ' ').title()
     faction = "Unknown"  # Will be extracted from metadata in future
     
-    # Check for team-specific box, otherwise use default
-    team_box_dir = workspace_root / "config" / "teams" / team_name / "box"
-    if team_box_dir.exists():
-        mesh_path = team_box_dir / "card-box.obj"
-        texture_path = team_box_dir / "card-box-texture.jpg"
-    else:
-        mesh_path = workspace_root / "config" / "defaults" / "box" / "card-box.obj"
-        texture_path = workspace_root / "config" / "defaults" / "box" / "card-box-texture.jpg"
+    # Check for team-specific box files, otherwise use defaults
+    team_mesh_path = workspace_root / "config" / "teams" / team_name / "box" / "card-box.obj"
+    team_texture_path = workspace_root / "config" / "teams" / team_name / "box" / "card-box-texture.jpg"
     
-    mesh_url = build_raw_url(mesh_path, workspace_root, branch)
-    texture_url = build_raw_url(texture_path, workspace_root, branch)
+    if team_mesh_path.exists() and team_texture_path.exists():
+        source_mesh_path = team_mesh_path
+        source_texture_path = team_texture_path
+    else:
+        source_mesh_path = workspace_root / "config" / "defaults" / "box" / "card-box.obj"
+        source_texture_path = workspace_root / "config" / "defaults" / "box" / "card-box-texture.jpg"
+    
+    # Copy box assets to output folder (TTS should only reference output, never config)
+    team_tts_dir = output_dir / team_name / "tts"
+    team_tts_dir.mkdir(parents=True, exist_ok=True)
+    
+    output_mesh_path = team_tts_dir / f"{team_name}-card-box.obj"
+    output_texture_path = team_tts_dir / f"{team_name}-card-box-texture.jpg"
+    
+    shutil.copy2(source_mesh_path, output_mesh_path)
+    shutil.copy2(source_texture_path, output_texture_path)
+    
+    mesh_url = build_raw_url(output_mesh_path, workspace_root, branch)
+    texture_url = build_raw_url(output_texture_path, workspace_root, branch)
 
     cardbox_script_path = workspace_root / "config" / "defaults" / "tts-script" / "tts-update-rules-in-box-script.lua"
     cardbox_script = load_text_file(cardbox_script_path)
