@@ -2,7 +2,7 @@
 
 ## Purpose
 
-The warcom pipeline extracts Kill Team datacards and tokens from official PDF rules documents downloaded from Warhammer Community (warcom). It processes PDFs through a 5-step pipeline to produce individual card images, tokens, and TTS-compatible JSON objects.
+The warcom pipeline extracts Kill Team datacards and tokens from official PDF rules documents downloaded from Warhammer Community (warcom). It processes PDFs through a 6-step pipeline to produce individual card images, tokens, and TTS-compatible JSON objects.
 
 ---
 
@@ -11,7 +11,8 @@ The warcom pipeline extracts Kill Team datacards and tokens from official PDF ru
 | Step | Script | Input | Output | Purpose |
 |------|--------|-------|--------|---------|
 | **1** | `1_scrape_warcom_killteam_downloads.py` | Warcom website | `layers/warcom/staging/*.pdf` | Download PDFs from warcom downloads page |
-| **2** | `2_card_extractor.py` | `layers/warcom/staging/*.pdf` | `layers/warcom/extracted/{team}/cards/*.pdf`<br>`layers/warcom/extracted/{team}/tokens/*.png` | Extract individual cards and tokens using template matching |
+| **2a** | `2a_extract_icons_and_artwork.py` | `layers/warcom/staging/*.pdf` | `layers/warcom/extracted/{team}/icons/*.jpg`<br>`layers/warcom/extracted/{team}/artwork/*.{jpg,png}` | Extract team icons and artwork images with perceptual deduplication |
+| **2b** | `2b_card_extractor.py` | `layers/warcom/staging/*.pdf` | `layers/warcom/extracted/{team}/cards/*.pdf`<br>`layers/warcom/extracted/{team}/tokens/*.png` | Extract individual cards and tokens using template matching |
 | **3** | `3_card_classification.py` | `layers/warcom/extracted/{team}/cards/*.pdf` | `output/{team}/cards/{type}/*.jpg` | Classify cards by type and convert to PNG with rounded corners |
 | **4** | `4_token_extraction.py` | `layers/warcom/extracted/{team}/tokens/*.png`<br>`layers/warcom/extracted/{team}/tokens/token-names.json` | `output/{team}/tokens/*.png` | Match tokens to names, apply shape templates, make transparent |
 | **5** | `5_generate_tts_objects.py` | `output/{team}/cards/**/*.jpg`<br>`output/{team}/tokens/*.png` | `output/{team}/tts/**/*.json`<br>`output/.tts-metadata.json` | Generate TTS JSON objects with change detection |
@@ -78,14 +79,16 @@ pipelines/warcom/
 ├── docs/
 │   ├── PIPELINE_OVERVIEW.md          # This file
 │   ├── STEP_1_SCRAPING.md             # Step 1 detailed logic
-│   ├── STEP_2_EXTRACTION.md           # Step 2 detailed logic
+│   ├── STEP_2A_ICONS_ARTWORK.md       # Step 2a detailed logic
+│   ├── STEP_2B_CARD_EXTRACTION.md     # Step 2b detailed logic
 │   ├── STEP_3_CLASSIFICATION.md       # Step 3 detailed logic
 │   ├── STEP_4_TOKEN_PROCESSING.md     # Step 4 detailed logic
 │   └── STEP_5_TTS_GENERATION.md       # Step 5 detailed logic
 ├── pdf_process_pipeline.py            # Main orchestrator (steps 1-3)
 └── steps/
     ├── 1_scrape_warcom_killteam_downloads.py
-    ├── 2_card_extractor.py
+    ├── 2a_extract_icons_and_artwork.py
+    ├── 2b_card_extractor.py
     ├── 3_card_classification.py
     ├── 4_token_extraction.py
     └── 5_generate_tts_objects.py
