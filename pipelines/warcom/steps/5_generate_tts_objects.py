@@ -1539,18 +1539,82 @@ def get_team_metadata(team_dir: Path) -> Dict[str, str]:
     }
 
 
-def find_card_images(cards_dir: Path, card_type: str, card_name: str, branch: str = "main") -> Dict[str, str]:
+def register_image_and_get_url(
+    image_path: Path,
+    workspace_root: Path,
+    registry: ComponentRegistry,
+    branch: str = "main"
+) -> str:
     """
-    Find front and back images for a card.
+    Register an image file in metadata and return URL with version parameter.
+    
+    Args:
+        image_path: Path to the image file
+        workspace_root: Workspace root directory
+        registry: Component registry for tracking
+        branch: Git branch for GitHub raw URLs
+    
+    Returns:
+        GitHub raw URL with ?v={timestamp} version parameter
+    """
+    if not image_path.exists():
+        return ""
+    
+    # Read image file content for hashing
+    image_content = image_path.read_bytes()
+    
+    # Build component path for metadata tracking
+    rel_path = image_path.relative_to(workspace_root)
+    component_path = f"images.{rel_path.as_posix().replace('/', '.')}"
+    
+    # Build base URL
+    repo_base = f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/{branch}"
+    base_url = f"{repo_base}/{rel_path.as_posix()}"
+    
+    # Register in metadata system
+    was_updated, metadata = registry.register(
+        component_path=component_path,
+        content=image_content,
+        component_type="image",
+        guid="",
+        url=base_url,
+        force_update=False
+    )
+    
+    # Convert ISO timestamp to human-readable yyyymmddHHMM format for cache busting
+    if metadata.last_modified:
+        try:
+            dt = datetime.fromisoformat(metadata.last_modified.replace('Z', '+00:00'))
+            # Format as yyyymmddHHMM (e.g., 202603041523)
+            version = dt.strftime("%Y%m%d%H%M")
+        except (ValueError, AttributeError):
+            # Fallback to using hash if timestamp parsing fails
+            version = abs(hash(metadata.content_hash)) % 10**12
+    else:
+        version = abs(hash(metadata.content_hash)) % 10**12
+    
+    return f"{base_url}?v={version}"
+
+
+def find_card_images(
+    cards_dir: Path,
+    card_type: str,
+    card_name: str,
+    registry: ComponentRegistry,
+    branch: str = "main"
+) -> Dict[str, str]:
+    """
+    Find front and back images for a card with version parameters.
     
     Args:
         cards_dir: Base cards directory (output/{team}/cards/)
         card_type: Type of card (datacards, equipment, firefight-ploys, etc.)
         card_name: Card name
+        registry: Component registry for tracking image metadata
         branch: Git branch for GitHub raw URLs (default: main)
     
     Returns:
-        Dict with 'front' and 'back' GitHub raw URLs (back may be empty)
+        Dict with 'front' and 'back' GitHub raw URLs with ?v= version parameters
     """
     # Handle ploys subdirectory structure
     if card_type.endswith('-ploys'):
@@ -1563,9 +1627,8 @@ def find_card_images(cards_dir: Path, card_type: str, card_name: str, branch: st
     if not type_dir.exists():
         return {'front': '', 'back': ''}
     
-    # Build GitHub raw URL base
-    repo_base = f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/{branch}"
-    team_name = cards_dir.parent.name
+    # Get workspace root
+    workspace_root = Path(__file__).parent.parent.parent.parent
     
     # Look for front and back images
     front_patterns = [f"{card_name}-front.jpg", f"{card_name}-front.png"]
@@ -1574,21 +1637,16 @@ def find_card_images(cards_dir: Path, card_type: str, card_name: str, branch: st
     front_url = ""
     back_url = ""
     
-    # Get workspace root
-    workspace_root = Path(__file__).parent.parent.parent.parent
-    
     for pattern in front_patterns:
         front_path = type_dir / pattern
         if front_path.exists():
-            rel_path = front_path.relative_to(workspace_root)
-            front_url = f"{repo_base}/{rel_path.as_posix()}"
+            front_url = register_image_and_get_url(front_path, workspace_root, registry, branch)
             break
     
     for pattern in back_patterns:
         back_path = type_dir / pattern
         if back_path.exists():
-            rel_path = back_path.relative_to(workspace_root)
-            back_url = f"{repo_base}/{rel_path.as_posix()}"
+            back_url = register_image_and_get_url(back_path, workspace_root, registry, branch)
             break
     
     return {'front': front_url, 'back': back_url}
@@ -1741,7 +1799,7 @@ def generate_team_tts(team_dir: Path, output_dir: Path, registry: ComponentRegis
         # If only one card of this type, make it a single card
         if len(card_names) == 1:
             card_name = card_names[0]
-            images = find_card_images(cards_dir, card_type, f"{team_name}-{card_name}", branch)
+            images = find_card_images(cards_dir, card_type, f"{team_name}-{card_name}", registry, branch)
             
             if images['front']:
                 card = TTSCard(
@@ -1761,7 +1819,7 @@ def generate_team_tts(team_dir: Path, output_dir: Path, registry: ComponentRegis
         # Create deck for this type (multiple cards)
         cards_in_deck = []
         for card_name in card_names:
-            images = find_card_images(cards_dir, card_type, f"{team_name}-{card_name}", branch)
+            images = find_card_images(cards_dir, card_type, f"{team_name}-{card_name}", registry, branch)
             
             if not images['front']:
                 logger.warning("Missing front image for %s", card_name)
@@ -1813,7 +1871,7 @@ def generate_team_tts(team_dir: Path, output_dir: Path, registry: ComponentRegis
                     continue
                 seen_slugs.add(token_slug)
 
-                image_url = build_raw_url(token_path, workspace_root, branch)
+                image_url = register_image_and_get_url(token_path, workspace_root, registry, branch)
                 token = TTSToken(
                     registry=registry,
                     team_name=team_name,
