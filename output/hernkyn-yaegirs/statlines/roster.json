@@ -1,6 +1,7 @@
 {
   "team": "hernkyn-yaegirs",
-  "generated": "2026-03-31T16:24:12.264758+00:00",
+  "generated": "2026-03-31T16:44:34.251647+00:00",
+  "operative_count": 8,
   "operatives": [
     {
       "name": "YAEGIR THEYN",
@@ -8,7 +9,36 @@
       "apl": 2,
       "movement": "5″",
       "save": "4+",
-      "wounds": 9
+      "wounds": 9,
+      "weapons": [
+        {
+          "name": "Bolt revolver",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "3/5",
+          "special_rules": "Range 8\""
+        },
+        {
+          "name": "Bolt shotgun (short range)",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "4/4",
+          "special_rules": "Range 6\""
+        },
+        {
+          "name": "Bolt shotgun (long range)",
+          "attacks": "4",
+          "hit": "5+",
+          "damage": "2/2"
+        },
+        {
+          "name": "Plasma knife",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "3/5",
+          "special_rules": "Lethal 5+"
+        }
+      ]
     },
     {
       "name": "YAEGIR BLADEKYN",
@@ -16,7 +46,23 @@
       "apl": 2,
       "movement": "5″",
       "save": "4+",
-      "wounds": 8
+      "wounds": 8,
+      "weapons": [
+        {
+          "name": "Throwing plasma knife",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "3/5",
+          "special_rules": "Range 6\", Lethal 5+, Limited 1, Silent"
+        },
+        {
+          "name": "Dual plasma knives",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "3/5",
+          "special_rules": "Ceaseless, Lethal 5+"
+        }
+      ]
     },
     {
       "name": "YAEGIR BOMBAST",
@@ -24,7 +70,22 @@
       "apl": 2,
       "movement": "5″",
       "save": "4+",
-      "wounds": 8
+      "wounds": 8,
+      "weapons": [
+        {
+          "name": "Wroughtlock revolvers",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "3/5",
+          "special_rules": "Range 9\", Ceaseless, Lethal 5+"
+        },
+        {
+          "name": "Fists",
+          "attacks": "3",
+          "hit": "4+",
+          "damage": "2/3"
+        }
+      ]
     },
     {
       "name": "YAEGIR GUNNER",
@@ -32,7 +93,29 @@
       "apl": 2,
       "movement": "5″",
       "save": "4+",
-      "wounds": 8
+      "wounds": 8,
+      "weapons": [
+        {
+          "name": "APM launcher (breaching)",
+          "attacks": "5",
+          "hit": "4+",
+          "damage": "3/5",
+          "special_rules": "Blast 2\", Heavy (Reposition only),  Bipod*"
+        },
+        {
+          "name": "APM launcher (high explosive)",
+          "attacks": "5",
+          "hit": "4+",
+          "damage": "2/4",
+          "special_rules": "Blast 3\", Heavy (Reposition only),  Bipod*"
+        },
+        {
+          "name": "Fists",
+          "attacks": "3",
+          "hit": "4+",
+          "damage": "2/3"
+        }
+      ]
     },
     {
       "name": "YAEGIR IRONBRAEK",
@@ -40,7 +123,22 @@
       "apl": 2,
       "movement": "5″",
       "save": "4+",
-      "wounds": 8
+      "wounds": 8,
+      "weapons": [
+        {
+          "name": "Bolt revolver",
+          "attacks": "4",
+          "hit": "4+",
+          "damage": "3/5",
+          "special_rules": "Range 8\""
+        },
+        {
+          "name": "Entrencher",
+          "attacks": "3",
+          "hit": "4+",
+          "damage": "3/4"
+        }
+      ]
     },
     {
       "name": "YAEGIR RIFLEKYN",
@@ -59,58 +157,24 @@
       "wounds": 8,
       "weapons": [
         {
-          "name": "weapons have the Seek Light weapon rule.",
-          "special_rules": "Tracker: Whenever this operative is shooting against or fighting, against an expended operative within 6\" of it, this operative’s, weapons have the Punishing weapon rule."
-        },
-        {
-          "name": "Tracker: Whenever this operative is shooting against or fighting",
-          "special_rules": "against an expended operative within 6\" of it, this operative’s, weapons have the Punishing weapon rule., HERNKYN YAEGIR , LEAGUES OF VOTANN, TRACKER"
-        },
-        {
-          "name": "against an expended operative within 6\" of it, this operative’s",
-          "attacks": "2",
-          "damage": "2",
-          "special_rules": "weapons have the Punishing weapon rule., HERNKYN YAEGIR , LEAGUES OF VOTANN, TRACKER, YAEGIR TRACKER"
-        },
-        {
-          "name": "weapons have the Punishing weapon rule.",
-          "attacks": "2",
-          "damage": "2",
-          "special_rules": "HERNKYN YAEGIR , LEAGUES OF VOTANN, TRACKER, YAEGIR TRACKER, APL"
-        },
-        {
-          "name": "HERNKYN YAEGIR , LEAGUES OF VOTANN, TRACKER",
-          "attacks": "2",
-          "damage": "2",
-          "special_rules": "YAEGIR TRACKER, APL, WOUNDS"
-        },
-        {
-          "name": "YAEGIR TRACKER",
-          "attacks": "2",
-          "damage": "2",
-          "special_rules": "APL, WOUNDS, SAVE"
-        },
-        {
-          "name": "APL",
-          "special_rules": "WOUNDS, SAVE, MOVE"
-        },
-        {
-          "name": "WOUNDS",
+          "name": "SiNR handbow",
+          "attacks": "4",
           "hit": "4+",
-          "special_rules": "SAVE, MOVE"
+          "damage": "3/5",
+          "special_rules": "Silent"
         },
         {
-          "name": "SAVE",
-          "attacks": "8",
-          "hit": "4+",
-          "damage": "8",
-          "special_rules": "MOVE"
+          "name": "Throwing hatchet",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "3/5",
+          "special_rules": "Range 6\", Limited 1, Rending, Silent"
         },
         {
-          "name": "MOVE",
-          "attacks": "8",
-          "hit": "4+",
-          "damage": "8"
+          "name": "Hatchet",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "4/5"
         }
       ]
     },
@@ -120,7 +184,36 @@
       "apl": 2,
       "movement": "5″",
       "save": "4+",
-      "wounds": 8
+      "wounds": 8,
+      "weapons": [
+        {
+          "name": "Bolt revolver",
+          "attacks": "4",
+          "hit": "4+",
+          "damage": "3/5",
+          "special_rules": "Range 8\""
+        },
+        {
+          "name": "Bolt shotgun (short range)",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "4/4",
+          "special_rules": "Range 6\""
+        },
+        {
+          "name": "Bolt shotgun (long range)",
+          "attacks": "4",
+          "hit": "5+",
+          "damage": "2/2"
+        },
+        {
+          "name": "Fists",
+          "attacks": "3",
+          "hit": "4+",
+          "damage": "2/3"
+        }
+      ]
     }
-  ]
+  ],
+  "_content_hash": "60150c42ed133421fa045b0d6b79b6bcf4ebc8a29b6d202a2d55fe48f2f6a801"
 }

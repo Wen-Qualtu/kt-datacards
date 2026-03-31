@@ -1,6 +1,7 @@
 {
   "team": "ratlings",
-  "generated": "2026-03-31T16:24:16.324637+00:00",
+  "generated": "2026-03-31T16:44:36.852120+00:00",
+  "operative_count": 16,
   "operatives": [
     {
       "name": "RATLING FIXER",
@@ -8,7 +9,34 @@
       "apl": 2,
       "movement": "5″",
       "save": "5+",
-      "wounds": 7
+      "wounds": 7,
+      "weapons": [
+        {
+          "name": "Battle rifle",
+          "attacks": "4",
+          "hit": "2+",
+          "damage": "3/4"
+        },
+        {
+          "name": "Sniper rifle (mobile)",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "3/4"
+        },
+        {
+          "name": "Sniper rifle (stationary)",
+          "attacks": "4",
+          "hit": "2+",
+          "damage": "3/3",
+          "special_rules": "Devastating 3, Heavy"
+        },
+        {
+          "name": "Fists",
+          "attacks": "3",
+          "hit": "5+",
+          "damage": "1/2"
+        }
+      ]
     },
     {
       "name": "RATLING BATTLEMUTT",
@@ -19,44 +47,10 @@
       "wounds": 4,
       "weapons": [
         {
-          "name": "weapons that aren’t on its datacard.",
-          "attacks": "2",
-          "damage": "2",
-          "special_rules": "RATLING , IMPERIUM, ASTRA MILITARUM, BATTLEMUTT, RATLING BATTLEMUTT, APL"
-        },
-        {
-          "name": "RATLING , IMPERIUM, ASTRA MILITARUM, BATTLEMUTT",
-          "attacks": "2",
-          "damage": "2",
-          "special_rules": "RATLING BATTLEMUTT, APL, WOUNDS"
-        },
-        {
-          "name": "RATLING BATTLEMUTT",
-          "attacks": "2",
-          "damage": "2",
-          "special_rules": "APL, WOUNDS, SAVE"
-        },
-        {
-          "name": "APL",
-          "special_rules": "WOUNDS, SAVE, MOVE"
-        },
-        {
-          "name": "WOUNDS",
-          "hit": "5+",
-          "special_rules": "SAVE, MOVE"
-        },
-        {
-          "name": "SAVE",
+          "name": "Bite",
           "attacks": "4",
-          "hit": "5+",
-          "damage": "4",
-          "special_rules": "MOVE"
-        },
-        {
-          "name": "MOVE",
-          "attacks": "4",
-          "hit": "5+",
-          "damage": "4"
+          "hit": "3+",
+          "damage": "2/4"
         }
       ]
     },
@@ -66,7 +60,35 @@
       "apl": 2,
       "movement": "6″",
       "save": "4+",
-      "wounds": 16
+      "wounds": 16,
+      "weapons": [
+        {
+          "name": "Grenadier gauntlet",
+          "attacks": "4",
+          "hit": "4+",
+          "damage": "3/5",
+          "special_rules": "Blast 2\""
+        },
+        {
+          "name": "Power maul",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "4/6",
+          "special_rules": "Shock"
+        },
+        {
+          "name": "Brute shield",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "3/4"
+        },
+        {
+          "name": "Slabshield",
+          "attacks": "4",
+          "hit": "4+",
+          "damage": "3/4"
+        }
+      ]
     },
     {
       "name": "OGRYN",
@@ -74,7 +96,22 @@
       "apl": 2,
       "movement": "6″",
       "save": "5+",
-      "wounds": 16
+      "wounds": 16,
+      "weapons": [
+        {
+          "name": "Ripper gun",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "4/5",
+          "special_rules": "Range 8\", Punishing"
+        },
+        {
+          "name": "Bayonet",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "4/5"
+        }
+      ]
     },
     {
       "name": "RATLING BIG SHOT",
@@ -82,23 +119,45 @@
       "apl": 2,
       "movement": "5″",
       "save": "5+",
-      "wounds": 6
+      "wounds": 6,
+      "weapons": [
+        {
+          "name": "Tankstopper rifle (mobile)",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "4/4",
+          "special_rules": "Devastating 1, Heavy (Dash only), Piercing 1"
+        },
+        {
+          "name": "Tankstopper rifle (stationary)",
+          "attacks": "4",
+          "hit": "2+",
+          "damage": "4/2",
+          "special_rules": "Devastating 4, Heavy, Piercing 1, Severe"
+        },
+        {
+          "name": "Fists",
+          "attacks": "3",
+          "hit": "5+",
+          "damage": "1/2"
+        }
+      ]
     },
     {
-      "name": "Unknown Operative",
+      "name": "RATLING BOMBER",
       "source_file": "ratlings_page02_card2_landscape.pdf",
-      "apl": 2,
+      "apl": null,
       "movement": "5″",
       "save": "4+",
-      "wounds": 6
+      "wounds": 2
     },
     {
-      "name": "Unknown Operative",
+      "name": "RATLING BOMBER",
       "source_file": "ratlings_page02_card3_landscape.pdf",
-      "apl": 2,
+      "apl": null,
       "movement": "5″",
       "save": "4+",
-      "wounds": 6
+      "wounds": 2
     },
     {
       "name": "RATLING HARDBIT",
@@ -106,7 +165,22 @@
       "apl": 2,
       "movement": "5″",
       "save": "5+",
-      "wounds": 6
+      "wounds": 6,
+      "weapons": [
+        {
+          "name": "Battle rifle",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "3/4"
+        },
+        {
+          "name": "Combat knife",
+          "attacks": "3",
+          "hit": "3+",
+          "damage": "3/5",
+          "special_rules": "Balanced"
+        }
+      ]
     },
     {
       "name": "RATLING RAIDER",
@@ -114,7 +188,29 @@
       "apl": 2,
       "movement": "5″",
       "save": "5+",
-      "wounds": 6
+      "wounds": 6,
+      "weapons": [
+        {
+          "name": "Suppressed sniper rifle (mobile)",
+          "attacks": "4",
+          "hit": "4+",
+          "damage": "3/4",
+          "special_rules": "Silent"
+        },
+        {
+          "name": "Suppressed sniper rifle (stationary)",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "3/3",
+          "special_rules": "Devastating 2, Heavy, Silent"
+        },
+        {
+          "name": "Dagger",
+          "attacks": "3",
+          "hit": "4+",
+          "damage": "2/3"
+        }
+      ]
     },
     {
       "name": "RATLING RAIDER",
@@ -130,7 +226,29 @@
       "apl": 2,
       "movement": "5″",
       "save": "5+",
-      "wounds": 6
+      "wounds": 6,
+      "weapons": [
+        {
+          "name": "Suppressed sniper rifle (mobile)",
+          "attacks": "4",
+          "hit": "4+",
+          "damage": "3/4",
+          "special_rules": "Silent"
+        },
+        {
+          "name": "Suppressed sniper rifle (stationary)",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "3/3",
+          "special_rules": "Devastating 2, Heavy, Silent"
+        },
+        {
+          "name": "Fists",
+          "attacks": "3",
+          "hit": "5+",
+          "damage": "1/2"
+        }
+      ]
     },
     {
       "name": "RATLING SNIPER",
@@ -138,7 +256,28 @@
       "apl": 2,
       "movement": "5″",
       "save": "5+",
-      "wounds": 6
+      "wounds": 6,
+      "weapons": [
+        {
+          "name": "Sniper rifle (mobile)",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "3/4"
+        },
+        {
+          "name": "Sniper rifle (stationary)",
+          "attacks": "4",
+          "hit": "2+",
+          "damage": "3/3",
+          "special_rules": "Devastating 3, Heavy"
+        },
+        {
+          "name": "Fists",
+          "attacks": "3",
+          "hit": "5+",
+          "damage": "1/2"
+        }
+      ]
     },
     {
       "name": "RATLING SPOTTER",
@@ -149,11 +288,23 @@
       "wounds": 6,
       "weapons": [
         {
-          "name": "weapons have the Seek Light weapon rule.",
-          "special_rules": "This operative cannot perform this action while within control range of an enemy operative."
+          "name": "Sniper rifle (mobile)",
+          "attacks": "4",
+          "hit": "4+",
+          "damage": "3/4"
         },
         {
-          "name": "This operative cannot perform this action while within control range of an enemy operative."
+          "name": "Sniper rifle (stationary)",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "3/3",
+          "special_rules": "Devastating 3, Heavy"
+        },
+        {
+          "name": "Fists",
+          "attacks": "3",
+          "hit": "5+",
+          "damage": "1/2"
         }
       ]
     },
@@ -163,7 +314,28 @@
       "apl": 2,
       "movement": "5″",
       "save": "5+",
-      "wounds": 6
+      "wounds": 6,
+      "weapons": [
+        {
+          "name": "Sniper rifle (mobile)",
+          "attacks": "4",
+          "hit": "4+",
+          "damage": "3/4"
+        },
+        {
+          "name": "Sniper rifle (stationary)",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "3/3",
+          "special_rules": "Devastating 3, Heavy"
+        },
+        {
+          "name": "Fists",
+          "attacks": "3",
+          "hit": "5+",
+          "damage": "1/2"
+        }
+      ]
     },
     {
       "name": "RATLING VOX-THIEF",
@@ -171,15 +343,37 @@
       "apl": 2,
       "movement": "5″",
       "save": "5+",
-      "wounds": 6
+      "wounds": 6,
+      "weapons": [
+        {
+          "name": "Sniper rifle (mobile)",
+          "attacks": "4",
+          "hit": "4+",
+          "damage": "3/4"
+        },
+        {
+          "name": "Sniper rifle (stationary)",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "3/3",
+          "special_rules": "Devastating 3, Heavy"
+        },
+        {
+          "name": "Fists",
+          "attacks": "3",
+          "hit": "5+",
+          "damage": "1/2"
+        }
+      ]
     },
     {
-      "name": "Unknown Operative",
+      "name": "NOTES:",
       "source_file": "ratlings_page04_card4_landscape.pdf",
       "apl": null,
       "movement": null,
       "save": null,
       "wounds": null
     }
-  ]
+  ],
+  "_content_hash": "ed9037bfd5673f3dcd05e2077f3e2200cab3db0b22a20f8b839d0845e771a970"
 }

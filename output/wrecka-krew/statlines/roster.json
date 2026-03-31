@@ -1,6 +1,7 @@
 {
   "team": "wrecka-krew",
-  "generated": "2026-03-31T16:24:18.177536+00:00",
+  "generated": "2026-03-31T16:44:38.058247+00:00",
+  "operative_count": 8,
   "operatives": [
     {
       "name": "WRECKA BOSS NOB",
@@ -8,7 +9,36 @@
       "apl": 2,
       "movement": "6″",
       "save": "4+",
-      "wounds": 14
+      "wounds": 14,
+      "weapons": [
+        {
+          "name": "Rokkit pistol",
+          "attacks": "6",
+          "hit": "5+",
+          "damage": "4/5",
+          "special_rules": "Range 8\", Blast 1\""
+        },
+        {
+          "name": "Two rokkit pistols (focused)",
+          "attacks": "6",
+          "hit": "4+",
+          "damage": "4/5",
+          "special_rules": "Range 8\", Blast 1\", Ceaseless"
+        },
+        {
+          "name": "Two rokkit pistols (salvo)",
+          "attacks": "6",
+          "hit": "5+",
+          "damage": "4/5",
+          "special_rules": "Range 8\", Blast 1\", Salvo*"
+        },
+        {
+          "name": "Choppa",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "4/5"
+        }
+      ]
     },
     {
       "name": "WRECKA BOMB SQUIG",
@@ -16,93 +46,20 @@
       "apl": 2,
       "movement": "6″",
       "save": "5+",
-      "wounds": 5,
+      "wounds": null,
       "weapons": [
         {
-          "name": "weapons that aren’t",
-          "special_rules": "on its datacard., Boom!: If this operative is incapacitated during a battle in which, it hasn’t used its explosives, roll one D6, or two D6 if you wish. If"
+          "name": "Explosives",
+          "attacks": "6",
+          "hit": "4+",
+          "damage": "4/5",
+          "special_rules": "Blast 1\", Limited 1, Explosive*"
         },
         {
-          "name": "on its datacard.",
-          "special_rules": "Boom!: If this operative is incapacitated during a battle in which, it hasn’t used its explosives, roll one D6, or two D6 if you wish. If, any result is a 4+, this operative performs a free Shoot action"
-        },
-        {
-          "name": "Boom!: If this operative is incapacitated during a battle in which",
-          "special_rules": "it hasn’t used its explosives, roll one D6, or two D6 if you wish. If, any result is a 4+, this operative performs a free Shoot action, with its explosives before it’s removed from the killzone."
-        },
-        {
-          "name": "it hasn’t used its explosives, roll one D6, or two D6 if you wish. If",
-          "special_rules": "any result is a 4+, this operative performs a free Shoot action, with its explosives before it’s removed from the killzone., Expendable: This operative is ignored for your opponent’s kill/"
-        },
-        {
-          "name": "any result is a 4+, this operative performs a free Shoot action",
-          "special_rules": "with its explosives before it’s removed from the killzone., Expendable: This operative is ignored for your opponent’s kill/, elimination op (when it’s incapacitated, and when determining"
-        },
-        {
-          "name": "with its explosives before it’s removed from the killzone.",
-          "special_rules": "Expendable: This operative is ignored for your opponent’s kill/, elimination op (when it’s incapacitated, and when determining, your starting number of operatives). It’s also ignored for victory"
-        },
-        {
-          "name": "Expendable: This operative is ignored for your opponent’s kill/",
-          "special_rules": "elimination op (when it’s incapacitated, and when determining, your starting number of operatives). It’s also ignored for victory, conditions and scoring VPs if either require operatives to"
-        },
-        {
-          "name": "elimination op (when it’s incapacitated, and when determining",
-          "special_rules": "your starting number of operatives). It’s also ignored for victory, conditions and scoring VPs if either require operatives to, it escapes/survives/is incapacitated, determining how many"
-        },
-        {
-          "name": "your starting number of operatives). It’s also ignored for victory",
-          "special_rules": "conditions and scoring VPs if either require operatives to, it escapes/survives/is incapacitated, determining how many, operatives must escape/survive/be incapacitated, etc.)."
-        },
-        {
-          "name": "conditions and scoring VPs if either require operatives to",
-          "special_rules": "it escapes/survives/is incapacitated, determining how many, operatives must escape/survive/be incapacitated, etc.)., WRECKA KREW , ORK, BOMB SQUIG"
-        },
-        {
-          "name": "it escapes/survives/is incapacitated, determining how many",
-          "attacks": "2",
-          "damage": "2",
-          "special_rules": "operatives must escape/survive/be incapacitated, etc.)., WRECKA KREW , ORK, BOMB SQUIG, WRECKA BOMB SQUIG"
-        },
-        {
-          "name": "operatives must escape/survive/be incapacitated, etc.).",
-          "attacks": "2",
-          "damage": "2",
-          "special_rules": "WRECKA KREW , ORK, BOMB SQUIG, WRECKA BOMB SQUIG, APL"
-        },
-        {
-          "name": "WRECKA KREW , ORK, BOMB SQUIG",
-          "attacks": "2",
-          "damage": "2",
-          "special_rules": "WRECKA BOMB SQUIG, APL, WOUNDS"
-        },
-        {
-          "name": "WRECKA BOMB SQUIG",
-          "attacks": "2",
-          "damage": "2",
-          "special_rules": "APL, WOUNDS, SAVE"
-        },
-        {
-          "name": "APL",
-          "special_rules": "WOUNDS, SAVE, MOVE"
-        },
-        {
-          "name": "WOUNDS",
-          "hit": "5+",
-          "special_rules": "SAVE, MOVE"
-        },
-        {
-          "name": "SAVE",
-          "attacks": "5",
-          "hit": "5+",
-          "damage": "5",
-          "special_rules": "MOVE"
-        },
-        {
-          "name": "MOVE",
-          "attacks": "5",
-          "hit": "5+",
-          "damage": "5"
+          "name": "Bite",
+          "attacks": "3",
+          "hit": "4+",
+          "damage": "4/5"
         }
       ]
     },
@@ -112,7 +69,21 @@
       "apl": 2,
       "movement": "6″",
       "save": "4+",
-      "wounds": 12
+      "wounds": 12,
+      "weapons": [
+        {
+          "name": "Tankhammer (bash)",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "4/5"
+        },
+        {
+          "name": "Tankhammer (detonate)",
+          "attacks": "4",
+          "hit": "3+",
+          "special_rules": "Lethal 5+, Limited 1, Detonate*"
+        }
+      ]
     },
     {
       "name": "BREAKA BOY FIGHTER",
@@ -120,7 +91,16 @@
       "apl": 2,
       "movement": "6″",
       "save": "4+",
-      "wounds": 12
+      "wounds": 12,
+      "weapons": [
+        {
+          "name": "Smash hammer",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "5/6",
+          "special_rules": "Brutal"
+        }
+      ]
     },
     {
       "name": "BREAKA BOY KRUSHA",
@@ -128,7 +108,16 @@
       "apl": 2,
       "movement": "6″",
       "save": "4+",
-      "wounds": 12
+      "wounds": 12,
+      "weapons": [
+        {
+          "name": "Knucklebustas",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "5/6",
+          "special_rules": "Brutal, Shock, Smash*"
+        }
+      ]
     },
     {
       "name": "TANKBUSTA GUNNER",
@@ -136,7 +125,29 @@
       "apl": 2,
       "movement": "6″",
       "save": "4+",
-      "wounds": 12
+      "wounds": 12,
+      "weapons": [
+        {
+          "name": "’Eavy rokkit launcha",
+          "attacks": "6",
+          "hit": "4+",
+          "damage": "4/5",
+          "special_rules": "Blast 1\", Heavy (Dash only)"
+        },
+        {
+          "name": "Rokkit launcha",
+          "attacks": "6",
+          "hit": "5+",
+          "damage": "4/5",
+          "special_rules": "Blast 1\""
+        },
+        {
+          "name": "Fists",
+          "attacks": "3",
+          "hit": "3+",
+          "damage": "3/4"
+        }
+      ]
     },
     {
       "name": "TANKBUSTA ROKKITEER",
@@ -147,68 +158,41 @@
       "wounds": 12,
       "weapons": [
         {
-          "name": "weapons by 1. This is cumulative with being",
-          "special_rules": "injured. X is that marker’s Pulsa points. In the Ready step of each, Strategy phase, subtract 1 from your Pulsa marker’s points. If a, Pulsa marker ever has 0 points, remove it."
+          "name": "Pulsa rokkit",
+          "attacks": "6",
+          "hit": "5+",
+          "special_rules": "Heavy (Reposition only), Limited 1, Pulsa*"
         },
         {
-          "name": "injured. X is that marker’s Pulsa points. In the Ready step of each",
-          "special_rules": "Strategy phase, subtract 1 from your Pulsa marker’s points. If a, Pulsa marker ever has 0 points, remove it., WRECKA KREW , ORK, TANKBUSTA, ROKKITEER"
+          "name": "Rokkit launcha",
+          "attacks": "6",
+          "hit": "5+",
+          "damage": "4/5",
+          "special_rules": "Blast 1\""
         },
         {
-          "name": "Strategy phase, subtract 1 from your Pulsa marker’s points. If a",
-          "attacks": "2",
-          "damage": "2",
-          "special_rules": "Pulsa marker ever has 0 points, remove it., WRECKA KREW , ORK, TANKBUSTA, ROKKITEER, TANKBUSTA ROKKITEER"
+          "name": "Rokkit rack",
+          "attacks": "6",
+          "hit": "5+",
+          "damage": "4/5",
+          "special_rules": "Blast 2\", Heavy (Reposition only), Limited 1, Relentless"
         },
         {
-          "name": "Pulsa marker ever has 0 points, remove it.",
-          "attacks": "2",
-          "damage": "2",
-          "special_rules": "WRECKA KREW , ORK, TANKBUSTA, ROKKITEER, TANKBUSTA ROKKITEER, APL"
-        },
-        {
-          "name": "WRECKA KREW , ORK, TANKBUSTA, ROKKITEER",
-          "attacks": "2",
-          "damage": "2",
-          "special_rules": "TANKBUSTA ROKKITEER, APL, WOUNDS"
-        },
-        {
-          "name": "TANKBUSTA ROKKITEER",
-          "attacks": "2",
-          "damage": "2",
-          "special_rules": "APL, WOUNDS, SAVE"
-        },
-        {
-          "name": "APL",
-          "special_rules": "WOUNDS, SAVE, MOVE"
-        },
-        {
-          "name": "WOUNDS",
-          "hit": "4+",
-          "special_rules": "SAVE, MOVE"
-        },
-        {
-          "name": "SAVE",
-          "attacks": "12",
-          "hit": "4+",
-          "damage": "12",
-          "special_rules": "MOVE"
-        },
-        {
-          "name": "MOVE",
-          "attacks": "12",
-          "hit": "4+",
-          "damage": "12"
+          "name": "Fists",
+          "attacks": "3",
+          "hit": "3+",
+          "damage": "3/4"
         }
       ]
     },
     {
-      "name": "Unknown Operative",
+      "name": "NOTES:",
       "source_file": "wrecka-krew_page02_card4_landscape.pdf",
       "apl": null,
       "movement": null,
       "save": null,
       "wounds": null
     }
-  ]
+  ],
+  "_content_hash": "b3af4f7d85072f564ec7dfd26350cc0101787a841075533be95bfce9774ea257"
 }

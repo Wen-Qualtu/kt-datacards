@@ -1,6 +1,7 @@
 {
   "team": "vespid-stingwings",
-  "generated": "2026-03-31T16:24:17.350285+00:00",
+  "generated": "2026-03-31T16:44:37.540529+00:00",
+  "operative_count": 12,
   "operatives": [
     {
       "name": "VESPID STRAIN LEADER",
@@ -8,7 +9,22 @@
       "apl": 2,
       "movement": "6″",
       "save": "5+",
-      "wounds": 10
+      "wounds": 10,
+      "weapons": [
+        {
+          "name": "Neutron blaster",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "3/3",
+          "special_rules": "Devastating 2"
+        },
+        {
+          "name": "Claws",
+          "attacks": "3",
+          "hit": "4+",
+          "damage": "3/4"
+        }
+      ]
     },
     {
       "name": "OVERSIGHT DRONE",
@@ -16,7 +32,15 @@
       "apl": 2,
       "movement": "8″",
       "save": "2+",
-      "wounds": 5
+      "wounds": 5,
+      "weapons": [
+        {
+          "name": "Ram",
+          "attacks": "3",
+          "hit": "5+",
+          "damage": "1/2"
+        }
+      ]
     },
     {
       "name": "OVERSIGHT DRONE",
@@ -24,63 +48,7 @@
       "apl": 2,
       "movement": "8″",
       "save": "2+",
-      "wounds": 5,
-      "weapons": [
-        {
-          "name": "weapons have the Lethal 5+ and",
-          "special_rules": "Saturate weapon rules. This has no effect while this operative, is within control range of an enemy operative., This operative cannot perform this action while within control"
-        },
-        {
-          "name": "Saturate weapon rules. This has no effect while this operative",
-          "special_rules": "is within control range of an enemy operative., This operative cannot perform this action while within control, range of an enemy operative."
-        },
-        {
-          "name": "is within control range of an enemy operative.",
-          "attacks": "2",
-          "damage": "2",
-          "special_rules": "This operative cannot perform this action while within control, range of an enemy operative., OVERSIGHT DRONE"
-        },
-        {
-          "name": "This operative cannot perform this action while within control",
-          "attacks": "2",
-          "damage": "2",
-          "special_rules": "range of an enemy operative., OVERSIGHT DRONE, APL"
-        },
-        {
-          "name": "range of an enemy operative.",
-          "attacks": "2",
-          "damage": "2",
-          "special_rules": "OVERSIGHT DRONE, APL, WOUNDS"
-        },
-        {
-          "name": "OVERSIGHT DRONE",
-          "attacks": "2",
-          "damage": "2",
-          "special_rules": "APL, WOUNDS, SAVE"
-        },
-        {
-          "name": "APL",
-          "special_rules": "WOUNDS, SAVE, MOVE"
-        },
-        {
-          "name": "WOUNDS",
-          "hit": "2+",
-          "special_rules": "SAVE, MOVE"
-        },
-        {
-          "name": "SAVE",
-          "attacks": "5",
-          "hit": "2+",
-          "damage": "5",
-          "special_rules": "MOVE"
-        },
-        {
-          "name": "MOVE",
-          "attacks": "5",
-          "hit": "2+",
-          "damage": "5"
-        }
-      ]
+      "wounds": 5
     },
     {
       "name": "VESPID LONGSTING",
@@ -88,7 +56,16 @@
       "apl": 2,
       "movement": "6″",
       "save": "5+",
-      "wounds": 9
+      "wounds": 9,
+      "weapons": [
+        {
+          "name": "Neutron rail rifle (standard)",
+          "attacks": "4",
+          "hit": "4+",
+          "damage": "4/4",
+          "special_rules": "Devastating 2, Neutron Fragment*"
+        }
+      ]
     },
     {
       "name": "VESPID SHADESTRAIN",
@@ -96,7 +73,29 @@
       "apl": 2,
       "movement": "6″",
       "save": "3+",
-      "wounds": 9
+      "wounds": 9,
+      "weapons": [
+        {
+          "name": "Neutron sting",
+          "attacks": "4",
+          "hit": "4+",
+          "damage": "3/3",
+          "special_rules": "Range 8\", Devastating 2"
+        },
+        {
+          "name": "Neutron grenade",
+          "attacks": "4",
+          "hit": "4+",
+          "damage": "3/3",
+          "special_rules": "Range 6\", Blast 2\", Devastating 2, Limited 1, Saturate"
+        },
+        {
+          "name": "Claws",
+          "attacks": "3",
+          "hit": "4+",
+          "damage": "3/4"
+        }
+      ]
     },
     {
       "name": "VESPID SKYBLAST",
@@ -104,7 +103,22 @@
       "apl": 2,
       "movement": "6″",
       "save": "5+",
-      "wounds": 9
+      "wounds": 9,
+      "weapons": [
+        {
+          "name": "Neutron grenade launcher",
+          "attacks": "4",
+          "hit": "4+",
+          "damage": "3/3",
+          "special_rules": "Blast 2\", Devastating 2, Neutron Bombardment*"
+        },
+        {
+          "name": "Claws",
+          "attacks": "3",
+          "hit": "4+",
+          "damage": "3/4"
+        }
+      ]
     },
     {
       "name": "VESPID SWARMGUARD",
@@ -112,7 +126,30 @@
       "apl": 2,
       "movement": "6″",
       "save": "5+",
-      "wounds": 9
+      "wounds": 9,
+      "weapons": [
+        {
+          "name": "Flamer (standard)",
+          "attacks": "4",
+          "hit": "2+",
+          "damage": "3/3",
+          "special_rules": "Range 8\", Saturate, Torrent 2\""
+        },
+        {
+          "name": "Flamer (skytorch)",
+          "attacks": "4",
+          "hit": "2+",
+          "damage": "3/3",
+          "special_rules": "Saturate, Torrent 0\", Skytorch*"
+        },
+        {
+          "name": "Claws",
+          "attacks": "3",
+          "hit": "4+",
+          "damage": "3/4",
+          "special_rules": "- -"
+        }
+      ]
     },
     {
       "name": "VESPID SWARMGUARD",
@@ -128,10 +165,25 @@
       "apl": 2,
       "movement": "6″",
       "save": "5+",
-      "wounds": 9
+      "wounds": 9,
+      "weapons": [
+        {
+          "name": "Neutron blaster",
+          "attacks": "4",
+          "hit": "4+",
+          "damage": "3/3",
+          "special_rules": "Devastating 2"
+        },
+        {
+          "name": "Claws",
+          "attacks": "3",
+          "hit": "4+",
+          "damage": "3/4"
+        }
+      ]
     },
     {
-      "name": "Unknown Operative",
+      "name": "NOTES:",
       "source_file": "vespid-stingwings_page03_card2_landscape.pdf",
       "apl": null,
       "movement": null,
@@ -139,7 +191,7 @@
       "wounds": null
     },
     {
-      "name": "Unknown Operative",
+      "name": "NOTES:",
       "source_file": "vespid-stingwings_page03_card3_landscape.pdf",
       "apl": null,
       "movement": null,
@@ -147,12 +199,13 @@
       "wounds": null
     },
     {
-      "name": "Unknown Operative",
+      "name": "NOTES:",
       "source_file": "vespid-stingwings_page03_card4_landscape.pdf",
       "apl": null,
       "movement": null,
       "save": null,
       "wounds": null
     }
-  ]
+  ],
+  "_content_hash": "0c1de498dcf6814278073c8463919519e2bb55853201372537869fc793f6ef07"
 }

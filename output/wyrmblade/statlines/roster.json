@@ -1,6 +1,7 @@
 {
   "team": "wyrmblade",
-  "generated": "2026-03-31T16:24:18.424870+00:00",
+  "generated": "2026-03-31T16:44:38.233376+00:00",
+  "operative_count": 16,
   "operatives": [
     {
       "name": "NEOPHYTE LEADER",
@@ -8,7 +9,36 @@
       "apl": 2,
       "movement": "6″",
       "save": "5+",
-      "wounds": 8
+      "wounds": 8,
+      "weapons": [
+        {
+          "name": "Autogun",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "2/3"
+        },
+        {
+          "name": "Bolt pistol",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "3/4",
+          "special_rules": "Range 8\""
+        },
+        {
+          "name": "Master-crafted autopistol",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "2/4",
+          "special_rules": "Range 8\", Lethal 5+"
+        },
+        {
+          "name": "Shotgun",
+          "attacks": "4",
+          "hit": "2+",
+          "damage": "3/3",
+          "special_rules": "Range 6\""
+        }
+      ]
     },
     {
       "name": "NEOPHYTE LEADER",
@@ -27,44 +57,11 @@
       "wounds": 9,
       "weapons": [
         {
-          "name": "weapons have the Severe weapon rule.",
+          "name": "Kelermorph knife",
           "attacks": "3",
-          "damage": "3",
-          "special_rules": "WYRMBLADE , TYRANID, GENESTEALER CULT, CULT AGENT, KELERMORPH, KELERMORPH, APL"
-        },
-        {
-          "name": "WYRMBLADE , TYRANID, GENESTEALER CULT, CULT AGENT, KELERMORPH",
-          "attacks": "3",
-          "damage": "3",
-          "special_rules": "KELERMORPH, APL, WOUNDS"
-        },
-        {
-          "name": "KELERMORPH",
-          "attacks": "3",
-          "damage": "3",
-          "special_rules": "APL, WOUNDS, SAVE"
-        },
-        {
-          "name": "APL",
-          "special_rules": "WOUNDS, SAVE, MOVE"
-        },
-        {
-          "name": "WOUNDS",
           "hit": "4+",
-          "special_rules": "SAVE, MOVE"
-        },
-        {
-          "name": "SAVE",
-          "attacks": "9",
-          "hit": "4+",
-          "damage": "9",
-          "special_rules": "MOVE"
-        },
-        {
-          "name": "MOVE",
-          "attacks": "9",
-          "hit": "4+",
-          "damage": "9"
+          "damage": "3/4",
+          "special_rules": "Rending"
         }
       ]
     },
@@ -74,7 +71,23 @@
       "apl": 3,
       "movement": "6″",
       "save": "4+",
-      "wounds": 9
+      "wounds": 9,
+      "weapons": [
+        {
+          "name": "Barbed tail",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "3/4",
+          "special_rules": "Range 3\", Silent"
+        },
+        {
+          "name": "Locus blades",
+          "attacks": "5",
+          "hit": "3+",
+          "damage": "4/6",
+          "special_rules": "Lethal 5+"
+        }
+      ]
     },
     {
       "name": "LOCUS",
@@ -90,7 +103,37 @@
       "apl": 2,
       "movement": "6″",
       "save": "5+",
-      "wounds": 7
+      "wounds": 7,
+      "weapons": [
+        {
+          "name": "Flamer",
+          "attacks": "4",
+          "hit": "2+",
+          "damage": "3/3",
+          "special_rules": "Range 8\", Saturate, Torrent 2\""
+        },
+        {
+          "name": "Grenade launcher (frag)",
+          "attacks": "4",
+          "hit": "4+",
+          "damage": "2/4",
+          "special_rules": "Blast 2\""
+        },
+        {
+          "name": "Grenade launcher (krak)",
+          "attacks": "4",
+          "hit": "4+",
+          "damage": "4/5",
+          "special_rules": "Piercing 1"
+        },
+        {
+          "name": "Webber",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "3/4",
+          "special_rules": "Range 12\", Severe, Stun"
+        }
+      ]
     },
     {
       "name": "NEOPHYTE HEAVY GUNNER",
@@ -98,7 +141,37 @@
       "apl": 2,
       "movement": "6″",
       "save": "5+",
-      "wounds": 7
+      "wounds": 7,
+      "weapons": [
+        {
+          "name": "Heavy stubber (focused)",
+          "attacks": "5",
+          "hit": "4+",
+          "damage": "4/5",
+          "special_rules": "Heavy (Dash only)"
+        },
+        {
+          "name": "Heavy stubber (sweeping)",
+          "attacks": "4",
+          "hit": "4+",
+          "damage": "4/5",
+          "special_rules": "Heavy (Dash only), Torrent 1\""
+        },
+        {
+          "name": "Mining laser",
+          "attacks": "5",
+          "hit": "4+",
+          "damage": "5/6",
+          "special_rules": "Heavy (Dash only), Piercing 1"
+        },
+        {
+          "name": "Seismic cannon (long-wave)",
+          "attacks": "6",
+          "hit": "4+",
+          "damage": "2/2",
+          "special_rules": "Blast 1\", Heavy (Dash only), Stun"
+        }
+      ]
     },
     {
       "name": "NEOPHYTE HEAVY GUNNER",
@@ -114,7 +187,28 @@
       "apl": 2,
       "movement": "6″",
       "save": "5+",
-      "wounds": 7
+      "wounds": 7,
+      "weapons": [
+        {
+          "name": "Autogun",
+          "attacks": "4",
+          "hit": "4+",
+          "damage": "2/3"
+        },
+        {
+          "name": "Shotgun",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "3/3",
+          "special_rules": "Range 6\""
+        },
+        {
+          "name": "Gun butt",
+          "attacks": "3",
+          "hit": "4+",
+          "damage": "2/3"
+        }
+      ]
     },
     {
       "name": "SANCTUS SNIPER",
@@ -122,7 +216,21 @@
       "apl": 3,
       "movement": "6″",
       "save": "4+",
-      "wounds": 9
+      "wounds": 9,
+      "weapons": [
+        {
+          "name": "Sanctus sniper rifle (mobile)",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "3/4"
+        },
+        {
+          "name": "Fists",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "2/4"
+        }
+      ]
     },
     {
       "name": "SANCTUS SNIPER",
@@ -138,7 +246,16 @@
       "apl": 3,
       "movement": "6″",
       "save": "4+",
-      "wounds": 9
+      "wounds": 9,
+      "weapons": [
+        {
+          "name": "Sanctus bio-dagger",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "3/6",
+          "special_rules": "Lethal 4+, Shock"
+        }
+      ]
     },
     {
       "name": "SANCTUS TALON",
@@ -154,10 +271,31 @@
       "apl": 2,
       "movement": "6″",
       "save": "5+",
-      "wounds": 7
+      "wounds": 7,
+      "weapons": [
+        {
+          "name": "Autogun",
+          "attacks": "4",
+          "hit": "4+",
+          "damage": "2/3"
+        },
+        {
+          "name": "Shotgun",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "3/3",
+          "special_rules": "Range 6\""
+        },
+        {
+          "name": "Gun butt",
+          "attacks": "3",
+          "hit": "4+",
+          "damage": "2/3"
+        }
+      ]
     },
     {
-      "name": "Unknown Operative",
+      "name": "NOTES:",
       "source_file": "wyrmblade_page04_card3_landscape.pdf",
       "apl": null,
       "movement": null,
@@ -165,12 +303,13 @@
       "wounds": null
     },
     {
-      "name": "Unknown Operative",
+      "name": "NOTES:",
       "source_file": "wyrmblade_page04_card4_landscape.pdf",
       "apl": null,
       "movement": null,
       "save": null,
       "wounds": null
     }
-  ]
+  ],
+  "_content_hash": "e59c220efe29a7ad99f360f39a59efb99721300d0442906b85c4d376ad9b4d96"
 }

@@ -1,6 +1,7 @@
 {
   "team": "hierotek-circle",
-  "generated": "2026-03-31T16:24:12.525923+00:00",
+  "generated": "2026-03-31T16:44:34.449163+00:00",
+  "operative_count": 20,
   "operatives": [
     {
       "name": "CHRONOMANCER",
@@ -8,10 +9,39 @@
       "apl": 3,
       "movement": "6″",
       "save": "3+",
-      "wounds": 14
+      "wounds": 14,
+      "weapons": [
+        {
+          "name": "Aeonstave (ranged)",
+          "attacks": "5",
+          "hit": "3+",
+          "damage": "3/3",
+          "special_rules": "Blast 2\", Lethal 5+, Stun, Magnify*"
+        },
+        {
+          "name": "Entropic lance (ranged)",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "5/3",
+          "special_rules": "Devastating 3, Piercing 1, Magnify*"
+        },
+        {
+          "name": "Aeonstave (melee)",
+          "attacks": "4",
+          "hit": "4+",
+          "damage": "3/4",
+          "special_rules": "Lethal 5+, Shock"
+        },
+        {
+          "name": "Entropic lance (melee)",
+          "attacks": "4",
+          "hit": "4+",
+          "damage": "3/6"
+        }
+      ]
     },
     {
-      "name": "Unknown Operative",
+      "name": "CHRONOMANCER ACTIONS",
       "source_file": "hierotek-circle_page01_card2_landscape.pdf",
       "apl": null,
       "movement": null,
@@ -19,29 +49,12 @@
       "wounds": null
     },
     {
-      "name": "Unknown Operative",
+      "name": "CHRONOMANCER ACTIONS",
       "source_file": "hierotek-circle_page01_card3_landscape.pdf",
       "apl": null,
       "movement": null,
       "save": null,
-      "wounds": null,
-      "weapons": [
-        {
-          "name": "weapons whenever it’s shooting",
-          "special_rules": "that selected operative., This operative cannot perform this action while within control, range of an enemy operative."
-        },
-        {
-          "name": "that selected operative.",
-          "special_rules": "This operative cannot perform this action while within control, range of an enemy operative."
-        },
-        {
-          "name": "This operative cannot perform this action while within control",
-          "special_rules": "range of an enemy operative."
-        },
-        {
-          "name": "range of an enemy operative."
-        }
-      ]
+      "wounds": null
     },
     {
       "name": "PSYCHOMANCER",
@@ -49,10 +62,26 @@
       "apl": 3,
       "movement": "6″",
       "save": "3+",
-      "wounds": 14
+      "wounds": 14,
+      "weapons": [
+        {
+          "name": "Abyssal lance (ranged)",
+          "attacks": "5",
+          "hit": "3+",
+          "damage": "2/2",
+          "special_rules": "Blast 2\", 2\" Devastating 1, Piercing 2, Magnify*"
+        },
+        {
+          "name": "Abyssal lance (melee)",
+          "attacks": "4",
+          "hit": "4+",
+          "damage": "4/4",
+          "special_rules": "Devastating 1"
+        }
+      ]
     },
     {
-      "name": "Unknown Operative",
+      "name": "PSYCHOMANCER ACTIONS",
       "source_file": "hierotek-circle_page02_card1_landscape.pdf",
       "apl": null,
       "movement": null,
@@ -60,7 +89,7 @@
       "wounds": null
     },
     {
-      "name": "Unknown Operative",
+      "name": "PSYCHOMANCER ACTIONS",
       "source_file": "hierotek-circle_page02_card2_landscape.pdf",
       "apl": null,
       "movement": null,
@@ -73,10 +102,26 @@
       "apl": 3,
       "movement": "6″",
       "save": "3+",
-      "wounds": 14
+      "wounds": 14,
+      "weapons": [
+        {
+          "name": "Staff of light (ranged)",
+          "attacks": "6",
+          "hit": "3+",
+          "damage": "3/4",
+          "special_rules": "Rending, Magnify*"
+        },
+        {
+          "name": "Staff of light (melee)",
+          "attacks": "4",
+          "hit": "4+",
+          "damage": "3/5",
+          "special_rules": "Rending"
+        }
+      ]
     },
     {
-      "name": "Unknown Operative",
+      "name": "TECHNOMANCER ACTIONS",
       "source_file": "hierotek-circle_page02_card4_landscape.pdf",
       "apl": null,
       "movement": null,
@@ -84,7 +129,7 @@
       "wounds": null
     },
     {
-      "name": "Unknown Operative",
+      "name": "TECHNOMANCER ACTIONS",
       "source_file": "hierotek-circle_page03_card1_landscape.pdf",
       "apl": null,
       "movement": null,
@@ -97,14 +142,20 @@
       "apl": 2,
       "movement": "7″",
       "save": "5+",
-      "wounds": 5,
+      "wounds": null,
       "weapons": [
         {
-          "name": "weapons that aren’t on its",
-          "special_rules": "datacard, or perform"
+          "name": "Spark",
+          "attacks": "4",
+          "hit": "4+",
+          "damage": "2/3",
+          "special_rules": "Range 4\",  Piercing 1"
         },
         {
-          "name": "datacard, or perform"
+          "name": "Claws",
+          "attacks": "3",
+          "hit": "5+",
+          "damage": "1/2"
         }
       ]
     },
@@ -114,14 +165,20 @@
       "apl": 2,
       "movement": "7″",
       "save": "5+",
-      "wounds": 5,
+      "wounds": null,
       "weapons": [
         {
-          "name": "weapons that aren’t on its",
-          "special_rules": "datacard, or perform"
+          "name": "Atomiser beam",
+          "attacks": "4",
+          "hit": "4+",
+          "damage": "3/4",
+          "special_rules": "Range 6\", Lethal 5+"
         },
         {
-          "name": "datacard, or perform"
+          "name": "Claws",
+          "attacks": "3",
+          "hit": "5+",
+          "damage": "1/2"
         }
       ]
     },
@@ -131,7 +188,7 @@
       "apl": 2,
       "movement": "7″",
       "save": "5+",
-      "wounds": 5
+      "wounds": null
     },
     {
       "name": "APPRENTEK",
@@ -139,7 +196,22 @@
       "apl": 3,
       "movement": "6″",
       "save": "3+",
-      "wounds": 11
+      "wounds": 11,
+      "weapons": [
+        {
+          "name": "Arcane conduit (ranged)",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "4/5",
+          "special_rules": "Piercing 1,  Magnify*"
+        },
+        {
+          "name": "Arcane conduit (melee)",
+          "attacks": "3",
+          "hit": "4+",
+          "damage": "3/5"
+        }
+      ]
     },
     {
       "name": "DEATHMARK",
@@ -150,70 +222,17 @@
       "wounds": 10,
       "weapons": [
         {
-          "name": "weapons have the Seek",
-          "special_rules": "weapon rule., MULTI-DIMENSIONAL VISION, Until the start of this operative’s next activation, whenever"
+          "name": "Synaptic disintegrator",
+          "attacks": "4",
+          "hit": "2+",
+          "damage": "4/3",
+          "special_rules": "Devastating 2, Heavy (Dash only), Piercing 1, Severe"
         },
         {
-          "name": "weapon rule.",
-          "special_rules": "MULTI-DIMENSIONAL VISION, Until the start of this operative’s next activation, whenever, it’s shooting, enemy operatives cannot be obscured."
-        },
-        {
-          "name": "MULTI-DIMENSIONAL VISION",
-          "special_rules": "Until the start of this operative’s next activation, whenever, it’s shooting, enemy operatives cannot be obscured., This operative cannot perform this action while within control"
-        },
-        {
-          "name": "Until the start of this operative’s next activation, whenever",
-          "special_rules": "it’s shooting, enemy operatives cannot be obscured., This operative cannot perform this action while within control, range of an enemy operative."
-        },
-        {
-          "name": "it’s shooting, enemy operatives cannot be obscured.",
-          "special_rules": "This operative cannot perform this action while within control, range of an enemy operative., HIEROTEK CIRCLE , NECRON, DEATHMARK"
-        },
-        {
-          "name": "This operative cannot perform this action while within control",
-          "attacks": "2",
-          "damage": "2",
-          "special_rules": "range of an enemy operative., HIEROTEK CIRCLE , NECRON, DEATHMARK, DEATHMARK"
-        },
-        {
-          "name": "range of an enemy operative.",
-          "attacks": "2",
-          "damage": "2",
-          "special_rules": "HIEROTEK CIRCLE , NECRON, DEATHMARK, DEATHMARK, APL"
-        },
-        {
-          "name": "HIEROTEK CIRCLE , NECRON, DEATHMARK",
-          "attacks": "2",
-          "damage": "2",
-          "special_rules": "DEATHMARK, APL, WOUNDS"
-        },
-        {
-          "name": "DEATHMARK",
-          "attacks": "2",
-          "damage": "2",
-          "special_rules": "APL, WOUNDS, SAVE"
-        },
-        {
-          "name": "APL",
-          "special_rules": "WOUNDS, SAVE, MOVE"
-        },
-        {
-          "name": "WOUNDS",
+          "name": "Fists",
+          "attacks": "3",
           "hit": "3+",
-          "special_rules": "SAVE, MOVE"
-        },
-        {
-          "name": "SAVE",
-          "attacks": "10",
-          "hit": "3+",
-          "damage": "10",
-          "special_rules": "MOVE"
-        },
-        {
-          "name": "MOVE",
-          "attacks": "10",
-          "hit": "3+",
-          "damage": "10"
+          "damage": "3/4"
         }
       ]
     },
@@ -223,7 +242,29 @@
       "apl": 2,
       "movement": "5″",
       "save": "3+",
-      "wounds": 11
+      "wounds": 11,
+      "weapons": [
+        {
+          "name": "Gauss blaster",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "4/5",
+          "special_rules": "Piercing 1"
+        },
+        {
+          "name": "Tesla carbine",
+          "attacks": "5",
+          "hit": "3+",
+          "damage": "3/3",
+          "special_rules": "2\" Devastating 1"
+        },
+        {
+          "name": "Bayonet",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "3/4"
+        }
+      ]
     },
     {
       "name": "IMMORTAL DESPOTEK",
@@ -239,10 +280,32 @@
       "apl": 2,
       "movement": "5″",
       "save": "3+",
-      "wounds": 10
+      "wounds": 10,
+      "weapons": [
+        {
+          "name": "Gauss blaster",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "4/5",
+          "special_rules": "Piercing 1"
+        },
+        {
+          "name": "Tesla carbine",
+          "attacks": "5",
+          "hit": "3+",
+          "damage": "3/3",
+          "special_rules": "2\" Devastating 1"
+        },
+        {
+          "name": "Bayonet",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "3/4"
+        }
+      ]
     },
     {
-      "name": "Unknown Operative",
+      "name": "NOTES:",
       "source_file": "hierotek-circle_page05_card2_landscape.pdf",
       "apl": null,
       "movement": null,
@@ -250,7 +313,7 @@
       "wounds": null
     },
     {
-      "name": "Unknown Operative",
+      "name": "NOTES:",
       "source_file": "hierotek-circle_page05_card3_landscape.pdf",
       "apl": null,
       "movement": null,
@@ -258,12 +321,13 @@
       "wounds": null
     },
     {
-      "name": "Unknown Operative",
+      "name": "NOTES:",
       "source_file": "hierotek-circle_page05_card4_landscape.pdf",
       "apl": null,
       "movement": null,
       "save": null,
       "wounds": null
     }
-  ]
+  ],
+  "_content_hash": "c4f62e17c4376578d16bb2fbb5d1c81c7d65fa4f7929b3f630c7060680e9f2f3"
 }
