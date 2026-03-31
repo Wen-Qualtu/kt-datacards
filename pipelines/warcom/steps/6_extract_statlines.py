@@ -177,6 +177,25 @@ def _extract_stats_from_blocks(blocks: List[Dict], page_width: float, page_heigh
                 stats["apl"] = int(text[-1])
                 break
     
+    # If APL not found in name, check stats box region (some cards like RATLING BOMBER)
+    if stats["apl"] is None:
+        for block in blocks:
+            if block.get("type") != 0:
+                continue
+            bbox = block["bbox"]
+            # Stats box region: x > 65%, y < 25%
+            if bbox[0] > page_width * 0.65 and bbox[1] < page_height * 0.25:
+                text = ""
+                for line in block.get("lines", []):
+                    for span in line.get("spans", []):
+                        text += span.get("text", "")
+                text = text.strip()
+                
+                # Look for single digit (APL is 2 or 3)
+                if text.isdigit() and len(text) == 1:
+                    stats["apl"] = int(text)
+                    break
+    
     # Collect text from stats box region (top-right)
     stats_text = ""
     for block in blocks:
@@ -260,22 +279,31 @@ def _extract_weapons_from_blocks(blocks: List[Dict], page_width: float, page_hei
     # First block should be header - skip it
     header_found = False
     for i, block_text in enumerate(weapon_blocks):
+        # Debug: log what we're processing
+        logger.debug("Weapon block %d: %s", i, block_text[:50])
+        
         # Check if this is the header
         if "NAME" in block_text and "ATK" in block_text:
             header_found = True
+            logger.debug("  -> Header, skipping")
             continue
         
         if not header_found:
+            logger.debug("  -> No header yet, skipping")
             continue
         
         # Stop at ability text (longer paragraphs)
         if len(block_text) > 100:
+            logger.debug("  -> Too long (%d chars), stopping", len(block_text))
             break
         
         # Parse weapon block
         weapon = _parse_weapon_block(block_text)
         if weapon:
             weapons.append(weapon)
+            logger.debug("  -> Parsed: %s", weapon["name"])
+        else:
+            logger.debug("  -> Failed to parse")
     
     return weapons if weapons else None
 
@@ -283,59 +311,101 @@ def _extract_weapons_from_blocks(blocks: List[Dict], page_width: float, page_hei
 def _parse_weapon_block(block_text: str) -> Optional[Dict[str, Any]]:
     """Parse a single weapon profile block.
     
-    Expected format (one item per line):
-    Slugga
-    4
-    4+
-    3/4
-    Range 8"
+    Supports two formats:
+    1. Multi-line (most common):
+       Explosive arsenal
+       5
+       3+
+       4/5
+       Range 3", Blast 1"
     
-    Or simpler:
-    Slugga
-    4
-    4+
-    3/4
-    -
+    2. Single-line (rare):
+       "Explosive arsenal  5  3+  4/5  Range 3""
     """
-    lines = [line.strip() for line in block_text.split('\n') if line.strip()]
+    # Clean up text
+    text = block_text.strip()
     
-    if len(lines) < 4:
+    # Skip headers and labels
+    if any(header in text for header in ['NAME', 'ATK', 'HIT', 'DMG', 'WR', 'APL', 'WOUNDS', 'SAVE', 'MOVE']):
+        return None
+    
+    # Try parsing as multi-line format first
+    lines = [line.strip() for line in text.split('\n') if line.strip()]
+    
+    if len(lines) >= 4:
+        # Multi-line format
+        weapon = {}
+        
+        # Line 0: Weapon name
+        weapon["name"] = lines[0]
+        
+        # Line 1: Attacks (should be a number)
+        if not lines[1].isdigit():
+            return None  # Invalid format
+        weapon["attacks"] = lines[1]
+        
+        # Line 2: Hit (X+ format)
+        if re.match(r'^\d\+$', lines[2]):
+            weapon["hit"] = lines[2]
+        
+        # Line 3: Damage (X/Y or just X)
+        if re.match(r'^\d+(/\d+)?$', lines[3]):
+            weapon["damage"] = lines[3]
+        
+        # Line 4+: Special rules (if present and not just "-")
+        if len(lines) > 4:
+            special_rules = ' '.join(lines[4:]).strip()
+            if special_rules and special_rules != '-':
+                weapon["special_rules"] = special_rules
+        
+        # Validate minimum required fields
+        if "name" in weapon and "attacks" in weapon:
+            return weapon
+    
+    # Try parsing as single-line format (fallback)
+    # Skip long ability text (weapons are short)
+    if len(text) > 150:
+        return None
+    
+    # Split by multiple spaces to separate fields
+    parts = re.split(r'\s{2,}', text)
+    
+    if len(parts) < 4:
         return None
     
     weapon = {}
+    weapon["name"] = parts[0].strip()
     
-    # Line 0: Weapon name
-    name = lines[0]
-    # Skip if it's a table header or stat label
-    if name in ['NAME', 'ATK', 'HIT', 'DMG', 'WR', 'APL', 'WOUNDS', 'SAVE', 'MOVE']:
-        return None
-    weapon["name"] = name
+    # Find numeric fields (ATK, HIT, DMG)
+    numeric_parts = []
+    for i, part in enumerate(parts[1:], 1):
+        part = part.strip()
+        # Check if it's a number (ATK)
+        if part.isdigit():
+            numeric_parts.append(("attacks", part))
+        # Check if it's hit (X+)
+        elif re.match(r'^\d\+$', part):
+            numeric_parts.append(("hit", part))
+        # Check if it's damage (X/Y or X)
+        elif re.match(r'^\d+(/\d+)?$', part):
+            numeric_parts.append(("damage", part))
+        # Everything else is special rules
+        else:
+            special_rules = ' '.join(parts[i:]).strip()
+            if special_rules and special_rules != '-':
+                weapon["special_rules"] = special_rules
+            break
     
-    # Line 1: Attacks (should be a number)
-    if lines[1].isdigit():
-        weapon["attacks"] = lines[1]
-    else:
-        return None  # Invalid weapon
+    # Assign numeric fields
+    for field_name, value in numeric_parts:
+        weapon[field_name] = value
     
-    # Line 2: Hit (X+ format)
-    if re.match(r'^\d\+$', lines[2]):
-        weapon["hit"] = lines[2]
-    
-    # Line 3: Damage (X/Y or just X)
-    if re.match(r'^\d+(/\d+)?$', lines[3]):
-        weapon["damage"] = lines[3]
-    
-    # Line 4+: Special rules (if present and not just "-")
-    if len(lines) > 4:
-        special_rules = ' '.join(lines[4:]).strip()
-        if special_rules and special_rules != '-':
-            weapon["special_rules"] = special_rules
-    
-    # Only return complete weapon (must have name and attacks minimum)
+    # Validate minimum required fields
     if "name" in weapon and "attacks" in weapon:
         return weapon
     
     return None
+
 
 
 def _extract_unique_actions_from_blocks(blocks: List[Dict], page_width: float, page_height: float,
@@ -466,14 +536,53 @@ def extract_statlines_from_team(team_dir: Path, output_dir: Path, force: bool = 
             logger.info("  %s: No changes detected, skipping", team_name)
             return None
     
-    # Extract operatives
+    # Extract operatives, handling front/back pairs
     operatives = []
-    for pdf_file in pdf_files:
+    skip_next = 0
+    
+    for idx, pdf_file in enumerate(pdf_files):
+        # Skip if this was processed as a back side
+        if skip_next > 0:
+            skip_next -= 1
+            continue
+        
+        # Extract from front card
         operative = extract_statlines_from_pdf(pdf_file)
-        # Only include operatives with valid name and wounds
-        # (operatives without wounds are ACTIONS-only back sides)
-        if operative.get("name") and operative.get("wounds") is not None:
-            operatives.append(operative)
+        
+        # Only process if valid operative
+        if not (operative.get("name") and operative.get("wounds") is not None):
+            continue
+        
+        # Check if card continues on back side
+        doc = fitz.open(pdf_file)
+        if len(doc) > 0:
+            page = doc[0]
+            text = page.get_text().lower()
+            
+            # Check for continue patterns
+            has_continue = any(pattern in text for pattern in [
+                "continue on other side",
+                "continued on other side", 
+                "continues on other side",
+                "rules continue on other side"
+            ])
+            
+            # If continues and there's a next PDF, process it as back side
+            if has_continue and idx + 1 < len(pdf_files):
+                back_pdf = pdf_files[idx + 1]
+                back_data = extract_statlines_from_pdf(back_pdf)
+                
+                # Merge unique actions from back side (weapons are front-only)
+                if back_data and back_data.get("unique_actions"):
+                    if not operative.get("unique_actions"):
+                        operative["unique_actions"] = []
+                    operative["unique_actions"].extend(back_data["unique_actions"])
+                
+                # Skip next PDF since we just processed it
+                skip_next = 1
+        
+        doc.close()
+        operatives.append(operative)
     
     if not operatives:
         logger.warning("  %s: No operatives extracted", team_name)
