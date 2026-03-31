@@ -55,6 +55,20 @@ def copy_tts_objects(output_dir: Path, tts_saves_dir: Path, teams: list[str] | N
             print(f"⚠ Missing cardbox file for {team_name}")
             continue
         
+        # Copy texture file if it exists
+        texture_file = tts_dir / f"{team_name}-card-box-texture.jpg"
+        if texture_file.exists():
+            dest_texture = tts_saves_dir / f"{team_name}-card-box-texture.jpg"
+            shutil.copy2(texture_file, dest_texture)
+            print(f"  + Copied texture file")
+        
+        # Copy mesh file if it exists
+        mesh_file = tts_dir / f"{team_name}-card-box-mesh.obj"
+        if mesh_file.exists():
+            dest_mesh = tts_saves_dir / f"{team_name}-card-box-mesh.obj"
+            shutil.copy2(mesh_file, dest_mesh)
+            print(f"  + Copied mesh file")
+        
         # Optionally copy cardbox folder (contains decks, single-cards, token-bag, etc.)
         if copy_subfolders:
             cardbox_dir = tts_dir / "cardbox"
