@@ -1,663 +1,306 @@
 # Development Rules & Guidelines
 
+> **Purpose**: This document provides essential context and rules for AI agents working on the Kill Team Datacards project. It focuses on current architecture, coding standards, and critical constraints.
+
 ## 🎯 Project Overview
 
 ### What Is This Project?
 
-This is an automated pipeline for processing **Warhammer 40,000: Kill Team datacards** exported from the mobile app into a format usable in **Tabletop Simulator (TTS)**.
+Automated pipelines for processing **Warhammer 40,000: Kill Team** datacards into **Tabletop Simulator (TTS)** compatible formats from two sources:
 
-**The Challenge:**
-- Kill Team mobile app exports PDFs with UUID filenames
-- PDFs contain multiple card types (datacards, equipment, ploys, faction rules, operatives, strategy)
-- TTS needs individual card images with specific URLs
-- Users want to quickly get new teams into TTS without manual image extraction
-
-**The Solution:**
-This pipeline automates the entire workflow:
-1. **Identify** - Analyze PDF content to determine team name and card type
-2. **Extract** - Split PDFs into individual card images (front/back detection)
-3. **Organize** - Store in TTS-compatible folder structure
-4. **Backsides** - Add default or team-specific card backsides
-5. **Generate URLs** - Create CSV mapping for TTS deck builder
-
-**Key Constraints:**
-- ⚠️ **IMMUTABLE output/ & output_2/ & tts_objects structure** - TTS cards reference exact paths via GitHub raw URLs
-- 🎯 **Accuracy over speed** - Wrong card data breaks gameplay
-- 🔄 **Reproducible** - Anyone should be able to run the pipeline and get same results
+1. **kt-app Pipeline**: Processes PDFs exported from the Kill Team mobile app
+2. **warcom Pipeline**: Processes official PDFs from Warhammer Community website
 
 **Tech Stack:**
 - Python 3.11+ with Poetry dependency management
 - PyMuPDF (fitz) for PDF processing
-- Pillow for image manipulation
-- pytesseract for OCR (future)
-- Task for workflow automation
+- Pillow & OpenCV for image manipulation
+- YAML for configuration
 - Git for version control
-- GitHub for hosting output images (via raw URLs)
-
-**Users:**
-- Kill Team players who want their cards in TTS
-- Primary user: Wen (project owner, manages team datacards)
+- GitHub raw URLs for hosting card images
 
 ---
 
-## 📋 Core Principles```
+## 🚨 Critical Constraints
 
-### 1 **Never Break TTS References**
-**CRITICAL**: The `output/` folder structure is IMMUTABLE. TTS cards reference these exact paths.
-- ✅ DO: Keep `output/{teamname}/{cardtype}/` structure exactly as-is
-- ❌ DON'T: Rename, restructure, or move anything in `output/`
-- 💡 Future: Use `output/v2/` for new structures while keeping `output/` for backwards compatibility
+### 1. Never Break TTS References
+**The `output/` folder structure is IMMUTABLE.**
+- TTS cards reference exact GitHub raw URLs
+- ✅ DO: Add new files or update existing images
+- ❌ DON'T: Rename folders, restructure paths, or move files in `output/`
 
-### 2. **Git as Source of Truth**
-- All changes are tracked in git
-- No manual version numbers in files
-- Use git history for version tracking
-- Commit frequently with clear messages
+### 2. Logging Standard
+**All pipeline scripts MUST use Python's logging module exclusively.**
+- ✅ DO: `logging.info()`, `logging.warning()`, `logging.error()`, `logging.debug()`
+- ❌ DON'T: `print()` statements
+- Configuration: Use `--log-level` flag (DEBUG, INFO, WARNING, ERROR)
+- Format: `'%(levelname)s: %(message)s'`
 
-### 3. **Reproducibility Across Machines**
-- Use Poetry for dependency management
-- Lock dependencies with `poetry.lock`
-- Use Task for consistent script execution
-- Virtual environments for isolation
-
-### 4. **Quality Over Speed**
+### 3. Data Quality Over Speed
 - Accuracy is paramount (especially for stats extraction)
-- Better to show warnings/errors than wrong data
-- Manual review is acceptable when accuracy is uncertain
-- Don't rush processing - it's fine if it takes hours
+- Better to warn/error than produce wrong data
+- Manual review is acceptable when uncertain
+- Processing can take hours - that's fine
 
 ---
 
-## 📁 Folder Structure Rules
+## 📁 Repository Structure
 
-### Current Structure (After Restructuring)
 ```
 kt-datacards/
-├── input/                      # Raw unprocessed files (any structure allowed)
-│   └── *.pdf                   # Process all PDFs recursively
-├── config/                     # Configuration files
-│   ├── team-config.yaml        # Team name mappings
-│   ├── defaults/               # Default assets for all teams
-│   │   ├── box/                # Default 3D box mesh
-│   │   ├── card-backside/      # Default backside images
-│   │   └── tts-image/          # Default preview image
-│   ├── teams/                  # Team-specific configurations
-│   │   └── {teamname}/         # Each team's assets
-│   │       ├── box/            # Custom 3D box (optional)
-│   │       ├── card-backside/  # Custom backsides (optional)
-│   │       └── tts-image/      # TTS preview image
-│   ├── team-icons/             # Processed team icons
-│   └── team-icons-raw/         # Raw downloaded icons
-├── processed/                  # Intermediate processing stage
-│   └── {teamname}/             # Flat structure by team
-├── output/                     # ⚠️ IMMUTABLE - TTS references these paths
-│   ├── {teamname}/
-│   │   ├── datacards/
-│   │   ├── equipment/
-│   │   ├── faction-rules/
-│   │   ├── firefight-ploys/
-│   │   ├── operatives/
-│   │   └── strategy-ploys/
-│   └── datacards-urls.csv      # Generated URL mapping
-├── archive/                    # Archived processed files (optional)
+├── config/
+│   ├── team-config.yaml           # Team metadata, faction assignments
+│   ├── team-guids.json            # TTS GUID assignments per team
+│   ├── defaults/                   # Default assets for all teams
+│   │   ├── box/                   # Default cardbox mesh/textures
+│   │   ├── card-backside/         # Default card back images
+│   │   ├── tts-image/             # Default TTS object images
+│   │   ├── tts-script/            # Default Lua scripts
+│   │   └── tts-token/             # Default token meshes/scripts
+│   ├── pipelines/                  # Pipeline-specific config
+│   │   └── warcom/                # Warcom scraping patterns
+│   └── teams/{teamname}/          # Team-specific overrides
+├── dev/                            # Development/debugging scripts
+│   └── examples/                   # Example scripts
+├── docs/
+│   └── DEVELOPMENT.md             # This file - AI agent onboarding
+├── input/                          # Raw unprocessed files (kt-app pipeline)
+├── layers/
+│   ├── archive/                    # Source PDFs archived by team
+│   ├── kt-app/                     # kt-app pipeline intermediate data
+│   └── warcom/                     # warcom pipeline intermediate data
+│       ├── staging/                # Downloaded PDFs awaiting processing
+│       └── extracted/{teamname}/  # Extracted cards and tokens
+├── output/                         # ⚠️ IMMUTABLE - TTS references these
+│   ├── .tts-metadata.json         # Change detection metadata
 │   └── {teamname}/
-├── script/
-│   ├── src/                    # Source code
-│   ├── scripts/                # Individual step scripts
-│   ├── tests/                  # Test scripts
-│   ├── run_pipeline.py         # Main entry point
-│   └── README.md               # Script documentation
-└── docs/                       # Feature documentation
-└── script/tools/               # Maintenance utilities (optional)
+│       ├── cards/{cardtype}/      # Card images organized by type
+│       ├── textures/               # Team box textures
+│       ├── tokens/                 # Processed token images
+│       └── tts/                    # TTS object JSON files
+├── output_v2/                      # Faction-organized output structure
+│   ├── datacards-urls.json        # All card URLs by team
+│   ├── metadata.yaml              # Team metadata
+│   ├── tts-card-boxes.json        # Cardbox objects by team
+│   ├── tts-manager.json           # TTS manager object
+│   ├── tts-metadata.json          # TTS generation metadata
+│   ├── chaos/{teamname}/          # Chaos faction teams
+│   ├── imperium/{teamname}/       # Imperium faction teams
+│   └── xenos/{teamname}/          # Xenos faction teams
+├── pipelines/
+│   ├── kt-app/                     # Mobile app PDF processing
+│   │   ├── docs/                   # kt-app specific documentation
+│   │   └── *.py                    # Pipeline scripts
+│   └── warcom/                     # Warhammer Community PDF processing
+│       ├── docs/                   # warcom specific documentation
+│       ├── steps/                  # Pipeline step implementations
+│       ├── pdf_process_pipeline.py # Main orchestrator
+│       └── README.md              # warcom pipeline overview
+├── tools/                          # Utility scripts and tools
+├── pyproject.toml                 # Poetry dependencies
+└── README.md                      # Project overview
 ```
-
-### Folder Rules
-
-#### `input/`
-- Process all PDFs recursively (including subfolders)
-- No specific structure required
-- Files are moved after processing
-- Keep it flexible for user convenience
-
-#### `archive/`
-- Keep files forever (safe to accumulate)
-- Organized by team name
-- GUIDs linked to source PDFs (overwrite on reprocessing)
-- Storage growth is acceptable
-
-#### `processed/`
-- Flat structure by team: `{teamname}/`
-- Example: `kasrkin/`, `hearthkyn-salvager/`
-- Contains identified and renamed PDFs
-- Note: Future hierarchical structure (faction/army) deferred to Feature 03
-
-#### `output/` ⚠️
-- **NEVER change structure**
-- Flat team structure: `{teamname}/{cardtype}/`
-- TTS cards reference these exact paths
-- Future: Create `output/v2/` for new structures
-
-#### `output/v2/` 🆕
-- **New hierarchical structure**
-- Organized by faction/team: `{faction}/{teamname}/{cardtype}/`
-- Card type `operatives` renamed to `operative-selection`
-- All card filenames include team prefix
-- Metadata moved to `output/metadata.yaml`
-- Separate URL CSV: `output/v2/datacards-urls.csv`
-- Does not affect legacy `output/` structure
-
-#### `config/`
-- All configuration files here
-- `team-config.yaml` for team configuration and metadata
-- `settings.py` for application config (future)
-- `card-backside/default/` for default backside images
-- `card-backside/team/{teamname}/` for custom team backsides
-- Keep configs in git (except secrets)
-
----
-
-## 🏷️ Naming Conventions
-
-### File Names
-
-#### Raw Input Files
-- **Accept any filename** - Pipeline identifies content, not based on filename
-- Mobile app exports use GUIDs (e.g., `05ba2863-8395-4b11-8df9-e67b70feebde.pdf`)
-- Manual exports may use descriptive names (e.g., `kasrkin-datacards.pdf`)
-- No specific naming required - pipeline handles all cases
-
-#### Processed Files
-- Pattern: `{team-name}_{card-type}.pdf`
-- Example: `kasrkin_datacards.pdf`
-- Use kebab-case for team names
-- Use kebab-case for card types
-
-#### Output Images
-- Pattern: `{card-name}_{side}.png`
-- Example: `assault-intercessor-grenadier_front.png`
-- Example: `assault-intercessor-grenadier_back.png`
-- Use kebab-case for card names
-- Sides: `_front` and `_back`
-
-### Code Naming
-
-#### Python Files
-- Use snake_case: `pdf_processor.py`
-- Descriptive names: `extract_pages.py`, `generate_urls.py`
-
-#### Classes
-- Use PascalCase: `TeamMetadata`, `PDFProcessor`
-- Noun-based names
-- Clear single responsibility
-
-#### Functions/Methods
-- Use snake_case: `process_raw_pdfs()`, `extract_text()`
-- Verb-based names
-- Clear action description
-
-#### Variables
-- Use snake_case: `team_name`, `output_dir`
-- Descriptive, not abbreviated
-- Boolean variables: `is_`, `has_`, `should_` prefix
-- **Exception**: Python convention parameters (`self` for instance methods, `card_type_class` for @classmethod instead of `cls`)
-- **Rule**: Prefer full words over abbreviations - you type once but read many times
-  - ✅ GOOD: `team_identifier`, `card_type_class`, `configuration`
-  - ❌ BAD: `team_id`, `cls`, `cfg`
-  - Clarity trumps brevity
-
-#### Constants
-- Use UPPER_SNAKE_CASE: `DEFAULT_DPI`, `MAX_WORKERS`
-- Defined at module level
-- Grouped logically
-
-### YAML/Config Naming
-
-#### Team Names (Canonical)
-- Use kebab-case: `angels-of-death`
-- Lowercase only
-- Hyphens for spaces
-
-#### Card Types
-- Use kebab-case: `datacards`, `firefight-ploys`
-- Lowercase only
-- Match output folder names exactly
-
-#### Metadata Keys
-- Use snake_case: `last_updated`, `file_count`
-- Descriptive keys
-- Consistent across all YAML files
 
 ---
 
 ## 🏗️ Architecture Principles
 
 ### Separation of Concerns
-- **Models**: Data structures (`Team`, `Datacard`)
-- **Processors**: Business logic (`PDFProcessor`, `TextExtractor`)
-- **Generators**: Output creation (`URLGenerator`)
-- **Utils**: Shared utilities (`file_utils`, `logger`)
-
-### Single Responsibility
-- Each class/function does ONE thing well
-- Easy to test, easy to understand
-- Easy to modify without breaking others
+- **Models**: Data structures (Team, Card, Token)
+- **Processors**: Business logic (extraction, classification)
+- **Generators**: Output creation (TTS objects, URLs)
+- **Utils**: Shared utilities (file operations, logging)
 
 ### Dependency Injection
-- Pass dependencies explicitly
-- Don't hardcode paths in classes
-- Use config for settings
+- Pass dependencies explicitly via parameters
+- Don't hardcode paths - use config or Path() relative to workspace root
+- Example: `workspace_root = Path(__file__).parent.parent.parent`
 
 ### Error Handling
 - Validate early, fail fast
-- Clear error messages
-- Log errors with context
+- Log errors with full context
 - Don't silently ignore errors
+- Provide actionable error messages
 
 ---
 
-## 🔍 Data Quality Rules
+## 📝 Naming Conventions
 
-### Stats Extraction
-- **100% accuracy required** - no guessing
-- Better to show warning than wrong data
-- Flag uncertain extractions for manual review
-- Validate against expected patterns
+### Python Code
 
-### Text Extraction
-- OCR can be imperfect - validate results
-- Cross-reference with known patterns
-- Allow manual correction workflow
-- Document OCR challenges per card type
+#### Files & Modules
+- Use `snake_case`: `pdf_processor.py`, `extract_tokens.py`
 
-### Metadata Tracking
-- Use content hashes to detect real changes
-- Don't update timestamps on reprocessing unchanged files
-- Track processing dates separately from update dates
-- Validate metadata against schema
+#### Classes
+- Use `PascalCase`: `TeamMetadata`, `PDFProcessor`, `TTSCard`
 
----
+#### Functions & Methods
+- Use `snake_case`: `process_raw_pdfs()`, `extract_text()`, `build_tts_object()`
+- Verb-based names describing the action
 
-## 🎯 Processing Workflow Rules
+#### Variables
+- Use `snake_case`: `team_name`, `output_dir`, `card_type`
+- **Rule**: Prefer full words over abbreviations
+  - ✅ GOOD: `team_identifier`, `configuration`, `card_type_class`
+  - ❌ BAD: `team_id`, `cfg`, `cls`
+- Boolean variables: `is_*`, `has_*`, `should_*` prefix
 
-### Default Behavior
-1. Check CLI arguments
-2. If no CLI args, check config file
-3. If no config, process all teams
-4. Always process recursively in `input/`
+#### Constants
+- Use `UPPER_SNAKE_CASE`: `DEFAULT_DPI`, `MAX_WORKERS`, `TARGET_SIZE`
 
-### Team Filtering
-- Validate team names against team-mapping
-- Show clear error for unknown teams
-- Support comma-separated lists
-- Support "all" keyword
+### Configuration (YAML)
 
-### Change Detection
-- Use content hash comparison
-- Only process if content changed
-- Support `--force` flag to override
-- Log whether processing or skipping
+#### Team Names (Canonical)
+- Use `kebab-case`: `angels-of-death`, `corsair-voidscarred`
+- Always lowercase
 
-### Pipeline Steps
-- Steps: `process`, `extract`, `backside`, `urls`, `tts`, `metadata`, `display-table`
-- Each step can run independently (except display-table which requires TTS objects)
-- Support selective execution
-- Clear logging for each step
-- Display table generation runs automatically as final step
+#### Card Types
+- Use `kebab-case`: `datacards`, `firefight-ploys`, `faction-rules`
+- Match output folder names exactly
+
+#### Metadata Keys
+- Use `snake_case`: `last_updated`, `file_count`, `content_hash`
 
 ---
 
-## 🗺️ Team Mapping Structure
+## ⚙️ Configuration System
 
-### Hierarchical Organization
-```yaml
-teams:
-  hearthkyn-salvagers:
-    canonical_name: "Hearthkyn Salvagers"
-    faction: "xenos"                    # Faction level
-    army: "leagues-of-votann"           # Army metadata (for reference)
-    aliases:
-      - "hearthkyn salvagers"
-      - "salvagers"
-    card_types:
-      datacards:
-        present: true
-        last_updated: "2025-12-15"
-        file_count: 8
-        source_hash: "abc123..."
-    paths:
-      processed: "processed/xenos/leagues-of-votann/hearthkyn-salvagers"
-      output: "output/hearthkyn-salvagers"  # Keep flat for TTS (v1)
-      output_v2: "output/v2/xenos/hearthkyn-salvagers"  # v2 hierarchy (faction/team)
-      archive: "archive/hearthkyn-salvagers"
-```
+### Team Configuration (`config/team-config.yaml`)
 
-### Team Metadata Configuration
-The `config/team-config.yaml` file includes faction and army metadata:
+Central configuration for all teams with metadata and paths:
+
 ```yaml
 teams:
   hearthkyn-salvagers:
     canonical_name: "Hearthkyn Salvagers"
     faction: "xenos"              # imperium, chaos, or xenos
     army: "leagues-of-votann"     # Specific army within faction
+    aliases:
+      - "hearthkyn salvagers"
+      - "salvagers"
+    tokens:                        # Optional: token shape configuration
+      - name: "Void Armor"
+        shape: "round"
+        type: "token"
+      - name: "Breach"
+        shape: "octagon"
+        type: "marker"
 ```
+---
 
-### Factions
-- `imperium` - Imperial forces
-- `chaos` - Chaos forces
-- `xenos` - Alien forces
+## 🔄 Pipeline Architectures
 
-### Card Types (Always Lowercase)
-- `datacards` - Unit datacards
-- `equipment` - Equipment cards
-- `faction-rules` - Faction-specific rules
-- `firefight-ploys` - Firefight tactical ploys
-- `operatives` - Operative cards
-- `strategy-ploys` - Strategic ploys
+### kt-app Pipeline
+**Purpose**: Process PDFs exported from Kill Team mobile app
+
+**Characteristics:**
+- PDFs have UUID filenames
+- Contains all team datacards in one or more PDFs
+- Requires content analysis to identify team and card types
+- Full documentation in `pipelines/kt-app/docs/`
+
+### warcom Pipeline
+**Purpose**: Process official PDFs from Warhammer Community
+
+**Characteristics:**
+- Standardized PDF structure (4 cards per page in grid)
+- Includes token guide cards along with datacards
+- Uses template matching for extraction
+- Cards extracted with team prefixes
+- Full documentation in `pipelines/warcom/docs/` and `pipelines/warcom/README.md`
+
+**Key Steps:**
+1. Scrape and download PDFs from warcom website
+2. Extract individual cards using template matching
+3. Classify cards by type based on text content
+4. Process tokens (step 4 - token name matching and transparency)
+5. Generate TTS objects (step 5)
 
 ---
 
-## 📊 Output Formats
+## 🛠️ Common Development Tasks
 
-### URL CSV Format
-```csv
-team,card_type,card_name,side,url
-kasrkin,datacards,trooper-gunner,front,https://raw.githubusercontent.com/.../kasrkin/datacards/trooper-gunner_front.png
-kasrkin,datacards,trooper-gunner,back,https://raw.githubusercontent.com/.../kasrkin/datacards/trooper-gunner_back.png
+### Running Pipelines
+
+**kt-app Pipeline:**
+```bash
+poetry run python pipelines/kt-app/run_pipeline.py --step all
+poetry run python pipelines/kt-app/run_pipeline.py --step extract --teams kasrkin
 ```
 
-### V2 URL CSV Format (Enhanced)
-```csv
-faction,team,type,name,url
-imperium,kasrkin,datacards,kasrkin-trooper-gunner_front,https://raw.githubusercontent.com/.../v2/imperium/kasrkin/datacards/kasrkin-trooper-gunner_front.jpg
-xenos,hearthkyn-salvagers,operative-selection,hearthkyn-salvagers-operatives_front,https://raw.githubusercontent.com/.../v2/xenos/hearthkyn-salvagers/operative-selection/hearthkyn-salvagers-operatives_front.jpg
+**warcom Pipeline:**
+```bash
+# Full pipeline (steps 1-3)
+poetry run python pipelines/warcom/pdf_process_pipeline.py --all
+
+# Individual steps
+poetry run python pipelines/warcom/pdf_process_pipeline.py --step 2
+poetry run python pipelines/warcom/pdf_process_pipeline.py --step 3 --teams kommandos
+
+# TTS object generation
+poetry run python pipelines/warcom/steps/5_generate_tts_objects.py --teams battleclade --force
 ```
 
-### Stats YAML Format (Datacards)
-```yaml
-teams:
-  kasrkin:
-    operatives:
-      - id: "trooper-gunner"
-        name: "Trooper Gunner"
-        stats:
-          movement: "6"
-          apl: "2"
-          save: "4+"
-          wounds: "7"
-        weapons:
-          - name: "Hot-shot Lasgun"
-            type: "ranged"
-            attacks: "4"
-            hit: "4+"
-            damage:
-              normal: "3"
-              critical: "4"
-              combined: "3/4"
-            weapon_rules:
-              - "Ceaseless"
-              - "Hot"
-        abilities:
-          - name: "Marksman"
-            description: "In the Roll Attack Dice step..."
+### Installing Dependencies
+```bash
+poetry install                    # Install all dependencies
+poetry add {package}              # Add new package
 ```
 
-### Stats CSV Format (Flat)
-```csv
-team,operative_id,operative_name,movement,apl,save,wounds,weapon_name,weapon_type,attacks,hit,dmg_normal,dmg_crit
-kasrkin,trooper-gunner,Trooper Gunner,6,2,4+,7,Hot-shot Lasgun,ranged,4,4+,3,4
+### Code Quality
+```bash
+poetry run black .                # Format code
+poetry run flake8                 # Lint code (if configured)
 ```
 
 ---
 
-## 🔧 Development Workflow
+## ⚠️ Common Pitfalls
 
-### Setting Up New Machine
-```bash
-git clone <repo>
-cd kt-datacards
-task install          # Install all dependencies
-task info            # Verify setup
-```
-
-### Daily Development
-```bash
-task format          # Format code before commit
-task lint            # Check code quality
-task test            # Run tests
-git commit           # Commit changes
-```
-
-### Processing Cards
-```bash
-# Process everything
-task all
-
-# Process specific team
-task process-team -- --teams kasrkin
-
-# Dry run to preview
-task process-team -- --teams kasrkin --dry-run
-
-# Force reprocess
-task process-team -- --teams kasrkin --force
-```
-
-### Adding New Team
-1. Export PDFs from Kill Team app
-2. Save to `input/` folder (any name/structure)
-3. Run `task all`
-4. Verify output in `output/{teamname}/`
-5. Check URLs in `output/datacards-urls.csv`
-6. Commit changes
-
----
-
-## ⚠️ Common Pitfalls to Avoid
-
-### 1. Don't Modify Output Structure
+### Don't Modify Output Structure
 - ❌ Renaming teams in `output/`
-- ❌ Changing folder structure in `output/`
-- ❌ Moving files in `output/`
-- ✅ Only add new files or update existing images
+- ❌ Changing folder hierarchy in `output/`
+- ❌ Moving files between folders in `output/`
 
-### 2. Don't Hardcode Paths
-- ❌ `output_dir = "c:/project/output"`
-- ✅ `output_dir = config.OUTPUT_DIR`
-- ✅ Use pathlib.Path for all paths
+### Don't Hardcode Paths
+- ❌ `output_dir = "c:/project/output"`  
+- ✅ `output_dir = workspace_root / "output"`
+- ✅ Use `pathlib.Path` for all path operations
 
-### 3. Don't Ignore Errors
-- ❌ Silent failures
-- ❌ Continuing with partial data
-- ✅ Log errors with context
-- ✅ Fail fast with clear messages
+### Don't Use Print Statements
+- ❌ `print("Processing team...")`
+- ✅ `logger.info("Processing team...")`
 
-### 4. Don't Guess at Stats
-- ❌ Filling in missing values with defaults
-- ❌ "Probably 3, that's common"
-- ✅ Flag as uncertain
-- ✅ Prompt for manual review
-
-### 5. Don't Break Virtual Environment
-- ❌ Installing packages with pip directly
-- ✅ Use `poetry add {package}`
-- ✅ Use `task install`
+### Don't Ignore Errors
+- ❌ Silent failures, empty except blocks
+- ✅ Log errors with context, fail fast
 
 ---
 
-## 📝 Code Review Checklist
+## 📚 Documentation Structure
 
-Before committing code, verify:
-
-- [ ] Code follows naming conventions
-- [ ] No hardcoded paths (use config)
-- [ ] Errors are handled properly
-- [ ] Logging is informative
-- [ ] Tests are updated
-- [ ] Documentation is updated
-- [ ] `output/` structure is unchanged
-- [ ] Works in virtual environment
-- [ ] Formatted with Black
-- [ ] Passes linting ✅ IMPLEMENTED
-The v2 output structure is now implemented with the following features:
-```
-output/
-├── {teamname}/          # Legacy structure (unchanged - TTS compatible!)
-├── metadata.yaml        # Moved from root to output folder
-└── v2/                  # New hierarchical structure
-    ├── {faction}/
-    │   └── {army}/
-    │       └── {teamname}/
-    │           ├── datacards/
-    │           ├── equipment/
-    │           ├── faction-rules/
-    │           ├── firefight-ploys/
-    │           ├── operative-selection/  # Renamed from "operatives"
-    │           └── strategy-ploys/
-    └── datacards-urls.csv
-```
-
-**V2 Features:**
-- Faction/army hierarchy for better organization
-- Team-prefixed card names for clarity
-- `operatives` → `operative-selection` for consistency
-- Separate metadata and URL files
-- Fully backwards compatible with v1
-output/
-├── {teamname}/          # Legacy structure (keep!)
-└── v2/                  # New structure
-    └── {faction}/
-        └── {army}/
-            └── {teamname}/
-```
-
-### TTS Objects Generation
-
-The pipeline generates TTS Custom_Model_Bag JSON objects that can be imported directly into Tabletop Simulator.
-
-**Features:**
-- Automatic bag creation with all cards organized by type (datacards, equipment, ploys, etc.)
-- Team-specific or default 3D box meshes and textures from `config/teams/{teamname}/box/` or `config/defaults/box/`
-- Preview images automatically extracted from box textures
-- Lua scripting support for in-game functionality
-
-**Preview Images:**
-- TTS displays a .png file with the same name as the .json in the saved objects interface
-- Preview images are automatically extracted from `config/teams/{teamname}/box/card-box-texture.jpg`
-- The extraction uses the same UV mapping as the 3D box front face
-- Stored in `config/teams/{teamname}/tts-image/` and copied to `tts_objects/` with matching names
-
-**Commands:**
-```bash
-# Extract preview images from box textures (one-time setup)
-poetry run python script/extract_tts_preview_images.py
-
-# Generate TTS objects (includes preview image copying)
-poetry run python script/generate_tts_objects.py
-```
-
-### TTS Scripting
-Current features:
-- Automate TTS object creation ✅
-- Custom 3D box models per team ✅
-- Preview images for saved objects ✅
-
-Future feature to investigate:
-- Auto-update card URLs in TTS
-- Would enable easier migrations
-
-### Stats Validation
-Future enhancements:
-- Machine learning for OCR improvement
-- Automated error correction
-- Stats comparison between versions
-- Web interface for browsing stats
-
----1
-
-## 📚 References
-
-- [Poetry Documentation](https://python-poetry.org/docs/)
-- [Task Documentation](https://taskfile.dev/)
-- [Kill Team Official Rules](https://www.warhammer-community.com/kill-team/)
-- Project Feature Docs: 
-  - `docs/card-structure.md` - Card data structure
-  - `docs/extracted-data-structure.md` - PDF extraction format
-  - `docs/display-table-generation.md` - TTS display table
-  - `docs/OUTPUT-V2-FORMAT.md` - New output structure
-  - `docs/token-generation.md` - TTS token generation **NEW**
+- **`docs/DEVELOPMENT.md`** (this file): AI agent onboarding, coding standards, critical rules
+- **`pipelines/kt-app/docs/`**: kt-app pipeline specific documentation
+- **`pipelines/warcom/docs/`**: warcom pipeline specific documentation
+- **`pipelines/warcom/README.md`**: warcom pipeline overview and usage
 
 ---
 
-## 🎲 Token Generation
+## 🎯 Quick Reference
 
-The project now supports automated token extraction and TTS object generation:
+**Before making changes:**
+- Read the relevant pipeline docs (kt-app or warcom)
+- Never modify `output/` structure (TTS URLs are hardcoded)
+- Use logging module exclusively (no print statements)
+- Use `pathlib.Path` for all file operations
+- Prefer explicit variable names over abbreviations
 
-1. **Extract tokens** from marker/token guide PDFs
-2. **Apply transparency** to remove backgrounds
-3. **Generate infinite bags** for TTS with master bag support
-
-See [Token Generation Documentation](token-generation.md) for complete workflow.
-
-**Quick Start:**
-```bash
-# Extract raw token PNGs from marker/token guides
-poetry run python script/tools/extract_tokens.py --team farstalker-kinband
-
-# Apply transparency to extracted token PNGs (in-place)
-poetry run python script/tools/add_token_transparency_bg_sample.py --team farstalker-kinband \
-  --bg-sample config/defaults/token-bg-sample.png
-
-# Package/embed tokens via the main pipeline
-poetry run python script/run_pipeline.py --step all
-```
-
-**Output:**
-- `output_v2/{faction}/{team}/tts/token/` - Token images
-- `tts_objects/tokens/{team}/` - TTS JSON bags
+**When stuck:**
+- Check pipeline-specific documentation
+- Look at existing code patterns in the same pipeline
+- Ask about design decisions rather than assuming
 
 ---
 
-## ⚠️ Common Issues & Troubleshooting
-
-### UTF-8 BOM in TTS Lua Scripts
-
-**Problem:** TTS spawner fails with "unexpected symbol near '>'" error when spawning card boxes.
-
-**Cause:** The Lua script template file has a UTF-8 BOM (Byte Order Mark `\ufeff`) at the start. When the pipeline generates card box JSON files, this BOM gets embedded in the `LuaScript` field. While manually copying these files to TTS works fine, the spawner fails when trying to re-encode and spawn them programmatically.
-
-**Solution:**
-1. Remove the BOM from `config/defaults/tts-script/tts-update-rules-in-box-script.lua`
-2. Regenerate all card boxes using the pipeline
-
-**PowerShell commands to check and fix:**
-```powershell
-# Check if BOM exists
-$bytes = [System.IO.File]::ReadAllBytes("config/defaults/tts-script/tts-update-rules-in-box-script.lua")
-if ($bytes[0] -eq 0xEF -and $bytes[1] -eq 0xBB -and $bytes[2] -eq 0xBF) { 
-    Write-Output "BOM found - needs fixing" 
-}
-
-# Remove BOM
-$content = Get-Content "config/defaults/tts-script/tts-update-rules-in-box-script.lua" -Raw
-$content = $content.TrimStart([char]0xFEFF)
-[System.IO.File]::WriteAllText("config/defaults/tts-script/tts-update-rules-in-box-script.lua", $content, (New-Object System.Text.UTF8Encoding $false))
-```
-
-**Prevention:** Always save Lua template files with UTF-8 encoding **without BOM**. In VS Code: Click the encoding in the status bar → "Save with Encoding" → "UTF-8" (not "UTF-8 with BOM").
-
----
-
-## ❓ Questions?
-
-If you're unsure about something:
-1. Check this document first
-2. Check feature documents in `docs/`
-3. Check existing code for patterns
-4. Ask before making structural changes
-5. When in doubt, don't break `output/`!
-
----
-
-**Last Updated**: January 15, 2026
-**Maintainer**: Project Team
-**Review Schedule**: Update after each major feature implementation
+**Last Updated**: February 16, 2026  
+**Review**: Update when architectural changes are made
