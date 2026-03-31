@@ -32,14 +32,14 @@ function createLoadButton()
     self.createButton({
         click_function = "promptForTeam",
         label = "Load Team",
-        position = {0, 1, 0},
+        position = {0, 0.2, 0},
         width = 1200,
         height = 400,
         font_size = 200
     })
 end
 
-function promptForTeam()
+function promptForTeam(obj, player_color, alt_click)
     -- Prompt player for team name
     broadcastToAll("Enter team name in chat (e.g. 'kommandos', 'pathfinders')", {r=0,g=0.7,b=1})
 end
@@ -144,9 +144,9 @@ def generate_simple_mod(output_file: Path, github_username: str = "YOUR_USERNAME
     
     logger.info("Generating minimal TTS mod...")
     
-    # Create a tablet object to hold the script
-    tablet_object = {
-        "Name": "Tablet",
+    # Create a notecard object to hold the script
+    notecard_object = {
+        "Name": "Notecard",
         "Transform": {
             "posX": 0.0,
             "posY": 1.0,
@@ -159,7 +159,7 @@ def generate_simple_mod(output_file: Path, github_username: str = "YOUR_USERNAME
             "scaleZ": 1.0
         },
         "Nickname": "KT Warcom Datacards",
-        "Description": "Type team name in chat to load roster data",
+        "Description": "Click 'Load Team' button or type team name in chat\\n\\nExamples: kommandos, pathfinders, blooded\\n\\nData loaded from Warcom datacards extraction",
         "ColorDiffuse": {
             "r": 1.0,
             "g": 1.0,
@@ -206,7 +206,7 @@ def generate_simple_mod(output_file: Path, github_username: str = "YOUR_USERNAME
         },
         "LuaScript": "",
         "LuaScriptState": "",
-        "ObjectStates": [tablet_object]
+        "ObjectStates": [notecard_object]
     }
     
     output_file.write_text(json.dumps(mod, indent=2, ensure_ascii=False), encoding='utf-8')

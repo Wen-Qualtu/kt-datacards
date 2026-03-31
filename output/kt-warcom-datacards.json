@@ -1,7 +1,7 @@
 {
   "SaveName": "KT Warcom Datacards",
-  "Date": "03/31/2026 11:03:26 PM",
-  "EpochTime": 1774991006,
+  "Date": "03/31/2026 11:06:50 PM",
+  "EpochTime": 1774991210,
   "VersionNumber": "v1.0",
   "GameMode": "KT Warcom",
   "GameType": "Utility",
@@ -34,7 +34,7 @@
   "LuaScriptState": "",
   "ObjectStates": [
     {
-      "Name": "Tablet",
+      "Name": "Notecard",
       "Transform": {
         "posX": 0.0,
         "posY": 1.0,
@@ -47,7 +47,7 @@
         "scaleZ": 1.0
       },
       "Nickname": "KT Warcom Datacards",
-      "Description": "Type team name in chat to load roster data",
+      "Description": "Click 'Load Team' button or type team name in chat\\n\\nExamples: kommandos, pathfinders, blooded\\n\\nData loaded from Warcom datacards extraction",
       "ColorDiffuse": {
         "r": 1.0,
         "g": 1.0,
@@ -60,7 +60,7 @@
       "Sticky": true,
       "Tooltip": true,
       "GUID": "abc123",
-      "LuaScript": "\n-- KT Warcom Datacards Loader\n-- Modified to use simple JSON roster format instead of BattleScribe\n\nGITHUB_BASE_URL = \"https://raw.githubusercontent.com/YOUR_USERNAME/kt-datacards/main/output/\"\nCURRENT_ROSTER = nil\n\nfunction onLoad()\n    log(\"KT Warcom Datacards - Ready\")\n    createLoadButton()\nend\n\nfunction createLoadButton()\n    self.createButton({\n        click_function = \"promptForTeam\",\n        label = \"Load Team\",\n        position = {0, 1, 0},\n        width = 1200,\n        height = 400,\n        font_size = 200\n    })\nend\n\nfunction promptForTeam()\n    -- Prompt player for team name\n    broadcastToAll(\"Enter team name in chat (e.g. 'kommandos', 'pathfinders')\", {r=0,g=0.7,b=1})\nend\n\nfunction onChat(message, player)\n    -- Load team when player types team name\n    if message:match(\"^[a-z%-]+$\") then\n        loadTeam(message)\n        return false  -- Don't show message in chat\n    end\nend\n\nfunction loadTeam(team_name)\n    local url = GITHUB_BASE_URL .. team_name .. \"/statlines/roster.json\"\n    broadcastToAll(\"Loading \" .. team_name.. \"...\", {r=1,g=1,b=0})\n    \n    WebRequest.get(url, function(request)\n        if request.is_error then\n            broadcastToAll(\"Failed to load '\" .. team_name .. \"'. Check spelling.\", {r=1,g=0,b=0})\n            return\n        end\n        \n        local data = JSON.decode(request.text)\n        CURRENT_ROSTER = data\n        displayRoster(data)\n    end)\nend\n\nfunction displayRoster(roster)\n    local msg = string.format(\"Loaded: %s (%d operatives)\", \n        roster.team:gsub(\"%-\", \" \"):upper(), roster.operative_count)\n    broadcastToAll(msg, {r=0,g=1,b=0})\n    \n    -- Log operative summary\n    log(\"=\".. (\"=\"):rep(60))\n    log(string.format(\"Team: %s (Generated: %s)\", roster.team, roster.generated))\n    log(\"=\".. (\"=\"):rep(60))\n    \n    for i, op in ipairs(roster.operatives) do\n        local weapons_count = op.weapons and #op.weapons or 0\n        local rules_count = op.rules and #op.rules or 0\n        \n        log(string.format(\"[%d] %s\", i, op.name))\n        log(string.format(\"    APL:%s M:%s SV:%s W:%s | Weapons:%d Rules:%d\",\n            op.apl or \"?\", op.movement or \"?\", op.save or \"?\", op.wounds or \"?\",\n            weapons_count, rules_count))\n        \n        if op.weapons then\n            for j, w in ipairs(op.weapons) do\n                local sr = w.special_rules and (\" [\" .. w.special_rules .. \"]\") or \"\"\n                log(string.format(\"      - %s: A%s BS%s D%s%s\", \n                    w.name, w.attacks or \"?\", w.hit or \"?\", w.damage or \"?\", sr))\n            end\n        end\n        \n        if op.rules then\n            for j, r in ipairs(op.rules) do\n                log(string.format(\"      * %s\", r.name))\n            end\n        end\n        log(\"\")\n    end\n    \n    -- TODO: Create operative models\n    -- TODO: Assign data to models\nend\n",
+      "LuaScript": "\n-- KT Warcom Datacards Loader\n-- Modified to use simple JSON roster format instead of BattleScribe\n\nGITHUB_BASE_URL = \"https://raw.githubusercontent.com/YOUR_USERNAME/kt-datacards/main/output/\"\nCURRENT_ROSTER = nil\n\nfunction onLoad()\n    log(\"KT Warcom Datacards - Ready\")\n    createLoadButton()\nend\n\nfunction createLoadButton()\n    self.createButton({\n        click_function = \"promptForTeam\",\n        label = \"Load Team\",\n        position = {0, 0.2, 0},\n        width = 1200,\n        height = 400,\n        font_size = 200\n    })\nend\n\nfunction promptForTeam(obj, player_color, alt_click)\n    -- Prompt player for team name\n    broadcastToAll(\"Enter team name in chat (e.g. 'kommandos', 'pathfinders')\", {r=0,g=0.7,b=1})\nend\n\nfunction onChat(message, player)\n    -- Load team when player types team name\n    if message:match(\"^[a-z%-]+$\") then\n        loadTeam(message)\n        return false  -- Don't show message in chat\n    end\nend\n\nfunction loadTeam(team_name)\n    local url = GITHUB_BASE_URL .. team_name .. \"/statlines/roster.json\"\n    broadcastToAll(\"Loading \" .. team_name.. \"...\", {r=1,g=1,b=0})\n    \n    WebRequest.get(url, function(request)\n        if request.is_error then\n            broadcastToAll(\"Failed to load '\" .. team_name .. \"'. Check spelling.\", {r=1,g=0,b=0})\n            return\n        end\n        \n        local data = JSON.decode(request.text)\n        CURRENT_ROSTER = data\n        displayRoster(data)\n    end)\nend\n\nfunction displayRoster(roster)\n    local msg = string.format(\"Loaded: %s (%d operatives)\", \n        roster.team:gsub(\"%-\", \" \"):upper(), roster.operative_count)\n    broadcastToAll(msg, {r=0,g=1,b=0})\n    \n    -- Log operative summary\n    log(\"=\".. (\"=\"):rep(60))\n    log(string.format(\"Team: %s (Generated: %s)\", roster.team, roster.generated))\n    log(\"=\".. (\"=\"):rep(60))\n    \n    for i, op in ipairs(roster.operatives) do\n        local weapons_count = op.weapons and #op.weapons or 0\n        local rules_count = op.rules and #op.rules or 0\n        \n        log(string.format(\"[%d] %s\", i, op.name))\n        log(string.format(\"    APL:%s M:%s SV:%s W:%s | Weapons:%d Rules:%d\",\n            op.apl or \"?\", op.movement or \"?\", op.save or \"?\", op.wounds or \"?\",\n            weapons_count, rules_count))\n        \n        if op.weapons then\n            for j, w in ipairs(op.weapons) do\n                local sr = w.special_rules and (\" [\" .. w.special_rules .. \"]\") or \"\"\n                log(string.format(\"      - %s: A%s BS%s D%s%s\", \n                    w.name, w.attacks or \"?\", w.hit or \"?\", w.damage or \"?\", sr))\n            end\n        end\n        \n        if op.rules then\n            for j, r in ipairs(op.rules) do\n                log(string.format(\"      * %s\", r.name))\n            end\n        end\n        log(\"\")\n    end\n    \n    -- TODO: Create operative models\n    -- TODO: Assign data to models\nend\n",
       "LuaScriptState": ""
     }
   ]
