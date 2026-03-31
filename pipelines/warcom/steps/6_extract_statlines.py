@@ -53,32 +53,39 @@ def is_landscape(pdf_path: Path) -> bool:
 
 def extract_operative_name(text: str) -> str:
     """Extract operative name from card text."""
-    lines = [line.strip() for line in text.split('\n') if line.strip()]
+    # The operative name appears on the line RIGHT before the APL value
+    # Pattern: OPERATIVE NAME\n3\nAPL
+    # Note: There may be a longer keywords line before it, so we look for the immediate predecessor
     
-    # Common non-name patterns to exclude
-    exclude_patterns = [
-        r'^APL$', r'^MOVE$', r'^SAVE$', r'^WOUNDS$',
-        r'^NAME$', r'^ATK$', r'^HIT$', r'^DMG$', r'^WR$',
-        r'^WEAPONS$', r'^ABILITIES$', r'^UNIQUE ACTIONS$',
-        r'^\d+$', r'^\d+"$', r'^\d+\+$',
-        r'RULES? CONTINUE',
-        r'^HIT DMG$', r'^WEAPON$'
-    ]
-    
-    for line in lines:
-        # Skip short lines
-        if len(line) < 3:
-            continue
+    # Find the APL section
+    apl_section_match = re.search(r'([^\n]+)\s*\n\s*(\d+)\s*\n\s*APL', text)
+    if apl_section_match:
+        name_candidate = apl_section_match.group(1).strip()
         
-        # Skip lines matching exclusion patterns
-        if any(re.search(pattern, line, re.IGNORECASE) for pattern in exclude_patterns):
-            continue
+        # Filter out table headers and unwanted strings
+        excluded = {
+            'NAME', 'ATK', 'HIT', 'DMG', 'WR', 'HIT DMG', 'ATK HIT DMG',
+            'APL', 'WOUNDS', 'SAVE', 'MOVE', 'WEAPONS', 'ABILITIES',
+            'TOXIC LUNGE', 'DISTEND DORSAL SAC'  # Ability names
+        }
         
-        # Operative names are typically in UPPERCASE and longer
-        if line.isupper() and len(line) >= 5:
-            # Clean up the name
-            name = ' '.join(line.split())
-            return name
+        # Exclude strings that look like ability names (short, no "OPERATIVE" type keywords)
+        exclude_patterns = [
+            r'RULES? CONTINUE',
+            r'^\d+$',
+            r'^[A-Z]\s+[A-Z]$',  # Single letters separated by space
+        ]
+        
+        # If the name has commas (keywords line), try to extract just the last part
+        if ',' in name_candidate:
+            # Take everything after the last comma
+            parts = name_candidate.split(',')
+            name_candidate = parts[-1].strip()
+        
+        if (name_candidate not in excluded and 
+            len(name_candidate) > 3 and
+            not any(re.search(pattern, name_candidate) for pattern in exclude_patterns)):
+            return name_candidate
     
     return "Unknown Operative"
 
@@ -92,25 +99,27 @@ def extract_stats(text: str) -> Dict[str, Any]:
         "wounds": None
     }
     
-    # Extract APL (usually 2 or 3)
-    apl_match = re.search(r'APL\s*(\d+)', text, re.IGNORECASE)
+    # The stats box has labels followed by values in sequence:
+    # 3          ← APL value (number before "APL" label)
+    # APL
+    # WOUNDS
+    # SAVE
+    # MOVE
+    # 6"         ← Movement value
+    # 3+         ← Save value  
+    # 15         ← Wounds value
+    
+    # Extract APL: number right before "APL" label
+    apl_match = re.search(r'(\d+)\s*\n\s*APL', text)
     if apl_match:
         stats["apl"] = int(apl_match.group(1))
     
-    # Extract Movement (e.g., 6", 7")
-    move_match = re.search(r'MOVE\s*(\d+)"?', text, re.IGNORECASE)
-    if move_match:
-        stats["movement"] = move_match.group(1) + '″'  # Use proper inch symbol
-    
-    # Extract Save (e.g., 3+, 4+)
-    save_match = re.search(r'SAVE\s*(\d\+)', text, re.IGNORECASE)
-    if save_match:
-        stats["save"] = save_match.group(1)
-    
-    # Extract Wounds (e.g., 8, 12, 21)
-    wounds_match = re.search(r'WOUNDS\s*(\d+)', text, re.IGNORECASE)
-    if wounds_match:
-        stats["wounds"] = int(wounds_match.group(1))
+    # After MOVE label, values appear in order: Movement, Save, Wounds
+    values_match = re.search(r'MOVE\s*\n\s*(\d+[″"])\s*\n\s*(\d+\+)\s*\n\s*(\d+)', text)
+    if values_match:
+        stats["movement"] = values_match.group(1).replace('"', '″')  # Normalize to proper symbol
+        stats["save"] = values_match.group(2)
+        stats["wounds"] = int(values_match.group(3))
     
     return stats
 
