@@ -30,16 +30,17 @@ end
 
 function createLoadButton()
     self.createButton({
-        click_function = "promptForTeam",
+        click_function = "buttonClickLoadTeam",
         label = "Load Team",
         position = {0, 0.2, 0},
+        rotation = {0, 180, 0},
         width = 1200,
         height = 400,
         font_size = 200
     })
 end
 
-function promptForTeam(obj, player_color, alt_click)
+function buttonClickLoadTeam(obj, player_color, alt_click)
     -- Prompt player for team name
     broadcastToAll("Enter team name in chat (e.g. 'kommandos', 'pathfinders')", {r=0,g=0.7,b=1})
 end
@@ -152,7 +153,7 @@ def generate_simple_mod(output_file: Path, github_username: str = "YOUR_USERNAME
             "posY": 1.0,
             "posZ": 0.0,
             "rotX": 0.0,
-            "rotY": 180.0,
+            "rotY": 0.0,
             "rotZ": 0.0,
             "scaleX": 1.0,
             "scaleY": 1.0,
