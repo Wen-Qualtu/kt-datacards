@@ -144,6 +144,38 @@ def generate_simple_mod(output_file: Path, github_username: str = "YOUR_USERNAME
     
     logger.info("Generating minimal TTS mod...")
     
+    # Create a tablet object to hold the script
+    tablet_object = {
+        "Name": "Tablet",
+        "Transform": {
+            "posX": 0.0,
+            "posY": 1.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 180.0,
+            "rotZ": 0.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+        },
+        "Nickname": "KT Warcom Datacards",
+        "Description": "Type team name in chat to load roster data",
+        "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+        },
+        "Locked": False,
+        "Grid": True,
+        "Snap": True,
+        "Autoraise": True,
+        "Sticky": True,
+        "Tooltip": True,
+        "GUID": "abc123",
+        "LuaScript": SIMPLE_LOADER_SCRIPT.replace("YOUR_USERNAME", github_username),
+        "LuaScriptState": ""
+    }
+    
     mod = {
         "SaveName": "KT Warcom Datacards",
         "Date": datetime.now().strftime("%m/%d/%Y %I:%M:%S %p"),
@@ -172,9 +204,9 @@ def generate_simple_mod(output_file: Path, github_username: str = "YOUR_USERNAME
         "Hands": {
             "Enable": True
         },
-        "LuaScript": SIMPLE_LOADER_SCRIPT.replace("YOUR_USERNAME", github_username),
+        "LuaScript": "",
         "LuaScriptState": "",
-        "ObjectStates": []
+        "ObjectStates": [tablet_object]
     }
     
     output_file.write_text(json.dumps(mod, indent=2, ensure_ascii=False), encoding='utf-8')
