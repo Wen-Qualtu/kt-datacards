@@ -1,242 +1,70 @@
 """
 Step 6: Extract Statlines from Datacards
 
-Extracts operative statistics and weapon profiles from datacard PDFs to generate
-BattleScribe-compatible roster.json files for TTS integration.
+Extracts operative characteristics (APL, Movement, Save, Wounds) and weapon profiles
+from classified datacard PDFs using coordinate-based region extraction.
 
-Input:  layers/warcom/extracted/{team}/cards/*.pdf (landscape datacards only)
+Input:  layers/warcom/extracted/{team}/cards/*_landscape.pdf
 Output: output/{team}/statlines/roster.json
+
+Architecture:
+- Uses coordinate-based region extraction (not text order)
+- Top-left region: Operative name
+- Top-right region: Stats box (APL, MOVE, SAVE, WOUNDS)
+- Middle region: Weapons table
+- Only processes landscape cards (datacards have stats)
 
 Usage:
     python pipelines/warcom/steps/6_extract_statlines.py
-    python pipelines/warcom/steps/6_extract_statlines.py --teams battleclade kommandos
+    python pipelines/warcom/steps/6_extract_statlines.py --teams kommandos battleclade
     python pipelines/warcom/steps/6_extract_statlines.py --force
 """
 
 import argparse
 import json
 import logging
+import hashlib
 import re
-import fitz  # PyMuPDF
 from pathlib import Path
 from typing import Dict, List, Optional, Any
 from datetime import datetime, timezone
 
+import fitz  # PyMuPDF
+
 logger = logging.getLogger(__name__)
 
 
-def extract_text_from_pdf(pdf_path: Path) -> str:
-    """Extract text from a PDF file."""
+def extract_statlines_from_pdf(pdf_path: Path) -> Dict[str, Any]:
+    """Extract complete stat profile from a datacard PDF using coordinate regions."""
     try:
         doc = fitz.open(pdf_path)
-        text = ""
-        for page in doc:
-            text += page.get_text()
-        doc.close()
-        return text
-    except Exception as e:
-        logger.error("Failed to extract text from %s: %s", pdf_path.name, e)
-        return ""
-
-
-def is_landscape(pdf_path: Path) -> bool:
-    """Check if PDF is landscape orientation."""
-    try:
-        doc = fitz.open(pdf_path)
+        if len(doc) == 0:
+            doc.close()
+            return _empty_operative(pdf_path.name, "No pages in PDF")
+        
         page = doc[0]
-        rect = page.rect
+        page_rect = page.rect
+        page_width = page_rect.width
+        page_height = page_rect.height
+        
+        # Get all text blocks with coordinates
+        blocks_dict = page.get_text("dict")
+        blocks = blocks_dict.get("blocks", [])
+        
+        # Extract from specific regions using block positions
+        # Name: Top-left corner (x < 60%, y < 15)
+        name = _extract_name_from_blocks(blocks, page_width, page_height)
+        
+        # Stats: Top-right corner (x > 65%, y < 25%)
+        stats = _extract_stats_from_blocks(blocks, page_width, page_height)
+        
+        # Weapons: Middle region (x < 60%, 15% < y < 50%)
+        weapons = _extract_weapons_from_blocks(blocks, page_width, page_height,
+                                                page_height * 0.15, page_height * 0.50)
+        
         doc.close()
-        return rect.width > rect.height
-    except Exception:
-        return False
-
-
-def extract_operative_name(text: str) -> str:
-    """Extract operative name from card text."""
-    # The operative name appears on the line RIGHT before the APL value
-    # Pattern: OPERATIVE NAME\n3\nAPL
-    # Note: There may be a longer keywords line before it, so we look for the immediate predecessor
-    
-    # Find the APL section
-    apl_section_match = re.search(r'([^\n]+)\s*\n\s*(\d+)\s*\n\s*APL', text)
-    if apl_section_match:
-        name_candidate = apl_section_match.group(1).strip()
         
-        # Filter out table headers and unwanted strings
-        excluded = {
-            'NAME', 'ATK', 'HIT', 'DMG', 'WR', 'HIT DMG', 'ATK HIT DMG',
-            'APL', 'WOUNDS', 'SAVE', 'MOVE', 'WEAPONS', 'ABILITIES',
-            'TOXIC LUNGE', 'DISTEND DORSAL SAC'  # Ability names
-        }
-        
-        # Exclude strings that look like ability names (short, no "OPERATIVE" type keywords)
-        exclude_patterns = [
-            r'RULES? CONTINUE',
-            r'^\d+$',
-            r'^[A-Z]\s+[A-Z]$',  # Single letters separated by space
-        ]
-        
-        # If the name has commas (keywords line), try to extract just the last part
-        if ',' in name_candidate:
-            # Take everything after the last comma
-            parts = name_candidate.split(',')
-            name_candidate = parts[-1].strip()
-        
-        if (name_candidate not in excluded and 
-            len(name_candidate) > 3 and
-            not any(re.search(pattern, name_candidate) for pattern in exclude_patterns)):
-            return name_candidate
-    
-    return "Unknown Operative"
-
-
-def extract_stats(text: str) -> Dict[str, Any]:
-    """Extract operative stats from card text."""
-    stats = {
-        "apl": None,
-        "movement": None,
-        "save": None,
-        "wounds": None
-    }
-    
-    # The stats box has labels followed by values in sequence:
-    # 3          ← APL value (number before "APL" label)
-    # APL
-    # WOUNDS
-    # SAVE
-    # MOVE
-    # 6"         ← Movement value
-    # 3+         ← Save value  
-    # 15         ← Wounds value
-    
-    # Extract APL: number right before "APL" label
-    apl_match = re.search(r'(\d+)\s*\n\s*APL', text)
-    if apl_match:
-        stats["apl"] = int(apl_match.group(1))
-    
-    # After MOVE label, values appear in order: Movement, Save, Wounds
-    values_match = re.search(r'MOVE\s*\n\s*(\d+[″"])\s*\n\s*(\d+\+)\s*\n\s*(\d+)', text)
-    if values_match:
-        stats["movement"] = values_match.group(1).replace('"', '″')  # Normalize to proper symbol
-        stats["save"] = values_match.group(2)
-        stats["wounds"] = int(values_match.group(3))
-    
-    return stats
-
-
-def extract_weapons(text: str) -> List[Dict[str, str]]:
-    """Extract weapon profiles from card text."""
-    weapons = []
-    
-    # Find weapon table section (after WEAPONS header, before ABILITIES/etc)
-    weapon_section_match = re.search(
-        r'WEAPONS.*?(?=ABILITIES|UNIQUE ACTIONS|RULES CONTINUE|$)',
-        text,
-        re.IGNORECASE | re.DOTALL
-    )
-    
-    if not weapon_section_match:
-        return weapons
-    
-    weapon_section = weapon_section_match.group(0)
-    lines = [line.strip() for line in weapon_section.split('\n') if line.strip()]
-    
-    # Skip header lines
-    skip_patterns = [
-        r'^WEAPONS?$', r'^NAME$', r'^ATK$', r'^HIT$', r'^DMG$', r'^WR$',
-        r'^HIT DMG WR$', r'^NAME ATK HIT DMG WR$'
-    ]
-    
-    i = 0
-    while i < len(lines):
-        line = lines[i]
-        
-        # Skip header patterns
-        if any(re.search(pattern, line, re.IGNORECASE) for pattern in skip_patterns):
-            i += 1
-            continue
-        
-        # Check if this looks like a weapon name (not just numbers/symbols)
-        if re.match(r'^[A-Za-z]', line):
-            # Try to extract weapon profile from this line and next few lines
-            weapon = {"name": line}
-            
-            # Look for ATK (number)
-            for j in range(i + 1, min(i + 5, len(lines))):
-                if re.match(r'^\d+$', lines[j]):
-                    weapon["attacks"] = lines[j]
-                    break
-            
-            # Look for HIT (e.g., 2+, 3+)
-            for j in range(i + 1, min(i + 5, len(lines))):
-                if re.match(r'^\d\+$', lines[j]):
-                    weapon["hit"] = lines[j]
-                    break
-            
-            # Look for DMG (e.g., 3, 4/5)
-            for j in range(i + 1, min(i + 5, len(lines))):
-                if re.match(r'^\d+(/\d+)?$', lines[j]):
-                    weapon["damage"] = lines[j]
-                    break
-            
-            # Everything else might be special rules
-            special_rules = []
-            for j in range(i + 1, min(i + 8, len(lines))):
-                test_line = lines[j]
-                # Skip if it's already captured or looks like a stat
-                if test_line in [weapon.get("attacks"), weapon.get("hit"), weapon.get("damage")]:
-                    continue
-                if re.match(r'^(\d+|^\d\+|\d+/\d+)$', test_line):
-                    continue
-                # If it's text, might be special rules
-                if re.match(r'^[A-Za-z]', test_line):
-                    special_rules.append(test_line)
-            
-            if special_rules:
-                weapon["special_rules"] = ", ".join(special_rules[:3])  # Limit to first 3
-            
-            weapons.append(weapon)
-        
-        i += 1
-    
-    return weapons
-
-
-def extract_statlines_from_team(team_dir: Path, output_dir: Path, force: bool = False) -> Optional[Dict]:
-    """Extract statlines from all datacards for a team."""
-    team_name = team_dir.name
-    cards_dir = team_dir / "cards"
-    
-    if not cards_dir.exists():
-        logger.warning("No cards directory found for %s", team_name)
-        return None
-    
-    # Find all PDF files
-    pdf_files = list(cards_dir.glob("*.pdf"))
-    if not pdf_files:
-        logger.warning("No PDF files found for %s", team_name)
-        return None
-    
-    # Filter landscape PDFs (datacards)
-    datacard_pdfs = [pdf for pdf in pdf_files if is_landscape(pdf)]
-    
-    if not datacard_pdfs:
-        logger.warning("No landscape datacards found for %s", team_name)
-        return None
-    
-    logger.info("Processing %s: %d datacards", team_name, len(datacard_pdfs))
-    
-    # Extract from each datacard
-    operatives = []
-    for pdf_path in datacard_pdfs:
-        text = extract_text_from_pdf(pdf_path)
-        if not text:
-            continue
-        
-        name = extract_operative_name(text)
-        stats = extract_stats(text)
-        weapons = extract_weapons(text)
-        
+        # Build operative profile
         operative = {
             "name": name,
             "source_file": pdf_path.name,
@@ -246,147 +74,401 @@ def extract_statlines_from_team(team_dir: Path, output_dir: Path, force: bool = 
         if weapons:
             operative["weapons"] = weapons
         
-        operatives.append(operative)
+        return operative
+        
+    except Exception as e:
+        logger.error("Error extracting from %s: %s", pdf_path.name, e)
+        return _empty_operative(pdf_path.name, str(e))
+
+
+def _empty_operative(source_file: str, error: str = "") -> Dict[str, Any]:
+    """Return empty operative profile with error."""
+    profile = {
+        "name": None,
+        "source_file": source_file,
+        "apl": None,
+        "movement": None,
+        "save": None,
+        "wounds": None
+    }
+    if error:
+        profile["error"] = error
+    return profile
+
+
+def _extract_name_from_blocks(blocks: List[Dict], page_width: float, page_height: float) -> Optional[str]:
+    """Extract operative name from blocks in top-left corner.
     
-    if not operatives:
-        logger.warning("No operatives extracted for %s", team_name)
+    Name is typically in a block at:
+    - x < 60% of page width (left side)
+    - y < 15 pixels from top (very top)
+    - ALL CAPS text
+    - Not a keyword line (no commas)
+    - May have APL value attached as trailing digit
+    """
+    for block in blocks:
+        if block.get("type") != 0:  # Skip non-text blocks
+            continue
+        
+        bbox = block["bbox"]
+        # Check if block is in top-left corner
+        if bbox[0] < page_width * 0.6 and bbox[1] < 15:
+            # Extract text from block
+            text = ""
+            for line in block.get("lines", []):
+                for span in line.get("spans", []):
+                    text += span.get("text", "")
+            
+            text= text.strip()
+            
+            # Skip if contains commas (keyword line) or is a header
+            if ',' in text or text in ['NAME', 'ATK', 'HIT', 'DMG', 'WR']:
+                continue
+            
+            # Check if all caps and reasonable length
+            if text.isupper() and 3 <= len(text) <= 50:
+                # Remove trailing digits  (these are APL values)
+                name = text.rstrip('0123456789').strip()
+                if len(name) >= 3:
+                    return name
+    
+    return None
+
+
+def _extract_stats_from_blocks(blocks: List[Dict], page_width: float, page_height: float) -> Dict[str, Any]:
+    """Extract stats from blocks in top-right and top-left regions.
+    
+    Stats are split across blocks:
+    - Top-left (name block): May have APL value attached to name
+    - Top-right stats box: Labels and values (MOVE, SAVE, WOUNDS)
+    """
+    stats = {
+        "apl": None,
+        "movement": None,
+        "save": None,
+        "wounds": None
+    }
+    
+    # Extract APL from name block (top-left, y < 15)
+    for block in blocks:
+        if block.get("type") != 0:
+            continue
+        bbox = block["bbox"]
+        if bbox[0] < page_width * 0.6 and bbox[1] < 15:
+            text = ""
+            for line in block.get("lines", []):
+                for span in line.get("spans", []):
+                    text += span.get("text", "")
+            text = text.strip()
+            
+            # Look for trailing digit (APL value attached to name)
+            if text and text[-1].isdigit():
+                stats["apl"] = int(text[-1])
+                break
+    
+    # Collect text from stats box region (top-right)
+    stats_text = ""
+    for block in blocks:
+        if block.get("type") != 0:
+            continue
+        
+        bbox = block["bbox"]
+        if bbox[0] > page_width * 0.65 and bbox[3] < page_height * 0.25:
+            for line in block.get("lines", []):
+                for span in line.get("spans", []):
+                    text = span.get("text", "")
+                    stats_text += text + "|"  # Use | as separator
+    
+    # Parse stats from collected text
+    # Movement: digit + " or ″
+    move_match = re.search(r'(\d+)[″"\']', stats_text)
+    if move_match:
+        movement_value = move_match.group(1)
+        stats["movement"] = movement_value + "″"
+    
+    # Save: digit followed by + (may have | separator)
+    save_match = re.search(r'(\d+)\|?\+', stats_text)
+    if save_match:
+        save_value = save_match.group(1)
+        stats["save"] = save_value + "+"
+    
+    # Wounds: Find all numbers, exclude APL/movement/save values
+    all_numbers = re.findall(r'\d+', stats_text)
+    for num_str in all_numbers:
+        num = int(num_str)
+        # Skip if it's APL, movement, or save
+        if (stats.get("apl") and num == stats["apl"]):
+            continue
+        if stats.get("movement") and num_str == stats["movement"].rstrip("″\"'"):
+            continue
+        if stats.get("save") and num_str == stats["save"].rstrip("+"):
+            continue
+        # This must be wounds
+        stats["wounds"] = num
+        break
+    
+    return stats
+
+
+def _extract_weapons_from_blocks(blocks: List[Dict], page_width: float, page_height: float,
+                                  region_y1: float, region_y2: float) -> Optional[List[Dict[str, Any]]]:
+    """Extract weapons from blocks in the weapons table region.
+    
+    Weapon table structure:
+    - Header block: "NAME ATK HIT DMG WR"
+    - Individual blocks for each weapon with structured data
+    - Blocks are short (< 100 chars) and within specific Y coordinates
+    """
+    weapons = []
+    
+    # Filter blocks in weapons region
+    weapon_blocks = []
+    for block in blocks:
+        if block.get("type") != 0:  # Skip non-text blocks
+            continue
+        
+        bbox = block["bbox"]
+        # Check if block is in weapons region (left side, middle height)
+        if (bbox[0] < page_width * 0.6 and 
+            bbox[1] >= region_y1 and 
+            bbox[3] <= region_y2):
+            
+            # Extract text from block
+            block_text = ""
+            for line in block.get("lines", []):
+                for span in line.get("spans", []):
+                    block_text += span.get("text", "")
+                block_text += "\n"
+            
+            block_text = block_text.strip()
+            weapon_blocks.append(block_text)
+    
+    if not weapon_blocks:
         return None
     
-    # Create output structure
+    # First block should be header - skip it
+    header_found = False
+    for i, block_text in enumerate(weapon_blocks):
+        # Check if this is the header
+        if "NAME" in block_text and "ATK" in block_text:
+            header_found = True
+            continue
+        
+        if not header_found:
+            continue
+        
+        # Stop at ability text (longer paragraphs)
+        if len(block_text) > 100:
+            break
+        
+        # Parse weapon block
+        weapon = _parse_weapon_block(block_text)
+        if weapon:
+            weapons.append(weapon)
+    
+    return weapons if weapons else None
+
+
+def _parse_weapon_block(block_text: str) -> Optional[Dict[str, Any]]:
+    """Parse a single weapon profile block.
+    
+    Expected format (one item per line):
+    Slugga
+    4
+    4+
+    3/4
+    Range 8"
+    
+    Or simpler:
+    Slugga
+    4
+    4+
+    3/4
+    -
+    """
+    lines = [line.strip() for line in block_text.split('\n') if line.strip()]
+    
+    if len(lines) < 4:
+        return None
+    
+    weapon = {}
+    
+    # Line 0: Weapon name
+    name = lines[0]
+    # Skip if it's a table header or stat label
+    if name in ['NAME', 'ATK', 'HIT', 'DMG', 'WR', 'APL', 'WOUNDS', 'SAVE', 'MOVE']:
+        return None
+    weapon["name"] = name
+    
+    # Line 1: Attacks (should be a number)
+    if lines[1].isdigit():
+        weapon["attacks"] = lines[1]
+    else:
+        return None  # Invalid weapon
+    
+    # Line 2: Hit (X+ format)
+    if re.match(r'^\d\+$', lines[2]):
+        weapon["hit"] = lines[2]
+    
+    # Line 3: Damage (X/Y or just X)
+    if re.match(r'^\d+(/\d+)?$', lines[3]):
+        weapon["damage"] = lines[3]
+    
+    # Line 4+: Special rules (if present and not just "-")
+    if len(lines) > 4:
+        special_rules = ' '.join(lines[4:]).strip()
+        if special_rules and special_rules != '-':
+            weapon["special_rules"] = special_rules
+    
+    # Only return complete weapon (must have name and attacks minimum)
+    if "name" in weapon and "attacks" in weapon:
+        return weapon
+    
+    return None
+
+
+def extract_statlines_from_team(team_dir: Path, output_dir: Path, force: bool = False) -> Optional[Dict]:
+    """Extract statlines from all datacards for a team."""
+    team_name = team_dir.name
+    cards_dir = team_dir / "cards"
+    
+    if not cards_dir.exists():
+        logger.warning("No cards directory for %s", team_name)
+        return None
+    
+    # Find all landscape PDFs (datacards are landscape)
+    pdf_files = sorted(cards_dir.glob("*_landscape.pdf"))
+    
+    if not pdf_files:
+        logger.warning("No landscape PDFs found for %s", team_name)
+        return None
+    
+    # Check if regeneration needed
+    output_path = output_dir / team_name / "statlines" / "roster.json"
+    if output_path.exists() and not force:
+        # Check if source files changed
+        existing_data = json.loads(output_path.read_text(encoding='utf-8'))
+        existing_hash = existing_data.get("_content_hash")
+        
+        # Compute hash of all source PDFs
+        hasher = hashlib.sha256()
+        for pdf_file in sorted(pdf_files):
+            hasher.update(pdf_file.read_bytes())
+        current_hash = hasher.hexdigest()
+        
+        if existing_hash == current_hash:
+            logger.info("  %s: No changes detected, skipping", team_name)
+            return None
+    
+    # Extract operatives
+    operatives = []
+    for pdf_file in pdf_files:
+        operative = extract_statlines_from_pdf(pdf_file)
+        if operative.get("name"):
+            operatives.append(operative)
+    
+    if not operatives:
+        logger.warning("  %s: No operatives extracted", team_name)
+        return None
+    
+    # Compute content hash
+    hasher = hashlib.sha256()
+    for pdf_file in sorted(pdf_files):
+        hasher.update(pdf_file.read_bytes())
+    content_hash = hasher.hexdigest()
+    
+    # Build roster
     roster = {
         "team": team_name,
         "generated": datetime.now(timezone.utc).isoformat(),
-        "operatives": operatives
+        "operative_count": len(operatives),
+        "operatives": operatives,
+        "_content_hash": content_hash
     }
     
-    # Save to output directory
-    statlines_dir = output_dir / team_name / "statlines"
-    statlines_dir.mkdir(parents=True, exist_ok=True)
+    # Save roster
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(json.dumps(roster, indent=2, ensure_ascii=False), encoding='utf-8')
     
-    roster_file = statlines_dir / "roster.json"
-    with open(roster_file, 'w', encoding='utf-8') as f:
-        json.dump(roster, f, indent=2, ensure_ascii=False)
+    logger.info("  ✓ %s: %d operatives extracted", team_name, len(operatives))
     
-    logger.info("✓ %s: Extracted %d operatives", team_name, len(operatives))
-    return roster
+    return {
+        "team": team_name,
+        "operative_count": len(operatives),
+        "output_file": str(output_path)
+    }
 
 
-def run(
-    extracted_dir: Path,
-    output_dir: Path,
-    teams: Optional[List[str]] = None,
-    force: bool = False
-) -> Dict[str, Any]:
-    """
-    Run statline extraction for all teams.
+def run(extracted_dir: Path, output_dir: Path, teams: Optional[List[str]] = None, 
+        force: bool = False) -> Dict[str, Any]:
+    """Run statline extraction for teams."""
     
-    Args:
-        extracted_dir: Directory containing extracted cards
-        output_dir: Directory for output files
-        teams: Optional list of specific teams to process
-        force: Force regeneration even if unchanged
-    
-    Returns:
-        Dictionary with processing results
-    """
-    logger.info("=" * 70)
-    logger.info("Step 6: Extract Statlines from Datacards")
-    logger.info("=" * 70)
-    logger.info("Extracted dir: %s", extracted_dir)
-    logger.info("Output dir: %s", output_dir)
-    
-    # Find all team directories
+    # Find teams to process
     if teams:
         team_dirs = [extracted_dir / team for team in teams if (extracted_dir / team).exists()]
     else:
-        team_dirs = [d for d in extracted_dir.iterdir() if d.is_dir()]
+        team_dirs = sorted([d for d in extracted_dir.iterdir() if d.is_dir()])
     
     if not team_dirs:
         logger.warning("No teams found to process")
-        return {"success": False, "teams_processed": 0}
+        return {"processed": 0, "teams": []}
     
+    logger.info("=" * 60)
+    logger.info("Step 6: Extract Statlines from Datacards")
+    logger.info("=" * 60)
     logger.info("Teams to process: %d", len(team_dirs))
-    logger.info("=" * 70)
+    logger.info("Force regeneration: %s", force)
+    logger.info("")
     
-    # Process each team
-    processed = 0
-    failed = 0
+    processed_teams = []
+    total_operatives = 0
     
-    for team_dir in sorted(team_dirs):
-        try:
-            result = extract_statlines_from_team(team_dir, output_dir, force)
-            if result:
-                processed += 1
-            else:
-                failed += 1
-        except Exception as e:
-            logger.error("Error processing %s: %s", team_dir.name, e)
-            failed += 1
+    for team_dir in team_dirs:
+        result = extract_statlines_from_team(team_dir, output_dir, force)
+        if result:
+            processed_teams.append(result)
+            total_operatives += result["operative_count"]
     
-    # Summary
-    logger.info("=" * 70)
+    logger.info("")
+    logger.info("=" * 60)
     logger.info("Extraction Complete")
-    logger.info("=" * 70)
-    logger.info("Teams processed: %d", processed)
-    logger.info("Teams failed: %d", failed)
-    logger.info("Output: %s", output_dir)
+    logger.info("=" * 60)
+    logger.info("Teams processed: %d", len(processed_teams))
+    logger.info("Total operatives: %d", total_operatives)
     
     return {
-        "success": True,
-        "teams_processed": processed,
-        "teams_failed": failed
+        "processed": len(processed_teams),
+        "total_operatives": total_operatives,
+        "teams": processed_teams
     }
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        description='Extract statlines from datacards'
-    )
-    parser.add_argument(
-        '--extracted',
-        type=Path,
-        default=Path('layers/warcom/extracted'),
-        help='Directory containing extracted cards (default: layers/warcom/extracted)'
-    )
-    parser.add_argument(
-        '--output',
-        type=Path,
-        default=Path('output'),
-        help='Output directory (default: output)'
-    )
-    parser.add_argument(
-        '--teams',
-        nargs='+',
-        help='Specific teams to process (default: all)'
-    )
-    parser.add_argument(
-        '--force',
-        action='store_true',
-        help='Force regeneration even if unchanged'
-    )
-    parser.add_argument(
-        '--log-level',
-        default='INFO',
-        choices=['DEBUG', 'INFO', 'WARNING', 'ERROR'],
-        help='Logging level (default: INFO)'
-    )
+    parser = argparse.ArgumentParser(description='Extract statlines from datacards')
+    parser.add_argument('--teams', nargs='+', help='Specific teams to process (default: all)')
+    parser.add_argument('--force', action='store_true', help='Force regeneration even if unchanged')
+    parser.add_argument('--extracted', type=Path, help='Extracted cards directory')
+    parser.add_argument('--output', type=Path, help='Output directory')
     
     args = parser.parse_args()
     
     # Setup logging
-    logging.basicConfig(
-        level=getattr(logging, args.log_level),
-        format='%(levelname)s: %(message)s'
-    )
+    logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
+    
+    # Setup paths
+    workspace_root = Path(__file__).parent.parent.parent.parent
+    extracted_dir = args.extracted or workspace_root / 'layers' / 'warcom' / 'extracted'
+    output_dir = args.output or workspace_root / 'output'
     
     # Run extraction
-    run(
-        extracted_dir=args.extracted,
-        output_dir=args.output,
-        teams=args.teams,
-        force=args.force
-    )
+    result = run(extracted_dir, output_dir, args.teams, args.force)
+    
+    if result["processed"] == 0:
+        logger.warning("No teams were processed")
+        return 1
+    
+    return 0
 
 
 if __name__ == '__main__':
-    main()
+    exit(main())
