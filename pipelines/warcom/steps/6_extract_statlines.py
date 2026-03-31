@@ -128,8 +128,12 @@ def _extract_name_from_blocks(blocks: List[Dict], page_width: float, page_height
             
             text= text.strip()
             
-            # Skip if contains commas (keyword line) or is a header or notes
+           # Skip if contains commas (keyword line) or is a header or notes
             if ',' in text or text.upper() in ['NAME', 'ATK', 'HIT', 'DMG', 'WR', 'NOTES:', 'NOTES']:
+                continue
+            
+            # Skip if it's an "ACTIONS" card (ability reference cards, not operatives)
+            if 'ACTIONS' in text.upper():
                 continue
             
             # Check if all caps and reasonable length
@@ -466,7 +470,9 @@ def extract_statlines_from_team(team_dir: Path, output_dir: Path, force: bool = 
     operatives = []
     for pdf_file in pdf_files:
         operative = extract_statlines_from_pdf(pdf_file)
-        if operative.get("name"):
+        # Only include operatives with valid name and wounds
+        # (operatives without wounds are ACTIONS-only back sides)
+        if operative.get("name") and operative.get("wounds") is not None:
             operatives.append(operative)
     
     if not operatives:
