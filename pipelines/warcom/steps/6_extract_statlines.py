@@ -409,12 +409,12 @@ def _extract_unique_actions_from_blocks(blocks: List[Dict], page_width: float, p
                                          region_y1: float) -> Optional[List[Dict[str, str]]]:
     """Extract Unique Actions from ability blocks.
     
-    Unique Actions format:
-    - Name in bold (sometimes with cost like "(1AP)")  
-    - May have bullet point prefix
-    - Followed by colon and description
-    - Example: "• Manifest Psychic Power (1AP): Description text..."
-    - Or: "Special Ability: Description..."
+    Unique Actions have two formats:
+    1. Colon format: "Ability Name: Description text..."
+    2. Warhammer format (no colon):
+       - Bold line: "ACTION NAME"  
+       - Bold line: "XAP" (cost)
+       - Regular lines: Description text
     """
     unique_actions = []
     
@@ -447,17 +447,14 @@ def _extract_unique_actions_from_blocks(blocks: List[Dict], page_width: float, p
         return None
     
     # Parse unique actions
-    # Pattern: Bold text (possibly with "(XAP)") followed by ":" and description
     i = 0
     while i < len(ability_text):
         text, is_bold = ability_text[i]
         
-        # Look for bold text with optional action cost
+        # Look for bold text
         if is_bold:
-            # Check if this line or next has a colon (UA format)
-            has_colon = ':' in text
-            
-            if has_colon:
+            # Pattern 1: Bold text with colon (e.g., "Ability Name: Description")
+            if ':' in text:
                 # Split at colon
                 parts = text.split(':', 1)
                 ua_name = parts[0].strip()
@@ -469,11 +466,11 @@ def _extract_unique_actions_from_blocks(blocks: List[Dict], page_width: float, p
                     next_text, next_bold = ability_text[j]
                     
                     # Stop if we hit another bold line (next UA)
-                    if next_bold and ':' in next_text:
+                    if next_bold and (':' in next_text or next_text.endswith('AP')):
                         break
                     
                     # Stop if we hit keyword footer (all caps with commas)
-                    if ',' in next_text and next_text.isupper():
+                    if ',' in next_text and next_text.isupper() and len(next_text) > 30:
                         break
                     
                     # Add to description
@@ -481,7 +478,6 @@ def _extract_unique_actions_from_blocks(blocks: List[Dict], page_width: float, p
                     j += 1
                 
                 # Clean up name
-                # Remove bullet points and special characters
                 ua_name = ua_name.lstrip('•■◆▪-– ')
                 
                 # Skip common headers that aren't UAs
@@ -494,6 +490,54 @@ def _extract_unique_actions_from_blocks(blocks: List[Dict], page_width: float, p
                 
                 i = j
                 continue
+            
+            # Pattern 2: Bold ACTION NAME, then check for XAP cost
+            # e.g., "GET IT DUN!" (bold), "1AP" (bold), "SUPPORT. Select..." (bold or regular)
+            elif i + 1 < len(ability_text):
+                next_text, next_bold = ability_text[i + 1]
+                
+                # Check if next line is a cost (XAP format)
+                is_cost = next_bold and next_text.endswith('AP') and len(next_text) <= 5
+                
+                if is_cost:
+                    ua_name = text.lstrip('•■◆▪-– ')
+                    cost = next_text
+                    ua_desc = ""
+                    
+                    # Read description from subsequent lines
+                    j = i + 2
+                    while j < len(ability_text):
+                        desc_text, desc_bold = ability_text[j]
+                        
+                        # Stop at keyword footer (faction keywords like "KOMMANDO , ORK, BOSS NOB")
+                        if ',' in desc_text and desc_text.isupper() and any(kw in desc_text for kw in ['KOMMANDO', 'MARINE', 'GUARD', 'HUNTER', 'OPERATIVE']):
+                            break
+                        
+                        # Stop at point values (typically just a number like "32")
+                        if desc_text.isdigit() and len(desc_text) <= 3:
+                            break
+                        
+                        # Stop at next action name (bold line followed by XAP cost)
+                        if desc_bold and j + 1 < len(ability_text):
+                            peek_text, peek_bold = ability_text[j + 1]
+                            if peek_bold and peek_text.endswith('AP') and len(peek_text) <= 5:
+                                break
+                        
+                        ua_desc += " " + desc_text
+                        j += 1
+                    
+                    # Skip common headers
+                    if ua_name and ua_name.upper() not in ['NAME', 'ATK', 'HIT', 'DMG', 'WR', 
+                                                             'UNIQUE ACTIONS', 'ABILITIES', 'NOTES']:
+                        # Combine name with cost
+                        full_name = f"{ua_name} ({cost})" if cost != "0AP" else ua_name
+                        unique_actions.append({
+                            "name": full_name,
+                            "description": ua_desc.strip()
+                        })
+                    
+                    i = j
+                    continue
         
         i += 1
     
