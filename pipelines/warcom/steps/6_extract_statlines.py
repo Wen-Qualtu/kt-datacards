@@ -58,9 +58,9 @@ def extract_statlines_from_pdf(pdf_path: Path) -> Dict[str, Any]:
         # Stats: Top-right corner (x > 65%, y < 25%)
         stats = _extract_stats_from_blocks(blocks, page_width, page_height)
         
-        # Weapons: Middle region (x < 60%, 15% < y < 50%)
+        # Weapons: Middle region (x < 60%, 15% < y < 60%)
         weapons = _extract_weapons_from_blocks(blocks, page_width, page_height,
-                                                page_height * 0.15, page_height * 0.50)
+                                                page_height * 0.15, page_height * 0.60)
         
         # Unique Actions: Lower region (y > 50%, abilities section)
         unique_actions = _extract_unique_actions_from_blocks(blocks, page_width, page_height,
@@ -245,9 +245,9 @@ def _extract_weapons_from_blocks(blocks: List[Dict], page_width: float, page_hei
     """Extract weapons from blocks in the weapons table region.
     
     Weapon table structure:
-    - Header block: "NAME ATK HIT DMG WR"
+    - Header block: "NAME ATK HIT DMG WR" (optional, may be missing)
     - Individual blocks for each weapon with structured data
-    - Blocks are short (< 100 chars) and within specific Y coordinates
+    - Blocks are typically short and within specific Y coordinates
     """
     weapons = []
     
@@ -258,10 +258,11 @@ def _extract_weapons_from_blocks(blocks: List[Dict], page_width: float, page_hei
             continue
         
         bbox = block["bbox"]
-        # Check if block is in weapons region (left side, middle height)
+        # Check if block START is in weapons region (left side, middle height)
+        # Only check top of block (bbox[1]), not bottom, to be more inclusive
         if (bbox[0] < page_width * 0.6 and 
             bbox[1] >= region_y1 and 
-            bbox[3] <= region_y2):
+            bbox[1] <= region_y2):
             
             # Extract text from block
             block_text = ""
@@ -271,39 +272,30 @@ def _extract_weapons_from_blocks(blocks: List[Dict], page_width: float, page_hei
                 block_text += "\n"
             
             block_text = block_text.strip()
-            weapon_blocks.append(block_text)
+            if block_text:  # Only add non-empty blocks
+                weapon_blocks.append(block_text)
     
     if not weapon_blocks:
         return None
     
-    # First block should be header - skip it
-    header_found = False
+    # Process all blocks and try to parse each as a weapon
     for i, block_text in enumerate(weapon_blocks):
-        # Debug: log what we're processing
-        logger.debug("Weapon block %d: %s", i, block_text[:50])
-        
-        # Check if this is the header
-        if "NAME" in block_text and "ATK" in block_text:
-            header_found = True
-            logger.debug("  -> Header, skipping")
+        # Skip header blocks
+        if "NAME" in block_text and "ATK" in block_text and len(block_text) < 50:
             continue
         
-        if not header_found:
-            logger.debug("  -> No header yet, skipping")
+        # Skip obvious ability blocks (have colons, long text, specific keywords)
+        if any(keyword in block_text for keyword in ['ACTIONS', 'PLOYS', 'RULES', 'EQUIPMENT']):
             continue
         
-        # Stop at ability text (longer paragraphs)
-        if len(block_text) > 100:
-            logger.debug("  -> Too long (%d chars), stopping", len(block_text))
-            break
+        # Skip very long blocks (> 500 chars) - definitely not a single weapon
+        if len(block_text) > 500:
+            continue
         
-        # Parse weapon block
+        # Try to parse as weapon
         weapon = _parse_weapon_block(block_text)
         if weapon:
             weapons.append(weapon)
-            logger.debug("  -> Parsed: %s", weapon["name"])
-        else:
-            logger.debug("  -> Failed to parse")
     
     return weapons if weapons else None
 
@@ -329,80 +321,85 @@ def _parse_weapon_block(block_text: str) -> Optional[Dict[str, Any]]:
     if any(header in text for header in ['NAME', 'ATK', 'HIT', 'DMG', 'WR', 'APL', 'WOUNDS', 'SAVE', 'MOVE']):
         return None
     
+    # Skip very long text blocks (likely abilities, not weapons)
+    if len(text) > 400:
+        return None
+    
     # Try parsing as multi-line format first
     lines = [line.strip() for line in text.split('\n') if line.strip()]
     
     if len(lines) >= 4:
         # Multi-line format
-        weapon = {}
+        weapon = {"name": lines[0]}
         
-        # Line 0: Weapon name
-        weapon["name"] = lines[0]
+        # Find attacks, hit, and damage from remaining lines
+        attacks = None
+        hit = None
+        damage = None
+        special_rules = []
         
-        # Line 1: Attacks (should be a number)
-        if not lines[1].isdigit():
-            return None  # Invalid format
-        weapon["attacks"] = lines[1]
-        
-        # Line 2: Hit (X+ format)
-        if re.match(r'^\d\+$', lines[2]):
-            weapon["hit"] = lines[2]
-        
-        # Line 3: Damage (X/Y or just X)
-        if re.match(r'^\d+(/\d+)?$', lines[3]):
-            weapon["damage"] = lines[3]
-        
-        # Line 4+: Special rules (if present and not just "-")
-        if len(lines) > 4:
-            special_rules = ' '.join(lines[4:]).strip()
-            if special_rules and special_rules != '-':
-                weapon["special_rules"] = special_rules
+        for line in lines[1:]:
+            # Attacks: single digit or small number (1-20)
+            if line.isdigit() and 1 <= int(line) <= 20 and attacks is None:
+                attacks = line
+            # Hit: X+ format (e.g., "2+", "3+", "4+")
+            elif re.match(r'^\d\+$', line.strip()) and hit is None:
+                hit = line.strip()
+            # Damage: X/Y format or single digit (e.g., "3/4", "4/5", "5")
+            elif re.match(r'^\d+(/\d+)?$', line.strip()) and damage is None:
+                damage = line.strip()
+            # Everything else is special rules
+            else:
+                special_rules.append(line)
         
         # Validate minimum required fields
-        if "name" in weapon and "attacks" in weapon:
+        if attacks and hit and damage:
+            weapon["attacks"] = attacks
+            weapon["hit"] = hit
+            weapon["damage"] = damage
+            
+            # Add special rules if present
+            special_text = ' '.join(special_rules).strip()
+            if special_text and special_text != '-':
+                weapon["special_rules"] = special_text
+            
             return weapon
     
     # Try parsing as single-line format (fallback)
-    # Skip long ability text (weapons are short)
-    if len(text) > 150:
-        return None
-    
     # Split by multiple spaces to separate fields
     parts = re.split(r'\s{2,}', text)
     
-    if len(parts) < 4:
-        return None
-    
-    weapon = {}
-    weapon["name"] = parts[0].strip()
-    
-    # Find numeric fields (ATK, HIT, DMG)
-    numeric_parts = []
-    for i, part in enumerate(parts[1:], 1):
-        part = part.strip()
-        # Check if it's a number (ATK)
-        if part.isdigit():
-            numeric_parts.append(("attacks", part))
-        # Check if it's hit (X+)
-        elif re.match(r'^\d\+$', part):
-            numeric_parts.append(("hit", part))
-        # Check if it's damage (X/Y or X)
-        elif re.match(r'^\d+(/\d+)?$', part):
-            numeric_parts.append(("damage", part))
-        # Everything else is special rules
-        else:
-            special_rules = ' '.join(parts[i:]).strip()
-            if special_rules and special_rules != '-':
-                weapon["special_rules"] = special_rules
-            break
-    
-    # Assign numeric fields
-    for field_name, value in numeric_parts:
-        weapon[field_name] = value
-    
-    # Validate minimum required fields
-    if "name" in weapon and "attacks" in weapon:
-        return weapon
+    if len(parts) >= 4:
+        weapon = {"name": parts[0].strip()}
+        attacks = None
+        hit = None
+        damage = None
+        
+        for i, part in enumerate(parts[1:], 1):
+            part = part.strip()
+            
+            # Attacks: single digit
+            if part.isdigit() and 1 <= int(part) <= 20 and attacks is None:
+                attacks = part
+            # Hit: X+ format
+            elif re.match(r'^\d\+$', part) and hit is None:
+                hit = part
+            # Damage: X/Y or X
+            elif re.match(r'^\d+(/\d+)?$', part) and damage is None:
+                damage = part
+            # Everything else is special rules
+            else:
+                special_rules = ' '.join(parts[i:]).strip()
+                if special_rules and special_rules != '-':
+                    weapon["special_rules"] = special_rules
+                break
+        
+        # Validate minimum required fields
+        if attacks and hit and damage:
+            weapon["attacks"] = attacks
+            weapon["hit"] = hit
+            weapon["damage"] = damage
+            return weapon
     
     return None
 
