@@ -1,0 +1,624 @@
+{
+  "SaveName": "KT2024 Command Node UI Extender - Experimental",
+  "EpochTime": 1743545892,
+  "Date": "4/1/2025 3:18:12 PM",
+  "VersionNumber": "v13.3",
+  "GameMode": "KT Command Node UI Extender",
+  "GameType": "Game",
+  "GameComplexity": "Low Complexity",
+  "PlayingTime": [
+    0,
+    0
+  ],
+  "PlayerCounts": [
+    0,
+    0
+  ],
+  "Tags": [
+    "Wargames",
+    "Strategy Games",
+    "User Interfaces",
+    "Scripting",
+    "Scripting: Automated",
+    "English",
+    "Kill Team",
+    "KT21",
+    "UI",
+    "Health",
+    "Bar",
+    "Warhammer",
+    "WHKT",
+    "Token",
+    "Order",
+    "Orders",
+    "HP"
+  ],
+  "Gravity": 0.5,
+  "PlayArea": 0.5,
+  "Table": "Table_Square",
+  "Sky": "Sky_Regal",
+  "Note": "",
+  "TabStates": {
+    "0": {
+      "title": "Rules",
+      "body": "",
+      "color": "Grey",
+      "visibleColor": {
+        "r": 0.5,
+        "g": 0.5,
+        "b": 0.5
+      },
+      "id": 0
+    },
+    "1": {
+      "title": "White",
+      "body": "",
+      "color": "White",
+      "visibleColor": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
+      },
+      "id": 1
+    },
+    "2": {
+      "title": "Brown",
+      "body": "",
+      "color": "Brown",
+      "visibleColor": {
+        "r": 0.443,
+        "g": 0.231,
+        "b": 0.09
+      },
+      "id": 2
+    },
+    "3": {
+      "title": "Red",
+      "body": "",
+      "color": "Red",
+      "visibleColor": {
+        "r": 0.856,
+        "g": 0.1,
+        "b": 0.094
+      },
+      "id": 3
+    },
+    "4": {
+      "title": "Orange",
+      "body": "",
+      "color": "Orange",
+      "visibleColor": {
+        "r": 0.956,
+        "g": 0.392,
+        "b": 0.113
+      },
+      "id": 4
+    },
+    "5": {
+      "title": "Yellow",
+      "body": "",
+      "color": "Yellow",
+      "visibleColor": {
+        "r": 0.905,
+        "g": 0.898,
+        "b": 0.172
+      },
+      "id": 5
+    },
+    "6": {
+      "title": "Green",
+      "body": "",
+      "color": "Green",
+      "visibleColor": {
+        "r": 0.192,
+        "g": 0.701,
+        "b": 0.168
+      },
+      "id": 6
+    },
+    "7": {
+      "title": "Blue",
+      "body": "",
+      "color": "Blue",
+      "visibleColor": {
+        "r": 0.118,
+        "g": 0.53,
+        "b": 1.0
+      },
+      "id": 7
+    },
+    "8": {
+      "title": "Teal",
+      "body": "",
+      "color": "Teal",
+      "visibleColor": {
+        "r": 0.129,
+        "g": 0.694,
+        "b": 0.607
+      },
+      "id": 8
+    },
+    "9": {
+      "title": "Purple",
+      "body": "",
+      "color": "Purple",
+      "visibleColor": {
+        "r": 0.627,
+        "g": 0.125,
+        "b": 0.941
+      },
+      "id": 9
+    },
+    "10": {
+      "title": "Pink",
+      "body": "",
+      "color": "Pink",
+      "visibleColor": {
+        "r": 0.96,
+        "g": 0.439,
+        "b": 0.807
+      },
+      "id": 10
+    },
+    "11": {
+      "title": "Black",
+      "body": "",
+      "color": "Black",
+      "visibleColor": {
+        "r": 0.25,
+        "g": 0.25,
+        "b": 0.25
+      },
+      "id": 11
+    }
+  },
+  "Grid": {
+    "Type": 0,
+    "Lines": false,
+    "Color": {
+      "r": 0.0,
+      "g": 0.0,
+      "b": 0.0
+    },
+    "Opacity": 0.75,
+    "ThickLines": false,
+    "Snapping": false,
+    "Offset": false,
+    "BothSnapping": false,
+    "xSize": 2.0,
+    "ySize": 2.0,
+    "PosOffset": {
+      "x": 0.0,
+      "y": 1.0,
+      "z": 0.0
+    }
+  },
+  "Lighting": {
+    "LightIntensity": 0.54,
+    "LightColor": {
+      "r": 1.0,
+      "g": 0.9804,
+      "b": 0.8902
+    },
+    "AmbientIntensity": 1.3,
+    "AmbientType": 0,
+    "AmbientSkyColor": {
+      "r": 0.5,
+      "g": 0.5,
+      "b": 0.5
+    },
+    "AmbientEquatorColor": {
+      "r": 0.5,
+      "g": 0.5,
+      "b": 0.5
+    },
+    "AmbientGroundColor": {
+      "r": 0.5,
+      "g": 0.5,
+      "b": 0.5
+    },
+    "ReflectionIntensity": 1.0,
+    "LutIndex": 0,
+    "LutContribution": 1.0
+  },
+  "Hands": {
+    "Enable": true,
+    "DisableUnused": false,
+    "Hiding": 0
+  },
+  "ComponentTags": {
+    "labels": [
+      {
+        "displayed": "Hud token",
+        "normalized": "hud_token"
+      },
+      {
+        "displayed": "KTMini",
+        "normalized": "ktmini"
+      },
+      {
+        "displayed": "KTUIToken",
+        "normalized": "ktuitoken"
+      },
+      {
+        "displayed": "KTUIMini",
+        "normalized": "ktuimini"
+      },
+      {
+        "displayed": "Kill Team Scoreboard",
+        "normalized": "kill_team_scoreboard"
+      },
+      {
+        "displayed": "Kill Team Dashboard",
+        "normalized": "kill_team_dashboard"
+      },
+      {
+        "displayed": "Objective Card",
+        "normalized": "objective_card"
+      },
+      {
+        "displayed": "b1bd-46ec-10b5-53ac",
+        "normalized": "b1bd-46ec-10b5-53ac"
+      },
+      {
+        "displayed": "KOMMANDO",
+        "normalized": "kommando"
+      },
+      {
+        "displayed": "Kommando Nob",
+        "normalized": "kommando_nob"
+      },
+      {
+        "displayed": "Leader",
+        "normalized": "leader"
+      },
+      {
+        "displayed": "Operative",
+        "normalized": "operative"
+      },
+      {
+        "displayed": "Ork",
+        "normalized": "ork"
+      },
+      {
+        "displayed": "KTUITokenSimple",
+        "normalized": "ktuitokensimple"
+      },
+      {
+        "displayed": "KTUITokenAdvanced",
+        "normalized": "ktuitokenadvanced"
+      },
+      {
+        "displayed": "dc7d-8bd2-6587-27f7",
+        "normalized": "dc7d-8bd2-6587-27f7"
+      },
+      {
+        "displayed": "2597-17e1-cf1f-c650",
+        "normalized": "2597-17e1-cf1f-c650"
+      },
+      {
+        "displayed": "Comms Boy",
+        "normalized": "comms_boy"
+      },
+      {
+        "displayed": "71d1-bf92-2625-89bf",
+        "normalized": "71d1-bf92-2625-89bf"
+      },
+      {
+        "displayed": "Bomb Squig",
+        "normalized": "bomb_squig"
+      },
+      {
+        "displayed": "083f-1d58-380d-0673",
+        "normalized": "083f-1d58-380d-0673"
+      },
+      {
+        "displayed": "Dakka Boy",
+        "normalized": "dakka_boy"
+      },
+      {
+        "displayed": "Breacha Boy",
+        "normalized": "breacha_boy"
+      },
+      {
+        "displayed": "d683-1ff5-eb03-c25f",
+        "normalized": "d683-1ff5-eb03-c25f"
+      },
+      {
+        "displayed": "3cb4-af4e-52e4-305b",
+        "normalized": "3cb4-af4e-52e4-305b"
+      },
+      {
+        "displayed": "Kommando Grot",
+        "normalized": "kommando_grot"
+      },
+      {
+        "displayed": "5d86-859b-d455-fbac",
+        "normalized": "5d86-859b-d455-fbac"
+      },
+      {
+        "displayed": "Slasha Boy",
+        "normalized": "slasha_boy"
+      },
+      {
+        "displayed": "f6b1-cdc2-aec9-6371",
+        "normalized": "f6b1-cdc2-aec9-6371"
+      },
+      {
+        "displayed": "Snipa Boy",
+        "normalized": "snipa_boy"
+      },
+      {
+        "displayed": "Burna Boy",
+        "normalized": "burna_boy"
+      },
+      {
+        "displayed": "f91a-757f-ec07-ef65",
+        "normalized": "f91a-757f-ec07-ef65"
+      },
+      {
+        "displayed": "9548-86bd-3855-dbc0",
+        "normalized": "9548-86bd-3855-dbc0"
+      },
+      {
+        "displayed": "Rokkit Boy",
+        "normalized": "rokkit_boy"
+      }
+    ]
+  },
+  "Turns": {
+    "Enable": false,
+    "Type": 0,
+    "TurnOrder": [],
+    "Reverse": false,
+    "SkipEmpty": false,
+    "DisableInteractions": false,
+    "PassTurns": true,
+    "TurnColor": ""
+  },
+  "DecalPallet": [],
+  "LuaScript": "function onload()\n\nend",
+  "LuaScriptState": "",
+  "XmlUI": "<!-- Xml UI. See documentation: https://api.tabletopsimulator.com/ui/introUI/ -->",
+  "ObjectStates": [
+    {
+      "GUID": "2536a0",
+      "Name": "HandTrigger",
+      "Transform": {
+        "posX": 14.3801212,
+        "posY": 2.97108841,
+        "posZ": 0.141296387,
+        "rotX": 0.0,
+        "rotY": 270.0,
+        "rotZ": 0.0,
+        "scaleX": 9.39275,
+        "scaleY": 6.6338706,
+        "scaleZ": 3.52228069
+      },
+      "Nickname": "",
+      "Description": "",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 0.627,
+        "g": 0.124999978,
+        "b": 0.941,
+        "a": 0.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": false,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "FogColor": "Purple",
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "432e71",
+      "Name": "HandTrigger",
+      "Transform": {
+        "posX": 0.03270387,
+        "posY": 2.97108459,
+        "posZ": -14.3704987,
+        "rotX": 0.0,
+        "rotY": 0.0,
+        "rotZ": 0.0,
+        "scaleX": 9.392744,
+        "scaleY": 6.633872,
+        "scaleZ": 3.5222795
+      },
+      "Nickname": "",
+      "Description": "",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 0.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": false,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "FogColor": "White",
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "db67c6",
+      "Name": "HandTrigger",
+      "Transform": {
+        "posX": 0.03270387,
+        "posY": 2.97108841,
+        "posZ": 14.2773781,
+        "rotX": 0.0,
+        "rotY": 180.0,
+        "rotZ": 0.0,
+        "scaleX": 9.392749,
+        "scaleY": 6.6338706,
+        "scaleZ": 3.52228117
+      },
+      "Nickname": "",
+      "Description": "",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 0.191999972,
+        "g": 0.701,
+        "b": 0.167999953,
+        "a": 0.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": false,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "FogColor": "Green",
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "ee6c86",
+      "Name": "HandTrigger",
+      "Transform": {
+        "posX": -14.29123,
+        "posY": 2.97108841,
+        "posZ": -0.05830002,
+        "rotX": 0.0,
+        "rotY": 90.0,
+        "rotZ": 0.0,
+        "scaleX": 9.39275,
+        "scaleY": 6.6338706,
+        "scaleZ": 3.52228069
+      },
+      "Nickname": "",
+      "Description": "",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 0.9559999,
+        "g": 0.39199996,
+        "b": 0.112999953,
+        "a": 0.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": false,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "FogColor": "Orange",
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "7d5c6e",
+      "Name": "Custom_Board",
+      "Transform": {
+        "posX": -0.2955679,
+        "posY": 1.00202739,
+        "posZ": -0.477677166,
+        "rotX": -2.21958146E-07,
+        "rotY": 269.976,
+        "rotZ": -1.12093458E-05,
+        "scaleX": 1.0,
+        "scaleY": 1.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "",
+      "Description": "",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 0.0,
+        "g": 0.0,
+        "b": 0.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "CustomImage": {
+        "ImageURL": "https://github.com/nyirsh/KTUI/raw/main/Resources/KTUIExtMat.png",
+        "ImageSecondaryURL": "",
+        "ImageScalar": 1.0,
+        "WidthScale": 0.633744836
+      },
+      "LuaScript": "function KTUI_ResetScripts()\r\n\tbroadcastToAll(\"Reloading KT UI Extender\")\r\n\tlocal r = 0\r\n\tfor _, obj in ipairs(getAllObjects()) do\r\n\t\tif obj.hasTag(\"KTUIMini\") then\r\n\t\t\tobj.reload()\r\n\t\t\tr = r + 1\r\n\t\tend\r\n\tend\r\n\tbroadcastToAll(\"Reloaded \" .. r .. \" items\")\r\nend\r\n\r\nfunction detectItemOnTop() --casts a ball that detects all the items on top\r\n\tlocal start = { self.getPosition()[1], self.getPosition()[2] + 3.1, self.getPosition()[3] }\r\n\tlocal hitList = Physics.cast({\r\n\t\torigin = start,\r\n\t\tdirection = { 0, 1, 0 },\r\n\t\ttype = 2,\r\n\t\tsize = { 15, 15, 15 },\r\n\t\tmax_distance = 3,\r\n\t\tdebug = false,\r\n\t})\r\n\treturn hitList\r\nend\r\n\r\nfunction ExtendUI(player)\r\n\tWebRequest.get(\r\n\t\t\"https://raw.githubusercontent.com/mal20k/KTUI/refs/heads/main/Scripts/MiniatureScript24.lua\",\r\n\t\tfunction(req)\r\n\t\t\tif req.is_error then\r\n\t\t\t\tlog(req.error)\r\n\t\t\telse\r\n\t\t\t\tlocal allTops = detectItemOnTop()\r\n\t\t\t\tlocal script = req.text\r\n\r\n\t\t\t\tfor _, hitlist in ipairs(allTops) do\r\n\t\t\t\t\tlocal object = hitlist[\"hit_object\"]\r\n\t\t\t\t\tUpdateModelScript(player, object, script)\r\n\t\t\t\tend\r\n\t\t\tend\r\n\t\tend\r\n\t)\r\nend\r\n\r\nfunction SaveAllPositions(player)\r\n\tfor _, obj in ipairs(getAllObjects()) do\r\n\t\tif obj.hasTag(\"KTUIMini\") then\r\n\t\t\tlocal op = obj.call(\"getOwningPlayer\")\r\n\t\t\tif op ~= nil then\r\n\t\t\t\tobj.call(\"savePosition\")\r\n\t\t\tend\r\n\t\tend\r\n\tend\r\n\tplayer.broadcast(\"All positions saved\")\r\nend\r\n\r\nfunction LoadAllPositions(player)\r\n\tfor _, obj in ipairs(getAllObjects()) do\r\n\t\tif obj.hasTag(\"KTUIMini\") then\r\n\t\t\tlocal op = obj.call(\"getOwningPlayer\")\r\n\t\t\tif op ~= nil then\r\n\t\t\t\tobj.call(\"loadPosition\")\r\n\t\t\tend\r\n\t\tend\r\n\tend\r\n\tplayer.broadcast(\"All positions saved\")\r\nend\r\n\r\nfunction ReadyAllOperatives(player)\r\n\tfor _, obj in ipairs(getAllObjects()) do\r\n\t\tif obj.hasTag(\"KTUIMini\") then\r\n\t\t\tlocal op = obj.call(\"getOwningPlayer\")\r\n\t\t\tif op ~= nil then\r\n\t\t\t\tobj.call(\"KTUI_ReadyOperative\")\r\n\t\t\tend\r\n\t\tend\r\n\tend\r\n\tplayer.broadcast(\"All operatives have been readied\")\r\nend\r\n\r\nfunction CleanAllOperatives(player)\r\n\tlocal allTops = detectItemOnTop()\r\n\tfor _, hitlist in ipairs(allTops) do\r\n\t\tlocal obj = hitlist[\"hit_object\"]\r\n\t\tif obj.hasTag(\"KTUIMini\") then\r\n\t\t\tlocal op = obj.call(\"getOwningPlayer\")\r\n\t\t\tif op ~= nil then\r\n\t\t\t\tobj.call(\"KTUI_CleanOperative\")\r\n\t\t\tend\r\n\t\tend\r\n\tend\r\n\tplayer.broadcast(\"All operatives have cleaned of their tokens\")\r\nend\r\n\r\nfunction UpdateModelScript(player, object, script)\r\n\tif object.tag == \"Figurine\" then\r\n\t\tsomethingExtended = true\r\n\t\tobject.setLuaScript(script)\r\n\t\tobject = object.reload()\r\n\t\tobject.addTag(\"KTUIMini\")\r\n\t\tWait.frames(function()\r\n\t\t\tobject.call(\"setOwningPlayer\", player.steam_id)\r\n\t\tend, 1)\r\n\tend\r\nend\r\n\r\nfunction UpdateScript(player)\r\n\tWebRequest.get(\r\n\t\t\"https://raw.githubusercontent.com/mal20k/KTUI/refs/heads/main/Scripts/MiniatureScript24.lua\",\r\n\t\tfunction(req)\r\n\t\t\tif req.is_error then\r\n\t\t\t\tlog(req.error)\r\n\t\t\telse\r\n\t\t\t\tlocal allTops = detectItemOnTop()\r\n\t\t\t\tlocal script = req.text\r\n\r\n\t\t\t\tfor _, hitlist in ipairs(allTops) do\r\n\t\t\t\t\tlocal object = hitlist[\"hit_object\"]\r\n\t\t\t\t\tUpdateModelScript(player, object, script)\r\n\t\t\t\tend\r\n\t\t\tend\r\n\t\tend\r\n\t)\r\nend\r\n\r\nfunction textColorXml(color, text)\r\n\treturn string.format('<textcolor color=\"#%s\">%s</textcolor>', color, text)\r\nend\r\n\r\nfunction textColorMd(color, text)\r\n\treturn string.format(\"[%s]%s[-]\", color, text)\r\nend\r\n\r\nfunction magiclines(str)\r\n\tlocal pos = 1\r\n\treturn function()\r\n\t\tif not pos then\r\n\t\t\treturn nil\r\n\t\tend\r\n\t\tlocal p1, p2 = string.find(str, \"\\r?\\n\", pos)\r\n\t\tlocal line\r\n\t\tif p1 then\r\n\t\t\tline = str:sub(pos, p1 - 1)\r\n\t\t\tpos = p2 + 1\r\n\t\telse\r\n\t\t\tline = str:sub(pos)\r\n\t\t\tpos = nil\r\n\t\tend\r\n\t\treturn line\r\n\tend\r\nend\r\n\r\nfunction ParseWeapons(desc)\r\n\tlocal lines = {}\r\n\tlocal in_weapons_section = false\r\n\r\n\tfor line in magiclines(desc) do\r\n\t\tif line:find(\"Weapons\") then\r\n\t\t\tin_weapons_section = true\r\n\t\telseif line:find(\"%-%-%-\") then\r\n\t\t\tbreak\r\n\t\telseif in_weapons_section then\r\n\t\t\ttable.insert(lines, line)\r\n\t\tend\r\n\tend\r\n\r\n\tlocal weapons = {}\r\n\tlocal current_weapon = {}\r\n\r\n\tfor i, line in ipairs(lines) do\r\n\t\tif line == \"\" then\r\n\t\t\tif #current_weapon > 0 then\r\n\t\t\t\ttable.insert(weapons, current_weapon)\r\n\t\t\t\tcurrent_weapon = {}\r\n\t\t\tend\r\n\t\telse\r\n\t\t\ttable.insert(current_weapon, line)\r\n\t\tend\r\n\tend\r\n\r\n\tif #current_weapon > 0 then\r\n\t\ttable.insert(weapons, current_weapon)\r\n\tend\r\n\r\n\treturn weapons\r\nend\r\n\r\nfunction ParseExtra(desc)\r\n\tlocal lines = {}\r\n\tlocal in_extra_section = false\r\n\r\n\tfor line in magiclines(desc) do\r\n\t\tif in_extra_section then\r\n\t\t\ttable.insert(lines, line)\r\n\t\telseif line:find(\"%-%-%-\") then\r\n\t\t\tin_extra_section = true\r\n\t\tend\r\n\tend\r\n\r\n\treturn lines\r\nend\r\n\r\nfunction UpdateOldModels(player)\r\n\tWebRequest.get(\r\n\t\t\"https://raw.githubusercontent.com/mal20k/KTUI/refs/heads/main/Scripts/MiniatureScript24.lua\",\r\n\t\tfunction(req)\r\n\t\t\tlocal allTops = detectItemOnTop()\r\n\t\t\tlocal script = req.text\r\n\r\n\t\t\tfor _, hitlist in ipairs(allTops) do\r\n\t\t\t\tlocal object = hitlist[\"hit_object\"]\r\n\t\t\t\tUpdateOldState(object)\r\n\t\t\t\tUpdateModelScript(player, object, script)\r\n\t\t\tend\r\n\t\tend\r\n\t)\r\nend\r\n\r\nfunction UpdateOldState(object)\r\n\tif object.tag == \"Figurine\" then\r\n\t\tlocal state = JSON.decode(object.script_state)\r\n\r\n\t\tif state.stats.M then\r\n\t\t\tstate.stats.Move = state.stats.M * 2\r\n\t\tend\r\n\r\n\t\t-- if state.stats.APL then\r\n\t\t-- state.stats.APL = state.stats.APL\r\n\t\t-- end\r\n\r\n\t\tif state.stats.SV then\r\n\t\t\tstate.stats.Save = state.stats.SV\r\n\t\tend\r\n\r\n\t\tif state.stats.W then\r\n\t\t\tstate.stats.Wounds = state.stats.W\r\n\t\tend\r\n\r\n\t\t-- We remove the old stats to avoid issues with attempts to detect which stats are used.\r\n\t\tstate.stats.M = nil\r\n\t\tstate.stats.SV = nil\r\n\t\tstate.stats.W = nil\r\n\r\n\t\tlocal desc = object.getDescription() or \"\"\r\n\r\n\t\tlocal innerUpdate = function(oldStat, newStat)\r\n\t\t\tlocal sstring = \"%[84E680%]\" .. oldStat .. \"%[%-%]%s*%[ffffff%]%s*(%d+).*%[%-%]\"\r\n\t\t\tfor match in string.gmatch(desc, \"%b[]\") do\r\n\t\t\t\tlocal s = match:match(sstring)\r\n\t\t\t\tif s then\r\n\t\t\t\t\tlocal ss = state.stats[newStat]\r\n\t\t\t\t\tif ss and ss == tonumber(s) then\r\n\t\t\t\t\t\treturn false\r\n\t\t\t\t\tend\r\n\t\t\t\t\tstate.stats[newStat] = tonumber(s)\r\n\t\t\t\t\treturn true\r\n\t\t\t\tend\r\n\t\t\tend\r\n\t\t\treturn false\r\n\t\tend\r\n\t\tinnerUpdate(\"M\", \"Move\")\r\n\t\tinnerUpdate(\"APL\", \"APL\")\r\n\t\tinnerUpdate(\"SV\", \"Save\")\r\n\t\tinnerUpdate(\"W\", \"Wounds\")\r\n\r\n\t\tlocal weapons = ParseWeapons(desc)\r\n\t\tlocal newWeapons = {}\r\n\t\tfor i, weaponLines in ipairs(weapons) do\r\n\t\t\tlocal newWeapon = {\r\n\t\t\t\tstats = {},\r\n\t\t\t}\r\n\t\t\tnewWeapon.name = weaponLines[1]:gsub(\"^%([MR]%) \", \"\")\r\n\r\n\t\t\tlocal weaponStats = weaponLines[2]\r\n\t\t\tnewWeapon.stats[\"ATK\"] = weaponStats:match(\"%[84E680%]A%[%-%] (%d+)\")\r\n\t\t\tnewWeapon.stats[\"HIT\"] = weaponStats:match(\"%[84E680%]WS/BS%[%-%] (%d+%+)\")\r\n\t\t\tnewWeapon.stats[\"DMG\"] = weaponStats:match(\"%[84E680%]D%[%-%] (%d+/%d+)\")\r\n\r\n\t\t\tlocal specialRules = \"-\"\r\n\t\t\tif #weaponLines == 3 then\r\n\t\t\t\tspecialRules = weaponLines[3]:match(\": (.*)\") or \"-\"\r\n\t\t\tend\r\n\t\t\tnewWeapon.stats[\"WR\"] = specialRules\r\n\t\t\ttable.insert(newWeapons, newWeapon)\r\n\t\tend\r\n\t\tstate.info.weapons = newWeapons\r\n\r\n\t\tobject.setDescription(UpdateDescription(state, ParseExtra(desc)))\r\n\r\n\t\tobject.script_state = JSON.encode(state)\r\n\tend\r\nend\r\n\r\nfunction subsymbol(s, tbl)\r\n\tlocal st = s\r\n\tfor o, sub in pairs(tbl) do\r\n\t\tst = string.gsub(st, o, sub)\r\n\tend\r\n\treturn st\r\nend\r\n\r\nfunction UpdateDescription(state, extra)\r\n\tlocal desc = {}\r\n\r\n\tlocal catex = function(cat, title, func, sep)\r\n\t\tif next(cat) ~= nil then\r\n\t\t\ttable.insert(desc, title)\r\n\t\t\tlocal ot = {}\r\n\t\t\tfor k, v in pairs(cat) do\r\n\t\t\t\ttable.insert(ot, func(k, v))\r\n\t\t\tend\r\n\t\t\ttable.insert(desc, table.concat(ot, sep or \"\\n\"))\r\n\t\tend\r\n\tend\r\n\r\n\ttable.insert(\r\n\t\tdesc,\r\n\t\tstring.format(\r\n\t\t\t'[D36B3E][[84E680]APL[-] [ffffff]%s[-]] [[84E680]MOVE[-] [ffffff]%s\"[-]]\\n[[84E680]SAVE[-] [ffffff]%s+[-]] [[84E680]WOUNDS[-] [ffffff]%s[-]][-]',\r\n\t\t\tstate.stats.APL or \"X\",\r\n\t\t\tstate.stats.Move or \"X\",\r\n\t\t\tstate.stats.Save or \"X\",\r\n\t\t\tstate.stats.Wounds or \"X\"\r\n\t\t)\r\n\t)\r\n\ttable.insert(desc, \"[C5C5C5]\" .. table.concat(state.info.categories, \", \") .. \"[-]\")\r\n\r\n\tif #state.info.weapons ~= 0 then\r\n\t\tcatex(state.info.weapons, \"[31B32B]Weapons[-]\", function(k, v)\r\n\t\t\t-- log(v)\r\n\t\t\tlocal vs = v.stats\r\n\t\t\tlocal ATK = vs[\"ATK\"] or \"-\"\r\n\t\t\tlocal HIT = vs[\"HIT\"] or \"-\"\r\n\t\t\tlocal DMG = vs[\"DMG\"] or \"-/-\"\r\n\t\t\tlocal WR = vs[\"WR\"]\r\n\r\n\t\t\tlocal ostr = string.format(\r\n\t\t\t\t\"%s\\n[84E680]ATK[-] %s [84E680]HIT[-] %s [84E680]DMG[-] %s\",\r\n\t\t\t\tv.name or \"X\",\r\n\t\t\t\tATK or \"X\",\r\n\t\t\t\tHIT or \"X\",\r\n\t\t\t\tDMG or \"X\"\r\n\t\t\t)\r\n\r\n\t\t\tif WR and WR ~= \"-\" then\r\n\t\t\t\tostr = ostr .. string.format(\"\\n[84E680]WR[-]: %s\", WR)\r\n\t\t\tend\r\n\r\n\t\t\treturn ostr\r\n\t\tend, \"\\n\\n\")\r\n\tend\r\n\r\n\ttable.insert(desc, \"---\")\r\n\r\n\tfor _, extraLine in ipairs(extra) do\r\n\t\ttable.insert(desc, extraLine)\r\n\tend\r\n\r\n\treturn table.concat(desc, \"\\n\")\r\nend\r\n",
+      "LuaScriptState": "",
+      "XmlUI": "<Button position=\"520 670 -60\"   rotation=\"0 0 -90\"  width=\"300\" height=\"50\" color=\"#00EB03FF\" textColor=\"#000000\" fontSize=\"30\"  fontStyle=\"Bold\" onClick=\"ExtendUI\"> Extend KT UI </Button>\r\n<Button position=\"520 -670 -60\"  rotation=\"0 0 -90\"  width=\"300\" height=\"50\" color=\"#FCEB03FF\" textColor=\"#000000\" fontSize=\"30\"  fontStyle=\"BoldAndItalic\" onClick=\"KTUI_ResetScripts\"> Fix Display Issues </Button>\r\n<Button position=\"-780 350 -60\"  rotation=\"0 0 -90\"  width=\"300\" height=\"50\" fontSize=\"30\" fontStyle=\"Bold\" onClick=\"SaveAllPositions\"> Save Positions </Button>\r\n<Button position=\"-720 350 -60\"  rotation=\"0 0 -90\"  width=\"300\" height=\"50\" fontSize=\"30\" fontStyle=\"BoldAndItalic\" onClick=\"LoadAllPositions\"> Load Positions </Button>\r\n<Button position=\"-780 670 -60\"  rotation=\"0 0 -90\"  width=\"300\" height=\"50\" fontSize=\"30\" fontStyle=\"Bold\" onClick=\"ReadyAllOperatives\"> Ready Operatives </Button>\r\n<Button position=\"-780 -670 -60\" rotation=\"0 0 -90\"  width=\"300\" height=\"50\" color=\"#e98c4c\" fontSize=\"30\" fontStyle=\"Bold\" onClick=\"CleanAllOperatives\"> Remove All Tokens </Button>\r\n<Button position=\"-780 -350 -60\" rotation=\"0 0 -90\"  width=\"300\" height=\"50\" color=\"#e98c4c\" fontSize=\"30\" fontStyle=\"Bold\" onClick=\"UpdateOldModels\"> Update Old Scripts </Button>"
+    }
+  ]
+}
