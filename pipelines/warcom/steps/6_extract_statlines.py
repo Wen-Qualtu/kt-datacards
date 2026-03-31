@@ -1,5 +1,5 @@
 """
-Step 7: Extract Statlines from Datacards
+Step 6: Extract Statlines from Datacards
 
 Extracts operative statistics and weapon profiles from datacard PDFs to generate
 BattleScribe-compatible roster.json files for TTS integration.
@@ -8,9 +8,9 @@ Input:  layers/warcom/extracted/{team}/cards/*.pdf (landscape datacards only)
 Output: output/{team}/statlines/roster.json
 
 Usage:
-    python pipelines/warcom/steps/7_extract_statlines.py
-    python pipelines/warcom/steps/7_extract_statlines.py --teams battleclade kommandos
-    python pipelines/warcom/steps/7_extract_statlines.py --force
+    python pipelines/warcom/steps/6_extract_statlines.py
+    python pipelines/warcom/steps/6_extract_statlines.py --teams battleclade kommandos
+    python pipelines/warcom/steps/6_extract_statlines.py --force
 """
 
 import argparse
@@ -281,7 +281,7 @@ def run(
         Dictionary with processing results
     """
     logger.info("=" * 70)
-    logger.info("Step 7: Extract Statlines from Datacards")
+    logger.info("Step 6: Extract Statlines from Datacards")
     logger.info("=" * 70)
     logger.info("Extracted dir: %s", extracted_dir)
     logger.info("Output dir: %s", output_dir)
