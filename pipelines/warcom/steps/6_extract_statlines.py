@@ -62,9 +62,10 @@ def extract_statlines_from_pdf(pdf_path: Path) -> Dict[str, Any]:
         weapons = _extract_weapons_from_blocks(blocks, page_width, page_height,
                                                 page_height * 0.15, page_height * 0.60)
         
-        # Unique Actions: Lower region (y > 50%, abilities section)
+        # Unique Actions: Lower region (y > 35%, after weapons/abilities section)
+        # Actions can appear as early as 35-40% page height on some cards
         unique_actions = _extract_unique_actions_from_blocks(blocks, page_width, page_height,
-                                                              page_height * 0.50)
+                                                              page_height * 0.35)
         
         doc.close()
         

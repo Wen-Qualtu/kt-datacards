@@ -1,6 +1,6 @@
 {
   "team": "kommandos",
-  "generated": "2026-03-31T20:23:26.141018+00:00",
+  "generated": "2026-03-31T20:30:22.734865+00:00",
   "operative_count": 9,
   "operatives": [
     {
@@ -34,8 +34,8 @@
       ],
       "unique_actions": [
         {
-          "name": "GET IT DUN! (1AP)",
-          "description": "SUPPORT. Select one other friendly KOMMANDO  operative (excluding BOMB SQUIG) visible to and within 6\" of this operative. Until the end of that operative’s next activation, add 1 to its APL stat. This operative cannot perform this action while within control range of an enemy operative, or while counteracting."
+          "name": "Krumpin’ Time",
+          "description": "This operative can perform two Fight actions during its activation. GET IT DUN!"
         }
       ]
     },
@@ -83,6 +83,12 @@
           "hit": "4+",
           "damage": "5/5",
           "special_rules": "Brutal, Severe, Shock"
+        }
+      ],
+      "unique_actions": [
+        {
+          "name": "BREACH (1AP)",
+          "description": "Place one of your Breach markers within this operative’s control range as close as possible to a terrain feature within control range of it. Whenever an operative is within 1\" of that marker, it treats parts of that terrain feature that are no more than 1\" thick as Accessible terrain. This operative can perform this action during the Charge or Reposition action, and it can do so for 1 less AP during those actions. Any remaining move distance can be used after it does so. This operative cannot perform this action while within control range of an enemy operative, or if a terrain feature isn’t within its control range."
         }
       ]
     },
@@ -137,6 +143,12 @@
           "hit": "3+",
           "damage": "3/4"
         }
+      ],
+      "unique_actions": [
+        {
+          "name": "I Got a Plan, Ladz",
+          "description": "Once during each of this operative’s activations, it can perform the Pick Up Marker, Place Marker or a mission action for 1 less AP. LISTEN IN"
+        }
       ]
     },
     {
@@ -165,6 +177,12 @@
           "attacks": "3",
           "hit": "3+",
           "damage": "3/4"
+        }
+      ],
+      "unique_actions": [
+        {
+          "name": "DAKKA DASH (1AP)",
+          "description": "Perform a free Dash action and a free Shoot action with this operative in any order. You can only select a dakka shoota for that Shoot action. This operative cannot perform this action while it has a Conceal order, or while within control range of an enemy operative."
         }
       ]
     },

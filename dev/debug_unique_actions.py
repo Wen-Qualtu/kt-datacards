@@ -2,11 +2,11 @@
 import fitz
 from pathlib import Path
 
-# Test all kommando cards
-card_dir = Path("layers/warcom/extracted/kommandos/cards")
-card_files = sorted(card_dir.glob("*_landscape.pdf"))
+# Test farstalker-kinband cards (including portrait/back sides)
+card_dir = Path("layers/warcom/extracted/farstalker-kinband/cards")
+card_files = sorted(card_dir.glob("*.pdf"))
 
-print(f"Testing {len(card_files)} cards\n")
+print(f"Testing {len(card_files)} farstalker-kinband cards (landscape + portrait)\n")
 
 for pdf_path in card_files:
     doc = fitz.open(pdf_path)

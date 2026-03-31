@@ -1,6 +1,6 @@
 {
   "team": "murderwings",
-  "generated": "2026-03-31T20:23:27.229824+00:00",
+  "generated": "2026-03-31T20:30:23.839446+00:00",
   "operative_count": 9,
   "operatives": [
     {
@@ -52,6 +52,16 @@
           "hit": "3+",
           "damage": "4/6",
           "special_rules": "Lethal 5+"
+        }
+      ],
+      "unique_actions": [
+        {
+          "name": "Higher",
+          "description": "Resolve the rule, then this operative gains 1 Damnation point."
+        },
+        {
+          "name": "Equal",
+          "description": "Do not resolve the rule. •  Less: Inflict damage on this operative equal to its number of Damnation points and do not resolve the rule. If this operative has 6 Damnation points, resolve the rule without rolling. Note that you cannot make an attempt more than once per action, regardless of the D6 result."
         }
       ]
     },
@@ -127,6 +137,12 @@
           "hit": "3+",
           "damage": "4/5",
           "special_rules": "Rending"
+        }
+      ],
+      "unique_actions": [
+        {
+          "name": "Frenzied Attack",
+          "description": "If this operative is incapacitated during the Fight action, you can strike the enemy operative in that sequence with one of your unresolved successes before this operative is removed from the killzone."
         }
       ]
     },
