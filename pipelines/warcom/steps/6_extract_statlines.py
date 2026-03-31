@@ -62,11 +62,11 @@ def extract_statlines_from_pdf(pdf_path: Path) -> Dict[str, Any]:
         weapons = _extract_weapons_from_blocks(blocks, page_width, page_height,
                                                 page_height * 0.15, page_height * 0.60)
         
-        # Unique Actions: After stats box (y > 15%)
-        # Actions appear at 35-40% on front cards with weapons
-        # Actions appear at 15-20% on back cards without weapons (just stats at top)
-        unique_actions = _extract_unique_actions_from_blocks(blocks, page_width, page_height,
-                                                              page_height * 0.15)
+        # Rules: After stats box (y > 15%)
+        # Rules/actions appear at 35-40% on front cards with weapons
+        # Rules/actions appear at 15-20% on back cards without weapons (just stats at top)
+        rules = _extract_rules_from_blocks(blocks, page_width, page_height,
+                                           page_height * 0.15)
         
         doc.close()
         
@@ -80,8 +80,8 @@ def extract_statlines_from_pdf(pdf_path: Path) -> Dict[str, Any]:
         if weapons:
             operative["weapons"] = weapons
         
-        if unique_actions:
-            operative["unique_actions"] = unique_actions
+        if rules:
+            operative["rules"] = rules
         
         return operative
         
@@ -407,18 +407,18 @@ def _parse_weapon_block(block_text: str) -> Optional[Dict[str, Any]]:
 
 
 
-def _extract_unique_actions_from_blocks(blocks: List[Dict], page_width: float, page_height: float,
-                                         region_y1: float) -> Optional[List[Dict[str, str]]]:
-    """Extract Unique Actions from ability blocks.
+def _extract_rules_from_blocks(blocks: List[Dict], page_width: float, page_height: float,
+                                region_y1: float) -> Optional[List[Dict[str, str]]]:
+    """Extract rules and unique actions from ability blocks.
     
-    Unique Actions have two formats:
+    Rules and unique actions have two formats:
     1. Colon format: "Ability Name: Description text..."
     2. Warhammer format (no colon):
        - Bold line: "ACTION NAME"  
        - Bold line: "XAP" (cost)
        - Regular lines: Description text
     """
-    unique_actions = []
+    rules = []
     
     # Collect all text blocks in abilities region (below weapons, y > 50%)
     ability_text = []
@@ -486,7 +486,7 @@ def _extract_unique_actions_from_blocks(blocks: List[Dict], page_width: float, p
                 if ua_name and ua_name.upper() not in ['NAME', 'ATK', 'HIT', 'DMG', 'WR', 
                                                          'APL', 'WOUNDS', 'SAVE', 'MOVE',
                                                          'UNIQUE ACTIONS', 'ABILITIES', 'NOTES']:
-                    unique_actions.append({
+                    rules.append({
                         "name": ua_name,
                         "description": ua_desc.strip()
                     })
@@ -535,7 +535,7 @@ def _extract_unique_actions_from_blocks(blocks: List[Dict], page_width: float, p
                                                              'UNIQUE ACTIONS', 'ABILITIES', 'NOTES']:
                         # Combine name with cost
                         full_name = f"{ua_name} ({cost})" if cost != "0AP" else ua_name
-                        unique_actions.append({
+                        rules.append({
                             "name": full_name,
                             "description": ua_desc.strip()
                         })
@@ -545,7 +545,7 @@ def _extract_unique_actions_from_blocks(blocks: List[Dict], page_width: float, p
         
         i += 1
     
-    return unique_actions if unique_actions else None
+    return rules if rules else None
 
 
 def extract_statlines_from_team(team_dir: Path, output_dir: Path, force: bool = False) -> Optional[Dict]:
@@ -617,11 +617,11 @@ def extract_statlines_from_team(team_dir: Path, output_dir: Path, force: bool = 
                 back_pdf = pdf_files[idx + 1]
                 back_data = extract_statlines_from_pdf(back_pdf)
                 
-                # Merge unique actions from back side (weapons are front-only)
-                if back_data and back_data.get("unique_actions"):
-                    if not operative.get("unique_actions"):
-                        operative["unique_actions"] = []
-                    operative["unique_actions"].extend(back_data["unique_actions"])
+                # Merge rules from back side (weapons are front-only)
+                if back_data and back_data.get("rules"):
+                    if not operative.get("rules"):
+                        operative["rules"] = []
+                    operative["rules"].extend(back_data["rules"])
                 
                 # Skip next PDF since we just processed it
                 skip_next = 1
