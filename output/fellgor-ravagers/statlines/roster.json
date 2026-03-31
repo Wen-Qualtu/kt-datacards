@@ -1,6 +1,6 @@
 {
   "team": "fellgor-ravagers",
-  "generated": "2026-03-31T20:30:17.470519+00:00",
+  "generated": "2026-03-31T20:37:49.097629+00:00",
   "operative_count": 11,
   "operatives": [
     {
@@ -98,6 +98,12 @@
           "hit": "3+",
           "damage": "4/5",
           "special_rules": "Ceaseless"
+        }
+      ],
+      "unique_actions": [
+        {
+          "name": "CLEAVER FLURRY (2AP)",
+          "description": "Perform a free Reposition action with this operative. During that action, it can move an additional 2\", and can move within control range of enemy operatives (it cannot begin or end the move there). Inflict D3+1 damage on each enemy operative it moved within control range of (roll separately for each after it’s moved, in the order it moved within control range of them). This operative cannot perform this action while it has a Conceal order. FELLGOR RAVAGER , CHAOS, FLUXBRAY"
         }
       ]
     },
@@ -218,6 +224,10 @@
         {
           "name": "Berserker",
           "description": "This operative cannot perform the Shoot action (other than Guard, but cannot then perform a free Shoot action during the interruption). You must spend 1 additional AP for this operative to perform the Pick Up Marker and mission actions (excluding Operate Hatch)."
+        },
+        {
+          "name": "Savage",
+          "description": "The first time this operative performs the Fight action during each of its activations, if it isn’t incapacitated, it can immediately perform a free Fight action afterwards (you don't have to select the same enemy operative to fight against). This takes precedence over action restrictions, and you cannot use the Ruthless Rampage firefight ploy between those two Fight actions."
         }
       ]
     },
@@ -255,6 +265,10 @@
         {
           "name": "APOPLECTIC REJUVENATION (1AP)",
           "description": "Select one friendly FELLGOR RAVAGER  operative that doesn’t have one of your Frenzy tokens and is visible to and within 6\" of this operative. That friendly operative regains up to 2D3 lost wounds; if that operative has incapacitated an enemy operative while fighting or retaliating during the battle, it regains up to 6 lost wounds instead. This operative cannot perform this action while within control range of an enemy operative. FELLGOR RAVAGER , CHAOS, PSYKER, SHAMAN"
+        },
+        {
+          "name": "MANTLE OF DARKNESS (1AP)",
+          "description": "PSYCHIC. Until the start of this operative’s next activation or until it’s incapacitated (whichever comes first), whenever a friendly FELLGOR RAVAGER  operative is visible to and within 3\" of this operative, has a Conceal order and is in cover, that friendly operative cannot be selected as a valid target, taking precedence over all other rules (e.g. Seek, Vantage terrain) except being within 2\". This operative cannot perform this action while within control range of an enemy operative."
         }
       ]
     },
@@ -295,6 +309,12 @@
           "hit": "4+",
           "damage": "5/5",
           "special_rules": "Brutal, Vicious Blows*"
+        }
+      ],
+      "unique_actions": [
+        {
+          "name": "SWEEPING BLOW (1AP)",
+          "description": "Inflict D3+1 damage on each other operative visible to and within 2\" of this operative. This operative cannot perform this action while it has a Conceal order. FELLGOR RAVAGER , CHAOS, VANDAL"
         }
       ]
     },

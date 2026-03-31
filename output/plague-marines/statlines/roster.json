@@ -1,6 +1,6 @@
 {
   "team": "plague-marines",
-  "generated": "2026-03-31T20:30:26.059944+00:00",
+  "generated": "2026-03-31T20:37:56.297579+00:00",
   "operative_count": 7,
   "operatives": [
     {
@@ -70,6 +70,12 @@
           "hit": "3+",
           "damage": "4/5",
           "special_rules": "Brutal, Severe, Shock, Poison*"
+        }
+      ],
+      "unique_actions": [
+        {
+          "name": "FLAIL (1AP)",
+          "description": "Inflict D3+2 damage on each other operative that’s both visible to and within 2\" of this operative. Roll separately for each: if it’s an enemy operative, if the D3 result is a 3, that enemy operative also gains one of your Poison tokens (if it doesn’t already have one). For the purposes of action restrictions and the Astartes faction rule, this action is treated as a Fight action. This operative cannot perform this action while it has a Conceal order."
         }
       ]
     },
@@ -148,6 +154,16 @@
           "hit": "3+",
           "damage": "3/4",
           "special_rules": "PSYCHIC, Severe, Shock, Stun, Poison*"
+        }
+      ],
+      "unique_actions": [
+        {
+          "name": "POISONOUS MIASMA (1AP)",
+          "description": "PSYCHIC. Select one enemy operative visible to and within 7\" of this operative, or one enemy operative that’s a valid target for this operative. That enemy operative gains one of your Poison tokens (if it doesn’t already have one). If it already has one, inflict 3 damage on that enemy operative instead. This operative cannot perform this action while within control range of an enemy operative."
+        },
+        {
+          "name": "PUTRESCENT VITALITY (1AP)",
+          "description": "PSYCHIC. Select one friendly operative visible to and within 3\" of this operative, then roll 2D6: if the result is 7, the selected operative regains 7 lost wounds; otherwise, the selected operative regains lost wounds equal to the highest D6. This operative cannot perform this action while within control range of an enemy operative, or more than once per turning point."
         }
       ]
     },

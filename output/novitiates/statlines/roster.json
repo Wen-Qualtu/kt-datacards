@@ -1,6 +1,6 @@
 {
   "team": "novitiates",
-  "generated": "2026-03-31T20:30:24.635461+00:00",
+  "generated": "2026-03-31T20:37:55.001532+00:00",
   "operative_count": 12,
   "operatives": [
     {
@@ -111,6 +111,10 @@
         {
           "name": "STIRRING RHETORIC (1AP)",
           "description": "SUPPORT. Select one other friendly NOVITIATE  operative visible to and within 6\" of this operative, or within 6\" of your Auto-broadcaster marker. Until the end of that operative’s next activation, add 1 to its APL stat (to a maximum of 3 after all APL stat changes have been totalled). This operative cannot perform this action while within control range of an enemy operative. NOVITIATE , IMPERIUM, ADEPTA SORORITAS, DIALOGUS"
+        },
+        {
+          "name": "AUTO-BROADCASTER",
+          "description": "If your Auto-broadcaster marker isn’t in the killzone, place it within 8\" horizontally of this operative; otherwise, move your Auto- broadcaster marker up to 8\" horizontally. If this operative is removed from the killzone, remove your Auto-broadcaster marker from the killzone. Whenever an enemy operative within 3\" of your Auto-broadcaster marker is shooting, fighting or retaliating, your opponent cannot re-roll their attack dice. This operative cannot perform this action while within control range of an enemy operative."
         }
       ]
     },
@@ -195,6 +199,10 @@
         {
           "name": "Medic!",
           "description": "The first time during each turning point that another friendly NOVITIATE  operative would be incapacitated while visible to and within 3\" of this operative, you can use this rule, providing neither this nor that operative is within control range of an enemy operative. If you do, that friendly operative isn’t incapacitated, has 1 wound remaining and cannot be incapacitated for the remainder of the action. After that action, that friendly operative can immediately perform a free Dash action, but must end that move within this operative’s control range. Subtract 1 from this and that operative’s APL stats until the end of their next activations respectively, and if this rule was used during that friendly operative’s activation, that activation ends. You cannot use this rule if this operative is incapacitated, or if it’s a Shoot action and this operative would be a primary or secondary target."
+        },
+        {
+          "name": "CHIRURGEON’S TOOLS (1AP)",
+          "description": "Select one friendly NOVITIATE  operative within this operative’s control range to regain up to 2D3 lost wounds. It cannot be an operative that the Medic! rule was used on during this turning point. This operative cannot perform this action while within control range of an enemy operative."
         }
       ]
     },
@@ -277,6 +285,12 @@
           "hit": "4+",
           "damage": "5/5",
           "special_rules": "Brutal, Severe"
+        }
+      ],
+      "unique_actions": [
+        {
+          "name": "Glorious Hymnal",
+          "description": "SUPPORT. Whenever a friendly NOVITIATE  operative is within 3\" of this operative, that friendly operative’s weapons have the Severe weapon rule."
         }
       ]
     },

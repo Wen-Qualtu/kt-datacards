@@ -62,10 +62,11 @@ def extract_statlines_from_pdf(pdf_path: Path) -> Dict[str, Any]:
         weapons = _extract_weapons_from_blocks(blocks, page_width, page_height,
                                                 page_height * 0.15, page_height * 0.60)
         
-        # Unique Actions: Lower region (y > 35%, after weapons/abilities section)
-        # Actions can appear as early as 35-40% page height on some cards
+        # Unique Actions: After stats box (y > 15%)
+        # Actions appear at 35-40% on front cards with weapons
+        # Actions appear at 15-20% on back cards without weapons (just stats at top)
         unique_actions = _extract_unique_actions_from_blocks(blocks, page_width, page_height,
-                                                              page_height * 0.35)
+                                                              page_height * 0.15)
         
         doc.close()
         
@@ -483,6 +484,7 @@ def _extract_unique_actions_from_blocks(blocks: List[Dict], page_width: float, p
                 
                 # Skip common headers that aren't UAs
                 if ua_name and ua_name.upper() not in ['NAME', 'ATK', 'HIT', 'DMG', 'WR', 
+                                                         'APL', 'WOUNDS', 'SAVE', 'MOVE',
                                                          'UNIQUE ACTIONS', 'ABILITIES', 'NOTES']:
                     unique_actions.append({
                         "name": ua_name,
@@ -529,6 +531,7 @@ def _extract_unique_actions_from_blocks(blocks: List[Dict], page_width: float, p
                     
                     # Skip common headers
                     if ua_name and ua_name.upper() not in ['NAME', 'ATK', 'HIT', 'DMG', 'WR', 
+                                                             'APL', 'WOUNDS', 'SAVE', 'MOVE',
                                                              'UNIQUE ACTIONS', 'ABILITIES', 'NOTES']:
                         # Combine name with cost
                         full_name = f"{ua_name} ({cost})" if cost != "0AP" else ua_name

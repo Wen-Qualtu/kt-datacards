@@ -1,6 +1,6 @@
 {
   "team": "exaction-squad",
-  "generated": "2026-03-31T20:30:16.587510+00:00",
+  "generated": "2026-03-31T20:37:48.335991+00:00",
   "operative_count": 12,
   "operatives": [
     {
@@ -37,6 +37,12 @@
           "hit": "3+",
           "damage": "2/3"
         }
+      ],
+      "unique_actions": [
+        {
+          "name": "DEPLOY NUNCIO-AQUILA",
+          "description": "If your Nuncio-aquila marker isn’t in the killzone, place it within 6\" horizontally of this operative; otherwise, move your Nuncio-aquila marker up to 6\" horizontally. If this operative is removed from the killzone, remove your Nuncio-aquila marker from the killzone. This operative cannot perform this action while within control range of an enemy operative."
+        }
       ]
     },
     {
@@ -71,6 +77,10 @@
         {
           "name": "Medic!",
           "description": "The first time during each turning point that another friendly EXACTION SQUAD  operative would be incapacitated while visible to and within 3\" of this operative, you can use this rule, providing neither this nor that operative is within control range of an enemy operative. If you do, that friendly operative isn’t incapacitated, has 1 wound remaining and cannot be incapacitated for the remainder of the action. After that action, that friendly operative can immediately perform a free Dash action, but must end that move within this operative’s control range. Subtract 1 from this and that operative’s APL stats until the end of their next activations respectively, and if this rule was used during that friendly operative’s activation, that activation ends. You cannot use this rule if this operative is incapacitated, or if it’s a Shoot action and this operative would be a primary or secondary target."
+        },
+        {
+          "name": "MEDIKIT (1AP)",
+          "description": "Select one friendly EXACTION SQUAD  operative within this operative’s control range to regain up to 2D3 lost wounds. It cannot be an operative that the Medic! rule was used on during this turning point. This operative cannot perform this action while within control range of an enemy operative."
         }
       ]
     },
@@ -117,6 +127,10 @@
         {
           "name": "CYBER-MASTIFF operative to have for the battle",
           "description": "•  Aggressive: Its melee weapons have the Relentless weapon rule. •  Swift: Add 2\" to its Move stat. •  Defensive: Improve its Save stat by 1."
+        },
+        {
+          "name": "R-VR COMMAND",
+          "description": "Select one friendly EXACTION SQUAD  R-VR CYBER-MASTIFF operative and change one of its attack patterns."
         }
       ]
     },
@@ -134,6 +148,12 @@
           "hit": "4+",
           "damage": "3/5",
           "special_rules": "Lethal 5+"
+        }
+      ],
+      "unique_actions": [
+        {
+          "name": "APPREHEND",
+          "description": "Select one enemy operative within this operative’s control range. Until that enemy operative is no longer within this operative’s control range, or until this operative performs this action again (whichever comes first), worsen the Hit stat of that enemy operative’s weapons by 1 (this isn’t cumulative with being injured); in addition, that enemy operative cannot perform the Fall Back action. This operative cannot perform this action unless an enemy operative is within its control range. EXACTION SQUAD , IMPERIUM, ADEPTUS ARBITES, R-VR CYBER-MASTIFF"
         }
       ]
     },

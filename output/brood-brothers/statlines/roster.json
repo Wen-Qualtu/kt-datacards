@@ -1,6 +1,6 @@
 {
   "team": "brood-brothers",
-  "generated": "2026-03-31T20:30:12.949619+00:00",
+  "generated": "2026-03-31T20:37:45.236873+00:00",
   "operative_count": 15,
   "operatives": [
     {
@@ -74,6 +74,12 @@
           "hit": "4+",
           "damage": "4/4",
           "special_rules": "Shock"
+        }
+      ],
+      "unique_actions": [
+        {
+          "name": "Psiren Caster",
+          "description": "Whenever a friendly BROOD BROTHER operative is shooting against, fighting against or retaliating against an enemy operative within 6\" of this operative, you can re-roll one of your attack dice."
         }
       ]
     },
@@ -160,6 +166,12 @@
           "damage": "3/4",
           "special_rules": "Ceaseless, Lethal 5+"
         }
+      ],
+      "unique_actions": [
+        {
+          "name": "Assassin",
+          "description": "This operative can perform the Charge action while it has a Conceal order. Counterattack: Whenever this operative is fighting or retaliating, whenever your opponent resolves a normal success, inflict 1 damage on the enemy operative in that sequence."
+        }
       ]
     },
     {
@@ -194,6 +206,10 @@
         {
           "name": "Medic!",
           "description": "The first time during each turning point that another friendly BROOD BROTHER  operative (excluding PATRIARCH) would be incapacitated while visible to and within 3\" of this operative, you can use this rule, providing neither this nor that operative is within control range of an enemy operative. If you do, that friendly operative isn’t incapacitated, has 1 wound remaining and cannot be incapacitated for the remainder of the action. After that action, that friendly operative can immediately perform a free Dash action, but must end that move within this operative’s control range. Subtract 1 from this and that operative’s APL stats until the end of their next activations respectively, and if this rule was used during that friendly operative’s activation, that activation ends. You cannot use this rule if this operative is incapacitated, or if it’s a Shoot action and this operative would be a primary or secondary target."
+        },
+        {
+          "name": "MEDIKIT (1AP)",
+          "description": "Select one friendly BROOD BROTHER  operative (excluding PATRIARCH) within this operative’s control range to regain up to 2D3 lost wounds. It cannot be an operative that the Medic! rule was used on during this turning point. This operative cannot perform this action while within control range of an enemy operative."
         }
       ]
     },
@@ -217,6 +233,12 @@
           "attacks": "3",
           "hit": "4+",
           "damage": "2/3"
+        }
+      ],
+      "unique_actions": [
+        {
+          "name": "EXPLOSIVES (1AP)",
+          "description": "The first time this operative performs this action during the battle, place your Explosives marker within its control range. The second time this operative performs this action during the battle, inflict 2D6 damage on each operative within 2\" of that marker (roll separately for each) unless Heavy terrain is wholly intervening between that operative and that marker. This operative cannot perform this action more than twice per battle, while within control range of an enemy operative, or during an activation in which it performed the Charge, Dash or Fall Back action (or vice versa)."
         }
       ]
     },
@@ -333,6 +355,10 @@
         {
           "name": "SIGNAL (1AP)",
           "description": "SUPPORT. Select one other friendly BROOD BROTHER  BROODGUARD operative visible to and within 6\" of this operative. Until the end of that operative’s next activation, add 1 to its APL stat. This operative cannot perform this action while within control range of an enemy operative."
+        },
+        {
+          "name": "JAM (1/2AP)",
+          "description": "Select one ready enemy operative that’s a valid target for this operative, or visible to this operative instead if you spend 1 additional AP. Roll one D6. Until the end of the turning point, that enemy operative cannot be activated or perform actions until it’s the last enemy operative to be activated, or until your opponent has activated a number of enemy operatives after this action equal to the result of the D6 (whichever comes first). This operative cannot perform this action while within control range of an enemy operative."
         }
       ]
     },
@@ -374,6 +400,14 @@
         {
           "name": "BROTHER  operatives to have until the end of the turning point or until this operative is incapacitated (whichever comes first)",
           "description": "•  Whenever an operative is shooting a friendly BROOD BROTHER  operative, ignore the Piercing weapon rule. •  You can ignore any changes to friendly BROOD BROTHER  operatives’ stats from being injured (including their weapons’ stats). •  You can ignore any changes to the APL stat of friendly BROOD BROTHER  operatives."
+        },
+        {
+          "name": "TELEPATHIC OVERLOAD (1AP)",
+          "description": "PSYCHIC. Select one enemy operative visible to this operative. Until the end of that operative’s next activation, subtract 1 from its APL stat. This operative cannot perform this action while within control range of an enemy operative."
+        },
+        {
+          "name": "MENTAL ONSLAUGHT (1AP)",
+          "description": "PSYCHIC. Select one enemy operative that’s a valid target for this operative. Inflict 2 damage on it, or 4 damage instead if it’s within 6\" of this operative. Then roll one D6: if the result is higher than that enemy operative’s APL stat, inflict an additional 2 damage on it, or 4 damage instead if it’s within 6\" of this operative. Keep rolling one D6 in this manner until you roll equal to or less than that enemy operative’s APL stat, until it’s incapacitated, or until you inflict 8 damage on it during this action (whichever comes first). This operative cannot perform this action while within control range of an enemy operative."
         }
       ]
     },
@@ -391,6 +425,16 @@
           "hit": "3+",
           "damage": "5/6",
           "special_rules": "Relentless, Rending"
+        }
+      ],
+      "unique_actions": [
+        {
+          "name": "INTO SHADOW (1AP)",
+          "description": "Change this operative’s order. This operative cannot perform this action while within control range of an enemy operative. BROOD BROTHER , TYRANID, GENESTEALER CULT, BROODCOVEN, PSYKER, LEADER, PATRIARCH"
+        },
+        {
+          "name": "MIND CONTROL (2AP)",
+          "description": "PSYCHIC. Select one enemy operative visible to and within 2\" of this operative. Both players roll one D6 and add their respective operative’s APL stat to their result. If your total is higher than your opponent’s, you can resolve this action’s second effect. Until the end of the activation, that enemy operative is a friendly operative (an enemy operative for your opponent), you can change its order, and it can immediately perform one free action. It cannot perform an action in which it moves other than Dash (in which case specify the location for your opponent to move the operative to). You can only resolve this action’s second effect once per battle. This operative cannot perform this action while within control range of an enemy operative, unless the only enemy operative it’s within control range of is selected for this action."
         }
       ]
     },

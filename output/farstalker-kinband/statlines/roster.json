@@ -1,6 +1,6 @@
 {
   "team": "farstalker-kinband",
-  "generated": "2026-03-31T20:30:17.039470+00:00",
+  "generated": "2026-03-31T20:37:48.716697+00:00",
   "operative_count": 11,
   "operatives": [
     {
@@ -110,6 +110,12 @@
           "damage": "3/5",
           "special_rules": "Ceaseless, Lethal 5+"
         }
+      ],
+      "unique_actions": [
+        {
+          "name": "Savage Assault",
+          "description": "The first time this operative performs the Fight action during each of its activations, if neither it nor the enemy operative in that sequence is incapacitated, this operative can immediately perform a free Fight action afterwards, but you cannot select any other enemy operative to fight against during that action (and only if it’s still valid to fight against). This takes precedence over action restrictions."
+        }
       ]
     },
     {
@@ -160,8 +166,12 @@
       ],
       "unique_actions": [
         {
+          "name": "Beast",
+          "description": "This operative cannot perform any actions other than Charge, Dash, Fall Back, Fight, Gather, Guard, Reposition, Pick Up Marker and Place Marker. It cannot use any weapons that aren’t on its datacard."
+        },
+        {
           "name": "Bad-tempered",
-          "description": "Whenever an enemy operative performs the Fight action, if this operative is a valid operative to fight against, you can force them to select this operative to fight against instead. Whenever an enemy operative ends the Charge action within control range of another friendly FARSTALKER KINBAND  operative within 3\" of this operative, if this operative isn’t within control range of enemy operatives, this operative can immediately perform a free Charge action (you can change its order to Engage to do so), but must end that move within control range of that enemy operative. Perform a free Dash or Reposition action with this operative. During that move, it can perform a free Pick Up Marker or Place Marker action (you can determine control during that action to do so), and any remaining move distance it had from the Dash or Reposition action can be used after it does so."
+          "description": "Whenever an enemy operative performs the Fight action, if this operative is a valid operative to fight against, you can force them to select this operative to fight against instead. Whenever an enemy operative ends the Charge action within control range of another friendly FARSTALKER KINBAND  operative within 3\" of this operative, if this operative isn’t within control range of enemy operatives, this operative can immediately perform a free Charge action (you can change its order to Engage to do so), but must end that move within control range of that enemy operative. GATHER"
         }
       ]
     },
@@ -198,6 +208,12 @@
           "attacks": "3",
           "hit": "3+",
           "damage": "3/5"
+        }
+      ],
+      "unique_actions": [
+        {
+          "name": "LONG-SIGHT (1AP)",
+          "description": "Until the start of this operative’s next activation: •  The concealed and stationary profiles of its Kroot hunting rifle have the Lethal 5+ weapon rule. •  Whenever it’s shooting with its Kroot hunting rifle, enemy operatives cannot be obscured. This operative cannot perform this action while within control range of an enemy operative."
         }
       ]
     },
@@ -292,6 +308,10 @@
         {
           "name": "MARKED FOR THE HUNT (1AP)",
           "description": "Remove your Pech’ra marker from the killzone (if any). Then place your Pech’ra marker visible to this operative, or on Vantage terrain of a terrain feature that’s visible to this operative. Whenever a friendly FARSTALKER KINBAND operative is shooting an enemy operative that has that marker within its control range, that friendly operative’s ranged weapons have the Seek Light weapon rule. At the start of this operative’s next activation or if it’s removed from the killzone (whichever comes first), remove your Pech’ra marker from the killzone. This operative cannot perform this action while within control range of an enemy operative. FARSTALKER KINBAND , T’AU EMPIRE, KROOT, TRACKER"
+        },
+        {
+          "name": "FROM THE EYE ABOVE (1AP)",
+          "description": "SUPPORT. Select one other friendly FARSTALKER KINBAND  operative visible to and within 6\" of this operative. Until the end of that operative’s next activation, add 1 to its APL stat. This operative cannot perform this action while within control range of an enemy operative."
         }
       ]
     },

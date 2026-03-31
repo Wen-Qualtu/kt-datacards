@@ -1,6 +1,6 @@
 {
   "team": "nemesis-claw",
-  "generated": "2026-03-31T20:30:24.158413+00:00",
+  "generated": "2026-03-31T20:37:54.547568+00:00",
   "operative_count": 8,
   "operatives": [
     {
@@ -56,8 +56,16 @@
       ],
       "unique_actions": [
         {
-          "name": "PREMONITION (1AP)",
-          "description": "PSYCHIC. Spend 1 of your Prescience points to gain 1CP. This operative cannot perform this action while within control range of an enemy operative, or more than once per turning point."
+          "name": "Prescience",
+          "description": "PSYCHIC. In the Ready step of each Strategy phase, you gain D3 Prescience points. At the end of each turning point, discard your Prescience points. You can spend your Prescience points in the Firefight phase as follows (you cannot use each of the following rules more than once per turning point):"
+        },
+        {
+          "name": "Foreboding",
+          "description": "PSYCHIC. Whenever it’s your turn to activate a friendly operative, you can spend 1 of your Prescience points to skip that activation."
+        },
+        {
+          "name": "Portent",
+          "description": "PSYCHIC. Whenever an attack dice inflicts Normal Dmg on this operative, you can spend 1 of your Prescience points to ignore that inflicted damage. You cannot gain or spend your Prescience points if this operative is incapacitated. PREMONITION"
         }
       ]
     },
@@ -88,6 +96,12 @@
           "hit": "3+",
           "damage": "3/5",
           "special_rules": "Terrorchem*"
+        }
+      ],
+      "unique_actions": [
+        {
+          "name": "POISON OBJECTIVE (1AP)",
+          "description": "Select one objective marker this operative controls to gain one of your Terrorchem tokens. It cannot be an objective marker within control range of an enemy operative, or one that already has one of your Terrorchem tokens. The first time that objective marker is within control range of an enemy operative that doesn’t have one of your Terrorchem tokens, that operative gains that Terrorchem token, then inflict 2D3 damage on it (if it’s during an action, at the end of that action). This operative cannot perform this action while within control range of an enemy operative."
         }
       ]
     },

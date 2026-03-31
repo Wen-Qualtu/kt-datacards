@@ -1,6 +1,6 @@
 {
   "team": "pathfinders",
-  "generated": "2026-03-31T20:30:25.347645+00:00",
+  "generated": "2026-03-31T20:37:55.567173+00:00",
   "operative_count": 16,
   "operatives": [
     {
@@ -156,6 +156,10 @@
         {
           "name": "MARKERLIGHT (1AP)",
           "description": "See the Markerlights faction rule. PATHFINDER , T'AU EMPIRE, DRONE CONTROLLER"
+        },
+        {
+          "name": "REMOTE PILOT (1AP)",
+          "description": "One friendly PATHFINDER  DRONE operative can immediately perform one free action, but it cannot move more than 2\" during that action. That action can be one that’s normally restricted by its Drone rule (this takes precedence over that rule). This operative cannot perform this action while within control range of an enemy operative. This operative can perform this action more than once during its activation, but if it does, the same DRONE operative cannot perform the same free action more than once per activation."
         }
       ]
     },
@@ -207,6 +211,14 @@
         {
           "name": "Medic!",
           "description": "The first time during each turning point that another friendly PATHFINDER  operative (excluding DRONE) would be incapacitated while visible to and within 3\" of this operative, you can use this rule, providing neither this nor that operative is within control range of an enemy operative. If you do, that friendly operative isn’t incapacitated, has 1 wound remaining and cannot be incapacitated for the remainder of the action. After that action, that friendly operative can immediately perform a free Dash action, but must end that move within this operative’s control range. Subtract 1 from this and that operative’s APL stats until the end of their next activations respectively, and if this rule was used during that friendly operative’s activation, that activation ends. You cannot use this rule if this operative is incapacitated, or if it’s a Shoot action and this operative would be a primary or secondary target."
+        },
+        {
+          "name": "MARKERLIGHT (1AP)",
+          "description": "See the Markerlights faction rule."
+        },
+        {
+          "name": "MEDIKIT (1AP)",
+          "description": "Select one friendly PATHFINDER  operative (excluding DRONE) within this operative’s control range to regain up to 2D3 lost wounds. It cannot be an operative that the Medic! rule was used on during this turning point. This operative cannot perform this action while within control range of an enemy operative."
         }
       ]
     },
@@ -397,7 +409,7 @@
       "unique_actions": [
         {
           "name": "MARKERLIGHT (1AP)",
-          "description": "See the Markerlights faction rule. •  This operative cannot perform any actions other than Charge, Dash, Fall Back, Fight, Markerlight and Reposition. It cannot use any weapons that aren’t on its datacard. •  When determining control of an objective marker, treat this operative’s APL stat as 1 lower. Note this isn’t a change to its APL stat, so any changes are cumulative with this. •  When determining what’s visible to this operative, the round disc at the top of the miniature is its head. PATHFINDER , T'AU EMPIRE, MV7 MARKER, DRONE"
+          "description": "See the Markerlights faction rule. Drone: •  This operative cannot perform any actions other than Charge, Dash, Fall Back, Fight, Markerlight and Reposition. It cannot use any weapons that aren’t on its datacard. •  When determining control of an objective marker, treat this operative’s APL stat as 1 lower. Note this isn’t a change to its APL stat, so any changes are cumulative with this. •  When determining what’s visible to this operative, the round disc at the top of the miniature is its head. PATHFINDER , T'AU EMPIRE, MV7 MARKER, DRONE"
         }
       ]
     },
@@ -414,6 +426,12 @@
           "attacks": "3",
           "hit": "5+",
           "damage": "2/3"
+        }
+      ],
+      "unique_actions": [
+        {
+          "name": "PULSE ACCELERATOR (1AP)",
+          "description": "Until the start of this operative’s next activation or until it's incapacitated (whichever comes first), whenever another friendly PATHFINDER  operative is shooting with a pulse weapon within 3\" of this operative, that weapon has the Lethal 5+ and Severe weapon rules. PATHFINDER , T'AU EMPIRE, MV31 PULSE ACCELERATOR, DRONE"
         }
       ]
     },

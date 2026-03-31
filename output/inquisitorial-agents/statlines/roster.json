@@ -1,6 +1,6 @@
 {
   "team": "inquisitorial-agents",
-  "generated": "2026-03-31T20:30:21.892774+00:00",
+  "generated": "2026-03-31T20:37:52.568908+00:00",
   "operative_count": 17,
   "operatives": [
     {
@@ -161,12 +161,8 @@
       ],
       "unique_actions": [
         {
-          "name": "Guidance",
-          "description": "PSYCHIC. Whenever the selected operative is shooting, fighting or retaliating, in the Roll Attack Dice step, you can retain one of your fails as a normal success instead of discarding it, or retain one of your normal successes as a critical success instead."
-        },
-        {
-          "name": "Protection",
-          "description": "PSYCHIC. Whenever an operative is shooting the selected operative, in the Roll Defence Dice step, you can retain one of your fails as a normal success instead of discarding it, or retain one of your normal successes as a critical success instead. This operative cannot perform this action while within control range of an enemy operative."
+          "name": "SCRY (1AP)",
+          "description": "PSYCHIC. Select one friendly INQUISITORIAL AGENT  operative within 6\" of this operative, then select one of the following effects to last until the start of this operative’s next activation, until it’s incapacitated or until it performs this action again (whichever comes first): •  Guidance: PSYCHIC. Whenever the selected operative is shooting, fighting or retaliating, in the Roll Attack Dice step, you can retain one of your fails as a normal success instead of discarding it, or retain one of your normal successes as a critical success instead. •  Protection: PSYCHIC. Whenever an operative is shooting the selected operative, in the Roll Defence Dice step, you can retain one of your fails as a normal success instead of discarding it, or retain one of your normal successes as a critical success instead. This operative cannot perform this action while within control range of an enemy operative."
         }
       ]
     },
@@ -354,6 +350,12 @@
           "damage": "4/6",
           "special_rules": "Lethal 5+"
         }
+      ],
+      "unique_actions": [
+        {
+          "name": "Psychic Null",
+          "description": "PSYCHIC ranged weapons cannot inflict damage on this operative. For the effects of PSYCHIC actions, this operative cannot be selected and is never treated as being within those actions’ required distances. Whenever an operative is within 6\" of this operative: •  That operative cannot perform PSYCHIC actions or use PSYCHIC additional rules. •  That operative cannot use PSYCHIC ranged weapons. •  PSYCHIC melee weapons have no weapon rules and cannot have Dmg stats higher than 3/4."
+        }
       ]
     },
     {
@@ -462,6 +464,10 @@
         {
           "name": "Medic!",
           "description": "The first time during each turning point that another friendly INQUISITORIAL AGENT  operative would be incapacitated while visible to and within 3\" of this operative, you can use this rule, providing neither this nor that operative is within control range of an enemy operative. If you do, that friendly operative isn’t incapacitated, has 1 wound remaining and cannot be incapacitated for the remainder of the action. After that action, that friendly operative can immediately perform a free Dash action, but must end that move within this operative’s control range. Subtract 1 from this and that operative’s APL stats until the end of their next activations respectively, and if this rule was used during that friendly operative’s activation, that activation ends. You cannot use this rule if this operative is incapacitated, or if it’s a Shoot action and this operative would be a primary or secondary target."
+        },
+        {
+          "name": "MEDIKIT (1AP)",
+          "description": "Select one friendly INQUISITORIAL AGENT  operative within this operative’s control range to regain up to 2D3 lost wounds. It cannot be an operative that the Medic! rule was used on during this turning point. This operative cannot perform this action while within control range of an enemy operative."
         }
       ]
     },
