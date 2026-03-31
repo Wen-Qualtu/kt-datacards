@@ -62,6 +62,10 @@ def extract_statlines_from_pdf(pdf_path: Path) -> Dict[str, Any]:
         weapons = _extract_weapons_from_blocks(blocks, page_width, page_height,
                                                 page_height * 0.15, page_height * 0.50)
         
+        # Unique Actions: Lower region (y > 50%, abilities section)
+        unique_actions = _extract_unique_actions_from_blocks(blocks, page_width, page_height,
+                                                              page_height * 0.50)
+        
         doc.close()
         
         # Build operative profile
@@ -73,6 +77,9 @@ def extract_statlines_from_pdf(pdf_path: Path) -> Dict[str, Any]:
         
         if weapons:
             operative["weapons"] = weapons
+        
+        if unique_actions:
+            operative["unique_actions"] = unique_actions
         
         return operative
         
@@ -121,8 +128,8 @@ def _extract_name_from_blocks(blocks: List[Dict], page_width: float, page_height
             
             text= text.strip()
             
-            # Skip if contains commas (keyword line) or is a header
-            if ',' in text or text in ['NAME', 'ATK', 'HIT', 'DMG', 'WR']:
+            # Skip if contains commas (keyword line) or is a header or notes
+            if ',' in text or text.upper() in ['NAME', 'ATK', 'HIT', 'DMG', 'WR', 'NOTES:', 'NOTES']:
                 continue
             
             # Check if all caps and reasonable length
@@ -325,6 +332,101 @@ def _parse_weapon_block(block_text: str) -> Optional[Dict[str, Any]]:
         return weapon
     
     return None
+
+
+def _extract_unique_actions_from_blocks(blocks: List[Dict], page_width: float, page_height: float,
+                                         region_y1: float) -> Optional[List[Dict[str, str]]]:
+    """Extract Unique Actions from ability blocks.
+    
+    Unique Actions format:
+    - Name in bold (sometimes with cost like "(1AP)")  
+    - May have bullet point prefix
+    - Followed by colon and description
+    - Example: "• Manifest Psychic Power (1AP): Description text..."
+    - Or: "Special Ability: Description..."
+    """
+    unique_actions = []
+    
+    # Collect all text blocks in abilities region (below weapons, y > 50%)
+    ability_text = []
+    for block in blocks:
+        if block.get("type") != 0:  # Skip non-text blocks
+            continue
+        
+        bbox = block["bbox"]
+        # Check if block is in abilities region (below weapons)
+        if bbox[1] >= region_y1:
+            # Extract text from block, preserving bold formatting info
+            for line in block.get("lines", []):
+                line_text = ""
+                is_bold = False
+                for span in line.get("spans", []):
+                    text = span.get("text", "")
+                    # Check if bold (font usually contains "Bold")
+                    font = span.get("font", "")
+                    if "Bold" in font or span.get("flags", 0) & 16:  # 16 = bold flag
+                        is_bold = True
+                    line_text += text
+                
+                line_text = line_text.strip()
+                if line_text:
+                    ability_text.append((line_text, is_bold))
+    
+    if not ability_text:
+        return None
+    
+    # Parse unique actions
+    # Pattern: Bold text (possibly with "(XAP)") followed by ":" and description
+    i = 0
+    while i < len(ability_text):
+        text, is_bold = ability_text[i]
+        
+        # Look for bold text with optional action cost
+        if is_bold:
+            # Check if this line or next has a colon (UA format)
+            has_colon = ':' in text
+            
+            if has_colon:
+                # Split at colon
+                parts = text.split(':', 1)
+                ua_name = parts[0].strip()
+                ua_desc = parts[1].strip() if len(parts) > 1 else ""
+                
+                # Continue reading description from subsequent lines
+                j = i + 1
+                while j < len(ability_text):
+                    next_text, next_bold = ability_text[j]
+                    
+                    # Stop if we hit another bold line (next UA)
+                    if next_bold and ':' in next_text:
+                        break
+                    
+                    # Stop if we hit keyword footer (all caps with commas)
+                    if ',' in next_text and next_text.isupper():
+                        break
+                    
+                    # Add to description
+                    ua_desc += " " + next_text
+                    j += 1
+                
+                # Clean up name
+                # Remove bullet points and special characters
+                ua_name = ua_name.lstrip('•■◆▪-– ')
+                
+                # Skip common headers that aren't UAs
+                if ua_name and ua_name.upper() not in ['NAME', 'ATK', 'HIT', 'DMG', 'WR', 
+                                                         'UNIQUE ACTIONS', 'ABILITIES', 'NOTES']:
+                    unique_actions.append({
+                        "name": ua_name,
+                        "description": ua_desc.strip()
+                    })
+                
+                i = j
+                continue
+        
+        i += 1
+    
+    return unique_actions if unique_actions else None
 
 
 def extract_statlines_from_team(team_dir: Path, output_dir: Path, force: bool = False) -> Optional[Dict]:
