@@ -178,7 +178,7 @@ A `.rosz` file is a ZIP archive containing a `.ros` file (BattleScribe XML forma
   - **Gap:** Need to identify weapon type
   - **Solution:** ✅ USER CONFIRMED: Weapons have ICONS (bullets=ranged, sword=melee)
   - **Implementation:** Need image recognition to detect icon type in weapon region
-  - **Fallback:** Manual weapon type config mapping if image detection too complex
+  - **Fallback:** Manual weapon type config mapping if image detection too complex. Order is always range first then melee. Never mixed. But number vary vastly and some have only Melee.
 
 - ⚠️ **Individual rule descriptions**: Each rule as separate `<rule>` element
   - **Gap:** Currently just comma-separated text
