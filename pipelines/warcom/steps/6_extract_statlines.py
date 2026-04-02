@@ -68,6 +68,9 @@ def extract_statlines_from_pdf(pdf_path: Path) -> Dict[str, Any]:
         rules = _extract_rules_from_blocks(blocks, page_width, page_height,
                                            page_height * 0.15)
         
+        # Keywords: Bottom black bar (y > 75%)
+        keywords = _extract_keywords_from_blocks(blocks, page_width, page_height)
+        
         doc.close()
         
         # Build operative profile
@@ -82,6 +85,9 @@ def extract_statlines_from_pdf(pdf_path: Path) -> Dict[str, Any]:
         
         if rules:
             operative["rules"] = rules
+        
+        if keywords:
+            operative["keywords"] = keywords
         
         return operative
         
@@ -471,9 +477,11 @@ def _extract_rules_from_blocks(blocks: List[Dict], page_width: float, page_heigh
                     if next_bold and (':' in next_text or next_text.endswith('AP')):
                         break
                     
-                    # Stop if we hit keyword footer (all caps with commas)
-                    if ',' in next_text and next_text.isupper() and len(next_text) > 30:
-                        break
+                    # Stop at keyword footer (all-caps comma-separated text)
+                    if ',' in next_text and next_text.isupper() and len(next_text) > 10:
+                        keyword_parts = [p.strip() for p in next_text.split(',')]
+                        if len(keyword_parts) >= 2 and all(len(p) > 1 for p in keyword_parts):
+                            break
                     
                     # Add to description
                     ua_desc += " " + next_text
@@ -512,9 +520,13 @@ def _extract_rules_from_blocks(blocks: List[Dict], page_width: float, page_heigh
                     while j < len(ability_text):
                         desc_text, desc_bold = ability_text[j]
                         
-                        # Stop at keyword footer (faction keywords like "KOMMANDO , ORK, BOSS NOB")
-                        if ',' in desc_text and desc_text.isupper() and any(kw in desc_text for kw in ['KOMMANDO', 'MARINE', 'GUARD', 'HUNTER', 'OPERATIVE']):
-                            break
+                        # Stop at keyword footer (all-caps comma-separated text)
+                        # Keywords are always: ALL CAPS, multiple commas, reasonable length
+                        if ',' in desc_text and desc_text.isupper() and len(desc_text) > 10:
+                            # Check if it looks like keywords (2+ comma-separated words)
+                            keyword_parts = [p.strip() for p in desc_text.split(',')]
+                            if len(keyword_parts) >= 2 and all(len(p) > 1 for p in keyword_parts):
+                                break
                         
                         # Stop at point values (typically just a number like "32")
                         if desc_text.isdigit() and len(desc_text) <= 3:
@@ -546,6 +558,48 @@ def _extract_rules_from_blocks(blocks: List[Dict], page_width: float, page_heigh
         i += 1
     
     return rules if rules else None
+
+
+def _extract_keywords_from_blocks(blocks: List[Dict], page_width: float, page_height: float) -> Optional[List[str]]:
+    """Extract keywords from the black bar at bottom of datacard.
+    
+    Keywords appear in a comma-separated list near the bottom of the card.
+    Format: "TEAM NAME, FACTION, KEYWORD1, KEYWORD2"
+    - All uppercase
+    - Comma-separated
+    - First keyword is the team name (appears in orange on card)
+    - Located in bottom ~20% of page
+    """
+    for block in blocks:
+        if block.get("type") != 0:  # Skip non-text blocks
+            continue
+        
+        bbox = block["bbox"]
+        
+        # Look for text in bottom region (y > 75% of page height)
+        if bbox[1] > page_height * 0.75:
+            # Extract text from block
+            text = ""
+            for line in block.get("lines", []):
+                for span in line.get("spans", []):
+                    text += span.get("text", "")
+            
+            text = text.strip()
+            
+            # Keywords are:
+            # - All caps
+            # - Contain commas (distinguishes from operative name)
+            # - Reasonable length
+            if text.isupper() and ',' in text and 10 <= len(text) <= 200:
+                # Split by comma and clean
+                keywords = [kw.strip() for kw in text.split(',')]
+                # Filter out empty strings and common non-keywords
+                keywords = [kw for kw in keywords if kw and kw not in ['AND', 'OR']]
+                
+                if keywords:
+                    return keywords
+    
+    return None
 
 
 def extract_statlines_from_team(team_dir: Path, output_dir: Path, force: bool = False) -> Optional[Dict]:
