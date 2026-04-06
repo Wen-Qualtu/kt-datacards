@@ -1,6 +1,6 @@
 {
   "team": "death-korps",
-  "generated": "2026-04-02T10:54:49.003657+00:00",
+  "generated": "2026-04-05T09:28:48.301634+00:00",
   "operative_count": 12,
   "operatives": [
     {
@@ -50,6 +50,19 @@
           "attacks": "4",
           "hit": "3+",
           "damage": "2/3"
+        },
+        {
+          "name": "Chainsword",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "4/5"
+        },
+        {
+          "name": "Power weapon",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "4/6",
+          "special_rules": "Lethal 5+"
         }
       ],
       "keywords": [
@@ -59,12 +72,8 @@
         "LEADER",
         "WATCHMASTER"
       ],
-      "rules": [
-        {
-          "name": "Bring it Down!",
-          "description": "STRATEGIC GAMBIT if this operative is in the killzone. Select one enemy operative. Whenever a friendly DEATH KORPS  operative is shooting against, fighting against or retaliating against that enemy operative, that friendly operative’s weapons have the Punishing weapon rule."
-        }
-      ]
+      "passive_abilities": [],
+      "unique_actions": []
     },
     {
       "name": "DEATH KORPS BRUISER",
@@ -93,7 +102,9 @@
         "IMPERIUM",
         "ASTRA MILITARUM",
         "BRUISER"
-      ]
+      ],
+      "passive_abilities": [],
+      "unique_actions": []
     },
     {
       "name": "DEATH KORPS CONFIDANT",
@@ -142,18 +153,14 @@
           "damage": "4/5"
         }
       ],
-      "rules": [
-        {
-          "name": "Second in Command",
-          "description": "If a friendly WATCHMASTER operative is incapacitated and removed from the killzone, you can use this rule. If you do, until the end of the battle, this operative can issue a GUARDSMAN ORDER as a STRATEGIC GAMBIT (even though it's not a WATCHMASTER operative)."
-        }
-      ],
       "keywords": [
         "DEATH KORPS",
         "IMPERIUM",
         "ASTRA MILITARUM",
         "CONFIDANT"
-      ]
+      ],
+      "passive_abilities": [],
+      "unique_actions": []
     },
     {
       "name": "DEATH KORPS GUNNER",
@@ -204,6 +211,12 @@
           "hit": "4+",
           "damage": "5/6",
           "special_rules": "Hot, Lethal 5+, Piercing 1"
+        },
+        {
+          "name": "Bayonet",
+          "attacks": "3",
+          "hit": "4+",
+          "damage": "2/3"
         }
       ],
       "keywords": [
@@ -211,7 +224,9 @@
         "IMPERIUM",
         "ASTRA MILITARUM",
         "GUNNER"
-      ]
+      ],
+      "passive_abilities": [],
+      "unique_actions": []
     },
     {
       "name": "DEATH KORPS MEDIC",
@@ -234,22 +249,14 @@
           "damage": "2/3"
         }
       ],
-      "rules": [
-        {
-          "name": "Medic!",
-          "description": "The first time during each turning point that another friendly DEATH KORPS  operative would be incapacitated while visible to and within 3\" of this operative, you can use this rule, providing neither this nor that operative is within control range of an enemy operative. If you do, that friendly operative isn’t incapacitated, has 1 wound remaining and cannot be incapacitated for the remainder of the action. After that action, that friendly operative can immediately perform a free Dash action, but must end that move within this operative’s control range. Subtract 1 from this and that operative’s APL stats until the end of their next activations respectively, and if this rule was used during that friendly operative’s activation, that activation ends. You cannot use this rule if this operative is incapacitated, or if it’s a Shoot action and this operative would be a primary or secondary target."
-        },
-        {
-          "name": "MEDIKIT (1AP)",
-          "description": "Select one friendly DEATH KORPS  operative within this operative’s control range to regain up to 2D3 lost wounds. It cannot be an operative that the Medic! rule was used on during this turning point. This operative cannot perform this action while within control range of an enemy operative."
-        }
-      ],
       "keywords": [
         "DEATH KORPS",
         "IMPERIUM",
         "ASTRA MILITARUM",
         "MEDIC"
-      ]
+      ],
+      "passive_abilities": [],
+      "unique_actions": []
     },
     {
       "name": "DEATH KORPS SAPPER",
@@ -279,18 +286,14 @@
           "damage": "2/3"
         }
       ],
-      "rules": [
-        {
-          "name": "Mine Layer",
-          "description": "This operative is carrying your Mine marker. It can perform the Pick Up Marker action on that marker, and whenever it performs the Place Marker action on that marker, it can immediately perform a free Dash action. *Detonate: Don’t select a valid target. Instead, shoot against each operative within 2\" of your Mine marker, unless Heavy terrain is wholly intervening between that operative and that marker. Each of those operatives cannot be in cover or obscured. Roll each sequence separately in an order of your choice. This weapon cannot be selected if your Mine marker isn’t in the killzone. At the end of the action, remove your Mine marker from the killzone. In a killzone that uses the close quarters rules (e.g. Killzone: Tomb World), this weapon has the Lethal 5+ weapon rule."
-        }
-      ],
       "keywords": [
         "DEATH KORPS",
         "IMPERIUM",
         "ASTRA MILITARUM",
         "SAPPER"
-      ]
+      ],
+      "passive_abilities": [],
+      "unique_actions": []
     },
     {
       "name": "DEATH KORPS SNIPER",
@@ -332,7 +335,9 @@
         "IMPERIUM",
         "ASTRA MILITARUM",
         "SNIPER"
-      ]
+      ],
+      "passive_abilities": [],
+      "unique_actions": []
     },
     {
       "name": "DEATH KORPS SPOTTER",
@@ -362,18 +367,14 @@
           "damage": "2/3"
         }
       ],
-      "rules": [
-        {
-          "name": "SPOT (1AP)",
-          "description": "SUPPORT. Select one enemy operative visible to this operative. Once during this turning point, when a friendly DEATH KORPS  operative within 3\" of this operative is shooting that enemy operative, you can use this effect. If you do: •  That friendly operative’s ranged weapons have the Seek Light weapon rule. •  That enemy operative cannot be obscured. This operative cannot perform this action while within control range of an enemy operative."
-        }
-      ],
       "keywords": [
         "DEATH KORPS",
         "IMPERIUM",
         "ASTRA MILITARUM",
         "SPOTTER"
-      ]
+      ],
+      "passive_abilities": [],
+      "unique_actions": []
     },
     {
       "name": "DEATH KORPS TROOPER",
@@ -401,7 +402,9 @@
         "IMPERIUM",
         "ASTRA MILITARUM",
         "TROOPER"
-      ]
+      ],
+      "passive_abilities": [],
+      "unique_actions": []
     },
     {
       "name": "DEATH KORPS VETERAN",
@@ -429,7 +432,9 @@
         "IMPERIUM",
         "ASTRA MILITARUM",
         "VETERAN"
-      ]
+      ],
+      "passive_abilities": [],
+      "unique_actions": []
     },
     {
       "name": "DEATH KORPS VOX-OPERATOR",
@@ -452,18 +457,14 @@
           "damage": "2/3"
         }
       ],
-      "rules": [
-        {
-          "name": "SIGNAL (1AP)",
-          "description": "SUPPORT. Select one other friendly DEATH KORPS operative visible to and within 6\" of this operative. Until the end of that operative’s next activation, add 1 to its APL stat. This operative cannot perform this action while within control range of an enemy operative."
-        }
-      ],
       "keywords": [
         "DEATH KORPS",
         "IMPERIUM",
         "ASTRA MILITARUM",
         "VOX-OPERATOR"
-      ]
+      ],
+      "passive_abilities": [],
+      "unique_actions": []
     },
     {
       "name": "DEATH KORPS ZEALOT",
@@ -486,19 +487,16 @@
           "damage": "2/3"
         }
       ],
-      "rules": [
-        {
-          "name": "Uplifting Primer",
-          "description": "SUPPORT. Whenever a friendly DEATH KORPS  operative is within 3\" of this operative, that friendly operative’s weapons have the Severe weapon rule."
-        }
-      ],
       "keywords": [
         "DEATH KORPS",
         "IMPERIUM",
         "ASTRA MILITARUM",
         "ZEALOT"
-      ]
+      ],
+      "passive_abilities": [],
+      "unique_actions": []
     }
   ],
-  "_content_hash": "dad92f479f4dfb740205c1c3241e66e5b0e1f96e4a764f864bb041e32a79f2b3"
+  "_content_hash": "690f74e391a9708919827d7cdba7f1647e13df790824ead0c3971d629b787946",
+  "last_modified": "2026-04-05T19:37:15.861521+00:00"
 }

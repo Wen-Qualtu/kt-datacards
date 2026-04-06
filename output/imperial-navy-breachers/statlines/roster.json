@@ -1,6 +1,6 @@
 {
   "team": "imperial-navy-breachers",
-  "generated": "2026-04-02T10:54:53.767642+00:00",
+  "generated": "2026-04-05T09:28:50.076096+00:00",
   "operative_count": 9,
   "operatives": [
     {
@@ -49,6 +49,13 @@
           "attacks": "3",
           "hit": "4+",
           "damage": "3/4"
+        },
+        {
+          "name": "Power weapon",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "4/6",
+          "special_rules": "Lethal 5+"
         }
       ],
       "keywords": [
@@ -56,7 +63,9 @@
         "IMPERIUM",
         "LEADER",
         "SERGEANT-AT-ARMS"
-      ]
+      ],
+      "passive_abilities": [],
+      "unique_actions": []
     },
     {
       "name": "NAVIS ARMSMAN",
@@ -90,7 +99,9 @@
         "IMPERIAL NAVY BREACHER",
         "IMPERIUM",
         "ARMSMAN"
-      ]
+      ],
+      "passive_abilities": [],
+      "unique_actions": []
     },
     {
       "name": "NAVIS AXEJACK",
@@ -115,17 +126,13 @@
           "special_rules": "Lethal 5+"
         }
       ],
-      "rules": [
-        {
-          "name": "performed the Charge action, roll one D6",
-          "description": "on a 5+, subtract 1 from that inflicted damage."
-        }
-      ],
       "keywords": [
         "IMPERIAL NAVY BREACHER",
         "IMPERIUM",
         "AXEJACK"
-      ]
+      ],
+      "passive_abilities": [],
+      "unique_actions": []
     },
     {
       "name": "NAVIS ENDURANT",
@@ -157,17 +164,13 @@
           "special_rules": "Brutal, Shield*"
         }
       ],
-      "rules": [
-        {
-          "name": "Disengage",
-          "description": "This operative can perform the Fall Back action for 1 less AP."
-        }
-      ],
       "keywords": [
         "IMPERIAL NAVY BREACHER",
         "IMPERIUM",
         "ENDURANT"
-      ]
+      ],
+      "passive_abilities": [],
+      "unique_actions": []
     },
     {
       "name": "NAVIS GRENADIER",
@@ -208,7 +211,9 @@
         "IMPERIAL NAVY BREACHER",
         "IMPERIUM",
         "GRENADIER"
-      ]
+      ],
+      "passive_abilities": [],
+      "unique_actions": []
     },
     {
       "name": "NAVIS GUNNER",
@@ -264,7 +269,9 @@
         "IMPERIAL NAVY BREACHER",
         "IMPERIUM",
         "GUNNER"
-      ]
+      ],
+      "passive_abilities": [],
+      "unique_actions": []
     },
     {
       "name": "NAVIS HATCHCUTTER",
@@ -289,21 +296,13 @@
           "special_rules": "Brutal, Rending"
         }
       ],
-      "rules": [
-        {
-          "name": "WELD SHUT (1AP)",
-          "description": "Select a closed hatchway (e.g. Killzone: Tomb World) within this operative’s control range. 1 additional AP must be spent for other operatives to perform the Operate Hatch action to open that hatchway. This effect ends when that hatchway is opened. Note this operative isn’t affected by this effect. This operative cannot perform this action while within control range of an enemy operative, or if it isn’t within 1\" of a closed hatchway."
-        },
-        {
-          "name": "BREACH POINT (1AP)",
-          "description": "Place one of your Breach markers within this operative’s control range as close as possible to a terrain feature within control range of it.  Whenever an operative is within 1\" of that marker, it treats parts of that terrain feature that are no more than 1\" thick as Accessible terrain. This operative cannot perform this action while within control range of an enemy operative, or if a terrain feature isn’t within its control range."
-        }
-      ],
       "keywords": [
         "IMPERIAL NAVY BREACHER",
         "IMPERIUM",
         "HATCHCUTTER"
-      ]
+      ],
+      "passive_abilities": [],
+      "unique_actions": []
     },
     {
       "name": "NAVIS SURVEYOR",
@@ -333,21 +332,13 @@
           "damage": "3/4"
         }
       ],
-      "rules": [
-        {
-          "name": "WAYFIND (1AP)",
-          "description": "SUPPORT. Select one other friendly IMPERIAL NAVY BREACHER  operative (excluding C.A.T. UNIT or GHEISTSKULL) visible to and within 6\" of this operative, or visible to and within 6\" of a friendly IMPERIAL NAVY BREACHER C.A.T. UNIT operative. Until the end of that operative’s next activation, add 1 to its APL stat. For the purposes of the Comms Device universal equipment, the operative the distance is being determined from must control that marker. This operative cannot perform this action while within control range of an enemy operative."
-        },
-        {
-          "name": "REMOTE CONTROL (1AP)",
-          "description": "Select one friendly IMPERIAL NAVY BREACHER C.A.T. UNIT operative. That operative can immediately perform one free action, but it cannot move more than 3\" during that action. This operative cannot perform this action while within control range of an enemy operative, or if a friendly IMPERIAL NAVY BREACHER  C.A.T. UNIT operative isn’t in the killzone."
-        }
-      ],
       "keywords": [
         "IMPERIAL NAVY BREACHER",
         "IMPERIUM",
         "SURVEYOR"
-      ]
+      ],
+      "passive_abilities": [],
+      "unique_actions": []
     },
     {
       "name": "NAVIS VOID-JAMMER",
@@ -384,22 +375,15 @@
           "damage": "3/4"
         }
       ],
-      "rules": [
-        {
-          "name": "*Detonate",
-          "description": "Don’t select a valid target. Instead, a friendly IMPERIAL NAVY BREACHER  GHEISTSKULL operative is always the primary target and cannot be in cover or obscured. If that operative isn’t in the killzone, you cannot select this weapon."
-        },
-        {
-          "name": "INTERFERENCE PULSE (1AP)",
-          "description": "Select one enemy operative visible to and within 8\" of a friendly GHEISTSKULL operative. Roll one D6, adding 1 to the result if that enemy operative is a valid target for that friendly GHEISTSKULL operative: on a 3+, subtract 1 from that enemy operative’s APL stat until the end of its next activation. This operative cannot perform this action while within control range of an enemy operative, or if a friendly GHEISTSKULL operative isn’t in the killzone."
-        }
-      ],
       "keywords": [
         "IMPERIAL NAVY BREACHER",
         "IMPERIUM",
         "VOID-JAMMER"
-      ]
+      ],
+      "passive_abilities": [],
+      "unique_actions": []
     }
   ],
-  "_content_hash": "9283e73d7aa057171afba85a61e4d5a09b6392c18f14ffe97ce780492369cd89"
+  "_content_hash": "302a9ffbd236e502b43b31a7475190dc6050c233013ef8a413a232cc6807ffe7",
+  "last_modified": "2026-04-05T19:37:15.875513+00:00"
 }

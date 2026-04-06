@@ -1,6 +1,6 @@
 {
   "team": "nemesis-claw",
-  "generated": "2026-04-02T10:54:56.442523+00:00",
+  "generated": "2026-04-05T09:28:50.975021+00:00",
   "operative_count": 8,
   "operatives": [
     {
@@ -52,6 +52,13 @@
           "hit": "3+",
           "damage": "4/6",
           "special_rules": "Shock"
+        },
+        {
+          "name": "Power weapon",
+          "attacks": "5",
+          "hit": "3+",
+          "damage": "4/6",
+          "special_rules": "Lethal 5+"
         }
       ],
       "keywords": [
@@ -62,20 +69,8 @@
         "LEADER",
         "VISIONARY"
       ],
-      "rules": [
-        {
-          "name": "Prescience",
-          "description": "PSYCHIC. In the Ready step of each Strategy phase, you gain D3 Prescience points. At the end of each turning point, discard your Prescience points. You can spend your Prescience points in the Firefight phase as follows (you cannot use each of the following rules more than once per turning point):"
-        },
-        {
-          "name": "Foreboding",
-          "description": "PSYCHIC. Whenever it’s your turn to activate a friendly operative, you can spend 1 of your Prescience points to skip that activation."
-        },
-        {
-          "name": "Portent",
-          "description": "PSYCHIC. Whenever an attack dice inflicts Normal Dmg on this operative, you can spend 1 of your Prescience points to ignore that inflicted damage. You cannot gain or spend your Prescience points if this operative is incapacitated. PREMONITION"
-        }
-      ]
+      "passive_abilities": [],
+      "unique_actions": []
     },
     {
       "name": "NIGHT LORD FEARMONGER",
@@ -112,12 +107,8 @@
         "HERETIC ASTARTES",
         "FEARMONGER"
       ],
-      "rules": [
-        {
-          "name": "POISON OBJECTIVE (1AP)",
-          "description": "Select one objective marker this operative controls to gain one of your Terrorchem tokens. It cannot be an objective marker within control range of an enemy operative, or one that already has one of your Terrorchem tokens. The first time that objective marker is within control range of an enemy operative that doesn’t have one of your Terrorchem tokens, that operative gains that Terrorchem token, then inflict 2D3 damage on it (if it’s during an action, at the end of that action). This operative cannot perform this action while within control range of an enemy operative."
-        }
-      ]
+      "passive_abilities": [],
+      "unique_actions": []
     },
     {
       "name": "NIGHT LORD GUNNER",
@@ -174,7 +165,9 @@
         "CHAOS",
         "HERETIC ASTARTES",
         "GUNNER"
-      ]
+      ],
+      "passive_abilities": [],
+      "unique_actions": []
     },
     {
       "name": "NIGHT LORD HEAVY GUNNER",
@@ -218,6 +211,12 @@
           "hit": "3+",
           "damage": "5/7",
           "special_rules": "Heavy (Reposition only), Piercing 1"
+        },
+        {
+          "name": "Fists",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "3/4"
         }
       ],
       "keywords": [
@@ -225,7 +224,9 @@
         "CHAOS",
         "HERETIC ASTARTES",
         "HEAVY GUNNER"
-      ]
+      ],
+      "passive_abilities": [],
+      "unique_actions": []
     },
     {
       "name": "NIGHT LORD SCREECHER",
@@ -248,7 +249,9 @@
         "CHAOS",
         "HERETIC ASTARTES",
         "SCREECHER"
-      ]
+      ],
+      "passive_abilities": [],
+      "unique_actions": []
     },
     {
       "name": "NIGHT LORD SKINTHIEF",
@@ -278,7 +281,9 @@
         "CHAOS",
         "HERETIC ASTARTES",
         "SKINTHIEF"
-      ]
+      ],
+      "passive_abilities": [],
+      "unique_actions": []
     },
     {
       "name": "NIGHT LORD VENTRILOKAR",
@@ -302,19 +307,15 @@
           "damage": "4/5"
         }
       ],
-      "rules": [
-        {
-          "name": "DISCONCERTING MIMICRY (1AP)",
-          "description": "PSYCHIC. Select one enemy operative within 6\" of this operative, then select one of the following for that enemy operative (you can only select each option once per battle): •  Until the end of its next activation, subtract 1 from its APL stat. •  Change its order. •  Perform a free Dash action with it (specify the location for your opponent to move it to). This operative cannot perform this action while within control range of an enemy operative."
-        }
-      ],
       "keywords": [
         "NEMESIS CLAW",
         "CHAOS",
         "HERETIC ASTARTES",
         "PSYKER",
         "VENTRILOKAR"
-      ]
+      ],
+      "passive_abilities": [],
+      "unique_actions": []
     },
     {
       "name": "NIGHT LORD WARRIOR",
@@ -355,8 +356,11 @@
         "CHAOS",
         "HERETIC ASTARTES",
         "WARRIOR"
-      ]
+      ],
+      "passive_abilities": [],
+      "unique_actions": []
     }
   ],
-  "_content_hash": "527ec40eab400217ada10161648cb806995db3e81426b3afc11d735645bcccf2"
+  "_content_hash": "c61e23c68d8f4c803cd805b2ded43461f9311ba7a2bd12d7c679953d9b9bf8fa",
+  "last_modified": "2026-04-05T19:37:15.883283+00:00"
 }

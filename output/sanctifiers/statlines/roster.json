@@ -1,7 +1,7 @@
 {
   "team": "sanctifiers",
-  "generated": "2026-04-02T10:54:59.579967+00:00",
-  "operative_count": 10,
+  "generated": "2026-04-05T09:28:51.952624+00:00",
+  "operative_count": 7,
   "operatives": [
     {
       "name": "SANCTIFIER CONFESSOR",
@@ -19,19 +19,15 @@
           "special_rules": "Brutal, Shock"
         }
       ],
-      "rules": [
-        {
-          "name": "Lead the Procession",
-          "description": "In each turning point after the first, whenever this operative is an ORATOR and performs the Charge, Fall Back or Reposition action during its activation, you can use this rule before it moves. If you do, determine each other friendly SANCTIFIER  operative that’s benefitting from the SERMON and is visible to this operative (or vice versa). After this operative ends that action, each of those friendly SANCTIFIER  operatives can immediately perform a free Charge, Fall Back or Reposition action in an order of your choice (choose separately for each), but each cannot move more than 3\" and must end that move in a location where they are still benefitting from the SERMON. If this operative is incapacitated before this rule is fully resolved, e.g. from the Guard action’s interruption (see close quarters rules, Kill Team Core Book), don’t remove it from the killzone until this rule has been resolved."
-        }
-      ],
       "keywords": [
         "SANCTIFIER",
         "IMPERIUM",
         "ADEPTUS MINISTORUM",
         "LEADER",
         "CONFESSOR"
-      ]
+      ],
+      "passive_abilities": [],
+      "unique_actions": []
     },
     {
       "name": "SANCTIFIER CONFLAGRATOR",
@@ -67,42 +63,9 @@
         "IMPERIUM",
         "ADEPTUS MINISTORUM",
         "CONFLAGRATOR"
-      ]
-    },
-    {
-      "name": "SANCTIFIER DEATH CULT ASSASSIN",
-      "source_file": "sanctifiers_page02_card2_landscape.pdf",
-      "apl": 3,
-      "movement": "6″",
-      "save": "5+",
-      "wounds": 8,
-      "weapons": [
-        {
-          "name": "Throwing knives",
-          "attacks": "4",
-          "hit": "3+",
-          "damage": "2/5",
-          "special_rules": "Range 6\", Silent"
-        },
-        {
-          "name": "Ritual blades",
-          "attacks": "4",
-          "hit": "2+",
-          "damage": "4/6"
-        }
       ],
-      "rules": [
-        {
-          "name": "TRAINED ASSASSIN (1AP)",
-          "description": "Change this operative’s order. This operative cannot perform this action while within control range of an enemy operative."
-        }
-      ],
-      "keywords": [
-        "SANCTIFIER",
-        "IMPERIUM",
-        "ADEPTUS MINISTORUM",
-        "DEATH CULT ASSASSIN"
-      ]
+      "passive_abilities": [],
+      "unique_actions": []
     },
     {
       "name": "SANCTIFIER DRILL ABBOT",
@@ -125,37 +88,9 @@
         "IMPERIUM",
         "ADEPTUS MINISTORUM",
         "DRILL ABBOT"
-      ]
-    },
-    {
-      "name": "SANCTIFIER PERSECUTOR",
-      "source_file": "sanctifiers_page02_card4_landscape.pdf",
-      "apl": 2,
-      "movement": "6″",
-      "save": "5+",
-      "wounds": 7,
-      "weapons": [
-        {
-          "name": "Hand flamer",
-          "attacks": "4",
-          "hit": "3+",
-          "damage": "3/3",
-          "special_rules": "Range 6\", Saturate, Torrent 1\", Blaze*"
-        },
-        {
-          "name": "Eviscerator",
-          "attacks": "4",
-          "hit": "4+",
-          "damage": "5/6",
-          "special_rules": "Brutal"
-        }
       ],
-      "keywords": [
-        "SANCTIFIER",
-        "IMPERIUM",
-        "ADEPTUS MINISTORUM",
-        "PERSECUTOR"
-      ]
+      "passive_abilities": [],
+      "unique_actions": []
     },
     {
       "name": "SANCTIFIER MIRACULIST",
@@ -199,12 +134,8 @@
         "ADEPTUS MINISTORUM",
         "MIRACULIST"
       ],
-      "rules": [
-        {
-          "name": "¹Wreathed",
-          "description": "This operative can perform the Shoot action with this weapon while within control range of an enemy operative. Don’t select a valid target. Instead, this operative is always the primary target, but only shoot against secondary targets and they cannot be in cover or obscured (in other words, determine Blast from this operative, but this operative isn’t affected). Miracle: The first time this operative would be incapacitated during the battle, it’s not incapacitated, has 1 wound remaining and cannot be incapacitated for the remainder of the action. All remaining attack dice are discarded (including yours if this operative is fighting or retaliating), then this operative can immediately perform a free Dash or Fall Back action (for the latter, it cannot move more than 3\"), even if it’s performed an action that prevents it from performing those actions."
-        }
-      ]
+      "passive_abilities": [],
+      "unique_actions": []
     },
     {
       "name": "SANCTIFIER MISSIONARY",
@@ -255,6 +186,18 @@
           "hit": "4+",
           "damage": "4/4",
           "special_rules": "Shock, Blaze*"
+        },
+        {
+          "name": "Chainsword",
+          "attacks": "4",
+          "hit": "4+",
+          "damage": "4/5"
+        },
+        {
+          "name": "Gun butt",
+          "attacks": "3",
+          "hit": "4+",
+          "damage": "2/3"
         }
       ],
       "keywords": [
@@ -262,7 +205,9 @@
         "IMPERIUM",
         "ADEPTUS MINISTORUM",
         "MISSIONARY"
-      ]
+      ],
+      "passive_abilities": [],
+      "unique_actions": []
     },
     {
       "name": "SANCTIFIER PREACHER",
@@ -291,36 +236,9 @@
         "IMPERIUM",
         "ADEPTUS MINISTORUM",
         "PREACHER"
-      ]
-    },
-    {
-      "name": "SANCTIFIER RELIQUANT",
-      "source_file": "sanctifiers_page04_card2_landscape.pdf",
-      "apl": 2,
-      "movement": "6″",
-      "save": "5+",
-      "wounds": 7,
-      "weapons": [
-        {
-          "name": "Hand flamer",
-          "attacks": "4",
-          "hit": "2+",
-          "damage": "3/3",
-          "special_rules": "Range 6\", Saturate, Torrent 1\", Blaze*"
-        },
-        {
-          "name": "Gun butt",
-          "attacks": "3",
-          "hit": "4+",
-          "damage": "2/3"
-        }
       ],
-      "keywords": [
-        "SANCTIFIER",
-        "IMPERIUM",
-        "ADEPTUS MINISTORUM",
-        "RELIQUANT"
-      ]
+      "passive_abilities": [],
+      "unique_actions": []
     },
     {
       "name": "SANCTIFIER SALVATIONIST",
@@ -337,20 +255,17 @@
           "damage": "2/3"
         }
       ],
-      "rules": [
-        {
-          "name": "MEDIKIT (1AP)",
-          "description": "Select one friendly SANCTIFIER  operative within this operative’s control range to regain up to 2D3 lost wounds. This operative cannot perform this action while within control range of an enemy operative."
-        }
-      ],
       "keywords": [
         "SANCTIFIER",
         "IMPERIUM",
         "ADEPTUS MINISTORUM",
         "MEDIC",
         "SALVATIONIST"
-      ]
+      ],
+      "passive_abilities": [],
+      "unique_actions": []
     }
   ],
-  "_content_hash": "23362eb6adf4620381b9d891bb27a3e26e11754cf7d78118157548ecb4d4007f"
+  "_content_hash": "1802007eb28337967079436f8d77bf566ae39fe46c6f8da9e57b8b0ddc6e1a25",
+  "last_modified": "2026-04-05T19:37:15.891891+00:00"
 }

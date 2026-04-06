@@ -1,6 +1,6 @@
 {
   "team": "canoptek-circle",
-  "generated": "2026-04-02T10:54:47.465515+00:00",
+  "last_modified": "2026-04-05T19:37:30.313783+00:00",
   "operative_count": 2,
   "operatives": [
     {
@@ -33,10 +33,22 @@
           "special_rules": "Severe, Shock, Stun"
         }
       ],
-      "rules": [
+      "_rules_temp": [
         {
           "name": "Obelisk Node Control",
           "description": "Whenever this operative would perform a mission action (excluding Retrieve, Approved Ops 2025), if it requires this operative to control an objective marker, you can instead determine control from one of your OBELISK NODE markers (see Obelisk Node Matrix faction rule). Whenever this operative would perform the Operate Hatch action, you can open or close a hatchway thats access point is within 1\" of one of your OBELISK NODE markers instead. Note that you must still fulfil the Operate Hatch action’s conditions."
+        },
+        {
+          "name": "GEOMANTIC DISTURBANCE (1AP)",
+          "description": "Select a point on a terrain feature; that point must be visible to and within 8\" of this operative. Separately roll 2D6 for each operative within 2\" of that point. If the result is higher than that operative’s remaining wounds, inflict damage on it equal to the difference. This operative cannot perform this action while it has a Conceal order, or while within control range of an enemy operative."
+        },
+        {
+          "name": "CANOPTEK CONTROL (1AP)",
+          "description": "SUPPORT. Select one friendly CANOPTEK CIRCLE CANOPTEK operative visible to and within 6\" of this operative. Alternatively, you can select one friendly CANOPTEK CIRCLE CANOPTEK operative that’s visible to this operative and within your OBELISK NODE MATRIX (SUPPORT doesn’t apply to this selection). That selected operative can immediately perform a 1AP action for free; during that action, it cannot move more than 2\", or must be set up wholly within 2\" if it’s removed and set up again. This operative cannot perform this action while within control range of an enemy operative, or while counteracting."
+        },
+        {
+          "name": "MOLECULAR BREACH (1AP)",
+          "description": "SUPPORT. Select one friendly CANOPTEK CIRCLE operative visible to and within 6\" of this operative. Alternatively, you can select one friendly CANOPTEK CIRCLE operative visible to this operative and within your OBELISK NODE MATRIX (SUPPORT doesn’t apply to this selection)."
         }
       ],
       "keywords": [
@@ -83,6 +95,20 @@
           "damage": "4/4"
         }
       ],
+      "_rules_temp": [
+        {
+          "name": "*Dimensional Banishment",
+          "description": "After this operative uses this weapon, if you inflicted damage or retained any critical successes, if the target wasn’t incapacitated, roll 2D6: if the result is higher than the target’s remaining wounds, the target is incapacitated (taking precedence over rules that prevent incapacitation, e.g. Medic!, FELLGOR RAVAGER  Frenzy) and your opponent cannot place a Reanimation marker (HIEROTEK CIRCLE ) for that operative, if relevant."
+        },
+        {
+          "name": "Weapon Sentinel",
+          "description": "Whenever your opponent is selecting a valid target, if this operative has a Conceal order, it cannot use Light terrain for cover. While this can allow this operative to be targeted (assuming it’s visible), it doesn’t remove its cover save (if any)."
+        },
+        {
+          "name": "Steadfast",
+          "description": "Whenever determining control of a marker, you can treat this operative’s APL stat as 3. If you do, this takes precedence over all other rules, meaning any changes to its APL stat are ignored for this."
+        }
+      ],
       "keywords": [
         "CANOPTEK CIRCLE",
         "NECRON",
@@ -91,5 +117,5 @@
       ]
     }
   ],
-  "_content_hash": "d258157bea5e58ca34b5cb07883a7535dd2bcbf7b0e64ad2a3b2a719b4e35020"
+  "_content_hash": "7a189336e3fcd73fbf6288bcbdb1ff5daacc544dce868a95c068fba32a09260a"
 }

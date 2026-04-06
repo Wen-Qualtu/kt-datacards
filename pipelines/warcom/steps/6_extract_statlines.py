@@ -2,16 +2,19 @@
 Step 6: Extract Statlines from Datacards
 
 Extracts operative characteristics (APL, Movement, Save, Wounds) and weapon profiles
-from classified datacard PDFs using coordinate-based region extraction.
+from datacard PDFs using coordinate-based region extraction.
 
-Input:  layers/warcom/extracted/{team}/cards/*_landscape.pdf
+Uses card_index.json (from step 3) to determine which cards to process and how.
+All logic about card relationships (front/back, multi-card operatives) is in the index.
+
+Input:  metadata/{team}/card_index.json (card index from step 3)
+        layers/warcom/extracted/{team}/cards/*.pdf (source PDFs)
 Output: output/{team}/statlines/roster.json
 
 Architecture:
+- Reads card_index.json to get operative cards and layouts
 - Uses coordinate-based region extraction (not text order)
-- Top-left region: Operative name
-- Top-right region: Stats box (APL, MOVE, SAVE, WOUNDS)
-- Middle region: Weapons table
+- Handles standard cards, back cards, and special 2-column action layouts
 - Only processes landscape cards (datacards have stats)
 
 Usage:
@@ -58,9 +61,10 @@ def extract_statlines_from_pdf(pdf_path: Path) -> Dict[str, Any]:
         # Stats: Top-right corner (x > 65%, y < 25%)
         stats = _extract_stats_from_blocks(blocks, page_width, page_height)
         
-        # Weapons: Middle region (x < 60%, 15% < y < 60%)
+        # Weapons: Middle region (x < 60%, 15% < y < 80%)
+        # Extended to 80% to capture operatives with many weapons (e.g., Traitor Chieftain with 10 weapons)
         weapons = _extract_weapons_from_blocks(blocks, page_width, page_height,
-                                                page_height * 0.15, page_height * 0.60)
+                                                page_height * 0.15, page_height * 0.80)
         
         # Rules: After stats box (y > 15%)
         # Rules/actions appear at 35-40% on front cards with weapons
@@ -83,8 +87,10 @@ def extract_statlines_from_pdf(pdf_path: Path) -> Dict[str, Any]:
         if weapons:
             operative["weapons"] = weapons
         
+        # Rules are split into passive_abilities and unique_actions in step 7
+        # Store temporarily for processing
         if rules:
-            operative["rules"] = rules
+            operative["_rules_temp"] = rules
         
         if keywords:
             operative["keywords"] = keywords
@@ -441,9 +447,13 @@ def _extract_rules_from_blocks(blocks: List[Dict], page_width: float, page_heigh
                 is_bold = False
                 for span in line.get("spans", []):
                     text = span.get("text", "")
-                    # Check if bold (font usually contains "Bold")
+                    # Check if bold - look for various indicators:
+                    # - "Bold" in font name
+                    # - "Bd" in font name (short for Bold)
+                    # - "Heavy" in font name  
+                    # - Bold flag (16)
                     font = span.get("font", "")
-                    if "Bold" in font or span.get("flags", 0) & 16:  # 16 = bold flag
+                    if any(indicator in font for indicator in ["Bold", "-Bd", "Heavy"]) or span.get("flags", 0) & 16:
                         is_bold = True
                     line_text += text
                 
@@ -473,9 +483,19 @@ def _extract_rules_from_blocks(blocks: List[Dict], page_width: float, page_heigh
                 while j < len(ability_text):
                     next_text, next_bold = ability_text[j]
                     
-                    # Stop if we hit another bold line (next UA)
-                    if next_bold and (':' in next_text or next_text.endswith('AP')):
-                        break
+                    # Stop if we hit another bold line (next ability/action)
+                    if next_bold:
+                        # Check for colon format ability
+                        if ':' in next_text:
+                            break
+                        # Check for AP cost (this line or next line)
+                        if next_text.endswith('AP') and len(next_text) <= 5:
+                            break
+                        # Check if this bold line is followed by XAP cost (Pattern 2 action)
+                        if j + 1 < len(ability_text):
+                            peek_text, peek_bold = ability_text[j + 1]
+                            if peek_bold and peek_text.endswith('AP') and len(peek_text) <= 5:
+                                break
                     
                     # Stop at keyword footer (all-caps comma-separated text)
                     if ',' in next_text and next_text.isupper() and len(next_text) > 10:
@@ -602,145 +622,372 @@ def _extract_keywords_from_blocks(blocks: List[Dict], page_width: float, page_he
     return None
 
 
-def extract_statlines_from_team(team_dir: Path, output_dir: Path, force: bool = False) -> Optional[Dict]:
-    """Extract statlines from all datacards for a team."""
-    team_name = team_dir.name
-    cards_dir = team_dir / "cards"
+def _extract_actions_from_2column_page(page: fitz.Page) -> List[Dict[str, str]]:
+    """Extract actions from a 2-column layout page.
     
-    if not cards_dir.exists():
-        logger.warning("No cards directory for %s", team_name)
+    No detection needed - just extract all actions found on the page.
+    Index already identified this as an action card.
+    
+    Each action has format:
+    - ALL-CAPS TITLE
+    - XAP (on next line)
+    - Description text
+    """
+    page_rect = page.rect
+    page_width = page_rect.width
+    page_height = page_rect.height
+    
+    logger.debug("  Extracting actions from 2-column page (%.0fx%.0f)", page_width, page_height)
+    
+    # 2-column layout: split at 40% of page width
+    split_x = page_width * 0.40
+    
+    # Get all text blocks, skipping headers
+    blocks_dict = page.get_text("dict")
+    blocks = blocks_dict.get("blocks", [])
+    
+    # Separate blocks by column, skipping page header
+    left_blocks = []
+    right_blocks = []
+    
+    for block in blocks:
+        if block.get("type") != 0:  # Skip non-text blocks
+            continue
+        
+        bbox = block.get("bbox", [0, 0, 0, 0])
+        
+        # Skip page header at top (Y < 30)
+        if bbox[1] < 30:
+            continue
+        
+        block_x = bbox[0]
+        if block_x < split_x:
+            left_blocks.append(block)
+        else:
+            right_blocks.append(block)
+    
+    logger.debug("  Split into columns: left=%d blocks, right=%d blocks", len(left_blocks), len(right_blocks))
+    
+    # Try extracting from each column
+    actions = []
+    
+    # Left column
+    left_action = _parse_action_from_blocks(left_blocks, page_width, page_height)
+    if left_action:
+        actions.append(left_action)
+    
+    # Right column
+    right_action = _parse_action_from_blocks(right_blocks, page_width, page_height)
+    if right_action:
+        actions.append(right_action)
+    
+    # If we didn't get actions from split columns, try merging all blocks
+    # (handles single action spanning both columns)
+    if not actions:
+        logger.debug("  No actions from split columns, trying merged blocks")
+        all_blocks = left_blocks + right_blocks
+        merged_action = _parse_action_from_blocks(all_blocks, page_width, page_height)
+        if merged_action:
+            actions.append(merged_action)
+    
+    logger.debug("  Extracted %d actions from page", len(actions))
+    return actions
+
+
+def _parse_action_from_blocks(blocks: List[Dict], page_width: float, page_height: float) -> Optional[Dict[str, str]]:
+    """Parse an action from a list of blocks (one column).
+    
+    Actions have format:
+    - All-caps title (may be bold or non-bold)
+    - "XAP" on the next line
+    - Description text after that
+    """
+    if not blocks:
         return None
     
-    # Find all landscape PDFs (datacards are landscape)
-    pdf_files = sorted(cards_dir.glob("*_landscape.pdf"))
+    logger.debug("    Parsing %d blocks for action", len(blocks))
     
-    if not pdf_files:
-        logger.warning("No landscape PDFs found for %s", team_name)
+    # Sort blocks by y position (top to bottom)
+    sorted_blocks = sorted(blocks, key=lambda b: b.get("bbox", [0, 0, 0, 0])[1])
+    
+    # Collect all text with line breaks preserved
+    lines = []
+    for block in sorted_blocks:
+        for line in block.get("lines", []):
+            line_text = ""
+            for span in line.get("spans", []):
+                line_text += span.get("text", "")
+            if line_text.strip():
+                lines.append(line_text.strip())
+    
+    if len(lines) < 3:  # Need at least: title, AP, and some description
+        logger.debug("      Not enough lines (%d): %s", len(lines), lines[:5] if lines else [])
+        return None
+    
+    logger.debug("      Checking %d lines for action title", len(lines))
+    
+    # Find title: look for all-caps line followed by "XAP" pattern
+    action_name = None
+    description_start = None
+    
+    for i in range(len(lines) - 1):
+        line = lines[i].strip()
+        next_line = lines[i + 1].strip()
+        
+        # Check if this is an all-caps title (1+ words, all uppercase, reasonable length)
+        words = line.split()
+        if len(words) >= 1 and line.isupper() and 3 <= len(line) <= 50:
+            # Check if next line has AP cost
+            if re.match(r'^\d+AP$', next_line, re.IGNORECASE):
+                action_name = f"{line} ({next_line})"
+                description_start = i + 2
+                logger.debug("      Found action: '%s' at line %d", action_name, i)
+                break
+        elif len(words) >= 1 and line.isupper() and 3 <= len(line) <= 50:
+            logger.debug("      Line %d is all-caps but next line is not XAP: '%s' -> '%s'", i, line[:40], next_line[:20] if next_line else "")
+    
+    if not action_name or description_start is None or description_start >= len(lines):
+        logger.debug("      No valid action found (checked %d lines)", len(lines))
+        return None
+    
+    # Collect remaining lines as description
+    description = " ".join(lines[description_start:])
+    description = re.sub(r'\s+', ' ', description).strip()
+    
+    if not description:
+        logger.debug("      No description found")
+        return None
+    
+    logger.debug("      Action extracted: '%s' (%d chars description)", action_name, len(description))
+    
+    return {
+        "name": action_name,
+        "description": description
+    }
+
+
+def extract_statlines_from_team(team_name: str, output_dir: Path, force: bool = False, 
+                                 base_dir: Path = None) -> Optional[Dict]:
+    """
+    Extract statlines from all datacards for a team using the card index.
+    
+    Reads metadata/{team}/card_index.json to determine which cards to process and how.
+    All logic about card relationships is in the index.
+    """
+    if base_dir is None:
+        base_dir = Path.cwd()
+    
+    # Read card index from metadata directory
+    index_path = base_dir / 'metadata' / team_name / 'card_index.json'
+    if not index_path.exists():
+        logger.error("  %s: card_index.json not found. Run step 3 first.", team_name)
+        return None
+    
+    with open(index_path, 'r', encoding='utf-8') as f:
+        index = json.load(f)
+    
+    if not index.get('operatives'):
+        logger.warning("  %s: No operatives in index", team_name)
         return None
     
     # Check if regeneration needed
     output_path = output_dir / team_name / "statlines" / "roster.json"
     if output_path.exists() and not force:
-        # Check if source files changed
+        # Check if source files changed (use hashes from index)
         existing_data = json.loads(output_path.read_text(encoding='utf-8'))
         existing_hash = existing_data.get("_content_hash")
         
-        # Compute hash of all source PDFs
+        # Compute hash from all card hashes in index
         hasher = hashlib.sha256()
-        for pdf_file in sorted(pdf_files):
-            hasher.update(pdf_file.read_bytes())
+        for operative_data in index['operatives']:
+            for card in operative_data['cards']:
+                hasher.update(card['content_hash'].encode('utf-8'))
         current_hash = hasher.hexdigest()
         
         if existing_hash == current_hash:
             logger.info("  %s: No changes detected, skipping", team_name)
             return None
     
-    # Extract operatives, handling front/back pairs
+    # Extract operatives from index
     operatives = []
-    skip_next = 0
     
-    for idx, pdf_file in enumerate(pdf_files):
-        # Skip if this was processed as a back side
-        if skip_next > 0:
-            skip_next -= 1
+    for operative_data in index['operatives']:
+        operative_name = operative_data['name']
+        cards = operative_data['cards']
+        
+        if not cards:
+            logger.warning("    %s: No cards in index", operative_name)
+            continue
+        
+        # Find front card
+        front_card = next((c for c in cards if c['type'] == 'front'), None)
+        if not front_card:
+            logger.warning("    %s: No front card in index", operative_name)
+            continue
+        
+        # Build absolute path to front card PDF
+        front_pdf_path = base_dir / front_card['source_pdf']
+        if not front_pdf_path.exists():
+            logger.warning("    %s: Front card PDF not found: %s", operative_name, front_pdf_path)
             continue
         
         # Extract from front card
-        operative = extract_statlines_from_pdf(pdf_file)
+        operative = extract_statlines_from_pdf(front_pdf_path)
         
         # Only process if valid operative
         if not (operative.get("name") and operative.get("wounds") is not None):
+            logger.warning("    %s: Failed to extract stats from front card", operative_name)
             continue
         
-        # Check if card continues on back side
-        doc = fitz.open(pdf_file)
-        if len(doc) > 0:
-            page = doc[0]
-            text = page.get_text().lower()
-            
-            # Check for continue patterns
-            has_continue = any(pattern in text for pattern in [
-                "continue on other side",
-                "continued on other side", 
-                "continues on other side",
-                "rules continue on other side"
-            ])
-            
-            # If continues and there's a next PDF, process it as back side
-            if has_continue and idx + 1 < len(pdf_files):
-                back_pdf = pdf_files[idx + 1]
-                back_data = extract_statlines_from_pdf(back_pdf)
-                
-                # Merge rules from back side (weapons are front-only)
-                if back_data and back_data.get("rules"):
-                    if not operative.get("rules"):
-                        operative["rules"] = []
-                    operative["rules"].extend(back_data["rules"])
-                
-                # Skip next PDF since we just processed it
-                skip_next = 1
+        # Process back card if it exists
+        back_card = next((c for c in cards if c['type'] == 'back'), None)
+        if back_card:
+            back_pdf_path = base_dir / back_card['source_pdf']
+            if back_pdf_path.exists():
+                back_data = extract_statlines_from_pdf(back_pdf_path)
+                if back_data and back_data.get("_rules_temp"):
+                    if not operative.get("_rules_temp"):
+                        operative["_rules_temp"] = []
+                    operative["_rules_temp"].extend(back_data["_rules_temp"])
         
-        doc.close()
+        # Process special action cards (2-column layout)
+        action_cards = [c for c in cards if c['type'].startswith('actions_')]
+        if action_cards:
+            logger.info("    %s: Processing %d action cards", operative_name, len(action_cards))
+            for action_card in action_cards:
+                action_pdf_path = base_dir / action_card['source_pdf']
+                if not action_pdf_path.exists():
+                    logger.warning("      Action card not found: %s", action_pdf_path)
+                    continue
+                
+                # Extract actions from 2-column layout
+                try:
+                    doc = fitz.open(action_pdf_path)
+                    if len(doc) > 0:
+                        page = doc[0]
+                        actions = _extract_actions_from_2column_page(page)
+                        if actions:
+                            logger.info("      Extracted %d actions from %s", len(actions), action_card['type'])
+                            if not operative.get("_rules_temp"):
+                                operative["_rules_temp"] = []
+                            operative["_rules_temp"].extend(actions)
+                    doc.close()
+                except Exception as e:
+                    logger.error("      Error extracting actions from %s: %s", action_pdf_path.name, e)
+        
         operatives.append(operative)
     
     if not operatives:
         logger.warning("  %s: No operatives extracted", team_name)
         return None
     
-    # Compute content hash
+    # Compute content hash from index card hashes
     hasher = hashlib.sha256()
-    for pdf_file in sorted(pdf_files):
-        hasher.update(pdf_file.read_bytes())
+    for operative_data in index['operatives']:
+        for card in operative_data['cards']:
+            hasher.update(card['content_hash'].encode('utf-8'))
     content_hash = hasher.hexdigest()
+    
+    # Check if we need to update
+    needs_update = force
+    existing_timestamp = None
+    
+    if output_path.exists() and not force:
+        try:
+            old_roster = json.loads(output_path.read_text(encoding='utf-8'))
+            old_hash = old_roster.get('_content_hash', '')
+            
+            if old_hash == content_hash:
+                # No changes - keep existing file
+                logger.info("  ⊘ %s: No changes (hash match), keeping existing roster", team_name)
+                return {
+                    "team": team_name,
+                    "operative_count": len(operatives),
+                    "output_file": str(output_path),
+                    "status": "unchanged"
+                }
+            else:
+                needs_update = True
+                # Preserve existing timestamp if we're updating
+                existing_timestamp = old_roster.get('last_modified')
+        except (json.JSONDecodeError, KeyError, IOError) as e:
+            logger.warning("  ⚠ Failed to read existing roster, will regenerate: %s", e)
+            needs_update = True
+    else:
+        needs_update = True
     
     # Build roster
     roster = {
         "team": team_name,
-        "generated": datetime.now(timezone.utc).isoformat(),
+        "last_modified": datetime.now(timezone.utc).isoformat(),
         "operative_count": len(operatives),
         "operatives": operatives,
         "_content_hash": content_hash
     }
     
-    # Save roster
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(json.dumps(roster, indent=2, ensure_ascii=False), encoding='utf-8')
-    
-    logger.info("  ✓ %s: %d operatives extracted", team_name, len(operatives))
+    # Save roster only if needed
+    if needs_update:
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        output_path.write_text(json.dumps(roster, indent=2, ensure_ascii=False), encoding='utf-8')
+        
+        logger.info("  ✓ %s: %d operatives extracted (updated)", team_name, len(operatives))
+        status = "updated"
+    else:
+        status = "unchanged"
     
     return {
         "team": team_name,
         "operative_count": len(operatives),
-        "output_file": str(output_path)
+        "output_file": str(output_path),
+        "status": status
     }
 
 
-def run(extracted_dir: Path, output_dir: Path, teams: Optional[List[str]] = None, 
-        force: bool = False) -> Dict[str, Any]:
-    """Run statline extraction for teams."""
+def run(output_dir: Path, teams: Optional[List[str]] = None, 
+        force: bool = False, base_dir: Path = None) -> Dict[str, Any]:
+    """
+    Run statline extraction for teams using card index.
     
-    # Find teams to process
+    Args:
+        output_dir: Output directory for statlines
+        teams: Optional list of team names to process (default: all teams with index)
+        force: Force regeneration even if files unchanged
+        base_dir: Base directory for resolving paths (default: current directory)
+    """
+    if base_dir is None:
+        base_dir = Path.cwd()
+    
+    # Find teams to process (those with card_index.json in metadata/)
     if teams:
-        team_dirs = [extracted_dir / team for team in teams if (extracted_dir / team).exists()]
+        team_names = teams
     else:
-        team_dirs = sorted([d for d in extracted_dir.iterdir() if d.is_dir()])
+        # Find all teams with card_index.json in metadata
+        metadata_dir = base_dir / 'metadata'
+        if not metadata_dir.exists():
+            logger.warning("No metadata directory found. Run step 3 first.")
+            return {"processed": 0, "teams": []}
+        
+        team_names = []
+        for team_dir in sorted(metadata_dir.iterdir()):
+            if team_dir.is_dir() and (team_dir / 'card_index.json').exists():
+                team_names.append(team_dir.name)
     
-    if not team_dirs:
-        logger.warning("No teams found to process")
+    if not team_names:
+        logger.warning("No teams found with card_index.json. Run step 3 first.")
         return {"processed": 0, "teams": []}
     
     logger.info("=" * 60)
     logger.info("Step 6: Extract Statlines from Datacards")
     logger.info("=" * 60)
-    logger.info("Teams to process: %d", len(team_dirs))
+    logger.info("Teams to process: %d", len(team_names))
     logger.info("Force regeneration: %s", force)
     logger.info("")
     
     processed_teams = []
     total_operatives = 0
     
-    for team_dir in team_dirs:
-        result = extract_statlines_from_team(team_dir, output_dir, force)
+    for team_name in team_names:
+        result = extract_statlines_from_team(team_name, output_dir, force, base_dir)
         if result:
             processed_teams.append(result)
             total_operatives += result["operative_count"]
@@ -760,11 +1007,11 @@ def run(extracted_dir: Path, output_dir: Path, teams: Optional[List[str]] = None
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Extract statlines from datacards')
+    parser = argparse.ArgumentParser(description='Extract statlines from datacards using card index')
     parser.add_argument('--teams', nargs='+', help='Specific teams to process (default: all)')
     parser.add_argument('--force', action='store_true', help='Force regeneration even if unchanged')
-    parser.add_argument('--extracted', type=Path, help='Extracted cards directory')
-    parser.add_argument('--output', type=Path, help='Output directory')
+    parser.add_argument('--output', type=Path, help='Output directory (default: ./output)')
+    parser.add_argument('--base-dir', type=Path, help='Base directory for resolving paths (default: current directory)')
     
     args = parser.parse_args()
     
@@ -773,11 +1020,11 @@ def main():
     
     # Setup paths
     workspace_root = Path(__file__).parent.parent.parent.parent
-    extracted_dir = args.extracted or workspace_root / 'layers' / 'warcom' / 'extracted'
     output_dir = args.output or workspace_root / 'output'
+    base_dir = getattr(args, 'base_dir', None) or workspace_root
     
     # Run extraction
-    result = run(extracted_dir, output_dir, args.teams, args.force)
+    result = run(output_dir, args.teams, args.force, base_dir)
     
     if result["processed"] == 0:
         logger.warning("No teams were processed")

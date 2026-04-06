@@ -1,6 +1,6 @@
 {
   "team": "blooded",
-  "generated": "2026-04-02T10:54:46.542876+00:00",
+  "generated": "2026-04-05T09:28:47.495808+00:00",
   "operative_count": 13,
   "operatives": [
     {
@@ -57,6 +57,25 @@
           "attacks": "3",
           "hit": "3+",
           "damage": "2/3"
+        },
+        {
+          "name": "Chainsword",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "4/5"
+        },
+        {
+          "name": "Improvised blade",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "2/3"
+        },
+        {
+          "name": "Power weapon",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "4/6",
+          "special_rules": "Lethal 5+"
         }
       ],
       "keywords": [
@@ -64,7 +83,9 @@
         "CHAOS",
         "LEADER",
         "CHIEFTAIN"
-      ]
+      ],
+      "passive_abilities": [],
+      "unique_actions": []
     },
     {
       "name": "TRAITOR BRIMSTONE GRENADIER",
@@ -98,7 +119,9 @@
         "BLOODED",
         "CHAOS",
         "BRIMSTONE GRENADIER"
-      ]
+      ],
+      "passive_abilities": [],
+      "unique_actions": []
     },
     {
       "name": "TRAITOR BUTCHER",
@@ -120,7 +143,9 @@
         "BLOODED",
         "CHAOS",
         "BUTCHER"
-      ]
+      ],
+      "passive_abilities": [],
+      "unique_actions": []
     },
     {
       "name": "TRAITOR CORPSEMAN",
@@ -150,21 +175,13 @@
           "special_rules": "Lethal 5+"
         }
       ],
-      "rules": [
-        {
-          "name": "STIMM Rules",
-          "description": "• Rejuvenated:  The operative regains up to 2D3 lost wounds. •  Enraged: The operative’s melee weapons have the Relentless weapon rule. •  Fortified: Whenever an attack dice inflicts damage of 3 or more on the operative, roll one D6: on a 5+, subtract 1 from that inflicted damage."
-        },
-        {
-          "name": "STIMMS (1AP)",
-          "description": "Select one friendly BLOODED  operative within this operative’s control range, then select the Rejuvenated STIMM rule, or one other STIMM rule for that operative to have for the battle. You cannot select each STIMM rule for each operative more than once per battle. This operative cannot perform this action while within control range of an enemy operative."
-        }
-      ],
       "keywords": [
         "BLOODED",
         "CHAOS",
         "CORPSEMAN"
-      ]
+      ],
+      "passive_abilities": [],
+      "unique_actions": []
     },
     {
       "name": "TRAITOR COMMSMAN",
@@ -187,21 +204,13 @@
           "damage": "2/3"
         }
       ],
-      "rules": [
-        {
-          "name": "SIGNAL (1AP)",
-          "description": "SUPPORT. Select one other friendly BLOODED operative (excluding OGRYN) visible to and within 6\" of this operative. Until the end of that operative’s next activation, add 1 to its APL stat. This operative cannot perform this action while within control range of an enemy operative."
-        },
-        {
-          "name": "SACRILEGIOUS ACTUATION (1AP)",
-          "description": "You gain one Blooded token. This operative cannot perform this action while within control range of an enemy operative, or if it doesn’t have one of your Blooded tokens."
-        }
-      ],
       "keywords": [
         "BLOODED",
         "CHAOS",
         "COMMSMAN"
-      ]
+      ],
+      "passive_abilities": [],
+      "unique_actions": []
     },
     {
       "name": "TRAITOR ENFORCER",
@@ -226,17 +235,13 @@
           "special_rules": "Brutal"
         }
       ],
-      "rules": [
-        {
-          "name": "ENFORCE (1AP)",
-          "description": "Select one other friendly BLOODED  operative visible to and within 3\" of this operative. That operative can immediately perform a 1AP action for free, but it cannot move more than 2\" during that action. If the selected friendly operative is a COMMSMAN, it cannot perform the Sacrilegious Actuation or Signal actions. This operative cannot perform this action while within control range of an enemy operative."
-        }
-      ],
       "keywords": [
         "BLOODED",
         "CHAOS",
         "ENFORCER"
-      ]
+      ],
+      "passive_abilities": [],
+      "unique_actions": []
     },
     {
       "name": "TRAITOR FLENSER",
@@ -254,17 +259,13 @@
           "special_rules": "Ceaseless, Stalk*"
         }
       ],
-      "rules": [
-        {
-          "name": "Wretched",
-          "description": "This operative can perform the Charge action while it has a Conceal order. If this operative is incapacitated during the Fight action, you can strike the enemy operative in that sequence with one of your unresolved successes before this operative is removed from the killzone."
-        }
-      ],
       "keywords": [
         "BLOODED",
         "CHAOS",
         "FLENSER"
-      ]
+      ],
+      "passive_abilities": [],
+      "unique_actions": []
     },
     {
       "name": "TRAITOR GUNNER",
@@ -315,13 +316,21 @@
           "hit": "4+",
           "damage": "5/6",
           "special_rules": "Hot, Lethal 5+, Piercing 1"
+        },
+        {
+          "name": "Bayonet",
+          "attacks": "3",
+          "hit": "4+",
+          "damage": "2/3"
         }
       ],
       "keywords": [
         "BLOODED",
         "CHAOS",
         "GUNNER"
-      ]
+      ],
+      "passive_abilities": [],
+      "unique_actions": []
     },
     {
       "name": "TRAITOR OGRYN",
@@ -343,7 +352,9 @@
         "BLOODED",
         "CHAOS",
         "OGRYN"
-      ]
+      ],
+      "passive_abilities": [],
+      "unique_actions": []
     },
     {
       "name": "TRAITOR SHARPSHOOTER",
@@ -373,17 +384,13 @@
           "damage": "2/3"
         }
       ],
-      "rules": [
-        {
-          "name": "A Name Whispered In Blood",
-          "description": "STRATEGIC GAMBIT in the first turning point. Select one enemy operative. Whenever this operative is shooting that enemy operative, treat this operative as if it has one of your Blooded tokens and is under the GAZE OF THE GODS."
-        }
-      ],
       "keywords": [
         "BLOODED",
         "CHAOS",
         "SHARPSHOOTER"
-      ]
+      ],
+      "passive_abilities": [],
+      "unique_actions": []
     },
     {
       "name": "TRAITOR THUG",
@@ -405,7 +412,9 @@
         "BLOODED",
         "CHAOS",
         "THUG"
-      ]
+      ],
+      "passive_abilities": [],
+      "unique_actions": []
     },
     {
       "name": "TRAITOR TRENCH SWEEPER",
@@ -434,7 +443,9 @@
         "BLOODED",
         "CHAOS",
         "TRENCH SWEEPER"
-      ]
+      ],
+      "passive_abilities": [],
+      "unique_actions": []
     },
     {
       "name": "TRAITOR TROOPER",
@@ -461,8 +472,11 @@
         "BLOODED",
         "CHAOS",
         "TROOPER"
-      ]
+      ],
+      "passive_abilities": [],
+      "unique_actions": []
     }
   ],
-  "_content_hash": "39174d235bf74c6f6158cb0656b7e8e0695a109c2e3d839c5d519237669c9ee7"
+  "_content_hash": "87df4661e6b7980d38c3c9bf9cb1e5417660b8b6972dfc30cb5e0c1bf209c5f9",
+  "last_modified": "2026-04-05T19:37:15.855275+00:00"
 }
