@@ -25,7 +25,7 @@ def main():
     
     parser.add_argument(
         '--step',
-        choices=['process', 'extract', 'backsides', 'urls', 'tokens', 'all'],
+        choices=['process', 'extract', 'backsides', 'urls', 'tokens', 'embed-stats', 'all'],
         default='all',
         help='Pipeline step to run (default: all)'
     )
@@ -125,6 +125,23 @@ def main():
                 token_stats.get('skipped_missing', 0),
             )
         
+        elif args.step == 'embed-stats':
+            logger.info("Embedding datacard stats")
+            from embed_datacard_stats import patch_team, discover_teams, LUA_SCRIPT_PATH, WEAPON_RULES_PATH
+            import json as _json
+
+            lua_script = LUA_SCRIPT_PATH.read_text(encoding='utf-8')
+            weapon_rules = _json.loads(WEAPON_RULES_PATH.read_text(encoding='utf-8'))
+            teams = discover_teams()
+            if args.teams:
+                teams = [t for t in teams if t in args.teams]
+            total_patched = total_cards = 0
+            for team in teams:
+                patched, total = patch_team(team, weapon_rules, lua_script, dry_run=False)
+                total_patched += patched
+                total_cards += total
+            logger.info(f"Embedded stats: {total_patched}/{total_cards} cards across {len(teams)} teams")
+
         logger.info("Done!")
         return 0
         
