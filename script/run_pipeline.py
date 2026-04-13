@@ -25,7 +25,7 @@ def main():
     
     parser.add_argument(
         '--step',
-        choices=['process', 'extract', 'backsides', 'urls', 'tokens', 'embed-stats', 'all'],
+        choices=['process', 'extract', 'backsides', 'urls', 'tokens', 'extract-statlines', 'embed-stats', 'all'],
         default='all',
         help='Pipeline step to run (default: all)'
     )
@@ -125,6 +125,20 @@ def main():
                 token_stats.get('skipped_missing', 0),
             )
         
+        elif args.step == 'extract-statlines':
+            logger.info("Extracting statlines from datacards PDFs")
+            from extract_statlines import extract_team, discover_teams as discover_statline_teams
+
+            teams = discover_statline_teams()
+            if args.teams:
+                teams = [t for t in teams if t in args.teams]
+            extracted = 0
+            for team in teams:
+                result = extract_team(team, force=True)
+                if result:
+                    extracted += 1
+            logger.info(f"Extracted statlines for {extracted}/{len(teams)} teams")
+
         elif args.step == 'embed-stats':
             logger.info("Embedding datacard stats")
             from embed_datacard_stats import patch_team, discover_teams, LUA_SCRIPT_PATH, WEAPON_RULES_PATH

@@ -190,6 +190,25 @@ class DatacardPipeline:
         except Exception as e:
             self.logger.warning(f"Token embedding skipped: {e}")
         
+        # Step 5.4: Extract statlines from datacards PDFs
+        self.logger.info("Step 5.4: Extracting statlines from datacards PDFs")
+        try:
+            import subprocess, sys as _sys
+            result = subprocess.run(
+                [_sys.executable, str(Path(__file__).parent.parent / 'extract_statlines.py'), '--force'],
+                cwd=str(Path(__file__).parent.parent.parent),
+                capture_output=True,
+                text=True,
+            )
+            if result.returncode == 0:
+                for line in result.stdout.strip().splitlines():
+                    if 'Done:' in line:
+                        self.logger.info(line.strip().lstrip('INFO').strip())
+            else:
+                self.logger.warning(f"Statline extraction failed: {result.stderr[-500:] if result.stderr else 'no output'}")
+        except Exception as e:
+            self.logger.warning(f"Statline extraction error: {e}")
+
         # Step 5.5: Embed operative stats into datacards
         self.logger.info("Step 5.5: Embedding operative stats into datacards")
         try:
