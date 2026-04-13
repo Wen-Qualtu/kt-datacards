@@ -1003,29 +1003,69 @@ def index_team_cards(team_name: str, source_dir: Path, output_dir: Path, base_di
     return index
 
 
+def _find_guide_cards_from_card_index(team_name: str, base_dir: Path) -> List[Dict]:
+    """Find token-guide cards from the card_index.json.
+
+    Returns a list of dicts with 'source_pdf' and 'source_png' keys (relative paths).
+    """
+    card_index_path = base_dir / 'metadata' / team_name / 'card_index.json'
+    if not card_index_path.exists():
+        return []
+
+    try:
+        with open(card_index_path, 'r', encoding='utf-8') as f:
+            card_index = json.load(f)
+    except Exception:
+        return []
+
+    guides = []
+    for card in card_index.get('other_cards', []):
+        if card.get('type') == 'token-guide':
+            # Single-sided token-guide card
+            if 'source_pdf' in card:
+                guides.append({
+                    'source_pdf': card['source_pdf'],
+                    'source_png': card.get('source_png', ''),
+                })
+            # Multi-card token-guide (e.g. celestian with 2 cards)
+            for sub in card.get('cards', []):
+                if sub.get('type') in ('front', 'option_1', 'option_2'):
+                    guides.append({
+                        'source_pdf': sub['source_pdf'],
+                        'source_png': sub.get('source_png', ''),
+                    })
+    return guides
+
+
 def index_team_tokens(team_name: str, source_dir: Path, config_path: Path, base_dir: Path = None) -> Optional[Dict]:
     """
     Create index of all tokens for a team by matching them to names and shapes.
-    
+
+    Produces a rich index that includes:
+    - guide_cards: which card(s) the tokens come from
+    - raw_detections: all detected token image areas (from step 2b)
+    - raw_text_elements: all text labels with positions (from step 2b)
+    - tokens: matched list with name, shape, source image, bbox
+
     Args:
         team_name: Team name
         source_dir: Source directory (e.g., layers/warcom/extracted root)
         config_path: Path to team config YAML
         base_dir: Base directory for relative paths (default: current directory)
-    
+
     Returns:
         Token index structure or None if no tokens
     """
     if base_dir is None:
         base_dir = Path.cwd()
-    
+
     tokens_dir = source_dir / team_name / 'tokens'
     metadata_path = tokens_dir / f'{team_name}_tokens_metadata.json'
-    
+
     if not tokens_dir.exists() or not metadata_path.exists():
         logger.info("  No tokens found for this team")
         return None
-    
+
     # Load token metadata from step 2b
     try:
         with open(metadata_path, 'r', encoding='utf-8') as f:
@@ -1033,23 +1073,23 @@ def index_team_tokens(team_name: str, source_dir: Path, config_path: Path, base_
     except Exception as e:
         logger.warning(f"  Failed to load token metadata: {e}")
         return None
-    
+
     tokens = metadata.get('tokens', [])
     text_elements = metadata.get('text_elements', [])
-    
+
     if not tokens:
         logger.info("  No tokens in metadata")
         return None
-    
+
     logger.info(f"  Found {len(tokens)} tokens to index")
-    
+
     # Load team config for shape lookup
     all_teams_config = load_team_config(config_path)
     team_config = all_teams_config.get(team_name, {})
-    
+
     # Match tokens to names
     token_names, filtered_custom = match_tokens_to_names(tokens, text_elements, team_config)
-    
+
     logger.info(f"  Matched {len(token_names)} tokens to names")
     if filtered_custom:
         logger.info(f"  Filtered {len(filtered_custom)} custom token labels:")
@@ -1057,36 +1097,59 @@ def index_team_tokens(team_name: str, source_dir: Path, config_path: Path, base_
             logger.info(f"    - {label}")
     for fname, name in token_names.items():
         logger.debug(f"    {fname} → {name}")
-    
-    # Build token index
+
+    # Identify token guide card(s) from card_index.json
+    guide_cards = _find_guide_cards_from_card_index(team_name, base_dir)
+
+    # Build token index with full provenance
     index = {
         'team': team_name,
         'generated': datetime.now(timezone.utc).isoformat(),
+        'guide_cards': guide_cards,
+        'raw_detections': [
+            {
+                'filename': t['filename'],
+                'index': t.get('index'),
+                'bbox': t['bbox'],
+                'area': t.get('area', 0),
+                'source_card': t.get('source_card', ''),
+            }
+            for t in tokens
+        ],
+        'raw_text_elements': [
+            {
+                'text': te.get('text', ''),
+                'bbox': te.get('bbox', {}),
+                'font_size': te.get('font_size'),
+                'source_card': te.get('source_card', ''),
+            }
+            for te in text_elements
+        ],
         'tokens': []
     }
-    
+
     # Track validation issues
     unmatched = []
     missing_config = []
-    
+
     for token in tokens:
         filename = token['filename']
-        
+
         # Check if matched to a name
         if filename not in token_names:
             unmatched.append(filename)
             continue
-        
+
         token_name = token_names[filename]
-        
+
         # Look up shape from config (REQUIRED - no fallbacks)
         config_shape = get_token_shape(team_config, token_name)
-        
+
         if not config_shape:
             logger.warning(f"  ⚠ Token '{token_name}' not found in config - SKIPPING")
             missing_config.append((filename, token_name))
             continue
-        
+
         # Add to index
         token_entry = {
             'name': token_name,
@@ -1095,23 +1158,23 @@ def index_team_tokens(team_name: str, source_dir: Path, config_path: Path, base_
             'bbox': token['bbox'],
             'area': token.get('area', 0)
         }
-        
+
         index['tokens'].append(token_entry)
-    
+
     # Report validation issues
     if unmatched:
         logger.warning(f"  ⚠ {len(unmatched)} tokens not matched to names")
         for fname in unmatched:
             logger.warning(f"    - {fname}")
-    
+
     if missing_config:
         logger.error(f"  ✗ {len(missing_config)} tokens NOT IN CONFIG:")
         for fname, name in missing_config:
             logger.error(f"      '{name}' ({fname})")
         logger.error(f"  → Add these tokens to config/team-config.yaml")
-    
+
     logger.info(f"  ✓ Indexed {len(index['tokens'])} tokens")
-    
+
     return index if index['tokens'] else None
 
 

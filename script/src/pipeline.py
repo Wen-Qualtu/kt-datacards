@@ -190,8 +190,28 @@ class DatacardPipeline:
         except Exception as e:
             self.logger.warning(f"Token embedding skipped: {e}")
         
-        # Step 5.5: Validate card counts
-        self.logger.info("Step 5.5: Validating card counts")
+        # Step 5.5: Embed operative stats into datacards
+        self.logger.info("Step 5.5: Embedding operative stats into datacards")
+        try:
+            import subprocess, sys as _sys
+            result = subprocess.run(
+                [_sys.executable, str(Path(__file__).parent.parent / 'embed_datacard_stats.py')],
+                cwd=str(Path(__file__).parent.parent.parent),
+                capture_output=True,
+                text=True,
+            )
+            if result.returncode == 0:
+                # Parse last line for counts
+                for line in result.stdout.strip().splitlines():
+                    if 'Done:' in line:
+                        self.logger.info(line.strip().lstrip('INFO').strip())
+            else:
+                self.logger.warning(f"Stat embedding failed: {result.stderr[-500:] if result.stderr else 'no output'}")
+        except Exception as e:
+            self.logger.warning(f"Stat embedding error: {e}")
+
+        # Step 5.75: Validate card counts
+        self.logger.info("Step 5.75: Validating card counts")
         self._validate_card_counts()
         
         # Step 6: Generate metadata
