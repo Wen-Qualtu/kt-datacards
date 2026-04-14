@@ -8,7 +8,7 @@ rules/abilities using coordinate-based region extraction from PyMuPDF.
 Front pages (starting with "NAME" header) contain operative stats.
 Back pages contain additional rules/abilities.
 
-Output: output/{team}/statlines/roster.json
+Output: output_v2/{faction}/{team}/statlines/roster.json
 
 Based on the warcom pipeline's 6_extract_statlines.py, adapted for the 
 multi-page datacards PDFs produced by the kt-app export.
@@ -29,13 +29,31 @@ from typing import Any, Optional
 from datetime import datetime, timezone
 
 import fitz  # PyMuPDF
+import yaml
 
 ROOT = Path(__file__).resolve().parent.parent
 PROCESSED_DIR = ROOT / "processed"
 OUTPUT_DIR = ROOT / "output"
+OUTPUT_V2_DIR = ROOT / "output_v2"
+TEAM_CONFIG_PATH = ROOT / "config" / "team-config.yaml"
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s  %(message)s")
 log = logging.getLogger(__name__)
+
+
+# ── Team config helpers ──
+
+def _load_team_config() -> dict:
+    """Load team-config.yaml"""
+    with open(TEAM_CONFIG_PATH, encoding="utf-8") as f:
+        return yaml.safe_load(f)
+
+
+def _get_team_faction(team: str) -> str:
+    """Get faction for a team from team-config.yaml"""
+    config = _load_team_config()
+    team_data = config.get("teams", {}).get(team, {})
+    return team_data.get("faction", "xenos")  # default to xenos if not found
 
 
 # ── Coordinate-based extraction helpers ──
@@ -197,7 +215,41 @@ def _parse_weapon_block(block_text: str) -> dict | None:
             weapon["hit"] = hit
             weapon["damage"] = damage
             sr = ' '.join(special_rules).strip()
-            if sr and sr != '-':
+            
+            # Fix: Clean control characters from weapon name and special_rules
+            # Remove control characters (U+0000 to U+001F) from weapon name
+            clean_name = re.sub(r'[\x00-\x1f]+', '', weapon["name"]).strip()
+            
+            # If cleaned name is empty or very short, extract real name from special_rules
+            if not clean_name or len(clean_name) <= 1 or weapon["name"] in ['—', '-']:
+                if sr:
+                    # Clean control characters first
+                    sr = re.sub(r'[\x00-\x1f]+', '', sr).strip()
+                    
+                    # Extract weapon name from the text before special rule keywords
+                    match = re.match(r'^(.+?)\s+(Range\s|Piercing\s|Saturate|Torrent|Ceaseless|Lethal|Balanced|Brutal|Rending|Hot|Massive|Stun|Indirect|Silent|MW\s|AP\s|Unwieldy|Heavy|Relentless)', sr)
+                    if match:
+                        # Found a keyword - text before it is the weapon name
+                        clean_name = match.group(1).strip()
+                        # Everything from the keyword onwards is special rules
+                        sr = sr[len(match.group(1)):].strip()
+                    else:
+                        # No keyword - check if ends with " - " or just "-"
+                        if sr.endswith(' -') or sr == '-':
+                            clean_name = sr.rstrip(' -').strip()
+                            sr = None
+                        else:
+                            # Entire text is the weapon name
+                            clean_name = sr
+                            sr = None
+            
+            weapon["name"] = clean_name if clean_name else weapon["name"]
+            
+            # Clean control characters from special_rules too
+            if sr:
+                sr = re.sub(r'[\x00-\x1f]+', '', sr).strip()
+            
+            if sr and sr not in ['-', '']:
                 weapon["special_rules"] = sr
             return weapon
 
@@ -216,7 +268,35 @@ def _parse_weapon_block(block_text: str) -> dict | None:
                 damage = part
             else:
                 sr = ' '.join(parts[i:]).strip()
-                if sr and sr != '-':
+                
+                # Fix: Clean control characters and extract proper weapon name
+                clean_name = re.sub(r'[\x00-\x1f]+', '', weapon["name"]).strip()
+                
+                if not clean_name or len(clean_name) <= 1 or weapon["name"] in ['—', '-']:
+                    if sr:
+                        # Clean control characters first
+                        sr = re.sub(r'[\x00-\x1f]+', '', sr).strip()
+                        
+                        # Extract weapon name from the text before special rule keywords
+                        match = re.match(r'^(.+?)\s+(Range\s|Piercing\s|Saturate|Torrent|Ceaseless|Lethal|Balanced|Brutal|Rending|Hot|Massive|Stun|Indirect|Silent|MW\s|AP\s|Unwieldy|Heavy|Relentless)', sr)
+                        if match:
+                            clean_name = match.group(1).strip()
+                            sr = sr[len(match.group(1)):].strip()
+                        else:
+                            if sr.endswith(' -') or sr == '-':
+                                clean_name = sr.rstrip(' -').strip()
+                                sr = None
+                            else:
+                                clean_name = sr
+                                sr = None
+                
+                weapon["name"] = clean_name if clean_name else weapon["name"]
+                
+                # Clean control characters from special_rules
+                if sr:
+                    sr = re.sub(r'[\x00-\x1f]+', '', sr).strip()
+                
+                if sr and sr not in ['-', '']:
                     weapon["special_rules"] = sr
                 break
         if attacks and hit and damage:
@@ -406,7 +486,8 @@ def extract_team(team: str, force: bool = False) -> dict | None:
     Returns roster dict or None if nothing to do.
     """
     pdf_path = PROCESSED_DIR / team / f"{team}-datacards.pdf"
-    output_path = OUTPUT_DIR / team / "statlines" / "roster.json"
+    faction = _get_team_faction(team)
+    output_path = OUTPUT_V2_DIR / faction / team / "statlines" / "roster.json"
 
     if not pdf_path.exists():
         log.debug("%s: no datacards PDF, skipping", team)

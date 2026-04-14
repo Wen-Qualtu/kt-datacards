@@ -23,16 +23,36 @@ try:
 except ImportError:
     fitz = None
 
+import yaml
+
 ROOT = Path(__file__).resolve().parent.parent
 LUA_SCRIPT_PATH = ROOT / "config" / "defaults" / "tts-script" / "datacard-load-stats.lua"
 WEAPON_RULES_PATH = ROOT / "config" / "weapon_rules.json"
 OUTPUT_DIR = ROOT / "output"
+OUTPUT_V2_DIR = ROOT / "output_v2"
 METADATA_DIR = ROOT / "metadata"
 TTS_DIR = ROOT / "tts_objects"
 PROCESSED_DIR = ROOT / "processed"
+TEAM_CONFIG_PATH = ROOT / "config" / "team-config.yaml"
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s  %(message)s")
 log = logging.getLogger(__name__)
+
+
+# ── Team config helpers ──
+
+def _load_team_config() -> dict:
+    """Load team-config.yaml"""
+    with open(TEAM_CONFIG_PATH, encoding="utf-8") as f:
+        return yaml.safe_load(f)
+
+
+def _get_team_faction(team: str) -> str:
+    """Get faction for a team from team-config.yaml"""
+    config = _load_team_config()
+    team_data = config.get("teams", {}).get(team, {})
+    return team_data.get("faction", "xenos")  # default to xenos if not found
+
 
 # ── Weapon type classification ──
 
@@ -397,6 +417,7 @@ def patch_team(
 ) -> tuple[int, int]:
     """Patch all datacards for a team. Returns (patched_count, total_count)."""
     
+    # Read from old output location (where TTS currently uses)
     roster_path = OUTPUT_DIR / team / "statlines" / "roster.json"
     meta_path = METADATA_DIR / team / "extraction_metadata.json"
     pdf_path = PROCESSED_DIR / team / f"{team}-datacards.pdf"
@@ -503,12 +524,15 @@ def discover_teams() -> list[str]:
     teams = []
     if not OUTPUT_DIR.exists():
         return teams
-    for d in sorted(OUTPUT_DIR.iterdir()):
-        if not d.is_dir():
+    
+    # Scan team folders directly (old structure)
+    for team_dir in sorted(OUTPUT_DIR.iterdir()):
+        if not team_dir.is_dir():
             continue
-        team = d.name
-        if (d / "statlines" / "roster.json").exists() and (TTS_DIR / team).exists():
+        team = team_dir.name
+        if (team_dir / "statlines" / "roster.json").exists() and (TTS_DIR / team).exists():
             teams.append(team)
+    
     return teams
 
 
