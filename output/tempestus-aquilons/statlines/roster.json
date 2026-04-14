@@ -1,0 +1,404 @@
+{
+  "team": "tempestus-aquilons",
+  "generated": "2026-04-13T21:20:38.007475+00:00",
+  "operative_count": 8,
+  "operatives": [
+    {
+      "name": "AQUILON TEMPESTOR",
+      "source_file": "tempestus-aquilons-datacards.pdf",
+      "source_page": 0,
+      "apl": 3,
+      "movement": "6″",
+      "save": "4+",
+      "wounds": 9,
+      "weapons": [
+        {
+          "name": "Hot‑shot lascarbine",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "3/4"
+        },
+        {
+          "name": "Hot‑shot laspistol",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "3/4",
+          "special_rules": "Range 8\""
+        },
+        {
+          "name": "Relic bolt pistol",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "3/5",
+          "special_rules": "Range 8\", Lethal 5+"
+        },
+        {
+          "name": "Chainsword",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "4/5"
+        },
+        {
+          "name": "Fists",
+          "attacks": "3",
+          "hit": "3+",
+          "damage": "2/3"
+        },
+        {
+          "name": "Power weapon",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "4/6",
+          "special_rules": "Lethal 5+"
+        }
+      ],
+      "keywords": [
+        "TEMPESTUS AQUILON",
+        "IMPERIUM",
+        "LEADER",
+        "TEMPESTOR"
+      ],
+      "passive_abilities": [
+        {
+          "name": "Tempestus Veteran",
+          "description": "Once per battle, you can either use a firefight ploy for 0CP if this is the specified TEMPESTUS AQUILON  operative, or the Command Re‑roll firefight ploy for 0CP if this is the operative the attack or defence dice was rolled for."
+        }
+      ],
+      "unique_actions": [
+        {
+          "name": "COMMAND (1AP)",
+          "description": "\u0007SUPPORT. Select one other friendly TEMPESTUS AQUILON  operative (excluding SERVO‑SENTRY) visible to and within 6\" of this operative. Until the end of that operative’s next activation, add 1 to its APL stat. \u0007This operative cannot perform this action while within control range of an enemy operative. AQUILON TEMPESTOR"
+        }
+      ]
+    },
+    {
+      "name": "AQUILON GRENADIER",
+      "source_file": "tempestus-aquilons-datacards.pdf",
+      "source_page": 2,
+      "apl": 2,
+      "movement": "6″",
+      "save": "4+",
+      "wounds": 8,
+      "weapons": [
+        {
+          "name": "Hot‑shot laspistol",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "3/4",
+          "special_rules": "Range 8\""
+        },
+        {
+          "name": "Melta bomb",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "5/3",
+          "special_rules": "\u0007Range 3\", Devastating 3, Heavy (Reposition only), Limited 1, Piercing 2"
+        },
+        {
+          "name": "Fists",
+          "attacks": "3",
+          "hit": "4+",
+          "damage": "2/3"
+        }
+      ],
+      "passive_abilities": [
+        {
+          "name": "Grenadier",
+          "description": "This operative can use frag, krak, smoke and stun grenades (see universal equipment). Doing so doesn’t count towards any limited uses you have (i.e. if you also select those grenades from equipment for other operatives). Whenever this operative is using a frag or krak grenade, improve the Hit stat of that weapon by 1."
+        }
+      ],
+      "unique_actions": [],
+      "keywords": [
+        "TEMPESTUS AQUILON",
+        "IMPERIUM",
+        "GRENADIER"
+      ]
+    },
+    {
+      "name": "AQUILON GUNFIGHTER",
+      "source_file": "tempestus-aquilons-datacards.pdf",
+      "source_page": 3,
+      "apl": 2,
+      "movement": "6″",
+      "save": "4+",
+      "wounds": 8,
+      "weapons": [
+        {
+          "name": "Hot‑shot laspistols (focused)",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "3/4",
+          "special_rules": "Range 8\", Ceaseless, Rending"
+        },
+        {
+          "name": "Hot‑shot laspistols (salvo)",
+          "attacks": "4",
+          "hit": "4+",
+          "damage": "3/4",
+          "special_rules": "Range 8\", Salvo*"
+        },
+        {
+          "name": "Hot‑shot laspistols (point‑blank)",
+          "special_rules": "Ceaseless",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "3/4"
+        }
+      ],
+      "passive_abilities": [
+        {
+          "name": "*Salvo",
+          "description": "Select up to two different valid targets that aren’t within control range of friendly operatives. Shoot with this weapon against both of them in an order of your choice (roll each sequence separately)."
+        },
+        {
+          "name": "Gunfight",
+          "description": "Whenever an enemy operative within 8\" of this operative shoots this operative, keep track of each attack dice that’s discarded as a fail. After the action, before incapacitated operatives are removed (including this one, if relevant), this operative can perform a free Shoot action (you can change its order to Engage to do so), but it can only target that enemy operative with its hot‑shot laspistols (focused), and you only roll a number of attack dice equal to the opponent’s discarded attack dice plus one (to a maximum of four)."
+        }
+      ],
+      "unique_actions": [],
+      "keywords": [
+        "TEMPESTUS AQUILON",
+        "IMPERIUM",
+        "GUNFIGHTER"
+      ]
+    },
+    {
+      "name": "AQUILON GUNNER",
+      "source_file": "tempestus-aquilons-datacards.pdf",
+      "source_page": 4,
+      "apl": 2,
+      "movement": "6″",
+      "save": "4+",
+      "wounds": 8,
+      "weapons": [
+        {
+          "name": "Melta carbine",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "6/3",
+          "special_rules": "Range 6\", Devastating 4, Piercing 2"
+        },
+        {
+          "name": "Plasma carbine (standard)",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "4/6",
+          "special_rules": "Piercing 1"
+        },
+        {
+          "name": "Plasma carbine (supercharge)",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "5/6",
+          "special_rules": "Hot, Lethal 5+, Piercing 1"
+        },
+        {
+          "name": "Fists",
+          "attacks": "3",
+          "hit": "4+",
+          "damage": "2/3"
+        }
+      ],
+      "keywords": [
+        "TEMPESTUS AQUILON",
+        "IMPERIUM",
+        "GUNNER"
+      ]
+    },
+    {
+      "name": "AQUILON MARKSMAN",
+      "source_file": "tempestus-aquilons-datacards.pdf",
+      "source_page": 5,
+      "apl": 2,
+      "movement": "6″",
+      "save": "4+",
+      "wounds": 8,
+      "weapons": [
+        {
+          "name": "Hot‑shot long-las (concealed)",
+          "attacks": "4",
+          "hit": "2+",
+          "damage": "3/3",
+          "special_rules": "Devastating 3, Heavy, Silent, Concealed Position*"
+        },
+        {
+          "name": "Hot‑shot long-las (mobile)",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "3/4"
+        },
+        {
+          "name": "Hot‑shot long-las (stationary)",
+          "attacks": "4",
+          "hit": "2+",
+          "damage": "3/3",
+          "special_rules": "Devastating 3, Heavy"
+        },
+        {
+          "name": "Fists",
+          "attacks": "3",
+          "hit": "4+",
+          "damage": "2/3"
+        }
+      ],
+      "passive_abilities": [
+        {
+          "name": "Sniper’s Vantage",
+          "description": "Whenever this operative is on Vantage terrain and is shooting an operative that has an Engage order and is at least 2\" lower than it, all profiles of its hot‑shot long-las have the Severe weapon rule."
+        },
+        {
+          "name": "*Concealed Position",
+          "description": "This operative can only use this weapon the first time it’s performing the Shoot action during the battle."
+        }
+      ],
+      "unique_actions": [],
+      "keywords": [
+        "TEMPESTUS AQUILON",
+        "IMPERIUM",
+        "MARKSMAN"
+      ]
+    },
+    {
+      "name": "AQUILON PRECURSOR",
+      "source_file": "tempestus-aquilons-datacards.pdf",
+      "source_page": 6,
+      "apl": 2,
+      "movement": "6″",
+      "save": "4+",
+      "wounds": 8,
+      "weapons": [
+        {
+          "name": "Hot‑shot laspistol",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "3/4",
+          "special_rules": "Range 8\""
+        },
+        {
+          "name": "Tempestus dagger",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "3/4",
+          "special_rules": "Ceaseless, Lethal 5+"
+        }
+      ],
+      "passive_abilities": [
+        {
+          "name": "Vicious Knife Fighter",
+          "description": "Whenever this operative is fighting, after resolving your first attack dice during that sequence, you can immediately resolve another (before your opponent)."
+        },
+        {
+          "name": "Dynamic",
+          "description": "Whenever this operative performs the Shoot or Fight action, it can immediately perform a free Dash action afterwards. It can do so even if it’s performed the Charge action during this activation, but can only use any remaining move distance it had from that Charge action (to a maximum of 3\")."
+        }
+      ],
+      "unique_actions": [],
+      "keywords": [
+        "TEMPESTUS AQUILON",
+        "IMPERIUM",
+        "PRECURSOR"
+      ]
+    },
+    {
+      "name": "AQUILON SERVO‑SENTRY",
+      "source_file": "tempestus-aquilons-datacards.pdf",
+      "source_page": 7,
+      "apl": 2,
+      "movement": "4″",
+      "save": "3+",
+      "wounds": 10,
+      "weapons": [
+        {
+          "name": "Flamer",
+          "attacks": "4",
+          "hit": "2+",
+          "damage": "3/3",
+          "special_rules": "Range 8\", Saturate, Torrent 2\""
+        },
+        {
+          "name": "Grenade launcher (frag)",
+          "attacks": "4",
+          "hit": "4+",
+          "damage": "2/4",
+          "special_rules": "Blast 2\""
+        },
+        {
+          "name": "Grenade launcher (krak)",
+          "attacks": "4",
+          "hit": "4+",
+          "damage": "4/5",
+          "special_rules": "Piercing 1"
+        },
+        {
+          "name": "Hot‑shot volley gun (focused)",
+          "attacks": "5",
+          "hit": "4+",
+          "damage": "3/4",
+          "special_rules": "Piercing Crits 1"
+        },
+        {
+          "name": "Hot‑shot volley gun (sweeping)",
+          "attacks": "4",
+          "hit": "4+",
+          "damage": "3/4",
+          "special_rules": "Piercing Crits 1, Torrent 1\""
+        }
+      ],
+      "passive_abilities": [
+        {
+          "name": "Machine",
+          "description": "This operative cannot perform any actions other than Dash, Fall Back, Reposition and Shoot. It cannot retaliate, assist in a fight or use any weapons that aren’t on its datacard."
+        },
+        {
+          "name": "Turret",
+          "description": "This operative can perform two Shoot actions during its activation."
+        }
+      ],
+      "unique_actions": [],
+      "keywords": [
+        "TEMPESTUS AQUILON",
+        "IMPERIUM",
+        "SERVO‑SENTRY"
+      ]
+    },
+    {
+      "name": "AQUILON TROOPER",
+      "source_file": "tempestus-aquilons-datacards.pdf",
+      "source_page": 8,
+      "apl": 2,
+      "movement": "6″",
+      "save": "4+",
+      "wounds": 8,
+      "weapons": [
+        {
+          "name": "Hot‑shot lascarbine",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "3/4"
+        },
+        {
+          "name": "Fists",
+          "attacks": "3",
+          "hit": "4+",
+          "damage": "2/3"
+        }
+      ],
+      "passive_abilities": [
+        {
+          "name": "Rapid Insertion",
+          "description": "STRATEGIC GAMBIT in the first turning point. Each friendly TEMPESTUS AQUILON  TROOPER operative wholly within your drop zone can immediately perform a free Reposition action, but must end that move wholly within 3\" of your drop zone."
+        },
+        {
+          "name": "Swift Landing",
+          "description": "When this operative lands, you can set it up within 4\" horizontally of one of your Drop markers, taking precedence over the normal distance requirement."
+        }
+      ],
+      "unique_actions": [],
+      "keywords": [
+        "TEMPESTUS AQUILON",
+        "IMPERIUM",
+        "TROOPER"
+      ]
+    }
+  ]
+}
