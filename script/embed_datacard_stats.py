@@ -2,10 +2,8 @@
 Embed operative stats (GMNotes + Lua) into existing TTS datacard objects.
 
 For each team:
-  1. Reads roster.json for stats/weapons
-  2. Reads extraction_metadata.json for abilities (front-side OCR)  
-  3. Reads the datacards PDF for back-side abilities (when front says "RULES CONTINUE")
-  4. Patches every datacard in tts_objects/{team}/*.json with GMNotes + LuaScript
+  1. Reads roster.json (produced by extract_statlines.py) as sole data source
+  2. Patches every datacard in tts_objects/{team}/*.json with GMNotes + LuaScript
 
 Usage:
     python script/embed_datacard_stats.py [--teams team1,team2] [--dry-run]
@@ -18,21 +16,13 @@ import re
 import sys
 from pathlib import Path
 
-try:
-    import fitz  # PyMuPDF
-except ImportError:
-    fitz = None
-
 import yaml
 
 ROOT = Path(__file__).resolve().parent.parent
 LUA_SCRIPT_PATH = ROOT / "config" / "defaults" / "tts-script" / "datacard-load-stats.lua"
 WEAPON_RULES_PATH = ROOT / "config" / "weapon_rules.json"
 OUTPUT_DIR = ROOT / "output"
-OUTPUT_V2_DIR = ROOT / "output_v2"
-METADATA_DIR = ROOT / "metadata"
 TTS_DIR = ROOT / "tts_objects"
-PROCESSED_DIR = ROOT / "processed"
 TEAM_CONFIG_PATH = ROOT / "config" / "team-config.yaml"
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s  %(message)s")
@@ -116,135 +106,49 @@ def match_weapon_rules(special_rules: str, all_rules: dict) -> dict:
     return matched
 
 
-# ── Ability extraction from OCR / PDF ──
+# ── Roster ability helpers ──
 
-def _clean_ocr(s: str) -> str:
+# Unicode chars commonly found in Kill Team PDFs
+_UNICODE_NORMALIZE = {
+    "\u2019": "'",   # RIGHT SINGLE QUOTATION MARK (T'au)
+    "\u2018": "'",   # LEFT SINGLE QUOTATION MARK
+    "\u201c": '"',   # LEFT DOUBLE QUOTATION MARK
+    "\u201d": '"',   # RIGHT DOUBLE QUOTATION MARK
+    "\u2010": "-",   # HYPHEN
+    "\u2011": "-",   # NON-BREAKING HYPHEN
+    "\u2012": "-",   # FIGURE DASH
+    "\u2013": "-",   # EN DASH
+    "\u2014": "-",   # EM DASH
+    "\u2033": '"',   # DOUBLE PRIME (inches)
+    "\u2032": "'",   # PRIME
+    "\u00e2": "a",   # â
+    "\u00f4": "o",   # ô
+}
+
+
+def _normalize_text(s: str) -> str:
+    """Strip control characters and normalize Unicode to ASCII equivalents."""
     s = re.sub(r"[\x07\x08]", "", s)
-    s = s.replace("\u00e2\u20ac\u2122", "'").replace("â\u20ac\u2122", "'")
+    for uchar, replacement in _UNICODE_NORMALIZE.items():
+        s = s.replace(uchar, replacement)
     return s.strip()
 
 
-def _strip_stat_block_suffix(text: str) -> str:
-    """Remove the operative stat block at the end of OCR text (keywords + name + numbers)."""
-    # Pattern: OPERATIVE NAME\nN\nAPL\nWOUNDS\nSAVE\nMOVE... at end
-    m = re.search(r"\n[A-Z][\w\s-]+\n\s*\d+\s*\nAPL\nWOUNDS", text)
-    if m:
-        return text[: m.start()].strip()
-    # Inline pattern: TEAM_KEYWORD, ... OPERATIVE NAME N APL WOUNDS SAVE MOVE
-    m = re.search(r"\d+\s+APL\s+WOUNDS\s+SAVE\s+MOVE", text)
-    if m:
-        # Go back to find the start of the keyword block  
-        prefix = text[: m.start()]
-        # Find last sentence ending before the keywords
-        kw_start = prefix.rfind(". ")
-        if kw_start > 0:
-            return text[: kw_start + 1].strip()
-        return prefix.strip()
-    return text
-
-
-def _extract_rules_from_front(full_text: str, known_rule_names: list[str]) -> str:
-    """Extract ability/action text from front-side OCR, stripping weapon stats and keywords."""
-    text = _clean_ocr(full_text)
-    # Remove trailing "RULES CONTINUE ON OTHER SIDE"
-    text = re.sub(r"\s*RULES CONTINUE ON OTHER SIDE\s*$", "", text, flags=re.IGNORECASE)
-    # Strip keyword/stat block at end (inline format from extraction_metadata)
-    # Find the last digit-stat pattern then the team keyword block
-    # Generic: find "N APL WOUNDS SAVE MOVE" 
-    m = re.search(r"\d+\s+APL\s+WOUNDS\s+SAVE\s+MOVE", text)
-    if m:
-        # Back up to find start of keyword section
-        prefix = text[: m.start()]
-        # Keywords usually start with TEAM_NAME comma-separated
-        # Find the last occurrence of a comma-separated uppercase block
-        kw = re.search(r"[A-Z][A-Z\s]+,\s*[A-Z]", prefix[max(0, len(prefix) - 200) :])
-        if kw:
-            cut = len(prefix) - 200 + kw.start() if len(prefix) > 200 else kw.start()
-            text = text[:cut].strip()
-        else:
-            text = prefix.strip()
-
-    # Find end of last weapon stat (ATK HIT DMG pattern)
-    last_stat = 0
-    for m in re.finditer(r"\d\s+\d\+\s+\d/\d", text):
-        last_stat = m.end()
-    if last_stat == 0:
-        return ""
-    remainder = text[last_stat:].strip()
-    # Strip leading weapon rule names and dashes
-    remainder = re.sub(r"^[\s\-]+", "", remainder)
-    rule_pat = "|".join(re.escape(r) for r in known_rule_names)
-    while True:
-        m = re.match(
-            r'^(?:Range\s+\d+"?|' + rule_pat + r")[\s,]*",
-            remainder,
-            re.IGNORECASE,
-        )
-        if m:
-            remainder = remainder[m.end() :].strip()
-        else:
-            break
-    remainder = re.sub(r"^\*\s*", "", remainder).strip()
-    return remainder
-
-
-def _extract_rules_from_backpage(page_text: str) -> str:
-    """Extract ability/action text from a PDF back-side page."""
-    text = _clean_ocr(page_text)
-    # Normalize newlines to spaces for consistent parsing
-    text = re.sub(r"\s*\n\s*", " ", text)
-    text = _strip_stat_block_suffix(text)
-    return text.strip()
-
-
-def _parse_ability_entries(rules_text: str):
-    """Parse abilities and actions from rules text."""
-    if not rules_text:
-        return [], []
+def _abilities_from_roster(op: dict) -> tuple[list, list]:
+    """Extract abilities and actions from a roster operative entry."""
     abilities = []
     actions = []
-    entries = []
-    # Actions: UPPERCASE WORDS (possibly hyphenated) NAP
-    for m in re.finditer(r"([A-Z][A-Z\s\-]{2,}?)\s+(\d+AP)\b", rules_text):
-        entries.append((m.start(), "action", m.group(1).strip().title(), m.group(2), m.end()))
-    # Abilities: TitleCase Name:
-    for m in re.finditer(r"([A-Z][a-z][\w\s'-]*?):\s", rules_text):
-        entries.append((m.start(), "ability", m.group(1).strip(), None, m.end()))
-    entries.sort(key=lambda e: e[0])
-    for i, (start, etype, name, ap, text_start) in enumerate(entries):
-        text_end = entries[i + 1][0] if i + 1 < len(entries) else len(rules_text)
-        text = rules_text[text_start:text_end].strip()
-        if etype == "action":
-            actions.append({"name": f"{name} ({ap})", "text": text})
-        else:
+    for pa in op.get("passive_abilities", []):
+        name = _normalize_text(pa.get("name", ""))
+        text = _normalize_text(pa.get("description", ""))
+        if name:
             abilities.append({"name": name, "text": text})
+    for ua in op.get("unique_actions", []):
+        name = _normalize_text(ua.get("name", ""))
+        text = _normalize_text(ua.get("description", ""))
+        if name:
+            actions.append({"name": name, "text": text})
     return abilities, actions
-
-
-def _find_backside_pages(pdf_path: Path) -> dict[str, str]:
-    """Find back-side pages in a datacards PDF.
-    
-    Returns dict mapping operative slug to back-page text.
-    Back pages don't start with 'NAME' and have an operative name in their stat block.
-    """
-    if fitz is None or not pdf_path.exists():
-        return {}
-    doc = fitz.open(str(pdf_path))
-    backpages = {}
-    for i in range(len(doc)):
-        text = doc[i].get_text().strip()
-        # Back pages don't start with 'NAME' (the header row of the stats table)
-        if text.startswith("NAME"):
-            continue
-        # Must have a stat block to identify the operative
-        name_match = re.search(r"([A-Z][\w\s'-]+?)\n\s*\d+\s*\nAPL\nWOUNDS", text)
-        if not name_match:
-            continue
-        op_name = name_match.group(1).strip()
-        slug = roster_slug(op_name)
-        backpages[slug] = _clean_ocr(text)
-    doc.close()
-    return backpages
 
 
 # ── TTS Description builder ──
@@ -301,7 +205,7 @@ def build_operative_data(
         "Save": parse_save(op["save"]),
         "Wounds": op["wounds"],
     }
-    keywords = ["Operative"] + op["keywords"]
+    keywords = ["Operative"] + [_normalize_text(k) for k in op["keywords"]]
     weapons = []
     weapon_rules = {}
     for w in op["weapons"]:
@@ -325,7 +229,7 @@ def build_operative_data(
     name_parts = op["name"].split()
     # The card nickname already has the right name, but we need a display name
     # Use title-case of the full name
-    display_name = op["name"].title()
+    display_name = _normalize_text(op["name"].title())
 
     description = build_description(display_name, stats, keywords, weapons, abilities, actions)
 
@@ -417,10 +321,7 @@ def patch_team(
 ) -> tuple[int, int]:
     """Patch all datacards for a team. Returns (patched_count, total_count)."""
     
-    # Read from old output location (where TTS currently uses)
     roster_path = OUTPUT_DIR / team / "statlines" / "roster.json"
-    meta_path = METADATA_DIR / team / "extraction_metadata.json"
-    pdf_path = PROCESSED_DIR / team / f"{team}-datacards.pdf"
     tts_team_dir = TTS_DIR / team
     
     if not roster_path.exists():
@@ -434,36 +335,6 @@ def patch_team(
     with open(roster_path, "r", encoding="utf-8") as f:
         roster = json.load(f)
     roster_lookup = build_roster_lookup(roster)
-    
-    # Load metadata abilities (front-side)
-    meta_abilities = {}
-    known_rule_names = sorted(
-        set(k.split()[0] for k in all_rules.keys()),
-        key=len, reverse=True,
-    )
-    if meta_path.exists():
-        try:
-            with open(meta_path, "r", encoding="utf-8") as f:
-                meta = json.load(f)
-            dc = meta.get("card_types", {}).get("datacards", {})
-            for slug, card in dc.items():
-                ft = card.get("extraction", {}).get("full_text", "")
-                rules = _extract_rules_from_front(ft, known_rule_names)
-                abilities, actions = _parse_ability_entries(rules)
-                meta_abilities[slug] = {"abilities": abilities, "actions": actions}
-        except (json.JSONDecodeError, KeyError) as e:
-            log.warning("%s: failed to parse extraction_metadata.json: %s", team, e)
-    
-    # Load back-side abilities from PDF
-    backpages = _find_backside_pages(pdf_path)
-    for slug, back_text in backpages.items():
-        rules = _extract_rules_from_backpage(back_text)
-        back_abilities, back_actions = _parse_ability_entries(rules)
-        if slug in meta_abilities:
-            meta_abilities[slug]["abilities"].extend(back_abilities)
-            meta_abilities[slug]["actions"].extend(back_actions)
-        else:
-            meta_abilities[slug] = {"abilities": back_abilities, "actions": back_actions}
     
     # Find TTS card box JSON files
     tts_files = list(tts_team_dir.glob("*.json"))
@@ -484,27 +355,21 @@ def patch_team(
             nickname = card.get("Nickname", "")
             total_cards += 1
             
-            # Match card to metadata key (for abilities)
-            meta_key = nickname  # direct match first
-            if meta_key not in meta_abilities:
-                prefix = team + "-"
-                if nickname.startswith(prefix):
-                    meta_key = nickname[len(prefix):]
-            
-            # Match card to roster operative (for stats/weapons)
+            # Match card to roster operative
             op = match_card_to_roster(nickname, team, roster_lookup)
             if op is None:
                 log.debug("%s: no roster match for card '%s'", team, nickname)
                 continue
             
-            # Get abilities
-            entry = meta_abilities.get(meta_key, {})
-            abilities = entry.get("abilities", [])
-            actions = entry.get("actions", [])
+            # Get abilities from roster
+            abilities, actions = _abilities_from_roster(op)
             
             # Build GMNotes data
             data = build_operative_data(op, all_rules, abilities, actions)
-            gmnotes_json = json.dumps(data, separators=(",", ":"))
+            gmnotes_json = json.dumps(data, separators=(",", ":"), ensure_ascii=False)
+            # Normalize any remaining Unicode chars (from weapon names, WR text, etc.)
+            for uchar, replacement in _UNICODE_NORMALIZE.items():
+                gmnotes_json = gmnotes_json.replace(uchar, replacement)
             
             card["GMNotes"] = gmnotes_json
             card["LuaScript"] = lua_script
@@ -553,8 +418,6 @@ def main():
         teams = discover_teams()
     
     log.info("Teams to process: %d", len(teams))
-    if fitz is None:
-        log.warning("PyMuPDF not installed — back-side abilities will be skipped")
     
     total_patched = 0
     total_cards = 0
