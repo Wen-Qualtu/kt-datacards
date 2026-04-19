@@ -192,12 +192,14 @@ def build_description(name: str, stats: dict, keywords: list,
 
 
 def _build_selection_for_gmnotes(
-    selection_groups: list[list[str]], weapons: list[dict]
+    selection_groups: list[list[str]], weapons: list[dict],
+    exclusive_sets: list[list[int]] | None = None,
 ) -> dict | None:
     """Transform selection groups into indexed format for TTS GMNotes.
 
     Returns {"groups": [[{"label": str, "weapons": [int]}]], "fixed": [int]}
     where weapon indices are 0-based into the weapons list.
+    Optionally includes "exclusive_sets" when groups have an either/or relationship.
     """
     if not selection_groups or not weapons:
         return None
@@ -209,8 +211,8 @@ def _build_selection_for_gmnotes(
     for group in selection_groups:
         group_options = []
         for option_label in group:
-            # Split "; " combos into individual weapon fragments
-            fragments = [f.strip().lower() for f in option_label.split(";")]
+            # Split "; " or " and " combos into individual weapon fragments
+            fragments = [f.strip().lower() for f in re.split(r'\s*;\s*|\s+and\s+', option_label)]
             matched: set[int] = set()
             for frag in fragments:
                 # Handle "X or Y" alternatives within a fragment
@@ -226,7 +228,10 @@ def _build_selection_for_gmnotes(
     # Weapons not covered by any option are always included
     fixed = [i for i in range(len(weapons)) if i not in all_matched]
 
-    return {"groups": result_groups, "fixed": fixed}
+    result = {"groups": result_groups, "fixed": fixed}
+    if exclusive_sets:
+        result["exclusive_sets"] = exclusive_sets
+    return result
 
 
 # ── Per-operative data builder ──
@@ -237,6 +242,7 @@ def build_operative_data(
     abilities: list,
     actions: list,
     selection: list | None = None,
+    exclusive_sets: list[list[int]] | None = None,
 ) -> dict:
     stats = {
         "APL": op["apl"],
@@ -283,7 +289,7 @@ def build_operative_data(
         "description": description,
     }
     if selection:
-        indexed = _build_selection_for_gmnotes(selection, weapons)
+        indexed = _build_selection_for_gmnotes(selection, weapons, exclusive_sets)
         if indexed:
             result["selection"] = indexed
     return result
@@ -380,6 +386,7 @@ def patch_team(
         roster = json.load(f)
     roster_lookup = build_roster_lookup(roster)
     selection_lookup = roster.get("selection", {})
+    exclusive_sets_lookup = roster.get("exclusive_sets", {})
     
     # Find TTS card box JSON files
     tts_files = list(tts_team_dir.glob("*.json"))
@@ -411,7 +418,8 @@ def patch_team(
             
             # Build GMNotes data
             op_selection = selection_lookup.get(op["name"], [])
-            data = build_operative_data(op, all_rules, abilities, actions, op_selection)
+            op_exclusive_sets = exclusive_sets_lookup.get(op["name"])
+            data = build_operative_data(op, all_rules, abilities, actions, op_selection, op_exclusive_sets)
             gmnotes_json = json.dumps(data, separators=(",", ":"), ensure_ascii=False)
             # Normalize any remaining Unicode chars (from weapon names, WR text, etc.)
             for uchar, replacement in _UNICODE_NORMALIZE.items():

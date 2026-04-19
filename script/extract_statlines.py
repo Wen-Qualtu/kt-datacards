@@ -641,10 +641,13 @@ def _parse_operative_selection(team: str, roster_names: list[str]) -> dict:
         # ── "Or" alternate sets ──
         if re.match(r"^Or\s+the\s+following\s+option", line, re.I):
             if current_op is not None:
+                raw_selection.setdefault(current_op, []).append(["__OR__"])
                 _start_new_group(current_op)
+                expect_from_each = False
             continue
         if re.match(r"^Or\s+one\s+option\s+from\s+each", line, re.I):
             if current_op is not None:
+                raw_selection.setdefault(current_op, []).append(["__OR__"])
                 expect_from_each = True
             continue
 
@@ -658,6 +661,9 @@ def _parse_operative_selection(team: str, roster_names: list[str]) -> dict:
                 continue
 
             m = re.match(r"\u2198\s*\d+\s+.+?\s{2,}([\w][\w\s'\u2019-]*?)\s+operative", line)
+            if not m:
+                # Fallback for wrapped headers where double-space is lost
+                m = re.match(r"\u2198\s*\d+\s+.*?([\w][\w\u2019-]+(?:-[\w]+)*)\s+operative", line)
             if m:
                 current_op = m.group(1).strip()
                 if "one option from each" in line:
@@ -669,6 +675,10 @@ def _parse_operative_selection(team: str, roster_names: list[str]) -> dict:
                     in_leader_options = True
                     expect_from_each = False
                 elif re.search(r"with\s+.+\s+and\s+one\s+of\s+the\s+following", line, re.I):
+                    raw_selection.setdefault(current_op, [[]])
+                    in_leader_options = True
+                    expect_from_each = False
+                elif re.search(r"with\s+the\s+following", line, re.I):
                     raw_selection.setdefault(current_op, [[]])
                     in_leader_options = True
                     expect_from_each = False
@@ -753,9 +763,23 @@ def _parse_operative_selection(team: str, roster_names: list[str]) -> dict:
                     _add_to_current_group(current_op, content)
             continue
 
-    # ── Clean up empty groups ──
-    for op_name in raw_selection:
-        raw_selection[op_name] = [g for g in raw_selection[op_name] if g]
+    # ── Clean up empty groups and compute exclusive sets ──
+    exclusive_sets_map: dict[str, list[list[int]]] = {}
+    for op_name in list(raw_selection.keys()):
+        clean_groups: list[list[str]] = []
+        sets: list[list[int]] = [[]]
+        idx = 0
+        for g in raw_selection[op_name]:
+            if g == ["__OR__"]:
+                sets.append([])
+            elif g:
+                clean_groups.append(g)
+                sets[-1].append(idx)
+                idx += 1
+        raw_selection[op_name] = clean_groups
+        # Only record exclusive_sets when there are 2+ non-empty sets
+        if len(sets) > 1 and all(s for s in sets):
+            exclusive_sets_map[op_name] = sets
 
     # ── Merge duplicate fixed-loadout operatives into selection groups ──
     for op_name, loadouts in fixed_loadouts.items():
@@ -787,6 +811,7 @@ def _parse_operative_selection(team: str, roster_names: list[str]) -> dict:
 
     # Match short names to full roster names
     selection: dict[str, list[list[str]]] = {}
+    exclusive_sets_out: dict[str, list[list[int]]] = {}
     for short_name, groups in raw_selection.items():
         short_upper = short_name.upper()
         matched = None
@@ -818,10 +843,12 @@ def _parse_operative_selection(team: str, roster_names: list[str]) -> dict:
                 selection[matched].extend(groups)
             else:
                 selection[matched] = groups
+            if short_name in exclusive_sets_map:
+                exclusive_sets_out[matched] = exclusive_sets_map[short_name]
         else:
             log.debug("  Selection operative '%s' not matched to roster", short_name)
 
-    return selection
+    return selection, exclusive_sets_out
 
 
 # ── Per-team extraction ──
@@ -898,12 +925,13 @@ def extract_team(team: str, force: bool = False) -> dict | None:
 
     # Phase 3: Parse operative selection card for weapon loadout options
     roster_names = [op["name"] for op in operatives]
-    selection = _parse_operative_selection(team, roster_names)
+    selection, exclusive_sets = _parse_operative_selection(team, roster_names)
 
     roster = {
         "team": team,
         "generated": datetime.now(timezone.utc).isoformat(),
         "selection": selection,
+        "exclusive_sets": exclusive_sets,
         "operative_count": len(operatives),
         "operatives": operatives,
     }

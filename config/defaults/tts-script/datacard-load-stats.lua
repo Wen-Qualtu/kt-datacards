@@ -10,6 +10,8 @@ local pendingModel = nil
 local pendingPlayerColor = nil
 local selectionData = nil
 local groupSelections = {}
+local exclusiveSets = {}
+local activeSet = 1
 
 function onLoad()
     self.addContextMenuItem("Load stats to model", loadStatsToModel)
@@ -106,31 +108,69 @@ end
 
 -- weapon selection popup
 
+function findSetForGroup(g)
+    for s, set in ipairs(exclusiveSets) do
+        for _, sg in ipairs(set) do
+            if sg == g then return s end
+        end
+    end
+    return 1
+end
+
+function isGroupInActiveSet(g)
+    if #exclusiveSets == 0 then return true end
+    for _, sg in ipairs(exclusiveSets[activeSet] or {}) do
+        if sg == g then return true end
+    end
+    return false
+end
+
 function buildSelectionPanelXml(selection)
     local rows = ""
     local totalOptions = 0
+    local orDividers = 0
+
+    -- Track which groups start a new exclusive set (for OR dividers)
+    local setStartGroups = {}
+    if #exclusiveSets > 1 then
+        for s = 2, #exclusiveSets do
+            local firstGroup = exclusiveSets[s][1]
+            setStartGroups[firstGroup] = true
+        end
+    end
 
     for g, group in ipairs(selection.groups) do
-        if g > 1 then
+        local inActive = isGroupInActiveSet(g)
+
+        -- OR divider between exclusive sets
+        if setStartGroups[g] then
+            rows = rows .. '<Text id="or_div" fontSize="10" fontStyle="Bold" color="#FF6600" '
+                .. 'preferredHeight="20" alignment="MiddleCenter">---- OR ----</Text>\n'
+            orDividers = orDividers + 1
+        elseif g > 1 then
             rows = rows .. '<Image color="rgba(255,255,255,0.15)" preferredHeight="1" />\n'
         end
         if #selection.groups > 1 then
-            rows = rows .. '<Text fontSize="10" fontStyle="Bold" color="#AAAAAA" '
-                .. 'preferredHeight="18" alignment="MiddleLeft">Choose one:</Text>\n'
+            local headerColor = inActive and "#AAAAAA" or "#555555"
+            rows = rows .. string.format(
+                '<Text id="hdr_%d" fontSize="10" fontStyle="Bold" color="%s" '
+                .. 'preferredHeight="18" alignment="MiddleLeft">Choose one:</Text>\n',
+                g, headerColor)
         end
         for o, option in ipairs(group) do
-            local isOn = (o == 1) and "true" or "false"
+            local isOn = (inActive and o == 1) and "true" or "false"
+            local textColor = inActive and "#FFFFFF" or "#666666"
             local label = option.label or ("Option " .. o)
             label = label:gsub("&", "&amp;"):gsub("<", "&lt;"):gsub(">", "&gt;"):gsub('"', "&quot;")
-            -- Replace "; " combo separator with " + " for readability
             label = label:gsub("; ", " + ")
 
             rows = rows .. string.format(
-                '<Toggle id="sel_%d_%d" isOn="%s" onValueChanged="onSelectionToggle" '
-                .. 'fontSize="10" textColor="#FFFFFF" colors="#444444|#666666|#333333|#222222" '
+                '<Toggle id="sel_%d_%d" isOn="%s" '
+                .. 'onValueChanged="onSelectionToggle" '
+                .. 'fontSize="10" textColor="%s" colors="#444444|#666666|#333333|#222222" '
                 .. 'toggleWidth="16" toggleHeight="16">'
                 .. '%s</Toggle>\n',
-                g, o, isOn, label
+                g, o, isOn, textColor, label
             )
             totalOptions = totalOptions + 1
         end
@@ -164,13 +204,45 @@ function buildSelectionPanelXml(selection)
     </HorizontalLayout>
   </VerticalLayout>
 </Panel>
-]], 64 + totalOptions * 22 + #selection.groups * 20, headerText, rows)
+]], 64 + totalOptions * 22 + #selection.groups * 20 + orDividers * 22, headerText, rows)
 end
 
 function onSelectionToggle(player, value, id)
     local g, o = id:match("sel_(%d+)_(%d+)")
     g, o = tonumber(g), tonumber(o)
     if not g or not o then return end
+
+    -- Handle exclusive set switching
+    if #exclusiveSets > 1 and value == "True" then
+        local clickedSet = findSetForGroup(g)
+        if clickedSet ~= activeSet then
+            activeSet = clickedSet
+            -- Deselect and dim toggles in other sets; brighten active set
+            for s, set in ipairs(exclusiveSets) do
+                if s ~= activeSet then
+                    for _, sg in ipairs(set) do
+                        groupSelections[sg] = nil
+                        self.UI.setAttribute("hdr_" .. sg, "color", "#555555")
+                        for i = 1, #selectionData.groups[sg] do
+                            self.UI.setAttribute("sel_" .. sg .. "_" .. i, "isOn", "false")
+                            self.UI.setAttribute("sel_" .. sg .. "_" .. i, "textColor", "#666666")
+                        end
+                    end
+                else
+                    for _, sg in ipairs(set) do
+                        self.UI.setAttribute("hdr_" .. sg, "color", "#AAAAAA")
+                        for i = 1, #selectionData.groups[sg] do
+                            self.UI.setAttribute("sel_" .. sg .. "_" .. i, "textColor", "#FFFFFF")
+                        end
+                        if not groupSelections[sg] and sg ~= g then
+                            groupSelections[sg] = 1
+                            self.UI.setAttribute("sel_" .. sg .. "_1", "isOn", "true")
+                        end
+                    end
+                end
+            end
+        end
+    end
 
     if value == "True" then
         groupSelections[g] = o
@@ -203,12 +275,26 @@ function onApplySelection(player, value, id)
         end
     end
 
+    -- Determine which groups to include (active set only, or all if no exclusive sets)
+    local activeGroups = {}
+    if #exclusiveSets > 0 then
+        for _, g in ipairs(exclusiveSets[activeSet] or {}) do
+            activeGroups[g] = true
+        end
+    else
+        for g = 1, #selectionData.groups do
+            activeGroups[g] = true
+        end
+    end
+
     for g, group in ipairs(selectionData.groups) do
-        local sel = groupSelections[g] or 1
-        local option = group[sel]
-        if option and option.weapons then
-            for _, idx in ipairs(option.weapons) do
-                weaponSet[idx + 1] = true
+        if activeGroups[g] then
+            local sel = groupSelections[g] or 1
+            local option = group[sel]
+            if option and option.weapons then
+                for _, idx in ipairs(option.weapons) do
+                    weaponSet[idx + 1] = true
+                end
             end
         end
     end
@@ -444,9 +530,29 @@ function loadStatsToModel(playerColor)
         pendingPlayerColor = playerColor
         selectionData = data.selection
 
+        -- Initialize exclusive sets (convert 0-based to 1-based)
+        exclusiveSets = {}
+        if data.selection.exclusive_sets then
+            for _, set in ipairs(data.selection.exclusive_sets) do
+                local luaSet = {}
+                for _, idx in ipairs(set) do
+                    table.insert(luaSet, idx + 1)
+                end
+                table.insert(exclusiveSets, luaSet)
+            end
+        end
+        activeSet = 1
+
+        -- Pre-select first option in each group of the active set
         groupSelections = {}
-        for g = 1, #data.selection.groups do
-            groupSelections[g] = 1  -- Default to first option
+        if #exclusiveSets > 0 then
+            for _, g in ipairs(exclusiveSets[activeSet]) do
+                groupSelections[g] = 1
+            end
+        else
+            for g = 1, #data.selection.groups do
+                groupSelections[g] = 1
+            end
         end
 
         self.UI.setXml(buildSelectionPanelXml(data.selection))
