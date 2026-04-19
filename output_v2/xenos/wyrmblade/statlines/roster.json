@@ -1,6 +1,54 @@
 {
   "team": "wyrmblade",
-  "generated": "2026-04-14T11:29:17.227780+00:00",
+  "generated": "2026-04-19T11:52:36.744119+00:00",
+  "selection": {
+    "NEOPHYTE LEADER": [
+      [
+        "Autogun; gun butt",
+        "Shotgun; gun butt"
+      ],
+      [
+        "Bolt pistol",
+        "master-crafted autopistol",
+        "web pistol"
+      ],
+      [
+        "Chainsword",
+        "power maul",
+        "power pick"
+      ]
+    ],
+    "KELERMORPH": [],
+    "LOCUS": [],
+    "NEOPHYTE GUNNER": [
+      [
+        "flamer and gun butt",
+        "grenade launcher and gun butt",
+        "webber and gun butt"
+      ]
+    ],
+    "NEOPHYTE HEAVY GUNNER": [
+      [
+        "heavy stubber and gun butt",
+        "mining laser and gun butt",
+        "seismic cannon and gun butt"
+      ]
+    ],
+    "NEOPHYTE ICON BEARER": [
+      [
+        "Autogun; gun butt",
+        "Shotgun; gun butt"
+      ]
+    ],
+    "SANCTUS SNIPER": [],
+    "SANCTUS TALON": [],
+    "NEOPHYTE WARRIOR": [
+      [
+        "Autogun; gun butt",
+        "Shotgun; gun butt"
+      ]
+    ]
+  },
   "operative_count": 9,
   "operatives": [
     {
@@ -98,6 +146,27 @@
       "wounds": 9,
       "weapons": [
         {
+          "name": "Liberator autostubs (hypersense)",
+          "attacks": "5",
+          "hit": "3+",
+          "damage": "3/4",
+          "special_rules": "Range 6\", Saturate, Seek Light, Hypersense*"
+        },
+        {
+          "name": "Liberator autostubs (long range)",
+          "attacks": "4",
+          "hit": "4+",
+          "damage": "3/4",
+          "special_rules": "Piercing Crits 1, Rending"
+        },
+        {
+          "name": "Liberator autostubs (short range)",
+          "attacks": "5",
+          "hit": "3+",
+          "damage": "3/4",
+          "special_rules": "Range 8\", Piercing 1, Rending"
+        },
+        {
           "name": "Kelermorph knife",
           "attacks": "3",
           "hit": "4+",
@@ -192,10 +261,11 @@
           "special_rules": "Range 8\", Saturate, Torrent 2\""
         },
         {
-          "name": "Grenade launcher (frag) Blast 2\"",
+          "name": "Grenade launcher (frag)",
           "attacks": "4",
           "hit": "4+",
-          "damage": "2/4"
+          "damage": "2/4",
+          "special_rules": "Blast 2\""
         },
         {
           "name": "Grenade launcher (krak)",
@@ -257,11 +327,11 @@
           "special_rules": "Heavy (Dash only), Piercing 1"
         },
         {
-          "name": "Seismic cannon (long-wave) Blast 1\",",
+          "name": "Seismic cannon (long-wave)",
           "attacks": "6",
           "hit": "4+",
           "damage": "2/2",
-          "special_rules": "Heavy (Dash only), Stun"
+          "special_rules": "Blast 1\", Heavy (Dash only), Stun"
         },
         {
           "name": "Seismic cannon (short-wave)",
@@ -354,6 +424,13 @@
           "attacks": "4",
           "hit": "3+",
           "damage": "3/4"
+        },
+        {
+          "name": "Sanctus sniper rifle (stationary)",
+          "attacks": "4",
+          "hit": "2+",
+          "damage": "3/3",
+          "special_rules": "Devastating 3, Heavy (Dash only), Silent"
         },
         {
           "name": "Fists",

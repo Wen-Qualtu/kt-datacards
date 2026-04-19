@@ -1,10 +1,19 @@
 -- kt-datacards: Load Stats to Model
 -- Card stores operative data in GMNotes (JSON).
 -- Context menu "Load stats to model" finds a KTUIMini on top,
+-- shows a weapon selection popup (if multiple weapons),
 -- compares current vs new, reports diffs, and applies changes.
+
+-- Persistent state for selection flow
+local pendingData = nil
+local pendingModel = nil
+local pendingPlayerColor = nil
+local selectionData = nil
+local groupSelections = {}
 
 function onLoad()
     self.addContextMenuItem("Load stats to model", loadStatsToModel)
+    self.addContextMenuItem("Load stats (all)", loadStatsToModelAll)
 end
 
 -- helpers
@@ -53,6 +62,196 @@ function tableEq(a, b)
         if a[k] == nil then return false end
     end
     return true
+end
+
+function rebuildDescription(data)
+    local lines = {}
+    table.insert(lines, string.format(
+        "[D36B3E][[84E680]APL[-] [ffffff]%s[-]] [[84E680]MOVE[-] [ffffff]%s\"[-]]",
+        tostring(data.stats.APL), tostring(data.stats.Move)))
+    table.insert(lines, string.format(
+        "[[84E680]SAVE[-] [ffffff]%s+[-]] [[84E680]WOUNDS[-] [ffffff]%s[-]][-]",
+        tostring(data.stats.Save), tostring(data.stats.Wounds)))
+    if data.keywords then
+        table.insert(lines, "[C5C5C5]" .. table.concat(data.keywords, ", ") .. "[-]")
+    end
+    table.insert(lines, "[31B32B]Weapons[-]")
+    if data.weapons then
+        for _, w in ipairs(data.weapons) do
+            table.insert(lines, w.name or "?")
+            local s = w.stats or {}
+            table.insert(lines, string.format("[84E680]ATK[-] %s [84E680]HIT[-] %s [84E680]DMG[-] %s",
+                s.ATK or "?", s.HIT or "?", s.DMG or "?"))
+            if s.WR and s.WR ~= "" then
+                table.insert(lines, "[84E680]WR[-]: " .. s.WR)
+            end
+            table.insert(lines, "")
+        end
+    end
+    if data.abilities and #data.abilities > 0 then
+        table.insert(lines, "---")
+        table.insert(lines, "[31B32B]Abilities[-]")
+        for _, ab in ipairs(data.abilities) do
+            table.insert(lines, "- [EF8450]" .. (ab.name or "?") .. "[-]")
+        end
+    end
+    if data.actions and #data.actions > 0 then
+        table.insert(lines, "[31B32B]Actions[-]")
+        for _, ac in ipairs(data.actions) do
+            table.insert(lines, "- [D46D6C]" .. (ac.name or "?") .. "[-]")
+        end
+    end
+    return table.concat(lines, "\n")
+end
+
+-- weapon selection popup
+
+function buildSelectionPanelXml(selection)
+    local rows = ""
+    local totalOptions = 0
+
+    for g, group in ipairs(selection.groups) do
+        if g > 1 then
+            rows = rows .. '<Image color="rgba(255,255,255,0.15)" preferredHeight="1" />\n'
+        end
+        if #selection.groups > 1 then
+            rows = rows .. '<Text fontSize="10" fontStyle="Bold" color="#AAAAAA" '
+                .. 'preferredHeight="18" alignment="MiddleLeft">Choose one:</Text>\n'
+        end
+        for o, option in ipairs(group) do
+            local isOn = (o == 1) and "true" or "false"
+            local label = option.label or ("Option " .. o)
+            label = label:gsub("&", "&amp;"):gsub("<", "&lt;"):gsub(">", "&gt;"):gsub('"', "&quot;")
+            -- Replace "; " combo separator with " + " for readability
+            label = label:gsub("; ", " + ")
+
+            rows = rows .. string.format(
+                '<Toggle id="sel_%d_%d" isOn="%s" onValueChanged="onSelectionToggle" '
+                .. 'fontSize="10" textColor="#FFFFFF" colors="#444444|#666666|#333333|#222222" '
+                .. 'toggleWidth="16" toggleHeight="16">'
+                .. '%s</Toggle>\n',
+                g, o, isOn, label
+            )
+            totalOptions = totalOptions + 1
+        end
+    end
+
+    local headerText = #selection.groups > 1 and "Select Loadout" or "Select Weapon"
+
+    return string.format([[
+<Panel id="selectionPanel" active="true"
+       width="224" height="%d"
+       color="rgba(0,0,0,0.92)"
+       padding="6 6 6 6"
+       position="0 0 -50"
+       rotation="0 0 180"
+       allowDragging="true">
+  <VerticalLayout spacing="2" childForceExpandWidth="true" childForceExpandHeight="false">
+    <Text fontSize="12" fontStyle="Bold" color="#FF9900"
+          alignment="MiddleCenter" preferredHeight="20">%s</Text>
+    <Image color="rgba(255,255,255,0.15)" preferredHeight="1" />
+    %s
+    <Image color="rgba(255,255,255,0.15)" preferredHeight="1" />
+    <HorizontalLayout spacing="4" preferredHeight="24">
+      <Button id="btnApply" onClick="onApplySelection"
+              fontSize="10" fontStyle="Bold"
+              colors="#2E7D32|#388E3C|#1B5E20|#555555"
+              textColor="#FFFFFF">Apply</Button>
+      <Button id="btnCancel" onClick="onCancelSelection"
+              fontSize="10"
+              colors="#C62828|#D32F2F|#B71C1C|#555555"
+              textColor="#FFFFFF">Cancel</Button>
+    </HorizontalLayout>
+  </VerticalLayout>
+</Panel>
+]], 64 + totalOptions * 22 + #selection.groups * 20, headerText, rows)
+end
+
+function onSelectionToggle(player, value, id)
+    local g, o = id:match("sel_(%d+)_(%d+)")
+    g, o = tonumber(g), tonumber(o)
+    if not g or not o then return end
+
+    if value == "True" then
+        groupSelections[g] = o
+        -- Radio behavior: turn off other options in same group
+        if selectionData and selectionData.groups and selectionData.groups[g] then
+            for i = 1, #selectionData.groups[g] do
+                if i ~= o then
+                    self.UI.setAttribute("sel_" .. g .. "_" .. i, "isOn", "false")
+                end
+            end
+        end
+    else
+        -- Prevent deselecting the current selection (radio: always one selected)
+        if groupSelections[g] == o then
+            self.UI.setAttribute(id, "isOn", "true")
+        end
+    end
+end
+
+function onApplySelection(player, value, id)
+    self.UI.setXml("")
+    if not pendingData or not pendingModel or not selectionData then return end
+
+    -- Collect weapon indices from selections + fixed weapons
+    local weaponSet = {}
+
+    if selectionData.fixed then
+        for _, idx in ipairs(selectionData.fixed) do
+            weaponSet[idx + 1] = true  -- Convert 0-based to Lua 1-based
+        end
+    end
+
+    for g, group in ipairs(selectionData.groups) do
+        local sel = groupSelections[g] or 1
+        local option = group[sel]
+        if option and option.weapons then
+            for _, idx in ipairs(option.weapons) do
+                weaponSet[idx + 1] = true
+            end
+        end
+    end
+
+    -- Filter weapons to selected set
+    local selectedWeapons = {}
+    for i, w in ipairs(pendingData.weapons) do
+        if weaponSet[i] then
+            table.insert(selectedWeapons, w)
+        end
+    end
+    pendingData.weapons = selectedWeapons
+
+    -- Rebuild description with filtered weapons
+    pendingData.description = rebuildDescription(pendingData)
+
+    local changes = diffAndApply(pendingModel, pendingData)
+
+    if #changes == 0 then
+        broadcastToColor("Already up to date.", pendingPlayerColor, Color.White)
+    elseif #changes == 1 then
+        broadcastToColor("Updated: " .. changes[1], pendingPlayerColor, Color.Green)
+    else
+        local msg = "Updated:\n"
+        for _, c in ipairs(changes) do
+            msg = msg .. " - " .. c .. "\n"
+        end
+        broadcastToColor(msg, pendingPlayerColor, Color.Green)
+    end
+
+    pendingData = nil
+    pendingModel = nil
+    pendingPlayerColor = nil
+    selectionData = nil
+end
+
+function onCancelSelection(player, value, id)
+    self.UI.setXml("")
+    broadcastToColor("Selection cancelled.", pendingPlayerColor or player.color, Color.White)
+    pendingData = nil
+    pendingModel = nil
+    pendingPlayerColor = nil
+    selectionData = nil
 end
 
 -- diff and apply
@@ -107,27 +306,26 @@ function diffAndApply(model, data)
         ms.info.categories = data.keywords
     end
 
-    -- 4. Weapons
+    -- 4. Weapons (always clear and replace)
     if data.weapons then
-        local oldW = ms.info.weapons or {}
-        if not tableEq(oldW, data.weapons) then
-            local weaponNames = {}
-            for _, w in ipairs(data.weapons) do
-                table.insert(weaponNames, w.plain_name or "?")
-            end
-            table.insert(changes, string.format("Weapons: %s", table.concat(weaponNames, ", ")))
-            ms.info.weapons = data.weapons
-
-            local ups = {}
-            for _, w in ipairs(data.weapons) do
-                table.insert(ups, w.plain_name or w.name)
-            end
-            ms.info.upgrades = ups
+        local weaponNames = {}
+        for _, w in ipairs(data.weapons) do
+            table.insert(weaponNames, w.plain_name or "?")
         end
+        table.insert(changes, string.format("Weapons: %s", table.concat(weaponNames, ", ")))
 
-        if data.weapon_rules and not tableEq(ms.info.rules, data.weapon_rules) then
-            table.insert(changes, "Weapon rules updated")
+        ms.info.weapons = data.weapons
+
+        local ups = {}
+        for _, w in ipairs(data.weapons) do
+            table.insert(ups, w.plain_name or w.name)
+        end
+        ms.info.upgrades = ups
+
+        if data.weapon_rules then
             ms.info.rules = data.weapon_rules
+        else
+            ms.info.rules = {}
         end
     end
 
@@ -186,6 +384,40 @@ end
 
 -- main entry
 
+function loadStatsToModelAll(playerColor)
+    local raw = self.getGMNotes()
+    if raw == nil or raw == "" then
+        broadcastToColor("No stat data on this card.", playerColor, Color.Red)
+        return
+    end
+
+    local ok, data = pcall(function() return JSON.decode(raw) end)
+    if not ok or data == nil then
+        broadcastToColor("Failed to parse card data.", playerColor, Color.Red)
+        return
+    end
+
+    local model = findModelOnCard()
+    if model == nil then
+        broadcastToColor("Place a KTUIMini model on this card first.", playerColor, Color.Orange)
+        return
+    end
+
+    -- Apply all weapons directly, ignoring selection
+    local changes = diffAndApply(model, data)
+    if #changes == 0 then
+        broadcastToColor("Already up to date.", playerColor, Color.White)
+    elseif #changes == 1 then
+        broadcastToColor("Updated: " .. changes[1], playerColor, Color.Green)
+    else
+        local msg = "Updated:\n"
+        for _, c in ipairs(changes) do
+            msg = msg .. " - " .. c .. "\n"
+        end
+        broadcastToColor(msg, playerColor, Color.Green)
+    end
+end
+
 function loadStatsToModel(playerColor)
     local raw = self.getGMNotes()
     if raw == nil or raw == "" then
@@ -205,17 +437,33 @@ function loadStatsToModel(playerColor)
         return
     end
 
-    local changes = diffAndApply(model, data)
+    -- Check for selection data (operatives with weapon loadout choices)
+    if data.selection and data.selection.groups and #data.selection.groups > 0 then
+        pendingData = data
+        pendingModel = model
+        pendingPlayerColor = playerColor
+        selectionData = data.selection
 
-    if #changes == 0 then
-        broadcastToColor("Already up to date.", playerColor, Color.White)
-    elseif #changes == 1 then
-        broadcastToColor("Updated: " .. changes[1], playerColor, Color.Green)
-    else
-        local msg = "Updated:\n"
-        for _, c in ipairs(changes) do
-            msg = msg .. " - " .. c .. "\n"
+        groupSelections = {}
+        for g = 1, #data.selection.groups do
+            groupSelections[g] = 1  -- Default to first option
         end
-        broadcastToColor(msg, playerColor, Color.Green)
+
+        self.UI.setXml(buildSelectionPanelXml(data.selection))
+        broadcastToColor("Select loadout, then click Apply.", playerColor, Color.Yellow)
+    else
+        -- No selection choices: apply all weapons directly
+        local changes = diffAndApply(model, data)
+        if #changes == 0 then
+            broadcastToColor("Already up to date.", playerColor, Color.White)
+        elseif #changes == 1 then
+            broadcastToColor("Updated: " .. changes[1], playerColor, Color.Green)
+        else
+            local msg = "Updated:\n"
+            for _, c in ipairs(changes) do
+                msg = msg .. " - " .. c .. "\n"
+            end
+            broadcastToColor(msg, playerColor, Color.Green)
+        end
     end
 end

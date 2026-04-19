@@ -197,6 +197,21 @@ def _parse_weapon_block(block_text: str) -> dict | None:
         return None
 
     lines = [ln.strip() for ln in text.split('\n') if ln.strip()]
+    # Filter out control-character-only lines (e.g. \x07 BEL markers)
+    lines = [ln for ln in lines if re.sub(r'[\x00-\x1f]+', '', ln).strip() or '\t' in ln]
+    # Expand tab-joined name+attacks lines (e.g. "HYLas rotary cannon (sweeping)\t 4")
+    expanded = []
+    for ln in lines:
+        if '\t' in ln:
+            parts = ln.rsplit('\t', 1)
+            name_part = parts[0].strip()
+            atk_part = parts[1].strip()
+            if atk_part.isdigit() and 1 <= int(atk_part) <= 20 and name_part:
+                expanded.append(name_part)
+                expanded.append(atk_part)
+                continue
+        expanded.append(ln)
+    lines = expanded
     if len(lines) >= 4:
         weapon = {"name": lines[0]}
         attacks = hit = damage = None
@@ -478,6 +493,337 @@ def _find_operative_for_backpage(page: fitz.Page) -> str | None:
     return None
 
 
+# ── Operative selection parsing ──
+
+def _find_asterisked_names(doc: fitz.Document) -> list[str]:
+    """Find operative names marked with an asterisk (*) vector drawing.
+
+    Asterisks are rendered as 19-segment vector paths with orange fill
+    (~#f15c22). They appear next to bullet-entry operative names and
+    reference a shared footnote. The footnote marker itself sits at the
+    left margin (x < 15) — those are skipped.
+
+    Scans all pages; page boundaries don't matter.
+    """
+    asterisked: list[str] = []
+
+    for page in doc:
+        # Collect asterisk rects on this page (skip margin footnote markers)
+        asterisk_rects = []
+        for d in page.get_drawings():
+            fill = d.get("fill")
+            if fill and len(d.get("items", [])) == 19:
+                r, g, b = fill
+                if r > 0.8 and g < 0.5 and b < 0.3 and d["rect"].x0 > 15:
+                    asterisk_rects.append(d["rect"])
+
+        if not asterisk_rects:
+            continue
+
+        # Match asterisk Y-positions to bullet-entry operative names
+        for block in page.get_text("dict")["blocks"]:
+            if "lines" not in block:
+                continue
+            for ln in block["lines"]:
+                spans = ln["spans"]
+                line_text = "".join(s["text"] for s in spans)
+                if not line_text.strip().startswith("\u2022"):
+                    continue
+
+                # Extract operative name from bold spans
+                name_parts = [s["text"] for s in spans if "Bold" in s.get("font", "")]
+                if not name_parts:
+                    continue
+
+                op_name = "".join(name_parts).strip()
+                # Skip bullets with inline options (e.g. "GUNNER with one of...")
+                if "with" in line_text.lower() and "option" in line_text.lower():
+                    continue
+
+                line_bbox = ln["bbox"]
+                for arect in asterisk_rects:
+                    if arect.y0 < line_bbox[3] and arect.y1 > line_bbox[1]:
+                        asterisked.append(op_name)
+                        break
+
+    return asterisked
+
+
+def _parse_operative_selection(team: str, roster_names: list[str]) -> dict:
+    """Parse operative selection PDF to extract weapon loadout options.
+
+    Combines text from all pages of the operative-selection PDF, detects
+    operatives with explicit inline options (e.g. "GUNNER with one of the
+    following options:") and operatives marked with an asterisk footnote
+    referencing a shared "* With one of ..." loadout block.
+
+    Format: list[list[str]] — outer list = independent choice groups,
+    inner list = alternatives within that group.
+      - [] — no options (all weapons available)
+      - [["opt1", "opt2"]] — pick 1 from a single group
+      - [["ranged1", "ranged2"], ["melee1", "melee2"]] — pick 1 from each group
+    """
+    pdf_path = PROCESSED_DIR / team / f"{team}-operative-selection.pdf"
+    if not pdf_path.exists():
+        return {}
+
+    doc = fitz.open(pdf_path)
+
+    # Find operatives marked with asterisk vectors across all pages
+    footnote_names = _find_asterisked_names(doc)
+
+    # Combine text from all pages into one stream
+    full_text = "\n".join(page.get_text() for page in doc)
+    doc.close()
+
+    # Normalize: join continuation lines into single logical lines
+    raw_lines = full_text.split("\n")
+    lines: list[str] = []
+    skip_continuation = False
+    in_footnote_block = False
+    footnote_groups: list[list[str]] = []
+    for raw in raw_lines:
+        stripped = raw.strip().replace("\x07", "")
+        if not stripped:
+            skip_continuation = False
+            if in_footnote_block and footnote_groups and footnote_groups[-1]:
+                in_footnote_block = False
+            continue
+        if stripped[0] == "\u2198" or stripped.startswith(
+            ("\u2022", "\u25cb", "\u25cf", "\u25ba")
+        ):
+            # If in footnote block, capture bullet options
+            if in_footnote_block and stripped.startswith("\u2022"):
+                option = re.sub(r"^[\u2022\s\x07]+", "", stripped).strip()
+                if option and footnote_groups:
+                    footnote_groups[-1].append(option)
+                continue
+            lines.append(stripped)
+            skip_continuation = False
+        elif footnote_names and stripped.startswith("With one of the following options:"):
+            # Standalone footnote — capture its options
+            in_footnote_block = True
+            footnote_groups.append([])
+        elif any(stripped.startswith(kw) for kw in (
+            "CONTINUES", "Other than", "Some ", "Your kill", "You cannot",
+            "You can ", "your kill", "you cannot", "RULE CONTIN",
+        )):
+            skip_continuation = True
+            in_footnote_block = False
+        elif re.match(r"^Or\s+(the\s+following|one\s+option)", stripped, re.I):
+            lines.append(stripped)
+            skip_continuation = False
+        elif skip_continuation:
+            continue
+        elif in_footnote_block:
+            continue
+        elif lines:
+            lines[-1] += " " + stripped
+
+    # ── Parse lines ──
+    raw_selection: dict[str, list[list[str]]] = {}
+    fixed_loadouts: dict[str, list[str]] = {}  # OP name → list of "with ..." loadout strings
+    current_op: str | None = None
+    in_leader_options = False
+    expect_from_each = False
+
+    def _start_new_group(op: str, value: str | None = None) -> None:
+        groups = raw_selection.setdefault(op, [])
+        groups.append([value] if value else [])
+
+    def _add_to_current_group(op: str, value: str) -> None:
+        groups = raw_selection.setdefault(op, [])
+        if not groups:
+            groups.append([])
+        groups[-1].append(value)
+
+    for line in lines:
+        # ── "Or" alternate sets ──
+        if re.match(r"^Or\s+the\s+following\s+option", line, re.I):
+            if current_op is not None:
+                _start_new_group(current_op)
+            continue
+        if re.match(r"^Or\s+one\s+option\s+from\s+each", line, re.I):
+            if current_op is not None:
+                expect_from_each = True
+            continue
+
+        # ── Section headers (↘) ──
+        if line.startswith("\u2198"):
+            in_leader_options = False
+            expect_from_each = False
+
+            if re.search(r"operatives?\s+(selected\s+from|from\s+the\s+list)", line, re.I):
+                current_op = None
+                continue
+
+            m = re.match(r"\u2198\s*\d+\s+.+?\s{2,}([\w][\w\s'\u2019-]*?)\s+operative", line)
+            if m:
+                current_op = m.group(1).strip()
+                if "one option from each" in line:
+                    raw_selection.setdefault(current_op, [])
+                    in_leader_options = True
+                    expect_from_each = True
+                elif "one of the following options" in line:
+                    raw_selection.setdefault(current_op, [[]])
+                    in_leader_options = True
+                    expect_from_each = False
+                elif re.search(r"with\s+.+\s+and\s+one\s+of\s+the\s+following", line, re.I):
+                    raw_selection.setdefault(current_op, [[]])
+                    in_leader_options = True
+                    expect_from_each = False
+                else:
+                    raw_selection.setdefault(current_op, [])
+                    current_op = None
+            continue
+
+        # ── Bullet entries (•) ──
+        if line.startswith(("\u2022", "\u25cf")):
+            content = re.sub(r"^[\u2022\u25cf]\s*", "", line).strip()
+
+            # Leader options
+            if in_leader_options and current_op is not None:
+                if expect_from_each:
+                    # Each bullet defines a group; split comma/or alternatives
+                    alts = re.split(r',\s+|\s+or\s+', content)
+                    alts = [a.strip() for a in alts if a.strip()]
+                    groups = raw_selection.setdefault(current_op, [])
+                    groups.append(alts)
+                else:
+                    _add_to_current_group(current_op, content)
+                continue
+
+            in_leader_options = False
+            expect_from_each = False
+
+            # "OP with one option from each of the following:"
+            m = re.match(
+                r"([\w][\w\s'\u2019-]*?)\s+with\s+one\s+option\s+from\s+each", content
+            )
+            if m:
+                current_op = m.group(1).strip()
+                raw_selection.setdefault(current_op, [])
+                expect_from_each = True
+                continue
+
+            # "OP with one of the following options:"
+            m = re.match(
+                r"([\w][\w\s'\u2019-]*?)\s+with\s+one\s+of\s+the\s+following\s+options:", content
+            )
+            if m:
+                current_op = m.group(1).strip()
+                raw_selection.setdefault(current_op, [[]])
+                continue
+
+            # "OP with X and one of the following options:"
+            m = re.match(
+                r"([\w][\w\s'\u2019-]*?)\s+with\s+.+?\s+and\s+one\s+of\s+the\s+following\s+options:",
+                content,
+            )
+            if m:
+                current_op = m.group(1).strip()
+                raw_selection.setdefault(current_op, [[]])
+                continue
+
+            # Plain operative name or fixed loadout — no explicit options
+            if " with " in content:
+                op_name = content.split(" with ")[0].strip()
+                loadout = content.split(" with ", 1)[1].strip()
+                if op_name and op_name[0].isupper():
+                    fixed_loadouts.setdefault(op_name, []).append(loadout)
+                    raw_selection.setdefault(op_name, [])
+            else:
+                op_name = content.strip()
+                if op_name and op_name[0].isupper():
+                    raw_selection.setdefault(op_name, [])
+            current_op = None
+            continue
+
+        # ── Sub-options (○) ──
+        if line.startswith("\u25cb"):
+            content = line.lstrip("\u25cb \t")
+            if current_op is not None:
+                if expect_from_each:
+                    # Each sub-option defines a group; split comma/or alternatives
+                    alts = re.split(r',\s+|\s+or\s+', content)
+                    alts = [a.strip() for a in alts if a.strip()]
+                    groups = raw_selection.setdefault(current_op, [])
+                    groups.append(alts)
+                else:
+                    _add_to_current_group(current_op, content)
+            continue
+
+    # ── Clean up empty groups ──
+    for op_name in raw_selection:
+        raw_selection[op_name] = [g for g in raw_selection[op_name] if g]
+
+    # ── Merge duplicate fixed-loadout operatives into selection groups ──
+    for op_name, loadouts in fixed_loadouts.items():
+        if len(loadouts) > 1 and not raw_selection.get(op_name):
+            raw_selection[op_name] = [loadouts]
+
+    # ── Apply footnote asterisk selections ──
+    if footnote_names and footnote_groups:
+        for fn_name in footnote_names:
+            fn_upper = fn_name.upper()
+            # Find matching key in raw_selection
+            matched_key = None
+            for key in raw_selection:
+                if key.upper() == fn_upper:
+                    matched_key = key
+                    break
+            if matched_key is None:
+                for key in raw_selection:
+                    if fn_upper in key.upper() or key.upper() in fn_upper:
+                        matched_key = key
+                        break
+            if matched_key is not None and not raw_selection[matched_key]:
+                raw_selection[matched_key] = [g[:] for g in footnote_groups]
+                log.debug("  Applied footnote options to '%s': %s", matched_key, footnote_groups)
+            elif matched_key is None:
+                # Add as new entry
+                raw_selection[fn_name] = [g[:] for g in footnote_groups]
+                log.debug("  Added footnote operative '%s': %s", fn_name, footnote_groups)
+
+    # Match short names to full roster names
+    selection: dict[str, list[list[str]]] = {}
+    for short_name, groups in raw_selection.items():
+        short_upper = short_name.upper()
+        matched = None
+
+        # 1. Exact match
+        for rname in roster_names:
+            if rname.upper() == short_upper:
+                matched = rname
+                break
+
+        # 2. Suffix match — prefer shortest roster name (most specific)
+        if matched is None:
+            best, best_len = None, float("inf")
+            for rname in roster_names:
+                ru = rname.upper()
+                if ru.endswith(" " + short_upper) and len(rname) < best_len:
+                    best, best_len = rname, len(rname)
+            matched = best
+
+        # 3. Fuzzy: all words present in roster name
+        if matched is None:
+            for rname in roster_names:
+                if all(w in rname.upper() for w in short_upper.split()):
+                    matched = rname
+                    break
+
+        if matched:
+            if matched in selection:
+                selection[matched].extend(groups)
+            else:
+                selection[matched] = groups
+        else:
+            log.debug("  Selection operative '%s' not matched to roster", short_name)
+
+    return selection
+
+
 # ── Per-team extraction ──
 
 def extract_team(team: str, force: bool = False) -> dict | None:
@@ -550,16 +896,29 @@ def extract_team(team: str, force: bool = False) -> dict | None:
         log.warning("%s: no operatives extracted from %d pages", team, page_count)
         return None
 
+    # Phase 3: Parse operative selection card for weapon loadout options
+    roster_names = [op["name"] for op in operatives]
+    selection = _parse_operative_selection(team, roster_names)
+
     roster = {
         "team": team,
         "generated": datetime.now(timezone.utc).isoformat(),
+        "selection": selection,
         "operative_count": len(operatives),
         "operatives": operatives,
     }
 
+    roster_json = json.dumps(roster, indent=2, ensure_ascii=False)
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(json.dumps(roster, indent=2, ensure_ascii=False), encoding="utf-8")
-    log.info("  %-35s %2d operatives", team, len(operatives))
+    output_path.write_text(roster_json, encoding="utf-8")
+
+    # Compat copy to output/{team}/statlines/ for embed_datacard_stats.py
+    compat_path = OUTPUT_DIR / team / "statlines" / "roster.json"
+    compat_path.parent.mkdir(parents=True, exist_ok=True)
+    compat_path.write_text(roster_json, encoding="utf-8")
+
+    sel_count = sum(1 for v in selection.values() if v)
+    log.info("  %-35s %2d operatives  (%d with loadout options)", team, len(operatives), sel_count)
     return roster
 
 

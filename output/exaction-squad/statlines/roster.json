@@ -1,6 +1,31 @@
 {
   "team": "exaction-squad",
-  "generated": "2026-04-13T21:19:09.262116+00:00",
+  "generated": "2026-04-19T11:50:26.447178+00:00",
+  "selection": {
+    "ARBITES PROCTOR-EXACTANT": [
+      [
+        "Combat shotgun; repression baton",
+        "Shotpistol; dominator maul & assault shield"
+      ]
+    ],
+    "ARBITES CASTIGATOR": [],
+    "ARBITES CHIRURGANT": [],
+    "ARBITES LEASHMASTER": [],
+    "R-VR CYBER-MASTIFF": [],
+    "ARBITES MALOCATOR": [],
+    "ARBITES MARKSMAN": [],
+    "ARBITES REVELATUM": [],
+    "ARBITES SUBDUCTOR": [],
+    "ARBITES VIGILANT": [],
+    "ARBITES VOX-SIGNIFIER": [],
+    "ARBITES GUNNER": [
+      [
+        "Grenade launcher; repression baton",
+        "Heavy stubber; repression baton",
+        "Webber; repression baton"
+      ]
+    ]
+  },
   "operative_count": 12,
   "operatives": [
     {
@@ -31,6 +56,13 @@
           "hit": "3+",
           "damage": "3/3",
           "special_rules": "Range 8\""
+        },
+        {
+          "name": "Dominator maul & assault shield",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "4/4",
+          "special_rules": "Lethal 5+, Shock, Repress*"
         },
         {
           "name": "Repression baton",
@@ -381,10 +413,24 @@
       "wounds": 8,
       "weapons": [
         {
+          "name": "Executioner shotgun (concealed)",
+          "attacks": "4",
+          "hit": "2+",
+          "damage": "4/0",
+          "special_rules": "Devastating 4, Heavy, Silent, Concealed Position*"
+        },
+        {
           "name": "Executioner shotgun (mobile)",
           "attacks": "4",
           "hit": "3+",
           "damage": "4/4"
+        },
+        {
+          "name": "Executioner shotgun (stationary)",
+          "attacks": "4",
+          "hit": "2+",
+          "damage": "4/0",
+          "special_rules": "Devastating 4, Heavy"
         },
         {
           "name": "Repression baton",
@@ -421,6 +467,13 @@
       "save": "4+",
       "wounds": 8,
       "weapons": [
+        {
+          "name": "Scoped shotpistol (short range)",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "3/3",
+          "special_rules": "Range 8\", Lethal 5+"
+        },
         {
           "name": "Scoped shotpistol (long range)",
           "attacks": "4",
