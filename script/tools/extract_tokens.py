@@ -3087,6 +3087,15 @@ def main():
         print("Searching for teams with marker/token guides...")
         teams = []
         
+        # Load team config for tokens_ready check
+        config_path = Path('config/team-config.yaml')
+        all_teams_config = {}
+        if config_path.exists():
+            with open(config_path, 'r', encoding='utf-8') as f:
+                data = yaml.safe_load(f)
+                all_teams_config = data.get('teams', {}) if data else {}
+        
+        skipped_locked = []
         for faction_dir in Path("output_v2").iterdir():
             if faction_dir.is_dir():
                 for team_dir in faction_dir.iterdir():
@@ -3095,9 +3104,16 @@ def main():
                         if faction_rules.exists():
                             marker_files = list(faction_rules.glob("*markertoken-guide*_front.jpg"))
                             if marker_files:
-                                teams.append(team_dir.name)
+                                team_slug = team_dir.name
+                                team_cfg = all_teams_config.get(team_slug, {})
+                                if team_cfg.get('tokens_ready', False):
+                                    skipped_locked.append(team_slug)
+                                else:
+                                    teams.append(team_slug)
         
         print(f"Found {len(teams)} teams with marker guides")
+        if skipped_locked:
+            print(f"Skipped {len(skipped_locked)} locked teams (tokens_ready=true): {', '.join(sorted(skipped_locked))}")
         
         # Process each team
         success_count = 0

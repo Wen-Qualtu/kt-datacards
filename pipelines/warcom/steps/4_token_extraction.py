@@ -1023,6 +1023,12 @@ def main():
         # Get team config
         team_config = all_teams_config.get(team_slug, {})
         
+        # Skip teams with tokens_ready: true (tokens are locked)
+        if team_config.get('tokens_ready', False):
+            logger.info(f"Skipping {team_slug} (tokens_ready=true, tokens are locked)")
+            total_stats['skipped'] += 1
+            continue
+        
         # Count tokens
         tokens = list(tokens_dir.glob("*.png"))
         if not tokens:

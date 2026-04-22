@@ -600,7 +600,30 @@ def build_token_name_map(tokens_metadata_path: Path) -> Dict[str, str]:
 
 
 def prepare_clean_tokens(team_name: str, workspace_root: Path) -> Tuple[Optional[Path], Dict[str, str]]:
-    """Generate cleaned/transparent tokens in output/{team}/tokens from extracted metadata."""
+    """Generate cleaned/transparent tokens in output/{team}/tokens from extracted metadata.
+    
+    If team has tokens_ready=true in config, uses existing output/{team}/tokens/ as-is
+    without re-extracting from layers/warcom/extracted/.
+    """
+    # Check tokens_ready lock
+    config = load_team_config()
+    teams_cfg = config.get("teams", {}) if config else {}
+    team_data = teams_cfg.get(team_name, {}) if teams_cfg else {}
+    
+    if team_data.get("tokens_ready", False):
+        # Tokens are locked — use existing output tokens without re-extraction
+        final_tokens_dir = workspace_root / "output" / team_name / "tokens"
+        if final_tokens_dir.exists() and list(final_tokens_dir.glob("*.png")):
+            output_name_map: Dict[str, str] = {}
+            for token_path in sorted(final_tokens_dir.glob("*.png")):
+                display_name = token_path.stem.replace("-", " ").replace("_", " ").title()
+                output_name_map[token_path.name] = display_name
+            logger.info("Using locked tokens for %s (%d tokens)", team_name, len(output_name_map))
+            return final_tokens_dir, output_name_map
+        else:
+            logger.warning("Team %s has tokens_ready=true but no tokens in %s", team_name, final_tokens_dir)
+            return None, {}
+    
     extracted_team_dir = workspace_root / "layers" / "warcom" / "extracted" / team_name
     extracted_tokens_dir = extracted_team_dir / "tokens"
     metadata_path = extracted_tokens_dir / f"{team_name}_tokens_metadata.json"
