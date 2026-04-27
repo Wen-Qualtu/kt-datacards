@@ -188,11 +188,11 @@ end
     -- 3. Add assets to baseBundle
     -- Build asset entries as text that will be inserted into model source
     local assets = "    {name=\\"gore-tank\\", url="
-    assets = assets .. "[" .. "=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/goremongers/tokens/gore-tank.png]" .. "=]},\\n"
+    assets = assets .. "[" .. "=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/chaos/goremongers/tts/token/goremongers-gore-tank-full.png]" .. "=]},\\n"
     assets = assets .. "    {name=\\"gore-tank-2\\", url="
-    assets = assets .. "[" .. "=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/goremongers/tokens/gore-tank-2.png]" .. "=]},\\n"
+    assets = assets .. "[" .. "=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/chaos/goremongers/tts/token/goremongers-gore-tank-half.png]" .. "=]},\\n"
     assets = assets .. "    {name=\\"gore-tank-3\\", url="
-    assets = assets .. "[" .. "=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/goremongers/tokens/gore-tank-3.png]" .. "=]},"
+    assets = assets .. "[" .. "=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/chaos/goremongers/tts/token/goremongers-gore-tank-empty.png]" .. "=]},"
     
     local bundlePattern = "({name=\\"Wound_red\\"[^\\n]+)"
     if modelLua:find(bundlePattern) then
