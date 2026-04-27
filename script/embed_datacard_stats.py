@@ -44,6 +44,217 @@ def _get_team_faction(team: str) -> str:
     return team_data.get("faction", "xenos")  # default to xenos if not found
 
 
+def _has_operative_counter(team: str) -> bool:
+    """Check if team has operative_counter configured"""
+    config = _load_team_config()
+    team_data = config.get("teams", {}).get(team, {})
+    return "operative_counter" in team_data
+
+
+def _inject_operative_counter(lua_script: str, team: str) -> str:
+    """
+    Inject operative counter functionality into datacard Lua script for teams that need it.
+    Checks team-config.yaml for operative_counter configuration.
+    """
+    if not _has_operative_counter(team):
+        return lua_script
+    
+    # Check if already injected
+    if "getOperativeCounterImage" in lua_script:
+        return lua_script
+    
+    log.info(f"{team}: Injecting operative counter into datacard script")
+    
+    # Helper functions to inject at end of script
+    helper_functions = '''
+
+-- ===== OPERATIVE COUNTER =====
+
+function getOperativeCounterImage()
+  if not state or not state.operative_counter then return "gore-tank-3" end
+  local currentValue = state.operative_counter.current or 0
+  if currentValue == 0 then return "gore-tank-3"
+  elseif currentValue == 1 then return "gore-tank-2"
+  elseif currentValue >= 2 then return "gore-tank"
+  else return "gore-tank-3" end
+end
+
+function getOperativeCounterText()
+  if not state or not state.operative_counter then return "Empty" end
+  local currentValue = state.operative_counter.current or 0
+  if currentValue == 0 then return "Empty"
+  elseif currentValue == 1 then return "Half"
+  elseif currentValue >= 2 then return "Full"
+  else return "Empty" end
+end
+
+function change_operative_counter(player, value, id)
+  if value == "-1" then decrease_operative_counter(player.color)
+  elseif value == "-2" then increase_operative_counter(player.color) end
+end
+
+function decrease_operative_counter(pc)
+  if not state or not state.operative_counter then return end
+  local minVal = state.operative_counter.min or 0
+  local currentVal = state.operative_counter.current or 0
+  if currentVal > minVal then
+    state.operative_counter.current = currentVal - 1
+    broadcastToColor(string.format("Gore Tank: %s", getOperativeCounterText()), pc, Color.Yellow)
+  else
+    broadcastToColor("Gore Tank already Empty", pc, Color.Orange)
+  end
+end
+
+function increase_operative_counter(pc)
+  if not state or not state.operative_counter then return end
+  local maxVal = state.operative_counter.max or 2
+  local currentVal = state.operative_counter.current or 0
+  if currentVal < maxVal then
+    state.operative_counter.current = currentVal + 1
+    broadcastToColor(string.format("Gore Tank: %s", getOperativeCounterText()), pc, Color.Yellow)
+  else
+    broadcastToColor("Gore Tank already Full", pc, Color.Orange)
+  end
+end
+
+-- ===== END OPERATIVE COUNTER =====
+-- Add Gore Tank context menu function
+function addGoreTankToModel(playerColor)
+    local model = findModelOnCard()
+    if model == nil then
+        broadcastToColor("Place a KTUIMini model on this card first.", playerColor, Color.Orange)
+        return
+    end
+    
+    local modelLua = model.getLuaScript() or ""
+    if modelLua == "" then
+        broadcastToColor("Model has no Lua script (not a KTUI model?).", playerColor, Color.Red)
+        return
+    end
+    
+    if modelLua:find("ktcnid%-status%-operative%-counter") then
+        broadcastToColor("Model already has Gore Tank counter.", playerColor, Color.White)
+        return
+    end
+    
+    -- 1. Add helper functions
+    local helperFuncs = [=[
+
+-- Gore Tank Counter
+function getOperativeCounterImage()
+  local currentValue = state.operative_counter.current or 0
+  if currentValue == 0 then return "gore-tank-3"
+  elseif currentValue == 1 then return "gore-tank-2"
+  elseif currentValue >= 2 then return "gore-tank"
+  else return "gore-tank-3" end
+end
+
+function change_operative_counter(player, value, id)
+  if not state.operative_counter then return end
+  local current = state.operative_counter.current or 0
+  local max = state.operative_counter.max or 2
+  local min = state.operative_counter.min or 0
+  
+  -- Left click (value "-1"): decrease, Right click (value "-2"): increase
+  if value == "-1" then
+    if current > min then current = current - 1 end
+  elseif value == "-2" then
+    if current < max then current = current + 1 end
+  end
+  
+  state.operative_counter.current = current
+  refreshUI()
+  local labels = {[0]="Empty", [1]="Half", [2]="Full"}
+  broadcastToColor("Gore Tank: " .. (labels[current] or "?"), player.color, Color.Yellow)
+end
+]=]
+    
+    -- 2. Inject counter panel into refreshUI's xmlTable  
+    -- Build the panel text that will be inserted into model source
+    local counterPanel = '\\n    <Panel color="#80808000" outline="#FFFF00" outlineSize="3 3" width="45" height="45" offsetXY="0 -10">'
+    counterPanel = counterPanel .. '\\n      <Image id="ktcnid-status-operative-counter" image="'
+    counterPanel = counterPanel .. ']]' .. '..getOperativeCounterImage()..' .. '[['
+    counterPanel = counterPanel .. '" preserveAspect="true" rectAlignment="MiddleCenter" onClick="change_operative_counter" />'
+    counterPanel = counterPanel .. '\\n    </Panel>'
+    
+    local xmlPattern = "(<HorizontalLayout spacing=\\"3\\" width=\\"@totalAtt\\")"
+    if modelLua:find(xmlPattern) then
+        modelLua = modelLua:gsub(xmlPattern, counterPanel .. "\\n    %1")
+    else
+        broadcastToColor("Could not find attachment layout in model.", playerColor, Color.Red)
+        return
+    end
+    
+    -- 3. Add assets to baseBundle
+    -- Build asset entries as text that will be inserted into model source
+    local assets = "    {name=\\"gore-tank\\", url="
+    assets = assets .. "[" .. "=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/goremongers/tokens/gore-tank.png]" .. "=]},\\n"
+    assets = assets .. "    {name=\\"gore-tank-2\\", url="
+    assets = assets .. "[" .. "=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/goremongers/tokens/gore-tank-2.png]" .. "=]},\\n"
+    assets = assets .. "    {name=\\"gore-tank-3\\", url="
+    assets = assets .. "[" .. "=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/goremongers/tokens/gore-tank-3.png]" .. "=]},"
+    
+    local bundlePattern = "({name=\\"Wound_red\\"[^\\n]+)"
+    if modelLua:find(bundlePattern) then
+        modelLua = modelLua:gsub(bundlePattern, "%1\\n" .. assets)
+    end
+    
+    -- Append helper functions
+    modelLua = modelLua .. helperFuncs
+    
+    -- Initialize state.operative_counter on the model
+    local modelState = model.script_state or "{}"
+    local state = JSON.decode(modelState)
+    if not state.operative_counter then
+        state.operative_counter = {current = 0, max = 2, min = 0}
+    end
+    model.script_state = JSON.encode(state)
+    
+    -- Write back and reload
+    model.setLuaScript(modelLua)
+    Wait.frames(function() model.reload() end, 10)
+    
+    broadcastToColor("Added Gore Tank counter to model!", playerColor, Color.Green)
+end
+
+-- Extend onLoad to add context menu
+local baseOnLoad = onLoad
+function onLoad()
+    if baseOnLoad then baseOnLoad() end
+    self.addContextMenuItem("Add Gore Tank", addGoreTankToModel)
+end
+'''
+    
+    # Separate counter initialization - just the state, UI injection is done via separate context menu
+    counter_init = '''
+    -- Initialize operative counter state
+    if not ms.operative_counter then
+        ms.operative_counter = {
+            name = "Gore Tank",
+            max = 2,
+            min = 0,
+            current = 0
+        }
+        table.insert(changes, "Initialized Gore Tank counter")
+    end
+    if ms.operative_counter.current == nil then
+        ms.operative_counter.current = ms.operative_counter.min or 0
+    end
+    '''
+    
+    # Inject helper functions at end
+    lua_script = lua_script.rstrip() + helper_functions
+    
+    # Inject counter initialization before "-- Write back" in diffAndApply
+    write_back_pos = lua_script.find("-- Write back")
+    if write_back_pos != -1:
+        lua_script = lua_script[:write_back_pos] + counter_init + "\n    " + lua_script[write_back_pos:]
+    else:
+        log.warning(f"{team}: Could not find insertion point for counter initialization")
+    
+    return lua_script
+
+
 # ── Weapon type classification ──
 
 _RANGED_RULES_PAT = re.compile(r"(range\s*\d|blast|torrent|silent)", re.IGNORECASE)
@@ -426,7 +637,7 @@ def patch_team(
                 gmnotes_json = gmnotes_json.replace(uchar, replacement)
             
             card["GMNotes"] = gmnotes_json
-            card["LuaScript"] = lua_script
+            card["LuaScript"] = _inject_operative_counter(lua_script, team)
             modified = True
             total_patched += 1
         
