@@ -61,7 +61,7 @@ Created `script/add_token_update_to_cardboxes.py` which:
 
 ### For Developers:
 1. Make changes to token images in `output_v2/{faction}/{team}/tts/token/`
-2. Run token generation: `poetry run python script/src/token_tools/generate_tts_tokens.py --team {team}`
+2. Run token generation: `poetry run python pipelines/kt-app/src/token_tools/generate_tts_tokens.py --team {team}`
 3. Extract token bags: `poetry run python script/extract_token_bags.py`
 4. Commit and push to GitHub
 5. Users can click "Update" in TTS to get the new tokens
@@ -112,7 +112,7 @@ The `?v={random}` parameter forces TTS to bypass its cache and fetch the latest 
 
 ### Current Token Generation Workflow:
 1. Extract tokens from PDFs: `poetry run python script/main.py extract-tokens --team {team}`
-2. Generate TTS tokens: `poetry run python script/src/token_tools/generate_tts_tokens.py --team {team}`
+2. Generate TTS tokens: `poetry run python pipelines/kt-app/src/token_tools/generate_tts_tokens.py --team {team}`
 3. Extract token bags: `poetry run python script/extract_token_bags.py` (NEW)
 4. Commit and push to GitHub
 
@@ -120,7 +120,7 @@ The `?v={random}` parameter forces TTS to bypass its cache and fetch the latest 
 ```bash
 # Extract and generate all teams
 for team in $(ls processed); do
-  poetry run python script/src/token_tools/generate_tts_tokens.py --team $team
+  poetry run python pipelines/kt-app/src/token_tools/generate_tts_tokens.py --team $team
 done
 
 # Extract all token bags

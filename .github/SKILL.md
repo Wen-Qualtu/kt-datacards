@@ -37,8 +37,8 @@ Do NOT use for:
 ### Two Pipeline Systems
 
 **kt-app pipeline** (PRIMARY - `script/`):
-- Entry point: `script/run_pipeline.py` CLI
-- Orchestrator: `script/src/pipeline.py`
+- Entry point: `pipelines/kt-app/run_pipeline.py` CLI
+- Orchestrator: `pipelines/kt-app/src/pipeline.py`
 - Numbered steps with parallel processing support
 - Full team processing from PDF to TTS objects
 
@@ -71,7 +71,7 @@ layers/                   # Image layers for card composition
 archive/                  # Original processed PDFs
 ```
 
-### Script Modules (`script/src/`)
+### Pipeline Modules (`pipelines/kt-app/src/`)
 
 ```
 pipeline.py               # Pipeline orchestrator with numbered steps

@@ -134,7 +134,7 @@ poetry run python script/generate_team_tokens.py --team murderwings
 Creates PNG, OBJ, and dispenser files with team prefixes:
 
 ```bash
-poetry run python script/src/token_tools/generate_tts_tokens.py --team murderwings
+poetry run python pipelines/kt-app/src/token_tools/generate_tts_tokens.py --team murderwings
 ```
 
 Output: `output_v2/{faction}/{team}/tts/token/{team}-{token-slug}.*`
@@ -152,7 +152,7 @@ Output: `tts_objects/{team}/tokens/{token-slug}.json`
 Creates master bag with Lua scripts for Setup/Place/Recall:
 
 ```bash
-poetry run python script/src/token_tools/generate_team_token_bag.py --team murderwings
+poetry run python pipelines/kt-app/src/token_tools/generate_team_token_bag.py --team murderwings
 ```
 
 Output: `output_v2/{faction}/{team}/tts/token/{team}-tokens.json`
@@ -169,7 +169,7 @@ This file contains:
 Adds token bag to card box ContainedObjects:
 
 ```bash
-poetry run python script/src/token_tools/add_tokens_to_box.py --team murderwings --box-dir tts_objects/murderwings --output-dir output_v2
+poetry run python pipelines/kt-app/src/token_tools/add_tokens_to_box.py --team murderwings --box-dir tts_objects/murderwings --output-dir output_v2
 ```
 
 This step:
@@ -289,9 +289,9 @@ Position grid: 5 columns, spaced 2.5 units apart, starting at relative position 
 ### Individual Scripts
 - `script/tools/extract_tokens.py` - Extract from PDF
 - `script/tools/add_token_transparency_bg_sample.py` - Background removal
-- `script/src/token_tools/generate_tts_tokens.py` - Generate individual token bags
-- `script/src/token_tools/generate_team_token_bag.py` - Generate master token bag
-- `script/src/token_tools/add_tokens_to_box.py` - Embed token bag in card box
+- `pipelines/kt-app/src/token_tools/generate_tts_tokens.py` - Generate individual token bags
+- `pipelines/kt-app/src/token_tools/generate_team_token_bag.py` - Generate master token bag
+- `pipelines/kt-app/src/token_tools/add_tokens_to_box.py` - Embed token bag in card box
 - `script/generate_tts_metadata.py` - Generate metadata
 - `script/generate_urls.py` - Generate URL mappings
 

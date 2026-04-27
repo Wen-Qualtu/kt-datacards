@@ -60,8 +60,8 @@ class DatacardPipeline:
         
         # Import and initialize URL generator
         from .generators.url_generator import URLGenerator
-        # Get project root (3 levels up from this file: script/src/pipeline.py)
-        project_root = Path(__file__).parent.parent.parent
+        # Get project root (4 levels up from this file: pipelines/kt-app/src/pipeline.py)
+        project_root = Path(__file__).parent.parent.parent.parent
         tts_objects_path = project_root / 'tts_objects'
         self.url_generator = URLGenerator(
             output_dir=output_v2_dir,
@@ -174,7 +174,7 @@ class DatacardPipeline:
         try:
             from .processors.token_integration import TokenIntegrator
 
-            project_root = Path(__file__).parent.parent.parent
+            project_root = Path(__file__).parent.parent.parent.parent
             integrator = TokenIntegrator(
                 project_root=project_root,
                 config_path=self.config_dir / 'team-config.yaml',
@@ -195,8 +195,8 @@ class DatacardPipeline:
         try:
             import subprocess, sys as _sys
             result = subprocess.run(
-                [_sys.executable, str(Path(__file__).parent.parent / 'extract_statlines.py'), '--force'],
-                cwd=str(Path(__file__).parent.parent.parent),
+                [_sys.executable, str(Path(__file__).parent.parent / 'steps' / 'extract_statlines.py'), '--force'],
+                cwd=str(Path(__file__).parent.parent.parent.parent),
                 capture_output=True,
                 text=True,
             )
@@ -214,8 +214,8 @@ class DatacardPipeline:
         try:
             import subprocess, sys as _sys
             result = subprocess.run(
-                [_sys.executable, str(Path(__file__).parent.parent / 'embed_datacard_stats.py')],
-                cwd=str(Path(__file__).parent.parent.parent),
+                [_sys.executable, str(Path(__file__).parent.parent / 'steps' / 'embed_datacard_stats.py')],
+                cwd=str(Path(__file__).parent.parent.parent.parent),
                 capture_output=True,
                 text=True,
             )
@@ -245,9 +245,9 @@ class DatacardPipeline:
         try:
             import subprocess
             result = subprocess.run(
-                [str(Path(__file__).parent.parent.parent / '.venv' / 'Scripts' / 'python.exe'),
-                 str(Path(__file__).parent.parent / 'generate_tts_metadata.py')],
-                cwd=str(Path(__file__).parent.parent.parent),
+                [str(Path(__file__).parent.parent.parent.parent / '.venv' / 'Scripts' / 'python.exe'),
+                 str(Path(__file__).parent.parent / 'steps' / 'generate_tts_metadata.py')],
+                cwd=str(Path(__file__).parent.parent.parent.parent),
                 capture_output=True,
                 text=True
             )
@@ -570,7 +570,7 @@ class DatacardPipeline:
     def generate_metadata(self):
         """Generate metadata YAML file"""
         import sys
-        sys.path.append(str(Path(__file__).parent.parent))
+        sys.path.append(str(Path(__file__).parent.parent / 'steps'))
         from generate_metadata import OutputMetadataGenerator
         
         generator = OutputMetadataGenerator(

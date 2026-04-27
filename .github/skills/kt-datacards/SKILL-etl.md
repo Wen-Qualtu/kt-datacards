@@ -23,8 +23,8 @@ Also load **SKILL-project.md** for directory structure and naming conventions.
 ### Two Pipeline Systems
 
 **kt-app pipeline** (PRIMARY):
-- Entry: `script/run_pipeline.py`
-- Orchestrator: `script/src/pipeline.py`
+- Entry: `pipelines/kt-app/run_pipeline.py`
+- Orchestrator: `pipelines/kt-app/src/pipeline.py`
 - Processes PDFs from the Kill Team mobile app (UUID filenames)
 - Requires content analysis to identify team and card types
 
@@ -43,24 +43,24 @@ Also load **SKILL-project.md** for directory structure and naming conventions.
 
 | Step | Name | Script/Module |
 |------|------|---------------|
-| 1 | Process raw PDFs | `script/process_pdfs.py` |
-| 2 | Extract images (parallel) | `script/src/processors/image_extractor.py` + token integration |
-| 3 | Add backsides | `script/src/processors/backside_processor.py` |
-| 3.5 | Process box textures | `script/src/processors/box_texture_processor.py` |
-| 4 | Generate V2 URLs JSON | `script/generate_urls.py` |
-| 5 | Generate TTS objects | `script/generate_tts_objects.py` |
+| 1 | Process raw PDFs | `pipelines/kt-app/steps/process_pdfs.py` |
+| 2 | Extract images (parallel) | `pipelines/kt-app/src/processors/image_extractor.py` + token integration |
+| 3 | Add backsides | `pipelines/kt-app/src/processors/backside_processor.py` |
+| 3.5 | Process box textures | `pipelines/kt-app/src/processors/box_texture_processor.py` |
+| 4 | Generate V2 URLs JSON | `pipelines/kt-app/steps/generate_urls.py` |
+| 5 | Generate TTS objects | `pipelines/kt-app/steps/generate_tts_objects.py` |
 | 5.25 | Embed ready team tokens | Locked teams only |
 | 5.4 | Extract statlines | From datacard PDFs → `output/{team}/statlines/roster.json` |
 | 5.5 | Embed datacard stats | Patches TTS objects with GMNotes + LuaScript |
-| 6 | Generate metadata | `script/generate_metadata.py` |
-| 6.5 | Generate TTS metadata | `script/generate_tts_metadata.py` (with timestamps) |
+| 6 | Generate metadata | `pipelines/kt-app/steps/generate_metadata.py` |
+| 6.5 | Generate TTS metadata | `pipelines/kt-app/steps/generate_tts_metadata.py` (with timestamps) |
 | 7 | Display table generation | Deployment only |
 
 ### Running Specific Steps
 ```powershell
-poetry run python script/run_pipeline.py --step all
-poetry run python script/run_pipeline.py --step extract --teams kasrkin
-poetry run python script/run_pipeline.py --step extract --teams angels-of-death,kommandos
+poetry run python pipelines/kt-app/run_pipeline.py --step all
+poetry run python pipelines/kt-app/run_pipeline.py --step extract --teams kasrkin
+poetry run python pipelines/kt-app/run_pipeline.py --step extract --teams angels-of-death,kommandos
 ```
 
 ---

@@ -209,7 +209,7 @@ After this, timestamps are saved and future updates will be smart.
 poetry run python script/main.py extract-tokens --team legionaries
 
 # 2. Generate TTS tokens
-poetry run python script/src/token_tools/generate_tts_tokens.py --team legionaries
+poetry run python pipelines/kt-app/src/token_tools/generate_tts_tokens.py --team legionaries
 
 # 3. Extract token bags
 poetry run python script/extract_token_bags.py
@@ -236,7 +236,7 @@ TEAM=$1
 
 # Regenerate everything
 poetry run python script/main.py extract-tokens --team $TEAM
-poetry run python script/src/token_tools/generate_tts_tokens.py --team $TEAM
+poetry run python pipelines/kt-app/src/token_tools/generate_tts_tokens.py --team $TEAM
 poetry run python script/extract_token_bags.py
 poetry run python script/generate_tts_metadata.py
 

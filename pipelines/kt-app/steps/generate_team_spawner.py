@@ -10,7 +10,7 @@ def generate_spawner():
     """Generate the spawner token JSON with embedded script."""
     
     # Paths
-    script_dir = Path(__file__).parent.parent
+    script_dir = Path(__file__).parent.parent.parent.parent
     spawner_template_path = script_dir / "tts_objects" / "display-table" / "kt_team_spawner.json"
     spawner_script_path = script_dir / "config" / "defaults" / "tts-script" / "team-spawner-script.lua"
     output_path = script_dir / "tts_objects" / "display-table" / "kt_team_spawner.json"

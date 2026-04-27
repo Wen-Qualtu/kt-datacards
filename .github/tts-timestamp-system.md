@@ -34,7 +34,7 @@ The kt-datacards project uses a hash-based timestamp system to track changes to 
 ### Pipeline Flow
 ```
 1. Edit PDF → processed/{team}/{team}-datacards.pdf
-2. Extract images → poetry run python script/run_pipeline.py --step extract --teams {team}
+2. Extract images → poetry run python pipelines/kt-app/run_pipeline.py --step extract --teams {team}
    - Generates JPG files in output_v2/{faction}/{team}/datacards/
 3. Generate TTS objects → poetry run python script/generate_tts_objects.py {team}
    - Computes MD5 hashes of all images
@@ -97,12 +97,12 @@ git push origin acc
 ### Issue: "Hash cache not detecting changes after regeneration"
 **Cause**: Preloading logic was computing fresh hashes from current (changed) files but storing old timestamps
 **Fixed**: 2026-02-27 - Preloading now skips if hash cache exists
-**Code**: [script/src/generators/tts_generator.py](../script/src/generators/tts_generator.py#L214)
+**Code**: [pipelines/kt-app/src/generators/tts_generator.py](../pipelines/kt-app/src/generators/tts_generator.py#L214)
 
 ### Issue: "datacards-urls.json changes every time I run pipeline"
 **Cause**: Old code removed all TTS box entries and re-added only regenerated ones
 **Fixed**: 2026-02-27 - Now updates TTS entries in-place preserving order
-**Code**: [script/src/generators/tts_generator.py](../script/src/generators/tts_generator.py#L588)
+**Code**: [pipelines/kt-app/src/generators/tts_generator.py](../pipelines/kt-app/src/generators/tts_generator.py#L588)
 
 ## Testing Changes
 

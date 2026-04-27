@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 """
 Process raw PDFs: identify and organize
-Compatible with script/process_raw_pdfs.py
+Compatible with pipelines/kt-app/steps/process_pdfs.py
 """
 import sys
 from pathlib import Path
 
 # Add src to path
-project_root = Path(__file__).parent.parent.parent
-sys.path.insert(0, str(project_root / 'script'))
+project_root = Path(__file__).parent.parent.parent.parent
+sys.path.insert(0, str(project_root / 'pipelines' / 'kt-app'))
 
 import os
 os.chdir(project_root)

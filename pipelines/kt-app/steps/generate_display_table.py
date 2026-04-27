@@ -21,7 +21,7 @@ from src.generators.display_table_generator import DisplayTableGenerator
 
 
 def main() -> None:
-    workspace_dir = Path(__file__).parent.parent
+    workspace_dir = Path(__file__).parent.parent.parent.parent
     gen = DisplayTableGenerator(
         tts_objects_dir=workspace_dir / "tts_objects",
         display_table_path=workspace_dir / "tts_objects" / "display-table" / "kt_all_teams_grid.json",

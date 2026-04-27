@@ -20,7 +20,7 @@ This document describes the automated pipeline for generating Kill Team token ob
 
 3. **Packaging + Embedding** (main pipeline)
   - Packages ready tokens into `output_v2/{faction}/{team}/tts/token/`
-  - Embeds token bags into ready team boxes during `script/run_pipeline.py`
+  - Embeds token bags into ready team boxes during `pipelines/kt-app/run_pipeline.py`
 
 ### Data Flow
 
@@ -30,7 +30,7 @@ PDF marker/token guide → script/tools/extract_tokens.py → processed/extracte
                                                       ↓
                              script/tools/add_token_transparency_bg_sample.py (in-place alpha)
                                                       ↓
-                                   script/run_pipeline.py (packages + embeds into output_v2)
+                                   pipelines/kt-app/run_pipeline.py (packages + embeds into output_v2)
 ```
 
 ## Token Types
@@ -139,7 +139,7 @@ poetry run python script/tools/add_token_transparency_bg_sample.py --team hearth
   --bg-sample config/defaults/token-bg-sample.png
 
 # 5. Package tokens
-poetry run python script/run_pipeline.py --team hearthkyn-salvagers --step tokens
+poetry run python pipelines/kt-app/run_pipeline.py --team hearthkyn-salvagers --step tokens
 ```
 
 **Notes:**

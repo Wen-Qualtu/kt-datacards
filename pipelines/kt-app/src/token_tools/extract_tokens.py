@@ -5,8 +5,8 @@ Extracts individual token images from marker/token guide cards.
 Uses PDF text extraction for accurate token names, falling back to OCR if needed.
 
 Usage:
-    poetry run python script/tools/extract_tokens.py --team farstalker-kinband
-    poetry run python script/tools/extract_tokens.py --all
+    poetry run python pipelines/kt-app/src/token_tools/extract_tokens.py --team farstalker-kinband
+    poetry run python pipelines/kt-app/src/token_tools/extract_tokens.py --all
 """
 
 import argparse

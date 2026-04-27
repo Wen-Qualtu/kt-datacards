@@ -180,7 +180,7 @@ The box timestamp = `max()` of all image timestamps for the team. If ANY card im
 `_preload_timestamps_from_existing_tts_files` only runs when the hash cache is **empty**.
 
 **Why**: Previously it computed fresh hashes from current files but stored old box timestamps, which broke change detection. Fixed: 2026-02-27.  
-Code: `script/src/generators/tts_generator.py` ~L214.
+Code: `pipelines/kt-app/src/generators/tts_generator.py` ~L214.
 
 ### tts-metadata.json Format
 ```json
@@ -202,8 +202,8 @@ Code: `script/src/generators/tts_generator.py` ~L214.
 |--------|---------|
 | `script/generate_tts_objects.py` | Generate TTS box JSON for one or all teams |
 | `script/generate_tts_metadata.py` | Generate `tts-metadata.json` from box files |
-| `script/src/generators/tts_generator.py` | Core TTSGenerator class |
-| `script/src/generators/tts_boxes_json_generator.py` | Box JSON helpers |
+| `pipelines/kt-app/src/generators/tts_generator.py` | Core TTSGenerator class |
+| `pipelines/kt-app/src/generators/tts_boxes_json_generator.py` | Box JSON helpers |
 
 ---
 
@@ -214,7 +214,7 @@ Code: `script/src/generators/tts_generator.py` ~L214.
 Copy-Item "dev\{team}-datacards.pdf" -Destination "processed\{team}\{team}-datacards.pdf" -Force
 
 # 2. Extract images (regenerates JPGs in output_v2/)
-poetry run python script/run_pipeline.py --step extract --teams {team}
+poetry run python pipelines/kt-app/run_pipeline.py --step extract --teams {team}
 
 # 3. Generate TTS objects (computes hashes, updates timestamps)
 poetry run python script/generate_tts_objects.py {team}

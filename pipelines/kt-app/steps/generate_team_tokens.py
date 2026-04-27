@@ -70,7 +70,7 @@ def extract_tokens(team_slug):
         print(f"⚠️  No processed faction-rules PDF found at {processed_pdf}, skipping extraction")
         return True
 
-    cmd = ['poetry', 'run', 'python', 'script/tools/extract_tokens.py', '--team', team_slug]
+    cmd = ['poetry', 'run', 'python', 'pipelines/kt-app/src/token_tools/extract_tokens.py', '--team', team_slug]
     result = subprocess.run(cmd, capture_output=False)
     
     if result.returncode != 0:

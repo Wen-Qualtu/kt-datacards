@@ -401,7 +401,7 @@ def main():
     )
     
     # Set paths relative to project root
-    project_root = Path(__file__).parent.parent
+    project_root = Path(__file__).parent.parent.parent.parent
     output_dir = project_root / 'output'
     config_dir = project_root / 'config'
     output_file = project_root / 'output' / 'metadata.yaml'

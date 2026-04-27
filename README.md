@@ -146,7 +146,7 @@ pyenv local 3.12.5
 Place your Kill Team PDF exports in the `input/` directory, then run:
 
 ```bash
-poetry run python script/run_pipeline.py --step all
+poetry run python pipelines/kt-app/run_pipeline.py --step all
 ```
 
 This executes all 7 steps automatically. Progress is displayed in real-time, and results are saved to:
@@ -160,23 +160,23 @@ Run individual pipeline steps:
 
 ```bash
 # Extract cards from PDFs only
-poetry run python script/run_pipeline.py --step 1
+poetry run python pipelines/kt-app/run_pipeline.py --step 1
 
 # Generate TTS objects only (steps 1-5 must be complete)
-poetry run python script/run_pipeline.py --step 6
+poetry run python pipelines/kt-app/run_pipeline.py --step 6
 
 # Generate display table grid only
-poetry run python script/run_pipeline.py --step 7
+poetry run python pipelines/kt-app/run_pipeline.py --step 7
 ```
 
 ### Process Specific Teams
 
 ```bash
 # Process only one team
-poetry run python script/run_pipeline.py --step all --team legionaries
+poetry run python pipelines/kt-app/run_pipeline.py --step all --team legionaries
 
 # Process multiple teams
-poetry run python script/run_pipeline.py --step all --team legionaries kommandos kasrkin
+poetry run python pipelines/kt-app/run_pipeline.py --step all --team legionaries kommandos kasrkin
 ```
 
 ### Generate Tokens

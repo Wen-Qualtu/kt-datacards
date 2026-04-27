@@ -6,7 +6,7 @@ Kill Team datacards pipeline for Tabletop Simulator (TTS). Extracts operative da
 ## Project Structure
 
 ### Two Pipelines
-- **kt-app pipeline** (`script/`): Primary pipeline. CLI via `script/run_pipeline.py`. Orchestrated by `script/src/pipeline.py`.
+- **kt-app pipeline** (`pipelines/kt-app/`): Primary pipeline. CLI via `pipelines/kt-app/run_pipeline.py`. Orchestrated by `pipelines/kt-app/src/pipeline.py`.
 - **warcom pipeline** (`pipelines/warcom/steps/`): Legacy pipeline with numbered steps (1–9). Kept for reference and some standalone tools (ROSZ generation, web scraping).
 
 ### Key Directories
@@ -20,6 +20,10 @@ Kill Team datacards pipeline for Tabletop Simulator (TTS). Extracts operative da
 | `config/` | Team configs, weapon rules, defaults |
 | `layers/` | Image layers for card composition |
 | `archive/` | Original processed PDFs |
+| `pipelines/kt-app/` | Main pipeline source code |
+| `pipelines/kt-app/src/` | Pipeline core modules |
+| `pipelines/kt-app/steps/` | Individual pipeline step scripts |
+| `pipelines/kt-app/tools/` | Pipeline utility tools |
 
 ### Config Structure
 - `config/team-config.yaml` — Master team registry (canonical names, factions, aliases, token definitions)
@@ -28,7 +32,7 @@ Kill Team datacards pipeline for Tabletop Simulator (TTS). Extracts operative da
 - `config/teams/{team}.yaml` — Individual team overrides
 - `config/defaults/` — Default templates (box, card-backside, tts-image, tts-script, tts-token)
 
-### Script Modules (`script/src/`)
+### Pipeline Modules (`pipelines/kt-app/src/`)
 - `pipeline.py` — Pipeline orchestrator with numbered steps
 - `generators/` — Card/token image generation
 - `managers/` — Management utilities

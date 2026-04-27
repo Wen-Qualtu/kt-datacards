@@ -18,6 +18,25 @@ Usage:
     python script/extract_statlines.py --teams kasrkin,blooded
     python script/extract_statlines.py --force
 """
+Extract operative statlines from datacards PDFs (kt-app pipeline).
+
+Reads processed/{team}/{team}-datacards.pdf (multi-page PDF, one page per card)
+and extracts statlines (APL, Movement, Save, Wounds), weapons, keywords, and 
+rules/abilities using coordinate-based region extraction from PyMuPDF.
+
+Front pages (starting with "NAME" header) contain operative stats.
+Back pages contain additional rules/abilities.
+
+Output: output_v2/{faction}/{team}/statlines/roster.json
+
+Based on the warcom pipeline's 6_extract_statlines.py, adapted for the 
+multi-page datacards PDFs produced by the kt-app export.
+
+Usage:
+    python pipelines/kt-app/steps/extract_statlines.py
+    python pipelines/kt-app/steps/extract_statlines.py --teams kasrkin,blooded
+    python pipelines/kt-app/steps/extract_statlines.py --force
+"""
 
 import argparse
 import json
@@ -31,7 +50,7 @@ from datetime import datetime, timezone
 import fitz  # PyMuPDF
 import yaml
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).resolve().parent.parent.parent.parent
 PROCESSED_DIR = ROOT / "processed"
 OUTPUT_DIR = ROOT / "output"
 OUTPUT_V2_DIR = ROOT / "output_v2"

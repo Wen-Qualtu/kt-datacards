@@ -41,7 +41,7 @@ def main():
     
     args = parser.parse_args()
     
-    workspace_dir = Path(__file__).parent.parent
+    workspace_dir = Path(__file__).parent.parent.parent.parent
     
     # Convert team filter to None if empty list
     team_filter = args.teams if args.teams else None

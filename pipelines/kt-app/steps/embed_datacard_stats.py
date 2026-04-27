@@ -6,7 +6,7 @@ For each team:
   2. Patches every datacard in tts_objects/{team}/*.json with GMNotes + LuaScript
 
 Usage:
-    python script/embed_datacard_stats.py [--teams team1,team2] [--dry-run]
+    python pipelines/kt-app/steps/embed_datacard_stats.py [--teams team1,team2] [--dry-run]
 """
 
 import argparse
@@ -18,7 +18,7 @@ from pathlib import Path
 
 import yaml
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).resolve().parent.parent.parent.parent
 LUA_SCRIPT_PATH = ROOT / "config" / "defaults" / "tts-script" / "datacard-load-stats.lua"
 WEAPON_RULES_PATH = ROOT / "config" / "weapon_rules.json"
 OUTPUT_DIR = ROOT / "output"
