@@ -62,7 +62,7 @@
       "Bag": {
         "Order": 0
       },
-      "LuaScript": "-- Kill Team Display Table Manager\r\n-- Attach this to a bag to manage the display table\r\n\r\nlocal TTS_BOXES_JSON_URL = \"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/tts-card-boxes.json\"\r\nlocal MANAGER_METADATA_URL = \"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/tts-manager.json\"\r\nlocal isUpdating = false\r\nlocal positions = {}\r\n\r\nfunction onLoad(script_state)\r\n    print(\"[KT Display Manager] Ready. Buttons: Refresh from GitHub | Place/Recall Teams\")\r\n    self.setName(\"KT Display Manager\")\r\n    self.setDescription(\"Manages Kill Team display table. Refresh from GitHub or Place/Recall all teams.\")\r\n    \r\n    -- Load stored positions (keyed by team name, not GUID)\r\n    if script_state ~= \"\" and script_state ~= nil then\r\n        local success, decoded = pcall(function() return JSON.decode(script_state) end)\r\n        if success and decoded then\r\n            positions = decoded\r\n            print(\"[KT Display Manager] Loaded \" .. getTableSize(positions) .. \" saved positions\")\r\n        end\r\n    end\r\nend\r\n\r\nfunction onSave()\r\n    return JSON.encode(positions)\r\nend\r\n\r\nfunction getTableSize(t)\r\n    local count = 0\r\n    for _ in pairs(t) do count = count + 1 end\r\n    return count\r\nend\r\n\r\n\nfunction selfUpdate()\n    if isUpdating then\n        broadcastToAll(\"Update already in progress...\", {1, 0.5, 0})\n        return\n    end\n    \n    isUpdating = true\n    broadcastToAll(\"Checking for Manager bag updates...\", {0.2, 0.8, 1})\n    \n    -- Fetch manager metadata\n    WebRequest.get(MANAGER_METADATA_URL, function(webReturn)\n        if webReturn.is_error then\n            broadcastToAll(\"Could not check for updates: \" .. webReturn.error, {1, 0, 0})\n            isUpdating = false\n            return\n        end\n        \n        local success, metadata = pcall(function() return JSON.decode(webReturn.text) end)\n        if not success or not metadata.url then\n            broadcastToAll(\"Could not parse update metadata\", {1, 0, 0})\n            isUpdating = false\n            return\n        end\n        \n        broadcastToAll(\"Fetching latest Manager bag...\", {0.2, 0.8, 1})\n        \n        -- Add cache busting to force fresh download\n        local cacheBust = metadata.last_modified and metadata.last_modified:gsub(\"[^0-9]\", \"\") or math.random(1, 999999)\n        local managerURL = metadata.url .. \"?v=\" .. cacheBust\n        \n        WebRequest.get(managerURL, function(managerReturn)\n            if managerReturn.is_error then\n                broadcastToAll(\"Could not fetch Manager update: \" .. managerReturn.error, {1, 0, 0})\n                isUpdating = false\n                return\n            end\n            \n            local success, managerData = pcall(function() return JSON.decode(managerReturn.text) end)\n            if not success or not managerData.ObjectStates or #managerData.ObjectStates == 0 then\n                broadcastToAll(\"Could not parse Manager data\", {1, 0, 0})\n                isUpdating = false\n                return\n            end\n            \n            broadcastToAll(\"Creating new Manager bag...\", {0.2, 0.8, 1})\n            \n            -- Get my current position, rotation, and state\n            local myPos = self.getPosition()\n            local myRot = self.getRotation()\n            local myState = self.script_state\n            local myContents = self.getObjects()\n            \n            -- Spawn the new manager bag\n            local newManagerData = managerData.ObjectStates[1]\n            local newManager = spawnObjectJSON({\n                json = JSON.encode(newManagerData),\n                position = myPos + Vector(0, 5, 0)\n            })\n            \n            Wait.condition(\n                function()\n                    -- Transfer state and position\n                    newManager.script_state = myState\n                    newManager.setPosition(myPos)\n                    newManager.setRotation(myRot)\n                    \n                    broadcastToAll(\"Transferring \" .. #myContents .. \" team bags to new Manager...\", {0.2, 0.8, 1})\n                    \n                    -- Transfer all contents to new bag\n                    local transferred = 0\n                    for i, item in ipairs(myContents) do\n                        Wait.time(function()\n                            local obj = self.takeObject({guid = item.guid, smooth = false})\n                            Wait.condition(\n                                function()\n                                    newManager.putObject(obj)\n                                    transferred = transferred + 1\n                                    \n                                    if transferred == #myContents then\n                                        -- All transferred, destroy old bag\n                                        Wait.time(function()\n                                            broadcastToAll(\"\u2713 Manager bag updated successfully!\", {0, 1, 0})\n                                            self.destruct()\n                                        end, 0.5)\n                                    end\n                                end,\n                                function() return obj ~= nil and not obj.spawning end,\n                                3\n                            )\n                        end, i * 0.1)\n                    end\n                    \n                    -- If bag was empty, just destroy old one\n                    if #myContents == 0 then\n                        Wait.time(function()\n                            broadcastToAll(\"\u2713 Manager bag updated successfully!\", {0, 1, 0})\n                            self.destruct()\n                        end, 0.5)\n                    end\n                end,\n                function() return newManager ~= nil and not newManager.spawning end,\n                10,\n                function()\n                    broadcastToAll(\"Timeout spawning new Manager bag\", {1, 0, 0})\n                    isUpdating = false\n                end\n            )\n        end)\n    end)\nend\n\nfunction refreshFromGitHub()\r\n    if isUpdating then\r\n        broadcastToAll(\"Refresh already in progress...\", {1, 0.5, 0})\r\n        return\r\n    end\r\n    \r\n    isUpdating = true\r\n    broadcastToAll(\"Fetching latest team list from GitHub...\", {0.2, 0.8, 1})\r\n    \r\n    -- Fetch the minimal JSON with just TTS card box URLs\r\n    WebRequest.get(TTS_BOXES_JSON_URL, function(webReturn)\r\n        if webReturn.is_error then\r\n            broadcastToAll(\"Error fetching team list: \" .. webReturn.error, {1, 0, 0})\r\n            isUpdating = false\r\n            return\r\n        end\r\n        \r\n        local success, teamBoxes = pcall(function() return JSON.decode(webReturn.text) end)\r\n        if not success then\r\n            broadcastToAll(\"Error parsing JSON: \" .. tostring(teamBoxes), {1, 0, 0})\r\n            isUpdating = false\r\n            return\r\n        end\r\n        \r\n        broadcastToAll(\"Found \" .. #teamBoxes .. \" teams. Clearing current contents...\", {0.2, 0.8, 1})\r\n        \r\n        -- Clear current contents\r\n        for _, obj in ipairs(self.getObjects()) do\r\n            self.takeObject({guid = obj.guid}).destruct()\r\n        end\r\n        \r\n        Wait.time(function()\r\n            broadcastToAll(\"Fetching team bags...\", {0.2, 0.8, 1})\r\n            loadNext(teamBoxes, 1, 0)\r\n        end, 1.0)\r\n    end)\r\nend\r\n\r\nfunction loadNext(teamBoxes, index, added)\r\n    if index > #teamBoxes then\r\n        broadcastToAll(\"\u2713 Manager bag updated with \" .. added .. \" teams!\", {0, 1, 0})\r\n        isUpdating = false\r\n        return\r\n    end\r\n    \r\n    local box = teamBoxes[index]\r\n    -- Use timestamp for cache busting (strip non-numeric characters)\r\n    local cacheBust = box.last_modified and box.last_modified:gsub(\"[^0-9]\", \"\") or math.random(1, 999999)\r\n    local url = box.url .. \"?v=\" .. cacheBust\r\n    \r\n    WebRequest.get(url, function(webReturn)\r\n        if webReturn.is_error then\r\n            print(\"[Warning] Failed to fetch \" .. box.name .. \": \" .. webReturn.error)\r\n            Wait.time(function() loadNext(teamBoxes, index + 1, added) end, 0.1)\r\n            return\r\n        end\r\n        \r\n        local success, decoded = pcall(function() return JSON.decode(webReturn.text) end)\r\n        if not success or not decoded.ObjectStates or #decoded.ObjectStates == 0 then\r\n            print(\"[Warning] Invalid JSON for \" .. box.name)\r\n            Wait.time(function() loadNext(teamBoxes, index + 1, added) end, 0.1)\r\n            return\r\n        end\r\n        \r\n        -- Get the team card box (first object)\r\n        local teamBag = decoded.ObjectStates[1]\r\n        local spawnedObj = spawnObjectJSON({\r\n            json = JSON.encode(teamBag),\r\n            position = self.getPosition() + Vector(0, 5, 0)\r\n        })\r\n        \r\n        Wait.condition(\r\n            function()\r\n                self.putObject(spawnedObj)\r\n                added = added + 1\r\n                broadcastToAll(\"Added \" .. box.name .. \" (\" .. added .. \"/\" .. #teamBoxes .. \")\", {0.5, 0.5, 1})\r\n                \r\n                Wait.time(function()\r\n                    loadNext(teamBoxes, index + 1, added)\r\n                end, 0.1)\r\n            end,\r\n            function() return spawnedObj ~= nil and not spawnedObj.spawning end,\r\n            5\r\n        )\r\n    end)\r\nend\r\n\r\nfunction placeTeamsOnTable()\r\n    local contents = self.getObjects()\r\n    \r\n    if #contents == 0 then\r\n        broadcastToAll(\"Manager bag is empty! Click 'Reload All Teams' first.\", {1, 0.5, 0})\r\n        return\r\n    end\r\n    \r\n    broadcastToAll(\"Recalling any existing teams first...\", {0.8, 0.8, 0.2})\r\n    \r\n    -- First, recall any existing team bags and clean up labels\r\n    local recalled = 0\r\n    for _, obj in ipairs(getAllObjects()) do\r\n        if obj.type == \"Bag\" and obj ~= self and obj.getName() ~= \"\" then\r\n            local name = obj.getName()\r\n            if name ~= \"KT Display Manager\" and obj.getGUID() ~= self.getGUID() then\r\n                self.putObject(obj)\r\n                recalled = recalled + 1\r\n            end\r\n        end\r\n    end\r\n    \r\n    -- Clean up old text labels\r\n    for _, obj in ipairs(getAllObjects()) do\r\n        if obj.getGMNotes() == \"_team_label\" then\r\n            obj.destruct()\r\n        end\r\n    end\r\n    \r\n    if recalled > 0 then\r\n        broadcastToAll(\"Recalled \" .. recalled .. \" existing teams.\", {0.5, 0.5, 0.5})\r\n    end\r\n    \r\n    -- Wait a moment before placing to ensure recall is complete\r\n    Wait.time(function()\r\n        broadcastToAll(\"Placing \" .. #contents .. \" teams on display table...\", {0.2, 0.8, 1})\r\n        \r\n        -- Get manager bag position as reference point\r\n        local bagPos = self.getPosition()\r\n        \r\n        -- Take out each team bag and spawn label\r\n        local placed = 0\r\n        for i, item in ipairs(contents) do\r\n            Wait.time(function()\r\n                local guid = item.guid\r\n                local teamName = item.name  -- Use team name from item\r\n                local posData = positions[teamName]  -- Look up by name, not GUID\r\n                \r\n                if posData then\r\n                    -- Calculate position relative to manager bag\r\n                    local relativePos = {\r\n                        x = bagPos.x + posData.pos.x,\r\n                        y = bagPos.y + posData.pos.y,\r\n                        z = bagPos.z + posData.pos.z - 30.0  -- Offset since bag is at Z=30\r\n                    }\r\n                    \r\n                    local bagObj = self.takeObject({\r\n                        guid = guid,\r\n                        position = Vector(relativePos.x, relativePos.y, relativePos.z),\r\n                        rotation = Vector(posData.rot.x, posData.rot.y, posData.rot.z),\r\n                        smooth = false\r\n                    })\r\n                    \r\n                    -- Spawn text label for this team\r\n                    Wait.time(function()\r\n                        if bagObj and teamName and teamName ~= \"\" then\r\n                            spawnObject({\r\n                                type = \"3DText\",\r\n                                position = Vector(relativePos.x, relativePos.y - 2.2, relativePos.z + 3.0),\r\n                                rotation = Vector(90, 0, 0),\r\n                                scale = Vector(0.015, 0.015, 0.015),\r\n                                callback_function = function(obj)\r\n                                    obj.TextTool.setValue(teamName)\r\n                                    obj.TextTool.setFontSize(50)\r\n                                    obj.setColorTint({r=1, g=1, b=1})\r\n                                    obj.setLock(true)\r\n                                    obj.setGMNotes(\"_team_label\")\r\n                                end\r\n                            })\r\n                        end\r\n                    end, 0.2)\r\n                else\r\n                    -- No saved position, just take out\r\n                    self.takeObject({\r\n                        guid = guid,\r\n                        smooth = false\r\n                    })\r\n                end\r\n                \r\n                placed = placed + 1\r\n                if placed == #contents then\r\n                    Wait.time(function()\r\n                        broadcastToAll(\"\u2713 All teams placed on table!\", {0, 1, 0})\r\n                    end, 0.5)\r\n                end\r\n            end, i * 0.15)\r\n        end\r\n    end, 0.5)\r\nend\r\n\r\nfunction recallTeamsToManager()\r\n    local recalled = 0\r\n    \r\n    -- Save positions before recalling (keyed by team name)\r\n    for _, obj in ipairs(getAllObjects()) do\r\n        if obj.type == \"Bag\" and obj ~= self and obj.getName() ~= \"\" then\r\n            local name = obj.getName()\r\n            if name ~= \"KT Display Manager\" and obj.getGUID() ~= self.getGUID() then\r\n                -- Store position relative to manager bag\r\n                local bagPos = self.getPosition()\r\n                local objPos = obj.getPosition()\r\n                local objRot = obj.getRotation()\r\n                \r\n                positions[name] = {\r\n                    pos = {\r\n                        x = objPos.x - bagPos.x,\r\n                        y = objPos.y - bagPos.y,\r\n                        z = objPos.z - bagPos.z + 30.0  -- Reverse the offset\r\n                    },\r\n                    rot = {x = objRot.x, y = objRot.y, z = objRot.z}\r\n                }\r\n                \r\n                self.putObject(obj)\r\n                recalled = recalled + 1\r\n            end\r\n        end\r\n    end\r\n    \r\n    -- Clean up text labels\r\n    for _, obj in ipairs(getAllObjects()) do\r\n        if obj.getGMNotes() == \"_team_label\" then\r\n            obj.destruct()\r\n        end\r\n    end\r\n    \r\n    if recalled > 0 then\r\n        broadcastToAll(\"\u2713 Recalled \" .. recalled .. \" teams and saved positions.\", {0, 1, 0})\r\n    else\r\n        broadcastToAll(\"No team bags found on table to recall.\", {1, 0.5, 0})\r\n    end\r\nend\r\n",
+      "LuaScript": "-- Kill Team Display Table Manager\r\n-- Attach this to a bag to manage the display table\r\n\r\nlocal TTS_BOXES_JSON_URL = \"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/tts-card-boxes.json\"\r\nlocal MANAGER_METADATA_URL = \"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/tts-manager.json\"\r\nlocal isUpdating = false\r\nlocal positions = {}\r\n\r\nfunction onLoad(script_state)\r\n    print(\"[KT Display Manager] Ready. Buttons: Refresh from GitHub | Place/Recall Teams\")\r\n    self.setName(\"KT Display Manager\")\r\n    self.setDescription(\"Manages Kill Team display table. Refresh from GitHub or Place/Recall all teams.\")\r\n    \r\n    -- Load stored positions (keyed by team name, not GUID)\r\n    if script_state ~= \"\" and script_state ~= nil then\r\n        local success, decoded = pcall(function() return JSON.decode(script_state) end)\r\n        if success and decoded then\r\n            positions = decoded\r\n            print(\"[KT Display Manager] Loaded \" .. getTableSize(positions) .. \" saved positions\")\r\n        end\r\n    end\r\nend\r\n\r\nfunction onSave()\r\n    return JSON.encode(positions)\r\nend\r\n\r\nfunction getTableSize(t)\r\n    local count = 0\r\n    for _ in pairs(t) do count = count + 1 end\r\n    return count\r\nend\r\n\r\n\nfunction selfUpdate()\n    if isUpdating then\n        broadcastToAll(\"Update already in progress...\", {1, 0.5, 0})\n        return\n    end\n    \n    isUpdating = true\n    broadcastToAll(\"Checking for Manager bag updates...\", {0.2, 0.8, 1})\n    \n    -- Fetch manager metadata\n    WebRequest.get(MANAGER_METADATA_URL, function(webReturn)\n        if webReturn.is_error then\n            broadcastToAll(\"Could not check for updates: \" .. webReturn.error, {1, 0, 0})\n            isUpdating = false\n            return\n        end\n        \n        local success, metadata = pcall(function() return JSON.decode(webReturn.text) end)\n        if not success or not metadata.url then\n            broadcastToAll(\"Could not parse update metadata\", {1, 0, 0})\n            isUpdating = false\n            return\n        end\n        \n        broadcastToAll(\"Fetching latest Manager bag...\", {0.2, 0.8, 1})\n        \n        -- Add cache busting to force fresh download\n        local cacheBust = metadata.last_modified and metadata.last_modified:gsub(\"[^0-9]\", \"\") or math.random(1, 999999)\n        local managerURL = metadata.url .. \"?v=\" .. cacheBust\n        \n        WebRequest.get(managerURL, function(managerReturn)\n            if managerReturn.is_error then\n                broadcastToAll(\"Could not fetch Manager update: \" .. managerReturn.error, {1, 0, 0})\n                isUpdating = false\n                return\n            end\n            \n            local success, managerData = pcall(function() return JSON.decode(managerReturn.text) end)\n            if not success or not managerData.ObjectStates or #managerData.ObjectStates == 0 then\n                broadcastToAll(\"Could not parse Manager data\", {1, 0, 0})\n                isUpdating = false\n                return\n            end\n            \n            broadcastToAll(\"Creating new Manager bag...\", {0.2, 0.8, 1})\n            \n            -- Get my current position, rotation, and state\n            local myPos = self.getPosition()\n            local myRot = self.getRotation()\n            local myState = self.script_state\n            local myContents = self.getObjects()\n            \n            -- Spawn the new manager bag\n            local newManagerData = managerData.ObjectStates[1]\n            local newManager = spawnObjectJSON({\n                json = JSON.encode(newManagerData),\n                position = myPos + Vector(0, 5, 0)\n            })\n            \n            Wait.condition(\n                function()\n                    -- Transfer state and position\n                    newManager.script_state = myState\n                    newManager.setPosition(myPos)\n                    newManager.setRotation(myRot)\n                    \n                    broadcastToAll(\"Transferring \" .. #myContents .. \" team bags to new Manager...\", {0.2, 0.8, 1})\n                    \n                    -- Transfer all contents to new bag\n                    local transferred = 0\n                    for i, item in ipairs(myContents) do\n                        Wait.time(function()\n                            local obj = self.takeObject({guid = item.guid, smooth = false})\n                            Wait.condition(\n                                function()\n                                    newManager.putObject(obj)\n                                    transferred = transferred + 1\n                                    \n                                    if transferred == #myContents then\n                                        -- All transferred, destroy old bag\n                                        Wait.time(function()\n                                            broadcastToAll(\"✓ Manager bag updated successfully!\", {0, 1, 0})\n                                            self.destruct()\n                                        end, 0.5)\n                                    end\n                                end,\n                                function() return obj ~= nil and not obj.spawning end,\n                                3\n                            )\n                        end, i * 0.1)\n                    end\n                    \n                    -- If bag was empty, just destroy old one\n                    if #myContents == 0 then\n                        Wait.time(function()\n                            broadcastToAll(\"✓ Manager bag updated successfully!\", {0, 1, 0})\n                            self.destruct()\n                        end, 0.5)\n                    end\n                end,\n                function() return newManager ~= nil and not newManager.spawning end,\n                10,\n                function()\n                    broadcastToAll(\"Timeout spawning new Manager bag\", {1, 0, 0})\n                    isUpdating = false\n                end\n            )\n        end)\n    end)\nend\n\nfunction refreshFromGitHub()\r\n    if isUpdating then\r\n        broadcastToAll(\"Refresh already in progress...\", {1, 0.5, 0})\r\n        return\r\n    end\r\n    \r\n    isUpdating = true\r\n    broadcastToAll(\"Fetching latest team list from GitHub...\", {0.2, 0.8, 1})\r\n    \r\n    -- Fetch the minimal JSON with just TTS card box URLs\r\n    WebRequest.get(TTS_BOXES_JSON_URL, function(webReturn)\r\n        if webReturn.is_error then\r\n            broadcastToAll(\"Error fetching team list: \" .. webReturn.error, {1, 0, 0})\r\n            isUpdating = false\r\n            return\r\n        end\r\n        \r\n        local success, teamBoxes = pcall(function() return JSON.decode(webReturn.text) end)\r\n        if not success then\r\n            broadcastToAll(\"Error parsing JSON: \" .. tostring(teamBoxes), {1, 0, 0})\r\n            isUpdating = false\r\n            return\r\n        end\r\n        \r\n        broadcastToAll(\"Found \" .. #teamBoxes .. \" teams. Clearing current contents...\", {0.2, 0.8, 1})\r\n        \r\n        -- Clear current contents\r\n        for _, obj in ipairs(self.getObjects()) do\r\n            self.takeObject({guid = obj.guid}).destruct()\r\n        end\r\n        \r\n        Wait.time(function()\r\n            broadcastToAll(\"Fetching team bags...\", {0.2, 0.8, 1})\r\n            loadNext(teamBoxes, 1, 0)\r\n        end, 1.0)\r\n    end)\r\nend\r\n\r\nfunction loadNext(teamBoxes, index, added)\r\n    if index > #teamBoxes then\r\n        broadcastToAll(\"✓ Manager bag updated with \" .. added .. \" teams!\", {0, 1, 0})\r\n        isUpdating = false\r\n        return\r\n    end\r\n    \r\n    local box = teamBoxes[index]\r\n    -- Use timestamp for cache busting (strip non-numeric characters)\r\n    local cacheBust = box.last_modified and box.last_modified:gsub(\"[^0-9]\", \"\") or math.random(1, 999999)\r\n    local url = box.url .. \"?v=\" .. cacheBust\r\n    \r\n    WebRequest.get(url, function(webReturn)\r\n        if webReturn.is_error then\r\n            print(\"[Warning] Failed to fetch \" .. box.name .. \": \" .. webReturn.error)\r\n            Wait.time(function() loadNext(teamBoxes, index + 1, added) end, 0.1)\r\n            return\r\n        end\r\n        \r\n        local success, decoded = pcall(function() return JSON.decode(webReturn.text) end)\r\n        if not success or not decoded.ObjectStates or #decoded.ObjectStates == 0 then\r\n            print(\"[Warning] Invalid JSON for \" .. box.name)\r\n            Wait.time(function() loadNext(teamBoxes, index + 1, added) end, 0.1)\r\n            return\r\n        end\r\n        \r\n        -- Get the team card box (first object)\r\n        local teamBag = decoded.ObjectStates[1]\r\n        local spawnedObj = spawnObjectJSON({\r\n            json = JSON.encode(teamBag),\r\n            position = self.getPosition() + Vector(0, 5, 0)\r\n        })\r\n        \r\n        Wait.condition(\r\n            function()\r\n                self.putObject(spawnedObj)\r\n                added = added + 1\r\n                broadcastToAll(\"Added \" .. box.name .. \" (\" .. added .. \"/\" .. #teamBoxes .. \")\", {0.5, 0.5, 1})\r\n                \r\n                Wait.time(function()\r\n                    loadNext(teamBoxes, index + 1, added)\r\n                end, 0.1)\r\n            end,\r\n            function() return spawnedObj ~= nil and not spawnedObj.spawning end,\r\n            5\r\n        )\r\n    end)\r\nend\r\n\r\nfunction placeTeamsOnTable()\r\n    local contents = self.getObjects()\r\n    \r\n    if #contents == 0 then\r\n        broadcastToAll(\"Manager bag is empty! Click 'Reload All Teams' first.\", {1, 0.5, 0})\r\n        return\r\n    end\r\n    \r\n    broadcastToAll(\"Recalling any existing teams first...\", {0.8, 0.8, 0.2})\r\n    \r\n    -- First, recall any existing team bags and clean up labels\r\n    local recalled = 0\r\n    for _, obj in ipairs(getAllObjects()) do\r\n        if obj.type == \"Bag\" and obj ~= self and obj.getName() ~= \"\" then\r\n            local name = obj.getName()\r\n            if name ~= \"KT Display Manager\" and obj.getGUID() ~= self.getGUID() then\r\n                self.putObject(obj)\r\n                recalled = recalled + 1\r\n            end\r\n        end\r\n    end\r\n    \r\n    -- Clean up old text labels\r\n    for _, obj in ipairs(getAllObjects()) do\r\n        if obj.getGMNotes() == \"_team_label\" then\r\n            obj.destruct()\r\n        end\r\n    end\r\n    \r\n    if recalled > 0 then\r\n        broadcastToAll(\"Recalled \" .. recalled .. \" existing teams.\", {0.5, 0.5, 0.5})\r\n    end\r\n    \r\n    -- Wait a moment before placing to ensure recall is complete\r\n    Wait.time(function()\r\n        broadcastToAll(\"Placing \" .. #contents .. \" teams on display table...\", {0.2, 0.8, 1})\r\n        \r\n        -- Get manager bag position as reference point\r\n        local bagPos = self.getPosition()\r\n        \r\n        -- Take out each team bag and spawn label\r\n        local placed = 0\r\n        for i, item in ipairs(contents) do\r\n            Wait.time(function()\r\n                local guid = item.guid\r\n                local teamName = item.name  -- Use team name from item\r\n                local posData = positions[teamName]  -- Look up by name, not GUID\r\n                \r\n                if posData then\r\n                    -- Calculate position relative to manager bag\r\n                    local relativePos = {\r\n                        x = bagPos.x + posData.pos.x,\r\n                        y = bagPos.y + posData.pos.y,\r\n                        z = bagPos.z + posData.pos.z - 30.0  -- Offset since bag is at Z=30\r\n                    }\r\n                    \r\n                    local bagObj = self.takeObject({\r\n                        guid = guid,\r\n                        position = Vector(relativePos.x, relativePos.y, relativePos.z),\r\n                        rotation = Vector(posData.rot.x, posData.rot.y, posData.rot.z),\r\n                        smooth = false\r\n                    })\r\n                    \r\n                    -- Spawn text label for this team\r\n                    Wait.time(function()\r\n                        if bagObj and teamName and teamName ~= \"\" then\r\n                            spawnObject({\r\n                                type = \"3DText\",\r\n                                position = Vector(relativePos.x, relativePos.y - 2.2, relativePos.z + 3.0),\r\n                                rotation = Vector(90, 0, 0),\r\n                                scale = Vector(0.015, 0.015, 0.015),\r\n                                callback_function = function(obj)\r\n                                    obj.TextTool.setValue(teamName)\r\n                                    obj.TextTool.setFontSize(50)\r\n                                    obj.setColorTint({r=1, g=1, b=1})\r\n                                    obj.setLock(true)\r\n                                    obj.setGMNotes(\"_team_label\")\r\n                                end\r\n                            })\r\n                        end\r\n                    end, 0.2)\r\n                else\r\n                    -- No saved position, just take out\r\n                    self.takeObject({\r\n                        guid = guid,\r\n                        smooth = false\r\n                    })\r\n                end\r\n                \r\n                placed = placed + 1\r\n                if placed == #contents then\r\n                    Wait.time(function()\r\n                        broadcastToAll(\"✓ All teams placed on table!\", {0, 1, 0})\r\n                    end, 0.5)\r\n                end\r\n            end, i * 0.15)\r\n        end\r\n    end, 0.5)\r\nend\r\n\r\nfunction recallTeamsToManager()\r\n    local recalled = 0\r\n    \r\n    -- Save positions before recalling (keyed by team name)\r\n    for _, obj in ipairs(getAllObjects()) do\r\n        if obj.type == \"Bag\" and obj ~= self and obj.getName() ~= \"\" then\r\n            local name = obj.getName()\r\n            if name ~= \"KT Display Manager\" and obj.getGUID() ~= self.getGUID() then\r\n                -- Store position relative to manager bag\r\n                local bagPos = self.getPosition()\r\n                local objPos = obj.getPosition()\r\n                local objRot = obj.getRotation()\r\n                \r\n                positions[name] = {\r\n                    pos = {\r\n                        x = objPos.x - bagPos.x,\r\n                        y = objPos.y - bagPos.y,\r\n                        z = objPos.z - bagPos.z + 30.0  -- Reverse the offset\r\n                    },\r\n                    rot = {x = objRot.x, y = objRot.y, z = objRot.z}\r\n                }\r\n                \r\n                self.putObject(obj)\r\n                recalled = recalled + 1\r\n            end\r\n        end\r\n    end\r\n    \r\n    -- Clean up text labels\r\n    for _, obj in ipairs(getAllObjects()) do\r\n        if obj.getGMNotes() == \"_team_label\" then\r\n            obj.destruct()\r\n        end\r\n    end\r\n    \r\n    if recalled > 0 then\r\n        broadcastToAll(\"✓ Recalled \" .. recalled .. \" teams and saved positions.\", {0, 1, 0})\r\n    else\r\n        broadcastToAll(\"No team bags found on table to recall.\", {1, 0.5, 0})\r\n    end\r\nend\r\n",
       "LuaScriptState": "{\"00cb67\":{\"pos\":{\"x\":24.701346,\"y\":3.460002,\"z\":7.3620934},\"rot\":{\"x\":-1.50793511E-07,\"y\":270,\"z\":-1.09183293E-06}},\"062a36\":{\"pos\":{\"x\":37.1566825,\"y\":3.460002,\"z\":7.3620934},\"rot\":{\"x\":-1.50793511E-07,\"y\":270,\"z\":-1.09183293E-06}},\"081d10\":{\"pos\":{\"x\":-25.12,\"y\":3.460002,\"z\":-22.6779066},\"rot\":{\"x\":-1.50793511E-07,\"y\":270,\"z\":-1.09183293E-06}},\"0e2967\":{\"pos\":{\"x\":-25.12,\"y\":3.460002,\"z\":-15.1679066},\"rot\":{\"x\":-1.50793511E-07,\"y\":270,\"z\":-1.09183293E-06}},\"17080d\":{\"pos\":{\"x\":12.2460095,\"y\":3.460002,\"z\":-15.1679066},\"rot\":{\"x\":-1.50793511E-07,\"y\":270,\"z\":-1.09183293E-06}},\"181814\":{\"pos\":{\"x\":37.1566825,\"y\":3.460002,\"z\":22.3820934},\"rot\":{\"x\":-1.50793511E-07,\"y\":270,\"z\":-1.09183293E-06}},\"1f5aee\":{\"pos\":{\"x\":37.1566825,\"y\":3.460002,\"z\":-7.6579066},\"rot\":{\"x\":-1.50793511E-07,\"y\":270,\"z\":-1.09183293E-06}},\"27d47f\":{\"pos\":{\"x\":-37.5753365,\"y\":3.460002,\"z\":22.3820934},\"rot\":{\"x\":-1.50793511E-07,\"y\":270,\"z\":-1.09183293E-06}},\"2fcfdf\":{\"pos\":{\"x\":24.701346,\"y\":3.460002,\"z\":-7.6579066},\"rot\":{\"x\":-1.50793511E-07,\"y\":270,\"z\":-1.09183293E-06}},\"311874\":{\"pos\":{\"x\":-25.12,\"y\":3.460002,\"z\":-7.6579066},\"rot\":{\"x\":-1.50793511E-07,\"y\":270,\"z\":-1.09183293E-06}},\"4d0f94\":{\"pos\":{\"x\":-0.209327000000002,\"y\":3.460002,\"z\":14.8720934},\"rot\":{\"x\":-1.50793511E-07,\"y\":270,\"z\":-1.09183293E-06}},\"58aa60\":{\"pos\":{\"x\":-37.5753365,\"y\":3.460002,\"z\":7.3620934},\"rot\":{\"x\":-1.50793511E-07,\"y\":270,\"z\":-1.09183293E-06}},\"5ed797\":{\"pos\":{\"x\":24.701346,\"y\":3.460002,\"z\":-0.147906600000002},\"rot\":{\"x\":-1.50793511E-07,\"y\":270,\"z\":-1.09183293E-06}},\"642af8\":{\"pos\":{\"x\":12.2460095,\"y\":3.460002,\"z\":22.3820934},\"rot\":{\"x\":-1.50793511E-07,\"y\":270,\"z\":-1.09183293E-06}},\"66c12f\":{\"pos\":{\"x\":24.701346,\"y\":3.460002,\"z\":22.3820934},\"rot\":{\"x\":-1.50793511E-07,\"y\":270,\"z\":-1.09183293E-06}},\"66e6a9\":{\"pos\":{\"x\":37.1566825,\"y\":3.460002,\"z\":-0.147906600000002},\"rot\":{\"x\":-1.50793511E-07,\"y\":270,\"z\":-1.09183293E-06}},\"6adf60\":{\"pos\":{\"x\":24.701346,\"y\":3.460002,\"z\":-15.1679066},\"rot\":{\"x\":-1.50793511E-07,\"y\":270,\"z\":-1.09183293E-06}},\"6b363b\":{\"pos\":{\"x\":-37.5753365,\"y\":3.460002,\"z\":-22.6779066},\"rot\":{\"x\":-1.50793511E-07,\"y\":270,\"z\":-1.09183293E-06}},\"71fe3c\":{\"pos\":{\"x\":-37.5753365,\"y\":3.460002,\"z\":-7.6579066},\"rot\":{\"x\":-1.50793511E-07,\"y\":270,\"z\":-1.09183293E-06}},\"825fd8\":{\"pos\":{\"x\":-12.6646635,\"y\":3.460002,\"z\":-7.6579066},\"rot\":{\"x\":-1.50793511E-07,\"y\":270,\"z\":-1.09183293E-06}},\"8b3301\":{\"pos\":{\"x\":37.1566825,\"y\":3.460002,\"z\":-15.1679066},\"rot\":{\"x\":-1.50793511E-07,\"y\":270,\"z\":-1.09183293E-06}},\"8f5b63\":{\"pos\":{\"x\":24.701346,\"y\":3.460002,\"z\":14.8720934},\"rot\":{\"x\":-1.50793511E-07,\"y\":270,\"z\":-1.09183293E-06}},\"95cae8\":{\"pos\":{\"x\":-0.209327000000002,\"y\":3.460002,\"z\":-7.6579066},\"rot\":{\"x\":-1.50793511E-07,\"y\":270,\"z\":-1.09183293E-06}},\"a31314\":{\"pos\":{\"x\":-0.209327000000002,\"y\":3.460002,\"z\":7.3620934},\"rot\":{\"x\":-1.50793511E-07,\"y\":270,\"z\":-1.09183293E-06}},\"ad1794\":{\"pos\":{\"x\":-0.209327000000002,\"y\":3.460002,\"z\":22.3820934},\"rot\":{\"x\":-1.50793511E-07,\"y\":270,\"z\":-1.09183293E-06}},\"Angels Of Death\":{\"pos\":{\"x\":-37.5753364898264,\"y\":2.68381899595261,\"z\":22.3820934295654},\"rot\":{\"x\":-9.8264685277627E-08,\"y\":270,\"z\":-9.200415433952E-07}},\"b299c3\":{\"pos\":{\"x\":-37.5753365,\"y\":3.460002,\"z\":-15.1679066},\"rot\":{\"x\":-1.50793511E-07,\"y\":270,\"z\":-1.09183293E-06}},\"b3a1bc\":{\"pos\":{\"x\":-12.6646635,\"y\":3.460002,\"z\":14.8720934},\"rot\":{\"x\":-1.50793511E-07,\"y\":270,\"z\":-1.09183293E-06}},\"b650f4\":{\"pos\":{\"x\":-12.6646635,\"y\":3.460002,\"z\":22.3820934},\"rot\":{\"x\":-1.50793511E-07,\"y\":270,\"z\":-1.09183293E-06}},\"b8af22\":{\"pos\":{\"x\":-25.12,\"y\":3.460002,\"z\":7.3620934},\"rot\":{\"x\":-1.50793511E-07,\"y\":270,\"z\":-1.09183293E-06}},\"Battleclade\":{\"pos\":{\"x\":-25.120000872761,\"y\":2.68381899595261,\"z\":22.3820934295654},\"rot\":{\"x\":-1.21650472806323E-07,\"y\":270,\"z\":-9.62319063546602E-07}},\"Blades Of Khaine\":{\"pos\":{\"x\":-12.6646633483469,\"y\":2.68381661176682,\"z\":22.3820934295654},\"rot\":{\"x\":4.55840165614063E-07,\"y\":270.000030517578,\"z\":-2.87527143427724E-07}},\"Blooded\":{\"pos\":{\"x\":-0.209327850490808,\"y\":2.68381875753403,\"z\":22.3820934295654},\"rot\":{\"x\":-1.24151426916796E-06,\"y\":270,\"z\":1.04314460713795E-06}},\"Brood Brothers\":{\"pos\":{\"x\":12.2460097931325,\"y\":2.68381661176682,\"z\":22.3820934295654},\"rot\":{\"x\":-2.34238868301873E-07,\"y\":270.000030517578,\"z\":-3.19312505325797E-08}},\"c06edd\":{\"pos\":{\"x\":-37.5753365,\"y\":3.460002,\"z\":-0.147906600000002},\"rot\":{\"x\":-1.50793511E-07,\"y\":270,\"z\":-1.09183293E-06}},\"c16cfc\":{\"pos\":{\"x\":12.2460095,\"y\":3.460002,\"z\":14.8720934},\"rot\":{\"x\":-1.50793511E-07,\"y\":270,\"z\":-1.09183293E-06}},\"c69c80\":{\"pos\":{\"x\":-12.6646635,\"y\":3.460002,\"z\":-0.147906600000002},\"rot\":{\"x\":-1.50793511E-07,\"y\":270,\"z\":-1.09183293E-06}},\"Canoptek Circle\":{\"pos\":{\"x\":24.701345410198,\"y\":2.68381899595261,\"z\":22.3820934295654},\"rot\":{\"x\":-1.18178647312561E-07,\"y\":270,\"z\":-8.76611750300071E-07}},\"cda876\":{\"pos\":{\"x\":-25.12,\"y\":3.460002,\"z\":14.8720934},\"rot\":{\"x\":-1.50793511E-07,\"y\":270,\"z\":-1.09183293E-06}},\"cfb091\":{\"pos\":{\"x\":-12.6646635,\"y\":3.460002,\"z\":7.3620934},\"rot\":{\"x\":-1.50793511E-07,\"y\":270,\"z\":-1.09183293E-06}},\"Chaos Cult\":{\"pos\":{\"x\":37.1566810272634,\"y\":2.68381875753403,\"z\":22.3820934295654},\"rot\":{\"x\":-9.99813892121892E-07,\"y\":270,\"z\":-1.51889878452494E-06}},\"Corsair Voidscarred\":{\"pos\":{\"x\":-37.5753364898264,\"y\":2.68381851911545,\"z\":14.8720932006836},\"rot\":{\"x\":-1.34298076659434E-07,\"y\":270,\"z\":-6.72708210913697E-07}},\"d5b341\":{\"pos\":{\"x\":37.1566825,\"y\":3.460002,\"z\":14.8720934},\"rot\":{\"x\":-1.50793511E-07,\"y\":270,\"z\":-1.09183293E-06}},\"d63101\":{\"pos\":{\"x\":-12.6646635,\"y\":3.460002,\"z\":-15.1679066},\"rot\":{\"x\":-1.50793511E-07,\"y\":270,\"z\":-1.09183293E-06}},\"Death Korps\":{\"pos\":{\"x\":-25.120000872761,\"y\":2.68381899595261,\"z\":14.8720932006836},\"rot\":{\"x\":-1.32543021891252E-07,\"y\":270,\"z\":-9.53422500060697E-07}},\"Deathwatch\":{\"pos\":{\"x\":-12.6646643020213,\"y\":2.68381685018539,\"z\":14.8720932006836},\"rot\":{\"x\":-1.22289043247292E-06,\"y\":270,\"z\":-3.39084454026306E-06}},\"e20f3e\":{\"pos\":{\"x\":-37.5753365,\"y\":3.460002,\"z\":14.8720934},\"rot\":{\"x\":-1.50793511E-07,\"y\":270,\"z\":-1.09183293E-06}},\"e68ce6\":{\"pos\":{\"x\":12.2460095,\"y\":3.460002,\"z\":-7.6579066},\"rot\":{\"x\":-1.50793511E-07,\"y\":270,\"z\":-1.09183293E-06}},\"e9452d\":{\"pos\":{\"x\":-25.12,\"y\":3.460002,\"z\":-0.147906600000002},\"rot\":{\"x\":-1.50793511E-07,\"y\":270,\"z\":-1.09183293E-06}},\"ebd9ad\":{\"pos\":{\"x\":12.2460095,\"y\":3.460002,\"z\":-0.147906600000002},\"rot\":{\"x\":-1.50793511E-07,\"y\":270,\"z\":-1.09183293E-06}},\"ec24c9\":{\"pos\":{\"x\":12.2460095,\"y\":3.460002,\"z\":7.3620934},\"rot\":{\"x\":-1.50793511E-07,\"y\":270,\"z\":-1.09183293E-06}},\"eeeb1b\":{\"pos\":{\"x\":-0.209327000000002,\"y\":3.460002,\"z\":-15.1679066},\"rot\":{\"x\":-1.50793511E-07,\"y\":270,\"z\":-1.09183293E-06}},\"Elucidian Starstriders\":{\"pos\":{\"x\":-0.209328565746546,\"y\":2.68381899595261,\"z\":14.8720932006836},\"rot\":{\"x\":-2.04643674805993E-06,\"y\":270,\"z\":1.15690900202026E-05}},\"Exaction Squad\":{\"pos\":{\"x\":12.2460078857839,\"y\":2.68381899595261,\"z\":14.8720941543579},\"rot\":{\"x\":2.08988467420568E-06,\"y\":270,\"z\":-2.83389294963854E-06}},\"f74467\":{\"pos\":{\"x\":-25.12,\"y\":3.460002,\"z\":22.3820934},\"rot\":{\"x\":-1.50793511E-07,\"y\":270,\"z\":-1.09183293E-06}},\"f86a9f\":{\"pos\":{\"x\":-0.209327000000002,\"y\":3.460002,\"z\":-0.147906600000002},\"rot\":{\"x\":-1.50793511E-07,\"y\":270,\"z\":-1.09183293E-06}},\"Farstalker Kinband\":{\"pos\":{\"x\":24.7012347839773,\"y\":2.68381923437119,\"z\":14.8721618652344},\"rot\":{\"x\":8.40091342979576E-06,\"y\":270,\"z\":1.80154518147901E-06}},\"Fellgor Ravagers\":{\"pos\":{\"x\":37.1566810272634,\"y\":2.68381780385971,\"z\":14.8720932006836},\"rot\":{\"x\":1.98322695155184E-07,\"y\":270,\"z\":1.3248533150545E-06}},\"Gellerpox Infected\":{\"pos\":{\"x\":-37.5753364898264,\"y\":2.68381875753403,\"z\":7.36209344863892},\"rot\":{\"x\":-1.38786197112495E-06,\"y\":270,\"z\":6.46987388108755E-08}},\"Goremongers\":{\"pos\":{\"x\":-25.120000872761,\"y\":2.68381923437119,\"z\":7.36209297180176},\"rot\":{\"x\":-2.4783895469227E-07,\"y\":270,\"z\":-1.15181887849758E-06}},\"Hand Of The Archon\":{\"pos\":{\"x\":-12.6646633483469,\"y\":2.68381899595261,\"z\":7.36209297180176},\"rot\":{\"x\":-2.89482682092057E-06,\"y\":270,\"z\":1.76498645032552E-06}},\"Hearthkyn Salvagers\":{\"pos\":{\"x\":-0.209328446537256,\"y\":2.68381899595261,\"z\":7.36209440231323},\"rot\":{\"x\":-2.33103241953359E-06,\"y\":270,\"z\":-1.95652705770044E-06}},\"Hernkyn Yaegirs\":{\"pos\":{\"x\":12.2460088394582,\"y\":2.68381899595261,\"z\":7.36209440231323},\"rot\":{\"x\":-8.42030431158491E-07,\"y\":270,\"z\":-2.36331089809028E-07}},\"Hierotek Circle\":{\"pos\":{\"x\":24.706077542156,\"y\":2.68381637334824,\"z\":7.36178159713745},\"rot\":{\"x\":-7.38791322874022E-06,\"y\":269.959045410156,\"z\":-1.98710986296646E-05}},\"Hunter Clade\":{\"pos\":{\"x\":37.1566810272634,\"y\":2.68381899595261,\"z\":7.36209344863892},\"rot\":{\"x\":-1.16195769805927E-06,\"y\":270,\"z\":-1.12205327695847E-07}},\"Imperial Navy Breachers\":{\"pos\":{\"x\":-37.5753364898264,\"y\":2.68381899595261,\"z\":-0.147906929254532},\"rot\":{\"x\":3.66704989573918E-06,\"y\":270,\"z\":1.38629630441756E-07}},\"Inquisitorial Agents\":{\"pos\":{\"x\":-25.120000872761,\"y\":2.68381899595261,\"z\":-0.147906363010406},\"rot\":{\"x\":-7.3570713539084E-06,\"y\":270,\"z\":-1.44404634738748E-06}},\"Kasrkin\":{\"pos\":{\"x\":-12.6646633483469,\"y\":2.68381899595261,\"z\":-0.147906139492989},\"rot\":{\"x\":7.07448680259404E-06,\"y\":270,\"z\":-7.34516277134389E-07}},\"Kommandos\":{\"pos\":{\"x\":-0.209328476339579,\"y\":2.68381899595261,\"z\":-0.147905975580215},\"rot\":{\"x\":-4.65595974219468E-07,\"y\":270,\"z\":-3.88552422236899E-07}},\"Legionaries\":{\"pos\":{\"x\":12.2460088394582,\"y\":2.68381923437119,\"z\":-0.147905886173248},\"rot\":{\"x\":3.78617471596954E-07,\"y\":270,\"z\":-1.07570633645082E-06}},\"Mandrakes\":{\"pos\":{\"x\":24.701345410198,\"y\":2.68381899595261,\"z\":-0.147906482219696},\"rot\":{\"x\":-7.82221104600467E-06,\"y\":270,\"z\":-2.38063671531563E-06}},\"Nemesis Claw\":{\"pos\":{\"x\":37.1566810272634,\"y\":2.68381899595261,\"z\":-0.147906497120857},\"rot\":{\"x\":2.72164879788761E-06,\"y\":270,\"z\":-8.96985454801325E-07}},\"Novitiates\":{\"pos\":{\"x\":-37.5753364898264,\"y\":2.68381899595261,\"z\":-7.65790605545044},\"rot\":{\"x\":-1.0002967201217E-06,\"y\":270,\"z\":-2.2538113171322E-06}},\"Pathfinders\":{\"pos\":{\"x\":-25.120000872761,\"y\":2.68381899595261,\"z\":-7.6579065322876},\"rot\":{\"x\":-1.94434235822882E-07,\"y\":270,\"z\":-9.77723743744718E-07}},\"Phobos Strike Team\":{\"pos\":{\"x\":-12.6646643020213,\"y\":2.68381899595261,\"z\":-7.65790557861328},\"rot\":{\"x\":-3.18562314305382E-07,\"y\":270,\"z\":-9.71232566371327E-06}},\"Plague Marines\":{\"pos\":{\"x\":-0.209328252822161,\"y\":2.68381899595261,\"z\":-7.65790510177612},\"rot\":{\"x\":-7.61909063839994E-07,\"y\":270,\"z\":7.49857520077057E-07}},\"Ratlings\":{\"pos\":{\"x\":12.2460078857839,\"y\":2.68381851911545,\"z\":-7.65790557861328},\"rot\":{\"x\":6.37526653690657E-08,\"y\":270,\"z\":1.47112382364867E-06}},\"Raveners\":{\"pos\":{\"x\":24.701345410198,\"y\":2.68381899595261,\"z\":-7.65790700912476},\"rot\":{\"x\":-4.59878674519132E-06,\"y\":270,\"z\":5.63053026780835E-06}},\"Sanctifiers\":{\"pos\":{\"x\":37.1566810272634,\"y\":2.68381899595261,\"z\":-7.6579065322876},\"rot\":{\"x\":-6.1893797465018E-07,\"y\":270,\"z\":-2.84522729998571E-06}},\"Scout Squad\":{\"pos\":{\"x\":-37.5753364898264,\"y\":2.68381899595261,\"z\":-15.1679067611694},\"rot\":{\"x\":-1.40748610988339E-07,\"y\":270,\"z\":-1.11619408471597E-06}},\"Tempestus Aquilons\":{\"pos\":{\"x\":-25.120000872761,\"y\":2.68381923437119,\"z\":-15.1679067611694},\"rot\":{\"x\":-2.04206529019757E-07,\"y\":270,\"z\":-1.21307505196455E-06}},\"Vespid Stingwings\":{\"pos\":{\"x\":-12.6646652556956,\"y\":2.68381899595261,\"z\":-15.1679058074951},\"rot\":{\"x\":3.13006069063704E-07,\"y\":270,\"z\":-6.33561285212636E-06}},\"Void Dancer Troupe\":{\"pos\":{\"x\":-0.209327641874552,\"y\":2.68381661176682,\"z\":-15.1679067611694},\"rot\":{\"x\":-3.23913802446896E-08,\"y\":270.000030517578,\"z\":-5.43505893801921E-06}},\"Warpcoven\":{\"pos\":{\"x\":12.2460088394582,\"y\":2.68381899595261,\"z\":-15.1679067611694},\"rot\":{\"x\":-7.04099704762484E-07,\"y\":270,\"z\":-2.86729755316628E-06}},\"Wolf Scouts\":{\"pos\":{\"x\":24.701345410198,\"y\":2.68381899595261,\"z\":-15.1679067611694},\"rot\":{\"x\":-1.61184402713843E-07,\"y\":270,\"z\":-1.07228879642207E-06}},\"Wrecka Krew\":{\"pos\":{\"x\":37.1566810272634,\"y\":2.68381899595261,\"z\":-15.1679067611694},\"rot\":{\"x\":-1.17208202254915E-07,\"y\":270,\"z\":-9.52005905219266E-07}},\"Wyrmblade\":{\"pos\":{\"x\":-37.5753364898264,\"y\":2.68381899595261,\"z\":-22.677906036377},\"rot\":{\"x\":-5.21162135669329E-08,\"y\":270,\"z\":-7.6821339689559E-07}},\"Xv26 Stealth Battlesuits\":{\"pos\":{\"x\":-25.120000872761,\"y\":2.68381899595261,\"z\":-22.677906036377},\"rot\":{\"x\":-9.38454505217123E-08,\"y\":270,\"z\":-8.25191250442003E-07}}}",
       "XmlUI": "<!-- Display Table Manager UI -->\n<Panel position=\"0 0 -40\" \n       height=\"400\" \n       width=\"1600\" \n       color=\"#000000DD\"\n       rectAlignment=\"UpperCenter\"\n       offsetXY=\"0 -100\">\n    <VerticalLayout spacing=\"20\" padding=\"20 20 20 20\">\n        <Text fontSize=\"64\" \n              color=\"#FFFFFF\" \n              alignment=\"MiddleCenter\">Kill Team Card Boxes</Text>\n        <Text fontSize=\"40\" \n              color=\"#AAAAAA\" \n              alignment=\"MiddleCenter\">Take out individual team card boxes (rightclick and search) or use 'Place on Table' for the full display. Click 'Reload All Teams' to update with the latest teams.</Text>\n        <VerticalLayout spacing=\"20\">\n            <!-- Top Row: Update buttons -->\n            <HorizontalLayout spacing=\"50\" \n                              childForceExpandWidth=\"true\" \n                              childForceExpandHeight=\"false\"\n                              preferredHeight=\"140\">\n                <Button onClick=\"selfUpdate\" \n                        preferredHeight=\"140\" \n                        fontSize=\"44\"\n                        color=\"#9C27B0\"\n                        textColor=\"#FFFFFF\">Self-Update</Button>\n                <Button onClick=\"refreshFromGitHub\" \n                        preferredHeight=\"140\" \n                        fontSize=\"44\"\n                        color=\"#1976D2\"\n                        textColor=\"#FFFFFF\">Reload Teams</Button>\n            </HorizontalLayout>\n            <!-- Bottom Row: Place/Recall buttons -->\n            <HorizontalLayout spacing=\"50\" \n                              childForceExpandWidth=\"true\" \n                              childForceExpandHeight=\"false\"\n                              preferredHeight=\"140\">\n                <Button onClick=\"placeTeamsOnTable\" \n                        preferredHeight=\"140\" \n                        fontSize=\"44\"\n                        color=\"#388E3C\"\n                        textColor=\"#FFFFFF\">Place on Table</Button>\n                <Button onClick=\"recallTeamsToManager\" \n                        preferredHeight=\"140\" \n                        fontSize=\"44\"\n                        color=\"#F57C00\"\n                        textColor=\"#FFFFFF\">Recall All Teams</Button>\n            </HorizontalLayout>\n        </VerticalLayout>\n    </VerticalLayout>\n</Panel>\n",
       "ContainedObjects": [
@@ -2165,7 +2165,6 @@
                 101100,
                 101200,
                 101300,
-                101400,
                 101500
               ],
               "CustomDeck": {
@@ -2262,15 +2261,6 @@
                 "1013": {
                   "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/chaos/blooded/datacards/blooded-traitor-thug_front.jpg",
                   "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/chaos/blooded/datacards/blooded-traitor-thug_back.jpg",
-                  "NumWidth": 1,
-                  "NumHeight": 1,
-                  "BackIsHidden": true,
-                  "UniqueBack": false,
-                  "Type": 0
-                },
-                "1014": {
-                  "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/chaos/blooded/datacards/blooded-traitor-trench-sweeper_front.jpg",
-                  "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/chaos/blooded/datacards/blooded-traitor-trench-sweeper_back.jpg",
                   "NumWidth": 1,
                   "NumHeight": 1,
                   "BackIsHidden": true,
@@ -4441,7 +4431,6 @@
                 101100,
                 101200,
                 101300,
-                101400,
                 101500
               ],
               "CustomDeck": {
@@ -4484,15 +4473,6 @@
                 "1013": {
                   "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/chaos/chaos-cult/datacards/chaos-cult-cult-demagogue_front.jpg",
                   "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/chaos/chaos-cult/datacards/chaos-cult-cult-demagogue_back.jpg",
-                  "NumWidth": 1,
-                  "NumHeight": 1,
-                  "BackIsHidden": true,
-                  "UniqueBack": false,
-                  "Type": 0
-                },
-                "1014": {
-                  "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/chaos/chaos-cult/datacards/chaos-cult-iconarch_front.jpg",
-                  "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/chaos/chaos-cult/datacards/chaos-cult-iconarch_back.jpg",
                   "NumWidth": 1,
                   "NumHeight": 1,
                   "BackIsHidden": true,
@@ -8093,21 +8073,11 @@
               "Hands": false,
               "SidewaysCard": false,
               "DeckIDs": [
-                101400,
                 101500,
                 101600,
                 101700
               ],
               "CustomDeck": {
-                "1014": {
-                  "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/chaos/fellgor-ravagers/equipment/fellgor-ravagers-brass-adornments_front.jpg",
-                  "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/chaos/fellgor-ravagers/equipment/fellgor-ravagers-brass-adornments_back.jpg",
-                  "NumWidth": 1,
-                  "NumHeight": 1,
-                  "BackIsHidden": true,
-                  "UniqueBack": false,
-                  "Type": 0
-                },
                 "1015": {
                   "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/chaos/fellgor-ravagers/equipment/fellgor-ravagers-chaos-sigil_front.jpg",
                   "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/chaos/fellgor-ravagers/equipment/fellgor-ravagers-chaos-sigil_back.jpg",
@@ -9415,8 +9385,7 @@
                 101000,
                 101100,
                 101200,
-                101300,
-                101400
+                101300
               ],
               "CustomDeck": {
                 "1006": {
@@ -9485,15 +9454,6 @@
                 "1013": {
                   "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/chaos/gellerpox-infected/datacards/gellerpox-infected-sludge-grub_front.jpg",
                   "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/chaos/gellerpox-infected/datacards/gellerpox-infected-sludge-grub_back.jpg",
-                  "NumWidth": 1,
-                  "NumHeight": 1,
-                  "BackIsHidden": true,
-                  "UniqueBack": false,
-                  "Type": 0
-                },
-                "1014": {
-                  "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/chaos/gellerpox-infected/datacards/gellerpox-infected-vulgrar-thrice-cursed_front.jpg",
-                  "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/chaos/gellerpox-infected/datacards/gellerpox-infected-vulgrar-thrice-cursed_back.jpg",
                   "NumWidth": 1,
                   "NumHeight": 1,
                   "BackIsHidden": true,
@@ -13490,7 +13450,6 @@
               "DeckIDs": [
                 101200,
                 101300,
-                101400,
                 101500
               ],
               "CustomDeck": {
@@ -13506,15 +13465,6 @@
                 "1013": {
                   "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/chaos/goremongers/equipment/goremongers-chaos-sigil_front.jpg",
                   "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/chaos/goremongers/equipment/goremongers-chaos-sigil_back.jpg",
-                  "NumWidth": 1,
-                  "NumHeight": 1,
-                  "BackIsHidden": true,
-                  "UniqueBack": false,
-                  "Type": 0
-                },
-                "1014": {
-                  "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/chaos/goremongers/equipment/goremongers-gory-totem_front.jpg",
-                  "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/chaos/goremongers/equipment/goremongers-gory-totem_back.jpg",
                   "NumWidth": 1,
                   "NumHeight": 1,
                   "BackIsHidden": true,
@@ -16779,7 +16729,6 @@
                 101100,
                 101200,
                 101300,
-                101400,
                 101500,
                 101600,
                 101700,
@@ -16825,15 +16774,6 @@
                 "1013": {
                   "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/chaos/legionaries/datacards/legionaries-legionary-chosen_front.jpg",
                   "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/chaos/legionaries/datacards/legionaries-legionary-chosen_back.jpg",
-                  "NumWidth": 1,
-                  "NumHeight": 1,
-                  "BackIsHidden": true,
-                  "UniqueBack": false,
-                  "Type": 0
-                },
-                "1014": {
-                  "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/chaos/legionaries/datacards/legionaries-legionary-gunner_front.jpg",
-                  "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/chaos/legionaries/datacards/legionaries-legionary-gunner_back.jpg",
                   "NumWidth": 1,
                   "NumHeight": 1,
                   "BackIsHidden": true,
@@ -19056,8 +18996,7 @@
               "DeckIDs": [
                 101100,
                 101200,
-                101300,
-                101400
+                101300
               ],
               "CustomDeck": {
                 "1011": {
@@ -19081,15 +19020,6 @@
                 "1013": {
                   "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/chaos/plague-marines/equipment/plague-marines-plague-rounds_front.jpg",
                   "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/chaos/plague-marines/equipment/plague-marines-plague-rounds_back.jpg",
-                  "NumWidth": 1,
-                  "NumHeight": 1,
-                  "BackIsHidden": true,
-                  "UniqueBack": false,
-                  "Type": 0
-                },
-                "1014": {
-                  "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/chaos/plague-marines/equipment/plague-marines-poison-vents_front.jpg",
-                  "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/chaos/plague-marines/equipment/plague-marines-poison-vents_back.jpg",
                   "NumWidth": 1,
                   "NumHeight": 1,
                   "BackIsHidden": true,
@@ -20880,21 +20810,11 @@
               "Hands": false,
               "SidewaysCard": false,
               "DeckIDs": [
-                101400,
                 101500,
                 101600,
                 101700
               ],
               "CustomDeck": {
-                "1014": {
-                  "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/chaos/warpcoven/equipment/warpcoven-arcane-robes_front.jpg",
-                  "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/chaos/warpcoven/equipment/warpcoven-arcane-robes_back.jpg",
-                  "NumWidth": 1,
-                  "NumHeight": 1,
-                  "BackIsHidden": true,
-                  "UniqueBack": false,
-                  "Type": 0
-                },
                 "1015": {
                   "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/chaos/warpcoven/equipment/warpcoven-daemonmaw-weapons_front.jpg",
                   "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/chaos/warpcoven/equipment/warpcoven-daemonmaw-weapons_back.jpg",
@@ -22650,7 +22570,6 @@
               "SidewaysCard": false,
               "DeckIDs": [
                 101300,
-                101400,
                 101500,
                 101600
               ],
@@ -22658,15 +22577,6 @@
                 "1013": {
                   "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/angels-of-death/equipment/angels-of-death-auspex_front.jpg",
                   "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/angels-of-death/equipment/angels-of-death-auspex_back.jpg",
-                  "NumWidth": 1,
-                  "NumHeight": 1,
-                  "BackIsHidden": true,
-                  "UniqueBack": false,
-                  "Type": 0
-                },
-                "1014": {
-                  "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/angels-of-death/equipment/angels-of-death-chapter-reliquaries_front.jpg",
-                  "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/angels-of-death/equipment/angels-of-death-chapter-reliquaries_back.jpg",
                   "NumWidth": 1,
                   "NumHeight": 1,
                   "BackIsHidden": true,
@@ -25721,21 +25631,11 @@
               "Hands": false,
               "SidewaysCard": false,
               "DeckIDs": [
-                101400,
                 101500,
                 101600,
                 101700
               ],
               "CustomDeck": {
-                "1014": {
-                  "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/battleclade/firefight-ploys/battleclade-auto-ferric-supplication_front.jpg",
-                  "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/battleclade/firefight-ploys/battleclade-auto-ferric-supplication_back.jpg",
-                  "NumWidth": 1,
-                  "NumHeight": 1,
-                  "BackIsHidden": true,
-                  "UniqueBack": false,
-                  "Type": 0
-                },
                 "1015": {
                   "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/battleclade/firefight-ploys/battleclade-remote-access_front.jpg",
                   "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/battleclade/firefight-ploys/battleclade-remote-access_back.jpg",
@@ -28691,7 +28591,6 @@
                 101100,
                 101200,
                 101300,
-                101400,
                 101500,
                 101600
               ],
@@ -28771,15 +28670,6 @@
                 "1013": {
                   "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/death-korps/datacards/death-korps-veteran_front.jpg",
                   "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/death-korps/datacards/death-korps-veteran_back.jpg",
-                  "NumWidth": 1,
-                  "NumHeight": 1,
-                  "BackIsHidden": true,
-                  "UniqueBack": false,
-                  "Type": 0
-                },
-                "1014": {
-                  "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/death-korps/datacards/death-korps-vox-operator_front.jpg",
-                  "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/death-korps/datacards/death-korps-vox-operator_back.jpg",
                   "NumWidth": 1,
                   "NumHeight": 1,
                   "BackIsHidden": true,
@@ -32245,8 +32135,7 @@
                 101000,
                 101100,
                 101200,
-                101300,
-                101400
+                101300
               ],
               "CustomDeck": {
                 "1004": {
@@ -32333,15 +32222,6 @@
                 "1013": {
                   "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/deathwatch/datacards/deathwatch-marksman-veteran_front.jpg",
                   "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/deathwatch/datacards/deathwatch-marksman-veteran_back.jpg",
-                  "NumWidth": 1,
-                  "NumHeight": 1,
-                  "BackIsHidden": true,
-                  "UniqueBack": false,
-                  "Type": 0
-                },
-                "1014": {
-                  "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/deathwatch/datacards/deathwatch-watch-sergeant_front.jpg",
-                  "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/deathwatch/datacards/deathwatch-watch-sergeant_back.jpg",
                   "NumWidth": 1,
                   "NumHeight": 1,
                   "BackIsHidden": true,
@@ -34575,8 +34455,7 @@
               "DeckIDs": [
                 101100,
                 101200,
-                101300,
-                101400
+                101300
               ],
               "CustomDeck": {
                 "1011": {
@@ -34600,15 +34479,6 @@
                 "1013": {
                   "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/elucidian-starstriders/equipment/elucidian-starstriders-improved-coordinates-uplink_front.jpg",
                   "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/elucidian-starstriders/equipment/elucidian-starstriders-improved-coordinates-uplink_back.jpg",
-                  "NumWidth": 1,
-                  "NumHeight": 1,
-                  "BackIsHidden": true,
-                  "UniqueBack": false,
-                  "Type": 0
-                },
-                "1014": {
-                  "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/elucidian-starstriders/equipment/elucidian-starstriders-rapid-gunnery_front.jpg",
-                  "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/elucidian-starstriders/equipment/elucidian-starstriders-rapid-gunnery_back.jpg",
                   "NumWidth": 1,
                   "NumHeight": 1,
                   "BackIsHidden": true,
@@ -37640,7 +37510,6 @@
                 101100,
                 101200,
                 101300,
-                101400,
                 101500,
                 101600
               ],
@@ -37720,15 +37589,6 @@
                 "1013": {
                   "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/exaction-squad/datacards/exaction-squad-arbites-subductor_front.jpg",
                   "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/exaction-squad/datacards/exaction-squad-arbites-subductor_back.jpg",
-                  "NumWidth": 1,
-                  "NumHeight": 1,
-                  "BackIsHidden": true,
-                  "UniqueBack": false,
-                  "Type": 0
-                },
-                "1014": {
-                  "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/exaction-squad/datacards/exaction-squad-arbites-vigilant_front.jpg",
-                  "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/exaction-squad/datacards/exaction-squad-arbites-vigilant_back.jpg",
                   "NumWidth": 1,
                   "NumHeight": 1,
                   "BackIsHidden": true,
@@ -41752,8 +41612,7 @@
                 101000,
                 101100,
                 101200,
-                101300,
-                101400
+                101300
               ],
               "CustomDeck": {
                 "1004": {
@@ -41840,15 +41699,6 @@
                 "1013": {
                   "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/imperial-navy-breachers/datacards/imperial-navy-breachers-navis-surveyor_front.jpg",
                   "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/imperial-navy-breachers/datacards/imperial-navy-breachers-navis-surveyor_back.jpg",
-                  "NumWidth": 1,
-                  "NumHeight": 1,
-                  "BackIsHidden": true,
-                  "UniqueBack": false,
-                  "Type": 0
-                },
-                "1014": {
-                  "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/imperial-navy-breachers/datacards/imperial-navy-breachers-navis-void-jammer_front.jpg",
-                  "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/imperial-navy-breachers/datacards/imperial-navy-breachers-navis-void-jammer_back.jpg",
                   "NumWidth": 1,
                   "NumHeight": 1,
                   "BackIsHidden": true,
@@ -45887,7 +45737,6 @@
                 101100,
                 101200,
                 101300,
-                101400,
                 101500,
                 101600,
                 101700,
@@ -45989,15 +45838,6 @@
                 "1013": {
                   "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/inquisitorial-agents/datacards/inquisitorial-agents-sister-of-silence-prosecutor_front.jpg",
                   "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/inquisitorial-agents/datacards/inquisitorial-agents-sister-of-silence-prosecutor_back.jpg",
-                  "NumWidth": 1,
-                  "NumHeight": 1,
-                  "BackIsHidden": true,
-                  "UniqueBack": false,
-                  "Type": 0
-                },
-                "1014": {
-                  "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/inquisitorial-agents/datacards/inquisitorial-agents-sister-of-silence-vigilator_front.jpg",
-                  "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/inquisitorial-agents/datacards/inquisitorial-agents-sister-of-silence-vigilator_back.jpg",
                   "NumWidth": 1,
                   "NumHeight": 1,
                   "BackIsHidden": true,
@@ -49577,8 +49417,7 @@
                 101000,
                 101100,
                 101200,
-                101300,
-                101400
+                101300
               ],
               "CustomDeck": {
                 "1007": {
@@ -49638,15 +49477,6 @@
                 "1013": {
                   "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/kasrkin/datacards/kasrkin-trooper_front.jpg",
                   "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/kasrkin/datacards/kasrkin-trooper_back.jpg",
-                  "NumWidth": 1,
-                  "NumHeight": 1,
-                  "BackIsHidden": true,
-                  "UniqueBack": false,
-                  "Type": 0
-                },
-                "1014": {
-                  "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/kasrkin/datacards/kasrkin-vox-trooper_front.jpg",
-                  "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/kasrkin/datacards/kasrkin-vox-trooper_back.jpg",
                   "NumWidth": 1,
                   "NumHeight": 1,
                   "BackIsHidden": true,
@@ -52799,8 +52629,7 @@
                 101000,
                 101100,
                 101200,
-                101300,
-                101400
+                101300
               ],
               "CustomDeck": {
                 "1003": {
@@ -52896,15 +52725,6 @@
                 "1013": {
                   "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/novitiates/datacards/novitiates-novitiate-reliquarius_front.jpg",
                   "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/novitiates/datacards/novitiates-novitiate-reliquarius_back.jpg",
-                  "NumWidth": 1,
-                  "NumHeight": 1,
-                  "BackIsHidden": true,
-                  "UniqueBack": false,
-                  "Type": 0
-                },
-                "1014": {
-                  "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/novitiates/datacards/novitiates-novitiate-superior_front.jpg",
-                  "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/novitiates/datacards/novitiates-novitiate-superior_back.jpg",
                   "NumWidth": 1,
                   "NumHeight": 1,
                   "BackIsHidden": true,
@@ -56837,7 +56657,6 @@
                 101100,
                 101200,
                 101300,
-                101400,
                 101500,
                 101600,
                 101700,
@@ -56910,15 +56729,6 @@
                 "1013": {
                   "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/phobos-strike-team/datacards/phobos-strike-team-infiltrator-sergeant_front.jpg",
                   "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/phobos-strike-team/datacards/phobos-strike-team-infiltrator-sergeant_back.jpg",
-                  "NumWidth": 1,
-                  "NumHeight": 1,
-                  "BackIsHidden": true,
-                  "UniqueBack": false,
-                  "Type": 0
-                },
-                "1014": {
-                  "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/phobos-strike-team/datacards/phobos-strike-team-infiltrator-veteran_front.jpg",
-                  "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/phobos-strike-team/datacards/phobos-strike-team-infiltrator-veteran_back.jpg",
                   "NumWidth": 1,
                   "NumHeight": 1,
                   "BackIsHidden": true,
@@ -60715,7 +60525,6 @@
                 101100,
                 101200,
                 101300,
-                101400,
                 101500
               ],
               "CustomDeck": {
@@ -60812,15 +60621,6 @@
                 "1013": {
                   "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/ratlings/datacards/ratlings-ratling-spotter_front.jpg",
                   "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/ratlings/datacards/ratlings-ratling-spotter_back.jpg",
-                  "NumWidth": 1,
-                  "NumHeight": 1,
-                  "BackIsHidden": true,
-                  "UniqueBack": false,
-                  "Type": 0
-                },
-                "1014": {
-                  "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/ratlings/datacards/ratlings-ratling-stashmaster_front.jpg",
-                  "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/ratlings/datacards/ratlings-ratling-stashmaster_back.jpg",
                   "NumWidth": 1,
                   "NumHeight": 1,
                   "BackIsHidden": true,
@@ -65068,8 +64868,7 @@
                 101000,
                 101100,
                 101200,
-                101300,
-                101400
+                101300
               ],
               "CustomDeck": {
                 "1004": {
@@ -65156,15 +64955,6 @@
                 "1013": {
                   "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/sanctifiers/datacards/sanctifiers-sanctifier-reliquant_front.jpg",
                   "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/sanctifiers/datacards/sanctifiers-sanctifier-reliquant_back.jpg",
-                  "NumWidth": 1,
-                  "NumHeight": 1,
-                  "BackIsHidden": true,
-                  "UniqueBack": false,
-                  "Type": 0
-                },
-                "1014": {
-                  "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/sanctifiers/datacards/sanctifiers-sanctifier-salvationist_front.jpg",
-                  "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/sanctifiers/datacards/sanctifiers-sanctifier-salvationist_back.jpg",
                   "NumWidth": 1,
                   "NumHeight": 1,
                   "BackIsHidden": true,
@@ -69069,7 +68859,6 @@
               "DeckIDs": [
                 101200,
                 101300,
-                101400,
                 101500
               ],
               "CustomDeck": {
@@ -69085,15 +68874,6 @@
                 "1013": {
                   "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/scout-squad/equipment/scout-squad-combat-blades_front.jpg",
                   "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/scout-squad/equipment/scout-squad-combat-blades_back.jpg",
-                  "NumWidth": 1,
-                  "NumHeight": 1,
-                  "BackIsHidden": true,
-                  "UniqueBack": false,
-                  "Type": 0
-                },
-                "1014": {
-                  "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/scout-squad/equipment/scout-squad-heavy-weapon-bipod_front.jpg",
-                  "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/scout-squad/equipment/scout-squad-heavy-weapon-bipod_back.jpg",
                   "NumWidth": 1,
                   "NumHeight": 1,
                   "BackIsHidden": true,
@@ -69203,53 +68983,6 @@
                   "HideWhenFaceDown": true,
                   "Hands": true,
                   "CardID": 101300,
-                  "SidewaysCard": false,
-                  "LuaScript": "",
-                  "LuaScriptState": "",
-                  "XmlUI": ""
-                },
-                {
-                  "GUID": "f247aa",
-                  "Name": "Card",
-                  "Transform": {
-                    "posX": 0.0,
-                    "posY": 0.0,
-                    "posZ": 0.0,
-                    "rotX": 0.0,
-                    "rotY": 180.0,
-                    "rotZ": 180.0,
-                    "scaleX": 1.0,
-                    "scaleY": 1.0,
-                    "scaleZ": 1.0
-                  },
-                  "Nickname": "scout-squad-heavy-weapon-bipod",
-                  "Description": "",
-                  "GMNotes": "",
-                  "AltLookAngle": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                  },
-                  "ColorDiffuse": {
-                    "r": 0.713235259,
-                    "g": 0.713235259,
-                    "b": 0.713235259
-                  },
-                  "LayoutGroupSortIndex": 0,
-                  "Value": 0,
-                  "Locked": false,
-                  "Grid": true,
-                  "Snap": true,
-                  "IgnoreFoW": false,
-                  "MeasureMovement": false,
-                  "DragSelectable": true,
-                  "Autoraise": true,
-                  "Sticky": true,
-                  "Tooltip": true,
-                  "GridProjection": false,
-                  "HideWhenFaceDown": true,
-                  "Hands": true,
-                  "CardID": 101400,
                   "SidewaysCard": false,
                   "LuaScript": "",
                   "LuaScriptState": "",
@@ -71651,7 +71384,6 @@
               "DeckIDs": [
                 101200,
                 101300,
-                101400,
                 101500
               ],
               "CustomDeck": {
@@ -71667,15 +71399,6 @@
                 "1013": {
                   "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/tempestus-aquilons/equipment/tempestus-aquilons-drop-augury_front.jpg",
                   "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/tempestus-aquilons/equipment/tempestus-aquilons-drop-augury_back.jpg",
-                  "NumWidth": 1,
-                  "NumHeight": 1,
-                  "BackIsHidden": true,
-                  "UniqueBack": false,
-                  "Type": 0
-                },
-                "1014": {
-                  "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/tempestus-aquilons/equipment/tempestus-aquilons-remote-overseer_front.jpg",
-                  "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/tempestus-aquilons/equipment/tempestus-aquilons-remote-overseer_back.jpg",
                   "NumWidth": 1,
                   "NumHeight": 1,
                   "BackIsHidden": true,
@@ -75349,7 +75072,6 @@
               "DeckIDs": [
                 101200,
                 101300,
-                101400,
                 101500
               ],
               "CustomDeck": {
@@ -75365,15 +75087,6 @@
                 "1013": {
                   "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/wolf-scouts/equipment/wolf-scouts-runic-charms_front.jpg",
                   "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/wolf-scouts/equipment/wolf-scouts-runic-charms_back.jpg",
-                  "NumWidth": 1,
-                  "NumHeight": 1,
-                  "BackIsHidden": true,
-                  "UniqueBack": false,
-                  "Type": 0
-                },
-                "1014": {
-                  "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/wolf-scouts/equipment/wolf-scouts-talismanic-trophies_front.jpg",
-                  "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/imperium/wolf-scouts/equipment/wolf-scouts-talismanic-trophies_back.jpg",
                   "NumWidth": 1,
                   "NumHeight": 1,
                   "BackIsHidden": true,
@@ -77015,7 +76728,6 @@
                 101100,
                 101200,
                 101300,
-                101400,
                 101500,
                 101600
               ],
@@ -77131,15 +76843,6 @@
                 "1013": {
                   "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/blades-of-khaine/faction-rules/blades-of-khaine-the-slicing-hurricane_front.jpg",
                   "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/blades-of-khaine/faction-rules/blades-of-khaine-the-slicing-hurricane_back.jpg",
-                  "NumWidth": 1,
-                  "NumHeight": 1,
-                  "BackIsHidden": true,
-                  "UniqueBack": false,
-                  "Type": 0
-                },
-                "1014": {
-                  "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/blades-of-khaine/faction-rules/blades-of-khaine-the-woe_front.jpg",
-                  "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/blades-of-khaine/faction-rules/blades-of-khaine-the-woe_back.jpg",
                   "NumWidth": 1,
                   "NumHeight": 1,
                   "BackIsHidden": true,
@@ -81331,7 +81034,6 @@
                 101100,
                 101200,
                 101300,
-                101400,
                 101500,
                 101600,
                 101700
@@ -81430,15 +81132,6 @@
                 "1013": {
                   "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/brood-brothers/datacards/brood-brothers-brood-brother-vox-operator_front.jpg",
                   "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/brood-brothers/datacards/brood-brothers-brood-brother-vox-operator_back.jpg",
-                  "NumWidth": 1,
-                  "NumHeight": 1,
-                  "BackIsHidden": true,
-                  "UniqueBack": false,
-                  "Type": 0
-                },
-                "1014": {
-                  "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/brood-brothers/datacards/brood-brothers-magus_front.jpg",
-                  "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/brood-brothers/datacards/brood-brothers-magus_back.jpg",
                   "NumWidth": 1,
                   "NumHeight": 1,
                   "BackIsHidden": true,
@@ -85248,7 +84941,6 @@
               "SidewaysCard": false,
               "DeckIDs": [
                 101300,
-                101400,
                 101500,
                 101600
               ],
@@ -85256,15 +84948,6 @@
                 "1013": {
                   "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/canoptek-circle/firefight-ploys/canoptek-circle-animate-obelisk-nodes_front.jpg",
                   "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/canoptek-circle/firefight-ploys/canoptek-circle-animate-obelisk-nodes_back.jpg",
-                  "NumWidth": 1,
-                  "NumHeight": 1,
-                  "BackIsHidden": true,
-                  "UniqueBack": false,
-                  "Type": 0
-                },
-                "1014": {
-                  "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/canoptek-circle/firefight-ploys/canoptek-circle-nodal-response_front.jpg",
-                  "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/canoptek-circle/firefight-ploys/canoptek-circle-nodal-response_back.jpg",
                   "NumWidth": 1,
                   "NumHeight": 1,
                   "BackIsHidden": true,
@@ -87416,8 +87099,7 @@
                 101000,
                 101100,
                 101200,
-                101300,
-                101400
+                101300
               ],
               "CustomDeck": {
                 "1004": {
@@ -87504,15 +87186,6 @@
                 "1013": {
                   "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/corsair-voidscarred/datacards/corsair-voidscarred-voidscarred-warrior_front.jpg",
                   "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/corsair-voidscarred/datacards/corsair-voidscarred-voidscarred-warrior_back.jpg",
-                  "NumWidth": 1,
-                  "NumHeight": 1,
-                  "BackIsHidden": true,
-                  "UniqueBack": false,
-                  "Type": 0
-                },
-                "1014": {
-                  "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/corsair-voidscarred/datacards/corsair-voidscarred-voidscarred-way-seeker_front.jpg",
-                  "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/corsair-voidscarred/datacards/corsair-voidscarred-voidscarred-way-seeker_back.jpg",
                   "NumWidth": 1,
                   "NumHeight": 1,
                   "BackIsHidden": true,
@@ -91850,21 +91523,11 @@
               "Hands": false,
               "SidewaysCard": false,
               "DeckIDs": [
-                101400,
                 101500,
                 101600,
                 101700
               ],
               "CustomDeck": {
-                "1014": {
-                  "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/farstalker-kinband/equipment/farstalker-kinband-bolster-their-regenerative-abilities_front.jpg",
-                  "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/farstalker-kinband/equipment/farstalker-kinband-bolster-their-regenerative-abilities_back.jpg",
-                  "NumWidth": 1,
-                  "NumHeight": 1,
-                  "BackIsHidden": true,
-                  "UniqueBack": false,
-                  "Type": 0
-                },
                 "1015": {
                   "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/farstalker-kinband/equipment/farstalker-kinband-piercing-shot_front.jpg",
                   "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/farstalker-kinband/equipment/farstalker-kinband-piercing-shot_back.jpg",
@@ -95234,7 +94897,6 @@
               "SidewaysCard": false,
               "DeckIDs": [
                 101300,
-                101400,
                 101500,
                 101600
               ],
@@ -95242,15 +94904,6 @@
                 "1013": {
                   "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/hand-of-the-archon/equipment/hand-of-the-archon-chain-snare_front.jpg",
                   "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/hand-of-the-archon/equipment/hand-of-the-archon-chain-snare_back.jpg",
-                  "NumWidth": 1,
-                  "NumHeight": 1,
-                  "BackIsHidden": true,
-                  "UniqueBack": false,
-                  "Type": 0
-                },
-                "1014": {
-                  "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/hand-of-the-archon/equipment/hand-of-the-archon-refined-poison_front.jpg",
-                  "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/hand-of-the-archon/equipment/hand-of-the-archon-refined-poison_back.jpg",
                   "NumWidth": 1,
                   "NumHeight": 1,
                   "BackIsHidden": true,
@@ -99180,21 +98833,11 @@
               "Hands": false,
               "SidewaysCard": false,
               "DeckIDs": [
-                101400,
                 101500,
                 101600,
                 101700
               ],
               "CustomDeck": {
-                "1014": {
-                  "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/hearthkyn-salvagers/equipment/hearthkyn-salvagers-climbing-rigs_front.jpg",
-                  "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/hearthkyn-salvagers/equipment/hearthkyn-salvagers-climbing-rigs_back.jpg",
-                  "NumWidth": 1,
-                  "NumHeight": 1,
-                  "BackIsHidden": true,
-                  "UniqueBack": false,
-                  "Type": 0
-                },
                 "1015": {
                   "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/hearthkyn-salvagers/equipment/hearthkyn-salvagers-excavation-tools_front.jpg",
                   "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/hearthkyn-salvagers/equipment/hearthkyn-salvagers-excavation-tools_back.jpg",
@@ -102508,7 +102151,6 @@
               "DeckIDs": [
                 101200,
                 101300,
-                101400,
                 101500
               ],
               "CustomDeck": {
@@ -102524,15 +102166,6 @@
                 "1013": {
                   "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/hernkyn-yaegirs/equipment/hernkyn-yaegirs-kv-ceramide-undersuit_front.jpg",
                   "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/hernkyn-yaegirs/equipment/hernkyn-yaegirs-kv-ceramide-undersuit_back.jpg",
-                  "NumWidth": 1,
-                  "NumHeight": 1,
-                  "BackIsHidden": true,
-                  "UniqueBack": false,
-                  "Type": 0
-                },
-                "1014": {
-                  "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/hernkyn-yaegirs/equipment/hernkyn-yaegirs-plasma-knives_front.jpg",
-                  "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/hernkyn-yaegirs/equipment/hernkyn-yaegirs-plasma-knives_back.jpg",
                   "NumWidth": 1,
                   "NumHeight": 1,
                   "BackIsHidden": true,
@@ -106317,7 +105950,6 @@
                 101100,
                 101200,
                 101300,
-                101400,
                 101500,
                 101600
               ],
@@ -106397,15 +106029,6 @@
                 "1013": {
                   "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/hierotek-circle/datacards/hierotek-circle-psychomancer_front.jpg",
                   "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/hierotek-circle/datacards/hierotek-circle-psychomancer_back.jpg",
-                  "NumWidth": 1,
-                  "NumHeight": 1,
-                  "BackIsHidden": true,
-                  "UniqueBack": false,
-                  "Type": 0
-                },
-                "1014": {
-                  "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/hierotek-circle/datacards/hierotek-circle-psychomancer-actions_front.jpg",
-                  "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/hierotek-circle/datacards/hierotek-circle-psychomancer-actions_back.jpg",
                   "NumWidth": 1,
                   "NumHeight": 1,
                   "BackIsHidden": true,
@@ -108309,7 +107932,6 @@
                 101100,
                 101200,
                 101300,
-                101400,
                 101500,
                 101600,
                 101700
@@ -108399,15 +108021,6 @@
                 "1013": {
                   "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/hunter-clade/datacards/hunter-clade-skitarii-vanguard-alpha_front.jpg",
                   "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/hunter-clade/datacards/hunter-clade-skitarii-vanguard-alpha_back.jpg",
-                  "NumWidth": 1,
-                  "NumHeight": 1,
-                  "BackIsHidden": true,
-                  "UniqueBack": false,
-                  "Type": 0
-                },
-                "1014": {
-                  "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/hunter-clade/datacards/hunter-clade-skitarii-vanguard-diktat_front.jpg",
-                  "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/hunter-clade/datacards/hunter-clade-skitarii-vanguard-diktat_back.jpg",
                   "NumWidth": 1,
                   "NumHeight": 1,
                   "BackIsHidden": true,
@@ -112169,21 +111782,11 @@
               "Hands": false,
               "SidewaysCard": false,
               "DeckIDs": [
-                101400,
                 101500,
                 101600,
                 101700
               ],
               "CustomDeck": {
-                "1014": {
-                  "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/kommandos/equipment/kommandos-choppas_front.jpg",
-                  "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/kommandos/equipment/kommandos-choppas_back.jpg",
-                  "NumWidth": 1,
-                  "NumHeight": 1,
-                  "BackIsHidden": true,
-                  "UniqueBack": false,
-                  "Type": 0
-                },
                 "1015": {
                   "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/kommandos/equipment/kommandos-collapsible-stocks_front.jpg",
                   "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/kommandos/equipment/kommandos-collapsible-stocks_back.jpg",
@@ -115683,7 +115286,6 @@
               "DeckIDs": [
                 101200,
                 101300,
-                101400,
                 101500
               ],
               "CustomDeck": {
@@ -115699,15 +115301,6 @@
                 "1013": {
                   "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/mandrakes/equipment/mandrakes-chain-snare_front.jpg",
                   "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/mandrakes/equipment/mandrakes-chain-snare_back.jpg",
-                  "NumWidth": 1,
-                  "NumHeight": 1,
-                  "BackIsHidden": true,
-                  "UniqueBack": false,
-                  "Type": 0
-                },
-                "1014": {
-                  "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/mandrakes/equipment/mandrakes-shadow-glyph_front.jpg",
-                  "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/mandrakes/equipment/mandrakes-shadow-glyph_back.jpg",
                   "NumWidth": 1,
                   "NumHeight": 1,
                   "BackIsHidden": true,
@@ -118637,7 +118230,6 @@
               "DeckIDs": [
                 101200,
                 101300,
-                101400,
                 101500
               ],
               "CustomDeck": {
@@ -118653,15 +118245,6 @@
                 "1013": {
                   "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/nemesis-claw/equipment/nemesis-claw-comms-jammers_front.jpg",
                   "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/nemesis-claw/equipment/nemesis-claw-comms-jammers_back.jpg",
-                  "NumWidth": 1,
-                  "NumHeight": 1,
-                  "BackIsHidden": true,
-                  "UniqueBack": false,
-                  "Type": 0
-                },
-                "1014": {
-                  "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/nemesis-claw/equipment/nemesis-claw-flayed-skin_front.jpg",
-                  "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/nemesis-claw/equipment/nemesis-claw-flayed-skin_back.jpg",
                   "NumWidth": 1,
                   "NumHeight": 1,
                   "BackIsHidden": true,
@@ -121832,7 +121415,6 @@
                 101100,
                 101200,
                 101300,
-                101400,
                 101500,
                 101600,
                 101700,
@@ -121924,15 +121506,6 @@
                 "1013": {
                   "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/pathfinders/datacards/pathfinders-mv33-grav-inhibitor-drone_front.jpg",
                   "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/pathfinders/datacards/pathfinders-mv33-grav-inhibitor-drone_back.jpg",
-                  "NumWidth": 1,
-                  "NumHeight": 1,
-                  "BackIsHidden": true,
-                  "UniqueBack": false,
-                  "Type": 0
-                },
-                "1014": {
-                  "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/pathfinders/datacards/pathfinders-mv4-shield-drone_front.jpg",
-                  "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/pathfinders/datacards/pathfinders-mv4-shield-drone_back.jpg",
                   "NumWidth": 1,
                   "NumHeight": 1,
                   "BackIsHidden": true,
@@ -125316,8 +124889,7 @@
               "DeckIDs": [
                 101100,
                 101200,
-                101300,
-                101400
+                101300
               ],
               "CustomDeck": {
                 "1011": {
@@ -125341,15 +124913,6 @@
                 "1013": {
                   "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/raveners/equipment/raveners-heightened-senses_front.jpg",
                   "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/raveners/equipment/raveners-heightened-senses_back.jpg",
-                  "NumWidth": 1,
-                  "NumHeight": 1,
-                  "BackIsHidden": true,
-                  "UniqueBack": false,
-                  "Type": 0
-                },
-                "1014": {
-                  "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/raveners/equipment/raveners-metamorphic-flesh_front.jpg",
-                  "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/raveners/equipment/raveners-metamorphic-flesh_back.jpg",
                   "NumWidth": 1,
                   "NumHeight": 1,
                   "BackIsHidden": true,
@@ -128084,7 +127647,6 @@
               "DeckIDs": [
                 101200,
                 101300,
-                101400,
                 101500
               ],
               "CustomDeck": {
@@ -128100,15 +127662,6 @@
                 "1013": {
                   "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/vespid-stingwings/equipment/vespid-stingwings-aggression-stimulant_front.jpg",
                   "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/vespid-stingwings/equipment/vespid-stingwings-aggression-stimulant_back.jpg",
-                  "NumWidth": 1,
-                  "NumHeight": 1,
-                  "BackIsHidden": true,
-                  "UniqueBack": false,
-                  "Type": 0
-                },
-                "1014": {
-                  "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/vespid-stingwings/equipment/vespid-stingwings-convergence-stimulant_front.jpg",
-                  "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/vespid-stingwings/equipment/vespid-stingwings-convergence-stimulant_back.jpg",
                   "NumWidth": 1,
                   "NumHeight": 1,
                   "BackIsHidden": true,
@@ -129794,8 +129347,7 @@
               "DeckIDs": [
                 101100,
                 101200,
-                101300,
-                101400
+                101300
               ],
               "CustomDeck": {
                 "1011": {
@@ -129819,15 +129371,6 @@
                 "1013": {
                   "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/void-dancer-troupe/firefight-ploys/void-dancer-troupe-murderous-entrance_front.jpg",
                   "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/void-dancer-troupe/firefight-ploys/void-dancer-troupe-murderous-entrance_back.jpg",
-                  "NumWidth": 1,
-                  "NumHeight": 1,
-                  "BackIsHidden": true,
-                  "UniqueBack": false,
-                  "Type": 0
-                },
-                "1014": {
-                  "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/void-dancer-troupe/firefight-ploys/void-dancer-troupe-the-curtain-falls_front.jpg",
-                  "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/void-dancer-troupe/firefight-ploys/void-dancer-troupe-the-curtain-falls_back.jpg",
                   "NumWidth": 1,
                   "NumHeight": 1,
                   "BackIsHidden": true,
@@ -133154,8 +132697,7 @@
               "DeckIDs": [
                 101100,
                 101200,
-                101300,
-                101400
+                101300
               ],
               "CustomDeck": {
                 "1011": {
@@ -133179,15 +132721,6 @@
                 "1013": {
                   "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/wrecka-krew/equipment/wrecka-krew-extra-armour_front.jpg",
                   "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/wrecka-krew/equipment/wrecka-krew-extra-armour_back.jpg",
-                  "NumWidth": 1,
-                  "NumHeight": 1,
-                  "BackIsHidden": true,
-                  "UniqueBack": false,
-                  "Type": 0
-                },
-                "1014": {
-                  "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/wrecka-krew/equipment/wrecka-krew-glyphs_front.jpg",
-                  "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/wrecka-krew/equipment/wrecka-krew-glyphs_back.jpg",
                   "NumWidth": 1,
                   "NumHeight": 1,
                   "BackIsHidden": true,
@@ -134922,7 +134455,6 @@
               "SidewaysCard": false,
               "DeckIDs": [
                 101300,
-                101400,
                 101500,
                 101600
               ],
@@ -134930,15 +134462,6 @@
                 "1013": {
                   "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/wyrmblade/equipment/wyrmblade-blasting-charges_front.jpg",
                   "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/wyrmblade/equipment/wyrmblade-blasting-charges_back.jpg",
-                  "NumWidth": 1,
-                  "NumHeight": 1,
-                  "BackIsHidden": true,
-                  "UniqueBack": false,
-                  "Type": 0
-                },
-                "1014": {
-                  "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/wyrmblade/equipment/wyrmblade-cult-knives_front.jpg",
-                  "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/wyrmblade/equipment/wyrmblade-cult-knives_back.jpg",
                   "NumWidth": 1,
                   "NumHeight": 1,
                   "BackIsHidden": true,
@@ -138063,7 +137586,6 @@
               "DeckIDs": [
                 101200,
                 101300,
-                101400,
                 101500
               ],
               "CustomDeck": {
@@ -138079,15 +137601,6 @@
                 "1013": {
                   "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/xv26-stealth-battlesuits/equipment/xv26-stealth-battlesuits-counter-network-jammers_front.jpg",
                   "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/xv26-stealth-battlesuits/equipment/xv26-stealth-battlesuits-counter-network-jammers_back.jpg",
-                  "NumWidth": 1,
-                  "NumHeight": 1,
-                  "BackIsHidden": true,
-                  "UniqueBack": false,
-                  "Type": 0
-                },
-                "1014": {
-                  "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/xv26-stealth-battlesuits/equipment/xv26-stealth-battlesuits-hardwired-target-locks_front.jpg",
-                  "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/xenos/xv26-stealth-battlesuits/equipment/xv26-stealth-battlesuits-hardwired-target-locks_back.jpg",
                   "NumWidth": 1,
                   "NumHeight": 1,
                   "BackIsHidden": true,

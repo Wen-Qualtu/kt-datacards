@@ -1,6 +1,6 @@
 {
   "team": "hearthkyn-salvagers",
-  "generated": "2026-04-19T11:50:56.834590+00:00",
+  "generated": "2026-04-29T12:21:19.964816+00:00",
   "selection": {
     "HEARTHKYN THEYN": [
       [
@@ -28,7 +28,6 @@
         "Magna rail rifle; fists"
       ]
     ],
-    "HEARTHKYN JUMP PACK WARRIOR": [],
     "HEARTHKYN KINLYNK": [
       [
         "Autoch-pattern bolter; fists",
@@ -60,7 +59,8 @@
       ]
     ]
   },
-  "operative_count": 11,
+  "exclusive_sets": {},
+  "operative_count": 10,
   "operatives": [
     {
       "name": "HEARTHKYN THEYN",
@@ -353,35 +353,7 @@
         {
           "name": "*Beam",
           "description": "Whenever this operative is shooting with this weapon, each retained critical success immediately inflicts D3 damage on each other operative along one (and only one) beam line (roll separately for each operative), but the target isn’t affected. An operative is along a beam line if a targeting line can be drawn from this operative to its base, and that line crosses the base of the original target but doesn’t cross Heavy terrain. In this example, Operative A is the target. Operatives B and C are along the beam line, but Operative D isn’t. HEARTHKYN GUNNER 2 APL WOUNDS SAVE MOVE 5\" 3+ 8 B Beam line Hearthkyn Gunner A D C"
-        }
-      ],
-      "unique_actions": []
-    },
-    {
-      "name": "HEARTHKYN JUMP PACK WARRIOR",
-      "source_file": "hearthkyn-salvagers-datacards.pdf",
-      "source_page": 9,
-      "apl": 2,
-      "movement": "7″",
-      "save": "3+",
-      "wounds": 8,
-      "weapons": [
-        {
-          "name": "Autoch-pattern bolt pistol",
-          "attacks": "4",
-          "hit": "4+",
-          "damage": "3/4",
-          "special_rules": "Range 8\", Accurate 1"
         },
-        {
-          "name": "Plasma weapon",
-          "attacks": "4",
-          "hit": "3+",
-          "damage": "4/6",
-          "special_rules": "Lethal 5+, Force Impact*"
-        }
-      ],
-      "passive_abilities": [
         {
           "name": "Jump Pack",
           "description": "Whenever this operative performs an action in which it moves, it can FLY. If it does, don’t move it. Instead, remove it from the killzone and set it back up wholly within a distance equal to its Move stat (or 3\" if it was a Dash) horizontally of its original location (in a killzone that uses the close quarters rules, e.g. Killzone: Tomb World, this distance cannot be measured over or through Wall terrain, and that operative cannot be set up on the other side of an access point – in other words it cannot FLY through an open hatchway). Note that it gains no additional distance when performing the Charge action. It must be set up in a location it can be placed, and unless it’s the Charge action, it cannot be set up within control range of an enemy operative."
@@ -391,12 +363,7 @@
           "description": "Whenever this operative is fighting with this weapon, if it’s performed the Charge action during the activation, this weapon has the Brutal weapon rule."
         }
       ],
-      "unique_actions": [],
-      "keywords": [
-        "HEARTHKYN SALVAGER",
-        "LEAGUES OF VOTANN",
-        "JUMP PACK WARRIOR"
-      ]
+      "unique_actions": []
     },
     {
       "name": "HEARTHKYN KINLYNK",
@@ -573,7 +540,7 @@
       "passive_abilities": [
         {
           "name": "Well Supplied",
-          "description": "You can select one additional equipment option."
+          "description": "You can select one additional equipment option, and in the Ready step of the first Strategy phase, you gain 1 additional CP."
         },
         {
           "name": "I’ve Got It",
