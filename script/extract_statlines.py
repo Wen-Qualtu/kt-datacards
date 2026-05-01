@@ -71,6 +71,56 @@ def _clean_extracted_text(text: str) -> str:
     return text.strip()
 
 
+def _split_embedded_actions(rules: list[dict]) -> list[dict]:
+    """Split abilities that contain embedded actions (e.g., passive ability + action in one entry).
+    
+    Looks for pattern: "ability text... ALL CAPS NAME \b XAP • action description"
+    Splits into separate passive ability and unique action entries.
+    """
+    if not rules:
+        return rules
+    
+    result = []
+    for rule in rules:
+        name = rule["name"]
+        desc = rule["description"]
+        
+        # Look for embedded action: ALL CAPS text (>3 chars) followed by backspace + XAP pattern
+        # Example: "...enemy operative. GAZE OF THE OMNISSIAH\b 1AP\n• Select one..."
+        match = re.search(r'([A-Z\s]{4,}?)[\x08\x07]?\s*(\d[AP]+)\s*(.+)$', desc, re.DOTALL)
+        
+        if match:
+            action_name_raw = match.group(1).strip()
+            cost = match.group(2).strip()
+            action_desc = match.group(3).strip()
+            
+            # Verify it looks like an action name (all caps, multiple words or single long word)
+            if action_name_raw.isupper() and (len(action_name_raw) > 5 or ' ' in action_name_raw):
+                # Split point: everything before the action name
+                ability_text = desc[:match.start()].strip()
+                
+                # Only split if there's meaningful ability text before the action
+                if ability_text and len(ability_text) > 10:
+                    # Add the passive ability (without the action)
+                    result.append({
+                        "name": name,
+                        "description": _clean_extracted_text(ability_text)
+                    })
+                    
+                    # Add the action separately
+                    action_name = f"{action_name_raw} ({cost})"
+                    result.append({
+                        "name": action_name,
+                        "description": _clean_extracted_text(action_desc)
+                    })
+                    continue
+        
+        # No split needed, keep as-is
+        result.append(rule)
+    
+    return result
+
+
 def _get_team_faction(team: str) -> str:
     """Get faction for a team from team-config.yaml"""
     config = _load_team_config()
@@ -528,6 +578,8 @@ def _extract_operative_from_page(page: fitz.Page, page_idx: int, pdf_name: str) 
     if weapons:
         operative["weapons"] = weapons
     if rules:
+        # Split any abilities that have embedded actions
+        rules = _split_embedded_actions(rules)
         operative["passive_abilities"] = [r for r in rules if '(' not in r["name"] or 'AP)' not in r["name"]]
         operative["unique_actions"] = [r for r in rules if '(' in r["name"] and 'AP)' in r["name"]]
     if keywords:
@@ -1112,6 +1164,8 @@ def extract_team(team: str, force: bool = False) -> dict | None:
         op_idx = front_indices.index(prev_front_idx)
         if op_idx < len(operatives):
             op = operatives[op_idx]
+            # Split any abilities that have embedded actions
+            rules = _split_embedded_actions(rules)
             back_pas = [r for r in rules if '(' not in r["name"] or 'AP)' not in r["name"]]
             back_act = [r for r in rules if '(' in r["name"] and 'AP)' in r["name"]]
             if "passive_abilities" not in op:
