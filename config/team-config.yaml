@@ -211,6 +211,22 @@ teams:
     army: chaos-cultists
     aliases:
     - chaos-cultist
+    faction_rule:
+      name: Accursed Gifts
+      select: 1
+      applies_to:
+      - MUTANT
+      - TORMENT
+      operative_select_count:
+        MUTANT: 1
+        TORMENT: 2
+      options:
+      - name: Deformed Wings
+      - name: Fleet
+      - name: Chitinous
+      - name: Horned
+      - name: Sinewed
+      - name: Barbed
   corsair-voidscarred:
     canonical_name: Corsair Voidscarred
     faction: xenos
