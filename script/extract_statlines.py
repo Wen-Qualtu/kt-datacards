@@ -916,7 +916,7 @@ def _extract_faction_rules(team: str) -> dict | None:
             name = cfg_names.get(name_upper, name_upper.title())
             text = raw_text.strip()
             text = re.sub(r"\s+", " ", text)
-            text = text.replace("\x95", "-")
+            text = _normalize_description(text)
             options.append({"name": name, "text": text})
     else:
         # Strategy 2: Search for each config option name in the faction rule pages
@@ -930,7 +930,7 @@ def _extract_faction_rules(team: str) -> dict | None:
             if m:
                 text = m.group(1).strip()
                 text = re.sub(r"\s+", " ", text)
-                text = text.replace("\x95", "-")
+                text = _normalize_description(text)
                 options.append({"name": opt_name, "text": text})
 
     if not options:

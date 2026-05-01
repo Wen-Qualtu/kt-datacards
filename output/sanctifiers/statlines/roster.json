@@ -1,8 +1,9 @@
 {
   "team": "sanctifiers",
-  "generated": "2026-04-29T12:22:24.682615+00:00",
+  "generated": "2026-05-01T16:26:43.040021+00:00",
   "selection": {
     "SANCTIFIER CONFESSOR": [],
+    "SANCTIFIER CHERUB": [],
     "SANCTIFIER CONFLAGRATOR": [],
     "SANCTIFIER DEATH CULT ASSASSIN": [],
     "SANCTIFIER DRILL ABBOT": [],
@@ -21,7 +22,7 @@
     "SANCTIFIER SALVATIONIST": []
   },
   "exclusive_sets": {},
-  "operative_count": 10,
+  "operative_count": 11,
   "operatives": [
     {
       "name": "SANCTIFIER CONFESSOR",
@@ -47,11 +48,39 @@
         },
         {
           "name": "Commanding Declamation",
-          "description": "Whenever an enemy operative would perform an action during an activation or counteraction while visible to and within 6\" of this operative, you can use this rule. If you do, roll one D6: if the result is higher than that enemy operative’s APL stat: •\t \u0007It cannot perform that action during that activation/ counteraction (the AP spent on it isn’t refunded). If it’s a counteraction, that counteraction ends. •\t \u0007You cannot use this rule again during the battle."
-        },
+          "description": "Whenever an enemy operative would perform an action during an activation or counteraction while visible to and within 6\" of this operative, you can use this rule. If you do, roll one D6: if the result is higher than that enemy operative’s APL stat:\n• It cannot perform that action during that activation/ counteraction (the AP spent on it isn’t refunded). If it’s a counteraction, that counteraction ends.\n• You cannot use this rule again during the battle."
+        }
+      ],
+      "unique_actions": [],
+      "keywords": [
+        "SANCTIFIER",
+        "IMPERIUM",
+        "ADEPTUS MINISTORUM",
+        "LEADER",
+        "CONFESSOR"
+      ]
+    },
+    {
+      "name": "SANCTIFIER CHERUB",
+      "source_file": "sanctifiers-datacards.pdf",
+      "source_page": 2,
+      "apl": 2,
+      "movement": "7″",
+      "save": "5+",
+      "wounds": 5,
+      "weapons": [
+        {
+          "name": "Incentiviser",
+          "attacks": "3",
+          "hit": "5+",
+          "damage": "1/3",
+          "special_rules": "Shock"
+        }
+      ],
+      "passive_abilities": [
         {
           "name": "Cherub",
-          "description": "•\t \u0007Whenever determining control of an objective marker, treat this operative’s APL stat as 1 lower. Note this isn’t a change to its APL stat, so any changes are cumulative with this. •\t \u0007Whenever this operative has a Conceal order and is in cover, it cannot be selected as a valid target, taking precedence over all other rules (e.g. Seek, Vantage terrain) except being within 2\". •\t \u0007This operative cannot use any weapons that aren’t on its datacard, or perform unique actions other than Incentivise."
+          "description": "• Whenever determining control of an objective marker, treat this operative’s APL stat as 1 lower. Note this isn’t a change to its APL stat, so any changes are cumulative with this.\n• Whenever this operative has a Conceal order and is in cover, it cannot be selected as a valid target, taking precedence over all other rules (e.g. Seek, Vantage terrain) except being within 2\".\n• This operative cannot use any weapons that aren’t on its datacard, or perform unique actions other than Incentivise."
         },
         {
           "name": "Fly",
@@ -61,15 +90,14 @@
       "unique_actions": [
         {
           "name": "INCENTIVISE (1AP)",
-          "description": "\u0007SUPPORT. Select one other friendly SANCTIFIER operative (excluding CONFESSOR, DEATH CULT ASSASSIN, MIRACULIST and ORATOR) visible to and within 2\" of this operative. Until the end of that operative’s next activation, add 1 to its APL stat. \u0007This operative cannot perform this action while within control range of an enemy operative. SANCTIFIER CHERUB"
+          "description": "SUPPORT. Select one other friendly SANCTIFIER operative (excluding CONFESSOR, DEATH CULT ASSASSIN, MIRACULIST and ORATOR) visible to and within 2\" of this operative. Until the end of that operative’s next activation, add 1 to its APL stat. This operative cannot perform this action while within control range of an enemy operative. SANCTIFIER CHERUB"
         }
       ],
       "keywords": [
         "SANCTIFIER",
         "IMPERIUM",
         "ADEPTUS MINISTORUM",
-        "LEADER",
-        "CONFESSOR"
+        "CHERUB"
       ]
     },
     {
@@ -152,7 +180,7 @@
       "unique_actions": [
         {
           "name": "TRAINED ASSASSIN (1AP)",
-          "description": "Change this operative’s order. \u0007This operative cannot perform this action while within control range of an enemy operative."
+          "description": "Change this operative’s order. This operative cannot perform this action while within control range of an enemy operative."
         }
       ],
       "keywords": [
@@ -479,7 +507,7 @@
       "unique_actions": [
         {
           "name": "MEDIKIT (1AP)",
-          "description": "\u0007Select one friendly SANCTIFIER  operative within this operative’s control range to regain up to 2D3 lost wounds. \u0007This operative cannot perform this action while within control range of an enemy operative."
+          "description": "Select one friendly SANCTIFIER  operative within this operative’s control range to regain up to 2D3 lost wounds. This operative cannot perform this action while within control range of an enemy operative."
         }
       ],
       "keywords": [
