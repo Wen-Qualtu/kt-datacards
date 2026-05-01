@@ -5,6 +5,18 @@ teams:
     army: space-marines
     aliases:
     - angel-of-death
+    faction_rule:
+      name: Chapter Tactics
+      select: 2
+      options:
+      - name: Aggressive
+      - name: Dueller
+      - name: Resolute
+      - name: Stealthy
+      - name: Mobile
+      - name: Hardy
+      - name: Sharpshooter
+      - name: Siege Specialist
   battleclade:
     canonical_name: Battleclade
     faction: imperium
@@ -753,6 +765,15 @@ teams:
     aliases:
     - legionary
     tokens_ready: true
+    faction_rule:
+      name: Marks of Chaos
+      select: 1
+      options:
+      - name: Khorne
+      - name: Nurgle
+      - name: Slaanesh
+      - name: Tzeentch
+      - name: Undivided
     tokens:
     - name: Grisly
       shape: round
