@@ -51,16 +51,22 @@ def _load_team_config() -> dict:
 
 def _clean_extracted_text(text: str) -> str:
     """Clean up extracted text by fixing bullet characters and whitespace."""
-    # Replace bullet characters
-    text = text.replace("\u0007", "• ")
-    text = text.replace("\x95", "- ")
-    text = text.replace("•", "• ")  # Ensure space after bullet
+    # Replace bullet characters with newline + bullet
+    text = text.replace("\u0007", "\n• ")
+    text = text.replace("\x95", "\n- ")
     
-    # Collapse multiple spaces
-    text = re.sub(r" +", " ", text)
+    # Also add newlines before existing bullets that don't have them
+    # Match bullet that's not at start of string and not already preceded by newline
+    text = re.sub(r"([^\n])\s*•\s+", r"\1\n• ", text)
     
-    # Clean up spacing around bullets
-    text = re.sub(r"•\s+•", "• ", text)  # Remove duplicate bullets
+    # Remove duplicate bullets
+    text = re.sub(r"•\s+•\s+", "• ", text)
+    
+    # Collapse multiple spaces (but preserve newlines)
+    text = re.sub(r"  +", " ", text)
+    
+    # Clean up multiple consecutive newlines
+    text = re.sub(r"\n\n+", "\n", text)
     
     return text.strip()
 
