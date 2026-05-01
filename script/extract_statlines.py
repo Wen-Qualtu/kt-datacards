@@ -76,6 +76,7 @@ def _split_embedded_actions(rules: list[dict]) -> list[dict]:
     
     Looks for pattern: "ability text... ALL CAPS NAME \b XAP • action description"
     Splits into separate passive ability and unique action entries.
+    Handles costs like: 1AP, 2AP, 1/2AP, 0AP
     """
     if not rules:
         return rules
@@ -87,7 +88,8 @@ def _split_embedded_actions(rules: list[dict]) -> list[dict]:
         
         # Look for embedded action: ALL CAPS text (>3 chars) followed by backspace + XAP pattern
         # Example: "...enemy operative. GAZE OF THE OMNISSIAH\b 1AP\n• Select one..."
-        match = re.search(r'([A-Z\s]{4,}?)[\x08\x07]?\s*(\d[AP]+)\s*(.+)$', desc, re.DOTALL)
+        # Pattern supports: 1AP, 2AP, 1/2AP, etc.
+        match = re.search(r'([A-Z\s]{4,}?)[\x08\x07]?\s*(\d+[/\d]*AP)\s*(.+)$', desc, re.DOTALL)
         
         if match:
             action_name_raw = match.group(1).strip()
