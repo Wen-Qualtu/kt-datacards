@@ -64,32 +64,6 @@ def _update_bag_timestamp(tts_data: dict) -> None:
     obj["LuaScriptState"] = json.dumps(state)
 
 
-def _update_bag_timestamp(tts_data: dict) -> None:
-    """Update lastCardUpdate in the top-level bag's LuaScriptState to current time."""
-    from datetime import datetime
-    obj = tts_data.get("ObjectStates", [{}])[0]
-    lss = obj.get("LuaScriptState", "")
-    try:
-        state = json.loads(lss) if lss else {}
-    except (json.JSONDecodeError, TypeError):
-        state = {}
-    state["lastCardUpdate"] = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
-    obj["LuaScriptState"] = json.dumps(state)
-
-
-def _update_bag_timestamp(tts_data: dict) -> None:
-    """Update lastCardUpdate in the top-level bag's LuaScriptState to current time."""
-    from datetime import datetime
-    obj = tts_data.get("ObjectStates", [{}])[0]
-    lss = obj.get("LuaScriptState", "")
-    try:
-        state = json.loads(lss) if lss else {}
-    except (json.JSONDecodeError, TypeError):
-        state = {}
-    state["lastCardUpdate"] = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
-    obj["LuaScriptState"] = json.dumps(state)
-
-
 def _has_faction_rule(team: str) -> bool:
     """Check if team has faction_rule configured"""
     config = _load_team_config()
@@ -1123,7 +1097,9 @@ def patch_team(
     total_patched = 0
     total_cards = 0
     
-    for tts_tts_data = json.load(f)
+    for tts_file in tts_files:
+        with open(tts_file, "r", encoding="utf-8") as f:
+            tts_data = json.load(f)
         
         datacards = find_datacards_in_tts(tts_data)
         if not datacards:

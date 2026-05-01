@@ -348,6 +348,20 @@ def _extract_keywords_from_blocks(blocks: list, page_width: float, page_height: 
     return None
 
 
+def _normalize_description(text: str) -> str:
+    """Clean up ability/action description text: fix bullets, line breaks, control chars."""
+    # Remove bell characters (\x07)
+    text = text.replace("\x07", "")
+    # Normalize bullet variants to standard bullet (U+2022)
+    # \x95 = Windows-1252 bullet, \xe2\u20ac\xa2 = UTF-8 mojibake for U+2022
+    text = text.replace("\x95", "\u2022")
+    text = text.replace("\xe2\u20ac\xa2", "\u2022")
+    # Insert newline before bullet points
+    text = re.sub(r"\s*\u2022\s*", "\n\u2022 ", text)
+    text = text.strip()
+    return text
+
+
 def _extract_rules_from_blocks(blocks: list, page_width: float, page_height: float,
                                 region_y1: float) -> list[dict] | None:
     """Extract rules and unique actions from ability blocks below the header."""
@@ -398,7 +412,7 @@ def _extract_rules_from_blocks(blocks: list, page_width: float, page_height: flo
                 if ua_name and ua_name.upper() not in ['NAME', 'ATK', 'HIT', 'DMG', 'WR',
                                                          'APL', 'WOUNDS', 'SAVE', 'MOVE',
                                                          'UNIQUE ACTIONS', 'ABILITIES', 'NOTES']:
-                    rules.append({"name": ua_name, "description": ua_desc.strip()})
+                    rules.append({"name": ua_name, "description": _normalize_description(ua_desc)})
                 i = j
                 continue
             elif i + 1 < len(ability_text):
@@ -424,7 +438,7 @@ def _extract_rules_from_blocks(blocks: list, page_width: float, page_height: flo
                                                              'APL', 'WOUNDS', 'SAVE', 'MOVE',
                                                              'UNIQUE ACTIONS', 'ABILITIES', 'NOTES']:
                         full_name = f"{ua_name} ({cost})" if cost != "0AP" else ua_name
-                        rules.append({"name": full_name, "description": ua_desc.strip()})
+                        rules.append({"name": full_name, "description": _normalize_description(ua_desc)})
                     i = j
                     continue
         i += 1
