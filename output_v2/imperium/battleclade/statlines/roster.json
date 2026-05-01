@@ -1,6 +1,6 @@
 {
   "team": "battleclade",
-  "generated": "2026-05-01T19:35:59.261357+00:00",
+  "generated": "2026-05-01T19:52:31.481957+00:00",
   "selection": {
     "BATTLECLADE TECHNOARCHEOLOGIST": [],
     "BATTLECLADE SERVITOR UNDERSEER": [],
@@ -127,6 +127,13 @@
           "special_rules": "Lethal 5+"
         }
       ],
+      "passive_abilities": [],
+      "unique_actions": [
+        {
+          "name": "BREACH (1AP)",
+          "description": "• Place one of your Breach markers within this operative’s control range as close as possible to a terrain feature within control range of it. Whenever an operative is within 1\" of that marker, it treats parts of that terrain feature that are no more than 1\" thick as Accessible terrain. • This operative cannot perform this action while within control range of an enemy operative, or if a terrain feature isn’t within its control range."
+        }
+      ],
       "keywords": [
         "BATTLECLADE",
         "IMPERIUM",
@@ -249,6 +256,17 @@
           "damage": "2/3"
         }
       ],
+      "passive_abilities": [],
+      "unique_actions": [
+        {
+          "name": "DATACORONAL ACCUMULATOR (1AP)",
+          "description": "• SUPPORT. Determine the friendly BATTLECLADE operatives within 6\" of this operative and/or a friendly BATTLECLADE AUTO-PROXY operative, then roll one D3. If the result is equal to or less than the number of objective markers those friendly operatives contest, you gain 1CP. For the purposes of the Comms Device universal equipment, the operative the distance is being determined from must control your Comms Device marker to add 3\" to its distance requirement for this rule. • This operative cannot perform this action while within control range of an enemy operative."
+        },
+        {
+          "name": "NETWORK OVERRIDE (1AP)",
+          "description": "• SUPPORT. Select one friendly BATTLECLADE SERVITOR operative within 6\" of either this operative or a friendly BATTLECLADE AUTO-PROXY operative to immediately NETWORK COUNTERACT (you don’t have to TRANSFER POWER to do so) or perform a free Dash action. Continue this operative’s activation after doing so. For the purposes of the Comms Device universal equipment, the operative the distance is being determined from must control that marker. • This operative can perform this action twice during its activation, but cannot perform this action while within control range of an enemy operative."
+        }
+      ],
       "keywords": [
         "BATTLECLADE",
         "IMPERIUM",
@@ -280,7 +298,12 @@
           "description": "Once per turning point, when another friendly BATTLECLADE operative would be incapacitated while visible to and within 3\" of this operative, you can use this rule, providing neither this nor that operative is within control range of an enemy operative. If you do, that friendly operative isn’t incapacitated, has 1 wound remaining and cannot be incapacitated for the remainder of the action. After that action, that friendly operative can immediately perform a free Dash action, but must end that move within this operative’s control range. If this rule was used during that friendly operative’s activation, that activation ends. You cannot use this rule if this operative is incapacitated, or if it’s a Shoot action and this operative would be a primary or secondary target."
         }
       ],
-      "unique_actions": [],
+      "unique_actions": [
+        {
+          "name": "EXPEDIENT REPAIR (1AP)",
+          "description": "• Select one friendly BATTLECLADE operative within this operative’s control range to regain up to D3+3 lost wounds. It cannot be an operative that the Mechanosuture Array rule was used on during this turning point. • This operative cannot perform this action while within control range of an enemy operative. BATTLECLADE TECHNOMEDIC SERVITOR"
+        }
+      ],
       "keywords": [
         "BATTLECLADE",
         "IMPERIUM",

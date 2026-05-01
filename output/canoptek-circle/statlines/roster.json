@@ -1,6 +1,6 @@
 {
   "team": "canoptek-circle",
-  "generated": "2026-05-01T19:36:01.369020+00:00",
+  "generated": "2026-05-01T19:52:33.975847+00:00",
   "selection": {
     "GEOMANCER": [],
     "CANOPTEK TOMB CRAWLER": [
@@ -58,7 +58,20 @@
           "description": "Whenever this operative would perform a mission action (excluding Retrieve, Approved Ops 2025), if it requires this operative to control an objective marker, you can instead determine control from one of your OBELISK NODE markers (see Obelisk Node Matrix faction rule). Whenever this operative would perform the Operate Hatch action, you can open or close a hatchway thats access point is within 1\" of one of your OBELISK NODE markers instead. Note that you must still fulfil the Operate Hatch action’s conditions."
         }
       ],
-      "unique_actions": [],
+      "unique_actions": [
+        {
+          "name": "GEOMANTIC DISTURBANCE (1AP)",
+          "description": "• Select a point on a terrain feature; that point must be visible to and within 8\" of this operative. Separately roll 2D6 for each operative within 2\" of that point. If the result is higher than that operative’s remaining wounds, inflict damage on it equal to the difference. • This operative cannot perform this action while it has a Conceal order, or while within control range of an enemy operative."
+        },
+        {
+          "name": "CANOPTEK CONTROL (1AP)",
+          "description": "• SUPPORT. Select one friendly CANOPTEK CIRCLE CANOPTEK operative visible to and within 6\" of this operative. Alternatively, you can select one friendly CANOPTEK CIRCLE CANOPTEK operative that’s visible to this operative and within your OBELISK NODE MATRIX (SUPPORT doesn’t apply to this selection). That selected operative can immediately perform a 1AP action for free; it cannot move more than or be removed and set up more than 2\" during that action. • This operative cannot perform this action while within control range of an enemy operative, or while counteracting. GEOMANCER ACTIONS"
+        },
+        {
+          "name": "MOLECULAR BREACH (1AP)",
+          "description": "• SUPPORT. Select one friendly CANOPTEK CIRCLE operative visible to and within 6\" of this operative. Alternatively, you can select one friendly CANOPTEK CIRCLE operative visible to this operative and within your OBELISK NODE MATRIX (SUPPORT doesn’t apply to this selection). • The next time the selected operative performs an action in which it moves, don’t move it. Instead, remove it from the killzone and set it back up wholly within a distance equal to its Move stat (or 3\" if it was a Dash) horizontally of its original location (in a killzone that uses the close quarters rules, e.g. Killzone: Tomb World, this distance can be measured over and through Wall terrain and the operative can be set up on the other side). Note that it gains no additional distance when performing the Charge action. It must be set up in a location it can be placed, and unless it’s the Charge action, it cannot be set up within control range of an enemy operative. • This operative cannot perform this action while within control range of an enemy operative."
+        }
+      ],
       "keywords": [
         "CANOPTEK CIRCLE",
         "NECRON",
@@ -97,6 +110,17 @@
         "CANOPTEK",
         "MACROCYTE",
         "ACCELERATOR"
+      ],
+      "passive_abilities": [],
+      "unique_actions": [
+        {
+          "name": "OVERCHARGE (1AP)",
+          "description": "• Select one other friendly CANOPTEK CIRCLE CANOPTEK operative visible to and within 3\" of this operative. Alternatively, if this operative is within your OBELISK NODE MATRIX, you can select one other friendly CANOPTEK CIRCLE CANOPTEK operative within your OBELISK NODE MATRIX. Until the end of that selected operative’s next activation, add 1 to its APL stat. • This operative cannot perform this action while within control range of an enemy operative."
+        },
+        {
+          "name": "CRANIAL OVERLOAD (1AP)",
+          "description": "• Select one enemy operative visible to and within 3\" of this operative. Alternatively, if this operative is within your OBELISK NODE MATRIX, you can select one enemy operative within your OBELISK NODE MATRIX. Until the end of that enemy operative’s next activation, subtract 1 from its APL stat. • This operative cannot perform this action while within control range of an enemy operative. CANOPTEK MACROCYTE ACCELERATOR"
+        }
       ]
     },
     {

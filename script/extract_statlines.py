@@ -393,6 +393,37 @@ def _extract_rules_from_blocks(blocks: list, page_width: float, page_height: flo
     i = 0
     while i < len(ability_text):
         text, is_bold = ability_text[i]
+        
+        # Check for ALL CAPS ability name followed by cost (even if not marked bold)
+        # E.g. "NETWORK OVERRIDE" followed by "1AP"
+        if not is_bold and text.isupper() and len(text) > 3 and i + 1 < len(ability_text):
+            nt, nb = ability_text[i + 1]
+            if nt.endswith('AP') and len(nt) <= 5 and nt[0].isdigit():
+                ua_name = text.lstrip('•■●▪-– ').rstrip('\x08\x07')  # Strip bullet and backspace chars
+                cost = nt
+                ua_desc = ""
+                j = i + 2
+                while j < len(ability_text):
+                    dt, db = ability_text[j]
+                    # Stop at next ability or keyword list
+                    if dt.isupper() and len(dt) > 3 and j + 1 < len(ability_text):
+                        next_t, _ = ability_text[j + 1]
+                        if next_t.endswith('AP') and len(next_t) <= 5:
+                            break
+                    if ',' in dt and dt.isupper() and len(dt) > 10:
+                        break
+                    if dt.isdigit() and len(dt) <= 3:
+                        break
+                    ua_desc += " " + dt
+                    j += 1
+                if ua_name and ua_name.upper() not in ['NAME', 'ATK', 'HIT', 'DMG', 'WR',
+                                                         'APL', 'WOUNDS', 'SAVE', 'MOVE',
+                                                         'UNIQUE ACTIONS', 'ABILITIES', 'NOTES']:
+                    full_name = f"{ua_name} ({cost})" if cost != "0AP" else ua_name
+                    rules.append({"name": full_name, "description": _clean_extracted_text(ua_desc.strip())})
+                i = j
+                continue
+        
         if is_bold:
             if ':' in text:
                 parts = text.split(':', 1)
