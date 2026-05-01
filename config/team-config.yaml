@@ -5,6 +5,18 @@ teams:
     army: space-marines
     aliases:
     - angel-of-death
+    faction_rule:
+      name: Chapter Tactics
+      select: 2
+      options:
+      - name: Aggressive
+      - name: Dueller
+      - name: Resolute
+      - name: Stealthy
+      - name: Mobile
+      - name: Hardy
+      - name: Sharpshooter
+      - name: Siege Specialist
   battleclade:
     canonical_name: Battleclade
     faction: imperium
@@ -199,6 +211,22 @@ teams:
     army: chaos-cultists
     aliases:
     - chaos-cultist
+    faction_rule:
+      name: Accursed Gifts
+      select: 1
+      applies_to:
+      - MUTANT
+      - TORMENT
+      operative_select_count:
+        MUTANT: 1
+        TORMENT: 2
+      options:
+      - name: Deformed Wings
+      - name: Fleet
+      - name: Chitinous
+      - name: Horned
+      - name: Sinewed
+      - name: Barbed
   corsair-voidscarred:
     canonical_name: Corsair Voidscarred
     faction: xenos
@@ -753,6 +781,15 @@ teams:
     aliases:
     - legionary
     tokens_ready: true
+    faction_rule:
+      name: Marks of Chaos
+      select: 1
+      options:
+      - name: Khorne
+      - name: Nurgle
+      - name: Slaanesh
+      - name: Tzeentch
+      - name: Undivided
     tokens:
     - name: Grisly
       shape: round

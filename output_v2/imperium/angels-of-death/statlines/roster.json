@@ -1,6 +1,6 @@
 {
   "team": "angels-of-death",
-  "generated": "2026-04-29T12:20:20.826613+00:00",
+  "generated": "2026-05-01T13:01:26.709893+00:00",
   "selection": {
     "ASSAULT INTERCESSOR SERGEANT": [
       [
@@ -583,5 +583,43 @@
         }
       ]
     }
-  ]
+  ],
+  "faction_rule": {
+    "name": "Chapter Tactics",
+    "select": 2,
+    "options": [
+      {
+        "name": "Aggressive",
+        "text": "This operative’s melee weapons have the Rending weapon rule."
+      },
+      {
+        "name": "Dueller",
+        "text": "Whenever this operative is fighting or retaliating, each of your normal successes can block one unresolved critical success (unless the enemy operative’s weapon has the Brutal weapon rule)."
+      },
+      {
+        "name": "Resolute",
+        "text": "You can ignore any changes to this operative’s APL stat and it isn’t affected by enemy operatives’ Shock weapon rule."
+      },
+      {
+        "name": "Stealthy",
+        "text": "Whenever an operative is shooting this operative, if you can retain any cover saves, you can retain one additional cover save, or you can retain one cover save as a critical success instead. This isn’t cumulative with improved cover saves from Vantage terrain."
+      },
+      {
+        "name": "Mobile",
+        "text": "• \u0007This operative can perform the Fall Back action for 1 less AP. • \u0007This operative can perform the Charge action while within control range of an enemy operative, and can leave that operative’s control range to do so (but then normal requirements for that move apply)."
+      },
+      {
+        "name": "Hardy",
+        "text": "Whenever an operative is shooting this operative, defence dice results of 5+ are critical successes. Whenever this operative is retaliating, the first time an attack dice inflicts Normal Dmg of 3 or more on this operative during that sequence, that dice inflicts 1 less damage on it."
+      },
+      {
+        "name": "Sharpshooter",
+        "text": "Whenever this operative is shooting during an activation in which it hasn’t performed the Charge, Fall Back or Reposition action, its bolt weapons have the Accurate 1 and Severe weapon rules."
+      },
+      {
+        "name": "Siege Specialist",
+        "text": "This operative’s ranged weapons have the Saturate weapon rule. Whenever this operative is fighting or retaliating, enemy operatives cannot assist. ANGEL OF DEATH FACTION RULE ASTARTES These genetically modified superhumans are made for one purpose: war. During each friendly ANGEL OF DEATH operative’s activation, it can perform either two Shoot actions or two Fight actions. If it’s two Shoot actions, a bolt weapon must be selected for at least one of them, and if it’s a bolt sniper rifle or heavy bolter, 1 additional AP must be spent for the second action if both actions are using that weapon. Each friendly ANGEL OF DEATH operative can counteract regardless of its order."
+      }
+    ]
+  }
 }
