@@ -49,6 +49,22 @@ def _load_team_config() -> dict:
         return yaml.safe_load(f)
 
 
+def _clean_extracted_text(text: str) -> str:
+    """Clean up extracted text by fixing bullet characters and whitespace."""
+    # Replace bullet characters
+    text = text.replace("\u0007", "• ")
+    text = text.replace("\x95", "- ")
+    text = text.replace("•", "• ")  # Ensure space after bullet
+    
+    # Collapse multiple spaces
+    text = re.sub(r" +", " ", text)
+    
+    # Clean up spacing around bullets
+    text = re.sub(r"•\s+•", "• ", text)  # Remove duplicate bullets
+    
+    return text.strip()
+
+
 def _get_team_faction(team: str) -> str:
     """Get faction for a team from team-config.yaml"""
     config = _load_team_config()
@@ -398,7 +414,7 @@ def _extract_rules_from_blocks(blocks: list, page_width: float, page_height: flo
                 if ua_name and ua_name.upper() not in ['NAME', 'ATK', 'HIT', 'DMG', 'WR',
                                                          'APL', 'WOUNDS', 'SAVE', 'MOVE',
                                                          'UNIQUE ACTIONS', 'ABILITIES', 'NOTES']:
-                    rules.append({"name": ua_name, "description": ua_desc.strip()})
+                    rules.append({"name": ua_name, "description": _clean_extracted_text(ua_desc.strip())})
                 i = j
                 continue
             elif i + 1 < len(ability_text):
@@ -424,7 +440,7 @@ def _extract_rules_from_blocks(blocks: list, page_width: float, page_height: flo
                                                              'APL', 'WOUNDS', 'SAVE', 'MOVE',
                                                              'UNIQUE ACTIONS', 'ABILITIES', 'NOTES']:
                         full_name = f"{ua_name} ({cost})" if cost != "0AP" else ua_name
-                        rules.append({"name": full_name, "description": ua_desc.strip()})
+                        rules.append({"name": full_name, "description": _clean_extracted_text(ua_desc.strip())})
                     i = j
                     continue
         i += 1
@@ -870,6 +886,77 @@ def _extract_faction_rules(team: str) -> dict | None:
     Uses config option names to locate text in the PDF.
     Returns dict with rule name and options list, or None.
     """
+    
+    def _clean_faction_rule_text(text: str, team: str, rule_name: str) -> str:
+        """Clean up extracted faction rule text by removing headers and fixing encoding."""
+        # Replace bullet characters
+        text = text.replace("\u0007", "• ")
+        text = text.replace("\x95", "- ")
+        text = text.replace("•", "• ")  # Ensure space after bullet
+        
+        # Collapse multiple spaces/newlines
+        text = re.sub(r"\s+", " ", text)
+        
+        # Remove repeated headers (case-insensitive patterns)
+        # Common patterns: "TEAM NAME FACTION RULE", "RULE NAME", "FACTION RULE"
+        team_upper = team.replace("-", " ").upper()
+        rule_upper = rule_name.upper()
+        
+        # Remove all occurrences of these headers
+        patterns_to_remove = [
+            rf"\b{re.escape(team_upper)}\s+FACTION\s+RULE\b",
+            rf"\b{re.escape(rule_upper)}\b",
+            r"\bFACTION\s+RULE\b",
+            rf"\b{re.escape(team_upper)}\b",  # Just team name
+        ]
+        
+        for pattern in patterns_to_remove:
+            text = re.sub(pattern, "", text, flags=re.IGNORECASE)
+        
+        # Stop at common continuation markers (start of next section)
+        # These usually indicate we've gone too far
+        stop_markers = [
+            r"MUTATION",  # Chaos Cult specific
+            r"ASTARTES",  # Angels of Death specific  
+            r"ANGEL\s+OF\s+DEATH",  # AoD team name variant
+            r"These genetically modified",  # AoD continuation
+            r"Through arcane ritual",  # Chaos Cult continuation
+        ]
+        
+        for marker in stop_markers:
+            match = re.search(marker, text, re.IGNORECASE)
+            if match:
+                text = text[:match.start()]
+                break
+        
+        # Also strip trailing team references
+        # Sometimes they appear at the very end without being caught by stop markers
+        trailing_patterns = [
+            r"\s*ANGEL\s+OF\s+DEATH\s*$",
+            r"\s*ASTARTES\s*$",
+            rf"\s*{re.escape(team_upper)}\s*$",
+        ]
+        
+        for pattern in trailing_patterns:
+            text = re.sub(pattern, "", text, flags=re.IGNORECASE)
+        
+        # Final cleanup
+        text = text.strip()
+        text = re.sub(r"\s+", " ", text)
+        
+        return text
+    
+    def _clean_faction_rule_name(name: str) -> str:
+        """Clean up extracted faction rule name by removing extra text."""
+        # If name contains newline, take only first line
+        if "\n" in name:
+            name = name.split("\n")[0]
+        
+        # Remove any leading/trailing whitespace
+        name = name.strip()
+        
+        return name
+    
     config = _load_team_config()
     team_data = config.get("teams", {}).get(team, {})
     faction_rule_cfg = team_data.get("faction_rule")
@@ -890,6 +977,7 @@ def _extract_faction_rules(team: str) -> dict | None:
     # Build lookup of config option names for matching
     cfg_options = faction_rule_cfg.get("options", [])
     cfg_names = {opt["name"].upper(): opt["name"] for opt in cfg_options}
+    rule_name = faction_rule_cfg["name"]
 
     # Strategy 1: Try numbered entries first (e.g. "1. AGGRESSIVE\n..." or "1. Deformed Wings\n...")
     # Match title case or ALL CAPS names
@@ -901,9 +989,8 @@ def _extract_faction_rules(team: str) -> dict | None:
         for _num, raw_name, raw_text in matches:
             name_upper = raw_name.strip()
             name = cfg_names.get(name_upper, name_upper.title())
-            text = raw_text.strip()
-            text = re.sub(r"\s+", " ", text)
-            text = text.replace("\x95", "-")
+            name = _clean_faction_rule_name(name)
+            text = _clean_faction_rule_text(raw_text.strip(), team, rule_name)
             options.append({"name": name, "text": text})
     else:
         # Strategy 2: Search for each config option name in the faction rule pages
@@ -915,9 +1002,7 @@ def _extract_faction_rules(team: str) -> dict | None:
             name_pattern = r"(?im)^" + re.escape(opt_name) + r"\n(.*?)(?=\nLEGIONARY\n|\Z)"
             m = re.search(name_pattern, all_text, re.DOTALL)
             if m:
-                text = m.group(1).strip()
-                text = re.sub(r"\s+", " ", text)
-                text = text.replace("\x95", "-")
+                text = _clean_faction_rule_text(m.group(1).strip(), team, rule_name)
                 options.append({"name": opt_name, "text": text})
 
     if not options:
