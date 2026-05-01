@@ -863,7 +863,11 @@ def _parse_operative_selection(team: str, roster_names: list[str]) -> dict:
 def _extract_faction_rules(team: str) -> dict | None:
     """Extract faction rule options from {team}-faction-rules.pdf if the team has a faction_rule config.
 
-    Parses numbered entries like '1. AGGRESSIVE\\n<description text>...' from the PDF.
+    Supports two PDF formats:
+    1. Numbered entries: '1. AGGRESSIVE\\n<description text>...' (e.g. Angels of Death)
+    2. Per-page entries: Each option on its own page with title-case name (e.g. Legionaries)
+
+    Uses config option names to locate text in the PDF.
     Returns dict with rule name and options list, or None.
     """
     config = _load_team_config()
@@ -883,27 +887,41 @@ def _extract_faction_rules(team: str) -> dict | None:
         all_text += page.get_text() + "\n"
     doc.close()
 
-    # Parse numbered entries: "N. NAME\n<text until next entry or end marker>"
+    # Build lookup of config option names for matching
+    cfg_options = faction_rule_cfg.get("options", [])
+    cfg_names = {opt["name"].upper(): opt["name"] for opt in cfg_options}
+
+    # Strategy 1: Try numbered entries first (e.g. "1. AGGRESSIVE\n...")
     pattern = r"(\d+)\.\s+([A-Z][A-Z\s]+)\n(.*?)(?=\n\d+\.\s+[A-Z]|\nCONTINUES|\Z)"
     matches = re.findall(pattern, all_text, re.DOTALL)
 
-    if not matches:
+    options = []
+    if matches:
+        for _num, raw_name, raw_text in matches:
+            name_upper = raw_name.strip()
+            name = cfg_names.get(name_upper, name_upper.title())
+            text = raw_text.strip()
+            text = re.sub(r"\s+", " ", text)
+            text = text.replace("\x95", "-")
+            options.append({"name": name, "text": text})
+    else:
+        # Strategy 2: Search for each config option name in the faction rule pages
+        # PDF format: "LEGIONARY\nFACTION RULE\n...\n<NAME>\n<Sub-rule>\n<Description>\n"
+        for opt in cfg_options:
+            opt_name = opt["name"]
+            # Match option name (case-insensitive) on its own line, then capture
+            # the sub-rule name and description until next page header or EOF
+            name_pattern = r"(?im)^" + re.escape(opt_name) + r"\n(.*?)(?=\nLEGIONARY\n|\Z)"
+            m = re.search(name_pattern, all_text, re.DOTALL)
+            if m:
+                text = m.group(1).strip()
+                text = re.sub(r"\s+", " ", text)
+                text = text.replace("\x95", "-")
+                options.append({"name": opt_name, "text": text})
+
+    if not options:
         log.warning("%s: no faction rule options found in PDF", team)
         return None
-
-    # Build lookup of config option names for matching
-    cfg_names = {opt["name"].upper(): opt["name"] for opt in faction_rule_cfg.get("options", [])}
-
-    options = []
-    for _num, raw_name, raw_text in matches:
-        name_upper = raw_name.strip()
-        # Use canonical name from config if available, otherwise title-case
-        name = cfg_names.get(name_upper, name_upper.title())
-        # Clean up extracted text
-        text = raw_text.strip()
-        text = re.sub(r"\s+", " ", text)  # collapse whitespace
-        text = text.replace("\x95", "-")   # bullet chars
-        options.append({"name": name, "text": text})
 
     log.info("  %-35s %d faction rule options extracted", team, len(options))
 
