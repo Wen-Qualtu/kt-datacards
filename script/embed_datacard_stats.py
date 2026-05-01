@@ -104,12 +104,18 @@ def _get_faction_rule(team: str) -> dict | None:
     return team_data.get("faction_rule")
 
 
-def _inject_faction_rule(lua_script: str, team: str, roster: dict | None = None) -> str:
+def _inject_faction_rule(lua_script: str, team: str, roster: dict | None = None, operative: dict | None = None) -> str:
     """
     Inject faction rule selection into datacard Lua script.
+    Decides at Python stage whether to inject based on operative keywords.
+    
     Supports two modes based on 'select' value:
     - select: 2 → Primary + Secondary selection (e.g. Angels of Death Chapter Tactics)
     - select: 1 → Single choice selection (e.g. Legionaries Marks of Chaos)
+
+    Optional fields:
+    - applies_to: List of keywords to filter which operatives get the context menu
+    - operative_select_count: Dict mapping keywords to select counts for adaptive behavior
 
     Reads option text from roster.json's faction_rule field (extracted from PDF).
     Falls back to team-config.yaml if roster data is unavailable.
@@ -125,13 +131,31 @@ def _inject_faction_rule(lua_script: str, team: str, roster: dict | None = None)
     roster_rule = roster.get("faction_rule") if roster else None
     yaml_rule = _get_faction_rule(team)
 
-    if roster_rule:
+    if roster_rule and yaml_rule:
+        # Merge: Use roster options (with text) + YAML metadata (applies_to, operative_select_count)
+        rule = {
+            "name": roster_rule.get("name", yaml_rule["name"]),
+            "select": roster_rule.get("select", yaml_rule.get("select", 2)),
+            "options": roster_rule["options"],  # Use extracted text from roster
+            "applies_to": yaml_rule.get("applies_to"),  # Metadata from YAML
+            "operative_select_count": yaml_rule.get("operative_select_count")  # Metadata from YAML
+        }
+    elif roster_rule:
         rule = roster_rule
     elif yaml_rule:
         rule = yaml_rule
     else:
         return lua_script
 
+    # Check if this operative should get the faction rule
+    applies_to = rule.get("applies_to", None)
+    if applies_to and operative:
+        # Check if any of the operative's keywords match applies_to
+        op_keywords = [kw.upper() for kw in operative.get("keywords", [])]
+        if not any(kw.upper() in op_keywords for kw in applies_to):
+            # This operative doesn't get the faction rule
+            return lua_script
+    
     log.info(f"{team}: Injecting faction rule '{rule['name']}' into datacard script")
 
     rule_name = rule["name"]
@@ -145,7 +169,17 @@ def _inject_faction_rule(lua_script: str, team: str, roster: dict | None = None)
         lua_options += f'    {{name = "{name_escaped}", text = "{text_escaped}"}},\n'
     lua_options += "}"
 
+    # Determine select count for this operative
+    operative_select_count = rule.get("operative_select_count", None)
     select_count = rule.get("select", 2)
+    
+    if operative_select_count and operative:
+        # Check operative keywords against operative_select_count mapping
+        op_keywords = [kw.upper() for kw in operative.get("keywords", [])]
+        for kw in op_keywords:
+            if kw.upper() in operative_select_count:
+                select_count = operative_select_count[kw.upper()]
+                break
 
     if select_count == 1:
         helper_functions = _build_select1_lua(rule_name, lua_options)
@@ -252,12 +286,12 @@ function onFrApply(player, value, id)
     ms.info = ms.info or {{}}
     ms.info.abilities = ms.info.abilities or {{}}
 
-    -- Remove any existing faction rule abilities
+    -- Remove any existing faction rule abilities (including those from other cards with suffixes)
     local kept = {{}}
     for _, ab in ipairs(ms.info.abilities) do
         local isFactionRule = false
         for _, opt in ipairs(FACTION_RULE_OPTIONS) do
-            if ab.name == opt.name then
+            if ab.name == opt.name or ab.name == opt.name .. " (Primary)" or ab.name == opt.name .. " (Secondary)" then
                 isFactionRule = true
                 break
             end
@@ -267,9 +301,9 @@ function onFrApply(player, value, id)
         end
     end
 
-    -- Add selected mark as ability
+    -- Add selected mark as ability (with Primary suffix for consistency)
     local selected = FACTION_RULE_OPTIONS[frSelection]
-    table.insert(kept, {{name = selected.name, text = selected.text}})
+    table.insert(kept, {{name = selected.name .. " (Primary)", text = selected.text}})
 
     ms.info.abilities = kept
 
@@ -290,13 +324,13 @@ function onFrApply(player, value, id)
 
     table.insert(descLines, "---")
     table.insert(descLines, "[31B32B]" .. FACTION_RULE_NAME .. "[-]")
-    table.insert(descLines, "- [EF8450]" .. selected.name .. "[-]")
+    table.insert(descLines, "- [EF8450]" .. selected.name .. " (Primary)[-]")
 
     model.setDescription(table.concat(descLines, "\\n"))
     model.script_state = JSON.encode(ms)
     Wait.frames(function() model.reload() end, 5)
 
-    broadcastToColor(string.format("%s applied: %s",
+    broadcastToColor(string.format("%s applied: %s (Primary)",
         FACTION_RULE_NAME, selected.name), pc, Color.Green)
 
     frPendingModel = nil
@@ -563,10 +597,6 @@ end
 
 -- ===== END FACTION RULE =====
 '''
-
-    lua_script = lua_script.rstrip() + helper_functions
-
-    return lua_script
 
 
 def _inject_operative_counter(lua_script: str, team: str) -> str:
@@ -1123,7 +1153,9 @@ def patch_team(
     total_patched = 0
     total_cards = 0
     
-    for tts_tts_data = json.load(f)
+    for tts_file in tts_files:
+        with open(tts_file, "r", encoding="utf-8") as f:
+            tts_data = json.load(f)
         
         datacards = find_datacards_in_tts(tts_data)
         if not datacards:
@@ -1154,7 +1186,7 @@ def patch_team(
             
             card["GMNotes"] = gmnotes_json
             final_lua = _inject_operative_counter(lua_script, team)
-            final_lua = _inject_faction_rule(final_lua, team, roster)
+            final_lua = _inject_faction_rule(final_lua, team, roster, op)
             card["LuaScript"] = final_lua
             modified = True
             total_patched += 1

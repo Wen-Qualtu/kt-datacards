@@ -891,8 +891,9 @@ def _extract_faction_rules(team: str) -> dict | None:
     cfg_options = faction_rule_cfg.get("options", [])
     cfg_names = {opt["name"].upper(): opt["name"] for opt in cfg_options}
 
-    # Strategy 1: Try numbered entries first (e.g. "1. AGGRESSIVE\n...")
-    pattern = r"(\d+)\.\s+([A-Z][A-Z\s]+)\n(.*?)(?=\n\d+\.\s+[A-Z]|\nCONTINUES|\Z)"
+    # Strategy 1: Try numbered entries first (e.g. "1. AGGRESSIVE\n..." or "1. Deformed Wings\n...")
+    # Match title case or ALL CAPS names
+    pattern = r"(\d+)\.\s+([A-Z][\w\s]+)\n(.*?)(?=\n\d+\.\s+[A-Z]|\nCONTINUES|\Z)"
     matches = re.findall(pattern, all_text, re.DOTALL)
 
     options = []
