@@ -138,14 +138,21 @@ def _extract_stats_from_blocks(blocks: list, page_width: float, page_height: flo
         stats["save"] = save_match.group(1) + "+"
 
     # Wounds: remaining number that isn't APL/movement/save
+    # Use flags to skip each stat value only once (handles duplicate values like save=5, wounds=5)
     all_numbers = re.findall(r'\d+', stats_text)
+    used_apl = False
+    used_movement = False
+    used_save = False
     for num_str in all_numbers:
         num = int(num_str)
-        if stats.get("apl") and num == stats["apl"]:
+        if stats.get("apl") and num == stats["apl"] and not used_apl:
+            used_apl = True
             continue
-        if stats.get("movement") and num_str == stats["movement"].rstrip("″\"'"):
+        if stats.get("movement") and num_str == stats["movement"].rstrip("″\"'") and not used_movement:
+            used_movement = True
             continue
-        if stats.get("save") and num_str == stats["save"].rstrip("+"):
+        if stats.get("save") and num_str == stats["save"].rstrip("+") and not used_save:
+            used_save = True
             continue
         stats["wounds"] = num
         break
