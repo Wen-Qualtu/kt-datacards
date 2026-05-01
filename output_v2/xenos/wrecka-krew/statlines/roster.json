@@ -1,6 +1,6 @@
 {
   "team": "wrecka-krew",
-  "generated": "2026-04-29T12:22:35.694032+00:00",
+  "generated": "2026-05-01T20:25:09.276995+00:00",
   "selection": {
     "WRECKA BOSS NOB": [
       [
@@ -8,6 +8,7 @@
         "Two rokkit pistols; choppa"
       ]
     ],
+    "WRECKA BOMB SQUIG": [],
     "BREAKA BOY DEMOLISHA": [],
     "BREAKA BOY FIGHTER": [],
     "BREAKA BOY KRUSHA": [],
@@ -25,7 +26,7 @@
     ]
   },
   "exclusive_sets": {},
-  "operative_count": 6,
+  "operative_count": 7,
   "operatives": [
     {
       "name": "WRECKA BOSS NOB",
@@ -79,7 +80,40 @@
         {
           "name": "*Salvo",
           "description": "Select up to two different valid targets that aren’t within control range of friendly operatives. Shoot with this weapon against both primary targets in an order of your choice, then against all remaining secondary targets in the same manner (roll each sequence separately). Each target (primary and secondary) cannot be shot more than once during the action."
+        }
+      ],
+      "unique_actions": [],
+      "keywords": [
+        "WRECKA KREW",
+        "ORK",
+        "LEADER",
+        "BOSS NOB"
+      ]
+    },
+    {
+      "name": "WRECKA BOMB SQUIG",
+      "source_file": "wrecka-krew-datacards.pdf",
+      "source_page": 1,
+      "apl": 2,
+      "movement": "6″",
+      "save": "5+",
+      "wounds": 5,
+      "weapons": [
+        {
+          "name": "Explosives",
+          "attacks": "6",
+          "hit": "4+",
+          "damage": "4/5",
+          "special_rules": "Blast 1\", Limited 1, Explosive*"
         },
+        {
+          "name": "Bite",
+          "attacks": "3",
+          "hit": "4+",
+          "damage": "4/5"
+        }
+      ],
+      "passive_abilities": [
         {
           "name": "*Explosive",
           "description": "This operative can perform the Shoot action with this weapon while within control range of an enemy operative. Don’t select a valid target. Instead, this operative is always the primary target and cannot be in cover or obscured."
@@ -101,8 +135,7 @@
       "keywords": [
         "WRECKA KREW",
         "ORK",
-        "LEADER",
-        "BOSS NOB"
+        "BOMB SQUIG"
       ]
     },
     {
@@ -160,7 +193,7 @@
       "unique_actions": [
         {
           "name": "BREAK STUFF (1AP)",
-          "description": "\u0007Select a terrain feature within this operative’s control range. If it’s an equipment terrain feature, remove it. Otherwise, place one of your Breach markers within this operative’s control range as close as possible to that terrain feature. Whenever an operative is within 1\" of that marker, it treats parts of that terrain feature that are no more than 1\" thick as Accessible terrain. \u0007This operative cannot perform this action while within control range of an enemy operative, or if a terrain feature isn’t within its control range."
+          "description": "• Select a terrain feature within this operative’s control range. If it’s an equipment terrain feature, remove it. Otherwise, place one of your Breach markers within this operative’s control range as close as possible to that terrain feature. Whenever an operative is within 1\" of that marker, it treats parts of that terrain feature that are no more than 1\" thick as Accessible terrain.\n• This operative cannot perform this action while within control range of an enemy operative, or if a terrain feature isn’t within its control range."
         }
       ],
       "keywords": [
