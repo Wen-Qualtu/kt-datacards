@@ -858,6 +858,62 @@ def _parse_operative_selection(team: str, roster_names: list[str]) -> dict:
     return selection, exclusive_sets_out
 
 
+# ── Faction rule extraction ──
+
+def _extract_faction_rules(team: str) -> dict | None:
+    """Extract faction rule options from {team}-faction-rules.pdf if the team has a faction_rule config.
+
+    Parses numbered entries like '1. AGGRESSIVE\\n<description text>...' from the PDF.
+    Returns dict with rule name and options list, or None.
+    """
+    config = _load_team_config()
+    team_data = config.get("teams", {}).get(team, {})
+    faction_rule_cfg = team_data.get("faction_rule")
+    if not faction_rule_cfg:
+        return None
+
+    pdf_path = PROCESSED_DIR / team / f"{team}-faction-rules.pdf"
+    if not pdf_path.exists():
+        log.debug("%s: no faction-rules PDF, skipping faction rule extraction", team)
+        return None
+
+    doc = fitz.open(pdf_path)
+    all_text = ""
+    for page in doc:
+        all_text += page.get_text() + "\n"
+    doc.close()
+
+    # Parse numbered entries: "N. NAME\n<text until next entry or end marker>"
+    pattern = r"(\d+)\.\s+([A-Z][A-Z\s]+)\n(.*?)(?=\n\d+\.\s+[A-Z]|\nCONTINUES|\Z)"
+    matches = re.findall(pattern, all_text, re.DOTALL)
+
+    if not matches:
+        log.warning("%s: no faction rule options found in PDF", team)
+        return None
+
+    # Build lookup of config option names for matching
+    cfg_names = {opt["name"].upper(): opt["name"] for opt in faction_rule_cfg.get("options", [])}
+
+    options = []
+    for _num, raw_name, raw_text in matches:
+        name_upper = raw_name.strip()
+        # Use canonical name from config if available, otherwise title-case
+        name = cfg_names.get(name_upper, name_upper.title())
+        # Clean up extracted text
+        text = raw_text.strip()
+        text = re.sub(r"\s+", " ", text)  # collapse whitespace
+        text = text.replace("\x95", "-")   # bullet chars
+        options.append({"name": name, "text": text})
+
+    log.info("  %-35s %d faction rule options extracted", team, len(options))
+
+    return {
+        "name": faction_rule_cfg["name"],
+        "select": faction_rule_cfg.get("select", 2),
+        "options": options,
+    }
+
+
 # ── Per-team extraction ──
 
 def extract_team(team: str, force: bool = False) -> dict | None:
@@ -934,6 +990,9 @@ def extract_team(team: str, force: bool = False) -> dict | None:
     roster_names = [op["name"] for op in operatives]
     selection, exclusive_sets = _parse_operative_selection(team, roster_names)
 
+    # Phase 4: Extract faction rule options from faction-rules PDF (if configured)
+    faction_rule = _extract_faction_rules(team)
+
     roster = {
         "team": team,
         "generated": datetime.now(timezone.utc).isoformat(),
@@ -942,6 +1001,8 @@ def extract_team(team: str, force: bool = False) -> dict | None:
         "operative_count": len(operatives),
         "operatives": operatives,
     }
+    if faction_rule:
+        roster["faction_rule"] = faction_rule
 
     roster_json = json.dumps(roster, indent=2, ensure_ascii=False)
     output_path.parent.mkdir(parents=True, exist_ok=True)

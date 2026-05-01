@@ -51,6 +51,292 @@ def _has_operative_counter(team: str) -> bool:
     return "operative_counter" in team_data
 
 
+def _has_faction_rule(team: str) -> bool:
+    """Check if team has faction_rule configured"""
+    config = _load_team_config()
+    team_data = config.get("teams", {}).get(team, {})
+    return "faction_rule" in team_data
+
+
+def _get_faction_rule(team: str) -> dict | None:
+    """Get faction_rule config for a team"""
+    config = _load_team_config()
+    team_data = config.get("teams", {}).get(team, {})
+    return team_data.get("faction_rule")
+
+
+def _inject_faction_rule(lua_script: str, team: str, roster: dict | None = None) -> str:
+    """
+    Inject faction rule selection (e.g. Chapter Tactics) into datacard Lua script.
+    Adds a context menu item that lets the user pick primary + secondary options,
+    then applies them as abilities on the model.
+
+    Reads option text from roster.json's faction_rule field (extracted from PDF).
+    Falls back to team-config.yaml if roster data is unavailable.
+    """
+    if not _has_faction_rule(team):
+        return lua_script
+
+    # Check if already injected
+    if "FACTION_RULE_OPTIONS" in lua_script:
+        return lua_script
+
+    # Prefer roster data (extracted from PDF) over YAML config
+    roster_rule = roster.get("faction_rule") if roster else None
+    yaml_rule = _get_faction_rule(team)
+
+    if roster_rule:
+        rule = roster_rule
+    elif yaml_rule:
+        rule = yaml_rule
+    else:
+        return lua_script
+
+    log.info(f"{team}: Injecting faction rule '{rule['name']}' into datacard script")
+
+    rule_name = rule["name"]
+    options = rule.get("options", [])
+
+    # Build Lua table literal for options
+    lua_options = "{\n"
+    for opt in options:
+        name_escaped = opt["name"].replace('"', '\\"')
+        text_escaped = opt.get("text", "").replace('"', '\\"').replace("'", "\\'")
+        lua_options += f'    {{name = "{name_escaped}", text = "{text_escaped}"}},\n'
+    lua_options += "}"
+
+    helper_functions = f'''
+
+-- ===== FACTION RULE: {rule_name.upper()} =====
+
+FACTION_RULE_NAME = "{rule_name}"
+FACTION_RULE_OPTIONS = {lua_options}
+
+local frPendingModel = nil
+local frPendingPlayerColor = nil
+local frPrimarySelection = 1
+local frSecondarySelection = 2
+
+function buildFactionRulePanel()
+    local rows = ""
+
+    -- Primary selection
+    rows = rows .. '<Text fontSize="11" fontStyle="Bold" color="#FF6600" '
+        .. 'preferredHeight="20" alignment="MiddleLeft">Primary:</Text>\\n'
+    for i, opt in ipairs(FACTION_RULE_OPTIONS) do
+        local isOn = (i == frPrimarySelection) and "true" or "false"
+        local label = opt.name:gsub("&", "&amp;"):gsub("<", "&lt;"):gsub(">", "&gt;")
+        rows = rows .. string.format(
+            '<Toggle id="fr_p_%d" isOn="%s" '
+            .. 'onValueChanged="onFrPrimaryToggle" '
+            .. 'fontSize="10" textColor="#FFFFFF" colors="#444444|#666666|#333333|#222222" '
+            .. 'toggleWidth="16" toggleHeight="16">%s</Toggle>\\n',
+            i, isOn, label
+        )
+    end
+
+    -- Separator
+    rows = rows .. '<Image color="rgba(255,255,255,0.3)" preferredHeight="1" />\\n'
+
+    -- Secondary selection
+    rows = rows .. '<Text fontSize="11" fontStyle="Bold" color="#FF6600" '
+        .. 'preferredHeight="20" alignment="MiddleLeft">Secondary:</Text>\\n'
+    for i, opt in ipairs(FACTION_RULE_OPTIONS) do
+        local isOn = (i == frSecondarySelection) and "true" or "false"
+        local label = opt.name:gsub("&", "&amp;"):gsub("<", "&lt;"):gsub(">", "&gt;")
+        rows = rows .. string.format(
+            '<Toggle id="fr_s_%d" isOn="%s" '
+            .. 'onValueChanged="onFrSecondaryToggle" '
+            .. 'fontSize="10" textColor="#FFFFFF" colors="#444444|#666666|#333333|#222222" '
+            .. 'toggleWidth="16" toggleHeight="16">%s</Toggle>\\n',
+            i, isOn, label
+        )
+    end
+
+    local optionCount = #FACTION_RULE_OPTIONS
+    local panelHeight = 80 + optionCount * 22 * 2 + 40
+
+    return string.format([[
+<Panel id="frPanel" active="true"
+       width="240" height="%d"
+       color="rgba(0,0,0,0.92)"
+       padding="6 6 6 6"
+       position="0 0 -50"
+       rotation="0 0 180"
+       allowDragging="true">
+  <VerticalLayout spacing="2" childForceExpandWidth="true" childForceExpandHeight="false">
+    <Text fontSize="12" fontStyle="Bold" color="#FF9900"
+          alignment="MiddleCenter" preferredHeight="22">]] .. FACTION_RULE_NAME .. [[</Text>
+    <Image color="rgba(255,255,255,0.15)" preferredHeight="1" />
+    %s
+    <Image color="rgba(255,255,255,0.15)" preferredHeight="1" />
+    <HorizontalLayout spacing="4" preferredHeight="24">
+      <Button id="frApply" onClick="onFrApply"
+              fontSize="10" fontStyle="Bold"
+              colors="#2E7D32|#388E3C|#1B5E20|#555555"
+              textColor="#FFFFFF">Apply</Button>
+      <Button id="frCancel" onClick="onFrCancel"
+              fontSize="10"
+              colors="#C62828|#D32F2F|#B71C1C|#555555"
+              textColor="#FFFFFF">Cancel</Button>
+    </HorizontalLayout>
+  </VerticalLayout>
+</Panel>
+]], panelHeight, rows)
+end
+
+function onFrPrimaryToggle(player, value, id)
+    local idx = tonumber(id:match("fr_p_(%d+)"))
+    if not idx then return end
+    if value == "True" then
+        frPrimarySelection = idx
+        for i = 1, #FACTION_RULE_OPTIONS do
+            if i ~= idx then
+                self.UI.setAttribute("fr_p_" .. i, "isOn", "false")
+            end
+        end
+    else
+        if frPrimarySelection == idx then
+            self.UI.setAttribute(id, "isOn", "true")
+        end
+    end
+end
+
+function onFrSecondaryToggle(player, value, id)
+    local idx = tonumber(id:match("fr_s_(%d+)"))
+    if not idx then return end
+    if value == "True" then
+        frSecondarySelection = idx
+        for i = 1, #FACTION_RULE_OPTIONS do
+            if i ~= idx then
+                self.UI.setAttribute("fr_s_" .. i, "isOn", "false")
+            end
+        end
+    else
+        if frSecondarySelection == idx then
+            self.UI.setAttribute(id, "isOn", "true")
+        end
+    end
+end
+
+function onFrApply(player, value, id)
+    self.UI.setXml("")
+
+    if not frPendingModel then
+        broadcastToColor("No model pending.", frPendingPlayerColor or player.color, Color.Red)
+        return
+    end
+
+    if frPrimarySelection == frSecondarySelection then
+        broadcastToColor("Primary and secondary must be different.", frPendingPlayerColor or player.color, Color.Orange)
+        -- Re-show panel
+        self.UI.setXml(buildFactionRulePanel())
+        return
+    end
+
+    local model = frPendingModel
+    local pc = frPendingPlayerColor or player.color
+
+    -- Read model state
+    local msRaw = model.script_state or "{{}}"
+    local ok, ms = pcall(function() return JSON.decode(msRaw) end)
+    if not ok or not ms then ms = {{}} end
+    ms.info = ms.info or {{}}
+    ms.info.abilities = ms.info.abilities or {{}}
+
+    -- Remove any existing faction rule abilities
+    local kept = {{}}
+    for _, ab in ipairs(ms.info.abilities) do
+        local isFactionRule = false
+        for _, opt in ipairs(FACTION_RULE_OPTIONS) do
+            if ab.name == opt.name or ab.name == opt.name .. " (Primary)" or ab.name == opt.name .. " (Secondary)" then
+                isFactionRule = true
+                break
+            end
+        end
+        if not isFactionRule then
+            table.insert(kept, ab)
+        end
+    end
+
+    -- Add selected tactics as abilities
+    local primary = FACTION_RULE_OPTIONS[frPrimarySelection]
+    local secondary = FACTION_RULE_OPTIONS[frSecondarySelection]
+
+    table.insert(kept, {{name = primary.name .. " (Primary)", text = primary.text}})
+    table.insert(kept, {{name = secondary.name .. " (Secondary)", text = secondary.text}})
+
+    ms.info.abilities = kept
+
+    -- Update description to reflect new abilities
+    local descLines = {{}}
+    local oldDesc = model.getDescription() or ""
+    local inFactionSection = false
+    for line in oldDesc:gmatch("([^\\n]*)\\n?") do
+        if line:find("^%[31B32B%]" .. FACTION_RULE_NAME) then
+            inFactionSection = true
+        elseif inFactionSection and (line:find("^%[31B32B%]") or line:find("^%-%-%-")) then
+            inFactionSection = false
+            table.insert(descLines, line)
+        elseif not inFactionSection then
+            table.insert(descLines, line)
+        end
+    end
+
+    -- Append faction rule section before the closing
+    table.insert(descLines, "---")
+    table.insert(descLines, "[31B32B]" .. FACTION_RULE_NAME .. "[-]")
+    table.insert(descLines, "- [EF8450]" .. primary.name .. " (Primary)[-]")
+    table.insert(descLines, "- [EF8450]" .. secondary.name .. " (Secondary)[-]")
+
+    model.setDescription(table.concat(descLines, "\\n"))
+    model.script_state = JSON.encode(ms)
+    Wait.frames(function() model.reload() end, 5)
+
+    broadcastToColor(string.format("%s applied: %s (Primary) + %s (Secondary)",
+        FACTION_RULE_NAME, primary.name, secondary.name), pc, Color.Green)
+
+    frPendingModel = nil
+    frPendingPlayerColor = nil
+end
+
+function onFrCancel(player, value, id)
+    self.UI.setXml("")
+    broadcastToColor(FACTION_RULE_NAME .. " selection cancelled.", frPendingPlayerColor or player.color, Color.White)
+    frPendingModel = nil
+    frPendingPlayerColor = nil
+end
+
+function applyFactionRule(playerColor)
+    local model = findModelOnCard()
+    if model == nil then
+        broadcastToColor("Place a KTUIMini model on this card first.", playerColor, Color.Orange)
+        return
+    end
+
+    frPendingModel = model
+    frPendingPlayerColor = playerColor
+    frPrimarySelection = 1
+    frSecondarySelection = 2
+    self.UI.setXml(buildFactionRulePanel())
+    broadcastToColor("Select primary and secondary " .. FACTION_RULE_NAME .. ", then click Apply.", playerColor, Color.Yellow)
+end
+
+-- Extend onLoad for faction rule
+local frBaseOnLoad = onLoad
+function onLoad()
+    if frBaseOnLoad then frBaseOnLoad() end
+    self.addContextMenuItem("{rule_name}", applyFactionRule)
+end
+
+-- ===== END FACTION RULE =====
+'''
+
+    lua_script = lua_script.rstrip() + helper_functions
+
+    return lua_script
+
+
 def _inject_operative_counter(lua_script: str, team: str) -> str:
     """
     Inject operative counter functionality into datacard Lua script for teams that need it.
@@ -637,7 +923,9 @@ def patch_team(
                 gmnotes_json = gmnotes_json.replace(uchar, replacement)
             
             card["GMNotes"] = gmnotes_json
-            card["LuaScript"] = _inject_operative_counter(lua_script, team)
+            final_lua = _inject_operative_counter(lua_script, team)
+            final_lua = _inject_faction_rule(final_lua, team, roster)
+            card["LuaScript"] = final_lua
             modified = True
             total_patched += 1
         
