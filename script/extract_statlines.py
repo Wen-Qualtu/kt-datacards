@@ -50,7 +50,10 @@ def _load_team_config() -> dict:
 
 
 def _clean_extracted_text(text: str) -> str:
-    """Clean up extracted text by fixing bullet characters and whitespace."""
+    """Clean up extracted text by fixing bullet characters, markdown formatting, and whitespace."""
+    # Remove markdown bold markers
+    text = re.sub(r"\*\*([^*]+)\*\*", r"\1", text)
+    
     # Replace bullet characters with newline + bullet
     text = text.replace("\u0007", "\n• ")
     text = text.replace("\x95", "\n- ")
@@ -980,13 +983,21 @@ def _extract_faction_rules(team: str) -> dict | None:
     
     def _clean_faction_rule_text(text: str, team: str, rule_name: str) -> str:
         """Clean up extracted faction rule text by removing headers and fixing encoding."""
-        # Replace bullet characters
-        text = text.replace("\u0007", "• ")
-        text = text.replace("\x95", "- ")
-        text = text.replace("•", "• ")  # Ensure space after bullet
+        # Remove markdown bold markers
+        text = re.sub(r"\*\*([^*]+)\*\*", r"\1", text)
         
-        # Collapse multiple spaces/newlines
-        text = re.sub(r"\s+", " ", text)
+        # Replace bullet characters with proper formatting
+        text = text.replace("\u0007", "\n• ")
+        text = text.replace("\x95", "\n- ")
+        
+        # Ensure bullets have newlines before them (if they don't already)
+        text = re.sub(r"([^\n])\s*•\s+", r"\1\n• ", text)
+        
+        # Remove duplicate bullets
+        text = re.sub(r"•\s+•\s+", "• ", text)
+        
+        # Collapse multiple spaces on same line (but preserve newlines)
+        text = re.sub(r"  +", " ", text)
         
         # Remove repeated headers (case-insensitive patterns)
         # Common patterns: "TEAM NAME FACTION RULE", "RULE NAME", "FACTION RULE"
@@ -1031,9 +1042,11 @@ def _extract_faction_rules(team: str) -> dict | None:
         for pattern in trailing_patterns:
             text = re.sub(pattern, "", text, flags=re.IGNORECASE)
         
-        # Final cleanup
+        # Clean up multiple consecutive newlines
+        text = re.sub(r"\n\n+", "\n", text)
+        
+        # Final cleanup - trim and collapse horizontal whitespace only
         text = text.strip()
-        text = re.sub(r"\s+", " ", text)
         
         return text
     
