@@ -165,7 +165,7 @@ def _inject_faction_rule(lua_script: str, team: str, roster: dict | None = None,
     lua_options = "{\n"
     for opt in options:
         name_escaped = opt["name"].replace('"', '\\"')
-        text_escaped = opt.get("text", "").replace('"', '\\"').replace("'", "\\'")
+        text_escaped = opt.get("text", "").replace('\\', '\\\\').replace('"', '\\"').replace("'", "\\'").replace('\n', '\\n')
         lua_options += f'    {{name = "{name_escaped}", text = "{text_escaped}"}},\n'
     lua_options += "}"
 
