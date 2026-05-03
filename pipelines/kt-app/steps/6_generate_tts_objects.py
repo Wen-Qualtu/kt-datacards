@@ -396,6 +396,9 @@ class TTSObjectGenerator:
         # Build card decks
         contained_objects = []
         
+        # Check if team has tokens ready
+        tokens_ready = team_config.get('tokens_ready', False)
+        
         # Card types to process (in order they should appear)
         card_types = [
             ('datacards', 'Datacards'),
@@ -445,6 +448,13 @@ class TTSObjectGenerator:
         if not contained_objects:
             logger.warning(f"  No cards found for {team}")
             return False
+        
+        # Add token bag if tokens_ready
+        if tokens_ready:
+            token_bag = self._create_token_bag(team, team_config)
+            if token_bag:
+                contained_objects.append(token_bag)
+                logger.info(f"  Added token bag")
         
         # Load Lua script
         lua_script = self._load_lua_script()
@@ -523,6 +533,104 @@ class TTSObjectGenerator:
         text = re.sub(r'[-\s]+', '-', text)
         return text.strip('-')
     
+    def _create_token_bag(self, team: str, team_config: Dict) -> Optional[Dict[str, Any]]:
+        """Create a token bag for teams with tokens_ready."""
+        tokens = team_config.get('tokens', [])
+        if not tokens:
+            return None
+        
+        # Check if token images exist
+        token_dir = self.output_v3_dir / team / "tokens"
+        if not token_dir.exists():
+            logger.warning(f"  Token directory not found: {token_dir}")
+            return None
+        
+        # Load token bag Lua script
+        lua_script_path = PROJECT_ROOT / "config" / "defaults" / "tts-token" / "token-bag-script.lua"
+        lua_script = ""
+        if lua_script_path.exists():
+            with open(lua_script_path, 'r', encoding='utf-8') as f:
+                lua_script = f.read()
+        
+        # Build token objects
+        token_objects = []
+        for idx, token in enumerate(tokens):
+            token_name = token.get('name', 'Unknown Token')
+            token_type = token.get('type', 'token')
+            
+            # Build token image URL
+            token_slug = self._slugify(token_name)
+            token_url = f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/{team}/tokens/{token_slug}.png"
+            
+            # Create token object (Custom_Token)
+            token_obj = {
+                "GUID": generate_guid(f"{team}:token:{token_name}"),
+                "Name": "Custom_Token",
+                "Transform": {
+                    "posX": 0.0,
+                    "posY": 3.0,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 1.0,
+                    "scaleY": 1.0,
+                    "scaleZ": 1.0
+                },
+                "Nickname": token_name,
+                "Description": "",
+                "GMNotes": "",
+                "Tags": [f"_{team}"],
+                "Locked": False,
+                "CustomImage": {
+                    "ImageURL": token_url,
+                    "ImageSecondaryURL": token_url,
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                        "Thickness": 0.1,
+                        "MergeDistancePixels": 15.0,
+                        "StandUp": False,
+                        "Stackable": False
+                    }
+                },
+                "LuaScript": "",
+                "LuaScriptState": "",
+                "XmlUI": ""
+            }
+            token_objects.append(token_obj)
+        
+        # Create bag
+        bag = {
+            "GUID": generate_guid(f"{team}:token-bag"),
+            "Name": "Bag",
+            "Transform": {
+                "posX": 0.0,
+                "posY": 3.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 0.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+            },
+            "Nickname": f"{team.title()} tokens",
+            "Description": "",
+            "GMNotes": "",
+            "Tags": [f"_{team}", "KTCardsTokenBag"],
+            "Locked": False,
+            "Bag": {
+                "Order": 0
+            },
+            "LuaScript": lua_script,
+            "LuaScriptState": "",
+            "ContainedObjects": token_objects,
+            "XmlUI": ""
+        }
+        
+        return bag
+    
     def _build_gm_notes(self, operative_name: str, team_data: Dict) -> str:
         """Build GM notes JSON with operative stats."""
         # Find operative in team data
@@ -545,7 +653,7 @@ class TTSObjectGenerator:
     
     def _load_lua_script(self) -> str:
         """Load Lua script for cardbox."""
-        lua_script_path = PROJECT_ROOT / "config" / "defaults" / "tts-script" / "cardbox.lua"
+        lua_script_path = PROJECT_ROOT / "config" / "defaults" / "tts-script" / "tts-update-rules-in-box-script.lua"
         
         if lua_script_path.exists():
             with open(lua_script_path, 'r', encoding='utf-8') as f:
