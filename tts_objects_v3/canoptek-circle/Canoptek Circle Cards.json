@@ -1,0 +1,966 @@
+{
+  "SaveName": "",
+  "Date": "",
+  "VersionNumber": "",
+  "GameMode": "",
+  "GameType": "",
+  "GameComplexity": "",
+  "Tags": [],
+  "Gravity": 0.5,
+  "PlayArea": 0.5,
+  "Table": "",
+  "Sky": "",
+  "Note": "",
+  "TabStates": {},
+  "LuaScript": "",
+  "LuaScriptState": "",
+  "XmlUI": "",
+  "ObjectStates": [
+    {
+      "GUID": "f704f95b-72e5-f22c-de2a-5286242390a1",
+      "Name": "Custom_Model_Bag",
+      "Transform": {
+        "posX": 0.0,
+        "posY": 3.5,
+        "posZ": 0.0,
+        "rotX": 0.0,
+        "rotY": 270.0,
+        "rotZ": 0.0,
+        "scaleX": 1.0,
+        "scaleY": 1.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "Canoptek Circle",
+      "Description": "",
+      "GMNotes": "_canoptek-circle",
+      "Tags": [
+        "_Faction_Decks"
+      ],
+      "Locked": false,
+      "CustomMesh": {
+        "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/config/defaults/tts-cardbox/cardbox-mesh.obj",
+        "DiffuseURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/config/defaults/tts-cardbox/cardbox-texture.png",
+        "NormalURL": "",
+        "ColliderURL": "",
+        "Convex": true,
+        "MaterialIndex": 0,
+        "TypeIndex": 6,
+        "CastShadows": true
+      },
+      "Bag": {
+        "Order": 0
+      },
+      "LuaScript": "",
+      "LuaScriptState": "{\"ml\": {},\"rr\": 270,\"teamSlug\": \"canoptek-circle\",\"lastCardUpdate\": \"2026-05-03T13:15:47.953822+00:00\",\"lastTokenUpdate\": \"\",\"tokenBagPositions\": {}}",
+      "ContainedObjects": [
+        {
+          "GUID": "1400ab4a-2635-72b3-6ef5-424046db92b4",
+          "Name": "Deck",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 180.0,
+            "rotZ": 180.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Datacards",
+          "Description": "",
+          "GMNotes": "",
+          "Tags": [
+            "_canoptek-circle",
+            "KTDatacard"
+          ],
+          "Locked": false,
+          "DeckIDs": [
+            100400,
+            100300,
+            100200,
+            100100,
+            100000
+          ],
+          "CustomDeck": {
+            "1000": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/canoptek-circle/cards/datacards/canoptek-circle-geomancer-front.png",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/canoptek-circle/cards/datacards/canoptek-circle-geomancer-back.png",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1001": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/canoptek-circle/cards/datacards/canoptek-circle-canoptek-macrocyte-accelerator-front.png",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/canoptek-circle/cards/datacards/canoptek-circle-canoptek-macrocyte-accelerator-back.png",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1002": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/canoptek-circle/cards/datacards/canoptek-circle-canoptek-macrocyte-reanimator-front.png",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/canoptek-circle/cards/datacards/canoptek-circle-canoptek-macrocyte-reanimator-back.png",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1003": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/canoptek-circle/cards/datacards/canoptek-circle-canoptek-macrocyte-warrior-front.png",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/canoptek-circle/cards/datacards/canoptek-circle-canoptek-macrocyte-warrior-back.png",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1004": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/canoptek-circle/cards/datacards/canoptek-circle-canoptek-tomb-crawler-front.png",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/canoptek-circle/cards/datacards/canoptek-circle-canoptek-tomb-crawler-back.png",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            }
+          },
+          "ContainedObjects": [
+            {
+              "GUID": "0afd8b6d-b52d-7620-2968-0778da20e187",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "CANOPTEK TOMB CRAWLER",
+              "Description": "",
+              "GMNotes": "{\"name\":\"CANOPTEK TOMB CRAWLER\",\"apl\":2,\"movement\":\"5\\u2033\",\"save\":\"3+\",\"wounds\":18,\"weapons\":[{\"name\":\"Transdimensional isolator\",\"attacks\":\"5\",\"hit\":\"4+\",\"damage\":\"5/6\",\"special_rules\":\"Dimensional Banishment*\"},{\"name\":\"Twin gauss reapers (focused)\",\"attacks\":\"5\",\"hit\":\"4+\",\"damage\":\"4/5\",\"special_rules\":\"Piercing 1, Severe\"},{\"name\":\"Twin gauss reapers (sweeping)\",\"attacks\":\"4\",\"hit\":\"4+\",\"damage\":\"4/5\",\"special_rules\":\"Piercing 1, Severe, Torrent 1\\\"\"},{\"name\":\"Claws\",\"attacks\":\"4\",\"hit\":\"4+\",\"damage\":\"4/4\"}]}",
+              "Tags": [
+                "_canoptek-circle",
+                "KTDatacard"
+              ],
+              "Locked": false,
+              "CardID": 100400,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "c5d76b16-50e2-54bd-2a17-86846ac5d48a",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "CANOPTEK MACROCYTE WARRIOR",
+              "Description": "",
+              "GMNotes": "{\"name\":\"CANOPTEK MACROCYTE WARRIOR\",\"apl\":2,\"movement\":\"7\\u2033\",\"save\":\"4+\",\"wounds\":7,\"weapons\":[{\"name\":\"Gauss scalpel\",\"attacks\":\"4\",\"hit\":\"4+\",\"damage\":\"2/3\",\"special_rules\":\"Piercing 1\"},{\"name\":\"Tesla caster (focused)\",\"attacks\":\"4\",\"hit\":\"4+\",\"damage\":\"2/3\"},{\"name\":\"Tesla caster (living lightning)\",\"attacks\":\"4\",\"hit\":\"4+\",\"damage\":\"2/3\",\"special_rules\":\"Blast 2\\\"\"},{\"name\":\"Claws & tail\",\"attacks\":\"3\",\"hit\":\"4+\",\"damage\":\"3/4\"}]}",
+              "Tags": [
+                "_canoptek-circle",
+                "KTDatacard"
+              ],
+              "Locked": false,
+              "CardID": 100300,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "939da8bc-6777-2d9c-b55a-f3a2a36661e2",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "CANOPTEK MACROCYTE REANIMATOR",
+              "Description": "",
+              "GMNotes": "{\"name\":\"CANOPTEK MACROCYTE REANIMATOR\",\"apl\":2,\"movement\":\"7\\u2033\",\"save\":\"4+\",\"wounds\":7,\"weapons\":[{\"name\":\"Atomiser beam\",\"attacks\":\"4\",\"hit\":\"4+\",\"damage\":\"3/4\",\"special_rules\":\"Range 6\\\", Lethal 5+\"},{\"name\":\"Claws & tail\",\"attacks\":\"4\",\"hit\":\"4+\",\"damage\":\"3/4\"}]}",
+              "Tags": [
+                "_canoptek-circle",
+                "KTDatacard"
+              ],
+              "Locked": false,
+              "CardID": 100200,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "6e51317b-79cc-f216-0a0b-740d6180b28e",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "CANOPTEK MACROCYTE ACCELERATOR",
+              "Description": "",
+              "GMNotes": "{\"name\":\"CANOPTEK MACROCYTE ACCELERATOR\",\"apl\":2,\"movement\":\"7\\u2033\",\"save\":\"4+\",\"wounds\":7,\"weapons\":[{\"name\":\"Spark\",\"attacks\":\"4\",\"hit\":\"4+\",\"damage\":\"2/3\",\"special_rules\":\"Range 4\\\", Piercing 1\"},{\"name\":\"Claws & spark\",\"attacks\":\"3\",\"hit\":\"4+\",\"damage\":\"3/4\",\"special_rules\":\"Lethal 5+, Stun\"}]}",
+              "Tags": [
+                "_canoptek-circle",
+                "KTDatacard"
+              ],
+              "Locked": false,
+              "CardID": 100100,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "3568ed8f-74da-11dd-971b-e08a7bdefd52",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "GEOMANCER",
+              "Description": "",
+              "GMNotes": "",
+              "Tags": [
+                "_canoptek-circle",
+                "KTDatacard"
+              ],
+              "Locked": false,
+              "CardID": 100000,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            }
+          ],
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "7f130fd0-b8e1-f58e-00e0-63b7db208419",
+          "Name": "Card",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 180.0,
+            "rotZ": 180.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "OPERATIVE SELECTION CANOPTEK CIRCLE",
+          "Description": "",
+          "GMNotes": "",
+          "Tags": [
+            "_canoptek-circle",
+            "KTOperativeSelection"
+          ],
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "CardID": 10100,
+          "SidewaysCard": false,
+          "CustomDeck": {
+            "101": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/canoptek-circle/cards/operatives_selection/canoptek-circle-operative-selection-canoptek-circle-front.png",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/canoptek-circle/cards/operatives_selection/canoptek-circle-operative-selection-canoptek-circle-back.png",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "17d1c249-7155-c582-b087-a8af353bbef0",
+          "Name": "Card",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 180.0,
+            "rotZ": 180.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "OBELISK NODE MATRIX",
+          "Description": "",
+          "GMNotes": "",
+          "Tags": [
+            "_canoptek-circle",
+            "KTFactionRules"
+          ],
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "CardID": 10200,
+          "SidewaysCard": false,
+          "CustomDeck": {
+            "102": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/canoptek-circle/cards/faction_rules/canoptek-circle-obelisk-node-matrix-front.png",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/canoptek-circle/cards/faction_rules/canoptek-circle-obelisk-node-matrix-back.png",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "47992f2d-d953-8e93-9570-d50038e8b6dc",
+          "Name": "Deck",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 180.0,
+            "rotZ": 180.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Equipment",
+          "Description": "",
+          "GMNotes": "",
+          "Tags": [
+            "_canoptek-circle",
+            "KTEquipment"
+          ],
+          "Locked": false,
+          "DeckIDs": [
+            130300,
+            130200,
+            130100,
+            130000
+          ],
+          "CustomDeck": {
+            "1300": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/canoptek-circle/cards/equipment/canoptek-circle-matrix-manipulator-front.png",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/canoptek-circle/cards/equipment/canoptek-circle-matrix-manipulator-back.png",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1301": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/canoptek-circle/cards/equipment/canoptek-circle-awakened-obelisk-nodes-front.png",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/canoptek-circle/cards/equipment/canoptek-circle-awakened-obelisk-nodes-back.png",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1302": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/canoptek-circle/cards/equipment/canoptek-circle-nanoscarab-caskets-front.png",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/canoptek-circle/cards/equipment/canoptek-circle-nanoscarab-caskets-back.png",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1303": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/canoptek-circle/cards/equipment/canoptek-circle-phase-shifter-front.png",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/canoptek-circle/cards/equipment/canoptek-circle-phase-shifter-back.png",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            }
+          },
+          "ContainedObjects": [
+            {
+              "GUID": "e851d2c5-04fe-5544-c4b0-14136dafa7a0",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "PHASE SHIFTER",
+              "Description": "",
+              "GMNotes": "",
+              "Tags": [
+                "_canoptek-circle",
+                "KTEquipment"
+              ],
+              "Locked": false,
+              "CardID": 130300,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "b84c44ac-807b-6c27-6fce-4be3e340e35a",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "NANOSCARAB CASKETS",
+              "Description": "",
+              "GMNotes": "",
+              "Tags": [
+                "_canoptek-circle",
+                "KTEquipment"
+              ],
+              "Locked": false,
+              "CardID": 130200,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "e3839f73-af43-4306-80b4-79d4c2eed745",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "AWAKENED OBELISK NODES",
+              "Description": "",
+              "GMNotes": "",
+              "Tags": [
+                "_canoptek-circle",
+                "KTEquipment"
+              ],
+              "Locked": false,
+              "CardID": 130100,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "4fc4ce0e-ba4d-7bae-646c-08962c2221ba",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "MATRIX MANIPULATOR",
+              "Description": "",
+              "GMNotes": "",
+              "Tags": [
+                "_canoptek-circle",
+                "KTEquipment"
+              ],
+              "Locked": false,
+              "CardID": 130000,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            }
+          ],
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "4298d313-3306-3706-020b-cd1e76fb4e66",
+          "Name": "Deck",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 180.0,
+            "rotZ": 180.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Strategy Ploys",
+          "Description": "",
+          "GMNotes": "",
+          "Tags": [
+            "_canoptek-circle",
+            "KTStrategyPloy"
+          ],
+          "Locked": false,
+          "DeckIDs": [
+            140300,
+            140200,
+            140100,
+            140000
+          ],
+          "CustomDeck": {
+            "1400": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/canoptek-circle/cards/strategy_ploys/canoptek-circle-hypershielding-front.png",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/canoptek-circle/cards/strategy_ploys/canoptek-circle-hypershielding-back.png",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1401": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/canoptek-circle/cards/strategy_ploys/canoptek-circle-transdynamic-amplification-front.png",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/canoptek-circle/cards/strategy_ploys/canoptek-circle-transdynamic-amplification-back.png",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1402": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/canoptek-circle/cards/strategy_ploys/canoptek-circle-cryptogravitic-repulsion-front.png",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/canoptek-circle/cards/strategy_ploys/canoptek-circle-cryptogravitic-repulsion-back.png",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1403": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/canoptek-circle/cards/strategy_ploys/canoptek-circle-souldrain-front.png",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/canoptek-circle/cards/strategy_ploys/canoptek-circle-souldrain-back.png",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            }
+          },
+          "ContainedObjects": [
+            {
+              "GUID": "b38debaf-a7db-d4b4-97a8-1648977f9911",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "SOULDRAIN",
+              "Description": "",
+              "GMNotes": "",
+              "Tags": [
+                "_canoptek-circle",
+                "KTStrategyPloy"
+              ],
+              "Locked": false,
+              "CardID": 140300,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "9bcaf6fc-e35d-58ac-b8ec-9d917095d692",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "CRYPTOGRAVITIC REPULSION",
+              "Description": "",
+              "GMNotes": "",
+              "Tags": [
+                "_canoptek-circle",
+                "KTStrategyPloy"
+              ],
+              "Locked": false,
+              "CardID": 140200,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "9e56fb26-e1cb-9c12-5579-1ebe02bc2ddb",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "TRANSDYNAMIC AMPLIFICATION",
+              "Description": "",
+              "GMNotes": "",
+              "Tags": [
+                "_canoptek-circle",
+                "KTStrategyPloy"
+              ],
+              "Locked": false,
+              "CardID": 140100,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "35c0b0e6-a875-6fd0-85df-e426361970f8",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "HYPERSHIELDING",
+              "Description": "",
+              "GMNotes": "",
+              "Tags": [
+                "_canoptek-circle",
+                "KTStrategyPloy"
+              ],
+              "Locked": false,
+              "CardID": 140000,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            }
+          ],
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "6eb7a7bb-d4da-e2a7-6c3f-63e277db1c4b",
+          "Name": "Deck",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 180.0,
+            "rotZ": 180.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Firefight Ploys",
+          "Description": "",
+          "GMNotes": "",
+          "Tags": [
+            "_canoptek-circle",
+            "KTFirefightPloy"
+          ],
+          "Locked": false,
+          "DeckIDs": [
+            150300,
+            150200,
+            150100,
+            150000
+          ],
+          "CustomDeck": {
+            "1500": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/canoptek-circle/cards/firefight_ploys/canoptek-circle-shield-flare-front.png",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/canoptek-circle/cards/firefight_ploys/canoptek-circle-shield-flare-back.png",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1501": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/canoptek-circle/cards/firefight_ploys/canoptek-circle-animate-obelisk-nodes-front.png",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/canoptek-circle/cards/firefight_ploys/canoptek-circle-animate-obelisk-nodes-back.png",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1502": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/canoptek-circle/cards/firefight_ploys/canoptek-circle-nodal-response-front.png",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/canoptek-circle/cards/firefight_ploys/canoptek-circle-nodal-response-back.png",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1503": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/canoptek-circle/cards/firefight_ploys/canoptek-circle-sacrificial-thrall-front.png",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/canoptek-circle/cards/firefight_ploys/canoptek-circle-sacrificial-thrall-back.png",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            }
+          },
+          "ContainedObjects": [
+            {
+              "GUID": "698d7c50-dcb3-7d07-519f-ce3ae002ea13",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "SACRIFICIAL THRALL",
+              "Description": "",
+              "GMNotes": "",
+              "Tags": [
+                "_canoptek-circle",
+                "KTFirefightPloy"
+              ],
+              "Locked": false,
+              "CardID": 150300,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "4ae83b4c-b378-a41b-386b-56fb6b465c75",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "NODAL RESPONSE",
+              "Description": "",
+              "GMNotes": "",
+              "Tags": [
+                "_canoptek-circle",
+                "KTFirefightPloy"
+              ],
+              "Locked": false,
+              "CardID": 150200,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "af970d83-5f07-2e39-c02c-b67e990c6c84",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "ANIMATE OBELISK NODES",
+              "Description": "",
+              "GMNotes": "",
+              "Tags": [
+                "_canoptek-circle",
+                "KTFirefightPloy"
+              ],
+              "Locked": false,
+              "CardID": 150100,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "3f95bc54-fef2-ae81-4556-ca10edd76245",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "SHIELD FLARE",
+              "Description": "",
+              "GMNotes": "",
+              "Tags": [
+                "_canoptek-circle",
+                "KTFirefightPloy"
+              ],
+              "Locked": false,
+              "CardID": 150000,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            }
+          ],
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "295a2acb-3c1c-b039-acaa-1563e4b0eb5a",
+          "Name": "Card",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 180.0,
+            "rotZ": 180.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "TOKEN GUIDE CANOPTEK CIRCLE",
+          "Description": "",
+          "GMNotes": "",
+          "Tags": [
+            "_canoptek-circle",
+            "KTTokenGuide"
+          ],
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "CardID": 10600,
+          "SidewaysCard": false,
+          "CustomDeck": {
+            "106": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/canoptek-circle/cards/token_guide/canoptek-circle-token-guide-canoptek-circle-front.png",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/canoptek-circle/cards/token_guide/canoptek-circle-token-guide-canoptek-circle-back.png",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        }
+      ],
+      "XmlUI": ""
+    }
+  ]
+}

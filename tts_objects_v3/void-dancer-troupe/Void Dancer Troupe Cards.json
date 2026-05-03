@@ -1,0 +1,948 @@
+{
+  "SaveName": "",
+  "Date": "",
+  "VersionNumber": "",
+  "GameMode": "",
+  "GameType": "",
+  "GameComplexity": "",
+  "Tags": [],
+  "Gravity": 0.5,
+  "PlayArea": 0.5,
+  "Table": "",
+  "Sky": "",
+  "Note": "",
+  "TabStates": {},
+  "LuaScript": "",
+  "LuaScriptState": "",
+  "XmlUI": "",
+  "ObjectStates": [
+    {
+      "GUID": "e61e19e7-7a9a-576f-a255-bda6caa5a019",
+      "Name": "Custom_Model_Bag",
+      "Transform": {
+        "posX": 0.0,
+        "posY": 3.5,
+        "posZ": 0.0,
+        "rotX": 0.0,
+        "rotY": 270.0,
+        "rotZ": 0.0,
+        "scaleX": 1.0,
+        "scaleY": 1.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "Void Dancer Troupe",
+      "Description": "",
+      "GMNotes": "_void-dancer-troupe",
+      "Tags": [
+        "_Faction_Decks"
+      ],
+      "Locked": false,
+      "CustomMesh": {
+        "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/config/defaults/tts-cardbox/cardbox-mesh.obj",
+        "DiffuseURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/config/defaults/tts-cardbox/cardbox-texture.png",
+        "NormalURL": "",
+        "ColliderURL": "",
+        "Convex": true,
+        "MaterialIndex": 0,
+        "TypeIndex": 6,
+        "CastShadows": true
+      },
+      "Bag": {
+        "Order": 0
+      },
+      "LuaScript": "",
+      "LuaScriptState": "{\"ml\": {},\"rr\": 270,\"teamSlug\": \"void-dancer-troupe\",\"lastCardUpdate\": \"2026-05-03T13:15:48.125193+00:00\",\"lastTokenUpdate\": \"\",\"tokenBagPositions\": {}}",
+      "ContainedObjects": [
+        {
+          "GUID": "69e437cf-a386-c1e5-d92f-54d35de152b0",
+          "Name": "Deck",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 180.0,
+            "rotZ": 180.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Datacards",
+          "Description": "",
+          "GMNotes": "",
+          "Tags": [
+            "_void-dancer-troupe",
+            "KTDatacard"
+          ],
+          "Locked": false,
+          "DeckIDs": [
+            100300,
+            100200,
+            100100,
+            100000
+          ],
+          "CustomDeck": {
+            "1000": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/void-dancer-troupe/cards/datacards/void-dancer-troupe-lead-player-front.png",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/void-dancer-troupe/cards/datacards/void-dancer-troupe-lead-player-back.png",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1001": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/void-dancer-troupe/cards/datacards/void-dancer-troupe-death-jester-front.png",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/void-dancer-troupe/cards/datacards/void-dancer-troupe-death-jester-back.png",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1002": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/void-dancer-troupe/cards/datacards/void-dancer-troupe-player-front.png",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/void-dancer-troupe/cards/datacards/void-dancer-troupe-player-back.png",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1003": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/void-dancer-troupe/cards/datacards/void-dancer-troupe-shadowseer-front.png",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/void-dancer-troupe/cards/datacards/void-dancer-troupe-shadowseer-back.png",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            }
+          },
+          "ContainedObjects": [
+            {
+              "GUID": "7448a514-233e-7279-cfb6-98831a8e1c95",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "SHADOWSEER",
+              "Description": "",
+              "GMNotes": "{\"name\":\"SHADOWSEER\",\"apl\":3,\"movement\":\"7\\u2033\",\"save\":\"4+\",\"wounds\":9,\"weapons\":[{\"name\":\"Hallucinogen grenade\",\"attacks\":\"4\",\"hit\":\"3+\",\"damage\":\"1/1\",\"special_rules\":\"Range 6\\\", Blast 2\\\", Lethal 5+, Seek Light, Silent, Stun\"},{\"name\":\"Neuro disruptor\",\"attacks\":\"4\",\"hit\":\"3+\",\"damage\":\"4/5\",\"special_rules\":\"Range 8\\\", Piercing 1, Stun\"},{\"name\":\"Shuriken pistol\",\"attacks\":\"4\",\"hit\":\"3+\",\"damage\":\"3/4\",\"special_rules\":\"Range 8\\\", Rending\"},{\"name\":\"Miststave\",\"attacks\":\"4\",\"hit\":\"3+\",\"damage\":\"4/4\",\"special_rules\":\"Shock\"}]}",
+              "Tags": [
+                "_void-dancer-troupe",
+                "KTDatacard"
+              ],
+              "Locked": false,
+              "CardID": 100300,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "97682ace-6b4c-ec77-e443-201ae95a6791",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "PLAYER",
+              "Description": "",
+              "GMNotes": "{\"name\":\"PLAYER\",\"apl\":3,\"movement\":\"7\\u2033\",\"save\":\"4+\",\"wounds\":8,\"weapons\":[{\"name\":\"Fusion pistol\",\"attacks\":\"4\",\"hit\":\"3+\",\"damage\":\"5/3\",\"special_rules\":\"Range 3\\\", Devastating 3, Piercing 2\"},{\"name\":\"Neuro disruptor\",\"attacks\":\"4\",\"hit\":\"3+\",\"damage\":\"4/5\",\"special_rules\":\"Range 8\\\", Piercing 1, Stun\"},{\"name\":\"Shuriken pistol\",\"attacks\":\"4\",\"hit\":\"3+\",\"damage\":\"3/4\",\"special_rules\":\"Range 8\\\", Rending\"},{\"name\":\"Blade\",\"attacks\":\"5\",\"hit\":\"3+\",\"damage\":\"4/6\"},{\"name\":\"Caress\",\"attacks\":\"5\",\"hit\":\"3+\",\"damage\":\"4/5\",\"special_rules\":\"Rending\"},{\"name\":\"Embrace\",\"attacks\":\"5\",\"hit\":\"3+\",\"damage\":\"4/5\",\"special_rules\":\"Brutal\"},{\"name\":\"Kiss\",\"attacks\":\"5\",\"hit\":\"3+\",\"damage\":\"3/7\"}]}",
+              "Tags": [
+                "_void-dancer-troupe",
+                "KTDatacard"
+              ],
+              "Locked": false,
+              "CardID": 100200,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "e85f5f52-3c6a-71c9-47c9-7b62d294ef67",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "DEATH JESTER",
+              "Description": "",
+              "GMNotes": "{\"name\":\"DEATH JESTER\",\"apl\":3,\"movement\":\"7\\u2033\",\"save\":\"4+\",\"wounds\":9,\"weapons\":[{\"name\":\"Shrieker cannon (focused)\",\"attacks\":\"5\",\"hit\":\"3+\",\"damage\":\"4/5\",\"special_rules\":\"Rending, Heavy (Reposition only), Humbling Cruelty*\"},{\"name\":\"Shrieker cannon (sweeping)\",\"attacks\":\"4\",\"hit\":\"3+\",\"damage\":\"4/5\",\"special_rules\":\"Rending, Heavy (Dash only), Torrent 2\\\", Humbling Cruelty*\"},{\"name\":\"Shrieker blade\",\"attacks\":\"4\",\"hit\":\"3+\",\"damage\":\"3/4\",\"special_rules\":\"Rending\"}]}",
+              "Tags": [
+                "_void-dancer-troupe",
+                "KTDatacard"
+              ],
+              "Locked": false,
+              "CardID": 100100,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "64def01c-85f8-b479-5f24-d7f66aa96012",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "LEAD PLAYER",
+              "Description": "",
+              "GMNotes": "{\"name\":\"LEAD PLAYER\",\"apl\":3,\"movement\":\"7\\u2033\",\"save\":\"4+\",\"wounds\":9,\"weapons\":[{\"name\":\"Fusion pistol\",\"attacks\":\"4\",\"hit\":\"3+\",\"damage\":\"5/3\",\"special_rules\":\"Range 3\\\", Devastating 3, Piercing 2\"},{\"name\":\"Neuro disruptor\",\"attacks\":\"4\",\"hit\":\"3+\",\"damage\":\"4/5\",\"special_rules\":\"Range 8\\\", Piercing 1, Stun\"},{\"name\":\"Shuriken pistol\",\"attacks\":\"4\",\"hit\":\"3+\",\"damage\":\"3/4\",\"special_rules\":\"Range 8\\\", Rending\"},{\"name\":\"Blade\",\"attacks\":\"5\",\"hit\":\"3+\",\"damage\":\"4/6\"},{\"name\":\"Caress\",\"attacks\":\"5\",\"hit\":\"3+\",\"damage\":\"4/5\",\"special_rules\":\"Rending\"},{\"name\":\"Embrace\",\"attacks\":\"5\",\"hit\":\"3+\",\"damage\":\"4/5\",\"special_rules\":\"Brutal\"},{\"name\":\"Kiss\",\"attacks\":\"5\",\"hit\":\"3+\",\"damage\":\"3/7\"},{\"name\":\"Power weapon\",\"attacks\":\"5\",\"hit\":\"3+\",\"damage\":\"4/6\",\"special_rules\":\"Lethal 5+\"}]}",
+              "Tags": [
+                "_void-dancer-troupe",
+                "KTDatacard"
+              ],
+              "Locked": false,
+              "CardID": 100000,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            }
+          ],
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "943ed09e-17f7-ed5a-ceac-396665aa6e30",
+          "Name": "Card",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 180.0,
+            "rotZ": 180.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "OPERATIVE SELECTION VOID DANCER TROUPE",
+          "Description": "",
+          "GMNotes": "",
+          "Tags": [
+            "_void-dancer-troupe",
+            "KTOperativeSelection"
+          ],
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "CardID": 10100,
+          "SidewaysCard": false,
+          "CustomDeck": {
+            "101": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/void-dancer-troupe/cards/operatives_selection/void-dancer-troupe-operative-selection-void-dancer-troupe-front.png",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/void-dancer-troupe/cards/operatives_selection/void-dancer-troupe-operative-selection-void-dancer-troupe-back.png",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "dcc6aa3c-031e-2415-3c10-0604e5d93e53",
+          "Name": "Deck",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 180.0,
+            "rotZ": 180.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Faction Rules",
+          "Description": "",
+          "GMNotes": "",
+          "Tags": [
+            "_void-dancer-troupe",
+            "KTFactionRules"
+          ],
+          "Locked": false,
+          "DeckIDs": [
+            120100,
+            120000
+          ],
+          "CustomDeck": {
+            "1200": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/void-dancer-troupe/cards/faction_rules/void-dancer-troupe-saedath-front.png",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/void-dancer-troupe/cards/faction_rules/void-dancer-troupe-saedath-back.png",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1201": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/void-dancer-troupe/cards/faction_rules/void-dancer-troupe-harlequins-panoply-front.png",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/void-dancer-troupe/cards/faction_rules/void-dancer-troupe-harlequins-panoply-back.png",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            }
+          },
+          "ContainedObjects": [
+            {
+              "GUID": "72fc78ea-b0ff-cddb-485b-959933161017",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "HARLEQUIN’S PANOPLY",
+              "Description": "",
+              "GMNotes": "",
+              "Tags": [
+                "_void-dancer-troupe",
+                "KTFactionRules"
+              ],
+              "Locked": false,
+              "CardID": 120100,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "38feb6a3-b4eb-57dd-4cc6-85bdc8b7ce53",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "SAEDATH",
+              "Description": "",
+              "GMNotes": "",
+              "Tags": [
+                "_void-dancer-troupe",
+                "KTFactionRules"
+              ],
+              "Locked": false,
+              "CardID": 120000,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            }
+          ],
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "1374bce7-9c11-9d58-8545-f42fb542637f",
+          "Name": "Deck",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 180.0,
+            "rotZ": 180.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Equipment",
+          "Description": "",
+          "GMNotes": "",
+          "Tags": [
+            "_void-dancer-troupe",
+            "KTEquipment"
+          ],
+          "Locked": false,
+          "DeckIDs": [
+            130300,
+            130200,
+            130100,
+            130000
+          ],
+          "CustomDeck": {
+            "1300": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/void-dancer-troupe/cards/equipment/void-dancer-troupe-wraithbone-talisman-front.png",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/void-dancer-troupe/cards/equipment/void-dancer-troupe-wraithbone-talisman-back.png",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1301": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/void-dancer-troupe/cards/equipment/void-dancer-troupe-shrieker-toxin-rounds-front.png",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/void-dancer-troupe/cards/equipment/void-dancer-troupe-shrieker-toxin-rounds-back.png",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1302": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/void-dancer-troupe/cards/equipment/void-dancer-troupe-death-mask-front.png",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/void-dancer-troupe/cards/equipment/void-dancer-troupe-death-mask-back.png",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1303": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/void-dancer-troupe/cards/equipment/void-dancer-troupe-understudys-mask-front.png",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/void-dancer-troupe/cards/equipment/void-dancer-troupe-understudys-mask-back.png",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            }
+          },
+          "ContainedObjects": [
+            {
+              "GUID": "e35e9461-a563-5a4d-48e4-da15a52c9432",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "UNDERSTUDY’S MASK",
+              "Description": "",
+              "GMNotes": "",
+              "Tags": [
+                "_void-dancer-troupe",
+                "KTEquipment"
+              ],
+              "Locked": false,
+              "CardID": 130300,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "b2047947-c369-b96f-205a-ad56a877450f",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "DEATH MASK",
+              "Description": "",
+              "GMNotes": "",
+              "Tags": [
+                "_void-dancer-troupe",
+                "KTEquipment"
+              ],
+              "Locked": false,
+              "CardID": 130200,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "6ae9431d-7c1f-409d-26b2-c3c03a7e19ae",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "SHRIEKER TOXIN ROUNDS",
+              "Description": "",
+              "GMNotes": "",
+              "Tags": [
+                "_void-dancer-troupe",
+                "KTEquipment"
+              ],
+              "Locked": false,
+              "CardID": 130100,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "4bfb8a1f-da87-8081-f4c9-a07af3331404",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "WRAITHBONE TALISMAN",
+              "Description": "",
+              "GMNotes": "",
+              "Tags": [
+                "_void-dancer-troupe",
+                "KTEquipment"
+              ],
+              "Locked": false,
+              "CardID": 130000,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            }
+          ],
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "d2fb09c6-8af3-e6dc-d604-c39f8a4086a5",
+          "Name": "Deck",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 180.0,
+            "rotZ": 180.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Strategy Ploys",
+          "Description": "",
+          "GMNotes": "",
+          "Tags": [
+            "_void-dancer-troupe",
+            "KTStrategyPloy"
+          ],
+          "Locked": false,
+          "DeckIDs": [
+            140300,
+            140200,
+            140100,
+            140000
+          ],
+          "CustomDeck": {
+            "1400": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/void-dancer-troupe/cards/strategy_ploys/void-dancer-troupe-darting-salvo-front.png",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/void-dancer-troupe/cards/strategy_ploys/void-dancer-troupe-darting-salvo-back.png",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1401": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/void-dancer-troupe/cards/strategy_ploys/void-dancer-troupe-rising-crescendo-front.png",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/void-dancer-troupe/cards/strategy_ploys/void-dancer-troupe-rising-crescendo-back.png",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1402": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/void-dancer-troupe/cards/strategy_ploys/void-dancer-troupe-prismatic-blur-front.png",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/void-dancer-troupe/cards/strategy_ploys/void-dancer-troupe-prismatic-blur-back.png",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1403": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/void-dancer-troupe/cards/strategy_ploys/void-dancer-troupe-cegorachs-jest-front.png",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/void-dancer-troupe/cards/strategy_ploys/void-dancer-troupe-cegorachs-jest-back.png",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            }
+          },
+          "ContainedObjects": [
+            {
+              "GUID": "35d84949-2363-f5ce-b6a7-89401903f1b4",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "CEGORACH’S JEST",
+              "Description": "",
+              "GMNotes": "",
+              "Tags": [
+                "_void-dancer-troupe",
+                "KTStrategyPloy"
+              ],
+              "Locked": false,
+              "CardID": 140300,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "c0ca39c5-d103-c6f1-a8f2-45e87c5b46bd",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "PRISMATIC BLUR",
+              "Description": "",
+              "GMNotes": "",
+              "Tags": [
+                "_void-dancer-troupe",
+                "KTStrategyPloy"
+              ],
+              "Locked": false,
+              "CardID": 140200,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "c8b9b1c3-f7f9-da2c-605d-f57f6a32f378",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "RISING CRESCENDO",
+              "Description": "",
+              "GMNotes": "",
+              "Tags": [
+                "_void-dancer-troupe",
+                "KTStrategyPloy"
+              ],
+              "Locked": false,
+              "CardID": 140100,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "f2d0b053-c270-6bd5-2e3a-53de67f9611c",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "DARTING SALVO",
+              "Description": "",
+              "GMNotes": "",
+              "Tags": [
+                "_void-dancer-troupe",
+                "KTStrategyPloy"
+              ],
+              "Locked": false,
+              "CardID": 140000,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            }
+          ],
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "040df25c-0370-a7bf-3c7a-d1b93524efea",
+          "Name": "Deck",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 180.0,
+            "rotZ": 180.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Firefight Ploys",
+          "Description": "",
+          "GMNotes": "",
+          "Tags": [
+            "_void-dancer-troupe",
+            "KTFirefightPloy"
+          ],
+          "Locked": false,
+          "DeckIDs": [
+            150300,
+            150200,
+            150100,
+            150000
+          ],
+          "CustomDeck": {
+            "1500": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/void-dancer-troupe/cards/firefight_ploys/void-dancer-troupe-murderous-entrance-front.png",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/void-dancer-troupe/cards/firefight_ploys/void-dancer-troupe-murderous-entrance-back.png",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1501": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/void-dancer-troupe/cards/firefight_ploys/void-dancer-troupe-the-curtain-falls-front.png",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/void-dancer-troupe/cards/firefight_ploys/void-dancer-troupe-the-curtain-falls-back.png",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1502": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/void-dancer-troupe/cards/firefight_ploys/void-dancer-troupe-elusive-target-front.png",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/void-dancer-troupe/cards/firefight_ploys/void-dancer-troupe-elusive-target-back.png",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1503": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/void-dancer-troupe/cards/firefight_ploys/void-dancer-troupe-domino-field-front.png",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/void-dancer-troupe/cards/firefight_ploys/void-dancer-troupe-domino-field-back.png",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            }
+          },
+          "ContainedObjects": [
+            {
+              "GUID": "6dc724df-97b9-995f-0dff-c75b5967a068",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "DOMINO FIELD",
+              "Description": "",
+              "GMNotes": "",
+              "Tags": [
+                "_void-dancer-troupe",
+                "KTFirefightPloy"
+              ],
+              "Locked": false,
+              "CardID": 150300,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "2262ca6b-42aa-0a69-ab11-803cff14a5b7",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "ELUSIVE TARGET",
+              "Description": "",
+              "GMNotes": "",
+              "Tags": [
+                "_void-dancer-troupe",
+                "KTFirefightPloy"
+              ],
+              "Locked": false,
+              "CardID": 150200,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "e91faadd-46b7-fd32-76df-7c1c139044f1",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "THE CURTAIN FALLS",
+              "Description": "",
+              "GMNotes": "",
+              "Tags": [
+                "_void-dancer-troupe",
+                "KTFirefightPloy"
+              ],
+              "Locked": false,
+              "CardID": 150100,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "32de9c57-bf0b-d635-b7ee-5d1ccc033eb6",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "MURDEROUS ENTRANCE",
+              "Description": "",
+              "GMNotes": "",
+              "Tags": [
+                "_void-dancer-troupe",
+                "KTFirefightPloy"
+              ],
+              "Locked": false,
+              "CardID": 150000,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            }
+          ],
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        }
+      ],
+      "XmlUI": ""
+    }
+  ]
+}
