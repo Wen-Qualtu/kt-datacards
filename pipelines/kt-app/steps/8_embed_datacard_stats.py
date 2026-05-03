@@ -176,19 +176,30 @@ class DatacardStatsEmbedder:
     
     def _match_card_to_operative(self, nickname: str, team: str, team_data: Dict) -> Optional[Dict]:
         """Match a card nickname to an operative in team_data."""
-        # Nicknames in TTS are typically all uppercase: "KASRKIN SERGEANT"
-        # Normalize for case-insensitive matching
+        # Nicknames in TTS may be short form: "sergeant" or "combat-medic"
+        # Team data has full names: "KASRKIN SERGEANT" or "KASRKIN COMBAT MEDIC"
+        # Normalize and match on the operative type (suffix) only
         def normalize(s):
-            return s.lower().strip()
+            return s.lower().strip().replace("-", " ").replace("_", " ")
         
         nickname_norm = normalize(nickname)
+        team_norm = normalize(team)
         
         # Search in datacards
         datacards = team_data.get('datacards', [])
         for operative in datacards:
             op_name = operative.get('name', '')
-            if normalize(op_name) == nickname_norm:
+            op_name_norm = normalize(op_name)
+            
+            # Try exact match first
+            if op_name_norm == nickname_norm:
                 return operative
+            
+            # Try matching without team prefix
+            if op_name_norm.startswith(team_norm):
+                op_type = op_name_norm[len(team_norm):].strip()
+                if op_type == nickname_norm:
+                    return operative
         
         return None
     
