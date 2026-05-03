@@ -87,6 +87,7 @@ def get_card_type_tag(card_type):
         "datacards": "KTCardsDatacard",
         "faction-rules": "KTCardsFactionRule",
         "operative-selection": "KTCardsOperativeSelection",
+        "token-guide": "KTCardsTokenGuide",
         "markertokens": "KTCardsMarkertoken"
     }
     return type_tag_map.get(card_type)
