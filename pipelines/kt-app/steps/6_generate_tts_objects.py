@@ -322,12 +322,12 @@ def get_card_type_tag(card_type: str) -> Optional[str]:
 
 def get_default_mesh_url() -> str:
     """Get default cardbox mesh URL."""
-    return "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/config/defaults/tts-cardbox/cardbox-mesh.obj"
+    return "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/refactor-kt-app-pipeline/config/defaults/tts-cardbox/cardbox-mesh.obj"
 
 
 def get_default_texture_url() -> str:
     """Get default cardbox texture URL."""
-    return "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/config/defaults/tts-cardbox/cardbox-texture.png"
+    return "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/refactor-kt-app-pipeline/config/defaults/tts-cardbox/cardbox-texture.png"
 
 
 # ===================================================================
@@ -523,7 +523,7 @@ class TTSObjectGenerator:
     def _build_card_url(self, team: str, card_type: str, filename: str) -> str:
         """Build GitHub raw URL for card image."""
         encoded_filename = filename.replace(' ', '%20')
-        return f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/{team}/cards/{card_type}/{encoded_filename}"
+        return f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/refactor-kt-app-pipeline/output_v3/{team}/cards/{card_type}/{encoded_filename}"
     
     def _slugify(self, text: str) -> str:
         """Convert text to slug format."""
@@ -560,7 +560,7 @@ class TTSObjectGenerator:
             
             # Build token image URL
             token_slug = self._slugify(token_name)
-            token_url = f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/{team}/tokens/{token_slug}.png"
+            token_url = f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/refactor-kt-app-pipeline/output_v3/{team}/tokens/{token_slug}.png"
             
             # Create token object (Custom_Token)
             token_obj = {

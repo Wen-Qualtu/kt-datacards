@@ -1,5 +1,5 @@
 -- constants
-local TTS_METADATA_URL = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/tts-metadata.json"
+local TTS_METADATA_URL = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/refactor-kt-app-pipeline/output_v2/tts-metadata.json"
 
 local SCRIPT_VERSION = "v2.0"
 
@@ -221,8 +221,14 @@ local function changeButtons(variant)
     self.createButton(BUTTON_RECALL)
     self.createButton(BUTTON_SETUP_BOX)
     self.createButton(BUTTON_PLACE_KT_TABLE)
-    self.createButton(BUTTON_UPDATE)
+    -- Update button moved to context menu (right-click)
   end
+end
+
+local function setupContextMenu()
+  self.clearContextMenu()
+  self.addContextMenuItem("Update Cards", click_update_rules)
+  self.addContextMenuItem("Update Tokens", click_update_tokens)
 end
 
 function compare_coords(p1, p2, rotation)
@@ -311,6 +317,9 @@ function onload(saved_data)
   else
     changeButtons('done_setup')
   end
+  
+  -- Setup context menu for update functions (right-click)
+  setupContextMenu()
 end
 
 -- handlers for buttons
