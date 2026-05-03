@@ -217,17 +217,18 @@ local function changeButtons(variant)
     self.createButton(BUTTON_SUBMIT)
     self.createButton(BUTTON_RESET)
   elseif (variant == 'done_setup') then
+    self.createButton(BUTTON_UPDATE)
+    self.createButton(BUTTON_UPDATE_TOKENS)
     self.createButton(BUTTON_PLACE)
     self.createButton(BUTTON_RECALL)
     self.createButton(BUTTON_SETUP_BOX)
     self.createButton(BUTTON_PLACE_KT_TABLE)
-    -- Update button moved to context menu (right-click)
   end
 end
 
 local function setupContextMenu()
   self.clearContextMenu()
-  self.addContextMenuItem("Update Cards", click_update_rules)
+  -- Context menu can be used for additional options if needed
   self.addContextMenuItem("Update Tokens", click_update_tokens)
 end
 
