@@ -207,6 +207,22 @@ local function readRotation()
   return round(r2)
 end
 
+local function hasTokenBag()
+  -- Check if this box contains a token bag (Custom_Model_Bag with "-tokens" in GMNotes)
+  local bagContents = self.getObjects()
+  for _, obj in ipairs(bagContents) do
+    if obj.name == "Custom_Model_Bag" then
+      -- The token bag has GMNotes with "{teamSlug}-tokens" format
+      local objGUID = obj.guid
+      local containedObj = self.getObject(objGUID)
+      if containedObj and containedObj.getGMNotes() and containedObj.getGMNotes():match("%-tokens$") then
+        return true
+      end
+    end
+  end
+  return false
+end
+
 local function changeButtons(variant)
   self.clearButtons()
 
@@ -218,7 +234,10 @@ local function changeButtons(variant)
     self.createButton(BUTTON_RESET)
   elseif (variant == 'done_setup') then
     self.createButton(BUTTON_UPDATE)
-    self.createButton(BUTTON_UPDATE_TOKENS)
+    -- Only show UPDATE_TOKENS button if the box contains a token bag
+    if hasTokenBag() then
+      self.createButton(BUTTON_UPDATE_TOKENS)
+    end
     self.createButton(BUTTON_PLACE)
     self.createButton(BUTTON_RECALL)
     self.createButton(BUTTON_SETUP_BOX)
