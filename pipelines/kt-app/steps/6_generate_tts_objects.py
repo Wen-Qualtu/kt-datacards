@@ -490,10 +490,11 @@ class TTSObjectGenerator:
             name = entity.get('name', 'Unknown')
             
             # Build URLs for front and back images
-            # Cards are stored as: output_v3/{team}/cards/{card_type}/{slug}-front.png
+            # Cards are stored as: output_v3/{team}/cards/{card_type}/{team}-{slug}-front.png
+            # Note: Step 4 already prefixed with team slug, so we don't add it again
             slug = self._slugify(name)
-            front_url = self._build_card_url(team, card_type, f"{team}-{slug}-front.png")
-            back_url = self._build_card_url(team, card_type, f"{team}-{slug}-back.png")
+            front_url = self._build_card_url(team, card_type, f"{slug}-front.png")
+            back_url = self._build_card_url(team, card_type, f"{slug}-back.png")
             
             # Build GM notes with stats (for datacards)
             gm_notes = ""
