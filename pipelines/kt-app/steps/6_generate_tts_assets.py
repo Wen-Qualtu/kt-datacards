@@ -75,9 +75,11 @@ class TTSAssetGenerator:
             logger.error(f"  Team not found in config: {team}")
             return False
         
-        # Create output directory
-        team_tts_dir = self.output_dir / team / "tts"
-        team_tts_dir.mkdir(parents=True, exist_ok=True)
+        # Create output directories
+        team_cardbox_dir = self.output_dir / team / "cardbox"
+        team_tokens_dir = self.output_dir / team / "tokens"
+        team_cardbox_dir.mkdir(parents=True, exist_ok=True)
+        team_tokens_dir.mkdir(parents=True, exist_ok=True)
         
         # Get cardbox assets
         mesh_source = self._get_mesh_for_team(team)
@@ -87,9 +89,9 @@ class TTSAssetGenerator:
             logger.error(f"  Missing cardbox assets for {team}")
             return False
         
-        # Copy cardbox assets
-        mesh_dest = team_tts_dir / f"{team}-card-box.obj"
-        texture_dest = team_tts_dir / f"{team}-card-box-texture.jpg"
+        # Copy cardbox assets to cardbox/ folder
+        mesh_dest = team_cardbox_dir / f"{team}-card-box.obj"
+        texture_dest = team_cardbox_dir / f"{team}-card-box-texture.jpg"
         
         try:
             shutil.copy2(mesh_source, mesh_dest)
@@ -104,14 +106,17 @@ class TTSAssetGenerator:
         if tokens_ready:
             token_bag_source = self._get_token_bag_mesh()
             if token_bag_source:
-                token_bag_dest = team_tts_dir / f"{team}-token-bag.obj"
+                # Put token bag in tokens/tokenbag/ folder
+                token_bag_dir = team_tokens_dir / "tokenbag"
+                token_bag_dir.mkdir(parents=True, exist_ok=True)
+                token_bag_dest = token_bag_dir / f"{team}-token-bag.obj"
                 try:
                     shutil.copy2(token_bag_source, token_bag_dest)
                     logger.info(f"  Copied token bag mesh")
                 except Exception as e:
                     logger.error(f"  Failed to copy token bag mesh: {e}")
             
-            # Copy individual token meshes from v2 to v3
+            # Copy individual token meshes from v2 to tokens/ folder
             faction = team_config.get('faction', '')
             if faction:
                 v2_token_dir = self.output_v2_dir / faction / team / 'tts' / 'token'
@@ -119,7 +124,7 @@ class TTSAssetGenerator:
                     copied_count = 0
                     for obj_file in v2_token_dir.glob(f'{team}-*.obj'):
                         if obj_file.name != f'{team}-token-mesh.obj':  # Skip generic mesh
-                            dest_file = team_tts_dir / obj_file.name
+                            dest_file = team_tokens_dir / obj_file.name
                             try:
                                 shutil.copy2(obj_file, dest_file)
                                 copied_count += 1

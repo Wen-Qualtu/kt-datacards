@@ -388,14 +388,19 @@ class TTSGenerator:
         Converts:
         output_v2/{faction}/{team}/tts/token/{team}-{name}.obj
         to:
-        output_v3/{team}/tts/{team}-{name}.obj
+        output_v3/{team}/tokens/{team}-{name}.obj
+        
+        And token bag:
+        output_v2/{faction}/{team}/tts/token/{team}-token-mesh.obj
+        to:
+        output_v3/{team}/tokens/tokenbag/{team}-token-bag.obj
         """
         if isinstance(obj, dict):
             for key, value in obj.items():
                 if isinstance(value, str) and 'output_v2' in value and '/tts/token/' in value:
                     # Rewrite v2 token URL to v3
                     # Pattern: .../output_v2/{faction}/{team}/tts/token/{filename}
-                    # New:     .../output_v3/{team}/tts/{filename}
+                    # New:     .../output_v3/{team}/tokens/{filename}
                     if '/output_v2/' in value:
                         parts = value.split('/output_v2/')
                         if len(parts) == 2:
@@ -408,8 +413,8 @@ class TTSGenerator:
                                 filename = filename_parts[-1]
                                 # Remove query params if present
                                 filename = filename.split('?')[0]
-                                # Construct v3 URL
-                                new_url = f"{base_url}/output_v3/{team_name}/tts/{filename}"
+                                # Construct v3 URL (tokens are now in tokens/ folder)
+                                new_url = f"{base_url}/output_v3/{team_name}/tokens/{filename}"
                                 # Update branch if not main
                                 if '/main/' in new_url:
                                     new_url = new_url.replace('/main/', f'/{branch}/')
