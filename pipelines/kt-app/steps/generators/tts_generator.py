@@ -391,11 +391,37 @@ class TTSGenerator:
         output_v3/{team}/tokens/{team}-{name}.obj
         
         And token bag:
-        output_v2/{faction}/{team}/tts/token/{team}-token-mesh.obj
+        output_v2/{faction}/{team}/tts/{team}-token-bag.obj
         to:
         output_v3/{team}/tokens/tokenbag/{team}-token-bag.obj
+        
+        Also adds DiffuseURL for token bag icon.
         """
         if isinstance(obj, dict):
+            # Check if this is a token bag object (has CustomMesh with token-bag.obj)
+            if 'CustomMesh' in obj and 'MeshURL' in obj['CustomMesh']:
+                mesh_url = obj['CustomMesh']['MeshURL']
+                if isinstance(mesh_url, str) and 'token-bag.obj' in mesh_url:
+                    # This is a token bag - rewrite mesh URL and add icon
+                    if '/output_v2/' in mesh_url:
+                        parts = mesh_url.split('/output_v2/')
+                        if len(parts) == 2:
+                            base_url = parts[0]
+                            # Construct new v3 URL for token bag
+                            new_mesh_url = f"{base_url}/output_v3/{team_name}/tokens/tokenbag/{team_name}-token-bag.obj"
+                            if '/main/' in new_mesh_url:
+                                new_mesh_url = new_mesh_url.replace('/main/', f'/{branch}/')
+                            obj['CustomMesh']['MeshURL'] = new_mesh_url
+                            
+                            # Add DiffuseURL for token bag icon
+                            icon_url = f"{base_url}/output_v3/{team_name}/tokens/tokenbag/{team_name}-token-bag-icon.png"
+                            if '/main/' in icon_url:
+                                icon_url = icon_url.replace('/main/', f'/{branch}/')
+                            obj['CustomMesh']['DiffuseURL'] = icon_url
+                            
+                            self.logger.debug(f"  Rewrote token bag mesh and added icon")
+            
+            # Recursively process all string values
             for key, value in obj.items():
                 if isinstance(value, str) and 'output_v2' in value and '/tts/token/' in value:
                     # Rewrite v2 token URL to v3
