@@ -396,8 +396,10 @@ def process_tokens_phase2(
         # Determine shape
         shape = get_token_shape(team_slug, token_name, metadata)
         
-        # Process token
-        output_path = output_dir / token_path.name
+        # Process token - add team prefix to output filename
+        # Convert filename format: token-name.png -> {team}-token-name.png
+        output_filename = f"{team_slug}-{token_path.name}"
+        output_path = output_dir / output_filename
         if process_token(token_path, output_path, shape, templates, debug):
             success_count += 1
     
