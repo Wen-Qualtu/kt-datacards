@@ -381,6 +381,49 @@ class TTSGenerator:
         
         self.logger.info(f"Updated tts-card-boxes.json ({len(tts_boxes)} total teams, {len(tts_entries)} updated)")
     
+    def _rewrite_token_urls_to_v3(self, obj: dict, team_name: str, branch: str = "refactor-kt-app-pipeline") -> dict:
+        """
+        Recursively rewrite token URLs from v2 to v3 structure.
+        
+        Converts:
+        output_v2/{faction}/{team}/tts/token/{team}-{name}.obj
+        to:
+        output_v3/{team}/tts/{team}-{name}.obj
+        """
+        if isinstance(obj, dict):
+            for key, value in obj.items():
+                if isinstance(value, str) and 'output_v2' in value and '/tts/token/' in value:
+                    # Rewrite v2 token URL to v3
+                    # Pattern: .../output_v2/{faction}/{team}/tts/token/{filename}
+                    # New:     .../output_v3/{team}/tts/{filename}
+                    if '/output_v2/' in value:
+                        parts = value.split('/output_v2/')
+                        if len(parts) == 2:
+                            base_url = parts[0]
+                            after_v2 = parts[1]
+                            # Extract filename from end
+                            filename_parts = after_v2.split('/')
+                            if len(filename_parts) >= 4:
+                                # [..., faction, team, 'tts', 'token', filename]
+                                filename = filename_parts[-1]
+                                # Remove query params if present
+                                filename = filename.split('?')[0]
+                                # Construct v3 URL
+                                new_url = f"{base_url}/output_v3/{team_name}/tts/{filename}"
+                                # Update branch if not main
+                                if '/main/' in new_url:
+                                    new_url = new_url.replace('/main/', f'/{branch}/')
+                                obj[key] = new_url
+                                self.logger.debug(f"  Rewrote token URL: {filename}")
+                elif isinstance(value, (dict, list)):
+                    self._rewrite_token_urls_to_v3(value, team_name, branch)
+        elif isinstance(obj, list):
+            for item in obj:
+                if isinstance(item, (dict, list)):
+                    self._rewrite_token_urls_to_v3(item, team_name, branch)
+        
+        return obj
+    
     def _load_token_bag(self, team_name: str, faction: str) -> tuple[dict, str] | tuple[None, None]:
         """
         Load token bag object from the team's tts/token folder if it exists.
@@ -404,6 +447,10 @@ class TTSGenerator:
                 # Extract the token bag object (first ObjectState)
                 if 'ObjectStates' in token_data and len(token_data['ObjectStates']) > 0:
                     token_bag = token_data['ObjectStates'][0]
+                    
+                    # Rewrite v2 URLs to v3
+                    token_bag = self._rewrite_token_urls_to_v3(token_bag, team_name)
+                    
                     self.logger.info(f"Loaded token bag for {team_name} from tts_objects with {len(token_bag.get('ContainedObjects', []))} tokens")
                     
                     # Extract token timestamp from LuaScriptState
@@ -437,6 +484,10 @@ class TTSGenerator:
             # Extract the token bag object (first ObjectState)
             if 'ObjectStates' in token_data and len(token_data['ObjectStates']) > 0:
                 token_bag = token_data['ObjectStates'][0]
+                
+                # Rewrite v2 URLs to v3
+                token_bag = self._rewrite_token_urls_to_v3(token_bag, team_name)
+                
                 self.logger.info(f"Loaded token bag for {team_name} with {len(token_bag.get('ContainedObjects', []))} tokens")
                 
                 # Extract token timestamp from LuaScriptState

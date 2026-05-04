@@ -43,9 +43,11 @@ class TTSAssetGenerator:
         self,
         output_dir: Path,
         config_file: Path,
-        config_dir: Path
+        config_dir: Path,
+        output_v2_dir: Optional[Path] = None
     ):
         self.output_dir = output_dir
+        self.output_v2_dir = output_v2_dir or (PROJECT_ROOT / 'output_v2')
         self.config_file = config_file
         self.config_dir = config_dir
         self.default_box_dir = config_dir / "defaults" / "box"
@@ -108,6 +110,23 @@ class TTSAssetGenerator:
                     logger.info(f"  Copied token bag mesh")
                 except Exception as e:
                     logger.error(f"  Failed to copy token bag mesh: {e}")
+            
+            # Copy individual token meshes from v2 to v3
+            faction = team_config.get('faction', '')
+            if faction:
+                v2_token_dir = self.output_v2_dir / faction / team / 'tts' / 'token'
+                if v2_token_dir.exists():
+                    copied_count = 0
+                    for obj_file in v2_token_dir.glob(f'{team}-*.obj'):
+                        if obj_file.name != f'{team}-token-mesh.obj':  # Skip generic mesh
+                            dest_file = team_tts_dir / obj_file.name
+                            try:
+                                shutil.copy2(obj_file, dest_file)
+                                copied_count += 1
+                            except Exception as e:
+                                logger.error(f"  Failed to copy {obj_file.name}: {e}")
+                    if copied_count > 0:
+                        logger.info(f"  Copied {copied_count} token meshes from v2")
         
         return True
     
@@ -186,7 +205,8 @@ def main():
     generator = TTSAssetGenerator(
         output_dir=args.output_dir,
         config_file=args.config,
-        config_dir=args.config_dir
+        config_dir=args.config_dir,
+        output_v2_dir=PROJECT_ROOT / 'output_v2'
     )
     
     # Get teams to process
