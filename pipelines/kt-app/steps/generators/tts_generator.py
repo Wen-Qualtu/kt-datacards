@@ -1,11 +1,13 @@
 """Generate Tabletop Simulator saved object files"""
 
+from __future__ import annotations
 import json
 from pathlib import Path
 from collections import defaultdict
 import random
 import shutil
 import logging
+from datetime import datetime, timezone
 
 
 class TTSGenerator:
@@ -149,7 +151,9 @@ class TTSGenerator:
         type_order = ['operative-selection', 'faction-rules', 'token-guide', 'markertokens', 'datacards', 'equipment', 'firefight-ploys', 'strategy-ploys']
         
         # Add token bag if tokens exist for this team
-        token_bag, token_timestamp = self._load_token_bag(team_name, faction)
+        # Pass first card URL to extract github base
+        sample_url = cards[0]['url'] if cards else None
+        token_bag, token_timestamp = self._load_token_bag(team_name, faction, sample_url)
         if token_bag:
             contained_objects.append(token_bag)
             self.logger.info(f"Added token bag for {team_name}")
@@ -307,7 +311,9 @@ class TTSGenerator:
     def _get_team_display_name(self, team_name: str) -> str:
         """Convert team slug to display name (e.g., 'farstalker-kinband' -> 'Farstalker Kinband')"""
         return team_name.replace('-', ' ').title()
-
+    
+    def _rewrite_token_urls_to_v3(self, obj, team_name: str, branch: str = 'main'):
+        """
         Recursively rewrite token URLs from v2 to v3 structure.
         
         Converts:
@@ -380,84 +386,190 @@ class TTSGenerator:
         
         return obj
     
-    def _load_token_bag(self, team_name: str, faction: str) -> tuple[dict, str] | tuple[None, None]:
+    def _load_token_bag(self, team_name: str, faction: str, sample_url: str = None) -> tuple[dict, str] | tuple[None, None]:
         """
-        Load token bag object from the team's tts/token folder if it exists.
+        Generate token bag from output_v3/{team}/tokens/ files.
+        
+        Scans the tokens directory for .obj/.png token files and generates
+        a TTS token bag object containing them.
         
         Args:
             team_name: Team slug (e.g., 'farstalker-kinband')
             faction: Faction name (e.g., 'xenos', 'imperium')
+            sample_url: Optional sample card URL to extract github base from
         
         Returns:
             Tuple of (token bag object dict, token timestamp) or (None, None) if no tokens exist
         """
-        # For v3 structure, check old tts_objects location first
-        workspace_root = self.output_v2_dir.parent  # Get workspace root
-        old_token_bag_path = workspace_root / 'tts_objects' / team_name / 'tokens' / f'{team_name}-tokenbag.json'
+        from generators.tts_generator_helpers import generate_guid
         
-        if old_token_bag_path.exists():
-            try:
-                with open(old_token_bag_path, 'r', encoding='utf-8') as f:
-                    token_data = json.load(f)
-                
-                # Extract the token bag object (first ObjectState)
-                if 'ObjectStates' in token_data and len(token_data['ObjectStates']) > 0:
-                    token_bag = token_data['ObjectStates'][0]
-                    
-                    # Rewrite v2 URLs to v3
-                    token_bag = self._rewrite_token_urls_to_v3(token_bag, team_name)
-                    
-                    self.logger.info(f"Loaded token bag for {team_name} from tts_objects with {len(token_bag.get('ContainedObjects', []))} tokens")
-                    
-                    # Extract token timestamp from LuaScriptState
-                    token_timestamp = ""
-                    lua_script_state = token_bag.get('LuaScriptState', '')
-                    if lua_script_state:
-                        try:
-                            state_data = json.loads(lua_script_state)
-                            token_timestamp = state_data.get('lastUpdate', '')
-                        except:
-                            pass
-                    
-                    return token_bag, token_timestamp
-            except Exception as e:
-                self.logger.warning(f"Failed to load token bag from tts_objects for {team_name}: {e}")
+        workspace_root = self.output_v2_dir.parent
+        tokens_dir = workspace_root / 'output_v3' / team_name / 'tokens'
         
-        # Fallback to v2 structure if faction is provided
-        if not faction:
+        if not tokens_dir.exists():
             return None, None
         
-        # Check if token JSON exists in v2 location
-        token_json_path = self.output_v2_dir / faction / team_name / 'tts' / 'token' / f'{team_name}-tokens.json'
+        # Find all token .obj files (excluding tokenbag folder)
+        token_files = []
+        for obj_file in tokens_dir.glob('*.obj'):
+            # Get corresponding .png file
+            png_file = obj_file.with_suffix('.png')
+            if png_file.exists():
+                token_files.append((obj_file.stem, obj_file, png_file))
         
-        if not token_json_path.exists():
+        if not token_files:
             return None, None
         
-        try:
-            with open(token_json_path, 'r', encoding='utf-8') as f:
-                token_data = json.load(f)
+        # Check for token bag mesh and icon
+        tokenbag_dir = tokens_dir / 'tokenbag'
+        bag_mesh_file = tokenbag_dir / f'{team_name}-token-bag.obj'
+        bag_icon_file = tokenbag_dir / f'{team_name}-token-bag-icon.png'
+        
+        if not bag_mesh_file.exists() or not bag_icon_file.exists():
+            self.logger.warning(f"Token bag mesh or icon not found for {team_name}")
+            return None, None
+        
+        # Extract github base URL from sample card URL if available
+        github_base = ""
+        if sample_url and '/output_v3/' in sample_url:
+            # Format: https://github.com/user/repo/raw/branch/output_v3/...
+            github_base = sample_url.split('/output_v3/')[0]
+        elif sample_url and '/output_v2/' in sample_url:
+            # Format: https://github.com/user/repo/raw/branch/output_v2/...
+            github_base = sample_url.split('/output_v2/')[0]
+        
+        if not github_base:
+            self.logger.warning(f"Could not extract github base URL, using placeholder")
+            github_base = "https://github.com/user/repo/raw/main"
+        
+        # Generate token objects
+        token_objects = []
+        for token_name, obj_path, png_path in sorted(token_files):
+            # Create token display name (remove team prefix)
+            display_name = token_name.replace(f'{team_name}-', '').replace('-', ' ').title()
             
-            # Extract the token bag object (first ObjectState)
-            if 'ObjectStates' in token_data and len(token_data['ObjectStates']) > 0:
-                token_bag = token_data['ObjectStates'][0]
-                
-                # Rewrite v2 URLs to v3
-                token_bag = self._rewrite_token_urls_to_v3(token_bag, team_name)
-                
-                self.logger.info(f"Loaded token bag for {team_name} with {len(token_bag.get('ContainedObjects', []))} tokens")
-                
-                # Extract token timestamp from LuaScriptState
-                token_timestamp = ""
-                lua_script_state = token_bag.get('LuaScriptState', '')
-                if lua_script_state:
-                    try:
-                        state_data = json.loads(lua_script_state)
-                        token_timestamp = state_data.get('lastUpdate', '')
-                    except:
-                        pass
-                
-                return token_bag, token_timestamp
-        except Exception as e:
-            self.logger.warning(f"Failed to load token bag for {team_name}: {e}")
+            # Build URLs
+            mesh_url = f"{github_base}/output_v3/{team_name}/tokens/{obj_path.name}"
+            diffuse_url = f"{github_base}/output_v3/{team_name}/tokens/{png_path.name}"
+            
+            token_obj = {
+                "GUID": generate_guid(f"{team_name}:token:{token_name}"),
+                "Name": "Custom_Model",
+                "Transform": {
+                    "posX": 0.0,
+                    "posY": 3.0,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 180.0,
+                    "rotZ": 180.0,
+                    "scaleX": 1.0,
+                    "scaleY": 1.0,
+                    "scaleZ": 1.0
+                },
+                "Nickname": display_name,
+                "Description": "",
+                "GMNotes": "",
+                "AltLookAngle": {"x": 0.0, "y": 0.0, "z": 0.0},
+                "ColorDiffuse": {"r": 1.0, "g": 1.0, "b": 1.0},
+                "Tags": [f"KTCards{team_name.replace('-', '')}"],
+                "LayoutGroupSortIndex": 0,
+                "Value": 0,
+                "Locked": False,
+                "Grid": True,
+                "Snap": True,
+                "IgnoreFoW": False,
+                "MeasureMovement": False,
+                "DragSelectable": True,
+                "Autoraise": True,
+                "Sticky": True,
+                "Tooltip": True,
+                "GridProjection": False,
+                "HideWhenFaceDown": False,
+                "Hands": False,
+                "CustomMesh": {
+                    "MeshURL": mesh_url,
+                    "DiffuseURL": diffuse_url,
+                    "NormalURL": "",
+                    "ColliderURL": "",
+                    "Convex": True,
+                    "MaterialIndex": 3,
+                    "TypeIndex": 0,
+                    "CastShadows": True
+                },
+                "LuaScript": "",
+                "LuaScriptState": "",
+                "XmlUI": ""
+            }
+            token_objects.append(token_obj)
         
-        return None, None
+        # Build token bag mesh and icon URLs
+        bag_mesh_url = f"{github_base}/output_v3/{team_name}/tokens/tokenbag/{bag_mesh_file.name}"
+        bag_icon_url = f"{github_base}/output_v3/{team_name}/tokens/tokenbag/{bag_icon_file.name}"
+        
+        # Create token bag
+        token_timestamp = datetime.now(timezone.utc).isoformat()
+        
+        # Load token bag Lua script
+        lua_script_path = self.config_dir / 'defaults' / 'tts-token' / 'token-bag-script.lua'
+        lua_script = ""
+        if lua_script_path.exists():
+            with open(lua_script_path, 'r', encoding='utf-8') as f:
+                lua_script = f.read()
+        
+        token_bag = {
+            "GUID": generate_guid(f"{team_name}:tokenbag"),
+            "Name": "Bag",
+            "Transform": {
+                "posX": 0.0,
+                "posY": 3.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 0.6,
+                "scaleY": 0.6,
+                "scaleZ": 0.6
+            },
+            "Nickname": f"{team_name.replace('-', ' ').title()} Tokens",
+            "Description": "",
+            "GMNotes": "",
+            "AltLookAngle": {"x": 0.0, "y": 0.0, "z": 0.0},
+            "ColorDiffuse": {"r": 1.0, "g": 1.0, "b": 1.0},
+            "Tags": [f"KTCards{team_name.replace('-', '')}"],
+            "LayoutGroupSortIndex": 0,
+            "Value": 0,
+            "Locked": False,
+            "Grid": True,
+            "Snap": True,
+            "IgnoreFoW": False,
+            "MeasureMovement": False,
+            "DragSelectable": True,
+            "Autoraise": True,
+            "Sticky": True,
+            "Tooltip": True,
+            "GridProjection": False,
+            "HideWhenFaceDown": False,
+            "Hands": False,
+            "MaterialIndex": -1,
+            "MeshIndex": -1,
+            "Bag": {
+                "Order": 0
+            },
+            "LuaScript": lua_script,
+            "LuaScriptState": json.dumps({"lastUpdate": token_timestamp}),
+            "XmlUI": "",
+            "ContainedObjects": token_objects,
+            "CustomMesh": {
+                "MeshURL": bag_mesh_url,
+                "DiffuseURL": bag_icon_url,
+                "NormalURL": "",
+                "ColliderURL": "",
+                "Convex": True,
+                "MaterialIndex": 3,
+                "TypeIndex": 6,
+                "CastShadows": True
+            }
+        }
+        
+        self.logger.info(f"Generated token bag for {team_name} with {len(token_objects)} tokens from output_v3")
+        return token_bag, token_timestamp

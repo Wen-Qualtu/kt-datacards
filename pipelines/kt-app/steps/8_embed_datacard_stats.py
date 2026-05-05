@@ -69,9 +69,9 @@ class DatacardStatsEmbedder:
         Returns (patched_count, total_count).
         """
         # Load team data
-        team_data_path = self.output_v3_dir / team / "data" / "team_data.json"
+        team_data_path = self.output_v3_dir / team / "data" / f"{team}-team-data.json"
         if not team_data_path.exists():
-            logger.warning(f"  No team_data.json found for {team}")
+            logger.warning(f"  No {team}-team-data.json found for {team}")
             return 0, 0
         
         logger.debug(f"  Loading team data from {team_data_path}")
@@ -152,12 +152,15 @@ class DatacardStatsEmbedder:
     
     def _get_faction_rule_code(self, team: str, team_data: Dict, operative_name: str = "") -> str:
         """
-        Generate faction rule Lua code from team_data.json.
+        Generate faction rule Lua code from {team}-team-data.json.
         
-        Generates Lua code for teams with faction-specific rules:
+        Generates Lua code ONLY for teams marked with faction_rule in team-config.yaml.
+        These are "load once" faction rules that persist on the model:
         - Chapter Tactics (angels-of-death)
-        - Marks of Chaos + Accursed Gifts (legionaries)
-        - Marks of Chaos (chaos-cult, specific operatives only)
+        - Marks of Chaos + Accursed Gifts (legionaries, chaos-cult)
+        
+        Does NOT generate for "per-round" faction rules like Skill at Arms (kasrkin)
+        which change each round and shouldn't be stored on models.
         
         For chaos-cult, filters by operative name:
         - Chaos Mutant: single selection
@@ -172,6 +175,12 @@ class DatacardStatsEmbedder:
         Returns:
             Lua code block for faction rule, or empty string if not applicable
         """
+        # Check if team has faction_rule marked in team-config.yaml
+        # Only "load once" faction rules should have the UI
+        team_info = self.team_config.get('teams', {}).get(team, {})
+        if 'faction_rule' not in team_info:
+            return ""  # This team's faction rules are not "load once" type
+        
         # Check if team has faction rules in team_data
         faction_rules = team_data.get('faction_rules', [])
         if not faction_rules:
@@ -459,7 +468,7 @@ class DatacardStatsEmbedder:
     
     def _get_selection_for_operative(self, operative_name: str, team_data: Dict) -> Optional[Dict]:
         """
-        Get weapon selection data for an operative from team_data.json.
+        Get weapon selection data for an operative from {team}-team-data.json.
         
         Uses operatives_selection.selection from team_data extracted by step 3.
         
@@ -604,13 +613,13 @@ def main():
     if args.teams:
         teams = [t.strip() for t in args.teams.split(',')]
     else:
-        # Get all teams from output_v3 that have team_data.json
+        # Get all teams from output_v3 that have {team}-team-data.json
         teams = []
         if args.output_dir.exists():
             for team_dir in sorted(args.output_dir.iterdir()):
                 if team_dir.is_dir():
                     team = team_dir.name
-                    team_data_path = team_dir / "data" / "team_data.json"
+                    team_data_path = team_dir / "data" / f"{team}-team-data.json"
                     tts_team_dir = team_dir / "tts_object"
                     if team_data_path.exists() and tts_team_dir.exists():
                         teams.append(team)

@@ -8,7 +8,7 @@ For datacards: Uses proven structured extraction (APL, movement, save, wounds, w
 For other cards: Extracts name and text content
 
 Input:  layers/kt-app/classified/{team}/structure.json
-Output: output_v3/{team}/data/team_data.json
+Output: output_v3/{team}/data/{team}-team-data.json
 
 Data Structure:
 {
@@ -627,7 +627,7 @@ class TeamDataExtractor:
     def __init__(self, team: str):
         self.team = team
         self.structure_path = CLASSIFIED_DIR / team / "structure.json"
-        self.output_path = OUTPUT_DIR / team / "data" / "team_data.json"
+        self.output_path = OUTPUT_DIR / team / "data" / f"{team}-team-data.json"
     
     def extract(self) -> Optional[Dict]:
         """

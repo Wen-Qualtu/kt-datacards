@@ -109,10 +109,31 @@ class CardImageExtractor:
                 
                 for card_idx, card in enumerate(cards, 1):
                     # Build base filename
-                    if needs_card_numbers:
-                        base_name = f"{self._sanitize_filename(name)}-card{card_idx}"
+                    sanitized = self._sanitize_filename(name)
+                    
+                    # Naming rule:
+                    # - datacards: Use operative name as-is (no team prefix)
+                    #   Example: "VOIDSCARRED FELARCH" -> "voidscarred-felarch"
+                    # - All other cards: Add team prefix
+                    #   Example: "FOREGRIP" -> "kasrkin-foregrip"
+                    #           "OPERATIVE SELECTION KASRKIN" -> "kasrkin-operative-selection"
+                    
+                    if card_type == 'datacards':
+                        # Datacards: use operative name as-is (no prefix)
+                        base_name = sanitized
                     else:
-                        base_name = self._sanitize_filename(name)
+                        # All other cards: add team prefix if not present
+                        if not sanitized.startswith(f"{team}-"):
+                            # Remove team suffix if present (e.g., "operative-selection-kasrkin")
+                            if sanitized.endswith(f"-{team}"):
+                                sanitized = sanitized[:-len(team)-1]
+                            # Add team prefix
+                            sanitized = f"{team}-{sanitized}"
+                        base_name = sanitized
+                    
+                    # Add card number if multiple cards
+                    if needs_card_numbers:
+                        base_name = f"{base_name}-card{card_idx}"
                     
                     # Extract front card
                     front_extracted = False
