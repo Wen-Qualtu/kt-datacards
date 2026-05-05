@@ -152,7 +152,7 @@ def main():
     # Create TTS generator with v3 paths
     generator = TTSGenerator(
         output_v2_dir=PROJECT_ROOT / 'output_v3',  # Read from v3
-        tts_output_dir=PROJECT_ROOT / 'tts_objects_v3',  # Write to v3
+        tts_output_dir=PROJECT_ROOT / 'output_v3',  # Write to v3 (generator handles team subdir)
         config_dir=PROJECT_ROOT / 'config',
         team_filter=args.teams
     )
@@ -164,7 +164,7 @@ def main():
     logger.info("Generation Complete")
     logger.info("=" * 60)
     logger.info(f"Teams processed: {count}")
-    logger.info(f"Output: {PROJECT_ROOT / 'tts_objects_v3'}")
+    logger.info(f"Output: {PROJECT_ROOT / 'output_v3' / '{team}' / 'tts_object'}")
 
 
 if __name__ == '__main__':

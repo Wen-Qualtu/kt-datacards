@@ -75,7 +75,6 @@ class TTSGenerator:
         # Generate TTS object for each team
         count = 0
         skipped = 0
-        tts_object_entries = []  # Collect entries for datacards-urls.json
         
         for team_name, cards in teams.items():
             # Skip if team filter is active and this team is not in the filter
@@ -90,33 +89,12 @@ class TTSGenerator:
             
             # Get team display name from config
             team_display_name = self._get_team_display_name(team_name)
-            output_filename = f"{team_display_name} Cards.json"
             
             self._generate_team_tts_object(team_name, cards, lua_script, texture_url, mesh_url)
-            
-            # Add entry for this TTS object
-            output_filename = f"{team_display_name} Cards.json"
-            
-            self._generate_team_tts_object(team_name, cards, lua_script, texture_url, mesh_url)
-            
-            # Add entry for this TTS object
-            tts_object_entries.append({
-                'faction': '',  # Not applicable for TTS objects
-                'team': team_name,
-                'type': 'tts_card_box_object',
-                'name': team_display_name,
-                'url': f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/tts_objects/{team_name}/{output_filename.replace(' ', '%20')}"
-            })
             
             count += 1
         if skipped > 0:
             self.logger.info(f"Skipped {skipped} team(s) (no changes or filtered out)")
-        
-        
-        # Append TTS object entries to datacards-urls.json
-        if tts_object_entries:
-            self._append_to_urls_json(all_cards, tts_object_entries)
-            self._generate_tts_boxes_json(tts_object_entries)
         
         return count
 
@@ -246,9 +224,9 @@ class TTSGenerator:
         team_display_name = team_name.replace('-', ' ').title()
         team_tag = f"_{team_name.replace('-', '_').title().replace('_', ' ')}"
         
-        # Get output file path in team subfolder
-        team_output_dir = self.tts_output_dir / team_name
-        team_output_dir.mkdir(exist_ok=True)
+        # Get output file path in team subfolder under output_v3/{team}/tts_object/
+        team_output_dir = self.tts_output_dir / team_name / 'tts_object'
+        team_output_dir.mkdir(parents=True, exist_ok=True)
         output_file = team_output_dir / f"{team_display_name} Cards.json"
         
         # Initially use a placeholder timestamp (will be set after file is written)
@@ -319,8 +297,8 @@ class TTSGenerator:
             source_preview = default_preview
         
         if source_preview.exists():
-            team_output_dir = self.tts_output_dir / team_folder_name
-            team_output_dir.mkdir(exist_ok=True)
+            team_output_dir = self.tts_output_dir / team_folder_name / 'tts_object'
+            team_output_dir.mkdir(parents=True, exist_ok=True)
             dest_preview = team_output_dir / f"{team_display_name} Cards.png"
             shutil.copy2(source_preview, dest_preview)
         else:
@@ -329,60 +307,7 @@ class TTSGenerator:
     def _get_team_display_name(self, team_name: str) -> str:
         """Convert team slug to display name (e.g., 'farstalker-kinband' -> 'Farstalker Kinband')"""
         return team_name.replace('-', ' ').title()
-    
-    def _append_to_urls_json(self, existing_cards: list, tts_entries: list):
-        """Append TTS object entries to datacards-urls.json"""
-        urls_file = self.output_v2_dir / "datacards-urls.json"
-        
-        # Remove any existing tts_card_box_object entries
-        filtered_cards = [card for card in existing_cards if card.get('type') != 'tts_card_box_object']
-        
-        # Add new TTS entries
-        filtered_cards.extend(tts_entries)
-        
-        # Write back to file
-        with open(urls_file, 'w', encoding='utf-8') as f:
-            json.dump(filtered_cards, f, indent=2, ensure_ascii=False)
-        
-        self.logger.info(f"Added {len(tts_entries)} TTS object entries to datacards-urls.json")
-    
-    def _generate_tts_boxes_json(self, tts_entries: list):
-        """
-        Generate/update tts-card-boxes.json with TTS box data.
-        Merges with existing entries to preserve teams that weren't regenerated.
-        """
-        output_file = self.output_v2_dir / 'tts-card-boxes.json'
-        
-        # Load existing tts-card-boxes.json if it exists
-        existing_boxes = {}
-        if output_file.exists():
-            try:
-                with open(output_file, 'r', encoding='utf-8') as f:
-                    existing_data = json.load(f)
-                    # Convert to dict keyed by team for easy lookup
-                    existing_boxes = {entry['team']: entry for entry in existing_data}
-            except Exception as e:
-                self.logger.warning(f"Could not load existing tts-card-boxes.json: {e}")
-        
-        # Update with new entries (overwrites existing entries for same teams)
-        for entry in tts_entries:
-            existing_boxes[entry['team']] = {
-                'team': entry['team'],
-                'name': entry['name'],
-                'url': entry['url']
-            }
-        
-        # Convert back to list, sorted by team name
-        tts_boxes = sorted(existing_boxes.values(), key=lambda x: x['team'])
 
-        # Write to tts-card-boxes.json
-        with open(output_file, 'w', encoding='utf-8') as f:
-            json.dump(tts_boxes, f, indent=2, ensure_ascii=False)
-        
-        self.logger.info(f"Updated tts-card-boxes.json ({len(tts_boxes)} total teams, {len(tts_entries)} updated)")
-    
-    def _rewrite_token_urls_to_v3(self, obj: dict, team_name: str, branch: str = "refactor-kt-app-pipeline") -> dict:
-        """
         Recursively rewrite token URLs from v2 to v3 structure.
         
         Converts:

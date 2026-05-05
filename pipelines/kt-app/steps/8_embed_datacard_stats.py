@@ -46,11 +46,9 @@ class DatacardStatsEmbedder:
     def __init__(
         self,
         output_v3_dir: Path,
-        tts_output_dir: Path,
         config_dir: Path
     ):
         self.output_v3_dir = output_v3_dir
-        self.tts_output_dir = tts_output_dir
         self.config_dir = config_dir
         
         # Load shared resources
@@ -64,9 +62,6 @@ class DatacardStatsEmbedder:
         lua_script_path = config_dir / "defaults" / "tts-script" / "datacard-load-stats.lua"
         with open(lua_script_path, 'r', encoding='utf-8') as f:
             self.lua_script = f.read()
-        
-        # Cache for selection data per team
-        self.selection_cache = {}
     
     def process_team(self, team: str) -> Tuple[int, int]:
         """
@@ -83,8 +78,8 @@ class DatacardStatsEmbedder:
         with open(team_data_path, 'r', encoding='utf-8') as f:
             team_data = json.load(f)
         
-        # Find TTS files
-        tts_team_dir = self.tts_output_dir / team
+        # Find TTS files (now in output_v3/{team}/tts_object/)
+        tts_team_dir = self.output_v3_dir / team / "tts_object"
         if not tts_team_dir.exists():
             logger.warning(f"  No TTS objects found for {team}")
             return 0, 0
@@ -134,7 +129,7 @@ class DatacardStatsEmbedder:
                 
                 # Get faction rule code if applicable (operative-specific for chaos-cult)
                 operative_name = operative.get('name', '')
-                faction_rule_code = self._get_faction_rule_code(team, operative_name)
+                faction_rule_code = self._get_faction_rule_code(team, team_data, operative_name)
                 lua_script = self.lua_script + faction_rule_code
                 
                 # Set GMNotes and Lua script
@@ -155,118 +150,81 @@ class DatacardStatsEmbedder:
         
         return total_patched, total_cards
     
-    def _get_faction_rule_code(self, team: str, operative_name: str = "") -> str:
+    def _get_faction_rule_code(self, team: str, team_data: Dict, operative_name: str = "") -> str:
         """
-        Get faction rule Lua code for teams with faction rules.
+        Generate faction rule Lua code from team_data.json.
         
-        Extracts Lua code blocks from OLD TTS objects for teams that have
-        faction-specific rules (Chapter Tactics, Marks of Chaos, Accursed Gifts).
+        Generates Lua code for teams with faction-specific rules:
+        - Chapter Tactics (angels-of-death)
+        - Marks of Chaos + Accursed Gifts (legionaries)
+        - Marks of Chaos (chaos-cult, specific operatives only)
         
-        For chaos-cult, filters by operative name and uses different variants:
-        - Chaos Mutant: frSelection (single choice)
-        - Chaos Torment: frPrimarySelection + frSecondarySelection (both)
+        For chaos-cult, filters by operative name:
+        - Chaos Mutant: single selection
+        - Chaos Torment: Primary + Secondary
         - Others: no faction rules
         
         Args:
             team: Team slug
+            team_data: Team data dict from team_data.json
             operative_name: Operative name for filtering (chaos-cult only)
             
         Returns:
             Lua code block for faction rule, or empty string if not applicable
         """
+        # Check if team has faction rules in team_data
+        faction_rules = team_data.get('faction_rules', [])
+        if not faction_rules:
+            return ""
+        
         # For chaos-cult, only specific operatives get faction rules
         if team == "chaos-cult":
             op_lower = operative_name.lower()
-            # Determine which variant to use
-            if "mutant" in op_lower:
-                variant = "mutant"  # Single selection
-            elif "torment" in op_lower or "possessed" in op_lower:
-                variant = "torment"  # Primary + Secondary
-            else:
+            if "mutant" not in op_lower and "torment" not in op_lower and "possessed" not in op_lower:
                 return ""  # Other operatives don't get faction rules
-        else:
-            variant = None
         
-        # Mapping of team slugs to their OLD TTS object paths
-        faction_rule_files = {
-            "angels-of-death": PROJECT_ROOT / "tts_objects" / "angels-of-death" / "Angels Of Death Cards.json",
-            "legionaries": PROJECT_ROOT / "tts_objects" / "legionaries" / "Legionaries Cards.json",
-            "chaos-cult": PROJECT_ROOT / "tts_objects" / "chaos-cult" / "Chaos Cult Cards.json",
-        }
-        
-        # Check if this team has faction rules
-        if team not in faction_rule_files:
+        # Load faction rule Lua template
+        template_path = self.config_dir / "defaults" / "tts-script" / "faction-rule-chapter-tactics.lua"
+        if not template_path.exists():
+            logger.warning(f"  Faction rule template not found: {template_path}")
             return ""
         
-        tts_file = faction_rule_files[team]
-        if not tts_file.exists():
-            logger.warning(f"  No OLD TTS file for {team}, cannot extract faction rule code")
+        with open(template_path, 'r', encoding='utf-8') as f:
+            template = f.read()
+        
+        # Find first faction rule with options (Chapter Tactics, Marks of Chaos, etc.)
+        rule_with_options = None
+        for rule in faction_rules:
+            if 'options' in rule and rule['options']:
+                rule_with_options = rule
+                break
+        
+        if not rule_with_options:
+            logger.debug(f"  No faction rule with options found for {team}")
             return ""
         
-        try:
-            with open(tts_file, 'r', encoding='utf-8') as f:
-                tts_data = json.load(f)
-            
-            # For chaos-cult, extract from specific operative card
-            if team == "chaos-cult" and variant:
-                # Find the specific card (mutant or torment)
-                # OLD nicknames are like "chaos-cult-chaos-torment" or "chaos-cult-chaos-mutant"
-                target_nickname = f"chaos-cult-chaos-{variant}"
-                
-                for obj in tts_data['ObjectStates']:
-                    for item in obj.get('ContainedObjects', []):
-                        if item.get('Name') == 'Deck' and item.get('Nickname') == 'Datacards':
-                            for card in item.get('ContainedObjects', []):
-                                card_nickname = card.get('Nickname', '')
-                                if card_nickname.lower() == target_nickname.lower():
-                                    lua_script = card.get('LuaScript', '')
-                                    
-                                    # Extract faction rule section (look for any faction rule marker)
-                                    faction_marker = None
-                                    for possible_marker in ['-- ===== FACTION RULE:', '-- ===== FACTION RULE =====']:
-                                        if possible_marker in lua_script:
-                                            faction_marker = possible_marker
-                                            break
-                                    
-                                    if faction_marker:
-                                        # Split at marker and take everything after
-                                        idx = lua_script.find(faction_marker)
-                                        faction_code = lua_script[idx:]
-                                        logger.info(f"  Extracted {variant} variant faction rule code for {team} ({len(faction_code)} chars)")
-                                        return faction_code
-                
-                logger.warning(f"  Could not find {variant} variant for {team} (looked for '{target_nickname}')")
-                return ""
-            
-            # For other teams, extract from any card (they all have the same code)
-            # Structure: ObjectStates[0] (Custom_Model_Bag) → ContainedObjects (Decks) → ContainedObjects (Cards)
-            for obj in tts_data.get('ObjectStates', []):
-                if obj.get('Name') == 'Custom_Model_Bag':
-                    # Look directly in this bag's decks
-                    for deck in obj.get('ContainedObjects', []):
-                        if deck.get('Name') == 'Deck' and 'ContainedObjects' in deck:
-                            for card in deck.get('ContainedObjects', []):
-                                lua_script = card.get('LuaScript', '')
-                                # Look for any faction rule marker
-                                faction_marker = None
-                                for possible_marker in ['-- ===== FACTION RULE:', '-- ===== FACTION RULE =====']:
-                                    if possible_marker in lua_script:
-                                        faction_marker = possible_marker
-                                        break
-                                
-                                if faction_marker:
-                                    # Extract everything from the marker onwards
-                                    idx = lua_script.find(faction_marker)
-                                    faction_code = lua_script[idx:]
-                                    logger.info(f"  Extracted faction rule code for {team} ({len(faction_code)} chars)")
-                                    return faction_code
-            
-            logger.warning(f"  No faction rule code found in {team} OLD TTS objects")
-            return ""
-            
-        except Exception as e:
-            logger.error(f"  Error extracting faction rule code for {team}: {e}")
-            return ""
+        # Generate Lua options array
+        rule_name = rule_with_options['name']
+        options = rule_with_options['options']
+        
+        # Format options as Lua table entries
+        lua_options = []
+        for opt in options:
+            opt_name = opt.get('name', '')
+            opt_text = opt.get('text', '')
+            # Escape Lua special chars
+            opt_name_escaped = opt_name.replace('\\', '\\\\').replace('"', '\\"').replace('\n', '\\n')
+            opt_text_escaped = opt_text.replace('\\', '\\\\').replace('"', '\\"').replace('\n', '\\n')
+            lua_options.append(f'    {{name = "{opt_name_escaped}", text = "{opt_text_escaped}"}}')
+        
+        options_str = ',\n'.join(lua_options)
+        
+        # Replace template placeholders
+        lua_code = template.replace('{{FACTION_RULE_NAME}}', rule_name)
+        lua_code = lua_code.replace('{{FACTION_RULE_OPTIONS}}', options_str)
+        
+        logger.info(f"  Generated faction rule code for {team} ({len(lua_code)} chars)")
+        return lua_code
     
     def _find_datacards(self, tts_data: Dict) -> List[Dict]:
         """Find all datacard objects in TTS JSON."""
@@ -501,43 +459,30 @@ class DatacardStatsEmbedder:
     
     def _get_selection_for_operative(self, operative_name: str, team_data: Dict) -> Optional[Dict]:
         """
-        Get weapon selection data for an operative from OLD roster.json.
+        Get weapon selection data for an operative from team_data.json.
+        
+        Uses operatives_selection.selection from team_data extracted by step 3.
         
         Returns selection structure: {groups: [[{label, weapons}]], fixed: [], exclusive_sets: [[]]}
         or None if no selection data exists.
         """
         team = team_data.get('team', '')
         
-        # Check cache first
-        if team in self.selection_cache:
-            selection_lookup = self.selection_cache[team]
-        else:
-            # Try to load OLD roster.json
-            roster_path = PROJECT_ROOT / "output" / team / "statlines" / "roster.json"
-            if not roster_path.exists():
-                logger.debug(f"  No OLD roster.json for {team}, skipping selection data")
-                self.selection_cache[team] = {}
-                return None
-            
-            try:
-                with open(roster_path, 'r', encoding='utf-8') as f:
-                    roster = json.load(f)
-                selection_lookup = roster.get('selection', {})
-                exclusive_sets_lookup = roster.get('exclusive_sets', {})
-                self.selection_cache[team] = {
-                    'selection': selection_lookup,
-                    'exclusive_sets': exclusive_sets_lookup
-                }
-            except Exception as e:
-                logger.warning(f"  Error loading roster.json for {team}: {e}")
-                self.selection_cache[team] = {}
-                return None
-        
-        if not self.selection_cache.get(team):
+        # Get selection data from operatives_selection in team_data
+        # operatives_selection is a list with one entry containing {name, text, selection, exclusive_sets}
+        operatives_selection_list = team_data.get('operatives_selection', [])
+        if not operatives_selection_list or not isinstance(operatives_selection_list, list):
+            logger.debug(f"  No operatives_selection in team_data for {team}")
             return None
         
-        selection_lookup = self.selection_cache[team].get('selection', {})
-        exclusive_sets_lookup = self.selection_cache[team].get('exclusive_sets', {})
+        # Extract selection data from first entry
+        operatives_selection = operatives_selection_list[0] if operatives_selection_list else {}
+        selection_lookup = operatives_selection.get('selection', {})
+        exclusive_sets_lookup = operatives_selection.get('exclusive_sets', {})
+        
+        if not selection_lookup:
+            logger.debug(f"  No selection data in operatives_selection for {team}")
+            return None
         
         # Normalize operative name for lookup (uppercase)
         op_name_upper = operative_name.upper()
@@ -635,12 +580,6 @@ def main():
         help='Output V3 directory'
     )
     parser.add_argument(
-        '--tts-output-dir',
-        type=Path,
-        default=PROJECT_ROOT / 'tts_objects_v3',
-        help='TTS output directory'
-    )
-    parser.add_argument(
         '--config-dir',
         type=Path,
         default=PROJECT_ROOT / 'config',
@@ -658,7 +597,6 @@ def main():
     logger.info("Step 8: Embedding datacard stats...")
     embedder = DatacardStatsEmbedder(
         output_v3_dir=args.output_dir,
-        tts_output_dir=args.tts_output_dir,
         config_dir=args.config_dir
     )
     
@@ -673,7 +611,7 @@ def main():
                 if team_dir.is_dir():
                     team = team_dir.name
                     team_data_path = team_dir / "data" / "team_data.json"
-                    tts_team_dir = args.tts_output_dir / team
+                    tts_team_dir = team_dir / "tts_object"
                     if team_data_path.exists() and tts_team_dir.exists():
                         teams.append(team)
     
