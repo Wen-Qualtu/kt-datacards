@@ -1,6 +1,6 @@
 {
   "team": "kommandos",
-  "generated_at": "2026-05-02T20:36:51.557419+00:00",
+  "generated_at": "2026-05-04T19:45:44.202873+00:00",
   "datacards": [
     {
       "name": "KOMMANDO BOSS NOB",
@@ -32,15 +32,16 @@
       ],
       "passive_abilities": [
         {
-          "name": "GET IT DUN!\b",
-          "description": "1AP\n• SUPPORT. Select one other friendly KOMMANDO operative (excluding BOMB SQUIG) visible to and within 6\" of this operative. Until the end of that operative’s next activation, add 1 to its APL stat.\n• This operative cannot perform this action while within control range of an enemy operative, or while counteracting."
-        },
-        {
-          "name": "KOMMANDO , ORK, LEADER, BOSS NOB",
-          "description": "32"
+          "name": "Krumpin’ Time",
+          "description": "This operative can perform two Fight actions during its activation."
         }
       ],
-      "unique_actions": [],
+      "unique_actions": [
+        {
+          "name": "GET IT DUN!\b (1AP)",
+          "description": "• SUPPORT. Select one other friendly KOMMANDO operative (excluding BOMB SQUIG) visible to and within 6\" of this operative. Until the end of that operative’s next activation, add 1 to its APL stat.\n• This operative cannot perform this action while within control range of an enemy operative, or while counteracting."
+        }
+      ],
       "keywords": [
         "KOMMANDO",
         "ORK",
@@ -71,16 +72,20 @@
       ],
       "passive_abilities": [
         {
-          "name": "KOMMANDO , ORK, BOMB SQUIG",
-          "description": "25 RULES CONTINUE ON OTHER SIDE"
+          "name": "*Explosive",
+          "description": "This operative can perform the Shoot action with this weapon while within control range of an enemy operative. Don’t select a valid target. Instead, this operative is always the primary target and cannot be in cover or obscured."
+        },
+        {
+          "name": "Boom!",
+          "description": "If this operative is incapacitated during a battle in which it hasn’t used its explosives, roll one D6, or two D6 if you wish. If any result is a 4+, this operative performs a free Shoot action with its explosives before it’s removed from the killzone."
         },
         {
           "name": "Stoopid",
-          "description": "In the Firefight phase, whenever you determine this operative’s order, you cannot select Conceal. This operative"
+          "description": "In the Firefight phase, whenever you determine this operative’s order, you cannot select Conceal. This operative cannot perform any actions other than Charge, Dash, Fight, Reposition and Shoot. It cannot use any weapons that aren’t on its datacard."
         },
         {
-          "name": "cannot perform any actions other than Charge, Dash, Fight,",
-          "description": "Reposition and Shoot. It cannot use any weapons that aren’t on its datacard. Expendable: This operative is ignored for your opponent’s kill/ elimination op (when it’s incapacitated, and when determining your starting number of operatives). It’s also ignored for victory conditions and scoring VPs if either require operatives to ‘escape’, ‘survive’ or be incapacitated by enemy operatives (if it escapes/survives/is incapacitated, determining how many operatives must escape/survive/be incapacitated, etc.). KOMMANDO BOMB SQUIG 2 APL WOUNDS SAVE MOVE 6\" 5+ 5"
+          "name": "Expendable",
+          "description": "This operative is ignored for your opponent’s kill/ elimination op (when it’s incapacitated, and when determining your starting number of operatives). It’s also ignored for victory conditions and scoring VPs if either require operatives to ‘escape’, ‘survive’ or be incapacitated by enemy operatives (if it escapes/survives/is incapacitated, determining how many operatives must escape/survive/be incapacitated, etc.). KOMMANDO BOMB SQUIG 2 APL WOUNDS SAVE MOVE 6\" 5+ 5"
         }
       ],
       "unique_actions": [],
@@ -113,8 +118,8 @@
       ],
       "passive_abilities": [
         {
-          "name": "KOMMANDO , ORK, BOY",
-          "description": "32"
+          "name": "Taktical Wot-notz",
+          "description": "You can do each of the following once per turning point:\n• One friendly KOMMANDO BOY operative can perform the Smoke Grenade action.\n• One friendly KOMMANDO BOY operative can perform the Stun Grenade action. The rules for these actions are found in universal equipment. Performing these actions using this rule doesn’t count towards their action limits (i.e. if you also select those grenades from equipment)."
         }
       ],
       "unique_actions": [],
@@ -146,17 +151,13 @@
           "special_rules": "Brutal, Severe, Shock"
         }
       ],
-      "passive_abilities": [
+      "passive_abilities": [],
+      "unique_actions": [
         {
-          "name": "BREACH\b",
-          "description": "1AP\n• Place one of your Breach markers within this operative’s control range as close as possible to a terrain feature within control range of it. Whenever an operative is within 1\" of that marker, it treats parts of that terrain feature that are no more than 1\" thick as Accessible terrain.\n• This operative can perform this action during the Charge or Reposition action, and it can do so for 1 less AP during those actions. Any remaining move distance can be used after it does so.\n• This operative cannot perform this action while within control range of an enemy operative, or if a terrain feature isn’t within its control range."
-        },
-        {
-          "name": "KOMMANDO , ORK, BREACHA BOY",
-          "description": "32"
+          "name": "BREACH\b (1AP)",
+          "description": "• Place one of your Breach markers within this operative’s control range as close as possible to a terrain feature within control range of it. Whenever an operative is within 1\" of that marker, it treats parts of that terrain feature that are no more than 1\" thick as Accessible terrain.\n• This operative can perform this action during the Charge or Reposition action, and it can do so for 1 less AP during those actions. Any remaining move distance can be used after it does so."
         }
       ],
-      "unique_actions": [],
       "keywords": [
         "KOMMANDO",
         "ORK",
@@ -191,13 +192,6 @@
           "damage": "3/4"
         }
       ],
-      "passive_abilities": [
-        {
-          "name": "KOMMANDO , ORK, BURNA BOY",
-          "description": "32 NAME ATK HIT\t DMG WR\n• Burna (standard) 4 2+ 3/3\n• Range 8\", Saturate, Torrent 2\"\n• Burna (deluge) 4 2+ 3/3\n• Range 4\", Saturate, Seek, Torrent 0\"*\n• Fists 3 3+ 3/4\n• - *Note that Torrent 0\" means you cannot select secondary targets, but this weapon still has the Torrent weapon rule for all other rules purposes, e.g. the Condensed Stronghold rule (see Killzone: Volkus, Kill Team Core Book)."
-        }
-      ],
-      "unique_actions": [],
       "keywords": [
         "KOMMANDO",
         "ORK",
@@ -227,15 +221,16 @@
       ],
       "passive_abilities": [
         {
-          "name": "LISTEN IN\b",
-          "description": "1AP\n• SUPPORT. Select one other friendly KOMMANDO operative (excluding BOMB SQUIG) visible to and within 6\" of this operative. Until the end of that operative’s next activation, add 1 to its APL stat.\n• This operative cannot perform this action while within control range of an enemy operative."
-        },
-        {
-          "name": "KOMMANDO , ORK, COMMS BOY",
-          "description": "32"
+          "name": "I Got a Plan, Ladz",
+          "description": "Once during each of this operative’s activations, it can perform the Pick Up Marker, Place Marker or a mission action for 1 less AP."
         }
       ],
-      "unique_actions": [],
+      "unique_actions": [
+        {
+          "name": "LISTEN IN\b (1AP)",
+          "description": "• SUPPORT. Select one other friendly KOMMANDO operative (excluding BOMB SQUIG) visible to and within 6\" of this operative. Until the end of that operative’s next activation, add 1 to its APL stat.\n• This operative cannot perform this action while within control range of an enemy operative."
+        }
+      ],
       "keywords": [
         "KOMMANDO",
         "ORK",
@@ -269,17 +264,13 @@
           "damage": "3/4"
         }
       ],
-      "passive_abilities": [
+      "passive_abilities": [],
+      "unique_actions": [
         {
-          "name": "DAKKA DASH\b",
-          "description": "1AP\n• Perform a free Dash action and a free Shoot action with this operative in any order. You can only select a dakka shoota for that Shoot action.\n• This operative cannot perform this action while it has a Conceal order, or while within control range of an enemy operative."
-        },
-        {
-          "name": "KOMMANDO , ORK, DAKKA BOY",
-          "description": "32"
+          "name": "DAKKA DASH\b (1AP)",
+          "description": "• Perform a free Dash action and a free Shoot action with this operative in any order. You can only select a dakka shoota for that Shoot action.\n• This operative cannot perform this action while it has a Conceal order, or while within control range of an enemy operative."
         }
       ],
-      "unique_actions": [],
       "keywords": [
         "KOMMANDO",
         "ORK",
@@ -302,15 +293,16 @@
       ],
       "passive_abilities": [
         {
-          "name": "GRAPPLING HOOK\b",
-          "description": "1AP\n• Select a visible point on a terrain feature for this operative. Remove this operative from the killzone and set it back up within 1\" horizontally of that point in a location it can be placed, not within control range of enemy operatives, and with that point visible to it. This operative cannot perform the Operate Hatch action during this action.\n• This action is treated as a Reposition action. This operative cannot perform this action while within control range of an enemy operative, or during an activation in which it performed the Charge or Fall Back action (or vice versa)."
-        },
-        {
-          "name": "KOMMANDO , ORK, GROT",
-          "description": "25"
+          "name": "Sneaky Zogger",
+          "description": "This operative cannot have an Engage order. Whenever this operative is in cover, it cannot be selected as a valid target, taking precedence over all other rules (e.g. Seek, Vantage terrain) except being within 2\"."
         }
       ],
-      "unique_actions": [],
+      "unique_actions": [
+        {
+          "name": "GRAPPLING HOOK\b (1AP)",
+          "description": "• Select a visible point on a terrain feature for this operative. Remove this operative from the killzone and set it back up within 1\" horizontally of that point in a location it can be placed, not within control range of enemy operatives, and with that point visible to it. This operative cannot perform the Operate Hatch action during this action.\n• This action is treated as a Reposition action. This operative cannot perform this action while within control range of an enemy operative, or during an activation in which it performed the Charge or Fall Back action (or vice versa)."
+        }
+      ],
       "keywords": [
         "KOMMANDO",
         "ORK",
@@ -345,13 +337,6 @@
           "damage": "3/4"
         }
       ],
-      "passive_abilities": [
-        {
-          "name": "KOMMANDO , ORK, ROKKIT BOY",
-          "description": "32"
-        }
-      ],
-      "unique_actions": [],
       "keywords": [
         "KOMMANDO",
         "ORK",
@@ -382,8 +367,8 @@
       ],
       "passive_abilities": [
         {
-          "name": "KOMMANDO , ORK, SLASHA BOY",
-          "description": "32"
+          "name": "Dat All You Got?",
+          "description": "After this operative fights or retaliates, if it wasn’t incapacitated, you can inflict D3 damage on the enemy operative in that sequence."
         }
       ],
       "unique_actions": [],
@@ -430,8 +415,8 @@
       ],
       "passive_abilities": [
         {
-          "name": "KOMMANDO , ORK, SNIPA BOY",
-          "description": "32"
+          "name": "*Concealed Position",
+          "description": "This operative can only use this weapon the first time it’s performing the Shoot action during the battle."
         }
       ],
       "unique_actions": [],

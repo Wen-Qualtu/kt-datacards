@@ -1,6 +1,6 @@
 {
   "team": "canoptek-circle",
-  "generated_at": "2026-05-02T20:36:19.358343+00:00",
+  "generated_at": "2026-05-04T19:45:10.619745+00:00",
   "datacards": [
     {
       "name": "CANOPTEK MACROCYTE ACCELERATOR",
@@ -24,28 +24,22 @@
           "special_rules": "Lethal 5+, Stun"
         }
       ],
-      "passive_abilities": [
-        {
-          "name": "CANOPTEK CIRCLE , NECRON, CANOPTEK, MACROCYTE, ACCELERATOR",
-          "description": "28 RULES CONTINUE ON OTHER SIDE"
-        },
-        {
-          "name": "\u0007Select one other friendly CANOPTEK CIRCLE",
-          "description": "CANOPTEK operative visible to and within 3\" of this operative. Alternatively, if this operative is within your OBELISK NODE MATRIX, you can select one other friendly CANOPTEK CIRCLE CANOPTEK operative within your OBELISK NODE MATRIX. Until the end of that selected operative’s next activation, add 1 to its APL stat.\n• This operative cannot perform this action while within control range of an enemy operative."
-        }
-      ],
-      "unique_actions": [
-        {
-          "name": "CRANIAL OVERLOAD (1AP)",
-          "description": "• Select one enemy operative visible to and within 3\" of this operative. Alternatively, if this operative is within your OBELISK NODE MATRIX, you can select one enemy operative within your OBELISK NODE MATRIX. Until the end of that enemy operative’s next activation, subtract 1 from its APL stat.\n• This operative cannot perform this action while within control range of an enemy operative. CANOPTEK MACROCYTE ACCELERATOR 2 APL WOUNDS SAVE MOVE 7\" 4+ 7"
-        }
-      ],
       "keywords": [
         "CANOPTEK CIRCLE",
         "NECRON",
         "CANOPTEK",
         "MACROCYTE",
         "ACCELERATOR"
+      ],
+      "unique_actions": [
+        {
+          "name": "OVERCHARGE (1AP)",
+          "description": "• Select one other friendly CANOPTEK CIRCLE CANOPTEK operative visible to and within 3\" of this operative. Alternatively, if this operative is within your OBELISK NODE MATRIX, you can select one other friendly CANOPTEK CIRCLE CANOPTEK operative within your OBELISK NODE MATRIX. Until the end of that selected operative’s next activation, add 1 to its APL stat.\n• This operative cannot perform this action while within control range of an enemy operative."
+        },
+        {
+          "name": "CRANIAL OVERLOAD (1AP)",
+          "description": "• Select one enemy operative visible to and within 3\" of this operative. Alternatively, if this operative is within your OBELISK NODE MATRIX, you can select one enemy operative within your OBELISK NODE MATRIX. Until the end of that enemy operative’s next activation, subtract 1 from its APL stat.\n• This operative cannot perform this action while within control range of an enemy operative. CANOPTEK MACROCYTE ACCELERATOR"
+        }
       ]
     },
     {
@@ -69,18 +63,17 @@
           "damage": "3/4"
         }
       ],
+      "keywords": [
+        "CANOPTEK CIRCLE",
+        "NECRON",
+        "CANOPTEK",
+        "MACROCYTE",
+        "REANIMATOR"
+      ],
       "passive_abilities": [
         {
-          "name": "CANOPTEK CIRCLE , NECRON, CANOPTEK, MACROCYTE, REANIMATOR",
-          "description": "28 RULES CONTINUE ON OTHER SIDE"
-        },
-        {
           "name": "Reanimate",
-          "description": "Once per turning point, when another friendly"
-        },
-        {
-          "name": "CANOPTEK CIRCLE  operative would be incapacitated,",
-          "description": "if that operative is visible to and within 6\" of this operative, or if this and that operative are within your OBELISK NODE MATRIX, you can use this rule, providing neither this nor that operative is within control range of an enemy operative. If you do, that friendly operative isn’t incapacitated, has 1 wound remaining and cannot be incapacitated for the remainder of the action. After that action, that friendly operative can immediately perform a free Dash action, but must end that action within this operative’s control range or within your OBELISK NODE MATRIX. Subtract 1 from this and that operative’s APL stats until the end of their next activations respectively, and if this rule was used during that friendly operative’s activation, that activation ends. You cannot use this rule if this operative is incapacitated, or if it’s a Shoot action and this operative would be a primary or secondary target."
+          "description": "Once per turning point, when another friendly CANOPTEK CIRCLE operative would be incapacitated, if that operative is visible to and within 6\" of this operative, or if this and that operative are within your OBELISK NODE MATRIX, you can use this rule, providing neither this nor that operative is within control range of an enemy operative. If you do, that friendly operative isn’t incapacitated, has 1 wound remaining and cannot be incapacitated for the remainder of the action. After that action, that friendly operative can immediately perform a free Dash action, but must end that action within this operative’s control range or within your OBELISK NODE MATRIX. Subtract 1 from this and that operative’s APL stats until the end of their next activations respectively, and if this rule was used during that friendly operative’s activation, that activation ends. You cannot use this rule if this operative is incapacitated, or if it’s a Shoot action and this operative would be a primary or secondary target."
         }
       ],
       "unique_actions": [
@@ -88,13 +81,6 @@
           "name": "NANOSCARAB BEAM (1AP)",
           "description": "• Select one friendly CANOPTEK CIRCLE operative visible to and within 6\" of this operative. Alternatively, if this operative is within your OBELISK NODE MATRIX, you can select one other friendly CANOPTEK CIRCLE operative within your OBELISK NODE MATRIX. The selected operative regains up to 3D3 lost wounds. It cannot be an operative that the Reanimate rule was used on during this turning point.\n• This operative cannot perform this action while within control range of an enemy operative, or more than once per turning point. CANOPTEK MACROCYTE REANIMATOR 2 APL WOUNDS SAVE MOVE 7\" 4+ 7"
         }
-      ],
-      "keywords": [
-        "CANOPTEK CIRCLE",
-        "NECRON",
-        "CANOPTEK",
-        "MACROCYTE",
-        "REANIMATOR"
       ]
     },
     {
@@ -131,11 +117,14 @@
           "damage": "3/4"
         }
       ],
+      "keywords": [
+        "CANOPTEK CIRCLE",
+        "NECRON",
+        "CANOPTEK",
+        "MACROCYTE",
+        "WARRIOR"
+      ],
       "passive_abilities": [
-        {
-          "name": "CANOPTEK CIRCLE , NECRON, CANOPTEK, MACROCYTE, WARRIOR",
-          "description": "28 RULES CONTINUE ON OTHER SIDE"
-        },
         {
           "name": "Aggressive Defence",
           "description": "If this operative is incapacitated by an enemy operative within 2\" of it, before this operative is removed from the killzone, roll one D3: on a 2+, inflict 1 damage on that enemy operative."
@@ -146,20 +135,8 @@
         },
         {
           "name": "A Ceaseless Scuttling",
-          "description": "As a STRATEGIC GAMBIT in each turning point after the first, if you have less than three"
-        },
-        {
-          "name": "non-incapacitated friendly CANOPTEK CIRCLE  WARRIOR",
-          "description": "operatives, you can set up another one ready and with a Conceal order wholly within your drop zone (you can select its weapon options as normal). CANOPTEK MACROCYTE WARRIOR 2 APL WOUNDS SAVE MOVE 7\" 4+ 7"
+          "description": "As a STRATEGIC GAMBIT in each turning point after the first, if you have less than three non-incapacitated friendly CANOPTEK CIRCLE WARRIOR operatives, you can set up another one ready and with a Conceal order wholly within your drop zone (you can select its weapon options as normal). CANOPTEK MACROCYTE WARRIOR 2 APL WOUNDS SAVE MOVE 7\" 4+ 7"
         }
-      ],
-      "unique_actions": [],
-      "keywords": [
-        "CANOPTEK CIRCLE",
-        "NECRON",
-        "CANOPTEK",
-        "MACROCYTE",
-        "WARRIOR"
       ]
     },
     {
@@ -200,15 +177,7 @@
       "passive_abilities": [
         {
           "name": "*Dimensional Banishment",
-          "description": "After this operative uses this weapon, if you inflicted damage or retained any critical successes, if the target wasn’t incapacitated, roll 2D6: if the result is higher than the target’s remaining wounds, the target is incapacitated (taking"
-        },
-        {
-          "name": "precedence over rules that prevent incapacitation, e.g. Medic!, FELLGOR RAVAGER  Frenzy) and your opponent cannot place a",
-          "description": "Reanimation marker (HIEROTEK CIRCLE ) for that operative, if relevant."
-        },
-        {
-          "name": "CANOPTEK CIRCLE , NECRON, CANOPTEK, TOMB CRAWLER",
-          "description": "50 RULES CONTINUE ON OTHER SIDE"
+          "description": "After this operative uses this weapon, if you inflicted damage or retained any critical successes, if the target wasn’t incapacitated, roll 2D6: if the result is higher than the target’s remaining wounds, the target is incapacitated (taking precedence over rules that prevent incapacitation, e.g. Medic!, FELLGOR RAVAGER Frenzy) and your opponent cannot place a Reanimation marker (HIEROTEK CIRCLE ) for that operative, if relevant."
         },
         {
           "name": "Weapon Sentinel",

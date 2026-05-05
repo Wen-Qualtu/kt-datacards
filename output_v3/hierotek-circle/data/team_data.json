@@ -1,6 +1,6 @@
 {
   "team": "hierotek-circle",
-  "generated_at": "2026-05-02T20:36:41.593650+00:00",
+  "generated_at": "2026-05-04T19:45:33.819125+00:00",
   "datacards": [
     {
       "name": "PLASMACYTE ACCELERATOR",
@@ -25,15 +25,16 @@
       ],
       "passive_abilities": [
         {
-          "name": "ACCELERATE\b",
-          "description": "1AP\n• Select one friendly DEATHMARK or IMMORTAL operative visible to and within 6\" of this operative. Until the end of that operative’s next activation, add 1 to its APL stat.\n• This operative cannot perform this action while within control range of an enemy operative."
-        },
-        {
-          "name": "HIEROTEK CIRCLE , NECRON, PLASMACYTE, ACCELERATOR",
-          "description": "25"
+          "name": "Scuttler",
+          "description": "• Whenever this operative has a Conceal order and is in cover, it cannot be selected as a valid target, taking precedence over all other rules (e.g. Seek, Vantage terrain) except being within 2\".\n• This operative can perform the Fall Back action for 1 less AP.\n• This operative cannot use any weapons that aren’t on its datacard, or perform unique actions other than Accelerate."
         }
       ],
-      "unique_actions": [],
+      "unique_actions": [
+        {
+          "name": "ACCELERATE\b (1AP)",
+          "description": "• Select one friendly DEATHMARK or IMMORTAL operative visible to and within 6\" of this operative. Until the end of that operative’s next activation, add 1 to its APL stat.\n• This operative cannot perform this action while within control range of an enemy operative."
+        }
+      ],
       "keywords": [
         "HIEROTEK CIRCLE",
         "NECRON",
@@ -64,15 +65,16 @@
       ],
       "passive_abilities": [
         {
-          "name": "HIEROTEK CIRCLE , NECRON, MEDIC, PLASMACYTE, REANIMATOR",
-          "description": "25 RULES CONTINUE ON OTHER SIDE"
-        },
-        {
-          "name": "REANIMATE\b",
-          "description": "1/2AP\n• Select one of your Reanimation markers visible to and within 6\" of this operative. Roll one D6: on a 3+, a friendly operative is REANIMATED; if you spent 1 additional AP, a friendly operative is automatically REANIMATED (you don’t need to roll one D6). An operative that’s REANIMATED from this unique action is set up expended if it was already expended during this turning point.\n• This operative cannot perform this action while within control range of an enemy operative. PLASMACYTE REANIMATOR 2 APL WOUNDS SAVE MOVE 7\" 5+ 5"
+          "name": "Scuttler",
+          "description": "• Whenever this operative has a Conceal order and is in cover, it cannot be selected as a valid target, taking precedence over all other rules (e.g. Seek, Vantage terrain) except being within 2\".\n• This operative can perform the Fall Back action for 1 less AP.\n• This operative cannot use any weapons that aren’t on its datacard, or perform unique actions other than Reanimate."
         }
       ],
-      "unique_actions": [],
+      "unique_actions": [
+        {
+          "name": "REANIMATE\b (1/2AP)",
+          "description": "• Select one of your Reanimation markers visible to and within 6\" of this operative. Roll one D6: on a 3+, a friendly operative is REANIMATED; if you spent 1 additional AP, a friendly operative is automatically REANIMATED (you don’t need to roll one D6). An operative that’s REANIMATED from this unique action is set up expended if it was already expended during this turning point.\n• This operative cannot perform this action while within control range of an enemy operative. PLASMACYTE REANIMATOR"
+        }
+      ],
       "keywords": [
         "HIEROTEK CIRCLE",
         "NECRON",
@@ -104,8 +106,8 @@
       ],
       "passive_abilities": [
         {
-          "name": "HIEROTEK CIRCLE , NECRON, APPRENTEK",
-          "description": "32"
+          "name": "Apprentek Assistance",
+          "description": "This operative has the same unique actions as your CRYPTEK operative selected for the battle, but can only perform one CRYPTEK unique action per turning point."
         }
       ],
       "unique_actions": [],
@@ -138,15 +140,16 @@
       ],
       "passive_abilities": [
         {
-          "name": "MULTI-DIMENSIONAL VISION\b",
-          "description": "1AP\n• Until the start of this operative’s next activation, whenever it’s shooting, enemy operatives cannot be obscured.\n• This operative cannot perform this action while within control range of an enemy operative."
-        },
-        {
-          "name": "HIEROTEK CIRCLE , NECRON, DEATHMARK",
-          "description": "32"
+          "name": "Deathmarked",
+          "description": "Whenever this operative ends the Shoot action, the target gains one of your Deathmarked tokens if it wasn’t incapacitated (the primary target, if relevant). Whenever a friendly HIEROTEK CIRCLE DEATHMARK operative is shooting an enemy operative that has one of your Deathmarked tokens, that friendly operative’s ranged weapons have the Seek weapon rule."
         }
       ],
-      "unique_actions": [],
+      "unique_actions": [
+        {
+          "name": "MULTI-DIMENSIONAL VISION\b (1AP)",
+          "description": "• Until the start of this operative’s next activation, whenever it’s shooting, enemy operatives cannot be obscured.\n• This operative cannot perform this action while within control range of an enemy operative."
+        }
+      ],
       "keywords": [
         "HIEROTEK CIRCLE",
         "NECRON",
@@ -183,15 +186,16 @@
       ],
       "passive_abilities": [
         {
-          "name": "HIEROTEK CIRCLE , NECRON, IMMORTAL, DESPOTEK",
-          "description": "32 RULES CONTINUE ON OTHER SIDE"
-        },
-        {
-          "name": "INTERSTITIAL COMMAND\b",
-          "description": "1AP\n• SUPPORT. Select one other friendly HIEROTEK CIRCLE operative (excluding APPRENTEK and CRYPTEK) visible to and within 6\" of this operative. That selected operative can immediately perform a 1AP action for free (excluding Accelerate); it cannot move more than or be removed and set up more than 2\" during that action, perform an action it’s already performed during this turning point, or perform that action again during this turning point.\n• This operative cannot perform this action while within control range of an enemy operative, or while counteracting. IMMORTAL DESPOTEK 2 APL WOUNDS SAVE MOVE 5\" 3+ 11"
+          "name": "Steadfast",
+          "description": "Whenever determining control of a marker, you can treat this operative’s APL stat as 3. If you do, this takes precedence over all other rules, meaning any changes to its APL stat are ignored for this."
         }
       ],
-      "unique_actions": [],
+      "unique_actions": [
+        {
+          "name": "INTERSTITIAL COMMAND\b (1AP)",
+          "description": "• SUPPORT. Select one other friendly HIEROTEK CIRCLE operative (excluding APPRENTEK and CRYPTEK) visible to and within 6\" of this operative. That selected operative can immediately perform a 1AP action for free (excluding Accelerate); it cannot move more than or be removed and set up more than 2\" during that action, perform an action it’s already performed during this turning point, or perform that action again during this turning point.\n• This operative cannot perform this action while within control range of an enemy operative, or while counteracting. IMMORTAL DESPOTEK"
+        }
+      ],
       "keywords": [
         "HIEROTEK CIRCLE",
         "NECRON",
@@ -229,8 +233,8 @@
       ],
       "passive_abilities": [
         {
-          "name": "HIEROTEK CIRCLE , NECRON, IMMORTAL, GUARDIAN",
-          "description": "32"
+          "name": "Steadfast",
+          "description": "Whenever determining control of a marker, you can treat this operative’s APL stat as 3. If you do, this takes precedence over all other rules, meaning any changes to its APL stat are ignored for this."
         }
       ],
       "unique_actions": [],

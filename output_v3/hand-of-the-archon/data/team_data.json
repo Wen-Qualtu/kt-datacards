@@ -1,6 +1,6 @@
 {
   "team": "hand-of-the-archon",
-  "generated_at": "2026-05-02T20:36:35.297293+00:00",
+  "generated_at": "2026-05-04T19:45:27.305153+00:00",
   "datacards": [
     {
       "name": "KABALITE ARCHSYBARITE",
@@ -60,16 +60,12 @@
       ],
       "passive_abilities": [
         {
-          "name": "HAND OF THE ARCHON , AELDARI, DRUKHARI, LEADER, ARCHSYBARITE",
-          "description": "25 RULES CONTINUE ON OTHER SIDE"
+          "name": "Cunning",
+          "description": "In the Gambit step of each Strategy phase, if this operative is in the killzone and you pass at the first opportunity, you gain 1CP. Ignore each STRATEGIC GAMBIT from the mission pack (if any) when determining this."
         },
         {
           "name": "Torturous Vision",
-          "description": "Once during each of this operative’s activations, if it doesn’t have any of your Pain tokens when it"
-        },
-        {
-          "name": "performs either the Fight or Shoot action, it can gain one of",
-          "description": "your Pain tokens when you select a valid target or an enemy operative to fight against. 2 APL WOUNDS SAVE MOVE 7\" 4+ 9 KABALITE ARCHSYBARITE"
+          "description": "Once during each of this operative’s activations, if it doesn’t have any of your Pain tokens when it performs either the Fight or Shoot action, it can gain one of your Pain tokens when you select a valid target or an enemy operative to fight against. 2 APL WOUNDS SAVE MOVE 7\" 4+ 9 KABALITE ARCHSYBARITE"
         }
       ],
       "unique_actions": [],
@@ -104,8 +100,8 @@
       ],
       "passive_abilities": [
         {
-          "name": "HAND OF THE ARCHON , AELDARI, DRUKHARI, AGENT",
-          "description": "25"
+          "name": "Sadistic Competition",
+          "description": "Once per turning point, when a friendly HAND OF THE ARCHON operative gains one of your Pain tokens, one friendly HAND OF THE ARCHON AGENT operative that doesn’t have one of your Pain tokens can also gain one."
         }
       ],
       "unique_actions": [],
@@ -140,8 +136,16 @@
       ],
       "passive_abilities": [
         {
-          "name": "HAND OF THE ARCHON , AELDARI, DRUKHARI, CRIMSON DUELLIST",
-          "description": "25"
+          "name": "Brutal Display",
+          "description": "Once per turning point, when this operative incapacitates an enemy operative within its control range, you can select one other enemy operative visible to and within 6\" of either this operative or the incapacitated enemy operative. Until the start of the next turning point, that other enemy operative cannot control markers or perform the Pick Up Marker or mission actions."
+        },
+        {
+          "name": "Crimson Duellist",
+          "description": "This operative can perform two Fight actions during its activation."
+        },
+        {
+          "name": "*Tangle",
+          "description": "Whenever this operative is fighting or retaliating with this weapon, each of your blocks can be allocated to block two unresolved successes (instead of one)."
         }
       ],
       "unique_actions": [],
@@ -175,15 +179,16 @@
       ],
       "passive_abilities": [
         {
-          "name": "HAND OF THE ARCHON , AELDARI, DRUKHARI, DISCIPLE OF YAELINDRA",
-          "description": "25 RULES CONTINUE ON OTHER SIDE"
-        },
-        {
-          "name": "TORMENT GRENADE\b",
-          "description": "1AP\n• Select one enemy operative visible to and within 6\" of this operative. That operative and each other operative within 1\" of it takes a poison test.\n• For an operative to take a poison test, roll one D6, adding 1 to the result if that operative has a Save stat of 4+ or worse: on a 3+, inflict D3 damage on that operative and it gains one of your Poison tokens (if it doesn’t already have one). Whenever an operative that has one of your Poison tokens is activated, inflict D3 damage on it.\n• This operative cannot perform this action while within control range of an enemy operative. KABALITE DISCIPLE OF YAELINDRA 2 APL WOUNDS SAVE MOVE 7\" 4+ 8"
+          "name": "*Stinger",
+          "description": "Whenever an enemy operative is incapacitated by this weapon, before it’s removed from the killzone, inflict D3 damage on each other operative visible to and within 2\" of it (roll separately for each). Each operative subsequently incapacitated as a result of this weapon rule will cause this to happen again."
         }
       ],
-      "unique_actions": [],
+      "unique_actions": [
+        {
+          "name": "TORMENT GRENADE\b (1AP)",
+          "description": "• Select one enemy operative visible to and within 6\" of this operative. That operative and each other operative within 1\" of it takes a poison test.\n• For an operative to take a poison test, roll one D6, adding 1 to the result if that operative has a Save stat of 4+ or worse: on a 3+, inflict D3 damage on that operative and it gains one of your Poison tokens (if it doesn’t already have one). Whenever an operative that has one of your Poison tokens is activated, inflict D3 damage on it.\n• This operative cannot perform this action while within control range of an enemy operative. KABALITE DISCIPLE OF YAELINDRA"
+        }
+      ],
       "keywords": [
         "HAND OF THE ARCHON",
         "AELDARI",
@@ -221,15 +226,32 @@
       ],
       "passive_abilities": [
         {
-          "name": "HAND OF THE ARCHON , AELDARI, DRUKHARI, ELIXICANT",
-          "description": "25 RULES CONTINUE ON OTHER SIDE"
+          "name": "Combat Drugs",
+          "description": "At the end of the Select Operatives step, if this operative is selected for deployment, select one of the following"
         },
         {
-          "name": "ADMINISTER DRUG\b",
-          "description": "1AP\n• Select one friendly HAND OF THE ARCHON operative visible to and within 3\" of this operative, then select one of the following for that friendly operative:\n• It regains up to 2D3 lost wounds.\n• Select a different COMBAT DRUG rule for it to have for the battle (this replaces its previous one).\n• This operative cannot perform this action while within control range of an enemy operative. KABALITE ELIXICANT 2 APL WOUNDS SAVE MOVE 7\" 4+ 8"
+          "name": "COMBAT DRUG rules for friendly HAND OF THE ARCHON  operatives to have for the battle",
+          "description": ""
+        },
+        {
+          "name": "\t \u0007Painbringer",
+          "description": "Whenever an attack dice inflicts damage of 3 or more on this operative, roll one D6: on a 6, subtract 1 from that inflicted damage."
+        },
+        {
+          "name": "\t \u0007Adrenalight",
+          "description": "In the Ready step of each Strategy phase, you can select one friendly operative that has this COMBAT DRUG to gain one of your Pain tokens."
+        },
+        {
+          "name": "\t \u0007Hypex",
+          "description": "You can ignore any changes to this operative’s Move stat from being injured."
         }
       ],
-      "unique_actions": [],
+      "unique_actions": [
+        {
+          "name": "ADMINISTER DRUG\b (1AP)",
+          "description": "• Select one friendly HAND OF THE ARCHON operative visible to and within 3\" of this operative, then select one of the following for that friendly operative:\n• It regains up to 2D3 lost wounds.\n• Select a different COMBAT DRUG rule for it to have for the battle (this replaces its previous one).\n• This operative cannot perform this action while within control range of an enemy operative. KABALITE ELIXICANT"
+        }
+      ],
       "keywords": [
         "HAND OF THE ARCHON",
         "AELDARI",
@@ -254,8 +276,12 @@
       ],
       "passive_abilities": [
         {
-          "name": "HAND OF THE ARCHON , AELDARI, DRUKHARI, FLAYER",
-          "description": "25"
+          "name": "Insensible to Pain",
+          "description": "Normal and Critical Dmg of 3 or more inflicts 1 less damage on this operative."
+        },
+        {
+          "name": "*Flay",
+          "description": "Whenever this operative is using this weapon, the first time you strike with a critical success during that sequence, you can select one friendly HAND OF THE ARCHON operative within 6\" of it to gain one of your Pain tokens."
         }
       ],
       "unique_actions": [],
@@ -294,13 +320,6 @@
           "damage": "3/4"
         }
       ],
-      "passive_abilities": [
-        {
-          "name": "HAND OF THE ARCHON , AELDARI, DRUKHARI, GUNNER",
-          "description": "25"
-        }
-      ],
-      "unique_actions": [],
       "keywords": [
         "HAND OF THE ARCHON",
         "AELDARI",
@@ -343,13 +362,6 @@
           "damage": "3/4"
         }
       ],
-      "passive_abilities": [
-        {
-          "name": "HAND OF THE ARCHON , AELDARI, DRUKHARI, HEAVY GUNNER",
-          "description": "25"
-        }
-      ],
-      "unique_actions": [],
       "keywords": [
         "HAND OF THE ARCHON",
         "AELDARI",
@@ -387,23 +399,20 @@
       ],
       "passive_abilities": [
         {
-          "name": "HAND OF THE ARCHON , AELDARI, DRUKHARI, SKYSPLINTER ASSASSIN",
-          "description": "25 RULES CONTINUE ON OTHER SIDE"
+          "name": "Merciless Hunter",
+          "description": "If this operative doesn’t perform the Mark unique action (see other side of card) during its activation, it can perform two Shoot actions during its activation, but a razorwing must be selected for one (and only one) of those actions."
         },
         {
           "name": "Omen",
-          "description": "In the Select Operatives step, when you’re selecting equipment, you can select one enemy operative or one other"
-        },
-        {
-          "name": "friendly HAND OF THE ARCHON  operative (reveal your",
-          "description": "selection when you reveal equipment). Whenever attack or defence dice are rolled for that operative:\n• If it’s an enemy operative, your opponent must re-roll their dice results of 6.\n• If it’s a friendly operative, you can re-roll any of your dice results of 1."
-        },
-        {
-          "name": "MARK\b",
-          "description": "1AP\n• Select one enemy operative visible to this operative. Until the end of the turning point, whenever this operative is shooting that enemy operative you can use this effect. If you do:\n• This operative’s ranged weapons have the Seek Light weapon rule.\n• That enemy operative cannot be obscured.\n• This operative cannot perform this action while within control range of an enemy operative. KABALITE SKYSPLINTER ASSASSIN 2 APL WOUNDS SAVE MOVE 7\" 4+ 8"
+          "description": "In the Select Operatives step, when you’re selecting equipment, you can select one enemy operative or one other friendly HAND OF THE ARCHON operative (reveal your selection when you reveal equipment). Whenever attack or defence dice are rolled for that operative:\n• If it’s an enemy operative, your opponent must re-roll their dice results of 6.\n• If it’s a friendly operative, you can re-roll any of your dice results of 1."
         }
       ],
-      "unique_actions": [],
+      "unique_actions": [
+        {
+          "name": "MARK\b (1AP)",
+          "description": "• Select one enemy operative visible to this operative. Until the end of the turning point, whenever this operative is shooting that enemy operative you can use this effect. If you do:\n• This operative’s ranged weapons have the Seek Light weapon rule.\n• That enemy operative cannot be obscured.\n• This operative cannot perform this action while within control range of an enemy operative. KABALITE SKYSPLINTER ASSASSIN"
+        }
+      ],
       "keywords": [
         "HAND OF THE ARCHON",
         "AELDARI",

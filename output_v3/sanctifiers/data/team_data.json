@@ -1,6 +1,6 @@
 {
   "team": "sanctifiers",
-  "generated_at": "2026-05-02T20:37:10.531667+00:00",
+  "generated_at": "2026-05-04T19:46:03.870670+00:00",
   "datacards": [
     {
       "name": "SANCTIFIER CONFESSOR",
@@ -19,12 +19,12 @@
       ],
       "passive_abilities": [
         {
-          "name": "SANCTIFIER , IMPERIUM, ADEPTUS MINISTORUM, LEADER, CONFESSOR",
-          "description": "32 RULES CONTINUE ON OTHER SIDE"
+          "name": "Lead the Procession",
+          "description": "In each turning point after the first, whenever this operative is an ORATOR and performs the Charge, Fall Back or Reposition action during its activation, you can use this rule before it moves. If you do, determine each other friendly SANCTIFIER operative that’s benefitting from the SERMON and is visible to this operative (or vice versa). After this operative ends that action, each of those friendly SANCTIFIER operatives can immediately perform a free Charge, Fall Back or Reposition action in an order of your choice (choose separately for each), but each cannot move more than or be removed and set up more than 3\" and must end that move in a location where they are still benefitting from the SERMON. If this operative is incapacitated before this rule is fully resolved, e.g. from the Guard action’s interruption (see close quarters rules, Kill Team Core Book), don’t remove it from the killzone until this rule has been resolved."
         },
         {
-          "name": "SANCTIFIER CONFESSOR",
-          "description": "2 APL WOUNDS SAVE MOVE 6\" 5+ 10 Commanding Declamation: Whenever an enemy operative would perform an action during an activation or counteraction while visible to and within 6\" of this operative, you can use this rule. If you do, roll one D6: if the result is higher than that enemy operative’s APL stat:\n• It cannot perform that action during that activation/ counteraction (the AP spent on it isn’t refunded). If it’s a counteraction, that counteraction ends.\n• You cannot use this rule again during the battle."
+          "name": "Commanding Declamation",
+          "description": "Whenever an enemy operative would perform an action during an activation or counteraction while visible to and within 6\" of this operative, you can use this rule. If you do, roll one D6: if the result is higher than that enemy operative’s APL stat:\n• It cannot perform that action during that activation/ counteraction (the AP spent on it isn’t refunded). If it’s a counteraction, that counteraction ends.\n• You cannot use this rule again during the battle."
         }
       ],
       "unique_actions": [],
@@ -53,23 +53,20 @@
       ],
       "passive_abilities": [
         {
-          "name": "SANCTIFIER , IMPERIUM, ADEPTUS MINISTORUM, CHERUB",
-          "description": "25 RULES CONTINUE ON OTHER SIDE"
+          "name": "Cherub",
+          "description": "• Whenever determining control of an objective marker, treat this operative’s APL stat as 1 lower. Note this isn’t a change to its APL stat, so any changes are cumulative with this.\n• Whenever this operative has a Conceal order and is in cover, it cannot be selected as a valid target, taking precedence over all other rules (e.g. Seek, Vantage terrain) except being within 2\".\n• This operative cannot use any weapons that aren’t on its datacard, or perform unique actions other than Incentivise."
         },
         {
           "name": "Fly",
-          "description": "Whenever this operative is performing the Charge, Fall"
-        },
-        {
-          "name": "Back or Reposition action, it can FLY. If it does, don’t move",
-          "description": "it. Instead, remove it from the killzone and set it back up wholly within a distance equal to its Move stat horizontally of its original location (in a killzone that uses the close quarters rules, e.g. Killzone: Tomb World, this distance cannot be measured over or through Wall terrain). Note that it gains no additional distance when performing the Charge action. It must be set up in a location it can be placed, and unless it’s the Charge action, it cannot be set up within control range of an enemy operative."
-        },
-        {
-          "name": "INCENTIVISE",
-          "description": "1AP\n• SUPPORT. Select one other friendly SANCTIFIER operative (excluding CONFESSOR, DEATH CULT ASSASSIN, MIRACULIST and ORATOR) visible to and within 2\" of this operative. Until the end of that operative’s next activation, add 1 to its APL stat.\n• This operative cannot perform this action while within control range of an enemy operative. SANCTIFIER CHERUB 2 APL WOUNDS SAVE MOVE 7\" 5+ 5"
+          "description": "Whenever this operative is performing the Charge, Fall Back or Reposition action, it can FLY. If it does, don’t move it. Instead, remove it from the killzone and set it back up wholly within a distance equal to its Move stat horizontally of its original location (in a killzone that uses the close quarters rules, e.g. Killzone: Tomb World, this distance cannot be measured over or through Wall terrain). Note that it gains no additional distance when performing the Charge action. It must be set up in a location it can be placed, and unless it’s the Charge action, it cannot be set up within control range of an enemy operative."
         }
       ],
-      "unique_actions": [],
+      "unique_actions": [
+        {
+          "name": "INCENTIVISE (1AP)",
+          "description": "• SUPPORT. Select one other friendly SANCTIFIER operative (excluding CONFESSOR, DEATH CULT ASSASSIN, MIRACULIST and ORATOR) visible to and within 2\" of this operative. Until the end of that operative’s next activation, add 1 to its APL stat.\n• This operative cannot perform this action while within control range of an enemy operative. SANCTIFIER CHERUB"
+        }
+      ],
       "keywords": [
         "SANCTIFIER",
         "IMPERIUM",
@@ -107,8 +104,12 @@
       ],
       "passive_abilities": [
         {
-          "name": "SANCTIFIER , IMPERIUM, ADEPTUS MINISTORUM, CONFLAGRATOR",
-          "description": "25"
+          "name": "¹Twin Torrent",
+          "description": "Select up to two different valid targets that aren’t within control range of friendly operatives. Shoot with this weapon against both of them in an order of your choice (roll each sequence separately). Torrent 0\" means you cannot select secondary targets, but this weapon still has the Torrent weapon rule for all other rules purposes, e.g. the Condensed Stronghold rule (see Killzone: Volkus, Kill Team Core Book)."
+        },
+        {
+          "name": "Sanctification Rack",
+          "description": "This operative can perform the Sanctification Orb action (see faction equipment). Doing so in this manner doesn’t count towards the once per turning point limit (i.e. if you also select that equipment for other operatives)."
         }
       ],
       "unique_actions": [],
@@ -142,15 +143,16 @@
       ],
       "passive_abilities": [
         {
-          "name": "TRAINED ASSASSIN",
-          "description": "1AP Change this operative’s order.\n• This operative cannot perform this action while within control range of an enemy operative."
-        },
-        {
-          "name": "SANCTIFIER , IMPERIUM, ADEPTUS MINISTORUM, DEATH CULT ASSASSIN",
-          "description": "25"
+          "name": "Bladed Stance",
+          "description": "Whenever this operative is fighting or retaliating, you can resolve one of your successes before the normal order. If you do, that success must be used to block."
         }
       ],
-      "unique_actions": [],
+      "unique_actions": [
+        {
+          "name": "TRAINED ASSASSIN (1AP)",
+          "description": "Change this operative’s order.\n• This operative cannot perform this action while within control range of an enemy operative."
+        }
+      ],
       "keywords": [
         "SANCTIFIER",
         "IMPERIUM",
@@ -175,8 +177,12 @@
       ],
       "passive_abilities": [
         {
-          "name": "SANCTIFIER , IMPERIUM, ADEPTUS MINISTORUM, DRILL ABBOT",
-          "description": "25"
+          "name": "Schola Progenium Disciplinarian",
+          "description": "Whenever a friendly SANCTIFIER operative is within 6\" of this operative, you can ignore any changes to that operative’s stats from being injured (including its weapons’ stats)."
+        },
+        {
+          "name": "Null Skull",
+          "description": "Whenever an enemy operative is within 4\" of this operative, that enemy operative’s APL stat cannot be added to (remove all positive APL stat changes it has). If an enemy operative that’s more than 4\" from this operative has a positive APL stat change and your opponent spends its final AP to move that operative within 4\" of this operative, this can cause your opponent to have spent more AP than its APL stat – this is permitted in this situation."
         }
       ],
       "unique_actions": [],
@@ -211,8 +217,12 @@
       ],
       "passive_abilities": [
         {
-          "name": "SANCTIFIER , IMPERIUM, ADEPTUS MINISTORUM, PERSECUTOR",
-          "description": "25"
+          "name": "Merciless Castigation",
+          "description": "The first time this operative performs the Fight action during each of its activations, if neither it nor the enemy operative in that sequence is incapacitated, this operative can immediately perform a free Fight action afterwards, but you cannot select any other enemy operative to fight against during that action (and only if it’s still valid to fight against). This takes precedence over action restrictions."
+        },
+        {
+          "name": "Fanatical Retribution",
+          "description": "If this operative is incapacitated during the Fight action, you can strike the enemy operative in that sequence with one of your unresolved successes before this operative is removed from the killzone."
         }
       ],
       "unique_actions": [],
@@ -258,22 +268,21 @@
           "damage": "1/2"
         }
       ],
-      "passive_abilities": [
-        {
-          "name": "SANCTIFIER , IMPERIUM, ADEPTUS MINISTORUM, MIRACULIST",
-          "description": "25 RULES CONTINUE ON OTHER SIDE"
-        },
-        {
-          "name": "SANCTIFIER MIRACULIST",
-          "description": "2 APL WOUNDS SAVE MOVE 6\" 4+ 7 ¹Wreathed: This operative can perform the Shoot action with this weapon while within control range of an enemy operative. Don’t select a valid target. Instead, this operative is always the primary target, but only shoot against secondary targets and they cannot be in cover or obscured (in other words, determine Blast from this operative, but this operative isn’t affected). Miracle: The first time this operative would be incapacitated during the battle, it’s not incapacitated, has 1 wound remaining and cannot be incapacitated for the remainder of the action. All remaining attack dice are discarded (including yours if this operative is fighting or retaliating), then this operative can immediately perform a free Dash or Fall Back action (for the latter, it cannot move more than 3\"), even if it’s performed an action that prevents it from performing those actions."
-        }
-      ],
-      "unique_actions": [],
       "keywords": [
         "SANCTIFIER",
         "IMPERIUM",
         "ADEPTUS MINISTORUM",
         "MIRACULIST"
+      ],
+      "passive_abilities": [
+        {
+          "name": "¹Wreathed",
+          "description": "This operative can perform the Shoot action with this weapon while within control range of an enemy operative. Don’t select a valid target. Instead, this operative is always the primary target, but only shoot against secondary targets and they cannot be in cover or obscured (in other words, determine Blast from this operative, but this operative isn’t affected)."
+        },
+        {
+          "name": "Miracle",
+          "description": "The first time this operative would be incapacitated during the battle, it’s not incapacitated, has 1 wound remaining and cannot be incapacitated for the remainder of the action. All remaining attack dice are discarded (including yours if this operative is fighting or retaliating), then this operative can immediately perform a free Dash or Fall Back action (for the latter, it cannot move more than 3\"), even if it’s performed an action that prevents it from performing those actions."
+        }
       ]
     },
     {
@@ -338,22 +347,21 @@
           "damage": "2/3"
         }
       ],
-      "passive_abilities": [
-        {
-          "name": "SANCTIFIER , IMPERIUM, ADEPTUS MINISTORUM, MISSIONARY",
-          "description": "25 RULES CONTINUE ON OTHER SIDE"
-        },
-        {
-          "name": "SANCTIFIER MISSIONARY",
-          "description": "2 APL WOUNDS SAVE MOVE 6\" 5+ 8 Holy Relic: If this operative has a holy relic, it’s always benefitting from the SERMON. Spread the Word of the God-Emperor: Whenever this operative is more than 6\" from other friendly operatives, its weapons have the Severe weapon rule."
-        }
-      ],
-      "unique_actions": [],
       "keywords": [
         "SANCTIFIER",
         "IMPERIUM",
         "ADEPTUS MINISTORUM",
         "MISSIONARY"
+      ],
+      "passive_abilities": [
+        {
+          "name": "Holy Relic",
+          "description": "If this operative has a holy relic, it’s always benefitting from the SERMON."
+        },
+        {
+          "name": "Spread the Word of the God-Emperor",
+          "description": "Whenever this operative is more than 6\" from other friendly operatives, its weapons have the Severe weapon rule."
+        }
       ]
     },
     {
@@ -379,8 +387,8 @@
       ],
       "passive_abilities": [
         {
-          "name": "SANCTIFIER , IMPERIUM, ADEPTUS MINISTORUM, PREACHER",
-          "description": "25"
+          "name": "Defend the Faith",
+          "description": "Whenever this operative controls an objective marker, it’s benefitting from the SERMON."
         }
       ],
       "unique_actions": [],
@@ -414,8 +422,12 @@
       ],
       "passive_abilities": [
         {
-          "name": "SANCTIFIER , IMPERIUM, ADEPTUS MINISTORUM, RELIQUANT",
-          "description": "25"
+          "name": "Cult Icon",
+          "description": "Whenever determining control of a marker within 4\" of this operative, treat the total APL stat of friendly SANCTIFIER operatives that contest it as 1 higher if at least one friendly SANCTIFIER operative contests that marker. Note this isn’t a change to the APL stat, so any changes are cumulative with this."
+        },
+        {
+          "name": "Imperial Cult Devotion",
+          "description": "Once per turning point, when a ready friendly SANCTIFIER operative is incapacitated while visible to and within 6\" of this operative, you can use this rule. If you do, before that operative is removed from the killzone, it can perform one free action (excluding Fight), and you can change its order to do so. It’s then removed from the killzone as normal."
         }
       ],
       "unique_actions": [],
@@ -442,15 +454,16 @@
       ],
       "passive_abilities": [
         {
-          "name": "MEDIKIT",
-          "description": "1AP\n• Select one friendly SANCTIFIER operative within this operative’s control range to regain up to 2D3 lost wounds.\n• This operative cannot perform this action while within control range of an enemy operative."
-        },
-        {
-          "name": "SANCTIFIER , IMPERIUM, ADEPTUS MINISTORUM, MEDIC, SALVATIONIST",
-          "description": "25"
+          "name": "Conversion Field",
+          "description": "Whenever an operative more than 6\" from this operative is shooting a friendly SANCTIFIER operative within 6\" of this operative, improve that friendly operative’s Save stat by 1."
         }
       ],
-      "unique_actions": [],
+      "unique_actions": [
+        {
+          "name": "MEDIKIT (1AP)",
+          "description": "• Select one friendly SANCTIFIER operative within this operative’s control range to regain up to 2D3 lost wounds.\n• This operative cannot perform this action while within control range of an enemy operative."
+        }
+      ],
       "keywords": [
         "SANCTIFIER",
         "IMPERIUM",

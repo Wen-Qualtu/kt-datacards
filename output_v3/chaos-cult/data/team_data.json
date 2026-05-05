@@ -1,6 +1,6 @@
 {
   "team": "chaos-cult",
-  "generated_at": "2026-05-02T20:36:20.270647+00:00",
+  "generated_at": "2026-05-04T19:45:11.645910+00:00",
   "datacards": [
     {
       "name": "CULT DEMAGOGUE",
@@ -31,21 +31,17 @@
           "special_rules": "Shock, Stun"
         }
       ],
-      "passive_abilities": [
+      "passive_abilities": [],
+      "unique_actions": [
         {
-          "name": "INCITE SLAUGHTER\b",
-          "description": "1AP\n• SUPPORT. One other friendly CHAOS CULT operative visible to and within 9\" of this operative can immediately perform a free Fight action.\n• This operative cannot perform this action while within control range of an enemy operative."
+          "name": "INCITE SLAUGHTER\b (1AP)",
+          "description": "• SUPPORT. One other friendly CHAOS CULT operative visible to and within 9\" of this operative can immediately perform a free Fight action.\n• This operative cannot perform this action while within control range of an enemy operative."
         },
         {
-          "name": "INCITE URGENCY\b",
-          "description": "1AP\n• SUPPORT. One other friendly CHAOS CULT operative visible to and within 9\" of this operative can immediately perform a free Charge or Dash action (for the former, it cannot move more than 3\").\n• This operative cannot perform this action while within control range of an enemy operative."
-        },
-        {
-          "name": "CHAOS CULT , CHAOS, LEADER, DARK COMMUNE, CULT DEMAGOGUE",
-          "description": "32"
+          "name": "INCITE URGENCY\b (1AP)",
+          "description": "• SUPPORT. One other friendly CHAOS CULT operative visible to and within 9\" of this operative can immediately perform a free Charge or Dash action (for the former, it cannot move more than 3\")."
         }
       ],
-      "unique_actions": [],
       "keywords": [
         "CHAOS CULT",
         "CHAOS",
@@ -71,8 +67,12 @@
       ],
       "passive_abilities": [
         {
-          "name": "CHAOS CULT , CHAOS, DARK COMMUNE, BLESSED BLADE",
-          "description": "28"
+          "name": "Cut Them Down",
+          "description": "Whenever an enemy operative performs the Fall Back action while within control range of this operative, you can use this rule. If you do, inflict D3+1 damage on that enemy operative before it moves. If that enemy operative is within control range of two of these operatives, inflict 2D3+2 damage instead."
+        },
+        {
+          "name": "Attuned In Purpose",
+          "description": "Whenever this operative is activated, you can activate another ready friendly BLESSED BLADE operative within 6\" of it at the same time. Complete their activations action by action in any order."
         }
       ],
       "unique_actions": [],
@@ -113,15 +113,16 @@
       ],
       "passive_abilities": [
         {
-          "name": "CHAOS CULT , CHAOS, DARK COMMUNE, PSYKER, ICONARCH",
-          "description": "32 RULES CONTINUE ON OTHER SIDE"
-        },
-        {
-          "name": "RUINOUS ICON\b",
-          "description": "1AP\n• PSYCHIC. Select one of the following effects to last until the start of this operative’s next activation, until it’s incapacitated or until it performs this action again (whichever comes first):\n• Invigoration: PSYCHIC. Whenever a friendly CHAOS CULT operative is within 4\" of this operative, Normal and Critical Dmg of 4 or more inflicts 1 less damage on that operative.\n• Deterioration: PSYCHIC. Whenever an enemy operative is within 4\" of this operative, Normal and Critical Dmg inflicts 1 more damage on that operative.\n• This operative cannot perform this action while within control range of an enemy operative. ICONARCH 2 APL WOUNDS SAVE MOVE 6\" 5+ 8"
+          "name": "Icon Bearer",
+          "description": "Whenever determining control of a marker, treat this operative’s APL stat as 1 higher. Note this isn’t a change to its APL stat, so any changes are cumulative with this."
         }
       ],
-      "unique_actions": [],
+      "unique_actions": [
+        {
+          "name": "RUINOUS ICON\b (1AP)",
+          "description": "• PSYCHIC. Select one of the following effects to last until the start of this operative’s next activation, until it’s incapacitated or until it performs this action again (whichever comes first):\n• Invigoration: PSYCHIC. Whenever a friendly CHAOS CULT operative is within 4\" of this operative, Normal and Critical Dmg of 4 or more inflicts 1 less damage on that operative.\n• Deterioration: PSYCHIC. Whenever an enemy operative is within 4\" of this operative, Normal and Critical Dmg inflicts 1 more damage on that operative.\n• This operative cannot perform this action while within control range of an enemy operative. ICONARCH"
+        }
+      ],
       "keywords": [
         "CHAOS CULT",
         "CHAOS",
@@ -151,21 +152,17 @@
           "damage": "1/2"
         }
       ],
-      "passive_abilities": [
+      "passive_abilities": [],
+      "unique_actions": [
         {
-          "name": "HEINOUS DELUGE\b",
-          "description": "1AP\n• PSYCHIC. Select one enemy operative that's a valid target for this operative. Until the end of that operative’s next activation, subtract 1 from its APL stat.\n• This operative cannot perform this action while within control range of an enemy operative."
+          "name": "HEINOUS DELUGE\b (1AP)",
+          "description": "• PSYCHIC. Select one enemy operative that's a valid target for this operative. Until the end of that operative’s next activation, subtract 1 from its APL stat.\n• This operative cannot perform this action while within control range of an enemy operative."
         },
         {
-          "name": "MALEFIC VORTEX\b",
-          "description": "1AP\n• PSYCHIC. Remove your Malefic Vortex marker from the killzone (if any). Then place your Malefic Vortex marker visible to this operative, or on Vantage terrain of a terrain feature that’s visible to this operative. Inflict 1 damage on each enemy operative within 2\" of that marker. In addition, in the Ready step of each Strategy phase, inflict 1 damage on each enemy operative within 2\" of that marker.\n• This operative cannot perform this action while within control range of an enemy operative."
-        },
-        {
-          "name": "CHAOS CULT , CHAOS, DARK COMMUNE, PSYKER, MINDWITCH",
-          "description": "32"
+          "name": "MALEFIC VORTEX\b (1AP)",
+          "description": "• PSYCHIC. Remove your Malefic Vortex marker from the killzone (if any). Then place your Malefic Vortex marker visible to this operative, or on Vantage terrain of a terrain feature that’s visible to this operative. Inflict 1 damage on each enemy operative within 2\" of that marker. In addition, in the Ready step of each Strategy phase, inflict 1 damage on each enemy operative within 2\" of that marker.\n• This operative cannot perform this action while within control range of an enemy operative."
         }
       ],
-      "unique_actions": [],
       "keywords": [
         "CHAOS CULT",
         "CHAOS",
@@ -197,8 +194,8 @@
       ],
       "passive_abilities": [
         {
-          "name": "CHAOS CULT , CHAOS, DEVOTEE",
-          "description": "25"
+          "name": "Group Activation",
+          "description": "Whenever this operative is expended, you must then activate one other ready friendly CHAOS CULT DEVOTEE operative (if able) before your opponent activates. When that other operative is expended, your opponent then activates as normal (in other words, you cannot activate more than two operatives in succession with this rule)."
         }
       ],
       "unique_actions": [],
@@ -225,8 +222,12 @@
       ],
       "passive_abilities": [
         {
-          "name": "CHAOS CULT , CHAOS, MUTANT",
-          "description": "25"
+          "name": "Accursed Mutant",
+          "description": "This operative cannot perform unique actions. You must spend 1 additional AP for this operative to perform the Pick Up Marker and mission actions (excluding Operate Hatch)."
+        },
+        {
+          "name": "Unnatural Regeneration",
+          "description": "Whenever an attack dice inflicts damage of 3 or more on this operative, roll one D6: on a 5+, subtract 1 from that inflicted damage."
         }
       ],
       "unique_actions": [],
@@ -253,8 +254,16 @@
       ],
       "passive_abilities": [
         {
-          "name": "CHAOS CULT , CHAOS, TORMENT",
-          "description": "40"
+          "name": "Accursed Torment",
+          "description": "This operative cannot use any weapons that aren’t on its datacard, or perform the Pick Up Marker, unique or mission actions (excluding Operate Hatch)."
+        },
+        {
+          "name": "Brute",
+          "description": "Whenever your opponent is selecting a valid target, if this operative has a Conceal order, it cannot use Light terrain for cover. While this can allow this operative to be targeted (assuming it’s visible), it doesn’t remove its cover save (if any)."
+        },
+        {
+          "name": "Unnatural Regeneration",
+          "description": "Whenever an attack dice inflicts damage of 3 or more on this operative, roll one D6: on a 5+, subtract 1 from that inflicted damage."
         }
       ],
       "unique_actions": [],

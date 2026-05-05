@@ -1,6 +1,6 @@
 {
   "team": "kasrkin",
-  "generated_at": "2026-05-02T20:36:49.728061+00:00",
+  "generated_at": "2026-05-04T19:45:42.319112+00:00",
   "datacards": [
     {
       "name": "KASRKIN SERGEANT",
@@ -63,23 +63,18 @@
           "special_rules": "Lethal 5+"
         }
       ],
-      "passive_abilities": [
-        {
-          "name": "KASRKIN , IMPERIUM, ASTRA MILITARUM, LEADER, SERGEANT",
-          "description": "28 RULES CONTINUE ON OTHER SIDE"
-        },
-        {
-          "name": "TACTICAL COMMAND\b",
-          "description": "0AP\n• Select one friendly KASRKIN operative, then select one SKILL AT ARMS for that operative to have until the Ready step of the next Strategy phase. This can be in addition to any SKILL AT ARMS it already has, but they cannot be the same.\n• Alternatively, instead of resolving the above effect, if your Clearance Sweep marker is in the killzone, you can remove it and place it again.\n• This operative cannot perform this action while within control range of an enemy operative. Veteran Leadership: Whenever this operative is in the killzone and you use the SKILL AT ARMS STRATEGIC GAMBIT, you can select one additional SKILL AT ARMS but they cannot be the same. KASRKIN SERGEANT 3 APL WOUNDS SAVE MOVE 6\" 4+ 9"
-        }
-      ],
-      "unique_actions": [],
       "keywords": [
         "KASRKIN",
         "IMPERIUM",
         "ASTRA MILITARUM",
         "LEADER",
         "SERGEANT"
+      ],
+      "passive_abilities": [
+        {
+          "name": "TACTICAL COMMAND\b",
+          "description": "• Select one friendly KASRKIN operative, then select one SKILL AT ARMS for that operative to have until the Ready step of the next Strategy phase. This can be in addition to any SKILL AT ARMS it already has, but they cannot be the same.\n• Alternatively, instead of resolving the above effect, if your Clearance Sweep marker is in the killzone, you can remove it and place it again.\n• This operative cannot perform this action while within control range of an enemy operative. Veteran Leadership: Whenever this operative is in the killzone and you use the SKILL AT ARMS STRATEGIC GAMBIT, you can select one additional SKILL AT ARMS but they cannot be the same. KASRKIN SERGEANT"
+        }
       ]
     },
     {
@@ -104,12 +99,12 @@
       ],
       "passive_abilities": [
         {
-          "name": "KASRKIN , IMPERIUM, ASTRA MILITARUM, MEDIC, COMBAT MEDIC",
-          "description": "28 RULES CONTINUE ON OTHER SIDE"
+          "name": "Medic!",
+          "description": "The first time during each turning point that another friendly KASRKIN operative would be incapacitated while visible to and within 3\" of this operative, you can use this rule, providing neither this nor that operative is within control range of an enemy operative. If you do, that friendly operative isn’t incapacitated, has 1 wound remaining and cannot be incapacitated for the remainder of the action. After that action, that friendly operative can immediately perform a free Dash action, but must end that move within this operative’s control range. Subtract 1 from this and that operative’s APL stats until the end of their next activations respectively, and if this rule was used during that friendly operative’s activation, that activation ends. You cannot use this rule if this operative is incapacitated, or if it’s a Shoot action and this operative would be a primary or secondary target."
         },
         {
           "name": "MEDIKIT\b",
-          "description": "0AP\n• Select one friendly KASRKIN operative within this operative’s control range to regain up to 2D3 lost wounds. It cannot be an operative that the Medic! rule was used on during this turning point.\n• This operative cannot perform this action while within control range of an enemy operative. KASRKIN COMBAT MEDIC 2 APL WOUNDS SAVE MOVE 6\" 4+ 8"
+          "description": "• Select one friendly KASRKIN operative within this operative’s control range to regain up to 2D3 lost wounds. It cannot be an operative that the Medic! rule was used on during this turning point.\n• This operative cannot perform this action while within control range of an enemy operative. KASRKIN COMBAT MEDIC"
         }
       ],
       "unique_actions": [],
@@ -144,16 +139,16 @@
       ],
       "passive_abilities": [
         {
-          "name": "KASRKIN , IMPERIUM, ASTRA MILITARUM, DEMO-TROOPER",
-          "description": "28 RULES CONTINUE ON OTHER SIDE"
+          "name": "Melta Mine",
+          "description": "This operative is carrying your Melta Mine marker. It can perform the Pick Up Marker action on that marker, and whenever it performs the Place Marker action on that marker, it can immediately perform a free Dash action. That marker cannot be placed within an enemy operative’s control range (if this operative is incapacitated while carrying that marker and that marker cannot be placed, it’s removed with this operative)."
+        },
+        {
+          "name": "Proximity Mine",
+          "description": "The first time your Melta Mine marker is within another operative’s control range, remove that marker and inflict 2D6+3 damage on that operative; if it isn’t incapacitated, end its action (if any), even if that action’s effects aren’t fulfilled. If it cannot be placed, move it the minimum amount to do so. Note that this operative is ignored for these effects (i.e. it cannot set it off or take damage from that marker)."
         },
         {
           "name": "Blast Padding",
-          "description": "Whenever an operative is shooting this operative with a weapon that has the Blast or Torrent weapon rule (excluding weapons that have a sweeping profile), you can re-roll one of your defence dice. In addition, this operative isn’t affected by the x\" Devastating x weapon rule (i.e. Devastating with a distance) unless they are the target during that sequence."
-        },
-        {
-          "name": "KASRKIN DEMO-TROOPER",
-          "description": "2 APL WOUNDS SAVE MOVE 6\" 4+ 8"
+          "description": "Whenever an operative is shooting this operative with a weapon that has the Blast or Torrent weapon rule (excluding weapons that have a sweeping profile), you can re-roll one of your defence dice. In addition, this operative isn’t affected by the x\" Devastating x weapon rule (i.e. Devastating with a distance) unless they are the target during that sequence. KASRKIN DEMO-TROOPER 2 APL WOUNDS SAVE MOVE 6\" 4+ 8"
         }
       ],
       "unique_actions": [],
@@ -234,13 +229,6 @@
           "damage": "2/3"
         }
       ],
-      "passive_abilities": [
-        {
-          "name": "KASRKIN , IMPERIUM, ASTRA MILITARUM, GUNNER",
-          "description": "28"
-        }
-      ],
-      "unique_actions": [],
       "keywords": [
         "KASRKIN",
         "IMPERIUM",
@@ -270,15 +258,16 @@
       ],
       "passive_abilities": [
         {
-          "name": "AUSPEX SCAN\b",
-          "description": "1AP\n• Until the start of this operative’s next activation or until it’s incapacitated (whichever comes first), whenever an enemy operative is within 8\" of this operative, that enemy operative is being scanned. Whenever a friendly KASRKIN operative is shooting an enemy operative that’s being scanned, that enemy operative cannot be obscured\n• This operative cannot perform this action while within control range of an enemy operative."
-        },
-        {
-          "name": "KASRKIN , IMPERIUM, ASTRA MILITARUM, RECON-TROOPER",
-          "description": "28"
+          "name": "Reconnoitre Killzone",
+          "description": "The Relocate strategy ploy costs you 0CP if this operative is the selected friendly KASRKIN operative."
         }
       ],
-      "unique_actions": [],
+      "unique_actions": [
+        {
+          "name": "AUSPEX SCAN\b (1AP)",
+          "description": "• Until the start of this operative’s next activation or until it’s incapacitated (whichever comes first), whenever an enemy operative is within 8\" of this operative, that enemy operative is being scanned. Whenever a friendly KASRKIN operative is shooting an enemy operative that’s being scanned, that enemy operative cannot be obscured\n• This operative cannot perform this action while within control range of an enemy operative."
+        }
+      ],
       "keywords": [
         "KASRKIN",
         "IMPERIUM",
@@ -322,8 +311,8 @@
       ],
       "passive_abilities": [
         {
-          "name": "KASRKIN , IMPERIUM, ASTRA MILITARUM, SHARPSHOOTER",
-          "description": "28"
+          "name": "Camo Cloak",
+          "description": "Whenever an operative is shooting this operative:\n• Ignore the Saturate weapon rule.\n• If you can retain any cover saves, you can retain one additional cover save, or you can retain one cover save as a critical success instead. This isn’t cumulative with improved cover saves from Vantage terrain."
         }
       ],
       "unique_actions": [],
@@ -356,8 +345,8 @@
       ],
       "passive_abilities": [
         {
-          "name": "KASRKIN , IMPERIUM, ASTRA MILITARUM, TROOPER",
-          "description": "28"
+          "name": "Adaptive Equipment",
+          "description": "You can do each of the following once per turning point:\n• One friendly KASRKIN TROOPER operative can perform the Smoke Grenade action.\n• One friendly KASRKIN TROOPER operative can perform the Stun Grenade action. The rules for these actions are found in universal equipment. Performing these actions using this rule doesn’t count towards their action limits (i.e. if you also select those grenades from equipment)."
         }
       ],
       "unique_actions": [],
@@ -388,17 +377,13 @@
           "damage": "2/3"
         }
       ],
-      "passive_abilities": [
+      "passive_abilities": [],
+      "unique_actions": [
         {
-          "name": "BATTLE COMMS\b",
-          "description": "1AP\n• Select one other friendly KASRKIN operative. Until the end of that operative’s next activation, add 1 to its APL stat (to a maximum of 3 after all APL stat changes have been totalled).\n• This operative can perform this action twice during its activation, but cannot perform this action while within control range of an enemy operative."
-        },
-        {
-          "name": "KASRKIN , IMPERIUM, ASTRA MILITARUM, VOX-TROOPER",
-          "description": "28"
+          "name": "BATTLE COMMS\b (1AP)",
+          "description": "• Select one other friendly KASRKIN operative. Until the end of that operative’s next activation, add 1 to its APL stat (to a maximum of 3 after all APL stat changes have been totalled).\n• This operative can perform this action twice during its activation, but cannot perform this action while within control range of an enemy operative."
         }
       ],
-      "unique_actions": [],
       "keywords": [
         "KASRKIN",
         "IMPERIUM",

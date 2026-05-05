@@ -1,6 +1,6 @@
 {
   "team": "blooded",
-  "generated_at": "2026-05-02T20:36:13.824508+00:00",
+  "generated_at": "2026-05-04T19:45:04.891088+00:00",
   "datacards": [
     {
       "name": "TRAITOR CHIEFTAIN",
@@ -76,26 +76,21 @@
           "special_rules": "Lethal 5+"
         }
       ],
-      "passive_abilities": [
-        {
-          "name": "BLOODED , CHAOS, LEADER, CHIEFTAIN",
-          "description": "25 RULES CONTINUE ON OTHER SIDE"
-        },
-        {
-          "name": "Blooded Icon",
-          "description": "Once per turning point, when a friendly"
-        },
-        {
-          "name": "BLOODED  operative that has one of your Blooded tokens is",
-          "description": "incapacitated, if this operative is within 6\" of it, you can regain that token. Lead With Strength: Whenever this operative has one of your Blooded tokens or is wholly within your opponent’s territory, treat it as if it’s under the GAZE OF THE GODS. TRAITOR CHIEFTAIN 2 APL WOUNDS SAVE MOVE 6\" 5+ 8"
-        }
-      ],
-      "unique_actions": [],
       "keywords": [
         "BLOODED",
         "CHAOS",
         "LEADER",
         "CHIEFTAIN"
+      ],
+      "passive_abilities": [
+        {
+          "name": "Blooded Icon",
+          "description": "Once per turning point, when a friendly BLOODED operative that has one of your Blooded tokens is incapacitated, if this operative is within 6\" of it, you can regain that token."
+        },
+        {
+          "name": "Lead With Strength",
+          "description": "Whenever this operative has one of your Blooded tokens or is wholly within your opponent’s territory, treat it as if it’s under the GAZE OF THE GODS. TRAITOR CHIEFTAIN 2 APL WOUNDS SAVE MOVE 6\" 5+ 8"
+        }
       ]
     },
     {
@@ -127,8 +122,12 @@
       ],
       "passive_abilities": [
         {
-          "name": "BLOODED , CHAOS, BRIMSTONE GRENADIER",
-          "description": "25"
+          "name": "Grenadier",
+          "description": "This operative can use frag and krak grenades (see universal equipment). Doing so doesn’t count towards any limited uses you have (i.e. if you also select those grenades from equipment for other operatives). Whenever it’s doing so, improve the Hit stat of that weapon by 1."
+        },
+        {
+          "name": "Explosive Demise",
+          "description": "If this operative is incapacitated, before it’s removed from the killzone, you can use this rule. If you do, roll two D6, or one D6 if this operative is within control range of an enemy operative. If any result is a 4+, inflict D3+2 damage on each operative visible to and within 2\" of this operative (roll separately for each). If this operative hasn’t used its diabolyk bomb during the battle, inflict D6+2 damage instead."
         }
       ],
       "unique_actions": [],
@@ -155,8 +154,12 @@
       ],
       "passive_abilities": [
         {
-          "name": "BLOODED , CHAOS, BUTCHER",
-          "description": "25"
+          "name": "Unholy Sustenance",
+          "description": "Whenever this operative is fighting or retaliating, if it incapacitates the enemy operative in that sequence, it regains up to D3 lost wounds. This is cumulative with the Symbols of Bloody Worship equipment."
+        },
+        {
+          "name": "*Blood Offering",
+          "description": "Whenever this operative is fighting or retaliating with this weapon, the first time you strike with a critical success during that sequence, you gain one Blooded token."
         }
       ],
       "unique_actions": [],
@@ -195,15 +198,32 @@
       ],
       "passive_abilities": [
         {
-          "name": "BLOODED , CHAOS, CORPSEMAN",
-          "description": "25 RULES CONTINUE ON OTHER SIDE"
+          "name": "Regular Dosage",
+          "description": "At the end of the Select Operatives step, if this operative is selected for deployment, you can select one other friendly BLOODED operative to gain one STIMM rule for the battle (excluding Rejuvenated)."
         },
         {
-          "name": "STIMMS\b",
-          "description": "1AP\n• Select one friendly BLOODED operative within this operative’s control range, then select the Rejuvenated STIMM rule, or one other STIMM rule for that operative to have for the battle. You cannot select each STIMM rule for each operative more than once per battle.\n• This operative cannot perform this action while within control range of an enemy operative. TRAITOR CORPSEMAN 2 APL WOUNDS SAVE MOVE 6\" 5+ 7"
+          "name": "STIMM Rules",
+          "description": ""
+        },
+        {
+          "name": "\t Rejuvenated",
+          "description": "• The operative regains up to 2D3 lost wounds."
+        },
+        {
+          "name": "\t \u0007Enraged",
+          "description": "The operative’s melee weapons have the Relentless weapon rule."
+        },
+        {
+          "name": "\t \u0007Fortified",
+          "description": "Whenever an attack dice inflicts damage of 3 or more on the operative, roll one D6: on a 5+, subtract 1 from that inflicted damage."
         }
       ],
-      "unique_actions": [],
+      "unique_actions": [
+        {
+          "name": "STIMMS\b (1AP)",
+          "description": "• Select one friendly BLOODED operative within this operative’s control range, then select the Rejuvenated STIMM rule, or one other STIMM rule for that operative to have for the battle. You cannot select each STIMM rule for each operative more than once per battle.\n• This operative cannot perform this action while within control range of an enemy operative. TRAITOR CORPSEMAN"
+        }
+      ],
       "keywords": [
         "BLOODED",
         "CHAOS",
@@ -230,21 +250,17 @@
           "damage": "2/3"
         }
       ],
-      "passive_abilities": [
+      "passive_abilities": [],
+      "unique_actions": [
         {
-          "name": "SIGNAL\b",
-          "description": "1AP\n• SUPPORT. Select one other friendly BLOODED operative (excluding OGRYN) visible to and within 6\" of this operative. Until the end of that operative’s next activation, add 1 to its APL stat.\n• This operative cannot perform this action while within control range of an enemy operative."
+          "name": "SIGNAL\b (1AP)",
+          "description": "• SUPPORT. Select one other friendly BLOODED operative (excluding OGRYN) visible to and within 6\" of this operative. Until the end of that operative’s next activation, add 1 to its APL stat.\n• This operative cannot perform this action while within control range of an enemy operative."
         },
         {
-          "name": "SACRILEGIOUS ACTUATION\b",
-          "description": "1AP\n• You gain one Blooded token.\n• This operative cannot perform this action while within control range of an enemy operative, or if it doesn’t have one of your Blooded tokens."
-        },
-        {
-          "name": "BLOODED , CHAOS, COMMSMAN",
-          "description": "25"
+          "name": "SACRILEGIOUS ACTUATION\b (1AP)",
+          "description": "• You gain one Blooded token.\n• This operative cannot perform this action while within control range of an enemy operative, or if it doesn’t have one of your Blooded tokens."
         }
       ],
-      "unique_actions": [],
       "keywords": [
         "BLOODED",
         "CHAOS",
@@ -275,15 +291,16 @@
       ],
       "passive_abilities": [
         {
-          "name": "ENFORCE\b",
-          "description": "1AP\n• Select one other friendly BLOODED operative visible to and within 3\" of this operative. That operative can immediately perform a 1AP action for free, but it cannot move more than 2\" during that action. If the selected friendly operative is a COMMSMAN, it cannot perform the Sacrilegious Actuation or Signal actions.\n• This operative cannot perform this action while within control range of an enemy operative."
-        },
-        {
-          "name": "BLOODED , CHAOS, ENFORCER",
-          "description": "32"
+          "name": "Gruelling Disciplinarian",
+          "description": "• Whenever a friendly BLOODED operative is within 6\" of this operative, you can ignore any changes to that operative’s stats from being injured (including its weapons’ stats).\n• Whenever a friendly BLOODED operative is activated within 6\" of this operative, you can ignore any changes to that operative’s stats from being injured until the end of its activation (including its weapons’ stats)."
         }
       ],
-      "unique_actions": [],
+      "unique_actions": [
+        {
+          "name": "ENFORCE\b (1AP)",
+          "description": "• Select one other friendly BLOODED operative visible to and within 3\" of this operative. That operative can immediately perform a 1AP action for free, but it cannot move more than 2\" during that action. If the selected friendly operative is a COMMSMAN, it cannot perform the Sacrilegious Actuation or Signal actions."
+        }
+      ],
       "keywords": [
         "BLOODED",
         "CHAOS",
@@ -307,8 +324,12 @@
       ],
       "passive_abilities": [
         {
-          "name": "BLOODED , CHAOS, FLENSER",
-          "description": "25"
+          "name": "*Stalk",
+          "description": "Whenever this operative is fighting or retaliating with this weapon, if Light or Heavy terrain is within its control range, this weapon has the Lethal 5+ weapon rule."
+        },
+        {
+          "name": "Wretched",
+          "description": "This operative can perform the Charge action while it has a Conceal order. If this operative is incapacitated during the Fight action, you can strike the enemy operative in that sequence with one of your unresolved successes before this operative is removed from the killzone."
         }
       ],
       "unique_actions": [],
@@ -374,13 +395,6 @@
           "damage": "2/3"
         }
       ],
-      "passive_abilities": [
-        {
-          "name": "BLOODED , CHAOS, GUNNER",
-          "description": "25"
-        }
-      ],
-      "unique_actions": [],
       "keywords": [
         "BLOODED",
         "CHAOS",
@@ -404,8 +418,20 @@
       ],
       "passive_abilities": [
         {
-          "name": "BLOODED , CHAOS, OGRYN",
-          "description": "40"
+          "name": "Avalanche of Muscle",
+          "description": "Whenever this operative ends its move during the Charge action, you can inflict D3 damage on one enemy operative within its control range."
+        },
+        {
+          "name": "Chem-enhanced",
+          "description": "You can ignore any changes to this operative’s APL stat and it’s not affected by enemy operatives’ Shock and Stun weapon rules."
+        },
+        {
+          "name": "Brute",
+          "description": "Whenever your opponent is selecting a valid target, if this operative has a Conceal order, it cannot use Light terrain for cover. While this can allow this operative to be targeted (assuming it’s visible), it doesn’t remove its cover save (if any)."
+        },
+        {
+          "name": "Slow-witted",
+          "description": "You must spend 1 additional AP for this operative to perform the Pick Up Marker and mission actions (excluding Operate Hatch)."
         }
       ],
       "unique_actions": [],
@@ -444,8 +470,12 @@
       ],
       "passive_abilities": [
         {
-          "name": "BLOODED , CHAOS, SHARPSHOOTER",
-          "description": "25"
+          "name": "Camo Cloak",
+          "description": "Whenever an operative is shooting this operative, if you can retain any cover saves, you can retain one additional cover save. This isn’t cumulative with improved cover saves from Vantage terrain."
+        },
+        {
+          "name": "A Name Whispered In Blood",
+          "description": "STRATEGIC GAMBIT in the first turning point. Select one enemy operative. Whenever this operative is shooting that enemy operative, treat this operative as if it has one of your Blooded tokens and is under the GAZE OF THE GODS."
         }
       ],
       "unique_actions": [],
@@ -472,8 +502,8 @@
       ],
       "passive_abilities": [
         {
-          "name": "BLOODED , CHAOS, THUG",
-          "description": "25"
+          "name": "Tough",
+          "description": "Whenever this operative is fighting or retaliating, or an operative is shooting it, Normal Dmg of 3 or more inflicts 1 less damage on it."
         }
       ],
       "unique_actions": [],
@@ -507,8 +537,12 @@
       ],
       "passive_abilities": [
         {
-          "name": "BLOODED , CHAOS, TRENCH SWEEPER",
-          "description": "25"
+          "name": "*Shield",
+          "description": "Whenever this operative is fighting or retaliating with this weapon, each of your blocks can be allocated to block two unresolved successes (instead of one)."
+        },
+        {
+          "name": "Shielding",
+          "description": "Whenever this operative is activated, you can use this rule. If you do, until the start of this operative’s next activation:\n• Subtract 2\" from its Move stat.\n• Whenever an operative is shooting this operative, you can re-roll any of your defence dice."
         }
       ],
       "unique_actions": [],
@@ -540,8 +574,8 @@
       ],
       "passive_abilities": [
         {
-          "name": "BLOODED , CHAOS, TROOPER",
-          "description": "25"
+          "name": "Group Activation",
+          "description": "Whenever this operative is expended, you must then activate one other ready friendly BLOODED TROOPER operative (if able) before your opponent activates. When that other operative is expended, your opponent then activates as normal (in other words, you cannot activate more than two operatives in succession with this rule)."
         }
       ],
       "unique_actions": [],

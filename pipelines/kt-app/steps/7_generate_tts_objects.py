@@ -66,16 +66,16 @@ def generate_urls_json_v3():
         team = team_dir.name
         faction = team_to_faction.get(team, 'unknown')
         cards_dir = team_dir / 'cards'
-        tts_dir = team_dir / 'tts'
+        cardbox_dir = team_dir / 'cardbox'
         
         if not cards_dir.exists():
             continue
         
-        # Add TTS assets (mesh and texture)
-        if tts_dir.exists():
-            for asset_file in tts_dir.glob('*'):
+        # Add cardbox assets (mesh and texture)
+        if cardbox_dir.exists():
+            for asset_file in cardbox_dir.glob('*'):
                 if asset_file.suffix in ['.obj', '.jpg']:
-                    asset_url = f"{base_url}/{team}/tts/{asset_file.name}"
+                    asset_url = f"{base_url}/{team}/cardbox/{asset_file.name}"
                     all_entries.append({
                         'faction': faction,
                         'team': team,

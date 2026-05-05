@@ -63,7 +63,7 @@ class TTSGenerator:
                 if 'card-box-texture' in card['name']:
                     # Store texture URL for this team
                     team_textures[team_key] = card['url']
-                elif 'card-box.obj' in card['name']:
+                elif 'card-box' in card['name'] and card['url'].endswith('.obj'):
                     # Store mesh URL for this team
                     team_meshes[team_key] = card['url']
             else:

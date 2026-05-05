@@ -369,12 +369,16 @@ def _extract_keywords_from_blocks(blocks: list, page_width: float, page_height: 
 def _extract_rules_from_blocks(blocks: list, page_width: float, page_height: float,
                                 region_y1: float) -> list[dict] | None:
     """Extract rules and unique actions from ability blocks below the header."""
+    # Set upper bound to exclude keyword bar (y < 75% of page height)
+    region_y2 = page_height * 0.75
+    
     ability_text = []
     for block in blocks:
         if block.get("type") != 0:
             continue
         bbox = block["bbox"]
-        if bbox[1] >= region_y1:
+        # Only extract from middle region (between header and keyword bar)
+        if region_y1 <= bbox[1] < region_y2:
             for line in block.get("lines", []):
                 line_text = ""
                 is_bold = False
@@ -391,36 +395,65 @@ def _extract_rules_from_blocks(blocks: list, page_width: float, page_height: flo
     if not ability_text:
         return None
 
+    # DEBUG: Log ability_text for Kurnathi
+    for block in blocks:
+        if block.get("type") != 0:
+            continue
+        bbox = block["bbox"]
+        if region_y1 <= bbox[1] < region_y2:
+            for line in block.get("lines", []):
+                for span in line.get("spans", []):
+                    text = span.get("text", "")
+                    if "KURNATHI" in text.upper() or "Blademaster" in text:
+                        logger.info(f"DEBUG: Found text in region: Y={bbox[1]}, text={text[:50]}")
+                        logger.info(f"  ability_text length: {len(ability_text)}")
+                        break
+
     rules = []
     i = 0
+    
     while i < len(ability_text):
         text, is_bold = ability_text[i]
         
-        if is_bold and text.upper() not in ['ABILITIES', 'UNIQUE ACTIONS', 'NOTES:', 'NOTES', 'WEAPONS']:
-            if ':' in text:
-                parts = text.split(':', 1)
-                ability_name = parts[0].strip()
-                ability_desc = parts[1].strip() if len(parts) > 1 else ""
-                j = i + 1
+        # Check for ALL CAPS ability name followed by cost (even if not marked bold)
+        if not is_bold and text.isupper() and len(text) > 3 and i + 1 < len(ability_text):
+            nt, nb = ability_text[i + 1]
+            if nt.endswith('AP') and len(nt) <= 5 and nt[0].isdigit():
+                ua_name = text.lstrip('•■●▪-– ').rstrip('\x08\x07')
+                cost = nt
+                ua_desc = ""
+                j = i + 2
                 while j < len(ability_text):
-                    nt, nb = ability_text[j]
-                    if nb:
+                    dt, db = ability_text[j]
+                    if dt.isupper() and len(dt) > 3 and j + 1 < len(ability_text):
+                        next_t, _ = ability_text[j + 1]
+                        if next_t.endswith('AP') and len(next_t) <= 5:
+                            break
+                    if ',' in dt and dt.isupper() and len(dt) > 10:
                         break
-                    ability_desc += " " + nt
+                    if dt.isdigit() and len(dt) <= 3:
+                        break
+                    ua_desc += " " + dt
                     j += 1
-                if ability_name and ability_name.upper() not in ['NAME', 'ATK', 'HIT', 'DMG', 'WR',
-                                                                 'APL', 'WOUNDS', 'SAVE', 'MOVE',
-                                                                 'UNIQUE ACTIONS', 'ABILITIES', 'NOTES']:
-                    rules.append({"name": ability_name, "description": _clean_extracted_text(ability_desc.strip())})
+                if ua_name and ua_name.upper() not in ['NAME', 'ATK', 'HIT', 'DMG', 'WR',
+                                                         'APL', 'WOUNDS', 'SAVE', 'MOVE',
+                                                         'UNIQUE ACTIONS', 'ABILITIES', 'NOTES']:
+                    full_name = f"{ua_name} ({cost})" if cost != "0AP" else ua_name
+                    rules.append({"name": full_name, "description": _clean_extracted_text(ua_desc.strip())})
                 i = j
                 continue
-            else:
-                ua_name = text
-                ua_desc = ""
+        
+        if is_bold:
+            if ':' in text:
+                parts = text.split(':', 1)
+                ua_name = parts[0].strip().lstrip('•■●▪-– ')
+                ua_desc = parts[1].strip() if len(parts) > 1 else ""
                 j = i + 1
                 while j < len(ability_text):
                     nt, nb = ability_text[j]
-                    if j + 1 < len(ability_text):
+                    if nb and (':' in nt or (nt.endswith('AP') and len(nt) <= 5)):
+                        break
+                    if nb and j + 1 < len(ability_text):
                         pt, pb = ability_text[j + 1]
                         if pb and pt.endswith('AP') and len(pt) <= 5:
                             break
@@ -434,33 +467,34 @@ def _extract_rules_from_blocks(blocks: list, page_width: float, page_height: flo
                     rules.append({"name": ua_name, "description": _clean_extracted_text(ua_desc.strip())})
                 i = j
                 continue
-        elif i + 1 < len(ability_text):
-            nt, nb = ability_text[i + 1]
-            if nb and nt.endswith('AP') and len(nt) <= 5:
-                ua_name = text.lstrip('•■●▪-– ')
-                cost = nt
-                ua_desc = ""
-                j = i + 2
-                while j < len(ability_text):
-                    dt, db = ability_text[j]
-                    if ',' in dt and dt.isupper() and len(dt) > 10:
-                        break
-                    if dt.isdigit() and len(dt) <= 3:
-                        break
-                    if db and j + 1 < len(ability_text):
-                        pt2, pb2 = ability_text[j + 1]
-                        if pb2 and pt2.endswith('AP') and len(pt2) <= 5:
+            elif i + 1 < len(ability_text):
+                nt, nb = ability_text[i + 1]
+                if nb and nt.endswith('AP') and len(nt) <= 5:
+                    ua_name = text.lstrip('•■●▪-– ')
+                    cost = nt
+                    ua_desc = ""
+                    j = i + 2
+                    while j < len(ability_text):
+                        dt, db = ability_text[j]
+                        if ',' in dt and dt.isupper() and len(dt) > 10:
                             break
-                    ua_desc += " " + dt
-                    j += 1
-                if ua_name and ua_name.upper() not in ['NAME', 'ATK', 'HIT', 'DMG', 'WR',
-                                                         'APL', 'WOUNDS', 'SAVE', 'MOVE',
-                                                         'UNIQUE ACTIONS', 'ABILITIES', 'NOTES']:
-                    full_name = f"{ua_name} ({cost})" if cost != "0AP" else ua_name
-                    rules.append({"name": full_name, "description": _clean_extracted_text(ua_desc.strip())})
-                i = j
-                continue
+                        if dt.isdigit() and len(dt) <= 3:
+                            break
+                        if db and j + 1 < len(ability_text):
+                            pt2, pb2 = ability_text[j + 1]
+                            if pb2 and pt2.endswith('AP') and len(pt2) <= 5:
+                                break
+                        ua_desc += " " + dt
+                        j += 1
+                    if ua_name and ua_name.upper() not in ['NAME', 'ATK', 'HIT', 'DMG', 'WR',
+                                                             'APL', 'WOUNDS', 'SAVE', 'MOVE',
+                                                             'UNIQUE ACTIONS', 'ABILITIES', 'NOTES']:
+                        full_name = f"{ua_name} ({cost})" if cost != "0AP" else ua_name
+                        rules.append({"name": full_name, "description": _clean_extracted_text(ua_desc.strip())})
+                    i = j
+                    continue
         i += 1
+    
     return rules if rules else None
 
 

@@ -1,6 +1,6 @@
 {
   "team": "scout-squad",
-  "generated_at": "2026-05-02T20:37:10.967859+00:00",
+  "generated_at": "2026-05-04T19:46:04.370992+00:00",
   "datacards": [
     {
       "name": "SCOUT SERGEANT",
@@ -44,8 +44,12 @@
       ],
       "passive_abilities": [
         {
-          "name": "SCOUT SQUAD , IMPERIUM, ADEPTUS ASTARTES, LEADER, SERGEANT",
-          "description": "28"
+          "name": "Guidance and Experience",
+          "description": "Once during each of this operative’s activations, you can select one other friendly SCOUT SQUAD operative in the killzone. Until the end of that operative’s next activation, add 1 to its APL stat."
+        },
+        {
+          "name": "Astartes",
+          "description": "During this operative’s activation, it can perform either two Shoot actions or two Fight actions. If it’s two Shoot actions, an Astartes shotgun, bolt pistol or boltgun must be selected for at least one of them. This operative can counteract regardless of its order."
         }
       ],
       "unique_actions": [],
@@ -108,8 +112,8 @@
       ],
       "passive_abilities": [
         {
-          "name": "SCOUT SQUAD , IMPERIUM, ADEPTUS ASTARTES, HEAVY GUNNER",
-          "description": "28"
+          "name": "Heavy Weapon Bipod",
+          "description": "Whenever this operative is shooting with a weapon from its datacard, if it hasn’t moved during the activation, or if it’s a counteraction, that weapon has the Ceaseless weapon rule; if the weapon already has that weapon rule (i.e. from the Ambush strategy ploy), it has the Relentless weapon rule instead. Note that this operative isn’t restricted from moving after shooting."
         }
       ],
       "unique_actions": [],
@@ -143,8 +147,12 @@
       ],
       "passive_abilities": [
         {
-          "name": "SCOUT SQUAD , IMPERIUM, ADEPTUS ASTARTES, HUNTER",
-          "description": "28"
+          "name": "Grapnel Launcher",
+          "description": "Whenever this operative is climbing up, you can treat the vertical distance as 2\" (regardless of how far the operative actually moves vertically)."
+        },
+        {
+          "name": "Grapnel Assault",
+          "description": "Whenever this operative performs the Charge action during its activation, if it climbs, drops, jumps or its base moves underneath Vantage terrain during that action, its melee weapons have the Lethal 3+ weapon rule until the end of that activation."
         }
       ],
       "unique_actions": [],
@@ -191,15 +199,16 @@
       ],
       "passive_abilities": [
         {
-          "name": "OPTICS\b",
-          "description": "1AP\n• Until the start of this operative’s next activation, whenever it’s shooting, enemy operatives cannot be obscured.\n• This operative cannot perform this action while within control range of an enemy operative."
-        },
-        {
-          "name": "SCOUT SQUAD , IMPERIUM, ADEPTUS ASTARTES, SNIPER",
-          "description": "28"
+          "name": "Camo Cloak",
+          "description": "Whenever an operative is shooting this operative:\n• Ignore the Saturate weapon rule.\n• If you can retain any cover saves, you can retain one additional cover save, or you can retain one cover save as a critical success instead. This isn’t cumulative with improved cover saves from Vantage terrain."
         }
       ],
-      "unique_actions": [],
+      "unique_actions": [
+        {
+          "name": "OPTICS\b (1AP)",
+          "description": "• Until the start of this operative’s next activation, whenever it’s shooting, enemy operatives cannot be obscured.\n• This operative cannot perform this action while within control range of an enemy operative."
+        }
+      ],
       "keywords": [
         "SCOUT SQUAD",
         "IMPERIUM",
@@ -227,21 +236,17 @@
           "damage": "3/4"
         }
       ],
-      "passive_abilities": [
+      "passive_abilities": [],
+      "unique_actions": [
         {
-          "name": "TRACK ENEMY\b",
-          "description": "1AP\n• Select one enemy operative within 8\" of this operative. Until the end of the turning point, whenever a friendly SCOUT SQUAD operative is shooting that enemy operative, that friendly operative’s ranged weapons have the Seek Light weapon rule.\n• This operative cannot perform this action while within control range of an enemy operative."
+          "name": "TRACK ENEMY\b (1AP)",
+          "description": "• Select one enemy operative within 8\" of this operative. Until the end of the turning point, whenever a friendly SCOUT SQUAD operative is shooting that enemy operative, that friendly operative’s ranged weapons have the Seek Light weapon rule.\n• This operative cannot perform this action while within control range of an enemy operative."
         },
         {
-          "name": "SCOUT SQUAD , IMPERIUM, ADEPTUS ASTARTES, TRACKER",
-          "description": "28 RULES CONTINUE ON OTHER SIDE"
-        },
-        {
-          "name": "AUSPEX SCAN\b",
-          "description": "1AP\n• Until the start of this operative’s next activation or until it’s incapacitated (whichever comes first), whenever a friendly SCOUT SQUAD operative is shooting an enemy operative within 8\" of this operative, that enemy operative cannot be obscured; if that friendly operative is a SNIPER that’s currently benefitting from the effects of its Optics action, its ranged weapons also have the Seek Light weapon rule.\n• This operative cannot perform this action while within control range of an enemy operative. SCOUT TRACKER 2 APL WOUNDS SAVE MOVE 6\" 4+ 10"
+          "name": "AUSPEX SCAN\b (1AP)",
+          "description": "• Until the start of this operative’s next activation or until it’s incapacitated (whichever comes first), whenever a friendly SCOUT SQUAD operative is shooting an enemy operative within 8\" of this operative, that enemy operative cannot be obscured; if that friendly operative is a SNIPER that’s currently benefitting from the effects of its Optics action, its ranged weapons also have the Seek Light weapon rule.\n• This operative cannot perform this action while within control range of an enemy operative. SCOUT TRACKER"
         }
       ],
-      "unique_actions": [],
       "keywords": [
         "SCOUT SQUAD",
         "IMPERIUM",
@@ -291,8 +296,8 @@
       ],
       "passive_abilities": [
         {
-          "name": "SCOUT SQUAD , IMPERIUM, ADEPTUS ASTARTES, WARRIOR",
-          "description": "28"
+          "name": "Adaptive Equipment",
+          "description": "You can do each of the following once per turning point:\n• One friendly SCOUT SQUAD WARRIOR operative can perform the Smoke Grenade action.\n• One friendly SCOUT SQUAD WARRIOR operative can perform the Stun Grenade action."
         }
       ],
       "unique_actions": [],

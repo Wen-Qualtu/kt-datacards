@@ -1,6 +1,6 @@
 {
   "team": "fellgor-ravagers",
-  "generated_at": "2026-05-02T20:36:32.183100+00:00",
+  "generated_at": "2026-05-04T19:45:24.006020+00:00",
   "datacards": [
     {
       "name": "FELLGOR IRONHORN",
@@ -47,8 +47,8 @@
       ],
       "passive_abilities": [
         {
-          "name": "FELLGOR RAVAGER , CHAOS, LEADER, IRONHORN",
-          "description": "32"
+          "name": "Call the Attack",
+          "description": "STRATEGIC GAMBIT if this operative doesn’t have one of your Frenzy tokens. Select one friendly FELLGOR RAVAGER operative visible to and within 6\" of this operative. That selected operative, and each other friendly FELLGOR RAVAGER operative visible to and within 2\" of it, can immediately perform a free Dash action in an order of your choice."
         }
       ],
       "unique_actions": [],
@@ -83,15 +83,20 @@
       ],
       "passive_abilities": [
         {
-          "name": "GONG KNELL\b",
-          "description": "1AP\n• Until the start of this operative’s next activation or until this operative is incapacitated (whichever comes first), whenever an operative is shooting this operative, improve this operative’s Save stat by 1 and ignore the Piercing weapon rule."
+          "name": "Icon Bearer",
+          "description": "This operative isn’t affected by the marker control bullet point of the Frenzy faction rule. Whenever determining control of a marker, treat this operative’s APL stat as 1 higher. Note this isn’t a change to its APL stat, so any changes are cumulative with this."
         },
         {
-          "name": "FELLGOR RAVAGER , CHAOS, DEATHKNELL",
-          "description": "32"
+          "name": "War Gong",
+          "description": "Whenever an attack dice would inflict Critical Dmg on a friendly FELLGOR RAVAGER operative within 3\" of this operative, if this operative doesn’t have one of your Frenzy tokens, you can choose for that attack dice to inflict Normal Dmg instead."
         }
       ],
-      "unique_actions": [],
+      "unique_actions": [
+        {
+          "name": "GONG KNELL\b (1AP)",
+          "description": "• Until the start of this operative’s next activation or until this operative is incapacitated (whichever comes first), whenever an operative is shooting this operative, improve this operative’s Save stat by 1 and ignore the Piercing weapon rule."
+        }
+      ],
       "keywords": [
         "FELLGOR RAVAGER",
         "CHAOS",
@@ -115,15 +120,16 @@
       ],
       "passive_abilities": [
         {
-          "name": "CLEAVER FLURRY\b",
-          "description": "2AP\n• Perform a free Reposition action with this operative. During that action, it can move an additional 2\", and can move within control range of enemy operatives (it cannot begin or end the move there). Inflict D3+1 damage on each enemy operative it moved within control range of (roll separately for each after it’s moved, in the order it moved within control range of them).\n• This operative cannot perform this action while it has a Conceal order."
-        },
-        {
-          "name": "FELLGOR RAVAGER , CHAOS, FLUXBRAY",
-          "description": "32"
+          "name": "Blade Whirl",
+          "description": "Whenever this operative is fighting or retaliating, if it doesn’t have one of your Frenzy tokens, you can resolve one of your successes before the normal order. If you do, that success must be used to block."
         }
       ],
-      "unique_actions": [],
+      "unique_actions": [
+        {
+          "name": "CLEAVER FLURRY\b (2AP)",
+          "description": "• Perform a free Reposition action with this operative. During that action, it can move an additional 2\", and can move within control range of enemy operatives (it cannot begin or end the move there). Inflict D3+1 damage on each enemy operative it moved within control range of (roll separately for each after it’s moved, in the order it moved within control range of them).\n• This operative cannot perform this action while it has a Conceal order."
+        }
+      ],
       "keywords": [
         "FELLGOR RAVAGER",
         "CHAOS",
@@ -154,15 +160,16 @@
       ],
       "passive_abilities": [
         {
-          "name": "UNCOMPROMISING ATTACK\b",
-          "description": "1AP\n• Perform a free Fight action with this operative, then perform a free Shoot action with this operative (or vice versa). This operative can perform that Shoot action while within control range of an enemy operative, but if it does, it can and must target an enemy operative within its control range (even if other friendly operatives are within that enemy operative’s control range). You can only select an autopistol for that Shoot action."
-        },
-        {
-          "name": "FELLGOR RAVAGER , CHAOS, GNARLSCAR",
-          "description": "32"
+          "name": "Sagacious",
+          "description": "At the end of this operative’s activation, you can change its order."
         }
       ],
-      "unique_actions": [],
+      "unique_actions": [
+        {
+          "name": "UNCOMPROMISING ATTACK\b (1AP)",
+          "description": "• Perform a free Fight action with this operative, then perform a free Shoot action with this operative (or vice versa). This operative can perform that Shoot action while within control range of an enemy operative, but if it does, it can and must target an enemy operative within its control range (even if other friendly operatives are within that enemy operative’s control range). You can only select an autopistol for that Shoot action."
+        }
+      ],
       "keywords": [
         "FELLGOR RAVAGER",
         "CHAOS",
@@ -193,8 +200,12 @@
       ],
       "passive_abilities": [
         {
-          "name": "FELLGOR RAVAGER , CHAOS, GOREHORN",
-          "description": "32"
+          "name": "Champion",
+          "description": "This operative can perform two Fight actions during its activation."
+        },
+        {
+          "name": "*Headtaker",
+          "description": "Whenever this operative incapacitates an operative with this weapon, roll one D3:\n• This operative regains a number of lost wounds equal to the result (unless it has a Frenzy token).\n• Until the end of the battle, add the result to the Critical Dmg stat of this operative’s skullcleaver (to a maximum of 8)."
         }
       ],
       "unique_actions": [],
@@ -235,15 +246,16 @@
       ],
       "passive_abilities": [
         {
-          "name": "INCITE FURY\b",
-          "description": "1AP\n• SUPPORT. Select one other friendly FELLGOR RAVAGER operative (excluding SHAMAN or IRONHORN) visible to and within 3\" of this operative. Until the end of that operative’s next activation, add 1 to its APL stat.\n• This operative cannot perform this action while within control range of an enemy operative."
-        },
-        {
-          "name": "FELLGOR RAVAGER , CHAOS, HERD-GOAD",
-          "description": "32"
+          "name": "Whip Control",
+          "description": "Whenever an enemy operative is visible to and within 3\" of this operative, if this operative isn’t within control range of any other enemy operatives:\n• Subtract 1 from the Atk stat of that enemy operative’s melee weapons (to a minimum of 1).\n• Your opponent must spend 1 additional AP for that enemy operative to perform the Fall Back action."
         }
       ],
-      "unique_actions": [],
+      "unique_actions": [
+        {
+          "name": "INCITE FURY\b (1AP)",
+          "description": "• SUPPORT. Select one other friendly FELLGOR RAVAGER operative (excluding SHAMAN or IRONHORN) visible to and within 3\" of this operative. Until the end of that operative’s next activation, add 1 to its APL stat.\n• This operative cannot perform this action while within control range of an enemy operative."
+        }
+      ],
       "keywords": [
         "FELLGOR RAVAGER",
         "CHAOS",
@@ -267,8 +279,16 @@
       ],
       "passive_abilities": [
         {
-          "name": "FELLGOR RAVAGER , CHAOS, MANGLER",
-          "description": "32"
+          "name": "*Tactual Hunter",
+          "description": "Whenever this operative is fighting with this weapon against an expended operative, the first time you strike with a critical success during that sequence, you can immediately resolve another of your successes as a strike (before your opponent)."
+        },
+        {
+          "name": "Berserker",
+          "description": "This operative cannot perform the Shoot action (other than Guard, but cannot then perform a free Shoot action during the interruption). You must spend 1 additional AP for this operative to perform the Pick Up Marker and mission actions (excluding Operate Hatch)."
+        },
+        {
+          "name": "Savage",
+          "description": "The first time this operative performs the Fight action during each of its activations, if it isn’t incapacitated, it can immediately perform a free Fight action afterwards (you don't have to select the same enemy operative to fight against). This takes precedence over action restrictions, and you cannot use the Ruthless Rampage firefight ploy between those two Fight actions."
         }
       ],
       "unique_actions": [],
@@ -307,21 +327,17 @@
           "special_rules": "Shock"
         }
       ],
-      "passive_abilities": [
+      "passive_abilities": [],
+      "unique_actions": [
         {
-          "name": "APOPLECTIC REJUVENATION\b",
-          "description": "1AP\n• Select one friendly FELLGOR RAVAGER operative that doesn’t have one of your Frenzy tokens and is visible to and within 6\" of this operative. That friendly operative regains up to 2D3 lost wounds; if that operative has incapacitated an enemy operative while fighting or retaliating during the battle, it regains up to 6 lost wounds instead.\n• This operative cannot perform this action while within control range of an enemy operative."
+          "name": "APOPLECTIC REJUVENATION\b (1AP)",
+          "description": "• Select one friendly FELLGOR RAVAGER operative that doesn’t have one of your Frenzy tokens and is visible to and within 6\" of this operative. That friendly operative regains up to 2D3 lost wounds; if that operative has incapacitated an enemy operative while fighting or retaliating during the battle, it regains up to 6 lost wounds instead.\n• This operative cannot perform this action while within control range of an enemy operative."
         },
         {
-          "name": "FELLGOR RAVAGER , CHAOS, PSYKER, SHAMAN",
-          "description": "32 RULES CONTINUE ON OTHER SIDE"
-        },
-        {
-          "name": "MANTLE OF DARKNESS\b",
-          "description": "1AP\n• PSYCHIC. Until the start of this operative’s next activation or until it’s incapacitated (whichever comes first), whenever a friendly FELLGOR RAVAGER operative is visible to and within 3\" of this operative, has a Conceal order and is in cover, that friendly operative cannot be selected as a valid target, taking precedence over all other rules (e.g. Seek, Vantage terrain) except being within 2\".\n• This operative cannot perform this action while within control range of an enemy operative. FELLGOR SHAMAN 2 APL WOUNDS SAVE MOVE 6\" 5+ 10"
+          "name": "MANTLE OF DARKNESS\b (1AP)",
+          "description": "• PSYCHIC. Until the start of this operative’s next activation or until it’s incapacitated (whichever comes first), whenever a friendly FELLGOR RAVAGER operative is visible to and within 3\" of this operative, has a Conceal order and is in cover, that friendly operative cannot be selected as a valid target, taking precedence over all other rules (e.g. Seek, Vantage terrain) except being within 2\".\n• This operative cannot perform this action while within control range of an enemy operative. FELLGOR SHAMAN"
         }
       ],
-      "unique_actions": [],
       "keywords": [
         "FELLGOR RAVAGER",
         "CHAOS",
@@ -352,8 +368,12 @@
       ],
       "passive_abilities": [
         {
-          "name": "FELLGOR RAVAGER , CHAOS, TOXHORN",
-          "description": "32"
+          "name": "Toxic Blessings",
+          "description": "You can ignore any changes to this operative’s APL stat and it’s not affected by enemy operatives’ Shock weapon rule. Whenever an attack dice inflicts Normal Dmg of 3 or more on this operative, roll one D6: on a 5+, subtract 1 from that inflicted damage."
+        },
+        {
+          "name": "Pox Bomb",
+          "description": "This operative can use stun grenades (see universal equipment). Doing so doesn’t count towards any limited uses you have (i.e. if you also select that grenade from equipment for other operatives). Whenever an enemy operative takes a stun test as a result of this operative performing the Stun Grenade action, if the result is a 3+, also inflict damage on that enemy operative equal to the dice result halved (rounding up)."
         }
       ],
       "unique_actions": [],
@@ -380,15 +400,16 @@
       ],
       "passive_abilities": [
         {
-          "name": "SWEEPING BLOW\b",
-          "description": "1AP\n• Inflict D3+1 damage on each other operative visible to and within 2\" of this operative in an order of your choice (roll separately for each).\n• This operative cannot perform this action while it has a Conceal order."
-        },
-        {
-          "name": "FELLGOR RAVAGER , CHAOS, VANDAL",
-          "description": "32"
+          "name": "*Vicious Blows",
+          "description": "Whenever this operative is fighting, this weapon has the Ceaseless weapon rule."
         }
       ],
-      "unique_actions": [],
+      "unique_actions": [
+        {
+          "name": "SWEEPING BLOW\b (1AP)",
+          "description": "• Inflict D3+1 damage on each other operative visible to and within 2\" of this operative in an order of your choice (roll separately for each).\n• This operative cannot perform this action while it has a Conceal order."
+        }
+      ],
       "keywords": [
         "FELLGOR RAVAGER",
         "CHAOS",
@@ -425,8 +446,8 @@
       ],
       "passive_abilities": [
         {
-          "name": "FELLGOR RAVAGER , CHAOS, WARRIOR",
-          "description": "32"
+          "name": "Warrior Frenzy",
+          "description": "Whenever this operative has one of your Frenzy tokens, it cannot be injured. This takes precedence over the normal Frenzy rules."
         }
       ],
       "unique_actions": [],

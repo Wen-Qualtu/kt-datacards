@@ -1,6 +1,6 @@
 {
   "team": "phobos-strike-team",
-  "generated_at": "2026-05-02T20:37:04.596853+00:00",
+  "generated_at": "2026-05-04T19:45:57.709485+00:00",
   "datacards": [
     {
       "name": "INFILTRATOR SERGEANT",
@@ -25,8 +25,8 @@
       ],
       "passive_abilities": [
         {
-          "name": "PHOBOS STRIKE TEAM , IMPERIUM, ADEPTUS ASTARTES, LEADER, INFILTRATOR, SERGEANT",
-          "description": "32"
+          "name": "Tactical Advantage",
+          "description": "You can do each of the following once per battle:\n• After rolling-off to decide initiative, if this operative is in the killzone, you can re-roll your dice.\n• You can use a firefight ploy for 0CP if this is the specified PHOBOS STRIKE TEAM operative (including Command Re-roll if the attack or defence dice was rolled for this operative), or the Patient Ambush firefight ploy for 0CP if this operative is ready and not within control range of enemy operatives."
         }
       ],
       "unique_actions": [],
@@ -62,8 +62,12 @@
       ],
       "passive_abilities": [
         {
-          "name": "PHOBOS STRIKE TEAM , IMPERIUM, ADEPTUS ASTARTES, INFILTRATOR, COMMSMAN",
-          "description": "32"
+          "name": "Strategic Oversight",
+          "description": "In the Ready step of each Strategy phase, when you gain CP, if this operative is in the killzone and isn’t within control range of enemy operatives, you can use this rule. If you do, roll one D6: on a 4+, you gain one additional CP."
+        },
+        {
+          "name": "Comms Array",
+          "description": "Once per turning point, during a friendly PHOBOS STRIKE TEAM operative’s activation or counteraction, before or after it performs an action, if this operative is in the killzone, you can change one strategy ploy you’ve used this turning point (it doesn’t cost you any CP to do so)."
         }
       ],
       "unique_actions": [],
@@ -98,15 +102,16 @@
       ],
       "passive_abilities": [
         {
-          "name": "PHOBOS STRIKE TEAM , IMPERIUM, ADEPTUS ASTARTES, MEDIC, INFILTRATOR, HELIX ADEPT",
-          "description": "32 RULES CONTINUE ON OTHER SIDE"
-        },
-        {
-          "name": "HELIX GAUNTLET\b",
-          "description": "1AP\n• Select one friendly PHOBOS STRIKE TEAM operative within this operative’s control range to regain up to D3+3 lost wounds. It cannot be an operative that the Medic! rule was used on during this turning point.\n• This operative cannot perform this action while within control range of an enemy operative. INFILTRATOR HELIX ADEPT 3 APL WOUNDS SAVE MOVE 7\" 3+ 12"
+          "name": "Medic!",
+          "description": "The first time during each turning point that another friendly PHOBOS STRIKE TEAM operative would be incapacitated while visible to and within 3\" of this operative, you can use this rule, providing neither this nor that operative is within control range of an enemy operative. If you do, that friendly operative isn’t incapacitated, has D3 wounds remaining and cannot be incapacitated for the remainder of the action. After that action, that friendly operative can immediately perform a free Dash action, but must end that move within this operative’s control range. Subtract 1 from this and that operative’s APL stats until the end of their next activations respectively, and if this rule was used during that friendly operative’s activation, that activation ends. You cannot use this rule if this operative is incapacitated, or if it’s a Shoot action and this operative would be a primary or secondary target."
         }
       ],
-      "unique_actions": [],
+      "unique_actions": [
+        {
+          "name": "HELIX GAUNTLET\b (1AP)",
+          "description": "• Select one friendly PHOBOS STRIKE TEAM operative within this operative’s control range to regain up to D3+3 lost wounds. It cannot be an operative that the Medic! rule was used on during this turning point.\n• This operative cannot perform this action while within control range of an enemy operative. INFILTRATOR HELIX ADEPT"
+        }
+      ],
       "keywords": [
         "PHOBOS STRIKE TEAM",
         "IMPERIUM",
@@ -146,8 +151,12 @@
       ],
       "passive_abilities": [
         {
-          "name": "PHOBOS STRIKE TEAM , IMPERIUM, ADEPTUS ASTARTES, INFILTRATOR, SABOTEUR",
-          "description": "32"
+          "name": "Plant Explosives",
+          "description": "This operative is carrying your Explosives marker. It can perform the Pick Up Marker action on that marker, and whenever it performs the Place Marker action on that marker, it can immediately perform a free Dash action."
+        },
+        {
+          "name": "*Detonate",
+          "description": "Don’t select a valid target. Instead, shoot against each operative within 2\" of your Explosives marker, unless Heavy terrain is wholly intervening between that operative and that marker. Each of those operatives cannot be in cover or obscured. Roll each sequence separately in an order of your choice. This weapon cannot be selected if your Explosives marker isn’t in the killzone. At the end of the action, remove your Explosives marker from the killzone. In a killzone that uses the close quarters rules (e.g. Killzone: Tomb World), this weapon has the Lethal 5+ weapon rule."
         }
       ],
       "unique_actions": [],
@@ -182,8 +191,8 @@
       ],
       "passive_abilities": [
         {
-          "name": "PHOBOS STRIKE TEAM , IMPERIUM, ADEPTUS ASTARTES, INFILTRATOR, VETERAN",
-          "description": "32"
+          "name": "*Custom",
+          "description": "At the end of the Select Operatives step, if this operative is selected for deployment, select up to two of the following weapon rules for this weapon to have for the battle: Balanced, Lethal 5+, Piercing Crits 1, Rending, Saturate."
         }
       ],
       "unique_actions": [],
@@ -218,15 +227,16 @@
       ],
       "passive_abilities": [
         {
-          "name": "AUSPEX SCAN\b",
-          "description": "1AP\n• Until the start of this operative’s next activation or until it’s incapacitated (whichever comes first), whenever a friendly PHOBOS STRIKE TEAM operative is shooting an enemy operative within 8\" of this operative, that enemy operative cannot be obscured; if that friendly operative is an INCURSOR, its ranged weapons also have the Seek Light weapon rule.\n• This operative cannot perform this action while within control range of an enemy operative."
-        },
-        {
-          "name": "PHOBOS STRIKE TEAM , IMPERIUM, ADEPTUS ASTARTES, INFILTRATOR, VOXBREAKER",
-          "description": "32"
+          "name": "Voxbreak",
+          "description": "Whenever an enemy operative is within 6\" of this operative, your opponent cannot re-roll their attack or defence dice for that operative."
         }
       ],
-      "unique_actions": [],
+      "unique_actions": [
+        {
+          "name": "AUSPEX SCAN\b (1AP)",
+          "description": "• Until the start of this operative’s next activation or until it’s incapacitated (whichever comes first), whenever a friendly PHOBOS STRIKE TEAM operative is shooting an enemy operative within 8\" of this operative, that enemy operative cannot be obscured; if that friendly operative is an INCURSOR, its ranged weapons also have the Seek Light weapon rule.\n• This operative cannot perform this action while within control range of an enemy operative."
+        }
+      ],
       "keywords": [
         "PHOBOS STRIKE TEAM",
         "IMPERIUM",
@@ -258,8 +268,8 @@
       ],
       "passive_abilities": [
         {
-          "name": "PHOBOS STRIKE TEAM , IMPERIUM, ADEPTUS ASTARTES, INFILTRATOR, WARRIOR",
-          "description": "32"
+          "name": "Vanguard",
+          "description": "Once per turning point, one friendly PHOBOS STRIKE TEAM operative with this rule can perform the Pick Up Marker or a mission action for 1 less AP."
         }
       ],
       "unique_actions": [],
@@ -294,8 +304,8 @@
       ],
       "passive_abilities": [
         {
-          "name": "PHOBOS STRIKE TEAM , IMPERIUM, ADEPTUS ASTARTES, LEADER, INCURSOR, SERGEANT",
-          "description": "32"
+          "name": "Tactical Advantage",
+          "description": "You can do each of the following once per battle:\n• After rolling-off to decide initiative, if this operative is in the killzone, you can re-roll your dice.\n• You can use a firefight ploy for 0CP if this is the specified PHOBOS STRIKE TEAM operative (including Command Re-roll if the attack or defence dice was rolled for this operative), or the Patient Ambush firefight ploy for 0CP if this operative is ready and not within control range of enemy operatives."
         }
       ],
       "unique_actions": [],
@@ -331,8 +341,8 @@
       ],
       "passive_abilities": [
         {
-          "name": "PHOBOS STRIKE TEAM , IMPERIUM, ADEPTUS ASTARTES, INCURSOR, MARKSMAN",
-          "description": "32"
+          "name": "Track Target",
+          "description": "This operative can perform the Guard action during its activation regardless of the killzone (see close quarters rules, Kill Team Core Book). It can perform the Guard action while it has a Conceal order, but when you perform the free Shoot or Fight action during the interruption, you must change its order to Engage."
         }
       ],
       "unique_actions": [],
@@ -367,8 +377,12 @@
       ],
       "passive_abilities": [
         {
-          "name": "PHOBOS STRIKE TEAM , IMPERIUM, ADEPTUS ASTARTES, INCURSOR, MINELAYER",
-          "description": "32"
+          "name": "Haywire Mine",
+          "description": "This operative is carrying your Haywire Mine marker. It can perform the Pick Up Marker action on that marker, but that marker cannot be placed within an enemy operative’s control range (if this operative is incapacitated while carrying that marker and that marker cannot be placed, it’s removed with this operative)."
+        },
+        {
+          "name": "Proximity Mine",
+          "description": "The first time your Haywire Mine marker is within another operative’s control range, remove that marker, subtract 1 from that operative’s APL stat until the end of its next activation, and inflict 2D3+3 damage on it; if it isn’t incapacitated, end its action (if any), even if that action’s effects aren’t fulfilled. If it cannot be placed, move it the minimum amount to do so. Note that this operative is ignored for these effects (i.e. it cannot set it off or take damage from that marker)."
         }
       ],
       "unique_actions": [],
@@ -403,8 +417,8 @@
       ],
       "passive_abilities": [
         {
-          "name": "PHOBOS STRIKE TEAM , IMPERIUM, ADEPTUS ASTARTES, INCURSOR, WARRIOR",
-          "description": "32"
+          "name": "Vanguard",
+          "description": "Once per turning point, one friendly PHOBOS STRIKE TEAM operative with this rule can perform the Pick Up Marker or a mission action for 1 less AP."
         }
       ],
       "unique_actions": [],
@@ -452,8 +466,12 @@
       ],
       "passive_abilities": [
         {
-          "name": "PHOBOS STRIKE TEAM , IMPERIUM, ADEPTUS ASTARTES, LEADER, REIVER, SERGEANT",
-          "description": "32"
+          "name": "Grav-chute and Grapnel Launcher",
+          "description": "Whenever this operative is climbing up, you can treat the vertical distance as 2\" (regardless of how far the operative actually moves vertically). Whenever this operative is dropping, ignore the vertical distance."
+        },
+        {
+          "name": "Tactical Advantage",
+          "description": "You can do each of the following once per battle:\n• After rolling-off to decide initiative, if this operative is in the killzone, you can re-roll your dice.\n• You can use a firefight ploy for 0CP if this is the specified PHOBOS STRIKE TEAM operative (including Command Re-roll if the attack or defence dice was rolled for this operative), or the Patient Ambush firefight ploy for 0CP if this operative is ready and not within control range of enemy operatives."
         }
       ],
       "unique_actions": [],
@@ -502,8 +520,12 @@
       ],
       "passive_abilities": [
         {
-          "name": "PHOBOS STRIKE TEAM , IMPERIUM, ADEPTUS ASTARTES, REIVER, WARRIOR",
-          "description": "32"
+          "name": "Grav-chute and Grapnel Launcher",
+          "description": "Whenever this operative is climbing up, you can treat the vertical distance as 2\" (regardless of how far the operative actually moves vertically). Whenever this operative is dropping, ignore the vertical distance."
+        },
+        {
+          "name": "Vanguard",
+          "description": "Once per turning point, one friendly PHOBOS STRIKE TEAM operative with this rule can perform the Pick Up Marker or a mission action for 1 less AP."
         }
       ],
       "unique_actions": [],

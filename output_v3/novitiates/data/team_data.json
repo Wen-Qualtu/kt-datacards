@@ -1,6 +1,6 @@
 {
   "team": "novitiates",
-  "generated_at": "2026-05-02T20:36:59.089091+00:00",
+  "generated_at": "2026-05-04T19:45:52.089911+00:00",
   "datacards": [
     {
       "name": "NOVITIATE SUPERIOR",
@@ -53,8 +53,8 @@
       ],
       "passive_abilities": [
         {
-          "name": "NOVITIATE , IMPERIUM, ADEPTA SORORITAS, LEADER, SUPERIOR",
-          "description": "32"
+          "name": "Inspirational Example",
+          "description": "Whenever this operative incapacitates an enemy operative, you gain 1 Faith point, or 2 Faith points if that enemy operative had a Wounds stat of 12 or more. This rule has no effect when using the Glorious Martyrdom firefight ploy."
         }
       ],
       "unique_actions": [],
@@ -90,8 +90,12 @@
       ],
       "passive_abilities": [
         {
-          "name": "NOVITIATE , IMPERIUM, ADEPTA SORORITAS, CONDEMNOR",
-          "description": "28"
+          "name": "Null Rod",
+          "description": "PSYCHIC ranged weapons cannot inflict damage on this operative. For the effects of PSYCHIC actions, this operative cannot be selected and is never treated as being within those actions’ required distances. Whenever an operative is within 6\" of this operative:\n• That operative cannot perform PSYCHIC actions or use PSYCHIC additional rules.\n• That operative cannot use PSYCHIC ranged weapons.\n• PSYCHIC melee weapons have no weapon rules and cannot have Dmg stats higher than 3/4."
+        },
+        {
+          "name": "*Anti-PSYKER",
+          "description": "Whenever this weapon is being used against an operative that has the PSYKER keyword, add 1 to both Dmg stats of this weapon and it has the Lethal 5+ weapon rule."
         }
       ],
       "unique_actions": [],
@@ -126,23 +130,16 @@
       ],
       "passive_abilities": [
         {
-          "name": "STIRRING RHETORIC\b",
-          "description": "1AP\n• SUPPORT. Select one other friendly NOVITIATE operative visible to and within 6\" of this operative, or within 6\" of your Auto-broadcaster marker. Until the end of that operative’s next activation, add 1 to its APL stat (to a maximum of 3 after all APL stat changes have been totalled).\n• This operative cannot perform this action while within control range of an enemy operative."
-        },
-        {
-          "name": "NOVITIATE , IMPERIUM, ADEPTA SORORITAS, DIALOGUS",
-          "description": "28 RULES CONTINUE ON OTHER SIDE"
-        },
-        {
-          "name": "NOVITIATE DIALOGUS",
-          "description": "2 APL WOUNDS SAVE MOVE 6\" 4+ 7"
-        },
-        {
           "name": "AUTO-BROADCASTER\b",
-          "description": "0AP\n• If your Auto-broadcaster marker isn’t in the killzone, place it within 8\" horizontally of this operative; otherwise, move your Auto- broadcaster marker up to 8\" horizontally. If this operative is removed from the killzone, remove your Auto-broadcaster marker from the killzone.\n• Whenever an enemy operative within 3\" of your Auto-broadcaster marker is shooting, fighting or retaliating, your opponent cannot re-roll their attack dice.\n• This operative cannot perform this action while within control range of an enemy operative."
+          "description": "• If your Auto-broadcaster marker isn’t in the killzone, place it within 8\" horizontally of this operative; otherwise, move your Auto- broadcaster marker up to 8\" horizontally. If this operative is removed from the killzone, remove your Auto-broadcaster marker from the killzone.\n• Whenever an enemy operative within 3\" of your Auto-broadcaster marker is shooting, fighting or retaliating, your opponent cannot re-roll their attack dice.\n• This operative cannot perform this action while within control range of an enemy operative."
         }
       ],
-      "unique_actions": [],
+      "unique_actions": [
+        {
+          "name": "STIRRING RHETORIC\b (1AP)",
+          "description": "• SUPPORT. Select one other friendly NOVITIATE operative visible to and within 6\" of this operative, or within 6\" of your Auto-broadcaster marker. Until the end of that operative’s next activation, add 1 to its APL stat (to a maximum of 3 after all APL stat changes have been totalled).\n• This operative cannot perform this action while within control range of an enemy operative."
+        }
+      ],
       "keywords": [
         "NOVITIATE",
         "IMPERIUM",
@@ -174,8 +171,8 @@
       ],
       "passive_abilities": [
         {
-          "name": "NOVITIATE , IMPERIUM, ADEPTA SORORITAS, DUELLIST",
-          "description": "28"
+          "name": "*Riposte",
+          "description": "Whenever you block with a critical success, you can also inflict damage equal to the weapon’s Critical Dmg stat on the enemy operative in that sequence."
         }
       ],
       "unique_actions": [],
@@ -208,17 +205,13 @@
           "special_rules": "Lethal 5+, Shock"
         }
       ],
-      "passive_abilities": [
+      "passive_abilities": [],
+      "unique_actions": [
         {
-          "name": "WHIP INTO FRENZY\b",
-          "description": "1AP\n• Select one other friendly NOVITIATE operative (excluding SUPERIOR) visible to and within 3\" of this operative that isn’t currently benefitting from the effects of this action. Until the end of that operative’s next activation, add 1\" to its Move stat, it can perform two Fight actions during its next activation, and one of them can be free.\n• This operative cannot perform this action while within control range of an enemy operative."
-        },
-        {
-          "name": "NOVITIATE , IMPERIUM, ADEPTA SORORITAS, EXACTOR",
-          "description": "28"
+          "name": "WHIP INTO FRENZY\b (1AP)",
+          "description": "• Select one other friendly NOVITIATE operative (excluding SUPERIOR) visible to and within 3\" of this operative that isn’t currently benefitting from the effects of this action. Until the end of that operative’s next activation, add 1\" to its Move stat, it can perform two Fight actions during its next activation, and one of them can be free.\n• This operative cannot perform this action while within control range of an enemy operative."
         }
       ],
-      "unique_actions": [],
       "keywords": [
         "NOVITIATE",
         "IMPERIUM",
@@ -250,15 +243,16 @@
       ],
       "passive_abilities": [
         {
-          "name": "NOVITIATE , IMPERIUM, ADEPTA SORORITAS, MEDIC, HOSPITALLER",
-          "description": "28 RULES CONTINUE ON OTHER SIDE"
-        },
-        {
-          "name": "CHIRURGEON’S TOOLS\b",
-          "description": "1AP\n• Select one friendly NOVITIATE operative within this operative’s control range to regain up to 2D3 lost wounds. It cannot be an operative that the Medic! rule was used on during this turning point.\n• This operative cannot perform this action while within control range of an enemy operative. NOVITIATE HOSPITALLER 2 APL WOUNDS SAVE MOVE 6\" 4+ 7"
+          "name": "Medic!",
+          "description": "The first time during each turning point that another friendly NOVITIATE operative would be incapacitated while visible to and within 3\" of this operative, you can use this rule, providing neither this nor that operative is within control range of an enemy operative. If you do, that friendly operative isn’t incapacitated, has 1 wound remaining and cannot be incapacitated for the remainder of the action. After that action, that friendly operative can immediately perform a free Dash action, but must end that move within this operative’s control range. Subtract 1 from this and that operative’s APL stats until the end of their next activations respectively, and if this rule was used during that friendly operative’s activation, that activation ends. You cannot use this rule if this operative is incapacitated, or if it’s a Shoot action and this operative would be a primary or secondary target."
         }
       ],
-      "unique_actions": [],
+      "unique_actions": [
+        {
+          "name": "CHIRURGEON’S TOOLS\b (1AP)",
+          "description": "• Select one friendly NOVITIATE operative within this operative’s control range to regain up to 2D3 lost wounds. It cannot be an operative that the Medic! rule was used on during this turning point.\n• This operative cannot perform this action while within control range of an enemy operative. NOVITIATE HOSPITALLER"
+        }
+      ],
       "keywords": [
         "NOVITIATE",
         "IMPERIUM",
@@ -302,8 +296,8 @@
       ],
       "passive_abilities": [
         {
-          "name": "NOVITIATE , IMPERIUM, ADEPTA SORORITAS, MILITANT",
-          "description": "28"
+          "name": "Militant Faith",
+          "description": "Whenever this operative is shooting, fighting or retaliating, if you use an ACT OF FAITH during that sequence and an enemy operative is incapacitated, the Faith points spent on that ACT OF FAITH are refunded. If you use the Icon of Faith equipment, Faith points are only refunded for one of those ACTS OF FAITH (your choice)."
         }
       ],
       "unique_actions": [],
@@ -338,8 +332,12 @@
       ],
       "passive_abilities": [
         {
-          "name": "NOVITIATE , IMPERIUM, ADEPTA SORORITAS, PENITENT",
-          "description": "28"
+          "name": "*Zealous Rage",
+          "description": "Whenever this operative is fighting with this weapon, it has the Ceaseless weapon rule."
+        },
+        {
+          "name": "Absolution Through Destruction",
+          "description": "Whenever this operative performs the Fight action, if it isn’t incapacitated, it can immediately perform a free Fight action afterwards. This takes precedence over action restrictions, and you cannot perform more than two Fight actions in succession as a result of this rule. If this operative is benefitting from the effects of the Whip Into Frenzy action (see EXACTOR), this applies to each of the Fight actions from those effects."
         }
       ],
       "unique_actions": [],
@@ -367,8 +365,12 @@
       ],
       "passive_abilities": [
         {
-          "name": "NOVITIATE , IMPERIUM, ADEPTA SORORITAS, PRECEPTOR",
-          "description": "28"
+          "name": "Unflinching Example",
+          "description": "Whenever this operative incapacitates a ready enemy operative within its control range, you gain 1 Faith point, or 2 Faith points if that enemy operative had a Wounds stat of 12 or more."
+        },
+        {
+          "name": "Glorious Hymnal",
+          "description": "SUPPORT. Whenever a friendly NOVITIATE operative is within 3\" of this operative, that friendly operative’s weapons have the Severe weapon rule."
         }
       ],
       "unique_actions": [],
@@ -402,8 +404,12 @@
       ],
       "passive_abilities": [
         {
-          "name": "NOVITIATE , IMPERIUM, ADEPTA SORORITAS, PRONATUS",
-          "description": "28"
+          "name": "Relic Seeker",
+          "description": "Once during each of this operative’s activations, it can perform the Pick Up Marker, Place Marker or a mission action for 1 less AP."
+        },
+        {
+          "name": "Divine Acquisition",
+          "description": "Once per turning point, when this operative performs a mission action that requires it to control an objective or mission marker, you gain a number of Faith points equal to the turning point number."
         }
       ],
       "unique_actions": [],
@@ -437,8 +443,8 @@
       ],
       "passive_abilities": [
         {
-          "name": "NOVITIATE , IMPERIUM, ADEPTA SORORITAS, PURGATUS",
-          "description": "28"
+          "name": "Purge with Flame",
+          "description": "Once per turning point, you can use the Inferno firefight ploy for 0CP if this is the specified friendly NOVITIATE operative."
         }
       ],
       "unique_actions": [],
@@ -472,15 +478,16 @@
       ],
       "passive_abilities": [
         {
-          "name": "RAISE ICON\b",
-          "description": "1AP\n• You gain 1 Faith point. If this operative controls an objective marker, you also gain a number of Faith points equal to the turning point number.\n• This operative cannot perform this action more than once per turning point, and cannot perform it while within control range of an enemy operative."
-        },
-        {
-          "name": "NOVITIATE , IMPERIUM, ADEPTA SORORITAS, RELIQUARIUS",
-          "description": "28"
+          "name": "Icon Bearer",
+          "description": "Whenever determining control of a marker, treat this operative’s APL stat as 1 higher. Note this isn’t a change to its APL stat, so any changes are cumulative with this."
         }
       ],
-      "unique_actions": [],
+      "unique_actions": [
+        {
+          "name": "RAISE ICON\b (1AP)",
+          "description": "• You gain 1 Faith point. If this operative controls an objective marker, you also gain a number of Faith points equal to the turning point number.\n• This operative cannot perform this action more than once per turning point, and cannot perform it while within control range of an enemy operative."
+        }
+      ],
       "keywords": [
         "NOVITIATE",
         "IMPERIUM",

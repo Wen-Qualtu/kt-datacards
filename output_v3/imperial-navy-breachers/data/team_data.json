@@ -1,6 +1,6 @@
 {
   "team": "imperial-navy-breachers",
-  "generated_at": "2026-05-02T20:36:44.467233+00:00",
+  "generated_at": "2026-05-04T19:45:36.887033+00:00",
   "datacards": [
     {
       "name": "NAVIS SERGEANT-AT-ARMS",
@@ -56,26 +56,17 @@
           "special_rules": "Lethal 5+"
         }
       ],
-      "passive_abilities": [
-        {
-          "name": "IMPERIAL NAVY BREACHER , IMPERIUM, LEADER, SERGEANT-AT-ARMS",
-          "description": "25 RULES CONTINUE ON OTHER SIDE"
-        },
-        {
-          "name": "Command Breach",
-          "description": "Whenever you would use the Attack Order or Defence Order strategy ploy, if this operative is in the killzone, it costs you 0CP. Once during each of this operative’s activations, before or after it performs an action, if your Attack Order or Defence Order marker is in the killzone (see relevant strategy ploy), you can either:\n• Remove that marker and place it again.\n• Change the selected ploy to the other (e.g. your Attack Order becomes a Defence Order). You cannot do both, and you don’t need to spend any CP to change the ploy."
-        },
-        {
-          "name": "NAVIS SERGEANT-AT-ARMS",
-          "description": "2 APL WOUNDS SAVE MOVE 6\" 4+ 9"
-        }
-      ],
-      "unique_actions": [],
       "keywords": [
         "IMPERIAL NAVY BREACHER",
         "IMPERIUM",
         "LEADER",
         "SERGEANT-AT-ARMS"
+      ],
+      "passive_abilities": [
+        {
+          "name": "Command Breach",
+          "description": "Whenever you would use the Attack Order or Defence Order strategy ploy, if this operative is in the killzone, it costs you 0CP. Once during each of this operative’s activations, before or after it performs an action, if your Attack Order or Defence Order marker is in the killzone (see relevant strategy ploy), you can either:\n• Remove that marker and place it again.\n• Change the selected ploy to the other (e.g. your Attack Order becomes a Defence Order). You cannot do both, and you don’t need to spend any CP to change the ploy. NAVIS SERGEANT-AT-ARMS 2 APL WOUNDS SAVE MOVE 6\" 4+ 9"
+        }
       ]
     },
     {
@@ -107,8 +98,8 @@
       ],
       "passive_abilities": [
         {
-          "name": "IMPERIAL NAVY BREACHER , IMPERIUM, ARMSMAN",
-          "description": "25"
+          "name": "Group Activation",
+          "description": "Whenever this operative is expended, you must then activate one other ready friendly IMPERIAL NAVY BREACHER ARMSMAN operative (if able) before your opponent activates. When that other operative is expended, your opponent then activates as normal (in other words, you cannot activate more than two operatives in succession with this rule). Ignore this rule when you are using the Breach and Clear faction rule."
         }
       ],
       "unique_actions": [],
@@ -142,8 +133,12 @@
       ],
       "passive_abilities": [
         {
-          "name": "IMPERIAL NAVY BREACHER , IMPERIUM, AXEJACK",
-          "description": "25"
+          "name": "Emboldened",
+          "description": "Whenever an attack dice inflicts damage of 3 or more on this operative during a turning point in which it"
+        },
+        {
+          "name": "performed the Charge action, roll one D6",
+          "description": "on a 5+, subtract 1 from that inflicted damage."
         }
       ],
       "unique_actions": [],
@@ -184,8 +179,16 @@
       ],
       "passive_abilities": [
         {
-          "name": "IMPERIAL NAVY BREACHER , IMPERIUM, ENDURANT",
-          "description": "28"
+          "name": "Breachwall",
+          "description": "Whenever your opponent is selecting a valid target, they cannot select another friendly IMPERIAL NAVY BREACHER operative whose base is touching this operative’s if this operative has an Engage order and is intervening. This rule has no effect if more than one other friendly operative’s base is touching this operative’s."
+        },
+        {
+          "name": "*Shield",
+          "description": "Whenever this operative is fighting or retaliating with this weapon, each of your blocks can be allocated to block two unresolved successes (instead of one)."
+        },
+        {
+          "name": "Disengage",
+          "description": "This operative can perform the Fall Back action for 1 less AP."
         }
       ],
       "unique_actions": [],
@@ -231,8 +234,8 @@
       ],
       "passive_abilities": [
         {
-          "name": "IMPERIAL NAVY BREACHER , IMPERIUM, GRENADIER",
-          "description": "25"
+          "name": "Grenadier",
+          "description": "This operative can use frag, krak and stun grenades (see universal equipment). Doing so doesn’t count towards any limited uses you have (i.e. if you also select those grenades from equipment for other operatives). Whenever this operative is using a frag or krak grenade, improve the Hit stat of that weapon by 1."
         }
       ],
       "unique_actions": [],
@@ -291,13 +294,6 @@
           "damage": "2/3"
         }
       ],
-      "passive_abilities": [
-        {
-          "name": "IMPERIAL NAVY BREACHER , IMPERIUM, GUNNER",
-          "description": "28"
-        }
-      ],
-      "unique_actions": [],
       "keywords": [
         "IMPERIAL NAVY BREACHER",
         "IMPERIUM",
@@ -326,21 +322,17 @@
           "special_rules": "Brutal, Rending"
         }
       ],
-      "passive_abilities": [
+      "passive_abilities": [],
+      "unique_actions": [
         {
-          "name": "WELD SHUT\b",
-          "description": "1AP\n• Select a closed hatchway (e.g. Killzone: Tomb World) within this operative’s control range. 1 additional AP must be spent for other operatives to perform the Operate Hatch action to open that hatchway. This effect ends when that hatchway is opened. Note this operative isn’t affected by this effect.\n• This operative cannot perform this action while within control range of an enemy operative, or if it isn’t within 1\" of a closed hatchway."
+          "name": "WELD SHUT\b (1AP)",
+          "description": "• Select a closed hatchway (e.g. Killzone: Tomb World) within this operative’s control range. 1 additional AP must be spent for other operatives to perform the Operate Hatch action to open that hatchway. This effect ends when that hatchway is opened. Note this operative isn’t affected by this effect.\n• This operative cannot perform this action while within control range of an enemy operative, or if it isn’t within 1\" of a closed hatchway."
         },
         {
-          "name": "IMPERIAL NAVY BREACHER , IMPERIUM, HATCHCUTTER",
-          "description": "25 RULES CONTINUE ON OTHER SIDE"
-        },
-        {
-          "name": "BREACH POINT\b",
-          "description": "1AP\n• Place one of your Breach markers within this operative’s control range as close as possible to a terrain feature within control range of it. Whenever an operative is within 1\" of that marker, it treats parts of that terrain feature that are no more than 1\" thick as Accessible terrain.\n• This operative cannot perform this action while within control range of an enemy operative, or if a terrain feature isn’t within its control range. NAVIS HATCHCUTTER 2 APL WOUNDS SAVE MOVE 6\" 4+ 8"
+          "name": "BREACH POINT\b (1AP)",
+          "description": "• Place one of your Breach markers within this operative’s control range as close as possible to a terrain feature within control range of it. Whenever an operative is within 1\" of that marker, it treats parts of that terrain feature that are no more than 1\" thick as Accessible terrain.\n• This operative cannot perform this action while within control range of an enemy operative, or if a terrain feature isn’t within its control range. NAVIS HATCHCUTTER"
         }
       ],
-      "unique_actions": [],
       "keywords": [
         "IMPERIAL NAVY BREACHER",
         "IMPERIUM",
@@ -374,21 +366,17 @@
           "damage": "3/4"
         }
       ],
-      "passive_abilities": [
+      "passive_abilities": [],
+      "unique_actions": [
         {
-          "name": "WAYFIND\b",
-          "description": "1AP\n• SUPPORT. Select one other friendly IMPERIAL NAVY BREACHER operative (excluding C.A.T. UNIT or GHEISTSKULL) visible to and within 6\" of this operative, or visible to and within 6\" of a friendly IMPERIAL NAVY BREACHER C.A.T. UNIT operative. Until the end of that operative’s next activation, add 1 to its APL stat. For the purposes of the Comms Device universal equipment, the operative the distance is being determined from must control that marker.\n• This operative cannot perform this action while within control range of an enemy operative."
+          "name": "WAYFIND\b (1AP)",
+          "description": "• SUPPORT. Select one other friendly IMPERIAL NAVY BREACHER operative (excluding C.A.T. UNIT or GHEISTSKULL) visible to and within 6\" of this operative, or visible to and within 6\" of a friendly IMPERIAL NAVY BREACHER C.A.T. UNIT operative. Until the end of that operative’s next activation, add 1 to its APL stat. For the purposes of the Comms Device universal equipment, the operative the distance is being determined from must control that marker.\n• This operative cannot perform this action while within control range of an enemy operative."
         },
         {
-          "name": "IMPERIAL NAVY BREACHER , IMPERIUM, SURVEYOR",
-          "description": "25 RULES CONTINUE ON OTHER SIDE"
-        },
-        {
-          "name": "REMOTE CONTROL\b",
-          "description": "1AP\n• Select one friendly IMPERIAL NAVY BREACHER C.A.T. UNIT operative. That operative can immediately perform one free action, but it cannot move more than 3\" during that action.\n• This operative cannot perform this action while within control range of an enemy operative, or if a friendly IMPERIAL NAVY BREACHER C.A.T. UNIT operative isn’t in the killzone. NAVIS SURVEYOR 2 APL WOUNDS SAVE MOVE 6\" 4+ 8"
+          "name": "REMOTE CONTROL\b (1AP)",
+          "description": "• Select one friendly IMPERIAL NAVY BREACHER C.A.T. UNIT operative. That operative can immediately perform one free action, but it cannot move more than 3\" during that action.\n• This operative cannot perform this action while within control range of an enemy operative, or if a friendly IMPERIAL NAVY BREACHER C.A.T. UNIT operative isn’t in the killzone. NAVIS SURVEYOR"
         }
       ],
-      "unique_actions": [],
       "keywords": [
         "IMPERIAL NAVY BREACHER",
         "IMPERIUM",
@@ -431,15 +419,16 @@
       ],
       "passive_abilities": [
         {
-          "name": "IMPERIAL NAVY BREACHER , IMPERIUM, VOID-JAMMER",
-          "description": "25 RULES CONTINUE ON OTHER SIDE"
-        },
-        {
-          "name": "INTERFERENCE PULSE\b",
-          "description": "1AP\n• Select one enemy operative visible to and within 8\" of a friendly GHEISTSKULL operative. Roll one D6, adding 1 to the result if that enemy operative is a valid target for that friendly GHEISTSKULL operative: on a 3+, subtract 1 from that enemy operative’s APL stat until the end of its next activation.\n• This operative cannot perform this action while within control range of an enemy operative, or if a friendly GHEISTSKULL operative isn’t in the killzone. NAVIS VOID-JAMMER 2 APL WOUNDS SAVE MOVE 6\" 4+ 8"
+          "name": "*Detonate",
+          "description": "Don’t select a valid target. Instead, a friendly IMPERIAL NAVY BREACHER GHEISTSKULL operative is always the primary target and cannot be in cover or obscured. If that operative isn’t in the killzone, you cannot select this weapon."
         }
       ],
-      "unique_actions": [],
+      "unique_actions": [
+        {
+          "name": "INTERFERENCE PULSE\b (1AP)",
+          "description": "• Select one enemy operative visible to and within 8\" of a friendly GHEISTSKULL operative. Roll one D6, adding 1 to the result if that enemy operative is a valid target for that friendly GHEISTSKULL operative: on a 3+, subtract 1 from that enemy operative’s APL stat until the end of its next activation.\n• This operative cannot perform this action while within control range of an enemy operative, or if a friendly GHEISTSKULL operative isn’t in the killzone. NAVIS VOID-JAMMER"
+        }
+      ],
       "keywords": [
         "IMPERIAL NAVY BREACHER",
         "IMPERIUM",

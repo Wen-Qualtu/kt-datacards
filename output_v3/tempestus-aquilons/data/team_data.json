@@ -1,6 +1,6 @@
 {
   "team": "tempestus-aquilons",
-  "generated_at": "2026-05-02T20:37:12.204659+00:00",
+  "generated_at": "2026-05-04T19:46:05.634035+00:00",
   "datacards": [
     {
       "name": "AQUILON TEMPESTOR",
@@ -49,30 +49,23 @@
           "special_rules": "Lethal 5+"
         }
       ],
-      "passive_abilities": [
-        {
-          "name": "TEMPESTUS AQUILON , IMPERIUM, LEADER, TEMPESTOR",
-          "description": "28 RULES CONTINUE ON OTHER SIDE"
-        },
-        {
-          "name": "Tempestus Veteran",
-          "description": "Once per battle, you can either use a"
-        },
-        {
-          "name": "firefight ploy for 0CP if this is the specified TEMPESTUS",
-          "description": "AQUILON operative, or the Command Re‑roll firefight ploy for 0CP if this is the operative the attack or defence dice was rolled for."
-        },
-        {
-          "name": "COMMAND",
-          "description": "1AP\n• SUPPORT. Select one other friendly TEMPESTUS AQUILON operative (excluding SERVO‑SENTRY) visible to and within 6\" of this operative. Until the end of that operative’s next activation, add 1 to its APL stat.\n• This operative cannot perform this action while within control range of an enemy operative. AQUILON TEMPESTOR 3 APL WOUNDS SAVE MOVE 6\" 4+ 9"
-        }
-      ],
-      "unique_actions": [],
       "keywords": [
         "TEMPESTUS AQUILON",
         "IMPERIUM",
         "LEADER",
         "TEMPESTOR"
+      ],
+      "passive_abilities": [
+        {
+          "name": "Tempestus Veteran",
+          "description": "Once per battle, you can either use a firefight ploy for 0CP if this is the specified TEMPESTUS AQUILON operative, or the Command Re‑roll firefight ploy for 0CP if this is the operative the attack or defence dice was rolled for."
+        }
+      ],
+      "unique_actions": [
+        {
+          "name": "COMMAND (1AP)",
+          "description": "• SUPPORT. Select one other friendly TEMPESTUS AQUILON operative (excluding SERVO‑SENTRY) visible to and within 6\" of this operative. Until the end of that operative’s next activation, add 1 to its APL stat.\n• This operative cannot perform this action while within control range of an enemy operative. AQUILON TEMPESTOR"
+        }
       ]
     },
     {
@@ -105,8 +98,8 @@
       ],
       "passive_abilities": [
         {
-          "name": "TEMPESTUS AQUILON , IMPERIUM, GRENADIER",
-          "description": "28"
+          "name": "Grenadier",
+          "description": "This operative can use frag, krak, smoke and stun grenades (see universal equipment). Doing so doesn’t count towards any limited uses you have (i.e. if you also select those grenades from equipment for other operatives). Whenever this operative is using a frag or krak grenade, improve the Hit stat of that weapon by 1."
         }
       ],
       "unique_actions": [],
@@ -147,8 +140,12 @@
       ],
       "passive_abilities": [
         {
-          "name": "TEMPESTUS AQUILON , IMPERIUM, GUNFIGHTER",
-          "description": "28"
+          "name": "*Salvo",
+          "description": "Select up to two different valid targets that aren’t within control range of friendly operatives. Shoot with this weapon against both of them in an order of your choice (roll each sequence separately)."
+        },
+        {
+          "name": "Gunfight",
+          "description": "Whenever an enemy operative within 8\" of this operative shoots this operative, keep track of each attack dice that’s discarded as a fail. After the action, before incapacitated operatives are removed (including this one, if relevant), this operative can perform a free Shoot action (you can change its order to Engage to do so), but it can only target that enemy operative with its hot‑shot laspistols (focused), and you only roll a number of attack dice equal to the opponent’s discarded attack dice plus one (to a maximum of four)."
         }
       ],
       "unique_actions": [],
@@ -193,13 +190,6 @@
           "damage": "2/3"
         }
       ],
-      "passive_abilities": [
-        {
-          "name": "TEMPESTUS AQUILON , IMPERIUM, GUNNER",
-          "description": "28"
-        }
-      ],
-      "unique_actions": [],
       "keywords": [
         "TEMPESTUS AQUILON",
         "IMPERIUM",
@@ -242,8 +232,12 @@
       ],
       "passive_abilities": [
         {
-          "name": "TEMPESTUS AQUILON , IMPERIUM, MARKSMAN",
-          "description": "28"
+          "name": "Sniper’s Vantage",
+          "description": "Whenever this operative is on Vantage terrain and is shooting an operative that has an Engage order and is at least 2\" lower than it, all profiles of its hot‑shot long-las have the Severe weapon rule."
+        },
+        {
+          "name": "*Concealed Position",
+          "description": "This operative can only use this weapon the first time it’s performing the Shoot action during the battle."
         }
       ],
       "unique_actions": [],
@@ -277,8 +271,12 @@
       ],
       "passive_abilities": [
         {
-          "name": "TEMPESTUS AQUILON , IMPERIUM, PRECURSOR",
-          "description": "28"
+          "name": "Vicious Knife Fighter",
+          "description": "Whenever this operative is fighting, after resolving your first attack dice during that sequence, you can immediately resolve another (before your opponent)."
+        },
+        {
+          "name": "Dynamic",
+          "description": "Whenever this operative performs the Shoot or Fight action, it can immediately perform a free Dash action afterwards. It can do so even if it’s performed the Charge action during this activation, but can only use any remaining move distance it had from that Charge action (to a maximum of 3\")."
         }
       ],
       "unique_actions": [],
@@ -333,8 +331,12 @@
       ],
       "passive_abilities": [
         {
-          "name": "TEMPESTUS AQUILON , IMPERIUM, SERVO‑SENTRY",
-          "description": "40"
+          "name": "Machine",
+          "description": "This operative cannot perform any actions other than Dash, Fall Back, Reposition and Shoot. It cannot retaliate, assist in a fight or use any weapons that aren’t on its datacard."
+        },
+        {
+          "name": "Turret",
+          "description": "This operative can perform two Shoot actions during its activation."
         }
       ],
       "unique_actions": [],
@@ -366,8 +368,12 @@
       ],
       "passive_abilities": [
         {
-          "name": "TEMPESTUS AQUILON , IMPERIUM, TROOPER",
-          "description": "28"
+          "name": "Rapid Insertion",
+          "description": "STRATEGIC GAMBIT in the first turning point. Each friendly TEMPESTUS AQUILON TROOPER operative wholly within your drop zone can immediately perform a free Reposition action, but must end that move wholly within 3\" of your drop zone."
+        },
+        {
+          "name": "Swift Landing",
+          "description": "When this operative lands, you can set it up within 4\" horizontally of one of your Drop markers, taking precedence over the normal distance requirement."
         }
       ],
       "unique_actions": [],

@@ -1,6 +1,6 @@
 {
   "team": "farstalker-kinband",
-  "generated_at": "2026-05-02T20:36:30.062159+00:00",
+  "generated_at": "2026-05-04T19:45:21.803215+00:00",
   "datacards": [
     {
       "name": "KROOT KILL-BROKER",
@@ -30,8 +30,12 @@
       ],
       "passive_abilities": [
         {
-          "name": "FARSTALKER KINBAND , T’AU EMPIRE, LEADER, KROOT, KILL-BROKER",
-          "description": "32"
+          "name": "Call The Kill",
+          "description": "STRATEGIC GAMBIT if this operative is in the killzone. Select one enemy operative to be your mark for the turning point. Whenever a friendly FARSTALKER KINBAND operative is shooting against, fighting against or retaliating against your mark, that friendly operative's weapons have the Balanced weapon rule. Whenever your mark is incapacitated, you can select a new enemy operative to be your mark for the turning point (and can continue to do so during this turning point)."
+        },
+        {
+          "name": "Victory Shriek",
+          "description": "Whenever your mark is incapacitated, you can select one friendly FARSTALKER KINBAND operative within 6\" of this operative. Until the end of the battle, that operative’s weapons have the Balanced weapon rule. Each friendly operative can only be selected for this rule once per battle."
         }
       ],
       "unique_actions": [],
@@ -78,17 +82,13 @@
           "damage": "3/5"
         }
       ],
-      "passive_abilities": [
+      "passive_abilities": [],
+      "unique_actions": [
         {
-          "name": "ENERGISE\b",
-          "description": "1AP\n• Until the end of the turning point or until this operative has shot with its accelerator bow (whichever comes first), all profiles of its accelerator bow have the Lethal 5+ weapon rule.\n• This operative cannot perform this action while within control range of an enemy operative."
-        },
-        {
-          "name": "FARSTALKER KINBAND , T’AU EMPIRE, KROOT, BOW-HUNTER",
-          "description": "28"
+          "name": "ENERGISE\b (1AP)",
+          "description": "• Until the end of the turning point or until this operative has shot with its accelerator bow (whichever comes first), all profiles of its accelerator bow have the Lethal 5+ weapon rule.\n• This operative cannot perform this action while within control range of an enemy operative."
         }
       ],
-      "unique_actions": [],
       "keywords": [
         "FARSTALKER KINBAND",
         "T’AU EMPIRE",
@@ -118,8 +118,12 @@
       ],
       "passive_abilities": [
         {
-          "name": "FARSTALKER KINBAND , T’AU EMPIRE, KROOT, COLD-BLOOD",
-          "description": "28"
+          "name": "Hardy",
+          "description": "Whenever an attack dice would inflict Critical Dmg on this operative, you can choose for that attack dice to inflict Normal Dmg instead."
+        },
+        {
+          "name": "Cold-blooded",
+          "description": "Whenever this operative is shooting against, fighting against or retaliating against a wounded enemy operative, this operative’s weapons have the Lethal 5+ weapon rule; if that enemy operative is also injured, this operative’s weapons also have the Rending weapon rule."
         }
       ],
       "unique_actions": [],
@@ -147,8 +151,12 @@
       ],
       "passive_abilities": [
         {
-          "name": "FARSTALKER KINBAND , T’AU EMPIRE, KROOT, CUT-SKIN",
-          "description": "28"
+          "name": "Vicious Duellist",
+          "description": "Whenever this operative is fighting or retaliating, for each attack dice your opponent discards as a fail, inflict 1 damage on the enemy operative in that sequence."
+        },
+        {
+          "name": "Savage Assault",
+          "description": "The first time this operative performs the Fight action during each of its activations, if neither it nor the enemy operative in that sequence is incapacitated, this operative can immediately perform a free Fight action afterwards, but you cannot select any other enemy operative to fight against during that action (and only if it’s still valid to fight against). This takes precedence over action restrictions."
         }
       ],
       "unique_actions": [],
@@ -187,13 +195,6 @@
           "damage": "3/5"
         }
       ],
-      "passive_abilities": [
-        {
-          "name": "FARSTALKER KINBAND , T’AU EMPIRE, KROOT, HEAVY GUNNER",
-          "description": "28"
-        }
-      ],
-      "unique_actions": [],
       "keywords": [
         "FARSTALKER KINBAND",
         "T’AU EMPIRE",
@@ -218,15 +219,20 @@
       ],
       "passive_abilities": [
         {
-          "name": "GATHER\b",
-          "description": "1AP\n• Perform a free Dash or Reposition action with this operative. During that move, it can perform a free Pick Up Marker or Place Marker action (you can determine control during that action to do so), and any remaining move distance it had from the Dash or Reposition action can be used after it does so."
+          "name": "Beast",
+          "description": "This operative cannot perform any actions other than Charge, Dash, Fall Back, Fight, Gather, Guard, Reposition, Pick Up Marker and Place Marker. It cannot use any weapons that aren’t on its datacard."
         },
         {
-          "name": "FARSTALKER KINBAND , T’AU EMPIRE, KROOT, HOUND",
-          "description": "28"
+          "name": "Bad-tempered",
+          "description": "Whenever an enemy operative performs the Fight action, if this operative is a valid operative to fight against, you can force them to select this operative to fight against instead. Whenever an enemy operative ends the Charge action within control range of another friendly FARSTALKER KINBAND operative within 3\" of this operative, if this operative isn’t within control range of enemy operatives, this operative can immediately perform a free Charge action (you can change its order to Engage to do so), but must end that move within control range of that enemy operative."
         }
       ],
-      "unique_actions": [],
+      "unique_actions": [
+        {
+          "name": "GATHER\b (1AP)",
+          "description": "• Perform a free Dash or Reposition action with this operative. During that move, it can perform a free Pick Up Marker or Place Marker action (you can determine control during that action to do so), and any remaining move distance it had from the Dash or Reposition action can be used after it does so."
+        }
+      ],
       "keywords": [
         "FARSTALKER KINBAND",
         "T’AU EMPIRE",
@@ -270,15 +276,16 @@
       ],
       "passive_abilities": [
         {
-          "name": "FARSTALKER KINBAND , T’AU EMPIRE, KROOT, LONG-SIGHT",
-          "description": "28 RULES CONTINUE ON OTHER SIDE"
-        },
-        {
-          "name": "LONG-SIGHT\b",
-          "description": "1AP Until the start of this operative’s next activation:\n• The concealed and stationary profiles of its Kroot hunting rifle have the Lethal 5+ weapon rule.\n• Whenever it’s shooting with its Kroot hunting rifle, enemy operatives cannot be obscured.\n• This operative cannot perform this action while within control range of an enemy operative. KROOT LONG-SIGHT 2 APL WOUNDS SAVE MOVE 6\" 5+ 8"
+          "name": "*Concealed Position",
+          "description": "This operative can only use this weapon the first time it’s performing the Shoot action during the battle."
         }
       ],
-      "unique_actions": [],
+      "unique_actions": [
+        {
+          "name": "LONG-SIGHT\b (1AP)",
+          "description": "Until the start of this operative’s next activation:\n• The concealed and stationary profiles of its Kroot hunting rifle have the Lethal 5+ weapon rule.\n• Whenever it’s shooting with its Kroot hunting rifle, enemy operatives cannot be obscured.\n• This operative cannot perform this action while within control range of an enemy operative. KROOT LONG-SIGHT"
+        }
+      ],
       "keywords": [
         "FARSTALKER KINBAND",
         "T’AU EMPIRE",
@@ -316,8 +323,12 @@
       ],
       "passive_abilities": [
         {
-          "name": "FARSTALKER KINBAND , T’AU EMPIRE, KROOT, PISTOLIER",
-          "description": "28"
+          "name": "Quick Draw",
+          "description": "Once per turning point, when an enemy operative is performing the Shoot action and this operative is selected as the valid target (or if it will be a secondary target from the Blast weapon rule), if this operative is ready, you can interrupt that action to use this rule. If you do, this operative can immediately perform a free Shoot action with its dual Kroot pistols (focused) against that enemy operative (you can change its order to Engage to do so), but that enemy operative must be a valid target."
+        },
+        {
+          "name": "*Salvo",
+          "description": "Select up to two different valid targets that aren’t within control range of friendly operatives. Shoot with this weapon against both of them in an order of your choice (roll each sequence separately)."
         }
       ],
       "unique_actions": [],
@@ -352,15 +363,16 @@
       ],
       "passive_abilities": [
         {
-          "name": "STEALTH ATTACK\b",
-          "description": "2AP\n• Perform a free Charge action with this operative, but don’t exceed its Move stat (i.e. don’t add 2\"). Then immediately perform a free Fight action with this operative. The first time you strike during that action, you can immediately resolve another of your successes as a strike (before your opponent).\n• This operative cannot perform this action while it has an Engage order, while within control range of an enemy operative, or if it isn’t within 1\" of Light or Heavy terrain."
-        },
-        {
-          "name": "FARSTALKER KINBAND , T’AU EMPIRE, KROOT, STALKER",
-          "description": "28"
+          "name": "Stalker",
+          "description": "This operative can perform the Charge action while it has a Conceal order."
         }
       ],
-      "unique_actions": [],
+      "unique_actions": [
+        {
+          "name": "STEALTH ATTACK\b (2AP)",
+          "description": "• Perform a free Charge action with this operative, but don’t exceed its Move stat (i.e. don’t add 2\"). Then immediately perform a free Fight action with this operative. The first time you strike during that action, you can immediately resolve another of your successes as a strike (before your opponent).\n• This operative cannot perform this action while it has an Engage order, while within control range of an enemy operative, or if it isn’t within 1\" of Light or Heavy terrain."
+        }
+      ],
       "keywords": [
         "FARSTALKER KINBAND",
         "T’AU EMPIRE",
@@ -388,21 +400,17 @@
           "damage": "3/5"
         }
       ],
-      "passive_abilities": [
+      "passive_abilities": [],
+      "unique_actions": [
         {
-          "name": "MARKED FOR THE HUNT\b",
-          "description": "1AP\n• Remove your Pech’ra marker from the killzone (if any). Then place your Pech’ra marker visible to this operative, or on Vantage terrain of a terrain feature that’s visible to this operative. Whenever a friendly FARSTALKER KINBAND operative is shooting an enemy operative that has that marker within its control range, that friendly operative’s ranged weapons have the Seek Light weapon rule.\n• At the start of this operative’s next activation or if it’s removed from the killzone (whichever comes first), remove your Pech’ra marker from the killzone.\n• This operative cannot perform this action while within control range of an enemy operative."
+          "name": "MARKED FOR THE HUNT\b (1AP)",
+          "description": "• Remove your Pech’ra marker from the killzone (if any). Then place your Pech’ra marker visible to this operative, or on Vantage terrain of a terrain feature that’s visible to this operative. Whenever a friendly FARSTALKER KINBAND operative is shooting an enemy operative that has that marker within its control range, that friendly operative’s ranged weapons have the Seek Light weapon rule.\n• At the start of this operative’s next activation or if it’s removed from the killzone (whichever comes first), remove your Pech’ra marker from the killzone.\n• This operative cannot perform this action while within control range of an enemy operative."
         },
         {
-          "name": "FARSTALKER KINBAND , T’AU EMPIRE, KROOT, TRACKER",
-          "description": "28 RULES CONTINUE ON OTHER SIDE"
-        },
-        {
-          "name": "FROM THE EYE ABOVE\b",
-          "description": "1AP\n• SUPPORT. Select one other friendly FARSTALKER KINBAND operative visible to and within 6\" of this operative. Until the end of that operative’s next activation, add 1 to its APL stat.\n• This operative cannot perform this action while within control range of an enemy operative. KROOT TRACKER 2 APL WOUNDS SAVE MOVE 6\" 5+ 8"
+          "name": "FROM THE EYE ABOVE\b (1AP)",
+          "description": "• SUPPORT. Select one other friendly FARSTALKER KINBAND operative visible to and within 6\" of this operative. Until the end of that operative’s next activation, add 1 to its APL stat.\n• This operative cannot perform this action while within control range of an enemy operative. KROOT TRACKER"
         }
       ],
-      "unique_actions": [],
       "keywords": [
         "FARSTALKER KINBAND",
         "T’AU EMPIRE",
@@ -439,8 +447,8 @@
       ],
       "passive_abilities": [
         {
-          "name": "FARSTALKER KINBAND , T’AU EMPIRE, KROOT, WARRIOR",
-          "description": "28"
+          "name": "Ready for Anything",
+          "description": "Once per turning point, during a friendly WARRIOR operative’s activation, you can use the Meat, Piercing Shot or Toxin Shot rule (see faction equipment) for that operative. Doing so doesn’t count for its once per turning point limit."
         }
       ],
       "unique_actions": [],

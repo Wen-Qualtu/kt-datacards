@@ -1,6 +1,6 @@
 {
   "team": "nemesis-claw",
-  "generated_at": "2026-05-02T20:36:57.408531+00:00",
+  "generated_at": "2026-05-04T19:45:50.318575+00:00",
   "datacards": [
     {
       "name": "NIGHT LORD VISIONARY",
@@ -59,29 +59,6 @@
           "special_rules": "Lethal 5+"
         }
       ],
-      "passive_abilities": [
-        {
-          "name": "NEMESIS CLAW , CHAOS, HERETIC ASTARTES, PSYKER, LEADER, VISIONARY",
-          "description": "32 RULES CONTINUE ON OTHER SIDE"
-        },
-        {
-          "name": "Prescience",
-          "description": "PSYCHIC. In the Ready step of each Strategy phase, you gain D3 Prescience points. At the end of each turning point, discard your Prescience points. You can spend your Prescience points in the Firefight phase as follows (you cannot use each of the following rules more than once per turning point):"
-        },
-        {
-          "name": "•\t \u0007Foreboding",
-          "description": "PSYCHIC. Whenever it’s your turn to activate a friendly operative, you can spend 1 of your Prescience points to skip that activation."
-        },
-        {
-          "name": "•\t \u0007Portent",
-          "description": "PSYCHIC. Whenever an attack dice inflicts Normal Dmg on this operative, you can spend 1 of your Prescience points to ignore that inflicted damage. You cannot gain or spend your Prescience points if this operative is incapacitated."
-        },
-        {
-          "name": "PREMONITION\b",
-          "description": "1AP\n• PSYCHIC. Spend 1 of your Prescience points to gain 1CP.\n• This operative cannot perform this action while within control range of an enemy operative, or more than once per turning point. NIGHT LORD VISIONARY 3 APL WOUNDS SAVE MOVE 6\" 3+ 15"
-        }
-      ],
-      "unique_actions": [],
       "keywords": [
         "NEMESIS CLAW",
         "CHAOS",
@@ -89,6 +66,26 @@
         "PSYKER",
         "LEADER",
         "VISIONARY"
+      ],
+      "passive_abilities": [
+        {
+          "name": "Prescience",
+          "description": "PSYCHIC. In the Ready step of each Strategy phase, you gain D3 Prescience points. At the end of each turning point, discard your Prescience points. You can spend your Prescience points in the Firefight phase as follows (you cannot use each of the following rules more than once per turning point):"
+        },
+        {
+          "name": "\t \u0007Foreboding",
+          "description": "PSYCHIC. Whenever it’s your turn to activate a friendly operative, you can spend 1 of your Prescience points to skip that activation."
+        },
+        {
+          "name": "\t \u0007Portent",
+          "description": "PSYCHIC. Whenever an attack dice inflicts Normal Dmg on this operative, you can spend 1 of your Prescience points to ignore that inflicted damage. You cannot gain or spend your Prescience points if this operative is incapacitated."
+        }
+      ],
+      "unique_actions": [
+        {
+          "name": "PREMONITION\b (1AP)",
+          "description": "• PSYCHIC. Spend 1 of your Prescience points to gain 1CP. NIGHT LORD VISIONARY"
+        }
       ]
     },
     {
@@ -128,15 +125,20 @@
       ],
       "passive_abilities": [
         {
-          "name": "NEMESIS CLAW , CHAOS, HERETIC ASTARTES, FEARMONGER",
-          "description": "32 RULES CONTINUE ON OTHER SIDE"
+          "name": "*Terrorchem",
+          "description": "In the Resolve Attack Dice step, if you inflict damage with any critical successes (including as a result of the Devastating weapon rule), the operative this weapon is being used against gains one of your Terrorchem tokens (if it doesn’t already have one)."
         },
         {
-          "name": "POISON OBJECTIVE\b",
-          "description": "1AP\n• Select one objective marker this operative controls to gain one of your Terrorchem tokens. It cannot be an objective marker within control range of an enemy operative, or one that already has one of your Terrorchem tokens. The first time that objective marker is within control range of an enemy operative that doesn’t have one of your Terrorchem tokens, that operative gains that Terrorchem token, then inflict 2D3 damage on it (if it’s during an action, at the end of that action).\n• This operative cannot perform this action while within control range of an enemy operative. NIGHT LORD FEARMONGER 3 APL WOUNDS SAVE MOVE 6\" 3+ 14"
+          "name": "Terrorchem Poison",
+          "description": "Whenever an operative that has one of your Terrorchem tokens is activated, inflict D3 damage on it."
         }
       ],
-      "unique_actions": [],
+      "unique_actions": [
+        {
+          "name": "POISON OBJECTIVE\b (1AP)",
+          "description": "• Select one objective marker this operative controls to gain one of your Terrorchem tokens. It cannot be an objective marker within control range of an enemy operative, or one that already has one of your Terrorchem tokens. The first time that objective marker is within control range of an enemy operative that doesn’t have one of your Terrorchem tokens, that operative gains that Terrorchem token, then inflict 2D3 damage on it (if it’s during an action, at the end of that action).\n• This operative cannot perform this action while within control range of an enemy operative. NIGHT LORD FEARMONGER"
+        }
+      ],
       "keywords": [
         "NEMESIS CLAW",
         "CHAOS",
@@ -193,13 +195,6 @@
           "damage": "3/4"
         }
       ],
-      "passive_abilities": [
-        {
-          "name": "NEMESIS CLAW , CHAOS, HERETIC ASTARTES, GUNNER",
-          "description": "32"
-        }
-      ],
-      "unique_actions": [],
       "keywords": [
         "NEMESIS CLAW",
         "CHAOS",
@@ -256,13 +251,6 @@
           "damage": "3/4"
         }
       ],
-      "passive_abilities": [
-        {
-          "name": "NEMESIS CLAW , CHAOS, HERETIC ASTARTES, HEAVY GUNNER",
-          "description": "32"
-        }
-      ],
-      "unique_actions": [],
       "keywords": [
         "NEMESIS CLAW",
         "CHAOS",
@@ -287,8 +275,12 @@
       ],
       "passive_abilities": [
         {
-          "name": "NEMESIS CLAW , CHAOS, HERETIC ASTARTES, SCREECHER",
-          "description": "32"
+          "name": "Screecher",
+          "description": "Whenever an enemy operative within 3\" of this operative is shooting, fighting or retaliating, your opponent cannot re-roll their attack dice."
+        },
+        {
+          "name": "Appetite for Cruelty",
+          "description": "Whenever this operative is fighting against a wounded enemy operative, this operative’s lightning claws have the Lethal 4+ weapon rule."
         }
       ],
       "unique_actions": [],
@@ -323,8 +315,12 @@
       ],
       "passive_abilities": [
         {
-          "name": "NEMESIS CLAW , CHAOS, HERETIC ASTARTES, SKINTHIEF",
-          "description": "32"
+          "name": "Flay Them Alive",
+          "description": "Once per turning point, when this operative incapacitates an enemy operative within its control range, you can select one other enemy operative visible to and within 6\" of either this operative or the incapacitated enemy operative. Until the start of the next turning point, that other enemy operative cannot control markers or perform the Pick Up Marker or mission actions."
+        },
+        {
+          "name": "Tyrant of the Skinning Pits",
+          "description": "Whenever this operative is fighting or retaliating, Normal and Critical Dmg of 3 or more inflicts 1 less damage on it."
         }
       ],
       "unique_actions": [],
@@ -358,15 +354,16 @@
       ],
       "passive_abilities": [
         {
-          "name": "DISCONCERTING MIMICRY\b",
-          "description": "1AP\n• PSYCHIC. Select one enemy operative within 6\" of this operative, then select one of the following for that enemy operative (you can only select each option once per battle):\n• Until the end of its next activation, subtract 1 from its APL stat.\n• Change its order.\n• Perform a free Dash action with it (specify the location for your opponent to move it to).\n• This operative cannot perform this action while within control range of an enemy operative."
-        },
-        {
-          "name": "NEMESIS CLAW , CHAOS, HERETIC ASTARTES, PSYKER, VENTRILOKAR",
-          "description": "32"
+          "name": "Icon Bearer",
+          "description": "Whenever determining control of a marker, treat this operative’s APL stat as 1 higher. Note this isn’t a change to its APL stat, so any changes are cumulative with this."
         }
       ],
-      "unique_actions": [],
+      "unique_actions": [
+        {
+          "name": "DISCONCERTING MIMICRY\b (1AP)",
+          "description": "• PSYCHIC. Select one enemy operative within 6\" of this operative, then select one of the following for that enemy operative (you can only select each option once per battle):\n• Until the end of its next activation, subtract 1 from its APL stat.\n• Change its order.\n• Perform a free Dash action with it (specify the location for your opponent to move it to)."
+        }
+      ],
       "keywords": [
         "NEMESIS CLAW",
         "CHAOS",
@@ -410,8 +407,8 @@
       ],
       "passive_abilities": [
         {
-          "name": "NEMESIS CLAW , CHAOS, HERETIC ASTARTES, WARRIOR",
-          "description": "32"
+          "name": "Cruel Tormenter",
+          "description": "Whenever this operative is shooting against, fighting against or retaliating against an injured enemy operative, or an enemy operative that has a Wounds stat of 7 or less, this operative’s weapons have the Lethal 5+ weapon rule."
         }
       ],
       "unique_actions": [],

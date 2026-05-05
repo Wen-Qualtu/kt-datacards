@@ -1,6 +1,6 @@
 {
   "team": "plague-marines",
-  "generated_at": "2026-05-02T20:37:07.003557+00:00",
+  "generated_at": "2026-05-04T19:46:00.129980+00:00",
   "datacards": [
     {
       "name": "PLAGUE MARINE CHAMPION",
@@ -33,8 +33,12 @@
       ],
       "passive_abilities": [
         {
-          "name": "PLAGUE MARINE , CHAOS, HERETIC ASTARTES, LEADER, CHAMPION",
-          "description": "32"
+          "name": "Grandfather’s Blessing",
+          "description": "Whenever an enemy operative that has one of your Poison tokens loses one or more wounds within 7\" of this operative, this operative regains up to an equal number of lost wounds (to a maximum of 3 lost wounds per turning point, and only if this operative isn’t incapacitated)."
+        },
+        {
+          "name": "*Toxic",
+          "description": "Whenever this operative is using this weapon against an enemy operative that has one of your Poison tokens, add 1 to both Dmg stats of this weapon."
         }
       ],
       "unique_actions": [],
@@ -68,8 +72,12 @@
       ],
       "passive_abilities": [
         {
-          "name": "PLAGUE MARINE , CHAOS, HERETIC ASTARTES, BOMBARDIER",
-          "description": "32"
+          "name": "Grenadier",
+          "description": "This operative can use blight and krak grenades (see faction and universal equipment). Doing so doesn’t count towards any limited uses you have (i.e. if you also select those grenades from equipment for other operatives). Whenever it’s doing so, improve the Hit stat of that weapon by 1 and blight grenades have the Toxic weapon rule (see right)."
+        },
+        {
+          "name": "*Toxic",
+          "description": "Whenever this operative is using this weapon against an enemy operative that has one of your Poison tokens, add 1 to both Dmg stats of this weapon."
         }
       ],
       "unique_actions": [],
@@ -102,17 +110,13 @@
           "special_rules": "Brutal, Severe, Shock, Poison*"
         }
       ],
-      "passive_abilities": [
+      "passive_abilities": [],
+      "unique_actions": [
         {
-          "name": "FLAIL\b",
-          "description": "1AP\n• Inflict D3+2 damage on each other operative that’s both visible to and within 2\" of this operative. Roll separately for each: if it’s an enemy operative, if the D3 result is a 3, that enemy operative also gains one of your Poison tokens (if it doesn’t already have one).\n• For the purposes of action restrictions and the Astartes faction rule, this action is treated as a Fight action. This operative cannot perform this action while it has a Conceal order."
-        },
-        {
-          "name": "PLAGUE MARINE , CHAOS, HERETIC ASTARTES, FIGHTER",
-          "description": "32"
+          "name": "FLAIL\b (1AP)",
+          "description": "• Inflict D3+2 damage on each other operative that’s both visible to and within 2\" of this operative. Roll separately for each: if it’s an enemy operative, if the D3 result is a 3, that enemy operative also gains one of your Poison tokens (if it doesn’t already have one).\n• For the purposes of action restrictions and the Astartes faction rule, this action is treated as a Fight action. This operative cannot perform this action while it has a Conceal order."
         }
       ],
-      "unique_actions": [],
       "keywords": [
         "PLAGUE MARINE",
         "CHAOS",
@@ -148,13 +152,6 @@
           "damage": "3/4"
         }
       ],
-      "passive_abilities": [
-        {
-          "name": "PLAGUE MARINE , CHAOS, HERETIC ASTARTES, HEAVY GUNNER",
-          "description": "32"
-        }
-      ],
-      "unique_actions": [],
       "keywords": [
         "PLAGUE MARINE",
         "CHAOS",
@@ -186,8 +183,12 @@
       ],
       "passive_abilities": [
         {
-          "name": "PLAGUE MARINE , CHAOS, HERETIC ASTARTES, ICON BEARER",
-          "description": "32"
+          "name": "Icon Bearer",
+          "description": "Whenever determining control of a marker, treat this operative’s APL stat as 1 higher. Note this isn’t a change to its APL stat, so any changes are cumulative with this."
+        },
+        {
+          "name": "Icon of Contagion",
+          "description": "Whenever this operative is within your opponent’s territory, the Contagion strategy ploy costs you 0CP."
         }
       ],
       "unique_actions": [],
@@ -227,27 +228,22 @@
           "special_rules": "PSYCHIC, Severe, Shock, Stun, Poison*"
         }
       ],
-      "passive_abilities": [
-        {
-          "name": "PLAGUE MARINE , CHAOS, HERETIC ASTARTES, PSYKER, MALIGNANT PLAGUECASTER",
-          "description": "32 RULES CONTINUE ON OTHER SIDE"
-        },
-        {
-          "name": "POISONOUS MIASMA\b",
-          "description": "1AP\n• PSYCHIC. Select one enemy operative visible to and within 7\" of this operative, or one enemy operative that’s a valid target for this operative. That enemy operative gains one of your Poison tokens (if it doesn’t already have one). If it already has one, inflict 3 damage on that enemy operative instead.\n• This operative cannot perform this action while within control range of an enemy operative."
-        },
-        {
-          "name": "PUTRESCENT VITALITY\b",
-          "description": "1AP\n• PSYCHIC. Select one friendly operative visible to and within 3\" of this operative, then roll 2D6: if the result is 7, the selected operative regains 7 lost wounds; otherwise, the selected operative regains lost wounds equal to the highest D6.\n• This operative cannot perform this action while within control range of an enemy operative, or more than once per turning point. MALIGNANT PLAGUECASTER 3 APL WOUNDS SAVE MOVE 5\" 3+ 14"
-        }
-      ],
-      "unique_actions": [],
       "keywords": [
         "PLAGUE MARINE",
         "CHAOS",
         "HERETIC ASTARTES",
         "PSYKER",
         "MALIGNANT PLAGUECASTER"
+      ],
+      "unique_actions": [
+        {
+          "name": "POISONOUS MIASMA\b (1AP)",
+          "description": "• PSYCHIC. Select one enemy operative visible to and within 7\" of this operative, or one enemy operative that’s a valid target for this operative. That enemy operative gains one of your Poison tokens (if it doesn’t already have one). If it already has one, inflict 3 damage on that enemy operative instead.\n• This operative cannot perform this action while within control range of an enemy operative."
+        },
+        {
+          "name": "PUTRESCENT VITALITY\b (1AP)",
+          "description": "• PSYCHIC. Select one friendly operative visible to and within 3\" of this operative, then roll 2D6: if the result is 7, the selected operative regains 7 lost wounds; otherwise, the selected operative regains lost wounds equal to the highest D6.\n• This operative cannot perform this action while within control range of an enemy operative, or more than once per turning point. MALIGNANT PLAGUECASTER"
+        }
       ]
     },
     {
@@ -274,8 +270,12 @@
       ],
       "passive_abilities": [
         {
-          "name": "PLAGUE MARINE , CHAOS, HERETIC ASTARTES, WARRIOR",
-          "description": "32"
+          "name": "Repulsive Fortitude",
+          "description": "Whenever an operative is shooting this operative, defence dice results of 5+ are critical successes."
+        },
+        {
+          "name": "*Toxic",
+          "description": "Whenever this operative is using this weapon against an enemy operative that has one of your Poison tokens, add 1 to both Dmg stats of this weapon."
         }
       ],
       "unique_actions": [],

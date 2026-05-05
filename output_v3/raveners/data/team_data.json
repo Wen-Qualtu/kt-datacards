@@ -1,6 +1,6 @@
 {
   "team": "raveners",
-  "generated_at": "2026-05-02T20:37:10.311400+00:00",
+  "generated_at": "2026-05-04T19:46:03.606537+00:00",
   "datacards": [
     {
       "name": "RAVENER PRIME",
@@ -27,15 +27,11 @@
       "passive_abilities": [
         {
           "name": "Neuropredatory Crest",
-          "description": "Whenever determining control of a marker, treat the total APL stat of enemy operatives that contest it as 1 lower if at least one of those enemy operatives is within 3\" of this operative. Note this isn’t a change to the APL stat, so any changes are cumulative with this. Whenever an enemy operative is within 3\" of this operative:\n• Your opponent must spend 1 additional AP for that enemy operative to"
+          "description": "Whenever determining control of a marker, treat the total APL stat of enemy operatives that contest it as 1 lower if at least one of those enemy operatives is within 3\" of this operative. Note this isn’t a change to the APL stat, so any changes are cumulative with this. Whenever an enemy operative is within 3\" of this operative:\n• Your opponent must spend 1 additional AP for that enemy operative to perform the Pick Up Marker and mission actions.\n• Your opponent cannot re-roll their attack or defence dice for that operative."
         },
         {
-          "name": "perform the Pick Up Marker and mission actions.",
-          "description": "• Your opponent cannot re-roll their attack or defence dice for that operative. Synaptic Link: STRATEGIC GAMBIT if this operative isn’t incapacitated. Roll one D6 and compare the result to the number of the current turning point; if the result is:\n• Twice as high or higher, you gain 1CP.\n• Less, inflict damage on this operative equal to the result.\n• Any other result, nothing happens."
-        },
-        {
-          "name": "RAVENER , GREAT DEVOURER, TYRANID, LEADER, PRIME",
-          "description": "40"
+          "name": "Synaptic Link",
+          "description": "STRATEGIC GAMBIT if this operative isn’t incapacitated. Roll one D6 and compare the result to the number of the current turning point; if the result is:\n• Twice as high or higher, you gain 1CP.\n• Less, inflict damage on this operative equal to the result.\n• Any other result, nothing happens."
         }
       ],
       "unique_actions": [],
@@ -80,20 +76,12 @@
         {
           "name": "*Poison",
           "description": "In the Resolve Attack Dice step, if you inflict damage with any critical successes, the operative this weapon is being used against gains one of your Poison tokens (if it doesn’t already have one). Whenever an operative that has one of your Poison tokens is activated, inflict D3 damage on it."
-        },
-        {
-          "name": "operative is underground, select one enemy operative on your TUNNEL.",
-          "description": "Inflict D3+2 damage on that enemy operative and it gains one of your Poison tokens (if it doesn’t already have one).\n• This operative can perform this action while underground (this takes precedence over the normal Burrow rules)."
-        },
-        {
-          "name": "RAVENER , GREAT DEVOURER, TYRANID, FELLTALON",
-          "description": "40"
         }
       ],
       "unique_actions": [
         {
           "name": "TOXIC LUNGE (1AP)",
-          "description": "• Select one enemy operative within 2\" of this operative. Alternatively, if this"
+          "description": "• Select one enemy operative within 2\" of this operative. Alternatively, if this operative is underground, select one enemy operative on your TUNNEL. Inflict D3+2 damage on that enemy operative and it gains one of your Poison tokens (if it doesn’t already have one).\n• This operative can perform this action while underground (this takes precedence over the normal Burrow rules)."
         }
       ],
       "keywords": [
@@ -128,15 +116,11 @@
       "passive_abilities": [
         {
           "name": "Subterranean Ambush",
-          "description": "Once per turning point in the Firefight phase, after an enemy operative"
+          "description": "Once per turning point in the Firefight phase, after an enemy operative performs an action in which it moves more than 2\" and ends within 2\" of your TUNNEL, if this operative is underground and is either ready or hasn’t counteracted during this turning point, you can interrupt to use this rule. If you do, activate or counteract with this operative (as appropriate), but during its activation/ counteraction it must shoot against or fight against that enemy operative, and cannot do so against any other enemy operatives until it does (if this isn’t possible, this operative’s activation/ counteraction is cancelled and this rule hasn’t been used). After completing this operative’s activation/counteraction, continue that enemy operative’s activation/counteraction (if possible and relevant)."
         },
         {
-          "name": "performs an action in which it moves more than 2\" and ends within 2\" of your TUNNEL, if this",
-          "description": "operative is underground and is either ready or hasn’t counteracted during this turning point, you can interrupt to use this rule. If you do, activate or counteract with this operative (as appropriate), but during its activation/ counteraction it must shoot against or fight against that enemy operative, and cannot do so against any other enemy operatives until it does (if this isn’t possible, this operative’s activation/ counteraction is cancelled and this rule hasn’t been used). After completing this operative’s activation/counteraction, continue that enemy operative’s activation/counteraction (if possible and relevant). Hypersensory Hunter: This operative can perform the Charge action while it has a Conceal order if it performed the Burrow action during the same activation/ counteraction."
-        },
-        {
-          "name": "RAVENER , GREAT DEVOURER, TYRANID, TREMORSCYTHE",
-          "description": "40"
+          "name": "Hypersensory Hunter",
+          "description": "This operative can perform the Charge action while it has a Conceal order if it performed the Burrow action during the same activation/ counteraction."
         }
       ],
       "unique_actions": [],
@@ -186,20 +170,12 @@
         {
           "name": "*Poison",
           "description": "In the Resolve Attack Dice step, if you inflict damage with any critical successes, the operative this weapon is being used against gains one of your Poison tokens (if it doesn’t already have one). Whenever an operative that has one of your Poison tokens is activated, inflict D3 damage on it."
-        },
-        {
-          "name": "action again or until it performs the Burrow action (whichever comes",
-          "description": "first), all profiles of its venom bolt have the Lethal 5+ weapon rule, have 1 added to their Atk stat and the Range 8\" weapon rule removed."
-        },
-        {
-          "name": "RAVENER , GREAT DEVOURER, TYRANID, VENOMSPITTER",
-          "description": "40"
         }
       ],
       "unique_actions": [
         {
           "name": "DISTEND DORSAL SAC (1AP)",
-          "description": "• Until this operative has shot with its venom bolt, until it performs this"
+          "description": "• Until this operative has shot with its venom bolt, until it performs this action again or until it performs the Burrow action (whichever comes first), all profiles of its venom bolt have the Lethal 5+ weapon rule, have 1 added to their Atk stat and the Range 8\" weapon rule removed."
         }
       ],
       "keywords": [
@@ -233,15 +209,7 @@
       "passive_abilities": [
         {
           "name": "Instinctive Behaviour",
-          "description": "Whenever this operative is shooting against, fighting against or retaliating against a wounded enemy"
-        },
-        {
-          "name": "operative, or an enemy operative that performed the Fall Back",
-          "description": "action during this turning point, this operative’s weapons have the Lethal 5+ weapon rule."
-        },
-        {
-          "name": "RAVENER , GREAT DEVOURER, TYRANID, WARRIOR",
-          "description": "40"
+          "description": "Whenever this operative is shooting against, fighting against or retaliating against a wounded enemy operative, or an enemy operative that performed the Fall Back action during this turning point, this operative’s weapons have the Lethal 5+ weapon rule."
         }
       ],
       "unique_actions": [],
@@ -282,10 +250,6 @@
         {
           "name": "*Crush",
           "description": "Whenever you strike, you and your opponent roll-off, adding 1 to your result if the operative this weapon is being used against has a Wounds stat of 9 or less. If you win, inflict additional damage on that operative equal to the difference between the dice results (to a maximum of 3 additional damage)."
-        },
-        {
-          "name": "RAVENER , GREAT DEVOURER, TYRANID, WRECKER",
-          "description": "40"
         }
       ],
       "unique_actions": [],

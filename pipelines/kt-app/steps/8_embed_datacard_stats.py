@@ -64,6 +64,9 @@ class DatacardStatsEmbedder:
         lua_script_path = config_dir / "defaults" / "tts-script" / "datacard-load-stats.lua"
         with open(lua_script_path, 'r', encoding='utf-8') as f:
             self.lua_script = f.read()
+        
+        # Cache for selection data per team
+        self.selection_cache = {}
     
     def process_team(self, team: str) -> Tuple[int, int]:
         """
@@ -119,12 +122,24 @@ class DatacardStatsEmbedder:
                     continue
                 
                 # Build GMNotes data
-                gm_notes_data = self._build_gm_notes(operative, team_data)
+                try:
+                    gm_notes_data = self._build_gm_notes(operative, team_data)
+                except Exception as e:
+                    logger.error(f"  Error building GMNotes for '{nickname}': {e}")
+                    import traceback
+                    logger.error(traceback.format_exc())
+                    continue
+                
                 gm_notes_json = json.dumps(gm_notes_data, separators=(",", ":"), ensure_ascii=False)
+                
+                # Get faction rule code if applicable (operative-specific for chaos-cult)
+                operative_name = operative.get('name', '')
+                faction_rule_code = self._get_faction_rule_code(team, operative_name)
+                lua_script = self.lua_script + faction_rule_code
                 
                 # Set GMNotes and Lua script
                 card["GMNotes"] = gm_notes_json
-                card["LuaScript"] = self.lua_script
+                card["LuaScript"] = lua_script
                 
                 modified = True
                 total_patched += 1
@@ -139,6 +154,119 @@ class DatacardStatsEmbedder:
                 logger.info(f"  Patched {tts_file.name}")
         
         return total_patched, total_cards
+    
+    def _get_faction_rule_code(self, team: str, operative_name: str = "") -> str:
+        """
+        Get faction rule Lua code for teams with faction rules.
+        
+        Extracts Lua code blocks from OLD TTS objects for teams that have
+        faction-specific rules (Chapter Tactics, Marks of Chaos, Accursed Gifts).
+        
+        For chaos-cult, filters by operative name and uses different variants:
+        - Chaos Mutant: frSelection (single choice)
+        - Chaos Torment: frPrimarySelection + frSecondarySelection (both)
+        - Others: no faction rules
+        
+        Args:
+            team: Team slug
+            operative_name: Operative name for filtering (chaos-cult only)
+            
+        Returns:
+            Lua code block for faction rule, or empty string if not applicable
+        """
+        # For chaos-cult, only specific operatives get faction rules
+        if team == "chaos-cult":
+            op_lower = operative_name.lower()
+            # Determine which variant to use
+            if "mutant" in op_lower:
+                variant = "mutant"  # Single selection
+            elif "torment" in op_lower or "possessed" in op_lower:
+                variant = "torment"  # Primary + Secondary
+            else:
+                return ""  # Other operatives don't get faction rules
+        else:
+            variant = None
+        
+        # Mapping of team slugs to their OLD TTS object paths
+        faction_rule_files = {
+            "angels-of-death": PROJECT_ROOT / "tts_objects" / "angels-of-death" / "Angels Of Death Cards.json",
+            "legionaries": PROJECT_ROOT / "tts_objects" / "legionaries" / "Legionaries Cards.json",
+            "chaos-cult": PROJECT_ROOT / "tts_objects" / "chaos-cult" / "Chaos Cult Cards.json",
+        }
+        
+        # Check if this team has faction rules
+        if team not in faction_rule_files:
+            return ""
+        
+        tts_file = faction_rule_files[team]
+        if not tts_file.exists():
+            logger.warning(f"  No OLD TTS file for {team}, cannot extract faction rule code")
+            return ""
+        
+        try:
+            with open(tts_file, 'r', encoding='utf-8') as f:
+                tts_data = json.load(f)
+            
+            # For chaos-cult, extract from specific operative card
+            if team == "chaos-cult" and variant:
+                # Find the specific card (mutant or torment)
+                # OLD nicknames are like "chaos-cult-chaos-torment" or "chaos-cult-chaos-mutant"
+                target_nickname = f"chaos-cult-chaos-{variant}"
+                
+                for obj in tts_data['ObjectStates']:
+                    for item in obj.get('ContainedObjects', []):
+                        if item.get('Name') == 'Deck' and item.get('Nickname') == 'Datacards':
+                            for card in item.get('ContainedObjects', []):
+                                card_nickname = card.get('Nickname', '')
+                                if card_nickname.lower() == target_nickname.lower():
+                                    lua_script = card.get('LuaScript', '')
+                                    
+                                    # Extract faction rule section (look for any faction rule marker)
+                                    faction_marker = None
+                                    for possible_marker in ['-- ===== FACTION RULE:', '-- ===== FACTION RULE =====']:
+                                        if possible_marker in lua_script:
+                                            faction_marker = possible_marker
+                                            break
+                                    
+                                    if faction_marker:
+                                        # Split at marker and take everything after
+                                        idx = lua_script.find(faction_marker)
+                                        faction_code = lua_script[idx:]
+                                        logger.info(f"  Extracted {variant} variant faction rule code for {team} ({len(faction_code)} chars)")
+                                        return faction_code
+                
+                logger.warning(f"  Could not find {variant} variant for {team} (looked for '{target_nickname}')")
+                return ""
+            
+            # For other teams, extract from any card (they all have the same code)
+            # Structure: ObjectStates[0] (Custom_Model_Bag) → ContainedObjects (Decks) → ContainedObjects (Cards)
+            for obj in tts_data.get('ObjectStates', []):
+                if obj.get('Name') == 'Custom_Model_Bag':
+                    # Look directly in this bag's decks
+                    for deck in obj.get('ContainedObjects', []):
+                        if deck.get('Name') == 'Deck' and 'ContainedObjects' in deck:
+                            for card in deck.get('ContainedObjects', []):
+                                lua_script = card.get('LuaScript', '')
+                                # Look for any faction rule marker
+                                faction_marker = None
+                                for possible_marker in ['-- ===== FACTION RULE:', '-- ===== FACTION RULE =====']:
+                                    if possible_marker in lua_script:
+                                        faction_marker = possible_marker
+                                        break
+                                
+                                if faction_marker:
+                                    # Extract everything from the marker onwards
+                                    idx = lua_script.find(faction_marker)
+                                    faction_code = lua_script[idx:]
+                                    logger.info(f"  Extracted faction rule code for {team} ({len(faction_code)} chars)")
+                                    return faction_code
+            
+            logger.warning(f"  No faction rule code found in {team} OLD TTS objects")
+            return ""
+            
+        except Exception as e:
+            logger.error(f"  Error extracting faction rule code for {team}: {e}")
+            return ""
     
     def _find_datacards(self, tts_data: Dict) -> List[Dict]:
         """Find all datacard objects in TTS JSON."""
@@ -204,75 +332,283 @@ class DatacardStatsEmbedder:
         return None
     
     def _build_gm_notes(self, operative: Dict, team_data: Dict) -> Dict:
-        """Build GMNotes JSON structure with operative stats."""
-        # Extract statline
-        stats = operative.get('statline', {})
+        """Build GMNotes JSON structure with operative stats (OLD FORMAT for Lua compatibility)."""
+        import re
         
-        # Build weapons array
+        # Helper: Parse movement string to integer (e.g., "7″" -> 7)
+        def parse_move(s: str) -> int:
+            m = re.search(r"(\d+)", str(s))
+            return int(m.group(1)) if m else 6
+        
+        # Helper: Parse save string to integer (e.g., "4+" -> 4)
+        def parse_save(s: str) -> int:
+            m = re.search(r"(\d+)", str(s))
+            return int(m.group(1)) if m else 5
+        
+        # Helper: Classify weapon type for prefix
+        def classify_weapon(weapon: Dict) -> str:
+            special_rules = weapon.get('special_rules', '').lower()
+            if 'range' in special_rules or 'rng' in special_rules:
+                return 'ranged'
+            # Default to melee if no range specified
+            return 'melee'
+        
+        # Helper: Get weapon prefix for TTS display
+        def weapon_prefix(weapon: Dict) -> str:
+            if classify_weapon(weapon) == 'melee':
+                return '[F4641D]M[-]'
+            return '[1E87FF]R[-]'
+        
+        # Build stats in OLD format (capital letters, integer values)
+        stats = {
+            'APL': operative.get('apl', 2),
+            'Move': parse_move(operative.get('movement', '6')),
+            'Save': parse_save(operative.get('save', '5+')),
+            'Wounds': operative.get('wounds', 1)
+        }
+        
+        # Build keywords list (Operative + extracted keywords)
+        keywords = ['Operative']
+        if 'keywords' in operative:
+            keywords.extend(operative.get('keywords', []))
+        
+        # Build weapons array in OLD format
         weapons = []
+        weapon_rules = {}
         for weapon in operative.get('weapons', []):
-            weapon_data = {
-                'name': weapon.get('name', ''),
-                'type': weapon.get('type', ''),
-                'attacks': weapon.get('attacks', ''),
-                'skill': weapon.get('skill', ''),
-                'damage': weapon.get('damage', {})
-            }
+            weapon_name = weapon.get('name', '')
+            special_rules = weapon.get('special_rules', '')
             
-            # Add weapon rules with descriptions
-            if 'rules' in weapon:
-                weapon_data['rules'] = []
-                for rule_name in weapon.get('rules', []):
-                    rule_desc = self.weapon_rules.get(rule_name, {}).get('description', '')
-                    weapon_data['rules'].append({
-                        'name': rule_name,
-                        'description': rule_desc
-                    })
+            # Add prefix to weapon name
+            prefix = weapon_prefix(weapon)
+            full_name = f'{prefix} {weapon_name}'
             
-            weapons.append(weapon_data)
+            weapons.append({
+                'name': full_name,
+                'plain_name': weapon_name,
+                'stats': {
+                    'ATK': weapon.get('attacks', ''),
+                    'HIT': weapon.get('hit', ''),
+                    'DMG': weapon.get('damage', ''),
+                    'WR': special_rules
+                }
+            })
+            
+            # Extract weapon rules from special_rules text
+            if special_rules:
+                # Match rule names with descriptions from weapon_rules.json
+                for rule_name, rule_description in self.weapon_rules.items():
+                    if rule_name.lower() in special_rules.lower():
+                        # weapon_rules.json has flat structure: {rule_name: description}
+                        weapon_rules[rule_name] = rule_description
         
-        # Build abilities array
+        # Build abilities array from passive_abilities (filter out malformed keyword entries)
         abilities = []
-        for ability in operative.get('abilities', []):
+        for ability in operative.get('passive_abilities', []):
+            ability_name = ability.get('name', '')
+            ability_desc = ability.get('description', '')
+            
+            # Skip if description is just a number (malformed keyword extraction)
+            if ability_desc.isdigit():
+                continue
+            
+            # Skip if description starts with digits (e.g., "32 RULES CONTINUE ON OTHER SIDE")
+            if ability_desc and ability_desc[0].isdigit():
+                continue
+            
+            # Skip if name contains multiple commas (likely malformed keywords)
+            if ',' in ability_name and len(ability_name.split(',')) > 3:
+                continue
+            
+            # Skip if name is ALL UPPERCASE and longer than 20 chars (likely text fragment or keyword line)
+            if ability_name.isupper() and len(ability_name) > 20:
+                continue
+            
+            # Skip if name doesn't start with a capital letter (likely text fragment)
+            if not ability_name or not ability_name[0].isupper():
+                continue
+            
+            # Skip if name contains too many words (>5) - likely a sentence fragment
+            word_count = len(ability_name.split())
+            if word_count > 5:
+                continue
+            
             abilities.append({
-                'name': ability.get('name', ''),
-                'description': ability.get('description', '')
+                'name': ability_name,
+                'text': ability_desc
             })
         
-        # Build actions array
+        # Build actions array from unique_actions
         actions = []
-        for action in operative.get('actions', []):
+        for action in operative.get('unique_actions', []):
             actions.append({
                 'name': action.get('name', ''),
-                'description': action.get('description', '')
+                'text': action.get('description', '')
             })
         
-        # Build unique actions array
-        unique_actions = []
-        for action in operative.get('unique_actions', []):
-            unique_actions.append({
-                'name': action.get('name', ''),
-                'description': action.get('description', '')
-            })
+        # Build description text (formatted for TTS display)
+        description_lines = [
+            f"[D36B3E][[84E680]APL[-] [ffffff]{stats['APL']}[-]] [[84E680]MOVE[-] [ffffff]{stats['Move']}\"[-]]",
+            f"[[84E680]SAVE[-] [ffffff]{stats['Save']}+[-]] [[84E680]WOUNDS[-] [ffffff]{stats['Wounds']}[-]][-]"
+        ]
         
-        # Assemble GMNotes structure
+        if keywords:
+            description_lines.append('[C5C5C5]' + ', '.join(keywords) + '[-]')
+        
+        description_lines.append('[31B32B]Weapons[-]')
+        for w in weapons:
+            description_lines.append(w['name'])
+            w_stats = w['stats']
+            description_lines.append(
+                f"[84E680]ATK[-] {w_stats['ATK']} [84E680]HIT[-] {w_stats['HIT']} [84E680]DMG[-] {w_stats['DMG']}"
+            )
+            if w_stats['WR']:
+                description_lines.append(f"[84E680]WR[-]: {w_stats['WR']}")
+            description_lines.append('')
+        
+        if abilities:
+            description_lines.append('---')
+            description_lines.append('[31B32B]Abilities[-]')
+            for ab in abilities:
+                description_lines.append(f"- [EF8450]{ab['name']}[-]")
+        
+        if actions:
+            description_lines.append('---')
+            description_lines.append('[31B32B]Unique Actions[-]')
+            for act in actions:
+                description_lines.append(f"- [EF8450]{act['name']}[-]")
+        
+        description = '\n'.join(description_lines)
+        
+        # Assemble GMNotes in OLD format (matches script/embed_datacard_stats.py)
         gm_notes = {
             'name': operative.get('name', ''),
-            'stats': {
-                'movement': stats.get('movement', ''),
-                'apl': stats.get('apl', ''),
-                'ga': stats.get('ga', ''),
-                'df': stats.get('df', ''),
-                'sv': stats.get('sv', ''),
-                'wounds': stats.get('wounds', '')
-            },
+            'stats': stats,
+            'keywords': keywords,
             'weapons': weapons,
             'abilities': abilities,
             'actions': actions,
-            'unique_actions': unique_actions
+            'weapon_rules': weapon_rules,
+            'description': description
         }
         
+        # Add selection data if available (for weapon loadout choices)
+        selection_data = self._get_selection_for_operative(operative.get('name', ''), team_data)
+        if selection_data:
+            gm_notes['selection'] = selection_data
+        
         return gm_notes
+    
+    def _get_selection_for_operative(self, operative_name: str, team_data: Dict) -> Optional[Dict]:
+        """
+        Get weapon selection data for an operative from OLD roster.json.
+        
+        Returns selection structure: {groups: [[{label, weapons}]], fixed: [], exclusive_sets: [[]]}
+        or None if no selection data exists.
+        """
+        team = team_data.get('team', '')
+        
+        # Check cache first
+        if team in self.selection_cache:
+            selection_lookup = self.selection_cache[team]
+        else:
+            # Try to load OLD roster.json
+            roster_path = PROJECT_ROOT / "output" / team / "statlines" / "roster.json"
+            if not roster_path.exists():
+                logger.debug(f"  No OLD roster.json for {team}, skipping selection data")
+                self.selection_cache[team] = {}
+                return None
+            
+            try:
+                with open(roster_path, 'r', encoding='utf-8') as f:
+                    roster = json.load(f)
+                selection_lookup = roster.get('selection', {})
+                exclusive_sets_lookup = roster.get('exclusive_sets', {})
+                self.selection_cache[team] = {
+                    'selection': selection_lookup,
+                    'exclusive_sets': exclusive_sets_lookup
+                }
+            except Exception as e:
+                logger.warning(f"  Error loading roster.json for {team}: {e}")
+                self.selection_cache[team] = {}
+                return None
+        
+        if not self.selection_cache.get(team):
+            return None
+        
+        selection_lookup = self.selection_cache[team].get('selection', {})
+        exclusive_sets_lookup = self.selection_cache[team].get('exclusive_sets', {})
+        
+        # Normalize operative name for lookup (uppercase)
+        op_name_upper = operative_name.upper()
+        selection_groups = selection_lookup.get(op_name_upper, [])
+        
+        if not selection_groups:
+            return None
+        
+        # Build indexed selection structure
+        return self._build_selection_for_gmnotes(
+            selection_groups,
+            team_data.get('datacards', []),
+            operative_name,
+            exclusive_sets_lookup.get(op_name_upper)
+        )
+    
+    def _build_selection_for_gmnotes(
+        self,
+        selection_groups: List[List[str]],
+        datacards: List[Dict],
+        operative_name: str,
+        exclusive_sets: Optional[List[List[int]]] = None
+    ) -> Optional[Dict]:
+        """
+        Transform selection groups into indexed format for TTS GMNotes.
+        
+        Returns {"groups": [[{"label": str, "weapons": [int]}]], "fixed": [int]}
+        where weapon indices are 0-based into the weapons list.
+        """
+        # Find the operative to get weapon list
+        operative = None
+        for op in datacards:
+            if op.get('name', '') == operative_name:
+                operative = op
+                break
+        
+        if not operative:
+            return None
+        
+        weapons = operative.get('weapons', [])
+        if not weapons:
+            return None
+        
+        weapon_names_lower = [w.get('name', '').lower() for w in weapons]
+        all_matched = set()
+        result_groups = []
+        
+        for group in selection_groups:
+            group_options = []
+            for option_label in group:
+                # Split "; " or " and " combos into individual weapon fragments
+                fragments = [f.strip().lower() for f in re.split(r'\s*;\s*|\s+and\s+', option_label)]
+                matched = set()
+                for frag in fragments:
+                    # Handle "X or Y" alternatives within a fragment
+                    sub_frags = [sf.strip() for sf in frag.split(" or ")]
+                    for sf in sub_frags:
+                        for i, wname in enumerate(weapon_names_lower):
+                            if sf in wname:
+                                matched.add(i)
+                all_matched.update(matched)
+                group_options.append({"label": option_label, "weapons": sorted(matched)})
+            result_groups.append(group_options)
+        
+        # Weapons not covered by any option are always included
+        fixed = [i for i in range(len(weapons)) if i not in all_matched]
+        
+        result = {"groups": result_groups, "fixed": fixed}
+        if exclusive_sets:
+            result["exclusive_sets"] = exclusive_sets
+        return result
     
     def _update_bag_timestamp(self, tts_data: Dict) -> None:
         """Update lastCardUpdate in the top-level bag's LuaScriptState."""
@@ -361,7 +697,9 @@ def main():
             total_patched += patched
             total_cards += cards
         except Exception as e:
+            import traceback
             logger.error(f"  Error processing {team}: {e}")
+            logger.debug(traceback.format_exc())
     
     logger.info(f"Successfully embedded stats: {total_patched}/{total_cards} datacards across {success_count} teams")
 

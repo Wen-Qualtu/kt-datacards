@@ -1,6 +1,6 @@
 {
   "team": "pathfinders",
-  "generated_at": "2026-05-02T20:37:01.475659+00:00",
+  "generated_at": "2026-05-04T19:45:54.483061+00:00",
   "datacards": [
     {
       "name": "SHAS’UI PATHFINDER",
@@ -24,23 +24,32 @@
       ],
       "passive_abilities": [
         {
-          "name": "MARKERLIGHT\b",
-          "description": "1AP See the Markerlights faction rule."
+          "name": "Art of War",
+          "description": "STRATEGIC GAMBIT if this operative is in the killzone. Select one of the following and apply its rules until the end of the turning point. You cannot select each option more than once per battle:"
         },
         {
-          "name": "PATHFINDER , T'AU EMPIRE, LEADER, SHAS’UI",
-          "description": "25"
+          "name": "\t \u0007Mont’ka",
+          "description": "Add 1\" to the Move stat of friendly PATHFINDER operatives."
         },
         {
-          "name": "MARKERLIGHT\b",
-          "description": "1AP See the Markerlights faction rule."
+          "name": "\t \u0007Kauyon",
+          "description": "Friendly PATHFINDER operatives can perform a free Markerlight action during their activation if they have a Conceal order."
         },
         {
-          "name": "PATHFINDER , T'AU EMPIRE, ASSAULT GRENADIER",
-          "description": "ASSAULT GRENADIER PATHFINDER 2 APL WOUNDS SAVE MOVE 6\" 5+ 7 25"
+          "name": "Grenadier Specialist",
+          "description": "This operative can use frag and krak grenades (see universal equipment). Doing so doesn’t count towards any limited uses you have (i.e. if you also select those grenades from equipment for other operatives). Whenever it’s doing so, improve the Hit stat of that weapon by 1."
         }
       ],
-      "unique_actions": [],
+      "unique_actions": [
+        {
+          "name": "MARKERLIGHT\b (1AP)",
+          "description": "See the Markerlights faction rule."
+        },
+        {
+          "name": "MARKERLIGHT\b (1AP)",
+          "description": "See the Markerlights faction rule. ASSAULT GRENADIER PATHFINDER"
+        }
+      ],
       "keywords": [
         "PATHFINDER",
         "T'AU EMPIRE",
@@ -70,23 +79,32 @@
       ],
       "passive_abilities": [
         {
-          "name": "MARKERLIGHT\b",
-          "description": "1AP See the Markerlights faction rule."
+          "name": "Art of War",
+          "description": "STRATEGIC GAMBIT if this operative is in the killzone. Select one of the following and apply its rules until the end of the turning point. You cannot select each option more than once per battle:"
         },
         {
-          "name": "PATHFINDER , T'AU EMPIRE, LEADER, SHAS’UI",
-          "description": "25"
+          "name": "\t \u0007Mont’ka",
+          "description": "Add 1\" to the Move stat of friendly PATHFINDER operatives."
         },
         {
-          "name": "MARKERLIGHT\b",
-          "description": "1AP See the Markerlights faction rule."
+          "name": "\t \u0007Kauyon",
+          "description": "Friendly PATHFINDER operatives can perform a free Markerlight action during their activation if they have a Conceal order."
         },
         {
-          "name": "PATHFINDER , T'AU EMPIRE, BLOODED",
-          "description": "BLOODED PATHFINDER 2 APL WOUNDS SAVE MOVE 6\" 5+ 8 25"
+          "name": "Veteran",
+          "description": "During a turning point in which you have used a friendly SHAS’UI operative’s Art of War STRATEGIC GAMBIT and you selected Mont’ka, this operative can use Kauyon instead during its activation (and vice versa)."
         }
       ],
-      "unique_actions": [],
+      "unique_actions": [
+        {
+          "name": "MARKERLIGHT\b (1AP)",
+          "description": "See the Markerlights faction rule."
+        },
+        {
+          "name": "MARKERLIGHT\b (1AP)",
+          "description": "See the Markerlights faction rule. BLOODED PATHFINDER"
+        }
+      ],
       "keywords": [
         "PATHFINDER",
         "T'AU EMPIRE",
@@ -114,21 +132,17 @@
           "damage": "2/3"
         }
       ],
-      "passive_abilities": [
+      "passive_abilities": [],
+      "unique_actions": [
         {
-          "name": "MARKERLIGHT\b",
-          "description": "1AP See the Markerlights faction rule."
+          "name": "MARKERLIGHT\b (1AP)",
+          "description": "See the Markerlights faction rule."
         },
         {
-          "name": "SIGNAL\b",
-          "description": "1AP\n• SUPPORT. Select one other friendly PATHFINDER operative visible to and within 6\" of this operative. Until the end of that operative’s next activation, add 1 to its APL stat.\n• This operative cannot perform this action while within control range of an enemy operative."
-        },
-        {
-          "name": "PATHFINDER , T'AU EMPIRE, COMMS SPECIALIST",
-          "description": "25"
+          "name": "SIGNAL\b (1AP)",
+          "description": "• SUPPORT. Select one other friendly PATHFINDER operative visible to and within 6\" of this operative. Until the end of that operative’s next activation, add 1 to its APL stat.\n• This operative cannot perform this action while within control range of an enemy operative."
         }
       ],
-      "unique_actions": [],
       "keywords": [
         "PATHFINDER",
         "T'AU EMPIRE",
@@ -157,19 +171,20 @@
       ],
       "passive_abilities": [
         {
-          "name": "MARKERLIGHT\b",
-          "description": "1AP See the Markerlights faction rule."
-        },
-        {
-          "name": "PATHFINDER , T'AU EMPIRE, DRONE CONTROLLER",
-          "description": "25 RULES CONTINUE ON OTHER SIDE"
-        },
-        {
-          "name": "REMOTE PILOT\b",
-          "description": "1AP\n• One friendly PATHFINDER DRONE operative can immediately perform one free action, but it cannot move more than 2\" during that action. That action can be one that’s normally restricted by its Drone rule (this takes precedence over that rule).\n• This operative cannot perform this action while within control range of an enemy operative. This operative can perform this action more than once during its activation, but if it does, the same DRONE operative cannot perform the same free action more than once per activation. DRONE CONTROLLER PATHFINDER 2 APL WOUNDS SAVE MOVE 6\" 5+ 7"
+          "name": "Drone Controller",
+          "description": "Whenever this operative is in the killzone:\n• Add 2\" to the Move stat of friendly PATHFINDER DRONE operatives.\n• The Saviour Protocols firefight ploy costs you 0CP."
         }
       ],
-      "unique_actions": [],
+      "unique_actions": [
+        {
+          "name": "MARKERLIGHT\b (1AP)",
+          "description": "See the Markerlights faction rule."
+        },
+        {
+          "name": "REMOTE PILOT\b (1AP)",
+          "description": "• One friendly PATHFINDER DRONE operative can immediately perform one free action, but it cannot move more than 2\" during that action. That action can be one that’s normally restricted by its Drone rule (this takes precedence over that rule).\n• This operative cannot perform this action while within control range of an enemy operative. This operative can perform this action more than once during its activation, but if it does, the same DRONE operative cannot perform the same free action more than once per activation. DRONE CONTROLLER PATHFINDER"
+        }
+      ],
       "keywords": [
         "PATHFINDER",
         "T'AU EMPIRE",
@@ -206,8 +221,8 @@
       ],
       "passive_abilities": [
         {
-          "name": "PATHFINDER , T'AU EMPIRE, MARKSMAN",
-          "description": "25"
+          "name": "Inertial Dampener",
+          "description": "You can ignore any changes to the Hit stat of this operative’s marksman rail rifle."
         }
       ],
       "unique_actions": [],
@@ -239,19 +254,20 @@
       ],
       "passive_abilities": [
         {
-          "name": "PATHFINDER , T'AU EMPIRE, MEDIC, MEDICAL TECHNICIAN",
-          "description": "25 RULES CONTINUE ON OTHER SIDE"
-        },
-        {
-          "name": "MARKERLIGHT\b",
-          "description": "1AP See the Markerlights faction rule."
-        },
-        {
-          "name": "MEDIKIT\b",
-          "description": "1AP\n• Select one friendly PATHFINDER operative (excluding DRONE) within this operative’s control range to regain up to 2D3 lost wounds. It cannot be an operative that the Medic! rule was used on during this turning point.\n• This operative cannot perform this action while within control range of an enemy operative. MEDICAL TECHNICIAN PATHFINDER 2 APL WOUNDS SAVE MOVE 6\" 5+ 7"
+          "name": "Medic!",
+          "description": "The first time during each turning point that another friendly PATHFINDER operative (excluding DRONE) would be incapacitated while visible to and within 3\" of this operative, you can use this rule, providing neither this nor that operative is within control range of an enemy operative. If you do, that friendly operative isn’t incapacitated, has 1 wound remaining and cannot be incapacitated for the remainder of the action. After that action, that friendly operative can immediately perform a free Dash action, but must end that move within this operative’s control range. Subtract 1 from this and that operative’s APL stats until the end of their next activations respectively, and if this rule was used during that friendly operative’s activation, that activation ends. You cannot use this rule if this operative is incapacitated, or if it’s a Shoot action and this operative would be a primary or secondary target."
         }
       ],
-      "unique_actions": [],
+      "unique_actions": [
+        {
+          "name": "MARKERLIGHT\b (1AP)",
+          "description": "See the Markerlights faction rule."
+        },
+        {
+          "name": "MEDIKIT\b (1AP)",
+          "description": "• Select one friendly PATHFINDER operative (excluding DRONE) within this operative’s control range to regain up to 2D3 lost wounds. It cannot be an operative that the Medic! rule was used on during this turning point.\n• This operative cannot perform this action while within control range of an enemy operative. MEDICAL TECHNICIAN PATHFINDER"
+        }
+      ],
       "keywords": [
         "PATHFINDER",
         "T'AU EMPIRE",
@@ -281,15 +297,20 @@
       ],
       "passive_abilities": [
         {
-          "name": "MARKERLIGHT\b",
-          "description": "1AP See the Markerlights faction rule."
+          "name": "Group Activation",
+          "description": "Whenever this operative is expended, you must then activate one other ready friendly PATHFINDER SHAS’LA operative (if able) before your opponent activates. When that other operative is expended, your opponent then activates as normal (in other words, you cannot activate more than two operatives in succession with this rule)."
         },
         {
-          "name": "PATHFINDER , T'AU EMPIRE, SHAS’LA",
-          "description": "25"
+          "name": "Fearless on the Frontline",
+          "description": "This operative can perform the Markerlight action while within control range of an enemy operative (this takes precedence over the Markerlight action’s normal conditions). In addition, this operative can perform the Fall Back action for 1 less AP."
         }
       ],
-      "unique_actions": [],
+      "unique_actions": [
+        {
+          "name": "MARKERLIGHT\b (1AP)",
+          "description": "See the Markerlights faction rule."
+        }
+      ],
       "keywords": [
         "PATHFINDER",
         "T'AU EMPIRE",
@@ -316,17 +337,13 @@
           "damage": "2/3"
         }
       ],
-      "passive_abilities": [
+      "passive_abilities": [],
+      "unique_actions": [
         {
-          "name": "SYSTEM JAM\b",
-          "description": "1AP\n• Select one enemy operative visible to this operative. Until the end of that operative’s next activation, subtract 1 from its APL stat.\n• This operative cannot perform this action while it has a Conceal order, or while within control range of an enemy operative. Multi-Dimensional Vision: Whenever this operative is shooting, enemy operatives cannot be obscured."
-        },
-        {
-          "name": "PATHFINDER , T'AU EMPIRE, TRANSPECTRAL INTERFERENCE",
-          "description": "25"
+          "name": "SYSTEM JAM\b (1AP)",
+          "description": "• Select one enemy operative visible to this operative. Until the end of that operative’s next activation, subtract 1 from its APL stat.\n• This operative cannot perform this action while it has a Conceal order, or while within control range of an enemy operative. Multi-Dimensional Vision: Whenever this operative is shooting, enemy operatives cannot be obscured."
         }
       ],
-      "unique_actions": [],
       "keywords": [
         "PATHFINDER",
         "T'AU EMPIRE",
@@ -368,13 +385,6 @@
           "damage": "2/3"
         }
       ],
-      "passive_abilities": [
-        {
-          "name": "PATHFINDER , T'AU EMPIRE, WEAPONS EXPERT",
-          "description": "25"
-        }
-      ],
-      "unique_actions": [],
       "keywords": [
         "PATHFINDER",
         "T'AU EMPIRE",
@@ -412,15 +422,16 @@
       ],
       "passive_abilities": [
         {
-          "name": "MARKERLIGHT\b",
-          "description": "1AP See the Markerlights faction rule. Drone:\n• This operative cannot perform any actions other than Charge, Dash, Fall Back, Fight, Markerlight, Reposition and Shoot. It cannot use any weapons that aren’t on its datacard.\n• Whenever determining control of an objective marker, treat this operative’s APL stat as 1 lower. Note this isn’t a change to its APL stat, so any changes are cumulative with this.\n• Whenever determining what’s visible to this operative, the round disc at the top of the miniature is its head."
-        },
-        {
-          "name": "PATHFINDER , T'AU EMPIRE, MB3 RECON, DRONE",
-          "description": "32"
+          "name": "Analyse",
+          "description": "Whenever this operative performs the Markerlight action, each other enemy operative that’s both visible to this operative and within 3\" of the enemy operative you selected for that action also gains one of your Markerlight tokens."
         }
       ],
-      "unique_actions": [],
+      "unique_actions": [
+        {
+          "name": "MARKERLIGHT\b (1AP)",
+          "description": "Drone:\n• This operative cannot perform any actions other than Charge, Dash, Fall Back, Fight, Markerlight, Reposition and Shoot. It cannot use any weapons that aren’t on its datacard.\n• Whenever determining control of an objective marker, treat this operative’s APL stat as 1 lower. Note this isn’t a change to its APL stat, so any changes are cumulative with this.\n• Whenever determining what’s visible to this operative, the round disc at the top of the miniature is its head."
+        }
+      ],
       "keywords": [
         "PATHFINDER",
         "T'AU EMPIRE",
@@ -451,8 +462,8 @@
       ],
       "passive_abilities": [
         {
-          "name": "PATHFINDER , T'AU EMPIRE, MV1 GUN, DRONE",
-          "description": "32"
+          "name": "Drone",
+          "description": "• This operative cannot perform any actions other than Charge, Dash, Fall Back, Fight, Reposition and Shoot. It cannot use any weapons that aren’t on its datacard.\n• Whenever determining control of an objective marker, treat this operative’s APL stat as 1 lower. Note this isn’t a change to its APL stat, so any changes are cumulative with this.\n• Whenever determining what’s visible to this operative, the round disc at the top of the miniature is its head."
         }
       ],
       "unique_actions": [],
@@ -479,8 +490,12 @@
       ],
       "passive_abilities": [
         {
-          "name": "PATHFINDER , T'AU EMPIRE, MV4 SHIELD, DRONE",
-          "description": "32"
+          "name": "Drone",
+          "description": "• This operative cannot perform any actions other than Charge, Dash, Fall Back, Fight and Reposition. It cannot use any weapons that aren’t on its datacard.\n• Whenever determining control of an objective marker, treat this operative’s APL stat as 1 lower. Note this isn’t a change to its APL stat, so any changes are cumulative with this.\n• Whenever determining what’s visible to this operative, the round disc at the top of the miniature is its head."
+        },
+        {
+          "name": "Shield Generator",
+          "description": "• This operative ignores the Piercing weapon rule.\n• Once per turning point, when an attack dice inflicts Normal Dmg on this operative, you can ignore that inflicted damage.\n• You can use the Saviour Protocols firefight ploy for 0CP if this is the specified DRONE operative."
         }
       ],
       "unique_actions": [],
@@ -507,15 +522,16 @@
       ],
       "passive_abilities": [
         {
-          "name": "MARKERLIGHT\b",
-          "description": "1AP See the Markerlights faction rule. Drone:\n• This operative cannot perform any actions other than Charge, Dash, Fall Back, Fight, Markerlight and Reposition. It cannot use any weapons that aren’t on its datacard.\n• When determining control of an objective marker, treat this operative’s APL stat as 1 lower. Note this isn’t a change to its APL stat, so any changes are cumulative with this.\n• When determining what’s visible to this operative, the round disc at the top of the miniature is its head."
-        },
-        {
-          "name": "PATHFINDER , T'AU EMPIRE, MV7 MARKER, DRONE",
-          "description": "32"
+          "name": "High-intensity Markerlight",
+          "description": "Whenever this operative performs the Markerlight action, the selected enemy operative gains two of your Markerlight tokens (instead of one)."
         }
       ],
-      "unique_actions": [],
+      "unique_actions": [
+        {
+          "name": "MARKERLIGHT\b (1AP)",
+          "description": "See the Markerlights faction rule. Drone:\n• This operative cannot perform any actions other than Charge, Dash, Fall Back, Fight, Markerlight and Reposition. It cannot use any weapons that aren’t on its datacard.\n• When determining control of an objective marker, treat this operative’s APL stat as 1 lower. Note this isn’t a change to its APL stat, so any changes are cumulative with this.\n• When determining what’s visible to this operative, the round disc at the top of the miniature is its head."
+        }
+      ],
       "keywords": [
         "PATHFINDER",
         "T'AU EMPIRE",
@@ -539,15 +555,16 @@
       ],
       "passive_abilities": [
         {
-          "name": "PULSE ACCELERATOR\b",
-          "description": "1AP\n• Until the start of this operative’s next activation or until it's incapacitated (whichever comes first), whenever another friendly PATHFINDER operative is shooting with a pulse weapon within 3\" of this operative, that weapon has the Lethal 5+ and Severe weapon rules."
-        },
-        {
-          "name": "PATHFINDER , T'AU EMPIRE, MV31 PULSE ACCELERATOR, DRONE",
-          "description": "32"
+          "name": "Drone",
+          "description": "• This operative cannot perform any actions other than Charge, Dash, Fall Back, Fight, Pulse Accelerator and Reposition. It cannot use any weapons that aren’t on its datacard.\n• When determining control of an objective marker, treat this operative’s APL stat as 1 lower. Note this isn’t a change to its APL stat, so any changes are cumulative with this.\n• When determining what’s visible to this operative, the round disc at the top of the miniature is its head."
         }
       ],
-      "unique_actions": [],
+      "unique_actions": [
+        {
+          "name": "PULSE ACCELERATOR\b (1AP)",
+          "description": "• Until the start of this operative’s next activation or until it's incapacitated (whichever comes first), whenever another friendly PATHFINDER operative is shooting with a pulse weapon within 3\" of this operative, that weapon has the Lethal 5+ and Severe weapon rules."
+        }
+      ],
       "keywords": [
         "PATHFINDER",
         "T'AU EMPIRE",
@@ -571,8 +588,12 @@
       ],
       "passive_abilities": [
         {
-          "name": "PATHFINDER , T'AU EMPIRE, MV33 GRAV-INHIBITOR, DRONE",
-          "description": "32"
+          "name": "Drone",
+          "description": "• This operative cannot perform any actions other than Charge, Dash, Fall Back, Fight and Reposition. It cannot use any weapons that aren’t on its datacard.\n• When determining control of an objective marker, treat this operative’s APL stat as 1 lower. Note this isn’t a change to its APL stat, so any changes are cumulative with this.\n• When determining what’s visible to this operative, the round disc at the top of the miniature is its head."
+        },
+        {
+          "name": "Grav-inhibitor",
+          "description": "• Whenever an enemy operative performs an action in which it moves (excluding Dash), if it would move visible to and within 6\" of this operative, treat the distance as an additional 2\" and ignore the additional distances from the Obstructing and Accessible terrain rules.\n• Whenever an enemy operative is fighting or retaliating while visible to and within 6\" of this operative, worsen the Hit stat of that enemy operative’s melee weapons by 1. This is cumulative with being injured."
         }
       ],
       "unique_actions": [],
