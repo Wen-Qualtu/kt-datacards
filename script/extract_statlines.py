@@ -152,7 +152,9 @@ def _extract_name_from_blocks(blocks: list, page_width: float, page_height: floa
             if 'ACTIONS' in text.upper():
                 continue
             if text.isupper() and 3 <= len(text) <= 50:
-                name = text.rstrip('0123456789').strip()
+                # Strip trailing non-letter characters (digits, quotes, symbols, etc.)
+                # Keeps letters, spaces, and hyphens only
+                name = re.sub(r'[^A-Z\s-]+$', '', text).strip()
                 if len(name) >= 3:
                     return name
     return None
@@ -173,8 +175,21 @@ def _extract_stats_from_blocks(blocks: list, page_width: float, page_height: flo
                 for span in line.get("spans", []):
                     text += span.get("text", "")
             text = text.strip()
-            if text and text[-1].isdigit():
-                stats["apl"] = int(text[-1])
+            if text and any(c.isdigit() for c in text):
+                # Extract APL: look for first digit after the name
+                # Strip the name (all caps letters, spaces, hyphens)
+                name_clean = re.sub(r'[^A-Z\s-]+$', '', text).strip()
+                # Get the remaining text after the name
+                if len(name_clean) < len(text):
+                    remainder = text[len(name_clean):].strip()
+                    # Find first digit (APL is always first, even in "10\"" format it's "1" + "0\"")
+                    apl_match = re.search(r'\d', remainder)
+                    if apl_match:
+                        stats["apl"] = int(apl_match.group())
+                        break
+                # Fallback: take last digit (old behavior)
+                if stats["apl"] is None and text[-1].isdigit():
+                    stats["apl"] = int(text[-1])
                 break
 
     # APL fallback: stats box region (x > 65%, y < 25%)
@@ -203,6 +218,19 @@ def _extract_stats_from_blocks(blocks: list, page_width: float, page_height: flo
             for line in block.get("lines", []):
                 for span in line.get("spans", []):
                     stats_text += span.get("text", "") + "|"
+    
+    # FALLBACK: If top-right region is empty/header-only, check top-left blocks for stats
+    # (Handles Spectre Squad format where stats are smooshed with name: "NAME26\"5+9")
+    stats_text_clean = stats_text.strip().strip('|')
+    if not stats_text_clean or stats_text_clean in ['APLWOUNDSSAVEMOVE', 'APL|WOUNDS|SAVE|MOVE', 'APLWOUNDSSAVE MOVE']:
+        for block in blocks:
+            if block.get("type") != 0:
+                continue
+            bbox = block["bbox"]
+            if bbox[0] < page_width * 0.6 and bbox[1] < 15:
+                for line in block.get("lines", []):
+                    for span in line.get("spans", []):
+                        stats_text += span.get("text", "") + "|"
 
     # Movement: digit + " or ″
     move_match = re.search(r'(\d+)[″"\']', stats_text)
@@ -542,20 +570,60 @@ def _extract_rules_from_blocks(blocks: list, page_width: float, page_height: flo
 # ── Page classification ──
 
 def _is_front_page(page: fitz.Page) -> bool:
-    """Check if a page is a front-side datacard (has the NAME weapon header row)."""
+    """Check if a page is a front-side datacard (has the NAME weapon header row or APL stat labels)."""
     blocks = page.get_text("dict").get("blocks", [])
+    has_weapon_header = False
+    has_stat_labels = False
+    has_operative_name = False
+    has_descriptive_text = False
+    
     for block in blocks:
         if block.get("type") != 0:
             continue
         bbox = block["bbox"]
-        if bbox[1] < 50:  # Header is typically in top quarter
-            text = ""
-            for line in block.get("lines", []):
-                for span in line.get("spans", []):
-                    text += span.get("text", "")
-            # Header can be "NAME ATK HIT DMG WR" or "NAME A HIT D WR"
+        text = ""
+        for line in block.get("lines", []):
+            for span in line.get("spans", []):
+                text += span.get("text", "")
+        
+        # Check for weapon table header (typical front page)
+        if bbox[1] < 50:
             if "NAME" in text and "HIT" in text and "WR" in text:
-                return True
+                has_weapon_header = True
+        
+        # Check for stat labels (APL, WOUNDS, SAVE, MOVE) - alternative front page format
+        if bbox[1] < 25:
+            if "APL" in text and "WOUNDS" in text and "SAVE" in text and "MOVE" in text:
+                has_stat_labels = True
+        
+        # Check for operative name (top-left, all caps)
+        if bbox[0] < page.rect.width * 0.6 and bbox[1] < 15:
+            text_clean = text.strip()
+            if text_clean.isupper() and len(text_clean) > 10 and "SPECTRE" in text_clean:
+                has_operative_name = True
+        
+        # Check for descriptive text below header (back page indicator)
+        # Actions/abilities/keyword descriptions appear around y=35-80
+        if 30 < bbox[1] < 80 and bbox[0] < page.rect.width * 0.6:
+            # Strip control characters (e.g., \x08 backspace) from PDF text
+            text_clean = re.sub(r'[\x00-\x1f\x7f-\x9f]', '', text.strip())
+            # Check for descriptive text patterns (colons, lowercase letters, action format)
+            if len(text_clean) > 10:  # Ignore very short text
+                # Action format (e.g., "MEDIKIT0AP")
+                if re.search(r'[A-Z]+\d+AP$', text_clean):
+                    has_descriptive_text = True
+                # Ability/action descriptions (colon or lowercase)
+                elif ':' in text_clean or any(c.islower() for c in text_clean):
+                    has_descriptive_text = True
+    
+    # Front page if:
+    # 1. Has weapon header (standard format), OR
+    # 2. Has stat labels + operative name + NO weapon header + NO descriptive text (VOX-RELAY BEACON format)
+    if has_weapon_header:
+        return True
+    elif has_stat_labels and has_operative_name and not has_weapon_header:
+        # Pages without weapon headers are front pages ONLY if they have no descriptive text
+        return not has_descriptive_text
     return False
 
 
@@ -580,8 +648,8 @@ def _extract_operative_from_page(page: fitz.Page, page_idx: int, pdf_name: str) 
         "source_page": page_idx,
         **stats,
     }
-    if weapons:
-        operative["weapons"] = weapons
+    # Always include weapons field, even if empty
+    operative["weapons"] = weapons if weapons else []
     if rules:
         # Split any abilities that have embedded actions
         rules = _split_embedded_actions(rules)
