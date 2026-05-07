@@ -205,14 +205,24 @@ class CardImageExtractor:
         try:
             # Check for team-specific backside first
             orientation = "portrait" if is_portrait else "landscape"
-            team_backside = PROJECT_ROOT / "config" / "teams" / self.current_team / "card-backside" / f"{self.current_team}-backside-{orientation}.jpg"
+            
+            # Try multiple team-specific backside patterns:
+            # 1. config/teams/{team}/card-backside/{team}-backside-{orientation}.jpg
+            # 2. config/teams/{team}/card-backside/default-backside-{orientation}.jpg
+            team_backside_patterns = [
+                PROJECT_ROOT / "config" / "teams" / self.current_team / "card-backside" / f"{self.current_team}-backside-{orientation}.jpg",
+                PROJECT_ROOT / "config" / "teams" / self.current_team / "card-backside" / f"default-backside-{orientation}.jpg",
+            ]
             
             backside_path = None
-            if team_backside.exists():
-                backside_path = team_backside
-                # logger.debug(f"  Using team-specific backside: {team_backside.name}")
-            else:
-                # Fall back to default backside
+            for pattern in team_backside_patterns:
+                if pattern.exists():
+                    backside_path = pattern
+                    # logger.debug(f"  Using team-specific backside: {pattern.name}")
+                    break
+            
+            if not backside_path:
+                # Fall back to global default backside
                 backside_path = DEFAULT_BACKSIDE_PORTRAIT if is_portrait else DEFAULT_BACKSIDE_LANDSCAPE
                 # logger.debug(f"  Using default backside: {backside_path.name}")
             

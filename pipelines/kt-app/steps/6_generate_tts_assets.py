@@ -117,7 +117,7 @@ class TTSAssetGenerator:
                     logger.error(f"  Failed to copy token bag mesh: {e}")
                 
                 # Copy token bag icon/texture
-                token_bag_icon_source = self._get_token_bag_icon()
+                token_bag_icon_source = self._get_token_bag_icon(team)
                 if token_bag_icon_source:
                     token_bag_icon_dest = token_bag_dir / f"{team}-token-bag-icon.png"
                     try:
@@ -126,22 +126,37 @@ class TTSAssetGenerator:
                     except Exception as e:
                         logger.error(f"  Failed to copy token bag icon: {e}")
             
-            # Copy individual token meshes from v2 to tokens/ folder
+            # Copy individual token meshes and textures from v2 to tokens/ folder
             faction = team_config.get('faction', '')
             if faction:
                 v2_token_dir = self.output_v2_dir / faction / team / 'tts' / 'token'
                 if v2_token_dir.exists():
-                    copied_count = 0
+                    copied_obj_count = 0
+                    copied_png_count = 0
+                    
+                    # Copy OBJ files
                     for obj_file in v2_token_dir.glob(f'{team}-*.obj'):
                         if obj_file.name != f'{team}-token-mesh.obj':  # Skip generic mesh
                             dest_file = team_tokens_dir / obj_file.name
                             try:
                                 shutil.copy2(obj_file, dest_file)
-                                copied_count += 1
+                                copied_obj_count += 1
                             except Exception as e:
                                 logger.error(f"  Failed to copy {obj_file.name}: {e}")
-                    if copied_count > 0:
-                        logger.info(f"  Copied {copied_count} token meshes from v2")
+                    
+                    # Copy PNG texture files
+                    for png_file in v2_token_dir.glob(f'{team}-*.png'):
+                        dest_file = team_tokens_dir / png_file.name
+                        try:
+                            shutil.copy2(png_file, dest_file)
+                            copied_png_count += 1
+                        except Exception as e:
+                            logger.error(f"  Failed to copy {png_file.name}: {e}")
+                    
+                    if copied_obj_count > 0:
+                        logger.info(f"  Copied {copied_obj_count} token meshes from v2")
+                    if copied_png_count > 0:
+                        logger.info(f"  Copied {copied_png_count} token textures from v2")
         
         return True
     
@@ -184,14 +199,20 @@ class TTSAssetGenerator:
         logger.warning("  No default token bag mesh found")
         return None
     
-    def _get_token_bag_icon(self) -> Optional[Path]:
-        """Get default token bag icon."""
-        # Use token background sample as placeholder icon
+    def _get_token_bag_icon(self, team: Optional[str] = None) -> Optional[Path]:
+        """Get token bag icon (team-specific or default)."""
+        # Priority 1: Team-specific icon
+        if team:
+            team_icon = self.teams_dir / team / "tts-image" / f"{team}-icon.png"
+            if team_icon.exists():
+                return team_icon
+        
+        # Priority 2: Default token bag icon
         token_bag_icon = PROJECT_ROOT / "config" / "defaults" / "tts-token" / "token-bg-sample.png"
         if token_bag_icon.exists():
             return token_bag_icon
         
-        logger.warning("  No default token bag icon found")
+        logger.warning("  No token bag icon found")
         return None
 
 

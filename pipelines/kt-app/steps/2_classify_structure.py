@@ -379,8 +379,13 @@ class PageClassifier:
                     
                     # Name should be uppercase, 3-50 chars
                     if text.isupper() and 3 <= len(text) <= 50:
-                        # Remove trailing numbers (e.g., "NAME2" -> "NAME")
-                        name = text.rstrip('0123456789').strip()
+                        # Clean up OCR artifacts and trailing stats
+                        # Remove patterns like: 26"5+, 26'5+, 265+, etc. (common OCR errors from stat lines)
+                        import re
+                        name = re.sub(r'\d+["\']?\d+\+?$', '', text).strip()  # Remove trailing number patterns
+                        name = re.sub(r'\d{2,}["\']?\d+[+\-]?$', '', name).strip()  # Remove stat patterns like 26"5+
+                        name = name.rstrip('0123456789+"\'-').strip()  # Final cleanup
+                        
                         if len(name) >= 3:
                             doc.close()
                             return name

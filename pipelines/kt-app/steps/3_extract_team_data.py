@@ -108,6 +108,43 @@ def _split_embedded_actions(rules: list[dict]) -> list[dict]:
     return result
 
 
+def _extract_stats_from_combined_text(text: str) -> tuple[str | None, dict]:
+    """Extract name and stats from combined text like 'NAME26"5+9'.
+    
+    Returns:
+        tuple: (name, stats_dict)
+    """
+    stats = {"apl": None, "movement": None, "save": None, "wounds": None}
+    
+    # Try to match: NAME + APL (1 digit) + movement (1-2 digits) + inch + save + plus + wounds
+    # Pattern: text ending with: APL + movement + inch mark + save + plus + wounds
+    # Example: "SPECTRE VETERAN SERGEANT26"5+9" = name + 2(APL) + 6(move) + " + 5(save) + + + 9(wounds)
+    match = re.search(r'^(.+?)(\d)(\d+)[″"\'](\d+)\+(\d+)$', text)
+    if match:
+        name = match.group(1).strip()
+        apl = int(match.group(2))
+        movement = match.group(3) + "″"
+        save = match.group(4) + "+"
+        wounds = int(match.group(5))
+        
+        stats["apl"] = apl
+        stats["movement"] = movement
+        stats["save"] = save
+        stats["wounds"] = wounds
+        
+        return name, stats
+    
+    # Try simpler pattern: NAME + APL at end (e.g., "SPECTRE GUIDE2")
+    if text and text[-1].isdigit():
+        stats["apl"] = int(text[-1])
+        name = text[:-1].strip()
+        return name, stats
+    
+    # No embedded stats found
+    name = text.rstrip('0123456789').strip()
+    return name if len(name) >= 3 else None, stats
+
+
 def _extract_name_from_blocks(blocks: list, page_width: float, page_height: float) -> str | None:
     """Extract operative name from blocks in top-left corner (x < 60%, y < 15px)."""
     for block in blocks:
@@ -124,9 +161,9 @@ def _extract_name_from_blocks(blocks: list, page_width: float, page_height: floa
                 continue
             if 'ACTIONS' in text.upper():
                 continue
-            if text.isupper() and 3 <= len(text) <= 50:
-                name = text.rstrip('0123456789').strip()
-                if len(name) >= 3:
+            if text.isupper() and 3 <= len(text) <= 100:
+                name, _ = _extract_stats_from_combined_text(text)
+                if name and len(name) >= 3:
                     return name
     return None
 
@@ -135,6 +172,8 @@ def _extract_stats_from_blocks(blocks: list, page_width: float, page_height: flo
     """Extract APL, movement, save, wounds from stat regions."""
     stats = {"apl": None, "movement": None, "save": None, "wounds": None}
 
+    # First, try to extract stats from the combined name block (Spectre Squad format)
+    # Look for text like "NAME26"5+9" in top-left corner
     for block in blocks:
         if block.get("type") != 0:
             continue
@@ -145,9 +184,32 @@ def _extract_stats_from_blocks(blocks: list, page_width: float, page_height: flo
                 for span in line.get("spans", []):
                     text += span.get("text", "")
             text = text.strip()
-            if text and text[-1].isdigit():
-                stats["apl"] = int(text[-1])
+            
+            if text.isupper() and 3 <= len(text) <= 100:
+                _, extracted_stats = _extract_stats_from_combined_text(text)
+                # If we found stats in the combined text, use them
+                if extracted_stats.get("wounds") is not None:
+                    return extracted_stats
+                # Otherwise, keep any APL we found for later
+                if extracted_stats.get("apl") is not None:
+                    stats["apl"] = extracted_stats["apl"]
                 break
+
+    # Fallback: Standard format - extract APL from top-left if not already found
+    if stats["apl"] is None:
+        for block in blocks:
+            if block.get("type") != 0:
+                continue
+            bbox = block["bbox"]
+            if bbox[0] < page_width * 0.6 and bbox[1] < 15:
+                text = ""
+                for line in block.get("lines", []):
+                    for span in line.get("spans", []):
+                        text += span.get("text", "")
+                text = text.strip()
+                if text and text[-1].isdigit():
+                    stats["apl"] = int(text[-1])
+                    break
 
     if stats["apl"] is None:
         for block in blocks:
@@ -164,6 +226,7 @@ def _extract_stats_from_blocks(blocks: list, page_width: float, page_height: flo
                     stats["apl"] = int(text)
                     break
 
+    # Extract movement, save, wounds from top-right stats area
     stats_text = ""
     for block in blocks:
         if block.get("type") != 0:
@@ -498,13 +561,25 @@ def _extract_rules_from_blocks(blocks: list, page_width: float, page_height: flo
     return rules if rules else None
 
 
-def _extract_operative_from_page(page: fitz.Page, page_idx: int, pdf_name: str) -> dict | None:
-    """Extract operative stats from a single front-side datacard page."""
+def _extract_operative_from_page(page: fitz.Page, page_idx: int, pdf_name: str, known_name: str | None = None) -> dict | None:
+    """Extract operative stats from a single front-side datacard page.
+    
+    Args:
+        page: PDF page object
+        page_idx: Page index
+        pdf_name: PDF filename
+        known_name: Pre-extracted operative name from structure.json (preferred over PDF extraction)
+    """
     pw = page.rect.width
     ph = page.rect.height
     blocks = page.get_text("dict").get("blocks", [])
 
-    name = _extract_name_from_blocks(blocks, pw, ph)
+    # Use known_name if provided (from structure.json), otherwise extract from PDF
+    if known_name:
+        name = known_name
+    else:
+        name = _extract_name_from_blocks(blocks, pw, ph)
+    
     stats = _extract_stats_from_blocks(blocks, pw, ph)
     weapons = _extract_weapons_from_blocks(blocks, pw, ph, ph * 0.15, ph * 0.80)
     rules = _extract_rules_from_blocks(blocks, pw, ph, ph * 0.15)
@@ -758,7 +833,8 @@ class TeamDataExtractor:
             doc = fitz.open(front_path)
             page = doc[0]
             
-            operative = _extract_operative_from_page(page, 0, front_path.name)
+            # Use the cleaned name from structure.json
+            operative = _extract_operative_from_page(page, 0, front_path.name, known_name=entity.get('name'))
             doc.close()
             
             if not operative:
