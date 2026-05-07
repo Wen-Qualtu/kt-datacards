@@ -223,6 +223,7 @@ def create_deck(deck_nickname, team_tag, cards_data, starting_deck_id=1000, card
                 "g": 0.713235259,
                 "b": 0.713235259
             },
+            "Tags": tags,
             "LayoutGroupSortIndex": 0,
             "Value": 0,
             "Locked": False,
