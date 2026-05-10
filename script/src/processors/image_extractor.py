@@ -178,8 +178,22 @@ class ImageExtractor:
                         card_type, 
                         team
                     )
+                    
+                    # Check for multi-card pattern (CARD 1/3, CARD 2/3, etc.) in raw text
+                    # These should NOT be paired even if they have the same extracted name
+                    current_text = text_normalized
+                    next_text = ' '.join(next_page.get_text().upper().split())
+                    
+                    import re
+                    current_has_card_num = bool(re.search(r'\(CARD\s+\d+/\d+\)', current_text))
+                    next_has_card_num = bool(re.search(r'\(CARD\s+\d+/\d+\)', next_text))
+                    
+                    # If both pages have (CARD X/Y) indicators, they are separate cards
+                    if current_has_card_num and next_has_card_num:
+                        # Don't pair them - they're separate cards in a sequence
+                        pass
                     # If next page has same name, treat as front/back pair (like datacards)
-                    if next_name == card_name and not is_marker_guide:
+                    elif next_name == card_name and not is_marker_guide:
                         has_back = True
                         skip_next_page = True
                     # If next page has no name (not marker guide), also treat as back
@@ -382,6 +396,26 @@ class ImageExtractor:
             
             # Special handling for faction rules - skip the header but get the rule name
             if card_type == CardType.FACTION_RULES:
+                # First, check for multi-card pattern (CARD 1/3, CARD 2/3, etc.)
+                page_text = page.get_text().upper()
+                page_text_normalized = ' '.join(page_text.split())
+                
+                import re
+                # Look for pattern: "FACTION RULE <RULE NAME> (CARD X/Y)"
+                # The rule name is between "FACTION RULE" and "(CARD"
+                card_num_match = re.search(r'FACTION\s+RULE\s+([A-Z\s]+?)\s*\(CARD\s+(\d+)/(\d+)\)', page_text_normalized)
+                if card_num_match:
+                    # Extract rule name and card number
+                    rule_name = card_num_match.group(1).strip()
+                    card_num = card_num_match.group(2)
+                    card_total = card_num_match.group(3)
+                    
+                    # Clean the rule name and append card number
+                    cleaned = self._clean_filename(rule_name)
+                    if cleaned and len(cleaned) > 2:
+                        # Return name with card number: "elite-fieldcraft-card-2"
+                        return f"{cleaned}-card-{card_num}"
+                
                 # Look for the rule name which typically appears after "FACTION RULE" header
                 # It's usually the next largest text after team name and "FACTION RULE"
                 faction_rule_found = False
@@ -637,9 +671,9 @@ class ImageExtractor:
             
             print(f"[DEBUG] Managers initialized for {team.name}")
             
-            # Track PDF processing
+            # Track PDF processing (use relative path)
             extraction_meta.add_pdf_processed(
-                pdf_path=str(pdf_path),
+                pdf_path=str(pdf_path.relative_to(Path.cwd())) if pdf_path.is_absolute() else str(pdf_path),
                 pages_processed=page_count
             )
             
@@ -664,15 +698,15 @@ class ImageExtractor:
                     card_name=datacard.card_name,
                     page_num=0,  # Page number would need to be tracked in datacard if needed
                     extraction={
-                        "source_pdf": str(pdf_path),
+                        "source_pdf": str(pdf_path.relative_to(Path.cwd())) if pdf_path.is_absolute() else str(pdf_path),
                         "extracted_at": datetime.now().isoformat(),
                         "full_text": datacard.description if datacard.description else "",  # Raw extracted text
                         "text_extracted": bool(datacard.description),
                         "name_confidence": "high"  # Could be enhanced to track actual confidence
                     },
                     output={
-                        "front_image": str(datacard.front_image) if datacard.front_image else None,
-                        "back_image": str(datacard.back_image) if datacard.back_image else None,
+                        "front_image": str(datacard.front_image.relative_to(Path.cwd())) if datacard.front_image and datacard.front_image.is_absolute() else str(datacard.front_image) if datacard.front_image else None,
+                        "back_image": str(datacard.back_image.relative_to(Path.cwd())) if datacard.back_image and datacard.back_image.is_absolute() else str(datacard.back_image) if datacard.back_image else None,
                         "image_format": "jpg",
                         "image_dpi": self.dpi
                     }

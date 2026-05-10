@@ -821,10 +821,20 @@ function click_place_kt_table(obj, player_color, alt_click)
                 cardTypeIndices[cardType] = cardTypeIndices[cardType] + 1
               end
             elseif cardType == "faction_rules" then
-              -- Unpack first 2 cards, keep rest as deck at position 3
+              -- Unpack first 2 cards, keep rest as deck/card at position 3
               local originalDeckGuid = guid
               local deckSize = #obj.getObjects()
               local cardsToUnpack = math.min(2, deckSize)
+              local remainingCardGuid = nil
+              
+              -- Get the GUID of the last card before unpacking (for tracking the remaining card)
+              if deckSize == 3 then
+                local deckContents = obj.getObjects()
+                -- After taking 2, the remaining card will be the one we didn't take
+                -- TTS takes from top, so the bottom card remains
+                remainingCardGuid = deckContents[3].guid
+              end
+              
               deckUnpackTracking[originalDeckGuid] = {
                 name = obj.getName(),
                 description = obj.getDescription(),
@@ -838,7 +848,8 @@ function click_place_kt_table(obj, player_color, alt_click)
                   local card = obj.takeObject({
                     position = customPos,
                     rotation = absoluteRot,
-                    smooth = false
+                    smooth = false,
+                    top = true  -- Take from top
                   })
                   if card then
                     card.setLock(entry.lock)
@@ -853,20 +864,34 @@ function click_place_kt_table(obj, player_color, alt_click)
                 end
               end
               
-              -- If there are remaining cards, place them as deck at position 3
-              if deckSize > 2 and obj and not obj.isDestroyed() then
-                local customPos = getWorkshopPosition(player_color, cardType, 3)
-                if customPos then
-                  obj.setPosition(customPos)
-                  obj.setRotation(absoluteRot)
-                  obj.setLock(entry.lock)
-                  table.insert(deckUnpackTracking[originalDeckGuid].cardGuids, obj.guid)
-                  newMemoryList[obj.guid] = {
-                    pos = {x=customPos.x - selfPos.x, y=customPos.y - selfPos.y, z=customPos.z - selfPos.z},
-                    rot = entry.rot,
-                    lock = entry.lock
-                  }
-                end
+              -- If there are remaining cards, find and place them at position 3
+              -- For 3-card decks, the remaining card needs special handling
+              if deckSize > 2 then
+                Wait.frames(function()
+                  local remainingCard = nil
+                  if deckSize == 3 and remainingCardGuid then
+                    -- After unpacking 2 from 3, find the single remaining card by GUID
+                    remainingCard = getObjectFromGUID(remainingCardGuid)
+                  elseif obj and not obj.isDestroyed() then
+                    -- More than 3 cards, obj is still a valid deck
+                    remainingCard = obj
+                  end
+                  
+                  if remainingCard and not remainingCard.isDestroyed() then
+                    local customPos = getWorkshopPosition(player_color, cardType, 3)
+                    if customPos then
+                      remainingCard.setPosition(customPos)
+                      remainingCard.setRotation(absoluteRot)
+                      remainingCard.setLock(entry.lock)
+                      table.insert(deckUnpackTracking[originalDeckGuid].cardGuids, remainingCard.guid)
+                      newMemoryList[remainingCard.guid] = {
+                        pos = {x=customPos.x - selfPos.x, y=customPos.y - selfPos.y, z=customPos.z - selfPos.z},
+                        rot = entry.rot,
+                        lock = entry.lock
+                      }
+                    end
+                  end
+                end, 3)
               end
             else
               -- Unpack all cards for ploys and other types
