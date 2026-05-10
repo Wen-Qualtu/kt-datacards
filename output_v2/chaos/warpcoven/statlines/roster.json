@@ -1,6 +1,6 @@
 {
   "team": "warpcoven",
-  "generated": "2026-04-29T12:22:32.203464+00:00",
+  "generated": "2026-05-01T20:25:08.588727+00:00",
   "selection": {
     "RUBRIC MARINE GUNNER": [
       [
@@ -66,6 +66,17 @@
         "PSYKER",
         "SORCERER",
         "DESTINY"
+      ],
+      "passive_abilities": [],
+      "unique_actions": [
+        {
+          "name": "PROTECTED BY FATE (1AP)",
+          "description": "• PSYCHIC. Select one friendly WARPCOVEN operative visible to this operative. Until the start of this operative’s next activation, until it’s incapacitated or until this action is performed again by a friendly operative (whichever comes first), whenever an operative is shooting that selected operative, you can re-roll any of your defence dice.\n• This operative cannot perform this action while within control range of an enemy operative."
+        },
+        {
+          "name": "RAVAGE DESTINY (1AP)",
+          "description": "• PSYCHIC. Select one enemy operative visible to and within 9\" of this operative. Until the start of this operative’s next activation, until it's incapacitated or until this action is performed again by a friendly operative (whichever comes first), whenever that enemy operative is shooting, fighting or retaliating, your opponent must re-roll their attack dice results of 6, and whenever determining control of a marker, treat that enemy operative’s APL stat as 1 lower. Note this isn't a change to its APL stat, so any changes are cumulative with this.\n• This operative cannot perform this action while within control range of an enemy operative. SORCERER OF DESTINY"
+        }
       ]
     },
     {
@@ -120,6 +131,17 @@
         "PSYKER",
         "SORCERER",
         "TEMPYRION"
+      ],
+      "passive_abilities": [],
+      "unique_actions": [
+        {
+          "name": "RECONSTITUTION RITUAL (1AP)",
+          "description": "• PSYCHIC. Select one friendly WARPCOVEN operative visible to and within 6\" of this operative. That operative regains up to 2D3 lost wounds.\n• This operative cannot perform this action while within control range of an enemy operative, or if a friendly operative has already performed this action during this turning point."
+        },
+        {
+          "name": "TEMPORAL FLUX (1AP)",
+          "description": "• PSYCHIC. Select one friendly WARPCOVEN operative visible to and within 6\" of this operative and place your Temporal Flux marker within that operative’s control range.\n• At the end of that operative’s next activation, if it hasn’t been incapacitated and is still wholly within 6\" of your Temporal Flux marker, remove that operative from the killzone and set it back up in a location it can be placed; when it's set back up, it must have your Temporal Flux marker within its control range (or as close as possible). Then remove your Temporal Flux marker from the killzone. If that operative isn't wholly within 6\" of your Temporal Flux marker (including if it’s incapacitated), remove that marker from the killzone.\n• This operative cannot perform this action while within control range of an enemy operative, or if your Temporal Flux marker is currently in the killzone. SORCERER OF TEMPYRION"
+        }
       ]
     },
     {
@@ -185,10 +207,15 @@
       "passive_abilities": [
         {
           "name": "*Mindburn",
-          "description": "In the Resolve Attack Dice step, if you inflict damage with any critical successes, the operative this weapon is being used against gains one of your Mindburn tokens (if it doesn't already have one) until the end of its next activation, until it’s incapacitated or until a friendly operative uses this weapon again (whichever comes first). Whenever an operative has one of your Mindburn tokens, worsen the Hit stat of its weapons by 1 (this isn’t cumulative with being injured). ALIGHT\b 1AP \u0007PSYCHIC. Select one enemy operative visible to this operative. Until the start of this operative’s next activation, until it's incapacitated or until this action is performed again by a friendly operative (whichever comes first), that enemy operative gains one of your Alight tokens (if it doesn’t already have one). Whenever a friendly WARPCOVEN operative is shooting against, fighting against or retaliating against an enemy operative that has one of your Alight tokens, that friendly operative’s weapons have the Ceaseless weapon rule. \u0007This operative cannot perform this action while within control range of an enemy operative. SORCERER OF WARPFIRE 3 APL WOUNDS SAVE MOVE 6\" 3+ 15"
+          "description": "In the Resolve Attack Dice step, if you inflict damage with any critical successes, the operative this weapon is being used against gains one of your Mindburn tokens (if it doesn't already have one) until the end of its next activation, until it’s incapacitated or until a friendly operative uses this weapon again (whichever comes first). Whenever an operative has one of your Mindburn tokens, worsen the Hit stat of its weapons by 1 (this isn’t cumulative with being injured)."
         }
       ],
-      "unique_actions": []
+      "unique_actions": [
+        {
+          "name": "ALIGHT (1AP)",
+          "description": "• PSYCHIC. Select one enemy operative visible to this operative. Until the start of this operative’s next activation, until it's incapacitated or until this action is performed again by a friendly operative (whichever comes first), that enemy operative gains one of your Alight tokens (if it doesn’t already have one). Whenever a friendly WARPCOVEN operative is shooting against, fighting against or retaliating against an enemy operative that has one of your Alight tokens, that friendly operative’s weapons have the Ceaseless weapon rule.\n• This operative cannot perform this action while within control range of an enemy operative. SORCERER OF WARPFIRE 3 APL WOUNDS SAVE MOVE 6\" 3+ 15"
+        }
+      ]
     },
     {
       "name": "RUBRIC MARINE GUNNER",
@@ -230,7 +257,7 @@
       "passive_abilities": [
         {
           "name": "Sorcerous Automata",
-          "description": "Whenever this operative is activated, subtract 1 from its APL stat until the end of that activation, unless a friendly WARPCOVEN  SORCERER operative is within 9\" of it."
+          "description": "Whenever this operative is activated, subtract 1 from its APL stat until the end of that activation, unless a friendly WARPCOVEN SORCERER operative is within 9\" of it."
         }
       ],
       "unique_actions": [],
@@ -268,7 +295,7 @@
       "passive_abilities": [
         {
           "name": "Sorcerous Automata",
-          "description": "Whenever this operative is activated, subtract 1 from its APL stat until the end of that activation, unless a friendly WARPCOVEN  SORCERER operative is within 9\" of it."
+          "description": "Whenever this operative is activated, subtract 1 from its APL stat until the end of that activation, unless a friendly WARPCOVEN SORCERER operative is within 9\" of it."
         },
         {
           "name": "Icon Bearer",
@@ -310,7 +337,7 @@
       "passive_abilities": [
         {
           "name": "Sorcerous Automata",
-          "description": "Whenever this operative is activated, subtract 1 from its APL stat until the end of that activation, unless a friendly WARPCOVEN  SORCERER operative is within 9\" of it."
+          "description": "Whenever this operative is activated, subtract 1 from its APL stat until the end of that activation, unless a friendly WARPCOVEN SORCERER operative is within 9\" of it."
         },
         {
           "name": "Slow and Purposeful",
@@ -380,6 +407,13 @@
           "damage": "3/5"
         }
       ],
+      "passive_abilities": [
+        {
+          "name": "BRAYHORN",
+          "description": "• Until the Ready step of the next Strategy phase, add 1\" to the Move stat of friendly WARPCOVEN TZAANGOR operatives.\n• This operative cannot perform this action while within control range of an enemy operative."
+        }
+      ],
+      "unique_actions": [],
       "keywords": [
         "WARPCOVEN",
         "CHAOS",
@@ -406,7 +440,7 @@
       "passive_abilities": [
         {
           "name": "Herd Banner",
-          "description": "Whenever an attack dice inflicts Normal Dmg of 3 or more on a friendly WARPCOVEN  TZAANGOR operative that’s visible to and within 3\" of this operative, subtract 1 from that inflicted damage."
+          "description": "Whenever an attack dice inflicts Normal Dmg of 3 or more on a friendly WARPCOVEN TZAANGOR operative that’s visible to and within 3\" of this operative, subtract 1 from that inflicted damage."
         },
         {
           "name": "Icon Bearer",

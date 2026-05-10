@@ -49,6 +49,83 @@ def _load_team_config() -> dict:
         return yaml.safe_load(f)
 
 
+def _clean_extracted_text(text: str) -> str:
+    """Clean up extracted text by fixing bullet characters, markdown formatting, and whitespace."""
+    # Remove markdown bold markers
+    text = re.sub(r"\*\*([^*]+)\*\*", r"\1", text)
+    
+    # Replace bullet characters with newline + bullet
+    text = text.replace("\u0007", "\n• ")
+    text = text.replace("\x95", "\n- ")
+    
+    # Also add newlines before existing bullets that don't have them
+    # Match bullet that's not at start of string and not already preceded by newline
+    text = re.sub(r"([^\n])\s*•\s+", r"\1\n• ", text)
+    
+    # Remove duplicate bullets
+    text = re.sub(r"•\s+•\s+", "• ", text)
+    
+    # Collapse multiple spaces (but preserve newlines)
+    text = re.sub(r"  +", " ", text)
+    
+    # Clean up multiple consecutive newlines
+    text = re.sub(r"\n\n+", "\n", text)
+    
+    return text.strip()
+
+
+def _split_embedded_actions(rules: list[dict]) -> list[dict]:
+    """Split abilities that contain embedded actions (e.g., passive ability + action in one entry).
+    
+    Looks for pattern: "ability text... ALL CAPS NAME \b XAP • action description"
+    Splits into separate passive ability and unique action entries.
+    Handles costs like: 1AP, 2AP, 1/2AP, 0AP
+    """
+    if not rules:
+        return rules
+    
+    result = []
+    for rule in rules:
+        name = rule["name"]
+        desc = rule["description"]
+        
+        # Look for embedded action: ALL CAPS text (>3 chars) followed by backspace + XAP pattern
+        # Example: "...enemy operative. GAZE OF THE OMNISSIAH\b 1AP\n• Select one..."
+        # Pattern supports: 1AP, 2AP, 1/2AP, etc.
+        match = re.search(r'([A-Z\s]{4,}?)[\x08\x07]?\s*(\d+[/\d]*AP)\s*(.+)$', desc, re.DOTALL)
+        
+        if match:
+            action_name_raw = match.group(1).strip()
+            cost = match.group(2).strip()
+            action_desc = match.group(3).strip()
+            
+            # Verify it looks like an action name (all caps, multiple words or single long word)
+            if action_name_raw.isupper() and (len(action_name_raw) > 5 or ' ' in action_name_raw):
+                # Split point: everything before the action name
+                ability_text = desc[:match.start()].strip()
+                
+                # Only split if there's meaningful ability text before the action
+                if ability_text and len(ability_text) > 10:
+                    # Add the passive ability (without the action)
+                    result.append({
+                        "name": name,
+                        "description": _clean_extracted_text(ability_text)
+                    })
+                    
+                    # Add the action separately
+                    action_name = f"{action_name_raw} ({cost})"
+                    result.append({
+                        "name": action_name,
+                        "description": _clean_extracted_text(action_desc)
+                    })
+                    continue
+        
+        # No split needed, keep as-is
+        result.append(rule)
+    
+    return result
+
+
 def _get_team_faction(team: str) -> str:
     """Get faction for a team from team-config.yaml"""
     config = _load_team_config()
@@ -377,6 +454,37 @@ def _extract_rules_from_blocks(blocks: list, page_width: float, page_height: flo
     i = 0
     while i < len(ability_text):
         text, is_bold = ability_text[i]
+        
+        # Check for ALL CAPS ability name followed by cost (even if not marked bold)
+        # E.g. "NETWORK OVERRIDE" followed by "1AP"
+        if not is_bold and text.isupper() and len(text) > 3 and i + 1 < len(ability_text):
+            nt, nb = ability_text[i + 1]
+            if nt.endswith('AP') and len(nt) <= 5 and nt[0].isdigit():
+                ua_name = text.lstrip('•■●▪-– ').rstrip('\x08\x07')  # Strip bullet and backspace chars
+                cost = nt
+                ua_desc = ""
+                j = i + 2
+                while j < len(ability_text):
+                    dt, db = ability_text[j]
+                    # Stop at next ability or keyword list
+                    if dt.isupper() and len(dt) > 3 and j + 1 < len(ability_text):
+                        next_t, _ = ability_text[j + 1]
+                        if next_t.endswith('AP') and len(next_t) <= 5:
+                            break
+                    if ',' in dt and dt.isupper() and len(dt) > 10:
+                        break
+                    if dt.isdigit() and len(dt) <= 3:
+                        break
+                    ua_desc += " " + dt
+                    j += 1
+                if ua_name and ua_name.upper() not in ['NAME', 'ATK', 'HIT', 'DMG', 'WR',
+                                                         'APL', 'WOUNDS', 'SAVE', 'MOVE',
+                                                         'UNIQUE ACTIONS', 'ABILITIES', 'NOTES']:
+                    full_name = f"{ua_name} ({cost})" if cost != "0AP" else ua_name
+                    rules.append({"name": full_name, "description": _clean_extracted_text(ua_desc.strip())})
+                i = j
+                continue
+        
         if is_bold:
             if ':' in text:
                 parts = text.split(':', 1)
@@ -398,7 +506,7 @@ def _extract_rules_from_blocks(blocks: list, page_width: float, page_height: flo
                 if ua_name and ua_name.upper() not in ['NAME', 'ATK', 'HIT', 'DMG', 'WR',
                                                          'APL', 'WOUNDS', 'SAVE', 'MOVE',
                                                          'UNIQUE ACTIONS', 'ABILITIES', 'NOTES']:
-                    rules.append({"name": ua_name, "description": ua_desc.strip()})
+                    rules.append({"name": ua_name, "description": _clean_extracted_text(ua_desc.strip())})
                 i = j
                 continue
             elif i + 1 < len(ability_text):
@@ -424,7 +532,7 @@ def _extract_rules_from_blocks(blocks: list, page_width: float, page_height: flo
                                                              'APL', 'WOUNDS', 'SAVE', 'MOVE',
                                                              'UNIQUE ACTIONS', 'ABILITIES', 'NOTES']:
                         full_name = f"{ua_name} ({cost})" if cost != "0AP" else ua_name
-                        rules.append({"name": full_name, "description": ua_desc.strip()})
+                        rules.append({"name": full_name, "description": _clean_extracted_text(ua_desc.strip())})
                     i = j
                     continue
         i += 1
@@ -475,6 +583,8 @@ def _extract_operative_from_page(page: fitz.Page, page_idx: int, pdf_name: str) 
     if weapons:
         operative["weapons"] = weapons
     if rules:
+        # Split any abilities that have embedded actions
+        rules = _split_embedded_actions(rules)
         operative["passive_abilities"] = [r for r in rules if '(' not in r["name"] or 'AP)' not in r["name"]]
         operative["unique_actions"] = [r for r in rules if '(' in r["name"] and 'AP)' in r["name"]]
     if keywords:
@@ -870,6 +980,87 @@ def _extract_faction_rules(team: str) -> dict | None:
     Uses config option names to locate text in the PDF.
     Returns dict with rule name and options list, or None.
     """
+    
+    def _clean_faction_rule_text(text: str, team: str, rule_name: str) -> str:
+        """Clean up extracted faction rule text by removing headers and fixing encoding."""
+        # Remove markdown bold markers
+        text = re.sub(r"\*\*([^*]+)\*\*", r"\1", text)
+        
+        # Replace bullet characters with proper formatting
+        text = text.replace("\u0007", "\n• ")
+        text = text.replace("\x95", "\n- ")
+        
+        # Ensure bullets have newlines before them (if they don't already)
+        text = re.sub(r"([^\n])\s*•\s+", r"\1\n• ", text)
+        
+        # Remove duplicate bullets
+        text = re.sub(r"•\s+•\s+", "• ", text)
+        
+        # Collapse multiple spaces on same line (but preserve newlines)
+        text = re.sub(r"  +", " ", text)
+        
+        # Remove repeated headers (case-insensitive patterns)
+        # Common patterns: "TEAM NAME FACTION RULE", "RULE NAME", "FACTION RULE"
+        team_upper = team.replace("-", " ").upper()
+        rule_upper = rule_name.upper()
+        
+        # Remove all occurrences of these headers
+        patterns_to_remove = [
+            rf"\b{re.escape(team_upper)}\s+FACTION\s+RULE\b",
+            rf"\b{re.escape(rule_upper)}\b",
+            r"\bFACTION\s+RULE\b",
+            rf"\b{re.escape(team_upper)}\b",  # Just team name
+        ]
+        
+        for pattern in patterns_to_remove:
+            text = re.sub(pattern, "", text, flags=re.IGNORECASE)
+        
+        # Stop at common continuation markers (start of next section)
+        # These usually indicate we've gone too far
+        stop_markers = [
+            r"MUTATION",  # Chaos Cult specific
+            r"ASTARTES",  # Angels of Death specific  
+            r"ANGEL\s+OF\s+DEATH",  # AoD team name variant
+            r"These genetically modified",  # AoD continuation
+            r"Through arcane ritual",  # Chaos Cult continuation
+        ]
+        
+        for marker in stop_markers:
+            match = re.search(marker, text, re.IGNORECASE)
+            if match:
+                text = text[:match.start()]
+                break
+        
+        # Also strip trailing team references
+        # Sometimes they appear at the very end without being caught by stop markers
+        trailing_patterns = [
+            r"\s*ANGEL\s+OF\s+DEATH\s*$",
+            r"\s*ASTARTES\s*$",
+            rf"\s*{re.escape(team_upper)}\s*$",
+        ]
+        
+        for pattern in trailing_patterns:
+            text = re.sub(pattern, "", text, flags=re.IGNORECASE)
+        
+        # Clean up multiple consecutive newlines
+        text = re.sub(r"\n\n+", "\n", text)
+        
+        # Final cleanup - trim and collapse horizontal whitespace only
+        text = text.strip()
+        
+        return text
+    
+    def _clean_faction_rule_name(name: str) -> str:
+        """Clean up extracted faction rule name by removing extra text."""
+        # If name contains newline, take only first line
+        if "\n" in name:
+            name = name.split("\n")[0]
+        
+        # Remove any leading/trailing whitespace
+        name = name.strip()
+        
+        return name
+    
     config = _load_team_config()
     team_data = config.get("teams", {}).get(team, {})
     faction_rule_cfg = team_data.get("faction_rule")
@@ -890,6 +1081,7 @@ def _extract_faction_rules(team: str) -> dict | None:
     # Build lookup of config option names for matching
     cfg_options = faction_rule_cfg.get("options", [])
     cfg_names = {opt["name"].upper(): opt["name"] for opt in cfg_options}
+    rule_name = faction_rule_cfg["name"]
 
     # Strategy 1: Try numbered entries first (e.g. "1. AGGRESSIVE\n..." or "1. Deformed Wings\n...")
     # Match title case or ALL CAPS names
@@ -901,9 +1093,8 @@ def _extract_faction_rules(team: str) -> dict | None:
         for _num, raw_name, raw_text in matches:
             name_upper = raw_name.strip()
             name = cfg_names.get(name_upper, name_upper.title())
-            text = raw_text.strip()
-            text = re.sub(r"\s+", " ", text)
-            text = text.replace("\x95", "-")
+            name = _clean_faction_rule_name(name)
+            text = _clean_faction_rule_text(raw_text.strip(), team, rule_name)
             options.append({"name": name, "text": text})
     else:
         # Strategy 2: Search for each config option name in the faction rule pages
@@ -915,9 +1106,7 @@ def _extract_faction_rules(team: str) -> dict | None:
             name_pattern = r"(?im)^" + re.escape(opt_name) + r"\n(.*?)(?=\nLEGIONARY\n|\Z)"
             m = re.search(name_pattern, all_text, re.DOTALL)
             if m:
-                text = m.group(1).strip()
-                text = re.sub(r"\s+", " ", text)
-                text = text.replace("\x95", "-")
+                text = _clean_faction_rule_text(m.group(1).strip(), team, rule_name)
                 options.append({"name": opt_name, "text": text})
 
     if not options:
@@ -990,6 +1179,8 @@ def extract_team(team: str, force: bool = False) -> dict | None:
         op_idx = front_indices.index(prev_front_idx)
         if op_idx < len(operatives):
             op = operatives[op_idx]
+            # Split any abilities that have embedded actions
+            rules = _split_embedded_actions(rules)
             back_pas = [r for r in rules if '(' not in r["name"] or 'AP)' not in r["name"]]
             back_act = [r for r in rules if '(' in r["name"] and 'AP)' in r["name"]]
             if "passive_abilities" not in op:

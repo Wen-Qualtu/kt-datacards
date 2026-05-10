@@ -1,6 +1,6 @@
 {
   "team": "canoptek-circle",
-  "generated": "2026-04-29T12:20:39.463927+00:00",
+  "generated": "2026-05-01T20:24:55.280405+00:00",
   "selection": {
     "GEOMANCER": [],
     "CANOPTEK TOMB CRAWLER": [
@@ -8,10 +8,18 @@
         "Twin gauss reapers; claws",
         "Transdimensional isolator; claws"
       ]
+    ],
+    "CANOPTEK MACROCYTE ACCELERATOR": [],
+    "CANOPTEK MACROCYTE REANIMATOR": [],
+    "CANOPTEK MACROCYTE WARRIOR": [
+      [
+        "Gauss scalpel; claws & tail",
+        "Tesla caster; claws & tail"
+      ]
     ]
   },
   "exclusive_sets": {},
-  "operative_count": 2,
+  "operative_count": 5,
   "operatives": [
     {
       "name": "GEOMANCER",
@@ -48,11 +56,160 @@
         {
           "name": "Obelisk Node Control",
           "description": "Whenever this operative would perform a mission action (excluding Retrieve, Approved Ops 2025), if it requires this operative to control an objective marker, you can instead determine control from one of your OBELISK NODE markers (see Obelisk Node Matrix faction rule). Whenever this operative would perform the Operate Hatch action, you can open or close a hatchway thats access point is within 1\" of one of your OBELISK NODE markers instead. Note that you must still fulfil the Operate Hatch action’s conditions."
+        }
+      ],
+      "unique_actions": [
+        {
+          "name": "GEOMANTIC DISTURBANCE (1AP)",
+          "description": "• Select a point on a terrain feature; that point must be visible to and within 8\" of this operative. Separately roll 2D6 for each operative within 2\" of that point. If the result is higher than that operative’s remaining wounds, inflict damage on it equal to the difference.\n• This operative cannot perform this action while it has a Conceal order, or while within control range of an enemy operative."
         },
         {
-          "name": "Reanimate",
-          "description": "Once per turning point, when another friendly CANOPTEK CIRCLE  operative would be incapacitated, if that operative is visible to and within 6\" of this operative, or if this and that operative are within your OBELISK NODE MATRIX, you can use this rule, providing neither this nor that operative is within control range of an enemy operative. If you do, that friendly operative isn’t incapacitated, has 1 wound remaining and cannot be incapacitated for the remainder of the action. After that action, that friendly operative can immediately perform a free Dash action, but must end that action within this operative’s control range or within your OBELISK NODE MATRIX. Subtract 1 from this and that operative’s APL stats until the end of their next activations respectively, and if this rule was used during that friendly operative’s activation, that activation ends. You cannot use this rule if this operative is incapacitated, or if it’s a Shoot action and this operative would be a primary or secondary target. NANOSCARAB BEAM\b 1AP \u0007Select one friendly CANOPTEK CIRCLE  operative visible to and within 6\" of this operative. Alternatively, if this operative is within your OBELISK NODE MATRIX, you can select one other friendly CANOPTEK CIRCLE operative within your OBELISK NODE MATRIX. The selected operative regains up to 3D3 lost wounds. It cannot be an operative that the Reanimate rule was used on during this turning point. \u0007This operative cannot perform this action while within control range of an enemy operative, or more than once per turning point. CANOPTEK MACROCYTE REANIMATOR 2 APL WOUNDS SAVE MOVE 7\" 4+ 7"
+          "name": "CANOPTEK CONTROL (1AP)",
+          "description": "• SUPPORT. Select one friendly CANOPTEK CIRCLE CANOPTEK operative visible to and within 6\" of this operative. Alternatively, you can select one friendly CANOPTEK CIRCLE CANOPTEK operative that’s visible to this operative and within your OBELISK NODE MATRIX (SUPPORT doesn’t apply to this selection). That selected operative can immediately perform a 1AP action for free; it cannot move more than or be removed and set up more than 2\" during that action.\n• This operative cannot perform this action while within control range of an enemy operative, or while counteracting. GEOMANCER ACTIONS"
         },
+        {
+          "name": "MOLECULAR BREACH (1AP)",
+          "description": "• SUPPORT. Select one friendly CANOPTEK CIRCLE operative visible to and within 6\" of this operative. Alternatively, you can select one friendly CANOPTEK CIRCLE operative visible to this operative and within your OBELISK NODE MATRIX (SUPPORT doesn’t apply to this selection).\n• The next time the selected operative performs an action in which it moves, don’t move it. Instead, remove it from the killzone and set it back up wholly within a distance equal to its Move stat (or 3\" if it was a Dash) horizontally of its original location (in a killzone that uses the close quarters rules, e.g. Killzone: Tomb World, this distance can be measured over and through Wall terrain and the operative can be set up on the other side). Note that it gains no additional distance when performing the Charge action. It must be set up in a location it can be placed, and unless it’s the Charge action, it cannot be set up within control range of an enemy operative.\n• This operative cannot perform this action while within control range of an enemy operative."
+        }
+      ],
+      "keywords": [
+        "CANOPTEK CIRCLE",
+        "NECRON",
+        "LEADER",
+        "CRYPTEK",
+        "GEOMANCER"
+      ]
+    },
+    {
+      "name": "CANOPTEK MACROCYTE ACCELERATOR",
+      "source_file": "canoptek-circle-datacards.pdf",
+      "source_page": 3,
+      "apl": 2,
+      "movement": "7″",
+      "save": "4+",
+      "wounds": 7,
+      "weapons": [
+        {
+          "name": "Spark",
+          "attacks": "4",
+          "hit": "4+",
+          "damage": "2/3",
+          "special_rules": "Range 4\", Piercing 1"
+        },
+        {
+          "name": "Claws & spark",
+          "attacks": "3",
+          "hit": "4+",
+          "damage": "3/4",
+          "special_rules": "Lethal 5+, Stun"
+        }
+      ],
+      "keywords": [
+        "CANOPTEK CIRCLE",
+        "NECRON",
+        "CANOPTEK",
+        "MACROCYTE",
+        "ACCELERATOR"
+      ],
+      "passive_abilities": [],
+      "unique_actions": [
+        {
+          "name": "OVERCHARGE (1AP)",
+          "description": "• Select one other friendly CANOPTEK CIRCLE CANOPTEK operative visible to and within 3\" of this operative. Alternatively, if this operative is within your OBELISK NODE MATRIX, you can select one other friendly CANOPTEK CIRCLE CANOPTEK operative within your OBELISK NODE MATRIX. Until the end of that selected operative’s next activation, add 1 to its APL stat.\n• This operative cannot perform this action while within control range of an enemy operative."
+        },
+        {
+          "name": "CRANIAL OVERLOAD (1AP)",
+          "description": "• Select one enemy operative visible to and within 3\" of this operative. Alternatively, if this operative is within your OBELISK NODE MATRIX, you can select one enemy operative within your OBELISK NODE MATRIX. Until the end of that enemy operative’s next activation, subtract 1 from its APL stat.\n• This operative cannot perform this action while within control range of an enemy operative. CANOPTEK MACROCYTE ACCELERATOR"
+        }
+      ]
+    },
+    {
+      "name": "CANOPTEK MACROCYTE REANIMATOR",
+      "source_file": "canoptek-circle-datacards.pdf",
+      "source_page": 5,
+      "apl": 2,
+      "movement": "7″",
+      "save": "4+",
+      "wounds": 7,
+      "weapons": [
+        {
+          "name": "Atomiser beam",
+          "attacks": "4",
+          "hit": "4+",
+          "damage": "3/4",
+          "special_rules": "Range 6\", Lethal 5+"
+        },
+        {
+          "name": "Claws & tail",
+          "attacks": "4",
+          "hit": "4+",
+          "damage": "3/4"
+        }
+      ],
+      "keywords": [
+        "CANOPTEK CIRCLE",
+        "NECRON",
+        "CANOPTEK",
+        "MACROCYTE",
+        "REANIMATOR"
+      ],
+      "passive_abilities": [
+        {
+          "name": "Reanimate",
+          "description": "Once per turning point, when another friendly CANOPTEK CIRCLE operative would be incapacitated, if that operative is visible to and within 6\" of this operative, or if this and that operative are within your OBELISK NODE MATRIX, you can use this rule, providing neither this nor that operative is within control range of an enemy operative. If you do, that friendly operative isn’t incapacitated, has 1 wound remaining and cannot be incapacitated for the remainder of the action. After that action, that friendly operative can immediately perform a free Dash action, but must end that action within this operative’s control range or within your OBELISK NODE MATRIX. Subtract 1 from this and that operative’s APL stats until the end of their next activations respectively, and if this rule was used during that friendly operative’s activation, that activation ends. You cannot use this rule if this operative is incapacitated, or if it’s a Shoot action and this operative would be a primary or secondary target."
+        }
+      ],
+      "unique_actions": [
+        {
+          "name": "NANOSCARAB BEAM (1AP)",
+          "description": "• Select one friendly CANOPTEK CIRCLE operative visible to and within 6\" of this operative. Alternatively, if this operative is within your OBELISK NODE MATRIX, you can select one other friendly CANOPTEK CIRCLE operative within your OBELISK NODE MATRIX. The selected operative regains up to 3D3 lost wounds. It cannot be an operative that the Reanimate rule was used on during this turning point.\n• This operative cannot perform this action while within control range of an enemy operative, or more than once per turning point. CANOPTEK MACROCYTE REANIMATOR 2 APL WOUNDS SAVE MOVE 7\" 4+ 7"
+        }
+      ]
+    },
+    {
+      "name": "CANOPTEK MACROCYTE WARRIOR",
+      "source_file": "canoptek-circle-datacards.pdf",
+      "source_page": 7,
+      "apl": 2,
+      "movement": "7″",
+      "save": "4+",
+      "wounds": 7,
+      "weapons": [
+        {
+          "name": "Gauss scalpel",
+          "attacks": "4",
+          "hit": "4+",
+          "damage": "2/3",
+          "special_rules": "Piercing 1"
+        },
+        {
+          "name": "Tesla caster (focused)",
+          "attacks": "4",
+          "hit": "4+",
+          "damage": "2/3"
+        },
+        {
+          "name": "Tesla caster (living lightning)",
+          "attacks": "4",
+          "hit": "4+",
+          "damage": "2/3",
+          "special_rules": "Blast 2\""
+        },
+        {
+          "name": "Claws & tail",
+          "attacks": "3",
+          "hit": "4+",
+          "damage": "3/4"
+        }
+      ],
+      "keywords": [
+        "CANOPTEK CIRCLE",
+        "NECRON",
+        "CANOPTEK",
+        "MACROCYTE",
+        "WARRIOR"
+      ],
+      "passive_abilities": [
         {
           "name": "Aggressive Defence",
           "description": "If this operative is incapacitated by an enemy operative within 2\" of it, before this operative is removed from the killzone, roll one D3: on a 2+, inflict 1 damage on that enemy operative."
@@ -63,17 +220,10 @@
         },
         {
           "name": "A Ceaseless Scuttling",
-          "description": "As a STRATEGIC GAMBIT in each turning point after the first, if you have less than three non-incapacitated friendly CANOPTEK CIRCLE  WARRIOR operatives, you can set up another one ready and with a Conceal order wholly within your drop zone (you can select its weapon options as normal). CANOPTEK MACROCYTE WARRIOR 2 APL WOUNDS SAVE MOVE 7\" 4+ 7"
+          "description": "As a STRATEGIC GAMBIT in each turning point after the first, if you have less than three non-incapacitated friendly CANOPTEK CIRCLE WARRIOR operatives, you can set up another one ready and with a Conceal order wholly within your drop zone (you can select its weapon options as normal). CANOPTEK MACROCYTE WARRIOR 2 APL WOUNDS SAVE MOVE 7\" 4+ 7"
         }
       ],
-      "unique_actions": [],
-      "keywords": [
-        "CANOPTEK CIRCLE",
-        "NECRON",
-        "LEADER",
-        "CRYPTEK",
-        "GEOMANCER"
-      ]
+      "unique_actions": []
     },
     {
       "name": "CANOPTEK TOMB CRAWLER",
@@ -115,7 +265,7 @@
       "passive_abilities": [
         {
           "name": "*Dimensional Banishment",
-          "description": "After this operative uses this weapon, if you inflicted damage or retained any critical successes, if the target wasn’t incapacitated, roll 2D6: if the result is higher than the target’s remaining wounds, the target is incapacitated (taking precedence over rules that prevent incapacitation, e.g. Medic!, FELLGOR RAVAGER  Frenzy) and your opponent cannot place a Reanimation marker (HIEROTEK CIRCLE ) for that operative, if relevant."
+          "description": "After this operative uses this weapon, if you inflicted damage or retained any critical successes, if the target wasn’t incapacitated, roll 2D6: if the result is higher than the target’s remaining wounds, the target is incapacitated (taking precedence over rules that prevent incapacitation, e.g. Medic!, FELLGOR RAVAGER Frenzy) and your opponent cannot place a Reanimation marker (HIEROTEK CIRCLE ) for that operative, if relevant."
         },
         {
           "name": "Weapon Sentinel",
