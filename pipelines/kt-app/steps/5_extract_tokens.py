@@ -125,10 +125,11 @@ def remove_background(img: np.ndarray) -> np.ndarray:
     v = hsv[:, :, 2]
     s = hsv[:, :, 1]
     
-    # More conservative white detection - only remove very pure white background
-    # Increased threshold from 235 to 245 to preserve white content (skulls, icons)
-    is_white = ((v > 245) & (s < 15)) | (
-        (bgr[:, :, 0] > 245) & (bgr[:, :, 1] > 245) & (bgr[:, :, 2] > 245)
+    # More aggressive white/light-gray detection to catch stray background pixels
+    # Lowered threshold from 245 to 235 to catch slightly off-white pixels
+    # These often appear as small pixel islands outside the main token
+    is_white = ((v > 235) & (s < 25)) | (
+        (bgr[:, :, 0] > 235) & (bgr[:, :, 1] > 235) & (bgr[:, :, 2] > 235)
     )
     
     mask = (~is_white).astype(np.uint8) * 255
@@ -312,6 +313,10 @@ def process_token(
     
     # Set alpha to 255 where template is
     alpha[template_area] = 255
+    
+    # SAFETY: Force remove any content pixels outside the template boundary
+    # This catches stray pixels that survived background removal
+    cropped_bgr[~template_area] = [255, 255, 255]  # Set to white
     
     # Step 5: Fill transparent areas within template with white
     # Any pixel inside template that's transparent gets filled with white

@@ -285,6 +285,33 @@ class PageClassifier:
             return False
     
     @staticmethod
+    def has_multi_card_pattern(pdf_path: Path) -> bool:
+        """
+        Check if a page has a multi-card pattern like "(CARD 2/3)".
+        
+        These cards should NOT be paired as front/back pairs.
+        """
+        import re
+        
+        try:
+            doc = fitz.open(pdf_path)
+            if len(doc) == 0:
+                return False
+            
+            page = doc[0]
+            text = page.get_text()
+            doc.close()
+            
+            # Normalize whitespace
+            text_normalized = ' '.join(text.split())
+            
+            # Check for pattern: (CARD X/Y)
+            return bool(re.search(r'\(CARD\s+\d+/\d+\)', text_normalized))
+        except Exception as e:
+            logger.warning(f"Error checking multi-card pattern for {pdf_path}: {e}")
+            return False
+    
+    @staticmethod
     def has_continue_on_back(pdf_path: Path) -> bool:
         """
         Check if a front page indicates it continues on the back.
@@ -406,8 +433,13 @@ class PageClassifier:
         Line 2: Card type label (FACTION EQUIPMENT, STRATEGY PLOY, etc.)
         Line 3: Card name (FOREGRIP, ELIMINATION PATTERN, etc.)
         
+        For multi-card rules with "(CARD X/Y)" pattern, appends card number to name.
+        Example: "ELITE FIELDCRAFT (CARD 2/3)" → "ELITE FIELDCRAFT-CARD-2"
+        
         Returns the third major text line (uppercase, 3-50 chars).
         """
+        import re
+        
         try:
             doc = fitz.open(pdf_path)
             if len(doc) == 0:
@@ -416,6 +448,21 @@ class PageClassifier:
             page = doc[0]
             text = page.get_text()
             doc.close()
+            
+            # Normalize text for pattern matching
+            text_normalized = ' '.join(text.split())
+            
+            # Check for multi-card pattern: "RULE NAME (CARD X/Y)"
+            # Pattern matches: FACTION RULE <NAME> (CARD 2/3)
+            card_num_match = re.search(r'FACTION\s+RULE\s+([A-Z\s]+?)\s*\(CARD\s+(\d+)/(\d+)\)', text_normalized)
+            if card_num_match:
+                rule_name = card_num_match.group(1).strip()
+                card_num = card_num_match.group(2)
+                # Slugify the rule name and append card number
+                cleaned = re.sub(r'[^A-Z0-9\s]', '', rule_name)  # Remove special chars
+                cleaned = re.sub(r'\s+', '-', cleaned.strip())    # Replace spaces with hyphens
+                cleaned = cleaned.lower()
+                return f"{cleaned}-card-{card_num}"
             
             # Split into lines and filter out empty ones
             lines = [line.strip() for line in text.split('\n') if line.strip()]
@@ -950,6 +997,27 @@ class StructureClassifier:
                     has_continue = self.page_classifier.has_continue_on_back(page_file)
                     
                     if has_continue and pos + 1 < group_end:
+                        # Check if both pages have multi-card pattern (CARD X/Y)
+                        # If so, they should NOT be paired (each is a separate card)
+                        current_has_card_num = self.page_classifier.has_multi_card_pattern(page_file)
+                        next_has_card_num = False
+                        if pos + 1 < len(all_page_files):
+                            next_file = all_page_files[pos + 1]
+                            next_has_card_num = self.page_classifier.has_multi_card_pattern(next_file)
+                        
+                        # Don't pair if both have card numbers
+                        if current_has_card_num and next_has_card_num:
+                            # Standalone page (part of multi-card sequence)
+                            card_pages.append({
+                                "type": "front",
+                                "card_in_group": card_in_group,
+                                "front": front_path
+                            })
+                            processed_positions.add(pos)
+                            pos += 1
+                            card_in_group += 1
+                            continue
+                        
                         # Check if next page is NOT a first (would be the back)
                         if (pos + 1) not in first_positions or not is_datacard_type:
                             back_file = all_page_files[pos + 1]
@@ -985,26 +1053,40 @@ class StructureClassifier:
                     # Check if next page is available
                     next_pos = first_page["position"] + 1
                     if next_pos < len(all_page_files):
-                        # For datacards, check if next page is not a front
-                        # For non-datacards, always pair
-                        can_pair = not is_datacard_type or next_pos not in first_positions
-                        if can_pair:
-                            back_file = all_page_files[next_pos]
-                            back_path = str(back_file.relative_to(PROJECT_ROOT)).replace('\\', '/')
-                            
-                            card_pages.append({
-                                "type": "both",
-                                "card_in_group": 1,
-                                "front": front_path,
-                                "back": back_path
-                            })
-                            processed_positions.add(next_pos)
-                        else:
+                        # Check if both pages have multi-card pattern (CARD X/Y)
+                        current_file = all_page_files[first_page["position"]]
+                        current_has_card_num = self.page_classifier.has_multi_card_pattern(current_file)
+                        next_file = all_page_files[next_pos]
+                        next_has_card_num = self.page_classifier.has_multi_card_pattern(next_file)
+                        
+                        # Don't pair if both have card numbers
+                        if current_has_card_num and next_has_card_num:
                             card_pages.append({
                                 "type": "front",
                                 "card_in_group": 1,
                                 "front": front_path
                             })
+                        else:
+                            # For datacards, check if next page is not a front
+                            # For non-datacards, always pair
+                            can_pair = not is_datacard_type or next_pos not in first_positions
+                            if can_pair:
+                                back_file = all_page_files[next_pos]
+                                back_path = str(back_file.relative_to(PROJECT_ROOT)).replace('\\', '/')
+                                
+                                card_pages.append({
+                                    "type": "both",
+                                    "card_in_group": 1,
+                                    "front": front_path,
+                                    "back": back_path
+                                })
+                                processed_positions.add(next_pos)
+                            else:
+                                card_pages.append({
+                                    "type": "front",
+                                    "card_in_group": 1,
+                                    "front": front_path
+                                })
                     else:
                         card_pages.append({
                             "type": "front",
