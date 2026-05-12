@@ -87,6 +87,7 @@ def get_card_type_tag(card_type):
         "datacards": "KTCardsDatacard",
         "faction-rules": "KTCardsFactionRule",
         "operative-selection": "KTCardsOperativeSelection",
+        "token-guide": "KTCardsTokenGuide",
         "markertokens": "KTCardsMarkertoken"
     }
     return type_tag_map.get(card_type)
@@ -357,28 +358,41 @@ def create_bag(team_name, team_tag, contained_objects, lua_script, texture_url=N
     def _infer_type_from_face_url(face_url: str) -> Optional[str]:
         if not face_url:
             return None
-        if "/output_v2/" not in face_url:
-            return None
-
-        try:
-            # URL format: .../output_v2/{faction}/{team}/{card_type}/...
+        
+        # Support both v2 and v3 output structures
+        if "/output_v2/" in face_url:
             after = face_url.split("/output_v2/", 1)[1]
+            # URL format: .../output_v2/{faction}/{team}/{card_type}/...
             parts = after.split("/")
             if len(parts) < 3:
                 return None
             folder = parts[2].strip().lower()
-        except Exception:
+        elif "/output_v3/" in face_url:
+            after = face_url.split("/output_v3/", 1)[1]
+            # URL format: .../output_v3/{team}/cards/{card_type}/...
+            parts = after.split("/")
+            if len(parts) < 3:
+                return None
+            folder = parts[2].strip().lower()
+        else:
             return None
 
-        if folder in {"operative-selection", "operatives"}:
+        # Normalize folder names to card types
+        if folder in {"operative-selection", "operatives", "operatives_selection"}:
             return "operative-selection"
+        if folder in {"token-guide", "token_guide", "markertoken-guide"}:
+            return "markertokens"
         if folder in {"datacards", "equipment", "firefight-ploys", "strategy-ploys"}:
             return folder
+        if folder == "firefight_ploys":
+            return "firefight-ploys"
+        if folder == "strategy_ploys":
+            return "strategy-ploys"
 
-        if folder == "faction-rules":
+        if folder == "faction-rules" or folder == "faction_rules":
             # Markertokens are stored under faction-rules, but should have their own slot.
             # Detect by URL content.
-            if "markertoken" in face_url.lower():
+            if "markertoken" in face_url.lower() or "token-guide" in face_url.lower():
                 return "markertokens"
             return "faction-rules"
 

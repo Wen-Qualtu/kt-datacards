@@ -5,8 +5,9 @@ Kill Team datacards pipeline for Tabletop Simulator (TTS). Extracts operative da
 
 ## Project Structure
 
-### Two Pipelines
-- **kt-app pipeline** (`script/`): Primary pipeline. CLI via `script/run_pipeline.py`. Orchestrated by `script/src/pipeline.py`.
+### Three Pipelines
+- **kt-app pipeline** (`script/`): Production pipeline. CLI via `script/run_pipeline.py`. Orchestrated by `script/src/pipeline.py`. Outputs to `output_v2/` and `tts_objects/`.
+- **kt-app refactor** (`pipelines/kt-app/steps/`): New modular pipeline architecture (refactor branch). 8 numbered steps (1–8). Outputs to `output_v3/` with cleaner structure. Uses `layers/kt-app/` for intermediate data.
 - **warcom pipeline** (`pipelines/warcom/steps/`): Legacy pipeline with numbered steps (1–9). Kept for reference and some standalone tools (ROSZ generation, web scraping).
 
 ### Key Directories
@@ -14,9 +15,11 @@ Kill Team datacards pipeline for Tabletop Simulator (TTS). Extracts operative da
 |-----------|---------|
 | `input/` | Raw PDF sources (datacards) |
 | `processed/` | Organized PDFs by team (`{team}/{team}-datacards.pdf`) |
-| `output_v2/` | Final extracted images & metadata, organized by faction (`imperium/`, `chaos/`, `xenos/`) |
+| `output_v2/` | **Production**: Final extracted images & metadata, organized by faction (`imperium/`, `chaos/`, `xenos/`) |
+| `output_v3/` | **Refactor**: Team-organized structure (`{team}/cards/`, `{team}/tokens/`, `{team}/data/`, `{team}/tts_object/`) |
 | `metadata/{team}/` | Per-team extracted metadata (`card_index.json`, `extraction_metadata.json`, `token_index.json`) |
-| `tts_objects/{team}/` | Generated TTS save JSON files (card boxes, token bags) |
+| `tts_objects/{team}/` | **Production**: Generated TTS save JSON files (card boxes, token bags) |
+| `layers/kt-app/` | **Refactor**: Intermediate extraction data (processed PDFs, extracted pages, classified structure) |
 | `config/` | Team configs, weapon rules, defaults |
 | `layers/` | Image layers for card composition |
 | `archive/` | Original processed PDFs |
@@ -97,6 +100,35 @@ Order prefix (`[FF5500]E[-]`) + wounds (`{8/8}`) + operative name
 - Two header formats: `NAME ATK HIT DMG WR` (full) and `NAME A HIT D WR` (abbreviated)
 - Coordinate-based region extraction for statline values
 - Back pages contain abilities, actions, weapon rules
+
+### Multi-Card Faction Rules (Elite Fieldcraft Fix)
+**Pattern**: Cards with "(CARD X/Y)" notation (e.g., "ELITE FIELDCRAFT (CARD 2/3)")
+
+**Problem**: Cards were incorrectly paired as front/back when they should be separate cards.
+
+**Solution** (applied to both pipelines):
+1. Enhanced name extraction with regex: `r'FACTION\s+RULE\s+([A-Z\s]+?)\s*\(CARD\s+(\d+)/(\d+)\)'`
+2. Append card number to name: "ELITE FIELDCRAFT (CARD 2/3)" → `elite-fieldcraft-card-2`
+3. Prevent pairing when both pages have "(CARD X/Y)" pattern
+4. Result: Card 1 (front+back), Card 2 (front+default back), Card 3 (front+default back)
+
+**Implementation**:
+- Main pipeline: `script/src/processors/image_extractor.py` lines 397-417, 172-203
+- Refactor pipeline: `pipelines/kt-app/steps/2_classify_structure.py` in `extract_card_name()` and pairing logic
+
+### Token Cleanup (Stray Pixel Fix)
+**Problem**: Small pixel islands outside token boundaries (e.g., 2-5 pixels in bottom-right corner)
+
+**Root Cause**: Conservative white detection threshold (245) allowed off-white pixels (235-244) to survive background removal.
+
+**Solution** (refactor pipeline):
+1. Lowered white detection: `v > 245` → `v > 235` (HSV value channel)
+2. Increased saturation threshold: `s < 15` → `s < 25` (catches light-gray variations)
+3. Added hard template boundary: Force pixels outside template to white/transparent
+
+**Implementation**: `pipelines/kt-app/steps/5_extract_tokens.py`
+- Lines ~128: `remove_background()` threshold adjustments
+- Lines ~313: Hard template boundary cleanup in `process_token()`
 
 ### Metadata JSON
 - `extraction_metadata.json` per team — some teams have malformed JSON (battleclade, deathwatch, exaction-squad), always wrap in try/except

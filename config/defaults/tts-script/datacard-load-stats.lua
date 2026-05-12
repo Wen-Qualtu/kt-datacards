@@ -372,11 +372,9 @@ function diffAndApply(model, data)
         end
     end
 
-    -- Reset wounds to full when max wounds changes (up or down)
+    -- Always reset wounds to full when loading stats
     if data.stats.Wounds then
-        if ms.wounds == nil or (oldMaxWounds and not valEq(oldMaxWounds, data.stats.Wounds)) then
-            ms.wounds = data.stats.Wounds
-        end
+        ms.wounds = data.stats.Wounds
     end
 
     -- 2. Name

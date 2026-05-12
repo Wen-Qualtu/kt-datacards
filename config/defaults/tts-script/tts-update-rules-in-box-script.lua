@@ -1,5 +1,5 @@
 -- constants
-local TTS_METADATA_URL = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/tts-metadata.json"
+local TTS_METADATA_URL = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/refactor-kt-app-pipeline/output_v2/tts-metadata.json"
 
 local SCRIPT_VERSION = "v2.0"
 
@@ -124,14 +124,6 @@ local BUTTON_UPDATE = {
   height=350, width=800,
   font_size=250, color={0,0.5,1}, font_color={1,1,1}
 }
-local BUTTON_UPDATE_TOKENS = {
-  label="Update Tokens",
-  click_function="click_update_tokens",
-  function_owner=self,
-  position={2,-2.5,1}, rotation={0,270,0},
-  height=350, width=800,
-  font_size=250, color={0.6,0.3,1}, font_color={1,1,1}
-}
 local BUTTON_CANCEL = {
   label="Cancel",
   click_function="click_cancel",
@@ -217,12 +209,17 @@ local function changeButtons(variant)
     self.createButton(BUTTON_SUBMIT)
     self.createButton(BUTTON_RESET)
   elseif (variant == 'done_setup') then
+    self.createButton(BUTTON_UPDATE)
     self.createButton(BUTTON_PLACE)
     self.createButton(BUTTON_RECALL)
     self.createButton(BUTTON_SETUP_BOX)
     self.createButton(BUTTON_PLACE_KT_TABLE)
-    self.createButton(BUTTON_UPDATE)
   end
+end
+
+local function setupContextMenu()
+  self.clearContextMenu()
+  -- Context menu can be used for additional options if needed
 end
 
 function compare_coords(p1, p2, rotation)
@@ -311,6 +308,9 @@ function onload(saved_data)
   else
     changeButtons('done_setup')
   end
+  
+  -- Setup context menu for update functions (right-click)
+  setupContextMenu()
 end
 
 -- handlers for buttons
@@ -1128,179 +1128,5 @@ function click_update_rules()
         10
       )
     end)
-  end)
-end
-
--- Token Bag Update Function
-function click_update_tokens()
-  if teamSlug == "" then
-    broadcastToAll("Cannot update tokens: team not identified.", {1, 0.5, 0})
-    return
-  end
-  
-  -- Check if we need to update by comparing timestamps
-  if lastTokenUpdate ~= "" then
-    broadcastToAll("Checking for token updates...", {1, 1, 0})
-    
-    -- Fetch tts-metadata.json to check if update is needed
-    WebRequest.get(TTS_METADATA_URL, function(request)
-      if request.is_error then
-        broadcastToAll("Could not check for token updates. Forcing refresh...", {1, 0.5, 0})
-        performTokenUpdate()
-        return
-      end
-      
-      -- Parse JSON to find this team's last_modified timestamp
-      local success, ttsTokenBags = pcall(function() return JSON.decode(request.text) end)
-      if not success or not ttsTokenBags then
-        broadcastToAll("Could not parse token update info. Forcing refresh...", {1, 0.5, 0})
-        performTokenUpdate()
-        return
-      end
-      
-      -- Find our team in the list
-      local remoteTimestamp = ""
-      local tokenBagUrl = ""
-      for _, bag in ipairs(ttsTokenBags) do
-        if bag.team == teamSlug then
-          remoteTimestamp = bag.tokens_last_modified or ""
-          tokenBagUrl = bag.tokens_url or ""
-          break
-        end
-      end
-      
-      if remoteTimestamp == "" or tokenBagUrl == "" then
-        broadcastToAll("Could not find token bag in update list. Forcing refresh...", {1, 0.5, 0})
-        performTokenUpdate()
-        return
-      end
-      
-      -- Compare timestamps
-      if remoteTimestamp == lastTokenUpdate then
-        broadcastToAll("Tokens already up to date! (Last: " .. lastTokenUpdate .. ")", {0, 1, 0})
-        return
-      else
-        broadcastToAll("Token update available! Local: " .. lastTokenUpdate .. " | Remote: " .. remoteTimestamp, {0, 0.7, 1})
-        performTokenUpdate(tokenBagUrl, remoteTimestamp)
-      end
-    end)
-  else
-    -- No timestamp info, force update
-    broadcastToAll("No token timestamp info. Forcing refresh...", {1, 1, 0})
-    performTokenUpdate()
-  end
-end
-
-function performTokenUpdate(tokenBagUrl, newTimestamp)
-  -- If we don't have the URL, fetch it from metadata
-  if not tokenBagUrl then
-    WebRequest.get(TTS_METADATA_URL, function(request)
-      if request.is_error then
-        broadcastToAll("Could not fetch token bag metadata.", {1, 0, 0})
-        return
-      end
-      
-      local success, ttsTokenBags = pcall(function() return JSON.decode(request.text) end)
-      if not success or not ttsTokenBags then
-        broadcastToAll("Could not parse token bag metadata.", {1, 0, 0})
-        return
-      end
-      
-      for _, bag in ipairs(ttsTokenBags) do
-        if bag.team == teamSlug then
-          tokenBagUrl = bag.tokens_url or ""
-          newTimestamp = bag.tokens_last_modified or ""
-          break
-        end
-      end
-      
-      if tokenBagUrl == "" then
-        broadcastToAll("Token bag not found for " .. teamSlug, {1, 0, 0})
-        return
-      end
-      
-      -- Now we have the URL, do the actual update
-      doTokenBagSpawn(tokenBagUrl, newTimestamp)
-    end)
-  else
-    -- We already have the URL
-    doTokenBagSpawn(tokenBagUrl, newTimestamp)
-  end
-end
-
-function doTokenBagSpawn(tokenBagUrl, newTimestamp)
-  -- Add cache busting parameter
-  local timestamp = newTimestamp:gsub("[^%d]", "")  -- Strip to numbers only
-  local urlWithCacheBust = tokenBagUrl .. "?v=" .. timestamp
-  
-  broadcastToAll("Updating token bags from GitHub...", {0, 0.7, 1})
-  
-  -- Save current positions of any existing token bags
-  local existingBags = {}
-  local allObjects = getAllObjects()
-  for _, obj in ipairs(allObjects) do
-    if obj.type == "Bag" and obj.getGMNotes() == teamSlug .. "-tokens" then
-      table.insert(existingBags, {
-        guid = obj.getGUID(),
-        position = obj.getPosition(),
-        rotation = obj.getRotation()
-      })
-    end
-  end
-  
-  -- Fetch and spawn the new token bag
-  WebRequest.get(urlWithCacheBust, function(request)
-    if request.is_error then
-      broadcastToAll("Failed to fetch token bag: " .. request.error, {1, 0, 0})
-      return
-    end
-    
-    local success, bagData = pcall(function() return JSON.decode(request.text) end)
-    if not success or not bagData then
-      broadcastToAll("Failed to parse token bag JSON", {1, 0, 0})
-      return
-    end
-    
-    -- Destroy old token bags
-    for _, oldBag in ipairs(existingBags) do
-      local obj = getObjectFromGUID(oldBag.guid)
-      if obj then
-        obj.destruct()
-      end
-    end
-    
-    -- Spawn new token bag(s) from JSON
-    if bagData.ObjectStates then
-      for _, objState in ipairs(bagData.ObjectStates) do
-        -- Use saved position if we had one, otherwise spawn at card box position
-        local spawnPos = self.getPosition() + Vector(3, 1, 0)
-        if #existingBags > 0 then
-          spawnPos = existingBags[1].position
-        end
-        
-        objState.GUID = nil  -- Let TTS assign new GUID
-        objState.Transform.posX = spawnPos.x
-        objState.Transform.posY = spawnPos.y
-        objState.Transform.posZ = spawnPos.z
-        
-        -- Set GM notes to identify this as our token bag
-        objState.GMNotes = teamSlug .. "-tokens"
-        
-        spawnObjectData({
-          data = objState,
-          callback_function = function(spawnedObj)
-            broadcastToAll("Token bag updated successfully!", {0, 1, 0})
-            
-            -- Update timestamp
-            if newTimestamp then
-              lastTokenUpdate = newTimestamp
-              updateSave()
-            end
-          end
-        })
-      end
-    else
-      broadcastToAll("Invalid token bag format", {1, 0, 0})
-    end
   end)
 end
