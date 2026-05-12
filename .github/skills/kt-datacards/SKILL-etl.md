@@ -30,11 +30,12 @@ Also load **SKILL-project.md** for directory structure and naming conventions.
 - Requires content analysis to identify team and card types
 
 **kt-app refactor** (REFACTOR — refactor-kt-app-pipeline branch):
-- Entry: `pipelines/kt-app/steps/1_process_pdfs.py` through `8_embed_datacard_stats.py`
+- Entry: `pipelines/kt-app/steps/1_process_pdfs.py` through `7_generate_tts_objects.py`
 - Output: `output_v3/` (team-organized), intermediate data in `layers/kt-app/`
-- Modular 8-step architecture with clean separation of concerns
+- Modular 7-step architecture with clean separation of concerns
 - Uses classification-based structure (structure.json)
 - Run individual steps or use pipeline orchestrator
+- **Stats embedded automatically in step 7** (no separate embedding step)
 
 **warcom pipeline** (LEGACY — kept for reference):
 - Entry: `pipelines/warcom/pdf_process_pipeline.py`
@@ -85,8 +86,7 @@ poetry run python script/run_pipeline.py --step extract --teams angels-of-death,
 | 4 | Extract Card Images | `4_extract_card_images.py` | `output_v3/{team}/cards/{type}/*.png` |
 | 5 | Extract Tokens | `5_extract_tokens.py` | `output_v3/{team}/tokens/*.png` |
 | 6 | Generate TTS Assets | `6_generate_tts_assets.py` | `output_v3/{team}/cardbox/`, `output_v3/{team}/tokens/*.obj` |
-| 7 | Generate TTS Objects | `7_generate_tts_objects.py` | `output_v3/{team}/tts_object/*.json` |
-| 8 | Embed Datacard Stats | `8_embed_datacard_stats.py` | Patches TTS objects with GMNotes + LuaScript |
+| 7 | Generate TTS Objects + Embed Stats | `7_generate_tts_objects.py` | `output_v3/{team}/tts_object/*.json` (with embedded GMNotes) |
 
 ### Running Refactor Steps
 ```powershell
@@ -98,8 +98,7 @@ python 3_extract_team_data.py --team spectre-squad --force
 python 4_extract_card_images.py --team spectre-squad --force
 python 5_extract_tokens.py --teams spectre-squad
 python 6_generate_tts_assets.py --teams spectre-squad
-python 7_generate_tts_objects.py --teams spectre-squad
-python 8_embed_datacard_stats.py --teams spectre-squad
+python 7_generate_tts_objects.py --teams spectre-squad  # Embeds stats automatically
 ```
 
 ### Refactor Pipeline Key Features

@@ -1,21 +1,24 @@
 """
-Step 7: Generate TTS Objects
+Step 7: Generate TTS Objects (with embedded stats)
 
 Generates Tabletop Simulator (TTS) JSON save files from classified cards.
+Embeds operative stats (GMNotes + Lua scripts) directly during generation.
 
 Prerequisites:
-    Step 6: TTS assets (mesh/texture) must be generated
+    Step 3: Team data extracted (for stat embedding)
+    Step 6: TTS assets (mesh/texture) generated
 
 Input:
     layers/kt-app/classified/{team}/structure.json - Card organization
     output_v3/{team}/cards/{card_type}/*.png - Card images
     output_v3/{team}/cardbox/*.obj/*.jpg - 3D assets from step 6
     output_v3/{team}/tokens/ - Token files
+    output_v3/{team}/data/{team}-team-data.json - Operative stats (optional)
     config/team-config.yaml - Team metadata
     
 Output:
-    output_v3/{team}/tts_object/{Team Name} Cards.json - TTS card box save file
-    output_v3/{team}/tts_object/{Team Name} Cards.png - Preview image
+    output_v3/{team}/tts_objects/{Team Name} Box.json - TTS card box save file with embedded stats
+    output_v3/{team}/tts_objects/{Team Name} Box.png - Preview image
 """
 
 import argparse
@@ -23,9 +26,11 @@ import json
 import logging
 import re
 import shutil
+import yaml
 from pathlib import Path
 from collections import defaultdict
 from datetime import datetime, timezone
+from typing import Dict, List, Optional
 import sys
 
 # Add templates to path
@@ -146,12 +151,12 @@ def generate_object_urls_json():
         }
         
         # Add TTS box JSON file
-        tts_object_dir = team_dir / 'tts_object'
-        box_file = tts_object_dir / f"{team_display_name} Cards.json"
+        tts_objects_dir = team_dir / 'tts_objects'
+        box_file = tts_objects_dir / f"{team_display_name} Box.json"
         if box_file.exists():
             box_mtime = box_file.stat().st_mtime
             box_modified = datetime.fromtimestamp(box_mtime, tz=timezone.utc).isoformat()
-            box_url = f"{base_url}/{team}/tts_object/{box_file.name.replace(' ', '%20')}"
+            box_url = f"{base_url}/{team}/tts_objects/{box_file.name.replace(' ', '%20')}"
             team_entry["box"] = {
                 "url": f"{box_url}?v={int(box_mtime)}",
                 "modified": box_modified
@@ -409,6 +414,10 @@ def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Pa
         }
         token_objects.append(token_obj)
     
+    # Save individual token JSONs
+    for idx, token_obj in enumerate(token_objects, start=1):
+        save_individual_token_json(token_obj, team_name, idx, output_v3_dir)
+    
     # Build token bag mesh and icon URLs
     bag_mesh_url = f"{github_base}/output_v3/{team_name}/tokens/tokenbag/{bag_mesh_file.name}"
     bag_icon_url = f"{github_base}/output_v3/{team_name}/tokens/tokenbag/{bag_icon_file.name}"
@@ -500,12 +509,410 @@ def copy_preview_image(team_folder_name: str, team_display_name: str, config_dir
         source_preview = default_preview
     
     if source_preview.exists():
-        team_output_dir = output_dir / team_folder_name / 'tts_object'
+        team_output_dir = output_dir / team_folder_name / 'tts_objects'
         team_output_dir.mkdir(parents=True, exist_ok=True)
-        dest_preview = team_output_dir / f"{team_display_name} Cards.png"
+        dest_preview = team_output_dir / f"{team_display_name} Box.png"
         shutil.copy2(source_preview, dest_preview)
     else:
         logger.warning(f"No preview/icon image found for {team_folder_name}")
+
+
+def embed_datacard_stats(bag_obj: dict, team_name: str, output_dir: Path, config_dir: Path) -> bool:
+    """
+    Embed operative stats into datacards within the TTS bag object.
+    Returns True if stats were embedded, False if skipped.
+    """
+    # Load team data
+    team_data_path = output_dir / team_name / "data" / f"{team_name}-team-data.json"
+    if not team_data_path.exists():
+        logger.debug(f"  No team data found for {team_name}, skipping stat embedding")
+        return False
+    
+    logger.debug(f"  Loading team data from {team_data_path}")
+    with open(team_data_path, 'r', encoding='utf-8') as f:
+        team_data = json.load(f)
+    
+    # Load weapon rules
+    weapon_rules_path = config_dir / "weapon_rules.json"
+    with open(weapon_rules_path, 'r', encoding='utf-8') as f:
+        weapon_rules = json.load(f)
+    
+    # Load team config
+    team_config_path = config_dir / "team-config.yaml"
+    with open(team_config_path, 'r', encoding='utf-8') as f:
+        team_config = yaml.safe_load(f)
+    
+    # Load datacard Lua script
+    lua_script_path = config_dir / "defaults" / "tts-script" / "datacard-load-stats.lua"
+    with open(lua_script_path, 'r', encoding='utf-8') as f:
+        datacard_lua_script = f.read()
+    
+    # Find all datacard objects in the bag
+    datacards = _find_datacards(bag_obj)
+    if not datacards:
+        logger.debug(f"  No datacards found in TTS object for {team_name}")
+        return False
+    
+    logger.info(f"  Embedding stats for {len(datacards)} datacards")
+    
+    patched = 0
+    for card in datacards:
+        nickname = card.get("Nickname", "")
+        
+        # Match card to operative
+        operative = _match_card_to_operative(nickname, team_name, team_data)
+        if not operative:
+            logger.debug(f"    No match for card '{nickname}'")
+            continue
+        
+        # Build GMNotes
+        try:
+            gm_notes_data = _build_gm_notes(operative, team_data, weapon_rules)
+            gm_notes_json = json.dumps(gm_notes_data, separators=(",", ":"), ensure_ascii=False)
+            
+            # Get faction rule code if applicable
+            operative_name = operative.get('name', '')
+            faction_rule_code = _get_faction_rule_code(team_name, team_data, operative_name, config_dir, team_config)
+            lua_script = datacard_lua_script + faction_rule_code
+            
+            # Set GMNotes and Lua script
+            card["GMNotes"] = gm_notes_json
+            card["LuaScript"] = lua_script
+            
+            patched += 1
+            logger.debug(f"    Embedded stats for '{nickname}'")
+        except Exception as e:
+            logger.error(f"    Error embedding stats for '{nickname}': {e}")
+            import traceback
+            logger.error(traceback.format_exc())
+            continue
+    
+    # Update bag timestamp
+    _update_bag_timestamp(bag_obj)
+    
+    logger.info(f"  Embedded stats for {patched}/{len(datacards)} datacards")
+    return True
+
+
+def _find_datacards(tts_data: dict) -> list:
+    """Find all datacard objects in TTS JSON."""
+    datacards = []
+    
+    def recurse(obj):
+        if isinstance(obj, dict):
+            nickname = obj.get("Nickname", "")
+            
+            if ("CardID" in obj or "CustomDeck" in obj) and nickname:
+                excluded_patterns = [
+                    "Datacards", "Equipment", "Strategy Ploys", "Firefight Ploys",
+                    "OPERATIVE SELECTION", "TOKEN GUIDE", "SKILL AT ARMS", "Faction Rules"
+                ]
+                
+                is_excluded = any(pattern in nickname for pattern in excluded_patterns)
+                if not is_excluded:
+                    datacards.append(obj)
+            
+            for key, value in obj.items():
+                if key not in ["CustomDeck", "CustomImage"]:
+                    recurse(value)
+        elif isinstance(obj, list):
+            for item in obj:
+                recurse(item)
+    
+    recurse(tts_data)
+    return datacards
+
+
+def _match_card_to_operative(nickname: str, team: str, team_data: dict) -> Optional[dict]:
+    """Match a card nickname to an operative in team_data."""
+    def normalize(s):
+        return s.lower().strip().replace("-", " ").replace("_", " ")
+    
+    nickname_norm = normalize(nickname)
+    team_norm = normalize(team)
+    
+    datacards = team_data.get('datacards', [])
+    for operative in datacards:
+        op_name = operative.get('name', '')
+        op_name_norm = normalize(op_name)
+        
+        if op_name_norm == nickname_norm:
+            return operative
+        
+        if op_name_norm.startswith(team_norm):
+            op_type = op_name_norm[len(team_norm):].strip()
+            if op_type == nickname_norm:
+                return operative
+    
+    return None
+
+
+def _build_gm_notes(operative: dict, team_data: dict, weapon_rules: dict) -> dict:
+    """Build GMNotes JSON structure with operative stats."""
+    import re
+    
+    def parse_move(s: str) -> int:
+        m = re.search(r"(\d+)", str(s))
+        return int(m.group(1)) if m else 6
+    
+    def parse_save(s: str) -> int:
+        m = re.search(r"(\d+)", str(s))
+        return int(m.group(1)) if m else 5
+    
+    def classify_weapon(weapon: dict) -> str:
+        special_rules = weapon.get('special_rules', '').lower()
+        if 'range' in special_rules or 'rng' in special_rules:
+            return 'ranged'
+        return 'melee'
+    
+    def weapon_prefix(weapon: dict) -> str:
+        return '[1E87FF]R[-]' if classify_weapon(weapon) == 'ranged' else '[F4641D]M[-]'
+    
+    stats = {
+        'APL': operative.get('apl', 2),
+        'Move': parse_move(operative.get('movement', '6')),
+        'Save': parse_save(operative.get('save', '5+')),
+        'Wounds': operative.get('wounds', 1)
+    }
+    
+    keywords = ['Operative']
+    if 'keywords' in operative:
+        keywords.extend(operative.get('keywords', []))
+    
+    weapons = []
+    weapon_rules_found = {}
+    for weapon in operative.get('weapons', []):
+        weapon_name = weapon.get('name', '')
+        special_rules = weapon.get('special_rules', '')
+        
+        prefix = weapon_prefix(weapon)
+        full_name = f'{prefix} {weapon_name}'
+        
+        weapons.append({
+            'name': full_name,
+            'plain_name': weapon_name,
+            'stats': {
+                'ATK': weapon.get('attacks', ''),
+                'HIT': weapon.get('hit', ''),
+                'DMG': weapon.get('damage', ''),
+                'WR': special_rules
+            }
+        })
+        
+        if special_rules:
+            for rule_name, rule_description in weapon_rules.items():
+                if rule_name.lower() in special_rules.lower():
+                    weapon_rules_found[rule_name] = rule_description
+    
+    abilities = []
+    for ability in operative.get('passive_abilities', []):
+        ability_name = ability.get('name', '')
+        ability_desc = ability.get('description', '')
+        
+        # Filter out malformed entries
+        if (ability_desc.isdigit() or 
+            (ability_desc and ability_desc[0].isdigit()) or
+            (',' in ability_name and len(ability_name.split(',')) > 3) or
+            (ability_name.isupper() and len(ability_name) > 20) or
+            (not ability_name or not ability_name[0].isupper()) or
+            len(ability_name.split()) > 5):
+            continue
+        
+        abilities.append({
+            'name': ability_name,
+            'text': ability_desc
+        })
+    
+    actions = []
+    for action in operative.get('unique_actions', []):
+        actions.append({
+            'name': action.get('name', ''),
+            'text': action.get('description', '')
+        })
+    
+    description_lines = [
+        f"[D36B3E][[84E680]APL[-] [ffffff]{stats['APL']}[-]] [[84E680]MOVE[-] [ffffff]{stats['Move']}\"[-]]",
+        f"[[84E680]SAVE[-] [ffffff]{stats['Save']}+[-]] [[84E680]WOUNDS[-] [ffffff]{stats['Wounds']}[-]][-]"
+    ]
+    
+    if keywords:
+        description_lines.append('[C5C5C5]' + ', '.join(keywords) + '[-]')
+    
+    description_lines.append('[31B32B]Weapons[-]')
+    for w in weapons:
+        description_lines.append(w['name'])
+        w_stats = w['stats']
+        description_lines.append(
+            f"[84E680]ATK[-] {w_stats['ATK']} [84E680]HIT[-] {w_stats['HIT']} [84E680]DMG[-] {w_stats['DMG']}"
+        )
+        if w_stats['WR']:
+            description_lines.append(f"[84E680]WR[-]: {w_stats['WR']}")
+        description_lines.append('')
+    
+    if abilities:
+        description_lines.append('---')
+        description_lines.append('[31B32B]Abilities[-]')
+        for ab in abilities:
+            description_lines.append(f"- [EF8450]{ab['name']}[-]")
+    
+    if actions:
+        description_lines.append('---')
+        description_lines.append('[31B32B]Unique Actions[-]')
+        for act in actions:
+            description_lines.append(f"- [EF8450]{act['name']}[-]")
+    
+    description = '\n'.join(description_lines)
+    
+    gm_notes = {
+        'name': operative.get('name', ''),
+        'stats': stats,
+        'keywords': keywords,
+        'weapons': weapons,
+        'abilities': abilities,
+        'actions': actions,
+        'weapon_rules': weapon_rules_found,
+        'description': description
+    }
+    
+    return gm_notes
+
+
+def _get_faction_rule_code(team: str, team_data: dict, operative_name: str, config_dir: Path, team_config: dict) -> str:
+    """Generate faction rule Lua code if applicable."""
+    team_info = team_config.get('teams', {}).get(team, {})
+    if 'faction_rule' not in team_info:
+        return ""
+    
+    faction_rules = team_data.get('faction_rules', [])
+    if not faction_rules:
+        return ""
+    
+    if team == "chaos-cult":
+        op_lower = operative_name.lower()
+        if "mutant" not in op_lower and "torment" not in op_lower and "possessed" not in op_lower:
+            return ""
+    
+    template_path = config_dir / "defaults" / "tts-script" / "faction-rule-chapter-tactics.lua"
+    if not template_path.exists():
+        return ""
+    
+    with open(template_path, 'r', encoding='utf-8') as f:
+        template = f.read()
+    
+    rule_with_options = None
+    for rule in faction_rules:
+        if 'options' in rule and rule['options']:
+            rule_with_options = rule
+            break
+    
+    if not rule_with_options:
+        return ""
+    
+    rule_name = rule_with_options['name']
+    options = rule_with_options['options']
+    
+    lua_options = []
+    for opt in options:
+        opt_name = opt.get('name', '')
+        opt_text = opt.get('text', '')
+        opt_name_escaped = opt_name.replace('\\', '\\\\').replace('"', '\\"').replace('\n', '\\n')
+        opt_text_escaped = opt_text.replace('\\', '\\\\').replace('"', '\\"').replace('\n', '\\n')
+        lua_options.append(f'    {{name = "{opt_name_escaped}", text = "{opt_text_escaped}"}}')
+    
+    options_str = ',\n'.join(lua_options)
+    
+    lua_code = template.replace('{{FACTION_RULE_NAME}}', rule_name)
+    lua_code = lua_code.replace('{{FACTION_RULE_OPTIONS}}', options_str)
+    
+    return lua_code
+
+
+def _update_bag_timestamp(tts_data: dict) -> None:
+    """Update lastCardUpdate in the top-level bag's LuaScriptState."""
+    obj = tts_data.get("ObjectStates", [{}])[0]
+    lss = obj.get("LuaScriptState", "")
+    try:
+        state = json.loads(lss) if lss else {}
+    except (json.JSONDecodeError, TypeError):
+        state = {}
+    
+    state["lastCardUpdate"] = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
+    obj["LuaScriptState"] = json.dumps(state)
+
+
+def save_individual_card_json(card_obj: dict, team_name: str, card_type: str, card_index: int, output_dir: Path) -> tuple:
+    """
+    Save individual card JSON to tts_objects/cards/{card_type}/.
+    
+    Args:
+        card_obj: Single card TTS object
+        team_name: Team slug
+        card_type: Card type (datacards, equipment, etc.)
+        card_index: Card index for filename (fallback)
+        output_dir: output_v3 directory
+    
+    Returns:
+        (file_path, modification_timestamp)
+    """
+    import os
+    
+    # Create card type subdirectory
+    card_type_dir = output_dir / team_name / 'tts_objects' / 'cards' / card_type
+    card_type_dir.mkdir(parents=True, exist_ok=True)
+    
+    # Use card nickname for filename, fallback to index
+    card_nickname = card_obj.get('Nickname', f'card-{card_index:03d}')
+    # Sanitize filename (lowercase, replace spaces with hyphens)
+    safe_name = card_nickname.lower().replace(' ', '-').replace('/', '-').replace('\\', '-')
+    filename = f"{safe_name}.json"
+    file_path = card_type_dir / filename
+    
+    # Save JSON
+    with open(file_path, 'w', encoding='utf-8') as f:
+        json.dump(card_obj, f, indent=2)
+    
+    # Get modification time
+    file_mtime = os.path.getmtime(file_path)
+    timestamp = datetime.fromtimestamp(file_mtime).strftime('%Y-%m-%dT%H:%M:%S')
+    
+    return file_path, timestamp
+
+
+def save_individual_token_json(token_obj: dict, team_name: str, token_index: int, output_dir: Path) -> tuple:
+    """
+    Save individual token JSON to tts_objects/tokens/.
+    
+    Args:
+        token_obj: Single token TTS object
+        team_name: Team slug
+        token_index: Token index for filename (fallback)
+        output_dir: output_v3 directory
+    
+    Returns:
+        (file_path, modification_timestamp)
+    """
+    import os
+    
+    # Create tokens subdirectory
+    tokens_dir = output_dir / team_name / 'tts_objects' / 'tokens'
+    tokens_dir.mkdir(parents=True, exist_ok=True)
+    
+    # Use token nickname for filename, fallback to index
+    token_nickname = token_obj.get('Nickname', f'token-{token_index:03d}')
+    # Sanitize filename (lowercase, replace spaces with hyphens)
+    safe_name = token_nickname.lower().replace(' ', '-').replace('/', '-').replace('\\', '-')
+    filename = f"{safe_name}.json"
+    file_path = tokens_dir / filename
+    
+    # Save JSON
+    with open(file_path, 'w', encoding='utf-8') as f:
+        json.dump(token_obj, f, indent=2)
+    
+    # Get modification time
+    file_mtime = os.path.getmtime(file_path)
+    timestamp = datetime.fromtimestamp(file_mtime).strftime('%Y-%m-%dT%H:%M:%S')
+    
+    return file_path, timestamp
 
 
 def generate_team_tts_object(team_name: str, cards: list, lua_script: str, texture_url: str, 
@@ -602,11 +1009,20 @@ def generate_team_tts_object(team_name: str, cards: list, lua_script: str, textu
                 str(deck_id_counter),
                 card_type
             )
+            
+            # Save individual card JSON
+            save_individual_card_json(card_obj, team_name, card_type, 1, output_dir)
+            
             contained_objects.append(card_obj)
             deck_id_counter += 1
         elif len(type_cards_data) > 1:
             type_nickname = card_type.replace('-', ' ').title()
             deck_obj = create_deck(type_nickname, team_tag, type_cards_data, deck_id_counter, card_type)
+            
+            # Save individual card JSONs from deck
+            for idx, card_obj in enumerate(deck_obj['ContainedObjects'], start=1):
+                save_individual_card_json(card_obj, team_name, card_type, idx, output_dir)
+            
             contained_objects.append(deck_obj)
             deck_id_counter += len(type_cards_data)
     
@@ -615,9 +1031,9 @@ def generate_team_tts_object(team_name: str, cards: list, lua_script: str, textu
     team_tag = f"_{team_name.replace('-', '_').title().replace('_', ' ')}"
     
     # Get output file path
-    team_output_dir = output_dir / team_name / 'tts_object'
+    team_output_dir = output_dir / team_name / 'tts_objects'
     team_output_dir.mkdir(parents=True, exist_ok=True)
-    output_file = team_output_dir / f"{team_display_name} Cards.json"
+    output_file = team_output_dir / f"{team_display_name} Box.json"
     
     # Create bag with placeholder timestamp
     import os
@@ -656,6 +1072,9 @@ def generate_team_tts_object(team_name: str, cards: list, lua_script: str, textu
     
     # Apply URL updates again
     update_urls_in_object(bag_obj)
+    
+    # Embed datacard stats (optional - skips if no team data)
+    embed_datacard_stats(bag_obj, team_name, output_dir, config_dir)
     
     # Save final version
     with open(output_file, 'w', encoding='utf-8') as f:
@@ -721,7 +1140,7 @@ def main():
     logging.getLogger().setLevel(getattr(logging, args.log_level))
     
     logger.info("=" * 60)
-    logger.info("TTS Object Generation - KT-App Pipeline")
+    logger.info("TTS Object Generation (with embedded stats) - KT-App Pipeline")
     logger.info("=" * 60)
     
     # Generate URLs JSON from v3 structure (flat format for internal use)
@@ -746,7 +1165,7 @@ def main():
     logger.info("Generation Complete")
     logger.info("=" * 60)
     logger.info(f"Teams processed: {count}")
-    logger.info(f"Output: {PROJECT_ROOT / 'output_v3' / '{team}' / 'tts_object'}")
+    logger.info(f"Output: {PROJECT_ROOT / 'output_v3' / '{team}' / 'tts_objects'}")
 
 
 if __name__ == '__main__':
