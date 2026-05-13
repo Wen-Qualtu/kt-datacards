@@ -356,7 +356,7 @@ def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Pa
         logger.warning(f"Could not extract github base URL, using placeholder")
         github_base = "https://github.com/user/repo/raw/main"
     
-    # Generate token objects
+    # Generate token objects (Custom_Model_Infinite_Bag, each containing a Custom_Token)
     token_objects = []
     for token_name, obj_path, png_path in sorted(token_files):
         display_name = token_name.replace(f'{team_name}-', '').replace('-', ' ').title()
@@ -364,50 +364,86 @@ def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Pa
         mesh_url = f"{github_base}/output_v3/{team_name}/tokens/{obj_path.name}"
         diffuse_url = f"{github_base}/output_v3/{team_name}/tokens/{png_path.name}"
         
-        token_obj = {
-            "GUID": generate_guid(f"{team_name}:token:{token_name}"),
-            "Name": "Custom_Model",
+        inner_token = {
+            "GUID": generate_guid(f"{team_name}:customtoken:{token_name}"),
+            "Name": "Custom_Token",
             "Transform": {
                 "posX": 0.0,
-                "posY": 3.0,
+                "posY": 1.63,
                 "posZ": 0.0,
                 "rotX": 0.0,
-                "rotY": 180.0,
-                "rotZ": 180.0,
-                "scaleX": 1.0,
+                "rotY": 0.0,
+                "rotZ": 0.0,
+                "scaleX": 0.21,
                 "scaleY": 1.0,
-                "scaleZ": 1.0
+                "scaleZ": 0.21
             },
             "Nickname": display_name,
-            "Description": "",
-            "GMNotes": "",
-            "AltLookAngle": {"x": 0.0, "y": 0.0, "z": 0.0},
+            "Description": display_name,
             "ColorDiffuse": {"r": 1.0, "g": 1.0, "b": 1.0},
-            "Tags": [f"KTCards{team_name.replace('-', '')}"],
-            "LayoutGroupSortIndex": 0,
-            "Value": 0,
+            "Tags": ["KTUIToken", "KTUIMarker"],
+            "Locked": False,
+            "Grid": True,
+            "Snap": False,
+            "Autoraise": True,
+            "Sticky": False,
+            "Tooltip": False,
+            "Hands": False,
+            "CustomImage": {
+                "ImageURL": diffuse_url,
+                "ImageSecondaryURL": "",
+                "ImageScalar": 1.0,
+                "WidthScale": 0.0,
+                "CustomToken": {
+                    "Thickness": 0.1,
+                    "MergeDistancePixels": 6.0,
+                    "StandUp": False,
+                    "Stackable": False
+                }
+            },
+            "LuaScript": "",
+            "LuaScriptState": "",
+            "XmlUI": ""
+        }
+        
+        token_obj = {
+            "GUID": generate_guid(f"{team_name}:token:{token_name}"),
+            "Name": "Custom_Model_Infinite_Bag",
+            "Transform": {
+                "posX": 0.0,
+                "posY": 1.03,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 270.0,
+                "rotZ": 0.0,
+                "scaleX": 1.8351557,
+                "scaleY": 0.1,
+                "scaleZ": 1.7720486
+            },
+            "Nickname": display_name,
+            "Description": f"Infinite {display_name} tokens",
+            "GMNotes": "",
+            "ColorDiffuse": {"r": 1.0, "g": 1.0, "b": 1.0, "a": 0.0},
+            "Tags": [f"_{team_name}_tokens"],
             "Locked": False,
             "Grid": True,
             "Snap": True,
-            "IgnoreFoW": False,
-            "MeasureMovement": False,
-            "DragSelectable": True,
             "Autoraise": True,
             "Sticky": True,
             "Tooltip": True,
-            "GridProjection": False,
-            "HideWhenFaceDown": False,
             "Hands": False,
             "CustomMesh": {
                 "MeshURL": mesh_url,
-                "DiffuseURL": diffuse_url,
+                "DiffuseURL": "",
                 "NormalURL": "",
                 "ColliderURL": "",
                 "Convex": True,
-                "MaterialIndex": 3,
-                "TypeIndex": 0,
+                "MaterialIndex": 0,
+                "TypeIndex": 7,
                 "CastShadows": True
             },
+            "Bag": {"Order": 0},
+            "ContainedObjects": [inner_token],
             "LuaScript": "",
             "LuaScriptState": "",
             "XmlUI": ""
@@ -418,9 +454,8 @@ def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Pa
     for idx, token_obj in enumerate(token_objects, start=1):
         save_individual_token_json(token_obj, team_name, idx, output_v3_dir)
     
-    # Build token bag mesh and icon URLs
+    # Build token bag mesh URL
     bag_mesh_url = f"{github_base}/output_v3/{team_name}/tokens/tokenbag/{bag_mesh_file.name}"
-    bag_icon_url = f"{github_base}/output_v3/{team_name}/tokens/tokenbag/{bag_icon_file.name}"
     
     # Create token bag
     token_timestamp = datetime.now(timezone.utc).isoformat()
@@ -432,59 +467,50 @@ def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Pa
         with open(lua_script_path, 'r', encoding='utf-8') as f:
             lua_script = f.read()
     
+    canonical_name = team_name.replace('-', ' ').title()
+
     token_bag = {
         "GUID": generate_guid(f"{team_name}:tokenbag"),
-        "Name": "Bag",
+        "Name": "Custom_Model_Bag",
         "Transform": {
             "posX": 0.0,
-            "posY": 3.0,
+            "posY": 1.01,
             "posZ": 0.0,
             "rotX": 0.0,
-            "rotY": 180.0,
+            "rotY": 270.0,
             "rotZ": 0.0,
-            "scaleX": 0.6,
-            "scaleY": 0.6,
-            "scaleZ": 0.6
+            "scaleX": 1.47,
+            "scaleY": 0.1,
+            "scaleZ": 1.47
         },
-        "Nickname": f"{team_name.replace('-', ' ').title()} Tokens",
-        "Description": "",
-        "GMNotes": "",
-        "AltLookAngle": {"x": 0.0, "y": 0.0, "z": 0.0},
-        "ColorDiffuse": {"r": 1.0, "g": 1.0, "b": 1.0},
-        "Tags": [f"KTCards{team_name.replace('-', '')}"],
-        "LayoutGroupSortIndex": 0,
-        "Value": 0,
+        "Nickname": f"{canonical_name} tokens",
+        "Description": "If errors pop up, just wait for few sec and try again",
+        "GMNotes": f"_{team_name}_tokens",
+        "ColorDiffuse": {"r": 1.0, "g": 1.0, "b": 1.0, "a": 0.0},
+        "Tags": [f"_{team_name}", "KTCardsTokenBag"],
         "Locked": False,
         "Grid": True,
         "Snap": True,
-        "IgnoreFoW": False,
-        "MeasureMovement": False,
-        "DragSelectable": True,
         "Autoraise": True,
         "Sticky": True,
         "Tooltip": True,
-        "GridProjection": False,
-        "HideWhenFaceDown": False,
         "Hands": False,
-        "MaterialIndex": -1,
-        "MeshIndex": -1,
-        "Bag": {
-            "Order": 0
-        },
-        "LuaScript": lua_script,
-        "LuaScriptState": json.dumps({"lastUpdate": token_timestamp}),
-        "XmlUI": "",
-        "ContainedObjects": token_objects,
+        "Number": 0,
         "CustomMesh": {
             "MeshURL": bag_mesh_url,
-            "DiffuseURL": bag_icon_url,
+            "DiffuseURL": "",
             "NormalURL": "",
             "ColliderURL": "",
             "Convex": True,
-            "MaterialIndex": 3,
+            "MaterialIndex": 0,
             "TypeIndex": 6,
             "CastShadows": True
-        }
+        },
+        "Bag": {"Order": 0},
+        "LuaScript": lua_script,
+        "LuaScriptState": json.dumps({"lastUpdate": token_timestamp}),
+        "XmlUI": "",
+        "ContainedObjects": token_objects
     }
     
     logger.info(f"Generated token bag for {team_name} with {len(token_objects)} tokens from output_v3")
@@ -542,6 +568,22 @@ def embed_datacard_stats(bag_obj: dict, team_name: str, output_dir: Path, config
     with open(team_config_path, 'r', encoding='utf-8') as f:
         team_config = yaml.safe_load(f)
     
+    # Load selection data from roster.json (output_v2)
+    faction = team_config.get('teams', {}).get(team_name, {}).get('faction', '')
+    roster_selection: dict = {}
+    roster_exclusive_sets: dict = {}
+    if faction:
+        roster_path = PROJECT_ROOT / 'output_v2' / faction / team_name / 'statlines' / 'roster.json'
+        if roster_path.exists():
+            try:
+                with open(roster_path, 'r', encoding='utf-8') as f:
+                    roster_data = json.load(f)
+                roster_selection = roster_data.get('selection', {})
+                roster_exclusive_sets = roster_data.get('exclusive_sets', {})
+                logger.debug(f"  Loaded selection for {sum(1 for v in roster_selection.values() if v)} operatives")
+            except Exception as e:
+                logger.warning(f"  Could not load roster.json for {team_name}: {e}")
+
     # Load datacard Lua script
     lua_script_path = config_dir / "defaults" / "tts-script" / "datacard-load-stats.lua"
     with open(lua_script_path, 'r', encoding='utf-8') as f:
@@ -565,9 +607,16 @@ def embed_datacard_stats(bag_obj: dict, team_name: str, output_dir: Path, config
             logger.debug(f"    No match for card '{nickname}'")
             continue
         
+        # Look up selection groups for this operative (keyed by UPPERCASE name in roster)
+        op_name_upper = operative.get('name', '').upper()
+        selection_groups = roster_selection.get(op_name_upper) or []
+        op_exclusive_sets = roster_exclusive_sets.get(op_name_upper) if roster_exclusive_sets else None
+
         # Build GMNotes
         try:
-            gm_notes_data = _build_gm_notes(operative, team_data, weapon_rules)
+            gm_notes_data = _build_gm_notes(operative, team_data, weapon_rules,
+                                             selection_groups=selection_groups,
+                                             exclusive_sets=op_exclusive_sets)
             gm_notes_json = json.dumps(gm_notes_data, separators=(",", ":"), ensure_ascii=False)
             
             # Get faction rule code if applicable
@@ -704,7 +753,39 @@ def _match_weapon_rules(special_rules: str, all_rules: dict) -> dict:
     return matched
 
 
-def _build_gm_notes(operative: dict, team_data: dict, weapon_rules: dict) -> dict:
+def _build_selection_for_gmnotes(selection_groups: list, weapons: list, exclusive_sets: dict = None) -> Optional[dict]:
+    """
+    Convert string-based selection groups to index-based format for GMNotes.
+    Mirrors script/embed_datacard_stats.py _build_selection_for_gmnotes().
+    """
+    if not selection_groups or not weapons:
+        return None
+    weapon_names_lower = [(w.get('plain_name') or w.get('name', '')).lower() for w in weapons]
+    all_matched = set()
+    result_groups = []
+    for group in selection_groups:
+        group_options = []
+        for option_label in group:
+            fragments = [f.strip().lower() for f in re.split(r'\s*;\s*|\s+and\s+', option_label)]
+            matched = set()
+            for frag in fragments:
+                sub_frags = [sf.strip() for sf in frag.split(' or ')]
+                for sf in sub_frags:
+                    for i, wname in enumerate(weapon_names_lower):
+                        if wname.startswith(sf):
+                            matched.add(i)
+            all_matched.update(matched)
+            group_options.append({'label': option_label, 'weapons': sorted(matched)})
+        result_groups.append(group_options)
+    fixed = [i for i in range(len(weapons)) if i not in all_matched]
+    result: dict = {'groups': result_groups, 'fixed': fixed}
+    if exclusive_sets:
+        result['exclusive_sets'] = exclusive_sets
+    return result
+
+
+def _build_gm_notes(operative: dict, team_data: dict, weapon_rules: dict,
+                    selection_groups: list = None, exclusive_sets: dict = None) -> dict:
     """Build GMNotes JSON structure with operative stats."""
     def parse_move(s: str) -> int:
         m = re.search(r"(\d+)", str(s))
@@ -789,7 +870,7 @@ def _build_gm_notes(operative: dict, team_data: dict, weapon_rules: dict) -> dic
 
     description = '\n'.join(description_lines)
 
-    return {
+    result = {
         'name': operative.get('name', ''),
         'stats': stats,
         'keywords': keywords,
@@ -799,6 +880,13 @@ def _build_gm_notes(operative: dict, team_data: dict, weapon_rules: dict) -> dic
         'weapon_rules': weapon_rules_found,
         'description': description
     }
+
+    if selection_groups:
+        indexed = _build_selection_for_gmnotes(selection_groups, weapons, exclusive_sets)
+        if indexed:
+            result['selection'] = indexed
+
+    return result
 
 
 def _build_select1_lua(rule_name: str, lua_options: str) -> str:

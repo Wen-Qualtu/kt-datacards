@@ -1,57 +1,99 @@
 {
   "GUID": "b63182",
-  "Name": "Custom_Model",
+  "Name": "Custom_Model_Infinite_Bag",
   "Transform": {
     "posX": 0.0,
-    "posY": 3.0,
+    "posY": 1.03,
     "posZ": 0.0,
     "rotX": 0.0,
-    "rotY": 180.0,
-    "rotZ": 180.0,
-    "scaleX": 1.0,
-    "scaleY": 1.0,
-    "scaleZ": 1.0
+    "rotY": 270.0,
+    "rotZ": 0.0,
+    "scaleX": 1.8351557,
+    "scaleY": 0.1,
+    "scaleZ": 1.7720486
   },
   "Nickname": "Magnification Conduits",
-  "Description": "",
+  "Description": "Infinite Magnification Conduits tokens",
   "GMNotes": "",
-  "AltLookAngle": {
-    "x": 0.0,
-    "y": 0.0,
-    "z": 0.0
-  },
   "ColorDiffuse": {
     "r": 1.0,
     "g": 1.0,
-    "b": 1.0
+    "b": 1.0,
+    "a": 0.0
   },
   "Tags": [
-    "KTCardshierotekcircle"
+    "_hierotek-circle_tokens"
   ],
-  "LayoutGroupSortIndex": 0,
-  "Value": 0,
   "Locked": false,
   "Grid": true,
   "Snap": true,
-  "IgnoreFoW": false,
-  "MeasureMovement": false,
-  "DragSelectable": true,
   "Autoraise": true,
   "Sticky": true,
   "Tooltip": true,
-  "GridProjection": false,
-  "HideWhenFaceDown": false,
   "Hands": false,
   "CustomMesh": {
     "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/hierotek-circle/tokens/hierotek-circle-magnification-conduits.obj",
-    "DiffuseURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/hierotek-circle/tokens/hierotek-circle-magnification-conduits.png",
+    "DiffuseURL": "",
     "NormalURL": "",
     "ColliderURL": "",
     "Convex": true,
-    "MaterialIndex": 3,
-    "TypeIndex": 0,
+    "MaterialIndex": 0,
+    "TypeIndex": 7,
     "CastShadows": true
   },
+  "Bag": {
+    "Order": 0
+  },
+  "ContainedObjects": [
+    {
+      "GUID": "a63d7d",
+      "Name": "Custom_Token",
+      "Transform": {
+        "posX": 0.0,
+        "posY": 1.63,
+        "posZ": 0.0,
+        "rotX": 0.0,
+        "rotY": 0.0,
+        "rotZ": 0.0,
+        "scaleX": 0.21,
+        "scaleY": 1.0,
+        "scaleZ": 0.21
+      },
+      "Nickname": "Magnification Conduits",
+      "Description": "Magnification Conduits",
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
+      },
+      "Tags": [
+        "KTUIToken",
+        "KTUIMarker"
+      ],
+      "Locked": false,
+      "Grid": true,
+      "Snap": false,
+      "Autoraise": true,
+      "Sticky": false,
+      "Tooltip": false,
+      "Hands": false,
+      "CustomImage": {
+        "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v3/hierotek-circle/tokens/hierotek-circle-magnification-conduits.png",
+        "ImageSecondaryURL": "",
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
+        "CustomToken": {
+          "Thickness": 0.1,
+          "MergeDistancePixels": 6.0,
+          "StandUp": false,
+          "Stackable": false
+        }
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    }
+  ],
   "LuaScript": "",
   "LuaScriptState": "",
   "XmlUI": ""
