@@ -54,7 +54,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[3]
 def generate_urls_json_v3():
     """Generate flat list format for internal use (backwards compatibility)"""
     output_v3 = PROJECT_ROOT / 'output_v3'
-    branch = "main"
+    branch = "refactor-kt-app-pipeline"
     base_url = f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/{branch}/output_v3"
     
     all_entries = []
@@ -130,7 +130,7 @@ def generate_object_urls_json():
     """
     output_v3 = PROJECT_ROOT / 'output_v3'
     config_dir = PROJECT_ROOT / 'config'
-    branch = "main"
+    branch = "refactor-kt-app-pipeline"
     base_url = f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/{branch}/output_v3"
     
     teams_data = {}
