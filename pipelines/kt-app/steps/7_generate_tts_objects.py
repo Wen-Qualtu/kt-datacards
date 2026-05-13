@@ -571,8 +571,7 @@ def embed_datacard_stats(bag_obj: dict, team_name: str, output_dir: Path, config
             gm_notes_json = json.dumps(gm_notes_data, separators=(",", ":"), ensure_ascii=False)
             
             # Get faction rule code if applicable
-            operative_name = operative.get('name', '')
-            faction_rule_code = _get_faction_rule_code(team_name, team_data, operative_name, config_dir, team_config)
+            faction_rule_code = _get_faction_rule_code(team_name, team_data, operative, team_config)
             lua_script = datacard_lua_script + faction_rule_code
             
             # Set GMNotes and Lua script
@@ -647,47 +646,90 @@ def _match_card_to_operative(nickname: str, team: str, team_data: dict) -> Optio
     return None
 
 
+# ─── Weapon classification patterns (ported from script/embed_datacard_stats.py) ───
+_RANGED_RULES_PAT = re.compile(r"(range\s*\d|blast|torrent|silent)", re.IGNORECASE)
+_RANGED_NAME_PAT = re.compile(
+    r"(pistol|rifle|carbine|blaster|bolter|cannon|gun|launcher|"
+    r"flamer|melta|plasma|las(?:cutter|gun|cannon)|auto|bolt|stubber|grenade|"
+    r"needle|sniper|mortar|missile|photon|radium|phosphor|igniter|"
+    r"scattergun|bow|fusil|jezzail|splinter|shuriken|starcannon|"
+    r"deathspitter|strangler|devourer|fleshborer|spinefist)",
+    re.IGNORECASE,
+)
+_MELEE_NAME_PAT = re.compile(
+    r"(sword|blade|claw|fist|axe|hammer|mace|glaive|talons?|"
+    r"pincer|pike|spear|staff|whip|maul|scythe|gauntlet|"
+    r"bayonet|knife|dagger|spike|club|choppa|stave|fangs|"
+    r"halberd|trident|sabre|falchion|cleaver|maw|beak|sabres|"
+    r"claws|pincers|bonesword|lash|tendril|proboscis|crusher)",
+    re.IGNORECASE,
+)
+_UNICODE_NORMALIZE_MAP = {
+    "\u2019": "'", "\u2018": "'",
+    "\u201c": '"', "\u201d": '"',
+    "\u2010": "-", "\u2011": "-", "\u2012": "-", "\u2013": "-", "\u2014": "-",
+    "\u2033": '"', "\u2032": "'",
+    "\u00e2": "a", "\u00f4": "o",
+}
+
+
+def _normalize_text(s: str) -> str:
+    """Strip control characters and normalize Unicode to ASCII equivalents."""
+    s = re.sub(r"[\x07\x08]", "", s)
+    for uchar, replacement in _UNICODE_NORMALIZE_MAP.items():
+        s = s.replace(uchar, replacement)
+    return s.strip()
+
+
+def _classify_weapon(weapon: dict) -> str:
+    rules = weapon.get('special_rules', '')
+    name = weapon.get('name', '')
+    if _MELEE_NAME_PAT.search(name) and not _RANGED_RULES_PAT.search(rules):
+        return 'melee'
+    if _RANGED_RULES_PAT.search(rules):
+        return 'ranged'
+    if _RANGED_NAME_PAT.search(name):
+        return 'ranged'
+    return 'melee'
+
+
+def _match_weapon_rules(special_rules: str, all_rules: dict) -> dict:
+    if not special_rules:
+        return {}
+    matched = {}
+    for rule_name, desc in all_rules.items():
+        base = rule_name.replace(' x', '').replace(' x+', '')
+        if re.search(re.escape(base), special_rules, re.IGNORECASE):
+            matched[rule_name] = desc
+    return matched
+
+
 def _build_gm_notes(operative: dict, team_data: dict, weapon_rules: dict) -> dict:
     """Build GMNotes JSON structure with operative stats."""
-    import re
-    
     def parse_move(s: str) -> int:
         m = re.search(r"(\d+)", str(s))
         return int(m.group(1)) if m else 6
-    
+
     def parse_save(s: str) -> int:
         m = re.search(r"(\d+)", str(s))
         return int(m.group(1)) if m else 5
-    
-    def classify_weapon(weapon: dict) -> str:
-        special_rules = weapon.get('special_rules', '').lower()
-        if 'range' in special_rules or 'rng' in special_rules:
-            return 'ranged'
-        return 'melee'
-    
-    def weapon_prefix(weapon: dict) -> str:
-        return '[1E87FF]R[-]' if classify_weapon(weapon) == 'ranged' else '[F4641D]M[-]'
-    
+
     stats = {
         'APL': operative.get('apl', 2),
         'Move': parse_move(operative.get('movement', '6')),
         'Save': parse_save(operative.get('save', '5+')),
         'Wounds': operative.get('wounds', 1)
     }
-    
-    keywords = ['Operative']
-    if 'keywords' in operative:
-        keywords.extend(operative.get('keywords', []))
-    
+
+    keywords = ['Operative'] + [_normalize_text(k) for k in operative.get('keywords', [])]
+
     weapons = []
     weapon_rules_found = {}
     for weapon in operative.get('weapons', []):
         weapon_name = weapon.get('name', '')
         special_rules = weapon.get('special_rules', '')
-        
-        prefix = weapon_prefix(weapon)
+        prefix = '[F4641D]M[-]' if _classify_weapon(weapon) == 'melee' else '[1E87FF]R[-]'
         full_name = f'{prefix} {weapon_name}'
-        
         weapons.append({
             'name': full_name,
             'plain_name': weapon_name,
@@ -698,46 +740,30 @@ def _build_gm_notes(operative: dict, team_data: dict, weapon_rules: dict) -> dic
                 'WR': special_rules
             }
         })
-        
-        if special_rules:
-            for rule_name, rule_description in weapon_rules.items():
-                if rule_name.lower() in special_rules.lower():
-                    weapon_rules_found[rule_name] = rule_description
-    
+        weapon_rules_found.update(_match_weapon_rules(special_rules, weapon_rules))
+
     abilities = []
     for ability in operative.get('passive_abilities', []):
-        ability_name = ability.get('name', '')
-        ability_desc = ability.get('description', '')
-        
-        # Filter out malformed entries
-        if (ability_desc.isdigit() or 
-            (ability_desc and ability_desc[0].isdigit()) or
-            (',' in ability_name and len(ability_name.split(',')) > 3) or
-            (ability_name.isupper() and len(ability_name) > 20) or
-            (not ability_name or not ability_name[0].isupper()) or
-            len(ability_name.split()) > 5):
-            continue
-        
-        abilities.append({
-            'name': ability_name,
-            'text': ability_desc
-        })
-    
+        name = _normalize_text(ability.get('name', ''))
+        text = _normalize_text(ability.get('description', ''))
+        if name:
+            abilities.append({'name': name, 'text': text})
+
     actions = []
     for action in operative.get('unique_actions', []):
-        actions.append({
-            'name': action.get('name', ''),
-            'text': action.get('description', '')
-        })
-    
+        name = _normalize_text(action.get('name', ''))
+        text = _normalize_text(action.get('description', ''))
+        if name:
+            actions.append({'name': name, 'text': text})
+
     description_lines = [
         f"[D36B3E][[84E680]APL[-] [ffffff]{stats['APL']}[-]] [[84E680]MOVE[-] [ffffff]{stats['Move']}\"[-]]",
         f"[[84E680]SAVE[-] [ffffff]{stats['Save']}+[-]] [[84E680]WOUNDS[-] [ffffff]{stats['Wounds']}[-]][-]"
     ]
-    
+
     if keywords:
         description_lines.append('[C5C5C5]' + ', '.join(keywords) + '[-]')
-    
+
     description_lines.append('[31B32B]Weapons[-]')
     for w in weapons:
         description_lines.append(w['name'])
@@ -748,22 +774,22 @@ def _build_gm_notes(operative: dict, team_data: dict, weapon_rules: dict) -> dic
         if w_stats['WR']:
             description_lines.append(f"[84E680]WR[-]: {w_stats['WR']}")
         description_lines.append('')
-    
+
     if abilities:
         description_lines.append('---')
         description_lines.append('[31B32B]Abilities[-]')
         for ab in abilities:
             description_lines.append(f"- [EF8450]{ab['name']}[-]")
-    
+
     if actions:
         description_lines.append('---')
         description_lines.append('[31B32B]Unique Actions[-]')
         for act in actions:
             description_lines.append(f"- [EF8450]{act['name']}[-]")
-    
+
     description = '\n'.join(description_lines)
-    
-    gm_notes = {
+
+    return {
         'name': operative.get('name', ''),
         'stats': stats,
         'keywords': keywords,
@@ -773,58 +799,450 @@ def _build_gm_notes(operative: dict, team_data: dict, weapon_rules: dict) -> dic
         'weapon_rules': weapon_rules_found,
         'description': description
     }
-    
-    return gm_notes
 
 
-def _get_faction_rule_code(team: str, team_data: dict, operative_name: str, config_dir: Path, team_config: dict) -> str:
-    """Generate faction rule Lua code if applicable."""
+def _build_select1_lua(rule_name: str, lua_options: str) -> str:
+    """Generate Lua for single-choice faction rule (select: 1)."""
+    return f'''
+
+-- ===== FACTION RULE: {rule_name.upper()} =====
+
+FACTION_RULE_NAME = "{rule_name}"
+FACTION_RULE_OPTIONS = {lua_options}
+
+local frPendingModel = nil
+local frPendingPlayerColor = nil
+local frSelection = 1
+
+function buildFactionRulePanel()
+    local rows = ""
+
+    for i, opt in ipairs(FACTION_RULE_OPTIONS) do
+        local isOn = (i == frSelection) and "true" or "false"
+        local label = opt.name:gsub("&", "&amp;"):gsub("<", "&lt;"):gsub(">", "&gt;")
+        rows = rows .. string.format(
+            '<Toggle id="fr_%d" isOn="%s" '
+            .. 'onValueChanged="onFrToggle" '
+            .. 'fontSize="10" textColor="#FFFFFF" colors="#444444|#666666|#333333|#222222" '
+            .. 'toggleWidth="16" toggleHeight="16">%s</Toggle>\\n',
+            i, isOn, label
+        )
+    end
+
+    local optionCount = #FACTION_RULE_OPTIONS
+    local panelHeight = 70 + optionCount * 22
+
+    return string.format([[
+<Panel id="frPanel" active="true"
+       width="240" height="%d"
+       color="rgba(0,0,0,0.92)"
+       padding="6 6 6 6"
+       position="0 0 -50"
+       rotation="0 0 180"
+       allowDragging="true">
+  <VerticalLayout spacing="2" childForceExpandWidth="true" childForceExpandHeight="false">
+    <Text fontSize="12" fontStyle="Bold" color="#FF9900"
+          alignment="MiddleCenter" preferredHeight="22">]] .. FACTION_RULE_NAME .. [[</Text>
+    <Image color="rgba(255,255,255,0.15)" preferredHeight="1" />
+    %s
+    <Image color="rgba(255,255,255,0.15)" preferredHeight="1" />
+    <HorizontalLayout spacing="4" preferredHeight="24">
+      <Button id="frApply" onClick="onFrApply"
+              fontSize="10" fontStyle="Bold"
+              colors="#2E7D32|#388E3C|#1B5E20|#555555"
+              textColor="#FFFFFF">Apply</Button>
+      <Button id="frCancel" onClick="onFrCancel"
+              fontSize="10"
+              colors="#C62828|#D32F2F|#B71C1C|#555555"
+              textColor="#FFFFFF">Cancel</Button>
+    </HorizontalLayout>
+  </VerticalLayout>
+</Panel>
+]], panelHeight, rows)
+end
+
+function onFrToggle(player, value, id)
+    local idx = tonumber(id:match("fr_(%d+)"))
+    if not idx then return end
+    if value == "True" then
+        frSelection = idx
+        for i = 1, #FACTION_RULE_OPTIONS do
+            if i ~= idx then
+                self.UI.setAttribute("fr_" .. i, "isOn", "false")
+            end
+        end
+    else
+        if frSelection == idx then
+            self.UI.setAttribute(id, "isOn", "true")
+        end
+    end
+end
+
+function onFrApply(player, value, id)
+    self.UI.setXml("")
+
+    if not frPendingModel then
+        broadcastToColor("No model pending.", frPendingPlayerColor or player.color, Color.Red)
+        return
+    end
+
+    local model = frPendingModel
+    local pc = frPendingPlayerColor or player.color
+
+    local msRaw = model.script_state or "{{}}"
+    local ok, ms = pcall(function() return JSON.decode(msRaw) end)
+    if not ok or not ms then ms = {{}} end
+    ms.info = ms.info or {{}}
+    ms.info.abilities = ms.info.abilities or {{}}
+
+    local kept = {{}}
+    for _, ab in ipairs(ms.info.abilities) do
+        local isFactionRule = false
+        for _, opt in ipairs(FACTION_RULE_OPTIONS) do
+            if ab.name == opt.name or ab.name == opt.name .. " (Primary)" or ab.name == opt.name .. " (Secondary)" then
+                isFactionRule = true
+                break
+            end
+        end
+        if not isFactionRule then
+            table.insert(kept, ab)
+        end
+    end
+
+    local selected = FACTION_RULE_OPTIONS[frSelection]
+    table.insert(kept, {{name = selected.name .. " (Primary)", text = selected.text}})
+
+    ms.info.abilities = kept
+
+    local descLines = {{}}
+    local oldDesc = model.getDescription() or ""
+    local inFactionSection = false
+    for line in oldDesc:gmatch("([^\\n]*)\\n?") do
+        if line:find("^%[31B32B%]" .. FACTION_RULE_NAME) then
+            inFactionSection = true
+        elseif inFactionSection and (line:find("^%[31B32B%]") or line:find("^%-%-%-")) then
+            inFactionSection = false
+            table.insert(descLines, line)
+        elseif not inFactionSection then
+            table.insert(descLines, line)
+        end
+    end
+
+    table.insert(descLines, "---")
+    table.insert(descLines, "[31B32B]" .. FACTION_RULE_NAME .. "[-]")
+    table.insert(descLines, "- [EF8450]" .. selected.name .. " (Primary)[-]")
+
+    model.setDescription(table.concat(descLines, "\\n"))
+    model.script_state = JSON.encode(ms)
+    Wait.frames(function() model.reload() end, 5)
+
+    broadcastToColor(string.format("%s applied: %s (Primary)",
+        FACTION_RULE_NAME, selected.name), pc, Color.Green)
+
+    frPendingModel = nil
+    frPendingPlayerColor = nil
+end
+
+function onFrCancel(player, value, id)
+    self.UI.setXml("")
+    broadcastToColor(FACTION_RULE_NAME .. " selection cancelled.", frPendingPlayerColor or player.color, Color.White)
+    frPendingModel = nil
+    frPendingPlayerColor = nil
+end
+
+function applyFactionRule(playerColor)
+    local model = findModelOnCard()
+    if model == nil then
+        broadcastToColor("Place a KTUIMini model on this card first.", playerColor, Color.Orange)
+        return
+    end
+
+    frPendingModel = model
+    frPendingPlayerColor = playerColor
+    frSelection = 1
+    self.UI.setXml(buildFactionRulePanel())
+    broadcastToColor("Select " .. FACTION_RULE_NAME .. ", then click Apply.", playerColor, Color.Yellow)
+end
+
+local frBaseOnLoad = onLoad
+function onLoad()
+    if frBaseOnLoad then frBaseOnLoad() end
+    self.addContextMenuItem("{rule_name}", applyFactionRule)
+end
+
+-- ===== END FACTION RULE =====
+'''
+
+
+def _build_select2_lua(rule_name: str, lua_options: str) -> str:
+    """Generate Lua for dual-choice faction rule (select: 2, primary + secondary)."""
+    return f'''
+
+-- ===== FACTION RULE: {rule_name.upper()} =====
+
+FACTION_RULE_NAME = "{rule_name}"
+FACTION_RULE_OPTIONS = {lua_options}
+
+local frPendingModel = nil
+local frPendingPlayerColor = nil
+local frPrimarySelection = 1
+local frSecondarySelection = 2
+
+function buildFactionRulePanel()
+    local rows = ""
+
+    rows = rows .. '<Text fontSize="11" fontStyle="Bold" color="#FF6600" '
+        .. 'preferredHeight="20" alignment="MiddleLeft">Primary:</Text>\\n'
+    for i, opt in ipairs(FACTION_RULE_OPTIONS) do
+        local isOn = (i == frPrimarySelection) and "true" or "false"
+        local label = opt.name:gsub("&", "&amp;"):gsub("<", "&lt;"):gsub(">", "&gt;")
+        rows = rows .. string.format(
+            '<Toggle id="fr_p_%d" isOn="%s" '
+            .. 'onValueChanged="onFrPrimaryToggle" '
+            .. 'fontSize="10" textColor="#FFFFFF" colors="#444444|#666666|#333333|#222222" '
+            .. 'toggleWidth="16" toggleHeight="16">%s</Toggle>\\n',
+            i, isOn, label
+        )
+    end
+
+    rows = rows .. '<Image color="rgba(255,255,255,0.3)" preferredHeight="1" />\\n'
+
+    rows = rows .. '<Text fontSize="11" fontStyle="Bold" color="#FF6600" '
+        .. 'preferredHeight="20" alignment="MiddleLeft">Secondary:</Text>\\n'
+    for i, opt in ipairs(FACTION_RULE_OPTIONS) do
+        local isOn = (i == frSecondarySelection) and "true" or "false"
+        local label = opt.name:gsub("&", "&amp;"):gsub("<", "&lt;"):gsub(">", "&gt;")
+        rows = rows .. string.format(
+            '<Toggle id="fr_s_%d" isOn="%s" '
+            .. 'onValueChanged="onFrSecondaryToggle" '
+            .. 'fontSize="10" textColor="#FFFFFF" colors="#444444|#666666|#333333|#222222" '
+            .. 'toggleWidth="16" toggleHeight="16">%s</Toggle>\\n',
+            i, isOn, label
+        )
+    end
+
+    local optionCount = #FACTION_RULE_OPTIONS
+    local panelHeight = 80 + optionCount * 22 * 2 + 40
+
+    return string.format([[
+<Panel id="frPanel" active="true"
+       width="240" height="%d"
+       color="rgba(0,0,0,0.92)"
+       padding="6 6 6 6"
+       position="0 0 -50"
+       rotation="0 0 180"
+       allowDragging="true">
+  <VerticalLayout spacing="2" childForceExpandWidth="true" childForceExpandHeight="false">
+    <Text fontSize="12" fontStyle="Bold" color="#FF9900"
+          alignment="MiddleCenter" preferredHeight="22">]] .. FACTION_RULE_NAME .. [[</Text>
+    <Image color="rgba(255,255,255,0.15)" preferredHeight="1" />
+    %s
+    <Image color="rgba(255,255,255,0.15)" preferredHeight="1" />
+    <HorizontalLayout spacing="4" preferredHeight="24">
+      <Button id="frApply" onClick="onFrApply"
+              fontSize="10" fontStyle="Bold"
+              colors="#2E7D32|#388E3C|#1B5E20|#555555"
+              textColor="#FFFFFF">Apply</Button>
+      <Button id="frCancel" onClick="onFrCancel"
+              fontSize="10"
+              colors="#C62828|#D32F2F|#B71C1C|#555555"
+              textColor="#FFFFFF">Cancel</Button>
+    </HorizontalLayout>
+  </VerticalLayout>
+</Panel>
+]], panelHeight, rows)
+end
+
+function onFrPrimaryToggle(player, value, id)
+    local idx = tonumber(id:match("fr_p_(%d+)"))
+    if not idx then return end
+    if value == "True" then
+        frPrimarySelection = idx
+        for i = 1, #FACTION_RULE_OPTIONS do
+            if i ~= idx then
+                self.UI.setAttribute("fr_p_" .. i, "isOn", "false")
+            end
+        end
+    else
+        if frPrimarySelection == idx then
+            self.UI.setAttribute(id, "isOn", "true")
+        end
+    end
+end
+
+function onFrSecondaryToggle(player, value, id)
+    local idx = tonumber(id:match("fr_s_(%d+)"))
+    if not idx then return end
+    if value == "True" then
+        frSecondarySelection = idx
+        for i = 1, #FACTION_RULE_OPTIONS do
+            if i ~= idx then
+                self.UI.setAttribute("fr_s_" .. i, "isOn", "false")
+            end
+        end
+    else
+        if frSecondarySelection == idx then
+            self.UI.setAttribute(id, "isOn", "true")
+        end
+    end
+end
+
+function onFrApply(player, value, id)
+    self.UI.setXml("")
+
+    if not frPendingModel then
+        broadcastToColor("No model pending.", frPendingPlayerColor or player.color, Color.Red)
+        return
+    end
+
+    if frPrimarySelection == frSecondarySelection then
+        broadcastToColor("Primary and secondary must be different.", frPendingPlayerColor or player.color, Color.Orange)
+        self.UI.setXml(buildFactionRulePanel())
+        return
+    end
+
+    local model = frPendingModel
+    local pc = frPendingPlayerColor or player.color
+
+    local msRaw = model.script_state or "{{}}"
+    local ok, ms = pcall(function() return JSON.decode(msRaw) end)
+    if not ok or not ms then ms = {{}} end
+    ms.info = ms.info or {{}}
+    ms.info.abilities = ms.info.abilities or {{}}
+
+    local kept = {{}}
+    for _, ab in ipairs(ms.info.abilities) do
+        local isFactionRule = false
+        for _, opt in ipairs(FACTION_RULE_OPTIONS) do
+            if ab.name == opt.name or ab.name == opt.name .. " (Primary)" or ab.name == opt.name .. " (Secondary)" then
+                isFactionRule = true
+                break
+            end
+        end
+        if not isFactionRule then
+            table.insert(kept, ab)
+        end
+    end
+
+    local primary = FACTION_RULE_OPTIONS[frPrimarySelection]
+    local secondary = FACTION_RULE_OPTIONS[frSecondarySelection]
+
+    table.insert(kept, {{name = primary.name .. " (Primary)", text = primary.text}})
+    table.insert(kept, {{name = secondary.name .. " (Secondary)", text = secondary.text}})
+
+    ms.info.abilities = kept
+
+    local descLines = {{}}
+    local oldDesc = model.getDescription() or ""
+    local inFactionSection = false
+    for line in oldDesc:gmatch("([^\\n]*)\\n?") do
+        if line:find("^%[31B32B%]" .. FACTION_RULE_NAME) then
+            inFactionSection = true
+        elseif inFactionSection and (line:find("^%[31B32B%]") or line:find("^%-%-%-")) then
+            inFactionSection = false
+            table.insert(descLines, line)
+        elseif not inFactionSection then
+            table.insert(descLines, line)
+        end
+    end
+
+    table.insert(descLines, "---")
+    table.insert(descLines, "[31B32B]" .. FACTION_RULE_NAME .. "[-]")
+    table.insert(descLines, "- [EF8450]" .. primary.name .. " (Primary)[-]")
+    table.insert(descLines, "- [EF8450]" .. secondary.name .. " (Secondary)[-]")
+
+    model.setDescription(table.concat(descLines, "\\n"))
+    model.script_state = JSON.encode(ms)
+    Wait.frames(function() model.reload() end, 5)
+
+    broadcastToColor(string.format("%s applied: %s (Primary) + %s (Secondary)",
+        FACTION_RULE_NAME, primary.name, secondary.name), pc, Color.Green)
+
+    frPendingModel = nil
+    frPendingPlayerColor = nil
+end
+
+function onFrCancel(player, value, id)
+    self.UI.setXml("")
+    broadcastToColor(FACTION_RULE_NAME .. " selection cancelled.", frPendingPlayerColor or player.color, Color.White)
+    frPendingModel = nil
+    frPendingPlayerColor = nil
+end
+
+function applyFactionRule(playerColor)
+    local model = findModelOnCard()
+    if model == nil then
+        broadcastToColor("Place a KTUIMini model on this card first.", playerColor, Color.Orange)
+        return
+    end
+
+    frPendingModel = model
+    frPendingPlayerColor = playerColor
+    frPrimarySelection = 1
+    frSecondarySelection = 2
+    self.UI.setXml(buildFactionRulePanel())
+    broadcastToColor("Select primary and secondary " .. FACTION_RULE_NAME .. ", then click Apply.", playerColor, Color.Yellow)
+end
+
+local frBaseOnLoad = onLoad
+function onLoad()
+    if frBaseOnLoad then frBaseOnLoad() end
+    self.addContextMenuItem("{rule_name}", applyFactionRule)
+end
+
+-- ===== END FACTION RULE =====
+'''
+
+
+def _get_faction_rule_code(team: str, team_data: dict, operative: dict, team_config: dict) -> str:
+    """Generate faction rule Lua code if applicable, using inline Lua builders."""
     team_info = team_config.get('teams', {}).get(team, {})
-    if 'faction_rule' not in team_info:
+    rule_cfg = team_info.get('faction_rule')
+    if not rule_cfg:
         return ""
-    
+
     faction_rules = team_data.get('faction_rules', [])
     if not faction_rules:
         return ""
-    
-    if team == "chaos-cult":
-        op_lower = operative_name.lower()
-        if "mutant" not in op_lower and "torment" not in op_lower and "possessed" not in op_lower:
+
+    # Check applies_to keyword filter
+    applies_to = rule_cfg.get('applies_to')
+    if applies_to:
+        op_keywords = [kw.upper() for kw in operative.get('keywords', [])]
+        if not any(kw.upper() in op_keywords for kw in applies_to):
             return ""
-    
-    template_path = config_dir / "defaults" / "tts-script" / "faction-rule-chapter-tactics.lua"
-    if not template_path.exists():
+
+    # Find the rule entry with options
+    rule_entry = next((r for r in faction_rules if r.get('options')), None)
+    if not rule_entry:
         return ""
-    
-    with open(template_path, 'r', encoding='utf-8') as f:
-        template = f.read()
-    
-    rule_with_options = None
-    for rule in faction_rules:
-        if 'options' in rule and rule['options']:
-            rule_with_options = rule
-            break
-    
-    if not rule_with_options:
-        return ""
-    
-    rule_name = rule_with_options['name']
-    options = rule_with_options['options']
-    
-    lua_options = []
+
+    # Use canonical rule name from team-config (proper casing), fall back to extracted name
+    rule_name = rule_cfg.get('name', rule_entry['name'])
+    options = rule_entry['options']
+
+    # Build Lua table literal for options
+    lua_options = "{\n"
     for opt in options:
-        opt_name = opt.get('name', '')
-        opt_text = opt.get('text', '')
-        opt_name_escaped = opt_name.replace('\\', '\\\\').replace('"', '\\"').replace('\n', '\\n')
-        opt_text_escaped = opt_text.replace('\\', '\\\\').replace('"', '\\"').replace('\n', '\\n')
-        lua_options.append(f'    {{name = "{opt_name_escaped}", text = "{opt_text_escaped}"}}')
-    
-    options_str = ',\n'.join(lua_options)
-    
-    lua_code = template.replace('{{FACTION_RULE_NAME}}', rule_name)
-    lua_code = lua_code.replace('{{FACTION_RULE_OPTIONS}}', options_str)
-    
-    return lua_code
+        name_esc = opt.get('name', '').replace('"', '\\"')
+        text_esc = opt.get('text', '').replace('\\', '\\\\').replace('"', '\\"').replace("'", "\\'").replace('\n', '\\n')
+        lua_options += f'    {{name = "{name_esc}", text = "{text_esc}"}},\n'
+    lua_options += "}"
+
+    # Determine select count (support per-operative overrides)
+    select_count = rule_cfg.get('select', 2)
+    operative_select_count = rule_cfg.get('operative_select_count')
+    if operative_select_count:
+        op_keywords = [kw.upper() for kw in operative.get('keywords', [])]
+        for kw in op_keywords:
+            if kw.upper() in operative_select_count:
+                select_count = operative_select_count[kw.upper()]
+                break
+
+    if select_count == 1:
+        return _build_select1_lua(rule_name, lua_options)
+    else:
+        return _build_select2_lua(rule_name, lua_options)
 
 
 def _update_bag_timestamp(tts_data: dict) -> None:
