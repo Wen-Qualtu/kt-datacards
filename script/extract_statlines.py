@@ -521,7 +521,13 @@ def _extract_rules_from_blocks(blocks: list, page_width: float, page_height: flo
                 j = i + 1
                 while j < len(ability_text):
                     nt, nb = ability_text[j]
-                    if nb and (':' in nt or (nt.endswith('AP') and len(nt) <= 5)):
+                    if nb and ':' in nt:
+                        # Only treat as new ability if text before ':' starts uppercase
+                        # (continuation text like "operatives. Once..." starts lowercase)
+                        name_part = nt.split(':', 1)[0].strip()
+                        if name_part and name_part[0].isupper():
+                            break
+                    elif nb and nt.endswith('AP') and len(nt) <= 5:
                         break
                     if nb and j + 1 < len(ability_text):
                         pt, pb = ability_text[j + 1]
@@ -666,7 +672,9 @@ def _extract_backpage_rules(page: fitz.Page) -> list[dict] | None:
     pw = page.rect.width
     ph = page.rect.height
     blocks = page.get_text("dict").get("blocks", [])
-    return _extract_rules_from_blocks(blocks, pw, ph, 0)
+    # Use min_y=30 to skip the mini-stat reminder header (operative name + APL/WOUNDS
+    # labels) that appears at y<15 on back pages of some teams (e.g. spectre-squad).
+    return _extract_rules_from_blocks(blocks, pw, ph, 30)
 
 
 def _find_operative_for_backpage(page: fitz.Page) -> str | None:
