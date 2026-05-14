@@ -1226,6 +1226,26 @@ def extract_team(team: str, force: bool = False) -> dict | None:
                 operatives.append(op)
                 front_indices.append(i)
 
+    # Deduplicate: back pages on some teams (e.g. spectre-squad) share a mini-stat
+    # reminder header that also triggers _is_front_page. When the same operative
+    # name appears more than once, keep the entry with keywords (most complete data).
+    seen_slugs: dict[str, int] = {}  # slug -> index in dedup lists
+    dedup_ops: list = []
+    dedup_fronts: list = []
+    for op, fi in zip(operatives, front_indices):
+        slug = re.sub(r'[^a-z0-9]+', '-', op['name'].lower()).strip('-')
+        if slug not in seen_slugs:
+            seen_slugs[slug] = len(dedup_ops)
+            dedup_ops.append(op)
+            dedup_fronts.append(fi)
+        else:
+            prev = seen_slugs[slug]
+            if 'keywords' in op and 'keywords' not in dedup_ops[prev]:
+                dedup_ops[prev] = op
+                dedup_fronts[prev] = fi
+    operatives = dedup_ops
+    front_indices = dedup_fronts
+
     # Phase 2: Process back pages — merge rules into the preceding operative
     for i in range(page_count):
         if i in front_indices:
