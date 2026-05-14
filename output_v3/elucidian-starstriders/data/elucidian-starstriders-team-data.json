@@ -1,6 +1,6 @@
 {
   "team": "elucidian-starstriders",
-  "generated_at": "2026-05-05T17:42:50.313684+00:00",
+  "generated_at": "2026-05-13T21:14:02.514173+00:00",
   "datacards": [
     {
       "name": "ELUCIA VHANE",
@@ -40,7 +40,32 @@
         {
           "name": "Reputation to Maintain",
           "description": "The first time this operative incapacitates an enemy operative during the battle, you can either gain 1 additional CP or use an additional WARRANT OF TRADE rule (up to five uses per battle, instead of four). Note that you still cannot use the same WARRANT OF TRADE rule more than once per battle."
-        },
+        }
+      ],
+      "unique_actions": [],
+      "keywords": [
+        "ELUCIDIAN STARSTRIDER",
+        "IMPERIUM",
+        "LEADER",
+        "ELUCIA VHANE"
+      ]
+    },
+    {
+      "name": "CANID",
+      "apl": 2,
+      "movement": "8″",
+      "save": "5+",
+      "wounds": 7,
+      "weapons": [
+        {
+          "name": "Vicious bite",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "3/4",
+          "special_rules": "Rending"
+        }
+      ],
+      "passive_abilities": [
         {
           "name": "Beast",
           "description": "This operative cannot perform any actions other than Charge, Dash, Fall Back, Fight, Gather, Guard, Reposition, Pick Up Marker and Place Marker. It cannot use any weapons that aren’t on its datacard."
@@ -53,55 +78,38 @@
       "unique_actions": [
         {
           "name": "GATHER (1AP)",
-          "description": "• Perform a free Dash or Reposition action with this operative. During that move, it can perform a free Pick Up Marker or Place Marker action (you can determine control during that action to do so), and any remaining move distance it had from the Dash or Reposition action can be used after it does so. CANID 2 APL WOUNDS SAVE MOVE 8\" 5+ 7"
+          "description": "• Perform a free Dash or Reposition action with this operative. During that move, it can perform a free Pick Up Marker or Place Marker action (you can determine control during that action to do so), and any remaining move distance it had from the Dash or Reposition action can be used after it does so."
         }
       ],
       "keywords": [
         "ELUCIDIAN STARSTRIDER",
         "IMPERIUM",
-        "LEADER",
-        "ELUCIA VHANE"
+        "CANID"
       ]
     },
     {
-      "name": "ELUCIA VHANE",
+      "name": "DEATH CULT EXECUTIONER",
       "apl": 3,
       "movement": "6″",
-      "save": "4+",
+      "save": "5+",
       "wounds": 8,
       "weapons": [
         {
-          "name": "Heirloom relic pistol",
+          "name": "Dartmask",
           "attacks": "4",
           "hit": "3+",
-          "damage": "4/5",
-          "special_rules": "Range 8\", Piercing Crits 1, Seek Light"
+          "damage": "1/1",
+          "special_rules": "Range 6\", Lethal 5+, Silent, Stun"
         },
         {
-          "name": "Monomolecular cane-rapier",
-          "attacks": "4",
+          "name": "Power weapon",
+          "attacks": "5",
           "hit": "3+",
-          "damage": "3/6",
+          "damage": "4/6",
           "special_rules": "Lethal 5+"
         }
       ],
       "passive_abilities": [
-        {
-          "name": "Digital Lasers",
-          "description": "Whenever this operative performs the Fight action, at the start of the Roll Attack Dice step, you can use this rule. If you do, inflict 1 damage on the enemy operative in that sequence."
-        },
-        {
-          "name": "Merciless",
-          "description": "Whenever this operative is shooting against, fighting against or retaliating against an enemy operative that was already wounded when the action started, this operative's weapons have the Balanced weapon rule; if the weapon already has that weapon rule, it has the Ceaseless weapon rule instead of Balanced."
-        },
-        {
-          "name": "Disruption Field",
-          "description": "Whenever an operative is shooting this operative, ignore the Piercing weapon rule."
-        },
-        {
-          "name": "Reputation to Maintain",
-          "description": "The first time this operative incapacitates an enemy operative during the battle, you can either gain 1 additional CP or use an additional WARRANT OF TRADE rule (up to five uses per battle, instead of four). Note that you still cannot use the same WARRANT OF TRADE rule more than once per battle."
-        },
         {
           "name": "Rapid Reflexes",
           "description": "Whenever an operative is shooting this operative, ignore the Piercing weapon rule."
@@ -118,14 +126,13 @@
       "unique_actions": [
         {
           "name": "TRAINED ASSASSIN (1AP)",
-          "description": "• Change this operative’s order.\n• This operative cannot perform this action while within control range of an enemy operative. DEATH CULT EXECUTIONER 3 APL WOUNDS SAVE MOVE 6\" 5+ 8"
+          "description": "• Change this operative’s order.\n• This operative cannot perform this action while within control range of an enemy operative."
         }
       ],
       "keywords": [
         "ELUCIDIAN STARSTRIDER",
         "IMPERIUM",
-        "LEADER",
-        "ELUCIA VHANE"
+        "DEATH CULT EXECUTIONER"
       ]
     },
     {

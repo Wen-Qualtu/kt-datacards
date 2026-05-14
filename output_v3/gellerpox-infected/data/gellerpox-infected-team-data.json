@@ -1,6 +1,6 @@
 {
   "team": "gellerpox-infected",
-  "generated_at": "2026-05-05T17:42:57.864478+00:00",
+  "generated_at": "2026-05-13T21:13:56.204066+00:00",
   "datacards": [
     {
       "name": "VULGRAR THRICE-CURSED",
@@ -55,46 +55,42 @@
       ]
     },
     {
-      "name": "VULGRAR THRICE-CURSED",
+      "name": "BLOATSPAWN",
       "apl": 2,
       "movement": "5″",
       "save": "5+",
-      "wounds": 21,
+      "wounds": 20,
       "weapons": [
         {
-          "name": "Pyregut (standard)",
+          "name": "Mutant tentacles",
           "attacks": "5",
-          "hit": "2+",
-          "damage": "3/3",
-          "special_rules": "Range 6”, Saturate, Torrent 2”"
+          "hit": "4+",
+          "damage": "3/4",
+          "special_rules": "Range 3\", Torrent 1\""
         },
         {
-          "name": "Pyregut (deluge)",
-          "attacks": "5",
-          "hit": "2+",
-          "damage": "3/3",
-          "special_rules": "Range 4”, Saturate, Seek Light"
+          "name": "Mutant claw & tentacles",
+          "attacks": "6",
+          "hit": "4+",
+          "damage": "3/4",
+          "special_rules": "- (slashing)"
         },
         {
-          "name": "Fleshmelded weapons",
-          "attacks": "5",
-          "hit": "3+",
-          "damage": "4/5",
-          "special_rules": "Engineered*"
+          "name": "Mutant claw & tentacles",
+          "attacks": "4",
+          "hit": "4+",
+          "damage": "3/4",
+          "special_rules": "Swipe* (swiping)"
         }
       ],
       "passive_abilities": [
         {
-          "name": "Spread the Glorious Gifts",
-          "description": "Once per battle STRATEGIC GAMBIT. Select one objective marker this operative controls to gain one of your Techno-curse tokens. It cannot be an objective marker within control range of an enemy operative. Whenever that objective marker is within control range of an enemy operative, that operative is affected by your selected TECHNO-CURSE rule and an additional rule determined by your TECHNO-CURSE, as shown below. You cannot use this STRATEGIC GAMBIT while this operative is within control range of an enemy operative.\n• Barrelwarp: No additional effect."
-        },
-        {
-          "name": "\t \u0007Screaming Rustspikes",
-          "description": "This TECHNO-CURSE inflicts 2 damage on that enemy operative (instead of 1).\n• Viral Vox-static: Whenever that enemy operative is activated, subtract 1 from its APL stat until the end of its activation."
-        },
-        {
           "name": "*Swipe",
-          "description": "Whenever this operative performs the Fight action and you select this weapon profile, if it isn't incapacitated, it can immediately perform a free Fight action afterwards, but you must select this weapon profile and it can only fight against each enemy operative within its control range once per activation or counteraction using this weapon profile. This takes precedence over action restrictions, and you can continue to perform free Fight actions until this operative is incapacitated or has fought against every enemy operative within its control range. BLOATSPAWN 2 APL WOUNDS SAVE MOVE 5\" 5+ 20"
+          "description": "Whenever this operative performs the Fight action and you select this weapon profile, if it isn't incapacitated, it can immediately perform a free Fight action afterwards, but you must select this weapon profile and it can only fight against each enemy operative within its control range once per activation or counteraction using this weapon profile. This takes precedence over action restrictions, and you can continue to perform free Fight actions until this operative is incapacitated or has fought against every enemy operative within its control range."
+        },
+        {
+          "name": "Tentacled Grasp",
+          "description": "Whenever an enemy operative would perform the Fall Back action while within control range of this operative, you can use this rule. If you do, roll one D6, adding 1 to the result if that enemy operative has a Wounds stat of 8 or less: on a 4+, that enemy operative cannot perform that action during that activation/counteraction (the AP spent on it isn’t refunded). BLOATSPAWN 2 APL WOUNDS SAVE MOVE 5\" 5+ 20"
         }
       ],
       "unique_actions": [],
@@ -102,8 +98,7 @@
         "GELLERPOX INFECTED",
         "CHAOS",
         "NIGHTMARE HULK",
-        "LEADER",
-        "VULGRAR THRICE-CURSED"
+        "BLOATSPAWN"
       ]
     },
     {
@@ -257,6 +252,114 @@
         "GELLERPOX INFECTED",
         "CHAOS",
         "GLITCHLING"
+      ]
+    },
+    {
+      "name": "CURSEMITE",
+      "apl": 2,
+      "movement": "6″",
+      "save": "6+",
+      "wounds": 2,
+      "weapons": [
+        {
+          "name": "Bloodsucking proboscis",
+          "attacks": "2",
+          "hit": "4+",
+          "damage": "2/3",
+          "special_rules": "Rending, Feast*"
+        }
+      ],
+      "passive_abilities": [
+        {
+          "name": "*Feast",
+          "description": "Whenever this operative is using this weapon against a wounded operative, add 1 to the Atk stat of this weapon and it has the Lethal 5+ weapon rule."
+        },
+        {
+          "name": "Group Activation",
+          "description": "Whenever this operative is expended, you must then activate one other ready friendly GELLERPOX INFECTED MUTOID VERMIN operative (if able) before your opponent activates. When that other operative is expended, your opponent then activates as normal (in other words, you cannot activate more than two operatives in succession with this rule)."
+        }
+      ],
+      "unique_actions": [],
+      "keywords": [
+        "GELLERPOX INFECTED",
+        "CHAOS",
+        "MUTOID VERMIN",
+        "CURSEMITE"
+      ]
+    },
+    {
+      "name": "EYESTINGER SWARM",
+      "apl": 2,
+      "movement": "6″",
+      "save": "6+",
+      "wounds": 2,
+      "weapons": [
+        {
+          "name": "Swarm",
+          "attacks": "5",
+          "hit": "6+",
+          "damage": "0/0",
+          "special_rules": "Range 6\", Stun"
+        },
+        {
+          "name": "Sting",
+          "attacks": "5",
+          "hit": "5+",
+          "damage": "1/2",
+          "special_rules": "Shock"
+        }
+      ],
+      "passive_abilities": [
+        {
+          "name": "Group Activation",
+          "description": "Whenever this operative is expended, you must then activate one other ready friendly GELLERPOX INFECTED MUTOID VERMIN operative (if able) before your opponent activates. When that other operative is expended, your opponent then activates as normal (in other words, you cannot activate more than two operatives in succession with this rule)."
+        }
+      ],
+      "unique_actions": [],
+      "keywords": [
+        "GELLERPOX INFECTED",
+        "CHAOS",
+        "MUTOID VERMIN",
+        "EYESTINGER SWARM"
+      ]
+    },
+    {
+      "name": "SLUDGE-GRUB",
+      "apl": 2,
+      "movement": "4″",
+      "save": "6+",
+      "wounds": 2,
+      "weapons": [
+        {
+          "name": "Acid spit",
+          "attacks": "4",
+          "hit": "4+",
+          "damage": "2/2",
+          "special_rules": "Range 6\", 1\" Devastating 1, Piercing 1"
+        },
+        {
+          "name": "Fanged maw",
+          "attacks": "2",
+          "hit": "4+",
+          "damage": "1/3"
+        }
+      ],
+      "passive_abilities": [
+        {
+          "name": "Group Activation",
+          "description": "Whenever this operative is expended, you must then activate one other ready friendly GELLERPOX INFECTED MUTOID VERMIN operative (if able) before your opponent activates. When that other operative is expended, your opponent then activates as normal (in other words, you cannot activate more than two operatives in succession with this rule)."
+        },
+        {
+          "name": "Caustic Demise",
+          "description": "When this operative is incapacitated, before it’s removed from the killzone, roll one D6 separately for each enemy operative visible to and within 2\" of it: on a 4+, inflict 1 damage on that operative."
+        }
+      ],
+      "unique_actions": [],
+      "keywords": [
+        "GELLERPOX INFECTED",
+        "CHAOS",
+        "MUTOID VERMIN",
+        "SLUDGE-GRUB"
       ]
     }
   ],

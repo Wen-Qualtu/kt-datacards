@@ -246,21 +246,21 @@ def _extract_stats_from_blocks(blocks: list, page_width: float, page_height: flo
         stats["save"] = save_match.group(1) + "+"
 
     all_numbers = re.findall(r'\d+', stats_text)
-    used_apl = False
     used_movement = False
     used_save = False
     for num_str in all_numbers:
-        num = int(num_str)
-        if stats.get("apl") and num == stats["apl"] and not used_apl:
-            used_apl = True
-            continue
+        # Skip the first occurrence of the movement value
         if stats.get("movement") and num_str == stats["movement"].rstrip("″\"'") and not used_movement:
             used_movement = True
             continue
+        # Skip the first occurrence of the save value
         if stats.get("save") and num_str == stats["save"].rstrip("+") and not used_save:
             used_save = True
             continue
-        stats["wounds"] = num
+        # First remaining number is wounds
+        # NOTE: APL is extracted from the top-left region and is NOT in stats_text,
+        # so we do not skip numbers equal to APL here (this caused false-skip when wounds == APL).
+        stats["wounds"] = int(num_str)
         break
 
     return stats
@@ -809,16 +809,27 @@ class TeamDataExtractor:
         Returns:
             Structured operative data with stats, weapons, abilities, keywords
         """
-        # Find front page
+        # Find front page - use the FIRST card with a "front" key.
+        # (Some operatives with "OWN CARDS" get multiple "front"-typed pages in
+        # structure.json; the first is always the actual stats page.)
         front_card = None
-        back_card = None
-        
+        back_cards = []
+
         for card in cards:
             if "front" in card:
-                front_card = card
+                if front_card is None:
+                    front_card = card   # Take the FIRST front card as the stats page
+                else:
+                    back_cards.append(card)  # Extra "front" pages are actually back content
             if "back" in card:
-                back_card = card
-        
+                if front_card is not None:   # Back of the "both" card — already captured above
+                    if card not in back_cards:
+                        back_cards.append(card)
+
+        # A "both" typed card carries its own back content; keep it in back_cards too
+        if front_card and "back" in front_card and front_card not in back_cards:
+            back_cards.insert(0, front_card)
+
         if not front_card or "front" not in front_card:
             logger.debug(f"  No front page found for {entity.get('name')}")
             return None
@@ -841,9 +852,12 @@ class TeamDataExtractor:
                 logger.debug(f"  Failed to extract datacard data for {entity.get('name')}")
                 return None
             
-            # Extract additional rules from back page if present
-            if back_card and "back" in back_card:
-                back_path = PROJECT_ROOT / back_card["back"]
+            # Extract additional rules from all back pages (supports multi-page operatives)
+            for back_card in back_cards:
+                back_path_key = "back" if "back" in back_card else "front"
+                back_path = PROJECT_ROOT / back_card[back_path_key]
+                if back_path == front_path:
+                    continue  # Don't re-process the stats page
                 if back_path.exists():
                     try:
                         doc = fitz.open(back_path)

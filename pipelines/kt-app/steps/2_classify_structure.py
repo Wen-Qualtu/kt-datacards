@@ -845,7 +845,9 @@ class StructureClassifier:
                 pass
             
             # 4-card special case: pairs (0,1) and (2,3)
-            if is_four_card_special_case(self.team, first_page_text):
+            # NOTE: Only apply to non-datacard types. Datacard pages often reference
+            # faction rule names in ability text, causing false positives.
+            if not is_datacard_type and is_four_card_special_case(self.team, first_page_text):
                 if len(all_page_files) >= 4:
                     logger.info(f"    Special case: 4-card group detected")
                     
@@ -895,7 +897,9 @@ class StructureClassifier:
                     # Continue processing remaining pages normally
             
             # 3-card special case: same front with 2 different backs
-            elif is_three_card_special_case(self.team, first_page_text):
+            # NOTE: Only apply to non-datacard types. Datacard pages often reference
+            # faction rule names in ability text, causing false positives.
+            elif not is_datacard_type and is_three_card_special_case(self.team, first_page_text):
                 if len(all_page_files) >= 3:
                     logger.info(f"    Special case: 3-card group detected")
                     

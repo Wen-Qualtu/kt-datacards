@@ -1,6 +1,6 @@
 {
   "team": "pathfinders",
-  "generated_at": "2026-05-05T17:43:26.170195+00:00",
+  "generated_at": "2026-05-13T21:13:59.676464+00:00",
   "datacards": [
     {
       "name": "SHAS’UI PATHFINDER",
@@ -34,20 +34,12 @@
         {
           "name": "\t \u0007Kauyon",
           "description": "Friendly PATHFINDER operatives can perform a free Markerlight action during their activation if they have a Conceal order."
-        },
-        {
-          "name": "Grenadier Specialist",
-          "description": "This operative can use frag and krak grenades (see universal equipment). Doing so doesn’t count towards any limited uses you have (i.e. if you also select those grenades from equipment for other operatives). Whenever it’s doing so, improve the Hit stat of that weapon by 1."
         }
       ],
       "unique_actions": [
         {
           "name": "MARKERLIGHT\b (1AP)",
           "description": "See the Markerlights faction rule."
-        },
-        {
-          "name": "MARKERLIGHT\b (1AP)",
-          "description": "See the Markerlights faction rule. ASSAULT GRENADIER PATHFINDER"
         }
       ],
       "keywords": [
@@ -58,38 +50,72 @@
       ]
     },
     {
-      "name": "SHAS’UI PATHFINDER",
+      "name": "ASSAULT GRENADIER PATHFINDER",
+      "apl": 2,
+      "movement": "6″",
+      "save": "5+",
+      "wounds": 7,
+      "weapons": [
+        {
+          "name": "Fusion grenade",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "4/3",
+          "special_rules": "Range 6\", Devastating 2, Limited 1, Piercing 2, Saturate"
+        },
+        {
+          "name": "Pulse carbine",
+          "attacks": "4",
+          "hit": "4+",
+          "damage": "4/5"
+        },
+        {
+          "name": "Gun butt",
+          "attacks": "3",
+          "hit": "5+",
+          "damage": "2/3"
+        }
+      ],
+      "passive_abilities": [
+        {
+          "name": "Grenadier Specialist",
+          "description": "This operative can use frag and krak grenades (see universal equipment). Doing so doesn’t count towards any limited uses you have (i.e. if you also select those grenades from equipment for other operatives). Whenever it’s doing so, improve the Hit stat of that weapon by 1."
+        }
+      ],
+      "unique_actions": [
+        {
+          "name": "MARKERLIGHT\b (1AP)",
+          "description": "See the Markerlights faction rule."
+        }
+      ],
+      "keywords": [
+        "PATHFINDER",
+        "T'AU EMPIRE",
+        "ASSAULT GRENADIER"
+      ]
+    },
+    {
+      "name": "BLOODED PATHFINDER",
       "apl": 2,
       "movement": "6″",
       "save": "5+",
       "wounds": 8,
       "weapons": [
         {
-          "name": "Pulse carbine",
+          "name": "Suppressed pulse carbine",
           "attacks": "4",
           "hit": "3+",
-          "damage": "4/5"
+          "damage": "4/5",
+          "special_rules": "Silent"
         },
         {
-          "name": "Gun butt",
+          "name": "Bionic arm",
           "attacks": "3",
           "hit": "4+",
-          "damage": "2/3"
+          "damage": "3/4"
         }
       ],
       "passive_abilities": [
-        {
-          "name": "Art of War",
-          "description": "STRATEGIC GAMBIT if this operative is in the killzone. Select one of the following and apply its rules until the end of the turning point. You cannot select each option more than once per battle:"
-        },
-        {
-          "name": "\t \u0007Mont’ka",
-          "description": "Add 1\" to the Move stat of friendly PATHFINDER operatives."
-        },
-        {
-          "name": "\t \u0007Kauyon",
-          "description": "Friendly PATHFINDER operatives can perform a free Markerlight action during their activation if they have a Conceal order."
-        },
         {
           "name": "Veteran",
           "description": "During a turning point in which you have used a friendly SHAS’UI operative’s Art of War STRATEGIC GAMBIT and you selected Mont’ka, this operative can use Kauyon instead during its activation (and vice versa)."
@@ -99,17 +125,12 @@
         {
           "name": "MARKERLIGHT\b (1AP)",
           "description": "See the Markerlights faction rule."
-        },
-        {
-          "name": "MARKERLIGHT\b (1AP)",
-          "description": "See the Markerlights faction rule. BLOODED PATHFINDER"
         }
       ],
       "keywords": [
         "PATHFINDER",
         "T'AU EMPIRE",
-        "LEADER",
-        "SHAS’UI"
+        "BLOODED"
       ]
     },
     {
