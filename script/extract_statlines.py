@@ -618,12 +618,13 @@ def _is_front_page(page: fitz.Page) -> bool:
     
     # Front page if:
     # 1. Has weapon header (standard format), OR
-    # 2. Has stat labels + operative name + NO weapon header + NO descriptive text (VOX-RELAY BEACON format)
+    # 2. Has stat labels + operative name (VOX-RELAY BEACON format - may also have descriptive text)
     if has_weapon_header:
         return True
     elif has_stat_labels and has_operative_name and not has_weapon_header:
-        # Pages without weapon headers are front pages ONLY if they have no descriptive text
-        return not has_descriptive_text
+        # Stat labels + operative name = front page, even if descriptive text is also present
+        # (e.g. VOX-RELAY BEACON has its action description on the same page as the stats block)
+        return True
     return False
 
 

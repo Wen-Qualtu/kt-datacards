@@ -30,32 +30,46 @@ class URLGenerator:
         print(f"DEBUG URLGenerator init: output_dir={output_dir}, exists={output_dir.exists()}")
         print(f"DEBUG URLGenerator init: tts_objects_dir={tts_objects_dir}, exists={tts_objects_dir.exists()}")
     
-    def generate_json(self, output_path: Path = Path('output/datacards-urls.json')) -> int:
+    def generate_json(self, output_path: Path = Path('output/datacards-urls.json'),
+                      team_filter: List[str] = None) -> int:
         """
-        Generate JSON file with all card image URLs
-        
+        Generate JSON file with all card image URLs.
+
+        When team_filter is provided, only entries for those teams are
+        refreshed; all other teams' entries are preserved from the
+        existing file (maintaining their original order and timestamps).
+
         Args:
             output_path: Path to output JSON file
-            
+            team_filter: Optional list of team slugs to update
+
         Returns:
             Number of entries written
         """
-        entries = self._collect_entries()
+        entries = self._collect_entries(team_filter=team_filter)
         print(f"DEBUG: Collected {len(entries)} entries from output_v2")
-        
-        # Add TTS object entries
-        tts_entries = self._collect_tts_objects()
+
+        # Add TTS object entries (filtered)
+        tts_entries = self._collect_tts_objects(team_filter=team_filter)
         print(f"DEBUG: Collected {len(tts_entries)} TTS entries")
         entries.extend(tts_entries)
         print(f"DEBUG: Total entries: {len(entries)}")
-        
+
+        if team_filter and output_path.exists():
+            # Preserve existing entries for teams not in the filter,
+            # then append the freshly-generated filtered entries.
+            existing = json.load(open(output_path, encoding='utf-8'))
+            preserved = [e for e in existing if e.get('team') not in team_filter]
+            entries = preserved + entries
+            print(f"DEBUG: Merged with existing: {len(entries)} total entries")
+
         # Ensure output directory exists
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        
+
         # Write JSON
         with open(output_path, 'w', encoding='utf-8') as jsonfile:
             json.dump(entries, jsonfile, indent=2, ensure_ascii=False)
-        
+
         self.logger.info(f"Generated {output_path} with {len(entries)} entries")
         
         # Log breakdown by team
@@ -66,7 +80,7 @@ class URLGenerator:
         
         return len(entries)
     
-    def _collect_entries(self) -> List[Dict[str, str]]:
+    def _collect_entries(self, team_filter: List[str] = None) -> List[Dict[str, str]]:
         """Collect all entries from output directory"""
         entries = []
         
@@ -93,6 +107,9 @@ class URLGenerator:
                     continue
                 
                 team_name = team_dir.name
+
+                if team_filter and team_name not in team_filter:
+                    continue
                 
                 # Walk through card type directories
                 for type_dir in sorted(team_dir.iterdir()):
@@ -137,7 +154,7 @@ class URLGenerator:
         
         return entries
     
-    def _collect_tts_objects(self) -> List[Dict[str, str]]:
+    def _collect_tts_objects(self, team_filter: List[str] = None) -> List[Dict[str, str]]:
         """Collect TTS saved object files from tts_objects directory"""
         entries = []
         
@@ -158,6 +175,9 @@ class URLGenerator:
             # Extract team name from filename (e.g., "Farstalker Kinband Cards.json" -> "farstalker-kinband")
             team_display_name = json_file.stem.replace(' Cards', '')
             team_id = team_display_name.lower().replace(' ', '-')
+
+            if team_filter and team_id not in team_filter:
+                continue
             
             # Construct GitHub raw URL
             url = f"{self.github_base.replace('/output_v2', '')}/tts_objects/{json_file.name.replace(' ', '%20')}"

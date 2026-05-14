@@ -1,7 +1,8 @@
 """Backside image management for cards"""
+import hashlib
 import shutil
 from pathlib import Path
-from typing import List, Optional
+from typing import List, Optional, Set
 import logging
 
 from ..models.team import Team
@@ -41,11 +42,17 @@ class BacksideProcessor:
             Number of backsides added
         """
         added_count = 0
+        default_hashes = self._get_default_hashes()
         
         for datacard in datacards:
-            # Skip if card already has backside
+            # Skip if card has a real (non-default) extracted back.
+            # Cards with a stale default back from a previous run are
+            # re-processed so the correct team-specific default is applied.
             if datacard.back_image and datacard.back_image.exists():
-                continue
+                file_hash = hashlib.md5(datacard.back_image.read_bytes()).hexdigest()
+                if file_hash not in default_hashes:
+                    continue  # Real extracted back — preserve it
+                # Stale default — fall through to re-apply correct one
             
             # Skip if no front image
             if not datacard.front_image or not datacard.front_image.exists():
@@ -88,17 +95,21 @@ class BacksideProcessor:
         if cache_key in self._backside_cache:
             return self._backside_cache[cache_key]
         
-        # Priority 1: Team-specific backside
-        team_backside = (
-            self.teams_dir / 
-            datacard.team.name / 
-            'card-backside' /
-            f'{datacard.team.name}-backside-{orientation}.jpg'
-        )
-        if team_backside.exists():
-            self._backside_cache[cache_key] = team_backside
-            return team_backside
-        
+        # Priority 1: Team-specific backside (check both naming patterns)
+        for backside_name in [
+            f'{datacard.team.name}-backside-{orientation}.jpg',
+            f'default-backside-{orientation}.jpg',
+        ]:
+            team_backside = (
+                self.teams_dir /
+                datacard.team.name /
+                'card-backside' /
+                backside_name
+            )
+            if team_backside.exists():
+                self._backside_cache[cache_key] = team_backside
+                return team_backside
+
         # Priority 2: Default backside
         default_backside = (
             self.default_dir / 
@@ -113,7 +124,20 @@ class BacksideProcessor:
             f"No {orientation} backside found for team {datacard.team.name}"
         )
         return None
-    
+
+    def _get_default_hashes(self) -> Set[str]:
+        """Return MD5 hashes of all known default backside files."""
+        hashes: Set[str] = set()
+        for f in self.default_dir.glob('*.jpg'):
+            hashes.add(hashlib.md5(f.read_bytes()).hexdigest())
+        for team_dir in self.teams_dir.iterdir():
+            if team_dir.is_dir():
+                cb_dir = team_dir / 'card-backside'
+                if cb_dir.is_dir():
+                    for f in cb_dir.glob('default-backside-*.jpg'):
+                        hashes.add(hashlib.md5(f.read_bytes()).hexdigest())
+        return hashes
+
     def _get_orientation(self, card_type: CardType) -> str:
         """Determine orientation for card type"""
         # Datacards use landscape, others use portrait
