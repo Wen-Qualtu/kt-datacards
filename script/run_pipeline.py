@@ -25,7 +25,7 @@ def main():
     
     parser.add_argument(
         '--step',
-        choices=['process', 'extract', 'backsides', 'urls', 'tokens', 'extract-statlines', 'embed-stats', 'all'],
+        choices=['process', 'extract', 'backsides', 'urls', 'tts', 'tokens', 'extract-statlines', 'embed-stats', 'all'],
         default='all',
         help='Pipeline step to run (default: all)'
     )
@@ -78,7 +78,7 @@ def main():
     try:
         if args.step == 'all':
             logger.info("Running full pipeline")
-            stats = pipeline.run_full_pipeline()
+            stats = pipeline.run_full_pipeline(team_filter=args.teams)
             
         elif args.step == 'process':
             logger.info("Processing raw PDFs")
@@ -97,8 +97,13 @@ def main():
             
         elif args.step == 'urls':
             logger.info("Generating URLs")
-            count = pipeline.generate_urls()
+            count = pipeline.generate_urls(team_filter=args.teams)
             logger.info(f"Generated {count} URL(s)")
+
+        elif args.step == 'tts':
+            logger.info("Generating TTS objects")
+            count = pipeline.generate_tts_objects(team_filter=args.teams)
+            logger.info(f"Generated {count} TTS object(s)")
 
         elif args.step == 'tokens':
             logger.info("Packaging tokens and embedding ready teams")

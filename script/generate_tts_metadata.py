@@ -49,8 +49,12 @@ def extract_timestamp_from_json(json_file: Path, timestamp_key: str) -> str:
         return ""
 
 
-def generate_combined_metadata():
-    """Generate unified tts-metadata.json with both cards and tokens."""
+def generate_combined_metadata(team_filter=None):
+    """Generate unified tts-metadata.json with both cards and tokens.
+
+    When team_filter is a non-empty list of team slugs only those teams are
+    refreshed; all other teams' entries are preserved from the existing file.
+    """
     # First, get card boxes from existing tts-card-boxes.json
     card_boxes_file = Path('output_v2/tts-card-boxes.json')
     
@@ -69,6 +73,9 @@ def generate_combined_metadata():
     for entry in card_boxes:
         team_slug = entry['team']
         team_name = entry['name']
+
+        if team_filter and team_slug not in team_filter:
+            continue
         
         # Find the card box file and extract timestamp from LuaScriptState
         # Files are stored in team subfolders: tts_objects/{team_slug}/{Team Name} Cards.json
@@ -97,8 +104,11 @@ def generate_combined_metadata():
         for team_dir in sorted(tts_teams_dir.iterdir()):
             if not team_dir.is_dir() or team_dir.name == 'display-table':
                 continue
-            
+
             team_slug = team_dir.name
+
+            if team_filter and team_slug not in team_filter:
+                continue
             token_bag_file = team_dir / 'tokens' / f"{team_slug}-tokenbag.json"
             
             if not token_bag_file.exists():
@@ -133,13 +143,22 @@ def generate_combined_metadata():
     
     # Convert dict to sorted list
     metadata = [metadata_dict[slug] for slug in sorted(metadata_dict.keys())]
-    
+
     # Save to output_v2/tts-metadata.json
     output_file = Path('output_v2/tts-metadata.json')
     output_file.parent.mkdir(parents=True, exist_ok=True)
-    
+
+    if team_filter and output_file.exists():
+        # Preserve existing entries for teams not in the filter,
+        # then append the freshly-generated filtered entries.
+        existing = json.load(open(output_file, encoding='utf-8'))
+        preserved = [e for e in existing if e.get('team') not in team_filter]
+        metadata = preserved + metadata
+        print(f"  Merged: updated {len(team_filter)} team(s), preserved {len(preserved)} others")
+
     with open(output_file, 'w', encoding='utf-8') as f:
         json.dump(metadata, f, indent=2)
+        f.write('\n')
     
     print(f"\nGenerated {output_file}")
     print(f"  Total teams: {len(metadata)}")
@@ -148,9 +167,17 @@ def generate_combined_metadata():
 
 
 def main():
+    import argparse
+    parser = argparse.ArgumentParser(description='Generate TTS metadata JSON')
+    parser.add_argument('--teams', nargs='+', metavar='TEAM',
+                        help='Only update entries for these team slugs')
+    args = parser.parse_args()
+
     print("Generating unified TTS metadata...")
     print("=" * 60)
-    generate_combined_metadata()
+    if args.teams:
+        print(f"  Team filter: {args.teams}")
+    generate_combined_metadata(team_filter=args.teams)
     
     print("\n" + "=" * 60)
     print("Metadata generation complete!")
