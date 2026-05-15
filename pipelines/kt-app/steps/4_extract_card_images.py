@@ -159,8 +159,9 @@ class CardImageExtractor:
                                 total_extracted += 1
                     elif front_extracted:
                         # No back card - copy default backside
+                        # Datacards are landscape; all other card types are portrait
                         output_path = output_dir / f"{base_name}-back.jpg"
-                        if self._copy_default_backside(output_path, is_portrait=True):
+                        if self._copy_default_backside(output_path, is_portrait=(card_type != 'datacards')):
                             total_extracted += 1
         
         logger.info(f"  Extracted {total_extracted} card images")
