@@ -10,7 +10,7 @@ Prerequisites:
 
 Input:
     layers/kt-app/classified/{team}/structure.json - Card organization
-    output_v3/{team}/cards/{card_type}/*.png - Card images
+    output_v3/{team}/cards/{card_type}/*.jpg - Card images
     output_v3/{team}/cardbox/*.obj/*.jpg - 3D assets from step 6
     output_v3/{team}/tokens/ - Token files
     output_v3/{team}/data/{team}-team-data.json - Operative stats (optional)
@@ -101,8 +101,8 @@ def generate_urls_json_v3():
             card_type_v2 = type_mappings.get(card_type, card_type.replace('_', '-'))
             
             # Regular card type
-            for card_file in sorted(card_type_dir.glob('*.png')):
-                # Convert filename format from "{team}-{card}-front.png" to "{team}-{card}_front"
+            for card_file in sorted(card_type_dir.glob('*.jpg')):
+                # Convert filename format from "{team}-{card}-front.jpg" to "{team}-{card}_front"
                 name = card_file.stem
                 if name.endswith('-front') or name.endswith('-back'):
                     name = name.rsplit('-', 1)
@@ -255,7 +255,7 @@ def generate_object_urls_json():
                 
                 # Group front/back pairs
                 card_pairs = {}
-                for card_file in card_type_dir.glob('*.png'):
+                for card_file in card_type_dir.glob('*.jpg'):
                     name = card_file.stem
                     if name.endswith('-front'):
                         base_name = name[:-6]

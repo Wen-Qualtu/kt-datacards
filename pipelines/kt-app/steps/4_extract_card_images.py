@@ -1,17 +1,20 @@
 """
 Step 4: Extract Card Images
 
-Converts PDF cards to PNG images based on structure.json classification.
-Reads the classified structure and converts each card (front/back) to PNG at 300 DPI.
+Converts PDF cards to JPEG images based on structure.json classification.
+Reads the classified structure and converts each card (front/back) to JPEG at 300 DPI.
 Ensures every card has both front and back images (using default backside if needed).
+
+Card images are saved as JPEG (not PNG) for significantly smaller file sizes (~3.5x).
+Token images remain PNG elsewhere in the pipeline as they require transparency.
 
 Input:
     layers/kt-app/classified/{team}/structure.json
     
 Output:
-    output_v3/{team}/cards/{card_type}/{name}-front.png
-    output_v3/{team}/cards/{card_type}/{name}-back.png
-    (or with card numbers: {name}-card{N}-front.png, {name}-card{N}-back.png)
+    output_v3/{team}/cards/{card_type}/{name}-front.jpg
+    output_v3/{team}/cards/{card_type}/{name}-back.jpg
+    (or with card numbers: {name}-card{N}-front.jpg, {name}-card{N}-back.jpg)
 """
 
 import argparse
@@ -38,8 +41,10 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
+JPEG_QUALITY = 90  # JPEG quality for card images (0-100). 90 gives good quality at ~3.5x smaller than PNG.
+
 class CardImageExtractor:
-    """Extracts PNG images from classified PDF cards."""
+    """Extracts JPEG images from classified PDF cards."""
     
     def __init__(self, dpi: int = 300):
         """
@@ -140,8 +145,8 @@ class CardImageExtractor:
                     if 'front' in card:
                         front_path = PROJECT_ROOT / card['front']
                         if front_path.exists():
-                            output_path = output_dir / f"{base_name}-front.png"
-                            if self._extract_pdf_to_png(front_path, output_path):
+                            output_path = output_dir / f"{base_name}-front.jpg"
+                            if self._extract_pdf_to_jpg(front_path, output_path):
                                 total_extracted += 1
                                 front_extracted = True
                     
@@ -149,25 +154,25 @@ class CardImageExtractor:
                     if 'back' in card:
                         back_path = PROJECT_ROOT / card['back']
                         if back_path.exists():
-                            output_path = output_dir / f"{base_name}-back.png"
-                            if self._extract_pdf_to_png(back_path, output_path):
+                            output_path = output_dir / f"{base_name}-back.jpg"
+                            if self._extract_pdf_to_jpg(back_path, output_path):
                                 total_extracted += 1
                     elif front_extracted:
                         # No back card - copy default backside
-                        output_path = output_dir / f"{base_name}-back.png"
+                        output_path = output_dir / f"{base_name}-back.jpg"
                         if self._copy_default_backside(output_path, is_portrait=True):
                             total_extracted += 1
         
         logger.info(f"  Extracted {total_extracted} card images")
         return True
     
-    def _extract_pdf_to_png(self, pdf_path: Path, output_path: Path) -> bool:
+    def _extract_pdf_to_jpg(self, pdf_path: Path, output_path: Path) -> bool:
         """
-        Convert single-page PDF to PNG.
+        Convert single-page PDF to JPEG.
         
         Args:
             pdf_path: Path to source PDF
-            output_path: Path to output PNG
+            output_path: Path to output JPEG
             
         Returns:
             True if successful
@@ -176,12 +181,12 @@ class CardImageExtractor:
             doc = fitz.open(pdf_path)
             page = doc[0]  # Single-page PDF
             
-            # Convert to PNG at specified DPI
+            # Convert to JPEG at specified DPI (no alpha channel needed for cards)
             mat = fitz.Matrix(self.zoom, self.zoom)
-            pix = page.get_pixmap(matrix=mat)
+            pix = page.get_pixmap(matrix=mat, alpha=False)
             
-            # Save as PNG
-            pix.save(output_path)
+            # Save as JPEG
+            pix.save(output_path, jpg_quality=JPEG_QUALITY)
             doc.close()
             
             return True
@@ -230,17 +235,16 @@ class CardImageExtractor:
                 logger.error(f"  Backside not found: {backside_path}")
                 return False
             
-            # Convert JPG to PNG at correct DPI
-            if backside_path.suffix.lower() == '.jpg':
+            # Convert source backside to JPEG at correct DPI
+            if backside_path.suffix.lower() in ('.jpg', '.jpeg', '.png'):
                 doc = fitz.open(backside_path)
                 page = doc[0]
                 
                 mat = fitz.Matrix(self.zoom, self.zoom)
-                pix = page.get_pixmap(matrix=mat)
-                pix.save(output_path)
+                pix = page.get_pixmap(matrix=mat, alpha=False)
+                pix.save(output_path, jpg_quality=JPEG_QUALITY)
                 doc.close()
             else:
-                # If already PNG, just copy
                 shutil.copy2(backside_path, output_path)
             
             return True
