@@ -773,17 +773,20 @@ def _match_card_to_operative(nickname: str, team: str, team_data: dict) -> Optio
     nickname_norm = normalize(nickname)
     team_norm = normalize(team)
     
+    # Strip -card1, -card2, etc. suffix for multi-page operatives (e.g. Necron leaders)
+    nickname_base = re.sub(r'\s+card\d+$', '', nickname_norm)
+    
     datacards = team_data.get('datacards', [])
     for operative in datacards:
         op_name = operative.get('name', '')
         op_name_norm = normalize(op_name)
         
-        if op_name_norm == nickname_norm:
+        if op_name_norm == nickname_norm or op_name_norm == nickname_base:
             return operative
         
         if op_name_norm.startswith(team_norm):
             op_type = op_name_norm[len(team_norm):].strip()
-            if op_type == nickname_norm:
+            if op_type == nickname_norm or op_type == nickname_base:
                 return operative
     
     return None
@@ -1659,6 +1662,8 @@ def generate_team_tts_object(team_name: str, cards: list, lua_script: str, textu
                     obj[key] = re.sub(r'\?v=\d+', cache_bust_param, value)
                     if '?v=' not in obj[key]:
                         obj[key] += cache_bust_param
+                    if key == 'MeshURL':
+                        obj['ColliderURL'] = obj[key]
                 else:
                     update_urls_in_object(value)
         elif isinstance(obj, list):
