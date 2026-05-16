@@ -8,7 +8,7 @@ For datacards: Uses proven structured extraction (APL, movement, save, wounds, w
 For other cards: Extracts name and text content
 
 Input:  layers/kt-app/classified/{team}/structure.json
-Output: output_v3/{team}/data/{team}-team-data.json
+Output: output/{team}/data/{team}-team-data.json
 
 Data Structure:
 {
@@ -45,6 +45,7 @@ import sys
 from pathlib import Path
 from datetime import datetime, timezone
 from typing import Dict, List, Optional
+import hashlib
 import re
 
 import fitz  # PyMuPDF
@@ -627,7 +628,117 @@ logger = logging.getLogger(__name__)
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent.parent
 CLASSIFIED_DIR = PROJECT_ROOT / "layers" / "kt-app" / "classified"
-OUTPUT_DIR = PROJECT_ROOT / "output_v3"
+OUTPUT_DIR = PROJECT_ROOT / "output"
+PIPELINE_METADATA_FILE = PROJECT_ROOT / "layers" / "kt-app" / "metadata.json"
+OUTPUT_METADATA_FILE = PROJECT_ROOT / "output" / "metadata.json"
+
+
+# ===================================================================
+# METADATA MANAGEMENT
+# ===================================================================
+
+class MetadataManager:
+    """Manages pipeline metadata with hash-based change detection"""
+
+    def __init__(self, metadata_file: Path):
+        self.metadata_file = metadata_file
+        self.metadata = self._load_metadata()
+
+    def _load_metadata(self) -> Dict:
+        """Load existing metadata"""
+        if self.metadata_file.exists():
+            with open(self.metadata_file, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        return {
+            "pipeline_version": "2.0",
+            "last_full_run": None,
+            "teams": {}
+        }
+
+    def save_metadata(self):
+        """Save metadata to file"""
+        self.metadata_file.parent.mkdir(parents=True, exist_ok=True)
+        with open(self.metadata_file, 'w', encoding='utf-8') as f:
+            json.dump(self.metadata, f, indent=2, ensure_ascii=False)
+
+    def compute_hash(self, file_path: Path) -> str:
+        """Compute SHA-256 hash of file"""
+        sha256 = hashlib.sha256()
+        with open(file_path, 'rb') as f:
+            for chunk in iter(lambda: f.read(4096), b''):
+                sha256.update(chunk)
+        return sha256.hexdigest()
+
+    def update_file(self, team: str, step: str, file_key: str, file_path: Path):
+        """Update metadata for a file"""
+        if team not in self.metadata["teams"]:
+            self.metadata["teams"][team] = {"steps": {}}
+        if "steps" not in self.metadata["teams"][team]:
+            self.metadata["teams"][team]["steps"] = {}
+        if step not in self.metadata["teams"][team]["steps"]:
+            self.metadata["teams"][team]["steps"][step] = {"outputs": {}}
+        if "outputs" not in self.metadata["teams"][team]["steps"][step]:
+            self.metadata["teams"][team]["steps"][step]["outputs"] = {}
+
+        file_hash = self.compute_hash(file_path)
+        timestamp = datetime.now(timezone.utc).isoformat()
+
+        self.metadata["teams"][team]["steps"][step]["outputs"][file_key] = {
+            "path": str(file_path),
+            "hash": file_hash,
+            "modified": timestamp
+        }
+
+    def mark_step_complete(self, team: str, step: str):
+        """Mark step as completed"""
+        if team not in self.metadata["teams"]:
+            self.metadata["teams"][team] = {"steps": {}}
+        if "steps" not in self.metadata["teams"][team]:
+            self.metadata["teams"][team]["steps"] = {}
+        if step not in self.metadata["teams"][team]["steps"]:
+            self.metadata["teams"][team]["steps"][step] = {}
+
+        self.metadata["teams"][team]["steps"][step]["completed"] = datetime.now(timezone.utc).isoformat()
+
+
+class OutputMetadataManager:
+    """Manages shared output metadata across pipelines"""
+
+    def __init__(self, metadata_file: Path):
+        self.metadata_file = metadata_file
+        self.metadata = self._load_metadata()
+
+    def _load_metadata(self) -> Dict:
+        if self.metadata_file.exists():
+            try:
+                with open(self.metadata_file, 'r', encoding='utf-8') as f:
+                    return json.load(f)
+            except Exception:
+                pass
+        return {"version": "1.0", "last_updated": None, "files": {}}
+
+    def save_metadata(self):
+        self.metadata_file.parent.mkdir(parents=True, exist_ok=True)
+        self.metadata["last_updated"] = datetime.now(timezone.utc).isoformat()
+        with open(self.metadata_file, 'w', encoding='utf-8') as f:
+            json.dump(self.metadata, f, indent=2, ensure_ascii=False)
+
+    def compute_hash(self, file_path: Path) -> str:
+        sha256 = hashlib.sha256()
+        with open(file_path, 'rb') as f:
+            for chunk in iter(lambda: f.read(4096), b''):
+                sha256.update(chunk)
+        return sha256.hexdigest()
+
+    def update_file(self, rel_path: str, file_path: Path, pipeline: str, step: str):
+        file_hash = self.compute_hash(file_path)
+        timestamp = datetime.now(timezone.utc).isoformat()
+        self.metadata.setdefault("files", {})[rel_path] = {
+            "hash": file_hash,
+            "modified": timestamp,
+            "pipeline": pipeline,
+            "step": step
+        }
 
 
 # ===================================================================
@@ -1553,7 +1664,11 @@ def main():
     logger.info("=" * 70)
     logger.info(f"Teams to process: {len(teams)}")
     logger.info("")
-    
+
+    # Initialize metadata managers
+    pipeline_meta = MetadataManager(PIPELINE_METADATA_FILE)
+    output_meta = OutputMetadataManager(OUTPUT_METADATA_FILE)
+
     # Process teams
     processed = 0
     skipped = 0
@@ -1563,6 +1678,11 @@ def main():
         try:
             if process_team(team, force=args.force):
                 processed += 1
+                output_file = OUTPUT_DIR / team / "data" / f"{team}-team-data.json"
+                if output_file.exists():
+                    pipeline_meta.update_file(team, "3_extract_team_data", "team_data.json", output_file)
+                    pipeline_meta.mark_step_complete(team, "3_extract_team_data")
+                    output_meta.update_file(f"{team}/data/{team}-team-data.json", output_file, "kt-app", "3_extract_team_data")
             else:
                 failed += 1
         except KeyboardInterrupt:
@@ -1579,7 +1699,12 @@ def main():
     logger.info(f"  Processed: {processed}")
     logger.info(f"  Failed: {failed}")
     logger.info("=" * 70)
-    
+
+    # Save metadata
+    pipeline_meta.metadata["last_full_run"] = datetime.now(timezone.utc).isoformat()
+    pipeline_meta.save_metadata()
+    output_meta.save_metadata()
+
     return 0 if failed == 0 else 1
 
 

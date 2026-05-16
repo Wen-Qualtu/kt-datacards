@@ -10,18 +10,19 @@ Prerequisites:
 
 Input:
     layers/kt-app/classified/{team}/structure.json - Card organization
-    output_v3/{team}/cards/{card_type}/*.jpg - Card images
-    output_v3/{team}/cardbox/*.obj/*.jpg - 3D assets from step 6
-    output_v3/{team}/tokens/ - Token files
-    output_v3/{team}/data/{team}-team-data.json - Operative stats (optional)
+    output/{team}/cards/{card_type}/*.jpg - Card images
+    output/{team}/cardbox/*.obj/*.jpg - 3D assets from step 6
+    output/{team}/tokens/ - Token files
+    output/{team}/data/{team}-team-data.json - Operative stats (optional)
     config/team-config.yaml - Team metadata
     
 Output:
-    output_v3/{team}/tts_objects/{Team Name} Box.json - TTS card box save file with embedded stats
-    output_v3/{team}/tts_objects/{Team Name} Box.png - Preview image
+    output/{team}/tts_objects/{Team Name} Box.json - TTS card box save file with embedded stats
+    output/{team}/tts_objects/{Team Name} Box.png - Preview image
 """
 
 import argparse
+import hashlib
 import json
 import logging
 import re
@@ -49,18 +50,111 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
+PIPELINE_METADATA_FILE = PROJECT_ROOT / "layers" / "kt-app" / "metadata.json"
+OUTPUT_METADATA_FILE = PROJECT_ROOT / "output" / "metadata.json"
+
+
+# ===================================================================
+# METADATA MANAGEMENT
+# ===================================================================
+
+class MetadataManager:
+    """Manages pipeline metadata with hash-based change detection"""
+
+    def __init__(self, metadata_file: Path):
+        self.metadata_file = metadata_file
+        self.metadata = self._load_metadata()
+
+    def _load_metadata(self) -> Dict:
+        if self.metadata_file.exists():
+            with open(self.metadata_file, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        return {"pipeline_version": "2.0", "last_full_run": None, "teams": {}}
+
+    def save_metadata(self):
+        self.metadata_file.parent.mkdir(parents=True, exist_ok=True)
+        with open(self.metadata_file, 'w', encoding='utf-8') as f:
+            json.dump(self.metadata, f, indent=2, ensure_ascii=False)
+
+    def compute_hash(self, file_path: Path) -> str:
+        sha256 = hashlib.sha256()
+        with open(file_path, 'rb') as f:
+            for chunk in iter(lambda: f.read(4096), b''):
+                sha256.update(chunk)
+        return sha256.hexdigest()
+
+    def update_file(self, team: str, step: str, file_key: str, file_path: Path):
+        if team not in self.metadata["teams"]:
+            self.metadata["teams"][team] = {"steps": {}}
+        if "steps" not in self.metadata["teams"][team]:
+            self.metadata["teams"][team]["steps"] = {}
+        if step not in self.metadata["teams"][team]["steps"]:
+            self.metadata["teams"][team]["steps"][step] = {"outputs": {}}
+        if "outputs" not in self.metadata["teams"][team]["steps"][step]:
+            self.metadata["teams"][team]["steps"][step]["outputs"] = {}
+        file_hash = self.compute_hash(file_path)
+        timestamp = datetime.now(timezone.utc).isoformat()
+        self.metadata["teams"][team]["steps"][step]["outputs"][file_key] = {
+            "path": str(file_path), "hash": file_hash, "modified": timestamp
+        }
+
+    def mark_step_complete(self, team: str, step: str):
+        if team not in self.metadata["teams"]:
+            self.metadata["teams"][team] = {"steps": {}}
+        if "steps" not in self.metadata["teams"][team]:
+            self.metadata["teams"][team]["steps"] = {}
+        if step not in self.metadata["teams"][team]["steps"]:
+            self.metadata["teams"][team]["steps"][step] = {}
+        self.metadata["teams"][team]["steps"][step]["completed"] = datetime.now(timezone.utc).isoformat()
+
+
+class OutputMetadataManager:
+    """Manages shared output metadata across pipelines"""
+
+    def __init__(self, metadata_file: Path):
+        self.metadata_file = metadata_file
+        self.metadata = self._load_metadata()
+
+    def _load_metadata(self) -> Dict:
+        if self.metadata_file.exists():
+            try:
+                with open(self.metadata_file, 'r', encoding='utf-8') as f:
+                    return json.load(f)
+            except Exception:
+                pass
+        return {"version": "1.0", "last_updated": None, "files": {}}
+
+    def save_metadata(self):
+        self.metadata_file.parent.mkdir(parents=True, exist_ok=True)
+        self.metadata["last_updated"] = datetime.now(timezone.utc).isoformat()
+        with open(self.metadata_file, 'w', encoding='utf-8') as f:
+            json.dump(self.metadata, f, indent=2, ensure_ascii=False)
+
+    def compute_hash(self, file_path: Path) -> str:
+        sha256 = hashlib.sha256()
+        with open(file_path, 'rb') as f:
+            for chunk in iter(lambda: f.read(4096), b''):
+                sha256.update(chunk)
+        return sha256.hexdigest()
+
+    def update_file(self, rel_path: str, file_path: Path, pipeline: str, step: str):
+        file_hash = self.compute_hash(file_path)
+        timestamp = datetime.now(timezone.utc).isoformat()
+        self.metadata.setdefault("files", {})[rel_path] = {
+            "hash": file_hash, "modified": timestamp, "pipeline": pipeline, "step": step
+        }
 
 
 def generate_urls_json_v3():
     """Generate flat list format for internal use (backwards compatibility)"""
-    output_v3 = PROJECT_ROOT / 'output_v3'
+    output_dir = PROJECT_ROOT / 'output'
     branch = "refactor-kt-app-pipeline"
-    base_url = f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/{branch}/output_v3"
+    base_url = f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/{branch}/output"
     
     all_entries = []
     
-    # Scan all team directories (flat structure in v3)
-    for team_dir in sorted(output_v3.iterdir()):
+    # Scan all team directories
+    for team_dir in sorted(output_dir.iterdir()):
         if not team_dir.is_dir():
             continue
         
@@ -128,15 +222,15 @@ def generate_object_urls_json():
     - box: The TTS save JSON file with modified timestamp
     - objects: Array of all assets (cards, cardbox, tokens, lua script) with URLs and timestamps
     """
-    output_v3 = PROJECT_ROOT / 'output_v3'
+    output_dir = PROJECT_ROOT / 'output'
     config_dir = PROJECT_ROOT / 'config'
     branch = "refactor-kt-app-pipeline"
-    base_url = f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/{branch}/output_v3"
+    base_url = f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/{branch}/output"
     
     teams_data = {}
     
     # Scan all team directories
-    for team_dir in sorted(output_v3.iterdir()):
+    for team_dir in sorted(output_dir.iterdir()):
         if not team_dir.is_dir():
             continue
         
@@ -314,14 +408,14 @@ def load_lua_script(config_dir: Path) -> str:
         return ""
 
 
-def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Path, output_v3_dir: Path) -> tuple:
+def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Path, output_dir: Path) -> tuple:
     """
-    Generate token bag from output_v3/{team}/tokens/ files.
+    Generate token bag from output/{team}/tokens/ files.
     
     Returns:
         Tuple of (token bag object dict, token timestamp) or (None, None) if no tokens exist
     """
-    tokens_dir = output_v3_dir / team_name / 'tokens'
+    tokens_dir = output_dir / team_name / 'tokens'
     
     if not tokens_dir.exists():
         return None, None
@@ -347,8 +441,8 @@ def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Pa
     
     # Extract github base URL from sample card URL
     github_base = ""
-    if sample_url and '/output_v3/' in sample_url:
-        github_base = sample_url.split('/output_v3/')[0]
+    if sample_url and '/output/' in sample_url:
+        github_base = sample_url.split('/output/')[0]
     elif sample_url and '/output_v2/' in sample_url:
         github_base = sample_url.split('/output_v2/')[0]
     
@@ -361,8 +455,8 @@ def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Pa
     for token_name, obj_path, png_path in sorted(token_files):
         display_name = token_name.replace(f'{team_name}-', '').replace('-', ' ').title()
         
-        mesh_url = f"{github_base}/output_v3/{team_name}/tokens/{obj_path.name}"
-        diffuse_url = f"{github_base}/output_v3/{team_name}/tokens/{png_path.name}"
+        mesh_url = f"{github_base}/output/{team_name}/tokens/{obj_path.name}"
+        diffuse_url = f"{github_base}/output/{team_name}/tokens/{png_path.name}"
         
         inner_token = {
             "GUID": generate_guid(f"{team_name}:customtoken:{token_name}"),
@@ -452,10 +546,10 @@ def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Pa
     
     # Save individual token JSONs
     for idx, token_obj in enumerate(token_objects, start=1):
-        save_individual_token_json(token_obj, team_name, idx, output_v3_dir)
+        save_individual_token_json(token_obj, team_name, idx, output_dir)
     
     # Build token bag mesh URL
-    bag_mesh_url = f"{github_base}/output_v3/{team_name}/tokens/tokenbag/{bag_mesh_file.name}"
+    bag_mesh_url = f"{github_base}/output/{team_name}/tokens/tokenbag/{bag_mesh_file.name}"
     
     # Create token bag
     token_timestamp = datetime.now(timezone.utc).isoformat()
@@ -513,7 +607,7 @@ def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Pa
         "ContainedObjects": token_objects
     }
     
-    logger.info(f"Generated token bag for {team_name} with {len(token_objects)} tokens from output_v3")
+    logger.info(f"Generated token bag for {team_name} with {len(token_objects)} tokens from output")
     return token_bag, token_timestamp
 
 
@@ -1355,7 +1449,7 @@ def save_individual_card_json(card_obj: dict, team_name: str, card_type: str, ca
         team_name: Team slug
         card_type: Card type (datacards, equipment, etc.)
         card_index: Card index for filename (fallback)
-        output_dir: output_v3 directory
+        output_dir: output directory
     
     Returns:
         (file_path, modification_timestamp)
@@ -1392,7 +1486,7 @@ def save_individual_token_json(token_obj: dict, team_name: str, token_index: int
         token_obj: Single token TTS object
         team_name: Team slug
         token_index: Token index for filename (fallback)
-        output_dir: output_v3 directory
+        output_dir: output directory
     
     Returns:
         (file_path, modification_timestamp)
@@ -1428,8 +1522,8 @@ def generate_team_tts_object(team_name: str, cards: list, lua_script: str, textu
     faction = None
     if cards:
         first_url = cards[0].get('url', '')
-        if '/output_v3/' in first_url:
-            parts = first_url.split('/output_v3/')[1].split('/')
+        if '/output/' in first_url:
+            parts = first_url.split('/output/')[1].split('/')
             if len(parts) > 0:
                 faction = parts[0]
     
@@ -1644,34 +1738,55 @@ def main():
     args = parser.parse_args()
     
     logging.getLogger().setLevel(getattr(logging, args.log_level))
-    
+
     logger.info("=" * 60)
     logger.info("TTS Object Generation (with embedded stats) - KT-App Pipeline")
     logger.info("=" * 60)
-    
+
+    # Initialize metadata managers
+    pipeline_meta = MetadataManager(PIPELINE_METADATA_FILE)
+    output_meta = OutputMetadataManager(OUTPUT_METADATA_FILE)
+
     # Generate URLs JSON from v3 structure (flat format for internal use)
-    logger.info("Scanning output_v3 structure...")
+    logger.info("Scanning output structure...")
     urls_data = generate_urls_json_v3()
     logger.info(f"Found {len(urls_data)} card/asset entries")
-    
+
     # Generate object-urls.json for TTS update checks
     logger.info("Generating object-urls.json for TTS update checks...")
     object_urls_data = generate_object_urls_json()
-    object_urls_file = PROJECT_ROOT / 'output_v3' / 'object-urls.json'
+    object_urls_file = PROJECT_ROOT / 'output' / 'object-urls.json'
     with open(object_urls_file, 'w', encoding='utf-8') as f:
         json.dump(object_urls_data, f, indent=2, ensure_ascii=False)
     logger.info(f"Saved object-urls.json with {len(object_urls_data)} teams")
-    
+
     # Generate TTS objects
     config_dir = PROJECT_ROOT / 'config'
-    output_dir = PROJECT_ROOT / 'output_v3'
+    output_dir = PROJECT_ROOT / 'output'
     count = generate_all_tts_objects(urls_data, config_dir, output_dir, args.teams)
-    
+
+    # Track metadata for all generated Box.json files
+    for team_tts_dir in sorted(output_dir.glob("*/tts_objects")):
+        team_slug = team_tts_dir.parent.name
+        for f in team_tts_dir.glob("*.json"):
+            rel = f"{team_slug}/tts_objects/{f.name}"
+            pipeline_meta.update_file(team_slug, "7_generate_tts_objects", f.name, f)
+            output_meta.update_file(rel, f, "kt-app", "7_generate_tts_objects")
+        pipeline_meta.mark_step_complete(team_slug, "7_generate_tts_objects")
+
+    # Track object-urls.json
+    output_meta.update_file("object-urls.json", object_urls_file, "kt-app", "7_generate_tts_objects")
+
+    # Save metadata
+    pipeline_meta.metadata["last_full_run"] = datetime.now(timezone.utc).isoformat()
+    pipeline_meta.save_metadata()
+    output_meta.save_metadata()
+
     logger.info("=" * 60)
     logger.info("Generation Complete")
     logger.info("=" * 60)
     logger.info(f"Teams processed: {count}")
-    logger.info(f"Output: {PROJECT_ROOT / 'output_v3' / '{team}' / 'tts_objects'}")
+    logger.info(f"Output: {PROJECT_ROOT / 'output' / '{team}' / 'tts_objects'}")
 
 
 if __name__ == '__main__':

@@ -12,16 +12,18 @@ Input:
     layers/kt-app/classified/{team}/structure.json
     
 Output:
-    output_v3/{team}/cards/{card_type}/{name}-front.jpg
-    output_v3/{team}/cards/{card_type}/{name}-back.jpg
+    output/{team}/cards/{card_type}/{name}-front.jpg
+    output/{team}/cards/{card_type}/{name}-back.jpg
     (or with card numbers: {name}-card{N}-front.jpg, {name}-card{N}-back.jpg)
 """
 
 import argparse
+import hashlib
 import json
 import logging
 from pathlib import Path
 from typing import Dict, List, Optional
+from datetime import datetime, timezone
 import fitz  # PyMuPDF
 import shutil
 
@@ -32,6 +34,9 @@ PROJECT_ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_BACKSIDE_PORTRAIT = PROJECT_ROOT / "config" / "defaults" / "card-backside" / "default-backside-portrait.jpg"
 DEFAULT_BACKSIDE_LANDSCAPE = PROJECT_ROOT / "config" / "defaults" / "card-backside" / "default-backside-landscape.jpg"
 
+PIPELINE_METADATA_FILE = PROJECT_ROOT / "layers" / "kt-app" / "metadata.json"
+OUTPUT_METADATA_FILE = PROJECT_ROOT / "output" / "metadata.json"
+
 # Setup logging
 logging.basicConfig(
     level=logging.INFO,
@@ -39,6 +44,97 @@ logging.basicConfig(
     datefmt='%H:%M:%S'
 )
 logger = logging.getLogger(__name__)
+
+
+# ===================================================================
+# METADATA MANAGEMENT
+# ===================================================================
+
+class MetadataManager:
+    """Manages pipeline metadata with hash-based change detection"""
+
+    def __init__(self, metadata_file: Path):
+        self.metadata_file = metadata_file
+        self.metadata = self._load_metadata()
+
+    def _load_metadata(self) -> Dict:
+        if self.metadata_file.exists():
+            with open(self.metadata_file, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        return {"pipeline_version": "2.0", "last_full_run": None, "teams": {}}
+
+    def save_metadata(self):
+        self.metadata_file.parent.mkdir(parents=True, exist_ok=True)
+        with open(self.metadata_file, 'w', encoding='utf-8') as f:
+            json.dump(self.metadata, f, indent=2, ensure_ascii=False)
+
+    def compute_hash(self, file_path: Path) -> str:
+        sha256 = hashlib.sha256()
+        with open(file_path, 'rb') as f:
+            for chunk in iter(lambda: f.read(4096), b''):
+                sha256.update(chunk)
+        return sha256.hexdigest()
+
+    def update_file(self, team: str, step: str, file_key: str, file_path: Path):
+        if team not in self.metadata["teams"]:
+            self.metadata["teams"][team] = {"steps": {}}
+        if "steps" not in self.metadata["teams"][team]:
+            self.metadata["teams"][team]["steps"] = {}
+        if step not in self.metadata["teams"][team]["steps"]:
+            self.metadata["teams"][team]["steps"][step] = {"outputs": {}}
+        if "outputs" not in self.metadata["teams"][team]["steps"][step]:
+            self.metadata["teams"][team]["steps"][step]["outputs"] = {}
+        file_hash = self.compute_hash(file_path)
+        timestamp = datetime.now(timezone.utc).isoformat()
+        self.metadata["teams"][team]["steps"][step]["outputs"][file_key] = {
+            "path": str(file_path), "hash": file_hash, "modified": timestamp
+        }
+
+    def mark_step_complete(self, team: str, step: str):
+        if team not in self.metadata["teams"]:
+            self.metadata["teams"][team] = {"steps": {}}
+        if "steps" not in self.metadata["teams"][team]:
+            self.metadata["teams"][team]["steps"] = {}
+        if step not in self.metadata["teams"][team]["steps"]:
+            self.metadata["teams"][team]["steps"][step] = {}
+        self.metadata["teams"][team]["steps"][step]["completed"] = datetime.now(timezone.utc).isoformat()
+
+
+class OutputMetadataManager:
+    """Manages shared output metadata across pipelines"""
+
+    def __init__(self, metadata_file: Path):
+        self.metadata_file = metadata_file
+        self.metadata = self._load_metadata()
+
+    def _load_metadata(self) -> Dict:
+        if self.metadata_file.exists():
+            try:
+                with open(self.metadata_file, 'r', encoding='utf-8') as f:
+                    return json.load(f)
+            except Exception:
+                pass
+        return {"version": "1.0", "last_updated": None, "files": {}}
+
+    def save_metadata(self):
+        self.metadata_file.parent.mkdir(parents=True, exist_ok=True)
+        self.metadata["last_updated"] = datetime.now(timezone.utc).isoformat()
+        with open(self.metadata_file, 'w', encoding='utf-8') as f:
+            json.dump(self.metadata, f, indent=2, ensure_ascii=False)
+
+    def compute_hash(self, file_path: Path) -> str:
+        sha256 = hashlib.sha256()
+        with open(file_path, 'rb') as f:
+            for chunk in iter(lambda: f.read(4096), b''):
+                sha256.update(chunk)
+        return sha256.hexdigest()
+
+    def update_file(self, rel_path: str, file_path: Path, pipeline: str, step: str):
+        file_hash = self.compute_hash(file_path)
+        timestamp = datetime.now(timezone.utc).isoformat()
+        self.metadata.setdefault("files", {})[rel_path] = {
+            "hash": file_hash, "modified": timestamp, "pipeline": pipeline, "step": step
+        }
 
 
 JPEG_QUALITY = 90  # JPEG quality for card images (0-100). 90 gives good quality at ~3.5x smaller than PNG.
@@ -101,7 +197,7 @@ class CardImageExtractor:
                 continue
             
             # Create output directory
-            output_dir = PROJECT_ROOT / "output_v3" / team / "cards" / card_type
+            output_dir = PROJECT_ROOT / "output" / team / "cards" / card_type
             output_dir.mkdir(parents=True, exist_ok=True)
             
             # Extract images for each entity
@@ -308,20 +404,32 @@ def main():
     
     logger.info(f"Teams to process: {len(teams)}")
     logger.info("")
-    
+
+    # Initialize metadata managers
+    pipeline_meta = MetadataManager(PIPELINE_METADATA_FILE)
+    output_meta = OutputMetadataManager(OUTPUT_METADATA_FILE)
+
     # Process teams
     extractor = CardImageExtractor(dpi=args.dpi)
     processed = 0
     failed = 0
-    
+
     for team in teams:
         logger.info(f"Processing {team}")
-        
+
         if extractor.process_team(team):
             processed += 1
+            # Track metadata for all card images written
+            team_cards_dir = PROJECT_ROOT / "output" / team / "cards"
+            if team_cards_dir.exists():
+                for f in team_cards_dir.rglob("*.jpg"):
+                    rel = str(f.relative_to(PROJECT_ROOT / "output")).replace("\\", "/")
+                    pipeline_meta.update_file(team, "4_extract_card_images", rel, f)
+                    output_meta.update_file(rel, f, "kt-app", "4_extract_card_images")
+            pipeline_meta.mark_step_complete(team, "4_extract_card_images")
         else:
             failed += 1
-    
+
     # Summary
     logger.info("")
     logger.info("=" * 70)
@@ -329,6 +437,11 @@ def main():
     logger.info(f"  Processed: {processed}")
     logger.info(f"  Failed: {failed}")
     logger.info("=" * 70)
+
+    # Save metadata
+    pipeline_meta.metadata["last_full_run"] = datetime.now(timezone.utc).isoformat()
+    pipeline_meta.save_metadata()
+    output_meta.save_metadata()
 
 
 if __name__ == "__main__":

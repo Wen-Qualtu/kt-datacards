@@ -12,9 +12,9 @@ Input:
     config/teams/{team}/box/ - Team-specific overrides (optional)
     
 Output:
-    output_v3/{team}/tts/{team}-card-box.obj
-    output_v3/{team}/tts/{team}-card-box-texture.jpg
-    output_v3/{team}/tts/{team}-token-bag.obj (for tokens_ready teams)
+    output/{team}/tts/{team}-card-box.obj
+    output/{team}/tts/{team}-card-box-texture.jpg
+    output/{team}/tts/{team}-token-bag.obj (for tokens_ready teams)
 """
 
 import argparse
@@ -224,8 +224,8 @@ def main():
     parser.add_argument(
         '--output-dir',
         type=Path,
-        default=PROJECT_ROOT / 'output_v3',
-        help='Output V3 directory'
+        default=PROJECT_ROOT / 'output',
+        help='Output directory'
     )
     parser.add_argument(
         '--config',
