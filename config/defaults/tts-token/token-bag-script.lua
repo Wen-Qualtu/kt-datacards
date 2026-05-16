@@ -344,7 +344,7 @@ function onload(saved_data)
 
     --Set up information off of loaded_data
 
-    memoryList = loaded_data.ml
+    memoryList = loaded_data.ml or {}
 
     relativeRotation = loaded_data.rr
 

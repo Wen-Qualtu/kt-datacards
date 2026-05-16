@@ -548,8 +548,9 @@ def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Pa
     for idx, token_obj in enumerate(token_objects, start=1):
         save_individual_token_json(token_obj, team_name, idx, output_dir)
     
-    # Build token bag mesh URL
+    # Build token bag mesh and icon URLs
     bag_mesh_url = f"{github_base}/output/{team_name}/tokens/tokenbag/{bag_mesh_file.name}"
+    bag_icon_url = f"{github_base}/output/{team_name}/tokens/tokenbag/{bag_icon_file.name}"
     
     # Create token bag
     token_timestamp = datetime.now(timezone.utc).isoformat()
@@ -592,9 +593,9 @@ def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Pa
         "Number": 0,
         "CustomMesh": {
             "MeshURL": bag_mesh_url,
-            "DiffuseURL": "",
+            "DiffuseURL": bag_icon_url,
             "NormalURL": "",
-            "ColliderURL": "",
+            "ColliderURL": bag_mesh_url,
             "Convex": True,
             "MaterialIndex": 0,
             "TypeIndex": 6,
@@ -602,7 +603,7 @@ def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Pa
         },
         "Bag": {"Order": 0},
         "LuaScript": lua_script,
-        "LuaScriptState": json.dumps({"lastUpdate": token_timestamp}),
+        "LuaScriptState": json.dumps({"ml": {}, "rr": None, "lastUpdate": token_timestamp}),
         "XmlUI": "",
         "ContainedObjects": token_objects
     }
@@ -1658,7 +1659,7 @@ def generate_team_tts_object(team_name: str, cards: list, lua_script: str, textu
     def update_urls_in_object(obj):
         if isinstance(obj, dict):
             for key, value in obj.items():
-                if key in ['FaceURL', 'BackURL', 'ImageURL', 'MeshURL'] and isinstance(value, str):
+                if key in ['FaceURL', 'BackURL', 'ImageURL', 'MeshURL', 'DiffuseURL'] and isinstance(value, str) and value:
                     obj[key] = re.sub(r'\?v=\d+', cache_bust_param, value)
                     if '?v=' not in obj[key]:
                         obj[key] += cache_bust_param

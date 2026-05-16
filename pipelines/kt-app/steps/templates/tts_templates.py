@@ -356,7 +356,7 @@ def create_bag(team_name, team_tag, contained_objects, lua_script, texture_url=N
         if not face_url:
             return None
         
-        # Support both v2 and v3 output structures
+        # Support v2, v3 and current output structures
         if "/output_v2/" in face_url:
             after = face_url.split("/output_v2/", 1)[1]
             # URL format: .../output_v2/{faction}/{team}/{card_type}/...
@@ -367,6 +367,13 @@ def create_bag(team_name, team_tag, contained_objects, lua_script, texture_url=N
         elif "/output_v3/" in face_url:
             after = face_url.split("/output_v3/", 1)[1]
             # URL format: .../output_v3/{team}/cards/{card_type}/...
+            parts = after.split("/")
+            if len(parts) < 3:
+                return None
+            folder = parts[2].strip().lower()
+        elif "/output/" in face_url:
+            after = face_url.split("/output/", 1)[1]
+            # URL format: .../output/{team}/cards/{card_type}/...
             parts = after.split("/")
             if len(parts) < 3:
                 return None
