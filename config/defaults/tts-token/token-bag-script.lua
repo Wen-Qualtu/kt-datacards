@@ -218,7 +218,9 @@ local function changeButtons(variant)
 
   if(variant == 'before_setup') then
 
-    self.createButton(BUTTON_SETUP)
+    self.createButton(BUTTON_PLACE)
+
+    self.createButton(BUTTON_RECALL)
 
   elseif (variant == 'in_setup') then
 
@@ -233,8 +235,6 @@ local function changeButtons(variant)
     self.createButton(BUTTON_PLACE)
 
     self.createButton(BUTTON_RECALL)
-
-    self.createButton(BUTTON_SETUP_2)
 
   end
 
@@ -371,6 +371,12 @@ function onload(saved_data)
     changeButtons('done_setup')
 
   end
+
+  self.addContextMenuItem("Setup tokens", function(playerColor)
+
+    click_setup()
+
+  end)
 
 end
 

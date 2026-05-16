@@ -169,7 +169,8 @@ def generate_urls_json_v3():
         if cardbox_dir.exists():
             for asset_file in cardbox_dir.glob('*'):
                 if asset_file.suffix in ['.obj', '.jpg']:
-                    asset_url = f"{base_url}/{team}/cardbox/{asset_file.name}"
+                    asset_mtime = int(asset_file.stat().st_mtime)
+                    asset_url = f"{base_url}/{team}/cardbox/{asset_file.name}?v={asset_mtime}"
                     all_entries.append({
                         'team': team,
                         'type': 'tts',
@@ -408,6 +409,34 @@ def load_lua_script(config_dir: Path) -> str:
         return ""
 
 
+def _build_token_memory_list(token_objects: list) -> dict:
+    """Build default grid layout for token bag memory list (ml).
+    
+    Lays tokens out in rows of 4, spaced 1.5 units apart, starting at
+    x=-2.25, z=-3.0 — matching the old pipeline's default layout.
+    """
+    cols = 4
+    x_start = -2.25
+    x_step = 1.5
+    z_start = -3.0
+    z_step = -1.5
+    y = 0.0213
+
+    ml = {}
+    for i, token_obj in enumerate(token_objects):
+        guid = token_obj.get("GUID")
+        if not guid:
+            continue
+        col = i % cols
+        row = i // cols
+        ml[guid] = {
+            "lock": False,
+            "pos": {"x": x_start + col * x_step, "y": y, "z": z_start + row * z_step},
+            "rot": {"x": 0.0, "y": 180.0, "z": 0.0},
+        }
+    return ml
+
+
 def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Path, output_dir: Path) -> tuple:
     """
     Generate token bag from output/{team}/tokens/ files.
@@ -455,8 +484,10 @@ def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Pa
     for token_name, obj_path, png_path in sorted(token_files):
         display_name = token_name.replace(f'{team_name}-', '').replace('-', ' ').title()
         
-        mesh_url = f"{github_base}/output/{team_name}/tokens/{obj_path.name}"
-        diffuse_url = f"{github_base}/output/{team_name}/tokens/{png_path.name}"
+        mesh_mtime = int(obj_path.stat().st_mtime)
+        png_mtime = int(png_path.stat().st_mtime)
+        mesh_url = f"{github_base}/output/{team_name}/tokens/{obj_path.name}?v={mesh_mtime}"
+        diffuse_url = f"{github_base}/output/{team_name}/tokens/{png_path.name}?v={png_mtime}"
         
         inner_token = {
             "GUID": generate_guid(f"{team_name}:customtoken:{token_name}"),
@@ -500,6 +531,42 @@ def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Pa
             "XmlUI": ""
         }
         
+        display_token = {
+            "GUID": generate_guid(f"{team_name}:displaytoken:{token_name}"),
+            "Name": "Custom_Token",
+            "Transform": {
+                "posX": 0.0, "posY": 0.0, "posZ": 0.0,
+                "rotX": 0.0, "rotY": 0.0, "rotZ": 0.0,
+                "scaleX": 0.21, "scaleY": 1.0, "scaleZ": 0.21
+            },
+            "Nickname": display_name,
+            "Description": display_name,
+            "ColorDiffuse": {"r": 1.0, "g": 1.0, "b": 1.0},
+            "Tags": ["KTUIToken", "KTUIMarker"],
+            "Locked": True,
+            "Grid": True,
+            "Snap": False,
+            "Autoraise": True,
+            "Sticky": False,
+            "Tooltip": False,
+            "Hands": False,
+            "CustomImage": {
+                "ImageURL": diffuse_url,
+                "ImageSecondaryURL": "",
+                "ImageScalar": 1.0,
+                "WidthScale": 0.0,
+                "CustomToken": {
+                    "Thickness": 0.1,
+                    "MergeDistancePixels": 6.0,
+                    "StandUp": False,
+                    "Stackable": False
+                }
+            },
+            "LuaScript": "",
+            "LuaScriptState": "",
+            "XmlUI": ""
+        }
+
         token_obj = {
             "GUID": generate_guid(f"{team_name}:token:{token_name}"),
             "Name": "Custom_Model_Infinite_Bag",
@@ -538,6 +605,7 @@ def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Pa
             },
             "Bag": {"Order": 0},
             "ContainedObjects": [inner_token],
+            "ChildObjects": [display_token],
             "LuaScript": "",
             "LuaScriptState": "",
             "XmlUI": ""
@@ -549,8 +617,10 @@ def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Pa
         save_individual_token_json(token_obj, team_name, idx, output_dir)
     
     # Build token bag mesh and icon URLs
-    bag_mesh_url = f"{github_base}/output/{team_name}/tokens/tokenbag/{bag_mesh_file.name}"
-    bag_icon_url = f"{github_base}/output/{team_name}/tokens/tokenbag/{bag_icon_file.name}"
+    bag_mesh_mtime = int(bag_mesh_file.stat().st_mtime)
+    bag_icon_mtime = int(bag_icon_file.stat().st_mtime)
+    bag_mesh_url = f"{github_base}/output/{team_name}/tokens/tokenbag/{bag_mesh_file.name}?v={bag_mesh_mtime}"
+    bag_icon_url = f"{github_base}/output/{team_name}/tokens/tokenbag/{bag_icon_file.name}?v={bag_icon_mtime}"
     
     # Create token bag
     token_timestamp = datetime.now(timezone.utc).isoformat()
@@ -593,7 +663,7 @@ def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Pa
         "Number": 0,
         "CustomMesh": {
             "MeshURL": bag_mesh_url,
-            "DiffuseURL": bag_icon_url,
+            "DiffuseURL": "",
             "NormalURL": "",
             "ColliderURL": bag_mesh_url,
             "Convex": True,
@@ -603,8 +673,41 @@ def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Pa
         },
         "Bag": {"Order": 0},
         "LuaScript": lua_script,
-        "LuaScriptState": json.dumps({"ml": {}, "rr": None, "lastUpdate": token_timestamp}),
+        "LuaScriptState": json.dumps({"ml": _build_token_memory_list(token_objects), "rr": 270, "lastUpdate": token_timestamp}),
         "XmlUI": "",
+        "ChildObjects": [
+            {
+                "GUID": generate_guid(f"{team_name}:tokenbag:icon"),
+                "Name": "Custom_Tile",
+                "Transform": {
+                    "posX": 0.0, "posY": -0.5, "posZ": 0.0,
+                    "rotX": 0.0, "rotY": 270.0, "rotZ": 0.0,
+                    "scaleX": 0.5, "scaleY": 10.0, "scaleZ": 0.5
+                },
+                "Nickname": "",
+                "Description": "",
+                "ColorDiffuse": {"r": 1.0, "g": 1.0, "b": 1.0},
+                "Locked": False,
+                "Grid": True,
+                "Snap": True,
+                "Autoraise": True,
+                "Sticky": True,
+                "Tooltip": True,
+                "Hands": False,
+                "CustomImage": {
+                    "ImageURL": bag_icon_url,
+                    "ImageSecondaryURL": bag_icon_url,
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomTile": {
+                        "Type": 0,
+                        "Thickness": 0.1,
+                        "Stackable": False,
+                        "Stretch": True
+                    }
+                }
+            }
+        ],
         "ContainedObjects": token_objects
     }
     
@@ -1650,34 +1753,29 @@ def generate_team_tts_object(team_name: str, cards: list, lua_script: str, textu
     with open(output_file, 'w', encoding='utf-8') as f:
         json.dump(bag_obj, f, indent=2)
     
-    # Get actual file timestamp and update URLs
+    # Get actual file timestamp
     file_mtime = os.path.getmtime(output_file)
     actual_timestamp = datetime.fromtimestamp(file_mtime).strftime('%Y-%m-%dT%H:%M:%S')
-    cache_bust_param = f"?v={int(file_mtime)}"
-    
-    # Update all URLs with cache-busting parameter
-    def update_urls_in_object(obj):
+
+    # Mirror MeshURL → ColliderURL (URLs already have correct per-file ?v= timestamps)
+    def mirror_collider_urls(obj):
         if isinstance(obj, dict):
             for key, value in obj.items():
-                if key in ['FaceURL', 'BackURL', 'ImageURL', 'MeshURL', 'DiffuseURL'] and isinstance(value, str) and value:
-                    obj[key] = re.sub(r'\?v=\d+', cache_bust_param, value)
-                    if '?v=' not in obj[key]:
-                        obj[key] += cache_bust_param
-                    if key == 'MeshURL':
-                        obj['ColliderURL'] = obj[key]
+                if key == 'MeshURL' and isinstance(value, str) and value:
+                    obj['ColliderURL'] = value
                 else:
-                    update_urls_in_object(value)
+                    mirror_collider_urls(value)
         elif isinstance(obj, list):
             for item in obj:
-                update_urls_in_object(item)
-    
-    update_urls_in_object(bag_obj)
-    
+                mirror_collider_urls(item)
+
+    mirror_collider_urls(bag_obj)
+
     # Recreate bag with actual timestamp
     bag_obj = create_bag(team_display_name, team_tag, contained_objects, lua_script, texture_url, mesh_url, faction, actual_timestamp, token_timestamp or "")
-    
-    # Apply URL updates again
-    update_urls_in_object(bag_obj)
+
+    # Apply collider mirroring again
+    mirror_collider_urls(bag_obj)
     
     # Embed datacard stats (optional - skips if no team data)
     embed_datacard_stats(bag_obj, team_name, output_dir, config_dir)
@@ -1705,7 +1803,7 @@ def generate_all_tts_objects(urls_data: list, config_dir: Path, output_dir: Path
         if card['type'] == 'tts':
             if 'card-box-texture' in card['name']:
                 team_textures[team_key] = card['url']
-            elif 'card-box' in card['name'] and card['url'].endswith('.obj'):
+            elif 'card-box' in card['name'] and '.obj' in card['url']:
                 team_meshes[team_key] = card['url']
         else:
             teams[team_key].append(card)
