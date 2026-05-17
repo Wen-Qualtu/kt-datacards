@@ -521,7 +521,13 @@ def _extract_rules_from_blocks(blocks: list, page_width: float, page_height: flo
                 j = i + 1
                 while j < len(ability_text):
                     nt, nb = ability_text[j]
-                    if nb and (':' in nt or (nt.endswith('AP') and len(nt) <= 5)):
+                    if nb and ':' in nt:
+                        # Only treat as new ability if text before ':' starts uppercase
+                        # (continuation text like "operatives. Once..." starts lowercase)
+                        name_part = nt.split(':', 1)[0].strip()
+                        if name_part and name_part[0].isupper():
+                            break
+                    elif nb and nt.endswith('AP') and len(nt) <= 5:
                         break
                     if nb and j + 1 < len(ability_text):
                         pt, pb = ability_text[j + 1]
@@ -618,12 +624,13 @@ def _is_front_page(page: fitz.Page) -> bool:
     
     # Front page if:
     # 1. Has weapon header (standard format), OR
-    # 2. Has stat labels + operative name + NO weapon header + NO descriptive text (VOX-RELAY BEACON format)
+    # 2. Has stat labels + operative name (VOX-RELAY BEACON format - may also have descriptive text)
     if has_weapon_header:
         return True
     elif has_stat_labels and has_operative_name and not has_weapon_header:
-        # Pages without weapon headers are front pages ONLY if they have no descriptive text
-        return not has_descriptive_text
+        # Stat labels + operative name = front page, even if descriptive text is also present
+        # (e.g. VOX-RELAY BEACON has its action description on the same page as the stats block)
+        return True
     return False
 
 
@@ -665,7 +672,9 @@ def _extract_backpage_rules(page: fitz.Page) -> list[dict] | None:
     pw = page.rect.width
     ph = page.rect.height
     blocks = page.get_text("dict").get("blocks", [])
-    return _extract_rules_from_blocks(blocks, pw, ph, 0)
+    # Use min_y=30 to skip the mini-stat reminder header (operative name + APL/WOUNDS
+    # labels) that appears at y<15 on back pages of some teams (e.g. spectre-squad).
+    return _extract_rules_from_blocks(blocks, pw, ph, 30)
 
 
 def _find_operative_for_backpage(page: fitz.Page) -> str | None:
@@ -1224,6 +1233,26 @@ def extract_team(team: str, force: bool = False) -> dict | None:
             if op:
                 operatives.append(op)
                 front_indices.append(i)
+
+    # Deduplicate: back pages on some teams (e.g. spectre-squad) share a mini-stat
+    # reminder header that also triggers _is_front_page. When the same operative
+    # name appears more than once, keep the entry with keywords (most complete data).
+    seen_slugs: dict[str, int] = {}  # slug -> index in dedup lists
+    dedup_ops: list = []
+    dedup_fronts: list = []
+    for op, fi in zip(operatives, front_indices):
+        slug = re.sub(r'[^a-z0-9]+', '-', op['name'].lower()).strip('-')
+        if slug not in seen_slugs:
+            seen_slugs[slug] = len(dedup_ops)
+            dedup_ops.append(op)
+            dedup_fronts.append(fi)
+        else:
+            prev = seen_slugs[slug]
+            if 'keywords' in op and 'keywords' not in dedup_ops[prev]:
+                dedup_ops[prev] = op
+                dedup_fronts[prev] = fi
+    operatives = dedup_ops
+    front_indices = dedup_fronts
 
     # Phase 2: Process back pages — merge rules into the preceding operative
     for i in range(page_count):

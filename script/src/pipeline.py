@@ -71,10 +71,15 @@ class DatacardPipeline:
         
         self.logger = logging.getLogger(__name__)
     
-    def run_full_pipeline(self) -> dict:
+    def run_full_pipeline(self, team_filter: Optional[List[str]] = None) -> dict:
         """
         Run complete pipeline: process → extract → backsides → URLs → V2
-        
+
+        Args:
+            team_filter: Optional list of team slugs to restrict processing.
+                         When provided, JSON metadata files are only updated
+                         for those teams.
+
         Returns:
             Statistics dictionary
         """
@@ -161,13 +166,7 @@ class DatacardPipeline:
         
         # Step 5: Generate TTS objects
         self.logger.info("Step 5: Generating TTS objects")
-        from .generators.tts_generator import TTSGenerator
-        tts_generator = TTSGenerator(
-            output_v2_dir=self.output_v2_dir,
-            tts_output_dir=self.output_v2_dir.parent / 'tts_objects',
-            config_dir=self.config_dir
-        )
-        stats['tts_objects_generated'] = tts_generator.generate_all_tts_objects()
+        stats['tts_objects_generated'] = self.generate_tts_objects(team_filter=team_filter)
 
         # Step 5.25: Embed ready team tokens (locked teams only)
         self.logger.info("Step 5.25: Embedding ready team tokens")
@@ -244,9 +243,14 @@ class DatacardPipeline:
         self.logger.info("Step 6.5: Generating TTS metadata with timestamps")
         try:
             import subprocess
+            cmd = [
+                str(Path(__file__).parent.parent.parent / '.venv' / 'Scripts' / 'python.exe'),
+                str(Path(__file__).parent.parent / 'generate_tts_metadata.py'),
+            ]
+            if team_filter:
+                cmd += ['--teams'] + list(team_filter)
             result = subprocess.run(
-                [str(Path(__file__).parent.parent.parent / '.venv' / 'Scripts' / 'python.exe'),
-                 str(Path(__file__).parent.parent / 'generate_tts_metadata.py')],
+                cmd,
                 cwd=str(Path(__file__).parent.parent.parent),
                 capture_output=True,
                 text=True
@@ -476,15 +480,37 @@ class DatacardPipeline:
         # Add backsides
         return self.backside_processor.add_backsides(datacards)
     
-    def generate_urls(self) -> int:
+    def generate_tts_objects(self, team_filter: Optional[List[str]] = None) -> int:
         """
-        Generate URLs JSON
-        
+        Generate TTS saved-object JSON files.
+
+        When team_filter is provided only those teams are regenerated.
+
+        Returns:
+            Number of TTS objects generated
+        """
+        from .generators.tts_generator import TTSGenerator
+        tts_generator = TTSGenerator(
+            output_v2_dir=self.output_v2_dir,
+            tts_output_dir=self.output_v2_dir.parent / 'tts_objects',
+            config_dir=self.config_dir,
+            team_filter=list(team_filter) if team_filter else None,
+        )
+        return tts_generator.generate_all_tts_objects()
+
+    def generate_urls(self, team_filter: Optional[List[str]] = None) -> int:
+        """
+        Generate URLs JSON.
+
+        When team_filter is provided only entries for those teams are
+        refreshed; all other teams' entries are preserved.
+
         Returns:
             Number of URLs generated
         """
         output_path = self.output_v2_dir / "datacards-urls.json"
-        return self.url_generator.generate_json(output_path=output_path)
+        return self.url_generator.generate_json(output_path=output_path,
+                                                team_filter=team_filter)
     
     def _generate_clean_filename(
         self, 
@@ -553,17 +579,17 @@ class DatacardPipeline:
                             team=team,
                             card_type=card_type,
                             card_name=card_name
-                    )
-                    datacard.front_image = front_image
-                    
-                    # Check for back image
-                    back_image = front_image.parent / front_image.name.replace(
-                        '_front.jpg', '_back.jpg'
-                    )
-                    if back_image.exists():
-                        datacard.back_image = back_image
-                    
-                    datacards.append(datacard)
+                        )
+                        datacard.front_image = front_image
+                        
+                        # Check for back image
+                        back_image = front_image.parent / front_image.name.replace(
+                            '_front.jpg', '_back.jpg'
+                        )
+                        if back_image.exists():
+                            datacard.back_image = back_image
+                        
+                        datacards.append(datacard)
         
         return datacards
     

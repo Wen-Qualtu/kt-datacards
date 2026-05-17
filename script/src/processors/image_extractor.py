@@ -382,6 +382,22 @@ class ImageExtractor:
             
             # Special handling for faction rules - skip the header but get the rule name
             if card_type == CardType.FACTION_RULES:
+                # Check page text directly for multi-card pattern: "FACTION RULE <NAME> (CARD X/Y)"
+                page_text_upper = page.get_text().upper()
+                card_num_match = re.search(
+                    r'FACTION\s+RULE\s+([A-Z][A-Z\s-]+?)\s*\(CARD\s+(\d+)/\d+\)',
+                    page_text_upper
+                )
+                if card_num_match:
+                    rule_name = card_num_match.group(1).strip()
+                    card_num = int(card_num_match.group(2))
+                    cleaned = self._clean_filename(rule_name)
+                    if cleaned:
+                        if card_num == 1:
+                            return cleaned
+                        else:
+                            return f"{cleaned}-card-{card_num}"
+
                 # Look for the rule name which typically appears after "FACTION RULE" header
                 # It's usually the next largest text after team name and "FACTION RULE"
                 faction_rule_found = False
@@ -461,7 +477,6 @@ class ImageExtractor:
                 if team_normalized.endswith('y') and text_normalized == team_normalized[:-1] + 'ies':
                     continue
                 # For compound words like "angel of death" vs "angels-of-death", split on both spaces and dashes
-                import re
                 text_parts = re.split(r'[-\s]+', text_lower.strip())
                 team_parts = re.split(r'[-\s]+', team.name.lower().strip())
                 if len(text_parts) == len(team_parts) and len(text_parts) > 1:

@@ -1,6 +1,6 @@
 {
   "team": "spectre-squad",
-  "generated": "2026-05-06T18:14:59.632931+00:00",
+  "generated": "2026-05-14T19:12:53.215479+00:00",
   "selection": {
     "SPECTRE FIELD MEDICAE": [
       [
@@ -44,7 +44,7 @@
     ]
   },
   "exclusive_sets": {},
-  "operative_count": 11,
+  "operative_count": 12,
   "operatives": [
     {
       "name": "SPECTRE VETERAN SERGEANT",
@@ -121,7 +121,7 @@
         },
         {
           "name": "MEDIKIT",
-          "description": "• Select one friendly SPECTRE SQUAD operative (excluding VOX-RELAY BEACON) within this operative’s control range to regain up to 2D3 lost wounds. It cannot be an operative that the Medic! rule was used on during this turning point.\n• This operative cannot perform this action while within control range of an enemy operative. SPECTRE FIELD MEDICAE"
+          "description": "• Select one friendly SPECTRE SQUAD operative (excluding VOX-RELAY BEACON) within this operative’s control range to regain up to 2D3 lost wounds. It cannot be an operative that the Medic! rule was used on during this turning point.\n• This operative cannot perform this action while within control range of an enemy operative."
         }
       ],
       "unique_actions": [],
@@ -173,7 +173,7 @@
         },
         {
           "name": "Proximity Mine",
-          "description": "The first time your Melta Mine marker is within another operative’s control range, remove that marker and inflict 2D6+3 damage on that operative; if it isn’t incapacitated, end its action (if any), even if that action’s effects aren’t fulfilled. If it cannot be placed, move it the minimum amount to do so. Note that this operative is ignored for these effects (i.e. it cannot set it off or take damage from that marker). SPECTRE GRENADIER 2 6\" 5+ 8 APL WOUNDS SAVE MOVE"
+          "description": "The first time your Melta Mine marker is within another operative’s control range, remove that marker and inflict 2D6+3 damage on that operative; if it isn’t incapacitated, end its action (if any), even if that action’s effects aren’t fulfilled. If it cannot be placed, move it the minimum amount to do so. Note that this operative is ignored for these effects (i.e. it cannot set it off or take damage from that marker)."
         }
       ],
       "unique_actions": [],
@@ -221,11 +221,7 @@
         },
         {
           "name": "Scout Terrain",
-          "description": "Terrain features within your territory or within 3\" of this operative are scouted for friendly SPECTRE SQUAD"
-        },
-        {
-          "name": "operatives. Once in each of their activations, friendly SPECTRE SQUAD  operatives can do one of the following",
-          "description": "• Ignore the first vertical distance of 2\" it moves during one climb up if the terrain feature is scouted for friendly SPECTRE SQUAD operatives.\n• Perform the Operate Hatch action for 1 less AP if the access point is scouted for friendly SPECTRE SQUAD operatives."
+          "description": "Terrain features within your territory or within 3\" of this operative are scouted for friendly SPECTRE SQUAD operatives. Once in each of their activations, friendly SPECTRE SQUAD operatives can do one of the following:\n• Ignore the first vertical distance of 2\" it moves during one climb up if the terrain feature is scouted for friendly SPECTRE SQUAD operatives.\n• Perform the Operate Hatch action for 1 less AP if the access point is scouted for friendly SPECTRE SQUAD operatives."
         }
       ],
       "unique_actions": [],
@@ -548,6 +544,29 @@
           "damage": "2/3"
         }
       ],
+      "passive_abilities": [],
+      "unique_actions": [
+        {
+          "name": "SIGNAL (1AP)",
+          "description": "• SUPPORT. Select one other friendly SPECTRE SQUAD operative (excluding VOX-RELAY BEACON) visible to this operative. Until the end of that operative’s next activation, add 1 to its APL stat.\n• This operative cannot perform this action while within control range of an enemy operative."
+        }
+      ],
+      "keywords": [
+        "SPECTRE SQUAD",
+        "IMPERIUM",
+        "ASTRA MILITARUM",
+        "VOX-OPERATOR"
+      ]
+    },
+    {
+      "name": "SPECTRE VOX-RELAY BEACON",
+      "source_file": "spectre-squad-datacards.pdf",
+      "source_page": 13,
+      "apl": 1,
+      "movement": "0″",
+      "save": "5+",
+      "wounds": 3,
+      "weapons": [],
       "passive_abilities": [
         {
           "name": "Pre-Deploy",
@@ -561,18 +580,14 @@
       "unique_actions": [
         {
           "name": "SIGNAL (1AP)",
-          "description": "• SUPPORT. Select one other friendly SPECTRE SQUAD operative (excluding VOX-RELAY BEACON) visible to this operative. Until the end of that operative’s next activation, add 1 to its APL stat.\n• This operative cannot perform this action while within control range of an enemy operative."
-        },
-        {
-          "name": "SIGNAL (1AP)",
-          "description": "• Select one other friendly SPECTRE SQUAD operative within 6\" of this operative. Until the end of that operative’s next activation, add 1 to its APL stat.\n• This operative cannot perform this action while within control range of an enemy operative. SPECTRE VOX-RELAY BEACON"
+          "description": "• Select one other friendly SPECTRE SQUAD operative within 6\" of this operative. Until the end of that operative’s next activation, add 1 to its APL stat.\n• This operative cannot perform this action while within control range of an enemy operative."
         }
       ],
       "keywords": [
         "SPECTRE SQUAD",
         "IMPERIUM",
         "ASTRA MILITARUM",
-        "VOX-OPERATOR"
+        "VOX-RELAY BEACON"
       ]
     }
   ]
