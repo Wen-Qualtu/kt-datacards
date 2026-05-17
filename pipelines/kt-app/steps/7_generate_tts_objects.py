@@ -37,7 +37,7 @@ import sys
 # Add templates to path
 sys.path.insert(0, str(Path(__file__).parent))
 from templates.tts_templates import (
-    create_single_card, create_deck, create_bag,
+    create_single_card, create_deck, create_bag, create_custom_dice,
     generate_guid
 )
 
@@ -713,6 +713,59 @@ def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Pa
     
     logger.info(f"Generated token bag for {team_name} with {len(token_objects)} tokens from output")
     return token_bag, token_timestamp
+
+
+def load_dice_objects(team_name: str, sample_url: Optional[str], output_dir: Path) -> list:
+    """
+    Create TTS Custom_Dice objects for a team (team, light, dark variants).
+    Saves individual JSON files to output/{team}/tts_objects/dice/ and returns
+    the list of objects to be included in the main box.
+    """
+    dice_dir = output_dir / team_name / "dice"
+    if not dice_dir.exists():
+        return []
+
+    github_base = ""
+    if sample_url:
+        if "/output/" in sample_url:
+            github_base = sample_url.split("/output/")[0]
+        elif "/output_v2/" in sample_url:
+            github_base = sample_url.split("/output_v2/")[0]
+    if not github_base:
+        github_base = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main"
+
+    team_tag = f"_{team_name.replace('-', '_').title().replace('_', ' ')}"
+    display = team_name.replace("-", " ").title()
+
+    variants = [
+        ("team",  f"{team_name}-dice-team.jpg",  f"{display} Dice"),
+        ("light", f"{team_name}-dice-light.jpg", f"{display} Light Dice"),
+        ("dark",  f"{team_name}-dice-dark.jpg",  f"{display} Dark Dice"),
+    ]
+
+    dice_objects = []
+    out_dir = output_dir / team_name / "tts_objects" / "dice"
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    for variant, filename, nickname in variants:
+        texture_file = dice_dir / filename
+        if not texture_file.exists():
+            continue
+
+        mtime = int(texture_file.stat().st_mtime)
+        texture_url = f"{github_base}/output/{team_name}/dice/{filename}?v={mtime}"
+
+        dice_obj = create_custom_dice(nickname, texture_url, team_tag, variant)
+        dice_objects.append(dice_obj)
+
+        # Save individual dice JSON
+        out_name = f"{team_name}-dice.json" if variant == "team" else f"{team_name}-{variant}-dice.json"
+        with open(out_dir / out_name, "w", encoding="utf-8") as f:
+            json.dump({"ObjectStates": [dice_obj]}, f, indent=2)
+
+    if dice_objects:
+        logger.info(f"  Added {len(dice_objects)} dice for {team_name}")
+    return dice_objects
 
 
 def copy_preview_image(team_folder_name: str, team_display_name: str, config_dir: Path, output_dir: Path):
@@ -1659,7 +1712,10 @@ def generate_team_tts_object(team_name: str, cards: list, lua_script: str, textu
     if token_bag:
         contained_objects.append(token_bag)
         logger.info(f"Added token bag for {team_name}")
-    
+
+    for dice_obj in load_dice_objects(team_name, sample_url, output_dir):
+        contained_objects.append(dice_obj)
+
     for card_type in type_order:
         if card_type not in cards_by_type:
             continue
