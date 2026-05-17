@@ -148,7 +148,7 @@ class OutputMetadataManager:
 def generate_urls_json_v3():
     """Generate flat list format for internal use (backwards compatibility)"""
     output_dir = PROJECT_ROOT / 'output'
-    branch = "refactor-kt-app-pipeline"
+    branch = "main"
     base_url = f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/{branch}/output"
     
     all_entries = []
@@ -225,7 +225,7 @@ def generate_object_urls_json():
     """
     output_dir = PROJECT_ROOT / 'output'
     config_dir = PROJECT_ROOT / 'config'
-    branch = "refactor-kt-app-pipeline"
+    branch = "main"
     base_url = f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/{branch}/output"
     
     teams_data = {}
