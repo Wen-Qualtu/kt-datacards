@@ -236,6 +236,12 @@ def extract_icons_from_pdf(pdf_path: Path, output_dir: Path, team_name: str) -> 
             token_path = icons_dir / f'{team_name}-icon-token.jpg'
             cv2.imwrite(str(token_path), token_icon, [cv2.IMWRITE_JPEG_QUALITY, 95])
             extracted['token'] = True
+            
+            # Also create transparent version for dice generation
+            transparent_icon = extract_icon_transparent(token_icon)
+            transparent_path = icons_dir / f'{team_name}-icon-token-transparent.png'
+            cv2.imwrite(str(transparent_path), transparent_icon)
+            extracted['token_transparent'] = True
         
         doc.close()
         
@@ -243,6 +249,54 @@ def extract_icons_from_pdf(pdf_path: Path, output_dir: Path, team_name: str) -> 
         logger.warning(f"    Error extracting icons for {team_name}: {e}")
     
     return extracted
+
+
+def get_image_orientation(width: int, height: int) -> str:
+    """Determine image orientation based on dimensions."""
+    aspect_ratio = width / height if height > 0 else 1.0
+
+
+def extract_icon_transparent(icon_bgr: np.ndarray, threshold: int = 80, margin: int = 30) -> np.ndarray:
+    """
+    Extract icon with transparent background using brightness-based cutout.
+    
+    Args:
+        icon_bgr: BGR image array from cv2
+        threshold: Brightness threshold (0-255) - pixels above this become transparent
+        margin: Pixels to apply gradient transparency at edges
+    
+    Returns:
+        BGRA image with alpha channel (transparent background)
+    """
+    # Convert BGR to RGB for processing
+    icon_rgb = cv2.cvtColor(icon_bgr, cv2.COLOR_BGR2RGB)
+    
+    # Calculate brightness
+    brightness = np.mean(icon_rgb, axis=2)
+    
+    # Create base alpha channel
+    alpha = np.where(brightness < threshold, 255, 0).astype(np.uint8)
+    
+    # Apply gradient at edges for smooth transparency
+    height, width = alpha.shape
+    for y in range(height):
+        for x in range(width):
+            if alpha[y, x] == 255:
+                # Check distance to transparent pixels
+                dist_to_edge = min(
+                    min(x, width - 1 - x),
+                    min(y, height - 1 - y)
+                )
+                
+                # Apply gradient within margin
+                if dist_to_edge < margin:
+                    fade_factor = dist_to_edge / margin
+                    alpha[y, x] = int(255 * fade_factor)
+    
+    # Create BGRA image
+    bgra = np.dstack([icon_bgr, alpha])
+    
+    return bgra
 
 
 def get_image_orientation(width: int, height: int) -> str:

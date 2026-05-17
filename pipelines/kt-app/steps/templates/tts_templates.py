@@ -300,6 +300,48 @@ def create_deck(deck_nickname, team_tag, cards_data, starting_deck_id=1000, card
     }
 
 
+def create_custom_dice(nickname: str, texture_url: str, team_tag: str, variant: str = "team") -> dict:
+    """Create a TTS Custom_Dice (D6) object with a custom texture."""
+    return {
+        "GUID": generate_guid(f"{team_tag}:dice:{variant}"),
+        "Name": "Custom_Dice",
+        "Transform": {
+            "posX": 0.0, "posY": 3.0, "posZ": 0.0,
+            "rotX": 0.0, "rotY": 0.0, "rotZ": 0.0,
+            "scaleX": 1.0, "scaleY": 1.0, "scaleZ": 1.0,
+        },
+        "Nickname": nickname,
+        "Description": "",
+        "GMNotes": "",
+        "AltLookAngle": {"x": 0.0, "y": 0.0, "z": 0.0},
+        "ColorDiffuse": {"r": 1.0, "g": 1.0, "b": 1.0},
+        "Tags": [team_tag, f"KTDice_{variant.capitalize()}"],
+        "LayoutGroupSortIndex": 0,
+        "Value": 0,
+        "Locked": False,
+        "Grid": True,
+        "Snap": True,
+        "IgnoreFoW": False,
+        "MeasureMovement": False,
+        "DragSelectable": True,
+        "Autoraise": True,
+        "Sticky": True,
+        "Tooltip": True,
+        "GridProjection": False,
+        "HideWhenFaceDown": False,
+        "Hands": False,
+        "CustomImage": {
+            "ImageURL": texture_url,
+            "ImageSecondaryURL": "",
+            "WidthScale": 0.0,
+        },
+        "CustomDice": {"Type": 1},  # Type 1 = D6
+        "LuaScript": "",
+        "LuaScriptState": "",
+        "XmlUI": "",
+    }
+
+
 def create_bag(team_name, team_tag, contained_objects, lua_script, texture_url=None, mesh_url=None, faction=None, last_modified=None, last_token_modified=None):
     """Create a TTS Custom_Model_Bag containing decks and cards"""
     
@@ -311,7 +353,7 @@ def create_bag(team_name, team_tag, contained_objects, lua_script, texture_url=N
     # If team-specific texture doesn't exist, step 6 copies default to this location
     # This allows backend updates per team without regenerating TTS objects
     
-    branch = "refactor-kt-app-pipeline"  # TODO: Make this configurable
+    branch = "main"
     
     if not mesh_url:
         # Always point to output_v3 cardbox location
@@ -338,7 +380,14 @@ def create_bag(team_name, team_tag, contained_objects, lua_script, texture_url=N
         "equipment": {"x": 0.0, "y": -2.50, "z": -7.40, "rot_y": 180.0},
         "markertokens": {"x": 2.0, "y": -2.50, "z": -7.40, "rot_y": 180.0},
         # Optional token bag (added by token pipeline)
-        "tokens": {"x": 4.0, "y": -2.50, "z": -8.0, "rot_y": 270.0},
+        "tokens":     {"x": 4.0,  "y": -2.50, "z": -8.0,  "rot_y": 270.0, "rot_x": 0.0169, "rot_z": 0.0799},
+        # Dice: dark + light stacked vertically (always present), team to the right (optional)
+        #    L
+        # B  D  T
+        # rot_x=270 puts face 6 on top; rot_x/rot_z chosen so they sit flat (no card tilt)
+        "dice-dark":  {"x": 6.0,  "y": -2.50, "z": -8.0,  "rot_y": 0.0,   "rot_x": 270.0, "rot_z": 0.0},
+        "dice-team":  {"x": 7.5,  "y": -2.50, "z": -8.0,  "rot_y": 0.0,   "rot_x": 270.0, "rot_z": 0.0},
+        "dice-light": {"x": 6.0,  "y": -2.50, "z": -6.5,  "rot_y": 0.0,   "rot_x": 270.0, "rot_z": 0.0},
     }
 
     nickname_to_type = {
@@ -410,6 +459,13 @@ def create_bag(team_name, team_tag, contained_objects, lua_script, texture_url=N
         if name == "Custom_Model_Bag" and "tokens" in nickname_norm:
             return "tokens"
 
+        if name == "Custom_Dice":
+            if "dark" in nickname_norm:
+                return "dice-dark"
+            if "light" in nickname_norm:
+                return "dice-light"
+            return "dice-team"
+
         by_nickname = nickname_to_type.get(nickname_norm)
         if by_nickname:
             return by_nickname
@@ -445,7 +501,7 @@ def create_bag(team_name, team_tag, contained_objects, lua_script, texture_url=N
         memory_list[guid] = {
             "lock": False,
             "pos": {"x": pos["x"], "y": pos["y"], "z": pos["z"]},
-            "rot": {"x": 0.0169, "y": pos["rot_y"], "z": 0.0799},
+            "rot": {"x": pos.get("rot_x", 0.0169), "y": pos["rot_y"], "z": pos.get("rot_z", 0.0799)},
         }
 
     # Include creation timestamp in state if provided

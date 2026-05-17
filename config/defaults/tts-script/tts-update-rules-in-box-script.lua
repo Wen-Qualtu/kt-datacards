@@ -40,7 +40,10 @@ local WORKSHOP_POSITIONS = {
     },
     operative_selection = {
       {x=-31.18, y=1, z=-22.63}
-    }
+    },
+    dice_dark  = { {x=31.00, y=0.73, z=-10.75} },
+    dice_light = { {x=31.00, y=0.73, z=-11.50} },
+    dice_team  = { {x=31.00, y=0.73, z=-12.25} }
   },
   Red = {
     strategy_ploys = {
@@ -74,7 +77,10 @@ local WORKSHOP_POSITIONS = {
     },
     operative_selection = {
       {x=-30.27, y=1, z=22.32}
-    }
+    },
+    dice_dark  = { {x=31.00, y=0.73, z=10.75} },
+    dice_light = { {x=31.00, y=0.73, z=11.50} },
+    dice_team  = { {x=31.00, y=0.73, z=12.25} }
   }
 }
 
@@ -529,15 +535,21 @@ local function determineCardType(obj)
       return "token_bag"
     elseif tag == "KTCardsOperativeSelection" then
       return "operative_selection"
+    elseif tag == "KTDice_Dark" then
+      return "dice_dark"
+    elseif tag == "KTDice_Light" then
+      return "dice_light"
+    elseif tag == "KTDice_Team" then
+      return "dice_team"
     end
   end
-  
+
   -- Fallback: try to determine from object name
   local name = obj.getName()
   if not name or name == "" then
     return nil
   end
-  
+
   local nameLower = string.lower(name)
   
   -- Check for specific card types based on name patterns
@@ -594,95 +606,6 @@ end
 function click_save_layout()
   broadcastToAll("Layout save is disabled in this release. Place will use default positions.", {1, 0.5, 0})
   return
-
-  -- First: capture positions of all known memoryList items on the table
-  for guid, _ in pairs(memoryList) do
-    if not bagContents[guid] then
-      local obj = getObjectFromGUID(guid)
-      if obj ~= nil and not obj.isDestroyed() then
-        local pos = obj.getPosition()
-        local rot = obj.getRotation()
-        customLayout[guid] = {
-          pos = {x=pos.x, y=pos.y, z=pos.z},
-          rot = {x=rot.x, y=rot.y, z=rot.z},
-          lock = obj.getLock()
-        }
-        count = count + 1
-      end
-    end
-  end
-
-  -- Second: detect drawn cards and record them in drawnCardLayout.
-  -- The box always stores complete decks; drawn cards are extracted by Place Phase 2.
-  local drawnCount = 0
-  for deckGuid, registry in pairs(deckCardRegistry) do
-    if not bagContents[deckGuid] then
-      local deckObj = getObjectFromGUID(deckGuid)
-      if deckObj ~= nil and deckObj.type == "Deck" and not deckObj.isDestroyed() then
-        -- Partial draw: deck still exists; compare current contents vs registered
-        local currentCardGuids = {}
-        for _, card in ipairs(deckObj.getObjects()) do
-          currentCardGuids[card.guid] = true
-        end
-        for _, cardGuid in ipairs(registry.cardGuids) do
-          if not currentCardGuids[cardGuid] and not bagContents[cardGuid] then
-            local cardObj = getObjectFromGUID(cardGuid)
-            if cardObj ~= nil and not cardObj.isDestroyed() then
-              local objPos = cardObj.getPosition()
-              local objRot = cardObj.getRotation()
-              drawnCardLayout[cardGuid] = {
-                deckGuid = deckGuid,
-                pos = {x=objPos.x, y=objPos.y, z=objPos.z},
-                rot = {x=objRot.x, y=objRot.y, z=objRot.z},
-                lock = cardObj.getLock()
-              }
-              drawnCount = drawnCount + 1
-              count = count + 1
-            end
-          end
-        end
-      else
-        -- Full draw: all cards taken, deck object gone.
-        -- Check all registered card GUIDs for objects currently on the table.
-        local anyFound = false
-        for _, cardGuid in ipairs(registry.cardGuids) do
-          if not bagContents[cardGuid] then
-            local cardObj = getObjectFromGUID(cardGuid)
-            if cardObj ~= nil and not cardObj.isDestroyed() then
-              if not anyFound then
-                -- Remove stale deck entry from memoryList/customLayout (deck no longer exists)
-                memoryList[deckGuid] = nil
-                customLayout[deckGuid] = nil
-                anyFound = true
-              end
-              local objPos = cardObj.getPosition()
-              local objRot = cardObj.getRotation()
-              drawnCardLayout[cardGuid] = {
-                deckGuid = deckGuid,
-                pos = {x=objPos.x, y=objPos.y, z=objPos.z},
-                rot = {x=objRot.x, y=objRot.y, z=objRot.z},
-                lock = cardObj.getLock()
-              }
-              drawnCount = drawnCount + 1
-              count = count + 1
-            end
-          end
-        end
-      end
-    end
-  end
-
-  if count == 0 then
-    broadcastToAll("No items found on table - please Place items first", {1, 0.5, 0})
-    return
-  end
-
-  local msg = "Layout saved! " .. count .. " items"
-  if drawnCount > 0 then
-    msg = msg .. " (" .. drawnCount .. " drawn card(s) detected)"
-  end
-  broadcastToAll(msg .. ". Place will now use these positions.", {0, 1, 0})
-  updateSave()
 end
 
 function click_place(obj, player_color, alt_click)
@@ -1107,11 +1030,11 @@ function click_place_kt_table(obj, player_color, alt_click)
             local customPos = getWorkshopPosition(player_color, cardType, cardTypeIndices[cardType])
             if customPos then
               obj.setPosition(customPos)
-              -- Token bags need 90 degree rotation adjustment
               if cardType == "token_bag" then
                 obj.setRotation(tokenBagRot)
+              elseif cardType == "dice_dark" or cardType == "dice_light" or cardType == "dice_team" then
+                obj.setRotation({x=270, y=0, z=0})
               else
-                -- Use absolute rotation (Blue=180°, Red=0°)
                 obj.setRotation(absoluteRot)
               end
               obj.setLock(entry.lock)
