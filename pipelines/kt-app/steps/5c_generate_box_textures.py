@@ -1,21 +1,18 @@
 """
 Step 5c: Generate Team Box Textures
 
-Composites per-team box textures from:
-- tools/resources/box-side.png  (template panel)
-- layers/warcom/extracted/{team}/icons/{team}-icon-landscape.jpg
-- layers/warcom/extracted/{team}/icons/{team}-icon-portrait.jpg
-- Team name text overlay
+Priority per team:
+  1. config/teams/{team}/box/card-box-texture.jpg exists  -> use as-is (manual override)
+  2. warcom icons exist in layers/warcom/extracted/{team}/icons/ -> auto-generate texture
+  3. neither available -> step 6 will fall back to config/defaults/box/ texture
 
-Output: config/teams/{team}/box/card-box-texture.jpg
-        (read by step 6 which copies textures into output/)
-
-Teams without warcom icons are skipped (they keep their existing or default texture).
+In practice almost all teams will hit case 2. Case 1 is for manual overrides that
+should survive regeneration. Case 3 covers new teams while their icons are unavailable.
 
 Usage:
     python pipelines/kt-app/steps/5c_generate_box_textures.py
     python pipelines/kt-app/steps/5c_generate_box_textures.py --teams angels-of-death kasrkin
-    python pipelines/kt-app/steps/5c_generate_box_textures.py --force
+    python pipelines/kt-app/steps/5c_generate_box_textures.py --force   # re-generate even case-1 textures
 """
 
 import argparse
@@ -37,73 +34,81 @@ _mod = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(_mod)
 generate_for_team = _mod.generate_for_team
 
-
 EXTRACTED_DIR = PROJECT_ROOT / "layers" / "warcom" / "extracted"
 CONFIG_DIR = PROJECT_ROOT / "config"
 TEMPLATE_PATH = PROJECT_ROOT / "tools" / "resources" / "box-side.png"
 
 
-def load_team_config() -> dict:
+def load_teams() -> list[str]:
     config_path = PROJECT_ROOT / "config" / "team-config.yaml"
     with open(config_path) as f:
-        return yaml.safe_load(f).get("teams", {})
+        return sorted(yaml.safe_load(f).get("teams", {}).keys())
 
 
-def teams_with_icons(team_filter: Optional[Set[str]] = None) -> list[str]:
-    """Return sorted team slugs that have both warcom landscape and portrait icons."""
-    teams_config = load_team_config()
-    result = []
-    for slug in teams_config:
-        if team_filter and slug not in team_filter:
-            continue
-        landscape = EXTRACTED_DIR / slug / "icons" / f"{slug}-icon-landscape.jpg"
-        portrait = EXTRACTED_DIR / slug / "icons" / f"{slug}-icon-portrait.jpg"
-        if landscape.exists() and portrait.exists():
-            result.append(slug)
-    return sorted(result)
+def has_icons(slug: str) -> bool:
+    landscape = EXTRACTED_DIR / slug / "icons" / f"{slug}-icon-landscape.jpg"
+    portrait = EXTRACTED_DIR / slug / "icons" / f"{slug}-icon-portrait.jpg"
+    return landscape.exists() and portrait.exists()
 
 
-def run(team_filter: Optional[Set[str]] = None, force: bool = False) -> tuple[int, int, int]:
+def run(team_filter: Optional[Set[str]] = None, force: bool = False) -> dict[str, int]:
     if not TEMPLATE_PATH.exists():
         print(f"ERROR: Template not found: {TEMPLATE_PATH}")
         sys.exit(1)
 
-    teams = teams_with_icons(team_filter)
-    if not teams:
-        print("No teams with warcom icons found.")
-        return 0, 0, 0
+    teams = load_teams()
+    if team_filter:
+        teams = [t for t in teams if t in team_filter]
 
-    generated = skipped = failed = 0
+    counts = {"generated": 0, "manual_override": 0, "no_icons": 0, "failed": 0}
+
     for slug in teams:
-        output = CONFIG_DIR / "teams" / slug / "box" / "card-box-texture.jpg"
-        if not force and output.exists():
-            skipped += 1
-            continue
-        print(f"  [{slug}]")
-        ok = generate_for_team(slug, EXTRACTED_DIR, CONFIG_DIR, TEMPLATE_PATH)
-        if ok:
-            generated += 1
-        else:
-            failed += 1
+        texture = CONFIG_DIR / "teams" / slug / "box" / "card-box-texture.jpg"
 
-    return generated, skipped, failed
+        # Priority 1: manual override — texture exists and we're not forcing
+        if texture.exists() and not force:
+            counts["manual_override"] += 1
+            continue
+
+        # Priority 2: auto-generate from warcom icons
+        if has_icons(slug):
+            print(f"  [generate] {slug}")
+            ok = generate_for_team(slug, EXTRACTED_DIR, CONFIG_DIR, TEMPLATE_PATH)
+            if ok:
+                counts["generated"] += 1
+            else:
+                print(f"  WARNING: generation failed for {slug}")
+                counts["failed"] += 1
+            continue
+
+        # Priority 3: no icons and no existing texture — step 6 will use default
+        if not texture.exists():
+            print(f"  [default]  {slug}  (no icons, step 6 will use default box)")
+            counts["no_icons"] += 1
+
+    return counts
 
 
 def main():
     parser = argparse.ArgumentParser(description="Step 5c: Generate team box textures")
     parser.add_argument("--teams", nargs="+", metavar="TEAM", help="Specific teams to process")
-    parser.add_argument("--force", action="store_true", help="Regenerate even if texture already exists")
+    parser.add_argument(
+        "--force", action="store_true",
+        help="Re-generate even for teams that already have a texture (overrides manual configs)"
+    )
     args = parser.parse_args()
 
     team_filter = set(args.teams) if args.teams else None
 
     print("=== Step 5c: Generate Box Textures ===")
-    if not args.force:
-        print("(pass --force to regenerate existing textures)")
+    counts = run(team_filter, args.force)
 
-    generated, skipped, failed = run(team_filter, args.force)
-
-    print(f"\nGenerated: {generated}  Skipped: {skipped}  Failed: {failed}")
+    print(
+        f"\nGenerated: {counts['generated']}"
+        f"  Manual override (kept): {counts['manual_override']}"
+        f"  No icons (will use default): {counts['no_icons']}"
+        f"  Failed: {counts['failed']}"
+    )
 
 
 if __name__ == "__main__":
