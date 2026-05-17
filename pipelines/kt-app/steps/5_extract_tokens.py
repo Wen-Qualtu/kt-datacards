@@ -5,7 +5,7 @@ Two-phase token extraction:
 - Phase 1: Extract rough tokens from PDFs (contour detection)
 - Phase 2: Apply transparency and shape cutting
 
-Outputs final tokens to output_v3/{team}/tokens/
+Outputs final tokens to output/{team}/tokens/
 
 Usage:
     python pipelines/kt-app/steps/5_extract_tokens.py
@@ -14,9 +14,11 @@ Usage:
 """
 
 import argparse
+import hashlib
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
-from typing import Optional, Set
+from typing import Dict, Optional, Set
 import yaml
 import shutil
 import json
@@ -26,6 +28,101 @@ import numpy as np
 # Import token extraction from pipeline utils
 sys.path.insert(0, str(Path(__file__).parent.parent / 'utils'))
 from token_extractor import TokenExtractor
+
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
+PIPELINE_METADATA_FILE = PROJECT_ROOT / "layers" / "kt-app" / "metadata.json"
+OUTPUT_METADATA_FILE = PROJECT_ROOT / "output" / "metadata.json"
+
+
+# ===================================================================
+# METADATA MANAGEMENT
+# ===================================================================
+
+class MetadataManager:
+    """Manages pipeline metadata with hash-based change detection"""
+
+    def __init__(self, metadata_file: Path):
+        self.metadata_file = metadata_file
+        self.metadata = self._load_metadata()
+
+    def _load_metadata(self) -> Dict:
+        if self.metadata_file.exists():
+            with open(self.metadata_file, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        return {"pipeline_version": "2.0", "last_full_run": None, "teams": {}}
+
+    def save_metadata(self):
+        self.metadata_file.parent.mkdir(parents=True, exist_ok=True)
+        with open(self.metadata_file, 'w', encoding='utf-8') as f:
+            json.dump(self.metadata, f, indent=2, ensure_ascii=False)
+
+    def compute_hash(self, file_path: Path) -> str:
+        sha256 = hashlib.sha256()
+        with open(file_path, 'rb') as f:
+            for chunk in iter(lambda: f.read(4096), b''):
+                sha256.update(chunk)
+        return sha256.hexdigest()
+
+    def update_file(self, team: str, step: str, file_key: str, file_path: Path):
+        if team not in self.metadata["teams"]:
+            self.metadata["teams"][team] = {"steps": {}}
+        if "steps" not in self.metadata["teams"][team]:
+            self.metadata["teams"][team]["steps"] = {}
+        if step not in self.metadata["teams"][team]["steps"]:
+            self.metadata["teams"][team]["steps"][step] = {"outputs": {}}
+        if "outputs" not in self.metadata["teams"][team]["steps"][step]:
+            self.metadata["teams"][team]["steps"][step]["outputs"] = {}
+        file_hash = self.compute_hash(file_path)
+        timestamp = datetime.now(timezone.utc).isoformat()
+        self.metadata["teams"][team]["steps"][step]["outputs"][file_key] = {
+            "path": str(file_path), "hash": file_hash, "modified": timestamp
+        }
+
+    def mark_step_complete(self, team: str, step: str):
+        if team not in self.metadata["teams"]:
+            self.metadata["teams"][team] = {"steps": {}}
+        if "steps" not in self.metadata["teams"][team]:
+            self.metadata["teams"][team]["steps"] = {}
+        if step not in self.metadata["teams"][team]["steps"]:
+            self.metadata["teams"][team]["steps"][step] = {}
+        self.metadata["teams"][team]["steps"][step]["completed"] = datetime.now(timezone.utc).isoformat()
+
+
+class OutputMetadataManager:
+    """Manages shared output metadata across pipelines"""
+
+    def __init__(self, metadata_file: Path):
+        self.metadata_file = metadata_file
+        self.metadata = self._load_metadata()
+
+    def _load_metadata(self) -> Dict:
+        if self.metadata_file.exists():
+            try:
+                with open(self.metadata_file, 'r', encoding='utf-8') as f:
+                    return json.load(f)
+            except Exception:
+                pass
+        return {"version": "1.0", "last_updated": None, "files": {}}
+
+    def save_metadata(self):
+        self.metadata_file.parent.mkdir(parents=True, exist_ok=True)
+        self.metadata["last_updated"] = datetime.now(timezone.utc).isoformat()
+        with open(self.metadata_file, 'w', encoding='utf-8') as f:
+            json.dump(self.metadata, f, indent=2, ensure_ascii=False)
+
+    def compute_hash(self, file_path: Path) -> str:
+        sha256 = hashlib.sha256()
+        with open(file_path, 'rb') as f:
+            for chunk in iter(lambda: f.read(4096), b''):
+                sha256.update(chunk)
+        return sha256.hexdigest()
+
+    def update_file(self, rel_path: str, file_path: Path, pipeline: str, step: str):
+        file_hash = self.compute_hash(file_path)
+        timestamp = datetime.now(timezone.utc).isoformat()
+        self.metadata.setdefault("files", {})[rel_path] = {
+            "hash": file_hash, "modified": timestamp, "pipeline": pipeline, "step": step
+        }
 
 
 def load_team_config():
@@ -477,8 +574,8 @@ def extract_tokens_for_team(team_slug: str, output_base: str = 'layers/kt-app/ex
         print(f"      ✗ Failed to load templates: {e}")
         return False
     
-    # Process tokens - output directly to output_v3
-    output_tokens_dir = Path('output_v3') / team_slug / 'tokens'
+    # Process tokens - output directly to output
+    output_tokens_dir = Path('output') / team_slug / 'tokens'
     output_tokens_dir.mkdir(parents=True, exist_ok=True)
     
     processed_count = process_tokens_phase2(
@@ -493,7 +590,7 @@ def extract_tokens_for_team(team_slug: str, output_base: str = 'layers/kt-app/ex
         print(f"      ✗ No tokens processed")
         return False
     
-    print(f"      ✓ Processed {processed_count} tokens with transparency → output_v3/{team_slug}/tokens/")
+    print(f"      ✓ Processed {processed_count} tokens with transparency → output/{team_slug}/tokens/")
     
     return True
 
@@ -539,25 +636,42 @@ def main():
     
     processed_count = 0
     error_count = 0
-    
+
+    # Initialize metadata managers
+    pipeline_meta = MetadataManager(PIPELINE_METADATA_FILE)
+    output_meta = OutputMetadataManager(OUTPUT_METADATA_FILE)
+
     for team_slug in teams_to_process:
         try:
             success = extract_tokens_for_team(team_slug, args.output_dir, args.debug)
             if success:
                 processed_count += 1
+                # Track metadata for all token images written
+                team_tokens_dir = PROJECT_ROOT / "output" / team_slug / "tokens"
+                if team_tokens_dir.exists():
+                    for f in team_tokens_dir.glob("*.png"):
+                        rel = f"{team_slug}/tokens/{f.name}"
+                        pipeline_meta.update_file(team_slug, "5_extract_tokens", f.name, f)
+                        output_meta.update_file(rel, f, "kt-app", "5_extract_tokens")
+                pipeline_meta.mark_step_complete(team_slug, "5_extract_tokens")
             else:
                 error_count += 1
         except Exception as e:
             print(f"    ✗ Error: {e}")
             error_count += 1
-    
+
     # Summary
     print(f"\n{'='*60}")
     print(f"Summary:")
     print(f"  Processed: {processed_count}")
     print(f"  Errors: {error_count}")
     print(f"{'='*60}\n")
-    
+
+    # Save metadata
+    pipeline_meta.metadata["last_full_run"] = datetime.now(timezone.utc).isoformat()
+    pipeline_meta.save_metadata()
+    output_meta.save_metadata()
+
     return 0 if error_count == 0 else 1
 
 

@@ -209,17 +209,26 @@ local function changeButtons(variant)
     self.createButton(BUTTON_SUBMIT)
     self.createButton(BUTTON_RESET)
   elseif (variant == 'done_setup') then
-    self.createButton(BUTTON_UPDATE)
     self.createButton(BUTTON_PLACE)
     self.createButton(BUTTON_RECALL)
-    self.createButton(BUTTON_SETUP_BOX)
     self.createButton(BUTTON_PLACE_KT_TABLE)
   end
 end
 
 local function setupContextMenu()
   self.clearContextMenu()
-  -- Context menu can be used for additional options if needed
+  self.addContextMenuItem("Update", function(playerColor)
+    click_update_rules()
+  end)
+  self.addContextMenuItem("Reset", function(playerColor)
+    click_setup()
+  end)
+  self.addContextMenuItem("Clear Layout", function(playerColor)
+    customLayout = {}
+    drawnCardLayout = {}
+    broadcastToAll("Custom layout cleared. Place will use default relative positions.", {1, 0.5, 0})
+    updateSave()
+  end)
 end
 
 function compare_coords(p1, p2, rotation)
@@ -269,7 +278,10 @@ function updateSave()
     ["lastTokenUpdate"]=lastTokenUpdate,
     ["teamSlug"]=teamSlug,
     ["tokenBagPositions"]=tokenBagPositions,
-    ["deckUnpackTracking"]=deckUnpackTracking
+    ["deckUnpackTracking"]=deckUnpackTracking,
+    ["customLayout"]=customLayout,
+    ["deckCardRegistry"]=deckCardRegistry,
+    ["drawnCardLayout"]=drawnCardLayout
   }
   saved_data = JSON.encode(data_to_save)
   self.script_state = saved_data
@@ -292,6 +304,9 @@ function onload(saved_data)
     teamSlug = loaded_data.teamSlug or ""
     tokenBagPositions = loaded_data.tokenBagPositions or {}
     deckUnpackTracking = loaded_data.deckUnpackTracking or {}
+    customLayout = {}
+    deckCardRegistry = loaded_data.deckCardRegistry or {}
+    drawnCardLayout = {}
   else
     memoryList = {}
     relativeRotation = readRotation()
@@ -301,6 +316,9 @@ function onload(saved_data)
     teamSlug = ""
     tokenBagPositions = {}
     deckUnpackTracking = {}
+    customLayout = {}
+    deckCardRegistry = {}
+    drawnCardLayout = {}
   end
 
   if next(memoryList) == nil then
@@ -464,6 +482,7 @@ end
 function click_reset()
   setOutline(memoryList, false)
   memoryList = {}
+  drawnCardLayout = {}
 
   relativeRotation = readRotation()
 
@@ -571,6 +590,101 @@ local function getWorkshopPosition(playerColor, cardType, index)
   return areaPositions[posIndex]
 end
 
+-- Save current absolute positions of all placed items for use by Place
+function click_save_layout()
+  broadcastToAll("Layout save is disabled in this release. Place will use default positions.", {1, 0.5, 0})
+  return
+
+  -- First: capture positions of all known memoryList items on the table
+  for guid, _ in pairs(memoryList) do
+    if not bagContents[guid] then
+      local obj = getObjectFromGUID(guid)
+      if obj ~= nil and not obj.isDestroyed() then
+        local pos = obj.getPosition()
+        local rot = obj.getRotation()
+        customLayout[guid] = {
+          pos = {x=pos.x, y=pos.y, z=pos.z},
+          rot = {x=rot.x, y=rot.y, z=rot.z},
+          lock = obj.getLock()
+        }
+        count = count + 1
+      end
+    end
+  end
+
+  -- Second: detect drawn cards and record them in drawnCardLayout.
+  -- The box always stores complete decks; drawn cards are extracted by Place Phase 2.
+  local drawnCount = 0
+  for deckGuid, registry in pairs(deckCardRegistry) do
+    if not bagContents[deckGuid] then
+      local deckObj = getObjectFromGUID(deckGuid)
+      if deckObj ~= nil and deckObj.type == "Deck" and not deckObj.isDestroyed() then
+        -- Partial draw: deck still exists; compare current contents vs registered
+        local currentCardGuids = {}
+        for _, card in ipairs(deckObj.getObjects()) do
+          currentCardGuids[card.guid] = true
+        end
+        for _, cardGuid in ipairs(registry.cardGuids) do
+          if not currentCardGuids[cardGuid] and not bagContents[cardGuid] then
+            local cardObj = getObjectFromGUID(cardGuid)
+            if cardObj ~= nil and not cardObj.isDestroyed() then
+              local objPos = cardObj.getPosition()
+              local objRot = cardObj.getRotation()
+              drawnCardLayout[cardGuid] = {
+                deckGuid = deckGuid,
+                pos = {x=objPos.x, y=objPos.y, z=objPos.z},
+                rot = {x=objRot.x, y=objRot.y, z=objRot.z},
+                lock = cardObj.getLock()
+              }
+              drawnCount = drawnCount + 1
+              count = count + 1
+            end
+          end
+        end
+      else
+        -- Full draw: all cards taken, deck object gone.
+        -- Check all registered card GUIDs for objects currently on the table.
+        local anyFound = false
+        for _, cardGuid in ipairs(registry.cardGuids) do
+          if not bagContents[cardGuid] then
+            local cardObj = getObjectFromGUID(cardGuid)
+            if cardObj ~= nil and not cardObj.isDestroyed() then
+              if not anyFound then
+                -- Remove stale deck entry from memoryList/customLayout (deck no longer exists)
+                memoryList[deckGuid] = nil
+                customLayout[deckGuid] = nil
+                anyFound = true
+              end
+              local objPos = cardObj.getPosition()
+              local objRot = cardObj.getRotation()
+              drawnCardLayout[cardGuid] = {
+                deckGuid = deckGuid,
+                pos = {x=objPos.x, y=objPos.y, z=objPos.z},
+                rot = {x=objRot.x, y=objRot.y, z=objRot.z},
+                lock = cardObj.getLock()
+              }
+              drawnCount = drawnCount + 1
+              count = count + 1
+            end
+          end
+        end
+      end
+    end
+  end
+
+  if count == 0 then
+    broadcastToAll("No items found on table - please Place items first", {1, 0.5, 0})
+    return
+  end
+
+  local msg = "Layout saved! " .. count .. " items"
+  if drawnCount > 0 then
+    msg = msg .. " (" .. drawnCount .. " drawn card(s) detected)"
+  end
+  broadcastToAll(msg .. ". Place will now use these positions.", {0, 1, 0})
+  updateSave()
+end
+
 function click_place(obj, player_color, alt_click)
   local bagObjList = self.getObjects()
   local currentRotation = readRotation()
@@ -630,12 +744,34 @@ function click_place(obj, player_color, alt_click)
       -- Re-get the object in case it was just taken from bag
       local placedObj = getObjectFromGUID(guid)
       if placedObj and not placedObj.isDestroyed() then
-        -- Use relative positioning
-        local deltaPos = compare_coords(selfPos, entry.pos, rotationAdjustment)
-        placedObj.setPosition(deltaPos)
-        placedObj.setRotation(rot)
-        placedObj.setLock(entry.lock)
+        if customLayout and customLayout[guid] then
+          -- Use saved absolute position from Save Layout
+          local savedPos = customLayout[guid]
+          placedObj.setPosition(savedPos.pos)
+          placedObj.setRotation(savedPos.rot)
+          placedObj.setLock(savedPos.lock)
+        else
+          -- Use relative positioning
+          local deltaPos = compare_coords(selfPos, entry.pos, rotationAdjustment)
+          placedObj.setPosition(deltaPos)
+          placedObj.setRotation(rot)
+          placedObj.setLock(entry.lock)
+        end
         newMemoryList[guid] = entry
+        -- Register deck card GUIDs, memoryList entry, and custom position so Recall
+        -- can regroup and restore the deck even if Save Layout cleared memoryList.
+        if placedObj.type == "Deck" then
+          local cardGuids = {}
+          for _, card in ipairs(placedObj.getObjects()) do
+            table.insert(cardGuids, card.guid)
+          end
+          deckCardRegistry[guid] = {
+            cardGuids = cardGuids,
+            memoryEntry = entry,
+            customEntry = customLayout and customLayout[guid] or nil,
+            cardType = determineCardType(placedObj)
+          }
+        end
       end
       
       -- Track completion
@@ -653,6 +789,43 @@ function click_place(obj, player_color, alt_click)
         }
         broadcastToAll("Objects Placed", {1,1,1})
         updateSave()
+        -- Phase 2: extract any drawn cards from their parent decks
+        if next(drawnCardLayout) ~= nil then
+          Wait.time(function()
+            for cardGuid, cardInfo in pairs(drawnCardLayout) do
+              local cardObj = getObjectFromGUID(cardGuid)
+              if cardObj ~= nil and not cardObj.isDestroyed() then
+                -- Card already on table; just move it to its saved position
+                cardObj.setPosition(cardInfo.pos)
+                cardObj.setRotation(cardInfo.rot)
+                cardObj.setLock(cardInfo.lock)
+              else
+                -- Card is inside its parent deck; extract it
+                local deckObj = getObjectFromGUID(cardInfo.deckGuid)
+                if deckObj and deckObj.type == "Deck" then
+                  local capturedPos = cardInfo.pos
+                  local capturedRot = cardInfo.rot
+                  local capturedLock = cardInfo.lock
+                  local capturedCardGuid = cardGuid
+                  deckObj.takeObject({
+                    guid = capturedCardGuid,
+                    position = {x=deckObj.getPosition().x, y=deckObj.getPosition().y+3, z=deckObj.getPosition().z},
+                    smooth = false,
+                    callback_function = function(extracted)
+                      Wait.frames(function()
+                        if extracted and not extracted.isDestroyed() then
+                          extracted.setPosition(capturedPos)
+                          extracted.setRotation(capturedRot)
+                          extracted.setLock(capturedLock)
+                        end
+                      end, 2)
+                    end
+                  })
+                end
+              end
+            end
+          end, 1.5)
+        end
       end
     end, 2)
   end
@@ -737,7 +910,6 @@ function click_place_kt_table(obj, player_color, alt_click)
     end
   end
 
-  local newMemoryList = {}
   -- Track card indices per type for proper placement
   local cardTypeIndices = {}
   
@@ -782,8 +954,8 @@ function click_place_kt_table(obj, player_color, alt_click)
     -- Wait for object to exist
     if obj ~= nil then
       Wait.frames(function()
-        -- Determine card type
-        local cardType = determineCardType(obj)
+        -- Determine card type (use stored cardType from previous placement if available)
+        local cardType = (entry and entry.cardType) or determineCardType(obj)
         
         -- Use workshop positions
         local shouldUseWorkshop = useWorkshopPositions and player_color and cardType and WORKSHOP_POSITIONS[player_color] ~= nil
@@ -813,12 +985,23 @@ function click_place_kt_table(obj, player_color, alt_click)
                 obj.setPosition(customPos)
                 obj.setRotation(absoluteRot)
                 obj.setLock(entry.lock)
-                newMemoryList[obj.guid] = {
+                local regEntry = {
                   pos = {x=customPos.x - selfPos.x, y=customPos.y - selfPos.y, z=customPos.z - selfPos.z},
                   rot = entry.rot,
-                  lock = entry.lock
+                  lock = entry.lock,
+                  cardType = cardType
                 }
                 cardTypeIndices[cardType] = cardTypeIndices[cardType] + 1
+                -- Register for drawn-card detection in Recall
+                local cardGuids = {}
+                for _, card in ipairs(obj.getObjects()) do
+                  table.insert(cardGuids, card.guid)
+                end
+                deckCardRegistry[obj.guid] = {
+                  cardGuids = cardGuids,
+                  memoryEntry = entry,
+                  customEntry = nil
+                }
               end
             elseif cardType == "faction_rules" then
               -- Unpack first 2 cards, keep rest as deck at position 3
@@ -828,7 +1011,9 @@ function click_place_kt_table(obj, player_color, alt_click)
               deckUnpackTracking[originalDeckGuid] = {
                 name = obj.getName(),
                 description = obj.getDescription(),
-                cardGuids = {}
+                cardGuids = {},
+                originalEntry = entry,
+                cardType = cardType
               }
               
               -- Unpack first 2 cards individually
@@ -843,11 +1028,6 @@ function click_place_kt_table(obj, player_color, alt_click)
                   if card then
                     card.setLock(entry.lock)
                     table.insert(deckUnpackTracking[originalDeckGuid].cardGuids, card.guid)
-                    newMemoryList[card.guid] = {
-                      pos = {x=customPos.x - selfPos.x, y=customPos.y - selfPos.y, z=customPos.z - selfPos.z},
-                      rot = entry.rot,
-                      lock = entry.lock
-                    }
                   end
                   cardTypeIndices[cardType] = cardTypeIndices[cardType] + 1
                 end
@@ -861,23 +1041,29 @@ function click_place_kt_table(obj, player_color, alt_click)
                   obj.setRotation(absoluteRot)
                   obj.setLock(entry.lock)
                   table.insert(deckUnpackTracking[originalDeckGuid].cardGuids, obj.guid)
-                  newMemoryList[obj.guid] = {
-                    pos = {x=customPos.x - selfPos.x, y=customPos.y - selfPos.y, z=customPos.z - selfPos.z},
-                    rot = entry.rot,
-                    lock = entry.lock
-                  }
                 end
               end
             else
               -- Unpack all cards for ploys and other types
               local originalDeckGuid = guid
-              local deckSize = #obj.getObjects()
+              -- Save all card GUIDs before the loop so we can detect the
+              -- deck-collapse case: when takeObject reduces a Deck to 1 card,
+              -- TTS collapses it to a standalone Card synchronously.  The final
+              -- loop iteration can no longer call takeObject on the destroyed deck
+              -- reference, leaving that last card untracked at the deck's position.
+              local allCardGuids = {}
+              for _, cardInfo in ipairs(obj.getObjects()) do
+                table.insert(allCardGuids, cardInfo.guid)
+              end
+              local deckSize = #allCardGuids
               deckUnpackTracking[originalDeckGuid] = {
                 name = obj.getName(),
                 description = obj.getDescription(),
-                cardGuids = {}
+                cardGuids = {},
+                originalEntry = entry,
+                cardType = cardType
               }
-              
+
               for i = 1, deckSize do
                 local customPos = getWorkshopPosition(player_color, cardType, cardTypeIndices[cardType])
                 if customPos then
@@ -889,13 +1075,30 @@ function click_place_kt_table(obj, player_color, alt_click)
                   if card then
                     card.setLock(entry.lock)
                     table.insert(deckUnpackTracking[originalDeckGuid].cardGuids, card.guid)
-                    newMemoryList[card.guid] = {
-                      pos = {x=customPos.x - selfPos.x, y=customPos.y - selfPos.y, z=customPos.z - selfPos.z},
-                      rot = entry.rot,
-                      lock = entry.lock
-                    }
                   end
                   cardTypeIndices[cardType] = cardTypeIndices[cardType] + 1
+                end
+              end
+
+              -- Collapsed-card recovery: if the deck collapsed to a standalone Card
+              -- during the loop (last takeObject on a 2-card deck destroys the deck
+              -- reference), that final card is never taken and sits untracked at the
+              -- deck's original position.  Only run this if fewer cards were tracked
+              -- than the deck had — this guards against GUID-mismatch false-positives.
+              if #deckUnpackTracking[originalDeckGuid].cardGuids < #allCardGuids then
+                local trackedSet = {}
+                for _, cguid in ipairs(deckUnpackTracking[originalDeckGuid].cardGuids) do
+                  trackedSet[cguid] = true
+                end
+                for _, cguid in ipairs(allCardGuids) do
+                  if cguid ~= nil and not trackedSet[cguid] then
+                    local remainingCard = getObjectFromGUID(cguid)
+                    if remainingCard ~= nil and not remainingCard.isDestroyed() then
+                      -- Just track it (no move) — Phase 2 recall will include it in group().
+                      table.insert(deckUnpackTracking[originalDeckGuid].cardGuids, cguid)
+                      trackedSet[cguid] = true
+                    end
+                  end
                 end
               end
             end
@@ -912,7 +1115,6 @@ function click_place_kt_table(obj, player_color, alt_click)
                 obj.setRotation(absoluteRot)
               end
               obj.setLock(entry.lock)
-              newMemoryList[obj.guid] = memoryList[guid]
               cardTypeIndices[cardType] = cardTypeIndices[cardType] + 1
             else
               -- Fallback to relative positioning
@@ -920,7 +1122,6 @@ function click_place_kt_table(obj, player_color, alt_click)
               obj.setPosition(deltaPos)
               obj.setRotation(rot)
               obj.setLock(entry.lock)
-              newMemoryList[obj.guid] = memoryList[guid]
             end
           end
         else
@@ -930,18 +1131,12 @@ function click_place_kt_table(obj, player_color, alt_click)
             obj.setPosition(deltaPos)
             obj.setRotation(rot)
             obj.setLock(entry.lock)
-            newMemoryList[obj.guid] = memoryList[guid]
           end
         end
         
         -- Track completion
         processedObjects = processedObjects + 1
         if processedObjects >= totalObjects then
-          -- All objects processed, update memoryList
-          memoryList = {}
-          for k,v in pairs(newMemoryList) do
-            memoryList[k] = v
-          end
           -- Track placement metadata
           placementMetadata = {
             mode = "kt_table",
@@ -959,33 +1154,396 @@ end
 -- Rebuild decks from individual cards after recall
 function click_recall()
   local totalInList = 0
-  
-  for _ in pairs(memoryList) do
-    totalInList = totalInList + 1
-  end
-  
-  if totalInList == 0 then
+  for _ in pairs(memoryList) do totalInList = totalInList + 1 end
+
+  if totalInList == 0 and next(drawnCardLayout) == nil then
     broadcastToAll("No objects to recall. Memory list is empty.", {1, 0.5, 0})
     return
   end
-  
-  broadcastToAll("Recalling " .. totalInList .. " objects...", {1, 1, 0})
-  
-  for guid, entry in pairs(memoryList) do
-    local obj = getObjectFromGUID(guid)
-    if obj ~= nil then
+
+  broadcastToAll("Recalling objects...", {1, 1, 0})
+
+  -- ── Auto-detect drawn cards if Recall is called without a prior Save Layout ─
+  -- drawnCardLayout is normally populated by click_save_layout. If the user skips
+  -- that step, we reconstruct it now from deckCardRegistry.
+  if next(drawnCardLayout) == nil and next(deckCardRegistry) ~= nil then
+    local bagContents = {}
+    for _, item in ipairs(self.getObjects()) do bagContents[item.guid] = true end
+    for deckGuid, registry in pairs(deckCardRegistry) do
+      if not bagContents[deckGuid] then
+        local deckObj = getObjectFromGUID(deckGuid)
+        if deckObj ~= nil and deckObj.type == "Deck" and not deckObj.isDestroyed() then
+          -- Partial draw: find cards that left the deck
+          local inDeck = {}
+          for _, c in ipairs(deckObj.getObjects()) do inDeck[c.guid] = true end
+          for _, cardGuid in ipairs(registry.cardGuids) do
+            if not inDeck[cardGuid] and not bagContents[cardGuid] then
+              local cardObj = getObjectFromGUID(cardGuid)
+              if cardObj ~= nil and not cardObj.isDestroyed() then
+                local p, r = cardObj.getPosition(), cardObj.getRotation()
+                drawnCardLayout[cardGuid] = {deckGuid=deckGuid, pos={x=p.x,y=p.y,z=p.z}, rot={x=r.x,y=r.y,z=r.z}, lock=cardObj.getLock()}
+              end
+            end
+          end
+        else
+          -- Full draw: deck is gone, all registered cards on table are drawn
+          for _, cardGuid in ipairs(registry.cardGuids) do
+            if not bagContents[cardGuid] then
+              local cardObj = getObjectFromGUID(cardGuid)
+              if cardObj ~= nil and not cardObj.isDestroyed() then
+                local p, r = cardObj.getPosition(), cardObj.getRotation()
+                drawnCardLayout[cardGuid] = {deckGuid=deckGuid, pos={x=p.x,y=p.y,z=p.z}, rot={x=r.x,y=r.y,z=r.z}, lock=cardObj.getLock()}
+              end
+            end
+          end
+        end
+      end
+    end
+  end
+
+  -- ── Pre-compute: KT table tracked GUIDs (excluded from regular loop) ───────
+  local trackedGuids = {}
+  for _, trackingData in pairs(deckUnpackTracking) do
+    for _, cguid in ipairs(trackingData.cardGuids) do
+      trackedGuids[cguid] = true
+    end
+  end
+
+  -- ── Phase 1: Re-merge drawn cards into their parent decks ─────────────────
+  -- Group drawn cards by their parent deck GUID.
+  -- Skip entries whose deckGuid is in deckUnpackTracking — those decks are fully
+  -- unpacked by the KT button and will be rebuilt by Phase 2, not Phase 1.
+  local drawnByDeck = {}
+  for cardGuid, cardInfo in pairs(drawnCardLayout) do
+    local cardObj = getObjectFromGUID(cardGuid)
+    if cardObj ~= nil and not cardObj.isDestroyed() then
+      local dGuid = cardInfo.deckGuid
+      if not deckUnpackTracking[dGuid] then
+        if not drawnByDeck[dGuid] then
+          drawnByDeck[dGuid] = {cards = {}, deckEntry = memoryList[dGuid]}
+        end
+        table.insert(drawnByDeck[dGuid].cards, {guid=cardGuid, obj=cardObj})
+      end
+    end
+  end
+
+  -- These deck GUIDs are handled in Phase 1; skip them in the regular loop.
+  local drawnDeckGuids = {}
+  for deckGuid, _ in pairs(drawnByDeck) do drawnDeckGuids[deckGuid] = true end
+
+  -- Helper: reset scale to default before stowing back in the box.
+  -- KT table tiles can scale cards; this ensures the box always stores clean originals.
+  -- Scale reset is skipped for non-card objects (e.g. token bags / 3D models).
+  local function stow(obj)
+    if obj ~= nil and not obj.isDestroyed() then
+      if obj.type == "Card" or obj.type == "Deck" then
+        obj.setScale({1, 1, 1})
+      end
       self.putObject(obj)
     end
   end
-  
-  -- Keep memoryList so we can place again
-  -- Just clear tracking data that prevents re-placement
-  placementMetadata = nil
-  deckUnpackTracking = {}
-  
-  changeButtons('done_setup')
-  updateSave()
-  broadcastToAll("✓ Objects recalled - ready to place again!", {0, 1, 0})
+
+  -- pendingOps counts async merge operations still in flight.
+  -- doFinalRecall() runs only when all are done.
+  local pendingOps = 0
+
+  local function doFinalRecall()
+    -- ── Phase 2: KT table deck reconstruction (deckUnpackTracking) ───────────
+    -- Build a job list first, then process sequentially.
+    -- Simultaneous group() calls for multiple decks (e.g. strategy + firefight ploys)
+    -- can silently fail in TTS, leaving cards loose. Serialising them avoids this.
+    local bagGuids = {}
+    for _, item in ipairs(self.getObjects()) do bagGuids[item.guid] = true end
+
+    local unpackJobs = {}
+    for origGuid, trackingData in pairs(deckUnpackTracking) do
+      local objects = {}
+      local missingGuids = {}
+      for _, cguid in ipairs(trackingData.cardGuids) do
+        if bagGuids[cguid] then
+          table.insert(missingGuids, "IN_BAG:"..cguid)
+        else
+          local obj = getObjectFromGUID(cguid)
+          if obj ~= nil and not obj.isDestroyed() then
+            table.insert(objects, obj)
+          else
+            table.insert(missingGuids, "NOT_FOUND:"..cguid)
+          end
+        end
+      end
+      local dbgMsg = "[DEBUG] KT recall "..tostring(trackingData.cardType).." tracked="..#trackingData.cardGuids.." found="..#objects
+      if #missingGuids > 0 then dbgMsg = dbgMsg.." missing="..#missingGuids end
+      print(dbgMsg)
+      if #objects > 0 then
+        table.insert(unpackJobs, {origGuid=origGuid, trackingData=trackingData, objects=objects})
+      end
+    end
+
+    -- ── Phase 3 (deferred) — runs only after all unpack jobs finish ───────────
+    local function doPhase3()
+      for guid, _ in pairs(memoryList) do
+        if not trackedGuids[guid] and not drawnDeckGuids[guid] then
+          local obj = getObjectFromGUID(guid)
+          stow(obj)
+        end
+      end
+      placementMetadata = nil
+      deckUnpackTracking = {}
+      deckCardRegistry = {}
+      customLayout = {}
+      drawnCardLayout = {}
+      changeButtons('done_setup')
+      updateSave()
+      broadcastToAll("✓ Objects recalled - ready to place again!", {0, 1, 0})
+    end
+
+    if #unpackJobs == 0 then
+      doPhase3()
+      return
+    end
+
+    local unpackIdx = 0
+    local function processNextUnpackJob()
+      unpackIdx = unpackIdx + 1
+      if unpackIdx > #unpackJobs then
+        doPhase3()
+        return
+      end
+
+      local job = unpackJobs[unpackIdx]
+      local origGuid = job.origGuid
+      local trackingData = job.trackingData
+      local objects = job.objects
+
+      local baseDeck = nil
+      local looseCards = {}
+      for _, obj in ipairs(objects) do
+        if obj.type == "Deck" then baseDeck = obj
+        else table.insert(looseCards, obj) end
+      end
+
+      if baseDeck ~= nil then
+        -- Partial unpack: one deck remains; merge loose cards back into it.
+        for _, card in ipairs(looseCards) do baseDeck.putObject(card) end
+        local capturedDeck = baseDeck
+        local capturedEntry = trackingData.originalEntry
+        local capturedCardType = trackingData.cardType
+        local capturedGuids = trackingData.cardGuids
+        local capturedObjects = objects
+        Wait.time(function()
+          if capturedDeck ~= nil and not capturedDeck.isDestroyed() then
+            stow(capturedDeck)
+            for _, cguid in ipairs(capturedGuids) do
+              if cguid ~= capturedDeck.guid then memoryList[cguid] = nil end
+            end
+            if capturedEntry then
+              local restoredEntry = capturedEntry
+              if capturedCardType then
+                restoredEntry = {pos=restoredEntry.pos, rot=restoredEntry.rot, lock=restoredEntry.lock, cardType=capturedCardType}
+              end
+              memoryList[capturedDeck.guid] = restoredEntry
+            end
+          else
+            for _, obj in ipairs(capturedObjects) do stow(obj) end
+          end
+          processNextUnpackJob()
+        end, 1.5)
+
+      else
+        -- Full unpack: all cards are loose; use group() to reassemble, then stow.
+        local capturedOrigGuid = origGuid
+        local capturedEntry = trackingData.originalEntry
+        local capturedCardType = trackingData.cardType
+        local capturedCardGuids = trackingData.cardGuids
+        if #objects >= 2 then
+          print("[DEBUG] group() called for "..tostring(trackingData.cardType).." with "..#objects.." objects")
+          for _, obj in ipairs(objects) do obj.setLock(false) end
+          local grouped = group(objects)
+          Wait.frames(function() -- 10 frames for reliable group() completion
+            local newDeck = (grouped and #grouped > 0) and grouped[1] or nil
+            if newDeck ~= nil and not newDeck.isDestroyed() then
+              print("[DEBUG] group() SUCCESS for "..tostring(trackingData.cardType).." newGuid="..newDeck.guid)
+              local newGuid = newDeck.guid
+              stow(newDeck)
+              for _, cguid in ipairs(capturedCardGuids) do memoryList[cguid] = nil end
+              local restoredEntry = capturedEntry or memoryList[capturedOrigGuid]
+              if restoredEntry and capturedCardType then
+                restoredEntry = {pos=restoredEntry.pos, rot=restoredEntry.rot, lock=restoredEntry.lock, cardType=capturedCardType}
+              end
+              memoryList[newGuid] = restoredEntry
+              if newGuid ~= capturedOrigGuid then
+                memoryList[capturedOrigGuid] = nil
+                for _, cardInfo in pairs(drawnCardLayout) do
+                  if cardInfo.deckGuid == capturedOrigGuid then cardInfo.deckGuid = newGuid end
+                end
+              end
+            else
+              -- group() failed: stow individual cards as fallback
+              print("[DEBUG] group() FAILED for "..tostring(trackingData.cardType).." grouped="..tostring(grouped).." len="..(grouped and #grouped or 0))
+              for _, obj in ipairs(objects) do stow(obj) end
+            end
+            processNextUnpackJob()
+          end, 10)
+        elseif #objects == 1 then
+          print("[DEBUG] single-card path for "..tostring(trackingData.cardType).." guid="..objects[1].guid)
+          local singleCard = objects[1]
+          local singleGuid = singleCard.guid
+          stow(singleCard)
+          -- Fix memoryList: if single card guid differs from original deck guid, remap
+          local restoredEntry = trackingData.originalEntry
+          if restoredEntry and trackingData.cardType then
+            restoredEntry = {pos=restoredEntry.pos, rot=restoredEntry.rot, lock=restoredEntry.lock, cardType=trackingData.cardType}
+          end
+          if singleGuid ~= origGuid then
+            if restoredEntry then memoryList[singleGuid] = restoredEntry end
+            memoryList[origGuid] = nil
+          else
+            if restoredEntry then memoryList[origGuid] = restoredEntry end
+          end
+          processNextUnpackJob()
+        else
+          processNextUnpackJob()
+        end
+      end
+    end
+
+    processNextUnpackJob()
+  end
+
+  local function onMergeDone()
+    pendingOps = pendingOps - 1
+    if pendingOps == 0 then doFinalRecall() end
+  end
+
+  -- ── Launch merge operations ───────────────────────────────────────────────
+  -- Partial draws run in parallel (simple putObject + 1.5s wait each).
+  -- Full draws are queued and processed one-at-a-time: simultaneous spawnObjectData
+  -- calls for multiple large deck JSONs will freeze TTS.
+  local fullDrawJobs = {}
+
+  for deckGuid, group in pairs(drawnByDeck) do
+    local deckObj = getObjectFromGUID(deckGuid)
+
+    if deckObj ~= nil and deckObj.type == "Deck" and not deckObj.isDestroyed() then
+      -- Partial draw: put cards back into existing deck, then stow.
+      pendingOps = pendingOps + 1
+      for _, cardInfo in ipairs(group.cards) do
+        deckObj.putObject(cardInfo.obj)
+      end
+      local capturedDeck = deckObj
+      Wait.time(function()
+        if capturedDeck ~= nil and not capturedDeck.isDestroyed() then
+          stow(capturedDeck)
+        end
+        onMergeDone()
+      end, 1.5)
+
+    else
+      local registry = deckCardRegistry[deckGuid]
+      if registry then
+        -- Full draw with registry: add to sequential queue.
+        table.insert(fullDrawJobs, {deckGuid=deckGuid, group=group, registry=registry})
+      else
+        -- No JSON fallback: stow individual cards synchronously (no pending op).
+        for _, cardInfo in ipairs(group.cards) do
+          stow(cardInfo.obj)
+        end
+        memoryList[deckGuid] = nil
+      end
+    end
+  end
+
+  -- Process full-draw queue sequentially using TTS group().
+  -- group() reassembles existing Card objects into a Deck — no spawn/destroy needed.
+  -- Cards are processed one deck at a time to keep TTS load manageable.
+  if #fullDrawJobs > 0 then
+    pendingOps = pendingOps + 1
+    local jobIdx = 0
+    local function processNextFullDraw()
+      jobIdx = jobIdx + 1
+      if jobIdx > #fullDrawJobs then
+        onMergeDone()  -- entire batch done
+        return
+      end
+      local job = fullDrawJobs[jobIdx]
+      local capturedOldGuid = job.deckGuid
+      local capturedEntry = job.registry.memoryEntry or job.group.deckEntry
+      local capturedCustom = job.registry.customEntry or customLayout[capturedOldGuid]
+      local capturedCardType = job.registry.cardType
+      -- Include cardType in restored entry so KT place can identify the deck type
+      local restoredEntry = capturedEntry
+      if restoredEntry and capturedCardType then
+        restoredEntry = {pos=restoredEntry.pos, rot=restoredEntry.rot, lock=restoredEntry.lock, cardType=capturedCardType}
+      end
+
+      -- Collect live Card objects for this deck
+      local cardObjs = {}
+      for _, cardInfo in ipairs(job.group.cards) do
+        if not cardInfo.obj.isDestroyed() then
+          table.insert(cardObjs, cardInfo.obj)
+        end
+      end
+
+      if #cardObjs == 0 then
+        -- Nothing to regroup; clean up memoryList and move on
+        memoryList[capturedOldGuid] = nil
+        processNextFullDraw()
+        return
+      end
+
+      if #cardObjs == 1 then
+        -- Single card: stow it directly (no deck needed)
+        stow(cardObjs[1])
+        if restoredEntry then memoryList[capturedOldGuid] = restoredEntry end
+        processNextFullDraw()
+        return
+      end
+
+      -- Multiple cards: use group() to reassemble into a Deck.
+      -- group() works on the existing Card objects — no spawn, no destroy.
+      local grouped = group(cardObjs)
+      Wait.frames(function()
+        local newDeck = (grouped and #grouped > 0) and grouped[1] or nil
+        if newDeck ~= nil and not newDeck.isDestroyed() then
+          local newGuid = newDeck.guid
+          stow(newDeck)
+          -- group() always produces a new GUID; remap references
+          if newGuid ~= capturedOldGuid then
+            memoryList[newGuid] = restoredEntry
+            memoryList[capturedOldGuid] = nil
+            if capturedCustom then
+              customLayout[newGuid] = capturedCustom
+              customLayout[capturedOldGuid] = nil
+            end
+            if deckCardRegistry[capturedOldGuid] then
+              deckCardRegistry[newGuid] = deckCardRegistry[capturedOldGuid]
+              deckCardRegistry[capturedOldGuid] = nil
+            end
+            -- Remap drawnCardLayout entries so Place Phase 2 can re-extract cards
+            for _, cardInfo in pairs(drawnCardLayout) do
+              if cardInfo.deckGuid == capturedOldGuid then
+                cardInfo.deckGuid = newGuid
+              end
+            end
+          else
+            if restoredEntry then memoryList[newGuid] = restoredEntry end
+            if capturedCustom then customLayout[newGuid] = capturedCustom end
+          end
+        else
+          -- group() failed: fall back to stowing individual cards
+          for _, cardObj in ipairs(cardObjs) do
+            stow(cardObj)
+          end
+          memoryList[capturedOldGuid] = nil
+        end
+        processNextFullDraw()
+      end, 3)
+    end
+    processNextFullDraw()  -- kick off the queue
+  end
+
+  -- If nothing needed merging, go straight to final recall.
+  if pendingOps == 0 then doFinalRecall() end
 end
 
 function click_update_rules()

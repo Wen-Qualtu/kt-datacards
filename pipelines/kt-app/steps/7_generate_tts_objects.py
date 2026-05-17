@@ -10,18 +10,19 @@ Prerequisites:
 
 Input:
     layers/kt-app/classified/{team}/structure.json - Card organization
-    output_v3/{team}/cards/{card_type}/*.png - Card images
-    output_v3/{team}/cardbox/*.obj/*.jpg - 3D assets from step 6
-    output_v3/{team}/tokens/ - Token files
-    output_v3/{team}/data/{team}-team-data.json - Operative stats (optional)
+    output/{team}/cards/{card_type}/*.jpg - Card images
+    output/{team}/cardbox/*.obj/*.jpg - 3D assets from step 6
+    output/{team}/tokens/ - Token files
+    output/{team}/data/{team}-team-data.json - Operative stats (optional)
     config/team-config.yaml - Team metadata
     
 Output:
-    output_v3/{team}/tts_objects/{Team Name} Box.json - TTS card box save file with embedded stats
-    output_v3/{team}/tts_objects/{Team Name} Box.png - Preview image
+    output/{team}/tts_objects/{Team Name} Box.json - TTS card box save file with embedded stats
+    output/{team}/tts_objects/{Team Name} Box.png - Preview image
 """
 
 import argparse
+import hashlib
 import json
 import logging
 import re
@@ -49,18 +50,111 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
+PIPELINE_METADATA_FILE = PROJECT_ROOT / "layers" / "kt-app" / "metadata.json"
+OUTPUT_METADATA_FILE = PROJECT_ROOT / "output" / "metadata.json"
+
+
+# ===================================================================
+# METADATA MANAGEMENT
+# ===================================================================
+
+class MetadataManager:
+    """Manages pipeline metadata with hash-based change detection"""
+
+    def __init__(self, metadata_file: Path):
+        self.metadata_file = metadata_file
+        self.metadata = self._load_metadata()
+
+    def _load_metadata(self) -> Dict:
+        if self.metadata_file.exists():
+            with open(self.metadata_file, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        return {"pipeline_version": "2.0", "last_full_run": None, "teams": {}}
+
+    def save_metadata(self):
+        self.metadata_file.parent.mkdir(parents=True, exist_ok=True)
+        with open(self.metadata_file, 'w', encoding='utf-8') as f:
+            json.dump(self.metadata, f, indent=2, ensure_ascii=False)
+
+    def compute_hash(self, file_path: Path) -> str:
+        sha256 = hashlib.sha256()
+        with open(file_path, 'rb') as f:
+            for chunk in iter(lambda: f.read(4096), b''):
+                sha256.update(chunk)
+        return sha256.hexdigest()
+
+    def update_file(self, team: str, step: str, file_key: str, file_path: Path):
+        if team not in self.metadata["teams"]:
+            self.metadata["teams"][team] = {"steps": {}}
+        if "steps" not in self.metadata["teams"][team]:
+            self.metadata["teams"][team]["steps"] = {}
+        if step not in self.metadata["teams"][team]["steps"]:
+            self.metadata["teams"][team]["steps"][step] = {"outputs": {}}
+        if "outputs" not in self.metadata["teams"][team]["steps"][step]:
+            self.metadata["teams"][team]["steps"][step]["outputs"] = {}
+        file_hash = self.compute_hash(file_path)
+        timestamp = datetime.now(timezone.utc).isoformat()
+        self.metadata["teams"][team]["steps"][step]["outputs"][file_key] = {
+            "path": str(file_path), "hash": file_hash, "modified": timestamp
+        }
+
+    def mark_step_complete(self, team: str, step: str):
+        if team not in self.metadata["teams"]:
+            self.metadata["teams"][team] = {"steps": {}}
+        if "steps" not in self.metadata["teams"][team]:
+            self.metadata["teams"][team]["steps"] = {}
+        if step not in self.metadata["teams"][team]["steps"]:
+            self.metadata["teams"][team]["steps"][step] = {}
+        self.metadata["teams"][team]["steps"][step]["completed"] = datetime.now(timezone.utc).isoformat()
+
+
+class OutputMetadataManager:
+    """Manages shared output metadata across pipelines"""
+
+    def __init__(self, metadata_file: Path):
+        self.metadata_file = metadata_file
+        self.metadata = self._load_metadata()
+
+    def _load_metadata(self) -> Dict:
+        if self.metadata_file.exists():
+            try:
+                with open(self.metadata_file, 'r', encoding='utf-8') as f:
+                    return json.load(f)
+            except Exception:
+                pass
+        return {"version": "1.0", "last_updated": None, "files": {}}
+
+    def save_metadata(self):
+        self.metadata_file.parent.mkdir(parents=True, exist_ok=True)
+        self.metadata["last_updated"] = datetime.now(timezone.utc).isoformat()
+        with open(self.metadata_file, 'w', encoding='utf-8') as f:
+            json.dump(self.metadata, f, indent=2, ensure_ascii=False)
+
+    def compute_hash(self, file_path: Path) -> str:
+        sha256 = hashlib.sha256()
+        with open(file_path, 'rb') as f:
+            for chunk in iter(lambda: f.read(4096), b''):
+                sha256.update(chunk)
+        return sha256.hexdigest()
+
+    def update_file(self, rel_path: str, file_path: Path, pipeline: str, step: str):
+        file_hash = self.compute_hash(file_path)
+        timestamp = datetime.now(timezone.utc).isoformat()
+        self.metadata.setdefault("files", {})[rel_path] = {
+            "hash": file_hash, "modified": timestamp, "pipeline": pipeline, "step": step
+        }
 
 
 def generate_urls_json_v3():
     """Generate flat list format for internal use (backwards compatibility)"""
-    output_v3 = PROJECT_ROOT / 'output_v3'
-    branch = "main"
-    base_url = f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/{branch}/output_v3"
+    output_dir = PROJECT_ROOT / 'output'
+    branch = "refactor-kt-app-pipeline"
+    base_url = f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/{branch}/output"
     
     all_entries = []
     
-    # Scan all team directories (flat structure in v3)
-    for team_dir in sorted(output_v3.iterdir()):
+    # Scan all team directories
+    for team_dir in sorted(output_dir.iterdir()):
         if not team_dir.is_dir():
             continue
         
@@ -75,7 +169,8 @@ def generate_urls_json_v3():
         if cardbox_dir.exists():
             for asset_file in cardbox_dir.glob('*'):
                 if asset_file.suffix in ['.obj', '.jpg']:
-                    asset_url = f"{base_url}/{team}/cardbox/{asset_file.name}"
+                    asset_mtime = int(asset_file.stat().st_mtime)
+                    asset_url = f"{base_url}/{team}/cardbox/{asset_file.name}?v={asset_mtime}"
                     all_entries.append({
                         'team': team,
                         'type': 'tts',
@@ -101,8 +196,8 @@ def generate_urls_json_v3():
             card_type_v2 = type_mappings.get(card_type, card_type.replace('_', '-'))
             
             # Regular card type
-            for card_file in sorted(card_type_dir.glob('*.png')):
-                # Convert filename format from "{team}-{card}-front.png" to "{team}-{card}_front"
+            for card_file in sorted(card_type_dir.glob('*.jpg')):
+                # Convert filename format from "{team}-{card}-front.jpg" to "{team}-{card}_front"
                 name = card_file.stem
                 if name.endswith('-front') or name.endswith('-back'):
                     name = name.rsplit('-', 1)
@@ -128,15 +223,15 @@ def generate_object_urls_json():
     - box: The TTS save JSON file with modified timestamp
     - objects: Array of all assets (cards, cardbox, tokens, lua script) with URLs and timestamps
     """
-    output_v3 = PROJECT_ROOT / 'output_v3'
+    output_dir = PROJECT_ROOT / 'output'
     config_dir = PROJECT_ROOT / 'config'
-    branch = "main"
-    base_url = f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/{branch}/output_v3"
+    branch = "refactor-kt-app-pipeline"
+    base_url = f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/{branch}/output"
     
     teams_data = {}
     
     # Scan all team directories
-    for team_dir in sorted(output_v3.iterdir()):
+    for team_dir in sorted(output_dir.iterdir()):
         if not team_dir.is_dir():
             continue
         
@@ -255,7 +350,7 @@ def generate_object_urls_json():
                 
                 # Group front/back pairs
                 card_pairs = {}
-                for card_file in card_type_dir.glob('*.png'):
+                for card_file in card_type_dir.glob('*.jpg'):
                     name = card_file.stem
                     if name.endswith('-front'):
                         base_name = name[:-6]
@@ -314,14 +409,42 @@ def load_lua_script(config_dir: Path) -> str:
         return ""
 
 
-def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Path, output_v3_dir: Path) -> tuple:
+def _build_token_memory_list(token_objects: list) -> dict:
+    """Build default grid layout for token bag memory list (ml).
+    
+    Lays tokens out in rows of 4, spaced 1.5 units apart, starting at
+    x=-2.25, z=-3.0 — matching the old pipeline's default layout.
     """
-    Generate token bag from output_v3/{team}/tokens/ files.
+    cols = 4
+    x_start = -2.25
+    x_step = 1.5
+    z_start = -3.0
+    z_step = -1.5
+    y = 0.0213
+
+    ml = {}
+    for i, token_obj in enumerate(token_objects):
+        guid = token_obj.get("GUID")
+        if not guid:
+            continue
+        col = i % cols
+        row = i // cols
+        ml[guid] = {
+            "lock": False,
+            "pos": {"x": x_start + col * x_step, "y": y, "z": z_start + row * z_step},
+            "rot": {"x": 0.0, "y": 180.0, "z": 0.0},
+        }
+    return ml
+
+
+def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Path, output_dir: Path) -> tuple:
+    """
+    Generate token bag from output/{team}/tokens/ files.
     
     Returns:
         Tuple of (token bag object dict, token timestamp) or (None, None) if no tokens exist
     """
-    tokens_dir = output_v3_dir / team_name / 'tokens'
+    tokens_dir = output_dir / team_name / 'tokens'
     
     if not tokens_dir.exists():
         return None, None
@@ -347,8 +470,8 @@ def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Pa
     
     # Extract github base URL from sample card URL
     github_base = ""
-    if sample_url and '/output_v3/' in sample_url:
-        github_base = sample_url.split('/output_v3/')[0]
+    if sample_url and '/output/' in sample_url:
+        github_base = sample_url.split('/output/')[0]
     elif sample_url and '/output_v2/' in sample_url:
         github_base = sample_url.split('/output_v2/')[0]
     
@@ -356,58 +479,133 @@ def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Pa
         logger.warning(f"Could not extract github base URL, using placeholder")
         github_base = "https://github.com/user/repo/raw/main"
     
-    # Generate token objects
+    # Generate token objects (Custom_Model_Infinite_Bag, each containing a Custom_Token)
     token_objects = []
     for token_name, obj_path, png_path in sorted(token_files):
         display_name = token_name.replace(f'{team_name}-', '').replace('-', ' ').title()
         
-        mesh_url = f"{github_base}/output_v3/{team_name}/tokens/{obj_path.name}"
-        diffuse_url = f"{github_base}/output_v3/{team_name}/tokens/{png_path.name}"
+        mesh_mtime = int(obj_path.stat().st_mtime)
+        png_mtime = int(png_path.stat().st_mtime)
+        mesh_url = f"{github_base}/output/{team_name}/tokens/{obj_path.name}?v={mesh_mtime}"
+        diffuse_url = f"{github_base}/output/{team_name}/tokens/{png_path.name}?v={png_mtime}"
         
-        token_obj = {
-            "GUID": generate_guid(f"{team_name}:token:{token_name}"),
-            "Name": "Custom_Model",
+        inner_token = {
+            "GUID": generate_guid(f"{team_name}:customtoken:{token_name}"),
+            "Name": "Custom_Token",
             "Transform": {
                 "posX": 0.0,
-                "posY": 3.0,
+                "posY": 1.63,
                 "posZ": 0.0,
                 "rotX": 0.0,
-                "rotY": 180.0,
-                "rotZ": 180.0,
-                "scaleX": 1.0,
+                "rotY": 0.0,
+                "rotZ": 0.0,
+                "scaleX": 0.21,
                 "scaleY": 1.0,
-                "scaleZ": 1.0
+                "scaleZ": 0.21
             },
             "Nickname": display_name,
-            "Description": "",
-            "GMNotes": "",
-            "AltLookAngle": {"x": 0.0, "y": 0.0, "z": 0.0},
+            "Description": display_name,
             "ColorDiffuse": {"r": 1.0, "g": 1.0, "b": 1.0},
-            "Tags": [f"KTCards{team_name.replace('-', '')}"],
-            "LayoutGroupSortIndex": 0,
-            "Value": 0,
+            "Tags": ["KTUIToken", "KTUIMarker"],
+            "Locked": False,
+            "Grid": True,
+            "Snap": False,
+            "Autoraise": True,
+            "Sticky": False,
+            "Tooltip": False,
+            "Hands": False,
+            "CustomImage": {
+                "ImageURL": diffuse_url,
+                "ImageSecondaryURL": "",
+                "ImageScalar": 1.0,
+                "WidthScale": 0.0,
+                "CustomToken": {
+                    "Thickness": 0.1,
+                    "MergeDistancePixels": 6.0,
+                    "StandUp": False,
+                    "Stackable": False
+                }
+            },
+            "LuaScript": "",
+            "LuaScriptState": "",
+            "XmlUI": ""
+        }
+        
+        display_token = {
+            "GUID": generate_guid(f"{team_name}:displaytoken:{token_name}"),
+            "Name": "Custom_Token",
+            "Transform": {
+                "posX": 0.0, "posY": 0.0, "posZ": 0.0,
+                "rotX": 0.0, "rotY": 0.0, "rotZ": 0.0,
+                "scaleX": 0.21, "scaleY": 1.0, "scaleZ": 0.21
+            },
+            "Nickname": display_name,
+            "Description": display_name,
+            "ColorDiffuse": {"r": 1.0, "g": 1.0, "b": 1.0},
+            "Tags": ["KTUIToken", "KTUIMarker"],
+            "Locked": True,
+            "Grid": True,
+            "Snap": False,
+            "Autoraise": True,
+            "Sticky": False,
+            "Tooltip": False,
+            "Hands": False,
+            "CustomImage": {
+                "ImageURL": diffuse_url,
+                "ImageSecondaryURL": "",
+                "ImageScalar": 1.0,
+                "WidthScale": 0.0,
+                "CustomToken": {
+                    "Thickness": 0.1,
+                    "MergeDistancePixels": 6.0,
+                    "StandUp": False,
+                    "Stackable": False
+                }
+            },
+            "LuaScript": "",
+            "LuaScriptState": "",
+            "XmlUI": ""
+        }
+
+        token_obj = {
+            "GUID": generate_guid(f"{team_name}:token:{token_name}"),
+            "Name": "Custom_Model_Infinite_Bag",
+            "Transform": {
+                "posX": 0.0,
+                "posY": 1.03,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 270.0,
+                "rotZ": 0.0,
+                "scaleX": 1.8351557,
+                "scaleY": 0.1,
+                "scaleZ": 1.7720486
+            },
+            "Nickname": display_name,
+            "Description": f"Infinite {display_name} tokens",
+            "GMNotes": "",
+            "ColorDiffuse": {"r": 1.0, "g": 1.0, "b": 1.0, "a": 0.0},
+            "Tags": [f"_{team_name}_tokens"],
             "Locked": False,
             "Grid": True,
             "Snap": True,
-            "IgnoreFoW": False,
-            "MeasureMovement": False,
-            "DragSelectable": True,
             "Autoraise": True,
             "Sticky": True,
             "Tooltip": True,
-            "GridProjection": False,
-            "HideWhenFaceDown": False,
             "Hands": False,
             "CustomMesh": {
                 "MeshURL": mesh_url,
-                "DiffuseURL": diffuse_url,
+                "DiffuseURL": "",
                 "NormalURL": "",
                 "ColliderURL": "",
                 "Convex": True,
-                "MaterialIndex": 3,
-                "TypeIndex": 0,
+                "MaterialIndex": 0,
+                "TypeIndex": 7,
                 "CastShadows": True
             },
+            "Bag": {"Order": 0},
+            "ContainedObjects": [inner_token],
+            "ChildObjects": [display_token],
             "LuaScript": "",
             "LuaScriptState": "",
             "XmlUI": ""
@@ -416,11 +614,13 @@ def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Pa
     
     # Save individual token JSONs
     for idx, token_obj in enumerate(token_objects, start=1):
-        save_individual_token_json(token_obj, team_name, idx, output_v3_dir)
+        save_individual_token_json(token_obj, team_name, idx, output_dir)
     
     # Build token bag mesh and icon URLs
-    bag_mesh_url = f"{github_base}/output_v3/{team_name}/tokens/tokenbag/{bag_mesh_file.name}"
-    bag_icon_url = f"{github_base}/output_v3/{team_name}/tokens/tokenbag/{bag_icon_file.name}"
+    bag_mesh_mtime = int(bag_mesh_file.stat().st_mtime)
+    bag_icon_mtime = int(bag_icon_file.stat().st_mtime)
+    bag_mesh_url = f"{github_base}/output/{team_name}/tokens/tokenbag/{bag_mesh_file.name}?v={bag_mesh_mtime}"
+    bag_icon_url = f"{github_base}/output/{team_name}/tokens/tokenbag/{bag_icon_file.name}?v={bag_icon_mtime}"
     
     # Create token bag
     token_timestamp = datetime.now(timezone.utc).isoformat()
@@ -432,62 +632,86 @@ def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Pa
         with open(lua_script_path, 'r', encoding='utf-8') as f:
             lua_script = f.read()
     
+    canonical_name = team_name.replace('-', ' ').title()
+
     token_bag = {
         "GUID": generate_guid(f"{team_name}:tokenbag"),
-        "Name": "Bag",
+        "Name": "Custom_Model_Bag",
         "Transform": {
             "posX": 0.0,
-            "posY": 3.0,
+            "posY": 1.01,
             "posZ": 0.0,
             "rotX": 0.0,
-            "rotY": 180.0,
+            "rotY": 270.0,
             "rotZ": 0.0,
-            "scaleX": 0.6,
-            "scaleY": 0.6,
-            "scaleZ": 0.6
+            "scaleX": 1.47,
+            "scaleY": 0.1,
+            "scaleZ": 1.47
         },
-        "Nickname": f"{team_name.replace('-', ' ').title()} Tokens",
-        "Description": "",
-        "GMNotes": "",
-        "AltLookAngle": {"x": 0.0, "y": 0.0, "z": 0.0},
-        "ColorDiffuse": {"r": 1.0, "g": 1.0, "b": 1.0},
-        "Tags": [f"KTCards{team_name.replace('-', '')}"],
-        "LayoutGroupSortIndex": 0,
-        "Value": 0,
+        "Nickname": f"{canonical_name} tokens",
+        "Description": "If errors pop up, just wait for few sec and try again",
+        "GMNotes": f"_{team_name}_tokens",
+        "ColorDiffuse": {"r": 1.0, "g": 1.0, "b": 1.0, "a": 0.0},
+        "Tags": [f"_{team_name}", "KTCardsTokenBag"],
         "Locked": False,
         "Grid": True,
         "Snap": True,
-        "IgnoreFoW": False,
-        "MeasureMovement": False,
-        "DragSelectable": True,
         "Autoraise": True,
         "Sticky": True,
         "Tooltip": True,
-        "GridProjection": False,
-        "HideWhenFaceDown": False,
         "Hands": False,
-        "MaterialIndex": -1,
-        "MeshIndex": -1,
-        "Bag": {
-            "Order": 0
-        },
-        "LuaScript": lua_script,
-        "LuaScriptState": json.dumps({"lastUpdate": token_timestamp}),
-        "XmlUI": "",
-        "ContainedObjects": token_objects,
+        "Number": 0,
         "CustomMesh": {
             "MeshURL": bag_mesh_url,
-            "DiffuseURL": bag_icon_url,
+            "DiffuseURL": "",
             "NormalURL": "",
-            "ColliderURL": "",
+            "ColliderURL": bag_mesh_url,
             "Convex": True,
-            "MaterialIndex": 3,
+            "MaterialIndex": 0,
             "TypeIndex": 6,
             "CastShadows": True
-        }
+        },
+        "Bag": {"Order": 0},
+        "LuaScript": lua_script,
+        "LuaScriptState": json.dumps({"ml": _build_token_memory_list(token_objects), "rr": 270, "lastUpdate": token_timestamp}),
+        "XmlUI": "",
+        "ChildObjects": [
+            {
+                "GUID": generate_guid(f"{team_name}:tokenbag:icon"),
+                "Name": "Custom_Tile",
+                "Transform": {
+                    "posX": 0.0, "posY": -0.5, "posZ": 0.0,
+                    "rotX": 0.0, "rotY": 270.0, "rotZ": 0.0,
+                    "scaleX": 0.5, "scaleY": 10.0, "scaleZ": 0.5
+                },
+                "Nickname": "",
+                "Description": "",
+                "ColorDiffuse": {"r": 1.0, "g": 1.0, "b": 1.0},
+                "Locked": False,
+                "Grid": True,
+                "Snap": True,
+                "Autoraise": True,
+                "Sticky": True,
+                "Tooltip": True,
+                "Hands": False,
+                "CustomImage": {
+                    "ImageURL": bag_icon_url,
+                    "ImageSecondaryURL": bag_icon_url,
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomTile": {
+                        "Type": 0,
+                        "Thickness": 0.1,
+                        "Stackable": False,
+                        "Stretch": True
+                    }
+                }
+            }
+        ],
+        "ContainedObjects": token_objects
     }
     
-    logger.info(f"Generated token bag for {team_name} with {len(token_objects)} tokens from output_v3")
+    logger.info(f"Generated token bag for {team_name} with {len(token_objects)} tokens from output")
     return token_bag, token_timestamp
 
 
@@ -542,6 +766,22 @@ def embed_datacard_stats(bag_obj: dict, team_name: str, output_dir: Path, config
     with open(team_config_path, 'r', encoding='utf-8') as f:
         team_config = yaml.safe_load(f)
     
+    # Load selection data from roster.json (output_v2)
+    faction = team_config.get('teams', {}).get(team_name, {}).get('faction', '')
+    roster_selection: dict = {}
+    roster_exclusive_sets: dict = {}
+    if faction:
+        roster_path = PROJECT_ROOT / 'output_v2' / faction / team_name / 'statlines' / 'roster.json'
+        if roster_path.exists():
+            try:
+                with open(roster_path, 'r', encoding='utf-8') as f:
+                    roster_data = json.load(f)
+                roster_selection = roster_data.get('selection', {})
+                roster_exclusive_sets = roster_data.get('exclusive_sets', {})
+                logger.debug(f"  Loaded selection for {sum(1 for v in roster_selection.values() if v)} operatives")
+            except Exception as e:
+                logger.warning(f"  Could not load roster.json for {team_name}: {e}")
+
     # Load datacard Lua script
     lua_script_path = config_dir / "defaults" / "tts-script" / "datacard-load-stats.lua"
     with open(lua_script_path, 'r', encoding='utf-8') as f:
@@ -565,14 +805,20 @@ def embed_datacard_stats(bag_obj: dict, team_name: str, output_dir: Path, config
             logger.debug(f"    No match for card '{nickname}'")
             continue
         
+        # Look up selection groups for this operative (keyed by UPPERCASE name in roster)
+        op_name_upper = operative.get('name', '').upper()
+        selection_groups = roster_selection.get(op_name_upper) or []
+        op_exclusive_sets = roster_exclusive_sets.get(op_name_upper) if roster_exclusive_sets else None
+
         # Build GMNotes
         try:
-            gm_notes_data = _build_gm_notes(operative, team_data, weapon_rules)
+            gm_notes_data = _build_gm_notes(operative, team_data, weapon_rules,
+                                             selection_groups=selection_groups,
+                                             exclusive_sets=op_exclusive_sets)
             gm_notes_json = json.dumps(gm_notes_data, separators=(",", ":"), ensure_ascii=False)
             
             # Get faction rule code if applicable
-            operative_name = operative.get('name', '')
-            faction_rule_code = _get_faction_rule_code(team_name, team_data, operative_name, config_dir, team_config)
+            faction_rule_code = _get_faction_rule_code(team_name, team_data, operative, team_config)
             lua_script = datacard_lua_script + faction_rule_code
             
             # Set GMNotes and Lua script
@@ -631,63 +877,141 @@ def _match_card_to_operative(nickname: str, team: str, team_data: dict) -> Optio
     nickname_norm = normalize(nickname)
     team_norm = normalize(team)
     
+    # Strip -card1, -card2, etc. suffix for multi-page operatives (e.g. Necron leaders)
+    nickname_base = re.sub(r'\s+card\d+$', '', nickname_norm)
+    
     datacards = team_data.get('datacards', [])
     for operative in datacards:
         op_name = operative.get('name', '')
         op_name_norm = normalize(op_name)
         
-        if op_name_norm == nickname_norm:
+        if op_name_norm == nickname_norm or op_name_norm == nickname_base:
             return operative
         
         if op_name_norm.startswith(team_norm):
             op_type = op_name_norm[len(team_norm):].strip()
-            if op_type == nickname_norm:
+            if op_type == nickname_norm or op_type == nickname_base:
                 return operative
     
     return None
 
 
-def _build_gm_notes(operative: dict, team_data: dict, weapon_rules: dict) -> dict:
+# ─── Weapon classification patterns (ported from script/embed_datacard_stats.py) ───
+_RANGED_RULES_PAT = re.compile(r"(range\s*\d|blast|torrent|silent)", re.IGNORECASE)
+_RANGED_NAME_PAT = re.compile(
+    r"(pistol|rifle|carbine|blaster|bolter|cannon|gun|launcher|"
+    r"flamer|melta|plasma|las(?:cutter|gun|cannon)|auto|bolt|stubber|grenade|"
+    r"needle|sniper|mortar|missile|photon|radium|phosphor|igniter|"
+    r"scattergun|bow|fusil|jezzail|splinter|shuriken|starcannon|"
+    r"deathspitter|strangler|devourer|fleshborer|spinefist)",
+    re.IGNORECASE,
+)
+_MELEE_NAME_PAT = re.compile(
+    r"(sword|blade|claw|fist|axe|hammer|mace|glaive|talons?|"
+    r"pincer|pike|spear|staff|whip|maul|scythe|gauntlet|"
+    r"bayonet|knife|dagger|spike|club|choppa|stave|fangs|"
+    r"halberd|trident|sabre|falchion|cleaver|maw|beak|sabres|"
+    r"claws|pincers|bonesword|lash|tendril|proboscis|crusher)",
+    re.IGNORECASE,
+)
+_UNICODE_NORMALIZE_MAP = {
+    "\u2019": "'", "\u2018": "'",
+    "\u201c": '"', "\u201d": '"',
+    "\u2010": "-", "\u2011": "-", "\u2012": "-", "\u2013": "-", "\u2014": "-",
+    "\u2033": '"', "\u2032": "'",
+    "\u00e2": "a", "\u00f4": "o",
+}
+
+
+def _normalize_text(s: str) -> str:
+    """Strip control characters and normalize Unicode to ASCII equivalents."""
+    s = re.sub(r"[\x07\x08]", "", s)
+    for uchar, replacement in _UNICODE_NORMALIZE_MAP.items():
+        s = s.replace(uchar, replacement)
+    return s.strip()
+
+
+def _classify_weapon(weapon: dict) -> str:
+    rules = weapon.get('special_rules', '')
+    name = weapon.get('name', '')
+    if _MELEE_NAME_PAT.search(name) and not _RANGED_RULES_PAT.search(rules):
+        return 'melee'
+    if _RANGED_RULES_PAT.search(rules):
+        return 'ranged'
+    if _RANGED_NAME_PAT.search(name):
+        return 'ranged'
+    return 'melee'
+
+
+def _match_weapon_rules(special_rules: str, all_rules: dict) -> dict:
+    if not special_rules:
+        return {}
+    matched = {}
+    for rule_name, desc in all_rules.items():
+        base = rule_name.replace(' x', '').replace(' x+', '')
+        if re.search(re.escape(base), special_rules, re.IGNORECASE):
+            matched[rule_name] = desc
+    return matched
+
+
+def _build_selection_for_gmnotes(selection_groups: list, weapons: list, exclusive_sets: dict = None) -> Optional[dict]:
+    """
+    Convert string-based selection groups to index-based format for GMNotes.
+    Mirrors script/embed_datacard_stats.py _build_selection_for_gmnotes().
+    """
+    if not selection_groups or not weapons:
+        return None
+    weapon_names_lower = [(w.get('plain_name') or w.get('name', '')).lower() for w in weapons]
+    all_matched = set()
+    result_groups = []
+    for group in selection_groups:
+        group_options = []
+        for option_label in group:
+            fragments = [f.strip().lower() for f in re.split(r'\s*;\s*|\s+and\s+', option_label)]
+            matched = set()
+            for frag in fragments:
+                sub_frags = [sf.strip() for sf in frag.split(' or ')]
+                for sf in sub_frags:
+                    for i, wname in enumerate(weapon_names_lower):
+                        if wname.startswith(sf):
+                            matched.add(i)
+            all_matched.update(matched)
+            group_options.append({'label': option_label, 'weapons': sorted(matched)})
+        result_groups.append(group_options)
+    fixed = [i for i in range(len(weapons)) if i not in all_matched]
+    result: dict = {'groups': result_groups, 'fixed': fixed}
+    if exclusive_sets:
+        result['exclusive_sets'] = exclusive_sets
+    return result
+
+
+def _build_gm_notes(operative: dict, team_data: dict, weapon_rules: dict,
+                    selection_groups: list = None, exclusive_sets: dict = None) -> dict:
     """Build GMNotes JSON structure with operative stats."""
-    import re
-    
     def parse_move(s: str) -> int:
         m = re.search(r"(\d+)", str(s))
         return int(m.group(1)) if m else 6
-    
+
     def parse_save(s: str) -> int:
         m = re.search(r"(\d+)", str(s))
         return int(m.group(1)) if m else 5
-    
-    def classify_weapon(weapon: dict) -> str:
-        special_rules = weapon.get('special_rules', '').lower()
-        if 'range' in special_rules or 'rng' in special_rules:
-            return 'ranged'
-        return 'melee'
-    
-    def weapon_prefix(weapon: dict) -> str:
-        return '[1E87FF]R[-]' if classify_weapon(weapon) == 'ranged' else '[F4641D]M[-]'
-    
+
     stats = {
         'APL': operative.get('apl', 2),
         'Move': parse_move(operative.get('movement', '6')),
         'Save': parse_save(operative.get('save', '5+')),
         'Wounds': operative.get('wounds', 1)
     }
-    
-    keywords = ['Operative']
-    if 'keywords' in operative:
-        keywords.extend(operative.get('keywords', []))
-    
+
+    keywords = ['Operative'] + [_normalize_text(k) for k in operative.get('keywords', [])]
+
     weapons = []
     weapon_rules_found = {}
     for weapon in operative.get('weapons', []):
         weapon_name = weapon.get('name', '')
         special_rules = weapon.get('special_rules', '')
-        
-        prefix = weapon_prefix(weapon)
+        prefix = '[F4641D]M[-]' if _classify_weapon(weapon) == 'melee' else '[1E87FF]R[-]'
         full_name = f'{prefix} {weapon_name}'
-        
         weapons.append({
             'name': full_name,
             'plain_name': weapon_name,
@@ -698,46 +1022,30 @@ def _build_gm_notes(operative: dict, team_data: dict, weapon_rules: dict) -> dic
                 'WR': special_rules
             }
         })
-        
-        if special_rules:
-            for rule_name, rule_description in weapon_rules.items():
-                if rule_name.lower() in special_rules.lower():
-                    weapon_rules_found[rule_name] = rule_description
-    
+        weapon_rules_found.update(_match_weapon_rules(special_rules, weapon_rules))
+
     abilities = []
     for ability in operative.get('passive_abilities', []):
-        ability_name = ability.get('name', '')
-        ability_desc = ability.get('description', '')
-        
-        # Filter out malformed entries
-        if (ability_desc.isdigit() or 
-            (ability_desc and ability_desc[0].isdigit()) or
-            (',' in ability_name and len(ability_name.split(',')) > 3) or
-            (ability_name.isupper() and len(ability_name) > 20) or
-            (not ability_name or not ability_name[0].isupper()) or
-            len(ability_name.split()) > 5):
-            continue
-        
-        abilities.append({
-            'name': ability_name,
-            'text': ability_desc
-        })
-    
+        name = _normalize_text(ability.get('name', ''))
+        text = _normalize_text(ability.get('description', ''))
+        if name:
+            abilities.append({'name': name, 'text': text})
+
     actions = []
     for action in operative.get('unique_actions', []):
-        actions.append({
-            'name': action.get('name', ''),
-            'text': action.get('description', '')
-        })
-    
+        name = _normalize_text(action.get('name', ''))
+        text = _normalize_text(action.get('description', ''))
+        if name:
+            actions.append({'name': name, 'text': text})
+
     description_lines = [
         f"[D36B3E][[84E680]APL[-] [ffffff]{stats['APL']}[-]] [[84E680]MOVE[-] [ffffff]{stats['Move']}\"[-]]",
         f"[[84E680]SAVE[-] [ffffff]{stats['Save']}+[-]] [[84E680]WOUNDS[-] [ffffff]{stats['Wounds']}[-]][-]"
     ]
-    
+
     if keywords:
         description_lines.append('[C5C5C5]' + ', '.join(keywords) + '[-]')
-    
+
     description_lines.append('[31B32B]Weapons[-]')
     for w in weapons:
         description_lines.append(w['name'])
@@ -748,22 +1056,22 @@ def _build_gm_notes(operative: dict, team_data: dict, weapon_rules: dict) -> dic
         if w_stats['WR']:
             description_lines.append(f"[84E680]WR[-]: {w_stats['WR']}")
         description_lines.append('')
-    
+
     if abilities:
         description_lines.append('---')
         description_lines.append('[31B32B]Abilities[-]')
         for ab in abilities:
             description_lines.append(f"- [EF8450]{ab['name']}[-]")
-    
+
     if actions:
         description_lines.append('---')
         description_lines.append('[31B32B]Unique Actions[-]')
         for act in actions:
             description_lines.append(f"- [EF8450]{act['name']}[-]")
-    
+
     description = '\n'.join(description_lines)
-    
-    gm_notes = {
+
+    result = {
         'name': operative.get('name', ''),
         'stats': stats,
         'keywords': keywords,
@@ -773,58 +1081,457 @@ def _build_gm_notes(operative: dict, team_data: dict, weapon_rules: dict) -> dic
         'weapon_rules': weapon_rules_found,
         'description': description
     }
-    
-    return gm_notes
+
+    if selection_groups:
+        indexed = _build_selection_for_gmnotes(selection_groups, weapons, exclusive_sets)
+        if indexed:
+            result['selection'] = indexed
+
+    return result
 
 
-def _get_faction_rule_code(team: str, team_data: dict, operative_name: str, config_dir: Path, team_config: dict) -> str:
-    """Generate faction rule Lua code if applicable."""
+def _build_select1_lua(rule_name: str, lua_options: str) -> str:
+    """Generate Lua for single-choice faction rule (select: 1)."""
+    return f'''
+
+-- ===== FACTION RULE: {rule_name.upper()} =====
+
+FACTION_RULE_NAME = "{rule_name}"
+FACTION_RULE_OPTIONS = {lua_options}
+
+local frPendingModel = nil
+local frPendingPlayerColor = nil
+local frSelection = 1
+
+function buildFactionRulePanel()
+    local rows = ""
+
+    for i, opt in ipairs(FACTION_RULE_OPTIONS) do
+        local isOn = (i == frSelection) and "true" or "false"
+        local label = opt.name:gsub("&", "&amp;"):gsub("<", "&lt;"):gsub(">", "&gt;")
+        rows = rows .. string.format(
+            '<Toggle id="fr_%d" isOn="%s" '
+            .. 'onValueChanged="onFrToggle" '
+            .. 'fontSize="10" textColor="#FFFFFF" colors="#444444|#666666|#333333|#222222" '
+            .. 'toggleWidth="16" toggleHeight="16">%s</Toggle>\\n',
+            i, isOn, label
+        )
+    end
+
+    local optionCount = #FACTION_RULE_OPTIONS
+    local panelHeight = 70 + optionCount * 22
+
+    return string.format([[
+<Panel id="frPanel" active="true"
+       width="240" height="%d"
+       color="rgba(0,0,0,0.92)"
+       padding="6 6 6 6"
+       position="0 0 -50"
+       rotation="0 0 180"
+       allowDragging="true">
+  <VerticalLayout spacing="2" childForceExpandWidth="true" childForceExpandHeight="false">
+    <Text fontSize="12" fontStyle="Bold" color="#FF9900"
+          alignment="MiddleCenter" preferredHeight="22">]] .. FACTION_RULE_NAME .. [[</Text>
+    <Image color="rgba(255,255,255,0.15)" preferredHeight="1" />
+    %s
+    <Image color="rgba(255,255,255,0.15)" preferredHeight="1" />
+    <HorizontalLayout spacing="4" preferredHeight="24">
+      <Button id="frApply" onClick="onFrApply"
+              fontSize="10" fontStyle="Bold"
+              colors="#2E7D32|#388E3C|#1B5E20|#555555"
+              textColor="#FFFFFF">Apply</Button>
+      <Button id="frCancel" onClick="onFrCancel"
+              fontSize="10"
+              colors="#C62828|#D32F2F|#B71C1C|#555555"
+              textColor="#FFFFFF">Cancel</Button>
+    </HorizontalLayout>
+  </VerticalLayout>
+</Panel>
+]], panelHeight, rows)
+end
+
+function onFrToggle(player, value, id)
+    local idx = tonumber(id:match("fr_(%d+)"))
+    if not idx then return end
+    if value == "True" then
+        frSelection = idx
+        for i = 1, #FACTION_RULE_OPTIONS do
+            if i ~= idx then
+                self.UI.setAttribute("fr_" .. i, "isOn", "false")
+            end
+        end
+    else
+        if frSelection == idx then
+            self.UI.setAttribute(id, "isOn", "true")
+        end
+    end
+end
+
+function onFrApply(player, value, id)
+    self.UI.setXml("")
+
+    if not frPendingModel then
+        broadcastToColor("No model pending.", frPendingPlayerColor or player.color, Color.Red)
+        return
+    end
+
+    local model = frPendingModel
+    local pc = frPendingPlayerColor or player.color
+
+    local msRaw = model.script_state or "{{}}"
+    local ok, ms = pcall(function() return JSON.decode(msRaw) end)
+    if not ok or not ms then ms = {{}} end
+    ms.info = ms.info or {{}}
+    ms.info.abilities = ms.info.abilities or {{}}
+
+    local kept = {{}}
+    for _, ab in ipairs(ms.info.abilities) do
+        local isFactionRule = false
+        for _, opt in ipairs(FACTION_RULE_OPTIONS) do
+            if ab.name == opt.name or ab.name == opt.name .. " (Primary)" or ab.name == opt.name .. " (Secondary)" then
+                isFactionRule = true
+                break
+            end
+        end
+        if not isFactionRule then
+            table.insert(kept, ab)
+        end
+    end
+
+    local selected = FACTION_RULE_OPTIONS[frSelection]
+    table.insert(kept, {{name = selected.name .. " (Primary)", text = selected.text}})
+
+    ms.info.abilities = kept
+
+    local descLines = {{}}
+    local oldDesc = model.getDescription() or ""
+    local inFactionSection = false
+    for line in oldDesc:gmatch("([^\\n]*)\\n?") do
+        if line:find("^%[31B32B%]" .. FACTION_RULE_NAME) then
+            inFactionSection = true
+        elseif inFactionSection and (line:find("^%[31B32B%]") or line:find("^%-%-%-")) then
+            inFactionSection = false
+            table.insert(descLines, line)
+        elseif not inFactionSection then
+            table.insert(descLines, line)
+        end
+    end
+
+    table.insert(descLines, "---")
+    table.insert(descLines, "[31B32B]" .. FACTION_RULE_NAME .. "[-]")
+    table.insert(descLines, "- [EF8450]" .. selected.name .. " (Primary)[-]")
+
+    model.setDescription(table.concat(descLines, "\\n"))
+    model.script_state = JSON.encode(ms)
+    Wait.frames(function() model.reload() end, 5)
+
+    broadcastToColor(string.format("%s applied: %s (Primary)",
+        FACTION_RULE_NAME, selected.name), pc, Color.Green)
+
+    frPendingModel = nil
+    frPendingPlayerColor = nil
+end
+
+function onFrCancel(player, value, id)
+    self.UI.setXml("")
+    broadcastToColor(FACTION_RULE_NAME .. " selection cancelled.", frPendingPlayerColor or player.color, Color.White)
+    frPendingModel = nil
+    frPendingPlayerColor = nil
+end
+
+function applyFactionRule(playerColor)
+    local model = findModelOnCard()
+    if model == nil then
+        broadcastToColor("Place a KTUIMini model on this card first.", playerColor, Color.Orange)
+        return
+    end
+
+    frPendingModel = model
+    frPendingPlayerColor = playerColor
+    frSelection = 1
+    self.UI.setXml(buildFactionRulePanel())
+    broadcastToColor("Select " .. FACTION_RULE_NAME .. ", then click Apply.", playerColor, Color.Yellow)
+end
+
+local frBaseOnLoad = onLoad
+function onLoad()
+    if frBaseOnLoad then frBaseOnLoad() end
+    self.addContextMenuItem("{rule_name}", applyFactionRule)
+end
+
+-- ===== END FACTION RULE =====
+'''
+
+
+def _build_select2_lua(rule_name: str, lua_options: str) -> str:
+    """Generate Lua for dual-choice faction rule (select: 2, primary + secondary)."""
+    return f'''
+
+-- ===== FACTION RULE: {rule_name.upper()} =====
+
+FACTION_RULE_NAME = "{rule_name}"
+FACTION_RULE_OPTIONS = {lua_options}
+
+local frPendingModel = nil
+local frPendingPlayerColor = nil
+local frPrimarySelection = 1
+local frSecondarySelection = 2
+
+function buildFactionRulePanel()
+    local rows = ""
+
+    rows = rows .. '<Text fontSize="11" fontStyle="Bold" color="#FF6600" '
+        .. 'preferredHeight="20" alignment="MiddleLeft">Primary:</Text>\\n'
+    for i, opt in ipairs(FACTION_RULE_OPTIONS) do
+        local isOn = (i == frPrimarySelection) and "true" or "false"
+        local label = opt.name:gsub("&", "&amp;"):gsub("<", "&lt;"):gsub(">", "&gt;")
+        rows = rows .. string.format(
+            '<Toggle id="fr_p_%d" isOn="%s" '
+            .. 'onValueChanged="onFrPrimaryToggle" '
+            .. 'fontSize="10" textColor="#FFFFFF" colors="#444444|#666666|#333333|#222222" '
+            .. 'toggleWidth="16" toggleHeight="16">%s</Toggle>\\n',
+            i, isOn, label
+        )
+    end
+
+    rows = rows .. '<Image color="rgba(255,255,255,0.3)" preferredHeight="1" />\\n'
+
+    rows = rows .. '<Text fontSize="11" fontStyle="Bold" color="#FF6600" '
+        .. 'preferredHeight="20" alignment="MiddleLeft">Secondary:</Text>\\n'
+    for i, opt in ipairs(FACTION_RULE_OPTIONS) do
+        local isOn = (i == frSecondarySelection) and "true" or "false"
+        local label = opt.name:gsub("&", "&amp;"):gsub("<", "&lt;"):gsub(">", "&gt;")
+        rows = rows .. string.format(
+            '<Toggle id="fr_s_%d" isOn="%s" '
+            .. 'onValueChanged="onFrSecondaryToggle" '
+            .. 'fontSize="10" textColor="#FFFFFF" colors="#444444|#666666|#333333|#222222" '
+            .. 'toggleWidth="16" toggleHeight="16">%s</Toggle>\\n',
+            i, isOn, label
+        )
+    end
+
+    local optionCount = #FACTION_RULE_OPTIONS
+    local panelHeight = 80 + optionCount * 22 * 2 + 40
+
+    return string.format([[
+<Panel id="frPanel" active="true"
+       width="240" height="%d"
+       color="rgba(0,0,0,0.92)"
+       padding="6 6 6 6"
+       position="0 0 -50"
+       rotation="0 0 180"
+       allowDragging="true">
+  <VerticalLayout spacing="2" childForceExpandWidth="true" childForceExpandHeight="false">
+    <Text fontSize="12" fontStyle="Bold" color="#FF9900"
+          alignment="MiddleCenter" preferredHeight="22">]] .. FACTION_RULE_NAME .. [[</Text>
+    <Image color="rgba(255,255,255,0.15)" preferredHeight="1" />
+    %s
+    <Image color="rgba(255,255,255,0.15)" preferredHeight="1" />
+    <HorizontalLayout spacing="4" preferredHeight="24">
+      <Button id="frApply" onClick="onFrApply"
+              fontSize="10" fontStyle="Bold"
+              colors="#2E7D32|#388E3C|#1B5E20|#555555"
+              textColor="#FFFFFF">Apply</Button>
+      <Button id="frCancel" onClick="onFrCancel"
+              fontSize="10"
+              colors="#C62828|#D32F2F|#B71C1C|#555555"
+              textColor="#FFFFFF">Cancel</Button>
+    </HorizontalLayout>
+  </VerticalLayout>
+</Panel>
+]], panelHeight, rows)
+end
+
+function onFrPrimaryToggle(player, value, id)
+    local idx = tonumber(id:match("fr_p_(%d+)"))
+    if not idx then return end
+    if value == "True" then
+        frPrimarySelection = idx
+        for i = 1, #FACTION_RULE_OPTIONS do
+            if i ~= idx then
+                self.UI.setAttribute("fr_p_" .. i, "isOn", "false")
+            end
+        end
+    else
+        if frPrimarySelection == idx then
+            self.UI.setAttribute(id, "isOn", "true")
+        end
+    end
+end
+
+function onFrSecondaryToggle(player, value, id)
+    local idx = tonumber(id:match("fr_s_(%d+)"))
+    if not idx then return end
+    if value == "True" then
+        frSecondarySelection = idx
+        for i = 1, #FACTION_RULE_OPTIONS do
+            if i ~= idx then
+                self.UI.setAttribute("fr_s_" .. i, "isOn", "false")
+            end
+        end
+    else
+        if frSecondarySelection == idx then
+            self.UI.setAttribute(id, "isOn", "true")
+        end
+    end
+end
+
+function onFrApply(player, value, id)
+    self.UI.setXml("")
+
+    if not frPendingModel then
+        broadcastToColor("No model pending.", frPendingPlayerColor or player.color, Color.Red)
+        return
+    end
+
+    if frPrimarySelection == frSecondarySelection then
+        broadcastToColor("Primary and secondary must be different.", frPendingPlayerColor or player.color, Color.Orange)
+        self.UI.setXml(buildFactionRulePanel())
+        return
+    end
+
+    local model = frPendingModel
+    local pc = frPendingPlayerColor or player.color
+
+    local msRaw = model.script_state or "{{}}"
+    local ok, ms = pcall(function() return JSON.decode(msRaw) end)
+    if not ok or not ms then ms = {{}} end
+    ms.info = ms.info or {{}}
+    ms.info.abilities = ms.info.abilities or {{}}
+
+    local kept = {{}}
+    for _, ab in ipairs(ms.info.abilities) do
+        local isFactionRule = false
+        for _, opt in ipairs(FACTION_RULE_OPTIONS) do
+            if ab.name == opt.name or ab.name == opt.name .. " (Primary)" or ab.name == opt.name .. " (Secondary)" then
+                isFactionRule = true
+                break
+            end
+        end
+        if not isFactionRule then
+            table.insert(kept, ab)
+        end
+    end
+
+    local primary = FACTION_RULE_OPTIONS[frPrimarySelection]
+    local secondary = FACTION_RULE_OPTIONS[frSecondarySelection]
+
+    table.insert(kept, {{name = primary.name .. " (Primary)", text = primary.text}})
+    table.insert(kept, {{name = secondary.name .. " (Secondary)", text = secondary.text}})
+
+    ms.info.abilities = kept
+
+    local descLines = {{}}
+    local oldDesc = model.getDescription() or ""
+    local inFactionSection = false
+    for line in oldDesc:gmatch("([^\\n]*)\\n?") do
+        if line:find("^%[31B32B%]" .. FACTION_RULE_NAME) then
+            inFactionSection = true
+        elseif inFactionSection and (line:find("^%[31B32B%]") or line:find("^%-%-%-")) then
+            inFactionSection = false
+            table.insert(descLines, line)
+        elseif not inFactionSection then
+            table.insert(descLines, line)
+        end
+    end
+
+    table.insert(descLines, "---")
+    table.insert(descLines, "[31B32B]" .. FACTION_RULE_NAME .. "[-]")
+    table.insert(descLines, "- [EF8450]" .. primary.name .. " (Primary)[-]")
+    table.insert(descLines, "- [EF8450]" .. secondary.name .. " (Secondary)[-]")
+
+    model.setDescription(table.concat(descLines, "\\n"))
+    model.script_state = JSON.encode(ms)
+    Wait.frames(function() model.reload() end, 5)
+
+    broadcastToColor(string.format("%s applied: %s (Primary) + %s (Secondary)",
+        FACTION_RULE_NAME, primary.name, secondary.name), pc, Color.Green)
+
+    frPendingModel = nil
+    frPendingPlayerColor = nil
+end
+
+function onFrCancel(player, value, id)
+    self.UI.setXml("")
+    broadcastToColor(FACTION_RULE_NAME .. " selection cancelled.", frPendingPlayerColor or player.color, Color.White)
+    frPendingModel = nil
+    frPendingPlayerColor = nil
+end
+
+function applyFactionRule(playerColor)
+    local model = findModelOnCard()
+    if model == nil then
+        broadcastToColor("Place a KTUIMini model on this card first.", playerColor, Color.Orange)
+        return
+    end
+
+    frPendingModel = model
+    frPendingPlayerColor = playerColor
+    frPrimarySelection = 1
+    frSecondarySelection = 2
+    self.UI.setXml(buildFactionRulePanel())
+    broadcastToColor("Select primary and secondary " .. FACTION_RULE_NAME .. ", then click Apply.", playerColor, Color.Yellow)
+end
+
+local frBaseOnLoad = onLoad
+function onLoad()
+    if frBaseOnLoad then frBaseOnLoad() end
+    self.addContextMenuItem("{rule_name}", applyFactionRule)
+end
+
+-- ===== END FACTION RULE =====
+'''
+
+
+def _get_faction_rule_code(team: str, team_data: dict, operative: dict, team_config: dict) -> str:
+    """Generate faction rule Lua code if applicable, using inline Lua builders."""
     team_info = team_config.get('teams', {}).get(team, {})
-    if 'faction_rule' not in team_info:
+    rule_cfg = team_info.get('faction_rule')
+    if not rule_cfg:
         return ""
-    
+
     faction_rules = team_data.get('faction_rules', [])
     if not faction_rules:
         return ""
-    
-    if team == "chaos-cult":
-        op_lower = operative_name.lower()
-        if "mutant" not in op_lower and "torment" not in op_lower and "possessed" not in op_lower:
+
+    # Check applies_to keyword filter
+    applies_to = rule_cfg.get('applies_to')
+    if applies_to:
+        op_keywords = [kw.upper() for kw in operative.get('keywords', [])]
+        if not any(kw.upper() in op_keywords for kw in applies_to):
             return ""
-    
-    template_path = config_dir / "defaults" / "tts-script" / "faction-rule-chapter-tactics.lua"
-    if not template_path.exists():
+
+    # Find the rule entry with options
+    rule_entry = next((r for r in faction_rules if r.get('options')), None)
+    if not rule_entry:
         return ""
-    
-    with open(template_path, 'r', encoding='utf-8') as f:
-        template = f.read()
-    
-    rule_with_options = None
-    for rule in faction_rules:
-        if 'options' in rule and rule['options']:
-            rule_with_options = rule
-            break
-    
-    if not rule_with_options:
-        return ""
-    
-    rule_name = rule_with_options['name']
-    options = rule_with_options['options']
-    
-    lua_options = []
+
+    # Use canonical rule name from team-config (proper casing), fall back to extracted name
+    rule_name = rule_cfg.get('name', rule_entry['name'])
+    options = rule_entry['options']
+
+    # Build Lua table literal for options
+    lua_options = "{\n"
     for opt in options:
-        opt_name = opt.get('name', '')
-        opt_text = opt.get('text', '')
-        opt_name_escaped = opt_name.replace('\\', '\\\\').replace('"', '\\"').replace('\n', '\\n')
-        opt_text_escaped = opt_text.replace('\\', '\\\\').replace('"', '\\"').replace('\n', '\\n')
-        lua_options.append(f'    {{name = "{opt_name_escaped}", text = "{opt_text_escaped}"}}')
-    
-    options_str = ',\n'.join(lua_options)
-    
-    lua_code = template.replace('{{FACTION_RULE_NAME}}', rule_name)
-    lua_code = lua_code.replace('{{FACTION_RULE_OPTIONS}}', options_str)
-    
-    return lua_code
+        name_esc = opt.get('name', '').replace('"', '\\"')
+        text_esc = opt.get('text', '').replace('\\', '\\\\').replace('"', '\\"').replace("'", "\\'").replace('\n', '\\n')
+        lua_options += f'    {{name = "{name_esc}", text = "{text_esc}"}},\n'
+    lua_options += "}"
+
+    # Determine select count (support per-operative overrides)
+    select_count = rule_cfg.get('select', 2)
+    operative_select_count = rule_cfg.get('operative_select_count')
+    if operative_select_count:
+        op_keywords = [kw.upper() for kw in operative.get('keywords', [])]
+        for kw in op_keywords:
+            if kw.upper() in operative_select_count:
+                select_count = operative_select_count[kw.upper()]
+                break
+
+    if select_count == 1:
+        return _build_select1_lua(rule_name, lua_options)
+    else:
+        return _build_select2_lua(rule_name, lua_options)
 
 
 def _update_bag_timestamp(tts_data: dict) -> None:
@@ -849,7 +1556,7 @@ def save_individual_card_json(card_obj: dict, team_name: str, card_type: str, ca
         team_name: Team slug
         card_type: Card type (datacards, equipment, etc.)
         card_index: Card index for filename (fallback)
-        output_dir: output_v3 directory
+        output_dir: output directory
     
     Returns:
         (file_path, modification_timestamp)
@@ -886,7 +1593,7 @@ def save_individual_token_json(token_obj: dict, team_name: str, token_index: int
         token_obj: Single token TTS object
         team_name: Team slug
         token_index: Token index for filename (fallback)
-        output_dir: output_v3 directory
+        output_dir: output directory
     
     Returns:
         (file_path, modification_timestamp)
@@ -922,8 +1629,8 @@ def generate_team_tts_object(team_name: str, cards: list, lua_script: str, textu
     faction = None
     if cards:
         first_url = cards[0].get('url', '')
-        if '/output_v3/' in first_url:
-            parts = first_url.split('/output_v3/')[1].split('/')
+        if '/output/' in first_url:
+            parts = first_url.split('/output/')[1].split('/')
             if len(parts) > 0:
                 faction = parts[0]
     
@@ -1046,32 +1753,29 @@ def generate_team_tts_object(team_name: str, cards: list, lua_script: str, textu
     with open(output_file, 'w', encoding='utf-8') as f:
         json.dump(bag_obj, f, indent=2)
     
-    # Get actual file timestamp and update URLs
+    # Get actual file timestamp
     file_mtime = os.path.getmtime(output_file)
     actual_timestamp = datetime.fromtimestamp(file_mtime).strftime('%Y-%m-%dT%H:%M:%S')
-    cache_bust_param = f"?v={int(file_mtime)}"
-    
-    # Update all URLs with cache-busting parameter
-    def update_urls_in_object(obj):
+
+    # Mirror MeshURL → ColliderURL (URLs already have correct per-file ?v= timestamps)
+    def mirror_collider_urls(obj):
         if isinstance(obj, dict):
             for key, value in obj.items():
-                if key in ['FaceURL', 'BackURL', 'ImageURL', 'MeshURL'] and isinstance(value, str):
-                    obj[key] = re.sub(r'\?v=\d+', cache_bust_param, value)
-                    if '?v=' not in obj[key]:
-                        obj[key] += cache_bust_param
+                if key == 'MeshURL' and isinstance(value, str) and value:
+                    obj['ColliderURL'] = value
                 else:
-                    update_urls_in_object(value)
+                    mirror_collider_urls(value)
         elif isinstance(obj, list):
             for item in obj:
-                update_urls_in_object(item)
-    
-    update_urls_in_object(bag_obj)
-    
+                mirror_collider_urls(item)
+
+    mirror_collider_urls(bag_obj)
+
     # Recreate bag with actual timestamp
     bag_obj = create_bag(team_display_name, team_tag, contained_objects, lua_script, texture_url, mesh_url, faction, actual_timestamp, token_timestamp or "")
-    
-    # Apply URL updates again
-    update_urls_in_object(bag_obj)
+
+    # Apply collider mirroring again
+    mirror_collider_urls(bag_obj)
     
     # Embed datacard stats (optional - skips if no team data)
     embed_datacard_stats(bag_obj, team_name, output_dir, config_dir)
@@ -1099,7 +1803,7 @@ def generate_all_tts_objects(urls_data: list, config_dir: Path, output_dir: Path
         if card['type'] == 'tts':
             if 'card-box-texture' in card['name']:
                 team_textures[team_key] = card['url']
-            elif 'card-box' in card['name'] and card['url'].endswith('.obj'):
+            elif 'card-box' in card['name'] and '.obj' in card['url']:
                 team_meshes[team_key] = card['url']
         else:
             teams[team_key].append(card)
@@ -1138,34 +1842,55 @@ def main():
     args = parser.parse_args()
     
     logging.getLogger().setLevel(getattr(logging, args.log_level))
-    
+
     logger.info("=" * 60)
     logger.info("TTS Object Generation (with embedded stats) - KT-App Pipeline")
     logger.info("=" * 60)
-    
+
+    # Initialize metadata managers
+    pipeline_meta = MetadataManager(PIPELINE_METADATA_FILE)
+    output_meta = OutputMetadataManager(OUTPUT_METADATA_FILE)
+
     # Generate URLs JSON from v3 structure (flat format for internal use)
-    logger.info("Scanning output_v3 structure...")
+    logger.info("Scanning output structure...")
     urls_data = generate_urls_json_v3()
     logger.info(f"Found {len(urls_data)} card/asset entries")
-    
+
     # Generate object-urls.json for TTS update checks
     logger.info("Generating object-urls.json for TTS update checks...")
     object_urls_data = generate_object_urls_json()
-    object_urls_file = PROJECT_ROOT / 'output_v3' / 'object-urls.json'
+    object_urls_file = PROJECT_ROOT / 'output' / 'object-urls.json'
     with open(object_urls_file, 'w', encoding='utf-8') as f:
         json.dump(object_urls_data, f, indent=2, ensure_ascii=False)
     logger.info(f"Saved object-urls.json with {len(object_urls_data)} teams")
-    
+
     # Generate TTS objects
     config_dir = PROJECT_ROOT / 'config'
-    output_dir = PROJECT_ROOT / 'output_v3'
+    output_dir = PROJECT_ROOT / 'output'
     count = generate_all_tts_objects(urls_data, config_dir, output_dir, args.teams)
-    
+
+    # Track metadata for all generated Box.json files
+    for team_tts_dir in sorted(output_dir.glob("*/tts_objects")):
+        team_slug = team_tts_dir.parent.name
+        for f in team_tts_dir.glob("*.json"):
+            rel = f"{team_slug}/tts_objects/{f.name}"
+            pipeline_meta.update_file(team_slug, "7_generate_tts_objects", f.name, f)
+            output_meta.update_file(rel, f, "kt-app", "7_generate_tts_objects")
+        pipeline_meta.mark_step_complete(team_slug, "7_generate_tts_objects")
+
+    # Track object-urls.json
+    output_meta.update_file("object-urls.json", object_urls_file, "kt-app", "7_generate_tts_objects")
+
+    # Save metadata
+    pipeline_meta.metadata["last_full_run"] = datetime.now(timezone.utc).isoformat()
+    pipeline_meta.save_metadata()
+    output_meta.save_metadata()
+
     logger.info("=" * 60)
     logger.info("Generation Complete")
     logger.info("=" * 60)
     logger.info(f"Teams processed: {count}")
-    logger.info(f"Output: {PROJECT_ROOT / 'output_v3' / '{team}' / 'tts_objects'}")
+    logger.info(f"Output: {PROJECT_ROOT / 'output' / '{team}' / 'tts_objects'}")
 
 
 if __name__ == '__main__':
