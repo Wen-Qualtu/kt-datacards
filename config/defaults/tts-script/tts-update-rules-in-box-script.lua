@@ -223,9 +223,6 @@ local function setupContextMenu()
   self.addContextMenuItem("Reset", function(playerColor)
     click_setup()
   end)
-  self.addContextMenuItem("Save Layout", function(playerColor)
-    click_save_layout()
-  end)
   self.addContextMenuItem("Clear Layout", function(playerColor)
     customLayout = {}
     drawnCardLayout = {}
@@ -307,9 +304,9 @@ function onload(saved_data)
     teamSlug = loaded_data.teamSlug or ""
     tokenBagPositions = loaded_data.tokenBagPositions or {}
     deckUnpackTracking = loaded_data.deckUnpackTracking or {}
-    customLayout = loaded_data.customLayout or {}
+    customLayout = {}
     deckCardRegistry = loaded_data.deckCardRegistry or {}
-    drawnCardLayout = loaded_data.drawnCardLayout or {}
+    drawnCardLayout = {}
   else
     memoryList = {}
     relativeRotation = readRotation()
@@ -595,20 +592,8 @@ end
 
 -- Save current absolute positions of all placed items for use by Place
 function click_save_layout()
-  if next(memoryList) == nil then
-    broadcastToAll("No layout in memory - please Place items first", {1, 0.5, 0})
-    return
-  end
-
-  -- Build a set of GUIDs currently inside this bag (not on table)
-  local bagContents = {}
-  for _, item in ipairs(self.getObjects()) do
-    bagContents[item.guid] = true
-  end
-
-  customLayout = {}
-  drawnCardLayout = {}
-  local count = 0
+  broadcastToAll("Layout save is disabled in this release. Place will use default positions.", {1, 0.5, 0})
+  return
 
   -- First: capture positions of all known memoryList items on the table
   for guid, _ in pairs(memoryList) do
@@ -1305,9 +1290,8 @@ function click_recall()
       placementMetadata = nil
       deckUnpackTracking = {}
       deckCardRegistry = {}
-      -- drawnCardLayout is intentionally kept: it persists across Recall→Place cycles
-      -- so Place can re-extract drawn cards to their saved positions.
-      -- It is only cleared by click_save_layout (fresh save) or Clear Layout.
+      customLayout = {}
+      drawnCardLayout = {}
       changeButtons('done_setup')
       updateSave()
       broadcastToAll("✓ Objects recalled - ready to place again!", {0, 1, 0})
