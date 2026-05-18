@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(cd c:\\\\git\\\\kt-datacards; git diff --cached --name-only | Where-Object { $_ -notmatch \"^output/\" -and $_ -notmatch \"^tts_objects/\" -and $_ -notmatch \"^output_v2/\" })",
+      "PowerShell(cd c:\\\\git\\\\kt-datacards; git restore *)",
+      "PowerShell(cd c:\\\\git\\\\kt-datacards; git add *)",
+      "PowerShell(cd c:\\\\git\\\\kt-datacards; git commit *)",
+      "PowerShell(cd c:\\\\git\\\\kt-datacards; python tools/swap_branch_urls.py *)",
+      "PowerShell(cd c:\\\\git\\\\kt-datacards; python tools/copy_tts_objects.py *)",
+      "PowerShell(git restore *)",
+      "PowerShell(git add *)",
+      "PowerShell(git commit *)",
+      "PowerShell(python tools/swap_branch_urls.py *)"
+    ]
+  }
+}
