@@ -202,8 +202,9 @@ def generate_urls_json_v3():
                 if name.endswith('-front') or name.endswith('-back'):
                     name = name.rsplit('-', 1)
                     name = f"{name[0]}_{name[1]}"
-                
-                card_url = f"{base_url}/{team}/cards/{card_type}/{card_file.name}"
+
+                card_mtime = int(card_file.stat().st_mtime)
+                card_url = f"{base_url}/{team}/cards/{card_type}/{card_file.name}?v={card_mtime}"
                 all_entries.append({
                     'team': team,
                     'type': card_type_v2,
@@ -769,17 +770,28 @@ def load_dice_objects(team_name: str, sample_url: Optional[str], output_dir: Pat
 
 
 def copy_preview_image(team_folder_name: str, team_display_name: str, config_dir: Path, output_dir: Path):
-    """Copy preview/icon image for a team"""
-    team_icon = config_dir / "teams" / team_folder_name / "tts-image" / f"{team_folder_name}-icon.png"
+    """Copy preview/icon image for a team.
+
+    Priority:
+      1. config/teams/{team}/tts-image/{team}-icon.png   — manual override
+      2. config/teams/{team}/tts-image/{team}-preview.png — manual override (alt)
+      3. layers/warcom/extracted/{team}/icons/{team}-icon-token.jpg — auto-source
+      4. config/defaults/tts-image/default-icon.png       — generic fallback
+      5. config/defaults/tts-image/default-preview.png    — generic fallback (alt)
+    """
+    team_icon    = config_dir / "teams" / team_folder_name / "tts-image" / f"{team_folder_name}-icon.png"
     team_preview = config_dir / "teams" / team_folder_name / "tts-image" / f"{team_folder_name}-preview.png"
-    default_icon = config_dir / "defaults" / "tts-image" / "default-icon.png"
+    warcom_icon  = PROJECT_ROOT / "layers" / "warcom" / "extracted" / team_folder_name / "icons" / f"{team_folder_name}-icon-token.jpg"
+    default_icon    = config_dir / "defaults" / "tts-image" / "default-icon.png"
     default_preview = config_dir / "defaults" / "tts-image" / "default-preview.png"
-    
-    # Priority: team icon > team preview > default icon > default preview
+
+    # Priority: team icon > team preview > warcom icon > default icon > default preview
     if team_icon.exists():
         source_preview = team_icon
     elif team_preview.exists():
         source_preview = team_preview
+    elif warcom_icon.exists():
+        source_preview = warcom_icon
     elif default_icon.exists():
         source_preview = default_icon
     else:

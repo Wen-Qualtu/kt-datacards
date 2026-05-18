@@ -216,18 +216,28 @@ class TTSAssetGenerator:
         return None
     
     def _get_token_bag_icon(self, team: Optional[str] = None) -> Optional[Path]:
-        """Get token bag icon (team-specific or default)."""
-        # Priority 1: Team-specific icon
+        """Get token bag icon.
+
+        Priority:
+          1. config/teams/{team}/tts-image/{team}-icon.png  — manual override
+          2. layers/warcom/extracted/{team}/icons/{team}-icon-token.jpg  — auto-source
+          3. config/defaults/tts-token/token-bg-sample.png  — generic fallback
+        """
         if team:
+            # Priority 1: manual override
             team_icon = self.teams_dir / team / "tts-image" / f"{team}-icon.png"
             if team_icon.exists():
                 return team_icon
-        
-        # Priority 2: Default token bag icon
+            # Priority 2: warcom icon (auto-source, same icon used by box textures)
+            warcom_icon = PROJECT_ROOT / "layers" / "warcom" / "extracted" / team / "icons" / f"{team}-icon-token.jpg"
+            if warcom_icon.exists():
+                return warcom_icon
+
+        # Priority 3: generic default
         token_bag_icon = PROJECT_ROOT / "config" / "defaults" / "tts-token" / "token-bg-sample.png"
         if token_bag_icon.exists():
             return token_bag_icon
-        
+
         logger.warning("  No token bag icon found")
         return None
 

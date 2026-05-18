@@ -580,7 +580,7 @@ def create_bag(team_name, team_tag, contained_objects, lua_script, texture_url=N
                     "NormalURL": "",
                     "ColliderURL": mesh_url,
                     "Convex": True,
-                    "MaterialIndex": 0,
+                    "MaterialIndex": 3,
                     "TypeIndex": 6,
                     "CastShadows": True
                 },
