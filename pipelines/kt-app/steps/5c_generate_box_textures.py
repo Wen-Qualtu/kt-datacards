@@ -1,18 +1,17 @@
 """
 Step 5c: Generate Team Box Textures
 
-Priority per team:
-  1. config/teams/{team}/box/card-box-texture.jpg exists  -> use as-is (manual override)
-  2. warcom icons exist in layers/warcom/extracted/{team}/icons/ -> auto-generate texture
-  3. neither available -> step 6 will fall back to config/defaults/box/ texture
+Output: output/{team}/cardbox/{team}-card-box-texture.jpg  (6-face cube-net, 1428×1170)
 
-In practice almost all teams will hit case 2. Case 1 is for manual overrides that
-should survive regeneration. Case 3 covers new teams while their icons are unavailable.
+Priority per team:
+  1. output texture already exists and --force not set  -> skip
+  2. warcom icons available in layers/warcom/extracted/{team}/icons/ -> auto-generate
+  3. no icons -> step 6 will fall back to config/defaults/box/ texture
 
 Usage:
     python pipelines/kt-app/steps/5c_generate_box_textures.py
     python pipelines/kt-app/steps/5c_generate_box_textures.py --teams angels-of-death kasrkin
-    python pipelines/kt-app/steps/5c_generate_box_textures.py --force   # re-generate even case-1 textures
+    python pipelines/kt-app/steps/5c_generate_box_textures.py --force
 """
 
 import argparse
@@ -35,8 +34,8 @@ _spec.loader.exec_module(_mod)
 generate_for_team = _mod.generate_for_team
 
 EXTRACTED_DIR = PROJECT_ROOT / "layers" / "warcom" / "extracted"
-CONFIG_DIR = PROJECT_ROOT / "config"
-TEMPLATE_PATH = PROJECT_ROOT / "tools" / "resources" / "box-side.png"
+OUTPUT_DIR = PROJECT_ROOT / "output"
+BACKGROUND_PATH = PROJECT_ROOT / "layers" / "warcom" / "extracted" / "_generic" / "generic-artwork-001.jpeg"
 
 
 def load_teams() -> list[str]:
@@ -52,28 +51,28 @@ def has_icons(slug: str) -> bool:
 
 
 def run(team_filter: Optional[Set[str]] = None, force: bool = False) -> dict[str, int]:
-    if not TEMPLATE_PATH.exists():
-        print(f"ERROR: Template not found: {TEMPLATE_PATH}")
+    if not BACKGROUND_PATH.exists():
+        print(f"ERROR: Background not found: {BACKGROUND_PATH}")
         sys.exit(1)
 
     teams = load_teams()
     if team_filter:
         teams = [t for t in teams if t in team_filter]
 
-    counts = {"generated": 0, "manual_override": 0, "no_icons": 0, "failed": 0}
+    counts = {"generated": 0, "skipped": 0, "no_icons": 0, "failed": 0}
 
     for slug in teams:
-        texture = CONFIG_DIR / "teams" / slug / "box" / "card-box-texture.jpg"
+        output_path = OUTPUT_DIR / slug / "cardbox" / f"{slug}-card-box-texture.jpg"
 
-        # Priority 1: manual override — texture exists and we're not forcing
-        if texture.exists() and not force:
-            counts["manual_override"] += 1
+        # Priority 1: already exists and not forcing — skip
+        if output_path.exists() and not force:
+            counts["skipped"] += 1
             continue
 
         # Priority 2: auto-generate from warcom icons
         if has_icons(slug):
             print(f"  [generate] {slug}")
-            ok = generate_for_team(slug, EXTRACTED_DIR, CONFIG_DIR, TEMPLATE_PATH)
+            ok = generate_for_team(slug, EXTRACTED_DIR, output_path, BACKGROUND_PATH)
             if ok:
                 counts["generated"] += 1
             else:
@@ -81,10 +80,9 @@ def run(team_filter: Optional[Set[str]] = None, force: bool = False) -> dict[str
                 counts["failed"] += 1
             continue
 
-        # Priority 3: no icons and no existing texture — step 6 will use default
-        if not texture.exists():
-            print(f"  [default]  {slug}  (no icons, step 6 will use default box)")
-            counts["no_icons"] += 1
+        # Priority 3: no icons — step 6 will use default box
+        print(f"  [default]  {slug}  (no icons, step 6 will use default box)")
+        counts["no_icons"] += 1
 
     return counts
 
@@ -105,7 +103,7 @@ def main():
 
     print(
         f"\nGenerated: {counts['generated']}"
-        f"  Manual override (kept): {counts['manual_override']}"
+        f"  Skipped (exists): {counts['skipped']}"
         f"  No icons (will use default): {counts['no_icons']}"
         f"  Failed: {counts['failed']}"
     )
