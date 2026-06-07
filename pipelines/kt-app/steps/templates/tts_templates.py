@@ -92,7 +92,7 @@ def get_card_type_tag(card_type):
     }
     return type_tag_map.get(card_type)
 
-def create_single_card(card_name, front_url, back_url, team_tag, deck_id="100", card_type=None):
+def create_single_card(card_name, front_url, back_url, team_tag, deck_id="100", card_type=None, updater_script=""):
     """Create a single TTS card object"""
     card_id = int(deck_id + "00")
     
@@ -158,13 +158,11 @@ def create_single_card(card_name, front_url, back_url, team_tag, deck_id="100", 
                 "Type": 0
             }
         },
-        "LuaScript": "",
+        "LuaScript": updater_script or "",
         "LuaScriptState": "",
         "XmlUI": ""
     }
-
-
-def create_deck(deck_nickname, team_tag, cards_data, starting_deck_id=1000, card_type=None):
+def create_deck(deck_nickname, team_tag, cards_data, starting_deck_id=1000, card_type=None, updater_script=""):
     """Create a TTS deck object containing multiple cards"""
     # Generate CustomDeck entries
     custom_deck = {}
@@ -239,7 +237,10 @@ def create_deck(deck_nickname, team_tag, cards_data, starting_deck_id=1000, card
             "HideWhenFaceDown": True,
             "Hands": True,
             "CardID": int(deck_id + "00"),
-            "SidewaysCard": False
+            "SidewaysCard": False,
+            "LuaScript": updater_script or "",
+            "LuaScriptState": "",
+            "XmlUI": ""
         }
         contained_objects.append(card_obj)
     
@@ -342,7 +343,7 @@ def create_custom_dice(nickname: str, texture_url: str, team_tag: str, variant: 
     }
 
 
-def create_bag(team_name, team_tag, contained_objects, lua_script, texture_url=None, mesh_url=None, faction=None, last_modified=None, last_token_modified=None):
+def create_bag(team_name, team_tag, contained_objects, lua_script, texture_url=None, mesh_url=None, faction=None, last_modified=None, last_token_modified=None, box_description="", repo_branch="main"):
     """Create a TTS Custom_Model_Bag containing decks and cards"""
     
     # Get team folder name from tag
@@ -353,15 +354,13 @@ def create_bag(team_name, team_tag, contained_objects, lua_script, texture_url=N
     # If team-specific texture doesn't exist, step 6 copies default to this location
     # This allows backend updates per team without regenerating TTS objects
     
-    branch = "main"
-    
     if not mesh_url:
         # Always point to output_v3 cardbox location
-        mesh_url = f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/{branch}/output_v3/{team_folder_name}/cardbox/{team_folder_name}-card-box.obj"
+        mesh_url = f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/{repo_branch}/output_v3/{team_folder_name}/cardbox/{team_folder_name}-card-box.obj"
     
     if not texture_url:
         # Always point to output_v3 cardbox location
-        texture_url = f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/{branch}/output_v3/{team_folder_name}/cardbox/{team_folder_name}-card-box-texture.jpg"
+        texture_url = f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/{repo_branch}/output_v3/{team_folder_name}/cardbox/{team_folder_name}-card-box-texture.jpg"
     
     # Create LuaScriptState with positions for each contained object.
     # IMPORTANT: Placement must be stable across teams.
@@ -545,7 +544,7 @@ def create_bag(team_name, team_tag, contained_objects, lua_script, texture_url=N
                     "scaleZ": 1.0
                 },
                 "Nickname": team_name,
-                "Description": "",
+                "Description": box_description or "",
                 "GMNotes": team_tag,
                 "AltLookAngle": {
                     "x": 0.0,

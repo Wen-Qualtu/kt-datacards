@@ -1,5 +1,4 @@
 -- constants
-local TTS_METADATA_URL = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/refactor-kt-app-pipeline/output_v2/tts-metadata.json"
 
 local SCRIPT_VERSION = "v2.0"
 
@@ -1478,8 +1477,20 @@ function click_update_rules()
   
   broadcastToAll("Checking for updates...", {1, 1, 0})
   
-  -- Fetch tts-metadata.json to check if update is needed (cache-busted)
-  local metadataUrl = TTS_METADATA_URL .. "?v=" .. tostring(os.time())
+  -- Build object-urls.json URL from this box's mesh URL so branch/path stay in sync.
+  local data = self.getData() or {}
+  local meshUrl = ((data.CustomMesh or {}).MeshURL) or ""
+  if meshUrl == "" then
+    broadcastToAll("Cannot check updates: missing box mesh URL", {1, 0.5, 0})
+    return
+  end
+  local cleanMeshUrl = string.match(meshUrl, "^[^?]+") or meshUrl
+  local baseUrl = string.match(cleanMeshUrl, "^(.-)/output/")
+  if not baseUrl or baseUrl == "" then
+    broadcastToAll("Cannot check updates: could not parse repository URL", {1, 0.5, 0})
+    return
+  end
+  local metadataUrl = baseUrl .. "/output/object-urls.json?v=" .. tostring(os.time())
   WebRequest.get(metadataUrl, function(request)
     if request.is_error then
       broadcastToAll("Could not check for updates: " .. request.error, {1, 0.5, 0})
@@ -1487,21 +1498,29 @@ function click_update_rules()
     end
     
     -- Parse JSON to find this team's last_modified timestamp and URL
-    local success, ttsBoxes = pcall(function() return JSON.decode(request.text) end)
-    if not success or not ttsBoxes then
+    local success, metadata = pcall(function() return JSON.decode(request.text) end)
+    if not success or not metadata then
       broadcastToAll("Could not parse update info.", {1, 0.5, 0})
       return
     end
-    
-    -- Find our team in the list
+
+    -- Find our team in keyed metadata map (or legacy list fallback)
     local remoteTimestamp = ""
     local cardsUrl = ""
-    for _, box in ipairs(ttsBoxes) do
-      if box.team == teamSlug then
-        remoteTimestamp = box.cards_last_modified or ""
-        cardsUrl = box.cards_url or ""
-        break
+
+    local teamEntry = metadata[teamSlug]
+    if not teamEntry then
+      for _, entry in ipairs(metadata) do
+        if entry and entry.team == teamSlug then
+          teamEntry = entry
+          break
+        end
       end
+    end
+
+    if teamEntry and teamEntry.box then
+      remoteTimestamp = teamEntry.box.modified or ""
+      cardsUrl = teamEntry.box.url or ""
     end
     
     if remoteTimestamp == "" or cardsUrl == "" then
@@ -1528,7 +1547,8 @@ function click_update_rules()
     
     -- Download and spawn new version
     local cacheBust = remoteTimestamp:gsub("[^%d]", "")
-    local url = cardsUrl .. "?v=" .. cacheBust
+    local separator = string.find(cardsUrl, "?", 1, true) and "&" or "?"
+    local url = cardsUrl .. separator .. "v=" .. cacheBust
     
     WebRequest.get(url, function(webReturn)
       if webReturn.is_error then
