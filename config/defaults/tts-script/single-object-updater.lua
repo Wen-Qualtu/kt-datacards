@@ -245,6 +245,32 @@ local function ktu_find_matching_metadata_object(teamData, info)
     return nil
 end
 
+local function ktu_extract_team_metadata(metadata, team)
+    if type(metadata) ~= "table" then
+        return nil
+    end
+
+    -- Preferred per-team shape: { team = "...", box = {...}, objects = [...] }
+    if metadata.team == team and type(metadata.objects) == "table" then
+        return metadata
+    end
+
+    -- Current global keyed shape: { [team] = { box = ..., objects = ... }, ... }
+    local keyed = metadata[team]
+    if type(keyed) == "table" then
+        return keyed
+    end
+
+    -- Legacy list shape: [ { team = "...", ... }, ... ]
+    for _, entry in ipairs(metadata) do
+        if type(entry) == "table" and entry.team == team then
+            return entry
+        end
+    end
+
+    return nil
+end
+
 local function ktu_find_source_object_in_box(boxData, info, targetMeta)
     if type(boxData) ~= "table" then return nil end
     local states = boxData.ObjectStates or {}
@@ -457,29 +483,11 @@ function click_update_single_object(playerColor)
 
     broadcastToColor("Checking update for this object...", playerColor or "White", {1, 1, 0})
 
-    local metadataUrl = ktu_append_cache_bust(info.rawBase .. "/output/object-urls.json", os.time())
-    WebRequest.get(metadataUrl, function(metaReq)
-        if metaReq.is_error then
-            broadcastToColor("Could not fetch object metadata: " .. tostring(metaReq.error), playerColor or "White", {1, 0.5, 0})
-            return
-        end
+    local now = os.time()
+    local teamMetadataUrl = ktu_append_cache_bust(info.rawBase .. "/output/object-urls/" .. info.team .. ".json", now)
+    local globalMetadataUrl = ktu_append_cache_bust(info.rawBase .. "/output/object-urls.json", now)
 
-        local okMeta, metadata = pcall(function() return JSON.decode(metaReq.text) end)
-        if not okMeta or type(metadata) ~= "table" then
-            broadcastToColor("Could not parse object metadata", playerColor or "White", {1, 0.5, 0})
-            return
-        end
-
-        local teamData = metadata[info.team]
-        if (not teamData) and type(metadata) == "table" then
-            -- Backward compatibility for old list-style metadata formats.
-            for _, entry in ipairs(metadata) do
-                if type(entry) == "table" and entry.team == info.team then
-                    teamData = entry
-                    break
-                end
-            end
-        end
+    local function continue_with_team_data(teamData)
         if type(teamData) ~= "table" then
             broadcastToColor("No metadata entry for team: " .. tostring(info.team), playerColor or "White", {1, 0.5, 0})
             return
@@ -558,6 +566,44 @@ function click_update_single_object(playerColor)
                 broadcastToColor("Object updated", playerColor or "White", {0, 1, 0})
             end
         end)
+    end
+
+    local function fetch_global_metadata()
+        WebRequest.get(globalMetadataUrl, function(globalReq)
+            if globalReq.is_error then
+                broadcastToColor("Could not fetch object metadata: " .. tostring(globalReq.error), playerColor or "White", {1, 0.5, 0})
+                return
+            end
+
+            local okMeta, metadata = pcall(function() return JSON.decode(globalReq.text) end)
+            if not okMeta or type(metadata) ~= "table" then
+                broadcastToColor("Could not parse object metadata", playerColor or "White", {1, 0.5, 0})
+                return
+            end
+
+            continue_with_team_data(ktu_extract_team_metadata(metadata, info.team))
+        end)
+    end
+
+    WebRequest.get(teamMetadataUrl, function(teamReq)
+        if teamReq.is_error then
+            fetch_global_metadata()
+            return
+        end
+
+        local okMeta, metadata = pcall(function() return JSON.decode(teamReq.text) end)
+        if not okMeta or type(metadata) ~= "table" then
+            fetch_global_metadata()
+            return
+        end
+
+        local teamData = ktu_extract_team_metadata(metadata, info.team)
+        if not teamData then
+            fetch_global_metadata()
+            return
+        end
+
+        continue_with_team_data(teamData)
     end)
 end
 

@@ -395,6 +395,32 @@ def generate_object_urls_json(repo_branch: str = URL_BRANCH):
     return teams_data
 
 
+def save_object_urls_team_files(teams_data: dict, output_dir: Path) -> list[Path]:
+    """Write per-team object URL metadata files for faster in-game update checks."""
+    team_meta_dir = output_dir / 'object-urls'
+    team_meta_dir.mkdir(parents=True, exist_ok=True)
+
+    written_files: list[Path] = []
+    active_teams = set()
+
+    for team, team_entry in sorted(teams_data.items()):
+        active_teams.add(team)
+        team_file = team_meta_dir / f"{team}.json"
+        with open(team_file, 'w', encoding='utf-8') as f:
+            json.dump(team_entry, f, indent=2, ensure_ascii=False)
+        written_files.append(team_file)
+
+    # Clean stale team metadata files from removed/renamed teams.
+    for existing_file in team_meta_dir.glob('*.json'):
+        if existing_file.stem not in active_teams:
+            try:
+                existing_file.unlink()
+            except Exception:
+                logger.warning(f"Could not remove stale team metadata file: {existing_file}")
+
+    return written_files
+
+
 def load_lua_script(config_dir: Path) -> str:
     """Load the Lua script from config defaults folder"""
     script_path = config_dir / "defaults" / "tts-script" / "tts-update-rules-in-box-script.lua"
@@ -1986,6 +2012,9 @@ def main():
         json.dump(object_urls_data, f, indent=2, ensure_ascii=False)
     logger.info(f"Saved object-urls.json with {len(object_urls_data)} teams")
 
+    team_object_url_files = save_object_urls_team_files(object_urls_data, PROJECT_ROOT / 'output')
+    logger.info(f"Saved {len(team_object_url_files)} team metadata files in output/object-urls/")
+
     # Generate TTS objects
     config_dir = PROJECT_ROOT / 'config'
     output_dir = PROJECT_ROOT / 'output'
@@ -2002,6 +2031,9 @@ def main():
 
     # Track object-urls.json
     output_meta.update_file("object-urls.json", object_urls_file, "kt-app", "7_generate_tts_objects")
+    for team_file in team_object_url_files:
+        rel = f"object-urls/{team_file.name}"
+        output_meta.update_file(rel, team_file, "kt-app", "7_generate_tts_objects")
 
     # Save metadata
     pipeline_meta.metadata["last_full_run"] = datetime.now(timezone.utc).isoformat()
