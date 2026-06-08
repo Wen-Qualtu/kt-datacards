@@ -463,6 +463,18 @@ teams:
     army: demons
     aliases:
     - goremonger
+    faction_rule:
+      name: Gore Tanks
+      select: 1
+      applies_to:
+      - GOREMONGER
+      options:
+      - name: Empty
+        text: Cannot use Sanguavitae until the Gore Tank is increased.
+      - name: Half
+        text: Starting level. Can be increased or decreased by one level when rules allow.
+      - name: Full
+        text: Cannot increase further. Decrease by one level to use Sanguavitae rules.
     tokens_ready: true
     operative_counter:
       name: Gore Tank

@@ -501,6 +501,21 @@ def load_single_object_updater_script(config_dir: Path) -> str:
         return ""
 
 
+def load_display_table_manager_script(config_dir: Path) -> str:
+    """Load display table manager Lua script from defaults folder."""
+    script_path = config_dir / "defaults" / "tts-script" / "display-table-manager-script.lua"
+    try:
+        with open(script_path, 'r', encoding='utf-8-sig') as f:
+            content = f.read()
+            if content.startswith('\ufeff'):
+                content = content[1:]
+            content = content.replace('\n', '\r\n')
+            return content
+    except Exception as e:
+        logger.warning(f"Could not load display manager script: {e}")
+        return ""
+
+
 def load_box_description(config_dir: Path) -> str:
     """Load default box description text from config defaults folder."""
     description_path = config_dir / "defaults" / "box" / "card-box-description.txt"
@@ -509,7 +524,17 @@ def load_box_description(config_dir: Path) -> str:
             return f.read().strip()
     except Exception as e:
         logger.warning(f"Could not load box description: {e}")
-        return ""
+        return (
+            "This box has two kinds of controls: table buttons and right-click (context menu) buttons.\n\n"
+            "Table buttons:\n"
+            "- Place: Puts cards/tokens in their play positions.\n"
+            "- KT table: Places items using the Kill Team table layout.\n"
+            "- Recall: Pulls tracked items back into the box.\n\n"
+            "Right-click (context menu) buttons:\n"
+            "- Update: Refreshes card stats/rules from this box onto matching cards already on the table.\n"
+            "- Reset: Resets this box and respawns its tracked contents.\n"
+            "- Clear Layout: Clears any saved custom layout and reverts Place behavior to defaults."
+        )
 
 
 def _build_token_memory_list(token_objects: list) -> dict:
@@ -906,6 +931,79 @@ def copy_preview_image(team_folder_name: str, team_display_name: str, config_dir
         shutil.copy2(source_preview, dest_preview)
     else:
         logger.warning(f"No preview/icon image found for {team_folder_name}")
+
+
+def rebuild_kill_team_card_boxes_example(output_dir: Path) -> tuple[int, Optional[Path]]:
+    """Refresh manager bag contents with latest generated team boxes.
+
+    Source template is loaded from dev/examples (or existing generated output
+    if present), while the generated artifact is written to
+    output/_generic-tts-objects/Kill Team Card Boxes.json.
+    Only `ContainedObjects` is rewritten. Manager bag Lua script, buttons,
+    description, and other top-level settings remain unchanged.
+    """
+    manager_template_path = PROJECT_ROOT / "dev" / "examples" / "Kill Team Card Boxes.json"
+    manager_output_dir = output_dir / "_generic-tts-objects"
+    manager_output_dir.mkdir(parents=True, exist_ok=True)
+    manager_output_path = manager_output_dir / "Kill Team Card Boxes.json"
+
+    source_path = manager_template_path
+    if not source_path.exists():
+        logger.warning(f"Manager bag template file not found: {source_path}")
+        return 0, None
+
+    try:
+        with open(source_path, 'r', encoding='utf-8') as f:
+            manager_data = json.load(f)
+    except Exception as e:
+        logger.warning(f"Could not read manager bag file: {e}")
+        return 0, None
+
+    object_states = manager_data.get("ObjectStates") or []
+    if not object_states or not isinstance(object_states[0], dict):
+        logger.warning("Manager bag JSON has no valid ObjectStates[0]")
+        return 0, None
+
+    manager_obj = object_states[0]
+    # Build manager bag contents from scratch each run to avoid stale nested state.
+    manager_obj["ContainedObjects"] = []
+
+    # Keep manager bag script synced with defaults so UI changes are always propagated.
+    manager_script = load_display_table_manager_script(PROJECT_ROOT / "config")
+    if manager_script:
+        manager_obj["LuaScript"] = manager_script
+
+    team_box_objects = []
+    for team_tts_dir in sorted(output_dir.glob("*/tts_objects")):
+        team_box_files = sorted(team_tts_dir.glob("* Box.json"))
+        if not team_box_files:
+            continue
+
+        box_file = team_box_files[0]
+        try:
+            with open(box_file, 'r', encoding='utf-8') as f:
+                team_data = json.load(f)
+            team_obj = (team_data.get("ObjectStates") or [None])[0]
+            if not isinstance(team_obj, dict):
+                continue
+        except Exception as e:
+            logger.warning(f"Could not read team box for manager bag ({box_file}): {e}")
+            continue
+
+        team_box_objects.append(team_obj)
+
+    team_box_objects.sort(key=lambda obj: obj.get("Nickname", ""))
+    manager_obj["ContainedObjects"] = team_box_objects
+
+    try:
+        with open(manager_output_path, 'w', encoding='utf-8') as f:
+            json.dump(manager_data, f, indent=2, ensure_ascii=False)
+    except Exception as e:
+        logger.warning(f"Could not write manager bag file: {e}")
+        return 0, None
+
+    logger.info(f"Updated manager bag contents: {len(team_box_objects)} teams -> {manager_output_path}")
+    return len(team_box_objects), manager_output_path
 
 
 def embed_datacard_stats(bag_obj: dict, team_name: str, output_dir: Path, config_dir: Path, single_object_updater_script: str = "") -> bool:
@@ -1668,6 +1766,32 @@ def _get_faction_rule_code(team: str, team_data: dict, operative: dict, team_con
         if not any(kw.upper() in op_keywords for kw in applies_to):
             return ""
 
+    # Optional explicit options override from team-config.
+    options_override = rule_cfg.get('options')
+    if options_override:
+        rule_name = rule_cfg.get('name', 'Faction Rule')
+        options = options_override
+
+        lua_options = "{\n"
+        for opt in options:
+            name_esc = opt.get('name', '').replace('"', '\\"')
+            text_esc = opt.get('text', '').replace('\\', '\\\\').replace('"', '\\"').replace("'", "\\'").replace('\n', '\\n')
+            lua_options += f'    {{name = "{name_esc}", text = "{text_esc}"}},\n'
+        lua_options += "}"
+
+        select_count = rule_cfg.get('select', 2)
+        operative_select_count = rule_cfg.get('operative_select_count')
+        if operative_select_count:
+            op_keywords = [kw.upper() for kw in operative.get('keywords', [])]
+            for kw in op_keywords:
+                if kw.upper() in operative_select_count:
+                    select_count = operative_select_count[kw.upper()]
+                    break
+
+        if select_count == 1:
+            return _build_select1_lua(rule_name, lua_options)
+        return _build_select2_lua(rule_name, lua_options)
+
     # Find the rule entry with options
     rule_entry = next((r for r in faction_rules if r.get('options')), None)
     if not rule_entry:
@@ -2079,6 +2203,9 @@ def main():
     output_dir = PROJECT_ROOT / 'output'
     count = generate_all_tts_objects(urls_data, config_dir, output_dir, args.teams, URL_BRANCH)
 
+    # Rebuild manager bag with latest team boxes.
+    manager_count, manager_path = rebuild_kill_team_card_boxes_example(output_dir)
+
     # Track metadata for all generated Box.json files
     for team_tts_dir in sorted(output_dir.glob("*/tts_objects")):
         team_slug = team_tts_dir.parent.name
@@ -2094,6 +2221,8 @@ def main():
     for team_file in team_object_url_files:
         rel = f"{team_file.parent.name}/{team_file.name}"
         output_meta.update_file(rel, team_file, "kt-app", "7_generate_tts_objects")
+    if manager_path:
+        output_meta.update_file("_generic-tts-objects/Kill Team Card Boxes.json", manager_path, "kt-app", "7_generate_tts_objects")
 
     # Save metadata
     pipeline_meta.metadata["last_full_run"] = datetime.now(timezone.utc).isoformat()
