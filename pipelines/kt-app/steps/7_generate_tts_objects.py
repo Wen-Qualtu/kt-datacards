@@ -218,7 +218,7 @@ def generate_urls_json_v3(repo_branch: str = URL_BRANCH):
 
 def generate_object_urls_json(repo_branch: str = URL_BRANCH):
     """
-    Generate object-urls.json for TTS update checks.
+    Generate team detail URL metadata for TTS update checks.
     
     Structure: Keyed by team for efficient lookup in TTS Lua scripts.
     Each team has:
@@ -395,28 +395,78 @@ def generate_object_urls_json(repo_branch: str = URL_BRANCH):
     return teams_data
 
 
-def save_object_urls_team_files(teams_data: dict, output_dir: Path) -> list[Path]:
-    """Write per-team object URL metadata files for faster in-game update checks."""
-    team_meta_dir = output_dir / 'object-urls'
-    team_meta_dir.mkdir(parents=True, exist_ok=True)
+def _to_stamp(ts: str) -> int:
+    """Convert ISO-like timestamp strings to comparable numeric stamp."""
+    return int(''.join(ch for ch in str(ts or '') if ch.isdigit()) or 0)
 
-    written_files: list[Path] = []
-    active_teams = set()
+
+def generate_object_urls_summary(teams_data: dict, repo_branch: str = URL_BRANCH) -> dict:
+    """Build lightweight global summary for fast box-level update checks."""
+    summary = {}
+    base_url = f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/{repo_branch}/output"
 
     for team, team_entry in sorted(teams_data.items()):
-        active_teams.add(team)
-        team_file = team_meta_dir / f"{team}.json"
+        max_modified = ""
+        max_stamp = 0
+
+        box = team_entry.get("box") or {}
+        box_modified = box.get("modified") or ""
+        box_stamp = _to_stamp(box_modified)
+        if box_stamp > max_stamp:
+            max_stamp = box_stamp
+            max_modified = box_modified
+
+        for obj in team_entry.get("objects") or []:
+            obj_modified = (obj or {}).get("modified") or ""
+            obj_stamp = _to_stamp(obj_modified)
+            if obj_stamp > max_stamp:
+                max_stamp = obj_stamp
+                max_modified = obj_modified
+
+        team_url = f"{base_url}/{team}/{team}-object-urls.json"
+        summary[team] = {
+            "team": team,
+            "modified": max_modified,
+            "team_url": f"{team_url}?v={max_stamp}",
+            # Keep box info for backward compatibility with older scripts.
+            "box": team_entry.get("box"),
+        }
+
+    return summary
+
+
+def save_object_urls_team_files(teams_data: dict, output_dir: Path) -> list[Path]:
+    """Write per-team object URL metadata files for faster in-game update checks."""
+    written_files: list[Path] = []
+
+    for team, team_entry in sorted(teams_data.items()):
+        team_meta_dir = output_dir / team
+        team_meta_dir.mkdir(parents=True, exist_ok=True)
+        team_file = team_meta_dir / f"{team}-object-urls.json"
         with open(team_file, 'w', encoding='utf-8') as f:
             json.dump(team_entry, f, indent=2, ensure_ascii=False)
         written_files.append(team_file)
 
-    # Clean stale team metadata files from removed/renamed teams.
-    for existing_file in team_meta_dir.glob('*.json'):
-        if existing_file.stem not in active_teams:
+        # Cleanup previous team-local filename from earlier implementation.
+        old_team_file = team_meta_dir / "object-urls.json"
+        if old_team_file.exists():
+            try:
+                old_team_file.unlink()
+            except Exception:
+                logger.warning(f"Could not remove legacy team metadata file: {old_team_file}")
+
+    # Cleanup legacy central folder from earlier implementation.
+    legacy_team_meta_dir = output_dir / 'object-urls'
+    if legacy_team_meta_dir.exists():
+        for existing_file in legacy_team_meta_dir.glob('*.json'):
             try:
                 existing_file.unlink()
             except Exception:
-                logger.warning(f"Could not remove stale team metadata file: {existing_file}")
+                logger.warning(f"Could not remove legacy team metadata file: {existing_file}")
+        try:
+            legacy_team_meta_dir.rmdir()
+        except OSError:
+            pass
 
     return written_files
 
@@ -2004,16 +2054,25 @@ def main():
     urls_data = generate_urls_json_v3(URL_BRANCH)
     logger.info(f"Found {len(urls_data)} card/asset entries")
 
-    # Generate object-urls.json for TTS update checks
-    logger.info("Generating object-urls.json for TTS update checks...")
-    object_urls_data = generate_object_urls_json(URL_BRANCH)
-    object_urls_file = PROJECT_ROOT / 'output' / 'object-urls.json'
+    # Build full per-team metadata and lightweight global summary.
+    logger.info("Generating team URL metadata for TTS update checks...")
+    team_object_urls_data = generate_object_urls_json(URL_BRANCH)
+    object_urls_data = generate_object_urls_summary(team_object_urls_data, URL_BRANCH)
+    object_urls_file = PROJECT_ROOT / 'output' / 'team-urls.json'
     with open(object_urls_file, 'w', encoding='utf-8') as f:
         json.dump(object_urls_data, f, indent=2, ensure_ascii=False)
-    logger.info(f"Saved object-urls.json with {len(object_urls_data)} teams")
+    logger.info(f"Saved summary team-urls.json with {len(object_urls_data)} teams")
 
-    team_object_url_files = save_object_urls_team_files(object_urls_data, PROJECT_ROOT / 'output')
-    logger.info(f"Saved {len(team_object_url_files)} team metadata files in output/object-urls/")
+    legacy_object_urls_file = PROJECT_ROOT / 'output' / 'object-urls.json'
+    if legacy_object_urls_file.exists():
+        try:
+            legacy_object_urls_file.unlink()
+            logger.info("Removed legacy output/object-urls.json")
+        except Exception as e:
+            logger.warning(f"Could not remove legacy output/object-urls.json: {e}")
+
+    team_object_url_files = save_object_urls_team_files(team_object_urls_data, PROJECT_ROOT / 'output')
+    logger.info(f"Saved {len(team_object_url_files)} team metadata files in output/{{team}}/{{team}}-object-urls.json")
 
     # Generate TTS objects
     config_dir = PROJECT_ROOT / 'config'
@@ -2029,10 +2088,11 @@ def main():
             output_meta.update_file(rel, f, "kt-app", "7_generate_tts_objects")
         pipeline_meta.mark_step_complete(team_slug, "7_generate_tts_objects")
 
-    # Track object-urls.json
-    output_meta.update_file("object-urls.json", object_urls_file, "kt-app", "7_generate_tts_objects")
+    # Track team-urls.json
+    output_meta.update_file("team-urls.json", object_urls_file, "kt-app", "7_generate_tts_objects")
+    output_meta.metadata.setdefault("files", {}).pop("object-urls.json", None)
     for team_file in team_object_url_files:
-        rel = f"object-urls/{team_file.name}"
+        rel = f"{team_file.parent.name}/{team_file.name}"
         output_meta.update_file(rel, team_file, "kt-app", "7_generate_tts_objects")
 
     # Save metadata

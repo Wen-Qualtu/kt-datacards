@@ -1,6 +1,6 @@
 -- kt-datacards: Single object updater
 -- Adds right-click "Update" on cards and token dispensers.
--- It checks object-urls.json for this specific object and respawns it from
+-- It checks team metadata for this specific object and respawns it from
 -- the latest team box JSON when an update is available.
 
 local function ktu_strip_query(url)
@@ -271,6 +271,22 @@ local function ktu_extract_team_metadata(metadata, team)
     return nil
 end
 
+local function ktu_extract_summary_entry(metadata, team)
+    if type(metadata) ~= "table" then
+        return nil
+    end
+    local entry = metadata[team]
+    if type(entry) == "table" then
+        return entry
+    end
+    for _, row in ipairs(metadata) do
+        if type(row) == "table" and row.team == team then
+            return row
+        end
+    end
+    return nil
+end
+
 local function ktu_find_source_object_in_box(boxData, info, targetMeta)
     if type(boxData) ~= "table" then return nil end
     local states = boxData.ObjectStates or {}
@@ -484,8 +500,10 @@ function click_update_single_object(playerColor)
     broadcastToColor("Checking update for this object...", playerColor or "White", {1, 1, 0})
 
     local now = os.time()
-    local teamMetadataUrl = ktu_append_cache_bust(info.rawBase .. "/output/object-urls/" .. info.team .. ".json", now)
-    local globalMetadataUrl = ktu_append_cache_bust(info.rawBase .. "/output/object-urls.json", now)
+    local teamMetadataUrl = ktu_append_cache_bust(info.rawBase .. "/output/" .. info.team .. "/" .. info.team .. "-object-urls.json", now)
+    local teamMetadataUrlLegacy = ktu_append_cache_bust(info.rawBase .. "/output/" .. info.team .. "/object-urls.json", now)
+    local legacyTeamMetadataUrl = ktu_append_cache_bust(info.rawBase .. "/output/object-urls/" .. info.team .. ".json", now)
+    local globalMetadataUrl = ktu_append_cache_bust(info.rawBase .. "/output/team-urls.json", now)
 
     local function continue_with_team_data(teamData)
         if type(teamData) ~= "table" then
@@ -581,25 +599,99 @@ function click_update_single_object(playerColor)
                 return
             end
 
-            continue_with_team_data(ktu_extract_team_metadata(metadata, info.team))
+            local teamData = ktu_extract_team_metadata(metadata, info.team)
+            if teamData then
+                continue_with_team_data(teamData)
+                return
+            end
+
+            -- Global summary mode: resolve team metadata URL, then fetch full team data.
+            local summaryEntry = ktu_extract_summary_entry(metadata, info.team)
+            local teamUrl = summaryEntry and summaryEntry.team_url
+            if not teamUrl or teamUrl == "" then
+                continue_with_team_data(nil)
+                return
+            end
+
+            local teamUrlCb = ktu_append_cache_bust(teamUrl, os.time())
+            WebRequest.get(teamUrlCb, function(teamReq)
+                if teamReq.is_error then
+                    continue_with_team_data(nil)
+                    return
+                end
+
+                local okTeam, teamMetadata = pcall(function() return JSON.decode(teamReq.text) end)
+                if not okTeam or type(teamMetadata) ~= "table" then
+                    continue_with_team_data(nil)
+                    return
+                end
+
+                continue_with_team_data(ktu_extract_team_metadata(teamMetadata, info.team))
+            end)
+        end)
+    end
+
+    local function fetch_legacy_team_metadata()
+        WebRequest.get(legacyTeamMetadataUrl, function(legacyReq)
+            if legacyReq.is_error then
+                fetch_global_metadata()
+                return
+            end
+
+            local okMeta, metadata = pcall(function() return JSON.decode(legacyReq.text) end)
+            if not okMeta or type(metadata) ~= "table" then
+                fetch_global_metadata()
+                return
+            end
+
+            local teamData = ktu_extract_team_metadata(metadata, info.team)
+            if not teamData then
+                fetch_global_metadata()
+                return
+            end
+
+            continue_with_team_data(teamData)
+        end)
+    end
+
+    local function fetch_team_legacy_filename()
+        WebRequest.get(teamMetadataUrlLegacy, function(legacyNameReq)
+            if legacyNameReq.is_error then
+                fetch_legacy_team_metadata()
+                return
+            end
+
+            local okMeta, metadata = pcall(function() return JSON.decode(legacyNameReq.text) end)
+            if not okMeta or type(metadata) ~= "table" then
+                fetch_legacy_team_metadata()
+                return
+            end
+
+            local teamData = ktu_extract_team_metadata(metadata, info.team)
+            if not teamData then
+                fetch_legacy_team_metadata()
+                return
+            end
+
+            continue_with_team_data(teamData)
         end)
     end
 
     WebRequest.get(teamMetadataUrl, function(teamReq)
         if teamReq.is_error then
-            fetch_global_metadata()
+            fetch_team_legacy_filename()
             return
         end
 
         local okMeta, metadata = pcall(function() return JSON.decode(teamReq.text) end)
         if not okMeta or type(metadata) ~= "table" then
-            fetch_global_metadata()
+            fetch_team_legacy_filename()
             return
         end
 
         local teamData = ktu_extract_team_metadata(metadata, info.team)
         if not teamData then
-            fetch_global_metadata()
+            fetch_team_legacy_filename()
             return
         end
 

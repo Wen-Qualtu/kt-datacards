@@ -1477,7 +1477,7 @@ function click_update_rules()
   
   broadcastToAll("Checking for updates...", {1, 1, 0})
   
-  -- Build object-urls.json URL from this box's mesh URL so branch/path stay in sync.
+  -- Build team-urls.json URL from this box's mesh URL so branch/path stay in sync.
   local data = self.getData() or {}
   local meshUrl = ((data.CustomMesh or {}).MeshURL) or ""
   if meshUrl == "" then
@@ -1490,7 +1490,7 @@ function click_update_rules()
     broadcastToAll("Cannot check updates: could not parse repository URL", {1, 0.5, 0})
     return
   end
-  local metadataUrl = baseUrl .. "/output/object-urls.json?v=" .. tostring(os.time())
+  local metadataUrl = baseUrl .. "/output/team-urls.json?v=" .. tostring(os.time())
   WebRequest.get(metadataUrl, function(request)
     if request.is_error then
       broadcastToAll("Could not check for updates: " .. request.error, {1, 0.5, 0})
@@ -1507,6 +1507,7 @@ function click_update_rules()
     -- Find our team in keyed metadata map (or legacy list fallback)
     local remoteTimestamp = ""
     local cardsUrl = ""
+    local teamMetadataUrl = ""
 
     local teamEntry = metadata[teamSlug]
     if not teamEntry then
@@ -1518,12 +1519,21 @@ function click_update_rules()
       end
     end
 
-    if teamEntry and teamEntry.box then
-      remoteTimestamp = teamEntry.box.modified or ""
-      cardsUrl = teamEntry.box.url or ""
+    if teamEntry then
+      -- New lightweight summary mode
+      remoteTimestamp = teamEntry.modified or ""
+      teamMetadataUrl = teamEntry.team_url or ""
+
+      -- Backward compatibility with older global shape
+      if remoteTimestamp == "" and teamEntry.box then
+        remoteTimestamp = teamEntry.box.modified or ""
+      end
+      if teamEntry.box then
+        cardsUrl = teamEntry.box.url or ""
+      end
     end
     
-    if remoteTimestamp == "" or cardsUrl == "" then
+    if remoteTimestamp == "" then
       broadcastToAll("Could not find team in update list.", {1, 0.5, 0})
       return
     end
@@ -1541,16 +1551,20 @@ function click_update_rules()
       return
     end
     
-    -- Update needed
-    broadcastToAll("Update available! Downloading new version...", {0, 0.7, 1})
-    broadcastToAll("Local: " .. (lastCardUpdate ~= "" and lastCardUpdate or "unknown") .. " | Remote: " .. remoteTimestamp, {0.7, 0.7, 0.7})
-    
-    -- Download and spawn new version
-    local cacheBust = remoteTimestamp:gsub("[^%d]", "")
-    local separator = string.find(cardsUrl, "?", 1, true) and "&" or "?"
-    local url = cardsUrl .. separator .. "v=" .. cacheBust
-    
-    WebRequest.get(url, function(webReturn)
+    local function download_and_spawn(updatedCardsUrl, effectiveRemoteTimestamp)
+      if not updatedCardsUrl or updatedCardsUrl == "" then
+        broadcastToAll("Could not find team box URL in update metadata.", {1, 0.5, 0})
+        return
+      end
+
+      broadcastToAll("Update available! Downloading new version...", {0, 0.7, 1})
+      broadcastToAll("Local: " .. (lastCardUpdate ~= "" and lastCardUpdate or "unknown") .. " | Remote: " .. effectiveRemoteTimestamp, {0.7, 0.7, 0.7})
+
+      local cacheBust = tostring(effectiveRemoteTimestamp or ""):gsub("[^%d]", "")
+      local separator = string.find(updatedCardsUrl, "?", 1, true) and "&" or "?"
+      local url = updatedCardsUrl .. separator .. "v=" .. cacheBust
+
+      WebRequest.get(url, function(webReturn)
       if webReturn.is_error then
         broadcastToAll("Failed to download update: " .. webReturn.error, {1, 0.5, 0})
         return
@@ -1568,7 +1582,7 @@ function click_update_rules()
       if newBoxData.LuaScriptState ~= nil and newBoxData.LuaScriptState ~= "" then
         local ok, state = pcall(function() return JSON.decode(newBoxData.LuaScriptState) end)
         if ok and state then
-          state.lastCardUpdate = remoteTimestamp
+          state.lastCardUpdate = effectiveRemoteTimestamp
           if not state.teamSlug or state.teamSlug == "" then
             state.teamSlug = teamSlug
           end
@@ -1576,7 +1590,7 @@ function click_update_rules()
         end
       else
         newBoxData.LuaScriptState = JSON.encode({
-          lastCardUpdate = remoteTimestamp,
+          lastCardUpdate = effectiveRemoteTimestamp,
           teamSlug = teamSlug
         })
       end
@@ -1628,6 +1642,43 @@ function click_update_rules()
         function() return spawnedObj ~= nil and not spawnedObj.spawning end,
         10
       )
-    end)
+      end)
+    end
+
+    -- If global summary did not include direct box URL, resolve full team metadata first.
+    if cardsUrl == "" and teamMetadataUrl ~= "" then
+      local teamMetaCb = teamMetadataUrl
+      local sep = string.find(teamMetaCb, "?", 1, true) and "&" or "?"
+      teamMetaCb = teamMetaCb .. sep .. "v=" .. tostring(os.time())
+
+      WebRequest.get(teamMetaCb, function(teamReq)
+        if teamReq.is_error then
+          broadcastToAll("Could not fetch team update metadata: " .. teamReq.error, {1, 0.5, 0})
+          return
+        end
+
+        local okTeam, teamData = pcall(function() return JSON.decode(teamReq.text) end)
+        if not okTeam or not teamData then
+          broadcastToAll("Could not parse team update metadata.", {1, 0.5, 0})
+          return
+        end
+
+        local resolvedCardsUrl = ((teamData.box or {}).url) or ""
+        local resolvedRemoteTimestamp = ((teamData.box or {}).modified) or remoteTimestamp
+        if resolvedRemoteTimestamp ~= "" then
+          local localStamp = toTimestampNumber(lastCardUpdate)
+          local remoteStamp = toTimestampNumber(resolvedRemoteTimestamp)
+          if lastCardUpdate ~= "" and remoteStamp ~= 0 and localStamp >= remoteStamp then
+            broadcastToAll("Already up to date! (Last: " .. lastCardUpdate .. ")", {0, 1, 0})
+            return
+          end
+        end
+
+        download_and_spawn(resolvedCardsUrl, resolvedRemoteTimestamp)
+      end)
+      return
+    end
+
+    download_and_spawn(cardsUrl, remoteTimestamp)
   end)
 end

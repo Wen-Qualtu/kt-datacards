@@ -464,7 +464,7 @@ output_v3/{team}/tokens/
    - Individual card JSONs: `output_v3/{team}/tts_objects/cards/{card_type}/card-*.json`
    - Individual token JSONs: `output_v3/{team}/tts_objects/tokens/token-*.json`
    - Assembled box: `output_v3/{team}/tts_objects/{Team Name} Box.json`
-9. Update `output_v3/object-urls.json` for all teams
+9. Update `output_v3/team-urls.json` for all teams
 
 **Input**:
 ```
@@ -500,7 +500,7 @@ output_v3/{team}/tts_objects/
       ├── token-002.json
       └── ...
 
-output_v3/object-urls.json             # Update manifest for all teams
+output_v3/team-urls.json               # Update manifest for all teams
 ```
 
 **Structure Details**:
@@ -587,7 +587,7 @@ output_v3/object-urls.json             # Update manifest for all teams
   ]
 }
 
-output_v3/object-urls.json  # Updated with all 47 teams
+output_v3/team-urls.json    # Updated with all 47 teams
 {
   "teams": [
     {
@@ -734,7 +734,7 @@ output_v3/{team}/
       └── {Team Name} Box.json (with embedded stats)
 
 output_v3/
-  └── object-urls.json (all 47 teams)
+  └── team-urls.json (all 47 teams)
 
 config/
   ├── team-config.yaml
@@ -779,7 +779,7 @@ Step 7 (Generate TTS Objects + Embed Stats)
   ↓ Reads: output_v3/{team}/cards/, tokens/, cardbox/
   ↓         output_v3/{team}/data/team-data.json (from step 3)
   ↓ Creates: output_v3/{team}/tts_objects/*.json (with embedded GMNotes)
-  ↓          output_v3/object-urls.json
+  ↓          output_v3/team-urls.json
 ```
 
 ---
@@ -918,7 +918,7 @@ After running pipeline for a team, verify:
 - [ ] Token bag exists with all tokens
 - [ ] Datacards have GMNotes with stats JSON
 - [ ] Cardbox has LuaScript with lastCardUpdate timestamp
-- [ ] `output_v3/object-urls.json` includes team entry
+- [ ] `output_v3/team-urls.json` includes team entry
 
 ---
 
