@@ -435,46 +435,6 @@ def generate_object_urls_summary(teams_data: dict, repo_branch: str = URL_BRANCH
     return summary
 
 
-def generate_legacy_tts_metadata_bridge(teams_data: dict) -> list[dict]:
-    """Build legacy output_v2/tts-metadata.json shape from current team metadata.
-
-    This keeps old in-TTS boxes (which still poll output_v2/tts-metadata.json)
-    able to discover and pull the latest Box.json from output/{team}/tts_objects.
-    """
-    legacy_rows: list[dict] = []
-
-    for team, team_entry in sorted(teams_data.items()):
-        box = (team_entry or {}).get("box") or {}
-        box_url = box.get("url") or ""
-        box_modified = box.get("modified") or ""
-        if not box_url:
-            continue
-
-        display_name = team.replace('-', ' ').title()
-        row: dict = {
-            "team": team,
-            "name": display_name,
-            # Old scripts use cards_url as the source to download replacement object JSON.
-            # Pointing this to the new Box.json migrates old boxes onto the new flow.
-            "cards_url": box_url,
-            "cards_last_modified": box_modified,
-        }
-
-        # Preserve optional token timestamp fields for legacy scripts that compare both.
-        token_objects = [
-            obj for obj in (team_entry.get("objects") or [])
-            if (obj or {}).get("type") in {"token", "token-bag"}
-        ]
-        if token_objects:
-            token_modified = max((obj.get("modified") or "") for obj in token_objects)
-            row["tokens_url"] = box_url
-            row["tokens_last_modified"] = token_modified
-
-        legacy_rows.append(row)
-
-    return legacy_rows
-
-
 def save_object_urls_team_files(teams_data: dict, output_dir: Path) -> list[Path]:
     """Write per-team object URL metadata files for faster in-game update checks."""
     written_files: list[Path] = []
@@ -2218,7 +2178,15 @@ def main():
     urls_data = generate_urls_json_v3(URL_BRANCH)
     logger.info(f"Found {len(urls_data)} card/asset entries")
 
-    # Build full per-team metadata and lightweight global summary.
+    # Generate TTS objects
+    config_dir = PROJECT_ROOT / 'config'
+    output_dir = PROJECT_ROOT / 'output'
+    count = generate_all_tts_objects(urls_data, config_dir, output_dir, args.teams, URL_BRANCH)
+
+    # Rebuild manager bag with latest team boxes.
+    manager_count, manager_path = rebuild_kill_team_card_boxes_example(output_dir)
+
+    # Build per-team metadata after Box.json files exist.
     logger.info("Generating team URL metadata for TTS update checks...")
     team_object_urls_data = generate_object_urls_json(URL_BRANCH)
     object_urls_data = generate_object_urls_summary(team_object_urls_data, URL_BRANCH)
@@ -2226,14 +2194,6 @@ def main():
     with open(object_urls_file, 'w', encoding='utf-8') as f:
         json.dump(object_urls_data, f, indent=2, ensure_ascii=False)
     logger.info(f"Saved summary team-urls.json with {len(object_urls_data)} teams")
-
-    # Compatibility bridge for old in-TTS boxes still polling output_v2/tts-metadata.json.
-    legacy_tts_metadata = generate_legacy_tts_metadata_bridge(team_object_urls_data)
-    legacy_tts_metadata_file = PROJECT_ROOT / 'output_v2' / 'tts-metadata.json'
-    legacy_tts_metadata_file.parent.mkdir(parents=True, exist_ok=True)
-    with open(legacy_tts_metadata_file, 'w', encoding='utf-8') as f:
-        json.dump(legacy_tts_metadata, f, indent=2, ensure_ascii=False)
-    logger.info(f"Saved legacy compatibility output_v2/tts-metadata.json with {len(legacy_tts_metadata)} teams")
 
     legacy_object_urls_file = PROJECT_ROOT / 'output' / 'object-urls.json'
     if legacy_object_urls_file.exists():
@@ -2246,14 +2206,6 @@ def main():
     team_object_url_files = save_object_urls_team_files(team_object_urls_data, PROJECT_ROOT / 'output')
     logger.info(f"Saved {len(team_object_url_files)} team metadata files in output/{{team}}/{{team}}-object-urls.json")
 
-    # Generate TTS objects
-    config_dir = PROJECT_ROOT / 'config'
-    output_dir = PROJECT_ROOT / 'output'
-    count = generate_all_tts_objects(urls_data, config_dir, output_dir, args.teams, URL_BRANCH)
-
-    # Rebuild manager bag with latest team boxes.
-    manager_count, manager_path = rebuild_kill_team_card_boxes_example(output_dir)
-
     # Track metadata for all generated Box.json files
     for team_tts_dir in sorted(output_dir.glob("*/tts_objects")):
         team_slug = team_tts_dir.parent.name
@@ -2265,8 +2217,8 @@ def main():
 
     # Track team-urls.json
     output_meta.update_file("team-urls.json", object_urls_file, "kt-app", "7_generate_tts_objects")
-    output_meta.update_file("output_v2/tts-metadata.json", legacy_tts_metadata_file, "kt-app", "7_generate_tts_objects")
     output_meta.metadata.setdefault("files", {}).pop("object-urls.json", None)
+    output_meta.metadata.setdefault("files", {}).pop("output_v2/tts-metadata.json", None)
     for team_file in team_object_url_files:
         rel = f"{team_file.parent.name}/{team_file.name}"
         output_meta.update_file(rel, team_file, "kt-app", "7_generate_tts_objects")
