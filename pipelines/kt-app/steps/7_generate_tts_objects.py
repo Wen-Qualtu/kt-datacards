@@ -1748,9 +1748,187 @@ end
 '''
 
 
+_OPERATIVE_COUNTER_LUA_TEMPLATE = r'''
+
+-- ===== OPERATIVE COUNTER: <<NAME_UPPER>> =====
+
+OC_NAME = "<<NAME>>"
+OC_INIT_VALUE = <<INIT_VALUE>>
+OC_MIN_VAL = <<MIN_VAL>>
+OC_MAX_VAL = <<MAX_VAL>>
+
+OC_HELPER_FUNCS = [==[<<HELPER_BLOCK>>]==]
+
+OC_ASSET_LINES = [==[<<ASSET_BLOCK>>
+]==]
+
+OC_PANEL_XML = "\n    <Panel color=\"#80808000\" outline=\"#FFFF00\" outlineSize=\"3 3\" width=\"45\" height=\"45\" offsetXY=\"0 -10\">"
+    .. "\n      <Image id=\"ktcnid-status-operative-counter\" image=\""
+    .. "]]..getOperativeCounterImage()..[["
+    .. "\" preserveAspect=\"true\" rectAlignment=\"MiddleCenter\" onClick=\"change_operative_counter\" />"
+    .. "\n    </Panel>"
+
+function addOperativeCounterToModel(playerColor)
+    local model = findModelOnCard()
+    if model == nil then
+        broadcastToColor("Place a KTUIMini model on this card first.", playerColor, Color.Orange)
+        return
+    end
+
+    local modelLua = model.getLuaScript() or ""
+    if modelLua == "" then
+        broadcastToColor("Model has no Lua script (not a KTUI model?).", playerColor, Color.Red)
+        return
+    end
+
+    if modelLua:find("ktcnid%-status%-operative%-counter") then
+        broadcastToColor("Model already has " .. OC_NAME .. " counter.", playerColor, Color.White)
+        return
+    end
+
+    local xmlPattern = "(<HorizontalLayout spacing=\"3\" width=\"@totalAtt\")"
+    if modelLua:find(xmlPattern) then
+        modelLua = modelLua:gsub(xmlPattern, OC_PANEL_XML .. "\n    %1")
+    else
+        broadcastToColor("Could not find attachment layout in model.", playerColor, Color.Red)
+        return
+    end
+
+    local bundlePattern = "({name=\"Wound_red\"[^\n]+)"
+    if modelLua:find(bundlePattern) then
+        modelLua = modelLua:gsub(bundlePattern, "%1" .. OC_ASSET_LINES)
+    end
+
+    modelLua = modelLua .. OC_HELPER_FUNCS
+
+    local modelState = model.script_state or "{}"
+    local ok, mState = pcall(function() return JSON.decode(modelState) end)
+    if not ok or not mState then mState = {} end
+    if not mState.operative_counter then
+        mState.operative_counter = {
+            name = OC_NAME,
+            current = OC_INIT_VALUE,
+            min = OC_MIN_VAL,
+            max = OC_MAX_VAL
+        }
+    end
+    model.script_state = JSON.encode(mState)
+
+    model.setLuaScript(modelLua)
+    Wait.frames(function() model.reload() end, 10)
+
+    broadcastToColor("Added " .. OC_NAME .. " counter to model!", playerColor, Color.Green)
+end
+
+local ocBaseOnLoad = onLoad
+function onLoad()
+    if ocBaseOnLoad then ocBaseOnLoad() end
+    self.addContextMenuItem("Add " .. OC_NAME, addOperativeCounterToModel)
+end
+
+-- ===== END OPERATIVE COUNTER =====
+'''
+
+
+def _operative_matches_counter(operative: dict, applies) -> bool:
+    if applies in (None, "all", True):
+        return True
+    if isinstance(applies, str):
+        applies = [applies]
+    if not isinstance(applies, list):
+        return False
+    op_kw = {kw.upper() for kw in operative.get('keywords', [])}
+    return any(kw.upper() in op_kw for kw in applies)
+
+
+def _build_operative_counter_lua(team: str, counter_cfg: dict, url_branch: str) -> str:
+    """Generate Lua that adds a left/right-click cycling image counter to a model placed on the card."""
+    name = str(counter_cfg.get('name', 'Counter'))
+    min_val = int(counter_cfg.get('min', 0))
+    max_val = int(counter_cfg.get('max', 1))
+    raw_states = counter_cfg.get('states') or []
+    states = sorted(raw_states, key=lambda s: int(s.get('value', 0)))
+    if not states:
+        return ""
+
+    base_url = f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/{url_branch}/output/{team}/tokens"
+
+    def asset_name(v: int) -> str:
+        return f"oc_asset_{v}"
+
+    def lua_str(s: str) -> str:
+        return '"' + str(s).replace('\\', '\\\\').replace('"', '\\"') + '"'
+
+    labels_lua = "{" + ", ".join(
+        f'[{int(s["value"])}]={lua_str(s.get("label", ""))}'
+        for s in states
+    ) + "}"
+
+    assets_table_lua = "{" + ", ".join(
+        f'[{int(s["value"])}]="{asset_name(int(s["value"]))}"'
+        for s in states
+    ) + "}"
+
+    default_value = int(states[0]["value"])
+    default_asset = asset_name(default_value)
+
+    helper_block = f"""
+
+-- {name} Counter (auto-injected)
+function getOperativeCounterImage()
+  if not state or not state.operative_counter then return "{default_asset}" end
+  local v = state.operative_counter.current or {default_value}
+  local assets = {assets_table_lua}
+  return assets[v] or "{default_asset}"
+end
+
+function change_operative_counter(player, value, id)
+  if not state.operative_counter then return end
+  local current = state.operative_counter.current or {default_value}
+  local maxv = state.operative_counter.max or {max_val}
+  local minv = state.operative_counter.min or {min_val}
+  if value == "-1" then
+    if current > minv then current = current - 1 end
+  elseif value == "-2" then
+    if current < maxv then current = current + 1 end
+  end
+  state.operative_counter.current = current
+  if refreshUI then refreshUI() end
+  local labels = {labels_lua}
+  broadcastToColor({lua_str(name + ': ')} .. (labels[current] or "?"), player.color, Color.Yellow)
+end
+"""
+
+    asset_lines = []
+    for s in states:
+        token_file = s.get("token", "")
+        url = f"{base_url}/{token_file}"
+        asset_lines.append(f'    {{name="{asset_name(int(s["value"]))}", url=[=[{url}]=]}},')
+    asset_block = "\n" + "\n".join(asset_lines)
+
+    return (
+        _OPERATIVE_COUNTER_LUA_TEMPLATE
+        .replace("<<NAME_UPPER>>", name.upper())
+        .replace("<<NAME>>", name)
+        .replace("<<INIT_VALUE>>", str(default_value))
+        .replace("<<MIN_VAL>>", str(min_val))
+        .replace("<<MAX_VAL>>", str(max_val))
+        .replace("<<HELPER_BLOCK>>", helper_block)
+        .replace("<<ASSET_BLOCK>>", asset_block)
+    )
+
+
 def _get_faction_rule_code(team: str, team_data: dict, operative: dict, team_config: dict) -> str:
     """Generate faction rule Lua code if applicable, using inline Lua builders."""
     team_info = team_config.get('teams', {}).get(team, {})
+
+    # Operative counter takes precedence over standard faction_rule popup UI
+    counter_cfg = team_info.get('operative_counter')
+    if counter_cfg and _operative_matches_counter(operative, counter_cfg.get('operatives', 'all')):
+        counter_lua = _build_operative_counter_lua(team, counter_cfg, URL_BRANCH)
+        if counter_lua:
+            return counter_lua
+
     rule_cfg = team_info.get('faction_rule')
     if not rule_cfg:
         return ""

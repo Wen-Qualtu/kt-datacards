@@ -481,6 +481,16 @@ teams:
       max: 2
       min: 0
       operatives: all
+      states:
+      - value: 0
+        label: Empty
+        token: goremongers-gore-tank-empty.png
+      - value: 1
+        label: Half
+        token: goremongers-gore-tank-half.png
+      - value: 2
+        label: Full
+        token: goremongers-gore-tank-full.png
     tokens:
     - name: Bleeding
       shape: operative
