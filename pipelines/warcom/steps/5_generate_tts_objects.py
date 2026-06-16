@@ -1423,7 +1423,7 @@ class TTSCardBox(TTSComponent):
                         "NormalURL": "",
                         "ColliderURL": "",
                         "Convex": True,
-                        "MaterialIndex": 0,
+                        "MaterialIndex": 3,
                         "TypeIndex": 6,
                         "CastShadows": True
                     },

@@ -25,6 +25,7 @@ import argparse
 import hashlib
 import json
 import logging
+import os
 import re
 import shutil
 import yaml
@@ -52,6 +53,7 @@ logger = logging.getLogger(__name__)
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 PIPELINE_METADATA_FILE = PROJECT_ROOT / "layers" / "kt-app" / "metadata.json"
 OUTPUT_METADATA_FILE = PROJECT_ROOT / "output" / "metadata.json"
+URL_BRANCH = os.environ.get("KT_DATACARDS_URL_BRANCH", "main")
 
 
 # ===================================================================
@@ -145,11 +147,10 @@ class OutputMetadataManager:
         }
 
 
-def generate_urls_json_v3():
+def generate_urls_json_v3(repo_branch: str = URL_BRANCH):
     """Generate flat list format for internal use (backwards compatibility)"""
     output_dir = PROJECT_ROOT / 'output'
-    branch = "main"
-    base_url = f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/{branch}/output"
+    base_url = f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/{repo_branch}/output"
     
     all_entries = []
     
@@ -202,8 +203,9 @@ def generate_urls_json_v3():
                 if name.endswith('-front') or name.endswith('-back'):
                     name = name.rsplit('-', 1)
                     name = f"{name[0]}_{name[1]}"
-                
-                card_url = f"{base_url}/{team}/cards/{card_type}/{card_file.name}"
+
+                card_mtime = int(card_file.stat().st_mtime)
+                card_url = f"{base_url}/{team}/cards/{card_type}/{card_file.name}?v={card_mtime}"
                 all_entries.append({
                     'team': team,
                     'type': card_type_v2,
@@ -214,9 +216,9 @@ def generate_urls_json_v3():
     return all_entries
 
 
-def generate_object_urls_json():
+def generate_object_urls_json(repo_branch: str = URL_BRANCH):
     """
-    Generate object-urls.json for TTS update checks.
+    Generate team detail URL metadata for TTS update checks.
     
     Structure: Keyed by team for efficient lookup in TTS Lua scripts.
     Each team has:
@@ -225,8 +227,7 @@ def generate_object_urls_json():
     """
     output_dir = PROJECT_ROOT / 'output'
     config_dir = PROJECT_ROOT / 'config'
-    branch = "main"
-    base_url = f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/{branch}/output"
+    base_url = f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/{repo_branch}/output"
     
     teams_data = {}
     
@@ -262,7 +263,7 @@ def generate_object_urls_json():
         if lua_script_path.exists():
             lua_mtime = lua_script_path.stat().st_mtime
             lua_modified = datetime.fromtimestamp(lua_mtime, tz=timezone.utc).isoformat()
-            lua_url = f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/{branch}/config/defaults/tts-script/tts-update-rules-in-box-script.lua"
+            lua_url = f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/{repo_branch}/config/defaults/tts-script/tts-update-rules-in-box-script.lua"
             team_entry["objects"].append({
                 "type": "lua-script",
                 "name": "update-script",
@@ -394,6 +395,82 @@ def generate_object_urls_json():
     return teams_data
 
 
+def _to_stamp(ts: str) -> int:
+    """Convert ISO-like timestamp strings to comparable numeric stamp."""
+    return int(''.join(ch for ch in str(ts or '') if ch.isdigit()) or 0)
+
+
+def generate_object_urls_summary(teams_data: dict, repo_branch: str = URL_BRANCH) -> dict:
+    """Build lightweight global summary for fast box-level update checks."""
+    summary = {}
+    base_url = f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/{repo_branch}/output"
+
+    for team, team_entry in sorted(teams_data.items()):
+        max_modified = ""
+        max_stamp = 0
+
+        box = team_entry.get("box") or {}
+        box_modified = box.get("modified") or ""
+        box_stamp = _to_stamp(box_modified)
+        if box_stamp > max_stamp:
+            max_stamp = box_stamp
+            max_modified = box_modified
+
+        for obj in team_entry.get("objects") or []:
+            obj_modified = (obj or {}).get("modified") or ""
+            obj_stamp = _to_stamp(obj_modified)
+            if obj_stamp > max_stamp:
+                max_stamp = obj_stamp
+                max_modified = obj_modified
+
+        team_url = f"{base_url}/{team}/{team}-object-urls.json"
+        summary[team] = {
+            "team": team,
+            "modified": max_modified,
+            "team_url": f"{team_url}?v={max_stamp}",
+            # Keep box info for backward compatibility with older scripts.
+            "box": team_entry.get("box"),
+        }
+
+    return summary
+
+
+def save_object_urls_team_files(teams_data: dict, output_dir: Path) -> list[Path]:
+    """Write per-team object URL metadata files for faster in-game update checks."""
+    written_files: list[Path] = []
+
+    for team, team_entry in sorted(teams_data.items()):
+        team_meta_dir = output_dir / team
+        team_meta_dir.mkdir(parents=True, exist_ok=True)
+        team_file = team_meta_dir / f"{team}-object-urls.json"
+        with open(team_file, 'w', encoding='utf-8') as f:
+            json.dump(team_entry, f, indent=2, ensure_ascii=False)
+        written_files.append(team_file)
+
+        # Cleanup previous team-local filename from earlier implementation.
+        old_team_file = team_meta_dir / "object-urls.json"
+        if old_team_file.exists():
+            try:
+                old_team_file.unlink()
+            except Exception:
+                logger.warning(f"Could not remove legacy team metadata file: {old_team_file}")
+
+    # Cleanup legacy central folder from earlier implementation.
+    legacy_team_meta_dir = output_dir / 'object-urls'
+    if legacy_team_meta_dir.exists():
+        for existing_file in legacy_team_meta_dir.glob('*.json'):
+            try:
+                existing_file.unlink()
+            except Exception:
+                logger.warning(f"Could not remove legacy team metadata file: {existing_file}")
+        try:
+            legacy_team_meta_dir.rmdir()
+        except OSError:
+            pass
+
+    return written_files
+
+
 def load_lua_script(config_dir: Path) -> str:
     """Load the Lua script from config defaults folder"""
     script_path = config_dir / "defaults" / "tts-script" / "tts-update-rules-in-box-script.lua"
@@ -407,6 +484,57 @@ def load_lua_script(config_dir: Path) -> str:
     except Exception as e:
         logger.warning(f"Could not load Lua script: {e}")
         return ""
+
+
+def load_single_object_updater_script(config_dir: Path) -> str:
+    """Load reusable per-object updater Lua script from defaults folder."""
+    script_path = config_dir / "defaults" / "tts-script" / "single-object-updater.lua"
+    try:
+        with open(script_path, 'r', encoding='utf-8-sig') as f:
+            content = f.read()
+            if content.startswith('\ufeff'):
+                content = content[1:]
+            content = content.replace('\n', '\r\n')
+            return content
+    except Exception as e:
+        logger.warning(f"Could not load single-object updater script: {e}")
+        return ""
+
+
+def load_display_table_manager_script(config_dir: Path) -> str:
+    """Load display table manager Lua script from defaults folder."""
+    script_path = config_dir / "defaults" / "tts-script" / "display-table-manager-script.lua"
+    try:
+        with open(script_path, 'r', encoding='utf-8-sig') as f:
+            content = f.read()
+            if content.startswith('\ufeff'):
+                content = content[1:]
+            content = content.replace('\n', '\r\n')
+            return content
+    except Exception as e:
+        logger.warning(f"Could not load display manager script: {e}")
+        return ""
+
+
+def load_box_description(config_dir: Path) -> str:
+    """Load default box description text from config defaults folder."""
+    description_path = config_dir / "defaults" / "box" / "card-box-description.txt"
+    try:
+        with open(description_path, 'r', encoding='utf-8-sig') as f:
+            return f.read().strip()
+    except Exception as e:
+        logger.warning(f"Could not load box description: {e}")
+        return (
+            "This box has two kinds of controls: table buttons and right-click (context menu) buttons.\n\n"
+            "Table buttons:\n"
+            "- Place: Puts cards/tokens in their play positions.\n"
+            "- KT table: Places items using the Kill Team table layout.\n"
+            "- Recall: Pulls tracked items back into the box.\n\n"
+            "Right-click (context menu) buttons:\n"
+            "- Update: Refreshes card stats/rules from this box onto matching cards already on the table.\n"
+            "- Reset: Resets this box and respawns its tracked contents.\n"
+            "- Clear Layout: Clears any saved custom layout and reverts Place behavior to defaults."
+        )
 
 
 def _build_token_memory_list(token_objects: list) -> dict:
@@ -437,7 +565,7 @@ def _build_token_memory_list(token_objects: list) -> dict:
     return ml
 
 
-def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Path, output_dir: Path) -> tuple:
+def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Path, output_dir: Path, single_object_updater_script: str = "") -> tuple:
     """
     Generate token bag from output/{team}/tokens/ files.
     
@@ -606,7 +734,7 @@ def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Pa
             "Bag": {"Order": 0},
             "ContainedObjects": [inner_token],
             "ChildObjects": [display_token],
-            "LuaScript": "",
+            "LuaScript": single_object_updater_script,
             "LuaScriptState": "",
             "XmlUI": ""
         }
@@ -715,7 +843,7 @@ def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Pa
     return token_bag, token_timestamp
 
 
-def load_dice_objects(team_name: str, sample_url: Optional[str], output_dir: Path) -> list:
+def load_dice_objects(team_name: str, sample_url: Optional[str], output_dir: Path, repo_branch: str = URL_BRANCH) -> list:
     """
     Create TTS Custom_Dice objects for a team (team, light, dark variants).
     Saves individual JSON files to output/{team}/tts_objects/dice/ and returns
@@ -732,7 +860,7 @@ def load_dice_objects(team_name: str, sample_url: Optional[str], output_dir: Pat
         elif "/output_v2/" in sample_url:
             github_base = sample_url.split("/output_v2/")[0]
     if not github_base:
-        github_base = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main"
+        github_base = f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/{repo_branch}"
 
     team_tag = f"_{team_name.replace('-', '_').title().replace('_', ' ')}"
     display = team_name.replace("-", " ").title()
@@ -769,17 +897,28 @@ def load_dice_objects(team_name: str, sample_url: Optional[str], output_dir: Pat
 
 
 def copy_preview_image(team_folder_name: str, team_display_name: str, config_dir: Path, output_dir: Path):
-    """Copy preview/icon image for a team"""
-    team_icon = config_dir / "teams" / team_folder_name / "tts-image" / f"{team_folder_name}-icon.png"
+    """Copy preview/icon image for a team.
+
+    Priority:
+      1. config/teams/{team}/tts-image/{team}-icon.png   — manual override
+      2. config/teams/{team}/tts-image/{team}-preview.png — manual override (alt)
+      3. layers/warcom/extracted/{team}/icons/{team}-icon-token.jpg — auto-source
+      4. config/defaults/tts-image/default-icon.png       — generic fallback
+      5. config/defaults/tts-image/default-preview.png    — generic fallback (alt)
+    """
+    team_icon    = config_dir / "teams" / team_folder_name / "tts-image" / f"{team_folder_name}-icon.png"
     team_preview = config_dir / "teams" / team_folder_name / "tts-image" / f"{team_folder_name}-preview.png"
-    default_icon = config_dir / "defaults" / "tts-image" / "default-icon.png"
+    warcom_icon  = PROJECT_ROOT / "layers" / "warcom" / "extracted" / team_folder_name / "icons" / f"{team_folder_name}-icon-token.jpg"
+    default_icon    = config_dir / "defaults" / "tts-image" / "default-icon.png"
     default_preview = config_dir / "defaults" / "tts-image" / "default-preview.png"
-    
-    # Priority: team icon > team preview > default icon > default preview
+
+    # Priority: team icon > team preview > warcom icon > default icon > default preview
     if team_icon.exists():
         source_preview = team_icon
     elif team_preview.exists():
         source_preview = team_preview
+    elif warcom_icon.exists():
+        source_preview = warcom_icon
     elif default_icon.exists():
         source_preview = default_icon
     else:
@@ -794,7 +933,80 @@ def copy_preview_image(team_folder_name: str, team_display_name: str, config_dir
         logger.warning(f"No preview/icon image found for {team_folder_name}")
 
 
-def embed_datacard_stats(bag_obj: dict, team_name: str, output_dir: Path, config_dir: Path) -> bool:
+def rebuild_kill_team_card_boxes_example(output_dir: Path) -> tuple[int, Optional[Path]]:
+    """Refresh manager bag contents with latest generated team boxes.
+
+    Source template is loaded from dev/examples (or existing generated output
+    if present), while the generated artifact is written to
+    output/_generic-tts-objects/Kill Team Card Boxes.json.
+    Only `ContainedObjects` is rewritten. Manager bag Lua script, buttons,
+    description, and other top-level settings remain unchanged.
+    """
+    manager_template_path = PROJECT_ROOT / "dev" / "examples" / "Kill Team Card Boxes.json"
+    manager_output_dir = output_dir / "_generic-tts-objects"
+    manager_output_dir.mkdir(parents=True, exist_ok=True)
+    manager_output_path = manager_output_dir / "Kill Team Card Boxes.json"
+
+    source_path = manager_template_path
+    if not source_path.exists():
+        logger.warning(f"Manager bag template file not found: {source_path}")
+        return 0, None
+
+    try:
+        with open(source_path, 'r', encoding='utf-8') as f:
+            manager_data = json.load(f)
+    except Exception as e:
+        logger.warning(f"Could not read manager bag file: {e}")
+        return 0, None
+
+    object_states = manager_data.get("ObjectStates") or []
+    if not object_states or not isinstance(object_states[0], dict):
+        logger.warning("Manager bag JSON has no valid ObjectStates[0]")
+        return 0, None
+
+    manager_obj = object_states[0]
+    # Build manager bag contents from scratch each run to avoid stale nested state.
+    manager_obj["ContainedObjects"] = []
+
+    # Keep manager bag script synced with defaults so UI changes are always propagated.
+    manager_script = load_display_table_manager_script(PROJECT_ROOT / "config")
+    if manager_script:
+        manager_obj["LuaScript"] = manager_script
+
+    team_box_objects = []
+    for team_tts_dir in sorted(output_dir.glob("*/tts_objects")):
+        team_box_files = sorted(team_tts_dir.glob("* Box.json"))
+        if not team_box_files:
+            continue
+
+        box_file = team_box_files[0]
+        try:
+            with open(box_file, 'r', encoding='utf-8') as f:
+                team_data = json.load(f)
+            team_obj = (team_data.get("ObjectStates") or [None])[0]
+            if not isinstance(team_obj, dict):
+                continue
+        except Exception as e:
+            logger.warning(f"Could not read team box for manager bag ({box_file}): {e}")
+            continue
+
+        team_box_objects.append(team_obj)
+
+    team_box_objects.sort(key=lambda obj: obj.get("Nickname", ""))
+    manager_obj["ContainedObjects"] = team_box_objects
+
+    try:
+        with open(manager_output_path, 'w', encoding='utf-8') as f:
+            json.dump(manager_data, f, indent=2, ensure_ascii=False)
+    except Exception as e:
+        logger.warning(f"Could not write manager bag file: {e}")
+        return 0, None
+
+    logger.info(f"Updated manager bag contents: {len(team_box_objects)} teams -> {manager_output_path}")
+    return len(team_box_objects), manager_output_path
+
+
+def embed_datacard_stats(bag_obj: dict, team_name: str, output_dir: Path, config_dir: Path, single_object_updater_script: str = "") -> bool:
     """
     Embed operative stats into datacards within the TTS bag object.
     Returns True if stats were embedded, False if skipped.
@@ -872,7 +1084,7 @@ def embed_datacard_stats(bag_obj: dict, team_name: str, output_dir: Path, config
             
             # Get faction rule code if applicable
             faction_rule_code = _get_faction_rule_code(team_name, team_data, operative, team_config)
-            lua_script = datacard_lua_script + faction_rule_code
+            lua_script = datacard_lua_script + "\n\n" + faction_rule_code + "\n\n" + (single_object_updater_script or "")
             
             # Set GMNotes and Lua script
             card["GMNotes"] = gm_notes_json
@@ -1536,9 +1748,187 @@ end
 '''
 
 
+_OPERATIVE_COUNTER_LUA_TEMPLATE = r'''
+
+-- ===== OPERATIVE COUNTER: <<NAME_UPPER>> =====
+
+OC_NAME = "<<NAME>>"
+OC_INIT_VALUE = <<INIT_VALUE>>
+OC_MIN_VAL = <<MIN_VAL>>
+OC_MAX_VAL = <<MAX_VAL>>
+
+OC_HELPER_FUNCS = [==[<<HELPER_BLOCK>>]==]
+
+OC_ASSET_LINES = [==[<<ASSET_BLOCK>>
+]==]
+
+OC_PANEL_XML = "\n    <Panel color=\"#80808000\" outline=\"#FFFF00\" outlineSize=\"3 3\" width=\"45\" height=\"45\" offsetXY=\"0 -10\">"
+    .. "\n      <Image id=\"ktcnid-status-operative-counter\" image=\""
+    .. "]]..getOperativeCounterImage()..[["
+    .. "\" preserveAspect=\"true\" rectAlignment=\"MiddleCenter\" onClick=\"change_operative_counter\" />"
+    .. "\n    </Panel>"
+
+function addOperativeCounterToModel(playerColor)
+    local model = findModelOnCard()
+    if model == nil then
+        broadcastToColor("Place a KTUIMini model on this card first.", playerColor, Color.Orange)
+        return
+    end
+
+    local modelLua = model.getLuaScript() or ""
+    if modelLua == "" then
+        broadcastToColor("Model has no Lua script (not a KTUI model?).", playerColor, Color.Red)
+        return
+    end
+
+    if modelLua:find("ktcnid%-status%-operative%-counter") then
+        broadcastToColor("Model already has " .. OC_NAME .. " counter.", playerColor, Color.White)
+        return
+    end
+
+    local xmlPattern = "(<HorizontalLayout spacing=\"3\" width=\"@totalAtt\")"
+    if modelLua:find(xmlPattern) then
+        modelLua = modelLua:gsub(xmlPattern, OC_PANEL_XML .. "\n    %1")
+    else
+        broadcastToColor("Could not find attachment layout in model.", playerColor, Color.Red)
+        return
+    end
+
+    local bundlePattern = "({name=\"Wound_red\"[^\n]+)"
+    if modelLua:find(bundlePattern) then
+        modelLua = modelLua:gsub(bundlePattern, "%1" .. OC_ASSET_LINES)
+    end
+
+    modelLua = modelLua .. OC_HELPER_FUNCS
+
+    local modelState = model.script_state or "{}"
+    local ok, mState = pcall(function() return JSON.decode(modelState) end)
+    if not ok or not mState then mState = {} end
+    if not mState.operative_counter then
+        mState.operative_counter = {
+            name = OC_NAME,
+            current = OC_INIT_VALUE,
+            min = OC_MIN_VAL,
+            max = OC_MAX_VAL
+        }
+    end
+    model.script_state = JSON.encode(mState)
+
+    model.setLuaScript(modelLua)
+    Wait.frames(function() model.reload() end, 10)
+
+    broadcastToColor("Added " .. OC_NAME .. " counter to model!", playerColor, Color.Green)
+end
+
+local ocBaseOnLoad = onLoad
+function onLoad()
+    if ocBaseOnLoad then ocBaseOnLoad() end
+    self.addContextMenuItem("Add " .. OC_NAME, addOperativeCounterToModel)
+end
+
+-- ===== END OPERATIVE COUNTER =====
+'''
+
+
+def _operative_matches_counter(operative: dict, applies) -> bool:
+    if applies in (None, "all", True):
+        return True
+    if isinstance(applies, str):
+        applies = [applies]
+    if not isinstance(applies, list):
+        return False
+    op_kw = {kw.upper() for kw in operative.get('keywords', [])}
+    return any(kw.upper() in op_kw for kw in applies)
+
+
+def _build_operative_counter_lua(team: str, counter_cfg: dict, url_branch: str) -> str:
+    """Generate Lua that adds a left/right-click cycling image counter to a model placed on the card."""
+    name = str(counter_cfg.get('name', 'Counter'))
+    min_val = int(counter_cfg.get('min', 0))
+    max_val = int(counter_cfg.get('max', 1))
+    raw_states = counter_cfg.get('states') or []
+    states = sorted(raw_states, key=lambda s: int(s.get('value', 0)))
+    if not states:
+        return ""
+
+    base_url = f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/{url_branch}/output/{team}/tokens"
+
+    def asset_name(v: int) -> str:
+        return f"oc_asset_{v}"
+
+    def lua_str(s: str) -> str:
+        return '"' + str(s).replace('\\', '\\\\').replace('"', '\\"') + '"'
+
+    labels_lua = "{" + ", ".join(
+        f'[{int(s["value"])}]={lua_str(s.get("label", ""))}'
+        for s in states
+    ) + "}"
+
+    assets_table_lua = "{" + ", ".join(
+        f'[{int(s["value"])}]="{asset_name(int(s["value"]))}"'
+        for s in states
+    ) + "}"
+
+    default_value = int(states[0]["value"])
+    default_asset = asset_name(default_value)
+
+    helper_block = f"""
+
+-- {name} Counter (auto-injected)
+function getOperativeCounterImage()
+  if not state or not state.operative_counter then return "{default_asset}" end
+  local v = state.operative_counter.current or {default_value}
+  local assets = {assets_table_lua}
+  return assets[v] or "{default_asset}"
+end
+
+function change_operative_counter(player, value, id)
+  if not state.operative_counter then return end
+  local current = state.operative_counter.current or {default_value}
+  local maxv = state.operative_counter.max or {max_val}
+  local minv = state.operative_counter.min or {min_val}
+  if value == "-1" then
+    if current > minv then current = current - 1 end
+  elseif value == "-2" then
+    if current < maxv then current = current + 1 end
+  end
+  state.operative_counter.current = current
+  if refreshUI then refreshUI() end
+  local labels = {labels_lua}
+  broadcastToColor({lua_str(name + ': ')} .. (labels[current] or "?"), player.color, Color.Yellow)
+end
+"""
+
+    asset_lines = []
+    for s in states:
+        token_file = s.get("token", "")
+        url = f"{base_url}/{token_file}"
+        asset_lines.append(f'    {{name="{asset_name(int(s["value"]))}", url=[=[{url}]=]}},')
+    asset_block = "\n" + "\n".join(asset_lines)
+
+    return (
+        _OPERATIVE_COUNTER_LUA_TEMPLATE
+        .replace("<<NAME_UPPER>>", name.upper())
+        .replace("<<NAME>>", name)
+        .replace("<<INIT_VALUE>>", str(default_value))
+        .replace("<<MIN_VAL>>", str(min_val))
+        .replace("<<MAX_VAL>>", str(max_val))
+        .replace("<<HELPER_BLOCK>>", helper_block)
+        .replace("<<ASSET_BLOCK>>", asset_block)
+    )
+
+
 def _get_faction_rule_code(team: str, team_data: dict, operative: dict, team_config: dict) -> str:
     """Generate faction rule Lua code if applicable, using inline Lua builders."""
     team_info = team_config.get('teams', {}).get(team, {})
+
+    # Operative counter takes precedence over standard faction_rule popup UI
+    counter_cfg = team_info.get('operative_counter')
+    if counter_cfg and _operative_matches_counter(operative, counter_cfg.get('operatives', 'all')):
+        counter_lua = _build_operative_counter_lua(team, counter_cfg, URL_BRANCH)
+        if counter_lua:
+            return counter_lua
+
     rule_cfg = team_info.get('faction_rule')
     if not rule_cfg:
         return ""
@@ -1553,6 +1943,32 @@ def _get_faction_rule_code(team: str, team_data: dict, operative: dict, team_con
         op_keywords = [kw.upper() for kw in operative.get('keywords', [])]
         if not any(kw.upper() in op_keywords for kw in applies_to):
             return ""
+
+    # Optional explicit options override from team-config.
+    options_override = rule_cfg.get('options')
+    if options_override:
+        rule_name = rule_cfg.get('name', 'Faction Rule')
+        options = options_override
+
+        lua_options = "{\n"
+        for opt in options:
+            name_esc = opt.get('name', '').replace('"', '\\"')
+            text_esc = opt.get('text', '').replace('\\', '\\\\').replace('"', '\\"').replace("'", "\\'").replace('\n', '\\n')
+            lua_options += f'    {{name = "{name_esc}", text = "{text_esc}"}},\n'
+        lua_options += "}"
+
+        select_count = rule_cfg.get('select', 2)
+        operative_select_count = rule_cfg.get('operative_select_count')
+        if operative_select_count:
+            op_keywords = [kw.upper() for kw in operative.get('keywords', [])]
+            for kw in op_keywords:
+                if kw.upper() in operative_select_count:
+                    select_count = operative_select_count[kw.upper()]
+                    break
+
+        if select_count == 1:
+            return _build_select1_lua(rule_name, lua_options)
+        return _build_select2_lua(rule_name, lua_options)
 
     # Find the rule entry with options
     rule_entry = next((r for r in faction_rules if r.get('options')), None)
@@ -1675,8 +2091,8 @@ def save_individual_token_json(token_obj: dict, team_name: str, token_index: int
     return file_path, timestamp
 
 
-def generate_team_tts_object(team_name: str, cards: list, lua_script: str, texture_url: str, 
-                            mesh_url: str, config_dir: Path, output_dir: Path):
+def generate_team_tts_object(team_name: str, cards: list, lua_script: str, box_description: str, single_object_updater_script: str, texture_url: str,
+                            mesh_url: str, config_dir: Path, output_dir: Path, repo_branch: str = URL_BRANCH):
     """Generate TTS object for a single team"""
     # Extract faction from first card's URL
     faction = None
@@ -1708,12 +2124,12 @@ def generate_team_tts_object(team_name: str, cards: list, lua_script: str, textu
     
     # Add token bag if tokens exist for this team
     sample_url = cards[0]['url'] if cards else None
-    token_bag, token_timestamp = load_token_bag(team_name, faction, sample_url, config_dir, output_dir)
+    token_bag, token_timestamp = load_token_bag(team_name, faction, sample_url, config_dir, output_dir, single_object_updater_script)
     if token_bag:
         contained_objects.append(token_bag)
         logger.info(f"Added token bag for {team_name}")
 
-    for dice_obj in load_dice_objects(team_name, sample_url, output_dir):
+    for dice_obj in load_dice_objects(team_name, sample_url, output_dir, repo_branch):
         contained_objects.append(dice_obj)
 
     for card_type in type_order:
@@ -1770,7 +2186,8 @@ def generate_team_tts_object(team_name: str, cards: list, lua_script: str, textu
                 card_data['back'],
                 team_tag,
                 str(deck_id_counter),
-                card_type
+                card_type,
+                single_object_updater_script,
             )
             
             # Save individual card JSON
@@ -1780,7 +2197,7 @@ def generate_team_tts_object(team_name: str, cards: list, lua_script: str, textu
             deck_id_counter += 1
         elif len(type_cards_data) > 1:
             type_nickname = card_type.replace('-', ' ').title()
-            deck_obj = create_deck(type_nickname, team_tag, type_cards_data, deck_id_counter, card_type)
+            deck_obj = create_deck(type_nickname, team_tag, type_cards_data, deck_id_counter, card_type, single_object_updater_script)
             
             # Save individual card JSONs from deck
             for idx, card_obj in enumerate(deck_obj['ContainedObjects'], start=1):
@@ -1803,7 +2220,19 @@ def generate_team_tts_object(team_name: str, cards: list, lua_script: str, textu
     placeholder_timestamp = "2000-01-01T00:00:00"
     placeholder_token_timestamp = ""
     
-    bag_obj = create_bag(team_display_name, team_tag, contained_objects, lua_script, texture_url, mesh_url, faction, placeholder_timestamp, placeholder_token_timestamp)
+    bag_obj = create_bag(
+        team_display_name,
+        team_tag,
+        contained_objects,
+        lua_script,
+        texture_url,
+        mesh_url,
+        faction,
+        placeholder_timestamp,
+        placeholder_token_timestamp,
+        box_description,
+        repo_branch,
+    )
     
     # Save to file
     with open(output_file, 'w', encoding='utf-8') as f:
@@ -1828,13 +2257,25 @@ def generate_team_tts_object(team_name: str, cards: list, lua_script: str, textu
     mirror_collider_urls(bag_obj)
 
     # Recreate bag with actual timestamp
-    bag_obj = create_bag(team_display_name, team_tag, contained_objects, lua_script, texture_url, mesh_url, faction, actual_timestamp, token_timestamp or "")
+    bag_obj = create_bag(
+        team_display_name,
+        team_tag,
+        contained_objects,
+        lua_script,
+        texture_url,
+        mesh_url,
+        faction,
+        actual_timestamp,
+        token_timestamp or "",
+        box_description,
+        repo_branch,
+    )
 
     # Apply collider mirroring again
     mirror_collider_urls(bag_obj)
     
     # Embed datacard stats (optional - skips if no team data)
-    embed_datacard_stats(bag_obj, team_name, output_dir, config_dir)
+    embed_datacard_stats(bag_obj, team_name, output_dir, config_dir, single_object_updater_script)
     
     # Save final version
     with open(output_file, 'w', encoding='utf-8') as f:
@@ -1844,10 +2285,12 @@ def generate_team_tts_object(team_name: str, cards: list, lua_script: str, textu
     copy_preview_image(team_name, team_display_name, config_dir, output_dir)
 
 
-def generate_all_tts_objects(urls_data: list, config_dir: Path, output_dir: Path, team_filter: list = None) -> int:
+def generate_all_tts_objects(urls_data: list, config_dir: Path, output_dir: Path, team_filter: list = None, repo_branch: str = URL_BRANCH) -> int:
     """Generate TTS objects for all teams"""
     # Load Lua script
     lua_script = load_lua_script(config_dir)
+    single_object_updater_script = load_single_object_updater_script(config_dir)
+    box_description = load_box_description(config_dir)
     
     # Group cards by team and separate box assets
     teams = defaultdict(list)
@@ -1879,7 +2322,7 @@ def generate_all_tts_objects(urls_data: list, config_dir: Path, output_dir: Path
         texture_url = team_textures.get(team_name)
         mesh_url = team_meshes.get(team_name)
         
-        generate_team_tts_object(team_name, cards, lua_script, texture_url, mesh_url, config_dir, output_dir)
+        generate_team_tts_object(team_name, cards, lua_script, box_description, single_object_updater_script, texture_url, mesh_url, config_dir, output_dir, repo_branch)
         count += 1
     
     if skipped > 0:
@@ -1901,6 +2344,7 @@ def main():
 
     logger.info("=" * 60)
     logger.info("TTS Object Generation (with embedded stats) - KT-App Pipeline")
+    logger.info(f"URL branch: {URL_BRANCH}")
     logger.info("=" * 60)
 
     # Initialize metadata managers
@@ -1909,21 +2353,36 @@ def main():
 
     # Generate URLs JSON from v3 structure (flat format for internal use)
     logger.info("Scanning output structure...")
-    urls_data = generate_urls_json_v3()
+    urls_data = generate_urls_json_v3(URL_BRANCH)
     logger.info(f"Found {len(urls_data)} card/asset entries")
-
-    # Generate object-urls.json for TTS update checks
-    logger.info("Generating object-urls.json for TTS update checks...")
-    object_urls_data = generate_object_urls_json()
-    object_urls_file = PROJECT_ROOT / 'output' / 'object-urls.json'
-    with open(object_urls_file, 'w', encoding='utf-8') as f:
-        json.dump(object_urls_data, f, indent=2, ensure_ascii=False)
-    logger.info(f"Saved object-urls.json with {len(object_urls_data)} teams")
 
     # Generate TTS objects
     config_dir = PROJECT_ROOT / 'config'
     output_dir = PROJECT_ROOT / 'output'
-    count = generate_all_tts_objects(urls_data, config_dir, output_dir, args.teams)
+    count = generate_all_tts_objects(urls_data, config_dir, output_dir, args.teams, URL_BRANCH)
+
+    # Rebuild manager bag with latest team boxes.
+    manager_count, manager_path = rebuild_kill_team_card_boxes_example(output_dir)
+
+    # Build per-team metadata after Box.json files exist.
+    logger.info("Generating team URL metadata for TTS update checks...")
+    team_object_urls_data = generate_object_urls_json(URL_BRANCH)
+    object_urls_data = generate_object_urls_summary(team_object_urls_data, URL_BRANCH)
+    object_urls_file = PROJECT_ROOT / 'output' / 'team-urls.json'
+    with open(object_urls_file, 'w', encoding='utf-8') as f:
+        json.dump(object_urls_data, f, indent=2, ensure_ascii=False)
+    logger.info(f"Saved summary team-urls.json with {len(object_urls_data)} teams")
+
+    legacy_object_urls_file = PROJECT_ROOT / 'output' / 'object-urls.json'
+    if legacy_object_urls_file.exists():
+        try:
+            legacy_object_urls_file.unlink()
+            logger.info("Removed legacy output/object-urls.json")
+        except Exception as e:
+            logger.warning(f"Could not remove legacy output/object-urls.json: {e}")
+
+    team_object_url_files = save_object_urls_team_files(team_object_urls_data, PROJECT_ROOT / 'output')
+    logger.info(f"Saved {len(team_object_url_files)} team metadata files in output/{{team}}/{{team}}-object-urls.json")
 
     # Track metadata for all generated Box.json files
     for team_tts_dir in sorted(output_dir.glob("*/tts_objects")):
@@ -1934,8 +2393,15 @@ def main():
             output_meta.update_file(rel, f, "kt-app", "7_generate_tts_objects")
         pipeline_meta.mark_step_complete(team_slug, "7_generate_tts_objects")
 
-    # Track object-urls.json
-    output_meta.update_file("object-urls.json", object_urls_file, "kt-app", "7_generate_tts_objects")
+    # Track team-urls.json
+    output_meta.update_file("team-urls.json", object_urls_file, "kt-app", "7_generate_tts_objects")
+    output_meta.metadata.setdefault("files", {}).pop("object-urls.json", None)
+    output_meta.metadata.setdefault("files", {}).pop("output_v2/tts-metadata.json", None)
+    for team_file in team_object_url_files:
+        rel = f"{team_file.parent.name}/{team_file.name}"
+        output_meta.update_file(rel, team_file, "kt-app", "7_generate_tts_objects")
+    if manager_path:
+        output_meta.update_file("_generic-tts-objects/Kill Team Card Boxes.json", manager_path, "kt-app", "7_generate_tts_objects")
 
     # Save metadata
     pipeline_meta.metadata["last_full_run"] = datetime.now(timezone.utc).isoformat()

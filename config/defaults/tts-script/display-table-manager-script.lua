@@ -30,24 +30,15 @@ function onLoad(script_state)
     
     -- Create buttons
     createButtons()
+
+    -- Move infrequent actions to context menu to keep table UI compact.
+    self.addContextMenuItem("Reload Teams", refreshFromGitHub)
+    self.addContextMenuItem("Update Manager", selfUpdate)
 end
 
 
 function createButtons(mode)
     self.clearButtons()
-    
-    -- Description box always visible (non-clickable button for visual consistency)
-    self.createButton({
-        label="Kill Team Card Boxes\nTake out individual team card boxes (rightclick and search) or use 'Place on Table' for\nthe full display. Click 'Reload All Teams' to update with the latest teams.",
-        click_function="doNothing",
-        function_owner=self,
-        position={0, 0.3, -1.8},
-        rotation={0, 180, 0},
-        height=600, width=4800,
-        font_size=120,
-        color={0, 0, 0},
-        font_color={1, 1, 1}
-    })
     
     if mode == "updating" then
         -- Show only cancel button during update (centered in grid)
@@ -55,7 +46,7 @@ function createButtons(mode)
             label="Cancel Reload",
             click_function="cancelReload",
             function_owner=self,
-            position={0, 0.3, -3.5625},
+            position={0, 0.3, -2.45},
             rotation={0, 180, 0},
             height=500, width=1400,
             font_size=180,
@@ -63,39 +54,12 @@ function createButtons(mode)
             font_color={1, 1, 1}
         })
     else
-        -- Normal 2x2 button grid with proper spacing
-        -- Top-left: Update Manager (swapped X for correct display)
-        self.createButton({
-            label="Update Manager",
-            click_function="selfUpdate",
-            function_owner=self,
-            position={1.6, 0.3, -3.0},
-            rotation={0, 180, 0},
-            height=400, width=1200,
-            font_size=150,
-            color={0.8, 0, 1},
-            font_color={1, 1, 1}
-        })
-        
-        -- Top-right: Reload Teams (swapped X for correct display)
-        self.createButton({
-            label="Reload Teams",
-            click_function="refreshFromGitHub",
-            function_owner=self,
-            position={-1.6, 0.3, -3.0},
-            rotation={0, 180, 0},
-            height=400, width=1200,
-            font_size=150,
-            color={0.2, 0.6, 1},
-            font_color={1, 1, 1}
-        })
-        
-        -- Bottom-left: Place Teams (swapped X for correct display)
+        -- Keep only core table actions on buttons, moved closer to bag.
         self.createButton({
             label="Place Teams",
             click_function="placeTeamsOnTable",
             function_owner=self,
-            position={1.6, 0.3, -4.125},
+            position={1.6, 0.3, -2.45},
             rotation={0, 180, 0},
             height=400, width=1200,
             font_size=150,
@@ -103,12 +67,11 @@ function createButtons(mode)
             font_color={1, 1, 1}
         })
         
-        -- Bottom-right: Recall Teams (swapped X for correct display)
         self.createButton({
             label="Recall Teams",
             click_function="recallTeamsToManager",
             function_owner=self,
-            position={-1.6, 0.3, -4.125},
+            position={-1.6, 0.3, -2.45},
             rotation={0, 180, 0},
             height=400, width=1200,
             font_size=150,
@@ -569,13 +532,6 @@ function placeTeamsOnTable()
         end
     end
     
-    -- Clean up old text labels
-    for _, obj in ipairs(getAllObjects()) do
-        if obj.getGMNotes() == "_team_label" then
-            obj.destruct()
-        end
-    end
-    
     if recalled > 0 then
         broadcastToAll("Recalled " .. recalled .. " existing teams.", {0.5, 0.5, 0.5})
     end
@@ -601,7 +557,7 @@ function placeTeamsOnTable()
             return a.name < b.name
         end)
         
-        -- Take out each team bag and spawn label
+        -- Take out each team bag
         local placed = 0
         for i, team in ipairs(teamList) do
             Wait.time(function()
@@ -633,25 +589,6 @@ function placeTeamsOnTable()
                     rotation = posData and Vector(posData.rot.x, posData.rot.y, posData.rot.z) or Vector(0, 270, 0),
                     smooth = false
                 })
-                
-                -- Spawn text label for this team
-                Wait.time(function()
-                    if bagObj and teamName and teamName ~= "" then
-                        spawnObject({
-                            type = "3DText",
-                            position = Vector(relativePos.x, relativePos.y - 2.2, relativePos.z + 3.0),
-                            rotation = Vector(90, 0, 0),
-                            scale = Vector(0.015, 0.015, 0.015),
-                            callback_function = function(obj)
-                                obj.TextTool.setValue(teamName)
-                                obj.TextTool.setFontSize(50)
-                                obj.setColorTint({r=1, g=1, b=1})
-                                obj.setLock(true)
-                                obj.setGMNotes("_team_label")
-                            end
-                        })
-                    end
-                end, 0.2)
                 
                 placed = placed + 1
                 if placed == #teamList then
@@ -689,13 +626,6 @@ function recallTeamsToManager()
                 self.putObject(obj)
                 recalled = recalled + 1
             end
-        end
-    end
-    
-    -- Clean up text labels
-    for _, obj in ipairs(getAllObjects()) do
-        if obj.getGMNotes() == "_team_label" then
-            obj.destruct()
         end
     end
     
