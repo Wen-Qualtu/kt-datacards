@@ -120,7 +120,7 @@
         "display_name": "Sanguavitae",
         "has_back": false,
         "content": {
-          "description": "SANGUAVITAE Rage WHEN: \u0007When a friendly GOREMONGER operative performs the Fight action. EFFECT:\t \u0007Until the end of that action, add 1 to the Atk stat of that operative’s melee weapons. GOREMONGER FACTION RULE"
+          "description": "GOREMONGER FACTION RULE SANGUAVITAE The blood-infused concoction within the Goremongers’ tanks is known as sanguavitae. Empowered by this fluid, they can undertake gore-drenched deeds far beyond the capabilities of most Humans. Through these acts they emulate Bloodletters and venerate Khorne. Each SANGUAVITAE rule specifies when it can be used, and you must decrease the operative’s"
         }
       },
       "markertoken-guide": {
@@ -129,6 +129,54 @@
         "has_back": false,
         "content": {
           "description": "MARKER/TOKEN GUIDE Gore Tank token (full) Gore Tank token (half) Impending Apotheosis token Bleeding token Claim Skull"
+        }
+      },
+      "sanguavitae-rejuvenate": {
+        "card_name": "sanguavitae-rejuvenate",
+        "display_name": "Sanguavitae Rejuvenate",
+        "has_back": false,
+        "content": {
+          "description": "SANGUAVITAE Rejuvenate WHEN: \u0007During a friendly GOREMONGER operative’s activation or counteraction, before or after it performs an action. EFFECT:\t \u0007That operative regains up to D3+1 lost wounds. GOREMONGER FACTION RULE"
+        }
+      },
+      "sanguavitae-mania": {
+        "card_name": "sanguavitae-mania",
+        "display_name": "Sanguavitae Mania",
+        "has_back": false,
+        "content": {
+          "description": "SANGUAVITAE Mania WHEN: \u0007During a friendly GOREMONGER operative’s activation, before or after it performs an action. EFFECT:\t \u0007Until the start of that operative’s next activation, add 1 to its APL stat. GOREMONGER FACTION RULE"
+        }
+      },
+      "sanguavitae-fury": {
+        "card_name": "sanguavitae-fury",
+        "display_name": "Sanguavitae Fury",
+        "has_back": false,
+        "content": {
+          "description": "SANGUAVITAE Fury WHEN: \u0007During a friendly GOREMONGER operative’s activation, before or after it performs an action. EFFECT:\t \u0007That operative can perform two Fight actions during that activation, and the second one is free. GOREMONGER"
+        }
+      },
+      "sanguavitae-rake": {
+        "card_name": "sanguavitae-rake",
+        "display_name": "Sanguavitae Rake",
+        "has_back": false,
+        "content": {
+          "description": "SANGUAVITAE Rake WHEN: \u0007When a friendly GOREMONGER operative performs the Charge action during its activation. EFFECT:\t \u0007When that operative finishes moving during that action, you can inflict D3 damage on one enemy operative within its control range."
+        }
+      },
+      "sanguavitae-surge": {
+        "card_name": "sanguavitae-surge",
+        "display_name": "Sanguavitae Surge",
+        "has_back": false,
+        "content": {
+          "description": "SANGUAVITAE Surge WHEN: \u0007When a friendly GOREMONGER operative performs the Charge or Reposition action. EFFECT:\t \u0007Until the end of that action, add 1\" to that operative’s Move stat. GOREMONGER FACTION RULE"
+        }
+      },
+      "sanguavitae-rage": {
+        "card_name": "sanguavitae-rage",
+        "display_name": "Sanguavitae Rage",
+        "has_back": false,
+        "content": {
+          "description": "SANGUAVITAE Rage WHEN: \u0007When a friendly GOREMONGER operative performs the Fight action. EFFECT:\t \u0007Until the end of that action, add 1 to the Atk stat of that operative’s melee weapons. GOREMONGER FACTION RULE"
         }
       }
     },
@@ -212,11 +260,11 @@
     }
   },
   "processing_summary": {
-    "total_cards": 24,
+    "total_cards": 30,
     "by_type": {
       "datacards": 7,
       "equipment": 4,
-      "faction-rules": 4,
+      "faction-rules": 10,
       "firefight-ploys": 4,
       "operative-selection": 1,
       "strategy-ploys": 4
