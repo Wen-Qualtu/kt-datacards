@@ -1497,7 +1497,7 @@ function click_update_rules()
       return
     end
     
-    -- Parse JSON to find this team's last_modified timestamp and URL
+    -- Parse JSON to find this team's latest modified timestamp and box URL
     local success, metadata = pcall(function() return JSON.decode(request.text) end)
     if not success or not metadata then
       broadcastToAll("Could not parse update info.", {1, 0.5, 0})
@@ -1507,7 +1507,6 @@ function click_update_rules()
     -- Find our team in keyed metadata map (or legacy list fallback)
     local remoteTimestamp = ""
     local cardsUrl = ""
-    local teamMetadataUrl = ""
 
     local teamEntry = metadata[teamSlug]
     if not teamEntry then
@@ -1522,7 +1521,6 @@ function click_update_rules()
     if teamEntry then
       -- New lightweight summary mode
       remoteTimestamp = teamEntry.modified or ""
-      teamMetadataUrl = teamEntry.team_url or ""
 
       -- Backward compatibility with older global shape
       if remoteTimestamp == "" and teamEntry.box then
@@ -1643,40 +1641,6 @@ function click_update_rules()
         10
       )
       end)
-    end
-
-    -- If global summary did not include direct box URL, resolve full team metadata first.
-    if cardsUrl == "" and teamMetadataUrl ~= "" then
-      local teamMetaCb = teamMetadataUrl
-      local sep = string.find(teamMetaCb, "?", 1, true) and "&" or "?"
-      teamMetaCb = teamMetaCb .. sep .. "v=" .. tostring(os.time())
-
-      WebRequest.get(teamMetaCb, function(teamReq)
-        if teamReq.is_error then
-          broadcastToAll("Could not fetch team update metadata: " .. teamReq.error, {1, 0.5, 0})
-          return
-        end
-
-        local okTeam, teamData = pcall(function() return JSON.decode(teamReq.text) end)
-        if not okTeam or not teamData then
-          broadcastToAll("Could not parse team update metadata.", {1, 0.5, 0})
-          return
-        end
-
-        local resolvedCardsUrl = ((teamData.box or {}).url) or ""
-        local resolvedRemoteTimestamp = ((teamData.box or {}).modified) or remoteTimestamp
-        if resolvedRemoteTimestamp ~= "" then
-          local localStamp = toTimestampNumber(lastCardUpdate)
-          local remoteStamp = toTimestampNumber(resolvedRemoteTimestamp)
-          if lastCardUpdate ~= "" and remoteStamp ~= 0 and localStamp >= remoteStamp then
-            broadcastToAll("Already up to date! (Last: " .. lastCardUpdate .. ")", {0, 1, 0})
-            return
-          end
-        end
-
-        download_and_spawn(resolvedCardsUrl, resolvedRemoteTimestamp)
-      end)
-      return
     end
 
     download_and_spawn(cardsUrl, remoteTimestamp)
