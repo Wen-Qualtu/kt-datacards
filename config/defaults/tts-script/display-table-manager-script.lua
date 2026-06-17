@@ -1,11 +1,44 @@
 -- Kill Team Display Table Manager
 -- Attach this to a bag to manage the display table
 
-local TTS_METADATA_URL = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/tts-metadata.json"
+-- New canonical source: keyed map { slug -> { team, modified, box={url, modified}, ... } }
+-- Each box URL is a BARE Custom_Model_Bag JSON (no ObjectStates wrapper).
+local TTS_METADATA_URL = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/team-urls.json"
 local MANAGER_METADATA_URL = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/tts-manager.json"
 local isUpdating = false
 local cancelRequested = false
 local positions = {}
+
+-- URL-decode just enough to recover a human display name from a path segment
+local function urlDecode(s)
+    if not s then return "" end
+    s = s:gsub("+", " ")
+    s = s:gsub("%%(%x%x)", function(h) return string.char(tonumber(h, 16)) end)
+    return s
+end
+
+-- Derive the display name (matches the bag's Nickname) from the box URL filename.
+local function displayNameFromUrl(url)
+    if not url or url == "" then return "" end
+    local cleanUrl = string.match(url, "^[^?]+") or url
+    local file = string.match(cleanUrl, "([^/]+)$") or cleanUrl
+    file = file:gsub("%.json$", "")
+    return urlDecode(file)
+end
+
+-- Extract the team bag from a downloaded box JSON. Supports both bare objects
+-- (new format: { Name="Custom_Model_Bag", ContainedObjects=... }) and the
+-- legacy save-file wrapper ({ ObjectStates = [ {box} ] }).
+local function extractTeamBag(decoded)
+    if type(decoded) ~= "table" then return nil end
+    if decoded.ObjectStates and decoded.ObjectStates[1] then
+        return decoded.ObjectStates[1]
+    end
+    if decoded.Name or decoded.GUID or decoded.ContainedObjects then
+        return decoded
+    end
+    return nil
+end
 
 -- Default grid layout: 10 columns x 8 rows = 80 spots
 local GRID_COLUMNS = 10
@@ -136,35 +169,51 @@ function refreshFromGitHub()
             return
         end
         
-        local success, teamBoxes = pcall(function() return JSON.decode(webReturn.text) end)
-        if not success then
-            broadcastToAll("Error parsing JSON: " .. tostring(teamBoxes), {1, 0, 0})
+        local success, payload = pcall(function() return JSON.decode(webReturn.text) end)
+        if not success or type(payload) ~= "table" then
+            broadcastToAll("Error parsing JSON: " .. tostring(payload), {1, 0, 0})
             isUpdating = false
             return
         end
-        
-        -- Build lookup table of remote teams by name
+
+        -- Build lookup table of remote teams by display name.
+        -- New shape (keyed map):
+        --   payload[slug] = { team, modified, box = { url, modified } }
+        -- Legacy shape (array): payload[i] = { name, cards_url, team, cards_last_modified, tokens_last_modified }
         local remoteTeams = {}
-        for _, box in ipairs(teamBoxes) do
-            -- Use the latest timestamp (max of cards and tokens)
-            local cardsTs = box.cards_last_modified or ""
-            local tokensTs = box.tokens_last_modified or ""
-            local latestTs = cardsTs
-            -- Only compare if both have values
-            if tokensTs ~= "" and cardsTs ~= "" then
-                if tokensTs > cardsTs then
+        if payload[1] ~= nil then
+            -- Legacy array shape
+            for _, box in ipairs(payload) do
+                local cardsTs = box.cards_last_modified or ""
+                local tokensTs = box.tokens_last_modified or ""
+                local latestTs = cardsTs
+                if tokensTs ~= "" and cardsTs ~= "" then
+                    if tokensTs > cardsTs then latestTs = tokensTs end
+                elseif tokensTs ~= "" then
                     latestTs = tokensTs
                 end
-            elseif tokensTs ~= "" then
-                -- Only tokens timestamp exists
-                latestTs = tokensTs
+                remoteTeams[box.name] = {
+                    url = box.cards_url,
+                    team = box.team,
+                    last_modified = latestTs
+                }
             end
-            
-            remoteTeams[box.name] = {
-                url = box.cards_url,
-                team = box.team,
-                last_modified = latestTs
-            }
+        else
+            -- New keyed-map shape
+            for slug, entry in pairs(payload) do
+                if type(entry) == "table" and entry.box and entry.box.url then
+                    local boxUrl = entry.box.url
+                    local modified = entry.box.modified or entry.modified or ""
+                    local name = displayNameFromUrl(boxUrl)
+                    if name ~= "" then
+                        remoteTeams[name] = {
+                            url = boxUrl,
+                            team = slug,
+                            last_modified = modified
+                        }
+                    end
+                end
+            end
         end
         
         -- Check existing teams in bag
@@ -333,15 +382,14 @@ function processAdds(toAdd, index, remoteTeams, toUpdate, toSkip)
         end
         
         local success, decoded = pcall(function() return JSON.decode(webReturn.text) end)
-        if not success or not decoded.ObjectStates or #decoded.ObjectStates == 0 then
+        local teamBag = success and extractTeamBag(decoded) or nil
+        if not teamBag then
             print("[Error] Invalid JSON for " .. teamName)
             Wait.time(function()
                 processAdds(toAdd, index + 1, remoteTeams, toUpdate, toSkip)
             end, 0.1)
             return
         end
-        
-        local teamBag = decoded.ObjectStates[1]
         
         -- Apply cache busting to all token URLs inside the bag
         if teamBag.ContainedObjects then
@@ -430,15 +478,14 @@ function processUpdates(toUpdate, index, remoteTeams, toSkip)
                 end
                 
                 local success, decoded = pcall(function() return JSON.decode(webReturn.text) end)
-                if not success or not decoded.ObjectStates or #decoded.ObjectStates == 0 then
+                local teamBag = success and extractTeamBag(decoded) or nil
+                if not teamBag then
                     print("[Error] Invalid JSON for " .. teamName)
                     Wait.time(function()
                         processUpdates(toUpdate, index + 1, remoteTeams, toSkip)
                     end, 0.1)
                     return
                 end
-                
-                local teamBag = decoded.ObjectStates[1]
                 
                 -- Apply cache busting to all token URLs inside the bag
                 if teamBag.ContainedObjects then

@@ -330,9 +330,13 @@ end
 
 -- handlers for buttons
 function click_setup()
-  -- Reset: Only works after recall - clears bag contents and respawns fresh objects
-  
-  -- Check if we have a setup (memoryList exists)
+  -- Reset: download latest box and respawn it (same flow as Update, no timestamp guard).
+  -- A future iteration can do an in-place per-field reset; for now this matches Update.
+  performBoxUpdate(true)
+end
+
+-- Legacy procedural reset (kept for reference / fallback). Unused.
+function _legacy_click_setup()
   if next(memoryList) == nil then
     broadcastToAll("No setup found. Please use Update button to get latest version.", {1, 0.5, 0})
     return
@@ -1461,13 +1465,23 @@ function click_recall()
 end
 
 function click_update_rules()
-  -- Check if we need to update by comparing timestamps
+  performBoxUpdate(false)
+end
+
+-- performBoxUpdate(force)
+--   force=false : check team-urls.json timestamp; skip if up to date (Update button)
+--   force=true  : always download and respawn (Reset button)
+function performBoxUpdate(force)
   if teamSlug == "" then
     broadcastToAll("Cannot update: team slug not configured", {1, 0.5, 0})
     return
   end
-  
-  broadcastToAll("Checking for updates...", {1, 1, 0})
+
+  if force then
+    broadcastToAll("Resetting box from latest version...", {1, 1, 0})
+  else
+    broadcastToAll("Checking for updates...", {1, 1, 0})
+  end
   
   -- Build team-urls.json URL from this box's mesh URL so branch/path stay in sync.
   local data = self.getData() or {}
@@ -1540,7 +1554,7 @@ function click_update_rules()
     local localStamp = toTimestampNumber(lastCardUpdate)
     local remoteStamp = toTimestampNumber(remoteTimestamp)
     
-    if lastCardUpdate ~= "" and remoteStamp ~= 0 and localStamp >= remoteStamp then
+    if not force and lastCardUpdate ~= "" and remoteStamp ~= 0 and localStamp >= remoteStamp then
       broadcastToAll("Already up to date! (Last: " .. lastCardUpdate .. ")", {0, 1, 0})
       return
     end
