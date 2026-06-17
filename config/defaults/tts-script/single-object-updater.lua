@@ -82,8 +82,11 @@ local function ktu_apply(info, meta, playerColor)
   local custom = self.getCustomObject() or {}
 
   if info.kind == "card" then
-    if meta.face_url then custom.FaceURL = meta.face_url end
-    if meta.back_url then custom.BackURL = meta.back_url end
+    -- TTS setCustomObject for CardCustom uses lowercase face/back at runtime;
+    -- the uppercase FaceURL/BackURL only appear in saved JSON. Set both so the
+    -- live object actually re-fetches the new image.
+    if meta.face_url then custom.face = meta.face_url; custom.FaceURL = meta.face_url end
+    if meta.back_url then custom.back = meta.back_url; custom.BackURL = meta.back_url end
   else
     if meta.mesh_url then custom.MeshURL = meta.mesh_url; custom.mesh = meta.mesh_url end
     if meta.texture_url then custom.DiffuseURL = meta.texture_url; custom.diffuse = meta.texture_url end
