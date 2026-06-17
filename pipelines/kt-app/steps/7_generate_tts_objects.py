@@ -17,7 +17,10 @@ Input:
     config/team-config.yaml - Team metadata
     
 Output:
-    output/{team}/tts_objects/{Team Name} Box.json - TTS card box save file with embedded stats
+    output/{team}/tts_objects/{Team Name}.json - TTS card box as bare Custom_Model_Bag
+        (clean/primary format, referenced by output/team-urls.json)
+    output/{team}/tts_objects/{Team Name} Box.json - Slim save-file wrapper
+        (legacy entry point for in-the-wild boxes; per-card LuaScripts stripped)
     output/{team}/tts_objects/{Team Name} Box.png - Preview image
 """
 
@@ -54,6 +57,114 @@ PROJECT_ROOT = Path(__file__).resolve().parents[3]
 PIPELINE_METADATA_FILE = PROJECT_ROOT / "layers" / "kt-app" / "metadata.json"
 OUTPUT_METADATA_FILE = PROJECT_ROOT / "output" / "metadata.json"
 URL_BRANCH = os.environ.get("KT_DATACARDS_URL_BRANCH", "main")
+
+
+# ===================================================================
+# BARE/CLEAN BOX FORMAT HELPERS
+# ===================================================================
+# Pipeline emits two TTS box files per team:
+#   {Team}.json     - bare/clean Custom_Model_Bag object (NEW primary format).
+#                     Spawned via spawnObjectJSON; referenced by team-urls.json.
+#   {Team} Box.json - slim save-file wrapper with per-card LuaScripts stripped
+#                     (legacy entry point for in-the-wild boxes via
+#                     output_v2/tts-card-boxes.json / tts-metadata.json).
+# The updater Lua in tts-update-rules-in-box-script.lua handles both formats.
+
+def _strip_sub_lua(node) -> int:
+    """Recursively clear nested LuaScript fields on cards/decks/sub-objects.
+
+    Leaves the top-level (box-level) LuaScript untouched — that's the caller's
+    job. Used to slim the legacy wrapper so its only purpose is to cascade an
+    Update click to the full clean box.
+    """
+    stripped = 0
+    if isinstance(node, dict):
+        for child in node.get("ContainedObjects") or []:
+            if isinstance(child, dict):
+                if child.get("LuaScript"):
+                    child["LuaScript"] = ""
+                    stripped += 1
+                stripped += _strip_sub_lua(child)
+        # Decks contain cards under "ContainedObjects" too — handled above.
+    elif isinstance(node, list):
+        for item in node:
+            stripped += _strip_sub_lua(item)
+    return stripped
+
+
+def _empty_save_wrapper() -> dict:
+    """Minimal TTS save-file envelope. Grid is left null/None — only valid as
+    a GridState object at top level, never as a bool here."""
+    return {
+        "SaveName": "",
+        "Date": "",
+        "VersionNumber": "",
+        "GameMode": "",
+        "GameType": "",
+        "GameComplexity": "",
+        "Tags": [],
+        "Gravity": 0.5,
+        "PlayArea": 0.5,
+        "Table": "",
+        "Sky": "",
+        "Note": "",
+        "TabStates": {},
+        "LuaScript": "",
+        "LuaScriptState": "",
+        "XmlUI": "",
+        "ObjectStates": [],
+    }
+
+
+def _bare_from_wrapper(bag_obj: dict) -> dict:
+    """Extract the Custom_Model_Bag from a wrapper dict, or return as-is if
+    already bare."""
+    if isinstance(bag_obj, dict) and bag_obj.get("ObjectStates"):
+        return bag_obj["ObjectStates"][0]
+    return bag_obj
+
+
+def write_team_box_files(bag_obj: dict, team_output_dir: Path, team_display_name: str,
+                         intermediate_lua: str = "") -> tuple[Path, Path]:
+    """Write both the clean bare object and the slim legacy wrapper.
+
+    Returns: (clean_path, wrapper_path)
+    """
+    import copy
+
+    inner = _bare_from_wrapper(bag_obj)
+
+    clean_path = team_output_dir / f"{team_display_name}.json"
+    wrapper_path = team_output_dir / f"{team_display_name} Box.json"
+
+    # Clean: full bare object exactly as TTS expects via spawnObjectJSON.
+    with open(clean_path, 'w', encoding='utf-8') as f:
+        json.dump(inner, f, indent=2)
+
+    # Wrapper: ruthlessly slimmed copy. Sole purpose is to be a one-click hop
+    # to the clean file. We strip:
+    #   - all per-card LuaScripts (legacy cards still updatable via clean box)
+    #   - full updater Lua at box level -> replaced with minimal updater
+    #   - LuaScriptState (memoryList, cached timestamps) -> empty, no Reset use
+    # Description nudges the user toward the Update button.
+    slim_inner = copy.deepcopy(inner)
+    _strip_sub_lua(slim_inner)
+    if intermediate_lua:
+        slim_inner["LuaScript"] = intermediate_lua
+    slim_inner["LuaScriptState"] = ""
+    slim_inner["Description"] = (
+        "OUTDATED VERSION. Click the red UPDATE button (or right-click -> "
+        "Update to latest) to replace this with the full current team box. "
+        "This intermediate is a one-time bridge and should not be reused."
+    )
+
+    wrapper = _empty_save_wrapper()
+    wrapper["SaveName"] = inner.get("Nickname") or team_display_name
+    wrapper["ObjectStates"] = [slim_inner]
+    with open(wrapper_path, 'w', encoding='utf-8') as f:
+        json.dump(wrapper, f, indent=2)
+
+    return clean_path, wrapper_path
 
 
 # ===================================================================
@@ -246,9 +357,10 @@ def generate_object_urls_json(repo_branch: str = URL_BRANCH):
             "objects": []
         }
         
-        # Add TTS box JSON file
+        # Add TTS box JSON file. Point at the bare {Team}.json (clean format)
+        # which is what spawnObjectJSON in the updater Lua expects.
         tts_objects_dir = team_dir / 'tts_objects'
-        box_file = tts_objects_dir / f"{team_display_name} Box.json"
+        box_file = tts_objects_dir / f"{team_display_name}.json"
         if box_file.exists():
             box_mtime = box_file.stat().st_mtime
             box_modified = datetime.fromtimestamp(box_mtime, tz=timezone.utc).isoformat()
@@ -485,18 +597,36 @@ def load_lua_script(config_dir: Path) -> str:
         return ""
 
 
+def load_intermediate_updater_script(config_dir: Path) -> str:
+    """Slim updater embedded in the legacy save-file wrapper {Team} Box.json.
+
+    Sole job: fetch team-urls.json, download the bare {Team}.json, respawn.
+    Keeps the wrapper lean so spawning it (the slow save-file code path in
+    TTS) stays as cheap as possible.
+    """
+    script_path = config_dir / "defaults" / "tts-script" / "intermediate-updater.lua"
+    try:
+        with open(script_path, 'r', encoding='utf-8-sig') as f:
+            content = f.read()
+            if content.startswith('\ufeff'):
+                content = content[1:]
+            content = content.replace('\n', '\r\n')
+            return content
+    except Exception as e:
+        logger.warning(f"Could not load intermediate updater script: {e}")
+        return ""
+
+
 def load_single_object_updater_script(config_dir: Path) -> str:
     """Load reusable per-object updater Lua script from defaults folder.
 
-    Temporarily disabled: returning an empty string strips the per-card
-    "Update" script from every card/deck/token bag. Embedding it on every
-    object inflated the box JSON (~27 KB/card) and made spawning the box on
-    "Update" heavy enough to lock TTS. Datacards keep their separate
-    load-stats script. Re-enable by restoring the file read below once a
-    lighter, spawn-safe approach is in place.
+    Embedded on every card/deck/token bag so users can right-click any single
+    object and update it in place. Lives in both the standalone per-object
+    JSON files and the in-box copies inside the clean {Team}.json. Whole-box
+    spawn stays fast because the clean bare object skips TTS's slow save-file
+    parser. The intermediate {Team} Box.json wrapper still strips this script
+    (one-off bridge, lean as possible).
     """
-    return ""
-
     script_path = config_dir / "defaults" / "tts-script" / "single-object-updater.lua"
     try:
         with open(script_path, 'r', encoding='utf-8-sig') as f:
@@ -984,20 +1114,36 @@ def rebuild_kill_team_card_boxes_example(output_dir: Path) -> tuple[int, Optiona
 
     team_box_objects = []
     for team_tts_dir in sorted(output_dir.glob("*/tts_objects")):
-        team_box_files = sorted(team_tts_dir.glob("* Box.json"))
-        if not team_box_files:
-            continue
-
-        box_file = team_box_files[0]
-        try:
-            with open(box_file, 'r', encoding='utf-8') as f:
-                team_data = json.load(f)
-            team_obj = (team_data.get("ObjectStates") or [None])[0]
-            if not isinstance(team_obj, dict):
+        # Prefer the bare {Team}.json (clean format). Fall back to extracting
+        # ObjectStates[0] from the legacy wrapper for backwards compatibility.
+        clean_candidates = sorted(
+            p for p in team_tts_dir.glob("*.json")
+            if not p.name.endswith(" Box.json") and "urls" not in p.name.lower()
+        )
+        if clean_candidates:
+            box_file = clean_candidates[0]
+            try:
+                with open(box_file, 'r', encoding='utf-8') as f:
+                    team_obj = json.load(f)
+                if not isinstance(team_obj, dict) or team_obj.get("Name") != "Custom_Model_Bag":
+                    continue
+            except Exception as e:
+                logger.warning(f"Could not read clean team box for manager bag ({box_file}): {e}")
                 continue
-        except Exception as e:
-            logger.warning(f"Could not read team box for manager bag ({box_file}): {e}")
-            continue
+        else:
+            team_box_files = sorted(team_tts_dir.glob("* Box.json"))
+            if not team_box_files:
+                continue
+            box_file = team_box_files[0]
+            try:
+                with open(box_file, 'r', encoding='utf-8') as f:
+                    team_data = json.load(f)
+                team_obj = (team_data.get("ObjectStates") or [None])[0]
+                if not isinstance(team_obj, dict):
+                    continue
+            except Exception as e:
+                logger.warning(f"Could not read team box for manager bag ({box_file}): {e}")
+                continue
 
         team_box_objects.append(team_obj)
 
@@ -2104,7 +2250,8 @@ def save_individual_token_json(token_obj: dict, team_name: str, token_index: int
 
 
 def generate_team_tts_object(team_name: str, cards: list, lua_script: str, box_description: str, single_object_updater_script: str, texture_url: str,
-                            mesh_url: str, config_dir: Path, output_dir: Path, repo_branch: str = URL_BRANCH):
+                            mesh_url: str, config_dir: Path, output_dir: Path, repo_branch: str = URL_BRANCH,
+                            intermediate_lua: str = ""):
     """Generate TTS object for a single team"""
     # Extract faction from first card's URL
     faction = None
@@ -2225,6 +2372,9 @@ def generate_team_tts_object(team_name: str, cards: list, lua_script: str, box_d
     # Get output file path
     team_output_dir = output_dir / team_name / 'tts_objects'
     team_output_dir.mkdir(parents=True, exist_ok=True)
+    # Two outputs: bare {Team}.json (clean, primary) and slim {Team} Box.json
+    # (legacy wrapper for in-the-wild boxes). See write_team_box_files docstring.
+    clean_file = team_output_dir / f"{team_display_name}.json"
     output_file = team_output_dir / f"{team_display_name} Box.json"
     
     # Create bag with placeholder timestamp
@@ -2246,12 +2396,14 @@ def generate_team_tts_object(team_name: str, cards: list, lua_script: str, box_d
         repo_branch,
     )
     
-    # Save to file
-    with open(output_file, 'w', encoding='utf-8') as f:
-        json.dump(bag_obj, f, indent=2)
-    
+    # Initial write to establish file mtime (used as the canonical timestamp
+    # baked into LuaScriptState below). Only writes the clean file — wrapper
+    # is regenerated on the final pass.
+    with open(clean_file, 'w', encoding='utf-8') as f:
+        json.dump(_bare_from_wrapper(bag_obj), f, indent=2)
+
     # Get actual file timestamp
-    file_mtime = os.path.getmtime(output_file)
+    file_mtime = os.path.getmtime(clean_file)
     actual_timestamp = datetime.fromtimestamp(file_mtime).strftime('%Y-%m-%dT%H:%M:%S')
 
     # Mirror MeshURL → ColliderURL (URLs already have correct per-file ?v= timestamps)
@@ -2289,9 +2441,8 @@ def generate_team_tts_object(team_name: str, cards: list, lua_script: str, box_d
     # Embed datacard stats (optional - skips if no team data)
     embed_datacard_stats(bag_obj, team_name, output_dir, config_dir, single_object_updater_script)
     
-    # Save final version
-    with open(output_file, 'w', encoding='utf-8') as f:
-        json.dump(bag_obj, f, indent=2)
+    # Write final versions: clean (full bare) + slim wrapper.
+    write_team_box_files(bag_obj, team_output_dir, team_display_name, intermediate_lua)
     
     # Copy preview image
     copy_preview_image(team_name, team_display_name, config_dir, output_dir)
@@ -2301,6 +2452,7 @@ def generate_all_tts_objects(urls_data: list, config_dir: Path, output_dir: Path
     """Generate TTS objects for all teams"""
     # Load Lua script
     lua_script = load_lua_script(config_dir)
+    intermediate_lua = load_intermediate_updater_script(config_dir)
     single_object_updater_script = load_single_object_updater_script(config_dir)
     box_description = load_box_description(config_dir)
     
@@ -2334,7 +2486,7 @@ def generate_all_tts_objects(urls_data: list, config_dir: Path, output_dir: Path
         texture_url = team_textures.get(team_name)
         mesh_url = team_meshes.get(team_name)
         
-        generate_team_tts_object(team_name, cards, lua_script, box_description, single_object_updater_script, texture_url, mesh_url, config_dir, output_dir, repo_branch)
+        generate_team_tts_object(team_name, cards, lua_script, box_description, single_object_updater_script, texture_url, mesh_url, config_dir, output_dir, repo_branch, intermediate_lua)
         count += 1
     
     if skipped > 0:
