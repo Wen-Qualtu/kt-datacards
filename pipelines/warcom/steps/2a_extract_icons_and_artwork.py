@@ -13,6 +13,7 @@ Output:
 import fitz  # PyMuPDF
 import cv2
 import numpy as np
+import yaml
 from pathlib import Path
 import logging
 import json
@@ -43,6 +44,12 @@ TOKEN_ICON_X1 = 0.1288
 TOKEN_ICON_Y1 = 0.1625
 TOKEN_ICON_X2 = 0.2724
 TOKEN_ICON_Y2 = 0.2613
+
+# When the page title "KILL TEAM <name>" wraps onto a second line, everything
+# below it (including the token icon) shifts down by roughly one title-line
+# height. Empirically this happens once the canonical name exceeds 22 chars.
+TITLE_WRAP_THRESHOLD_CHARS = 22
+TITLE_WRAP_Y_OFFSET = 0.045  # fraction of page height to shift the token crop
 
 
 @dataclass
@@ -157,13 +164,20 @@ def find_kill_team_page(pdf_path: Path) -> int:
         return -1
 
 
-def extract_icons_from_pdf(pdf_path: Path, output_dir: Path, team_name: str) -> dict:
+def extract_icons_from_pdf(
+    pdf_path: Path,
+    output_dir: Path,
+    team_name: str,
+    canonical_name: Optional[str] = None,
+) -> dict:
     """
     Extract team icons from PDF for card backsides and token bag.
-    
+
     Returns:
         Dict with extraction results
     """
+    title_wraps = bool(canonical_name) and len(canonical_name) > TITLE_WRAP_THRESHOLD_CHARS
+    token_y_offset = TITLE_WRAP_Y_OFFSET if title_wraps else 0.0
     icons_dir = output_dir / 'icons'
     icons_dir.mkdir(parents=True, exist_ok=True)
     
@@ -228,9 +242,9 @@ def extract_icons_from_pdf(pdf_path: Path, output_dir: Path, team_name: str) -> 
             
             # Extract token bag icon
             tok_x1 = int(page_width * TOKEN_ICON_X1)
-            tok_y1 = int(page_height * TOKEN_ICON_Y1)
+            tok_y1 = int(page_height * (TOKEN_ICON_Y1 + token_y_offset))
             tok_x2 = int(page_width * TOKEN_ICON_X2)
-            tok_y2 = int(page_height * TOKEN_ICON_Y2)
+            tok_y2 = int(page_height * (TOKEN_ICON_Y2 + token_y_offset))
             
             token_icon = img[tok_y1:tok_y2, tok_x1:tok_x2]
             token_path = icons_dir / f'{team_name}-icon-token.jpg'
@@ -465,12 +479,37 @@ def extract_artwork_from_pdf(
     return extracted_images
 
 
+def _load_canonical_names() -> Dict[str, str]:
+    """Map team slug -> canonical_name from config/team-config.yaml."""
+    cfg_path = Path('config/team-config.yaml')
+    if not cfg_path.exists():
+        return {}
+    try:
+        with open(cfg_path, encoding='utf-8') as f:
+            data = yaml.safe_load(f) or {}
+        return {
+            slug: (cfg or {}).get('canonical_name', '')
+            for slug, cfg in (data.get('teams') or {}).items()
+        }
+    except Exception as e:
+        logger.warning(f"  Could not load team-config.yaml: {e}")
+        return {}
+
+
+_CANONICAL_NAMES: Dict[str, str] = {}
+
+
 def process_team_pdf(pdf_path: Path, output_dir: Path, generic_dir: Path) -> dict:
     """Process a single team PDF: extract icons and artwork."""
+    global _CANONICAL_NAMES
+    if not _CANONICAL_NAMES:
+        _CANONICAL_NAMES = _load_canonical_names()
+
     team_name = pdf_path.stem.replace('_team_rules', '').replace('_online_rules', '')
     team_output = output_dir / team_name
     team_output.mkdir(parents=True, exist_ok=True)
-    
+    canonical_name = _CANONICAL_NAMES.get(team_name, '')
+
     logger.info(f"\nProcessing: {team_name}")
     
     results = {
@@ -481,7 +520,7 @@ def process_team_pdf(pdf_path: Path, output_dir: Path, generic_dir: Path) -> dic
     
     # Extract icons
     logger.info("  Extracting icons...")
-    icons_result = extract_icons_from_pdf(pdf_path, team_output, team_name)
+    icons_result = extract_icons_from_pdf(pdf_path, team_output, team_name, canonical_name)
     results['icons_extracted'] = sum(1 for v in icons_result.values() if v)
     logger.info(f"  ✓ Extracted {results['icons_extracted']} icons")
     
