@@ -40,6 +40,27 @@ local function extractTeamBag(decoded)
     return nil
 end
 
+-- Returns true if the downloaded text is a bare box object (new format).
+-- Detection is cheap: skip whitespace, find the first JSON key, and check it
+-- against the two wrapper keys. Avoids JSON.decode on 500KB+ payloads.
+local function isBareBoxText(text)
+    if type(text) ~= "string" or #text == 0 then return false end
+    local i = 1
+    while i <= #text do
+        local b = text:byte(i)
+        if b ~= 32 and b ~= 9 and b ~= 10 and b ~= 13 then break end
+        i = i + 1
+    end
+    if text:byte(i) ~= 123 then return false end -- '{'
+    -- Find the first key (between quotes after the opening brace).
+    local keyOpen = text:find('"', i + 1, true)
+    if not keyOpen then return false end
+    local keyClose = text:find('"', keyOpen + 1, true)
+    if not keyClose then return false end
+    local firstKey = text:sub(keyOpen + 1, keyClose - 1)
+    return firstKey ~= "SaveName" and firstKey ~= "ObjectStates"
+end
+
 -- Default grid layout: 10 columns x 8 rows = 80 spots
 local GRID_COLUMNS = 10
 local GRID_ROWS = 10
@@ -380,38 +401,49 @@ function processAdds(toAdd, index, remoteTeams, toUpdate, toSkip)
             end, 0.1)
             return
         end
-        
-        local success, decoded = pcall(function() return JSON.decode(webReturn.text) end)
-        local teamBag = success and extractTeamBag(decoded) or nil
-        if not teamBag then
-            print("[Error] Invalid JSON for " .. teamName)
-            Wait.time(function()
-                processAdds(toAdd, index + 1, remoteTeams, toUpdate, toSkip)
-            end, 0.1)
-            return
-        end
-        
-        -- Apply cache busting to all token URLs inside the bag
-        if teamBag.ContainedObjects then
-            for _, obj in ipairs(teamBag.ContainedObjects) do
-                if obj.CustomImage then
-                    if obj.CustomImage.ImageURL and not obj.CustomImage.ImageURL:find("?v=") then
-                        obj.CustomImage.ImageURL = obj.CustomImage.ImageURL .. "?v=" .. cacheBust
+
+        -- Fast path: bare boxes have asset URLs pre-cache-busted by the pipeline
+        -- (Python writes ?v=mtime on every asset URL), so we can hand the raw
+        -- text directly to spawnObjectJSON and skip a costly decode/encode round
+        -- trip on a 500KB+ string.
+        local spawnJson
+        if isBareBoxText(webReturn.text) then
+            spawnJson = webReturn.text
+        else
+            local success, decoded = pcall(function() return JSON.decode(webReturn.text) end)
+            local teamBag = success and extractTeamBag(decoded) or nil
+            if not teamBag then
+                print("[Error] Invalid JSON for " .. teamName)
+                Wait.time(function()
+                    processAdds(toAdd, index + 1, remoteTeams, toUpdate, toSkip)
+                end, 0.1)
+                return
+            end
+
+            -- Legacy wrapper path: keep cache-busting fallback for any in-bag
+            -- asset URLs that lack ?v= (older published boxes).
+            if teamBag.ContainedObjects then
+                for _, obj in ipairs(teamBag.ContainedObjects) do
+                    if obj.CustomImage then
+                        if obj.CustomImage.ImageURL and not obj.CustomImage.ImageURL:find("?v=") then
+                            obj.CustomImage.ImageURL = obj.CustomImage.ImageURL .. "?v=" .. cacheBust
+                        end
+                        if obj.CustomImage.ImageSecondaryURL and not obj.CustomImage.ImageSecondaryURL:find("?v=") then
+                            obj.CustomImage.ImageSecondaryURL = obj.CustomImage.ImageSecondaryURL .. "?v=" .. cacheBust
+                        end
                     end
-                    if obj.CustomImage.ImageSecondaryURL and not obj.CustomImage.ImageSecondaryURL:find("?v=") then
-                        obj.CustomImage.ImageSecondaryURL = obj.CustomImage.ImageSecondaryURL .. "?v=" .. cacheBust
-                    end
-                end
-                if obj.CustomTile and obj.CustomTile.CustomImage then
-                    if obj.CustomTile.CustomImage.ImageURL and not obj.CustomTile.CustomImage.ImageURL:find("?v=") then
-                        obj.CustomTile.CustomImage.ImageURL = obj.CustomTile.CustomImage.ImageURL .. "?v=" .. cacheBust
+                    if obj.CustomTile and obj.CustomTile.CustomImage then
+                        if obj.CustomTile.CustomImage.ImageURL and not obj.CustomTile.CustomImage.ImageURL:find("?v=") then
+                            obj.CustomTile.CustomImage.ImageURL = obj.CustomTile.CustomImage.ImageURL .. "?v=" .. cacheBust
+                        end
                     end
                 end
             end
+            spawnJson = JSON.encode(teamBag)
         end
-        
+
         local spawnedObj = spawnObjectJSON({
-            json = JSON.encode(teamBag),
+            json = spawnJson,
             position = self.getPosition() + Vector(0, 5, 0)
         })
         
@@ -476,38 +508,44 @@ function processUpdates(toUpdate, index, remoteTeams, toSkip)
                     end, 0.1)
                     return
                 end
-                
-                local success, decoded = pcall(function() return JSON.decode(webReturn.text) end)
-                local teamBag = success and extractTeamBag(decoded) or nil
-                if not teamBag then
-                    print("[Error] Invalid JSON for " .. teamName)
-                    Wait.time(function()
-                        processUpdates(toUpdate, index + 1, remoteTeams, toSkip)
-                    end, 0.1)
-                    return
-                end
-                
-                -- Apply cache busting to all token URLs inside the bag
-                if teamBag.ContainedObjects then
-                    for _, obj in ipairs(teamBag.ContainedObjects) do
-                        if obj.CustomImage then
-                            if obj.CustomImage.ImageURL and not obj.CustomImage.ImageURL:find("?v=") then
-                                obj.CustomImage.ImageURL = obj.CustomImage.ImageURL .. "?v=" .. cacheBust
+
+                -- Fast path: bare boxes (asset URLs already cache-busted by pipeline).
+                local spawnJson
+                if isBareBoxText(webReturn.text) then
+                    spawnJson = webReturn.text
+                else
+                    local success, decoded = pcall(function() return JSON.decode(webReturn.text) end)
+                    local teamBag = success and extractTeamBag(decoded) or nil
+                    if not teamBag then
+                        print("[Error] Invalid JSON for " .. teamName)
+                        Wait.time(function()
+                            processUpdates(toUpdate, index + 1, remoteTeams, toSkip)
+                        end, 0.1)
+                        return
+                    end
+
+                    if teamBag.ContainedObjects then
+                        for _, obj in ipairs(teamBag.ContainedObjects) do
+                            if obj.CustomImage then
+                                if obj.CustomImage.ImageURL and not obj.CustomImage.ImageURL:find("?v=") then
+                                    obj.CustomImage.ImageURL = obj.CustomImage.ImageURL .. "?v=" .. cacheBust
+                                end
+                                if obj.CustomImage.ImageSecondaryURL and not obj.CustomImage.ImageSecondaryURL:find("?v=") then
+                                    obj.CustomImage.ImageSecondaryURL = obj.CustomImage.ImageSecondaryURL .. "?v=" .. cacheBust
+                                end
                             end
-                            if obj.CustomImage.ImageSecondaryURL and not obj.CustomImage.ImageSecondaryURL:find("?v=") then
-                                obj.CustomImage.ImageSecondaryURL = obj.CustomImage.ImageSecondaryURL .. "?v=" .. cacheBust
-                            end
-                        end
-                        if obj.CustomTile and obj.CustomTile.CustomImage then
-                            if obj.CustomTile.CustomImage.ImageURL and not obj.CustomTile.CustomImage.ImageURL:find("?v=") then
-                                obj.CustomTile.CustomImage.ImageURL = obj.CustomTile.CustomImage.ImageURL .. "?v=" .. cacheBust
+                            if obj.CustomTile and obj.CustomTile.CustomImage then
+                                if obj.CustomTile.CustomImage.ImageURL and not obj.CustomTile.CustomImage.ImageURL:find("?v=") then
+                                    obj.CustomTile.CustomImage.ImageURL = obj.CustomTile.CustomImage.ImageURL .. "?v=" .. cacheBust
+                                end
                             end
                         end
                     end
+                    spawnJson = JSON.encode(teamBag)
                 end
-                
+
                 local spawnedObj = spawnObjectJSON({
-                    json = JSON.encode(teamBag),
+                    json = spawnJson,
                     position = self.getPosition() + Vector(0, 5, 0)
                 })
                 
