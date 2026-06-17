@@ -161,7 +161,7 @@ def generate_team_dice(
             used_icon = True
 
     if not used_icon:
-        paste_dots(canvas, 5, dot_color)
+        paste_dots(canvas, 6, dot_color)
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
     canvas.save(output_path, 'JPEG', quality=95)
