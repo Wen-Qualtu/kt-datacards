@@ -428,7 +428,6 @@ def generate_object_urls_summary(teams_data: dict, repo_branch: str = URL_BRANCH
             "team": team,
             "modified": max_modified,
             "team_url": f"{team_url}?v={max_stamp}",
-            # Keep box info for backward compatibility with older scripts.
             "box": team_entry.get("box"),
         }
 
