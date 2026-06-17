@@ -1159,46 +1159,79 @@ def rebuild_kill_team_card_boxes_example(output_dir: Path) -> tuple[int, Optiona
 
     logger.info(f"Updated manager bag contents: {len(team_box_objects)} teams -> {manager_output_path}")
 
-    # Also (re)generate the one-shot spawner tile so its embedded Lua stays in
-    # sync with config/defaults/tts-script/manager-bag-spawner.lua. The spawner
-    # is small (~5KB) but lives next to the manager bag for discoverability.
-    spawner_lua_path = PROJECT_ROOT / "config" / "defaults" / "tts-script" / "manager-bag-spawner.lua"
+    # Also write a save-file-wrapped copy of the manager bag so users can drop
+    # it into TTS via Game -> Save & Load -> Saved Objects. The bare file
+    # (Kill Team Card Boxes.json) is what the manager Lua self-update flow
+    # downloads at runtime via spawnObjectJSON.
+    wrapped_path = manager_output_dir / "Kill Team Card Boxes (saved object).json"
+    wrapped_obj = {
+        "SaveName": "Kill Team Card Boxes",
+        "Date": "", "VersionNumber": "", "GameMode": "", "GameType": "",
+        "GameComplexity": "", "Tags": [], "Gravity": 0.5, "PlayArea": 0.5,
+        "Table": "", "Sky": "", "Note": "", "Rules": "", "XmlUI": "",
+        "CustomUIAssets": [], "LuaScript": "", "LuaScriptState": "",
+        "ObjectStates": [manager_obj],
+        "TabStates": {}, "Lighting": {}, "Hands": {}, "ComponentTags": {},
+        "Turns": {}, "Grid": {}, "CameraStates": [], "DecalPallet": [],
+        "VectorLines": [],
+    }
+    try:
+        with open(wrapped_path, "w", encoding="utf-8") as f:
+            json.dump(wrapped_obj, f, indent=2, ensure_ascii=False)
+        logger.info(f"Wrote manager bag (saved object): {wrapped_path}")
+    except Exception as e:
+        logger.warning(f"Could not write wrapped manager bag: {e}")
+
+    # Generate the per-team Kill Team Spawner (save-file wrapper) from the
+    # current team-spawner-clean-script.lua. Small object users drop into TTS
+    # to pick & spawn an individual team box without loading the full manager.
+    spawner_lua_path = PROJECT_ROOT / "config" / "defaults" / "tts-script" / "team-spawner-clean-script.lua"
     if spawner_lua_path.exists():
         try:
             spawner_lua = spawner_lua_path.read_text(encoding="utf-8")
-            spawner_obj = {
+            spawner_tile = {
                 "Name": "Custom_Tile",
                 "Transform": {
                     "posX": 0.0, "posY": 1.0, "posZ": 0.0,
                     "rotX": 0.0, "rotY": 180.0, "rotZ": 0.0,
                     "scaleX": 3.5, "scaleY": 1.0, "scaleZ": 2.5,
                 },
-                "Nickname": "Spawn KT Manager Bag",
-                "Description": "Click to download and spawn the KT Display Manager bag (all 47 teams).",
+                "Nickname": "Kill Team Spawner",
+                "Description": "Click button to spawn a Kill Team card box.",
                 "GMNotes": "",
-                "ColorDiffuse": {"r": 0.1, "g": 0.5, "b": 0.85},
+                "ColorDiffuse": {"r": 0.2, "g": 0.8, "b": 0.3},
                 "Locked": False, "Grid": True, "Snap": True, "IgnoreFoW": False,
                 "MeasureMovement": False, "DragSelectable": True, "Autoraise": True,
                 "Sticky": True, "Tooltip": True, "GridProjection": False,
                 "HideWhenFaceDown": False, "Hands": False,
                 "CustomImage": {
-                    "ImageURL": "",
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/_generic-tts-objects/team-spawner-image.png",
                     "ImageSecondaryURL": "",
                     "ImageScalar": 1.0,
                     "WidthScale": 0.0,
                     "CustomTile": {"Type": 0, "Thickness": 0.1, "Stackable": False, "Stretch": True},
                 },
                 "LuaScript": spawner_lua,
-                "LuaScriptState": "",
-                "XmlUI": "",
-                "GUID": "ktbagspawn",
+                "LuaScriptState": "", "XmlUI": "", "States": {},
+                "GUID": "spawnc",
             }
-            spawner_path = manager_output_dir / "kt_manager_bag_spawner.json"
+            spawner_save = {
+                "SaveName": "Kill Team Spawner",
+                "Date": "", "VersionNumber": "", "GameMode": "", "GameType": "",
+                "GameComplexity": "", "Tags": [], "Gravity": 0.5, "PlayArea": 0.5,
+                "Table": "", "Sky": "", "Note": "", "Rules": "", "XmlUI": "",
+                "CustomUIAssets": [], "LuaScript": "", "LuaScriptState": "",
+                "ObjectStates": [spawner_tile],
+                "TabStates": {}, "Lighting": {}, "Hands": {}, "ComponentTags": {},
+                "Turns": {}, "Grid": {}, "CameraStates": [], "DecalPallet": [],
+                "VectorLines": [],
+            }
+            spawner_path = manager_output_dir / "Kill Team Spawner.json"
             with open(spawner_path, "w", encoding="utf-8") as f:
-                json.dump(spawner_obj, f, indent=2, ensure_ascii=False)
-            logger.info(f"Wrote manager bag spawner: {spawner_path}")
+                json.dump(spawner_save, f, indent=2, ensure_ascii=False)
+            logger.info(f"Wrote team spawner: {spawner_path}")
         except Exception as e:
-            logger.warning(f"Could not write manager bag spawner: {e}")
+            logger.warning(f"Could not write team spawner: {e}")
 
     return len(team_box_objects), manager_output_path
 
