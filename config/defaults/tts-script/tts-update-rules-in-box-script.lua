@@ -1565,33 +1565,84 @@ function click_update_rules()
       end
 
       -- The downloaded box file may be EITHER:
-      --   (a) a bare object (preferred): we hand the raw text straight to
-      --       spawnObjectJSON with ZERO parsing, or
-      --   (b) a full save-file wrapper { ..., "ObjectStates": [ {box} ] }: we
-      --       slice the single box object out with cheap native string ops.
-      -- Either way we never run TTS's pure-Lua JSON.decode on the ~400 KB-1 MB
-      -- payload (that main-thread decode is what froze the game). spawnObjectJSON
-      -- parses the JSON natively in C#.
+      --   (a) a bare object (new format): { "GUID": ..., "Name": ..., ... }
+      --   (b) a full save-file wrapper (legacy/published boxes still in use):
+      --       { "SaveName": ..., ..., "ObjectStates": [ {box} ] }
+      -- We support both so users with old published boxes can still self-update.
+      --
+      -- CRITICAL: we must NOT run Lua patterns on the ~400KB-1MB payload.
+      -- MoonSharp throws "pattern too complex" even on simple anchored patterns
+      -- at that size. All scanning below uses byte ops and plain string.find
+      -- (4th arg = true), both of which are O(n) native C# in TTS.
       local saveText = webReturn.text
-      local trimmed = saveText:gsub("^%s+", "")
-      local firstKey = trimmed:match('^{%s*"([^"]+)"')
-      local objJson
+      local saveLen = #saveText
+      local function isSpace(b) return b == 32 or b == 9 or b == 10 or b == 13 end
 
+      -- Skip leading whitespace
+      local startIdx = 1
+      while startIdx <= saveLen and isSpace(saveText:byte(startIdx)) do
+        startIdx = startIdx + 1
+      end
+
+      if startIdx > saveLen or saveText:byte(startIdx) ~= 123 then -- 123 = '{'
+        broadcastToAll("Invalid update data received.", {1, 0.5, 0})
+        return
+      end
+
+      -- Read the first JSON key (between the first pair of quotes after '{')
+      local keyOpenIdx = startIdx + 1
+      while keyOpenIdx <= saveLen and isSpace(saveText:byte(keyOpenIdx)) do
+        keyOpenIdx = keyOpenIdx + 1
+      end
+      local firstKey = ""
+      if keyOpenIdx <= saveLen and saveText:byte(keyOpenIdx) == 34 then -- 34 = '"'
+        local keyCloseIdx = saveText:find('"', keyOpenIdx + 1, true)
+        if keyCloseIdx then
+          firstKey = saveText:sub(keyOpenIdx + 1, keyCloseIdx - 1)
+        end
+      end
+
+      local objJson
       if firstKey == "SaveName" or firstKey == "ObjectStates" then
-        -- Full save-file wrapper. The REAL top-level "ObjectStates" key is the
-        -- first occurrence (it precedes the object body, whose LuaScript string
-        -- may contain escaped \"ObjectStates\" text), so a first-match slice is
-        -- safe.
-        local arrText = saveText:match('"ObjectStates"%s*:%s*(.-)%s*}%s*$')
-        if not arrText or arrText == "" then
+        -- (b) Save-file wrapper. Slice the inner box object with plain ops.
+        -- The first occurrence of "ObjectStates" is the real top-level key (it
+        -- precedes the object body whose LuaScript may contain escaped
+        -- \"ObjectStates\" text), so a first-match slice is safe.
+        local osIdx = saveText:find('"ObjectStates"', 1, true)
+        local colonIdx = osIdx and saveText:find(':', osIdx + 14, true)
+        local bracketIdx = colonIdx and saveText:find('[', colonIdx + 1, true)
+        local boxStart = bracketIdx and saveText:find('{', bracketIdx + 1, true)
+
+        -- Walk back from end of file to find the box's closing '}'.
+        -- Tail structure: ... } ] }  (with possible whitespace between).
+        local endIdx = saveLen
+        while endIdx > 0 and isSpace(saveText:byte(endIdx)) do endIdx = endIdx - 1 end
+        if endIdx == 0 or saveText:byte(endIdx) ~= 125 then -- '}' wrapper close
           broadcastToAll("Invalid update data received.", {1, 0.5, 0})
           return
         end
-        objJson = arrText:gsub("^%s*%[%s*", "", 1)
-        objJson = objJson:gsub("%s*%]%s*$", "", 1)
+        endIdx = endIdx - 1
+        while endIdx > 0 and isSpace(saveText:byte(endIdx)) do endIdx = endIdx - 1 end
+        if endIdx == 0 or saveText:byte(endIdx) ~= 93 then -- ']' array close
+          broadcastToAll("Invalid update data received.", {1, 0.5, 0})
+          return
+        end
+        endIdx = endIdx - 1
+        while endIdx > 0 and isSpace(saveText:byte(endIdx)) do endIdx = endIdx - 1 end
+        if endIdx == 0 or saveText:byte(endIdx) ~= 125 then -- '}' box close
+          broadcastToAll("Invalid update data received.", {1, 0.5, 0})
+          return
+        end
+
+        if not boxStart or boxStart > endIdx then
+          broadcastToAll("Invalid update data received.", {1, 0.5, 0})
+          return
+        end
+        objJson = saveText:sub(boxStart, endIdx)
       else
-        -- Already a bare object: spawn directly, no slicing.
-        objJson = trimmed
+        -- (a) Bare object: hand the raw text (minus any leading whitespace)
+        -- straight to spawnObjectJSON, which parses natively in C#.
+        objJson = (startIdx == 1) and saveText or saveText:sub(startIdx)
       end
 
       if objJson == "" or objJson:sub(1, 1) ~= "{" then
