@@ -158,9 +158,8 @@ def generate_dice(
             paste_y = face_y + CONTENT_OFFSET
             background.paste(icon_scaled, (paste_x, paste_y), icon_scaled)
         else:
-            logger.warning(f"    Icon not found or invalid, using dots for face 6")
-            # Fallback to dots-5
-            dots_path = dots_dir / 'dots-5.png'
+            logger.warning(f"    Icon not found or invalid, using dots-6 for face 6")
+            dots_path = dots_dir / 'dots-6.png'
             dots = Image.open(dots_path).convert('RGBA')
             dots_array = np.array(dots)
             
@@ -174,8 +173,8 @@ def generate_dice(
             paste_y = face_y + CONTENT_OFFSET
             background.paste(dots_scaled, (paste_x, paste_y), dots_scaled)
     else:
-        # Use dots-5 for face 6
-        dots_path = dots_dir / 'dots-5.png'
+        # Use dots-6 for face 6
+        dots_path = dots_dir / 'dots-6.png'
         dots = Image.open(dots_path).convert('RGBA')
         dots_array = np.array(dots)
         
