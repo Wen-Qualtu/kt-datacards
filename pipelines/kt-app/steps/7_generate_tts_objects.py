@@ -486,7 +486,17 @@ def load_lua_script(config_dir: Path) -> str:
 
 
 def load_single_object_updater_script(config_dir: Path) -> str:
-    """Load reusable per-object updater Lua script from defaults folder."""
+    """Load reusable per-object updater Lua script from defaults folder.
+
+    Temporarily disabled: returning an empty string strips the per-card
+    "Update" script from every card/deck/token bag. Embedding it on every
+    object inflated the box JSON (~27 KB/card) and made spawning the box on
+    "Update" heavy enough to lock TTS. Datacards keep their separate
+    load-stats script. Re-enable by restoring the file read below once a
+    lighter, spawn-safe approach is in place.
+    """
+    return ""
+
     script_path = config_dir / "defaults" / "tts-script" / "single-object-updater.lua"
     try:
         with open(script_path, 'r', encoding='utf-8-sig') as f:
@@ -2011,7 +2021,10 @@ def _update_bag_timestamp(tts_data: dict) -> None:
     except (json.JSONDecodeError, TypeError):
         state = {}
     
-    state["lastCardUpdate"] = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
+    # Use UTC to stay consistent with box.modified (file mtime in UTC) in
+    # team-urls.json, so the in-game up-to-date comparison isn't skewed by the
+    # generating machine's local timezone.
+    state["lastCardUpdate"] = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S")
     obj["LuaScriptState"] = json.dumps(state)
 
 
