@@ -168,14 +168,6 @@ local function transmute(t, vfn, kfn)
     return out
 end
 
-local function duplicateTable(oldTable)
-  local newTable = {}
-  for k, v in pairs(oldTable) do
-    newTable[k] = v
-  end
-  return newTable
-end
-
 local function round(num, dec)
   local mult = 10^(dec or 0)
   return math.floor(num * mult + 0.5) / mult
@@ -1536,9 +1528,13 @@ function click_update_rules()
       return
     end
     
-    -- Compare timestamps (treat remote <= local as up to date)
+    -- Compare timestamps (treat remote <= local as up to date).
+    -- Normalize to the first 14 digits (YYYYMMDDHHMMSS) so values with extra
+    -- microsecond/timezone digits (e.g. remote isoformat) don't compare as
+    -- artificially larger than a plain local timestamp.
     local function toTimestampNumber(ts)
       local num = tostring(ts or ""):gsub("[^%d]", "")
+      num = string.sub(num, 1, 14)
       return tonumber(num) or 0
     end
     local localStamp = toTimestampNumber(lastCardUpdate)
@@ -1567,73 +1563,84 @@ function click_update_rules()
         broadcastToAll("Failed to download update: " .. webReturn.error, {1, 0.5, 0})
         return
       end
-      
-      local success, decoded = pcall(function() return JSON.decode(webReturn.text) end)
-      if not success or not decoded.ObjectStates or #decoded.ObjectStates == 0 then
+
+      -- The downloaded box file may be EITHER:
+      --   (a) a bare object (preferred): we hand the raw text straight to
+      --       spawnObjectJSON with ZERO parsing, or
+      --   (b) a full save-file wrapper { ..., "ObjectStates": [ {box} ] }: we
+      --       slice the single box object out with cheap native string ops.
+      -- Either way we never run TTS's pure-Lua JSON.decode on the ~400 KB-1 MB
+      -- payload (that main-thread decode is what froze the game). spawnObjectJSON
+      -- parses the JSON natively in C#.
+      local saveText = webReturn.text
+      local trimmed = saveText:gsub("^%s+", "")
+      local firstKey = trimmed:match('^{%s*"([^"]+)"')
+      local objJson
+
+      if firstKey == "SaveName" or firstKey == "ObjectStates" then
+        -- Full save-file wrapper. The REAL top-level "ObjectStates" key is the
+        -- first occurrence (it precedes the object body, whose LuaScript string
+        -- may contain escaped \"ObjectStates\" text), so a first-match slice is
+        -- safe.
+        local arrText = saveText:match('"ObjectStates"%s*:%s*(.-)%s*}%s*$')
+        if not arrText or arrText == "" then
+          broadcastToAll("Invalid update data received.", {1, 0.5, 0})
+          return
+        end
+        objJson = arrText:gsub("^%s*%[%s*", "", 1)
+        objJson = objJson:gsub("%s*%]%s*$", "", 1)
+      else
+        -- Already a bare object: spawn directly, no slicing.
+        objJson = trimmed
+      end
+
+      if objJson == "" or objJson:sub(1, 1) ~= "{" then
         broadcastToAll("Invalid update data received.", {1, 0.5, 0})
         return
       end
-      
-      local newBoxData = decoded.ObjectStates[1]
-      
-      -- Ensure the new box state matches the remote timestamp to avoid repeated updates
-      if newBoxData.LuaScriptState ~= nil and newBoxData.LuaScriptState ~= "" then
-        local ok, state = pcall(function() return JSON.decode(newBoxData.LuaScriptState) end)
-        if ok and state then
-          state.lastCardUpdate = effectiveRemoteTimestamp
-          if not state.teamSlug or state.teamSlug == "" then
-            state.teamSlug = teamSlug
-          end
-          newBoxData.LuaScriptState = JSON.encode(state)
-        end
-      else
-        newBoxData.LuaScriptState = JSON.encode({
-          lastCardUpdate = effectiveRemoteTimestamp,
-          teamSlug = teamSlug
-        })
-      end
-      
+
       -- Store current position, rotation, and lock state
       local currentPos = self.getPosition()
       local currentRot = self.getRotation()
       local currentLock = self.getLock()
-      
+
+      -- Spawn next to the current box to avoid overlap. The new box is identical
+      -- to the repo JSON; we don't mutate it (the generated LuaScriptState
+      -- already carries lastCardUpdate, so no injection is needed).
+      local spawnPos = currentPos + Vector(5, 0, 0)
+
       broadcastToAll("Spawning updated card box...", {1, 1, 0})
-      
-      -- Apply position and rotation to new box data
-      newBoxData.Transform.posX = currentPos.x
-      newBoxData.Transform.posY = currentPos.y
-      newBoxData.Transform.posZ = currentPos.z
-      newBoxData.Transform.rotX = currentRot.x
-      newBoxData.Transform.rotY = currentRot.y
-      newBoxData.Transform.rotZ = currentRot.z
-      
-      -- Spawn new box next to the current one to avoid overlap
-      local spawnOffset = Vector(5, 0, 0)
-      local spawnPos = currentPos + spawnOffset
-      newBoxData.Transform.posX = spawnPos.x
-      newBoxData.Transform.posY = spawnPos.y
-      newBoxData.Transform.posZ = spawnPos.z
-      
+
       local spawnedObj = spawnObjectJSON({
-        json = JSON.encode(newBoxData),
-        position = spawnPos
+        json = objJson,
+        position = spawnPos,
+        rotation = currentRot
       })
-      
+
+      if spawnedObj == nil then
+        broadcastToAll("Update failed: could not spawn new box.", {1, 0.5, 0})
+        return
+      end
+
       Wait.condition(
         function()
           -- Wait a moment for script state to initialize
           Wait.time(function()
+            if spawnedObj == nil or spawnedObj.isDestroyed() then
+              broadcastToAll("Update failed during spawn.", {1, 0.5, 0})
+              return
+            end
+
             spawnedObj.setLock(currentLock)
-            
+
             -- Destroy old box after new one is ready
             self.destruct()
-            
+
             -- Move new box to original position
             Wait.time(function()
               spawnedObj.setPositionSmooth(currentPos, false, true)
               spawnedObj.setRotationSmooth(currentRot, false, true)
-              broadcastToAll("✓ Card box updated successfully!", {0, 1, 0})
+              broadcastToAll("Card box updated successfully!", {0, 1, 0})
             end, 0.5)
           end, 0.5)
         end,
