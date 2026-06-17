@@ -273,43 +273,39 @@ def get_image_orientation(width: int, height: int) -> str:
 def extract_icon_transparent(icon_bgr: np.ndarray, threshold: int = 80, margin: int = 30) -> np.ndarray:
     """
     Extract icon with transparent background using brightness-based cutout.
-    
+    Warcom token icons are bright (orange) shapes on a near-black background,
+    so dark pixels become transparent and bright pixels stay opaque.
+
     Args:
         icon_bgr: BGR image array from cv2
-        threshold: Brightness threshold (0-255) - pixels above this become transparent
+        threshold: Brightness threshold (0-255) - pixels below this become transparent
         margin: Pixels to apply gradient transparency at edges
-    
+
     Returns:
         BGRA image with alpha channel (transparent background)
     """
-    # Convert BGR to RGB for processing
-    icon_rgb = cv2.cvtColor(icon_bgr, cv2.COLOR_BGR2RGB)
-    
-    # Calculate brightness
-    brightness = np.mean(icon_rgb, axis=2)
-    
-    # Create base alpha channel
-    alpha = np.where(brightness < threshold, 255, 0).astype(np.uint8)
-    
-    # Apply gradient at edges for smooth transparency
+    # Per-pixel max(R,G,B) to keep saturated colors (orange) clearly above threshold
+    brightness = icon_bgr.max(axis=2)
+
+    # Bright pixels opaque, dark pixels transparent
+    alpha = np.where(brightness < threshold, 0, 255).astype(np.uint8)
+
+    # Apply gradient at canvas edges for smooth transparency
     height, width = alpha.shape
     for y in range(height):
         for x in range(width):
             if alpha[y, x] == 255:
-                # Check distance to transparent pixels
                 dist_to_edge = min(
                     min(x, width - 1 - x),
                     min(y, height - 1 - y)
                 )
-                
-                # Apply gradient within margin
                 if dist_to_edge < margin:
                     fade_factor = dist_to_edge / margin
                     alpha[y, x] = int(255 * fade_factor)
-    
+
     # Create BGRA image
     bgra = np.dstack([icon_bgr, alpha])
-    
+
     return bgra
 
 
