@@ -489,12 +489,27 @@ class PDFProcessor:
 # MAIN STEP LOGIC
 # ===================================================================
 
+def _archive_input_pdf(pdf_path: Path, archive_root: Path, team_name: str) -> None:
+    """Move a successfully identified input PDF into layers/archive/{team}/."""
+    team_archive_dir = archive_root / team_name
+    team_archive_dir.mkdir(parents=True, exist_ok=True)
+    archive_path = team_archive_dir / pdf_path.name
+    try:
+        if archive_path.exists():
+            archive_path.unlink()
+        shutil.move(str(pdf_path), str(archive_path))
+        logger.info(f"  Archived input -> {archive_path}")
+    except Exception as exc:
+        logger.warning(f"  Could not archive input {pdf_path.name}: {exc}")
+
+
 def run(
     input_dir: Path = Path('input'),
     layers_dir: Path = Path('layers/kt-app'),
     config_path: Path = Path('config/team-config.yaml'),
     teams_filter: Optional[List[str]] = None,
-    force: bool = False
+    force: bool = False,
+    archive_inputs: bool = True,
 ) -> Dict:
     """
     Run Step 1: Process PDFs
@@ -505,6 +520,7 @@ def run(
         config_path: Team config file
         teams_filter: Optional list of teams to process
         force: Force reprocessing even if unchanged
+        archive_inputs: Move identified PDFs from input/ to layers/archive/{team}/
     
     Returns:
         Statistics dictionary
@@ -516,6 +532,7 @@ def run(
     # Setup paths
     processed_dir = layers_dir / 'processed'
     extracted_dir = layers_dir / 'extracted'
+    archive_dir = Path('layers/archive')
     metadata_file = layers_dir / 'metadata.json'
     
     # Initialize
@@ -571,6 +588,8 @@ def run(
             if not metadata_manager.has_changed(team.name, "1_process", output_filename, pdf_path):
                 logger.info(f"  Skipped: No changes detected")
                 stats['skipped'] += 1
+                if archive_inputs:
+                    _archive_input_pdf(pdf_path, archive_dir, team.name)
                 continue
         
         # Copy to processed/
@@ -592,6 +611,9 @@ def run(
         
         stats['processed'] += 1
         stats['pages_extracted'] += len(page_files)
+
+        if archive_inputs:
+            _archive_input_pdf(pdf_path, archive_dir, team.name)
     
     # Mark step complete
     metadata_manager.metadata["last_full_run"] = datetime.now(timezone.utc).isoformat()
@@ -619,6 +641,7 @@ def main():
     parser.add_argument('--config', default='config/team-config.yaml', help='Team config file')
     parser.add_argument('--teams', help='Comma-separated list of teams to process')
     parser.add_argument('--force', action='store_true', help='Force reprocessing')
+    parser.add_argument('--no-archive', action='store_true', help='Do not move input PDFs to layers/archive after processing')
     
     args = parser.parse_args()
     
@@ -631,7 +654,8 @@ def main():
         layers_dir=Path(args.layers_dir),
         config_path=Path(args.config),
         teams_filter=teams_filter,
-        force=args.force
+        force=args.force,
+        archive_inputs=not args.no_archive,
     )
 
 
