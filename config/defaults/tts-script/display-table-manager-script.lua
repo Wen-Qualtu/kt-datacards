@@ -4,7 +4,9 @@
 -- New canonical source: keyed map { slug -> { team, modified, box={url, modified}, ... } }
 -- Each box URL is a BARE Custom_Model_Bag JSON (no ObjectStates wrapper).
 local TTS_METADATA_URL = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/team-urls.json"
-local MANAGER_METADATA_URL = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output_v2/tts-manager.json"
+-- The manager bag itself is published as a bare Custom_Bag JSON (no save-file
+-- wrapper) so it can be downloaded and handed straight to spawnObjectJSON.
+local MANAGER_BAG_URL = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/_generic-tts-objects/Kill%20Team%20Card%20Boxes.json"
 local isUpdating = false
 local cancelRequested = false
 local positions = {}
@@ -722,127 +724,70 @@ function recallTeamsToManager()
 end
 
 function selfUpdate()
-    broadcastToAll("Checking for Manager updates...", {0.8, 0, 1})
-    
-    -- Fetch manager metadata to get latest version URL
-    WebRequest.get(MANAGER_METADATA_URL, function(request)
-        if request.is_error then
-            broadcastToAll("Could not check for Manager updates: " .. request.error, {1, 0, 0})
-            return
-        end
-        
-        local success, metadata = pcall(function() return JSON.decode(request.text) end)
-        if not success or not metadata or not metadata.url then
-            broadcastToAll("Could not parse Manager metadata", {1, 0, 0})
-            return
-        end
-        
-        local managerUrl = metadata.url
-        local timestamp = (metadata.last_modified or ""):gsub("[^%d]", "")
-        local urlWithCacheBust = managerUrl .. "?v=" .. timestamp
-        
-        broadcastToAll("Downloading latest Manager bag...", {0.8, 0, 1})
-        
-        -- Fetch the new manager bag JSON
-        WebRequest.get(urlWithCacheBust, function(webReturn)
-            if webReturn.is_error then
-                broadcastToAll("Failed to download Manager: " .. webReturn.error, {1, 0, 0})
-                return
-            end
-            
-            local success2, newBagData = pcall(function() return JSON.decode(webReturn.text) end)
-            if not success2 or not newBagData or not newBagData.ObjectStates or #newBagData.ObjectStates == 0 then
-                broadcastToAll("Invalid Manager bag format", {1, 0, 0})
-                return
-            end
-            
-            broadcastToAll("Spawning new Manager bag...", {0.8, 0, 1})
-            
-            -- Get current state
-            local currentPos = self.getPosition()
-            local currentRot = self.getRotation()
-            local savedState = self.script_state
-            local contents = self.getObjects()
-            
-            -- Spawn new manager bag NEXT TO the old one (not on top)
-            local newBagState = newBagData.ObjectStates[1]
-            newBagState.Transform.posX = currentPos.x + 5.0  -- Offset 5 units to the side
-            newBagState.Transform.posY = currentPos.y
-            newBagState.Transform.posZ = currentPos.z
-            newBagState.Transform.rotX = currentRot.x
-            newBagState.Transform.rotY = currentRot.y
-            newBagState.Transform.rotZ = currentRot.z
-            newBagState.LuaScriptState = ""  -- Start with empty state, will update after transfer
-            newBagState.ContainedObjects = {}  -- Spawn empty bag
-            
-            spawnObjectData({
-                data = newBagState,
-                callback_function = function(newBag)
-                    if #contents == 0 then
-                        -- No contents to transfer, restore state and destroy old bag
-                        newBag.script_state = savedState
-                        broadcastToAll("✓ Manager updated! Old Manager destroyed.", {0, 1, 0})
-                        
-                        -- Move new bag to old position
-                        Wait.time(function()
-                            newBag.setPositionSmooth(currentPos, false, false)
-                            Wait.time(function()
-                                self.destruct()
-                            end, 0.5)
-                        end, 0.3)
-                    else
-                        -- Transfer contents one at a time
-                        broadcastToAll("Transferring " .. #contents .. " team boxes...", {0.8, 0, 1})
-                        transferNextBox(newBag, contents, 1, #contents, currentPos, savedState)
-                    end
-                end
-            })
-        end)
-    end)
-end
+    broadcastToAll("Downloading latest Manager bag...", {0.8, 0, 1})
 
-function transferNextBox(newBag, contents, index, total, originalPos, savedState)
-    if index > total then
-        -- All transferred, NOW restore the state, then move and destroy
-        broadcastToAll("✓ Manager updated! All " .. total .. " teams transferred. Restoring state...", {0, 1, 0})
-        newBag.script_state = savedState  -- Restore saved positions AFTER transfer
-        
-        Wait.time(function()
-            newBag.setPositionSmooth(originalPos, false, false)
-            Wait.time(function()
-                self.destruct()
-            end, 1.0)
-        end, 0.3)
-        return
-    end
-    
-    local item = contents[index]
-    broadcastToAll("Transferring " .. (item.name or "team") .. " (" .. index .. "/" .. total .. ")", {0.6, 0.6, 1})
-    
-    -- Take object from old bag and place it to the side (not above)
-    local takenObj = self.takeObject({
-        guid = item.guid,
-        position = self.getPosition() + Vector(0, 1, 5),  -- To the side, not above
-        smooth = false
-    })
-    
-    -- Wait for it to spawn, then put in new bag
-    Wait.condition(
-        function()
-            newBag.putObject(takenObj)
-            
-            -- Wait a moment for putObject to complete, then transfer next
-            Wait.time(function()
-                transferNextBox(newBag, contents, index + 1, total, originalPos, savedState)
-            end, 0.1)
-        end,
-        function() return takenObj ~= nil and not takenObj.spawning end,
-        5,
-        function()
-            -- Timeout - skip this one and move to next
-            print("[Warning] Timeout transferring " .. (item.name or item.guid))
-            transferNextBox(newBag, contents, index + 1, total, originalPos, savedState)
+    local url = MANAGER_BAG_URL .. "?v=" .. tostring(os.time())
+    WebRequest.get(url, function(resp)
+        local code = tonumber(resp.response_code) or 0
+        if resp.is_error or code >= 400 then
+            local msg = resp.error
+            if msg == nil or msg == "" then msg = "HTTP " .. tostring(code) end
+            broadcastToAll("Manager update failed: " .. msg, {1, 0, 0})
+            return
         end
-    )
+
+        -- The manager bag is a bare Custom_Bag JSON. Skip leading whitespace
+        -- and hand the raw text to spawnObjectJSON (no decode of the ~30MB body).
+        local body = resp.text or ""
+        local startIdx = 1
+        while startIdx <= #body do
+            local b = body:byte(startIdx)
+            if b ~= 32 and b ~= 9 and b ~= 10 and b ~= 13 then break end
+            startIdx = startIdx + 1
+        end
+        if startIdx > #body or body:byte(startIdx) ~= 123 then
+            broadcastToAll("Manager update failed: unexpected response format", {1, 0, 0})
+            return
+        end
+        local objJson = (startIdx == 1) and body or body:sub(startIdx)
+
+        local currentPos = self.getPosition()
+        local currentRot = self.getRotation()
+        local savedState = self.script_state
+
+        broadcastToAll("Spawning new Manager bag...", {0.8, 0, 1})
+
+        local spawned = spawnObjectJSON({
+            json = objJson,
+            position = currentPos + Vector(5, 0, 0),
+            rotation = currentRot
+        })
+
+        if spawned == nil then
+            broadcastToAll("Manager update failed: spawnObjectJSON returned nil", {1, 0, 0})
+            return
+        end
+
+        Wait.condition(
+            function()
+                Wait.time(function()
+                    if spawned == nil or spawned.isDestroyed() then
+                        broadcastToAll("Manager update failed during spawn", {1, 0, 0})
+                        return
+                    end
+                    -- Preserve saved positions so Place Teams still works.
+                    spawned.script_state = savedState
+                    self.destruct()
+                    Wait.time(function()
+                        spawned.setPositionSmooth(currentPos, false, true)
+                        spawned.setRotationSmooth(currentRot, false, true)
+                        broadcastToAll("Manager bag updated!", {0, 1, 0})
+                    end, 0.3)
+                end, 0.3)
+            end,
+            function() return spawned ~= nil and not spawned.spawning end,
+            60
+        )
+    end)
 end
 
