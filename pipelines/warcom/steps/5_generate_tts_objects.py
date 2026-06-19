@@ -2096,6 +2096,78 @@ def generate_team_tts(team_dir: Path, output_dir: Path, registry: ComponentRegis
     return was_updated
 
 
+def run(
+    output_dir: Path = None,
+    teams: Optional[List[str]] = None,
+    force: bool = False,
+    branch: str = 'main',
+) -> Dict:
+    """Generate TTS objects for all (or selected) teams.
+
+    Args:
+        output_dir: Base output dir containing per-team folders (default: output/)
+        teams: Optional list of team slugs to limit processing
+        force: Force regeneration even if unchanged
+        branch: Git branch for GitHub raw URLs
+
+    Returns:
+        Dict with 'status', 'teams_processed', 'teams_updated'.
+    """
+    workspace_dir = Path(__file__).parent.parent.parent.parent
+    out_dir = Path(output_dir) if output_dir else (workspace_dir / 'output')
+    metadata_file = out_dir / '.tts-metadata.json'
+
+    detector = ChangeDetector(metadata_file)
+    registry = ComponentRegistry(detector, force_update=force)
+
+    logger.info("=" * 60)
+    logger.info("TTS Object Generation - Warcom Pipeline")
+    logger.info("=" * 60)
+
+    if teams:
+        team_dirs = [out_dir / t for t in teams if (out_dir / t).exists()]
+    else:
+        team_dirs = find_all_teams(out_dir)
+
+    if not team_dirs:
+        logger.warning("No teams found to process")
+        return {'status': 'success', 'teams_processed': 0, 'teams_updated': 0}
+
+    logger.info("Found %d team(s) to process", len(team_dirs))
+
+    updated_count = 0
+    failed_count = 0
+    for team_dir in team_dirs:
+        try:
+            was_updated = generate_team_tts(team_dir, out_dir, registry, branch)
+            if was_updated:
+                updated_count += 1
+        except Exception as e:
+            logger.error("Error processing %s: %s", team_dir.name, e)
+            import traceback
+            traceback.print_exc()
+            failed_count += 1
+            continue
+
+    detector.save_metadata()
+    logger.info("Full metadata saved to %s", metadata_file)
+
+    logger.info("=" * 60)
+    logger.info("Generation Complete")
+    logger.info("=" * 60)
+    logger.info("Teams processed: %d", len(team_dirs))
+    logger.info("Teams updated: %d", updated_count)
+    logger.info("Output: %s", out_dir)
+    logger.info("Metadata: %s", metadata_file)
+
+    return {
+        'status': 'success' if failed_count == 0 else 'partial',
+        'teams_processed': len(team_dirs),
+        'teams_updated': updated_count,
+        'failed': failed_count,
+    }
+
+
 def main():
     parser = argparse.ArgumentParser(description='Generate TTS objects from extracted cards')
     parser.add_argument('--teams', nargs='+', help='Specific teams to process (default: all)')
@@ -2106,62 +2178,10 @@ def main():
     parser.add_argument('--log-level', default='INFO',
                        choices=['DEBUG', 'INFO', 'WARNING', 'ERROR'],
                        help='Logging level (default: INFO)')
-    
-    args = parser.parse_args()
-    
-    logging.basicConfig(level=getattr(logging, args.log_level), format='%(levelname)s: %(message)s')
 
-    # Setup paths
-    workspace_dir = Path(__file__).parent.parent.parent.parent
-    output_dir = workspace_dir / 'output'
-    metadata_file = output_dir / '.tts-metadata.json'
-    
-    # Initialize change detection
-    detector = ChangeDetector(metadata_file)
-    registry = ComponentRegistry(detector, force_update=args.force)
-    
-    logger.info("=" * 60)
-    logger.info("TTS Object Generation - Warcom Pipeline")
-    logger.info("=" * 60)
-    
-    # Find teams to process
-    if args.teams:
-        teams = [output_dir / team for team in args.teams if (output_dir / team).exists()]
-    else:
-        teams = find_all_teams(output_dir)
-    
-    if not teams:
-        logger.warning("No teams found to process")
-        return
-    
-    logger.info("Found %d team(s) to process", len(teams))
-    
-    # Process each team
-    updated_count = 0
-    for team_dir in teams:
-        try:
-            was_updated = generate_team_tts(team_dir, output_dir, registry, args.branch)
-            if was_updated:
-                updated_count += 1
-        except Exception as e:
-            logger.error("Error processing %s: %s", team_dir.name, e)
-            import traceback
-            traceback.print_exc()
-            continue
-    
-    # Save metadata
-    detector.save_metadata()
-    logger.info("Full metadata saved to %s", metadata_file)
-    
-    
-    # Summary
-    logger.info("=" * 60)
-    logger.info("Generation Complete")
-    logger.info("=" * 60)
-    logger.info("Teams processed: %d", len(teams))
-    logger.info("Teams updated: %d", updated_count)
-    logger.info("Output: %s", output_dir)
-    logger.info("Metadata: %s", metadata_file)
+    args = parser.parse_args()
+    logging.basicConfig(level=getattr(logging, args.log_level), format='%(levelname)s: %(message)s')
+    run(teams=args.teams, force=args.force, branch=args.branch)
 
 
 if __name__ == '__main__':

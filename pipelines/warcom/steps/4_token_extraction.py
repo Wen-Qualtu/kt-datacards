@@ -980,76 +980,91 @@ def process_team(team_slug: str, team_config: Dict, all_teams_config: Dict) -> D
     return stats
 
 
-def main():
-    parser = argparse.ArgumentParser(description='Process extracted tokens with template cutout')
-    args = parser.parse_args()
-    
+def run(
+    extracted_dir: Path = None,
+    output_dir: Path = None,
+    teams: Optional[List[str]] = None,
+    workers: int = None,
+    debug: bool = False,
+) -> Dict:
+    """Process extracted tokens with template cutout for all (or selected) teams.
+
+    Args:
+        extracted_dir: Source extracted layers (default: layers/warcom/extracted)
+        output_dir: Output base (default: output) — tokens land in {output_dir}/{team}/tokens
+        teams: Optional list of team slugs to limit processing
+        workers: Unused (kept for orchestrator parity)
+        debug: Unused (kept for orchestrator parity)
+
+    Returns:
+        Dict with 'status' and processing counts.
+    """
+    src_dir = Path(extracted_dir) if extracted_dir else BASE_DIR
+    out_base = Path(output_dir) if output_dir else Path("output")
+
     logger.info("=" * 80)
     logger.info("Step 4: Process Tokens with Template Cutout")
     logger.info("=" * 80)
-    logger.info(f"Input: {BASE_DIR}")
-    logger.info(f"Output: output/{{team}}/tokens")
+    logger.info(f"Input: {src_dir}")
+    logger.info(f"Output: {out_base}/{{team}}/tokens")
     logger.info(f"Target size: {TARGET_SIZE}x{TARGET_SIZE}")
     logger.info("")
-    
-    # Clean up old output directories
-    logger.info("Cleaning up old processed tokens...")
-    output_base = Path("output")
-    if output_base.exists():
-        for team_dir in output_base.iterdir():
-            if team_dir.is_dir():
-                tokens_dir = team_dir / "tokens"
-                if tokens_dir.exists():
-                    import shutil
-                    shutil.rmtree(tokens_dir)
-    logger.info("")
-    
-    # Load team config
+
     all_teams_config = load_team_config()
-    
-    # Process each team
-    total_stats = {'processed': 0, 'skipped': 0, 'failed': 0, 'teams': 0}
-    
-    for team_dir in sorted(BASE_DIR.iterdir()):
-        if not team_dir.is_dir():
+
+    # Decide which team dirs to walk
+    if teams:
+        candidate_dirs = [src_dir / t for t in teams if (src_dir / t).is_dir()]
+    else:
+        candidate_dirs = sorted([d for d in src_dir.iterdir() if d.is_dir()]) if src_dir.exists() else []
+
+    # Clean up old output token dirs ONLY for teams we will reprocess and that are NOT locked.
+    logger.info("Cleaning up old processed tokens for non-locked teams...")
+    import shutil
+    for team_dir in candidate_dirs:
+        team_slug = team_dir.name
+        team_config = all_teams_config.get(team_slug, {})
+        if team_config.get('tokens_ready', False):
             continue
-        
+        tokens_out = out_base / team_slug / "tokens"
+        if tokens_out.exists():
+            shutil.rmtree(tokens_out)
+    logger.info("")
+
+    total_stats = {'processed': 0, 'skipped': 0, 'failed': 0, 'teams': 0}
+
+    for team_dir in candidate_dirs:
         team_slug = team_dir.name
         tokens_dir = team_dir / "tokens"
-        
         if not tokens_dir.exists():
             continue
-        
-        # Get team config
+
         team_config = all_teams_config.get(team_slug, {})
-        
-        # Skip teams with tokens_ready: true (tokens are locked)
+
         if team_config.get('tokens_ready', False):
             logger.info(f"Skipping {team_slug} (tokens_ready=true, tokens are locked)")
             total_stats['skipped'] += 1
             continue
-        
-        # Count tokens
+
         tokens = list(tokens_dir.glob("*.png"))
         if not tokens:
             continue
-        
+
         logger.info(f"Processing {team_slug} ({len(tokens)} tokens)...")
-        
         stats = process_team(team_slug, team_config, all_teams_config)
-        
+
         if stats['processed'] > 0:
             logger.info(f"  ✓ Processed: {stats['processed']}")
         if stats['failed'] > 0:
             logger.warning(f"  ✗ Failed: {stats['failed']}")
         if stats['skipped'] > 0:
             logger.info(f"  ○ Skipped: {stats['skipped']}")
-        
+
         total_stats['processed'] += stats['processed']
         total_stats['skipped'] += stats['skipped']
         total_stats['failed'] += stats['failed']
         total_stats['teams'] += 1
-    
+
     logger.info("")
     logger.info("=" * 80)
     logger.info("Processing complete!")
@@ -1058,6 +1073,23 @@ def main():
     logger.info(f"  Skipped: {total_stats['skipped']}")
     logger.info(f"  Failed: {total_stats['failed']}")
     logger.info("=" * 80)
+
+    return {
+        'status': 'success' if total_stats['failed'] == 0 else 'partial',
+        'teams_processed': total_stats['teams'],
+        'processed': total_stats['processed'],
+        'skipped': total_stats['skipped'],
+        'failed': total_stats['failed'],
+    }
+
+
+def main():
+    parser = argparse.ArgumentParser(description='Process extracted tokens with template cutout')
+    parser.add_argument('--extracted-dir', type=Path, default=None)
+    parser.add_argument('--output-dir', type=Path, default=None)
+    parser.add_argument('--teams', nargs='+', default=None)
+    args = parser.parse_args()
+    run(extracted_dir=args.extracted_dir, output_dir=args.output_dir, teams=args.teams)
 
 
 if __name__ == "__main__":
