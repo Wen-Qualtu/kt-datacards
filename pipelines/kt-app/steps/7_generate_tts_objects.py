@@ -704,6 +704,46 @@ def _build_token_memory_list(token_objects: list) -> dict:
     return ml
 
 
+def _build_token_tags_map(team_name: str, config_dir: Path) -> dict:
+    """Build a mapping of normalized token name -> KTUI tags from team-config.
+
+    The KTUI tags determine whether an object behaves as a token or a marker in
+    the Kill Team UI mod. Driven by the config `type` field:
+      - marker  -> ["KTUIToken", "KTUIMarker"]
+      - token   -> ["KTUIToken", "KTUITokenSimple"]
+      - custom  -> ["KTUIToken"] + the tags listed in config
+    """
+    tags_by_name = {}
+    team_config_path = config_dir / "team-config.yaml"
+    try:
+        with open(team_config_path, 'r', encoding='utf-8') as f:
+            team_config = yaml.safe_load(f)
+    except Exception as e:
+        logger.warning(f"Could not load team-config for token tags ({team_name}): {e}")
+        return tags_by_name
+
+    tokens_cfg = team_config.get('teams', {}).get(team_name, {}).get('tokens', []) or []
+    for token_cfg in tokens_cfg:
+        name = token_cfg.get('name', '')
+        if not name:
+            continue
+        normalized = ' '.join(name.lower().split())
+        token_type = (token_cfg.get('type') or '').strip().lower()
+
+        if token_type == 'marker':
+            tags = ["KTUIToken", "KTUIMarker"]
+        elif token_type == 'custom':
+            cfg_tags = token_cfg.get('tags', []) or []
+            tags = ["KTUIToken"] + [t for t in cfg_tags if t != "KTUIToken"]
+        else:
+            # token (default for empty/unknown types)
+            tags = ["KTUIToken", "KTUITokenSimple"]
+
+        tags_by_name[normalized] = tags
+
+    return tags_by_name
+
+
 def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Path, output_dir: Path, single_object_updater_script: str = "") -> tuple:
     """
     Generate token bag from output/{team}/tokens/ files.
@@ -746,10 +786,16 @@ def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Pa
         logger.warning(f"Could not extract github base URL, using placeholder")
         github_base = "https://github.com/user/repo/raw/main"
     
+    # Build a lookup of token name -> KTUI tags driven by the config `type`.
+    # marker -> KTUIMarker, token -> KTUITokenSimple, custom -> config tags.
+    token_tags_by_name = _build_token_tags_map(team_name, config_dir)
+    
     # Generate token objects (Custom_Model_Infinite_Bag, each containing a Custom_Token)
     token_objects = []
     for token_name, obj_path, png_path in sorted(token_files):
         display_name = token_name.replace(f'{team_name}-', '').replace('-', ' ').title()
+        normalized_name = ' '.join(token_name.replace(f'{team_name}-', '').replace('-', ' ').lower().split())
+        token_tags = token_tags_by_name.get(normalized_name, ["KTUIToken", "KTUITokenSimple"])
         
         mesh_mtime = int(obj_path.stat().st_mtime)
         png_mtime = int(png_path.stat().st_mtime)
@@ -773,7 +819,7 @@ def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Pa
             "Nickname": display_name,
             "Description": display_name,
             "ColorDiffuse": {"r": 1.0, "g": 1.0, "b": 1.0},
-            "Tags": ["KTUIToken", "KTUIMarker"],
+            "Tags": list(token_tags),
             "Locked": False,
             "Grid": True,
             "Snap": False,
@@ -809,7 +855,7 @@ def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Pa
             "Nickname": display_name,
             "Description": display_name,
             "ColorDiffuse": {"r": 1.0, "g": 1.0, "b": 1.0},
-            "Tags": ["KTUIToken", "KTUIMarker"],
+            "Tags": list(token_tags),
             "Locked": True,
             "Grid": True,
             "Snap": False,
