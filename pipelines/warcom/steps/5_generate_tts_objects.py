@@ -621,7 +621,11 @@ def prepare_clean_tokens(team_name: str, workspace_root: Path) -> Tuple[Optional
             logger.info("Using locked tokens for %s (%d tokens)", team_name, len(output_name_map))
             return final_tokens_dir, output_name_map
         else:
-            logger.warning("Team %s has tokens_ready=true but no tokens in %s", team_name, final_tokens_dir)
+            # Empty tokens list in config => team intentionally has no tokens
+            if not team_data.get("tokens"):
+                logger.info("Team %s has no tokens declared; skipping token bag.", team_name)
+            else:
+                logger.warning("Team %s has tokens_ready=true but no tokens in %s", team_name, final_tokens_dir)
             return None, {}
     
     extracted_team_dir = workspace_root / "layers" / "warcom" / "extracted" / team_name
@@ -1930,9 +1934,17 @@ def generate_team_tts(team_dir: Path, output_dir: Path, registry: ComponentRegis
                 )
                 logger.info("Created token bag with %d dispensers", len(dispensers))
     else:
-        logger.error("Token processing failed for %s; missing name mapping.", team_name)
+        team_cfg = (load_team_config() or {}).get("teams", {}).get(team_name, {})
+        if team_cfg.get("tokens_ready", False):
+            # prepare_clean_tokens already logged the appropriate INFO/WARNING
+            pass
+        else:
+            extracted_tokens_dir = workspace_root / "layers" / "warcom" / "extracted" / team_name / "tokens"
+            if not extracted_tokens_dir.exists():
+                logger.info("No token guide card detected for %s; skipping token bag.", team_name)
+            else:
+                logger.error("Token processing failed for %s; missing name mapping.", team_name)
         # Don't return early - continue to save cards even if tokens fail
-        # return False
     
     # Create card box (container for all decks and token bag)
     # TODO: Extract proper faction and display name from metadata
