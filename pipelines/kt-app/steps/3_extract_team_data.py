@@ -1334,26 +1334,41 @@ class TeamDataExtractor:
         
         # Pre-process: merge operative header lines that span multiple lines
         # E.g., "• OPERATIVE with \n one option from" → "• OPERATIVE with one option from"
+        # Also handles mid-phrase breaks like "• OP operative with one of the\nfollowing options:"
         lines = text.split('\n')
         processed_lines = []
         i = 0
         while i < len(lines):
             line = lines[i].strip()
-            
-            # If line ends with "with" or "with auxiliary", merge with next line(s) until we get full phrase
-            if line and (line.endswith(' with') or line.endswith(' auxiliary')) and i + 1 < len(lines):
-                # Keep merging until we get a complete "with ... one of/one option" phrase
+
+            # Determine if this line is an incomplete operative loadout declaration
+            # that needs to be merged with following lines.
+            line_lower = line.lower()
+            has_with = (' with ' in line_lower) or line_lower.endswith(' with') or line_lower.endswith(' auxiliary')
+            already_complete = (
+                'with one option' in line_lower
+                or 'with one of the following' in line_lower
+                or ('with auxiliary' in line_lower and 'one of' in line_lower)
+            )
+
+            if line and has_with and not already_complete and i + 1 < len(lines):
+                # Keep merging until we get a complete loadout phrase (or run out / hit a new bullet)
                 while i + 1 < len(lines):
                     next_line = lines[i + 1].strip()
                     if not next_line:
                         i += 1
                         continue
+                    # Don't swallow a new bullet item — that's a different operative
+                    if next_line.startswith('•') or next_line.startswith('◯') or next_line.startswith('○'):
+                        break
                     line = line + ' ' + next_line
                     i += 1
-                    # Stop if we've completed the phrase
-                    if 'one of' in line.lower() or 'one option' in line.lower():
+                    merged_lower = line.lower()
+                    if ('with one option' in merged_lower
+                            or 'with one of the following' in merged_lower
+                            or ('with auxiliary' in merged_lower and 'one of' in merged_lower)):
                         break
-            
+
             if line:
                 processed_lines.append(line)
             i += 1
@@ -1363,7 +1378,31 @@ class TeamDataExtractor:
         i = 0
         while i < len(lines):
             line = lines[i]
-            
+
+            # Helper: does this stripped line look like a new operative entry?
+            # Matches things like:
+            #   "• PSYCHOMANCER"
+            #   "• 1 PLASMACYTE ACCELERATOR operative"
+            #   "• APPRENTEK"
+            # i.e. a bullet whose textual content is mostly uppercase (an operative
+            # roster bullet), regardless of whether it carries a 'with ...' loadout.
+            def _looks_like_operative_bullet(stripped: str) -> bool:
+                if not stripped.startswith('•'):
+                    return False
+                content = stripped[1:].strip()
+                if not content or len(content) > 80:
+                    return False
+                # Strip leading roster count like "1 " or "10 "
+                content_no_count = re.sub(r'^\d+\s+', '', content)
+                # Drop a trailing " operative" / " operatives" descriptor
+                content_core = re.sub(r'\s+operatives?\b.*$', '', content_no_count, flags=re.IGNORECASE)
+                # Compute uppercase ratio over alpha characters only
+                alpha = [c for c in content_core if c.isalpha()]
+                if len(alpha) < 3:
+                    return False
+                upper_ratio = sum(1 for c in alpha if c.isupper()) / len(alpha)
+                return upper_ratio >= 0.8
+
             # Look for operative name with loadout options
             # Pattern: "• OPERATIVE NAME with one option from"
             # or: "• OPERATIVE NAME with auxiliary ... and one of"
@@ -1375,50 +1414,61 @@ class TeamDataExtractor:
                 match = re.match(r'^[•\s]*(.+?)\s+with\s+', line, re.IGNORECASE)
                 if match:
                     operative_name = match.group(1).strip().upper()
+                    # Strip trailing grammar words like " OPERATIVE" that aren't part of the name
+                    operative_name = re.sub(r'\s+OPERATIVES?$', '', operative_name)
+
+                    # Determine loadout structure from the phrasing.
+                    #   "with one of the following [options]" => single group, each ○/• is one option choice
+                    #   "with one option from each of the following" => multiple groups, each ○/• starts a new group
+                    line_lower = line.lower()
+                    single_group_mode = (
+                        'with one of the following' in line_lower
+                        or ('with one option' in line_lower and 'from each' not in line_lower)
+                    )
+
                     option_groups = []
                     i += 1
                     
                     # Parse option groups marked by ◯ or "Or the following option"
                     current_group_lines = []
-                    
+                    single_group_options: list = []  # used when single_group_mode
+
+                    def _flush_current_group():
+                        if not current_group_lines:
+                            return
+                        group_text = ' '.join(current_group_lines)
+                        parsed_group = self._parse_weapon_options(group_text)
+                        if not parsed_group:
+                            return
+                        if single_group_mode:
+                            single_group_options.extend(parsed_group)
+                        else:
+                            option_groups.append(parsed_group)
+
                     while i < len(lines):
                         opt_line = lines[i].strip()
                         
-                        # Check if we hit next operative (starts with • and looks like operative name with "with")
+                        # Check if we hit next operative (loadout-carrying bullet)
                         if opt_line.startswith('•') and ' with ' in opt_line.lower():
                             # Next operative found, stop here
                             break
-                        
-                        # Check for standalone operative names without options
-                        if (opt_line.startswith('•') and 
-                            opt_line[1:].strip().isupper() and
-                            len(opt_line) < 60 and
-                            any(kw in opt_line.upper() for kw in ['SERGEANT', 'CAPTAIN', 'WARRIOR', 'GUNNER', 'GRENADIER', 'SNIPER']) and
-                            ' with ' not in opt_line.lower()):
+
+                        # Check if we hit next operative (plain roster bullet, no loadout)
+                        if _looks_like_operative_bullet(opt_line):
                             # Next operative found, stop here
                             break
                         
                         # Option group marker (◯ or ○)
                         if opt_line.startswith('◯') or opt_line.startswith('○'):
-                            # Save previous group if any
-                            if current_group_lines:
-                                group_text = ' '.join(current_group_lines)
-                                parsed_group = self._parse_weapon_options(group_text)
-                                if parsed_group:
-                                    option_groups.append(parsed_group)
-                                current_group_lines = []
+                            _flush_current_group()
+                            current_group_lines = []
                             i += 1
                             continue
                         
                         # Alternative option group marker: "Or the following option:"
                         if 'or the following option' in opt_line.lower():
-                            # Save previous group if any
-                            if current_group_lines:
-                                group_text = ' '.join(current_group_lines)
-                                parsed_group = self._parse_weapon_options(group_text)
-                                if parsed_group:
-                                    option_groups.append(parsed_group)
-                                current_group_lines = []
+                            _flush_current_group()
+                            current_group_lines = []
                             i += 1
                             continue
                         
@@ -1443,11 +1493,11 @@ class TeamDataExtractor:
                         i += 1
                     
                     # Save last group if any
-                    if current_group_lines:
-                        group_text = ' '.join(current_group_lines)
-                        parsed_group = self._parse_weapon_options(group_text)
-                        if parsed_group:
-                            option_groups.append(parsed_group)
+                    _flush_current_group()
+
+                    if single_group_mode:
+                        if single_group_options:
+                            option_groups = [single_group_options]
                     
                     # Save to selection
                     selection[operative_name] = option_groups
