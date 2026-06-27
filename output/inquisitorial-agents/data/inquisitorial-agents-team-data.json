@@ -1,6 +1,6 @@
 {
   "team": "inquisitorial-agents",
-  "generated_at": "2026-05-05T17:43:10.753245+00:00",
+  "generated_at": "2026-06-27T12:57:31.185792+00:00",
   "datacards": [
     {
       "name": "INTERROGATOR AGENT",
@@ -44,6 +44,38 @@
         "INQUISITION",
         "LEADER",
         "INTERROGATOR"
+      ]
+    },
+    {
+      "name": "TOME-SKULL",
+      "apl": 2,
+      "movement": "6″",
+      "save": "5+",
+      "wounds": 5,
+      "passive_abilities": [
+        {
+          "name": "Consecrated Tome",
+          "description": "This operative can have an INQUISITORIAL TOME rule (see INTERROGATOR). Note it keeps that rule even if that friendly INTERROGATOR operative is removed from the killzone."
+        },
+        {
+          "name": "Machine",
+          "description": "• This operative cannot perform any actions other than Charge, Dash, Fall Back and Reposition.\n• It cannot retaliate or assist in a fight.\n• Whenever determining control of a marker, treat this operative’s APL stat as 1 lower. Note this isn’t a change to its APL stat, so any changes are cumulative with this.\n• Whenever this operative has a Conceal order and is in cover, it cannot be selected as a valid target, taking precedence over all other rules (e.g. Seek, Vantage terrain) except being within 2\"."
+        },
+        {
+          "name": "Expendable",
+          "description": "This operative is ignored for your opponent’s kill/ elimination op (when it’s incapacitated, and when determining your starting number of operatives). It’s also ignored for victory conditions and scoring VPs if either require operatives to ‘escape’, ‘survive’ or be incapacitated by enemy operatives (if it escapes/survives/is incapacitated, determining how many operatives must escape/survive/be incapacitated, etc.)."
+        },
+        {
+          "name": "Group Activation",
+          "description": "Whenever this operative is expended, you must then activate a ready friendly INQUISITORIAL AGENT INTERROGATOR operative (if able) before your opponent activates. The same is true in reverse (INTERROGATOR followed by TOME-SKULL). When that other operative is expended, your opponent then activates as normal. TOME-SKULL 2 APL WOUNDS SAVE MOVE 6\" 5+ 5"
+        }
+      ],
+      "unique_actions": [],
+      "keywords": [
+        "INQUISITORIAL AGENT",
+        "IMPERIUM",
+        "INQUISITION",
+        "TOME-SKULL"
       ]
     },
     {
