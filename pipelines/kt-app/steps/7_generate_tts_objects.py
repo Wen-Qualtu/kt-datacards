@@ -59,6 +59,26 @@ OUTPUT_METADATA_FILE = PROJECT_ROOT / "output" / "metadata.json"
 URL_BRANCH = os.environ.get("KT_DATACARDS_URL_BRANCH", "main")
 
 
+def write_json_if_changed(path: Path, data, *, indent: int = 2, ensure_ascii: bool = False) -> bool:
+    """Write JSON to path only when serialized content differs from existing file.
+
+    Preserves mtime when content is unchanged so downstream cache-bust URLs
+    (`?v={int(mtime)}`) and `modified` timestamps stay stable across re-runs.
+    Returns True iff the file was written.
+    """
+    serialized = json.dumps(data, indent=indent, ensure_ascii=ensure_ascii)
+    if path.exists():
+        try:
+            existing = path.read_text(encoding='utf-8')
+            if existing == serialized:
+                return False
+        except OSError:
+            pass
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(serialized, encoding='utf-8')
+    return True
+
+
 # ===================================================================
 # BARE/CLEAN BOX FORMAT HELPERS
 # ===================================================================
@@ -124,6 +144,61 @@ def _bare_from_wrapper(bag_obj: dict) -> dict:
     return bag_obj
 
 
+def _preserve_prior_box_timestamps(new_root: dict, existing_path: Path) -> None:
+    """Recursively patch LuaScriptState timestamp fields on new_root from the
+    on-disk file at existing_path. Keeps `lastCardUpdate`, `lastTokenUpdate`,
+    and `lastUpdate` byte-stable across re-runs so that downstream cache-bust
+    URLs only advance when actual content changes. No-op if the existing file
+    is missing/unreadable.
+    """
+    if not existing_path.exists():
+        return
+    try:
+        old_root = json.loads(existing_path.read_text(encoding='utf-8'))
+    except (OSError, json.JSONDecodeError):
+        return
+
+    TIMESTAMP_KEYS = ('lastCardUpdate', 'lastTokenUpdate', 'lastUpdate')
+
+    def _walk(new_node, old_node):
+        if isinstance(new_node, dict) and isinstance(old_node, dict):
+            ns = new_node.get('LuaScriptState')
+            os_s = old_node.get('LuaScriptState')
+            if isinstance(ns, str) and ns and isinstance(os_s, str) and os_s:
+                try:
+                    nd = json.loads(ns)
+                    od = json.loads(os_s)
+                    changed = False
+                    for k in TIMESTAMP_KEYS:
+                        if k in od and nd.get(k) != od.get(k):
+                            nd[k] = od[k]
+                            changed = True
+                    if changed:
+                        new_node['LuaScriptState'] = json.dumps(nd)
+                except json.JSONDecodeError:
+                    pass
+            # Recurse into ContainedObjects pairwise by index.
+            new_co = new_node.get('ContainedObjects') or []
+            old_co = old_node.get('ContainedObjects') or []
+            # Match children by GUID where possible (order is not guaranteed
+            # stable on dict-keyed regeneration).
+            old_by_guid = {c.get('GUID'): c for c in old_co if isinstance(c, dict) and c.get('GUID')}
+            for nc in new_co:
+                if not isinstance(nc, dict):
+                    continue
+                oc = old_by_guid.get(nc.get('GUID'))
+                if oc is not None:
+                    _walk(nc, oc)
+            # Recurse into ObjectStates (top-level save wrappers).
+            new_os = new_node.get('ObjectStates') or []
+            old_os = old_node.get('ObjectStates') or []
+            for nc, oc in zip(new_os, old_os):
+                if isinstance(nc, dict) and isinstance(oc, dict):
+                    _walk(nc, oc)
+
+    _walk(new_root, old_root)
+
+
 def write_team_box_files(bag_obj: dict, team_output_dir: Path, team_display_name: str,
                          intermediate_lua: str = "") -> tuple[Path, Path]:
     """Write both the clean bare object and the slim legacy wrapper.
@@ -137,9 +212,15 @@ def write_team_box_files(bag_obj: dict, team_output_dir: Path, team_display_name
     clean_path = team_output_dir / f"{team_display_name}.json"
     wrapper_path = team_output_dir / f"{team_display_name} Box.json"
 
+    # If the only differences between the new content and the on-disk file are
+    # timestamp fields inside LuaScriptState, copy the prior timestamps over so
+    # the file (and its downstream cache-bust URLs) stays byte-for-byte stable.
+    _preserve_prior_box_timestamps(inner, clean_path)
+
     # Clean: full bare object exactly as TTS expects via spawnObjectJSON.
-    with open(clean_path, 'w', encoding='utf-8') as f:
-        json.dump(inner, f, indent=2)
+    # Use write-if-changed so the file's mtime (and downstream ?v= cache-bust)
+    # only advances when content actually differs.
+    write_json_if_changed(clean_path, inner, ensure_ascii=True)
 
     # Wrapper: ruthlessly slimmed copy. Sole purpose is to be a one-click hop
     # to the clean file. We strip:
@@ -161,8 +242,8 @@ def write_team_box_files(bag_obj: dict, team_output_dir: Path, team_display_name
     wrapper = _empty_save_wrapper()
     wrapper["SaveName"] = inner.get("Nickname") or team_display_name
     wrapper["ObjectStates"] = [slim_inner]
-    with open(wrapper_path, 'w', encoding='utf-8') as f:
-        json.dump(wrapper, f, indent=2)
+    _preserve_prior_box_timestamps(wrapper, wrapper_path)
+    write_json_if_changed(wrapper_path, wrapper, ensure_ascii=True)
 
     return clean_path, wrapper_path
 
@@ -185,9 +266,7 @@ class MetadataManager:
         return {"pipeline_version": "2.0", "last_full_run": None, "teams": {}}
 
     def save_metadata(self):
-        self.metadata_file.parent.mkdir(parents=True, exist_ok=True)
-        with open(self.metadata_file, 'w', encoding='utf-8') as f:
-            json.dump(self.metadata, f, indent=2, ensure_ascii=False)
+        write_json_if_changed(self.metadata_file, self.metadata)
 
     def compute_hash(self, file_path: Path) -> str:
         sha256 = hashlib.sha256()
@@ -206,9 +285,15 @@ class MetadataManager:
         if "outputs" not in self.metadata["teams"][team]["steps"][step]:
             self.metadata["teams"][team]["steps"][step]["outputs"] = {}
         file_hash = self.compute_hash(file_path)
-        timestamp = datetime.now(timezone.utc).isoformat()
-        self.metadata["teams"][team]["steps"][step]["outputs"][file_key] = {
-            "path": str(file_path), "hash": file_hash, "modified": timestamp
+        outputs = self.metadata["teams"][team]["steps"][step]["outputs"]
+        prior = outputs.get(file_key) or {}
+        # Only bump `modified` when the file's content hash actually changed.
+        if prior.get("hash") == file_hash and prior.get("path") == str(file_path):
+            return
+        outputs[file_key] = {
+            "path": str(file_path),
+            "hash": file_hash,
+            "modified": datetime.now(timezone.utc).isoformat(),
         }
 
     def mark_step_complete(self, team: str, step: str):
@@ -218,7 +303,19 @@ class MetadataManager:
             self.metadata["teams"][team]["steps"] = {}
         if step not in self.metadata["teams"][team]["steps"]:
             self.metadata["teams"][team]["steps"][step] = {}
-        self.metadata["teams"][team]["steps"][step]["completed"] = datetime.now(timezone.utc).isoformat()
+        # Only stamp completion if outputs for this step changed since the
+        # previous run. Heuristic: any output entry whose `modified` is newer
+        # than the prior `completed` timestamp counts as a fresh write.
+        step_entry = self.metadata["teams"][team]["steps"][step]
+        prior_completed = step_entry.get("completed")
+        outputs = step_entry.get("outputs") or {}
+        any_changed = False
+        for o in outputs.values():
+            if not prior_completed or (o.get("modified") or "") > prior_completed:
+                any_changed = True
+                break
+        if any_changed or not prior_completed:
+            step_entry["completed"] = datetime.now(timezone.utc).isoformat()
 
 
 class OutputMetadataManager:
@@ -227,6 +324,10 @@ class OutputMetadataManager:
     def __init__(self, metadata_file: Path):
         self.metadata_file = metadata_file
         self.metadata = self._load_metadata()
+        # Snapshot of `files` at load time so save_metadata can detect whether
+        # any entries actually changed during this run.
+        import copy as _copy
+        self._prior_files_snapshot = _copy.deepcopy(self.metadata.get("files") or {})
 
     def _load_metadata(self) -> Dict:
         if self.metadata_file.exists():
@@ -238,10 +339,16 @@ class OutputMetadataManager:
         return {"version": "1.0", "last_updated": None, "files": {}}
 
     def save_metadata(self):
-        self.metadata_file.parent.mkdir(parents=True, exist_ok=True)
-        self.metadata["last_updated"] = datetime.now(timezone.utc).isoformat()
-        with open(self.metadata_file, 'w', encoding='utf-8') as f:
-            json.dump(self.metadata, f, indent=2, ensure_ascii=False)
+        # Only stamp `last_updated` when the underlying `files` dict actually
+        # changed since load — keeps output/metadata.json byte-stable across
+        # no-op re-runs so its modified time and cache-bust URL don't drift.
+        prior_files = self._prior_files_snapshot
+        if prior_files == self.metadata.get("files"):
+            # No real changes; leave last_updated as-is from disk.
+            pass
+        else:
+            self.metadata["last_updated"] = datetime.now(timezone.utc).isoformat()
+        write_json_if_changed(self.metadata_file, self.metadata)
 
     def compute_hash(self, file_path: Path) -> str:
         sha256 = hashlib.sha256()
@@ -252,9 +359,17 @@ class OutputMetadataManager:
 
     def update_file(self, rel_path: str, file_path: Path, pipeline: str, step: str):
         file_hash = self.compute_hash(file_path)
-        timestamp = datetime.now(timezone.utc).isoformat()
-        self.metadata.setdefault("files", {})[rel_path] = {
-            "hash": file_hash, "modified": timestamp, "pipeline": pipeline, "step": step
+        files = self.metadata.setdefault("files", {})
+        prior = files.get(rel_path) or {}
+        # Only update the entry (and thus the `modified` timestamp) when the
+        # file's hash actually changed.
+        if prior.get("hash") == file_hash and prior.get("pipeline") == pipeline and prior.get("step") == step:
+            return
+        files[rel_path] = {
+            "hash": file_hash,
+            "modified": datetime.now(timezone.utc).isoformat(),
+            "pipeline": pipeline,
+            "step": step,
         }
 
 
@@ -554,8 +669,7 @@ def save_object_urls_team_files(teams_data: dict, output_dir: Path) -> list[Path
         team_meta_dir = output_dir / team
         team_meta_dir.mkdir(parents=True, exist_ok=True)
         team_file = team_meta_dir / f"{team}-object-urls.json"
-        with open(team_file, 'w', encoding='utf-8') as f:
-            json.dump(team_entry, f, indent=2, ensure_ascii=False)
+        write_json_if_changed(team_file, team_entry)
         written_files.append(team_file)
 
         # Cleanup previous team-local filename from earlier implementation.
@@ -890,7 +1004,19 @@ def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Pa
     bag_icon_url = f"{github_base}/output/{team_name}/tokens/tokenbag/{bag_icon_file.name}?v={bag_icon_mtime}"
     
     # Create token bag
-    token_timestamp = datetime.now(timezone.utc).isoformat()
+    # Derive timestamp from token asset mtimes (stable across re-runs when
+    # the underlying tokens/mesh/icon haven't changed). Falls back to mesh
+    # mtime if nothing else is available.
+    _token_max_mtime = max(bag_mesh_file.stat().st_mtime, bag_icon_file.stat().st_mtime)
+    tokens_dir_local = output_dir / team_name / 'tokens'
+    if tokens_dir_local.exists():
+        for _tf in tokens_dir_local.rglob('*'):
+            if _tf.is_file():
+                try:
+                    _token_max_mtime = max(_token_max_mtime, _tf.stat().st_mtime)
+                except OSError:
+                    pass
+    token_timestamp = datetime.fromtimestamp(_token_max_mtime, tz=timezone.utc).isoformat()
     
     # Load token bag Lua script
     lua_script_path = config_dir / 'defaults' / 'tts-token' / 'token-bag-script.lua'
@@ -1025,10 +1151,9 @@ def load_dice_objects(team_name: str, sample_url: Optional[str], output_dir: Pat
         dice_obj = create_custom_dice(nickname, texture_url, team_tag, variant)
         dice_objects.append(dice_obj)
 
-        # Save individual dice JSON
+        # Save individual dice JSON only if content changed.
         out_name = f"{team_name}-dice.json" if variant == "team" else f"{team_name}-{variant}-dice.json"
-        with open(out_dir / out_name, "w", encoding="utf-8") as f:
-            json.dump({"ObjectStates": [dice_obj]}, f, indent=2)
+        write_json_if_changed(out_dir / out_name, {"ObjectStates": [dice_obj]}, ensure_ascii=True)
 
     if dice_objects:
         logger.info(f"  Added {len(dice_objects)} dice for {team_name}")
@@ -1151,8 +1276,7 @@ def rebuild_kill_team_card_boxes_example(output_dir: Path) -> tuple[int, Optiona
     manager_obj["ContainedObjects"] = team_box_objects
 
     try:
-        with open(manager_output_path, 'w', encoding='utf-8') as f:
-            json.dump(manager_obj, f, indent=2, ensure_ascii=False)
+        write_json_if_changed(manager_output_path, manager_obj)
     except Exception as e:
         logger.warning(f"Could not write manager bag file: {e}")
         return 0, None
@@ -1176,8 +1300,7 @@ def rebuild_kill_team_card_boxes_example(output_dir: Path) -> tuple[int, Optiona
         "VectorLines": [],
     }
     try:
-        with open(wrapped_path, "w", encoding="utf-8") as f:
-            json.dump(wrapped_obj, f, indent=2, ensure_ascii=False)
+        write_json_if_changed(wrapped_path, wrapped_obj)
         logger.info(f"Wrote manager bag (saved object): {wrapped_path}")
     except Exception as e:
         logger.warning(f"Could not write wrapped manager bag: {e}")
@@ -1227,8 +1350,7 @@ def rebuild_kill_team_card_boxes_example(output_dir: Path) -> tuple[int, Optiona
                 "VectorLines": [],
             }
             spawner_path = manager_output_dir / "Kill Team Spawner.json"
-            with open(spawner_path, "w", encoding="utf-8") as f:
-                json.dump(spawner_save, f, indent=2, ensure_ascii=False)
+            write_json_if_changed(spawner_path, spawner_save)
             logger.info(f"Wrote team spawner: {spawner_path}")
         except Exception as e:
             logger.warning(f"Could not write team spawner: {e}")
@@ -1261,21 +1383,37 @@ def embed_datacard_stats(bag_obj: dict, team_name: str, output_dir: Path, config
     with open(team_config_path, 'r', encoding='utf-8') as f:
         team_config = yaml.safe_load(f)
     
-    # Load selection data from roster.json (output_v2)
+    # Load selection data.
+    # Primary source: team_data['operatives_selection'] (produced by step 3).
+    # Fallback: legacy output_v2/{faction}/{team}/statlines/roster.json (no current generator).
     faction = team_config.get('teams', {}).get(team_name, {}).get('faction', '')
     roster_selection: dict = {}
     roster_exclusive_sets: dict = {}
+
+    for entry in team_data.get('operatives_selection', []) or []:
+        sel = entry.get('selection') if isinstance(entry, dict) else None
+        if isinstance(sel, dict):
+            for op_name, groups in sel.items():
+                # Merge: later entries don't overwrite a non-empty earlier selection
+                if op_name not in roster_selection or not roster_selection[op_name]:
+                    roster_selection[op_name] = groups
+
     if faction:
         roster_path = PROJECT_ROOT / 'output_v2' / faction / team_name / 'statlines' / 'roster.json'
         if roster_path.exists():
             try:
                 with open(roster_path, 'r', encoding='utf-8') as f:
                     roster_data = json.load(f)
-                roster_selection = roster_data.get('selection', {})
-                roster_exclusive_sets = roster_data.get('exclusive_sets', {})
-                logger.debug(f"  Loaded selection for {sum(1 for v in roster_selection.values() if v)} operatives")
+                legacy_selection = roster_data.get('selection', {}) or {}
+                # Only fill gaps; do not overwrite values already produced by step 3
+                for op_name, groups in legacy_selection.items():
+                    if op_name not in roster_selection or not roster_selection[op_name]:
+                        roster_selection[op_name] = groups
+                roster_exclusive_sets = roster_data.get('exclusive_sets', {}) or {}
             except Exception as e:
-                logger.warning(f"  Could not load roster.json for {team_name}: {e}")
+                logger.warning(f"  Could not load legacy roster.json for {team_name}: {e}")
+
+    logger.debug(f"  Loaded selection for {sum(1 for v in roster_selection.values() if v)} operatives")
 
     # Load datacard Lua script
     lua_script_path = config_dir / "defaults" / "tts-script" / "datacard-load-stats.lua"
@@ -1300,10 +1438,28 @@ def embed_datacard_stats(bag_obj: dict, team_name: str, output_dir: Path, config
             logger.debug(f"    No match for card '{nickname}'")
             continue
         
-        # Look up selection groups for this operative (keyed by UPPERCASE name in roster)
+        # Look up selection groups for this operative (keyed by UPPERCASE name in roster).
+        # The operative-selection card may list a short name (e.g. "DESPOTEK") while
+        # the datacard operative is named "IMMORTAL DESPOTEK". Fall back to suffix /
+        # substring match before giving up.
         op_name_upper = operative.get('name', '').upper()
         selection_groups = roster_selection.get(op_name_upper) or []
         op_exclusive_sets = roster_exclusive_sets.get(op_name_upper) if roster_exclusive_sets else None
+
+        if not selection_groups and roster_selection:
+            # Try matching where the selection key is a suffix word of the operative name
+            op_tokens = op_name_upper.split()
+            for sel_key, sel_val in roster_selection.items():
+                if not sel_val:
+                    continue
+                sel_key_upper = sel_key.upper()
+                sel_tokens = sel_key_upper.split()
+                # Match if selection key tokens are a trailing subsequence of operative name
+                if sel_tokens and op_tokens[-len(sel_tokens):] == sel_tokens:
+                    selection_groups = sel_val
+                    if roster_exclusive_sets:
+                        op_exclusive_sets = roster_exclusive_sets.get(sel_key) or op_exclusive_sets
+                    break
 
         # Build GMNotes
         try:
@@ -2276,9 +2432,8 @@ def save_individual_card_json(card_obj: dict, team_name: str, card_type: str, ca
     filename = f"{safe_name}.json"
     file_path = card_type_dir / filename
     
-    # Save JSON
-    with open(file_path, 'w', encoding='utf-8') as f:
-        json.dump(card_obj, f, indent=2)
+    # Save JSON only if content changed (preserve mtime for stable cache-bust).
+    write_json_if_changed(file_path, card_obj, ensure_ascii=True)
     
     # Get modification time
     file_mtime = os.path.getmtime(file_path)
@@ -2313,9 +2468,8 @@ def save_individual_token_json(token_obj: dict, team_name: str, token_index: int
     filename = f"{safe_name}.json"
     file_path = tokens_dir / filename
     
-    # Save JSON
-    with open(file_path, 'w', encoding='utf-8') as f:
-        json.dump(token_obj, f, indent=2)
+    # Save JSON only if content changed (preserve mtime for stable cache-bust).
+    write_json_if_changed(file_path, token_obj, ensure_ascii=True)
     
     # Get modification time
     file_mtime = os.path.getmtime(file_path)
@@ -2451,10 +2605,45 @@ def generate_team_tts_object(team_name: str, cards: list, lua_script: str, box_d
     # (legacy wrapper for in-the-wild boxes). See write_team_box_files docstring.
     clean_file = team_output_dir / f"{team_display_name}.json"
     output_file = team_output_dir / f"{team_display_name} Box.json"
+
+    # Compute canonical timestamp from input source mtimes (cards, assets,
+    # team data, embedded Lua). Stable across re-runs unless inputs actually
+    # change, so the box JSON content doesn't drift on each run.
+    def _max_input_mtime() -> float:
+        max_m = 0.0
+        team_dir = output_dir / team_name
+        for sub in ('cards', 'cardbox', 'tokens'):
+            d = team_dir / sub
+            if d.exists():
+                for f in d.rglob('*'):
+                    if f.is_file():
+                        try:
+                            max_m = max(max_m, f.stat().st_mtime)
+                        except OSError:
+                            pass
+        td = team_dir / 'data' / f'{team_name}-team-data.json'
+        if td.exists():
+            try:
+                max_m = max(max_m, td.stat().st_mtime)
+            except OSError:
+                pass
+        lua_dir = config_dir / 'defaults' / 'tts-script'
+        if lua_dir.exists():
+            for lua_f in lua_dir.glob('*.lua'):
+                try:
+                    max_m = max(max_m, lua_f.stat().st_mtime)
+                except OSError:
+                    pass
+        return max_m
+
+    src_mtime = _max_input_mtime()
+    if src_mtime <= 0:
+        # Fallback: preserve existing file's mtime if present, else current time.
+        src_mtime = clean_file.stat().st_mtime if clean_file.exists() else datetime.now(timezone.utc).timestamp()
+    actual_timestamp = datetime.fromtimestamp(src_mtime).strftime('%Y-%m-%dT%H:%M:%S')
     
     # Create bag with placeholder timestamp
     import os
-    placeholder_timestamp = "2000-01-01T00:00:00"
     placeholder_token_timestamp = ""
     
     bag_obj = create_bag(
@@ -2465,21 +2654,11 @@ def generate_team_tts_object(team_name: str, cards: list, lua_script: str, box_d
         texture_url,
         mesh_url,
         faction,
-        placeholder_timestamp,
+        actual_timestamp,
         placeholder_token_timestamp,
         box_description,
         repo_branch,
     )
-    
-    # Initial write to establish file mtime (used as the canonical timestamp
-    # baked into LuaScriptState below). Only writes the clean file — wrapper
-    # is regenerated on the final pass.
-    with open(clean_file, 'w', encoding='utf-8') as f:
-        json.dump(_bare_from_wrapper(bag_obj), f, indent=2)
-
-    # Get actual file timestamp
-    file_mtime = os.path.getmtime(clean_file)
-    actual_timestamp = datetime.fromtimestamp(file_mtime).strftime('%Y-%m-%dT%H:%M:%S')
 
     # Mirror MeshURL → ColliderURL (URLs already have correct per-file ?v= timestamps)
     def mirror_collider_urls(obj):
@@ -2495,7 +2674,8 @@ def generate_team_tts_object(team_name: str, cards: list, lua_script: str, box_d
 
     mirror_collider_urls(bag_obj)
 
-    # Recreate bag with actual timestamp
+    # Recreate bag with token timestamp filled in (token_timestamp resolved
+    # by load_token_bag earlier in the call).
     bag_obj = create_bag(
         team_display_name,
         team_tag,
@@ -2608,8 +2788,7 @@ def main():
     team_object_urls_data = generate_object_urls_json(URL_BRANCH)
     object_urls_data = generate_object_urls_summary(team_object_urls_data, URL_BRANCH)
     object_urls_file = PROJECT_ROOT / 'output' / 'team-urls.json'
-    with open(object_urls_file, 'w', encoding='utf-8') as f:
-        json.dump(object_urls_data, f, indent=2, ensure_ascii=False)
+    write_json_if_changed(object_urls_file, object_urls_data)
     logger.info(f"Saved summary team-urls.json with {len(object_urls_data)} teams")
 
     legacy_object_urls_file = PROJECT_ROOT / 'output' / 'object-urls.json'
@@ -2642,8 +2821,18 @@ def main():
     if manager_path:
         output_meta.update_file("_generic-tts-objects/Kill Team Card Boxes.json", manager_path, "kt-app", "7_generate_tts_objects")
 
-    # Save metadata
-    pipeline_meta.metadata["last_full_run"] = datetime.now(timezone.utc).isoformat()
+    # Save metadata. Only bump `last_full_run` when teams content actually
+    # changed during this run so the layers/kt-app/metadata.json stays stable
+    # on no-op re-runs.
+    prior_teams = json.loads(json.dumps(pipeline_meta.metadata.get("teams") or {}))
+    if pipeline_meta.metadata_file.exists():
+        try:
+            on_disk = json.loads(pipeline_meta.metadata_file.read_text(encoding='utf-8'))
+            prior_teams = on_disk.get("teams") or {}
+        except (OSError, json.JSONDecodeError):
+            pass
+    if prior_teams != pipeline_meta.metadata.get("teams"):
+        pipeline_meta.metadata["last_full_run"] = datetime.now(timezone.utc).isoformat()
     pipeline_meta.save_metadata()
     output_meta.save_metadata()
 
