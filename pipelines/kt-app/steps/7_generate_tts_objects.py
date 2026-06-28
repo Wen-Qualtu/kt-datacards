@@ -2308,10 +2308,23 @@ def _get_faction_rule_code(team: str, team_data: dict, operative: dict, team_con
         rule_name = rule_cfg.get('name', 'Faction Rule')
         options = options_override
 
+        # Build lookup of extracted option text by normalized name, so config
+        # options inherit text from the PDF extraction (step 3) without
+        # requiring rule text to be hand-maintained in YAML.
+        extracted_text_by_name: dict[str, str] = {}
+        for r in faction_rules:
+            for o in (r.get('options') or []):
+                key = (o.get('name') or '').strip().lower()
+                txt = (o.get('text') or '').strip()
+                if key and txt and key not in extracted_text_by_name:
+                    extracted_text_by_name[key] = txt
+
         lua_options = "{\n"
         for opt in options:
-            name_esc = opt.get('name', '').replace('"', '\\"')
-            text_esc = opt.get('text', '').replace('\\', '\\\\').replace('"', '\\"').replace("'", "\\'").replace('\n', '\\n')
+            opt_name = opt.get('name', '')
+            text = opt.get('text') or extracted_text_by_name.get(opt_name.strip().lower(), '')
+            name_esc = opt_name.replace('"', '\\"')
+            text_esc = text.replace('\\', '\\\\').replace('"', '\\"').replace("'", "\\'").replace('\n', '\\n')
             lua_options += f'    {{name = "{name_esc}", text = "{text_esc}"}},\n'
         lua_options += "}"
 
