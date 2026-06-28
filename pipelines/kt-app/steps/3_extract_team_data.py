@@ -1128,6 +1128,10 @@ class TeamDataExtractor:
         start_idx = 0
         rule_name_from_header = None
         for i, line in enumerate(lines):
+            # A numbered-option line (e.g. "4. STEALTHY") is the first option,
+            # never a card header — stop skipping before consuming it.
+            if re.match(r'^\d+\.\s+', line):
+                break
             # Skip lines that look like headers
             if any(header in line.upper() for header in ['FACTION RULE', 'CONTINUES ON OTHER SIDE', 'KILL TEAM']):
                 start_idx = i + 1
