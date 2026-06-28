@@ -1,6 +1,6 @@
 {
   "team": "imperial-navy-breachers",
-  "generated_at": "2026-05-05T17:43:08.605242+00:00",
+  "generated_at": "2026-06-27T12:57:28.657264+00:00",
   "datacards": [
     {
       "name": "NAVIS SERGEANT-AT-ARMS",
@@ -149,6 +149,34 @@
       ]
     },
     {
+      "name": "NAVIS C.A.T. UNIT",
+      "apl": 2,
+      "movement": "8″",
+      "save": "5+",
+      "wounds": 5,
+      "passive_abilities": [
+        {
+          "name": "Machine",
+          "description": "• This operative cannot be activated or perform actions if it’s within control range of an enemy operative, or if a friendly IMPERIAL NAVY BREACHER SURVEYOR operative has been incapacitated. The turning point can end even if this operative is still ready.\n• This operative cannot perform any actions other than Charge, Dash, Fall Back, Reposition and Spot.\n• It cannot retaliate, assist in a fight, climb or jump.\n• Whenever determining control of a marker, treat this operative’s APL stat as 1 lower. Note this isn’t a change to its APL stat, so any changes are cumulative with this.\n• Whenever this operative has a Conceal order and is in cover, it cannot be selected as a valid target, taking precedence over all other rules (e.g. Seek, Vantage terrain) except being within 2\".\n• Whenever determining what's visible to this operative, draw the line from any part of the miniature."
+        },
+        {
+          "name": "Expendable",
+          "description": "This operative is ignored for your opponent’s kill/elimination op (when it’s incapacitated, and when determining your starting number of operatives). It’s also ignored for victory conditions and scoring VPs if either require operatives to ‘escape’, ‘survive’ or be incapacitated by enemy operatives (if it escapes/survives/ is incapacitated, determining how many operatives must escape/survive/be incapacitated, etc.)."
+        }
+      ],
+      "unique_actions": [
+        {
+          "name": "SPOT \b (1AP)",
+          "description": "• Select one enemy operative visible to this operative. Until the end of the turning point, until that enemy operative is no longer visible to this operative or until this operative performs this action again (whichever comes first), whenever a friendly IMPERIAL NAVY BREACHER operative is shooting that enemy operative, you can use this effect. If you do:\n• That friendly operative’s ranged weapons have the Seek Light weapon rule.\n• That enemy operative cannot be obscured.\n• This operative cannot perform this action while within control range of an enemy operative. NAVIS C.A.T. UNIT"
+        }
+      ],
+      "keywords": [
+        "IMPERIAL NAVY BREACHER",
+        "IMPERIUM",
+        "C.A.T. UNIT"
+      ]
+    },
+    {
       "name": "NAVIS ENDURANT",
       "apl": 2,
       "movement": "4″",
@@ -196,6 +224,34 @@
         "IMPERIAL NAVY BREACHER",
         "IMPERIUM",
         "ENDURANT"
+      ]
+    },
+    {
+      "name": "NAVIS GHEISTSKULL",
+      "apl": 2,
+      "movement": "8″",
+      "save": "5+",
+      "wounds": 5,
+      "passive_abilities": [
+        {
+          "name": "Machine",
+          "description": "• This operative cannot perform any actions other than Boost, Charge, Dash, Fall Back and Reposition.\n• It cannot retaliate or assist in a fight.\n• Whenever determining control of a marker, treat this operative’s APL stat as 1 lower. Note this isn’t a change to its APL stat, so any changes are cumulative with this.\n• Whenever this operative has a Conceal order and is in cover, it cannot be selected as a valid target, taking precedence over all other rules (e.g. Seek, Vantage terrain) except being within 2\"."
+        },
+        {
+          "name": "Expendable",
+          "description": "This operative is ignored for your opponent’s kill/elimination op (when it’s incapacitated, and when determining your starting number of operatives). It’s also ignored for victory conditions and scoring VPs if either require operatives to ‘escape’, ‘survive’ or be incapacitated by enemy operatives (if it escapes/survives/is incapacitated, determining how many operatives must escape/survive/be incapacitated, etc.)."
+        }
+      ],
+      "unique_actions": [
+        {
+          "name": "BOOST\b (1AP)",
+          "description": "• Until the end of the activation, add 6\" to this operative’s Move stat.\n• This operative cannot perform this action more than once per battle, and cannot perform it during the first turning point."
+        }
+      ],
+      "keywords": [
+        "IMPERIAL NAVY BREACHER",
+        "IMPERIUM",
+        "GHEISTSKULL"
       ]
     },
     {

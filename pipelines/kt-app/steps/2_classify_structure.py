@@ -246,44 +246,48 @@ def is_four_card_special_case(team_name: str, text: str) -> bool:
 
 class PageClassifier:
     """Classifies datacard pages as fronts or backs and extracts operative names"""
-    
+
     @staticmethod
-    def is_front_page(pdf_path: Path) -> bool:
+    def has_stat_header(pdf_path: Path) -> bool:
         """
-        Check if a page is a front-side datacard (has the NAME weapon header row).
-        
-        Front pages have the weapon table header: "NAME ATK HIT DMG WR" or "NAME A HIT D WR"
+        Check if a page carries the operative stat header (APL/WOUNDS/SAVE/MOVE)
+        in the top region. This is the primary datacard front-page signal:
+        every operative datacard front prints this block, including "small"
+        operatives without a weapons table (e.g. Navis C.A.T. Unit, Navis
+        Gheistskull, Spectre Vox-Relay Beacon, Inquisitorial Tome-Skull).
+
+        Back pages of a normal operative also carry this header, so the caller
+        must disambiguate front vs. back using sequence context (the back
+        repeats the same operative name as its front — see Phase 1 in
+        `_classify_card_type`).
         """
         try:
             doc = fitz.open(pdf_path)
             if len(doc) == 0:
                 return False
-            
+
             page = doc[0]
             blocks = page.get_text("dict").get("blocks", [])
-            
+
             for block in blocks:
-                if block.get("type") != 0:  # Only text blocks
+                if block.get("type") != 0:
                     continue
-                
                 bbox = block["bbox"]
-                if bbox[1] < 50:  # Header is typically in top area
+                if bbox[1] < 50:
                     text = ""
                     for line in block.get("lines", []):
                         for span in line.get("spans", []):
                             text += span.get("text", "")
-                    
-                    # Header can be "NAME ATK HIT DMG WR" or "NAME A HIT D WR"
-                    if "NAME" in text and "HIT" in text and "WR" in text:
+                    if all(k in text for k in ("APL", "WOUNDS", "SAVE", "MOVE")):
                         doc.close()
                         return True
-            
+
             doc.close()
             return False
         except Exception as e:
-            logger.warning(f"Error checking front page for {pdf_path}: {e}")
+            logger.warning(f"Error checking stat header for {pdf_path}: {e}")
             return False
-    
+
     @staticmethod
     def has_multi_card_pattern(pdf_path: Path) -> bool:
         """
@@ -406,12 +410,16 @@ class PageClassifier:
                     
                     # Name should be uppercase, 3-50 chars
                     if text.isupper() and 3 <= len(text) <= 50:
-                        # Clean up OCR artifacts and trailing stats
-                        # Remove patterns like: 26"5+, 26'5+, 265+, etc. (common OCR errors from stat lines)
+                        # Clean up OCR artifacts and stat blobs glued to the name.
+                        # On back pages the stat header (e.g. 6"3+10) sometimes
+                        # extracts in the same block as the operative name —
+                        # strip both leading and trailing stat patterns.
                         import re
-                        name = re.sub(r'\d+["\']?\d+\+?$', '', text).strip()  # Remove trailing number patterns
-                        name = re.sub(r'\d{2,}["\']?\d+[+\-]?$', '', name).strip()  # Remove stat patterns like 26"5+
-                        name = name.rstrip('0123456789+"\'-').strip()  # Final cleanup
+                        name = re.sub(r'\d+["\']?\d+\+?$', '', text).strip()  # trailing
+                        name = re.sub(r'\d{2,}["\']?\d+[+\-]?$', '', name).strip()  # trailing (alt)
+                        name = re.sub(r'^\d+["\']?\d+\+?\d*', '', name).strip()  # leading stat blob (MOVE"SAVE+WOUNDS)
+                        name = name.rstrip('0123456789+"\'-').strip()
+                        name = name.lstrip('0123456789+"\'-').strip()
                         
                         if len(name) >= 3:
                             doc.close()
@@ -683,7 +691,23 @@ class StructureClassifier:
             return None
         
         structure = {"team": self.team}
-        
+
+        # Preserve previously-extracted token metadata across re-runs.
+        # `_extract_token_metadata` depends on TokenExtractor which is not always
+        # importable (optional dependency); without preservation, a re-run on an
+        # env that can't import it would silently wipe the `tokens` field.
+        existing_tokens_by_name: Dict[str, Dict] = {}
+        existing_structure_file = CLASSIFIED_DIR / self.team / "structure.json"
+        if existing_structure_file.exists():
+            try:
+                with open(existing_structure_file, 'r', encoding='utf-8') as f:
+                    prev = json.load(f)
+                for prev_entity in prev.get("token_guide", []) or []:
+                    if "tokens" in prev_entity and prev_entity.get("name"):
+                        existing_tokens_by_name[prev_entity["name"]] = prev_entity["tokens"]
+            except Exception as e:
+                logger.debug(f"  Could not load previous tokens for {self.team}: {e}")
+
         # Card types to process (matching CardType enum from Step 1)
         card_types = [
             ("datacards", "datacards"),
@@ -699,9 +723,16 @@ class StructureClassifier:
         for file_prefix, key in card_types:
             result = self._classify_card_type(file_prefix, key)
             if result:
-                # Extract token metadata for token guides
                 if key == "token_guide":
-                    self._extract_token_metadata(result)
+                    # Reattach previously-extracted tokens by entity name
+                    for entity in result:
+                        prev = existing_tokens_by_name.get(entity.get("name"))
+                        if prev is not None:
+                            entity["tokens"] = prev
+                    # Only run extraction for entities that still have no tokens
+                    pending = [e for e in result if "tokens" not in e]
+                    if pending:
+                        self._extract_token_metadata(pending)
                 
                 structure[key] = result
                 total_entities += len(result)
@@ -793,13 +824,21 @@ class StructureClassifier:
         
         first_pages = []
         first_positions = set()
-        
+        last_front_name = None  # tracks last accepted datacard front name (for back-page disambiguation)
+
         for pos, page_file in enumerate(all_page_files):
             if is_datacard_type:
-                # Datacards: only fronts are first pages
-                if not self.page_classifier.is_front_page(page_file):
+                # Datacards: a front is any page that carries the stat header
+                # (APL/WOUNDS/SAVE/MOVE) AND whose top-left operative name
+                # differs from the previously accepted front. Backs repeat the
+                # front's name and so are filtered out by the name check.
+                if not self.page_classifier.has_stat_header(page_file):
                     continue
-                name = self.page_classifier.extract_operative_name(page_file)
+                candidate_name = self.page_classifier.extract_operative_name(page_file)
+                if not candidate_name or candidate_name == last_front_name:
+                    continue
+                name = candidate_name
+                last_front_name = name
             elif is_operative_selection:
                 # Operative selection: use default name based on team
                 team_name = self.team.replace('-', ' ').title()

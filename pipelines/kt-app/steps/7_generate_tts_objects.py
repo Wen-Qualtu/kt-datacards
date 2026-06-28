@@ -327,6 +327,53 @@ def generate_urls_json_v3(repo_branch: str = URL_BRANCH):
     return all_entries
 
 
+def _sha256_of_files(paths) -> str:
+    """Combined SHA-256 hex of one or more files (order-sensitive)."""
+    import hashlib
+    h = hashlib.sha256()
+    for p in paths:
+        try:
+            with open(p, 'rb') as f:
+                for chunk in iter(lambda: f.read(65536), b''):
+                    h.update(chunk)
+        except Exception:
+            h.update(b"<missing>")
+        h.update(b"\x00")  # boundary
+    return h.hexdigest()
+
+
+def _load_prev_team_urls(output_dir: Path, team: str) -> dict:
+    """Load the previous object-urls.json for a team (empty dict if absent)."""
+    team_file = output_dir / team / f"{team}-object-urls.json"
+    if not team_file.exists():
+        return {}
+    try:
+        with open(team_file, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except Exception:
+        return {}
+
+
+def _git_unchanged_from_head(file_path: Path) -> bool | None:
+    """Return True if file content matches git HEAD, False if it differs,
+    or None if git is unavailable / file is not tracked. Used only as a
+    bootstrap heuristic when prior entries lack a `hash` field."""
+    try:
+        import subprocess
+        rel = file_path.relative_to(PROJECT_ROOT).as_posix()
+        r = subprocess.run(
+            ["git", "-C", str(PROJECT_ROOT), "diff", "--quiet", "HEAD", "--", rel],
+            capture_output=True
+        )
+        if r.returncode == 0:
+            return True
+        if r.returncode == 1:
+            return False
+        return None
+    except Exception:
+        return None
+
+
 def generate_object_urls_json(repo_branch: str = URL_BRANCH):
     """
     Generate team detail URL metadata for TTS update checks.
@@ -335,13 +382,76 @@ def generate_object_urls_json(repo_branch: str = URL_BRANCH):
     Each team has:
     - box: The TTS save JSON file with modified timestamp
     - objects: Array of all assets (cards, cardbox, tokens, lua script) with URLs and timestamps
+
+    Cache-busting policy: each entry stores a content hash. When the underlying
+    file(s) haven't changed (hash matches the previously-saved entry), the
+    previous `url` and `modified` are reused verbatim so downstream consumers
+    (TTS update checks) only see churn for objects that actually changed.
+    Legacy entries without `hash` use a git HEAD comparison as a bootstrap
+    heuristic — preserve on clean, regenerate on real diff.
     """
     output_dir = PROJECT_ROOT / 'output'
     config_dir = PROJECT_ROOT / 'config'
     base_url = f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/{repo_branch}/output"
     
     teams_data = {}
-    
+
+    def _reuse_or_new_single(prev_entry, file_path, url, entry):
+        """Single-file entry: reuse prev url/modified if hash matches."""
+        new_hash = _sha256_of_files([file_path])
+        prev_hash = (prev_entry or {}).get("hash")
+        if prev_entry and prev_hash == new_hash:
+            entry["url"] = prev_entry.get("url", url)
+            entry["modified"] = prev_entry.get("modified")
+        elif prev_entry and prev_hash is None:
+            git_clean = _git_unchanged_from_head(file_path)
+            if git_clean is False:
+                mtime = file_path.stat().st_mtime
+                entry["url"] = f"{url}?v={int(mtime)}"
+                entry["modified"] = datetime.fromtimestamp(mtime, tz=timezone.utc).isoformat()
+            else:
+                entry["url"] = prev_entry.get("url", url)
+                entry["modified"] = prev_entry.get("modified")
+        else:
+            mtime = file_path.stat().st_mtime
+            entry["url"] = f"{url}?v={int(mtime)}"
+            entry["modified"] = datetime.fromtimestamp(mtime, tz=timezone.utc).isoformat()
+        entry["hash"] = new_hash
+        return entry
+
+    def _reuse_or_new_pair(prev_entry, file_a, file_b, url_a, url_b, key_a, key_b, entry):
+        """Two-file entry (mesh/texture, front/back): reuse if combined hash matches."""
+        new_hash = _sha256_of_files([file_a, file_b])
+        prev_hash = (prev_entry or {}).get("hash")
+
+        def _emit_new():
+            mtime_a = file_a.stat().st_mtime
+            mtime_b = file_b.stat().st_mtime
+            entry[key_a] = f"{url_a}?v={int(mtime_a)}"
+            entry[key_b] = f"{url_b}?v={int(mtime_b)}"
+            entry["modified"] = datetime.fromtimestamp(
+                max(mtime_a, mtime_b), tz=timezone.utc
+            ).isoformat()
+
+        def _emit_prev():
+            entry[key_a] = prev_entry.get(key_a, url_a)
+            entry[key_b] = prev_entry.get(key_b, url_b)
+            entry["modified"] = prev_entry.get("modified")
+
+        if prev_entry and prev_hash == new_hash:
+            _emit_prev()
+        elif prev_entry and prev_hash is None:
+            clean_a = _git_unchanged_from_head(file_a)
+            clean_b = _git_unchanged_from_head(file_b)
+            if clean_a is False or clean_b is False:
+                _emit_new()
+            else:
+                _emit_prev()
+        else:
+            _emit_new()
+        entry["hash"] = new_hash
+        return entry
+
     # Scan all team directories
     for team_dir in sorted(output_dir.iterdir()):
         if not team_dir.is_dir():
@@ -349,7 +459,15 @@ def generate_object_urls_json(repo_branch: str = URL_BRANCH):
         
         team = team_dir.name
         team_display_name = team.replace('-', ' ').title()
-        
+
+        # Load previous entries for change-detection
+        prev_data = _load_prev_team_urls(output_dir, team)
+        prev_box = prev_data.get("box") or None
+        prev_objs_by_key = {
+            (o.get("type"), o.get("name")): o
+            for o in (prev_data.get("objects") or [])
+        }
+
         # Initialize team entry
         team_entry = {
             "team": team,
@@ -362,26 +480,16 @@ def generate_object_urls_json(repo_branch: str = URL_BRANCH):
         tts_objects_dir = team_dir / 'tts_objects'
         box_file = tts_objects_dir / f"{team_display_name}.json"
         if box_file.exists():
-            box_mtime = box_file.stat().st_mtime
-            box_modified = datetime.fromtimestamp(box_mtime, tz=timezone.utc).isoformat()
-            box_url = f"{base_url}/{team}/tts_objects/{box_file.name.replace(' ', '%20')}"
-            team_entry["box"] = {
-                "url": f"{box_url}?v={int(box_mtime)}",
-                "modified": box_modified
-            }
+            box_base = f"{base_url}/{team}/tts_objects/{box_file.name.replace(' ', '%20')}"
+            team_entry["box"] = _reuse_or_new_single(prev_box, box_file, box_base, {})
         
         # Add Lua script
         lua_script_path = config_dir / "defaults" / "tts-script" / "tts-update-rules-in-box-script.lua"
         if lua_script_path.exists():
-            lua_mtime = lua_script_path.stat().st_mtime
-            lua_modified = datetime.fromtimestamp(lua_mtime, tz=timezone.utc).isoformat()
-            lua_url = f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/{repo_branch}/config/defaults/tts-script/tts-update-rules-in-box-script.lua"
-            team_entry["objects"].append({
-                "type": "lua-script",
-                "name": "update-script",
-                "url": f"{lua_url}?v={int(lua_mtime)}",
-                "modified": lua_modified
-            })
+            lua_base = f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/{repo_branch}/config/defaults/tts-script/tts-update-rules-in-box-script.lua"
+            entry = {"type": "lua-script", "name": "update-script"}
+            prev = prev_objs_by_key.get(("lua-script", "update-script"))
+            team_entry["objects"].append(_reuse_or_new_single(prev, lua_script_path, lua_base, entry))
         
         # Add cardbox assets (mesh and texture)
         cardbox_dir = team_dir / 'cardbox'
@@ -394,16 +502,10 @@ def generate_object_urls_json(repo_branch: str = URL_BRANCH):
                 else:
                     continue
                 
-                mtime = asset_file.stat().st_mtime
-                modified = datetime.fromtimestamp(mtime, tz=timezone.utc).isoformat()
-                asset_url = f"{base_url}/{team}/cardbox/{asset_file.name}"
-                
-                team_entry["objects"].append({
-                    "type": obj_type,
-                    "name": asset_file.stem,
-                    "url": f"{asset_url}?v={int(mtime)}",
-                    "modified": modified
-                })
+                asset_base = f"{base_url}/{team}/cardbox/{asset_file.name}"
+                entry = {"type": obj_type, "name": asset_file.stem}
+                prev = prev_objs_by_key.get((obj_type, asset_file.stem))
+                team_entry["objects"].append(_reuse_or_new_single(prev, asset_file, asset_base, entry))
         
         # Add tokens
         tokens_dir = team_dir / 'tokens'
@@ -413,21 +515,14 @@ def generate_object_urls_json(repo_branch: str = URL_BRANCH):
                 if not token_png.exists():
                     continue
                 
-                obj_mtime = token_obj.stat().st_mtime
-                png_mtime = token_png.stat().st_mtime
-                max_mtime = max(obj_mtime, png_mtime)
-                modified = datetime.fromtimestamp(max_mtime, tz=timezone.utc).isoformat()
-                
                 obj_url = f"{base_url}/{team}/tokens/{token_obj.name}"
                 png_url = f"{base_url}/{team}/tokens/{token_png.name}"
-                
-                team_entry["objects"].append({
-                    "type": "token",
-                    "name": token_obj.stem,
-                    "mesh_url": f"{obj_url}?v={int(obj_mtime)}",
-                    "texture_url": f"{png_url}?v={int(png_mtime)}",
-                    "modified": modified
-                })
+                entry = {"type": "token", "name": token_obj.stem}
+                prev = prev_objs_by_key.get(("token", token_obj.stem))
+                team_entry["objects"].append(_reuse_or_new_pair(
+                    prev, token_obj, token_png, obj_url, png_url,
+                    "mesh_url", "texture_url", entry
+                ))
             
             # Add token bag mesh and icon
             tokenbag_dir = tokens_dir / 'tokenbag'
@@ -436,21 +531,14 @@ def generate_object_urls_json(repo_branch: str = URL_BRANCH):
                 bag_icon = tokenbag_dir / f'{team}-token-bag-icon.png'
                 
                 if bag_mesh.exists() and bag_icon.exists():
-                    mesh_mtime = bag_mesh.stat().st_mtime
-                    icon_mtime = bag_icon.stat().st_mtime
-                    max_mtime = max(mesh_mtime, icon_mtime)
-                    modified = datetime.fromtimestamp(max_mtime, tz=timezone.utc).isoformat()
-                    
                     mesh_url = f"{base_url}/{team}/tokens/tokenbag/{bag_mesh.name}"
                     icon_url = f"{base_url}/{team}/tokens/tokenbag/{bag_icon.name}"
-                    
-                    team_entry["objects"].append({
-                        "type": "token-bag",
-                        "name": f"{team}-token-bag",
-                        "mesh_url": f"{mesh_url}?v={int(mesh_mtime)}",
-                        "icon_url": f"{icon_url}?v={int(icon_mtime)}",
-                        "modified": modified
-                    })
+                    entry = {"type": "token-bag", "name": f"{team}-token-bag"}
+                    prev = prev_objs_by_key.get(("token-bag", f"{team}-token-bag"))
+                    team_entry["objects"].append(_reuse_or_new_pair(
+                        prev, bag_mesh, bag_icon, mesh_url, icon_url,
+                        "mesh_url", "icon_url", entry
+                    ))
         
         # Add card images
         cards_dir = team_dir / 'cards'
@@ -484,21 +572,15 @@ def generate_object_urls_json(repo_branch: str = URL_BRANCH):
                     if not front_file:
                         continue
                     
-                    front_mtime = front_file.stat().st_mtime
-                    back_mtime = back_file.stat().st_mtime if back_file else front_mtime
-                    max_mtime = max(front_mtime, back_mtime)
-                    modified = datetime.fromtimestamp(max_mtime, tz=timezone.utc).isoformat()
-                    
                     front_url = f"{base_url}/{team}/cards/{card_type}/{front_file.name}"
                     back_url = f"{base_url}/{team}/cards/{card_type}/{back_file.name}" if back_file else front_url
-                    
-                    team_entry["objects"].append({
-                        "type": card_type,
-                        "name": base_name,
-                        "face_url": f"{front_url}?v={int(front_mtime)}",
-                        "back_url": f"{back_url}?v={int(back_mtime)}",
-                        "modified": modified
-                    })
+                    effective_back = back_file if back_file else front_file
+                    entry = {"type": card_type, "name": base_name}
+                    prev = prev_objs_by_key.get((card_type, base_name))
+                    team_entry["objects"].append(_reuse_or_new_pair(
+                        prev, front_file, effective_back, front_url, back_url,
+                        "face_url", "back_url", entry
+                    ))
         
         # Add team to result if it has a box
         if team_entry["box"]:
