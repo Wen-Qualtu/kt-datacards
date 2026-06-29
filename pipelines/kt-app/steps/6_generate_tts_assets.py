@@ -152,6 +152,10 @@ class TTSAssetGenerator:
                     # Copy PNG texture files
                     for png_file in v2_token_dir.glob(f'{team}-*.png'):
                         dest_file = team_tokens_dir / png_file.name
+                        # Preserve PNGs that step 5 already produced (e.g. custom-token
+                        # overrides); only copy when no step-5 output exists yet.
+                        if dest_file.exists():
+                            continue
                         try:
                             shutil.copy2(png_file, dest_file)
                             copied_png_count += 1
