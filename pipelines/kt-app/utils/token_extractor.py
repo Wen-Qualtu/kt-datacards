@@ -1358,11 +1358,17 @@ class TokenExtractor:
     
     def find_faction_rules_pdf(self, team_name: str) -> Path | None:
         """Find the faction rules PDF for a team."""
-        processed_dir = Path("processed") / team_name
-        if processed_dir.exists():
-            pdf_files = list(processed_dir.glob(f"{team_name}-faction-rules.pdf"))
-            if pdf_files:
-                return pdf_files[0]
+        # Step 1 (refactor) stores PDFs under layers/kt-app/processed/; fall back to
+        # the legacy root-level processed/ directory used by the warcom pipeline.
+        candidate_dirs = [
+            Path("layers/kt-app/processed") / team_name,
+            Path("processed") / team_name,
+        ]
+        for processed_dir in candidate_dirs:
+            if processed_dir.exists():
+                pdf_files = list(processed_dir.glob(f"{team_name}-faction-rules.pdf"))
+                if pdf_files:
+                    return pdf_files[0]
         return None
     
     def _extract_team_from_path(self, image_path: Path) -> str:
@@ -2851,6 +2857,7 @@ class TokenExtractor:
 
         # Copy custom tokens from config/teams/{team}/custom-tokens/
         custom_tokens_dir = Path(f"config/teams/{team_name}/custom-tokens")
+        custom_base_names: set[str] = set()
         if custom_tokens_dir.exists():
             for custom_token_path in custom_tokens_dir.glob("*.png"):
                 if custom_token_path.name.startswith("_"):
@@ -2861,7 +2868,27 @@ class TokenExtractor:
                 team_prefix = f"{team_name}-"
                 if filename.startswith(team_prefix):
                     filename = filename[len(team_prefix):]
-                
+
+                base_safe = filename[:-4] if filename.lower().endswith('.png') else filename
+                custom_base_names.add(base_safe)
+
+                # Drop any auto-extracted siblings that share this custom base, including
+                # numeric-suffixed misdetections like "pain_2". The custom token is
+                # authoritative; mistaken duplicates from the marker guide should not survive.
+                survivors: List[Dict] = []
+                for tok in extracted:
+                    tok_safe = tok.get('safe_name') or tok.get('path', Path('')).stem
+                    if tok_safe == base_safe or re.fullmatch(rf"{re.escape(base_safe)}_\d+", tok_safe or ''):
+                        try:
+                            tok_path = tok.get('path')
+                            if isinstance(tok_path, Path) and tok_path.exists() and tok_path != (output_dir / filename):
+                                tok_path.unlink()
+                        except Exception:
+                            pass
+                        continue
+                    survivors.append(tok)
+                extracted = survivors
+
                 dest_path = output_dir / filename
                 shutil.copy2(custom_token_path, dest_path)
                 
