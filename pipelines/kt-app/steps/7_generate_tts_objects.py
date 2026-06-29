@@ -124,9 +124,118 @@ def _bare_from_wrapper(bag_obj: dict) -> dict:
     return bag_obj
 
 
+# Volatile timestamp keys inside LuaScriptState JSON blobs. Stamping these on
+# every run would otherwise cascade-bust every team's box hash (and thus its
+# object-urls.json entry) even when nothing meaningful changed.
+_VOLATILE_LUA_STATE_KEYS = ("lastUpdate", "lastCardUpdate", "lastTokenUpdate")
+
+
+def _strip_volatile_lua_states(obj) -> None:
+    """In-place: walk the object tree and blank volatile timestamp values in
+    every parsed LuaScriptState dict. Leaves non-dict / unparseable
+    LuaScriptState strings untouched.
+    """
+    if isinstance(obj, dict):
+        lss = obj.get("LuaScriptState")
+        if isinstance(lss, str) and lss:
+            try:
+                state = json.loads(lss)
+            except (json.JSONDecodeError, TypeError):
+                state = None
+            if isinstance(state, dict):
+                touched = False
+                for k in _VOLATILE_LUA_STATE_KEYS:
+                    if k in state:
+                        state[k] = ""
+                        touched = True
+                if touched:
+                    obj["LuaScriptState"] = json.dumps(state)
+        for v in obj.values():
+            _strip_volatile_lua_states(v)
+    elif isinstance(obj, list):
+        for v in obj:
+            _strip_volatile_lua_states(v)
+
+
+def _normalize_for_compare(data, top_level_volatile_keys=()) -> str | None:
+    """Return a deterministic JSON repr with volatile fields blanked, or None
+    if `data` can't be parsed. Accepts a dict/list, raw bytes, or a JSON
+    string.
+    """
+    import copy
+
+    if isinstance(data, (bytes, bytearray)):
+        try:
+            data = json.loads(data.decode("utf-8-sig"))
+        except (json.JSONDecodeError, UnicodeDecodeError):
+            return None
+    elif isinstance(data, str):
+        try:
+            data = json.loads(data)
+        except json.JSONDecodeError:
+            return None
+    snap = copy.deepcopy(data)
+    _strip_volatile_lua_states(snap)
+    if isinstance(snap, dict):
+        for k in top_level_volatile_keys:
+            if k in snap:
+                snap[k] = ""
+    return json.dumps(snap, sort_keys=True)
+
+
+def _write_json_stable(path: Path, data, *, indent: int = 2,
+                       ensure_ascii: bool = True,
+                       top_level_volatile_keys: tuple = (),
+                       prior_bytes: bytes | None = None,
+                       prior_mtime: float | None = None) -> bool:
+    """Write `data` as JSON to `path`. If the prior file's normalized content
+    matches the new content, restore the prior bytes AND mtime so the file is
+    byte-identical to the previous generation. Returns True when the prior
+    file was restored, False otherwise.
+
+    If `prior_bytes` / `prior_mtime` are provided, they're used as the baseline
+    (useful when caller already wrote a placeholder over the real prior file).
+    Otherwise the function reads the file at `path` before writing.
+
+    Downstream cache busters (sha256 of file bytes, mtime-based ?v= params)
+    therefore stay quiet when nothing meaningful changed.
+    """
+    if prior_bytes is None and path.exists():
+        try:
+            prior_bytes = path.read_bytes()
+            prior_mtime = path.stat().st_mtime
+        except OSError:
+            prior_bytes = None
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=indent, ensure_ascii=ensure_ascii)
+
+    if prior_bytes is None:
+        return False  # no prior — nothing to preserve
+
+    prior_norm = _normalize_for_compare(prior_bytes, top_level_volatile_keys)
+    new_norm = _normalize_for_compare(data, top_level_volatile_keys)
+    if prior_norm is None or new_norm is None or prior_norm != new_norm:
+        return False  # meaningful change — keep new bytes
+
+    # Content unchanged — restore prior bytes and mtime.
+    path.write_bytes(prior_bytes)
+    if prior_mtime is not None:
+        import os
+        os.utime(path, (prior_mtime, prior_mtime))
+    return True
+
+
 def write_team_box_files(bag_obj: dict, team_output_dir: Path, team_display_name: str,
-                         intermediate_lua: str = "") -> tuple[Path, Path]:
+                         intermediate_lua: str = "",
+                         clean_prior_bytes: bytes | None = None,
+                         clean_prior_mtime: float | None = None) -> tuple[Path, Path]:
     """Write both the clean bare object and the slim legacy wrapper.
+
+    If `clean_prior_bytes`/`clean_prior_mtime` are provided, they're used as
+    the baseline for byte-stable preservation of the clean file (since the
+    caller may have already written a placeholder over the real prior file).
 
     Returns: (clean_path, wrapper_path)
     """
@@ -138,8 +247,10 @@ def write_team_box_files(bag_obj: dict, team_output_dir: Path, team_display_name
     wrapper_path = team_output_dir / f"{team_display_name} Box.json"
 
     # Clean: full bare object exactly as TTS expects via spawnObjectJSON.
-    with open(clean_path, 'w', encoding='utf-8') as f:
-        json.dump(inner, f, indent=2)
+    _write_json_stable(
+        clean_path, inner, indent=2, ensure_ascii=True,
+        prior_bytes=clean_prior_bytes, prior_mtime=clean_prior_mtime,
+    )
 
     # Wrapper: ruthlessly slimmed copy. Sole purpose is to be a one-click hop
     # to the clean file. We strip:
@@ -161,8 +272,7 @@ def write_team_box_files(bag_obj: dict, team_output_dir: Path, team_display_name
     wrapper = _empty_save_wrapper()
     wrapper["SaveName"] = inner.get("Nickname") or team_display_name
     wrapper["ObjectStates"] = [slim_inner]
-    with open(wrapper_path, 'w', encoding='utf-8') as f:
-        json.dump(wrapper, f, indent=2)
+    _write_json_stable(wrapper_path, wrapper, indent=2, ensure_ascii=True)
 
     return clean_path, wrapper_path
 
@@ -2614,7 +2724,16 @@ def generate_team_tts_object(team_name: str, cards: list, lua_script: str, box_d
     
     # Initial write to establish file mtime (used as the canonical timestamp
     # baked into LuaScriptState below). Only writes the clean file — wrapper
-    # is regenerated on the final pass.
+    # is regenerated on the final pass. Capture the prior generation's bytes
+    # first so write_team_box_files can byte-stably preserve unchanged content.
+    clean_prior_bytes: bytes | None = None
+    clean_prior_mtime: float | None = None
+    if clean_file.exists():
+        try:
+            clean_prior_bytes = clean_file.read_bytes()
+            clean_prior_mtime = clean_file.stat().st_mtime
+        except OSError:
+            clean_prior_bytes = None
     with open(clean_file, 'w', encoding='utf-8') as f:
         json.dump(_bare_from_wrapper(bag_obj), f, indent=2)
 
@@ -2658,7 +2777,10 @@ def generate_team_tts_object(team_name: str, cards: list, lua_script: str, box_d
     embed_datacard_stats(bag_obj, team_name, output_dir, config_dir, single_object_updater_script)
     
     # Write final versions: clean (full bare) + slim wrapper.
-    write_team_box_files(bag_obj, team_output_dir, team_display_name, intermediate_lua)
+    write_team_box_files(
+        bag_obj, team_output_dir, team_display_name, intermediate_lua,
+        clean_prior_bytes=clean_prior_bytes, clean_prior_mtime=clean_prior_mtime,
+    )
     
     # Copy preview image
     copy_preview_image(team_name, team_display_name, config_dir, output_dir)
