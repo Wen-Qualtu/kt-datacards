@@ -1568,20 +1568,52 @@ class TeamDataExtractor:
     def save(self, team_data: Dict) -> bool:
         """
         Save team data to output file.
-        
+
+        Writes byte-stably: if the previous file's content (excluding the
+        volatile `generated_at` top-level timestamp) matches what we're about
+        to write, the prior file's bytes AND mtime are restored. This stops
+        downstream cache busters from spuriously bumping when nothing
+        meaningful changed.
+
         Args:
             team_data: Team data dict
-            
+
         Returns:
             True if saved successfully
         """
         # Create output directory
         self.output_path.parent.mkdir(parents=True, exist_ok=True)
-        
+
         try:
+            prior_bytes = None
+            prior_mtime = None
+            if self.output_path.exists():
+                try:
+                    prior_bytes = self.output_path.read_bytes()
+                    prior_mtime = self.output_path.stat().st_mtime
+                except OSError:
+                    prior_bytes = None
+
             with open(self.output_path, 'w', encoding='utf-8') as f:
                 json.dump(team_data, f, indent=2, ensure_ascii=False)
-            
+
+            if prior_bytes is not None:
+                try:
+                    import copy as _copy
+                    prior_obj = json.loads(prior_bytes.decode('utf-8-sig'))
+                    prior_snap = _copy.deepcopy(prior_obj)
+                    new_snap = _copy.deepcopy(team_data)
+                    for snap in (prior_snap, new_snap):
+                        if isinstance(snap, dict) and 'generated_at' in snap:
+                            snap['generated_at'] = ''
+                    if json.dumps(prior_snap, sort_keys=True) == json.dumps(new_snap, sort_keys=True):
+                        # Content unchanged — restore prior bytes + mtime.
+                        self.output_path.write_bytes(prior_bytes)
+                        import os
+                        os.utime(self.output_path, (prior_mtime, prior_mtime))
+                except (json.JSONDecodeError, UnicodeDecodeError, OSError):
+                    pass  # fall through and keep freshly-written file
+
             logger.info(f"  Saved: {self.output_path}")
             return True
         except Exception as e:
