@@ -27,20 +27,23 @@ new_implementation/
       extracted/                  per-card split PDFs
       structure/{team}-structure.json
     integration/                  SHARED, source-agnostic merge point (COMMITTED)
-      metadata.json               run-level pipeline metadata (all teams)
-      output-metadata.json        per-file hash/timestamp metadata (all teams)
+      pipeline-state.json         global index: teams -> state path + last_updated, last_run
       {team}/                     one folder per team
         {team}-{type}-{name}.pdf  classified single-card PDFs (no -front/-back postfix)
         manifest.json             entity grouping (copy of structure manifest)
         content/{team}-content.json
+        {team}-pipeline-state.json step completion + output hashes (change detection)
         artwork/                  lore art jpegs + {team}-artwork-metadata.json
           icons/                  token, token-transparent, portrait, landscape
   output/{team}/...               final assets (cards, tokens, dice, cardbox, data)
 ```
 
 Key facts:
-- **Per-team** integration folders. Run-level metadata (`metadata.json`,
-  `output-metadata.json`) lives at the integration **root**, not per team.
+- **Per-team** integration folders. Each team's run state (step completion + output
+  hashes) lives in `{team}/{team}-pipeline-state.json` — rewritten wholly per run, so
+  there are no stale cross-team keys. A global `pipeline-state.json` at the integration
+  root is a *derived* index (teams -> state path + `last_updated`, plus `last_run`),
+  rebuilt by scanning the per-team files so it too is stale-key free.
 - `layers/kt-app/` and `layers/warcom/` are **gitignored** (reproducible staging/extract).
   `layers/integration/**` and `output/**` **are committed**.
 - Icons are **byte-identical** across both tracks by design. warcom additionally emits
@@ -51,12 +54,13 @@ Key facts:
 | Helper | Returns |
 |--------|---------|
 | `INTEGRATION` | `layers/integration` |
-| `PIPELINE_METADATA_FILE` / `OUTPUT_METADATA_FILE` | integration-root metadata |
+| `PIPELINE_STATE_INDEX` | `layers/integration/pipeline-state.json` (global index) |
 | `integration_team_dir(team)` | `layers/integration/{team}` |
 | `classified_file(team, type, name)` | `.../{team}-{type}-{name}.pdf` |
 | `integration_manifest_file(team)` | `.../{team}/manifest.json` |
 | `content_dir(team)` / `content_file(team)` | `.../{team}/content[/{team}-content.json]` |
 | `artwork_team_dir(team)` | `.../{team}/artwork` (icons in `artwork/icons/`) |
+| `pipeline_state_file(team)` | `.../{team}/{team}-pipeline-state.json` |
 | `track_dir` / `staging_dir` / `extracted_dir` / `structure_dir` / `structure_file` | per-track layers |
 | `team_output(team)` | `output/{team}` |
 
@@ -94,7 +98,7 @@ Flags: `--source kt-app|warcom` (required for front-end/source steps), `--teams 
 | 2 | `extract_artwork` | source | raw source → `integration/{team}/artwork/{,icons}` |
 | 3 | `build_structure` | source | extracted → `layers/{track}/structure/{team}-structure.json` |
 | 4 | `integrate_classified` | source | extracted + structure → `integration/{team}/*.pdf` + `manifest.json` |
-| 5 | `content_analysis` | shared | integration PDFs + manifest → `integration/{team}/content/*.json` + root metadata |
+| 5 | `content_analysis` | shared | integration PDFs + manifest → `integration/{team}/content/*.json` + per-team `{team}-pipeline-state.json` + global `pipeline-state.json` index |
 | 6 | `extract_backsides` | shared | artwork → `output/{team}/card-backside/*` |
 | 7 | `extract_tokens` | shared | content + artwork → `output/{team}/tokens/*.png` |
 | 8 | `generate_dice` | shared | artwork + config → `output/{team}/dice/*` |
@@ -115,9 +119,9 @@ integration layer, source-agnostic (no `--source` needed).
   no splash (e.g. sanctifiers `eng_25-02`) — a data gap, not a bug.
 - **Heavy pixel work is centralized** in `pipeline/utils/artwork.py` so both tracks can't
   drift. Step modules only resolve *where the PDF is* and *which team it is*.
-- **Metadata managers MERGE existing keys.** To fully re-point stored path strings (they are
-  relative to `paths.ROOT`), delete `integration/metadata.json` + `output-metadata.json` and
-  re-run `content_analysis` with no `--teams` (processes all teams that have a `manifest.json`).
+- **Per-team state is rewritten wholly each run** (no cross-team merge), so it never holds
+  stale keys. The global `pipeline-state.json` index is rebuilt by scanning the per-team
+  state files, so it stays authoritative automatically — no delete-and-regenerate dance.
 - **ETL rule:** never hand-edit intermediate/output artifacts (`*-content.json`, `manifest.json`,
   extracted images, `output/*`, metadata). Fix the step source and re-run with `--force`.
 

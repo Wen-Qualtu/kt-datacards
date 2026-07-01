@@ -51,16 +51,19 @@ def structure_file(track: str, team: str) -> Path:
 # --- integration layer (shared, source-agnostic merge point) --------------
 # One folder per team holds everything produced after the two tracks converge:
 #   layers/integration/{team}/
-#     {team}-{type}-{name}.pdf     classified single-card PDFs
-#     manifest.json                entity grouping (source-agnostic)
-#     content/{team}-content.json  content analysis
-#     artwork/                     lore art + {team}-artwork-metadata.json
-#       icons/                     token / portrait / landscape icons
-# Run-level metadata lives at the integration root.
+#     {team}-{type}-{name}.pdf         classified single-card PDFs
+#     manifest.json                    entity grouping (source-agnostic)
+#     content/{team}-content.json      content analysis
+#     artwork/                         lore art + {team}-artwork-metadata.json
+#       icons/                         token / portrait / landscape icons
+#     {team}-pipeline-state.json       per-team step completion + output hashes
+# A global index at the integration root points to every team's state file:
+#     pipeline-state.json              teams -> state-file path + last_updated, last_run
 INTEGRATION = LAYERS / "integration"
 
-PIPELINE_METADATA_FILE = INTEGRATION / "metadata.json"
-OUTPUT_METADATA_FILE = INTEGRATION / "output-metadata.json"
+# Global registry: teams -> {state, last_updated} + last_run. Derived (rebuilt by
+# scanning the per-team state files), so it never holds stale team keys.
+PIPELINE_STATE_INDEX = INTEGRATION / "pipeline-state.json"
 
 
 def integration_team_dir(team: str) -> Path:
@@ -92,6 +95,13 @@ def content_file(team: str) -> Path:
 def artwork_team_dir(team: str) -> Path:
     """layers/integration/{team}/artwork — lore art files + an icons/ subfolder."""
     return integration_team_dir(team) / "artwork"
+
+
+def pipeline_state_file(team: str) -> Path:
+    """layers/integration/{team}/{team}-pipeline-state.json — per-team step
+    completion + output hashes for change detection (rewritten wholly per run,
+    so there are no stale cross-team keys)."""
+    return integration_team_dir(team) / f"{team}-pipeline-state.json"
 
 
 # --- output ---------------------------------------------------------------

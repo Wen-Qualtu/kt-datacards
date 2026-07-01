@@ -11,7 +11,7 @@ production step:
   - Output path: layers/{track}/structure/{team}-structure.json (one file per team)
     instead of layers/kt-app/classified/{team}/structure.json.
   - Paths inside the JSON are relative to the new_implementation ROOT.
-  - No MetadataManager / hash change-detection (the orchestrator owns --force).
+  - No StateManager / hash change-detection (the orchestrator owns --force).
   - No token-metadata extraction (TokenExtractor). Token-guide pages are still
     classified into a `token_guide` entity list; the richer token text/labels are
     produced downstream by the dedicated token step from the content map + artwork.

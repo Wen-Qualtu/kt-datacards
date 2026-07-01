@@ -611,122 +611,115 @@ def _extract_backpage_rules(page: fitz.Page) -> list[dict] | None:
 # PATHS
 # ===================================================================
 
-PIPELINE_METADATA_FILE = paths.PIPELINE_METADATA_FILE
-OUTPUT_METADATA_FILE = paths.OUTPUT_METADATA_FILE
+# (per-team state lives at paths.pipeline_state_file(team))
 
 
 # ===================================================================
-# METADATA MANAGEMENT
+# STATE MANAGEMENT
 # ===================================================================
 
-class MetadataManager:
-    """Manages pipeline metadata with hash-based change detection"""
+class StateManager:
+    """Per-team pipeline state: step completion + output hashes for change detection.
 
-    def __init__(self, metadata_file: Path):
-        self.metadata_file = metadata_file
-        self.metadata = self._load_metadata()
+    One file per team at ``layers/integration/{team}/{team}-pipeline-state.json``.
+    Loaded then rewritten wholly per run for that team, so there are never stale
+    cross-team keys (the reason the old global metadata files had to be deleted and
+    regenerated). Currently write-only groundwork for caching; the orchestrator owns
+    ``--force`` for now.
+    """
 
-    def _load_metadata(self) -> Dict:
-        """Load existing metadata"""
-        if self.metadata_file.exists():
-            with open(self.metadata_file, 'r', encoding='utf-8') as f:
-                return json.load(f)
+    def __init__(self, team: str):
+        self.team = team
+        self.state_file = paths.pipeline_state_file(team)
+        self.state = self._load()
+
+    def _load(self) -> Dict:
+        if self.state_file.exists():
+            try:
+                with open(self.state_file, 'r', encoding='utf-8') as f:
+                    return json.load(f)
+            except Exception:
+                pass
         return {
+            "team": self.team,
             "pipeline_version": "2.0",
-            "last_full_run": None,
-            "teams": {}
+            "last_updated": None,
+            "steps": {},
         }
 
-    def save_metadata(self):
-        """Save metadata to file"""
-        self.metadata_file.parent.mkdir(parents=True, exist_ok=True)
-        with open(self.metadata_file, 'w', encoding='utf-8') as f:
-            json.dump(self.metadata, f, indent=2, ensure_ascii=False)
-
-    def compute_hash(self, file_path: Path) -> str:
-        """Compute SHA-256 hash of file"""
+    @staticmethod
+    def _compute_hash(file_path: Path) -> str:
+        """Compute SHA-256 hash of a file."""
         sha256 = hashlib.sha256()
         with open(file_path, 'rb') as f:
             for chunk in iter(lambda: f.read(4096), b''):
                 sha256.update(chunk)
         return sha256.hexdigest()
 
-    def update_file(self, team: str, step: str, file_key: str, file_path: Path):
-        """Update metadata for a file"""
-        if team not in self.metadata["teams"]:
-            self.metadata["teams"][team] = {"steps": {}}
-        if "steps" not in self.metadata["teams"][team]:
-            self.metadata["teams"][team]["steps"] = {}
-        if step not in self.metadata["teams"][team]["steps"]:
-            self.metadata["teams"][team]["steps"][step] = {"outputs": {}}
-        if "outputs" not in self.metadata["teams"][team]["steps"][step]:
-            self.metadata["teams"][team]["steps"][step]["outputs"] = {}
-
-        file_hash = self.compute_hash(file_path)
-        timestamp = datetime.now(timezone.utc).isoformat()
-
-        # Store a workspace-relative POSIX path — absolute paths break across machines.
+    def record_output(self, step: str, file_key: str, file_path: Path):
+        """Record hash + workspace-relative path of a step output."""
         try:
             rel_path = str(Path(file_path).resolve().relative_to(paths.ROOT.resolve())).replace("\\", "/")
         except ValueError:
             rel_path = str(file_path).replace("\\", "/")
 
-        self.metadata["teams"][team]["steps"][step]["outputs"][file_key] = {
+        step_entry = self.state["steps"].setdefault(step, {"outputs": {}})
+        step_entry.setdefault("outputs", {})[file_key] = {
             "path": rel_path,
-            "hash": file_hash,
-            "modified": timestamp
+            "hash": self._compute_hash(file_path),
+            "modified": datetime.now(timezone.utc).isoformat(),
         }
 
-    def mark_step_complete(self, team: str, step: str):
-        """Mark step as completed"""
-        if team not in self.metadata["teams"]:
-            self.metadata["teams"][team] = {"steps": {}}
-        if "steps" not in self.metadata["teams"][team]:
-            self.metadata["teams"][team]["steps"] = {}
-        if step not in self.metadata["teams"][team]["steps"]:
-            self.metadata["teams"][team]["steps"][step] = {}
+    def mark_complete(self, step: str):
+        """Mark a step as completed for this team."""
+        step_entry = self.state["steps"].setdefault(step, {"outputs": {}})
+        step_entry["completed"] = datetime.now(timezone.utc).isoformat()
 
-        self.metadata["teams"][team]["steps"][step]["completed"] = datetime.now(timezone.utc).isoformat()
+    def save(self):
+        """Write the per-team state file."""
+        self.state_file.parent.mkdir(parents=True, exist_ok=True)
+        self.state["last_updated"] = datetime.now(timezone.utc).isoformat()
+        with open(self.state_file, 'w', encoding='utf-8') as f:
+            json.dump(self.state, f, indent=2, ensure_ascii=False)
 
 
-class OutputMetadataManager:
-    """Manages shared output metadata across pipelines"""
+class StateIndex:
+    """Global registry at ``layers/integration/pipeline-state.json``.
 
-    def __init__(self, metadata_file: Path):
-        self.metadata_file = metadata_file
-        self.metadata = self._load_metadata()
+    Lists every team with a pointer to its per-team state file and that team's
+    ``last_updated``, plus a global ``last_run``. Rebuilt by scanning the per-team
+    state files, so it is always authoritative and never holds stale team keys.
+    """
 
-    def _load_metadata(self) -> Dict:
-        if self.metadata_file.exists():
-            try:
-                with open(self.metadata_file, 'r', encoding='utf-8') as f:
-                    return json.load(f)
-            except Exception:
-                pass
-        return {"version": "1.0", "last_updated": None, "files": {}}
+    def __init__(self):
+        self.index_file = paths.PIPELINE_STATE_INDEX
 
-    def save_metadata(self):
-        self.metadata_file.parent.mkdir(parents=True, exist_ok=True)
-        self.metadata["last_updated"] = datetime.now(timezone.utc).isoformat()
-        with open(self.metadata_file, 'w', encoding='utf-8') as f:
-            json.dump(self.metadata, f, indent=2, ensure_ascii=False)
+    def rebuild_and_save(self):
+        teams: Dict[str, Dict] = {}
+        if paths.INTEGRATION.exists():
+            for team_dir in sorted(paths.INTEGRATION.iterdir()):
+                if not team_dir.is_dir():
+                    continue
+                state_path = paths.pipeline_state_file(team_dir.name)
+                if not state_path.exists():
+                    continue
+                last_updated = None
+                try:
+                    with open(state_path, 'r', encoding='utf-8') as f:
+                        last_updated = json.load(f).get("last_updated")
+                except Exception:
+                    pass
+                rel = str(state_path.relative_to(paths.ROOT)).replace("\\", "/")
+                teams[team_dir.name] = {"state": rel, "last_updated": last_updated}
 
-    def compute_hash(self, file_path: Path) -> str:
-        sha256 = hashlib.sha256()
-        with open(file_path, 'rb') as f:
-            for chunk in iter(lambda: f.read(4096), b''):
-                sha256.update(chunk)
-        return sha256.hexdigest()
-
-    def update_file(self, rel_path: str, file_path: Path, pipeline: str, step: str):
-        file_hash = self.compute_hash(file_path)
-        timestamp = datetime.now(timezone.utc).isoformat()
-        self.metadata.setdefault("files", {})[rel_path] = {
-            "hash": file_hash,
-            "modified": timestamp,
-            "pipeline": pipeline,
-            "step": step
+        index = {
+            "pipeline_version": "2.0",
+            "last_run": datetime.now(timezone.utc).isoformat(),
+            "teams": teams,
         }
+        self.index_file.parent.mkdir(parents=True, exist_ok=True)
+        with open(self.index_file, 'w', encoding='utf-8') as f:
+            json.dump(index, f, indent=2, ensure_ascii=False)
 
 
 # ===================================================================
@@ -1664,10 +1657,6 @@ def run(teams=None, source=None, force=False):
 
     logger.info(f"content_analysis: {len(teams)} team(s)")
 
-    # Hash-based change detection across runs.
-    pipeline_meta = MetadataManager(PIPELINE_METADATA_FILE)
-    output_meta = OutputMetadataManager(OUTPUT_METADATA_FILE)
-
     processed = skipped = failed = 0
     for team in teams:
         try:
@@ -1675,10 +1664,11 @@ def run(teams=None, source=None, force=False):
                 out_file = paths.content_file(team)
                 if out_file.exists():
                     processed += 1
-                    pipeline_meta.update_file(team, "content_analysis", "content.json", out_file)
-                    pipeline_meta.mark_step_complete(team, "content_analysis")
-                    rel = str(out_file.relative_to(paths.ROOT)).replace("\\", "/")
-                    output_meta.update_file(rel, out_file, "shared", "content_analysis")
+                    # Per-team state: rewritten wholly for this team each run.
+                    state = StateManager(team)
+                    state.record_output("content_analysis", "content.json", out_file)
+                    state.mark_complete("content_analysis")
+                    state.save()
                 else:
                     skipped += 1
             else:
@@ -1690,9 +1680,8 @@ def run(teams=None, source=None, force=False):
             logger.error(f"Error processing {team}: {e}")
             failed += 1
 
-    pipeline_meta.metadata["last_full_run"] = datetime.now(timezone.utc).isoformat()
-    pipeline_meta.save_metadata()
-    output_meta.save_metadata()
+    # Refresh the global index from all per-team state files (stale-key free).
+    StateIndex().rebuild_and_save()
 
     logger.info(
         f"content_analysis done: processed={processed} skipped={skipped} failed={failed}"

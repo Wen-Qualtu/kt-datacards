@@ -43,5 +43,6 @@ SOURCE-DECISION (kt-app vs warcom) notes. We fill them in one by one.
 | `layers/integration/{team}/artwork/` | icons + artwork | shared (both tracks write) |
 | `layers/integration/{team}/{team}-{type}-{name}.pdf` | merge point | shared |
 | `layers/integration/{team}/content/{team}-content.json` | content map | shared |
-| `layers/integration/{metadata,output-metadata}.json` | pipeline metadata | shared |
+| `layers/integration/pipeline-state.json` | global index (teams -> state path + last_run) | shared |
+| `layers/integration/{team}/{team}-pipeline-state.json` | per-team run state (step completion + output hashes) | shared |
 | `output/{team}/...` | final assets | shared |
