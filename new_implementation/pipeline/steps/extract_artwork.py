@@ -1,10 +1,10 @@
 """Icon + artwork extraction — runs on the RAW source, writes the shared artwork layer.
 
-raw source  ->  layers/shared/artwork/{team}/{icons,artwork}/
+raw source  ->  layers/integration/{team}/artwork/{icons/,*.jpeg}
   - kt-app:  input/*.pdf                              (UUID-named; team by content)
   - warcom:  layers/warcom/staging/{team}-datacards.pdf (team by filename)
 
-Both tracks write the SAME shared artwork layer. The heavy pixel work lives in
+Both tracks write the SAME per-team artwork layer. The heavy pixel work lives in
 ``pipeline.utils.artwork`` so the two tracks can never drift apart — this module
 only resolves *where the raw PDF is* and *which team it belongs to*.
 
@@ -137,9 +137,9 @@ def _process_kt_app(teams: Optional[list], force: bool) -> dict:
         try:
             icons = artwork.extract_token_icon(doc, icons_dir, slug, _canonical_name(identifier, slug))
             images = artwork.extract_artwork(
-                doc, out / "artwork", slug, generic_exact, generic_perceptual
+                doc, out, slug, generic_exact, generic_perceptual
             )
-            artwork.write_artwork_metadata(out / "artwork", slug, images)
+            artwork.write_artwork_metadata(out, slug, images)
         finally:
             doc.close()
 
@@ -197,9 +197,9 @@ def _process_warcom(teams: Optional[list], force: bool) -> dict:
             icons = artwork.extract_backside_icons(doc, icons_dir, slug)
             icons.update(artwork.extract_token_icon(doc, icons_dir, slug, _canonical_name(identifier, slug)))
             images = artwork.extract_artwork(
-                doc, out / "artwork", slug, generic_exact, generic_perceptual
+                doc, out, slug, generic_exact, generic_perceptual
             )
-            artwork.write_artwork_metadata(out / "artwork", slug, images)
+            artwork.write_artwork_metadata(out, slug, images)
         finally:
             doc.close()
 

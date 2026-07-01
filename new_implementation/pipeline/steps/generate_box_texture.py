@@ -1,6 +1,6 @@
 """Box texture — one-off per team, derived from the artwork layer. TTS-only.
 
-layers/shared/artwork + config  ->  output/{team}/cardbox/texture.jpg (+ .obj)
+layers/integration/{team}/artwork + config  ->  output/{team}/cardbox/texture.jpg (+ .obj)
 
 PORT-FROM: pipelines/kt-app/steps/5c_generate_box_textures.py
 SOURCE-DECISION: kt-app only (warcom has no box-texture step).

@@ -1,6 +1,6 @@
 """Stats / team data — from the content map.
 
-layers/shared/content/{team}-content.json  ->  output/{team}/data/{team}-team-data.json
+layers/integration/{team}/content/{team}-content.json  ->  output/{team}/data/{team}-team-data.json
 
 PORT-FROM: pipelines/kt-app/steps/3_extract_team_data.py (the serialization half).
 SOURCE-DECISION: kt-app. May fold into content_analysis if the split proves redundant.

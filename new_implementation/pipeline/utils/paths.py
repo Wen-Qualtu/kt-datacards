@@ -48,33 +48,50 @@ def structure_file(track: str, team: str) -> Path:
     return structure_dir(track) / f"{team}-structure.json"
 
 
-# --- shared layers --------------------------------------------------------
-SHARED = LAYERS / "shared"
-ARTWORK = SHARED / "artwork"        # icons + artwork (both tracks write here)
-INTEGRATION = SHARED / "integration"  # {team}-{type}-{name}.pdf (merge point)
-INTEGRATION_MANIFESTS = INTEGRATION / "_manifests"  # {team}.json (entity grouping)
-CONTENT = SHARED / "content"        # {team}-content.json (content analysis)
+# --- integration layer (shared, source-agnostic merge point) --------------
+# One folder per team holds everything produced after the two tracks converge:
+#   layers/integration/{team}/
+#     {team}-{type}-{name}.pdf     classified single-card PDFs
+#     manifest.json                entity grouping (source-agnostic)
+#     content/{team}-content.json  content analysis
+#     artwork/                     lore art + {team}-artwork-metadata.json
+#       icons/                     token / portrait / landscape icons
+# Run-level metadata lives at the integration root.
+INTEGRATION = LAYERS / "integration"
+
+PIPELINE_METADATA_FILE = INTEGRATION / "metadata.json"
+OUTPUT_METADATA_FILE = INTEGRATION / "output-metadata.json"
 
 
-def artwork_team_dir(team: str) -> Path:
-    """layers/shared/artwork/{team} — per-team icons/ + artwork/."""
-    return ARTWORK / team
+def integration_team_dir(team: str) -> Path:
+    """layers/integration/{team} — per-team integration root."""
+    return INTEGRATION / team
 
 
 def classified_file(team: str, card_type: str, name: str) -> Path:
-    """layers/shared/integration/{team}-{type}-{name}.pdf (no front/back postfix)."""
-    return INTEGRATION / f"{team}-{card_type}-{name}.pdf"
+    """layers/integration/{team}/{team}-{type}-{name}.pdf (no front/back postfix)."""
+    return integration_team_dir(team) / f"{team}-{card_type}-{name}.pdf"
 
 
 def integration_manifest_file(team: str) -> Path:
-    """layers/shared/integration/_manifests/{team}.json — source-agnostic entity
-    grouping (a copy of the structure manifest) so downstream shared steps do not
-    depend on which track ran."""
-    return INTEGRATION_MANIFESTS / f"{team}.json"
+    """layers/integration/{team}/manifest.json — source-agnostic entity grouping
+    (a copy of the structure manifest) so downstream shared steps do not depend on
+    which track ran."""
+    return integration_team_dir(team) / "manifest.json"
+
+
+def content_dir(team: str) -> Path:
+    """layers/integration/{team}/content."""
+    return integration_team_dir(team) / "content"
 
 
 def content_file(team: str) -> Path:
-    return CONTENT / f"{team}-content.json"
+    return content_dir(team) / f"{team}-content.json"
+
+
+def artwork_team_dir(team: str) -> Path:
+    """layers/integration/{team}/artwork — lore art files + an icons/ subfolder."""
+    return integration_team_dir(team) / "artwork"
 
 
 # --- output ---------------------------------------------------------------

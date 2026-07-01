@@ -40,7 +40,8 @@ SOURCE-DECISION (kt-app vs warcom) notes. We fill them in one by one.
 | `layers/{track}/staging/` | warcom scrape target | track |
 | `layers/{track}/extracted/` | per-card split PDFs | track |
 | `layers/{track}/structure/{team}-structure.json` | structure manifest | track |
-| `layers/shared/artwork/` | icons + artwork | shared (both tracks write) |
-| `layers/shared/classified/{team}-{type}-{name}.pdf` | merge point | shared |
-| `layers/shared/content/{team}-content.json` | content map | shared |
+| `layers/integration/{team}/artwork/` | icons + artwork | shared (both tracks write) |
+| `layers/integration/{team}/{team}-{type}-{name}.pdf` | merge point | shared |
+| `layers/integration/{team}/content/{team}-content.json` | content map | shared |
+| `layers/integration/{metadata,output-metadata}.json` | pipeline metadata | shared |
 | `output/{team}/...` | final assets | shared |

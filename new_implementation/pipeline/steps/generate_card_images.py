@@ -1,6 +1,6 @@
 """Card image processing — needs the content map + backsides.
 
-layers/shared/integration/{team}-*.pdf (front) + backsides + content map
+layers/integration/{team}/{team}-*.pdf (front) + backsides + content map
    ->  output/{team}/cards/{type}/{name}.jpg (+ back)
 
 PDF -> JPEG (300 DPI); compose with the pre-generated backside; fall back to

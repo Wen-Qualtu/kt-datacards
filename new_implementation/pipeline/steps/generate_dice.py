@@ -1,6 +1,6 @@
 """Dice textures — one-off per team, derived from the artwork layer. TTS-only.
 
-layers/shared/artwork + config  ->  output/{team}/dice/{light,dark,team}.jpg
+layers/integration/{team}/artwork + config  ->  output/{team}/dice/{light,dark,team}.jpg
 
 PORT-FROM: pipelines/kt-app/steps/5b_generate_dice.py
 SOURCE-DECISION: USE kt-app 5b (warcom 4a is nearly identical but lacks the

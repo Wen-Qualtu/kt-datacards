@@ -1,7 +1,7 @@
 """Integration — shared merge point. Copy + rename extracted PDFs into one folder.
 
 layers/{track}/extracted + layers/{track}/structure/{team}-structure.json
-   ->  layers/shared/integration/{team}-{type}-{name}.pdf   (no -front/-back postfix)
+   ->  layers/integration/{team}/{team}-{type}-{name}.pdf   (no -front/-back postfix)
 
 Both tracks emit the IDENTICAL file set here. This is the dedup/merge point: run
 whichever source GW updated and downstream is source-agnostic.
@@ -55,6 +55,8 @@ def _merge_card(front: Path, back: Optional[Path], out_path: Path) -> None:
 
 def _integrate_team(team: str, structure: Dict, force: bool) -> Dict:
     stats = {"written": 0, "missing": 0}
+    team_dir = paths.integration_team_dir(team)
+    team_dir.mkdir(parents=True, exist_ok=True)
 
     for key in TYPE_KEYS:
         entities = structure.get(key, [])
@@ -69,7 +71,7 @@ def _integrate_team(team: str, structure: Dict, force: bool) -> Dict:
                 base = naming.classified_name(team, card_type, name)
                 if multi:
                     base = f"{base}-{card['card_number']}"
-                out_path = paths.INTEGRATION / f"{base}.pdf"
+                out_path = team_dir / f"{base}.pdf"
 
                 front_rel = card.get("front")
                 back_rel = card.get("back")

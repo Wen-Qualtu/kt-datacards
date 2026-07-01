@@ -1,6 +1,6 @@
 """Tokens — one-off per team. Needs the content map + the artwork layer.
 
-content map (which card / token-guide to read) + layers/shared/artwork (token-bag image)
+content map (which card / token-guide to read) + layers/integration/{team}/artwork (token-bag image)
    ->  output/{team}/tokens/{name}.png
 
 PORT-FROM: pipelines/kt-app/utils/token_extractor.py  (TokenExtractor; reusable)

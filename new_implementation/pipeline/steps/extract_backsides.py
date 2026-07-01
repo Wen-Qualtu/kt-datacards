@@ -1,6 +1,6 @@
 """Backside extraction — one-off per team, consumes the artwork layer.
 
-layers/shared/artwork/{team}/...  ->  layers/shared/.../card-backside/{landscape,portrait}.jpg
+layers/integration/{team}/artwork/...  ->  output/{team}/card-backside/{landscape,portrait}.jpg
 
 Predecessor for card image processing. NOT stored in the classified folder
 (an earlier copy landed in the wrong path; that is being removed).

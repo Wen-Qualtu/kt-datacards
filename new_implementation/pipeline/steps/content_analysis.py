@@ -1,17 +1,17 @@
 """Content analysis — shared, runs once on the integration output.
 
-layers/shared/integration/{team}-*.pdf (+ _manifests/{team}.json)
-   ->  layers/shared/content/{team}-content.json
+layers/integration/{team}/{team}-*.pdf (+ {team}/manifest.json)
+   ->  layers/integration/{team}/content/{team}-content.json
 
 Extracts comprehensive data from all card types into one per-team content manifest.
 For datacards: proven structured extraction (APL, movement, save, wounds, weapons,
 abilities, keywords). For other cards: name + text (with option/selection parsing).
 
-Source-agnostic: reads the shared integration PDFs and the source-agnostic manifest
+Source-agnostic: reads the per-team integration PDFs and the source-agnostic manifest
 emitted by integrate_classified, so it does not depend on which track ran.
 
 PORT-FROM: pipelines/kt-app/steps/3_extract_team_data.py (extraction logic verbatim;
-           only the IO layer is re-pointed at the integration layer + shared manifest).
+           only the IO layer is re-pointed at the integration layer + team manifest).
 
 Data Structure:
 {
@@ -611,8 +611,8 @@ def _extract_backpage_rules(page: fitz.Page) -> list[dict] | None:
 # PATHS
 # ===================================================================
 
-PIPELINE_METADATA_FILE = paths.CONTENT / "metadata.json"
-OUTPUT_METADATA_FILE = paths.CONTENT / "output-metadata.json"
+PIPELINE_METADATA_FILE = paths.PIPELINE_METADATA_FILE
+OUTPUT_METADATA_FILE = paths.OUTPUT_METADATA_FILE
 
 
 # ===================================================================
@@ -816,7 +816,7 @@ class TeamDataExtractor:
             base = naming.classified_name(self.team, card_type, name)
             if multi:
                 base = f"{base}-{card['card_number']}"
-            pdfs.append(paths.INTEGRATION / f"{base}.pdf")
+            pdfs.append(paths.integration_team_dir(self.team) / f"{base}.pdf")
         return pdfs
 
     @staticmethod
@@ -1644,11 +1644,13 @@ def process_team(team: str, force: bool = False) -> bool:
 
 
 def get_all_teams() -> List[str]:
-    """All teams that have a shared integration manifest."""
-    manifest_dir = paths.INTEGRATION_MANIFESTS
-    if not manifest_dir.exists():
+    """All teams that have an integration manifest."""
+    if not paths.INTEGRATION.exists():
         return []
-    return sorted(f.stem for f in manifest_dir.glob("*.json"))
+    return sorted(
+        d.name for d in paths.INTEGRATION.iterdir()
+        if d.is_dir() and (d / "manifest.json").exists()
+    )
 
 
 def run(teams=None, source=None, force=False):
