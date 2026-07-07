@@ -16,12 +16,20 @@ from typing import Optional
 
 import fitz  # PyMuPDF
 
-from ..utils import paths
+from ..utils import artwork, paths
+from ..utils.parallel import map_items
+from ..utils.state import StateIndex, StateManager
 from ..utils.team_identification import CardType, Team, TeamIdentifier
 
 logger = logging.getLogger(__name__)
 
 TRACK = "kt-app"
+
+# A designed supplement carries the team's KILL TEAM selection page in the large
+# "designed" layout (page width >= this). Those PDFs are artwork/icon sources
+# consumed by ``extract_artwork`` only — front_end must never split them into
+# cards (their first page can otherwise be mis-read as a datacard).
+MIN_DESIGNED_PAGE_WIDTH = 400.0
 
 
 # ---------------------------------------------------------------------------
@@ -141,6 +149,13 @@ def _identify_team_name(page, card_type: Optional[CardType], identifier: TeamIde
 def identify_pdf(pdf_path: Path, identifier: TeamIdentifier) -> tuple[Optional[Team], Optional[CardType]]:
     try:
         pdf = fitz.open(pdf_path)
+        # Designed supplements (KILL TEAM icon page in the large layout) are
+        # artwork sources only — skip them so they are never split into cards.
+        kt_page = artwork.find_kill_team_page(pdf)
+        if kt_page != -1 and pdf[kt_page].rect.width >= MIN_DESIGNED_PAGE_WIDTH:
+            pdf.close()
+            logger.info(f"Supplement (artwork source), not card-split: {pdf_path.name}")
+            return None, None
         page = pdf[0]
         card_type = _identify_card_type(page)
         team_name = _identify_team_name(page, card_type, identifier)
@@ -177,15 +192,25 @@ def split_pdf_to_pages(pdf_path: Path, cards_dir: Path, prefix: str, card_type: 
 # ---------------------------------------------------------------------------
 # Step entry point
 # ---------------------------------------------------------------------------
-def run(teams=None, source=None, force=False):
+def run(teams=None, source=None, force=False, jobs=1):
     identifier = TeamIdentifier()
     input_pdfs = sorted(paths.INPUT.glob("*.pdf"))
     logger.info(f"Found {len(input_pdfs)} PDFs in {paths.INPUT}")
 
     stats = {"identified": 0, "processed": 0, "pages": 0, "skipped": 0, "failed": 0}
 
-    for pdf_path in input_pdfs:
-        team, card_type = identify_pdf(pdf_path, identifier)
+    # Phase 1 (parallel): content-identify every inbox PDF. This is the slow part
+    # (each PDF is opened and scanned) and is purely read-only, so it fans out
+    # cleanly across a thread pool.
+    identified = map_items(
+        lambda pdf: (pdf, *identify_pdf(pdf, identifier)), input_pdfs, jobs=jobs
+    )
+
+    # Group the identified PDFs by team. Several PDFs map to one team (one per card
+    # type), so grouping keeps each team's state file written by a single worker in
+    # phase 2 — no cross-thread races on the per-team state.
+    by_team: dict = {}
+    for pdf_path, team, card_type in identified:
         if not team or not card_type:
             stats["failed"] += 1
             continue
@@ -193,14 +218,44 @@ def run(teams=None, source=None, force=False):
         if teams and team.name not in teams:
             stats["skipped"] += 1
             continue
+        by_team.setdefault(team.name, []).append((pdf_path, card_type))
 
-        cards_dir = paths.extracted_dir(TRACK) / team.name / "cards"
-        prefix = f"{team.name}-{card_type.value}"
-        page_files = split_pdf_to_pages(pdf_path, cards_dir, prefix, card_type.value)
-        logger.info(f"  {team.name}/{card_type.value}: {len(page_files)} pages -> {cards_dir / card_type.value}")
-        stats["processed"] += 1
-        stats["pages"] += len(page_files)
+    def process_team(item) -> dict:
+        team_name, entries = item
+        stat = {"processed": 0, "pages": 0, "skipped": 0}
+        state = StateManager(team_name)
+        for pdf_path, card_type in entries:
+            # The input PDF is archived after splitting, so gate on its *content*
+            # hash: re-dropping the byte-identical PDF is skipped while the pages it
+            # produced are still on disk. The card type keys the source so one team
+            # tracks its several PDFs independently.
+            pdf_hash = StateManager._compute_hash(pdf_path)
+            if state.source_can_skip("front_end", card_type.value, pdf_hash, force):
+                logger.info(f"  = {team_name}/{card_type.value}: unchanged (skip split)")
+                stat["skipped"] += 1
+                paths.archive_input(pdf_path)
+                continue
 
+            cards_dir = paths.extracted_dir(TRACK) / team_name / "cards"
+            prefix = f"{team_name}-{card_type.value}"
+            page_files = split_pdf_to_pages(pdf_path, cards_dir, prefix, card_type.value)
+            logger.info(f"  {team_name}/{card_type.value}: {len(page_files)} pages -> {cards_dir / card_type.value}")
+            state.record_source("front_end", card_type.value, pdf_hash, page_files)
+            stat["processed"] += 1
+            stat["pages"] += len(page_files)
+            # Consumed: move out of the inbox so input/ only holds unprocessed files.
+            paths.archive_input(pdf_path)
+        state.mark_complete("front_end")
+        state.save()
+        return stat
+
+    # Phase 2 (parallel across teams): split each team's PDFs + record its state.
+    for stat in map_items(process_team, sorted(by_team.items()), jobs=jobs):
+        stats["processed"] += stat["processed"]
+        stats["pages"] += stat["pages"]
+        stats["skipped"] += stat["skipped"]
+
+    StateIndex().rebuild_and_save()
     logger.info(
         f"kt-app front-end done: identified={stats['identified']} processed={stats['processed']} "
         f"pages={stats['pages']} skipped={stats['skipped']} failed={stats['failed']}"

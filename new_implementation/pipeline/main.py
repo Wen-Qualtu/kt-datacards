@@ -18,8 +18,23 @@ from __future__ import annotations
 
 import argparse
 import importlib
+import inspect
 import logging
+import sys
 from typing import Callable, Optional
+
+from .utils import paths
+from .utils.parallel import map_items
+
+# Ported steps print status with Unicode glyphs (checkmarks etc.); force UTF-8 on
+# stdout/stderr so they don't crash on a Windows cp1252 console.
+for _stream in (sys.stdout, sys.stderr):
+    _reconfigure = getattr(_stream, "reconfigure", None)
+    if _reconfigure is not None:
+        try:
+            _reconfigure(encoding="utf-8")
+        except Exception:
+            pass
 
 # Ordered pipeline. (key, module, scope)
 #   scope:
@@ -49,6 +64,27 @@ TRACK_FRONT_END = {
 
 STEP_KEYS = [k for k, _, _ in STEP_ORDER]
 
+# Steps that must run over ALL teams in one call — either they consume the shared
+# inbox/scrape (the team set isn't known per-team) or they emit a global artifact.
+# Everything else is per-team and runs team-major (one whole-chain worker per team,
+# many teams in parallel) when --jobs > 1.
+#   front_end       -> shared inbox/scrape; parallelizes internally via --jobs
+#   extract_artwork -> global "best source per team" scan over the raw inbox
+#   generate_tts    -> writes the global team-urls.json summary + object-urls
+SERIAL_STEPS = {"front_end", "extract_artwork", "generate_tts"}
+
+
+def _discover_teams(source: Optional[str]) -> list[str]:
+    """Teams that actually have data — the pool for team-major execution.
+
+    Discovered lazily (after the front-end has produced per-team layers): from the
+    track's extracted dir when a source is set, else from the shared integration dir.
+    """
+    base = paths.extracted_dir(source) if source else paths.INTEGRATION
+    if not base.exists():
+        return []
+    return sorted(d.name for d in base.iterdir() if d.is_dir())
+
 
 def _resolve_module(key: str, module: Optional[str], scope: str, source: Optional[str]) -> str:
     if scope == "track":
@@ -63,6 +99,18 @@ def _runner(module_name: str) -> Callable:
     if not hasattr(mod, "run"):
         raise SystemExit(f"step '{module_name}' has no run() function")
     return mod.run
+
+
+def _run_step(key, module, scope, teams, source, force, jobs) -> None:
+    """Invoke one step's run(), passing source/jobs only when it accepts them."""
+    module_name = _resolve_module(key, module, scope, source)
+    run = _runner(module_name)
+    kwargs = {"teams": teams, "force": force}
+    if scope in ("track", "source"):
+        kwargs["source"] = source
+    if "jobs" in inspect.signature(run).parameters:
+        kwargs["jobs"] = jobs
+    run(**kwargs)
 
 
 def _select_steps(args) -> list[tuple[str, Optional[str], str]]:
@@ -81,6 +129,8 @@ def main() -> None:
     p.add_argument("--from", dest="from_", choices=STEP_KEYS, help="start step (inclusive)")
     p.add_argument("--to", choices=STEP_KEYS, help="end step (inclusive)")
     p.add_argument("--force", action="store_true", help="ignore caches / re-run")
+    p.add_argument("--jobs", type=int, default=10,
+                   help="parallel team workers (default: 10; 1 = fully serial)")
     p.add_argument("--list", action="store_true", help="list steps and exit")
     args = p.parse_args()
 
@@ -97,15 +147,42 @@ def main() -> None:
         return
 
     teams = [t.strip() for t in args.teams.split(",")] if args.teams else None
+    selected = _select_steps(args)
+    jobs = max(1, args.jobs)
 
-    for key, module, scope in _select_steps(args):
-        module_name = _resolve_module(key, module, scope, args.source)
-        run = _runner(module_name)
-        print(f"==> {key} ({module_name})")
-        kwargs = {"teams": teams, "force": args.force}
-        if scope in ("track", "source"):
-            kwargs["source"] = args.source
-        run(**kwargs)
+    if jobs <= 1:
+        # Fully serial: each step runs once over all teams.
+        for key, module, scope in selected:
+            print(f"==> {key} ({_resolve_module(key, module, scope, args.source)})")
+            _run_step(key, module, scope, teams, args.source, args.force, jobs=1)
+        return
+
+    # Team-major: walk the selected steps; run consecutive per-team steps as a
+    # whole-chain worker per team (many teams in parallel), while serial steps
+    # (shared input / global finalize) run once over all teams.
+    i = 0
+    while i < len(selected):
+        key, module, scope = selected[i]
+        if key in SERIAL_STEPS:
+            print(f"==> {key} ({_resolve_module(key, module, scope, args.source)}) [serial, jobs={jobs}]")
+            _run_step(key, module, scope, teams, args.source, args.force, jobs=jobs)
+            i += 1
+            continue
+
+        batch = []
+        while i < len(selected) and selected[i][0] not in SERIAL_STEPS:
+            batch.append(selected[i])
+            i += 1
+
+        pool = teams or _discover_teams(args.source)
+        batch_keys = " -> ".join(k for k, _, _ in batch)
+        print(f"==> team-major [{batch_keys}] x{len(pool)} teams, {jobs} workers")
+
+        def team_worker(team, _batch=batch):
+            for k, m, sc in _batch:
+                _run_step(k, m, sc, [team], args.source, args.force, jobs=1)
+
+        map_items(team_worker, pool, jobs=jobs)
 
 
 if __name__ == "__main__":

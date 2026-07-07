@@ -27,6 +27,7 @@ from typing import Dict, List, Optional
 import fitz  # PyMuPDF
 
 from ..utils import naming, paths
+from ..utils.state import StateIndex, StateManager
 
 logger = logging.getLogger(__name__)
 
@@ -53,8 +54,21 @@ def _merge_card(front: Path, back: Optional[Path], out_path: Path) -> None:
     doc.close()
 
 
-def _integrate_team(team: str, structure: Dict, force: bool) -> Dict:
-    stats = {"written": 0, "missing": 0}
+def _referenced_pdfs(structure: Dict) -> List[Path]:
+    """Absolute paths of every extracted front/back PDF the structure references —
+    the true source inputs for this team's integration."""
+    refs: List[Path] = []
+    for key in TYPE_KEYS:
+        for entity in structure.get(key, []):
+            for card in entity.get("cards", []):
+                for rel in (card.get("front"), card.get("back")):
+                    if rel:
+                        refs.append(paths.ROOT / rel)
+    return refs
+
+
+def _integrate_team(team: str, structure: Dict) -> Dict:
+    stats: Dict = {"written": 0, "missing": 0, "paths": []}
     team_dir = paths.integration_team_dir(team)
     team_dir.mkdir(parents=True, exist_ok=True)
 
@@ -90,13 +104,9 @@ def _integrate_team(team: str, structure: Dict, force: bool) -> Dict:
                     logger.warning(f"  {base}: back missing on disk: {back}")
                     back = None
 
-                if out_path.exists() and not force:
-                    # Overwrite is cheap and deterministic; only skip when not forcing
-                    # and the file already exists from a prior run of the same track.
-                    pass
-
                 _merge_card(front, back, out_path)
                 stats["written"] += 1
+                stats["paths"].append(out_path)
 
     return stats
 
@@ -120,13 +130,21 @@ def run(teams=None, source=None, force=False):
 
     paths.INTEGRATION.mkdir(parents=True, exist_ok=True)
 
-    totals = {"teams": 0, "written": 0, "missing": 0}
+    totals = {"teams": 0, "written": 0, "missing": 0, "skipped": 0}
     for sf in structure_files:
         with open(sf, "r", encoding="utf-8") as f:
             structure = json.load(f)
         team = structure.get("team") or sf.stem.replace("-structure", "")
+
+        state = StateManager(team)
+        inputs = [sf] + _referenced_pdfs(structure)
+        if state.can_skip("integrate_classified", inputs, force):
+            logger.info(f"Integrating: {team} — unchanged, skip")
+            totals["skipped"] += 1
+            continue
+
         logger.info(f"Integrating: {team} (source={source})")
-        stats = _integrate_team(team, structure, force)
+        stats = _integrate_team(team, structure)
         # Emit a source-agnostic manifest so downstream shared steps (content
         # analysis, etc.) can group entities without knowing which track ran.
         manifest_path = paths.integration_manifest_file(team)
@@ -134,12 +152,21 @@ def run(teams=None, source=None, force=False):
         with open(manifest_path, "w", encoding="utf-8") as mf:
             json.dump(structure, mf, indent=2, ensure_ascii=False)
         logger.info(f"  wrote {stats['written']} classified PDFs (missing {stats['missing']})")
+
+        state.record_output("integrate_classified", "manifest.json", manifest_path)
+        for out_path in stats["paths"]:
+            state.record_output("integrate_classified", out_path.name, out_path)
+        state.record_inputs("integrate_classified", inputs)
+        state.mark_complete("integrate_classified")
+        state.save()
+
         totals["teams"] += 1
         totals["written"] += stats["written"]
         totals["missing"] += stats["missing"]
 
+    StateIndex().rebuild_and_save()
     logger.info(
         f"integrate_classified done: teams={totals['teams']} "
-        f"written={totals['written']} missing={totals['missing']}"
+        f"written={totals['written']} missing={totals['missing']} skipped={totals['skipped']}"
     )
     return totals

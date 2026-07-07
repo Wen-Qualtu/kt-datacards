@@ -6,19 +6,43 @@ production pipelines at the repo root. Inside the sandbox we use clean names
 """
 from __future__ import annotations
 
+import shutil
 from pathlib import Path
 
 # new_implementation/ root: utils -> pipeline -> root
 ROOT = Path(__file__).resolve().parents[2]
 
-INPUT = ROOT / "input"     # raw PDFs for the kt-app track
+INPUT = ROOT / "input"                 # raw PDFs for the kt-app track (inbox)
+INPUT_ARCHIVE = ROOT / "input_archive" # consumed input PDFs are moved here
 LAYERS = ROOT / "layers"   # intermediate layers
 OUTPUT = ROOT / "output"   # final outputs
 
-# Shared config still lives at the repo root (read-only). Copy into the sandbox
-# later if we want full isolation.
+# Config is self-contained inside the sandbox (copied from the repo-root config
+# and stripped of pre-baked token data + the tokens_ready flag so the pipeline
+# regenerates everything from scratch).
 REPO_ROOT = ROOT.parent
-TEAM_CONFIG = REPO_ROOT / "config" / "team-config.yaml"
+CONFIG = ROOT / "config"
+DEFAULTS = CONFIG / "defaults"
+TEAM_CONFIG = CONFIG / "team-config.yaml"
+
+
+def archive_input(pdf_path: Path) -> Path:
+    """Move a consumed kt-app input PDF into ``input_archive/`` so ``input/``
+    only ever holds not-yet-processed files (an inbox). Overwrites any existing
+    archived copy. Returns the destination path; no-op-safe if already gone."""
+    INPUT_ARCHIVE.mkdir(parents=True, exist_ok=True)
+    dest = INPUT_ARCHIVE / pdf_path.name
+    if not pdf_path.exists():
+        return dest
+    if dest.exists():
+        dest.unlink()
+    shutil.move(str(pdf_path), str(dest))
+    return dest
+
+
+def team_config_dir(team: str) -> Path:
+    """config/teams/{team} — per-team manual overrides (backsides, dice, box)."""
+    return CONFIG / "teams" / team
 
 VALID_TRACKS = ("kt-app", "warcom")
 

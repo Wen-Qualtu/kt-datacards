@@ -29,11 +29,18 @@ from typing import Dict, List, Optional
 import fitz  # PyMuPDF
 
 from ..utils import card_naming, paths
+from ..utils.state import StateIndex, StateManager
 
 logger = logging.getLogger(__name__)
 
 # Base for relative paths written into the structure JSON.
 ROOT = paths.ROOT
+
+
+def _team_card_pdfs(extracted_dir: Path, team: str) -> list:
+    """Every extracted card page for a team — the inputs to structure building."""
+    cards_dir = extracted_dir / team / "cards"
+    return sorted(cards_dir.rglob("*.pdf")) if cards_dir.exists() else []
 
 
 # ===================================================================
@@ -617,6 +624,13 @@ def _run_kt_app(teams: Optional[List[str]], force: bool) -> Dict:
         team = team_dir.name
         logger.info(f"Processing: {team}")
         try:
+            state = StateManager(team)
+            inputs = _team_card_pdfs(extracted_dir, team)
+            if state.can_skip("build_structure", inputs, force):
+                logger.info("  = unchanged (skip)")
+                stats["skipped"] += 1
+                continue
+
             classifier = StructureClassifier(team, extracted_dir)
             structure = classifier.classify()
             if not structure:
@@ -629,6 +643,11 @@ def _run_kt_app(teams: Optional[List[str]], force: bool) -> Dict:
                 json.dump(structure, f, indent=2, ensure_ascii=False)
             logger.info(f"  Saved: {output_file}")
 
+            state.record_output("build_structure", "structure", output_file)
+            state.record_inputs("build_structure", inputs)
+            state.mark_complete("build_structure")
+            state.save()
+
             stats["processed"] += 1
             for key in [
                 "datacards", "equipment", "faction_rules", "token_guide",
@@ -640,6 +659,7 @@ def _run_kt_app(teams: Optional[List[str]], force: bool) -> Dict:
             logger.error(f"  Failed: {e}", exc_info=True)
             stats["failed"] += 1
 
+    StateIndex().rebuild_and_save()
     logger.info(
         f"build_structure (kt-app) done: processed={stats['processed']} "
         f"cards={stats['total_cards']} skipped={stats['skipped']} failed={stats['failed']}"
@@ -901,6 +921,13 @@ def _run_warcom(teams: Optional[List[str]], force: bool) -> Dict:
         cards_dir = team_dir / "cards"
         logger.info(f"Processing: {team}")
         try:
+            state = StateManager(team)
+            inputs = sorted(cards_dir.glob("*.pdf")) if cards_dir.exists() else []
+            if state.can_skip("build_structure", inputs, force):
+                logger.info("  = unchanged (skip)")
+                stats["skipped"] += 1
+                continue
+
             structure = _classify_warcom_team(team, cards_dir)
             if not structure:
                 logger.info("  Skipped: no cards classified")
@@ -912,6 +939,11 @@ def _run_warcom(teams: Optional[List[str]], force: bool) -> Dict:
                 json.dump(structure, f, indent=2, ensure_ascii=False)
             logger.info(f"  Saved: {output_file}")
 
+            state.record_output("build_structure", "structure", output_file)
+            state.record_inputs("build_structure", inputs)
+            state.mark_complete("build_structure")
+            state.save()
+
             stats["processed"] += 1
             for key in WARCOM_TYPE_TO_KEY.values():
                 for entity in structure.get(key, []):
@@ -920,6 +952,7 @@ def _run_warcom(teams: Optional[List[str]], force: bool) -> Dict:
             logger.error(f"  Failed: {e}", exc_info=True)
             stats["failed"] += 1
 
+    StateIndex().rebuild_and_save()
     logger.info(
         f"build_structure (warcom) done: processed={stats['processed']} "
         f"cards={stats['total_cards']} skipped={stats['skipped']} failed={stats['failed']}"

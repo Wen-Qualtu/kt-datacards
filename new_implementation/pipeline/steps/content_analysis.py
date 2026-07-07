@@ -20,7 +20,7 @@ Data Structure:
   "datacards": [
     {
       "name": "BATTLECLADE TECHNOARCHEOLOGIST",
-      "apl": 3, "movement": "6″", "save": "3+", "wounds": 9,
+      "apl": 3, "movement": "6″", "save": "3+", "wounds": 9, "base_size": 40,
       "weapons": [{...}], "passive_abilities": [{...}],
       "unique_actions": [{...}], "keywords": [...]
     }
@@ -36,12 +36,12 @@ import logging
 from pathlib import Path
 from datetime import datetime, timezone
 from typing import Dict, List, Optional
-import hashlib
 import re
 
 import fitz  # PyMuPDF
 
 from ..utils import naming, paths
+from ..utils.state import StateManager, StateIndex
 
 
 # ===================================================================
@@ -253,6 +253,39 @@ def _extract_stats_from_blocks(blocks: list, page_width: float, page_height: flo
         break
 
     return stats
+
+
+def _extract_base_size_from_blocks(blocks: list, page_width: float, page_height: float) -> int | float | None:
+    """Extract the model base size (mm) from the black circle in the bottom-right corner.
+
+    The datacard prints the base diameter (e.g. 25, 32, 40) as white text inside a
+    black circle at the far bottom-right of the front page.
+    """
+    candidates = []
+    for block in blocks:
+        if block.get("type") != 0:
+            continue
+        x0, y0, x1, y1 = block["bbox"]
+        # Base-size circle sits in the far bottom-right corner of the card.
+        if x0 > page_width * 0.88 and y0 > page_height * 0.82:
+            text = ""
+            for line in block.get("lines", []):
+                for span in line.get("spans", []):
+                    text += span.get("text", "")
+            text = text.strip()
+            match = re.fullmatch(r"(\d+(?:\.\d+)?)", text)
+            if not match:
+                continue
+            value = float(match.group(1))
+            # Guard against stray numbers; real base sizes fall in this range.
+            if 15 <= value <= 200:
+                candidates.append((y0, x0, value))
+    if not candidates:
+        return None
+    # Prefer the lowest, right-most candidate (the base circle).
+    candidates.sort(key=lambda c: (c[0], c[1]), reverse=True)
+    value = candidates[0][2]
+    return int(value) if value == int(value) else value
 
 
 def _extract_weapons_from_blocks(blocks: list, page_width: float, page_height: float,
@@ -570,6 +603,7 @@ def _extract_operative_from_page(page: fitz.Page, page_idx: int, pdf_name: str, 
         name = _extract_name_from_blocks(blocks, pw, ph)
     
     stats = _extract_stats_from_blocks(blocks, pw, ph)
+    base_size = _extract_base_size_from_blocks(blocks, pw, ph)
     weapons = _extract_weapons_from_blocks(blocks, pw, ph, ph * 0.15, ph * 0.80)
     rules = _extract_rules_from_blocks(blocks, pw, ph, ph * 0.15)
     keywords = _extract_keywords_from_blocks(blocks, pw, ph)
@@ -582,6 +616,7 @@ def _extract_operative_from_page(page: fitz.Page, page_idx: int, pdf_name: str, 
         "source_file": pdf_name,
         "source_page": page_idx,
         **stats,
+        "base_size": base_size,
     }
     if weapons:
         operative["weapons"] = weapons
@@ -611,115 +646,8 @@ def _extract_backpage_rules(page: fitz.Page) -> list[dict] | None:
 # PATHS
 # ===================================================================
 
-# (per-team state lives at paths.pipeline_state_file(team))
-
-
-# ===================================================================
-# STATE MANAGEMENT
-# ===================================================================
-
-class StateManager:
-    """Per-team pipeline state: step completion + output hashes for change detection.
-
-    One file per team at ``layers/integration/{team}/{team}-pipeline-state.json``.
-    Loaded then rewritten wholly per run for that team, so there are never stale
-    cross-team keys (the reason the old global metadata files had to be deleted and
-    regenerated). Currently write-only groundwork for caching; the orchestrator owns
-    ``--force`` for now.
-    """
-
-    def __init__(self, team: str):
-        self.team = team
-        self.state_file = paths.pipeline_state_file(team)
-        self.state = self._load()
-
-    def _load(self) -> Dict:
-        if self.state_file.exists():
-            try:
-                with open(self.state_file, 'r', encoding='utf-8') as f:
-                    return json.load(f)
-            except Exception:
-                pass
-        return {
-            "team": self.team,
-            "pipeline_version": "2.0",
-            "last_updated": None,
-            "steps": {},
-        }
-
-    @staticmethod
-    def _compute_hash(file_path: Path) -> str:
-        """Compute SHA-256 hash of a file."""
-        sha256 = hashlib.sha256()
-        with open(file_path, 'rb') as f:
-            for chunk in iter(lambda: f.read(4096), b''):
-                sha256.update(chunk)
-        return sha256.hexdigest()
-
-    def record_output(self, step: str, file_key: str, file_path: Path):
-        """Record hash + workspace-relative path of a step output."""
-        try:
-            rel_path = str(Path(file_path).resolve().relative_to(paths.ROOT.resolve())).replace("\\", "/")
-        except ValueError:
-            rel_path = str(file_path).replace("\\", "/")
-
-        step_entry = self.state["steps"].setdefault(step, {"outputs": {}})
-        step_entry.setdefault("outputs", {})[file_key] = {
-            "path": rel_path,
-            "hash": self._compute_hash(file_path),
-            "modified": datetime.now(timezone.utc).isoformat(),
-        }
-
-    def mark_complete(self, step: str):
-        """Mark a step as completed for this team."""
-        step_entry = self.state["steps"].setdefault(step, {"outputs": {}})
-        step_entry["completed"] = datetime.now(timezone.utc).isoformat()
-
-    def save(self):
-        """Write the per-team state file."""
-        self.state_file.parent.mkdir(parents=True, exist_ok=True)
-        self.state["last_updated"] = datetime.now(timezone.utc).isoformat()
-        with open(self.state_file, 'w', encoding='utf-8') as f:
-            json.dump(self.state, f, indent=2, ensure_ascii=False)
-
-
-class StateIndex:
-    """Global registry at ``layers/integration/pipeline-state.json``.
-
-    Lists every team with a pointer to its per-team state file and that team's
-    ``last_updated``, plus a global ``last_run``. Rebuilt by scanning the per-team
-    state files, so it is always authoritative and never holds stale team keys.
-    """
-
-    def __init__(self):
-        self.index_file = paths.PIPELINE_STATE_INDEX
-
-    def rebuild_and_save(self):
-        teams: Dict[str, Dict] = {}
-        if paths.INTEGRATION.exists():
-            for team_dir in sorted(paths.INTEGRATION.iterdir()):
-                if not team_dir.is_dir():
-                    continue
-                state_path = paths.pipeline_state_file(team_dir.name)
-                if not state_path.exists():
-                    continue
-                last_updated = None
-                try:
-                    with open(state_path, 'r', encoding='utf-8') as f:
-                        last_updated = json.load(f).get("last_updated")
-                except Exception:
-                    pass
-                rel = str(state_path.relative_to(paths.ROOT)).replace("\\", "/")
-                teams[team_dir.name] = {"state": rel, "last_updated": last_updated}
-
-        index = {
-            "pipeline_version": "2.0",
-            "last_run": datetime.now(timezone.utc).isoformat(),
-            "teams": teams,
-        }
-        self.index_file.parent.mkdir(parents=True, exist_ok=True)
-        with open(self.index_file, 'w', encoding='utf-8') as f:
-            json.dump(index, f, indent=2, ensure_ascii=False)
+# Per-team state lives at paths.pipeline_state_file(team); the StateManager /
+# StateIndex helpers are shared with the downstream steps (pipeline.utils.state).
 
 
 # ===================================================================
@@ -1045,7 +973,13 @@ class TeamDataExtractor:
         """
         # Split by separator to get individual card texts
         card_texts = full_text.split("\n\n---\n\n")
-        
+
+        # Normalized rule name for same-rule detection below. The entity name may be
+        # a slug ("chapter-tactics") while the card repeats the display title
+        # ("CHAPTER TACTICS"); comparing raw strings would treat the same rule's
+        # option cards as a NEW rule and drop every option.
+        name_norm = re.sub(r'[^a-z0-9]+', '', (name or '').lower())
+
         # First card contains the main rule text
         main_text = card_texts[0] if card_texts else ""
         
@@ -1077,8 +1011,10 @@ class TeamDataExtractor:
                 for i, line in enumerate(lines[:5]):  # Check first 5 lines
                     if 'FACTION RULE' in line.upper() and i + 1 < len(lines):
                         next_line = lines[i + 1]
-                        # If next line is all caps and different from current rule name
-                        if next_line.isupper() and next_line != name and len(next_line) > 3:
+                        # If next line is all caps and names a DIFFERENT rule (compared
+                        # on a normalized form, so slug vs display casing still matches).
+                        if (next_line.isupper() and len(next_line) > 3
+                                and re.sub(r'[^a-z0-9]+', '', next_line.lower()) != name_norm):
                             is_new_rule = True
                             break
             
@@ -1646,6 +1582,15 @@ def get_all_teams() -> List[str]:
     )
 
 
+def _inputs_for(team: str) -> list:
+    """Source files this step consumes: the manifest, the classified PDFs, and
+    the shared team config (parsing rules depend on it)."""
+    team_dir = paths.integration_team_dir(team)
+    inputs = [paths.integration_manifest_file(team), paths.TEAM_CONFIG]
+    inputs.extend(sorted(team_dir.glob("*.pdf")))
+    return inputs
+
+
 def run(teams=None, source=None, force=False):
     """Orchestrator entry point. Shared step — `source` is accepted for a uniform
     step signature but ignored (input is the source-agnostic integration layer)."""
@@ -1660,13 +1605,21 @@ def run(teams=None, source=None, force=False):
     processed = skipped = failed = 0
     for team in teams:
         try:
-            if process_team(team, force=force):
+            state = StateManager(team)
+            inputs = _inputs_for(team)
+            if state.can_skip("content_analysis", inputs, force):
+                logger.info(f"  {team}: unchanged, skip")
+                skipped += 1
+                continue
+
+            # Inputs changed (or --force): regenerate unconditionally.
+            if process_team(team, force=True):
                 out_file = paths.content_file(team)
                 if out_file.exists():
                     processed += 1
                     # Per-team state: rewritten wholly for this team each run.
-                    state = StateManager(team)
                     state.record_output("content_analysis", "content.json", out_file)
+                    state.record_inputs("content_analysis", inputs)
                     state.mark_complete("content_analysis")
                     state.save()
                 else:

@@ -26,13 +26,15 @@ from pathlib import Path
 from typing import List, Optional
 
 from ..utils import naming, paths
+from ..utils.parallel import map_items
+from ..utils.state import StateIndex, StateManager
 from .warcom import card_extractor, scraper
 
 logger = logging.getLogger(__name__)
 
 TRACK = "warcom"
 
-TEMPLATES_FILE = paths.REPO_ROOT / "config" / "pipelines" / "warcom" / "card_templates.json"
+TEMPLATES_FILE = paths.CONFIG / "pipelines" / "warcom" / "card_templates.json"
 DEFAULT_URL = scraper.DOWNLOADS_URL
 
 
@@ -101,16 +103,20 @@ def _scrape(teams: Optional[List[str]], force: bool) -> List[Path]:
     return downloaded
 
 
-def _extract(staging_pdfs: List[Path], teams: Optional[List[str]]) -> dict:
-    """Split each staging PDF into per-card PDFs under extracted/{team}/cards."""
+def _extract(staging_pdfs: List[Path], teams: Optional[List[str]], force: bool, jobs: int = 1) -> dict:
+    """Split each staging PDF into per-card PDFs under extracted/{team}/cards.
+
+    One staging PDF per team, so the per-PDF workers never touch the same team
+    state file — safe to fan out across a thread pool.
+    """
     templates = card_extractor.load_templates(TEMPLATES_FILE)
     team_config = card_extractor.load_team_config(paths.TEAM_CONFIG)
     extracted_root = paths.extracted_dir(TRACK)
 
     wanted = {_slug(t) for t in teams} if teams else None
-    stats = {"processed": 0, "skipped": 0, "failed": 0, "cards": 0}
 
-    for pdf in staging_pdfs:
+    def worker(pdf: Path) -> dict:
+        stat = {"processed": 0, "skipped": 0, "failed": 0, "cards": 0}
         try:
             # Team identity comes from the filename (reliable) first; the in-PDF
             # font heuristic is only a last resort.
@@ -119,12 +125,23 @@ def _extract(staging_pdfs: List[Path], teams: Optional[List[str]]) -> dict:
                 extracted_name = card_extractor.extract_team_name_from_pdf(pdf)
                 if not extracted_name:
                     logger.warning(f"  no team name from {pdf.name}")
-                    stats["failed"] += 1
-                    continue
+                    stat["failed"] = 1
+                    return stat
                 team_name = card_extractor.match_team_name(extracted_name, team_config) or _slug(extracted_name)
             if wanted and team_name not in wanted:
-                stats["skipped"] += 1
-                continue
+                stat["skipped"] = 1
+                return stat
+
+            # The staging PDF is the durable source; gate on its content hash so a
+            # re-scrape of the byte-identical rules PDF is not re-split while its
+            # extracted cards are still on disk. (Fresh sandbox has no baseline, so
+            # this always processes on the first run.)
+            state = StateManager(team_name)
+            pdf_hash = StateManager._compute_hash(pdf)
+            if state.source_can_skip("front_end", "cards", pdf_hash, force):
+                logger.info(f"  = {team_name}: unchanged (skip split)")
+                stat["skipped"] = 1
+                return stat
 
             team_cards_dir = extracted_root / team_name / "cards"
             if team_cards_dir.exists():
@@ -137,16 +154,27 @@ def _extract(staging_pdfs: List[Path], teams: Optional[List[str]]) -> dict:
                 f"  {team_name}: {result['total_cards']} cards from "
                 f"{result['pages_processed']} pages -> {team_cards_dir}"
             )
-            stats["processed"] += 1
-            stats["cards"] += result["total_cards"]
+            state.record_source("front_end", "cards", pdf_hash,
+                                sorted(team_cards_dir.glob("*.pdf")))
+            state.mark_complete("front_end")
+            state.save()
+            stat["processed"] = 1
+            stat["cards"] = result["total_cards"]
         except Exception as e:
             logger.error(f"  failed on {pdf.name}: {e}", exc_info=True)
-            stats["failed"] += 1
+            stat["failed"] = 1
+        return stat
 
+    stats = {"processed": 0, "skipped": 0, "failed": 0, "cards": 0}
+    for stat in map_items(worker, staging_pdfs, jobs=jobs):
+        for k in stats:
+            stats[k] += stat[k]
+
+    StateIndex().rebuild_and_save()
     return stats
 
 
-def run(teams=None, source=None, force=False):
+def run(teams=None, source=None, force=False, jobs=1):
     if not TEMPLATES_FILE.exists():
         raise SystemExit(f"warcom templates not found: {TEMPLATES_FILE}")
 
@@ -155,7 +183,7 @@ def run(teams=None, source=None, force=False):
         logger.error("No staging PDFs available after scrape")
         return {"processed": 0, "skipped": 0, "failed": 0, "cards": 0}
 
-    stats = _extract(staging_pdfs, teams)
+    stats = _extract(staging_pdfs, teams, force, jobs=jobs)
     logger.info(
         f"warcom front-end done: processed={stats['processed']} cards={stats['cards']} "
         f"skipped={stats['skipped']} failed={stats['failed']}"

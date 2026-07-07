@@ -21,6 +21,7 @@ from typing import Optional
 import fitz  # PyMuPDF
 
 from ..utils import artwork, paths
+from ..utils.state import StateIndex, StateManager
 from ..utils.team_identification import TeamIdentifier, normalize_name
 
 logger = logging.getLogger(__name__)
@@ -128,9 +129,17 @@ def _process_kt_app(teams: Optional[list], force: bool) -> dict:
         out = paths.artwork_team_dir(slug)
         icons_dir = out / "icons"
         token_jpg = icons_dir / f"{slug}-icon-token.jpg"
-        if token_jpg.exists() and not force:
-            logger.info(f"  = {slug}: token icon exists (use --force to rebuild)")
+
+        # The chosen source PDF is archived after extraction, so gate on its
+        # *content* hash: a re-dropped byte-identical supplement is skipped while
+        # its icon/artwork outputs are still on disk. A changed source re-extracts
+        # even if a stale token icon exists.
+        state = StateManager(slug)
+        pdf_hash = StateManager._compute_hash(pdf)
+        if token_jpg.exists() and state.source_can_skip("extract_artwork", "artwork", pdf_hash, force):
+            logger.info(f"  = {slug}: unchanged (skip)")
             results["skipped"].append(slug)
+            paths.archive_input(pdf)
             continue
 
         doc = fitz.open(pdf)
@@ -146,7 +155,14 @@ def _process_kt_app(teams: Optional[list], force: bool) -> dict:
         n_icons = sum(1 for v in icons.values() if v)
         logger.info(f"  + {slug}: {n_icons} icon files, {len(images)} artwork  ({pdf.name})")
         results["processed"].append(slug)
+        state.record_source("extract_artwork", "artwork", pdf_hash,
+                            [p for p in out.rglob("*") if p.is_file()])
+        state.mark_complete("extract_artwork")
+        state.save()
+        # Consumed: move the supplement out of the inbox into input_archive/.
+        paths.archive_input(pdf)
 
+    StateIndex().rebuild_and_save()
     return results
 
 
@@ -187,8 +203,11 @@ def _process_warcom(teams: Optional[list], force: bool) -> dict:
         out = paths.artwork_team_dir(slug)
         icons_dir = out / "icons"
         token_jpg = icons_dir / f"{slug}-icon-token.jpg"
-        if token_jpg.exists() and not force:
-            logger.info(f"  = {slug}: token icon exists (use --force to rebuild)")
+
+        state = StateManager(slug)
+        pdf_hash = StateManager._compute_hash(pdf)
+        if token_jpg.exists() and state.source_can_skip("extract_artwork", "artwork", pdf_hash, force):
+            logger.info(f"  = {slug}: unchanged (skip)")
             results["skipped"].append(slug)
             continue
 
@@ -206,7 +225,12 @@ def _process_warcom(teams: Optional[list], force: bool) -> dict:
         n_icons = sum(1 for v in icons.values() if v)
         logger.info(f"  + {slug}: {n_icons} icon files, {len(images)} artwork  ({pdf.name})")
         results["processed"].append(slug)
+        state.record_source("extract_artwork", "artwork", pdf_hash,
+                            [p for p in out.rglob("*") if p.is_file()])
+        state.mark_complete("extract_artwork")
+        state.save()
 
+    StateIndex().rebuild_and_save()
     return results
 
 
