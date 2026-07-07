@@ -1,0 +1,1173 @@
+{
+  "team": "phobos-strike-team",
+  "pipeline_version": "2.0",
+  "last_updated": "2026-07-07T07:30:00.970360+00:00",
+  "steps": {
+    "content_analysis": {
+      "outputs": {
+        "content.json": {
+          "path": "layers/integration/phobos-strike-team/content/phobos-strike-team-content.json",
+          "hash": "dec641d27e0c056c7e126300c2d28809048e923ce2d308c4ece6a8d40f4b006f",
+          "modified": "2026-07-06T21:01:33.148120+00:00"
+        }
+      },
+      "completed": "2026-07-06T21:01:33.190009+00:00",
+      "inputs": {
+        "layers/integration/phobos-strike-team/manifest.json": "00a990f3092e05d0fff9eef979f97a8db637df34b48280bb7823f19ecd989b84",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "layers/integration/phobos-strike-team/phobos-strike-team-datacard-incursor-marksman.pdf": "4c800095b0df48840a2ac96a898b961dd436e2d53db7a803de0655e4e847eaf4",
+        "layers/integration/phobos-strike-team/phobos-strike-team-datacard-incursor-minelayer.pdf": "9a8115db878c932d218d0d0714f803a1a571cda138e144186d258220552587e2",
+        "layers/integration/phobos-strike-team/phobos-strike-team-datacard-incursor-sergeant.pdf": "17d8da71a18a181ca8c3834a1de82deaf267234d34c847c5f96b7c7874f6fbe8",
+        "layers/integration/phobos-strike-team/phobos-strike-team-datacard-incursor-warrior.pdf": "37309a3dab765a9e21280a323505e995b2f40896f055a6e0f0f6d6164d63b020",
+        "layers/integration/phobos-strike-team/phobos-strike-team-datacard-infiltrator-commsman.pdf": "169e930ef2e6faf1f4e9e84b9a763209c643ffd64c36dfad1372bbac2bbd2282",
+        "layers/integration/phobos-strike-team/phobos-strike-team-datacard-infiltrator-helix-adept.pdf": "f760b6e06d23999b6677a878a0041a70a78454ccd2ebafb11fef264b7ea2c49a",
+        "layers/integration/phobos-strike-team/phobos-strike-team-datacard-infiltrator-saboteur.pdf": "fd9958eed6aac0e82385c31dfd0ab11a41e155b2ed5f592d1f7fe8c341b7fbf4",
+        "layers/integration/phobos-strike-team/phobos-strike-team-datacard-infiltrator-sergeant.pdf": "da2d10bef75dfcada0c3fa94491bffade7f38ba8356b183c8f8a91b221756528",
+        "layers/integration/phobos-strike-team/phobos-strike-team-datacard-infiltrator-veteran.pdf": "f4630078d7c79c6013c1ebd2c49c88ccbc95f825d2ee8eaf0995adc5c03d12c3",
+        "layers/integration/phobos-strike-team/phobos-strike-team-datacard-infiltrator-voxbreaker.pdf": "e2bc1b5b8f62992b73e8f65df6f00d1f4f2201ae8e68c44122105d2752755402",
+        "layers/integration/phobos-strike-team/phobos-strike-team-datacard-infiltrator-warrior.pdf": "5d4cafa0f9ca7ac5d8a7abddb32730dc3848678d29c0777f3e141845b27386f5",
+        "layers/integration/phobos-strike-team/phobos-strike-team-datacard-reiver-sergeant.pdf": "3158932d2333e09151a60db9d98b01103ded49248e3086b03eae30c1cd4345ab",
+        "layers/integration/phobos-strike-team/phobos-strike-team-datacard-reiver-warrior.pdf": "c6c53b4739bd3801611e2f913c12fce99454f7a791a7c5cface1f1c8e5aea5eb",
+        "layers/integration/phobos-strike-team/phobos-strike-team-equipment-additional-utility-grenades.pdf": "bf3c4914eadd55cc7446f7c26a56935d448b38e2b67194ba1482ac3cdc09a817",
+        "layers/integration/phobos-strike-team/phobos-strike-team-equipment-combat-blades.pdf": "6257e9a2187fffb8dd6d2d730644f8b58a4da96666975709006a64fc00535a0f",
+        "layers/integration/phobos-strike-team/phobos-strike-team-equipment-purity-seals.pdf": "3d252b89160790b5760006c8d14dd90032e8c495ce0521820ab2069eb72aa9b2",
+        "layers/integration/phobos-strike-team/phobos-strike-team-equipment-special-issue-ammunition.pdf": "2d995be13433d4bcc0b828ecd277fd47a593a1387c2305c572f68dc5cf274d71",
+        "layers/integration/phobos-strike-team/phobos-strike-team-faction-rule-astartes.pdf": "92930b8e878ce1da4b459bdd1cb0257de3d52bb0efa96b11a554986201c42a0e",
+        "layers/integration/phobos-strike-team/phobos-strike-team-faction-rule-multi-spectrum-array.pdf": "32b5d1d4050b22e2807607f15263c055151b44a72f8d45c064434f2b148f60af",
+        "layers/integration/phobos-strike-team/phobos-strike-team-faction-rule-omni-scrambler.pdf": "1c186ee56e1d0faa0b0df4c1bef1c4895e8f71c6ce84d1146b06fe8b64daca0c",
+        "layers/integration/phobos-strike-team/phobos-strike-team-faction-rule-terror.pdf": "8778741942e80cc98204895a1026c064cbdbfa2d2711a87097a5d4b0b3c1284d",
+        "layers/integration/phobos-strike-team/phobos-strike-team-firefight-ploy-critical-shot.pdf": "8d4087de74c799a5f1a3a0bfc94d4b9602f8307e4afbf68030c1a1678bdf5efb",
+        "layers/integration/phobos-strike-team/phobos-strike-team-firefight-ploy-patient-ambush.pdf": "4b427211b1ba6b041d567281e863ff45c4dcd4edb1dee805d5021713495647df",
+        "layers/integration/phobos-strike-team/phobos-strike-team-firefight-ploy-stealth-assault.pdf": "523bc7ffaa1f46b74b9c5ce5cdf63094265a9f44a1130ffa35bde9d9311e59e4",
+        "layers/integration/phobos-strike-team/phobos-strike-team-firefight-ploy-transhuman-physiology.pdf": "01dd8dcf6a41c311b4f3acf700ce462b7f40e802fbed60e589a6046a2dfc048d",
+        "layers/integration/phobos-strike-team/phobos-strike-team-operatives-selection-operative-selection.pdf": "68fae6e93f47a3a47b155fb9bef9b6b4700401fb63ae9d0554092698b79e07c7",
+        "layers/integration/phobos-strike-team/phobos-strike-team-strategy-ploy-and-they-shall-know-no-fear.pdf": "8771ec7d3bee55cf7fbe4a5469edcc6910f84e9baad6066c3e10c8f04ed5d71a",
+        "layers/integration/phobos-strike-team/phobos-strike-team-strategy-ploy-deadly-shots.pdf": "958b984fc94607f0b9a5340bf57915210ce9933e6fbc0750d03131a55911fc02",
+        "layers/integration/phobos-strike-team/phobos-strike-team-strategy-ploy-guerrilla-warfare.pdf": "8ce95dbcaabda06f265e637c8738e5ea61692620087f27c6c0140b8e75c26766",
+        "layers/integration/phobos-strike-team/phobos-strike-team-strategy-ploy-lethal-assaults.pdf": "d27b6652b77b51856e06e615774f582633420b7026b5361b8b29417e0c0a5181",
+        "layers/integration/phobos-strike-team/phobos-strike-team-token-guide-token-guide.pdf": "c09aa8d609b762c852fd53f7e38ecd195b5f061880cfc3624e32fa93010843c4"
+      }
+    },
+    "extract_backsides": {
+      "outputs": {
+        "backside-landscape.jpg": {
+          "path": "layers/integration/phobos-strike-team/card-backside/phobos-strike-team-backside-landscape.jpg",
+          "hash": "1e1bf6fa467d6e4261232b90da97943fcad4450858bbbb427f11dd08c5697179",
+          "modified": "2026-07-06T16:32:04.435824+00:00"
+        },
+        "backside-portrait.jpg": {
+          "path": "layers/integration/phobos-strike-team/card-backside/phobos-strike-team-backside-portrait.jpg",
+          "hash": "3db7b110c5636685da69431dda1fb06635a3517742348178a9891b4c0698aad5",
+          "modified": "2026-07-06T16:32:04.463545+00:00"
+        }
+      },
+      "completed": "2026-07-06T16:32:04.468978+00:00",
+      "inputs": {
+        "layers/integration/phobos-strike-team/artwork/icons/phobos-strike-team-icon-token.jpg": "103afbed63d2e3da12c311efc33f2badc8a6a6bbfc76af0cc8144a5aee2337da",
+        "config/defaults/box/card-box-background.jpeg": "2dd1442a7c52ca1d66899333f678d60f48981ce20561ead77c1161d548176036"
+      }
+    },
+    "extract_tokens": {
+      "outputs": {
+        "tokens/phobos-strike-team-auspex-scan.png": {
+          "path": "output/phobos-strike-team/tokens/phobos-strike-team-auspex-scan.png",
+          "hash": "0d9e385021f49bfba0b67663beb70f806844435927a59a3dff81d494e867ad57",
+          "modified": "2026-07-06T21:02:50.761838+00:00"
+        },
+        "tokens/phobos-strike-team-explosives.png": {
+          "path": "output/phobos-strike-team/tokens/phobos-strike-team-explosives.png",
+          "hash": "c5cbf1132299ae2b70be3c1401672845cfa1846e18d1a3ed8a25932201460734",
+          "modified": "2026-07-06T21:02:50.767228+00:00"
+        },
+        "tokens/phobos-strike-team-haywire-mine.png": {
+          "path": "output/phobos-strike-team/tokens/phobos-strike-team-haywire-mine.png",
+          "hash": "6d65c0874f4fe9e040a93e5f8b1a1fd4c40b227bf93abcb4507f1aed75a1b0a6",
+          "modified": "2026-07-06T21:02:50.772418+00:00"
+        },
+        "tokens/phobos-strike-team-medic.png": {
+          "path": "output/phobos-strike-team/tokens/phobos-strike-team-medic.png",
+          "hash": "f8997703cfe9f3f524bca5ab9357b5e5e2e2220fc432e5efa5c732f18ec16c0d",
+          "modified": "2026-07-06T21:02:50.777601+00:00"
+        },
+        "tokens/phobos-strike-team-omni-scrambler.png": {
+          "path": "output/phobos-strike-team/tokens/phobos-strike-team-omni-scrambler.png",
+          "hash": "42746d7177f38fccab1a9ceccd04f75dc4287dc01999aa163db44f9c3ab03751",
+          "modified": "2026-07-06T21:02:50.785108+00:00"
+        },
+        "tokens/phobos-strike-team-purity-seals.png": {
+          "path": "output/phobos-strike-team/tokens/phobos-strike-team-purity-seals.png",
+          "hash": "68814b4c3aacda7300103c76bc769be6b333f5626b7fbd50fdb12d83ad1f2ef7",
+          "modified": "2026-07-06T21:02:50.790687+00:00"
+        },
+        "tokens/phobos-strike-team-remote-detonator.png": {
+          "path": "output/phobos-strike-team/tokens/phobos-strike-team-remote-detonator.png",
+          "hash": "410959277b913bd404fada5d1438ed1213b3de4256abfc97d54c13b0e1bce0a3",
+          "modified": "2026-07-06T21:02:50.798330+00:00"
+        },
+        "tokens/phobos-strike-team-special-issue-ammunition.png": {
+          "path": "output/phobos-strike-team/tokens/phobos-strike-team-special-issue-ammunition.png",
+          "hash": "cc6441da80f9657534a2617fb160f2af30a3a99719eb3c233f191ca6be13e9fe",
+          "modified": "2026-07-06T21:02:50.804527+00:00"
+        },
+        "tokens/phobos-strike-team-tactical-advantage.png": {
+          "path": "output/phobos-strike-team/tokens/phobos-strike-team-tactical-advantage.png",
+          "hash": "7b88433ddedf5cf2540db50a626682140548d738cb168ca1883b70476f7f6aea",
+          "modified": "2026-07-06T21:02:50.810225+00:00"
+        },
+        "tokens/phobos-strike-team-vanguard.png": {
+          "path": "output/phobos-strike-team/tokens/phobos-strike-team-vanguard.png",
+          "hash": "44d1086b95de025d70483828028900eba2453cb194803c3af5d7394e63064636",
+          "modified": "2026-07-06T21:02:50.817672+00:00"
+        },
+        "tokens/phobos-strike-team-auspex-scan.obj": {
+          "path": "output/phobos-strike-team/tokens/phobos-strike-team-auspex-scan.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:50.819189+00:00"
+        },
+        "tokens/phobos-strike-team-explosives.obj": {
+          "path": "output/phobos-strike-team/tokens/phobos-strike-team-explosives.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:50.820507+00:00"
+        },
+        "tokens/phobos-strike-team-haywire-mine.obj": {
+          "path": "output/phobos-strike-team/tokens/phobos-strike-team-haywire-mine.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:50.821611+00:00"
+        },
+        "tokens/phobos-strike-team-medic.obj": {
+          "path": "output/phobos-strike-team/tokens/phobos-strike-team-medic.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:50.822510+00:00"
+        },
+        "tokens/phobos-strike-team-omni-scrambler.obj": {
+          "path": "output/phobos-strike-team/tokens/phobos-strike-team-omni-scrambler.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:50.823385+00:00"
+        },
+        "tokens/phobos-strike-team-purity-seals.obj": {
+          "path": "output/phobos-strike-team/tokens/phobos-strike-team-purity-seals.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:50.824257+00:00"
+        },
+        "tokens/phobos-strike-team-remote-detonator.obj": {
+          "path": "output/phobos-strike-team/tokens/phobos-strike-team-remote-detonator.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:50.825186+00:00"
+        },
+        "tokens/phobos-strike-team-special-issue-ammunition.obj": {
+          "path": "output/phobos-strike-team/tokens/phobos-strike-team-special-issue-ammunition.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:50.826084+00:00"
+        },
+        "tokens/phobos-strike-team-tactical-advantage.obj": {
+          "path": "output/phobos-strike-team/tokens/phobos-strike-team-tactical-advantage.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:50.826973+00:00"
+        },
+        "tokens/phobos-strike-team-vanguard.obj": {
+          "path": "output/phobos-strike-team/tokens/phobos-strike-team-vanguard.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:50.827992+00:00"
+        },
+        "tokens/tokenbag/phobos-strike-team-token-bag-icon.png": {
+          "path": "output/phobos-strike-team/tokens/tokenbag/phobos-strike-team-token-bag-icon.png",
+          "hash": "103afbed63d2e3da12c311efc33f2badc8a6a6bbfc76af0cc8144a5aee2337da",
+          "modified": "2026-07-06T21:02:50.835307+00:00"
+        },
+        "tokens/tokenbag/phobos-strike-team-token-bag.obj": {
+          "path": "output/phobos-strike-team/tokens/tokenbag/phobos-strike-team-token-bag.obj",
+          "hash": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+          "modified": "2026-07-06T21:02:50.836435+00:00"
+        }
+      },
+      "completed": "2026-07-06T21:02:50.878365+00:00",
+      "inputs": {
+        "layers/integration/phobos-strike-team/manifest.json": "00a990f3092e05d0fff9eef979f97a8db637df34b48280bb7823f19ecd989b84",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "layers/integration/phobos-strike-team/artwork/icons/phobos-strike-team-icon-token.jpg": "103afbed63d2e3da12c311efc33f2badc8a6a6bbfc76af0cc8144a5aee2337da",
+        "layers/integration/phobos-strike-team/phobos-strike-team-datacard-incursor-marksman.pdf": "4c800095b0df48840a2ac96a898b961dd436e2d53db7a803de0655e4e847eaf4",
+        "layers/integration/phobos-strike-team/phobos-strike-team-datacard-incursor-minelayer.pdf": "9a8115db878c932d218d0d0714f803a1a571cda138e144186d258220552587e2",
+        "layers/integration/phobos-strike-team/phobos-strike-team-datacard-incursor-sergeant.pdf": "17d8da71a18a181ca8c3834a1de82deaf267234d34c847c5f96b7c7874f6fbe8",
+        "layers/integration/phobos-strike-team/phobos-strike-team-datacard-incursor-warrior.pdf": "37309a3dab765a9e21280a323505e995b2f40896f055a6e0f0f6d6164d63b020",
+        "layers/integration/phobos-strike-team/phobos-strike-team-datacard-infiltrator-commsman.pdf": "169e930ef2e6faf1f4e9e84b9a763209c643ffd64c36dfad1372bbac2bbd2282",
+        "layers/integration/phobos-strike-team/phobos-strike-team-datacard-infiltrator-helix-adept.pdf": "f760b6e06d23999b6677a878a0041a70a78454ccd2ebafb11fef264b7ea2c49a",
+        "layers/integration/phobos-strike-team/phobos-strike-team-datacard-infiltrator-saboteur.pdf": "fd9958eed6aac0e82385c31dfd0ab11a41e155b2ed5f592d1f7fe8c341b7fbf4",
+        "layers/integration/phobos-strike-team/phobos-strike-team-datacard-infiltrator-sergeant.pdf": "da2d10bef75dfcada0c3fa94491bffade7f38ba8356b183c8f8a91b221756528",
+        "layers/integration/phobos-strike-team/phobos-strike-team-datacard-infiltrator-veteran.pdf": "f4630078d7c79c6013c1ebd2c49c88ccbc95f825d2ee8eaf0995adc5c03d12c3",
+        "layers/integration/phobos-strike-team/phobos-strike-team-datacard-infiltrator-voxbreaker.pdf": "e2bc1b5b8f62992b73e8f65df6f00d1f4f2201ae8e68c44122105d2752755402",
+        "layers/integration/phobos-strike-team/phobos-strike-team-datacard-infiltrator-warrior.pdf": "5d4cafa0f9ca7ac5d8a7abddb32730dc3848678d29c0777f3e141845b27386f5",
+        "layers/integration/phobos-strike-team/phobos-strike-team-datacard-reiver-sergeant.pdf": "3158932d2333e09151a60db9d98b01103ded49248e3086b03eae30c1cd4345ab",
+        "layers/integration/phobos-strike-team/phobos-strike-team-datacard-reiver-warrior.pdf": "c6c53b4739bd3801611e2f913c12fce99454f7a791a7c5cface1f1c8e5aea5eb",
+        "layers/integration/phobos-strike-team/phobos-strike-team-equipment-additional-utility-grenades.pdf": "bf3c4914eadd55cc7446f7c26a56935d448b38e2b67194ba1482ac3cdc09a817",
+        "layers/integration/phobos-strike-team/phobos-strike-team-equipment-combat-blades.pdf": "6257e9a2187fffb8dd6d2d730644f8b58a4da96666975709006a64fc00535a0f",
+        "layers/integration/phobos-strike-team/phobos-strike-team-equipment-purity-seals.pdf": "3d252b89160790b5760006c8d14dd90032e8c495ce0521820ab2069eb72aa9b2",
+        "layers/integration/phobos-strike-team/phobos-strike-team-equipment-special-issue-ammunition.pdf": "2d995be13433d4bcc0b828ecd277fd47a593a1387c2305c572f68dc5cf274d71",
+        "layers/integration/phobos-strike-team/phobos-strike-team-faction-rule-astartes.pdf": "92930b8e878ce1da4b459bdd1cb0257de3d52bb0efa96b11a554986201c42a0e",
+        "layers/integration/phobos-strike-team/phobos-strike-team-faction-rule-multi-spectrum-array.pdf": "32b5d1d4050b22e2807607f15263c055151b44a72f8d45c064434f2b148f60af",
+        "layers/integration/phobos-strike-team/phobos-strike-team-faction-rule-omni-scrambler.pdf": "1c186ee56e1d0faa0b0df4c1bef1c4895e8f71c6ce84d1146b06fe8b64daca0c",
+        "layers/integration/phobos-strike-team/phobos-strike-team-faction-rule-terror.pdf": "8778741942e80cc98204895a1026c064cbdbfa2d2711a87097a5d4b0b3c1284d",
+        "layers/integration/phobos-strike-team/phobos-strike-team-firefight-ploy-critical-shot.pdf": "8d4087de74c799a5f1a3a0bfc94d4b9602f8307e4afbf68030c1a1678bdf5efb",
+        "layers/integration/phobos-strike-team/phobos-strike-team-firefight-ploy-patient-ambush.pdf": "4b427211b1ba6b041d567281e863ff45c4dcd4edb1dee805d5021713495647df",
+        "layers/integration/phobos-strike-team/phobos-strike-team-firefight-ploy-stealth-assault.pdf": "523bc7ffaa1f46b74b9c5ce5cdf63094265a9f44a1130ffa35bde9d9311e59e4",
+        "layers/integration/phobos-strike-team/phobos-strike-team-firefight-ploy-transhuman-physiology.pdf": "01dd8dcf6a41c311b4f3acf700ce462b7f40e802fbed60e589a6046a2dfc048d",
+        "layers/integration/phobos-strike-team/phobos-strike-team-operatives-selection-operative-selection.pdf": "68fae6e93f47a3a47b155fb9bef9b6b4700401fb63ae9d0554092698b79e07c7",
+        "layers/integration/phobos-strike-team/phobos-strike-team-strategy-ploy-and-they-shall-know-no-fear.pdf": "8771ec7d3bee55cf7fbe4a5469edcc6910f84e9baad6066c3e10c8f04ed5d71a",
+        "layers/integration/phobos-strike-team/phobos-strike-team-strategy-ploy-deadly-shots.pdf": "958b984fc94607f0b9a5340bf57915210ce9933e6fbc0750d03131a55911fc02",
+        "layers/integration/phobos-strike-team/phobos-strike-team-strategy-ploy-guerrilla-warfare.pdf": "8ce95dbcaabda06f265e637c8738e5ea61692620087f27c6c0140b8e75c26766",
+        "layers/integration/phobos-strike-team/phobos-strike-team-strategy-ploy-lethal-assaults.pdf": "d27b6652b77b51856e06e615774f582633420b7026b5361b8b29417e0c0a5181",
+        "layers/integration/phobos-strike-team/phobos-strike-team-token-guide-token-guide.pdf": "c09aa8d609b762c852fd53f7e38ecd195b5f061880cfc3624e32fa93010843c4"
+      }
+    },
+    "generate_dice": {
+      "outputs": {
+        "dice-light.jpg": {
+          "path": "output/phobos-strike-team/dice/phobos-strike-team-dice-light.jpg",
+          "hash": "6136c79394dbc52a3b1a62d151c4208f32607c32d98775234ca634d33017245d",
+          "modified": "2026-07-06T16:33:26.733615+00:00"
+        },
+        "dice-dark.jpg": {
+          "path": "output/phobos-strike-team/dice/phobos-strike-team-dice-dark.jpg",
+          "hash": "d98fc1dfe13e407d6a2daa732480fb4969b61eb8849dba1a4f5006d3d6f3678c",
+          "modified": "2026-07-06T16:33:26.744011+00:00"
+        },
+        "dice-team.jpg": {
+          "path": "output/phobos-strike-team/dice/phobos-strike-team-dice-team.jpg",
+          "hash": "d17c67524a88b7d2a77cc14e099255ac9e4294703ffb57db9a3612935f717d03",
+          "modified": "2026-07-06T16:33:26.752365+00:00"
+        }
+      },
+      "completed": "2026-07-06T16:33:26.753681+00:00",
+      "inputs": {
+        "layers/integration/phobos-strike-team/artwork/icons/phobos-strike-team-icon-token-transparent.png": "44e6aa0967da7a43f6cf24e43e2eabaa4b74dd18c58ef8ef145eefcea73197e2",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41"
+      }
+    },
+    "generate_box_texture": {
+      "outputs": {
+        "card-box-texture.jpg": {
+          "path": "output/phobos-strike-team/cardbox/phobos-strike-team-card-box-texture.jpg",
+          "hash": "5032a704987a36f375fac522b88f1770d553d3c9c9171c4c154234f966edae2c",
+          "modified": "2026-07-06T16:33:34.474052+00:00"
+        },
+        "card-box.obj": {
+          "path": "output/phobos-strike-team/cardbox/phobos-strike-team-card-box.obj",
+          "hash": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+          "modified": "2026-07-06T16:33:34.475651+00:00"
+        }
+      },
+      "completed": "2026-07-06T16:33:34.478682+00:00",
+      "inputs": {
+        "layers/integration/phobos-strike-team/artwork/icons/phobos-strike-team-icon-token.jpg": "103afbed63d2e3da12c311efc33f2badc8a6a6bbfc76af0cc8144a5aee2337da",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "config/defaults/box/card-box.obj": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+        "config/defaults/box/card-box-texture.jpg": "b2f310b01a0d28e8806e99ce0b972e8967e3014608eacefcb6ec51597695a313"
+      }
+    },
+    "generate_card_images": {
+      "outputs": {
+        "cards/datacards/incursor-marksman-back.jpg": {
+          "path": "output/phobos-strike-team/cards/datacards/incursor-marksman-back.jpg",
+          "hash": "1e1bf6fa467d6e4261232b90da97943fcad4450858bbbb427f11dd08c5697179",
+          "modified": "2026-07-07T07:25:26.589841+00:00"
+        },
+        "cards/datacards/incursor-marksman-front.jpg": {
+          "path": "output/phobos-strike-team/cards/datacards/incursor-marksman-front.jpg",
+          "hash": "2991bd6ea770813911f9c77e98139ee716b7c82fbab4802a87a391d0fcc6d781",
+          "modified": "2026-07-07T07:25:26.595125+00:00"
+        },
+        "cards/datacards/incursor-minelayer-back.jpg": {
+          "path": "output/phobos-strike-team/cards/datacards/incursor-minelayer-back.jpg",
+          "hash": "1e1bf6fa467d6e4261232b90da97943fcad4450858bbbb427f11dd08c5697179",
+          "modified": "2026-07-07T07:25:26.599570+00:00"
+        },
+        "cards/datacards/incursor-minelayer-front.jpg": {
+          "path": "output/phobos-strike-team/cards/datacards/incursor-minelayer-front.jpg",
+          "hash": "2f86032cfb6890bc09220cda9bf651a27bce13d163b6b383d722607619bf4f04",
+          "modified": "2026-07-07T07:25:26.604352+00:00"
+        },
+        "cards/datacards/incursor-sergeant-back.jpg": {
+          "path": "output/phobos-strike-team/cards/datacards/incursor-sergeant-back.jpg",
+          "hash": "1e1bf6fa467d6e4261232b90da97943fcad4450858bbbb427f11dd08c5697179",
+          "modified": "2026-07-07T07:25:26.608831+00:00"
+        },
+        "cards/datacards/incursor-sergeant-front.jpg": {
+          "path": "output/phobos-strike-team/cards/datacards/incursor-sergeant-front.jpg",
+          "hash": "531deab105957e27dee926fcc979c083d836ae701c10ac66b3030a798472f73b",
+          "modified": "2026-07-07T07:25:26.613531+00:00"
+        },
+        "cards/datacards/incursor-warrior-back.jpg": {
+          "path": "output/phobos-strike-team/cards/datacards/incursor-warrior-back.jpg",
+          "hash": "1e1bf6fa467d6e4261232b90da97943fcad4450858bbbb427f11dd08c5697179",
+          "modified": "2026-07-07T07:25:26.618188+00:00"
+        },
+        "cards/datacards/incursor-warrior-front.jpg": {
+          "path": "output/phobos-strike-team/cards/datacards/incursor-warrior-front.jpg",
+          "hash": "1c321a790e2d61d6b5f30a96b66d3a83d6392e56ea497ba3a82e89bd4e1f3a06",
+          "modified": "2026-07-07T07:25:26.622949+00:00"
+        },
+        "cards/datacards/infiltrator-commsman-back.jpg": {
+          "path": "output/phobos-strike-team/cards/datacards/infiltrator-commsman-back.jpg",
+          "hash": "1e1bf6fa467d6e4261232b90da97943fcad4450858bbbb427f11dd08c5697179",
+          "modified": "2026-07-07T07:25:26.627538+00:00"
+        },
+        "cards/datacards/infiltrator-commsman-front.jpg": {
+          "path": "output/phobos-strike-team/cards/datacards/infiltrator-commsman-front.jpg",
+          "hash": "526c98c93068cb329e48e4aa80e3c2d1fe7aa65db1c1df25350e586451f0d629",
+          "modified": "2026-07-07T07:25:26.632406+00:00"
+        },
+        "cards/datacards/infiltrator-helix-adept-back.jpg": {
+          "path": "output/phobos-strike-team/cards/datacards/infiltrator-helix-adept-back.jpg",
+          "hash": "6f2d98f16832961c19a68c728bc6a63870759e9bc594185da88ef7381e58fbaf",
+          "modified": "2026-07-07T07:25:26.637342+00:00"
+        },
+        "cards/datacards/infiltrator-helix-adept-front.jpg": {
+          "path": "output/phobos-strike-team/cards/datacards/infiltrator-helix-adept-front.jpg",
+          "hash": "e1f7ed902f039830a37d38dca94625012a1c4998570c3eacd98580fa5b5831d3",
+          "modified": "2026-07-07T07:25:26.642375+00:00"
+        },
+        "cards/datacards/infiltrator-saboteur-back.jpg": {
+          "path": "output/phobos-strike-team/cards/datacards/infiltrator-saboteur-back.jpg",
+          "hash": "1e1bf6fa467d6e4261232b90da97943fcad4450858bbbb427f11dd08c5697179",
+          "modified": "2026-07-07T07:25:26.647118+00:00"
+        },
+        "cards/datacards/infiltrator-saboteur-front.jpg": {
+          "path": "output/phobos-strike-team/cards/datacards/infiltrator-saboteur-front.jpg",
+          "hash": "37110e20d57350ff72d76a6d8de9e5331c6ee90a4c0adeb2b0fa428e0dd210c5",
+          "modified": "2026-07-07T07:25:26.652302+00:00"
+        },
+        "cards/datacards/infiltrator-sergeant-back.jpg": {
+          "path": "output/phobos-strike-team/cards/datacards/infiltrator-sergeant-back.jpg",
+          "hash": "1e1bf6fa467d6e4261232b90da97943fcad4450858bbbb427f11dd08c5697179",
+          "modified": "2026-07-07T07:25:26.656773+00:00"
+        },
+        "cards/datacards/infiltrator-sergeant-front.jpg": {
+          "path": "output/phobos-strike-team/cards/datacards/infiltrator-sergeant-front.jpg",
+          "hash": "c8c59233e1ed9e4f3dd5ab594247b7fda5346cf83ee5164752c84f3900cb8edf",
+          "modified": "2026-07-07T07:25:26.661464+00:00"
+        },
+        "cards/datacards/infiltrator-veteran-back.jpg": {
+          "path": "output/phobos-strike-team/cards/datacards/infiltrator-veteran-back.jpg",
+          "hash": "1e1bf6fa467d6e4261232b90da97943fcad4450858bbbb427f11dd08c5697179",
+          "modified": "2026-07-07T07:25:26.666066+00:00"
+        },
+        "cards/datacards/infiltrator-veteran-front.jpg": {
+          "path": "output/phobos-strike-team/cards/datacards/infiltrator-veteran-front.jpg",
+          "hash": "2a11ea86364263b41b68af14e7faf86de8cca60dcdb8fbc551a5947cc271119a",
+          "modified": "2026-07-07T07:25:26.670885+00:00"
+        },
+        "cards/datacards/infiltrator-voxbreaker-back.jpg": {
+          "path": "output/phobos-strike-team/cards/datacards/infiltrator-voxbreaker-back.jpg",
+          "hash": "1e1bf6fa467d6e4261232b90da97943fcad4450858bbbb427f11dd08c5697179",
+          "modified": "2026-07-07T07:25:26.675446+00:00"
+        },
+        "cards/datacards/infiltrator-voxbreaker-front.jpg": {
+          "path": "output/phobos-strike-team/cards/datacards/infiltrator-voxbreaker-front.jpg",
+          "hash": "cd48ef66920f993fc426b26d86641154f2ffc497e2b7ff9f1b9134308de12271",
+          "modified": "2026-07-07T07:25:26.680319+00:00"
+        },
+        "cards/datacards/infiltrator-warrior-back.jpg": {
+          "path": "output/phobos-strike-team/cards/datacards/infiltrator-warrior-back.jpg",
+          "hash": "1e1bf6fa467d6e4261232b90da97943fcad4450858bbbb427f11dd08c5697179",
+          "modified": "2026-07-07T07:25:26.684959+00:00"
+        },
+        "cards/datacards/infiltrator-warrior-front.jpg": {
+          "path": "output/phobos-strike-team/cards/datacards/infiltrator-warrior-front.jpg",
+          "hash": "fe88b79fba062fb1fcfadac571dda35f37692e28ada35370ce17859b88aa5398",
+          "modified": "2026-07-07T07:25:26.689772+00:00"
+        },
+        "cards/datacards/reiver-sergeant-back.jpg": {
+          "path": "output/phobos-strike-team/cards/datacards/reiver-sergeant-back.jpg",
+          "hash": "1e1bf6fa467d6e4261232b90da97943fcad4450858bbbb427f11dd08c5697179",
+          "modified": "2026-07-07T07:25:26.694345+00:00"
+        },
+        "cards/datacards/reiver-sergeant-front.jpg": {
+          "path": "output/phobos-strike-team/cards/datacards/reiver-sergeant-front.jpg",
+          "hash": "80d99b15dda05805cf5a7d54d94c66d5310075393a54a5461de2ee2949c73510",
+          "modified": "2026-07-07T07:25:26.699193+00:00"
+        },
+        "cards/datacards/reiver-warrior-back.jpg": {
+          "path": "output/phobos-strike-team/cards/datacards/reiver-warrior-back.jpg",
+          "hash": "1e1bf6fa467d6e4261232b90da97943fcad4450858bbbb427f11dd08c5697179",
+          "modified": "2026-07-07T07:25:26.703731+00:00"
+        },
+        "cards/datacards/reiver-warrior-front.jpg": {
+          "path": "output/phobos-strike-team/cards/datacards/reiver-warrior-front.jpg",
+          "hash": "61bbc08236b2b39b8beb6bdab5fbd9c10f512dee146a4995360662f4a746146c",
+          "modified": "2026-07-07T07:25:26.708525+00:00"
+        },
+        "cards/equipment/phobos-strike-team-additional-utility-grenades-back.jpg": {
+          "path": "output/phobos-strike-team/cards/equipment/phobos-strike-team-additional-utility-grenades-back.jpg",
+          "hash": "3db7b110c5636685da69431dda1fb06635a3517742348178a9891b4c0698aad5",
+          "modified": "2026-07-07T07:25:26.713464+00:00"
+        },
+        "cards/equipment/phobos-strike-team-additional-utility-grenades-front.jpg": {
+          "path": "output/phobos-strike-team/cards/equipment/phobos-strike-team-additional-utility-grenades-front.jpg",
+          "hash": "9fcb3e39cbb68c35accfdf69bbaa9d12c346d94333b946cfa3a94a185c91ef90",
+          "modified": "2026-07-07T07:25:26.718382+00:00"
+        },
+        "cards/equipment/phobos-strike-team-combat-blades-back.jpg": {
+          "path": "output/phobos-strike-team/cards/equipment/phobos-strike-team-combat-blades-back.jpg",
+          "hash": "3db7b110c5636685da69431dda1fb06635a3517742348178a9891b4c0698aad5",
+          "modified": "2026-07-07T07:25:26.723089+00:00"
+        },
+        "cards/equipment/phobos-strike-team-combat-blades-front.jpg": {
+          "path": "output/phobos-strike-team/cards/equipment/phobos-strike-team-combat-blades-front.jpg",
+          "hash": "640c44a2ec5bfa28071a7123e86ca242b2e34b4b64a07e0ad97c41deac4bddec",
+          "modified": "2026-07-07T07:25:26.727866+00:00"
+        },
+        "cards/equipment/phobos-strike-team-purity-seals-back.jpg": {
+          "path": "output/phobos-strike-team/cards/equipment/phobos-strike-team-purity-seals-back.jpg",
+          "hash": "3db7b110c5636685da69431dda1fb06635a3517742348178a9891b4c0698aad5",
+          "modified": "2026-07-07T07:25:26.732476+00:00"
+        },
+        "cards/equipment/phobos-strike-team-purity-seals-front.jpg": {
+          "path": "output/phobos-strike-team/cards/equipment/phobos-strike-team-purity-seals-front.jpg",
+          "hash": "26b6f5554e53062b5a31c89ebcf30ed4912825669ec2be221d63211f9c538dae",
+          "modified": "2026-07-07T07:25:26.737303+00:00"
+        },
+        "cards/equipment/phobos-strike-team-special-issue-ammunition-back.jpg": {
+          "path": "output/phobos-strike-team/cards/equipment/phobos-strike-team-special-issue-ammunition-back.jpg",
+          "hash": "3db7b110c5636685da69431dda1fb06635a3517742348178a9891b4c0698aad5",
+          "modified": "2026-07-07T07:25:26.741939+00:00"
+        },
+        "cards/equipment/phobos-strike-team-special-issue-ammunition-front.jpg": {
+          "path": "output/phobos-strike-team/cards/equipment/phobos-strike-team-special-issue-ammunition-front.jpg",
+          "hash": "42ef79eeae5ea616d5292f13b6c2538c640d51d7be14009a1bd2b0395bed46a7",
+          "modified": "2026-07-07T07:25:26.746877+00:00"
+        },
+        "cards/faction_rules/phobos-strike-team-astartes-back.jpg": {
+          "path": "output/phobos-strike-team/cards/faction_rules/phobos-strike-team-astartes-back.jpg",
+          "hash": "3db7b110c5636685da69431dda1fb06635a3517742348178a9891b4c0698aad5",
+          "modified": "2026-07-07T07:25:26.751705+00:00"
+        },
+        "cards/faction_rules/phobos-strike-team-astartes-front.jpg": {
+          "path": "output/phobos-strike-team/cards/faction_rules/phobos-strike-team-astartes-front.jpg",
+          "hash": "aa1c75eab44aa2306db397c12ba085fe2bc2feaef796801bca2192efdf969c68",
+          "modified": "2026-07-07T07:25:26.756738+00:00"
+        },
+        "cards/faction_rules/phobos-strike-team-multi-spectrum-array-back.jpg": {
+          "path": "output/phobos-strike-team/cards/faction_rules/phobos-strike-team-multi-spectrum-array-back.jpg",
+          "hash": "3db7b110c5636685da69431dda1fb06635a3517742348178a9891b4c0698aad5",
+          "modified": "2026-07-07T07:25:26.761783+00:00"
+        },
+        "cards/faction_rules/phobos-strike-team-multi-spectrum-array-front.jpg": {
+          "path": "output/phobos-strike-team/cards/faction_rules/phobos-strike-team-multi-spectrum-array-front.jpg",
+          "hash": "ef470907e83f28746037aa0fa86e2987daa4875c435c52582c0ed11527488b4c",
+          "modified": "2026-07-07T07:25:26.766508+00:00"
+        },
+        "cards/faction_rules/phobos-strike-team-omni-scrambler-back.jpg": {
+          "path": "output/phobos-strike-team/cards/faction_rules/phobos-strike-team-omni-scrambler-back.jpg",
+          "hash": "3db7b110c5636685da69431dda1fb06635a3517742348178a9891b4c0698aad5",
+          "modified": "2026-07-07T07:25:26.771096+00:00"
+        },
+        "cards/faction_rules/phobos-strike-team-omni-scrambler-front.jpg": {
+          "path": "output/phobos-strike-team/cards/faction_rules/phobos-strike-team-omni-scrambler-front.jpg",
+          "hash": "6fa422bb637cfd9241cd5f06b14413aa194d832fc4680bc895697d068c614337",
+          "modified": "2026-07-07T07:25:26.776091+00:00"
+        },
+        "cards/faction_rules/phobos-strike-team-terror-back.jpg": {
+          "path": "output/phobos-strike-team/cards/faction_rules/phobos-strike-team-terror-back.jpg",
+          "hash": "3db7b110c5636685da69431dda1fb06635a3517742348178a9891b4c0698aad5",
+          "modified": "2026-07-07T07:25:26.780758+00:00"
+        },
+        "cards/faction_rules/phobos-strike-team-terror-front.jpg": {
+          "path": "output/phobos-strike-team/cards/faction_rules/phobos-strike-team-terror-front.jpg",
+          "hash": "ba4c61a136b5585acdccef5b0215e973b971908e04d242ae24ebd20c8c238a7c",
+          "modified": "2026-07-07T07:25:26.785616+00:00"
+        },
+        "cards/firefight_ploys/phobos-strike-team-critical-shot-back.jpg": {
+          "path": "output/phobos-strike-team/cards/firefight_ploys/phobos-strike-team-critical-shot-back.jpg",
+          "hash": "3db7b110c5636685da69431dda1fb06635a3517742348178a9891b4c0698aad5",
+          "modified": "2026-07-07T07:25:26.790271+00:00"
+        },
+        "cards/firefight_ploys/phobos-strike-team-critical-shot-front.jpg": {
+          "path": "output/phobos-strike-team/cards/firefight_ploys/phobos-strike-team-critical-shot-front.jpg",
+          "hash": "698ae534087160e43b54f93e783d83391757f4f235ad034ffaed92f5bc5dcb54",
+          "modified": "2026-07-07T07:25:26.795092+00:00"
+        },
+        "cards/firefight_ploys/phobos-strike-team-patient-ambush-back.jpg": {
+          "path": "output/phobos-strike-team/cards/firefight_ploys/phobos-strike-team-patient-ambush-back.jpg",
+          "hash": "3db7b110c5636685da69431dda1fb06635a3517742348178a9891b4c0698aad5",
+          "modified": "2026-07-07T07:25:26.799771+00:00"
+        },
+        "cards/firefight_ploys/phobos-strike-team-patient-ambush-front.jpg": {
+          "path": "output/phobos-strike-team/cards/firefight_ploys/phobos-strike-team-patient-ambush-front.jpg",
+          "hash": "c0780350f45133c59faebb2ae2b6475defd0bceb90f4470e08816bf0b1e5f520",
+          "modified": "2026-07-07T07:25:26.804573+00:00"
+        },
+        "cards/firefight_ploys/phobos-strike-team-stealth-assault-back.jpg": {
+          "path": "output/phobos-strike-team/cards/firefight_ploys/phobos-strike-team-stealth-assault-back.jpg",
+          "hash": "3db7b110c5636685da69431dda1fb06635a3517742348178a9891b4c0698aad5",
+          "modified": "2026-07-07T07:25:26.809272+00:00"
+        },
+        "cards/firefight_ploys/phobos-strike-team-stealth-assault-front.jpg": {
+          "path": "output/phobos-strike-team/cards/firefight_ploys/phobos-strike-team-stealth-assault-front.jpg",
+          "hash": "14904e9891d0e02e8a3c6a03afc2c19f806ffb71919701bc7d0b9f0a1a5a0c57",
+          "modified": "2026-07-07T07:25:26.814165+00:00"
+        },
+        "cards/firefight_ploys/phobos-strike-team-transhuman-physiology-back.jpg": {
+          "path": "output/phobos-strike-team/cards/firefight_ploys/phobos-strike-team-transhuman-physiology-back.jpg",
+          "hash": "3db7b110c5636685da69431dda1fb06635a3517742348178a9891b4c0698aad5",
+          "modified": "2026-07-07T07:25:26.818822+00:00"
+        },
+        "cards/firefight_ploys/phobos-strike-team-transhuman-physiology-front.jpg": {
+          "path": "output/phobos-strike-team/cards/firefight_ploys/phobos-strike-team-transhuman-physiology-front.jpg",
+          "hash": "7d1dd8513b1e3f6084c633fa73ea7df4cc9beab8d55cefdbb21cc3fce549b2f8",
+          "modified": "2026-07-07T07:25:26.823636+00:00"
+        },
+        "cards/operatives_selection/phobos-strike-team-operative-selection-back.jpg": {
+          "path": "output/phobos-strike-team/cards/operatives_selection/phobos-strike-team-operative-selection-back.jpg",
+          "hash": "e5673f7cc25a05d0ab3c44b00eb0b10d365b8a8a87ca5872f71b9c30f3db721e",
+          "modified": "2026-07-07T07:25:26.828455+00:00"
+        },
+        "cards/operatives_selection/phobos-strike-team-operative-selection-front.jpg": {
+          "path": "output/phobos-strike-team/cards/operatives_selection/phobos-strike-team-operative-selection-front.jpg",
+          "hash": "70fa57ac077ea0b80da6db35914050c6194a748e71c902fcc4777f296032a593",
+          "modified": "2026-07-07T07:25:26.833364+00:00"
+        },
+        "cards/strategy_ploys/phobos-strike-team-and-they-shall-know-no-fear-back.jpg": {
+          "path": "output/phobos-strike-team/cards/strategy_ploys/phobos-strike-team-and-they-shall-know-no-fear-back.jpg",
+          "hash": "3db7b110c5636685da69431dda1fb06635a3517742348178a9891b4c0698aad5",
+          "modified": "2026-07-07T07:25:26.837960+00:00"
+        },
+        "cards/strategy_ploys/phobos-strike-team-and-they-shall-know-no-fear-front.jpg": {
+          "path": "output/phobos-strike-team/cards/strategy_ploys/phobos-strike-team-and-they-shall-know-no-fear-front.jpg",
+          "hash": "f9e72da1b0639176ea7640824443caf4e6cff31ea32da8f98459541c4c649c5f",
+          "modified": "2026-07-07T07:25:26.842742+00:00"
+        },
+        "cards/strategy_ploys/phobos-strike-team-deadly-shots-back.jpg": {
+          "path": "output/phobos-strike-team/cards/strategy_ploys/phobos-strike-team-deadly-shots-back.jpg",
+          "hash": "3db7b110c5636685da69431dda1fb06635a3517742348178a9891b4c0698aad5",
+          "modified": "2026-07-07T07:25:26.847394+00:00"
+        },
+        "cards/strategy_ploys/phobos-strike-team-deadly-shots-front.jpg": {
+          "path": "output/phobos-strike-team/cards/strategy_ploys/phobos-strike-team-deadly-shots-front.jpg",
+          "hash": "43b5ac2d3165b225164c2496f4a4e7de029ad3c8a754619dc8693349dc2efb81",
+          "modified": "2026-07-07T07:25:26.852250+00:00"
+        },
+        "cards/strategy_ploys/phobos-strike-team-guerrilla-warfare-back.jpg": {
+          "path": "output/phobos-strike-team/cards/strategy_ploys/phobos-strike-team-guerrilla-warfare-back.jpg",
+          "hash": "3db7b110c5636685da69431dda1fb06635a3517742348178a9891b4c0698aad5",
+          "modified": "2026-07-07T07:25:26.857099+00:00"
+        },
+        "cards/strategy_ploys/phobos-strike-team-guerrilla-warfare-front.jpg": {
+          "path": "output/phobos-strike-team/cards/strategy_ploys/phobos-strike-team-guerrilla-warfare-front.jpg",
+          "hash": "16a0bd858d37e4b934e0ff5502437602000d0953d9186e0c6deba54b9fdf3b83",
+          "modified": "2026-07-07T07:25:26.862171+00:00"
+        },
+        "cards/strategy_ploys/phobos-strike-team-lethal-assaults-back.jpg": {
+          "path": "output/phobos-strike-team/cards/strategy_ploys/phobos-strike-team-lethal-assaults-back.jpg",
+          "hash": "3db7b110c5636685da69431dda1fb06635a3517742348178a9891b4c0698aad5",
+          "modified": "2026-07-07T07:25:26.867085+00:00"
+        },
+        "cards/strategy_ploys/phobos-strike-team-lethal-assaults-front.jpg": {
+          "path": "output/phobos-strike-team/cards/strategy_ploys/phobos-strike-team-lethal-assaults-front.jpg",
+          "hash": "46aa4861a29e753b3ecce319fa1d9189e2befb0d8e710e8e19237c35317d4716",
+          "modified": "2026-07-07T07:25:26.871885+00:00"
+        },
+        "cards/token_guide/phobos-strike-team-token-guide-back.jpg": {
+          "path": "output/phobos-strike-team/cards/token_guide/phobos-strike-team-token-guide-back.jpg",
+          "hash": "3db7b110c5636685da69431dda1fb06635a3517742348178a9891b4c0698aad5",
+          "modified": "2026-07-07T07:25:26.876401+00:00"
+        },
+        "cards/token_guide/phobos-strike-team-token-guide-front.jpg": {
+          "path": "output/phobos-strike-team/cards/token_guide/phobos-strike-team-token-guide-front.jpg",
+          "hash": "56998ba15afdc4046625ab6aeaede1d1778b440cf869b6caa5244a18942c04d4",
+          "modified": "2026-07-07T07:25:26.881192+00:00"
+        }
+      },
+      "completed": "2026-07-07T07:25:26.926815+00:00",
+      "inputs": {
+        "layers/integration/phobos-strike-team/manifest.json": "00a990f3092e05d0fff9eef979f97a8db637df34b48280bb7823f19ecd989b84",
+        "layers/integration/phobos-strike-team/phobos-strike-team-datacard-incursor-marksman.pdf": "4c800095b0df48840a2ac96a898b961dd436e2d53db7a803de0655e4e847eaf4",
+        "layers/integration/phobos-strike-team/phobos-strike-team-datacard-incursor-minelayer.pdf": "9a8115db878c932d218d0d0714f803a1a571cda138e144186d258220552587e2",
+        "layers/integration/phobos-strike-team/phobos-strike-team-datacard-incursor-sergeant.pdf": "17d8da71a18a181ca8c3834a1de82deaf267234d34c847c5f96b7c7874f6fbe8",
+        "layers/integration/phobos-strike-team/phobos-strike-team-datacard-incursor-warrior.pdf": "37309a3dab765a9e21280a323505e995b2f40896f055a6e0f0f6d6164d63b020",
+        "layers/integration/phobos-strike-team/phobos-strike-team-datacard-infiltrator-commsman.pdf": "169e930ef2e6faf1f4e9e84b9a763209c643ffd64c36dfad1372bbac2bbd2282",
+        "layers/integration/phobos-strike-team/phobos-strike-team-datacard-infiltrator-helix-adept.pdf": "f760b6e06d23999b6677a878a0041a70a78454ccd2ebafb11fef264b7ea2c49a",
+        "layers/integration/phobos-strike-team/phobos-strike-team-datacard-infiltrator-saboteur.pdf": "fd9958eed6aac0e82385c31dfd0ab11a41e155b2ed5f592d1f7fe8c341b7fbf4",
+        "layers/integration/phobos-strike-team/phobos-strike-team-datacard-infiltrator-sergeant.pdf": "da2d10bef75dfcada0c3fa94491bffade7f38ba8356b183c8f8a91b221756528",
+        "layers/integration/phobos-strike-team/phobos-strike-team-datacard-infiltrator-veteran.pdf": "f4630078d7c79c6013c1ebd2c49c88ccbc95f825d2ee8eaf0995adc5c03d12c3",
+        "layers/integration/phobos-strike-team/phobos-strike-team-datacard-infiltrator-voxbreaker.pdf": "e2bc1b5b8f62992b73e8f65df6f00d1f4f2201ae8e68c44122105d2752755402",
+        "layers/integration/phobos-strike-team/phobos-strike-team-datacard-infiltrator-warrior.pdf": "5d4cafa0f9ca7ac5d8a7abddb32730dc3848678d29c0777f3e141845b27386f5",
+        "layers/integration/phobos-strike-team/phobos-strike-team-datacard-reiver-sergeant.pdf": "3158932d2333e09151a60db9d98b01103ded49248e3086b03eae30c1cd4345ab",
+        "layers/integration/phobos-strike-team/phobos-strike-team-datacard-reiver-warrior.pdf": "c6c53b4739bd3801611e2f913c12fce99454f7a791a7c5cface1f1c8e5aea5eb",
+        "layers/integration/phobos-strike-team/phobos-strike-team-equipment-additional-utility-grenades.pdf": "bf3c4914eadd55cc7446f7c26a56935d448b38e2b67194ba1482ac3cdc09a817",
+        "layers/integration/phobos-strike-team/phobos-strike-team-equipment-combat-blades.pdf": "6257e9a2187fffb8dd6d2d730644f8b58a4da96666975709006a64fc00535a0f",
+        "layers/integration/phobos-strike-team/phobos-strike-team-equipment-purity-seals.pdf": "3d252b89160790b5760006c8d14dd90032e8c495ce0521820ab2069eb72aa9b2",
+        "layers/integration/phobos-strike-team/phobos-strike-team-equipment-special-issue-ammunition.pdf": "2d995be13433d4bcc0b828ecd277fd47a593a1387c2305c572f68dc5cf274d71",
+        "layers/integration/phobos-strike-team/phobos-strike-team-faction-rule-astartes.pdf": "92930b8e878ce1da4b459bdd1cb0257de3d52bb0efa96b11a554986201c42a0e",
+        "layers/integration/phobos-strike-team/phobos-strike-team-faction-rule-multi-spectrum-array.pdf": "32b5d1d4050b22e2807607f15263c055151b44a72f8d45c064434f2b148f60af",
+        "layers/integration/phobos-strike-team/phobos-strike-team-faction-rule-omni-scrambler.pdf": "1c186ee56e1d0faa0b0df4c1bef1c4895e8f71c6ce84d1146b06fe8b64daca0c",
+        "layers/integration/phobos-strike-team/phobos-strike-team-faction-rule-terror.pdf": "8778741942e80cc98204895a1026c064cbdbfa2d2711a87097a5d4b0b3c1284d",
+        "layers/integration/phobos-strike-team/phobos-strike-team-firefight-ploy-critical-shot.pdf": "8d4087de74c799a5f1a3a0bfc94d4b9602f8307e4afbf68030c1a1678bdf5efb",
+        "layers/integration/phobos-strike-team/phobos-strike-team-firefight-ploy-patient-ambush.pdf": "4b427211b1ba6b041d567281e863ff45c4dcd4edb1dee805d5021713495647df",
+        "layers/integration/phobos-strike-team/phobos-strike-team-firefight-ploy-stealth-assault.pdf": "523bc7ffaa1f46b74b9c5ce5cdf63094265a9f44a1130ffa35bde9d9311e59e4",
+        "layers/integration/phobos-strike-team/phobos-strike-team-firefight-ploy-transhuman-physiology.pdf": "01dd8dcf6a41c311b4f3acf700ce462b7f40e802fbed60e589a6046a2dfc048d",
+        "layers/integration/phobos-strike-team/phobos-strike-team-operatives-selection-operative-selection.pdf": "68fae6e93f47a3a47b155fb9bef9b6b4700401fb63ae9d0554092698b79e07c7",
+        "layers/integration/phobos-strike-team/phobos-strike-team-strategy-ploy-and-they-shall-know-no-fear.pdf": "8771ec7d3bee55cf7fbe4a5469edcc6910f84e9baad6066c3e10c8f04ed5d71a",
+        "layers/integration/phobos-strike-team/phobos-strike-team-strategy-ploy-deadly-shots.pdf": "958b984fc94607f0b9a5340bf57915210ce9933e6fbc0750d03131a55911fc02",
+        "layers/integration/phobos-strike-team/phobos-strike-team-strategy-ploy-guerrilla-warfare.pdf": "8ce95dbcaabda06f265e637c8738e5ea61692620087f27c6c0140b8e75c26766",
+        "layers/integration/phobos-strike-team/phobos-strike-team-strategy-ploy-lethal-assaults.pdf": "d27b6652b77b51856e06e615774f582633420b7026b5361b8b29417e0c0a5181",
+        "layers/integration/phobos-strike-team/phobos-strike-team-token-guide-token-guide.pdf": "c09aa8d609b762c852fd53f7e38ecd195b5f061880cfc3624e32fa93010843c4",
+        "layers/integration/phobos-strike-team/card-backside/phobos-strike-team-backside-portrait.jpg": "3db7b110c5636685da69431dda1fb06635a3517742348178a9891b4c0698aad5",
+        "config/defaults/card-backside/default-backside-portrait.jpg": "f00ff15fa70005b9f804de08519e2e83485d7eaf78dfacea65dcef0eb1a29c22",
+        "layers/integration/phobos-strike-team/card-backside/phobos-strike-team-backside-landscape.jpg": "1e1bf6fa467d6e4261232b90da97943fcad4450858bbbb427f11dd08c5697179",
+        "config/defaults/card-backside/default-backside-landscape.jpg": "1cf5580a1dff0c10adb1a286edad4479c487f3d2d698b0b8be84fe653039fd7e"
+      }
+    },
+    "extract_stats": {
+      "outputs": {
+        "team-data.json": {
+          "path": "output/phobos-strike-team/data/phobos-strike-team-team-data.json",
+          "hash": "dec641d27e0c056c7e126300c2d28809048e923ce2d308c4ece6a8d40f4b006f",
+          "modified": "2026-07-07T07:29:45.133979+00:00"
+        }
+      },
+      "completed": "2026-07-07T07:29:45.134455+00:00",
+      "inputs": {
+        "layers/integration/phobos-strike-team/content/phobos-strike-team-content.json": "dec641d27e0c056c7e126300c2d28809048e923ce2d308c4ece6a8d40f4b006f"
+      }
+    },
+    "generate_tts": {
+      "outputs": {
+        "tts_objects/Phobos Strike Team Box.json": {
+          "path": "output/phobos-strike-team/tts_objects/Phobos Strike Team Box.json",
+          "hash": "3c7cf90a9f4acc98c77b206720de3cb14b31bd26ef82a59d22b68dbea83651d3",
+          "modified": "2026-07-07T07:30:00.909250+00:00"
+        },
+        "tts_objects/Phobos Strike Team.json": {
+          "path": "output/phobos-strike-team/tts_objects/Phobos Strike Team.json",
+          "hash": "16d1d66741d25e3b22fbf92b2f946869295fae701ce94129b19c6802d0d0704b",
+          "modified": "2026-07-07T07:30:00.919235+00:00"
+        }
+      },
+      "completed": "2026-07-07T07:30:00.970187+00:00",
+      "inputs": {
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "config/team-guids.json": "1dea0eaf2c7d1c37c86aba088cdf876f0638d2dcaca162888fea8422c2d5c9db",
+        "output/phobos-strike-team/cards/datacards/incursor-marksman-back.jpg": "1e1bf6fa467d6e4261232b90da97943fcad4450858bbbb427f11dd08c5697179",
+        "output/phobos-strike-team/cards/datacards/incursor-marksman-front.jpg": "2991bd6ea770813911f9c77e98139ee716b7c82fbab4802a87a391d0fcc6d781",
+        "output/phobos-strike-team/cards/datacards/incursor-minelayer-back.jpg": "1e1bf6fa467d6e4261232b90da97943fcad4450858bbbb427f11dd08c5697179",
+        "output/phobos-strike-team/cards/datacards/incursor-minelayer-front.jpg": "2f86032cfb6890bc09220cda9bf651a27bce13d163b6b383d722607619bf4f04",
+        "output/phobos-strike-team/cards/datacards/incursor-sergeant-back.jpg": "1e1bf6fa467d6e4261232b90da97943fcad4450858bbbb427f11dd08c5697179",
+        "output/phobos-strike-team/cards/datacards/incursor-sergeant-front.jpg": "531deab105957e27dee926fcc979c083d836ae701c10ac66b3030a798472f73b",
+        "output/phobos-strike-team/cards/datacards/incursor-warrior-back.jpg": "1e1bf6fa467d6e4261232b90da97943fcad4450858bbbb427f11dd08c5697179",
+        "output/phobos-strike-team/cards/datacards/incursor-warrior-front.jpg": "1c321a790e2d61d6b5f30a96b66d3a83d6392e56ea497ba3a82e89bd4e1f3a06",
+        "output/phobos-strike-team/cards/datacards/infiltrator-commsman-back.jpg": "1e1bf6fa467d6e4261232b90da97943fcad4450858bbbb427f11dd08c5697179",
+        "output/phobos-strike-team/cards/datacards/infiltrator-commsman-front.jpg": "526c98c93068cb329e48e4aa80e3c2d1fe7aa65db1c1df25350e586451f0d629",
+        "output/phobos-strike-team/cards/datacards/infiltrator-helix-adept-back.jpg": "6f2d98f16832961c19a68c728bc6a63870759e9bc594185da88ef7381e58fbaf",
+        "output/phobos-strike-team/cards/datacards/infiltrator-helix-adept-front.jpg": "e1f7ed902f039830a37d38dca94625012a1c4998570c3eacd98580fa5b5831d3",
+        "output/phobos-strike-team/cards/datacards/infiltrator-saboteur-back.jpg": "1e1bf6fa467d6e4261232b90da97943fcad4450858bbbb427f11dd08c5697179",
+        "output/phobos-strike-team/cards/datacards/infiltrator-saboteur-front.jpg": "37110e20d57350ff72d76a6d8de9e5331c6ee90a4c0adeb2b0fa428e0dd210c5",
+        "output/phobos-strike-team/cards/datacards/infiltrator-sergeant-back.jpg": "1e1bf6fa467d6e4261232b90da97943fcad4450858bbbb427f11dd08c5697179",
+        "output/phobos-strike-team/cards/datacards/infiltrator-sergeant-front.jpg": "c8c59233e1ed9e4f3dd5ab594247b7fda5346cf83ee5164752c84f3900cb8edf",
+        "output/phobos-strike-team/cards/datacards/infiltrator-veteran-back.jpg": "1e1bf6fa467d6e4261232b90da97943fcad4450858bbbb427f11dd08c5697179",
+        "output/phobos-strike-team/cards/datacards/infiltrator-veteran-front.jpg": "2a11ea86364263b41b68af14e7faf86de8cca60dcdb8fbc551a5947cc271119a",
+        "output/phobos-strike-team/cards/datacards/infiltrator-voxbreaker-back.jpg": "1e1bf6fa467d6e4261232b90da97943fcad4450858bbbb427f11dd08c5697179",
+        "output/phobos-strike-team/cards/datacards/infiltrator-voxbreaker-front.jpg": "cd48ef66920f993fc426b26d86641154f2ffc497e2b7ff9f1b9134308de12271",
+        "output/phobos-strike-team/cards/datacards/infiltrator-warrior-back.jpg": "1e1bf6fa467d6e4261232b90da97943fcad4450858bbbb427f11dd08c5697179",
+        "output/phobos-strike-team/cards/datacards/infiltrator-warrior-front.jpg": "fe88b79fba062fb1fcfadac571dda35f37692e28ada35370ce17859b88aa5398",
+        "output/phobos-strike-team/cards/datacards/reiver-sergeant-back.jpg": "1e1bf6fa467d6e4261232b90da97943fcad4450858bbbb427f11dd08c5697179",
+        "output/phobos-strike-team/cards/datacards/reiver-sergeant-front.jpg": "80d99b15dda05805cf5a7d54d94c66d5310075393a54a5461de2ee2949c73510",
+        "output/phobos-strike-team/cards/datacards/reiver-warrior-back.jpg": "1e1bf6fa467d6e4261232b90da97943fcad4450858bbbb427f11dd08c5697179",
+        "output/phobos-strike-team/cards/datacards/reiver-warrior-front.jpg": "61bbc08236b2b39b8beb6bdab5fbd9c10f512dee146a4995360662f4a746146c",
+        "output/phobos-strike-team/cards/equipment/phobos-strike-team-additional-utility-grenades-back.jpg": "3db7b110c5636685da69431dda1fb06635a3517742348178a9891b4c0698aad5",
+        "output/phobos-strike-team/cards/equipment/phobos-strike-team-additional-utility-grenades-front.jpg": "9fcb3e39cbb68c35accfdf69bbaa9d12c346d94333b946cfa3a94a185c91ef90",
+        "output/phobos-strike-team/cards/equipment/phobos-strike-team-combat-blades-back.jpg": "3db7b110c5636685da69431dda1fb06635a3517742348178a9891b4c0698aad5",
+        "output/phobos-strike-team/cards/equipment/phobos-strike-team-combat-blades-front.jpg": "640c44a2ec5bfa28071a7123e86ca242b2e34b4b64a07e0ad97c41deac4bddec",
+        "output/phobos-strike-team/cards/equipment/phobos-strike-team-purity-seals-back.jpg": "3db7b110c5636685da69431dda1fb06635a3517742348178a9891b4c0698aad5",
+        "output/phobos-strike-team/cards/equipment/phobos-strike-team-purity-seals-front.jpg": "26b6f5554e53062b5a31c89ebcf30ed4912825669ec2be221d63211f9c538dae",
+        "output/phobos-strike-team/cards/equipment/phobos-strike-team-special-issue-ammunition-back.jpg": "3db7b110c5636685da69431dda1fb06635a3517742348178a9891b4c0698aad5",
+        "output/phobos-strike-team/cards/equipment/phobos-strike-team-special-issue-ammunition-front.jpg": "42ef79eeae5ea616d5292f13b6c2538c640d51d7be14009a1bd2b0395bed46a7",
+        "output/phobos-strike-team/cards/faction_rules/phobos-strike-team-astartes-back.jpg": "3db7b110c5636685da69431dda1fb06635a3517742348178a9891b4c0698aad5",
+        "output/phobos-strike-team/cards/faction_rules/phobos-strike-team-astartes-front.jpg": "aa1c75eab44aa2306db397c12ba085fe2bc2feaef796801bca2192efdf969c68",
+        "output/phobos-strike-team/cards/faction_rules/phobos-strike-team-multi-spectrum-array-back.jpg": "3db7b110c5636685da69431dda1fb06635a3517742348178a9891b4c0698aad5",
+        "output/phobos-strike-team/cards/faction_rules/phobos-strike-team-multi-spectrum-array-front.jpg": "ef470907e83f28746037aa0fa86e2987daa4875c435c52582c0ed11527488b4c",
+        "output/phobos-strike-team/cards/faction_rules/phobos-strike-team-omni-scrambler-back.jpg": "3db7b110c5636685da69431dda1fb06635a3517742348178a9891b4c0698aad5",
+        "output/phobos-strike-team/cards/faction_rules/phobos-strike-team-omni-scrambler-front.jpg": "6fa422bb637cfd9241cd5f06b14413aa194d832fc4680bc895697d068c614337",
+        "output/phobos-strike-team/cards/faction_rules/phobos-strike-team-terror-back.jpg": "3db7b110c5636685da69431dda1fb06635a3517742348178a9891b4c0698aad5",
+        "output/phobos-strike-team/cards/faction_rules/phobos-strike-team-terror-front.jpg": "ba4c61a136b5585acdccef5b0215e973b971908e04d242ae24ebd20c8c238a7c",
+        "output/phobos-strike-team/cards/firefight_ploys/phobos-strike-team-critical-shot-back.jpg": "3db7b110c5636685da69431dda1fb06635a3517742348178a9891b4c0698aad5",
+        "output/phobos-strike-team/cards/firefight_ploys/phobos-strike-team-critical-shot-front.jpg": "698ae534087160e43b54f93e783d83391757f4f235ad034ffaed92f5bc5dcb54",
+        "output/phobos-strike-team/cards/firefight_ploys/phobos-strike-team-patient-ambush-back.jpg": "3db7b110c5636685da69431dda1fb06635a3517742348178a9891b4c0698aad5",
+        "output/phobos-strike-team/cards/firefight_ploys/phobos-strike-team-patient-ambush-front.jpg": "c0780350f45133c59faebb2ae2b6475defd0bceb90f4470e08816bf0b1e5f520",
+        "output/phobos-strike-team/cards/firefight_ploys/phobos-strike-team-stealth-assault-back.jpg": "3db7b110c5636685da69431dda1fb06635a3517742348178a9891b4c0698aad5",
+        "output/phobos-strike-team/cards/firefight_ploys/phobos-strike-team-stealth-assault-front.jpg": "14904e9891d0e02e8a3c6a03afc2c19f806ffb71919701bc7d0b9f0a1a5a0c57",
+        "output/phobos-strike-team/cards/firefight_ploys/phobos-strike-team-transhuman-physiology-back.jpg": "3db7b110c5636685da69431dda1fb06635a3517742348178a9891b4c0698aad5",
+        "output/phobos-strike-team/cards/firefight_ploys/phobos-strike-team-transhuman-physiology-front.jpg": "7d1dd8513b1e3f6084c633fa73ea7df4cc9beab8d55cefdbb21cc3fce549b2f8",
+        "output/phobos-strike-team/cards/operatives_selection/phobos-strike-team-operative-selection-back.jpg": "e5673f7cc25a05d0ab3c44b00eb0b10d365b8a8a87ca5872f71b9c30f3db721e",
+        "output/phobos-strike-team/cards/operatives_selection/phobos-strike-team-operative-selection-front.jpg": "70fa57ac077ea0b80da6db35914050c6194a748e71c902fcc4777f296032a593",
+        "output/phobos-strike-team/cards/strategy_ploys/phobos-strike-team-and-they-shall-know-no-fear-back.jpg": "3db7b110c5636685da69431dda1fb06635a3517742348178a9891b4c0698aad5",
+        "output/phobos-strike-team/cards/strategy_ploys/phobos-strike-team-and-they-shall-know-no-fear-front.jpg": "f9e72da1b0639176ea7640824443caf4e6cff31ea32da8f98459541c4c649c5f",
+        "output/phobos-strike-team/cards/strategy_ploys/phobos-strike-team-deadly-shots-back.jpg": "3db7b110c5636685da69431dda1fb06635a3517742348178a9891b4c0698aad5",
+        "output/phobos-strike-team/cards/strategy_ploys/phobos-strike-team-deadly-shots-front.jpg": "43b5ac2d3165b225164c2496f4a4e7de029ad3c8a754619dc8693349dc2efb81",
+        "output/phobos-strike-team/cards/strategy_ploys/phobos-strike-team-guerrilla-warfare-back.jpg": "3db7b110c5636685da69431dda1fb06635a3517742348178a9891b4c0698aad5",
+        "output/phobos-strike-team/cards/strategy_ploys/phobos-strike-team-guerrilla-warfare-front.jpg": "16a0bd858d37e4b934e0ff5502437602000d0953d9186e0c6deba54b9fdf3b83",
+        "output/phobos-strike-team/cards/strategy_ploys/phobos-strike-team-lethal-assaults-back.jpg": "3db7b110c5636685da69431dda1fb06635a3517742348178a9891b4c0698aad5",
+        "output/phobos-strike-team/cards/strategy_ploys/phobos-strike-team-lethal-assaults-front.jpg": "46aa4861a29e753b3ecce319fa1d9189e2befb0d8e710e8e19237c35317d4716",
+        "output/phobos-strike-team/cards/token_guide/phobos-strike-team-token-guide-back.jpg": "3db7b110c5636685da69431dda1fb06635a3517742348178a9891b4c0698aad5",
+        "output/phobos-strike-team/cards/token_guide/phobos-strike-team-token-guide-front.jpg": "56998ba15afdc4046625ab6aeaede1d1778b440cf869b6caa5244a18942c04d4",
+        "output/phobos-strike-team/cardbox/phobos-strike-team-card-box-texture.jpg": "5032a704987a36f375fac522b88f1770d553d3c9c9171c4c154234f966edae2c",
+        "output/phobos-strike-team/cardbox/phobos-strike-team-card-box.obj": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+        "output/phobos-strike-team/tokens/phobos-strike-team-auspex-scan.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/phobos-strike-team/tokens/phobos-strike-team-auspex-scan.png": "0d9e385021f49bfba0b67663beb70f806844435927a59a3dff81d494e867ad57",
+        "output/phobos-strike-team/tokens/phobos-strike-team-explosives.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/phobos-strike-team/tokens/phobos-strike-team-explosives.png": "c5cbf1132299ae2b70be3c1401672845cfa1846e18d1a3ed8a25932201460734",
+        "output/phobos-strike-team/tokens/phobos-strike-team-haywire-mine.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/phobos-strike-team/tokens/phobos-strike-team-haywire-mine.png": "6d65c0874f4fe9e040a93e5f8b1a1fd4c40b227bf93abcb4507f1aed75a1b0a6",
+        "output/phobos-strike-team/tokens/phobos-strike-team-medic.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/phobos-strike-team/tokens/phobos-strike-team-medic.png": "f8997703cfe9f3f524bca5ab9357b5e5e2e2220fc432e5efa5c732f18ec16c0d",
+        "output/phobos-strike-team/tokens/phobos-strike-team-omni-scrambler.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/phobos-strike-team/tokens/phobos-strike-team-omni-scrambler.png": "42746d7177f38fccab1a9ceccd04f75dc4287dc01999aa163db44f9c3ab03751",
+        "output/phobos-strike-team/tokens/phobos-strike-team-purity-seals.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/phobos-strike-team/tokens/phobos-strike-team-purity-seals.png": "68814b4c3aacda7300103c76bc769be6b333f5626b7fbd50fdb12d83ad1f2ef7",
+        "output/phobos-strike-team/tokens/phobos-strike-team-remote-detonator.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/phobos-strike-team/tokens/phobos-strike-team-remote-detonator.png": "410959277b913bd404fada5d1438ed1213b3de4256abfc97d54c13b0e1bce0a3",
+        "output/phobos-strike-team/tokens/phobos-strike-team-special-issue-ammunition.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/phobos-strike-team/tokens/phobos-strike-team-special-issue-ammunition.png": "cc6441da80f9657534a2617fb160f2af30a3a99719eb3c233f191ca6be13e9fe",
+        "output/phobos-strike-team/tokens/phobos-strike-team-tactical-advantage.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/phobos-strike-team/tokens/phobos-strike-team-tactical-advantage.png": "7b88433ddedf5cf2540db50a626682140548d738cb168ca1883b70476f7f6aea",
+        "output/phobos-strike-team/tokens/phobos-strike-team-vanguard.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/phobos-strike-team/tokens/phobos-strike-team-vanguard.png": "44d1086b95de025d70483828028900eba2453cb194803c3af5d7394e63064636",
+        "output/phobos-strike-team/tokens/tokenbag/phobos-strike-team-token-bag-icon.png": "103afbed63d2e3da12c311efc33f2badc8a6a6bbfc76af0cc8144a5aee2337da",
+        "output/phobos-strike-team/tokens/tokenbag/phobos-strike-team-token-bag.obj": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+        "output/phobos-strike-team/dice/phobos-strike-team-dice-dark.jpg": "d98fc1dfe13e407d6a2daa732480fb4969b61eb8849dba1a4f5006d3d6f3678c",
+        "output/phobos-strike-team/dice/phobos-strike-team-dice-light.jpg": "6136c79394dbc52a3b1a62d151c4208f32607c32d98775234ca634d33017245d",
+        "output/phobos-strike-team/dice/phobos-strike-team-dice-team.jpg": "d17c67524a88b7d2a77cc14e099255ac9e4294703ffb57db9a3612935f717d03",
+        "output/phobos-strike-team/data/phobos-strike-team-team-data.json": "dec641d27e0c056c7e126300c2d28809048e923ce2d308c4ece6a8d40f4b006f",
+        "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
+        "config/defaults/tts-script/datacard-load-stats.lua": "2d5f4088c2ff09f54988cf8722080f536b4e1b998cc2b4c1f1ea94e6b18eb92e",
+        "config/defaults/tts-script/display-table-manager-script.lua": "0dab4381078d90802f25e2cc825bc3658be35ee13ab3e98831c9d248c2526689",
+        "config/defaults/tts-script/faction-rule-chapter-tactics.lua": "c906742268076fb91f7cb4a92c6b588e1122ccddb692688f635c8dd4f7110ad0",
+        "config/defaults/tts-script/intermediate-updater.lua": "1a2d6dbc1a8c9c57ba6a3e7a3d4bc4b7a38a6c242a93f6ef3dae698123384d35",
+        "config/defaults/tts-script/single-object-updater.lua": "3613b85169e986a8e50ebe221482079e27c18037e3f48920aa0f7e138c0ccacc",
+        "config/defaults/tts-script/team-spawner-clean-script.lua": "12457bff3961eee2293c42d81cf4f4eb8b103177245a1ab8b46fd65da40672a2",
+        "config/defaults/tts-script/team-spawner-script.lua": "a51ff45c8622923db909fb465781801511f235412f099f83dff728d4027650db",
+        "config/defaults/tts-script/tts-update-rules-in-box-script.lua": "1eddd1803087ed63181a1149c856db77eef3196dc45d0d283693fada44a357dd",
+        "config/defaults/tts-image/default-icon.png": "892aff2628b9685c813e77be05c66afc1dc4247bc1dc9ce6fe54f006c2608271",
+        "config/defaults/tts-image/spawner-token.png": "61903b093f01d834f5e4c4c069b1353ecf7d29f012fef914b3027266816d8a6b",
+        "config/defaults/tts-token/square-bag-mesh.obj": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+        "config/defaults/tts-token/template-diamond-cutter.png": "719f57ba2b86494be454a6d3d25d8567dde974a915f3dde5ddc0e2d8dafaa1a5",
+        "config/defaults/tts-token/template-octagon-cutter.png": "944632aeacab978293ae57758b63086166c5fbaf3b845f48b3dd61db67d5c076",
+        "config/defaults/tts-token/template-operative-cutter.png": "0e698ddd403d7f0e84f200eb42af73f5249a9c5539d773298ff4c700ac9fe153",
+        "config/defaults/tts-token/template-round-cutter.png": "6564e1451c9a135a1c756fd94cde1c71e373e3fa677b51bba9d4bbe9e795d544",
+        "config/defaults/tts-token/token-bag-script.lua": "1659887e0fbfb9e3ebbc1aa5f3df8e1ffd89ee192be24d2dd1f02fcb0407e486",
+        "config/defaults/tts-token/token-bg-sample.png": "f9f90664c7f1c877c6f050f6e85babde6523cdc0aed9c77de8c09214f44ee109",
+        "config/defaults/tts-token/token-mesh.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc"
+      }
+    },
+    "front_end": {
+      "outputs": {},
+      "sources": {
+        "firefight-ploys": {
+          "hash": "62c2f846af3ff4057d39dcbd9b0abb4119d511d2c0b5717a118aae68015675ee",
+          "outputs": [
+            "layers/kt-app/extracted/phobos-strike-team/cards/firefight-ploys/phobos-strike-team-firefight-ploys-page_0.pdf",
+            "layers/kt-app/extracted/phobos-strike-team/cards/firefight-ploys/phobos-strike-team-firefight-ploys-page_1.pdf",
+            "layers/kt-app/extracted/phobos-strike-team/cards/firefight-ploys/phobos-strike-team-firefight-ploys-page_2.pdf",
+            "layers/kt-app/extracted/phobos-strike-team/cards/firefight-ploys/phobos-strike-team-firefight-ploys-page_3.pdf"
+          ],
+          "modified": "2026-07-06T15:59:56.779051+00:00"
+        },
+        "strategy-ploys": {
+          "hash": "5f68be6900aa9d2758dc2ad3a3f4d85432b2b452651e0ed32cbcccf62221ed1e",
+          "outputs": [
+            "layers/kt-app/extracted/phobos-strike-team/cards/strategy-ploys/phobos-strike-team-strategy-ploys-page_0.pdf",
+            "layers/kt-app/extracted/phobos-strike-team/cards/strategy-ploys/phobos-strike-team-strategy-ploys-page_1.pdf",
+            "layers/kt-app/extracted/phobos-strike-team/cards/strategy-ploys/phobos-strike-team-strategy-ploys-page_2.pdf",
+            "layers/kt-app/extracted/phobos-strike-team/cards/strategy-ploys/phobos-strike-team-strategy-ploys-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:01:55.083301+00:00"
+        },
+        "datacards": {
+          "hash": "08279eae855eb2a559af0d0a924a091eb461be4786861fbfe23cf20e5dbe9993",
+          "outputs": [
+            "layers/kt-app/extracted/phobos-strike-team/cards/datacards/phobos-strike-team-datacards-page_0.pdf",
+            "layers/kt-app/extracted/phobos-strike-team/cards/datacards/phobos-strike-team-datacards-page_1.pdf",
+            "layers/kt-app/extracted/phobos-strike-team/cards/datacards/phobos-strike-team-datacards-page_2.pdf",
+            "layers/kt-app/extracted/phobos-strike-team/cards/datacards/phobos-strike-team-datacards-page_3.pdf",
+            "layers/kt-app/extracted/phobos-strike-team/cards/datacards/phobos-strike-team-datacards-page_4.pdf",
+            "layers/kt-app/extracted/phobos-strike-team/cards/datacards/phobos-strike-team-datacards-page_5.pdf",
+            "layers/kt-app/extracted/phobos-strike-team/cards/datacards/phobos-strike-team-datacards-page_6.pdf",
+            "layers/kt-app/extracted/phobos-strike-team/cards/datacards/phobos-strike-team-datacards-page_7.pdf",
+            "layers/kt-app/extracted/phobos-strike-team/cards/datacards/phobos-strike-team-datacards-page_8.pdf",
+            "layers/kt-app/extracted/phobos-strike-team/cards/datacards/phobos-strike-team-datacards-page_9.pdf",
+            "layers/kt-app/extracted/phobos-strike-team/cards/datacards/phobos-strike-team-datacards-page_10.pdf",
+            "layers/kt-app/extracted/phobos-strike-team/cards/datacards/phobos-strike-team-datacards-page_11.pdf",
+            "layers/kt-app/extracted/phobos-strike-team/cards/datacards/phobos-strike-team-datacards-page_12.pdf",
+            "layers/kt-app/extracted/phobos-strike-team/cards/datacards/phobos-strike-team-datacards-page_13.pdf"
+          ],
+          "modified": "2026-07-06T16:04:49.669858+00:00"
+        },
+        "faction-rules": {
+          "hash": "75d5f9a913e983ea153832ca8103858cca9e7b5420366584fe0a71670fb1950b",
+          "outputs": [
+            "layers/kt-app/extracted/phobos-strike-team/cards/faction-rules/phobos-strike-team-faction-rules-page_0.pdf",
+            "layers/kt-app/extracted/phobos-strike-team/cards/faction-rules/phobos-strike-team-faction-rules-page_1.pdf",
+            "layers/kt-app/extracted/phobos-strike-team/cards/faction-rules/phobos-strike-team-faction-rules-page_2.pdf",
+            "layers/kt-app/extracted/phobos-strike-team/cards/faction-rules/phobos-strike-team-faction-rules-page_3.pdf",
+            "layers/kt-app/extracted/phobos-strike-team/cards/faction-rules/phobos-strike-team-faction-rules-page_4.pdf"
+          ],
+          "modified": "2026-07-06T16:05:28.654147+00:00"
+        },
+        "operatives-selection": {
+          "hash": "97f68b5790f3d7dee28016c6d53a026db9de6a4ebba8d664d73880cf623a109b",
+          "outputs": [
+            "layers/kt-app/extracted/phobos-strike-team/cards/operatives-selection/phobos-strike-team-operatives-selection-page_0.pdf",
+            "layers/kt-app/extracted/phobos-strike-team/cards/operatives-selection/phobos-strike-team-operatives-selection-page_1.pdf"
+          ],
+          "modified": "2026-07-06T16:08:13.630236+00:00"
+        },
+        "equipment": {
+          "hash": "0e1c065652aafa84a17bf6a81d9b636a555787fb39730ed4e7b958935be2fe1e",
+          "outputs": [
+            "layers/kt-app/extracted/phobos-strike-team/cards/equipment/phobos-strike-team-equipment-page_0.pdf",
+            "layers/kt-app/extracted/phobos-strike-team/cards/equipment/phobos-strike-team-equipment-page_1.pdf",
+            "layers/kt-app/extracted/phobos-strike-team/cards/equipment/phobos-strike-team-equipment-page_2.pdf",
+            "layers/kt-app/extracted/phobos-strike-team/cards/equipment/phobos-strike-team-equipment-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:08:37.153728+00:00"
+        },
+        "cards": {
+          "hash": "56b10a4fb1b97cb43c453759485a770083289aa67c8d482b454af3b87009f1e5",
+          "outputs": [
+            "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page01_card1_landscape.pdf",
+            "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page01_card2_landscape.pdf",
+            "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page01_card3_landscape.pdf",
+            "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page01_card4_landscape.pdf",
+            "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page02_card1_landscape.pdf",
+            "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page02_card2_landscape.pdf",
+            "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page02_card3_landscape.pdf",
+            "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page02_card4_landscape.pdf",
+            "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page03_card1_landscape.pdf",
+            "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page03_card2_landscape.pdf",
+            "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page03_card3_landscape.pdf",
+            "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page03_card4_landscape.pdf",
+            "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page04_card1_landscape.pdf",
+            "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page04_card2_landscape.pdf",
+            "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page04_card3_landscape.pdf",
+            "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page04_card4_landscape.pdf",
+            "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page05_card1_portrait.pdf",
+            "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page05_card2_portrait.pdf",
+            "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page05_card3_portrait.pdf",
+            "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page05_card4_portrait.pdf",
+            "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page06_card1_portrait.pdf",
+            "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page06_card2_portrait.pdf",
+            "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page06_card3_portrait.pdf",
+            "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page06_card4_portrait.pdf",
+            "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page07_card1_portrait.pdf",
+            "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page07_card2_portrait.pdf",
+            "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page07_card3_portrait.pdf",
+            "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page07_card4_portrait.pdf",
+            "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page08_card1_portrait.pdf",
+            "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page08_card2_portrait.pdf",
+            "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page08_card3_portrait.pdf",
+            "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page08_card4_portrait.pdf",
+            "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page09_card1_portrait.pdf",
+            "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page09_card2_portrait.pdf",
+            "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page09_card3_portrait.pdf",
+            "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page09_card4_portrait.pdf"
+          ],
+          "modified": "2026-07-06T20:38:43.482956+00:00"
+        }
+      },
+      "completed": "2026-07-06T20:38:43.483019+00:00"
+    },
+    "build_structure": {
+      "outputs": {
+        "structure": {
+          "path": "layers/warcom/structure/phobos-strike-team-structure.json",
+          "hash": "00a990f3092e05d0fff9eef979f97a8db637df34b48280bb7823f19ecd989b84",
+          "modified": "2026-07-06T20:57:11.674548+00:00"
+        }
+      },
+      "inputs": {
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page01_card1_landscape.pdf": "8ac45b397620198c686dc02ebeec0ddbc4a232a380c6bce9c6c4c1819e8cb3dc",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page01_card2_landscape.pdf": "d4441b0dbdd5c093fc2398f2e3f6b9771113784a2b9976c72a1f66f753213d38",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page01_card3_landscape.pdf": "35b2f2b07ad98e7cf6e260f8e737da6f702c77d2d2f0dfc0d5435f81f5a5fe4c",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page01_card4_landscape.pdf": "e5cf35b76bc506d5c6f92a5825768a2e885bc48cf423b41867dfc36b4e878cbf",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page02_card1_landscape.pdf": "3dd01e1c463dff788e0202b953153986f56c4dfbb22735b1f860f7ed25c4074e",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page02_card2_landscape.pdf": "86b7233e833b5e62568d13ad8d7e382bdb25abcd45bbf632521fffc8c9675113",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page02_card3_landscape.pdf": "575f7cbb1e6d8ff1437c83a905e63288a63ca6bf99496a94e158e9b7c426f175",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page02_card4_landscape.pdf": "9d9c70cea05663997dfe398a96da8e2afd54fa0783e25d24a5322861fd552db7",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page03_card1_landscape.pdf": "e0836246aab4a16c0299ed4a7d655f4a7fb62d9912e8d026f47f664f9641dd40",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page03_card2_landscape.pdf": "c4762cb69b5acb1fdfa06db11f2e1e0c9169180922744a0aa7f6b6f24ef7bdf7",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page03_card3_landscape.pdf": "f9a3d06135ede05a1c69c17c074520ad8ec3daa45132ea26104e653435c18f9f",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page03_card4_landscape.pdf": "a3c8e34f80eef1af2ecf03659280fed54b3119e229029f6b1e8787cb83172a30",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page04_card1_landscape.pdf": "c33c66a05e98e147aca8352e72b722e8980bee9188947ada28a513eee4769d57",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page04_card2_landscape.pdf": "60e363cbdcdf1cc2ced8985a33f533df25aad5f1e0ff1dae6f3a214eec2ddd41",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page04_card3_landscape.pdf": "618e64e6d840fc0445ae41ce1de4862e9ee08aaafafe3f4c11544dce5d069af1",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page04_card4_landscape.pdf": "0ea576da61aa6cce730313258e758641d979f7913b725e6cde0363b810ea4ddc",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page05_card1_portrait.pdf": "dd780f4a604bbd77eb260b19f8d3771075d867024bd83d2985f5745c9a6e3158",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page05_card2_portrait.pdf": "79e3cf39adb7dfceff0aae6bdff40878d1a0ec29b2bcaf34376df1f364e999a1",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page05_card3_portrait.pdf": "24d089a142b023f27811fc3fcf69c98685a32e5c9e9d8c753be7c226c57283d1",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page05_card4_portrait.pdf": "ed2faefd4994cc84772c2ff00fa121ebad57901f1b4a753d5307880d5115e35c",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page06_card1_portrait.pdf": "a16b82482491cfad6dd9da0dffd335a14090c8d0f774fe484491e8bdd0359d97",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page06_card2_portrait.pdf": "3f1667a6f0d5473c613f8a67b224a6f050d9679a31686d15082ff8221b441a27",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page06_card3_portrait.pdf": "81224425fbef2479a7ec2fee70cd5fdc257fd5a403bfcf0be89690db51c6374b",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page06_card4_portrait.pdf": "d997c0fc1da1f81c6692f60c48f57a506524eb68a08ce725b5cd2d6d904ccddb",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page07_card1_portrait.pdf": "8de48074ca35836ce0268c5b786db6d93d62ac36191bac01b4695c7cbee8933b",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page07_card2_portrait.pdf": "19397a4b925e9b5f926760bd644f6b8bb2b351633f9a7f2644e664811a2292b3",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page07_card3_portrait.pdf": "40aac4293c0d2a36da70e3eb49b8e33284ff08906d0ee6fd123aeaea89aa4837",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page07_card4_portrait.pdf": "b73748678feda487d74a4dae1af95ae82e47a56794c893cba59a9830c80cc968",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page08_card1_portrait.pdf": "bbda2b3d490295ea4aea4320c14ef070e8e7b16a45327cc40ba9abeeeb22cd2b",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page08_card2_portrait.pdf": "61542698f92a8bc6fabc168d06a40c1c4d2ce76a6d3610470e4196f7347c6085",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page08_card3_portrait.pdf": "8e2e88225debe928ada37dc18eec1bc92b871525421d6e25f1038bf37163fce6",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page08_card4_portrait.pdf": "cbe57a48347dbd7ba3fbc334b9946ffdf00513d9ba8e21da6c99aefedf9dd5e4",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page09_card1_portrait.pdf": "390e7457548f6a250cf4c6c028de007ff6eeb7e601aebced2d49cfb51adb9b5f",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page09_card2_portrait.pdf": "c6525635c0233e2836a4d20932454174df5516caa57b815de4e89894f549d9a7",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page09_card3_portrait.pdf": "b2a85427ea4c520fc2c738832b8056e519090e69f9518cc62de4abbc55daa78a",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page09_card4_portrait.pdf": "83ff99bb98ac2799cd52f0b0e1049b5a4c505360632e598f94d2eb64d306a2aa"
+      },
+      "completed": "2026-07-06T20:57:11.721015+00:00"
+    },
+    "integrate_classified": {
+      "outputs": {
+        "manifest.json": {
+          "path": "layers/integration/phobos-strike-team/manifest.json",
+          "hash": "00a990f3092e05d0fff9eef979f97a8db637df34b48280bb7823f19ecd989b84",
+          "modified": "2026-07-06T20:57:46.029384+00:00"
+        },
+        "phobos-strike-team-datacard-infiltrator-sergeant.pdf": {
+          "path": "layers/integration/phobos-strike-team/phobos-strike-team-datacard-infiltrator-sergeant.pdf",
+          "hash": "da2d10bef75dfcada0c3fa94491bffade7f38ba8356b183c8f8a91b221756528",
+          "modified": "2026-07-06T20:57:46.039140+00:00"
+        },
+        "phobos-strike-team-datacard-infiltrator-commsman.pdf": {
+          "path": "layers/integration/phobos-strike-team/phobos-strike-team-datacard-infiltrator-commsman.pdf",
+          "hash": "169e930ef2e6faf1f4e9e84b9a763209c643ffd64c36dfad1372bbac2bbd2282",
+          "modified": "2026-07-06T20:57:46.048612+00:00"
+        },
+        "phobos-strike-team-datacard-infiltrator-helix-adept.pdf": {
+          "path": "layers/integration/phobos-strike-team/phobos-strike-team-datacard-infiltrator-helix-adept.pdf",
+          "hash": "f760b6e06d23999b6677a878a0041a70a78454ccd2ebafb11fef264b7ea2c49a",
+          "modified": "2026-07-06T20:57:46.059534+00:00"
+        },
+        "phobos-strike-team-datacard-infiltrator-saboteur.pdf": {
+          "path": "layers/integration/phobos-strike-team/phobos-strike-team-datacard-infiltrator-saboteur.pdf",
+          "hash": "fd9958eed6aac0e82385c31dfd0ab11a41e155b2ed5f592d1f7fe8c341b7fbf4",
+          "modified": "2026-07-06T20:57:46.070649+00:00"
+        },
+        "phobos-strike-team-datacard-infiltrator-veteran.pdf": {
+          "path": "layers/integration/phobos-strike-team/phobos-strike-team-datacard-infiltrator-veteran.pdf",
+          "hash": "f4630078d7c79c6013c1ebd2c49c88ccbc95f825d2ee8eaf0995adc5c03d12c3",
+          "modified": "2026-07-06T20:57:46.079848+00:00"
+        },
+        "phobos-strike-team-datacard-infiltrator-voxbreaker.pdf": {
+          "path": "layers/integration/phobos-strike-team/phobos-strike-team-datacard-infiltrator-voxbreaker.pdf",
+          "hash": "e2bc1b5b8f62992b73e8f65df6f00d1f4f2201ae8e68c44122105d2752755402",
+          "modified": "2026-07-06T20:57:46.090059+00:00"
+        },
+        "phobos-strike-team-datacard-infiltrator-warrior.pdf": {
+          "path": "layers/integration/phobos-strike-team/phobos-strike-team-datacard-infiltrator-warrior.pdf",
+          "hash": "5d4cafa0f9ca7ac5d8a7abddb32730dc3848678d29c0777f3e141845b27386f5",
+          "modified": "2026-07-06T20:57:46.099945+00:00"
+        },
+        "phobos-strike-team-datacard-incursor-sergeant.pdf": {
+          "path": "layers/integration/phobos-strike-team/phobos-strike-team-datacard-incursor-sergeant.pdf",
+          "hash": "17d8da71a18a181ca8c3834a1de82deaf267234d34c847c5f96b7c7874f6fbe8",
+          "modified": "2026-07-06T20:57:46.110492+00:00"
+        },
+        "phobos-strike-team-datacard-incursor-marksman.pdf": {
+          "path": "layers/integration/phobos-strike-team/phobos-strike-team-datacard-incursor-marksman.pdf",
+          "hash": "4c800095b0df48840a2ac96a898b961dd436e2d53db7a803de0655e4e847eaf4",
+          "modified": "2026-07-06T20:57:46.121467+00:00"
+        },
+        "phobos-strike-team-datacard-incursor-minelayer.pdf": {
+          "path": "layers/integration/phobos-strike-team/phobos-strike-team-datacard-incursor-minelayer.pdf",
+          "hash": "9a8115db878c932d218d0d0714f803a1a571cda138e144186d258220552587e2",
+          "modified": "2026-07-06T20:57:46.132797+00:00"
+        },
+        "phobos-strike-team-datacard-incursor-warrior.pdf": {
+          "path": "layers/integration/phobos-strike-team/phobos-strike-team-datacard-incursor-warrior.pdf",
+          "hash": "37309a3dab765a9e21280a323505e995b2f40896f055a6e0f0f6d6164d63b020",
+          "modified": "2026-07-06T20:57:46.143494+00:00"
+        },
+        "phobos-strike-team-datacard-reiver-sergeant.pdf": {
+          "path": "layers/integration/phobos-strike-team/phobos-strike-team-datacard-reiver-sergeant.pdf",
+          "hash": "3158932d2333e09151a60db9d98b01103ded49248e3086b03eae30c1cd4345ab",
+          "modified": "2026-07-06T20:57:46.155459+00:00"
+        },
+        "phobos-strike-team-datacard-reiver-warrior.pdf": {
+          "path": "layers/integration/phobos-strike-team/phobos-strike-team-datacard-reiver-warrior.pdf",
+          "hash": "c6c53b4739bd3801611e2f913c12fce99454f7a791a7c5cface1f1c8e5aea5eb",
+          "modified": "2026-07-06T20:57:46.166048+00:00"
+        },
+        "phobos-strike-team-equipment-purity-seals.pdf": {
+          "path": "layers/integration/phobos-strike-team/phobos-strike-team-equipment-purity-seals.pdf",
+          "hash": "3d252b89160790b5760006c8d14dd90032e8c495ce0521820ab2069eb72aa9b2",
+          "modified": "2026-07-06T20:57:46.175248+00:00"
+        },
+        "phobos-strike-team-equipment-additional-utility-grenades.pdf": {
+          "path": "layers/integration/phobos-strike-team/phobos-strike-team-equipment-additional-utility-grenades.pdf",
+          "hash": "bf3c4914eadd55cc7446f7c26a56935d448b38e2b67194ba1482ac3cdc09a817",
+          "modified": "2026-07-06T20:57:46.187452+00:00"
+        },
+        "phobos-strike-team-equipment-combat-blades.pdf": {
+          "path": "layers/integration/phobos-strike-team/phobos-strike-team-equipment-combat-blades.pdf",
+          "hash": "6257e9a2187fffb8dd6d2d730644f8b58a4da96666975709006a64fc00535a0f",
+          "modified": "2026-07-06T20:57:46.200067+00:00"
+        },
+        "phobos-strike-team-equipment-special-issue-ammunition.pdf": {
+          "path": "layers/integration/phobos-strike-team/phobos-strike-team-equipment-special-issue-ammunition.pdf",
+          "hash": "2d995be13433d4bcc0b828ecd277fd47a593a1387c2305c572f68dc5cf274d71",
+          "modified": "2026-07-06T20:57:46.209986+00:00"
+        },
+        "phobos-strike-team-faction-rule-omni-scrambler.pdf": {
+          "path": "layers/integration/phobos-strike-team/phobos-strike-team-faction-rule-omni-scrambler.pdf",
+          "hash": "1c186ee56e1d0faa0b0df4c1bef1c4895e8f71c6ce84d1146b06fe8b64daca0c",
+          "modified": "2026-07-06T20:57:46.220148+00:00"
+        },
+        "phobos-strike-team-faction-rule-terror.pdf": {
+          "path": "layers/integration/phobos-strike-team/phobos-strike-team-faction-rule-terror.pdf",
+          "hash": "8778741942e80cc98204895a1026c064cbdbfa2d2711a87097a5d4b0b3c1284d",
+          "modified": "2026-07-06T20:57:46.228888+00:00"
+        },
+        "phobos-strike-team-faction-rule-astartes.pdf": {
+          "path": "layers/integration/phobos-strike-team/phobos-strike-team-faction-rule-astartes.pdf",
+          "hash": "92930b8e878ce1da4b459bdd1cb0257de3d52bb0efa96b11a554986201c42a0e",
+          "modified": "2026-07-06T20:57:46.240145+00:00"
+        },
+        "phobos-strike-team-faction-rule-multi-spectrum-array.pdf": {
+          "path": "layers/integration/phobos-strike-team/phobos-strike-team-faction-rule-multi-spectrum-array.pdf",
+          "hash": "32b5d1d4050b22e2807607f15263c055151b44a72f8d45c064434f2b148f60af",
+          "modified": "2026-07-06T20:57:46.252477+00:00"
+        },
+        "phobos-strike-team-token-guide-token-guide.pdf": {
+          "path": "layers/integration/phobos-strike-team/phobos-strike-team-token-guide-token-guide.pdf",
+          "hash": "c09aa8d609b762c852fd53f7e38ecd195b5f061880cfc3624e32fa93010843c4",
+          "modified": "2026-07-06T20:57:46.265253+00:00"
+        },
+        "phobos-strike-team-firefight-ploy-patient-ambush.pdf": {
+          "path": "layers/integration/phobos-strike-team/phobos-strike-team-firefight-ploy-patient-ambush.pdf",
+          "hash": "4b427211b1ba6b041d567281e863ff45c4dcd4edb1dee805d5021713495647df",
+          "modified": "2026-07-06T20:57:46.274463+00:00"
+        },
+        "phobos-strike-team-firefight-ploy-critical-shot.pdf": {
+          "path": "layers/integration/phobos-strike-team/phobos-strike-team-firefight-ploy-critical-shot.pdf",
+          "hash": "8d4087de74c799a5f1a3a0bfc94d4b9602f8307e4afbf68030c1a1678bdf5efb",
+          "modified": "2026-07-06T20:57:46.284442+00:00"
+        },
+        "phobos-strike-team-firefight-ploy-transhuman-physiology.pdf": {
+          "path": "layers/integration/phobos-strike-team/phobos-strike-team-firefight-ploy-transhuman-physiology.pdf",
+          "hash": "01dd8dcf6a41c311b4f3acf700ce462b7f40e802fbed60e589a6046a2dfc048d",
+          "modified": "2026-07-06T20:57:46.295202+00:00"
+        },
+        "phobos-strike-team-firefight-ploy-stealth-assault.pdf": {
+          "path": "layers/integration/phobos-strike-team/phobos-strike-team-firefight-ploy-stealth-assault.pdf",
+          "hash": "523bc7ffaa1f46b74b9c5ce5cdf63094265a9f44a1130ffa35bde9d9311e59e4",
+          "modified": "2026-07-06T20:57:46.305054+00:00"
+        },
+        "phobos-strike-team-operatives-selection-operative-selection.pdf": {
+          "path": "layers/integration/phobos-strike-team/phobos-strike-team-operatives-selection-operative-selection.pdf",
+          "hash": "68fae6e93f47a3a47b155fb9bef9b6b4700401fb63ae9d0554092698b79e07c7",
+          "modified": "2026-07-06T20:57:46.317347+00:00"
+        },
+        "phobos-strike-team-strategy-ploy-guerrilla-warfare.pdf": {
+          "path": "layers/integration/phobos-strike-team/phobos-strike-team-strategy-ploy-guerrilla-warfare.pdf",
+          "hash": "8ce95dbcaabda06f265e637c8738e5ea61692620087f27c6c0140b8e75c26766",
+          "modified": "2026-07-06T20:57:46.327556+00:00"
+        },
+        "phobos-strike-team-strategy-ploy-and-they-shall-know-no-fear.pdf": {
+          "path": "layers/integration/phobos-strike-team/phobos-strike-team-strategy-ploy-and-they-shall-know-no-fear.pdf",
+          "hash": "8771ec7d3bee55cf7fbe4a5469edcc6910f84e9baad6066c3e10c8f04ed5d71a",
+          "modified": "2026-07-06T20:57:46.339089+00:00"
+        },
+        "phobos-strike-team-strategy-ploy-deadly-shots.pdf": {
+          "path": "layers/integration/phobos-strike-team/phobos-strike-team-strategy-ploy-deadly-shots.pdf",
+          "hash": "958b984fc94607f0b9a5340bf57915210ce9933e6fbc0750d03131a55911fc02",
+          "modified": "2026-07-06T20:57:46.349402+00:00"
+        },
+        "phobos-strike-team-strategy-ploy-lethal-assaults.pdf": {
+          "path": "layers/integration/phobos-strike-team/phobos-strike-team-strategy-ploy-lethal-assaults.pdf",
+          "hash": "d27b6652b77b51856e06e615774f582633420b7026b5361b8b29417e0c0a5181",
+          "modified": "2026-07-06T20:57:46.358197+00:00"
+        }
+      },
+      "inputs": {
+        "layers/warcom/structure/phobos-strike-team-structure.json": "00a990f3092e05d0fff9eef979f97a8db637df34b48280bb7823f19ecd989b84",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page01_card1_landscape.pdf": "8ac45b397620198c686dc02ebeec0ddbc4a232a380c6bce9c6c4c1819e8cb3dc",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page01_card2_landscape.pdf": "d4441b0dbdd5c093fc2398f2e3f6b9771113784a2b9976c72a1f66f753213d38",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page01_card3_landscape.pdf": "35b2f2b07ad98e7cf6e260f8e737da6f702c77d2d2f0dfc0d5435f81f5a5fe4c",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page01_card4_landscape.pdf": "e5cf35b76bc506d5c6f92a5825768a2e885bc48cf423b41867dfc36b4e878cbf",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page02_card1_landscape.pdf": "3dd01e1c463dff788e0202b953153986f56c4dfbb22735b1f860f7ed25c4074e",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page02_card2_landscape.pdf": "86b7233e833b5e62568d13ad8d7e382bdb25abcd45bbf632521fffc8c9675113",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page02_card3_landscape.pdf": "575f7cbb1e6d8ff1437c83a905e63288a63ca6bf99496a94e158e9b7c426f175",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page02_card4_landscape.pdf": "9d9c70cea05663997dfe398a96da8e2afd54fa0783e25d24a5322861fd552db7",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page03_card1_landscape.pdf": "e0836246aab4a16c0299ed4a7d655f4a7fb62d9912e8d026f47f664f9641dd40",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page03_card2_landscape.pdf": "c4762cb69b5acb1fdfa06db11f2e1e0c9169180922744a0aa7f6b6f24ef7bdf7",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page03_card3_landscape.pdf": "f9a3d06135ede05a1c69c17c074520ad8ec3daa45132ea26104e653435c18f9f",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page03_card4_landscape.pdf": "a3c8e34f80eef1af2ecf03659280fed54b3119e229029f6b1e8787cb83172a30",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page04_card1_landscape.pdf": "c33c66a05e98e147aca8352e72b722e8980bee9188947ada28a513eee4769d57",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page04_card2_landscape.pdf": "60e363cbdcdf1cc2ced8985a33f533df25aad5f1e0ff1dae6f3a214eec2ddd41",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page08_card4_portrait.pdf": "cbe57a48347dbd7ba3fbc334b9946ffdf00513d9ba8e21da6c99aefedf9dd5e4",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page09_card1_portrait.pdf": "390e7457548f6a250cf4c6c028de007ff6eeb7e601aebced2d49cfb51adb9b5f",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page09_card2_portrait.pdf": "c6525635c0233e2836a4d20932454174df5516caa57b815de4e89894f549d9a7",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page09_card3_portrait.pdf": "b2a85427ea4c520fc2c738832b8056e519090e69f9518cc62de4abbc55daa78a",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page05_card3_portrait.pdf": "24d089a142b023f27811fc3fcf69c98685a32e5c9e9d8c753be7c226c57283d1",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page05_card4_portrait.pdf": "ed2faefd4994cc84772c2ff00fa121ebad57901f1b4a753d5307880d5115e35c",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page06_card1_portrait.pdf": "a16b82482491cfad6dd9da0dffd335a14090c8d0f774fe484491e8bdd0359d97",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page06_card2_portrait.pdf": "3f1667a6f0d5473c613f8a67b224a6f050d9679a31686d15082ff8221b441a27",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page06_card3_portrait.pdf": "81224425fbef2479a7ec2fee70cd5fdc257fd5a403bfcf0be89690db51c6374b",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page07_card4_portrait.pdf": "b73748678feda487d74a4dae1af95ae82e47a56794c893cba59a9830c80cc968",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page08_card1_portrait.pdf": "bbda2b3d490295ea4aea4320c14ef070e8e7b16a45327cc40ba9abeeeb22cd2b",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page08_card2_portrait.pdf": "61542698f92a8bc6fabc168d06a40c1c4d2ce76a6d3610470e4196f7347c6085",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page08_card3_portrait.pdf": "8e2e88225debe928ada37dc18eec1bc92b871525421d6e25f1038bf37163fce6",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page05_card1_portrait.pdf": "dd780f4a604bbd77eb260b19f8d3771075d867024bd83d2985f5745c9a6e3158",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page05_card2_portrait.pdf": "79e3cf39adb7dfceff0aae6bdff40878d1a0ec29b2bcaf34376df1f364e999a1",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page06_card4_portrait.pdf": "d997c0fc1da1f81c6692f60c48f57a506524eb68a08ce725b5cd2d6d904ccddb",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page07_card1_portrait.pdf": "8de48074ca35836ce0268c5b786db6d93d62ac36191bac01b4695c7cbee8933b",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page07_card2_portrait.pdf": "19397a4b925e9b5f926760bd644f6b8bb2b351633f9a7f2644e664811a2292b3",
+        "layers/warcom/extracted/phobos-strike-team/cards/phobos-strike-team_page07_card3_portrait.pdf": "40aac4293c0d2a36da70e3eb49b8e33284ff08906d0ee6fd123aeaea89aa4837"
+      },
+      "completed": "2026-07-06T20:57:46.403051+00:00"
+    },
+    "extract_artwork": {
+      "outputs": {},
+      "sources": {
+        "artwork": {
+          "hash": "56b10a4fb1b97cb43c453759485a770083289aa67c8d482b454af3b87009f1e5",
+          "outputs": [
+            "layers/integration/phobos-strike-team/artwork/phobos-strike-team-artwork-01.jpeg",
+            "layers/integration/phobos-strike-team/artwork/phobos-strike-team-artwork-02.jpeg",
+            "layers/integration/phobos-strike-team/artwork/phobos-strike-team-artwork-03.png",
+            "layers/integration/phobos-strike-team/artwork/phobos-strike-team-artwork-04.jpeg",
+            "layers/integration/phobos-strike-team/artwork/phobos-strike-team-artwork-05.jpeg",
+            "layers/integration/phobos-strike-team/artwork/phobos-strike-team-artwork-06.png",
+            "layers/integration/phobos-strike-team/artwork/phobos-strike-team-artwork-07.jpeg",
+            "layers/integration/phobos-strike-team/artwork/phobos-strike-team-artwork-08.jpeg",
+            "layers/integration/phobos-strike-team/artwork/phobos-strike-team-artwork-09.jpeg",
+            "layers/integration/phobos-strike-team/artwork/phobos-strike-team-artwork-10.jpeg",
+            "layers/integration/phobos-strike-team/artwork/phobos-strike-team-artwork-11.jpeg",
+            "layers/integration/phobos-strike-team/artwork/phobos-strike-team-artwork-12.jpeg",
+            "layers/integration/phobos-strike-team/artwork/phobos-strike-team-artwork-13.jpeg",
+            "layers/integration/phobos-strike-team/artwork/phobos-strike-team-artwork-14.jpeg",
+            "layers/integration/phobos-strike-team/artwork/phobos-strike-team-artwork-15.jpeg",
+            "layers/integration/phobos-strike-team/artwork/phobos-strike-team-artwork-16.jpeg",
+            "layers/integration/phobos-strike-team/artwork/phobos-strike-team-artwork-17.jpeg",
+            "layers/integration/phobos-strike-team/artwork/phobos-strike-team-artwork-18.jpeg",
+            "layers/integration/phobos-strike-team/artwork/phobos-strike-team-artwork-19.jpeg",
+            "layers/integration/phobos-strike-team/artwork/phobos-strike-team-artwork-20.jpeg",
+            "layers/integration/phobos-strike-team/artwork/phobos-strike-team-artwork-21.jpeg",
+            "layers/integration/phobos-strike-team/artwork/phobos-strike-team-artwork-22.jpeg",
+            "layers/integration/phobos-strike-team/artwork/phobos-strike-team-artwork-23.jpeg",
+            "layers/integration/phobos-strike-team/artwork/phobos-strike-team-artwork-24.jpeg",
+            "layers/integration/phobos-strike-team/artwork/phobos-strike-team-artwork-25.jpeg",
+            "layers/integration/phobos-strike-team/artwork/phobos-strike-team-artwork-26.jpeg",
+            "layers/integration/phobos-strike-team/artwork/phobos-strike-team-artwork-27.jpeg",
+            "layers/integration/phobos-strike-team/artwork/phobos-strike-team-artwork-28.jpeg",
+            "layers/integration/phobos-strike-team/artwork/phobos-strike-team-artwork-29.jpeg",
+            "layers/integration/phobos-strike-team/artwork/phobos-strike-team-artwork-metadata.json",
+            "layers/integration/phobos-strike-team/artwork/icons/phobos-strike-team-icon-landscape.jpg",
+            "layers/integration/phobos-strike-team/artwork/icons/phobos-strike-team-icon-portrait.jpg",
+            "layers/integration/phobos-strike-team/artwork/icons/phobos-strike-team-icon-token-transparent.png",
+            "layers/integration/phobos-strike-team/artwork/icons/phobos-strike-team-icon-token.jpg"
+          ],
+          "modified": "2026-07-06T20:48:09.022174+00:00"
+        }
+      },
+      "completed": "2026-07-06T20:48:09.022190+00:00"
+    }
+  }
+}

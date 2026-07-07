@@ -1,0 +1,1150 @@
+{
+  "team": "spectre-squad",
+  "pipeline_version": "2.0",
+  "last_updated": "2026-07-07T07:30:01.348742+00:00",
+  "steps": {
+    "content_analysis": {
+      "outputs": {
+        "content.json": {
+          "path": "layers/integration/spectre-squad/content/spectre-squad-content.json",
+          "hash": "2ebac048d4802214e7c863a1b4398f15ca0b3beb7fb942cee9ec4a648fc80208",
+          "modified": "2026-07-06T21:01:56.172804+00:00"
+        }
+      },
+      "completed": "2026-07-06T21:01:56.210394+00:00",
+      "inputs": {
+        "layers/integration/spectre-squad/manifest.json": "4a9a0222b5ec7c658a384f825888efa4a1dcd08ed08e0902d851066f100a8c00",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "layers/integration/spectre-squad/spectre-squad-datacard-spectre-field-medicae.pdf": "13260930b20e3ec3e17fbd31af4e91f47dc091361b8fd8cc527a81e908979c0d",
+        "layers/integration/spectre-squad/spectre-squad-datacard-spectre-grenadier.pdf": "e4c304e5275c9e44255c75d6400894c75d49d44bfde14e116c31947962a2de5d",
+        "layers/integration/spectre-squad/spectre-squad-datacard-spectre-guide.pdf": "07835c7ffea48dcab4747070cec3551291736eeb2254be2126b4081860094b8c",
+        "layers/integration/spectre-squad/spectre-squad-datacard-spectre-gunner.pdf": "c27b70cbf75801d4edd9eb288136b2e09e48aa6e36d83e0d3bbc146c854c363b",
+        "layers/integration/spectre-squad/spectre-squad-datacard-spectre-heavy-gunner.pdf": "d1d5c15fc489b7680f34f9f7bc3d980dab538be8727b551c625edc2a237f22ed",
+        "layers/integration/spectre-squad/spectre-squad-datacard-spectre-loader.pdf": "f69774f97d5e7d4e3d32d88045734355146fd6995490c6bed68c6ec214a12331",
+        "layers/integration/spectre-squad/spectre-squad-datacard-spectre-sharpshooter.pdf": "cc3563a18ff6590f86a67d8a4f0ef520826992c1fb5e8efcd24f3375433300ea",
+        "layers/integration/spectre-squad/spectre-squad-datacard-spectre-stub-gunner.pdf": "7335a5e0454d4e8f619d387067fc5173c44629f6b134cd83f58e3aa786ddc55d",
+        "layers/integration/spectre-squad/spectre-squad-datacard-spectre-trooper.pdf": "637ca83cfa4e2d9df4a251951c449dcdbb7d81ba8d1da305e6e1aaccdb8b4dee",
+        "layers/integration/spectre-squad/spectre-squad-datacard-spectre-veteran-sergeant.pdf": "81ed0335d95fb3e8b43cfbb17ad0d19d46dc6de6435aca9d83b0e958bedd1a70",
+        "layers/integration/spectre-squad/spectre-squad-datacard-spectre-vox-operator.pdf": "9b21a1a88955db78fbafc5d00059a86e98611c5e685e9e17af567b5866c3283a",
+        "layers/integration/spectre-squad/spectre-squad-datacard-spectre-vox-relay-beacon.pdf": "b8b680b7c24315e0805506b90b01b96e451e94c63101ed7833c241dec6cf4642",
+        "layers/integration/spectre-squad/spectre-squad-equipment-advanced-camouflage.pdf": "2945c7cef61079f598dcc6e6a74a21a0d89b7357ff4485f6091ce74e4af0f684",
+        "layers/integration/spectre-squad/spectre-squad-equipment-sniper-overwatch.pdf": "890299b491fcacb7cd28fdc6c1ca0f966fdce1950ba4db1039f8467c8eb05bdc",
+        "layers/integration/spectre-squad/spectre-squad-equipment-starshell-flare.pdf": "653698c11dfa32ddb3cd99d1d76e604aab356af61981d06bd460412256832395",
+        "layers/integration/spectre-squad/spectre-squad-equipment-tvid-feed-triangulation.pdf": "fc2fe1ec6297e37a6cfc3da238a2d9543c83d8f3f298de4fcb3c64d6fc555fe2",
+        "layers/integration/spectre-squad/spectre-squad-faction-rule-camo-cloaks.pdf": "67bec91dda09b0aab7c6ef3a84a3700017967c92e599d4d987066add58cf382e",
+        "layers/integration/spectre-squad/spectre-squad-faction-rule-elite-fieldcraft-card-1.pdf": "5b48f277af8ac7d8d05827926433f9d7b414936b94fc5071b9b56fbecf0d9d4a",
+        "layers/integration/spectre-squad/spectre-squad-faction-rule-elite-fieldcraft-card-2.pdf": "4bcf040cbe0e12295fdd14a894d39f822cded7a881d8f87c8cf61c4246188bea",
+        "layers/integration/spectre-squad/spectre-squad-faction-rule-elite-fieldcraft-card-3.pdf": "5c07f64cb79bf54cfa3928c0a989079cd64b001e82121f0a531a4eb563ac8a09",
+        "layers/integration/spectre-squad/spectre-squad-firefight-ploy-dodge.pdf": "0a4fb8abd26b3575d3912f662ea7b350525f2a2080b46b6b3b8780f8845418b9",
+        "layers/integration/spectre-squad/spectre-squad-firefight-ploy-prepared-defence.pdf": "46d0b81cbc09d792f79a53291e1fa80d41e275fe84089c4ed5aa8146a38b595a",
+        "layers/integration/spectre-squad/spectre-squad-firefight-ploy-sharp-reactions.pdf": "9cac1bcafb19f8de2a68efe3c0e4cf24be57476d7dee3d6060efbfa712d96ecd",
+        "layers/integration/spectre-squad/spectre-squad-firefight-ploy-silent-killers.pdf": "8134baaf13aacd76214d48739e722d3f7be1ac65e89abd0abcf6d3c5ebf77289",
+        "layers/integration/spectre-squad/spectre-squad-operatives-selection-operative-selection.pdf": "494327423dfdf277e0dfea3f747f489764b48783aa4a64097b91eca4b5e7a148",
+        "layers/integration/spectre-squad/spectre-squad-strategy-ploy-ambushing-volley.pdf": "b5876e2f0770740b776979c007fa9747d30bcdb96ab5097eb5b654de004a9e72",
+        "layers/integration/spectre-squad/spectre-squad-strategy-ploy-disappear.pdf": "ca6d00545df70508bd21b0ceacf5917e77b19ce094c532d236b12a9dd82ac5b2",
+        "layers/integration/spectre-squad/spectre-squad-strategy-ploy-hidden-engagement.pdf": "5fa5232241dc2a3936fa5fa1dbb34bc2ea0bb5603efe3145e6e667f61b8087eb",
+        "layers/integration/spectre-squad/spectre-squad-strategy-ploy-patience.pdf": "4424f7b8a9cb31115486b7348f0ece19fe2615b1802dea0b65819e14af9aabe3",
+        "layers/integration/spectre-squad/spectre-squad-token-guide-token-guide.pdf": "01087e8b40e830d2da876d925150d001f6d46c335cb0cbc1c677aa8114fa695c"
+      }
+    },
+    "extract_backsides": {
+      "outputs": {
+        "backside-landscape.jpg": {
+          "path": "layers/integration/spectre-squad/card-backside/spectre-squad-backside-landscape.jpg",
+          "hash": "96ba9bf409e3d82b37e4dbf6da940da001f7654ca6894b79af60718df3955972",
+          "modified": "2026-07-06T16:32:06.095537+00:00"
+        },
+        "backside-portrait.jpg": {
+          "path": "layers/integration/spectre-squad/card-backside/spectre-squad-backside-portrait.jpg",
+          "hash": "7b2ba8b6c264eb119ee19585ff8080ff386816a6d63c66e90dace593b1e1da3b",
+          "modified": "2026-07-06T16:32:06.117862+00:00"
+        }
+      },
+      "completed": "2026-07-06T16:32:06.122579+00:00",
+      "inputs": {
+        "layers/integration/spectre-squad/artwork/icons/spectre-squad-icon-token.jpg": "44c028841040db6351f4c730db05f19f46d816c8fd55c0aa42fcb4d945b11974",
+        "config/defaults/box/card-box-background.jpeg": "2dd1442a7c52ca1d66899333f678d60f48981ce20561ead77c1161d548176036"
+      }
+    },
+    "extract_tokens": {
+      "outputs": {
+        "tokens/spectre-squad-advanced-camouflage.png": {
+          "path": "output/spectre-squad/tokens/spectre-squad-advanced-camouflage.png",
+          "hash": "3816364419ac2e83e7c3a3f64e37fa05fe3d2c2387fad529195536ed6d9b6d00",
+          "modified": "2026-07-06T21:02:55.633207+00:00"
+        },
+        "tokens/spectre-squad-cool-headed.png": {
+          "path": "output/spectre-squad/tokens/spectre-squad-cool-headed.png",
+          "hash": "699800bf1d8c94207872b9c3db6861c405d85d3555c74ce7c5481542b5a206e9",
+          "modified": "2026-07-06T21:02:55.638343+00:00"
+        },
+        "tokens/spectre-squad-fieldcraft-points.png": {
+          "path": "output/spectre-squad/tokens/spectre-squad-fieldcraft-points.png",
+          "hash": "7089dfaa0e548efeea473f83058b42968a74d8735cac4fe9e42f1cb3831377bb",
+          "modified": "2026-07-06T21:02:55.642951+00:00"
+        },
+        "tokens/spectre-squad-issue-mission.png": {
+          "path": "output/spectre-squad/tokens/spectre-squad-issue-mission.png",
+          "hash": "6203287d644cab33caca52766825c32f4754793f936b6645c2eb65d2f3fee4fb",
+          "modified": "2026-07-06T21:02:55.647244+00:00"
+        },
+        "tokens/spectre-squad-medic.png": {
+          "path": "output/spectre-squad/tokens/spectre-squad-medic.png",
+          "hash": "2bdaa00a599e0d3f300b07627349b66b2af35372ea0d898f3361dcf71f86041e",
+          "modified": "2026-07-06T21:02:55.651493+00:00"
+        },
+        "tokens/spectre-squad-melta-mine.png": {
+          "path": "output/spectre-squad/tokens/spectre-squad-melta-mine.png",
+          "hash": "7f98d3f3b034329b6dfa91d459592fbcf4dcf2a26758879c6dd11da845d3d022",
+          "modified": "2026-07-06T21:02:55.655786+00:00"
+        },
+        "tokens/spectre-squad-patience.png": {
+          "path": "output/spectre-squad/tokens/spectre-squad-patience.png",
+          "hash": "a8c0dc9730cd58bbdc55503557150f17a5cbb4a5759bc1ea9dcf73d86dd46f16",
+          "modified": "2026-07-06T21:02:55.660268+00:00"
+        },
+        "tokens/spectre-squad-sniper-overwatch.png": {
+          "path": "output/spectre-squad/tokens/spectre-squad-sniper-overwatch.png",
+          "hash": "9fd8069858746ede294993caa12d9228051699dade78397ff329c201beafb741",
+          "modified": "2026-07-06T21:02:55.664694+00:00"
+        },
+        "tokens/spectre-squad-starshell-flare.png": {
+          "path": "output/spectre-squad/tokens/spectre-squad-starshell-flare.png",
+          "hash": "331df587ad6414fc50f3bb5a28b9a5e0a7201cafe33ef629d2ffd865e733bae5",
+          "modified": "2026-07-06T21:02:55.668915+00:00"
+        },
+        "tokens/spectre-squad-tvid-feed-triangulation.png": {
+          "path": "output/spectre-squad/tokens/spectre-squad-tvid-feed-triangulation.png",
+          "hash": "37a9389554ae206cf4140e99d73d2d7750ae2d4f69272f1b1d378c3021671973",
+          "modified": "2026-07-06T21:02:55.673228+00:00"
+        },
+        "tokens/spectre-squad-advanced-camouflage.obj": {
+          "path": "output/spectre-squad/tokens/spectre-squad-advanced-camouflage.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:55.674441+00:00"
+        },
+        "tokens/spectre-squad-cool-headed.obj": {
+          "path": "output/spectre-squad/tokens/spectre-squad-cool-headed.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:55.675251+00:00"
+        },
+        "tokens/spectre-squad-fieldcraft-points.obj": {
+          "path": "output/spectre-squad/tokens/spectre-squad-fieldcraft-points.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:55.676056+00:00"
+        },
+        "tokens/spectre-squad-issue-mission.obj": {
+          "path": "output/spectre-squad/tokens/spectre-squad-issue-mission.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:55.676863+00:00"
+        },
+        "tokens/spectre-squad-medic.obj": {
+          "path": "output/spectre-squad/tokens/spectre-squad-medic.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:55.677654+00:00"
+        },
+        "tokens/spectre-squad-melta-mine.obj": {
+          "path": "output/spectre-squad/tokens/spectre-squad-melta-mine.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:55.678439+00:00"
+        },
+        "tokens/spectre-squad-patience.obj": {
+          "path": "output/spectre-squad/tokens/spectre-squad-patience.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:55.679224+00:00"
+        },
+        "tokens/spectre-squad-sniper-overwatch.obj": {
+          "path": "output/spectre-squad/tokens/spectre-squad-sniper-overwatch.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:55.680013+00:00"
+        },
+        "tokens/spectre-squad-starshell-flare.obj": {
+          "path": "output/spectre-squad/tokens/spectre-squad-starshell-flare.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:55.680794+00:00"
+        },
+        "tokens/spectre-squad-tvid-feed-triangulation.obj": {
+          "path": "output/spectre-squad/tokens/spectre-squad-tvid-feed-triangulation.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:55.681597+00:00"
+        },
+        "tokens/tokenbag/spectre-squad-token-bag-icon.png": {
+          "path": "output/spectre-squad/tokens/tokenbag/spectre-squad-token-bag-icon.png",
+          "hash": "44c028841040db6351f4c730db05f19f46d816c8fd55c0aa42fcb4d945b11974",
+          "modified": "2026-07-06T21:02:55.685997+00:00"
+        },
+        "tokens/tokenbag/spectre-squad-token-bag.obj": {
+          "path": "output/spectre-squad/tokens/tokenbag/spectre-squad-token-bag.obj",
+          "hash": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+          "modified": "2026-07-06T21:02:55.686852+00:00"
+        }
+      },
+      "completed": "2026-07-06T21:02:55.726201+00:00",
+      "inputs": {
+        "layers/integration/spectre-squad/manifest.json": "4a9a0222b5ec7c658a384f825888efa4a1dcd08ed08e0902d851066f100a8c00",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "layers/integration/spectre-squad/artwork/icons/spectre-squad-icon-token.jpg": "44c028841040db6351f4c730db05f19f46d816c8fd55c0aa42fcb4d945b11974",
+        "layers/integration/spectre-squad/spectre-squad-datacard-spectre-field-medicae.pdf": "13260930b20e3ec3e17fbd31af4e91f47dc091361b8fd8cc527a81e908979c0d",
+        "layers/integration/spectre-squad/spectre-squad-datacard-spectre-grenadier.pdf": "e4c304e5275c9e44255c75d6400894c75d49d44bfde14e116c31947962a2de5d",
+        "layers/integration/spectre-squad/spectre-squad-datacard-spectre-guide.pdf": "07835c7ffea48dcab4747070cec3551291736eeb2254be2126b4081860094b8c",
+        "layers/integration/spectre-squad/spectre-squad-datacard-spectre-gunner.pdf": "c27b70cbf75801d4edd9eb288136b2e09e48aa6e36d83e0d3bbc146c854c363b",
+        "layers/integration/spectre-squad/spectre-squad-datacard-spectre-heavy-gunner.pdf": "d1d5c15fc489b7680f34f9f7bc3d980dab538be8727b551c625edc2a237f22ed",
+        "layers/integration/spectre-squad/spectre-squad-datacard-spectre-loader.pdf": "f69774f97d5e7d4e3d32d88045734355146fd6995490c6bed68c6ec214a12331",
+        "layers/integration/spectre-squad/spectre-squad-datacard-spectre-sharpshooter.pdf": "cc3563a18ff6590f86a67d8a4f0ef520826992c1fb5e8efcd24f3375433300ea",
+        "layers/integration/spectre-squad/spectre-squad-datacard-spectre-stub-gunner.pdf": "7335a5e0454d4e8f619d387067fc5173c44629f6b134cd83f58e3aa786ddc55d",
+        "layers/integration/spectre-squad/spectre-squad-datacard-spectre-trooper.pdf": "637ca83cfa4e2d9df4a251951c449dcdbb7d81ba8d1da305e6e1aaccdb8b4dee",
+        "layers/integration/spectre-squad/spectre-squad-datacard-spectre-veteran-sergeant.pdf": "81ed0335d95fb3e8b43cfbb17ad0d19d46dc6de6435aca9d83b0e958bedd1a70",
+        "layers/integration/spectre-squad/spectre-squad-datacard-spectre-vox-operator.pdf": "9b21a1a88955db78fbafc5d00059a86e98611c5e685e9e17af567b5866c3283a",
+        "layers/integration/spectre-squad/spectre-squad-datacard-spectre-vox-relay-beacon.pdf": "b8b680b7c24315e0805506b90b01b96e451e94c63101ed7833c241dec6cf4642",
+        "layers/integration/spectre-squad/spectre-squad-equipment-advanced-camouflage.pdf": "2945c7cef61079f598dcc6e6a74a21a0d89b7357ff4485f6091ce74e4af0f684",
+        "layers/integration/spectre-squad/spectre-squad-equipment-sniper-overwatch.pdf": "890299b491fcacb7cd28fdc6c1ca0f966fdce1950ba4db1039f8467c8eb05bdc",
+        "layers/integration/spectre-squad/spectre-squad-equipment-starshell-flare.pdf": "653698c11dfa32ddb3cd99d1d76e604aab356af61981d06bd460412256832395",
+        "layers/integration/spectre-squad/spectre-squad-equipment-tvid-feed-triangulation.pdf": "fc2fe1ec6297e37a6cfc3da238a2d9543c83d8f3f298de4fcb3c64d6fc555fe2",
+        "layers/integration/spectre-squad/spectre-squad-faction-rule-camo-cloaks.pdf": "67bec91dda09b0aab7c6ef3a84a3700017967c92e599d4d987066add58cf382e",
+        "layers/integration/spectre-squad/spectre-squad-faction-rule-elite-fieldcraft-card-1.pdf": "5b48f277af8ac7d8d05827926433f9d7b414936b94fc5071b9b56fbecf0d9d4a",
+        "layers/integration/spectre-squad/spectre-squad-faction-rule-elite-fieldcraft-card-2.pdf": "4bcf040cbe0e12295fdd14a894d39f822cded7a881d8f87c8cf61c4246188bea",
+        "layers/integration/spectre-squad/spectre-squad-faction-rule-elite-fieldcraft-card-3.pdf": "5c07f64cb79bf54cfa3928c0a989079cd64b001e82121f0a531a4eb563ac8a09",
+        "layers/integration/spectre-squad/spectre-squad-firefight-ploy-dodge.pdf": "0a4fb8abd26b3575d3912f662ea7b350525f2a2080b46b6b3b8780f8845418b9",
+        "layers/integration/spectre-squad/spectre-squad-firefight-ploy-prepared-defence.pdf": "46d0b81cbc09d792f79a53291e1fa80d41e275fe84089c4ed5aa8146a38b595a",
+        "layers/integration/spectre-squad/spectre-squad-firefight-ploy-sharp-reactions.pdf": "9cac1bcafb19f8de2a68efe3c0e4cf24be57476d7dee3d6060efbfa712d96ecd",
+        "layers/integration/spectre-squad/spectre-squad-firefight-ploy-silent-killers.pdf": "8134baaf13aacd76214d48739e722d3f7be1ac65e89abd0abcf6d3c5ebf77289",
+        "layers/integration/spectre-squad/spectre-squad-operatives-selection-operative-selection.pdf": "494327423dfdf277e0dfea3f747f489764b48783aa4a64097b91eca4b5e7a148",
+        "layers/integration/spectre-squad/spectre-squad-strategy-ploy-ambushing-volley.pdf": "b5876e2f0770740b776979c007fa9747d30bcdb96ab5097eb5b654de004a9e72",
+        "layers/integration/spectre-squad/spectre-squad-strategy-ploy-disappear.pdf": "ca6d00545df70508bd21b0ceacf5917e77b19ce094c532d236b12a9dd82ac5b2",
+        "layers/integration/spectre-squad/spectre-squad-strategy-ploy-hidden-engagement.pdf": "5fa5232241dc2a3936fa5fa1dbb34bc2ea0bb5603efe3145e6e667f61b8087eb",
+        "layers/integration/spectre-squad/spectre-squad-strategy-ploy-patience.pdf": "4424f7b8a9cb31115486b7348f0ece19fe2615b1802dea0b65819e14af9aabe3",
+        "layers/integration/spectre-squad/spectre-squad-token-guide-token-guide.pdf": "01087e8b40e830d2da876d925150d001f6d46c335cb0cbc1c677aa8114fa695c"
+      }
+    },
+    "generate_dice": {
+      "outputs": {
+        "dice-light.jpg": {
+          "path": "output/spectre-squad/dice/spectre-squad-dice-light.jpg",
+          "hash": "4108285b840b66f6b53db8ba843ca72da40b061dc552dcf0669ec01a8142c624",
+          "modified": "2026-07-06T16:33:29.451724+00:00"
+        },
+        "dice-dark.jpg": {
+          "path": "output/spectre-squad/dice/spectre-squad-dice-dark.jpg",
+          "hash": "179725301698d412816beab39c09b7efa07bbbeee5012a9a634fff697d66ba1f",
+          "modified": "2026-07-06T16:33:29.459768+00:00"
+        },
+        "dice-team.jpg": {
+          "path": "output/spectre-squad/dice/spectre-squad-dice-team.jpg",
+          "hash": "b1b88fdf4c011ac05415324c91cd4c7e55b3ca2322675f3c10f0efd5d74df33f",
+          "modified": "2026-07-06T16:33:29.465664+00:00"
+        }
+      },
+      "completed": "2026-07-06T16:33:29.466631+00:00",
+      "inputs": {
+        "layers/integration/spectre-squad/artwork/icons/spectre-squad-icon-token-transparent.png": "77421b1911bb57938b505750d521cc061691ea57fe36bfedf3f153f86d544a36",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41"
+      }
+    },
+    "generate_box_texture": {
+      "outputs": {
+        "card-box-texture.jpg": {
+          "path": "output/spectre-squad/cardbox/spectre-squad-card-box-texture.jpg",
+          "hash": "bb05f6a02f437dc5ee61bf3575ca159486871adad5c53823fdfab652b3416ed6",
+          "modified": "2026-07-06T16:33:34.746694+00:00"
+        },
+        "card-box.obj": {
+          "path": "output/spectre-squad/cardbox/spectre-squad-card-box.obj",
+          "hash": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+          "modified": "2026-07-06T16:33:34.747955+00:00"
+        }
+      },
+      "completed": "2026-07-06T16:33:34.750380+00:00",
+      "inputs": {
+        "layers/integration/spectre-squad/artwork/icons/spectre-squad-icon-token.jpg": "44c028841040db6351f4c730db05f19f46d816c8fd55c0aa42fcb4d945b11974",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "config/defaults/box/card-box.obj": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+        "config/defaults/box/card-box-texture.jpg": "b2f310b01a0d28e8806e99ce0b972e8967e3014608eacefcb6ec51597695a313"
+      }
+    },
+    "generate_card_images": {
+      "outputs": {
+        "cards/datacards/spectre-field-medicae-back.jpg": {
+          "path": "output/spectre-squad/cards/datacards/spectre-field-medicae-back.jpg",
+          "hash": "3022294a778df57ad2a1a520edf95f6deeb6ddbd2b0febb5d75226e5e75676de",
+          "modified": "2026-07-07T07:27:18.143277+00:00"
+        },
+        "cards/datacards/spectre-field-medicae-front.jpg": {
+          "path": "output/spectre-squad/cards/datacards/spectre-field-medicae-front.jpg",
+          "hash": "98609541aa9d9d37db10974dce4be4a0cba48951d1fc79557b693e67730ad01e",
+          "modified": "2026-07-07T07:27:18.148626+00:00"
+        },
+        "cards/datacards/spectre-grenadier-back.jpg": {
+          "path": "output/spectre-squad/cards/datacards/spectre-grenadier-back.jpg",
+          "hash": "b6e88303a605347ec90c551d5ce25e96530bbab7ca628b19de8c876e097bbc92",
+          "modified": "2026-07-07T07:27:18.153371+00:00"
+        },
+        "cards/datacards/spectre-grenadier-front.jpg": {
+          "path": "output/spectre-squad/cards/datacards/spectre-grenadier-front.jpg",
+          "hash": "5a306a324c947a1b1b7c31d1e5152da2980437bbf1a14e88e2eb838051ba36fe",
+          "modified": "2026-07-07T07:27:18.158510+00:00"
+        },
+        "cards/datacards/spectre-guide-back.jpg": {
+          "path": "output/spectre-squad/cards/datacards/spectre-guide-back.jpg",
+          "hash": "96ba9bf409e3d82b37e4dbf6da940da001f7654ca6894b79af60718df3955972",
+          "modified": "2026-07-07T07:27:18.162950+00:00"
+        },
+        "cards/datacards/spectre-guide-front.jpg": {
+          "path": "output/spectre-squad/cards/datacards/spectre-guide-front.jpg",
+          "hash": "ae0896670e58e09b1b4f0aa6ab0be4db48fa7d8a5eb8aed63c0ceb09cab722c5",
+          "modified": "2026-07-07T07:27:18.167537+00:00"
+        },
+        "cards/datacards/spectre-gunner-back.jpg": {
+          "path": "output/spectre-squad/cards/datacards/spectre-gunner-back.jpg",
+          "hash": "96ba9bf409e3d82b37e4dbf6da940da001f7654ca6894b79af60718df3955972",
+          "modified": "2026-07-07T07:27:18.171960+00:00"
+        },
+        "cards/datacards/spectre-gunner-front.jpg": {
+          "path": "output/spectre-squad/cards/datacards/spectre-gunner-front.jpg",
+          "hash": "7c55579e34703ba283509f15a2ff1faaa8222919d63a6b278851b405bfd3ac08",
+          "modified": "2026-07-07T07:27:18.176403+00:00"
+        },
+        "cards/datacards/spectre-heavy-gunner-back.jpg": {
+          "path": "output/spectre-squad/cards/datacards/spectre-heavy-gunner-back.jpg",
+          "hash": "96ba9bf409e3d82b37e4dbf6da940da001f7654ca6894b79af60718df3955972",
+          "modified": "2026-07-07T07:27:18.180670+00:00"
+        },
+        "cards/datacards/spectre-heavy-gunner-front.jpg": {
+          "path": "output/spectre-squad/cards/datacards/spectre-heavy-gunner-front.jpg",
+          "hash": "55f8c9ccc657c699c4e302246ad0ec44505fe273a881d18cf40ffed2b8466a34",
+          "modified": "2026-07-07T07:27:18.185178+00:00"
+        },
+        "cards/datacards/spectre-loader-back.jpg": {
+          "path": "output/spectre-squad/cards/datacards/spectre-loader-back.jpg",
+          "hash": "96ba9bf409e3d82b37e4dbf6da940da001f7654ca6894b79af60718df3955972",
+          "modified": "2026-07-07T07:27:18.189579+00:00"
+        },
+        "cards/datacards/spectre-loader-front.jpg": {
+          "path": "output/spectre-squad/cards/datacards/spectre-loader-front.jpg",
+          "hash": "e6ee2f2c6a3be6d746d33859e562326abeed9a29899b6c6a4ddef700f6209f43",
+          "modified": "2026-07-07T07:27:18.194078+00:00"
+        },
+        "cards/datacards/spectre-sharpshooter-back.jpg": {
+          "path": "output/spectre-squad/cards/datacards/spectre-sharpshooter-back.jpg",
+          "hash": "96ba9bf409e3d82b37e4dbf6da940da001f7654ca6894b79af60718df3955972",
+          "modified": "2026-07-07T07:27:18.198355+00:00"
+        },
+        "cards/datacards/spectre-sharpshooter-front.jpg": {
+          "path": "output/spectre-squad/cards/datacards/spectre-sharpshooter-front.jpg",
+          "hash": "2abeb87e4990a7709071aa3d6f4065aacdd8625ae438c18920df969423a7a03d",
+          "modified": "2026-07-07T07:27:18.202906+00:00"
+        },
+        "cards/datacards/spectre-stub-gunner-back.jpg": {
+          "path": "output/spectre-squad/cards/datacards/spectre-stub-gunner-back.jpg",
+          "hash": "96ba9bf409e3d82b37e4dbf6da940da001f7654ca6894b79af60718df3955972",
+          "modified": "2026-07-07T07:27:18.207228+00:00"
+        },
+        "cards/datacards/spectre-stub-gunner-front.jpg": {
+          "path": "output/spectre-squad/cards/datacards/spectre-stub-gunner-front.jpg",
+          "hash": "4cf7b162b33a2cd423434070652e30dc5d0138daa294a60bad97235505363c1e",
+          "modified": "2026-07-07T07:27:18.211734+00:00"
+        },
+        "cards/datacards/spectre-trooper-back.jpg": {
+          "path": "output/spectre-squad/cards/datacards/spectre-trooper-back.jpg",
+          "hash": "96ba9bf409e3d82b37e4dbf6da940da001f7654ca6894b79af60718df3955972",
+          "modified": "2026-07-07T07:27:18.216002+00:00"
+        },
+        "cards/datacards/spectre-trooper-front.jpg": {
+          "path": "output/spectre-squad/cards/datacards/spectre-trooper-front.jpg",
+          "hash": "e2f6edccd8968346d56e90a84c88e70bdcf1d89d62e97771258cea9fbd3ca46d",
+          "modified": "2026-07-07T07:27:18.220550+00:00"
+        },
+        "cards/datacards/spectre-veteran-sergeant-back.jpg": {
+          "path": "output/spectre-squad/cards/datacards/spectre-veteran-sergeant-back.jpg",
+          "hash": "96ba9bf409e3d82b37e4dbf6da940da001f7654ca6894b79af60718df3955972",
+          "modified": "2026-07-07T07:27:18.224850+00:00"
+        },
+        "cards/datacards/spectre-veteran-sergeant-front.jpg": {
+          "path": "output/spectre-squad/cards/datacards/spectre-veteran-sergeant-front.jpg",
+          "hash": "10219857fde67fc35902f675a1addc100eb2c0ad46f45d554968a7a89f40efa6",
+          "modified": "2026-07-07T07:27:18.229374+00:00"
+        },
+        "cards/datacards/spectre-vox-operator-back.jpg": {
+          "path": "output/spectre-squad/cards/datacards/spectre-vox-operator-back.jpg",
+          "hash": "96ba9bf409e3d82b37e4dbf6da940da001f7654ca6894b79af60718df3955972",
+          "modified": "2026-07-07T07:27:18.233744+00:00"
+        },
+        "cards/datacards/spectre-vox-operator-front.jpg": {
+          "path": "output/spectre-squad/cards/datacards/spectre-vox-operator-front.jpg",
+          "hash": "b1439ef90ee9768b69d9fe383b70f6d96c6d9d46bc842f800441bc2e4c90b27b",
+          "modified": "2026-07-07T07:27:18.238329+00:00"
+        },
+        "cards/datacards/spectre-vox-relay-beacon-back.jpg": {
+          "path": "output/spectre-squad/cards/datacards/spectre-vox-relay-beacon-back.jpg",
+          "hash": "acf030a2b2c61c8391b4187039a98c3789d90a5728cc77768d25821497fac939",
+          "modified": "2026-07-07T07:27:18.242749+00:00"
+        },
+        "cards/datacards/spectre-vox-relay-beacon-front.jpg": {
+          "path": "output/spectre-squad/cards/datacards/spectre-vox-relay-beacon-front.jpg",
+          "hash": "3f0df4a217a88bf55ba38ff11416d4f6abfa19cee77b54edf667eec5657254e1",
+          "modified": "2026-07-07T07:27:18.247368+00:00"
+        },
+        "cards/equipment/spectre-squad-advanced-camouflage-back.jpg": {
+          "path": "output/spectre-squad/cards/equipment/spectre-squad-advanced-camouflage-back.jpg",
+          "hash": "7b2ba8b6c264eb119ee19585ff8080ff386816a6d63c66e90dace593b1e1da3b",
+          "modified": "2026-07-07T07:27:18.251830+00:00"
+        },
+        "cards/equipment/spectre-squad-advanced-camouflage-front.jpg": {
+          "path": "output/spectre-squad/cards/equipment/spectre-squad-advanced-camouflage-front.jpg",
+          "hash": "7d1e14c69c206e8388dc9969ddbc3d4841c90648e973577616de2840e7f34cd2",
+          "modified": "2026-07-07T07:27:18.256415+00:00"
+        },
+        "cards/equipment/spectre-squad-sniper-overwatch-back.jpg": {
+          "path": "output/spectre-squad/cards/equipment/spectre-squad-sniper-overwatch-back.jpg",
+          "hash": "7b2ba8b6c264eb119ee19585ff8080ff386816a6d63c66e90dace593b1e1da3b",
+          "modified": "2026-07-07T07:27:18.260718+00:00"
+        },
+        "cards/equipment/spectre-squad-sniper-overwatch-front.jpg": {
+          "path": "output/spectre-squad/cards/equipment/spectre-squad-sniper-overwatch-front.jpg",
+          "hash": "1775615f03f32699a00a2aa0b6e48b92b2ca72c32fb183f8f19342ecc2d016f4",
+          "modified": "2026-07-07T07:27:18.265331+00:00"
+        },
+        "cards/equipment/spectre-squad-starshell-flare-back.jpg": {
+          "path": "output/spectre-squad/cards/equipment/spectre-squad-starshell-flare-back.jpg",
+          "hash": "7b2ba8b6c264eb119ee19585ff8080ff386816a6d63c66e90dace593b1e1da3b",
+          "modified": "2026-07-07T07:27:18.270122+00:00"
+        },
+        "cards/equipment/spectre-squad-starshell-flare-front.jpg": {
+          "path": "output/spectre-squad/cards/equipment/spectre-squad-starshell-flare-front.jpg",
+          "hash": "228cada83d10739680771eb6c00f6d85c02eb80c3151754570c038347bc50c0b",
+          "modified": "2026-07-07T07:27:18.274753+00:00"
+        },
+        "cards/equipment/spectre-squad-tvid-feed-triangulation-back.jpg": {
+          "path": "output/spectre-squad/cards/equipment/spectre-squad-tvid-feed-triangulation-back.jpg",
+          "hash": "7b2ba8b6c264eb119ee19585ff8080ff386816a6d63c66e90dace593b1e1da3b",
+          "modified": "2026-07-07T07:27:18.279068+00:00"
+        },
+        "cards/equipment/spectre-squad-tvid-feed-triangulation-front.jpg": {
+          "path": "output/spectre-squad/cards/equipment/spectre-squad-tvid-feed-triangulation-front.jpg",
+          "hash": "32bd5ac65ba716a28cddb96b55e3c02576c8b08e24dc9a916d9fe527951c51bd",
+          "modified": "2026-07-07T07:27:18.284763+00:00"
+        },
+        "cards/faction_rules/spectre-squad-camo-cloaks-back.jpg": {
+          "path": "output/spectre-squad/cards/faction_rules/spectre-squad-camo-cloaks-back.jpg",
+          "hash": "7b2ba8b6c264eb119ee19585ff8080ff386816a6d63c66e90dace593b1e1da3b",
+          "modified": "2026-07-07T07:27:18.291011+00:00"
+        },
+        "cards/faction_rules/spectre-squad-camo-cloaks-front.jpg": {
+          "path": "output/spectre-squad/cards/faction_rules/spectre-squad-camo-cloaks-front.jpg",
+          "hash": "a05e7c753d472624addf19f0909641ad2e504213e8eb06688b883faa6cbe94d1",
+          "modified": "2026-07-07T07:27:18.296400+00:00"
+        },
+        "cards/faction_rules/spectre-squad-elite-fieldcraft-card-1-back.jpg": {
+          "path": "output/spectre-squad/cards/faction_rules/spectre-squad-elite-fieldcraft-card-1-back.jpg",
+          "hash": "2c9d7736a46cc12bae111656b0ffbf54e19425db94bd103b2606c07b3250c46f",
+          "modified": "2026-07-07T07:27:18.302863+00:00"
+        },
+        "cards/faction_rules/spectre-squad-elite-fieldcraft-card-1-front.jpg": {
+          "path": "output/spectre-squad/cards/faction_rules/spectre-squad-elite-fieldcraft-card-1-front.jpg",
+          "hash": "5c28e3bf8390b232ca537505b9c4d43f60af5869dfb8b2b5ba886088ecd2c8ae",
+          "modified": "2026-07-07T07:27:18.309350+00:00"
+        },
+        "cards/faction_rules/spectre-squad-elite-fieldcraft-card-2-back.jpg": {
+          "path": "output/spectre-squad/cards/faction_rules/spectre-squad-elite-fieldcraft-card-2-back.jpg",
+          "hash": "7b2ba8b6c264eb119ee19585ff8080ff386816a6d63c66e90dace593b1e1da3b",
+          "modified": "2026-07-07T07:27:18.314762+00:00"
+        },
+        "cards/faction_rules/spectre-squad-elite-fieldcraft-card-2-front.jpg": {
+          "path": "output/spectre-squad/cards/faction_rules/spectre-squad-elite-fieldcraft-card-2-front.jpg",
+          "hash": "7b9c6547567486202293c4d796035605cb0d834a2d5033ec31f92a691c392877",
+          "modified": "2026-07-07T07:27:18.320673+00:00"
+        },
+        "cards/faction_rules/spectre-squad-elite-fieldcraft-card-3-back.jpg": {
+          "path": "output/spectre-squad/cards/faction_rules/spectre-squad-elite-fieldcraft-card-3-back.jpg",
+          "hash": "7b2ba8b6c264eb119ee19585ff8080ff386816a6d63c66e90dace593b1e1da3b",
+          "modified": "2026-07-07T07:27:18.326026+00:00"
+        },
+        "cards/faction_rules/spectre-squad-elite-fieldcraft-card-3-front.jpg": {
+          "path": "output/spectre-squad/cards/faction_rules/spectre-squad-elite-fieldcraft-card-3-front.jpg",
+          "hash": "ad472319d83ed0ec8fc67ffc96cea80febd227a5909371a409533956596bf0ea",
+          "modified": "2026-07-07T07:27:18.331666+00:00"
+        },
+        "cards/firefight_ploys/spectre-squad-dodge-back.jpg": {
+          "path": "output/spectre-squad/cards/firefight_ploys/spectre-squad-dodge-back.jpg",
+          "hash": "7b2ba8b6c264eb119ee19585ff8080ff386816a6d63c66e90dace593b1e1da3b",
+          "modified": "2026-07-07T07:27:18.336893+00:00"
+        },
+        "cards/firefight_ploys/spectre-squad-dodge-front.jpg": {
+          "path": "output/spectre-squad/cards/firefight_ploys/spectre-squad-dodge-front.jpg",
+          "hash": "f08f1012c2ba0af996002940daf46605a981c592c90f140b7206a5bd03eb7194",
+          "modified": "2026-07-07T07:27:18.341720+00:00"
+        },
+        "cards/firefight_ploys/spectre-squad-prepared-defence-back.jpg": {
+          "path": "output/spectre-squad/cards/firefight_ploys/spectre-squad-prepared-defence-back.jpg",
+          "hash": "7b2ba8b6c264eb119ee19585ff8080ff386816a6d63c66e90dace593b1e1da3b",
+          "modified": "2026-07-07T07:27:18.346269+00:00"
+        },
+        "cards/firefight_ploys/spectre-squad-prepared-defence-front.jpg": {
+          "path": "output/spectre-squad/cards/firefight_ploys/spectre-squad-prepared-defence-front.jpg",
+          "hash": "00a43295c539676f6132fa48368bfe0aa2f636652bfaeb7c52df302bdcf4d3d3",
+          "modified": "2026-07-07T07:27:18.350925+00:00"
+        },
+        "cards/firefight_ploys/spectre-squad-sharp-reactions-back.jpg": {
+          "path": "output/spectre-squad/cards/firefight_ploys/spectre-squad-sharp-reactions-back.jpg",
+          "hash": "7b2ba8b6c264eb119ee19585ff8080ff386816a6d63c66e90dace593b1e1da3b",
+          "modified": "2026-07-07T07:27:18.355282+00:00"
+        },
+        "cards/firefight_ploys/spectre-squad-sharp-reactions-front.jpg": {
+          "path": "output/spectre-squad/cards/firefight_ploys/spectre-squad-sharp-reactions-front.jpg",
+          "hash": "ca80293dc3d6f7e0598ee136a31539e10295c5ad1a27b9868f3e4cac9a0a7d67",
+          "modified": "2026-07-07T07:27:18.360024+00:00"
+        },
+        "cards/firefight_ploys/spectre-squad-silent-killers-back.jpg": {
+          "path": "output/spectre-squad/cards/firefight_ploys/spectre-squad-silent-killers-back.jpg",
+          "hash": "7b2ba8b6c264eb119ee19585ff8080ff386816a6d63c66e90dace593b1e1da3b",
+          "modified": "2026-07-07T07:27:18.364370+00:00"
+        },
+        "cards/firefight_ploys/spectre-squad-silent-killers-front.jpg": {
+          "path": "output/spectre-squad/cards/firefight_ploys/spectre-squad-silent-killers-front.jpg",
+          "hash": "e9d085a6acd1be230326af2ae5e73a07cc69fd377add32c25cf3d80c558d1eba",
+          "modified": "2026-07-07T07:27:18.368850+00:00"
+        },
+        "cards/operatives_selection/spectre-squad-operative-selection-back.jpg": {
+          "path": "output/spectre-squad/cards/operatives_selection/spectre-squad-operative-selection-back.jpg",
+          "hash": "64a88b3482cbc277d8bd0f3c4f0ae56808cf11c935eb93a852e9f4645d96afaf",
+          "modified": "2026-07-07T07:27:18.373303+00:00"
+        },
+        "cards/operatives_selection/spectre-squad-operative-selection-front.jpg": {
+          "path": "output/spectre-squad/cards/operatives_selection/spectre-squad-operative-selection-front.jpg",
+          "hash": "692b26d53245e0bf1e95c693dc100a13f43d06a2704e823594a36f994a6078ed",
+          "modified": "2026-07-07T07:27:18.378020+00:00"
+        },
+        "cards/strategy_ploys/spectre-squad-ambushing-volley-back.jpg": {
+          "path": "output/spectre-squad/cards/strategy_ploys/spectre-squad-ambushing-volley-back.jpg",
+          "hash": "7b2ba8b6c264eb119ee19585ff8080ff386816a6d63c66e90dace593b1e1da3b",
+          "modified": "2026-07-07T07:27:18.382571+00:00"
+        },
+        "cards/strategy_ploys/spectre-squad-ambushing-volley-front.jpg": {
+          "path": "output/spectre-squad/cards/strategy_ploys/spectre-squad-ambushing-volley-front.jpg",
+          "hash": "2f4c336fede0406a6fabd1a42c0a310ee96c677f8f9366c03f18551cc5f02b29",
+          "modified": "2026-07-07T07:27:18.387336+00:00"
+        },
+        "cards/strategy_ploys/spectre-squad-disappear-back.jpg": {
+          "path": "output/spectre-squad/cards/strategy_ploys/spectre-squad-disappear-back.jpg",
+          "hash": "7b2ba8b6c264eb119ee19585ff8080ff386816a6d63c66e90dace593b1e1da3b",
+          "modified": "2026-07-07T07:27:18.391881+00:00"
+        },
+        "cards/strategy_ploys/spectre-squad-disappear-front.jpg": {
+          "path": "output/spectre-squad/cards/strategy_ploys/spectre-squad-disappear-front.jpg",
+          "hash": "8bab4e44a84a108398798faeb7e158d4ef27ed43fcbb462b04d1d8b7a9e5e93e",
+          "modified": "2026-07-07T07:27:18.396428+00:00"
+        },
+        "cards/strategy_ploys/spectre-squad-hidden-engagement-back.jpg": {
+          "path": "output/spectre-squad/cards/strategy_ploys/spectre-squad-hidden-engagement-back.jpg",
+          "hash": "7b2ba8b6c264eb119ee19585ff8080ff386816a6d63c66e90dace593b1e1da3b",
+          "modified": "2026-07-07T07:27:18.400761+00:00"
+        },
+        "cards/strategy_ploys/spectre-squad-hidden-engagement-front.jpg": {
+          "path": "output/spectre-squad/cards/strategy_ploys/spectre-squad-hidden-engagement-front.jpg",
+          "hash": "24717b4500129b1fbbadd1e25f1b23f5cacf0ffec38602ee34868e826b8891e0",
+          "modified": "2026-07-07T07:27:18.405395+00:00"
+        },
+        "cards/strategy_ploys/spectre-squad-patience-back.jpg": {
+          "path": "output/spectre-squad/cards/strategy_ploys/spectre-squad-patience-back.jpg",
+          "hash": "7b2ba8b6c264eb119ee19585ff8080ff386816a6d63c66e90dace593b1e1da3b",
+          "modified": "2026-07-07T07:27:18.409832+00:00"
+        },
+        "cards/strategy_ploys/spectre-squad-patience-front.jpg": {
+          "path": "output/spectre-squad/cards/strategy_ploys/spectre-squad-patience-front.jpg",
+          "hash": "78e938b1f6bdb9bc143fccaf800a5f7cf8a8ea6d906924a3b61c73a52ddc299d",
+          "modified": "2026-07-07T07:27:18.414495+00:00"
+        },
+        "cards/token_guide/spectre-squad-token-guide-back.jpg": {
+          "path": "output/spectre-squad/cards/token_guide/spectre-squad-token-guide-back.jpg",
+          "hash": "7b2ba8b6c264eb119ee19585ff8080ff386816a6d63c66e90dace593b1e1da3b",
+          "modified": "2026-07-07T07:27:18.418849+00:00"
+        },
+        "cards/token_guide/spectre-squad-token-guide-front.jpg": {
+          "path": "output/spectre-squad/cards/token_guide/spectre-squad-token-guide-front.jpg",
+          "hash": "4dc1040a07dc9ba5c6a3ec3542f3c9faa45c6614739bba2a799f72020f64bc0c",
+          "modified": "2026-07-07T07:27:18.423491+00:00"
+        }
+      },
+      "completed": "2026-07-07T07:27:18.465022+00:00",
+      "inputs": {
+        "layers/integration/spectre-squad/manifest.json": "4a9a0222b5ec7c658a384f825888efa4a1dcd08ed08e0902d851066f100a8c00",
+        "layers/integration/spectre-squad/spectre-squad-datacard-spectre-field-medicae.pdf": "13260930b20e3ec3e17fbd31af4e91f47dc091361b8fd8cc527a81e908979c0d",
+        "layers/integration/spectre-squad/spectre-squad-datacard-spectre-grenadier.pdf": "e4c304e5275c9e44255c75d6400894c75d49d44bfde14e116c31947962a2de5d",
+        "layers/integration/spectre-squad/spectre-squad-datacard-spectre-guide.pdf": "07835c7ffea48dcab4747070cec3551291736eeb2254be2126b4081860094b8c",
+        "layers/integration/spectre-squad/spectre-squad-datacard-spectre-gunner.pdf": "c27b70cbf75801d4edd9eb288136b2e09e48aa6e36d83e0d3bbc146c854c363b",
+        "layers/integration/spectre-squad/spectre-squad-datacard-spectre-heavy-gunner.pdf": "d1d5c15fc489b7680f34f9f7bc3d980dab538be8727b551c625edc2a237f22ed",
+        "layers/integration/spectre-squad/spectre-squad-datacard-spectre-loader.pdf": "f69774f97d5e7d4e3d32d88045734355146fd6995490c6bed68c6ec214a12331",
+        "layers/integration/spectre-squad/spectre-squad-datacard-spectre-sharpshooter.pdf": "cc3563a18ff6590f86a67d8a4f0ef520826992c1fb5e8efcd24f3375433300ea",
+        "layers/integration/spectre-squad/spectre-squad-datacard-spectre-stub-gunner.pdf": "7335a5e0454d4e8f619d387067fc5173c44629f6b134cd83f58e3aa786ddc55d",
+        "layers/integration/spectre-squad/spectre-squad-datacard-spectre-trooper.pdf": "637ca83cfa4e2d9df4a251951c449dcdbb7d81ba8d1da305e6e1aaccdb8b4dee",
+        "layers/integration/spectre-squad/spectre-squad-datacard-spectre-veteran-sergeant.pdf": "81ed0335d95fb3e8b43cfbb17ad0d19d46dc6de6435aca9d83b0e958bedd1a70",
+        "layers/integration/spectre-squad/spectre-squad-datacard-spectre-vox-operator.pdf": "9b21a1a88955db78fbafc5d00059a86e98611c5e685e9e17af567b5866c3283a",
+        "layers/integration/spectre-squad/spectre-squad-datacard-spectre-vox-relay-beacon.pdf": "b8b680b7c24315e0805506b90b01b96e451e94c63101ed7833c241dec6cf4642",
+        "layers/integration/spectre-squad/spectre-squad-equipment-advanced-camouflage.pdf": "2945c7cef61079f598dcc6e6a74a21a0d89b7357ff4485f6091ce74e4af0f684",
+        "layers/integration/spectre-squad/spectre-squad-equipment-sniper-overwatch.pdf": "890299b491fcacb7cd28fdc6c1ca0f966fdce1950ba4db1039f8467c8eb05bdc",
+        "layers/integration/spectre-squad/spectre-squad-equipment-starshell-flare.pdf": "653698c11dfa32ddb3cd99d1d76e604aab356af61981d06bd460412256832395",
+        "layers/integration/spectre-squad/spectre-squad-equipment-tvid-feed-triangulation.pdf": "fc2fe1ec6297e37a6cfc3da238a2d9543c83d8f3f298de4fcb3c64d6fc555fe2",
+        "layers/integration/spectre-squad/spectre-squad-faction-rule-camo-cloaks.pdf": "67bec91dda09b0aab7c6ef3a84a3700017967c92e599d4d987066add58cf382e",
+        "layers/integration/spectre-squad/spectre-squad-faction-rule-elite-fieldcraft-card-1.pdf": "5b48f277af8ac7d8d05827926433f9d7b414936b94fc5071b9b56fbecf0d9d4a",
+        "layers/integration/spectre-squad/spectre-squad-faction-rule-elite-fieldcraft-card-2.pdf": "4bcf040cbe0e12295fdd14a894d39f822cded7a881d8f87c8cf61c4246188bea",
+        "layers/integration/spectre-squad/spectre-squad-faction-rule-elite-fieldcraft-card-3.pdf": "5c07f64cb79bf54cfa3928c0a989079cd64b001e82121f0a531a4eb563ac8a09",
+        "layers/integration/spectre-squad/spectre-squad-firefight-ploy-dodge.pdf": "0a4fb8abd26b3575d3912f662ea7b350525f2a2080b46b6b3b8780f8845418b9",
+        "layers/integration/spectre-squad/spectre-squad-firefight-ploy-prepared-defence.pdf": "46d0b81cbc09d792f79a53291e1fa80d41e275fe84089c4ed5aa8146a38b595a",
+        "layers/integration/spectre-squad/spectre-squad-firefight-ploy-sharp-reactions.pdf": "9cac1bcafb19f8de2a68efe3c0e4cf24be57476d7dee3d6060efbfa712d96ecd",
+        "layers/integration/spectre-squad/spectre-squad-firefight-ploy-silent-killers.pdf": "8134baaf13aacd76214d48739e722d3f7be1ac65e89abd0abcf6d3c5ebf77289",
+        "layers/integration/spectre-squad/spectre-squad-operatives-selection-operative-selection.pdf": "494327423dfdf277e0dfea3f747f489764b48783aa4a64097b91eca4b5e7a148",
+        "layers/integration/spectre-squad/spectre-squad-strategy-ploy-ambushing-volley.pdf": "b5876e2f0770740b776979c007fa9747d30bcdb96ab5097eb5b654de004a9e72",
+        "layers/integration/spectre-squad/spectre-squad-strategy-ploy-disappear.pdf": "ca6d00545df70508bd21b0ceacf5917e77b19ce094c532d236b12a9dd82ac5b2",
+        "layers/integration/spectre-squad/spectre-squad-strategy-ploy-hidden-engagement.pdf": "5fa5232241dc2a3936fa5fa1dbb34bc2ea0bb5603efe3145e6e667f61b8087eb",
+        "layers/integration/spectre-squad/spectre-squad-strategy-ploy-patience.pdf": "4424f7b8a9cb31115486b7348f0ece19fe2615b1802dea0b65819e14af9aabe3",
+        "layers/integration/spectre-squad/spectre-squad-token-guide-token-guide.pdf": "01087e8b40e830d2da876d925150d001f6d46c335cb0cbc1c677aa8114fa695c",
+        "layers/integration/spectre-squad/card-backside/spectre-squad-backside-portrait.jpg": "7b2ba8b6c264eb119ee19585ff8080ff386816a6d63c66e90dace593b1e1da3b",
+        "config/defaults/card-backside/default-backside-portrait.jpg": "f00ff15fa70005b9f804de08519e2e83485d7eaf78dfacea65dcef0eb1a29c22",
+        "layers/integration/spectre-squad/card-backside/spectre-squad-backside-landscape.jpg": "96ba9bf409e3d82b37e4dbf6da940da001f7654ca6894b79af60718df3955972",
+        "config/defaults/card-backside/default-backside-landscape.jpg": "1cf5580a1dff0c10adb1a286edad4479c487f3d2d698b0b8be84fe653039fd7e"
+      }
+    },
+    "extract_stats": {
+      "outputs": {
+        "team-data.json": {
+          "path": "output/spectre-squad/data/spectre-squad-team-data.json",
+          "hash": "2ebac048d4802214e7c863a1b4398f15ca0b3beb7fb942cee9ec4a648fc80208",
+          "modified": "2026-07-07T07:29:45.255650+00:00"
+        }
+      },
+      "completed": "2026-07-07T07:29:45.256069+00:00",
+      "inputs": {
+        "layers/integration/spectre-squad/content/spectre-squad-content.json": "2ebac048d4802214e7c863a1b4398f15ca0b3beb7fb942cee9ec4a648fc80208"
+      }
+    },
+    "generate_tts": {
+      "outputs": {
+        "tts_objects/Spectre Squad Box.json": {
+          "path": "output/spectre-squad/tts_objects/Spectre Squad Box.json",
+          "hash": "3beedf18679800802b498d890c109acc7463dbb2aa2d86596fb435ac344b09fd",
+          "modified": "2026-07-07T07:30:01.289773+00:00"
+        },
+        "tts_objects/Spectre Squad.json": {
+          "path": "output/spectre-squad/tts_objects/Spectre Squad.json",
+          "hash": "922071e2a75df3adf566772e727a78e408eb4fb953a0fa062a199307ebefe175",
+          "modified": "2026-07-07T07:30:01.300936+00:00"
+        }
+      },
+      "completed": "2026-07-07T07:30:01.348606+00:00",
+      "inputs": {
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "config/team-guids.json": "1dea0eaf2c7d1c37c86aba088cdf876f0638d2dcaca162888fea8422c2d5c9db",
+        "output/spectre-squad/cards/datacards/spectre-field-medicae-back.jpg": "3022294a778df57ad2a1a520edf95f6deeb6ddbd2b0febb5d75226e5e75676de",
+        "output/spectre-squad/cards/datacards/spectre-field-medicae-front.jpg": "98609541aa9d9d37db10974dce4be4a0cba48951d1fc79557b693e67730ad01e",
+        "output/spectre-squad/cards/datacards/spectre-grenadier-back.jpg": "b6e88303a605347ec90c551d5ce25e96530bbab7ca628b19de8c876e097bbc92",
+        "output/spectre-squad/cards/datacards/spectre-grenadier-front.jpg": "5a306a324c947a1b1b7c31d1e5152da2980437bbf1a14e88e2eb838051ba36fe",
+        "output/spectre-squad/cards/datacards/spectre-guide-back.jpg": "96ba9bf409e3d82b37e4dbf6da940da001f7654ca6894b79af60718df3955972",
+        "output/spectre-squad/cards/datacards/spectre-guide-front.jpg": "ae0896670e58e09b1b4f0aa6ab0be4db48fa7d8a5eb8aed63c0ceb09cab722c5",
+        "output/spectre-squad/cards/datacards/spectre-gunner-back.jpg": "96ba9bf409e3d82b37e4dbf6da940da001f7654ca6894b79af60718df3955972",
+        "output/spectre-squad/cards/datacards/spectre-gunner-front.jpg": "7c55579e34703ba283509f15a2ff1faaa8222919d63a6b278851b405bfd3ac08",
+        "output/spectre-squad/cards/datacards/spectre-heavy-gunner-back.jpg": "96ba9bf409e3d82b37e4dbf6da940da001f7654ca6894b79af60718df3955972",
+        "output/spectre-squad/cards/datacards/spectre-heavy-gunner-front.jpg": "55f8c9ccc657c699c4e302246ad0ec44505fe273a881d18cf40ffed2b8466a34",
+        "output/spectre-squad/cards/datacards/spectre-loader-back.jpg": "96ba9bf409e3d82b37e4dbf6da940da001f7654ca6894b79af60718df3955972",
+        "output/spectre-squad/cards/datacards/spectre-loader-front.jpg": "e6ee2f2c6a3be6d746d33859e562326abeed9a29899b6c6a4ddef700f6209f43",
+        "output/spectre-squad/cards/datacards/spectre-sharpshooter-back.jpg": "96ba9bf409e3d82b37e4dbf6da940da001f7654ca6894b79af60718df3955972",
+        "output/spectre-squad/cards/datacards/spectre-sharpshooter-front.jpg": "2abeb87e4990a7709071aa3d6f4065aacdd8625ae438c18920df969423a7a03d",
+        "output/spectre-squad/cards/datacards/spectre-stub-gunner-back.jpg": "96ba9bf409e3d82b37e4dbf6da940da001f7654ca6894b79af60718df3955972",
+        "output/spectre-squad/cards/datacards/spectre-stub-gunner-front.jpg": "4cf7b162b33a2cd423434070652e30dc5d0138daa294a60bad97235505363c1e",
+        "output/spectre-squad/cards/datacards/spectre-trooper-back.jpg": "96ba9bf409e3d82b37e4dbf6da940da001f7654ca6894b79af60718df3955972",
+        "output/spectre-squad/cards/datacards/spectre-trooper-front.jpg": "e2f6edccd8968346d56e90a84c88e70bdcf1d89d62e97771258cea9fbd3ca46d",
+        "output/spectre-squad/cards/datacards/spectre-veteran-sergeant-back.jpg": "96ba9bf409e3d82b37e4dbf6da940da001f7654ca6894b79af60718df3955972",
+        "output/spectre-squad/cards/datacards/spectre-veteran-sergeant-front.jpg": "10219857fde67fc35902f675a1addc100eb2c0ad46f45d554968a7a89f40efa6",
+        "output/spectre-squad/cards/datacards/spectre-vox-operator-back.jpg": "96ba9bf409e3d82b37e4dbf6da940da001f7654ca6894b79af60718df3955972",
+        "output/spectre-squad/cards/datacards/spectre-vox-operator-front.jpg": "b1439ef90ee9768b69d9fe383b70f6d96c6d9d46bc842f800441bc2e4c90b27b",
+        "output/spectre-squad/cards/datacards/spectre-vox-relay-beacon-back.jpg": "acf030a2b2c61c8391b4187039a98c3789d90a5728cc77768d25821497fac939",
+        "output/spectre-squad/cards/datacards/spectre-vox-relay-beacon-front.jpg": "3f0df4a217a88bf55ba38ff11416d4f6abfa19cee77b54edf667eec5657254e1",
+        "output/spectre-squad/cards/equipment/spectre-squad-advanced-camouflage-back.jpg": "7b2ba8b6c264eb119ee19585ff8080ff386816a6d63c66e90dace593b1e1da3b",
+        "output/spectre-squad/cards/equipment/spectre-squad-advanced-camouflage-front.jpg": "7d1e14c69c206e8388dc9969ddbc3d4841c90648e973577616de2840e7f34cd2",
+        "output/spectre-squad/cards/equipment/spectre-squad-sniper-overwatch-back.jpg": "7b2ba8b6c264eb119ee19585ff8080ff386816a6d63c66e90dace593b1e1da3b",
+        "output/spectre-squad/cards/equipment/spectre-squad-sniper-overwatch-front.jpg": "1775615f03f32699a00a2aa0b6e48b92b2ca72c32fb183f8f19342ecc2d016f4",
+        "output/spectre-squad/cards/equipment/spectre-squad-starshell-flare-back.jpg": "7b2ba8b6c264eb119ee19585ff8080ff386816a6d63c66e90dace593b1e1da3b",
+        "output/spectre-squad/cards/equipment/spectre-squad-starshell-flare-front.jpg": "228cada83d10739680771eb6c00f6d85c02eb80c3151754570c038347bc50c0b",
+        "output/spectre-squad/cards/equipment/spectre-squad-tvid-feed-triangulation-back.jpg": "7b2ba8b6c264eb119ee19585ff8080ff386816a6d63c66e90dace593b1e1da3b",
+        "output/spectre-squad/cards/equipment/spectre-squad-tvid-feed-triangulation-front.jpg": "32bd5ac65ba716a28cddb96b55e3c02576c8b08e24dc9a916d9fe527951c51bd",
+        "output/spectre-squad/cards/faction_rules/spectre-squad-camo-cloaks-back.jpg": "7b2ba8b6c264eb119ee19585ff8080ff386816a6d63c66e90dace593b1e1da3b",
+        "output/spectre-squad/cards/faction_rules/spectre-squad-camo-cloaks-front.jpg": "a05e7c753d472624addf19f0909641ad2e504213e8eb06688b883faa6cbe94d1",
+        "output/spectre-squad/cards/faction_rules/spectre-squad-elite-fieldcraft-card-1-back.jpg": "2c9d7736a46cc12bae111656b0ffbf54e19425db94bd103b2606c07b3250c46f",
+        "output/spectre-squad/cards/faction_rules/spectre-squad-elite-fieldcraft-card-1-front.jpg": "5c28e3bf8390b232ca537505b9c4d43f60af5869dfb8b2b5ba886088ecd2c8ae",
+        "output/spectre-squad/cards/faction_rules/spectre-squad-elite-fieldcraft-card-2-back.jpg": "7b2ba8b6c264eb119ee19585ff8080ff386816a6d63c66e90dace593b1e1da3b",
+        "output/spectre-squad/cards/faction_rules/spectre-squad-elite-fieldcraft-card-2-front.jpg": "7b9c6547567486202293c4d796035605cb0d834a2d5033ec31f92a691c392877",
+        "output/spectre-squad/cards/faction_rules/spectre-squad-elite-fieldcraft-card-3-back.jpg": "7b2ba8b6c264eb119ee19585ff8080ff386816a6d63c66e90dace593b1e1da3b",
+        "output/spectre-squad/cards/faction_rules/spectre-squad-elite-fieldcraft-card-3-front.jpg": "ad472319d83ed0ec8fc67ffc96cea80febd227a5909371a409533956596bf0ea",
+        "output/spectre-squad/cards/firefight_ploys/spectre-squad-dodge-back.jpg": "7b2ba8b6c264eb119ee19585ff8080ff386816a6d63c66e90dace593b1e1da3b",
+        "output/spectre-squad/cards/firefight_ploys/spectre-squad-dodge-front.jpg": "f08f1012c2ba0af996002940daf46605a981c592c90f140b7206a5bd03eb7194",
+        "output/spectre-squad/cards/firefight_ploys/spectre-squad-prepared-defence-back.jpg": "7b2ba8b6c264eb119ee19585ff8080ff386816a6d63c66e90dace593b1e1da3b",
+        "output/spectre-squad/cards/firefight_ploys/spectre-squad-prepared-defence-front.jpg": "00a43295c539676f6132fa48368bfe0aa2f636652bfaeb7c52df302bdcf4d3d3",
+        "output/spectre-squad/cards/firefight_ploys/spectre-squad-sharp-reactions-back.jpg": "7b2ba8b6c264eb119ee19585ff8080ff386816a6d63c66e90dace593b1e1da3b",
+        "output/spectre-squad/cards/firefight_ploys/spectre-squad-sharp-reactions-front.jpg": "ca80293dc3d6f7e0598ee136a31539e10295c5ad1a27b9868f3e4cac9a0a7d67",
+        "output/spectre-squad/cards/firefight_ploys/spectre-squad-silent-killers-back.jpg": "7b2ba8b6c264eb119ee19585ff8080ff386816a6d63c66e90dace593b1e1da3b",
+        "output/spectre-squad/cards/firefight_ploys/spectre-squad-silent-killers-front.jpg": "e9d085a6acd1be230326af2ae5e73a07cc69fd377add32c25cf3d80c558d1eba",
+        "output/spectre-squad/cards/operatives_selection/spectre-squad-operative-selection-back.jpg": "64a88b3482cbc277d8bd0f3c4f0ae56808cf11c935eb93a852e9f4645d96afaf",
+        "output/spectre-squad/cards/operatives_selection/spectre-squad-operative-selection-front.jpg": "692b26d53245e0bf1e95c693dc100a13f43d06a2704e823594a36f994a6078ed",
+        "output/spectre-squad/cards/strategy_ploys/spectre-squad-ambushing-volley-back.jpg": "7b2ba8b6c264eb119ee19585ff8080ff386816a6d63c66e90dace593b1e1da3b",
+        "output/spectre-squad/cards/strategy_ploys/spectre-squad-ambushing-volley-front.jpg": "2f4c336fede0406a6fabd1a42c0a310ee96c677f8f9366c03f18551cc5f02b29",
+        "output/spectre-squad/cards/strategy_ploys/spectre-squad-disappear-back.jpg": "7b2ba8b6c264eb119ee19585ff8080ff386816a6d63c66e90dace593b1e1da3b",
+        "output/spectre-squad/cards/strategy_ploys/spectre-squad-disappear-front.jpg": "8bab4e44a84a108398798faeb7e158d4ef27ed43fcbb462b04d1d8b7a9e5e93e",
+        "output/spectre-squad/cards/strategy_ploys/spectre-squad-hidden-engagement-back.jpg": "7b2ba8b6c264eb119ee19585ff8080ff386816a6d63c66e90dace593b1e1da3b",
+        "output/spectre-squad/cards/strategy_ploys/spectre-squad-hidden-engagement-front.jpg": "24717b4500129b1fbbadd1e25f1b23f5cacf0ffec38602ee34868e826b8891e0",
+        "output/spectre-squad/cards/strategy_ploys/spectre-squad-patience-back.jpg": "7b2ba8b6c264eb119ee19585ff8080ff386816a6d63c66e90dace593b1e1da3b",
+        "output/spectre-squad/cards/strategy_ploys/spectre-squad-patience-front.jpg": "78e938b1f6bdb9bc143fccaf800a5f7cf8a8ea6d906924a3b61c73a52ddc299d",
+        "output/spectre-squad/cards/token_guide/spectre-squad-token-guide-back.jpg": "7b2ba8b6c264eb119ee19585ff8080ff386816a6d63c66e90dace593b1e1da3b",
+        "output/spectre-squad/cards/token_guide/spectre-squad-token-guide-front.jpg": "4dc1040a07dc9ba5c6a3ec3542f3c9faa45c6614739bba2a799f72020f64bc0c",
+        "output/spectre-squad/cardbox/spectre-squad-card-box-texture.jpg": "bb05f6a02f437dc5ee61bf3575ca159486871adad5c53823fdfab652b3416ed6",
+        "output/spectre-squad/cardbox/spectre-squad-card-box.obj": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+        "output/spectre-squad/tokens/spectre-squad-advanced-camouflage.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/spectre-squad/tokens/spectre-squad-advanced-camouflage.png": "3816364419ac2e83e7c3a3f64e37fa05fe3d2c2387fad529195536ed6d9b6d00",
+        "output/spectre-squad/tokens/spectre-squad-cool-headed.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/spectre-squad/tokens/spectre-squad-cool-headed.png": "699800bf1d8c94207872b9c3db6861c405d85d3555c74ce7c5481542b5a206e9",
+        "output/spectre-squad/tokens/spectre-squad-fieldcraft-points.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/spectre-squad/tokens/spectre-squad-fieldcraft-points.png": "7089dfaa0e548efeea473f83058b42968a74d8735cac4fe9e42f1cb3831377bb",
+        "output/spectre-squad/tokens/spectre-squad-issue-mission.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/spectre-squad/tokens/spectre-squad-issue-mission.png": "6203287d644cab33caca52766825c32f4754793f936b6645c2eb65d2f3fee4fb",
+        "output/spectre-squad/tokens/spectre-squad-medic.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/spectre-squad/tokens/spectre-squad-medic.png": "2bdaa00a599e0d3f300b07627349b66b2af35372ea0d898f3361dcf71f86041e",
+        "output/spectre-squad/tokens/spectre-squad-melta-mine.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/spectre-squad/tokens/spectre-squad-melta-mine.png": "7f98d3f3b034329b6dfa91d459592fbcf4dcf2a26758879c6dd11da845d3d022",
+        "output/spectre-squad/tokens/spectre-squad-patience.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/spectre-squad/tokens/spectre-squad-patience.png": "a8c0dc9730cd58bbdc55503557150f17a5cbb4a5759bc1ea9dcf73d86dd46f16",
+        "output/spectre-squad/tokens/spectre-squad-sniper-overwatch.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/spectre-squad/tokens/spectre-squad-sniper-overwatch.png": "9fd8069858746ede294993caa12d9228051699dade78397ff329c201beafb741",
+        "output/spectre-squad/tokens/spectre-squad-starshell-flare.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/spectre-squad/tokens/spectre-squad-starshell-flare.png": "331df587ad6414fc50f3bb5a28b9a5e0a7201cafe33ef629d2ffd865e733bae5",
+        "output/spectre-squad/tokens/spectre-squad-tvid-feed-triangulation.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/spectre-squad/tokens/spectre-squad-tvid-feed-triangulation.png": "37a9389554ae206cf4140e99d73d2d7750ae2d4f69272f1b1d378c3021671973",
+        "output/spectre-squad/tokens/tokenbag/spectre-squad-token-bag-icon.png": "44c028841040db6351f4c730db05f19f46d816c8fd55c0aa42fcb4d945b11974",
+        "output/spectre-squad/tokens/tokenbag/spectre-squad-token-bag.obj": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+        "output/spectre-squad/dice/spectre-squad-dice-dark.jpg": "179725301698d412816beab39c09b7efa07bbbeee5012a9a634fff697d66ba1f",
+        "output/spectre-squad/dice/spectre-squad-dice-light.jpg": "4108285b840b66f6b53db8ba843ca72da40b061dc552dcf0669ec01a8142c624",
+        "output/spectre-squad/dice/spectre-squad-dice-team.jpg": "b1b88fdf4c011ac05415324c91cd4c7e55b3ca2322675f3c10f0efd5d74df33f",
+        "output/spectre-squad/data/spectre-squad-team-data.json": "2ebac048d4802214e7c863a1b4398f15ca0b3beb7fb942cee9ec4a648fc80208",
+        "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
+        "config/defaults/tts-script/datacard-load-stats.lua": "2d5f4088c2ff09f54988cf8722080f536b4e1b998cc2b4c1f1ea94e6b18eb92e",
+        "config/defaults/tts-script/display-table-manager-script.lua": "0dab4381078d90802f25e2cc825bc3658be35ee13ab3e98831c9d248c2526689",
+        "config/defaults/tts-script/faction-rule-chapter-tactics.lua": "c906742268076fb91f7cb4a92c6b588e1122ccddb692688f635c8dd4f7110ad0",
+        "config/defaults/tts-script/intermediate-updater.lua": "1a2d6dbc1a8c9c57ba6a3e7a3d4bc4b7a38a6c242a93f6ef3dae698123384d35",
+        "config/defaults/tts-script/single-object-updater.lua": "3613b85169e986a8e50ebe221482079e27c18037e3f48920aa0f7e138c0ccacc",
+        "config/defaults/tts-script/team-spawner-clean-script.lua": "12457bff3961eee2293c42d81cf4f4eb8b103177245a1ab8b46fd65da40672a2",
+        "config/defaults/tts-script/team-spawner-script.lua": "a51ff45c8622923db909fb465781801511f235412f099f83dff728d4027650db",
+        "config/defaults/tts-script/tts-update-rules-in-box-script.lua": "1eddd1803087ed63181a1149c856db77eef3196dc45d0d283693fada44a357dd",
+        "config/defaults/tts-image/default-icon.png": "892aff2628b9685c813e77be05c66afc1dc4247bc1dc9ce6fe54f006c2608271",
+        "config/defaults/tts-image/spawner-token.png": "61903b093f01d834f5e4c4c069b1353ecf7d29f012fef914b3027266816d8a6b",
+        "config/defaults/tts-token/square-bag-mesh.obj": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+        "config/defaults/tts-token/template-diamond-cutter.png": "719f57ba2b86494be454a6d3d25d8567dde974a915f3dde5ddc0e2d8dafaa1a5",
+        "config/defaults/tts-token/template-octagon-cutter.png": "944632aeacab978293ae57758b63086166c5fbaf3b845f48b3dd61db67d5c076",
+        "config/defaults/tts-token/template-operative-cutter.png": "0e698ddd403d7f0e84f200eb42af73f5249a9c5539d773298ff4c700ac9fe153",
+        "config/defaults/tts-token/template-round-cutter.png": "6564e1451c9a135a1c756fd94cde1c71e373e3fa677b51bba9d4bbe9e795d544",
+        "config/defaults/tts-token/token-bag-script.lua": "1659887e0fbfb9e3ebbc1aa5f3df8e1ffd89ee192be24d2dd1f02fcb0407e486",
+        "config/defaults/tts-token/token-bg-sample.png": "f9f90664c7f1c877c6f050f6e85babde6523cdc0aed9c77de8c09214f44ee109",
+        "config/defaults/tts-token/token-mesh.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc"
+      }
+    },
+    "front_end": {
+      "outputs": {},
+      "sources": {
+        "operatives-selection": {
+          "hash": "7fad860976ce9239bce1c73676f41ef945c8d047b04b09b43fd3faa671b2ed3c",
+          "outputs": [
+            "layers/kt-app/extracted/spectre-squad/cards/operatives-selection/spectre-squad-operatives-selection-page_0.pdf",
+            "layers/kt-app/extracted/spectre-squad/cards/operatives-selection/spectre-squad-operatives-selection-page_1.pdf"
+          ],
+          "modified": "2026-07-06T15:59:05.312595+00:00"
+        },
+        "equipment": {
+          "hash": "5f5f37c0bd4686b5ed2f4cf65de46c6971b0d1063e27377b58bea539a2886790",
+          "outputs": [
+            "layers/kt-app/extracted/spectre-squad/cards/equipment/spectre-squad-equipment-page_0.pdf",
+            "layers/kt-app/extracted/spectre-squad/cards/equipment/spectre-squad-equipment-page_1.pdf",
+            "layers/kt-app/extracted/spectre-squad/cards/equipment/spectre-squad-equipment-page_2.pdf",
+            "layers/kt-app/extracted/spectre-squad/cards/equipment/spectre-squad-equipment-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:01:37.083317+00:00"
+        },
+        "datacards": {
+          "hash": "e8a89628ba2e3e749902a1aa9e017fe5faad130badc72b538ec3e0d12d85d49e",
+          "outputs": [
+            "layers/kt-app/extracted/spectre-squad/cards/datacards/spectre-squad-datacards-page_0.pdf",
+            "layers/kt-app/extracted/spectre-squad/cards/datacards/spectre-squad-datacards-page_1.pdf",
+            "layers/kt-app/extracted/spectre-squad/cards/datacards/spectre-squad-datacards-page_2.pdf",
+            "layers/kt-app/extracted/spectre-squad/cards/datacards/spectre-squad-datacards-page_3.pdf",
+            "layers/kt-app/extracted/spectre-squad/cards/datacards/spectre-squad-datacards-page_4.pdf",
+            "layers/kt-app/extracted/spectre-squad/cards/datacards/spectre-squad-datacards-page_5.pdf",
+            "layers/kt-app/extracted/spectre-squad/cards/datacards/spectre-squad-datacards-page_6.pdf",
+            "layers/kt-app/extracted/spectre-squad/cards/datacards/spectre-squad-datacards-page_7.pdf",
+            "layers/kt-app/extracted/spectre-squad/cards/datacards/spectre-squad-datacards-page_8.pdf",
+            "layers/kt-app/extracted/spectre-squad/cards/datacards/spectre-squad-datacards-page_9.pdf",
+            "layers/kt-app/extracted/spectre-squad/cards/datacards/spectre-squad-datacards-page_10.pdf",
+            "layers/kt-app/extracted/spectre-squad/cards/datacards/spectre-squad-datacards-page_11.pdf",
+            "layers/kt-app/extracted/spectre-squad/cards/datacards/spectre-squad-datacards-page_12.pdf",
+            "layers/kt-app/extracted/spectre-squad/cards/datacards/spectre-squad-datacards-page_13.pdf",
+            "layers/kt-app/extracted/spectre-squad/cards/datacards/spectre-squad-datacards-page_14.pdf"
+          ],
+          "modified": "2026-07-06T16:02:23.986203+00:00"
+        },
+        "strategy-ploys": {
+          "hash": "bf1975cbf8b2ff7f7b7eb61d23f1ae95d35ca20621f145bb818e3cfb45852ef4",
+          "outputs": [
+            "layers/kt-app/extracted/spectre-squad/cards/strategy-ploys/spectre-squad-strategy-ploys-page_0.pdf",
+            "layers/kt-app/extracted/spectre-squad/cards/strategy-ploys/spectre-squad-strategy-ploys-page_1.pdf",
+            "layers/kt-app/extracted/spectre-squad/cards/strategy-ploys/spectre-squad-strategy-ploys-page_2.pdf",
+            "layers/kt-app/extracted/spectre-squad/cards/strategy-ploys/spectre-squad-strategy-ploys-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:07:33.337927+00:00"
+        },
+        "firefight-ploys": {
+          "hash": "077f603d699d35c3b74a9ccfe931f18629deef52375dd3005e70f24064598d3d",
+          "outputs": [
+            "layers/kt-app/extracted/spectre-squad/cards/firefight-ploys/spectre-squad-firefight-ploys-page_0.pdf",
+            "layers/kt-app/extracted/spectre-squad/cards/firefight-ploys/spectre-squad-firefight-ploys-page_1.pdf",
+            "layers/kt-app/extracted/spectre-squad/cards/firefight-ploys/spectre-squad-firefight-ploys-page_2.pdf",
+            "layers/kt-app/extracted/spectre-squad/cards/firefight-ploys/spectre-squad-firefight-ploys-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:07:41.579055+00:00"
+        },
+        "faction-rules": {
+          "hash": "4d098d4e197c0a6d535e6eb212bddd29bdae4ba6495742fea523e9e8f56910e3",
+          "outputs": [
+            "layers/kt-app/extracted/spectre-squad/cards/faction-rules/spectre-squad-faction-rules-page_0.pdf",
+            "layers/kt-app/extracted/spectre-squad/cards/faction-rules/spectre-squad-faction-rules-page_1.pdf",
+            "layers/kt-app/extracted/spectre-squad/cards/faction-rules/spectre-squad-faction-rules-page_2.pdf",
+            "layers/kt-app/extracted/spectre-squad/cards/faction-rules/spectre-squad-faction-rules-page_3.pdf",
+            "layers/kt-app/extracted/spectre-squad/cards/faction-rules/spectre-squad-faction-rules-page_4.pdf",
+            "layers/kt-app/extracted/spectre-squad/cards/faction-rules/spectre-squad-faction-rules-page_5.pdf"
+          ],
+          "modified": "2026-07-06T16:09:01.987109+00:00"
+        },
+        "cards": {
+          "hash": "96116a2f75f2312c0ff0bbcb9c5facd9ba0212f5c1067712ec45060a61ce4adf",
+          "outputs": [
+            "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page01_card1_landscape.pdf",
+            "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page01_card2_landscape.pdf",
+            "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page01_card3_landscape.pdf",
+            "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page01_card4_landscape.pdf",
+            "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page02_card1_landscape.pdf",
+            "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page02_card2_landscape.pdf",
+            "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page02_card3_landscape.pdf",
+            "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page02_card4_landscape.pdf",
+            "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page03_card1_landscape.pdf",
+            "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page03_card2_landscape.pdf",
+            "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page03_card3_landscape.pdf",
+            "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page03_card4_landscape.pdf",
+            "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page04_card1_landscape.pdf",
+            "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page04_card2_landscape.pdf",
+            "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page04_card3_landscape.pdf",
+            "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page04_card4_landscape.pdf",
+            "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page05_card1_portrait.pdf",
+            "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page05_card2_portrait.pdf",
+            "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page05_card3_portrait.pdf",
+            "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page05_card4_portrait.pdf",
+            "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page06_card1_portrait.pdf",
+            "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page06_card2_portrait.pdf",
+            "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page06_card3_portrait.pdf",
+            "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page06_card4_portrait.pdf",
+            "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page07_card1_portrait.pdf",
+            "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page07_card2_portrait.pdf",
+            "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page07_card3_portrait.pdf",
+            "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page07_card4_portrait.pdf",
+            "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page08_card1_portrait.pdf",
+            "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page08_card2_portrait.pdf",
+            "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page08_card3_portrait.pdf",
+            "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page08_card4_portrait.pdf",
+            "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page09_card1_portrait.pdf",
+            "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page09_card2_portrait.pdf",
+            "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page09_card3_portrait.pdf",
+            "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page09_card4_portrait.pdf"
+          ],
+          "modified": "2026-07-06T20:26:15.179712+00:00"
+        }
+      },
+      "completed": "2026-07-06T20:26:15.179739+00:00"
+    },
+    "build_structure": {
+      "outputs": {
+        "structure": {
+          "path": "layers/warcom/structure/spectre-squad-structure.json",
+          "hash": "4a9a0222b5ec7c658a384f825888efa4a1dcd08ed08e0902d851066f100a8c00",
+          "modified": "2026-07-06T20:57:19.948471+00:00"
+        }
+      },
+      "inputs": {
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page01_card1_landscape.pdf": "6e0b469bd2d7efde7c6aa82e405986c99af7a4a8574f554baab40c97c2a23fc0",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page01_card2_landscape.pdf": "76520e461796f629a5b859219a95996700db7726c58fc16929c80596941683cb",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page01_card3_landscape.pdf": "682d878817c9693a6f03f9533edd0349a0e26757a2ddc02ff7f403037e64e1ac",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page01_card4_landscape.pdf": "e8ab9287a3d4e8e3ebc922656134b6c9ff9e89315ee6fc30b25774b77747e1f7",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page02_card1_landscape.pdf": "55d971aa722ba235fe909cf9d50cb42303fafbf3ab6c632e4b5648f1ddb79c92",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page02_card2_landscape.pdf": "adfc6d01194fecc6034cad00e80570ada695606fb47e43bdd709fd0f28ad5082",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page02_card3_landscape.pdf": "330098997b0f9463688d0bcf8bb6361600f820887a098aa032d27c9662ae61df",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page02_card4_landscape.pdf": "c84696c1c6ef04f32b34d7700d4c4ec709ccd2c424ea164eee8347de01e84e90",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page03_card1_landscape.pdf": "e670d5a5c95fc3423aeae6a5dc0e52619d1e1a92ab382733905a526950d91d5d",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page03_card2_landscape.pdf": "5da901961cc7eb43f57969593450d93a04ae5a3f6e0db6f26a126822797496c0",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page03_card3_landscape.pdf": "2854d6656c30b2bebf083c8315963f162631457d6a7bed57646afd73ce5c98e6",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page03_card4_landscape.pdf": "b7d9b9561a49cecf6c66f6a25fa545ff83ea0fc1956759d60ff0a06605fb2a12",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page04_card1_landscape.pdf": "a733a7cb6e20cc2e5f53d06667f6914da6290f05fa2eb4381a1cdb835d908966",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page04_card2_landscape.pdf": "2bfcf356c27ee96f29d153d3728d5d122e8cad332b099ab110fb808a9868c889",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page04_card3_landscape.pdf": "9f7801a7b5176c88e8fabd910fc4af661c3f07b3bc3b4426e8c714d67119d4ff",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page04_card4_landscape.pdf": "f9ecd0989cd3c15e61251d3f2f09eccd20e5ef45baaf5b656926d08187c49c29",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page05_card1_portrait.pdf": "d718e6012ecfc8a7d29f20a71ce37975a229de37e5e3e5660e04926f1ff17e12",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page05_card2_portrait.pdf": "4237c58cc60bff7de4a88d4928a9df56bf8099d21545d103f7ca9244712fe8d0",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page05_card3_portrait.pdf": "c4f5b22b0e8efc858f053d739f10abce9317e0d0133312368c4b7f7ac79b73ec",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page05_card4_portrait.pdf": "51d5fd212b4a6c8f5b23d10e87ff893ddcd9545e3db41d952c4f4a2337b4c2a6",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page06_card1_portrait.pdf": "082cd89d0a8d7841490c58c1d9aef0a3bbfcb8c10614b772a8902af23da24e7a",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page06_card2_portrait.pdf": "dd01754b54d6c2a385a1c2418ef330367c0fda251496410aebf4c5702a7d1259",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page06_card3_portrait.pdf": "e443554ca1b5f62e7b39f69db8ee6cc19723b5acafb4b0d9dac40c72594966f8",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page06_card4_portrait.pdf": "2b5b2934d6a4d3bf0571041a9b5b5ffadb12294f753a66fa851654e19207d52b",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page07_card1_portrait.pdf": "70b68d269f5dabd0394e2b6a756d95fea736edb274650827aca0c1f8e2da93c6",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page07_card2_portrait.pdf": "6ead0ee323a4b415de19b7135e8cc53b00de7fc7f8d602fef4098774ee459a2b",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page07_card3_portrait.pdf": "29ba416171b28b8a32093510385041681ea1caedb7fda9a47844a78900dcd3dc",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page07_card4_portrait.pdf": "8f7f33f29fdaf96670616e7c2dcd3683e79cdd8c79df73236af22fdae0e31ee7",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page08_card1_portrait.pdf": "264b21f68b783d2ff25ec0174cfd328edc1d3422e820a18de3f1ce5332409ae8",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page08_card2_portrait.pdf": "1640cf609e414d15370ab3e623edc51dbf683fa09a886c6a26ac4a8972a4e8b7",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page08_card3_portrait.pdf": "b2989c50a83dd5af15bef710f6d54e4fc11404bf13382174a83d5e395ae44eb1",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page08_card4_portrait.pdf": "c713db233e51f2df195bef84506885f8b7add99bedadd7908a369ed92aa550d9",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page09_card1_portrait.pdf": "96eab1d726bdca08a3e42024d244dab045e899284913064617529aa71f447d33",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page09_card2_portrait.pdf": "2ca3e89206cc8e722e1ebca088705776dc4c2803ccab3a5377b92e0f9338802b",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page09_card3_portrait.pdf": "7297d09d4bfcf0de7d37ff9d69ab3d5a60a09a1544b8ef9c5f4013a4db41121e",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page09_card4_portrait.pdf": "2c6c6b5bf925bdf39601923daea8fd0fecd71981b59910f851c1884c31dcf13c"
+      },
+      "completed": "2026-07-06T20:57:19.988252+00:00"
+    },
+    "integrate_classified": {
+      "outputs": {
+        "manifest.json": {
+          "path": "layers/integration/spectre-squad/manifest.json",
+          "hash": "4a9a0222b5ec7c658a384f825888efa4a1dcd08ed08e0902d851066f100a8c00",
+          "modified": "2026-07-06T20:57:49.090546+00:00"
+        },
+        "spectre-squad-datacard-spectre-veteran-sergeant.pdf": {
+          "path": "layers/integration/spectre-squad/spectre-squad-datacard-spectre-veteran-sergeant.pdf",
+          "hash": "81ed0335d95fb3e8b43cfbb17ad0d19d46dc6de6435aca9d83b0e958bedd1a70",
+          "modified": "2026-07-06T20:57:49.101622+00:00"
+        },
+        "spectre-squad-datacard-spectre-field-medicae.pdf": {
+          "path": "layers/integration/spectre-squad/spectre-squad-datacard-spectre-field-medicae.pdf",
+          "hash": "13260930b20e3ec3e17fbd31af4e91f47dc091361b8fd8cc527a81e908979c0d",
+          "modified": "2026-07-06T20:57:49.113501+00:00"
+        },
+        "spectre-squad-datacard-spectre-grenadier.pdf": {
+          "path": "layers/integration/spectre-squad/spectre-squad-datacard-spectre-grenadier.pdf",
+          "hash": "e4c304e5275c9e44255c75d6400894c75d49d44bfde14e116c31947962a2de5d",
+          "modified": "2026-07-06T20:57:49.126213+00:00"
+        },
+        "spectre-squad-datacard-spectre-guide.pdf": {
+          "path": "layers/integration/spectre-squad/spectre-squad-datacard-spectre-guide.pdf",
+          "hash": "07835c7ffea48dcab4747070cec3551291736eeb2254be2126b4081860094b8c",
+          "modified": "2026-07-06T20:57:49.136550+00:00"
+        },
+        "spectre-squad-datacard-spectre-gunner.pdf": {
+          "path": "layers/integration/spectre-squad/spectre-squad-datacard-spectre-gunner.pdf",
+          "hash": "c27b70cbf75801d4edd9eb288136b2e09e48aa6e36d83e0d3bbc146c854c363b",
+          "modified": "2026-07-06T20:57:49.147797+00:00"
+        },
+        "spectre-squad-datacard-spectre-heavy-gunner.pdf": {
+          "path": "layers/integration/spectre-squad/spectre-squad-datacard-spectre-heavy-gunner.pdf",
+          "hash": "d1d5c15fc489b7680f34f9f7bc3d980dab538be8727b551c625edc2a237f22ed",
+          "modified": "2026-07-06T20:57:49.157935+00:00"
+        },
+        "spectre-squad-datacard-spectre-loader.pdf": {
+          "path": "layers/integration/spectre-squad/spectre-squad-datacard-spectre-loader.pdf",
+          "hash": "f69774f97d5e7d4e3d32d88045734355146fd6995490c6bed68c6ec214a12331",
+          "modified": "2026-07-06T20:57:49.170910+00:00"
+        },
+        "spectre-squad-datacard-spectre-sharpshooter.pdf": {
+          "path": "layers/integration/spectre-squad/spectre-squad-datacard-spectre-sharpshooter.pdf",
+          "hash": "cc3563a18ff6590f86a67d8a4f0ef520826992c1fb5e8efcd24f3375433300ea",
+          "modified": "2026-07-06T20:57:49.182021+00:00"
+        },
+        "spectre-squad-datacard-spectre-stub-gunner.pdf": {
+          "path": "layers/integration/spectre-squad/spectre-squad-datacard-spectre-stub-gunner.pdf",
+          "hash": "7335a5e0454d4e8f619d387067fc5173c44629f6b134cd83f58e3aa786ddc55d",
+          "modified": "2026-07-06T20:57:49.194952+00:00"
+        },
+        "spectre-squad-datacard-spectre-trooper.pdf": {
+          "path": "layers/integration/spectre-squad/spectre-squad-datacard-spectre-trooper.pdf",
+          "hash": "637ca83cfa4e2d9df4a251951c449dcdbb7d81ba8d1da305e6e1aaccdb8b4dee",
+          "modified": "2026-07-06T20:57:49.206457+00:00"
+        },
+        "spectre-squad-datacard-spectre-vox-operator.pdf": {
+          "path": "layers/integration/spectre-squad/spectre-squad-datacard-spectre-vox-operator.pdf",
+          "hash": "9b21a1a88955db78fbafc5d00059a86e98611c5e685e9e17af567b5866c3283a",
+          "modified": "2026-07-06T20:57:49.217259+00:00"
+        },
+        "spectre-squad-datacard-spectre-vox-relay-beacon.pdf": {
+          "path": "layers/integration/spectre-squad/spectre-squad-datacard-spectre-vox-relay-beacon.pdf",
+          "hash": "b8b680b7c24315e0805506b90b01b96e451e94c63101ed7833c241dec6cf4642",
+          "modified": "2026-07-06T20:57:49.232774+00:00"
+        },
+        "spectre-squad-equipment-sniper-overwatch.pdf": {
+          "path": "layers/integration/spectre-squad/spectre-squad-equipment-sniper-overwatch.pdf",
+          "hash": "890299b491fcacb7cd28fdc6c1ca0f966fdce1950ba4db1039f8467c8eb05bdc",
+          "modified": "2026-07-06T20:57:49.253120+00:00"
+        },
+        "spectre-squad-equipment-tvid-feed-triangulation.pdf": {
+          "path": "layers/integration/spectre-squad/spectre-squad-equipment-tvid-feed-triangulation.pdf",
+          "hash": "fc2fe1ec6297e37a6cfc3da238a2d9543c83d8f3f298de4fcb3c64d6fc555fe2",
+          "modified": "2026-07-06T20:57:49.278270+00:00"
+        },
+        "spectre-squad-equipment-starshell-flare.pdf": {
+          "path": "layers/integration/spectre-squad/spectre-squad-equipment-starshell-flare.pdf",
+          "hash": "653698c11dfa32ddb3cd99d1d76e604aab356af61981d06bd460412256832395",
+          "modified": "2026-07-06T20:57:49.302867+00:00"
+        },
+        "spectre-squad-equipment-advanced-camouflage.pdf": {
+          "path": "layers/integration/spectre-squad/spectre-squad-equipment-advanced-camouflage.pdf",
+          "hash": "2945c7cef61079f598dcc6e6a74a21a0d89b7357ff4485f6091ce74e4af0f684",
+          "modified": "2026-07-06T20:57:49.325130+00:00"
+        },
+        "spectre-squad-faction-rule-elite-fieldcraft-card-1.pdf": {
+          "path": "layers/integration/spectre-squad/spectre-squad-faction-rule-elite-fieldcraft-card-1.pdf",
+          "hash": "5b48f277af8ac7d8d05827926433f9d7b414936b94fc5071b9b56fbecf0d9d4a",
+          "modified": "2026-07-06T20:57:49.363481+00:00"
+        },
+        "spectre-squad-faction-rule-elite-fieldcraft-card-2.pdf": {
+          "path": "layers/integration/spectre-squad/spectre-squad-faction-rule-elite-fieldcraft-card-2.pdf",
+          "hash": "4bcf040cbe0e12295fdd14a894d39f822cded7a881d8f87c8cf61c4246188bea",
+          "modified": "2026-07-06T20:57:49.387864+00:00"
+        },
+        "spectre-squad-faction-rule-elite-fieldcraft-card-3.pdf": {
+          "path": "layers/integration/spectre-squad/spectre-squad-faction-rule-elite-fieldcraft-card-3.pdf",
+          "hash": "5c07f64cb79bf54cfa3928c0a989079cd64b001e82121f0a531a4eb563ac8a09",
+          "modified": "2026-07-06T20:57:49.411891+00:00"
+        },
+        "spectre-squad-faction-rule-camo-cloaks.pdf": {
+          "path": "layers/integration/spectre-squad/spectre-squad-faction-rule-camo-cloaks.pdf",
+          "hash": "67bec91dda09b0aab7c6ef3a84a3700017967c92e599d4d987066add58cf382e",
+          "modified": "2026-07-06T20:57:49.436339+00:00"
+        },
+        "spectre-squad-token-guide-token-guide.pdf": {
+          "path": "layers/integration/spectre-squad/spectre-squad-token-guide-token-guide.pdf",
+          "hash": "01087e8b40e830d2da876d925150d001f6d46c335cb0cbc1c677aa8114fa695c",
+          "modified": "2026-07-06T20:57:49.457964+00:00"
+        },
+        "spectre-squad-firefight-ploy-dodge.pdf": {
+          "path": "layers/integration/spectre-squad/spectre-squad-firefight-ploy-dodge.pdf",
+          "hash": "0a4fb8abd26b3575d3912f662ea7b350525f2a2080b46b6b3b8780f8845418b9",
+          "modified": "2026-07-06T20:57:49.484944+00:00"
+        },
+        "spectre-squad-firefight-ploy-silent-killers.pdf": {
+          "path": "layers/integration/spectre-squad/spectre-squad-firefight-ploy-silent-killers.pdf",
+          "hash": "8134baaf13aacd76214d48739e722d3f7be1ac65e89abd0abcf6d3c5ebf77289",
+          "modified": "2026-07-06T20:57:49.507008+00:00"
+        },
+        "spectre-squad-firefight-ploy-sharp-reactions.pdf": {
+          "path": "layers/integration/spectre-squad/spectre-squad-firefight-ploy-sharp-reactions.pdf",
+          "hash": "9cac1bcafb19f8de2a68efe3c0e4cf24be57476d7dee3d6060efbfa712d96ecd",
+          "modified": "2026-07-06T20:57:49.528113+00:00"
+        },
+        "spectre-squad-firefight-ploy-prepared-defence.pdf": {
+          "path": "layers/integration/spectre-squad/spectre-squad-firefight-ploy-prepared-defence.pdf",
+          "hash": "46d0b81cbc09d792f79a53291e1fa80d41e275fe84089c4ed5aa8146a38b595a",
+          "modified": "2026-07-06T20:57:49.550744+00:00"
+        },
+        "spectre-squad-operatives-selection-operative-selection.pdf": {
+          "path": "layers/integration/spectre-squad/spectre-squad-operatives-selection-operative-selection.pdf",
+          "hash": "494327423dfdf277e0dfea3f747f489764b48783aa4a64097b91eca4b5e7a148",
+          "modified": "2026-07-06T20:57:49.590176+00:00"
+        },
+        "spectre-squad-strategy-ploy-disappear.pdf": {
+          "path": "layers/integration/spectre-squad/spectre-squad-strategy-ploy-disappear.pdf",
+          "hash": "ca6d00545df70508bd21b0ceacf5917e77b19ce094c532d236b12a9dd82ac5b2",
+          "modified": "2026-07-06T20:57:49.611541+00:00"
+        },
+        "spectre-squad-strategy-ploy-hidden-engagement.pdf": {
+          "path": "layers/integration/spectre-squad/spectre-squad-strategy-ploy-hidden-engagement.pdf",
+          "hash": "5fa5232241dc2a3936fa5fa1dbb34bc2ea0bb5603efe3145e6e667f61b8087eb",
+          "modified": "2026-07-06T20:57:49.633541+00:00"
+        },
+        "spectre-squad-strategy-ploy-ambushing-volley.pdf": {
+          "path": "layers/integration/spectre-squad/spectre-squad-strategy-ploy-ambushing-volley.pdf",
+          "hash": "b5876e2f0770740b776979c007fa9747d30bcdb96ab5097eb5b654de004a9e72",
+          "modified": "2026-07-06T20:57:49.656996+00:00"
+        },
+        "spectre-squad-strategy-ploy-patience.pdf": {
+          "path": "layers/integration/spectre-squad/spectre-squad-strategy-ploy-patience.pdf",
+          "hash": "4424f7b8a9cb31115486b7348f0ece19fe2615b1802dea0b65819e14af9aabe3",
+          "modified": "2026-07-06T20:57:49.682394+00:00"
+        }
+      },
+      "inputs": {
+        "layers/warcom/structure/spectre-squad-structure.json": "4a9a0222b5ec7c658a384f825888efa4a1dcd08ed08e0902d851066f100a8c00",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page01_card1_landscape.pdf": "6e0b469bd2d7efde7c6aa82e405986c99af7a4a8574f554baab40c97c2a23fc0",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page01_card2_landscape.pdf": "76520e461796f629a5b859219a95996700db7726c58fc16929c80596941683cb",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page01_card3_landscape.pdf": "682d878817c9693a6f03f9533edd0349a0e26757a2ddc02ff7f403037e64e1ac",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page01_card4_landscape.pdf": "e8ab9287a3d4e8e3ebc922656134b6c9ff9e89315ee6fc30b25774b77747e1f7",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page02_card1_landscape.pdf": "55d971aa722ba235fe909cf9d50cb42303fafbf3ab6c632e4b5648f1ddb79c92",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page02_card2_landscape.pdf": "adfc6d01194fecc6034cad00e80570ada695606fb47e43bdd709fd0f28ad5082",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page02_card3_landscape.pdf": "330098997b0f9463688d0bcf8bb6361600f820887a098aa032d27c9662ae61df",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page02_card4_landscape.pdf": "c84696c1c6ef04f32b34d7700d4c4ec709ccd2c424ea164eee8347de01e84e90",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page03_card1_landscape.pdf": "e670d5a5c95fc3423aeae6a5dc0e52619d1e1a92ab382733905a526950d91d5d",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page03_card2_landscape.pdf": "5da901961cc7eb43f57969593450d93a04ae5a3f6e0db6f26a126822797496c0",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page03_card3_landscape.pdf": "2854d6656c30b2bebf083c8315963f162631457d6a7bed57646afd73ce5c98e6",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page03_card4_landscape.pdf": "b7d9b9561a49cecf6c66f6a25fa545ff83ea0fc1956759d60ff0a06605fb2a12",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page04_card1_landscape.pdf": "a733a7cb6e20cc2e5f53d06667f6914da6290f05fa2eb4381a1cdb835d908966",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page04_card2_landscape.pdf": "2bfcf356c27ee96f29d153d3728d5d122e8cad332b099ab110fb808a9868c889",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page04_card3_landscape.pdf": "9f7801a7b5176c88e8fabd910fc4af661c3f07b3bc3b4426e8c714d67119d4ff",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page09_card1_portrait.pdf": "96eab1d726bdca08a3e42024d244dab045e899284913064617529aa71f447d33",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page09_card2_portrait.pdf": "2ca3e89206cc8e722e1ebca088705776dc4c2803ccab3a5377b92e0f9338802b",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page09_card3_portrait.pdf": "7297d09d4bfcf0de7d37ff9d69ab3d5a60a09a1544b8ef9c5f4013a4db41121e",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page09_card4_portrait.pdf": "2c6c6b5bf925bdf39601923daea8fd0fecd71981b59910f851c1884c31dcf13c",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page05_card3_portrait.pdf": "c4f5b22b0e8efc858f053d739f10abce9317e0d0133312368c4b7f7ac79b73ec",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page05_card4_portrait.pdf": "51d5fd212b4a6c8f5b23d10e87ff893ddcd9545e3db41d952c4f4a2337b4c2a6",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page06_card1_portrait.pdf": "082cd89d0a8d7841490c58c1d9aef0a3bbfcb8c10614b772a8902af23da24e7a",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page06_card2_portrait.pdf": "dd01754b54d6c2a385a1c2418ef330367c0fda251496410aebf4c5702a7d1259",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page06_card3_portrait.pdf": "e443554ca1b5f62e7b39f69db8ee6cc19723b5acafb4b0d9dac40c72594966f8",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page06_card4_portrait.pdf": "2b5b2934d6a4d3bf0571041a9b5b5ffadb12294f753a66fa851654e19207d52b",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page08_card1_portrait.pdf": "264b21f68b783d2ff25ec0174cfd328edc1d3422e820a18de3f1ce5332409ae8",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page08_card2_portrait.pdf": "1640cf609e414d15370ab3e623edc51dbf683fa09a886c6a26ac4a8972a4e8b7",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page08_card3_portrait.pdf": "b2989c50a83dd5af15bef710f6d54e4fc11404bf13382174a83d5e395ae44eb1",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page08_card4_portrait.pdf": "c713db233e51f2df195bef84506885f8b7add99bedadd7908a369ed92aa550d9",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page05_card1_portrait.pdf": "d718e6012ecfc8a7d29f20a71ce37975a229de37e5e3e5660e04926f1ff17e12",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page05_card2_portrait.pdf": "4237c58cc60bff7de4a88d4928a9df56bf8099d21545d103f7ca9244712fe8d0",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page07_card1_portrait.pdf": "70b68d269f5dabd0394e2b6a756d95fea736edb274650827aca0c1f8e2da93c6",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page07_card2_portrait.pdf": "6ead0ee323a4b415de19b7135e8cc53b00de7fc7f8d602fef4098774ee459a2b",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page07_card3_portrait.pdf": "29ba416171b28b8a32093510385041681ea1caedb7fda9a47844a78900dcd3dc",
+        "layers/warcom/extracted/spectre-squad/cards/spectre-squad_page07_card4_portrait.pdf": "8f7f33f29fdaf96670616e7c2dcd3683e79cdd8c79df73236af22fdae0e31ee7"
+      },
+      "completed": "2026-07-06T20:57:49.723539+00:00"
+    },
+    "extract_artwork": {
+      "outputs": {},
+      "sources": {
+        "artwork": {
+          "hash": "96116a2f75f2312c0ff0bbcb9c5facd9ba0212f5c1067712ec45060a61ce4adf",
+          "outputs": [
+            "layers/integration/spectre-squad/artwork/spectre-squad-artwork-01.jpeg",
+            "layers/integration/spectre-squad/artwork/spectre-squad-artwork-02.jpeg",
+            "layers/integration/spectre-squad/artwork/spectre-squad-artwork-03.jpeg",
+            "layers/integration/spectre-squad/artwork/spectre-squad-artwork-04.jpeg",
+            "layers/integration/spectre-squad/artwork/spectre-squad-artwork-05.jpeg",
+            "layers/integration/spectre-squad/artwork/spectre-squad-artwork-06.jpeg",
+            "layers/integration/spectre-squad/artwork/spectre-squad-artwork-07.jpeg",
+            "layers/integration/spectre-squad/artwork/spectre-squad-artwork-08.jpeg",
+            "layers/integration/spectre-squad/artwork/spectre-squad-artwork-09.jpeg",
+            "layers/integration/spectre-squad/artwork/spectre-squad-artwork-10.jpeg",
+            "layers/integration/spectre-squad/artwork/spectre-squad-artwork-11.jpeg",
+            "layers/integration/spectre-squad/artwork/spectre-squad-artwork-12.jpeg",
+            "layers/integration/spectre-squad/artwork/spectre-squad-artwork-13.jpeg",
+            "layers/integration/spectre-squad/artwork/spectre-squad-artwork-14.jpeg",
+            "layers/integration/spectre-squad/artwork/spectre-squad-artwork-15.jpeg",
+            "layers/integration/spectre-squad/artwork/spectre-squad-artwork-16.jpeg",
+            "layers/integration/spectre-squad/artwork/spectre-squad-artwork-17.jpeg",
+            "layers/integration/spectre-squad/artwork/spectre-squad-artwork-18.jpeg",
+            "layers/integration/spectre-squad/artwork/spectre-squad-artwork-19.jpeg",
+            "layers/integration/spectre-squad/artwork/spectre-squad-artwork-20.jpeg",
+            "layers/integration/spectre-squad/artwork/spectre-squad-artwork-21.jpeg",
+            "layers/integration/spectre-squad/artwork/spectre-squad-artwork-22.jpeg",
+            "layers/integration/spectre-squad/artwork/spectre-squad-artwork-metadata.json",
+            "layers/integration/spectre-squad/artwork/icons/spectre-squad-icon-landscape.jpg",
+            "layers/integration/spectre-squad/artwork/icons/spectre-squad-icon-portrait.jpg",
+            "layers/integration/spectre-squad/artwork/icons/spectre-squad-icon-token-transparent.png",
+            "layers/integration/spectre-squad/artwork/icons/spectre-squad-icon-token.jpg"
+          ],
+          "modified": "2026-07-06T20:44:02.634320+00:00"
+        }
+      },
+      "completed": "2026-07-06T20:44:02.634335+00:00"
+    }
+  }
+}

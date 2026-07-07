@@ -1,13 +1,14 @@
 {
   "team": "canoptek-circle",
-  "generated_at": "2026-07-01T17:21:12.507302+00:00",
+  "generated_at": "2026-07-06T20:58:25.001472+00:00",
   "datacards": [
     {
-      "name": "GEOMANCER",
+      "name": "geomancer",
       "apl": 3,
       "movement": "6″",
       "save": "3+",
       "wounds": 14,
+      "base_size": 50,
       "weapons": [
         {
           "name": "Tremorglaive (part matter)",
@@ -40,15 +41,15 @@
       "unique_actions": [
         {
           "name": "GEOMANTIC DISTURBANCE (1AP)",
-          "description": "• Select a point on a terrain feature; that point must be visible to and within 8\" of this operative. Separately roll 2D6 for each operative within 2\" of that point. If the result is higher than that operative’s remaining wounds, inflict damage on it equal to the difference.\n• This operative cannot perform this action while it has a Conceal order, or while within control range of an enemy operative."
+          "description": "Select a point on a terrain feature; that point must be visible to and within 8\" of this operative. Separately roll 2D6 for each operative within 2\" of that point. If the result is higher than that operative’s remaining wounds, inflict damage on it equal to the difference. This operative cannot perform this action while it has a Conceal order, or while within control range of an enemy operative."
         },
         {
           "name": "CANOPTEK CONTROL (1AP)",
-          "description": "• SUPPORT. Select one friendly CANOPTEK CIRCLE CANOPTEK operative visible to and within 6\" of this operative. Alternatively, you can select one friendly CANOPTEK CIRCLE CANOPTEK operative that’s visible to this operative and within your OBELISK NODE MATRIX (SUPPORT doesn’t apply to this selection). That selected operative can immediately perform a 1AP action for free; it cannot move more than or be removed and set up more than 2\" during that action.\n• This operative cannot perform this action while within control range of an enemy operative, or while counteracting. GEOMANCER ACTIONS"
+          "description": "SUPPORT. Select one friendly CANOPTEK CIRCLE CANOPTEK operative visible to and within 6\" of this operative. Alternatively, you can select one friendly CANOPTEK CIRCLE CANOPTEK operative that’s visible to this operative and within your OBELISK NODE MATRIX (SUPPORT doesn’t apply to this selection). That selected operative can immediately perform a 1AP action for free; it cannot move more than or be removed and set up more than 2\" during that action. This operative cannot perform this action while within control range of an enemy operative, or while counteracting. GEOMANCER ACTIONS"
         },
         {
           "name": "MOLECULAR BREACH (1AP)",
-          "description": "• SUPPORT. Select one friendly CANOPTEK CIRCLE operative visible to and within 6\" of this operative. Alternatively, you can select one friendly CANOPTEK CIRCLE operative visible to this operative and within your OBELISK NODE MATRIX (SUPPORT doesn’t apply to this selection).\n• The next time the selected operative performs an action in which it moves, don’t move it. Instead, remove it from the killzone and set it back up wholly within a distance equal to its Move stat (or 3\" if it was a Dash) horizontally of its original location (in a killzone that uses the close quarters rules, e.g. Killzone: Tomb World, this distance can be measured over and through Wall terrain and the operative can be set up on the other side). Note that it gains no additional distance when performing the Charge action. It must be set up in a location it can be placed, and unless it’s the Charge action, it cannot be set up within control range of an enemy operative."
+          "description": "SUPPORT. Select one friendly CANOPTEK CIRCLE operative visible to and within 6\" of this operative. Alternatively, you can select one friendly CANOPTEK CIRCLE operative visible to this operative and within your OBELISK NODE MATRIX (SUPPORT doesn’t apply to this selection). The next time the selected operative performs an action in which it moves, don’t move it. Instead, remove it from the killzone and set it back up wholly within a distance equal to its Move stat (or 3\" if it was a Dash) horizontally of its original location (in a killzone that uses the close quarters rules, e.g. Killzone: Tomb World, this distance can be measured over and through Wall terrain and the operative can be set up on the other side). Note that it gains no additional distance when performing the Charge action. It must be set up in a location it can be placed, and unless it’s the Charge action, it cannot be set up within control range of an enemy operative."
         }
       ],
       "keywords": [
@@ -60,11 +61,12 @@
       ]
     },
     {
-      "name": "CANOPTEK MACROCYTE ACCELERATOR",
+      "name": "canoptek-macrocyte-accelerator",
       "apl": 2,
       "movement": "7″",
       "save": "4+",
       "wounds": 7,
+      "base_size": 28,
       "weapons": [
         {
           "name": "Spark",
@@ -91,20 +93,21 @@
       "unique_actions": [
         {
           "name": "OVERCHARGE (1AP)",
-          "description": "• Select one other friendly CANOPTEK CIRCLE CANOPTEK operative visible to and within 3\" of this operative. Alternatively, if this operative is within your OBELISK NODE MATRIX, you can select one other friendly CANOPTEK CIRCLE CANOPTEK operative within your OBELISK NODE MATRIX. Until the end of that selected operative’s next activation, add 1 to its APL stat.\n• This operative cannot perform this action while within control range of an enemy operative."
+          "description": "Select one other friendly CANOPTEK CIRCLE CANOPTEK operative visible to and within 3\" of this operative. Alternatively, if this operative is within your OBELISK NODE MATRIX, you can select one other friendly CANOPTEK CIRCLE CANOPTEK operative within your OBELISK NODE MATRIX. Until the end of that selected operative’s next activation, add 1 to its APL stat. This operative cannot perform this action while within control range of an enemy operative."
         },
         {
           "name": "CRANIAL OVERLOAD (1AP)",
-          "description": "• Select one enemy operative visible to and within 3\" of this operative. Alternatively, if this operative is within your OBELISK NODE MATRIX, you can select one enemy operative within your OBELISK NODE MATRIX. Until the end of that enemy operative’s next activation, subtract 1 from its APL stat.\n• This operative cannot perform this action while within control range of an enemy operative. CANOPTEK MACROCYTE ACCELERATOR"
+          "description": "Select one enemy operative visible to and within 3\" of this operative. Alternatively, if this operative is within your OBELISK NODE MATRIX, you can select one enemy operative within your OBELISK NODE MATRIX. Until the end of that enemy operative’s next activation, subtract 1 from its APL stat. This operative cannot perform this action while within control range of an enemy operative. CANOPTEK MACROCYTE ACCELERATOR"
         }
       ]
     },
     {
-      "name": "CANOPTEK MACROCYTE REANIMATOR",
+      "name": "canoptek-macrocyte-reanimator",
       "apl": 2,
       "movement": "7″",
       "save": "4+",
       "wounds": 7,
+      "base_size": 28,
       "weapons": [
         {
           "name": "Atomiser beam",
@@ -136,16 +139,17 @@
       "unique_actions": [
         {
           "name": "NANOSCARAB BEAM (1AP)",
-          "description": "• Select one friendly CANOPTEK CIRCLE operative visible to and within 6\" of this operative. Alternatively, if this operative is within your OBELISK NODE MATRIX, you can select one other friendly CANOPTEK CIRCLE operative within your OBELISK NODE MATRIX. The selected operative regains up to 3D3 lost wounds. It cannot be an operative that the Reanimate rule was used on during this turning point.\n• This operative cannot perform this action while within control range of an enemy operative, or more than once per turning point. CANOPTEK MACROCYTE REANIMATOR 2 APL WOUNDS SAVE MOVE 7\" 4+ 7"
+          "description": "Select one friendly CANOPTEK CIRCLE operative visible to and within 6\" of this operative. Alternatively, if this operative is within your OBELISK NODE MATRIX, you can select one other friendly CANOPTEK CIRCLE operative within your OBELISK NODE MATRIX. The selected operative regains up to 3D3 lost wounds. It cannot be an operative that the Reanimate rule was used on during this turning point. This operative cannot perform this action while within control range of an enemy operative, or more than once per turning point. CANOPTEK MACROCYTE REANIMATOR 2 APL WOUNDS SAVE MOVE 7\" 4+ 7"
         }
       ]
     },
     {
-      "name": "CANOPTEK MACROCYTE WARRIOR",
+      "name": "canoptek-macrocyte-warrior",
       "apl": 2,
       "movement": "7″",
       "save": "4+",
       "wounds": 7,
+      "base_size": 28,
       "weapons": [
         {
           "name": "Gauss scalpel",
@@ -197,11 +201,12 @@
       ]
     },
     {
-      "name": "CANOPTEK TOMB CRAWLER",
+      "name": "canoptek-tomb-crawler",
       "apl": 2,
       "movement": "5″",
       "save": "3+",
       "wounds": 18,
+      "base_size": 50,
       "weapons": [
         {
           "name": "Transdimensional isolator",
@@ -308,12 +313,12 @@
   ],
   "operatives_selection": [
     {
-      "name": "OPERATIVE SELECTION",
-      "text": "CANOPTEK CIRCLE \nKILL TEAM\nARCHETYPES: RECON, SECURITY\nOPERATIVES\n\t\n↘\n• 1 CANOPTEK CIRCLE GEOMANCER operative \n\t\n↘\n• 2 CANOPTEK CIRCLE TOMB CRAWLER \noperatives with one of the following options \n(select separately for each):\n• Twin gauss reapers; claws\n• Transdimensional isolator; claws \n\t\n↘\n• 1 CANOPTEK CIRCLE ACCELERATOR \noperative \n\t\n↘\n• 1 CANOPTEK CIRCLE REANIMATOR operative \n\t\n↘\n• 3 CANOPTEK CIRCLE WARRIOR operatives \nwith one of the following options (select \nseparately for each):\n• Gauss scalpel; claws & tail\n• Tesla caster; claws & tail\n• Your kill team can only include up to one \ntransdimensional isolator.",
+      "name": "operative-selection",
+      "text": "CANOPTEK CIRCLE \nKILL TEAM\nARCHETYPES: RECON, SECURITY\nOPERATIVES\n \n↘ 1 CANOPTEK CIRCLE GEOMANCER operative \n \n↘ 2 CANOPTEK CIRCLE TOMB CRAWLER \noperatives with one of the following options \n(select separately for each):\n• Twin gauss reapers; claws\n• Transdimensional isolator; claws \n \n↘ 1 CANOPTEK CIRCLE ACCELERATOR \noperative \n \n↘ 1 CANOPTEK CIRCLE REANIMATOR operative \n \n↘ 3 CANOPTEK CIRCLE WARRIOR operatives \nwith one of the following options (select \nseparately for each):\n• Gauss scalpel; claws & tail\n• Tesla caster; claws & tail \n Your kill team can only include up to one \ntransdimensional isolator.",
       "selection": {
         "OPERATIVES": [
           [
-            "Twin gauss reapers; claws Transdimensional isolator; claws 1 CANOPTEK CIRCLE ACCELERATOR operative 1 CANOPTEK CIRCLE REANIMATOR operative 3 CANOPTEK CIRCLE WARRIOR operatives with one of the following options (select separately for each): Gauss scalpel; claws & tail Tesla caster; claws & tail transdimensional isolator."
+            "Twin gauss reapers; claws Transdimensional isolator; claws operative with one of the following options (select separately for each): Gauss scalpel; claws & tail Tesla caster; claws & tail transdimensional isolator."
           ]
         ]
       }

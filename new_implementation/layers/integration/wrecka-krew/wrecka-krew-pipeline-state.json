@@ -1,0 +1,989 @@
+{
+  "team": "wrecka-krew",
+  "pipeline_version": "2.0",
+  "last_updated": "2026-07-07T07:30:01.695109+00:00",
+  "steps": {
+    "content_analysis": {
+      "outputs": {
+        "content.json": {
+          "path": "layers/integration/wrecka-krew/content/wrecka-krew-content.json",
+          "hash": "6afe67447b28800de9cdab0ba4f2c3989c0acc148f07a2523808d299a714b64a",
+          "modified": "2026-07-06T21:02:12.845669+00:00"
+        }
+      },
+      "completed": "2026-07-06T21:02:12.870331+00:00",
+      "inputs": {
+        "layers/integration/wrecka-krew/manifest.json": "cf1847a071cf01072fcc0d117f80cbde658743df9bc4dbde8d55f14a6e8d7c5b",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "layers/integration/wrecka-krew/wrecka-krew-datacard-breaka-boy-demolisha.pdf": "d2ec6947b8887484b81de9f1f5784a3f593f049a925d5e1339caa35106b57596",
+        "layers/integration/wrecka-krew/wrecka-krew-datacard-breaka-boy-fighter.pdf": "01a5264e73b25eb708f61c2ff0862daf48c425d75099008b7013597e5fe3c66b",
+        "layers/integration/wrecka-krew/wrecka-krew-datacard-breaka-boy-krusha.pdf": "20e3d1c3d3f4c2c89a6c35edf716d6d2085ea1a3f218a3ad4d89c6fd7afa09a8",
+        "layers/integration/wrecka-krew/wrecka-krew-datacard-tankbusta-gunner.pdf": "6c8e944cf48edc7105ffcfd655b891abadaef0e0cd54e824033846ad34c3d879",
+        "layers/integration/wrecka-krew/wrecka-krew-datacard-tankbusta-rokkiteer.pdf": "8ce25a7ed048922bf611843fe9eb25c6548b7721c9edbdbbbe588c6491a9319d",
+        "layers/integration/wrecka-krew/wrecka-krew-datacard-wrecka-bomb-squig.pdf": "599a83180801444e230c84de6072e0b7a01786ee7797e37316a20be55fe70881",
+        "layers/integration/wrecka-krew/wrecka-krew-datacard-wrecka-boss-nob.pdf": "67215d1d8521e90a06bbd7a0e6252d3dd71641d69f74758d05a21a27b64ce70d",
+        "layers/integration/wrecka-krew/wrecka-krew-equipment-drill-rokkits.pdf": "135a49ad75b459efe7570ec938fe6cd514363e0ee468ab5555552ec99d4b027e",
+        "layers/integration/wrecka-krew/wrecka-krew-equipment-engine-oil.pdf": "928b1b94904aac62b7964ec792a2128c4569937776355981a84a50bec1cc05e4",
+        "layers/integration/wrecka-krew/wrecka-krew-equipment-extra-armour.pdf": "6d97cb270b9691d774d479332670996218cc161a5626ba9394a29907d03f403f",
+        "layers/integration/wrecka-krew/wrecka-krew-equipment-glyphs.pdf": "8f73685eddffbe7cce0d71677c02c82753d466e0f0f83a530bca3d6992334120",
+        "layers/integration/wrecka-krew/wrecka-krew-faction-rule-tanked-up.pdf": "0ebd208b8af6cecec22d942a9a83b38d5d3d34b12ef64dbf66d7835040a06f60",
+        "layers/integration/wrecka-krew/wrecka-krew-faction-rule-wrecka-rampage.pdf": "be8ab5f1d02666435c5fff5d97a373a12506eac8a307f2b05f02e970cfd3d6c0",
+        "layers/integration/wrecka-krew/wrecka-krew-firefight-ploy-demolition-job.pdf": "18c4c8d1cd99a4b66cb0815be1eb00c09d977c9b67719e0f70ae74171d185bba",
+        "layers/integration/wrecka-krew/wrecka-krew-firefight-ploy-just-a-scratch.pdf": "f37842d1f225f3107749b74fab138be5c7e1cebb021bd738ee071dea08c9e90e",
+        "layers/integration/wrecka-krew/wrecka-krew-firefight-ploy-kaboom.pdf": "9120d29889ad55fab86354f4a485a627182624b15b83f787a036300780c2c9d3",
+        "layers/integration/wrecka-krew/wrecka-krew-firefight-ploy-proppa-scrap.pdf": "680fc279ef3013c624702358bec8734767ad56c07d955337202779eb63ceee2c",
+        "layers/integration/wrecka-krew/wrecka-krew-operatives-selection-operative-selection.pdf": "6834bbc9fe99214df5f124c29cd4e0f130481c8807f3d542a0c0cdbf3d09ec77",
+        "layers/integration/wrecka-krew/wrecka-krew-strategy-ploy-amped-up.pdf": "1e813bfc373d3997c6df4e881a46f8e6f67fea864a42ee34f75fad8991198426",
+        "layers/integration/wrecka-krew/wrecka-krew-strategy-ploy-destruction.pdf": "1896ae581616f5b08a5a2fb84ba3eef9559d4d7eeae43986d4dfdbd31b765302",
+        "layers/integration/wrecka-krew/wrecka-krew-strategy-ploy-tuff-gitz.pdf": "8ce4ea5ed83f7b944c40e0018f9ee50de634a4ae29241e147e40bd7e90d054a3",
+        "layers/integration/wrecka-krew/wrecka-krew-strategy-ploy-waaagh.pdf": "edef0d3de6d81295172232f03baf8f341c3c4a6974c1c0ed3f7093d0cc114e18",
+        "layers/integration/wrecka-krew/wrecka-krew-token-guide-token-guide.pdf": "4c2c844b0beaca29200540a64748e300510a79c5077b468e4fcc47a96156f10d"
+      }
+    },
+    "extract_backsides": {
+      "outputs": {
+        "backside-landscape.jpg": {
+          "path": "layers/integration/wrecka-krew/card-backside/wrecka-krew-backside-landscape.jpg",
+          "hash": "6a56b845b33b96f6a8cf4a0fd1b37939438a20405271132cdcc0a8e54093207c",
+          "modified": "2026-07-06T16:32:07.691115+00:00"
+        },
+        "backside-portrait.jpg": {
+          "path": "layers/integration/wrecka-krew/card-backside/wrecka-krew-backside-portrait.jpg",
+          "hash": "5dd01029f5b2506ee0dca765d77fa5cc569981cd58b2e52aae967bbfe05085d2",
+          "modified": "2026-07-06T16:32:07.714709+00:00"
+        }
+      },
+      "completed": "2026-07-06T16:32:07.719693+00:00",
+      "inputs": {
+        "layers/integration/wrecka-krew/artwork/icons/wrecka-krew-icon-token.jpg": "d5fe0d6374d10a637dab7473cd017a894cf8bebe038fd24819f3dea3eaee67aa",
+        "config/defaults/box/card-box-background.jpeg": "2dd1442a7c52ca1d66899333f678d60f48981ce20561ead77c1161d548176036"
+      }
+    },
+    "extract_tokens": {
+      "outputs": {
+        "tokens/wrecka-krew-breach.png": {
+          "path": "output/wrecka-krew/tokens/wrecka-krew-breach.png",
+          "hash": "1fdc895acb57766fab17406048d600912f8ca02d30a66bc0cd31158fc352bbac",
+          "modified": "2026-07-06T21:02:59.100041+00:00"
+        },
+        "tokens/wrecka-krew-demolition.png": {
+          "path": "output/wrecka-krew/tokens/wrecka-krew-demolition.png",
+          "hash": "c5235b8d31561079db838be4e129282d92eeceac11b6faed121a90dcb695cc15",
+          "modified": "2026-07-06T21:02:59.105549+00:00"
+        },
+        "tokens/wrecka-krew-drill-rokkits.png": {
+          "path": "output/wrecka-krew/tokens/wrecka-krew-drill-rokkits.png",
+          "hash": "2d3402d0f7245381d0846db2baf00c5c210ebbf4019c9eea74f8205b648fb476",
+          "modified": "2026-07-06T21:02:59.110454+00:00"
+        },
+        "tokens/wrecka-krew-engine-oil.png": {
+          "path": "output/wrecka-krew/tokens/wrecka-krew-engine-oil.png",
+          "hash": "f2362d0a6e65f238c58bcbc8ffd36fd0a10621bad86e65f45934fdb494d2c249",
+          "modified": "2026-07-06T21:02:59.115264+00:00"
+        },
+        "tokens/wrecka-krew-explosives.png": {
+          "path": "output/wrecka-krew/tokens/wrecka-krew-explosives.png",
+          "hash": "62312f899946d4e6059c74dd557abef9469491cceb76f301e84e2af56784ee41",
+          "modified": "2026-07-06T21:02:59.119948+00:00"
+        },
+        "tokens/wrecka-krew-pulsa-point.png": {
+          "path": "output/wrecka-krew/tokens/wrecka-krew-pulsa-point.png",
+          "hash": "30866cda8ad9b173d4e8258883659d6be0054bc4540f36109ee38c9c053a66c7",
+          "modified": "2026-07-06T21:02:59.124644+00:00"
+        },
+        "tokens/wrecka-krew-pulsa-rokkit.png": {
+          "path": "output/wrecka-krew/tokens/wrecka-krew-pulsa-rokkit.png",
+          "hash": "2d2e4d5c2c6d925b2297ea84c6f00fbe58647f525b8eb7a166837f493040f948",
+          "modified": "2026-07-06T21:02:59.129430+00:00"
+        },
+        "tokens/wrecka-krew-pulsa.png": {
+          "path": "output/wrecka-krew/tokens/wrecka-krew-pulsa.png",
+          "hash": "c04bbec72640bd2ed012eb905f814d45dc33b693674c52d94dd3c58e86922c91",
+          "modified": "2026-07-06T21:02:59.134149+00:00"
+        },
+        "tokens/wrecka-krew-rokkit-rack.png": {
+          "path": "output/wrecka-krew/tokens/wrecka-krew-rokkit-rack.png",
+          "hash": "11c3505e3926f1b66f7e98120a34dcd8e4b06f7379599ad7ee8b9f6550675d09",
+          "modified": "2026-07-06T21:02:59.138858+00:00"
+        },
+        "tokens/wrecka-krew-tankhammer.png": {
+          "path": "output/wrecka-krew/tokens/wrecka-krew-tankhammer.png",
+          "hash": "4a6bf59d9b319274be304f75bc88c6c52fbd0b3dc2b239ddbee85044a0276f41",
+          "modified": "2026-07-06T21:02:59.143471+00:00"
+        },
+        "tokens/wrecka-krew-wrecka-points.png": {
+          "path": "output/wrecka-krew/tokens/wrecka-krew-wrecka-points.png",
+          "hash": "252800112d92e295cd4e116bdb70e4036a92bd5674c2ed936be5d987b3f79b5c",
+          "modified": "2026-07-06T21:02:59.148208+00:00"
+        },
+        "tokens/wrecka-krew-breach.obj": {
+          "path": "output/wrecka-krew/tokens/wrecka-krew-breach.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:59.149501+00:00"
+        },
+        "tokens/wrecka-krew-demolition.obj": {
+          "path": "output/wrecka-krew/tokens/wrecka-krew-demolition.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:59.150371+00:00"
+        },
+        "tokens/wrecka-krew-drill-rokkits.obj": {
+          "path": "output/wrecka-krew/tokens/wrecka-krew-drill-rokkits.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:59.151219+00:00"
+        },
+        "tokens/wrecka-krew-engine-oil.obj": {
+          "path": "output/wrecka-krew/tokens/wrecka-krew-engine-oil.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:59.152033+00:00"
+        },
+        "tokens/wrecka-krew-explosives.obj": {
+          "path": "output/wrecka-krew/tokens/wrecka-krew-explosives.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:59.152893+00:00"
+        },
+        "tokens/wrecka-krew-pulsa-point.obj": {
+          "path": "output/wrecka-krew/tokens/wrecka-krew-pulsa-point.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:59.153737+00:00"
+        },
+        "tokens/wrecka-krew-pulsa-rokkit.obj": {
+          "path": "output/wrecka-krew/tokens/wrecka-krew-pulsa-rokkit.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:59.154562+00:00"
+        },
+        "tokens/wrecka-krew-pulsa.obj": {
+          "path": "output/wrecka-krew/tokens/wrecka-krew-pulsa.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:59.155402+00:00"
+        },
+        "tokens/wrecka-krew-rokkit-rack.obj": {
+          "path": "output/wrecka-krew/tokens/wrecka-krew-rokkit-rack.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:59.156310+00:00"
+        },
+        "tokens/wrecka-krew-tankhammer.obj": {
+          "path": "output/wrecka-krew/tokens/wrecka-krew-tankhammer.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:59.157200+00:00"
+        },
+        "tokens/wrecka-krew-wrecka-points.obj": {
+          "path": "output/wrecka-krew/tokens/wrecka-krew-wrecka-points.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:59.158047+00:00"
+        },
+        "tokens/tokenbag/wrecka-krew-token-bag-icon.png": {
+          "path": "output/wrecka-krew/tokens/tokenbag/wrecka-krew-token-bag-icon.png",
+          "hash": "d5fe0d6374d10a637dab7473cd017a894cf8bebe038fd24819f3dea3eaee67aa",
+          "modified": "2026-07-06T21:02:59.163442+00:00"
+        },
+        "tokens/tokenbag/wrecka-krew-token-bag.obj": {
+          "path": "output/wrecka-krew/tokens/tokenbag/wrecka-krew-token-bag.obj",
+          "hash": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+          "modified": "2026-07-06T21:02:59.164831+00:00"
+        }
+      },
+      "completed": "2026-07-06T21:02:59.192151+00:00",
+      "inputs": {
+        "layers/integration/wrecka-krew/manifest.json": "cf1847a071cf01072fcc0d117f80cbde658743df9bc4dbde8d55f14a6e8d7c5b",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "layers/integration/wrecka-krew/artwork/icons/wrecka-krew-icon-token.jpg": "d5fe0d6374d10a637dab7473cd017a894cf8bebe038fd24819f3dea3eaee67aa",
+        "layers/integration/wrecka-krew/wrecka-krew-datacard-breaka-boy-demolisha.pdf": "d2ec6947b8887484b81de9f1f5784a3f593f049a925d5e1339caa35106b57596",
+        "layers/integration/wrecka-krew/wrecka-krew-datacard-breaka-boy-fighter.pdf": "01a5264e73b25eb708f61c2ff0862daf48c425d75099008b7013597e5fe3c66b",
+        "layers/integration/wrecka-krew/wrecka-krew-datacard-breaka-boy-krusha.pdf": "20e3d1c3d3f4c2c89a6c35edf716d6d2085ea1a3f218a3ad4d89c6fd7afa09a8",
+        "layers/integration/wrecka-krew/wrecka-krew-datacard-tankbusta-gunner.pdf": "6c8e944cf48edc7105ffcfd655b891abadaef0e0cd54e824033846ad34c3d879",
+        "layers/integration/wrecka-krew/wrecka-krew-datacard-tankbusta-rokkiteer.pdf": "8ce25a7ed048922bf611843fe9eb25c6548b7721c9edbdbbbe588c6491a9319d",
+        "layers/integration/wrecka-krew/wrecka-krew-datacard-wrecka-bomb-squig.pdf": "599a83180801444e230c84de6072e0b7a01786ee7797e37316a20be55fe70881",
+        "layers/integration/wrecka-krew/wrecka-krew-datacard-wrecka-boss-nob.pdf": "67215d1d8521e90a06bbd7a0e6252d3dd71641d69f74758d05a21a27b64ce70d",
+        "layers/integration/wrecka-krew/wrecka-krew-equipment-drill-rokkits.pdf": "135a49ad75b459efe7570ec938fe6cd514363e0ee468ab5555552ec99d4b027e",
+        "layers/integration/wrecka-krew/wrecka-krew-equipment-engine-oil.pdf": "928b1b94904aac62b7964ec792a2128c4569937776355981a84a50bec1cc05e4",
+        "layers/integration/wrecka-krew/wrecka-krew-equipment-extra-armour.pdf": "6d97cb270b9691d774d479332670996218cc161a5626ba9394a29907d03f403f",
+        "layers/integration/wrecka-krew/wrecka-krew-equipment-glyphs.pdf": "8f73685eddffbe7cce0d71677c02c82753d466e0f0f83a530bca3d6992334120",
+        "layers/integration/wrecka-krew/wrecka-krew-faction-rule-tanked-up.pdf": "0ebd208b8af6cecec22d942a9a83b38d5d3d34b12ef64dbf66d7835040a06f60",
+        "layers/integration/wrecka-krew/wrecka-krew-faction-rule-wrecka-rampage.pdf": "be8ab5f1d02666435c5fff5d97a373a12506eac8a307f2b05f02e970cfd3d6c0",
+        "layers/integration/wrecka-krew/wrecka-krew-firefight-ploy-demolition-job.pdf": "18c4c8d1cd99a4b66cb0815be1eb00c09d977c9b67719e0f70ae74171d185bba",
+        "layers/integration/wrecka-krew/wrecka-krew-firefight-ploy-just-a-scratch.pdf": "f37842d1f225f3107749b74fab138be5c7e1cebb021bd738ee071dea08c9e90e",
+        "layers/integration/wrecka-krew/wrecka-krew-firefight-ploy-kaboom.pdf": "9120d29889ad55fab86354f4a485a627182624b15b83f787a036300780c2c9d3",
+        "layers/integration/wrecka-krew/wrecka-krew-firefight-ploy-proppa-scrap.pdf": "680fc279ef3013c624702358bec8734767ad56c07d955337202779eb63ceee2c",
+        "layers/integration/wrecka-krew/wrecka-krew-operatives-selection-operative-selection.pdf": "6834bbc9fe99214df5f124c29cd4e0f130481c8807f3d542a0c0cdbf3d09ec77",
+        "layers/integration/wrecka-krew/wrecka-krew-strategy-ploy-amped-up.pdf": "1e813bfc373d3997c6df4e881a46f8e6f67fea864a42ee34f75fad8991198426",
+        "layers/integration/wrecka-krew/wrecka-krew-strategy-ploy-destruction.pdf": "1896ae581616f5b08a5a2fb84ba3eef9559d4d7eeae43986d4dfdbd31b765302",
+        "layers/integration/wrecka-krew/wrecka-krew-strategy-ploy-tuff-gitz.pdf": "8ce4ea5ed83f7b944c40e0018f9ee50de634a4ae29241e147e40bd7e90d054a3",
+        "layers/integration/wrecka-krew/wrecka-krew-strategy-ploy-waaagh.pdf": "edef0d3de6d81295172232f03baf8f341c3c4a6974c1c0ed3f7093d0cc114e18",
+        "layers/integration/wrecka-krew/wrecka-krew-token-guide-token-guide.pdf": "4c2c844b0beaca29200540a64748e300510a79c5077b468e4fcc47a96156f10d",
+        "config/teams/wrecka-krew/custom-tokens/wrecka-krew-wrecka-points.png": "044b6a382daa6f4af1109af8fcd36cac6268fec0989409c4e9abe7d018122b93"
+      }
+    },
+    "generate_dice": {
+      "outputs": {
+        "dice-light.jpg": {
+          "path": "output/wrecka-krew/dice/wrecka-krew-dice-light.jpg",
+          "hash": "337c533a0ef1034c35507cd9ff524f04aee1ef987a0eb493dcb5fa0c687ad21d",
+          "modified": "2026-07-06T16:33:31.953099+00:00"
+        },
+        "dice-dark.jpg": {
+          "path": "output/wrecka-krew/dice/wrecka-krew-dice-dark.jpg",
+          "hash": "e539608ac0c2ad758f3ec96d5671d35171f76915169ae3a060790edef32b6e52",
+          "modified": "2026-07-06T16:33:31.961575+00:00"
+        },
+        "dice-team.jpg": {
+          "path": "output/wrecka-krew/dice/wrecka-krew-dice-team.jpg",
+          "hash": "af552181a35d8284bb80bc6017cc177f9d3b9e9506b6aacf887899ee1af9e8f5",
+          "modified": "2026-07-06T16:33:31.967119+00:00"
+        }
+      },
+      "completed": "2026-07-06T16:33:31.968113+00:00",
+      "inputs": {
+        "layers/integration/wrecka-krew/artwork/icons/wrecka-krew-icon-token-transparent.png": "a89fc675773a116a46771ffc0a0d063dac5adc580e246ea998f03f5a10a40c54",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41"
+      }
+    },
+    "generate_box_texture": {
+      "outputs": {
+        "card-box-texture.jpg": {
+          "path": "output/wrecka-krew/cardbox/wrecka-krew-card-box-texture.jpg",
+          "hash": "e07c41a705c66bedaa0bf93a92cf5d0a13c1822d5b32fb32dd19986645675222",
+          "modified": "2026-07-06T16:33:35.035627+00:00"
+        },
+        "card-box.obj": {
+          "path": "output/wrecka-krew/cardbox/wrecka-krew-card-box.obj",
+          "hash": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+          "modified": "2026-07-06T16:33:35.036979+00:00"
+        }
+      },
+      "completed": "2026-07-06T16:33:35.039402+00:00",
+      "inputs": {
+        "layers/integration/wrecka-krew/artwork/icons/wrecka-krew-icon-token.jpg": "d5fe0d6374d10a637dab7473cd017a894cf8bebe038fd24819f3dea3eaee67aa",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "config/defaults/box/card-box.obj": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+        "config/defaults/box/card-box-texture.jpg": "b2f310b01a0d28e8806e99ce0b972e8967e3014608eacefcb6ec51597695a313"
+      }
+    },
+    "generate_card_images": {
+      "outputs": {
+        "cards/datacards/breaka-boy-demolisha-back.jpg": {
+          "path": "output/wrecka-krew/cards/datacards/breaka-boy-demolisha-back.jpg",
+          "hash": "6a56b845b33b96f6a8cf4a0fd1b37939438a20405271132cdcc0a8e54093207c",
+          "modified": "2026-07-07T07:29:01.733408+00:00"
+        },
+        "cards/datacards/breaka-boy-demolisha-front.jpg": {
+          "path": "output/wrecka-krew/cards/datacards/breaka-boy-demolisha-front.jpg",
+          "hash": "b99962977f2adc56f6f798ae8b8c34a3c8830b3e5d0fdd825744a20cd69be8ea",
+          "modified": "2026-07-07T07:29:01.740479+00:00"
+        },
+        "cards/datacards/breaka-boy-fighter-back.jpg": {
+          "path": "output/wrecka-krew/cards/datacards/breaka-boy-fighter-back.jpg",
+          "hash": "6a56b845b33b96f6a8cf4a0fd1b37939438a20405271132cdcc0a8e54093207c",
+          "modified": "2026-07-07T07:29:01.746405+00:00"
+        },
+        "cards/datacards/breaka-boy-fighter-front.jpg": {
+          "path": "output/wrecka-krew/cards/datacards/breaka-boy-fighter-front.jpg",
+          "hash": "355b9d9bfefb0dc958f1ba7c005238b0fb91c7b72fc92f8d529bb85fd716b6c0",
+          "modified": "2026-07-07T07:29:01.752618+00:00"
+        },
+        "cards/datacards/breaka-boy-krusha-back.jpg": {
+          "path": "output/wrecka-krew/cards/datacards/breaka-boy-krusha-back.jpg",
+          "hash": "6a56b845b33b96f6a8cf4a0fd1b37939438a20405271132cdcc0a8e54093207c",
+          "modified": "2026-07-07T07:29:01.759132+00:00"
+        },
+        "cards/datacards/breaka-boy-krusha-front.jpg": {
+          "path": "output/wrecka-krew/cards/datacards/breaka-boy-krusha-front.jpg",
+          "hash": "8d278a2b0b009bed4474a91d0176a895a4ed7d95553d1bf1fab58fb3d4a076a7",
+          "modified": "2026-07-07T07:29:01.764889+00:00"
+        },
+        "cards/datacards/tankbusta-gunner-back.jpg": {
+          "path": "output/wrecka-krew/cards/datacards/tankbusta-gunner-back.jpg",
+          "hash": "6a56b845b33b96f6a8cf4a0fd1b37939438a20405271132cdcc0a8e54093207c",
+          "modified": "2026-07-07T07:29:01.771940+00:00"
+        },
+        "cards/datacards/tankbusta-gunner-front.jpg": {
+          "path": "output/wrecka-krew/cards/datacards/tankbusta-gunner-front.jpg",
+          "hash": "5faa98700ab283a0463b65578afa74cddbd3165b3c4a3c655fba5d9a2342e697",
+          "modified": "2026-07-07T07:29:01.777703+00:00"
+        },
+        "cards/datacards/tankbusta-rokkiteer-back.jpg": {
+          "path": "output/wrecka-krew/cards/datacards/tankbusta-rokkiteer-back.jpg",
+          "hash": "6a56b845b33b96f6a8cf4a0fd1b37939438a20405271132cdcc0a8e54093207c",
+          "modified": "2026-07-07T07:29:01.783123+00:00"
+        },
+        "cards/datacards/tankbusta-rokkiteer-front.jpg": {
+          "path": "output/wrecka-krew/cards/datacards/tankbusta-rokkiteer-front.jpg",
+          "hash": "993d8d1d89753ec49a2487a2956b5d80755d59b3ea86b4db6c54469cfcad642a",
+          "modified": "2026-07-07T07:29:01.789298+00:00"
+        },
+        "cards/datacards/wrecka-bomb-squig-back.jpg": {
+          "path": "output/wrecka-krew/cards/datacards/wrecka-bomb-squig-back.jpg",
+          "hash": "6a56b845b33b96f6a8cf4a0fd1b37939438a20405271132cdcc0a8e54093207c",
+          "modified": "2026-07-07T07:29:01.794728+00:00"
+        },
+        "cards/datacards/wrecka-bomb-squig-front.jpg": {
+          "path": "output/wrecka-krew/cards/datacards/wrecka-bomb-squig-front.jpg",
+          "hash": "dd1e0ef713db42a7f721b27ee9cf51049584507554106b57f209be33eb3c0089",
+          "modified": "2026-07-07T07:29:01.799699+00:00"
+        },
+        "cards/datacards/wrecka-boss-nob-back.jpg": {
+          "path": "output/wrecka-krew/cards/datacards/wrecka-boss-nob-back.jpg",
+          "hash": "6a56b845b33b96f6a8cf4a0fd1b37939438a20405271132cdcc0a8e54093207c",
+          "modified": "2026-07-07T07:29:01.807747+00:00"
+        },
+        "cards/datacards/wrecka-boss-nob-front.jpg": {
+          "path": "output/wrecka-krew/cards/datacards/wrecka-boss-nob-front.jpg",
+          "hash": "5b0b87e6f7cdef13daa6a949d0c3ea24d8585224e3984792764b0984e77791a1",
+          "modified": "2026-07-07T07:29:01.813224+00:00"
+        },
+        "cards/equipment/wrecka-krew-drill-rokkits-back.jpg": {
+          "path": "output/wrecka-krew/cards/equipment/wrecka-krew-drill-rokkits-back.jpg",
+          "hash": "5dd01029f5b2506ee0dca765d77fa5cc569981cd58b2e52aae967bbfe05085d2",
+          "modified": "2026-07-07T07:29:01.819601+00:00"
+        },
+        "cards/equipment/wrecka-krew-drill-rokkits-front.jpg": {
+          "path": "output/wrecka-krew/cards/equipment/wrecka-krew-drill-rokkits-front.jpg",
+          "hash": "0f0f66cf3446a326388f0f2bcdc7481ea23a91913acc8891cae480a040ed5de2",
+          "modified": "2026-07-07T07:29:01.825370+00:00"
+        },
+        "cards/equipment/wrecka-krew-engine-oil-back.jpg": {
+          "path": "output/wrecka-krew/cards/equipment/wrecka-krew-engine-oil-back.jpg",
+          "hash": "5dd01029f5b2506ee0dca765d77fa5cc569981cd58b2e52aae967bbfe05085d2",
+          "modified": "2026-07-07T07:29:01.830792+00:00"
+        },
+        "cards/equipment/wrecka-krew-engine-oil-front.jpg": {
+          "path": "output/wrecka-krew/cards/equipment/wrecka-krew-engine-oil-front.jpg",
+          "hash": "5f3e1257907310f85e97d787c4f00987b5286ac3ff60f72560d5f486f49a1d1f",
+          "modified": "2026-07-07T07:29:01.836699+00:00"
+        },
+        "cards/equipment/wrecka-krew-extra-armour-back.jpg": {
+          "path": "output/wrecka-krew/cards/equipment/wrecka-krew-extra-armour-back.jpg",
+          "hash": "5dd01029f5b2506ee0dca765d77fa5cc569981cd58b2e52aae967bbfe05085d2",
+          "modified": "2026-07-07T07:29:01.842063+00:00"
+        },
+        "cards/equipment/wrecka-krew-extra-armour-front.jpg": {
+          "path": "output/wrecka-krew/cards/equipment/wrecka-krew-extra-armour-front.jpg",
+          "hash": "1ee8a4095dc9928fddee647baaa7e088b9650d49e0deaf2691c1c615f55fdb78",
+          "modified": "2026-07-07T07:29:01.847053+00:00"
+        },
+        "cards/equipment/wrecka-krew-glyphs-back.jpg": {
+          "path": "output/wrecka-krew/cards/equipment/wrecka-krew-glyphs-back.jpg",
+          "hash": "5dd01029f5b2506ee0dca765d77fa5cc569981cd58b2e52aae967bbfe05085d2",
+          "modified": "2026-07-07T07:29:01.852888+00:00"
+        },
+        "cards/equipment/wrecka-krew-glyphs-front.jpg": {
+          "path": "output/wrecka-krew/cards/equipment/wrecka-krew-glyphs-front.jpg",
+          "hash": "898052abdc6cb5826ccf4996fe59f0b9f12e62f3a2a6ac8a294b9b6f4884be3e",
+          "modified": "2026-07-07T07:29:01.858196+00:00"
+        },
+        "cards/faction_rules/wrecka-krew-tanked-up-back.jpg": {
+          "path": "output/wrecka-krew/cards/faction_rules/wrecka-krew-tanked-up-back.jpg",
+          "hash": "5dd01029f5b2506ee0dca765d77fa5cc569981cd58b2e52aae967bbfe05085d2",
+          "modified": "2026-07-07T07:29:01.863283+00:00"
+        },
+        "cards/faction_rules/wrecka-krew-tanked-up-front.jpg": {
+          "path": "output/wrecka-krew/cards/faction_rules/wrecka-krew-tanked-up-front.jpg",
+          "hash": "1947f2cb0a6bb86402f3b781b8b374fec46f1c10b141d358a15a6d50f2e7bba3",
+          "modified": "2026-07-07T07:29:01.868520+00:00"
+        },
+        "cards/faction_rules/wrecka-krew-wrecka-rampage-back.jpg": {
+          "path": "output/wrecka-krew/cards/faction_rules/wrecka-krew-wrecka-rampage-back.jpg",
+          "hash": "5dd01029f5b2506ee0dca765d77fa5cc569981cd58b2e52aae967bbfe05085d2",
+          "modified": "2026-07-07T07:29:01.874045+00:00"
+        },
+        "cards/faction_rules/wrecka-krew-wrecka-rampage-front.jpg": {
+          "path": "output/wrecka-krew/cards/faction_rules/wrecka-krew-wrecka-rampage-front.jpg",
+          "hash": "2e926c6abe7738441903b72383b882b4145d427849db4ff8b4e11c4034d59e87",
+          "modified": "2026-07-07T07:29:01.879168+00:00"
+        },
+        "cards/firefight_ploys/wrecka-krew-demolition-job-back.jpg": {
+          "path": "output/wrecka-krew/cards/firefight_ploys/wrecka-krew-demolition-job-back.jpg",
+          "hash": "5dd01029f5b2506ee0dca765d77fa5cc569981cd58b2e52aae967bbfe05085d2",
+          "modified": "2026-07-07T07:29:01.884939+00:00"
+        },
+        "cards/firefight_ploys/wrecka-krew-demolition-job-front.jpg": {
+          "path": "output/wrecka-krew/cards/firefight_ploys/wrecka-krew-demolition-job-front.jpg",
+          "hash": "717f2415be5051b28f17299a9f1832ada89907c81aaf0628c13ab7f517c7c12d",
+          "modified": "2026-07-07T07:29:01.891089+00:00"
+        },
+        "cards/firefight_ploys/wrecka-krew-just-a-scratch-back.jpg": {
+          "path": "output/wrecka-krew/cards/firefight_ploys/wrecka-krew-just-a-scratch-back.jpg",
+          "hash": "5dd01029f5b2506ee0dca765d77fa5cc569981cd58b2e52aae967bbfe05085d2",
+          "modified": "2026-07-07T07:29:01.896517+00:00"
+        },
+        "cards/firefight_ploys/wrecka-krew-just-a-scratch-front.jpg": {
+          "path": "output/wrecka-krew/cards/firefight_ploys/wrecka-krew-just-a-scratch-front.jpg",
+          "hash": "fc1e40965facf084dc2f9a1df19573e7dd81aae9d69c80e8b0a8876155277906",
+          "modified": "2026-07-07T07:29:01.901844+00:00"
+        },
+        "cards/firefight_ploys/wrecka-krew-kaboom-back.jpg": {
+          "path": "output/wrecka-krew/cards/firefight_ploys/wrecka-krew-kaboom-back.jpg",
+          "hash": "5dd01029f5b2506ee0dca765d77fa5cc569981cd58b2e52aae967bbfe05085d2",
+          "modified": "2026-07-07T07:29:01.907142+00:00"
+        },
+        "cards/firefight_ploys/wrecka-krew-kaboom-front.jpg": {
+          "path": "output/wrecka-krew/cards/firefight_ploys/wrecka-krew-kaboom-front.jpg",
+          "hash": "5495dedffcbe00ce95d49d8d904a9ebdb9332cff6366ad7e336573641c05b1f9",
+          "modified": "2026-07-07T07:29:01.912400+00:00"
+        },
+        "cards/firefight_ploys/wrecka-krew-proppa-scrap-back.jpg": {
+          "path": "output/wrecka-krew/cards/firefight_ploys/wrecka-krew-proppa-scrap-back.jpg",
+          "hash": "5dd01029f5b2506ee0dca765d77fa5cc569981cd58b2e52aae967bbfe05085d2",
+          "modified": "2026-07-07T07:29:01.918532+00:00"
+        },
+        "cards/firefight_ploys/wrecka-krew-proppa-scrap-front.jpg": {
+          "path": "output/wrecka-krew/cards/firefight_ploys/wrecka-krew-proppa-scrap-front.jpg",
+          "hash": "58a586c2167a5461eb52b3c0b7b3f650b078d132a682f4f76259bc8dad1d1153",
+          "modified": "2026-07-07T07:29:01.924626+00:00"
+        },
+        "cards/operatives_selection/wrecka-krew-operative-selection-back.jpg": {
+          "path": "output/wrecka-krew/cards/operatives_selection/wrecka-krew-operative-selection-back.jpg",
+          "hash": "5dd01029f5b2506ee0dca765d77fa5cc569981cd58b2e52aae967bbfe05085d2",
+          "modified": "2026-07-07T07:29:01.929915+00:00"
+        },
+        "cards/operatives_selection/wrecka-krew-operative-selection-front.jpg": {
+          "path": "output/wrecka-krew/cards/operatives_selection/wrecka-krew-operative-selection-front.jpg",
+          "hash": "bafc595086a85852a521b0f05bd3caa91754182f326fc14c501e456432e525be",
+          "modified": "2026-07-07T07:29:01.935520+00:00"
+        },
+        "cards/strategy_ploys/wrecka-krew-amped-up-back.jpg": {
+          "path": "output/wrecka-krew/cards/strategy_ploys/wrecka-krew-amped-up-back.jpg",
+          "hash": "5dd01029f5b2506ee0dca765d77fa5cc569981cd58b2e52aae967bbfe05085d2",
+          "modified": "2026-07-07T07:29:01.940802+00:00"
+        },
+        "cards/strategy_ploys/wrecka-krew-amped-up-front.jpg": {
+          "path": "output/wrecka-krew/cards/strategy_ploys/wrecka-krew-amped-up-front.jpg",
+          "hash": "a50edb70eb728df01a51c148271f434dd041c998798c38580f8d97cfee80064f",
+          "modified": "2026-07-07T07:29:01.945748+00:00"
+        },
+        "cards/strategy_ploys/wrecka-krew-destruction-back.jpg": {
+          "path": "output/wrecka-krew/cards/strategy_ploys/wrecka-krew-destruction-back.jpg",
+          "hash": "5dd01029f5b2506ee0dca765d77fa5cc569981cd58b2e52aae967bbfe05085d2",
+          "modified": "2026-07-07T07:29:01.950914+00:00"
+        },
+        "cards/strategy_ploys/wrecka-krew-destruction-front.jpg": {
+          "path": "output/wrecka-krew/cards/strategy_ploys/wrecka-krew-destruction-front.jpg",
+          "hash": "629ce091532a3c4457df38b2f8cdaad2ebc19f288516c2a7b25de04fd85f80ae",
+          "modified": "2026-07-07T07:29:01.956442+00:00"
+        },
+        "cards/strategy_ploys/wrecka-krew-tuff-gitz-back.jpg": {
+          "path": "output/wrecka-krew/cards/strategy_ploys/wrecka-krew-tuff-gitz-back.jpg",
+          "hash": "5dd01029f5b2506ee0dca765d77fa5cc569981cd58b2e52aae967bbfe05085d2",
+          "modified": "2026-07-07T07:29:01.961338+00:00"
+        },
+        "cards/strategy_ploys/wrecka-krew-tuff-gitz-front.jpg": {
+          "path": "output/wrecka-krew/cards/strategy_ploys/wrecka-krew-tuff-gitz-front.jpg",
+          "hash": "08885dc30a57ce7ad5e51c17e7a68a7f52633a25d975adb8d7cc4f3216b83e8a",
+          "modified": "2026-07-07T07:29:01.966035+00:00"
+        },
+        "cards/strategy_ploys/wrecka-krew-waaagh-back.jpg": {
+          "path": "output/wrecka-krew/cards/strategy_ploys/wrecka-krew-waaagh-back.jpg",
+          "hash": "5dd01029f5b2506ee0dca765d77fa5cc569981cd58b2e52aae967bbfe05085d2",
+          "modified": "2026-07-07T07:29:01.972269+00:00"
+        },
+        "cards/strategy_ploys/wrecka-krew-waaagh-front.jpg": {
+          "path": "output/wrecka-krew/cards/strategy_ploys/wrecka-krew-waaagh-front.jpg",
+          "hash": "98c11d3f1ed42087402ea57879ea24d91d14b541d12c2151ed2819a1e4b8cf7d",
+          "modified": "2026-07-07T07:29:01.977478+00:00"
+        },
+        "cards/token_guide/wrecka-krew-token-guide-back.jpg": {
+          "path": "output/wrecka-krew/cards/token_guide/wrecka-krew-token-guide-back.jpg",
+          "hash": "5dd01029f5b2506ee0dca765d77fa5cc569981cd58b2e52aae967bbfe05085d2",
+          "modified": "2026-07-07T07:29:01.982095+00:00"
+        },
+        "cards/token_guide/wrecka-krew-token-guide-front.jpg": {
+          "path": "output/wrecka-krew/cards/token_guide/wrecka-krew-token-guide-front.jpg",
+          "hash": "3effc8f47b2b35094858b685169b6b737cf0646c6e7ac3c6d5cabcbf31971860",
+          "modified": "2026-07-07T07:29:01.987751+00:00"
+        }
+      },
+      "completed": "2026-07-07T07:29:02.015300+00:00",
+      "inputs": {
+        "layers/integration/wrecka-krew/manifest.json": "cf1847a071cf01072fcc0d117f80cbde658743df9bc4dbde8d55f14a6e8d7c5b",
+        "layers/integration/wrecka-krew/wrecka-krew-datacard-breaka-boy-demolisha.pdf": "d2ec6947b8887484b81de9f1f5784a3f593f049a925d5e1339caa35106b57596",
+        "layers/integration/wrecka-krew/wrecka-krew-datacard-breaka-boy-fighter.pdf": "01a5264e73b25eb708f61c2ff0862daf48c425d75099008b7013597e5fe3c66b",
+        "layers/integration/wrecka-krew/wrecka-krew-datacard-breaka-boy-krusha.pdf": "20e3d1c3d3f4c2c89a6c35edf716d6d2085ea1a3f218a3ad4d89c6fd7afa09a8",
+        "layers/integration/wrecka-krew/wrecka-krew-datacard-tankbusta-gunner.pdf": "6c8e944cf48edc7105ffcfd655b891abadaef0e0cd54e824033846ad34c3d879",
+        "layers/integration/wrecka-krew/wrecka-krew-datacard-tankbusta-rokkiteer.pdf": "8ce25a7ed048922bf611843fe9eb25c6548b7721c9edbdbbbe588c6491a9319d",
+        "layers/integration/wrecka-krew/wrecka-krew-datacard-wrecka-bomb-squig.pdf": "599a83180801444e230c84de6072e0b7a01786ee7797e37316a20be55fe70881",
+        "layers/integration/wrecka-krew/wrecka-krew-datacard-wrecka-boss-nob.pdf": "67215d1d8521e90a06bbd7a0e6252d3dd71641d69f74758d05a21a27b64ce70d",
+        "layers/integration/wrecka-krew/wrecka-krew-equipment-drill-rokkits.pdf": "135a49ad75b459efe7570ec938fe6cd514363e0ee468ab5555552ec99d4b027e",
+        "layers/integration/wrecka-krew/wrecka-krew-equipment-engine-oil.pdf": "928b1b94904aac62b7964ec792a2128c4569937776355981a84a50bec1cc05e4",
+        "layers/integration/wrecka-krew/wrecka-krew-equipment-extra-armour.pdf": "6d97cb270b9691d774d479332670996218cc161a5626ba9394a29907d03f403f",
+        "layers/integration/wrecka-krew/wrecka-krew-equipment-glyphs.pdf": "8f73685eddffbe7cce0d71677c02c82753d466e0f0f83a530bca3d6992334120",
+        "layers/integration/wrecka-krew/wrecka-krew-faction-rule-tanked-up.pdf": "0ebd208b8af6cecec22d942a9a83b38d5d3d34b12ef64dbf66d7835040a06f60",
+        "layers/integration/wrecka-krew/wrecka-krew-faction-rule-wrecka-rampage.pdf": "be8ab5f1d02666435c5fff5d97a373a12506eac8a307f2b05f02e970cfd3d6c0",
+        "layers/integration/wrecka-krew/wrecka-krew-firefight-ploy-demolition-job.pdf": "18c4c8d1cd99a4b66cb0815be1eb00c09d977c9b67719e0f70ae74171d185bba",
+        "layers/integration/wrecka-krew/wrecka-krew-firefight-ploy-just-a-scratch.pdf": "f37842d1f225f3107749b74fab138be5c7e1cebb021bd738ee071dea08c9e90e",
+        "layers/integration/wrecka-krew/wrecka-krew-firefight-ploy-kaboom.pdf": "9120d29889ad55fab86354f4a485a627182624b15b83f787a036300780c2c9d3",
+        "layers/integration/wrecka-krew/wrecka-krew-firefight-ploy-proppa-scrap.pdf": "680fc279ef3013c624702358bec8734767ad56c07d955337202779eb63ceee2c",
+        "layers/integration/wrecka-krew/wrecka-krew-operatives-selection-operative-selection.pdf": "6834bbc9fe99214df5f124c29cd4e0f130481c8807f3d542a0c0cdbf3d09ec77",
+        "layers/integration/wrecka-krew/wrecka-krew-strategy-ploy-amped-up.pdf": "1e813bfc373d3997c6df4e881a46f8e6f67fea864a42ee34f75fad8991198426",
+        "layers/integration/wrecka-krew/wrecka-krew-strategy-ploy-destruction.pdf": "1896ae581616f5b08a5a2fb84ba3eef9559d4d7eeae43986d4dfdbd31b765302",
+        "layers/integration/wrecka-krew/wrecka-krew-strategy-ploy-tuff-gitz.pdf": "8ce4ea5ed83f7b944c40e0018f9ee50de634a4ae29241e147e40bd7e90d054a3",
+        "layers/integration/wrecka-krew/wrecka-krew-strategy-ploy-waaagh.pdf": "edef0d3de6d81295172232f03baf8f341c3c4a6974c1c0ed3f7093d0cc114e18",
+        "layers/integration/wrecka-krew/wrecka-krew-token-guide-token-guide.pdf": "4c2c844b0beaca29200540a64748e300510a79c5077b468e4fcc47a96156f10d",
+        "layers/integration/wrecka-krew/card-backside/wrecka-krew-backside-portrait.jpg": "5dd01029f5b2506ee0dca765d77fa5cc569981cd58b2e52aae967bbfe05085d2",
+        "config/defaults/card-backside/default-backside-portrait.jpg": "f00ff15fa70005b9f804de08519e2e83485d7eaf78dfacea65dcef0eb1a29c22",
+        "layers/integration/wrecka-krew/card-backside/wrecka-krew-backside-landscape.jpg": "6a56b845b33b96f6a8cf4a0fd1b37939438a20405271132cdcc0a8e54093207c",
+        "config/defaults/card-backside/default-backside-landscape.jpg": "1cf5580a1dff0c10adb1a286edad4479c487f3d2d698b0b8be84fe653039fd7e"
+      }
+    },
+    "extract_stats": {
+      "outputs": {
+        "team-data.json": {
+          "path": "output/wrecka-krew/data/wrecka-krew-team-data.json",
+          "hash": "6afe67447b28800de9cdab0ba4f2c3989c0acc148f07a2523808d299a714b64a",
+          "modified": "2026-07-07T07:29:45.388253+00:00"
+        }
+      },
+      "completed": "2026-07-07T07:29:45.388947+00:00",
+      "inputs": {
+        "layers/integration/wrecka-krew/content/wrecka-krew-content.json": "6afe67447b28800de9cdab0ba4f2c3989c0acc148f07a2523808d299a714b64a"
+      }
+    },
+    "generate_tts": {
+      "outputs": {
+        "tts_objects/Wrecka Krew Box.json": {
+          "path": "output/wrecka-krew/tts_objects/Wrecka Krew Box.json",
+          "hash": "66161c4b3cc5cbdf04f043242a4d18ad940c38f6e7ba1c7d5ba51d78b78dafb4",
+          "modified": "2026-07-07T07:30:01.645385+00:00"
+        },
+        "tts_objects/Wrecka Krew.json": {
+          "path": "output/wrecka-krew/tts_objects/Wrecka Krew.json",
+          "hash": "d2225a81a3c2d1671462b9a229688a396db642c6180f079c6d12b5d22221c0fa",
+          "modified": "2026-07-07T07:30:01.654572+00:00"
+        }
+      },
+      "completed": "2026-07-07T07:30:01.694976+00:00",
+      "inputs": {
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "config/team-guids.json": "1dea0eaf2c7d1c37c86aba088cdf876f0638d2dcaca162888fea8422c2d5c9db",
+        "output/wrecka-krew/cards/datacards/breaka-boy-demolisha-back.jpg": "6a56b845b33b96f6a8cf4a0fd1b37939438a20405271132cdcc0a8e54093207c",
+        "output/wrecka-krew/cards/datacards/breaka-boy-demolisha-front.jpg": "b99962977f2adc56f6f798ae8b8c34a3c8830b3e5d0fdd825744a20cd69be8ea",
+        "output/wrecka-krew/cards/datacards/breaka-boy-fighter-back.jpg": "6a56b845b33b96f6a8cf4a0fd1b37939438a20405271132cdcc0a8e54093207c",
+        "output/wrecka-krew/cards/datacards/breaka-boy-fighter-front.jpg": "355b9d9bfefb0dc958f1ba7c005238b0fb91c7b72fc92f8d529bb85fd716b6c0",
+        "output/wrecka-krew/cards/datacards/breaka-boy-krusha-back.jpg": "6a56b845b33b96f6a8cf4a0fd1b37939438a20405271132cdcc0a8e54093207c",
+        "output/wrecka-krew/cards/datacards/breaka-boy-krusha-front.jpg": "8d278a2b0b009bed4474a91d0176a895a4ed7d95553d1bf1fab58fb3d4a076a7",
+        "output/wrecka-krew/cards/datacards/tankbusta-gunner-back.jpg": "6a56b845b33b96f6a8cf4a0fd1b37939438a20405271132cdcc0a8e54093207c",
+        "output/wrecka-krew/cards/datacards/tankbusta-gunner-front.jpg": "5faa98700ab283a0463b65578afa74cddbd3165b3c4a3c655fba5d9a2342e697",
+        "output/wrecka-krew/cards/datacards/tankbusta-rokkiteer-back.jpg": "6a56b845b33b96f6a8cf4a0fd1b37939438a20405271132cdcc0a8e54093207c",
+        "output/wrecka-krew/cards/datacards/tankbusta-rokkiteer-front.jpg": "993d8d1d89753ec49a2487a2956b5d80755d59b3ea86b4db6c54469cfcad642a",
+        "output/wrecka-krew/cards/datacards/wrecka-bomb-squig-back.jpg": "6a56b845b33b96f6a8cf4a0fd1b37939438a20405271132cdcc0a8e54093207c",
+        "output/wrecka-krew/cards/datacards/wrecka-bomb-squig-front.jpg": "dd1e0ef713db42a7f721b27ee9cf51049584507554106b57f209be33eb3c0089",
+        "output/wrecka-krew/cards/datacards/wrecka-boss-nob-back.jpg": "6a56b845b33b96f6a8cf4a0fd1b37939438a20405271132cdcc0a8e54093207c",
+        "output/wrecka-krew/cards/datacards/wrecka-boss-nob-front.jpg": "5b0b87e6f7cdef13daa6a949d0c3ea24d8585224e3984792764b0984e77791a1",
+        "output/wrecka-krew/cards/equipment/wrecka-krew-drill-rokkits-back.jpg": "5dd01029f5b2506ee0dca765d77fa5cc569981cd58b2e52aae967bbfe05085d2",
+        "output/wrecka-krew/cards/equipment/wrecka-krew-drill-rokkits-front.jpg": "0f0f66cf3446a326388f0f2bcdc7481ea23a91913acc8891cae480a040ed5de2",
+        "output/wrecka-krew/cards/equipment/wrecka-krew-engine-oil-back.jpg": "5dd01029f5b2506ee0dca765d77fa5cc569981cd58b2e52aae967bbfe05085d2",
+        "output/wrecka-krew/cards/equipment/wrecka-krew-engine-oil-front.jpg": "5f3e1257907310f85e97d787c4f00987b5286ac3ff60f72560d5f486f49a1d1f",
+        "output/wrecka-krew/cards/equipment/wrecka-krew-extra-armour-back.jpg": "5dd01029f5b2506ee0dca765d77fa5cc569981cd58b2e52aae967bbfe05085d2",
+        "output/wrecka-krew/cards/equipment/wrecka-krew-extra-armour-front.jpg": "1ee8a4095dc9928fddee647baaa7e088b9650d49e0deaf2691c1c615f55fdb78",
+        "output/wrecka-krew/cards/equipment/wrecka-krew-glyphs-back.jpg": "5dd01029f5b2506ee0dca765d77fa5cc569981cd58b2e52aae967bbfe05085d2",
+        "output/wrecka-krew/cards/equipment/wrecka-krew-glyphs-front.jpg": "898052abdc6cb5826ccf4996fe59f0b9f12e62f3a2a6ac8a294b9b6f4884be3e",
+        "output/wrecka-krew/cards/faction_rules/wrecka-krew-tanked-up-back.jpg": "5dd01029f5b2506ee0dca765d77fa5cc569981cd58b2e52aae967bbfe05085d2",
+        "output/wrecka-krew/cards/faction_rules/wrecka-krew-tanked-up-front.jpg": "1947f2cb0a6bb86402f3b781b8b374fec46f1c10b141d358a15a6d50f2e7bba3",
+        "output/wrecka-krew/cards/faction_rules/wrecka-krew-wrecka-rampage-back.jpg": "5dd01029f5b2506ee0dca765d77fa5cc569981cd58b2e52aae967bbfe05085d2",
+        "output/wrecka-krew/cards/faction_rules/wrecka-krew-wrecka-rampage-front.jpg": "2e926c6abe7738441903b72383b882b4145d427849db4ff8b4e11c4034d59e87",
+        "output/wrecka-krew/cards/firefight_ploys/wrecka-krew-demolition-job-back.jpg": "5dd01029f5b2506ee0dca765d77fa5cc569981cd58b2e52aae967bbfe05085d2",
+        "output/wrecka-krew/cards/firefight_ploys/wrecka-krew-demolition-job-front.jpg": "717f2415be5051b28f17299a9f1832ada89907c81aaf0628c13ab7f517c7c12d",
+        "output/wrecka-krew/cards/firefight_ploys/wrecka-krew-just-a-scratch-back.jpg": "5dd01029f5b2506ee0dca765d77fa5cc569981cd58b2e52aae967bbfe05085d2",
+        "output/wrecka-krew/cards/firefight_ploys/wrecka-krew-just-a-scratch-front.jpg": "fc1e40965facf084dc2f9a1df19573e7dd81aae9d69c80e8b0a8876155277906",
+        "output/wrecka-krew/cards/firefight_ploys/wrecka-krew-kaboom-back.jpg": "5dd01029f5b2506ee0dca765d77fa5cc569981cd58b2e52aae967bbfe05085d2",
+        "output/wrecka-krew/cards/firefight_ploys/wrecka-krew-kaboom-front.jpg": "5495dedffcbe00ce95d49d8d904a9ebdb9332cff6366ad7e336573641c05b1f9",
+        "output/wrecka-krew/cards/firefight_ploys/wrecka-krew-proppa-scrap-back.jpg": "5dd01029f5b2506ee0dca765d77fa5cc569981cd58b2e52aae967bbfe05085d2",
+        "output/wrecka-krew/cards/firefight_ploys/wrecka-krew-proppa-scrap-front.jpg": "58a586c2167a5461eb52b3c0b7b3f650b078d132a682f4f76259bc8dad1d1153",
+        "output/wrecka-krew/cards/operatives_selection/wrecka-krew-operative-selection-back.jpg": "5dd01029f5b2506ee0dca765d77fa5cc569981cd58b2e52aae967bbfe05085d2",
+        "output/wrecka-krew/cards/operatives_selection/wrecka-krew-operative-selection-front.jpg": "bafc595086a85852a521b0f05bd3caa91754182f326fc14c501e456432e525be",
+        "output/wrecka-krew/cards/strategy_ploys/wrecka-krew-amped-up-back.jpg": "5dd01029f5b2506ee0dca765d77fa5cc569981cd58b2e52aae967bbfe05085d2",
+        "output/wrecka-krew/cards/strategy_ploys/wrecka-krew-amped-up-front.jpg": "a50edb70eb728df01a51c148271f434dd041c998798c38580f8d97cfee80064f",
+        "output/wrecka-krew/cards/strategy_ploys/wrecka-krew-destruction-back.jpg": "5dd01029f5b2506ee0dca765d77fa5cc569981cd58b2e52aae967bbfe05085d2",
+        "output/wrecka-krew/cards/strategy_ploys/wrecka-krew-destruction-front.jpg": "629ce091532a3c4457df38b2f8cdaad2ebc19f288516c2a7b25de04fd85f80ae",
+        "output/wrecka-krew/cards/strategy_ploys/wrecka-krew-tuff-gitz-back.jpg": "5dd01029f5b2506ee0dca765d77fa5cc569981cd58b2e52aae967bbfe05085d2",
+        "output/wrecka-krew/cards/strategy_ploys/wrecka-krew-tuff-gitz-front.jpg": "08885dc30a57ce7ad5e51c17e7a68a7f52633a25d975adb8d7cc4f3216b83e8a",
+        "output/wrecka-krew/cards/strategy_ploys/wrecka-krew-waaagh-back.jpg": "5dd01029f5b2506ee0dca765d77fa5cc569981cd58b2e52aae967bbfe05085d2",
+        "output/wrecka-krew/cards/strategy_ploys/wrecka-krew-waaagh-front.jpg": "98c11d3f1ed42087402ea57879ea24d91d14b541d12c2151ed2819a1e4b8cf7d",
+        "output/wrecka-krew/cards/token_guide/wrecka-krew-token-guide-back.jpg": "5dd01029f5b2506ee0dca765d77fa5cc569981cd58b2e52aae967bbfe05085d2",
+        "output/wrecka-krew/cards/token_guide/wrecka-krew-token-guide-front.jpg": "3effc8f47b2b35094858b685169b6b737cf0646c6e7ac3c6d5cabcbf31971860",
+        "output/wrecka-krew/cardbox/wrecka-krew-card-box-texture.jpg": "e07c41a705c66bedaa0bf93a92cf5d0a13c1822d5b32fb32dd19986645675222",
+        "output/wrecka-krew/cardbox/wrecka-krew-card-box.obj": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+        "output/wrecka-krew/tokens/tokenbag/wrecka-krew-token-bag-icon.png": "d5fe0d6374d10a637dab7473cd017a894cf8bebe038fd24819f3dea3eaee67aa",
+        "output/wrecka-krew/tokens/tokenbag/wrecka-krew-token-bag.obj": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+        "output/wrecka-krew/tokens/wrecka-krew-breach.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/wrecka-krew/tokens/wrecka-krew-breach.png": "1fdc895acb57766fab17406048d600912f8ca02d30a66bc0cd31158fc352bbac",
+        "output/wrecka-krew/tokens/wrecka-krew-demolition.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/wrecka-krew/tokens/wrecka-krew-demolition.png": "c5235b8d31561079db838be4e129282d92eeceac11b6faed121a90dcb695cc15",
+        "output/wrecka-krew/tokens/wrecka-krew-drill-rokkits.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/wrecka-krew/tokens/wrecka-krew-drill-rokkits.png": "2d3402d0f7245381d0846db2baf00c5c210ebbf4019c9eea74f8205b648fb476",
+        "output/wrecka-krew/tokens/wrecka-krew-engine-oil.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/wrecka-krew/tokens/wrecka-krew-engine-oil.png": "f2362d0a6e65f238c58bcbc8ffd36fd0a10621bad86e65f45934fdb494d2c249",
+        "output/wrecka-krew/tokens/wrecka-krew-explosives.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/wrecka-krew/tokens/wrecka-krew-explosives.png": "62312f899946d4e6059c74dd557abef9469491cceb76f301e84e2af56784ee41",
+        "output/wrecka-krew/tokens/wrecka-krew-pulsa-point.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/wrecka-krew/tokens/wrecka-krew-pulsa-point.png": "30866cda8ad9b173d4e8258883659d6be0054bc4540f36109ee38c9c053a66c7",
+        "output/wrecka-krew/tokens/wrecka-krew-pulsa-rokkit.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/wrecka-krew/tokens/wrecka-krew-pulsa-rokkit.png": "2d2e4d5c2c6d925b2297ea84c6f00fbe58647f525b8eb7a166837f493040f948",
+        "output/wrecka-krew/tokens/wrecka-krew-pulsa.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/wrecka-krew/tokens/wrecka-krew-pulsa.png": "c04bbec72640bd2ed012eb905f814d45dc33b693674c52d94dd3c58e86922c91",
+        "output/wrecka-krew/tokens/wrecka-krew-rokkit-rack.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/wrecka-krew/tokens/wrecka-krew-rokkit-rack.png": "11c3505e3926f1b66f7e98120a34dcd8e4b06f7379599ad7ee8b9f6550675d09",
+        "output/wrecka-krew/tokens/wrecka-krew-tankhammer.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/wrecka-krew/tokens/wrecka-krew-tankhammer.png": "4a6bf59d9b319274be304f75bc88c6c52fbd0b3dc2b239ddbee85044a0276f41",
+        "output/wrecka-krew/tokens/wrecka-krew-wrecka-points.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/wrecka-krew/tokens/wrecka-krew-wrecka-points.png": "252800112d92e295cd4e116bdb70e4036a92bd5674c2ed936be5d987b3f79b5c",
+        "output/wrecka-krew/dice/wrecka-krew-dice-dark.jpg": "e539608ac0c2ad758f3ec96d5671d35171f76915169ae3a060790edef32b6e52",
+        "output/wrecka-krew/dice/wrecka-krew-dice-light.jpg": "337c533a0ef1034c35507cd9ff524f04aee1ef987a0eb493dcb5fa0c687ad21d",
+        "output/wrecka-krew/dice/wrecka-krew-dice-team.jpg": "af552181a35d8284bb80bc6017cc177f9d3b9e9506b6aacf887899ee1af9e8f5",
+        "output/wrecka-krew/data/wrecka-krew-team-data.json": "6afe67447b28800de9cdab0ba4f2c3989c0acc148f07a2523808d299a714b64a",
+        "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
+        "config/defaults/tts-script/datacard-load-stats.lua": "2d5f4088c2ff09f54988cf8722080f536b4e1b998cc2b4c1f1ea94e6b18eb92e",
+        "config/defaults/tts-script/display-table-manager-script.lua": "0dab4381078d90802f25e2cc825bc3658be35ee13ab3e98831c9d248c2526689",
+        "config/defaults/tts-script/faction-rule-chapter-tactics.lua": "c906742268076fb91f7cb4a92c6b588e1122ccddb692688f635c8dd4f7110ad0",
+        "config/defaults/tts-script/intermediate-updater.lua": "1a2d6dbc1a8c9c57ba6a3e7a3d4bc4b7a38a6c242a93f6ef3dae698123384d35",
+        "config/defaults/tts-script/single-object-updater.lua": "3613b85169e986a8e50ebe221482079e27c18037e3f48920aa0f7e138c0ccacc",
+        "config/defaults/tts-script/team-spawner-clean-script.lua": "12457bff3961eee2293c42d81cf4f4eb8b103177245a1ab8b46fd65da40672a2",
+        "config/defaults/tts-script/team-spawner-script.lua": "a51ff45c8622923db909fb465781801511f235412f099f83dff728d4027650db",
+        "config/defaults/tts-script/tts-update-rules-in-box-script.lua": "1eddd1803087ed63181a1149c856db77eef3196dc45d0d283693fada44a357dd",
+        "config/defaults/tts-image/default-icon.png": "892aff2628b9685c813e77be05c66afc1dc4247bc1dc9ce6fe54f006c2608271",
+        "config/defaults/tts-image/spawner-token.png": "61903b093f01d834f5e4c4c069b1353ecf7d29f012fef914b3027266816d8a6b",
+        "config/defaults/tts-token/square-bag-mesh.obj": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+        "config/defaults/tts-token/template-diamond-cutter.png": "719f57ba2b86494be454a6d3d25d8567dde974a915f3dde5ddc0e2d8dafaa1a5",
+        "config/defaults/tts-token/template-octagon-cutter.png": "944632aeacab978293ae57758b63086166c5fbaf3b845f48b3dd61db67d5c076",
+        "config/defaults/tts-token/template-operative-cutter.png": "0e698ddd403d7f0e84f200eb42af73f5249a9c5539d773298ff4c700ac9fe153",
+        "config/defaults/tts-token/template-round-cutter.png": "6564e1451c9a135a1c756fd94cde1c71e373e3fa677b51bba9d4bbe9e795d544",
+        "config/defaults/tts-token/token-bag-script.lua": "1659887e0fbfb9e3ebbc1aa5f3df8e1ffd89ee192be24d2dd1f02fcb0407e486",
+        "config/defaults/tts-token/token-bg-sample.png": "f9f90664c7f1c877c6f050f6e85babde6523cdc0aed9c77de8c09214f44ee109",
+        "config/defaults/tts-token/token-mesh.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc"
+      }
+    },
+    "front_end": {
+      "outputs": {},
+      "sources": {
+        "operatives-selection": {
+          "hash": "49dc1fc2f531df6b81417135c06d4f0d0c9c96a2026e45411e6afefdc7a886ae",
+          "outputs": [
+            "layers/kt-app/extracted/wrecka-krew/cards/operatives-selection/wrecka-krew-operatives-selection-page_0.pdf"
+          ],
+          "modified": "2026-07-06T16:00:43.239250+00:00"
+        },
+        "firefight-ploys": {
+          "hash": "656ff7c72b81b5d13896bed5e2503f84aa6d9da935d85d493dc4cd626b6b0b1d",
+          "outputs": [
+            "layers/kt-app/extracted/wrecka-krew/cards/firefight-ploys/wrecka-krew-firefight-ploys-page_0.pdf",
+            "layers/kt-app/extracted/wrecka-krew/cards/firefight-ploys/wrecka-krew-firefight-ploys-page_1.pdf",
+            "layers/kt-app/extracted/wrecka-krew/cards/firefight-ploys/wrecka-krew-firefight-ploys-page_2.pdf",
+            "layers/kt-app/extracted/wrecka-krew/cards/firefight-ploys/wrecka-krew-firefight-ploys-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:01:02.316468+00:00"
+        },
+        "strategy-ploys": {
+          "hash": "d1e5a7581e8ccf88a6b398e9bfef9d45838d37c6d5074e9033cb143afdc60873",
+          "outputs": [
+            "layers/kt-app/extracted/wrecka-krew/cards/strategy-ploys/wrecka-krew-strategy-ploys-page_0.pdf",
+            "layers/kt-app/extracted/wrecka-krew/cards/strategy-ploys/wrecka-krew-strategy-ploys-page_1.pdf",
+            "layers/kt-app/extracted/wrecka-krew/cards/strategy-ploys/wrecka-krew-strategy-ploys-page_2.pdf",
+            "layers/kt-app/extracted/wrecka-krew/cards/strategy-ploys/wrecka-krew-strategy-ploys-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:05:32.390097+00:00"
+        },
+        "datacards": {
+          "hash": "79cd7bda1d6adea614e6187e25e755dcfd6681c4c9b490b3399ce492c192e508",
+          "outputs": [
+            "layers/kt-app/extracted/wrecka-krew/cards/datacards/wrecka-krew-datacards-page_0.pdf",
+            "layers/kt-app/extracted/wrecka-krew/cards/datacards/wrecka-krew-datacards-page_1.pdf",
+            "layers/kt-app/extracted/wrecka-krew/cards/datacards/wrecka-krew-datacards-page_2.pdf",
+            "layers/kt-app/extracted/wrecka-krew/cards/datacards/wrecka-krew-datacards-page_3.pdf",
+            "layers/kt-app/extracted/wrecka-krew/cards/datacards/wrecka-krew-datacards-page_4.pdf",
+            "layers/kt-app/extracted/wrecka-krew/cards/datacards/wrecka-krew-datacards-page_5.pdf",
+            "layers/kt-app/extracted/wrecka-krew/cards/datacards/wrecka-krew-datacards-page_6.pdf"
+          ],
+          "modified": "2026-07-06T16:05:47.938682+00:00"
+        },
+        "equipment": {
+          "hash": "2c8fe248fadcb3b032fdfd4d7f70408f1017fac5d2c4d343b14a855f2361355b",
+          "outputs": [
+            "layers/kt-app/extracted/wrecka-krew/cards/equipment/wrecka-krew-equipment-page_0.pdf",
+            "layers/kt-app/extracted/wrecka-krew/cards/equipment/wrecka-krew-equipment-page_1.pdf",
+            "layers/kt-app/extracted/wrecka-krew/cards/equipment/wrecka-krew-equipment-page_2.pdf",
+            "layers/kt-app/extracted/wrecka-krew/cards/equipment/wrecka-krew-equipment-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:10:24.757689+00:00"
+        },
+        "faction-rules": {
+          "hash": "7ad70685705e4a52f3ba317a88ec65072b0821db495db0417816063a128674ae",
+          "outputs": [
+            "layers/kt-app/extracted/wrecka-krew/cards/faction-rules/wrecka-krew-faction-rules-page_0.pdf",
+            "layers/kt-app/extracted/wrecka-krew/cards/faction-rules/wrecka-krew-faction-rules-page_1.pdf",
+            "layers/kt-app/extracted/wrecka-krew/cards/faction-rules/wrecka-krew-faction-rules-page_2.pdf"
+          ],
+          "modified": "2026-07-06T16:13:05.738196+00:00"
+        },
+        "cards": {
+          "hash": "3b956943653f93526b5eb8369d57e953b8519faa33d0a697e186e3ccd18d80ba",
+          "outputs": [
+            "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page01_card1_landscape.pdf",
+            "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page01_card2_landscape.pdf",
+            "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page01_card3_landscape.pdf",
+            "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page01_card4_landscape.pdf",
+            "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page02_card1_landscape.pdf",
+            "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page02_card2_landscape.pdf",
+            "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page02_card3_landscape.pdf",
+            "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page02_card4_landscape.pdf",
+            "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page03_card1_portrait.pdf",
+            "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page03_card2_portrait.pdf",
+            "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page03_card3_portrait.pdf",
+            "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page03_card4_portrait.pdf",
+            "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page04_card1_portrait.pdf",
+            "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page04_card2_portrait.pdf",
+            "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page04_card3_portrait.pdf",
+            "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page04_card4_portrait.pdf",
+            "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page05_card1_portrait.pdf",
+            "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page05_card2_portrait.pdf",
+            "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page05_card3_portrait.pdf",
+            "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page05_card4_portrait.pdf",
+            "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page06_card1_portrait.pdf",
+            "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page06_card2_portrait.pdf",
+            "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page06_card3_portrait.pdf",
+            "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page06_card4_portrait.pdf"
+          ],
+          "modified": "2026-07-06T20:24:20.219061+00:00"
+        }
+      },
+      "completed": "2026-07-06T20:24:20.219085+00:00"
+    },
+    "build_structure": {
+      "outputs": {
+        "structure": {
+          "path": "layers/warcom/structure/wrecka-krew-structure.json",
+          "hash": "cf1847a071cf01072fcc0d117f80cbde658743df9bc4dbde8d55f14a6e8d7c5b",
+          "modified": "2026-07-06T20:57:26.875376+00:00"
+        }
+      },
+      "inputs": {
+        "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page01_card1_landscape.pdf": "0ca69ecf72d4e181bc353d938ee40c3e7e26f9772428f0ced36a1927b068b79b",
+        "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page01_card2_landscape.pdf": "666b7f04eb7265bf94e67d7dd12cb03f36aaad67ed3a92c2e2a4fa6e2227db24",
+        "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page01_card3_landscape.pdf": "b27be43b5d9a38ee5b89fae8bb512ee00f77ee820b172c7f6488835c5d21f22d",
+        "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page01_card4_landscape.pdf": "51789ad91423290aa2b4af46bde2148d55873c3e474d0e7077a05b8aed112369",
+        "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page02_card1_landscape.pdf": "b1a01d1c8dea957f1c9ed1635dce9c9de678e58744a13d25046453a21da660c3",
+        "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page02_card2_landscape.pdf": "7f679f971d93c37f78eb14e6ee9579b8ae3a991cae2297a546250326e5685a02",
+        "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page02_card3_landscape.pdf": "5fc610abfd7d580dbf06def8aa2e37cb48c46568b9b2893bc29bd53c78d89a7d",
+        "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page02_card4_landscape.pdf": "a964441e0d8a463c62d1c0b248fd77da1dc1837b368e46518980b14a8abaeb50",
+        "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page03_card1_portrait.pdf": "300da7e221ed454e15138701e4e0d4ca7d614e6e798e80b4ab45a6abf44baef4",
+        "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page03_card2_portrait.pdf": "c1376bb3433ea8e501423390077fcc68a346d19fbe39d783be2e84ce0a6a3ef2",
+        "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page03_card3_portrait.pdf": "ec187635bba091ec9822f431b4e95cabca72035151a71a3af71b140f0dd8e57d",
+        "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page03_card4_portrait.pdf": "37c1ad81050cc5a4fa789d9be95d50e06db33adcd08625e35e3092f8669c4496",
+        "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page04_card1_portrait.pdf": "a1c47c363b654a38850779d42ad009d929ddf2f3843c417eaeabb122c5e92632",
+        "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page04_card2_portrait.pdf": "f1d40f9ee4f0dcd42b650159f90f1de3619d807023d8aba9f7a6762b57f435c4",
+        "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page04_card3_portrait.pdf": "d1786425cb5479e6220d4074bf0e308433d433fefe9b7051b2a2af9faea9b0bb",
+        "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page04_card4_portrait.pdf": "1b92d2da9d028393de2a75ee01e95e5c54dce6f53a10aa50d0d89c9bc23431ee",
+        "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page05_card1_portrait.pdf": "ba08bb536803a42914c86fbf9bd90db3d21c598e22d521349dc6ae58b28d68ef",
+        "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page05_card2_portrait.pdf": "9eec39294db1d4799244e1feee2920128f49ee798617194388c6f69320dbec0b",
+        "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page05_card3_portrait.pdf": "ab29267f46f39bdfc773a61ed26ab068541fd06052bfec01ccf8bfeca774463f",
+        "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page05_card4_portrait.pdf": "310c881646bdc27868e392555a1db3442fcc46c3c49095d55f2a61e1baf0bc5f",
+        "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page06_card1_portrait.pdf": "dc235e361deb15421bd51501cda8253653fd31f5659359e8febc18d29dbb527f",
+        "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page06_card2_portrait.pdf": "9dbcafb47c9721ad6189509c032d1452be7cae6d86e96910642dc0b2fb076c1c",
+        "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page06_card3_portrait.pdf": "9bc26b3247f353defbec5bda556b4a742d4ecab2d84c040263d55dd7f15c5cea",
+        "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page06_card4_portrait.pdf": "4ce86ac8b0dd80af789be958fcfd92f4fbcbb5fa25d36a6adafd9751bdfe8534"
+      },
+      "completed": "2026-07-06T20:57:26.900689+00:00"
+    },
+    "integrate_classified": {
+      "outputs": {
+        "manifest.json": {
+          "path": "layers/integration/wrecka-krew/manifest.json",
+          "hash": "cf1847a071cf01072fcc0d117f80cbde658743df9bc4dbde8d55f14a6e8d7c5b",
+          "modified": "2026-07-06T20:57:52.154279+00:00"
+        },
+        "wrecka-krew-datacard-wrecka-boss-nob.pdf": {
+          "path": "layers/integration/wrecka-krew/wrecka-krew-datacard-wrecka-boss-nob.pdf",
+          "hash": "67215d1d8521e90a06bbd7a0e6252d3dd71641d69f74758d05a21a27b64ce70d",
+          "modified": "2026-07-06T20:57:52.164535+00:00"
+        },
+        "wrecka-krew-datacard-wrecka-bomb-squig.pdf": {
+          "path": "layers/integration/wrecka-krew/wrecka-krew-datacard-wrecka-bomb-squig.pdf",
+          "hash": "599a83180801444e230c84de6072e0b7a01786ee7797e37316a20be55fe70881",
+          "modified": "2026-07-06T20:57:52.176010+00:00"
+        },
+        "wrecka-krew-datacard-breaka-boy-demolisha.pdf": {
+          "path": "layers/integration/wrecka-krew/wrecka-krew-datacard-breaka-boy-demolisha.pdf",
+          "hash": "d2ec6947b8887484b81de9f1f5784a3f593f049a925d5e1339caa35106b57596",
+          "modified": "2026-07-06T20:57:52.189044+00:00"
+        },
+        "wrecka-krew-datacard-breaka-boy-fighter.pdf": {
+          "path": "layers/integration/wrecka-krew/wrecka-krew-datacard-breaka-boy-fighter.pdf",
+          "hash": "01a5264e73b25eb708f61c2ff0862daf48c425d75099008b7013597e5fe3c66b",
+          "modified": "2026-07-06T20:57:52.202091+00:00"
+        },
+        "wrecka-krew-datacard-breaka-boy-krusha.pdf": {
+          "path": "layers/integration/wrecka-krew/wrecka-krew-datacard-breaka-boy-krusha.pdf",
+          "hash": "20e3d1c3d3f4c2c89a6c35edf716d6d2085ea1a3f218a3ad4d89c6fd7afa09a8",
+          "modified": "2026-07-06T20:57:52.215574+00:00"
+        },
+        "wrecka-krew-datacard-tankbusta-gunner.pdf": {
+          "path": "layers/integration/wrecka-krew/wrecka-krew-datacard-tankbusta-gunner.pdf",
+          "hash": "6c8e944cf48edc7105ffcfd655b891abadaef0e0cd54e824033846ad34c3d879",
+          "modified": "2026-07-06T20:57:52.228827+00:00"
+        },
+        "wrecka-krew-datacard-tankbusta-rokkiteer.pdf": {
+          "path": "layers/integration/wrecka-krew/wrecka-krew-datacard-tankbusta-rokkiteer.pdf",
+          "hash": "8ce25a7ed048922bf611843fe9eb25c6548b7721c9edbdbbbe588c6491a9319d",
+          "modified": "2026-07-06T20:57:52.241972+00:00"
+        },
+        "wrecka-krew-equipment-drill-rokkits.pdf": {
+          "path": "layers/integration/wrecka-krew/wrecka-krew-equipment-drill-rokkits.pdf",
+          "hash": "135a49ad75b459efe7570ec938fe6cd514363e0ee468ab5555552ec99d4b027e",
+          "modified": "2026-07-06T20:57:52.254144+00:00"
+        },
+        "wrecka-krew-equipment-extra-armour.pdf": {
+          "path": "layers/integration/wrecka-krew/wrecka-krew-equipment-extra-armour.pdf",
+          "hash": "6d97cb270b9691d774d479332670996218cc161a5626ba9394a29907d03f403f",
+          "modified": "2026-07-06T20:57:52.264996+00:00"
+        },
+        "wrecka-krew-equipment-engine-oil.pdf": {
+          "path": "layers/integration/wrecka-krew/wrecka-krew-equipment-engine-oil.pdf",
+          "hash": "928b1b94904aac62b7964ec792a2128c4569937776355981a84a50bec1cc05e4",
+          "modified": "2026-07-06T20:57:52.276400+00:00"
+        },
+        "wrecka-krew-equipment-glyphs.pdf": {
+          "path": "layers/integration/wrecka-krew/wrecka-krew-equipment-glyphs.pdf",
+          "hash": "8f73685eddffbe7cce0d71677c02c82753d466e0f0f83a530bca3d6992334120",
+          "modified": "2026-07-06T20:57:52.286947+00:00"
+        },
+        "wrecka-krew-faction-rule-wrecka-rampage.pdf": {
+          "path": "layers/integration/wrecka-krew/wrecka-krew-faction-rule-wrecka-rampage.pdf",
+          "hash": "be8ab5f1d02666435c5fff5d97a373a12506eac8a307f2b05f02e970cfd3d6c0",
+          "modified": "2026-07-06T20:57:52.296909+00:00"
+        },
+        "wrecka-krew-faction-rule-tanked-up.pdf": {
+          "path": "layers/integration/wrecka-krew/wrecka-krew-faction-rule-tanked-up.pdf",
+          "hash": "0ebd208b8af6cecec22d942a9a83b38d5d3d34b12ef64dbf66d7835040a06f60",
+          "modified": "2026-07-06T20:57:52.308027+00:00"
+        },
+        "wrecka-krew-token-guide-token-guide.pdf": {
+          "path": "layers/integration/wrecka-krew/wrecka-krew-token-guide-token-guide.pdf",
+          "hash": "4c2c844b0beaca29200540a64748e300510a79c5077b468e4fcc47a96156f10d",
+          "modified": "2026-07-06T20:57:52.318756+00:00"
+        },
+        "wrecka-krew-firefight-ploy-just-a-scratch.pdf": {
+          "path": "layers/integration/wrecka-krew/wrecka-krew-firefight-ploy-just-a-scratch.pdf",
+          "hash": "f37842d1f225f3107749b74fab138be5c7e1cebb021bd738ee071dea08c9e90e",
+          "modified": "2026-07-06T20:57:52.328721+00:00"
+        },
+        "wrecka-krew-firefight-ploy-demolition-job.pdf": {
+          "path": "layers/integration/wrecka-krew/wrecka-krew-firefight-ploy-demolition-job.pdf",
+          "hash": "18c4c8d1cd99a4b66cb0815be1eb00c09d977c9b67719e0f70ae74171d185bba",
+          "modified": "2026-07-06T20:57:52.339910+00:00"
+        },
+        "wrecka-krew-firefight-ploy-proppa-scrap.pdf": {
+          "path": "layers/integration/wrecka-krew/wrecka-krew-firefight-ploy-proppa-scrap.pdf",
+          "hash": "680fc279ef3013c624702358bec8734767ad56c07d955337202779eb63ceee2c",
+          "modified": "2026-07-06T20:57:52.350927+00:00"
+        },
+        "wrecka-krew-firefight-ploy-kaboom.pdf": {
+          "path": "layers/integration/wrecka-krew/wrecka-krew-firefight-ploy-kaboom.pdf",
+          "hash": "9120d29889ad55fab86354f4a485a627182624b15b83f787a036300780c2c9d3",
+          "modified": "2026-07-06T20:57:52.360516+00:00"
+        },
+        "wrecka-krew-operatives-selection-operative-selection.pdf": {
+          "path": "layers/integration/wrecka-krew/wrecka-krew-operatives-selection-operative-selection.pdf",
+          "hash": "6834bbc9fe99214df5f124c29cd4e0f130481c8807f3d542a0c0cdbf3d09ec77",
+          "modified": "2026-07-06T20:57:52.372392+00:00"
+        },
+        "wrecka-krew-strategy-ploy-waaagh.pdf": {
+          "path": "layers/integration/wrecka-krew/wrecka-krew-strategy-ploy-waaagh.pdf",
+          "hash": "edef0d3de6d81295172232f03baf8f341c3c4a6974c1c0ed3f7093d0cc114e18",
+          "modified": "2026-07-06T20:57:52.383277+00:00"
+        },
+        "wrecka-krew-strategy-ploy-tuff-gitz.pdf": {
+          "path": "layers/integration/wrecka-krew/wrecka-krew-strategy-ploy-tuff-gitz.pdf",
+          "hash": "8ce4ea5ed83f7b944c40e0018f9ee50de634a4ae29241e147e40bd7e90d054a3",
+          "modified": "2026-07-06T20:57:52.392963+00:00"
+        },
+        "wrecka-krew-strategy-ploy-destruction.pdf": {
+          "path": "layers/integration/wrecka-krew/wrecka-krew-strategy-ploy-destruction.pdf",
+          "hash": "1896ae581616f5b08a5a2fb84ba3eef9559d4d7eeae43986d4dfdbd31b765302",
+          "modified": "2026-07-06T20:57:52.404217+00:00"
+        },
+        "wrecka-krew-strategy-ploy-amped-up.pdf": {
+          "path": "layers/integration/wrecka-krew/wrecka-krew-strategy-ploy-amped-up.pdf",
+          "hash": "1e813bfc373d3997c6df4e881a46f8e6f67fea864a42ee34f75fad8991198426",
+          "modified": "2026-07-06T20:57:52.415350+00:00"
+        }
+      },
+      "inputs": {
+        "layers/warcom/structure/wrecka-krew-structure.json": "cf1847a071cf01072fcc0d117f80cbde658743df9bc4dbde8d55f14a6e8d7c5b",
+        "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page01_card1_landscape.pdf": "0ca69ecf72d4e181bc353d938ee40c3e7e26f9772428f0ced36a1927b068b79b",
+        "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page01_card2_landscape.pdf": "666b7f04eb7265bf94e67d7dd12cb03f36aaad67ed3a92c2e2a4fa6e2227db24",
+        "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page01_card3_landscape.pdf": "b27be43b5d9a38ee5b89fae8bb512ee00f77ee820b172c7f6488835c5d21f22d",
+        "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page01_card4_landscape.pdf": "51789ad91423290aa2b4af46bde2148d55873c3e474d0e7077a05b8aed112369",
+        "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page02_card1_landscape.pdf": "b1a01d1c8dea957f1c9ed1635dce9c9de678e58744a13d25046453a21da660c3",
+        "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page02_card2_landscape.pdf": "7f679f971d93c37f78eb14e6ee9579b8ae3a991cae2297a546250326e5685a02",
+        "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page02_card3_landscape.pdf": "5fc610abfd7d580dbf06def8aa2e37cb48c46568b9b2893bc29bd53c78d89a7d",
+        "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page06_card1_portrait.pdf": "dc235e361deb15421bd51501cda8253653fd31f5659359e8febc18d29dbb527f",
+        "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page06_card2_portrait.pdf": "9dbcafb47c9721ad6189509c032d1452be7cae6d86e96910642dc0b2fb076c1c",
+        "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page06_card3_portrait.pdf": "9bc26b3247f353defbec5bda556b4a742d4ecab2d84c040263d55dd7f15c5cea",
+        "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page06_card4_portrait.pdf": "4ce86ac8b0dd80af789be958fcfd92f4fbcbb5fa25d36a6adafd9751bdfe8534",
+        "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page03_card2_portrait.pdf": "c1376bb3433ea8e501423390077fcc68a346d19fbe39d783be2e84ce0a6a3ef2",
+        "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page03_card3_portrait.pdf": "ec187635bba091ec9822f431b4e95cabca72035151a71a3af71b140f0dd8e57d",
+        "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page03_card4_portrait.pdf": "37c1ad81050cc5a4fa789d9be95d50e06db33adcd08625e35e3092f8669c4496",
+        "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page05_card1_portrait.pdf": "ba08bb536803a42914c86fbf9bd90db3d21c598e22d521349dc6ae58b28d68ef",
+        "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page05_card2_portrait.pdf": "9eec39294db1d4799244e1feee2920128f49ee798617194388c6f69320dbec0b",
+        "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page05_card3_portrait.pdf": "ab29267f46f39bdfc773a61ed26ab068541fd06052bfec01ccf8bfeca774463f",
+        "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page05_card4_portrait.pdf": "310c881646bdc27868e392555a1db3442fcc46c3c49095d55f2a61e1baf0bc5f",
+        "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page03_card1_portrait.pdf": "300da7e221ed454e15138701e4e0d4ca7d614e6e798e80b4ab45a6abf44baef4",
+        "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page04_card1_portrait.pdf": "a1c47c363b654a38850779d42ad009d929ddf2f3843c417eaeabb122c5e92632",
+        "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page04_card2_portrait.pdf": "f1d40f9ee4f0dcd42b650159f90f1de3619d807023d8aba9f7a6762b57f435c4",
+        "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page04_card3_portrait.pdf": "d1786425cb5479e6220d4074bf0e308433d433fefe9b7051b2a2af9faea9b0bb",
+        "layers/warcom/extracted/wrecka-krew/cards/wrecka-krew_page04_card4_portrait.pdf": "1b92d2da9d028393de2a75ee01e95e5c54dce6f53a10aa50d0d89c9bc23431ee"
+      },
+      "completed": "2026-07-06T20:57:52.439940+00:00"
+    },
+    "extract_artwork": {
+      "outputs": {},
+      "sources": {
+        "artwork": {
+          "hash": "3b956943653f93526b5eb8369d57e953b8519faa33d0a697e186e3ccd18d80ba",
+          "outputs": [
+            "layers/integration/wrecka-krew/artwork/wrecka-krew-artwork-01.jpeg",
+            "layers/integration/wrecka-krew/artwork/wrecka-krew-artwork-02.jpeg",
+            "layers/integration/wrecka-krew/artwork/wrecka-krew-artwork-03.jpeg",
+            "layers/integration/wrecka-krew/artwork/wrecka-krew-artwork-03.png",
+            "layers/integration/wrecka-krew/artwork/wrecka-krew-artwork-04.jpeg",
+            "layers/integration/wrecka-krew/artwork/wrecka-krew-artwork-05.jpeg",
+            "layers/integration/wrecka-krew/artwork/wrecka-krew-artwork-06.jpeg",
+            "layers/integration/wrecka-krew/artwork/wrecka-krew-artwork-07.jpeg",
+            "layers/integration/wrecka-krew/artwork/wrecka-krew-artwork-08.jpeg",
+            "layers/integration/wrecka-krew/artwork/wrecka-krew-artwork-09.jpeg",
+            "layers/integration/wrecka-krew/artwork/wrecka-krew-artwork-10.jpeg",
+            "layers/integration/wrecka-krew/artwork/wrecka-krew-artwork-11.jpeg",
+            "layers/integration/wrecka-krew/artwork/wrecka-krew-artwork-12.jpeg",
+            "layers/integration/wrecka-krew/artwork/wrecka-krew-artwork-13.jpeg",
+            "layers/integration/wrecka-krew/artwork/wrecka-krew-artwork-14.jpeg",
+            "layers/integration/wrecka-krew/artwork/wrecka-krew-artwork-15.jpeg",
+            "layers/integration/wrecka-krew/artwork/wrecka-krew-artwork-16.jpeg",
+            "layers/integration/wrecka-krew/artwork/wrecka-krew-artwork-17.jpeg",
+            "layers/integration/wrecka-krew/artwork/wrecka-krew-artwork-18.jpeg",
+            "layers/integration/wrecka-krew/artwork/wrecka-krew-artwork-19.jpeg",
+            "layers/integration/wrecka-krew/artwork/wrecka-krew-artwork-20.jpeg",
+            "layers/integration/wrecka-krew/artwork/wrecka-krew-artwork-21.jpeg",
+            "layers/integration/wrecka-krew/artwork/wrecka-krew-artwork-22.jpeg",
+            "layers/integration/wrecka-krew/artwork/wrecka-krew-artwork-23.jpeg",
+            "layers/integration/wrecka-krew/artwork/wrecka-krew-artwork-24.jpeg",
+            "layers/integration/wrecka-krew/artwork/wrecka-krew-artwork-25.jpeg",
+            "layers/integration/wrecka-krew/artwork/wrecka-krew-artwork-26.jpeg",
+            "layers/integration/wrecka-krew/artwork/wrecka-krew-artwork-27.jpeg",
+            "layers/integration/wrecka-krew/artwork/wrecka-krew-artwork-28.jpeg",
+            "layers/integration/wrecka-krew/artwork/wrecka-krew-artwork-29.jpeg",
+            "layers/integration/wrecka-krew/artwork/wrecka-krew-artwork-30.jpeg",
+            "layers/integration/wrecka-krew/artwork/wrecka-krew-artwork-31.jpeg",
+            "layers/integration/wrecka-krew/artwork/wrecka-krew-artwork-32.jpeg",
+            "layers/integration/wrecka-krew/artwork/wrecka-krew-artwork-33.jpeg",
+            "layers/integration/wrecka-krew/artwork/wrecka-krew-artwork-34.jpeg",
+            "layers/integration/wrecka-krew/artwork/wrecka-krew-artwork-35.jpeg",
+            "layers/integration/wrecka-krew/artwork/wrecka-krew-artwork-metadata.json",
+            "layers/integration/wrecka-krew/artwork/icons/wrecka-krew-icon-landscape.jpg",
+            "layers/integration/wrecka-krew/artwork/icons/wrecka-krew-icon-portrait.jpg",
+            "layers/integration/wrecka-krew/artwork/icons/wrecka-krew-icon-token-transparent.png",
+            "layers/integration/wrecka-krew/artwork/icons/wrecka-krew-icon-token.jpg"
+          ],
+          "modified": "2026-07-06T20:45:18.388137+00:00"
+        }
+      },
+      "completed": "2026-07-06T20:45:18.388155+00:00"
+    }
+  }
+}

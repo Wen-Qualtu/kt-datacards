@@ -1,0 +1,980 @@
+{
+  "team": "nemesis-claw",
+  "pipeline_version": "2.0",
+  "last_updated": "2026-07-07T07:30:00.760536+00:00",
+  "steps": {
+    "content_analysis": {
+      "outputs": {
+        "content.json": {
+          "path": "layers/integration/nemesis-claw/content/nemesis-claw-content.json",
+          "hash": "ee0016e3078fc5805ac6a85d91420830678b0a3e95bec195d68c8c5c5f2f358b",
+          "modified": "2026-07-06T21:01:03.470894+00:00"
+        }
+      },
+      "completed": "2026-07-06T21:01:03.499010+00:00",
+      "inputs": {
+        "layers/integration/nemesis-claw/manifest.json": "c2d1ec610fec8c599b04353d228ab6a71883a41c702418b95e5922289cf9cbf5",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "layers/integration/nemesis-claw/nemesis-claw-datacard-night-lord-fearmonger.pdf": "2ddff81fc37590f786db913eb989f6766047589914cc18ab34d2276e6a9a6b32",
+        "layers/integration/nemesis-claw/nemesis-claw-datacard-night-lord-gunner.pdf": "b68b3da62d91f84a6fec9ea51f98c828e01323c8c41c2a4901e13a5b26a06c96",
+        "layers/integration/nemesis-claw/nemesis-claw-datacard-night-lord-heavy-gunner.pdf": "1e76862400607369798e6890cd1afddfb7ed6efe7e1fdc589e111e5ba02061ad",
+        "layers/integration/nemesis-claw/nemesis-claw-datacard-night-lord-screecher.pdf": "9d1b62b8db378ba1fee3b87b68c6b48976533b026e664a11ac56145bad9fffc1",
+        "layers/integration/nemesis-claw/nemesis-claw-datacard-night-lord-skinthief.pdf": "be37bd73ddf622ff4d7c116edfb44d32bf9c7f9591ec0ca0989efc176a80188d",
+        "layers/integration/nemesis-claw/nemesis-claw-datacard-night-lord-ventrilokar.pdf": "ed5ca65fddfe3036f34f257d2e5036f776078bfbc00ea1e6222ed5d638664e71",
+        "layers/integration/nemesis-claw/nemesis-claw-datacard-night-lord-visionary.pdf": "ec74c7b1a6edd751cdfcfd60d03589773a1ab25d829bbdf741448e4b0f018a43",
+        "layers/integration/nemesis-claw/nemesis-claw-datacard-night-lord-warrior.pdf": "4b346fb330d6e9105de0a1a27ab74679459e92bcaa583d2db169cf13916dec08",
+        "layers/integration/nemesis-claw/nemesis-claw-equipment-chain-snare.pdf": "b472d1551873aa873a3eb534b1e36d2c2acdd526f37f9835e699b4c157a43e84",
+        "layers/integration/nemesis-claw/nemesis-claw-equipment-comms-jammers.pdf": "71021187740a25d613116a39a2d66be85eab67cb9d34278055a78654c2008cc0",
+        "layers/integration/nemesis-claw/nemesis-claw-equipment-flayed-skin.pdf": "7bcec0bbfbe992fcb4b54ad12d3f3cd2e8d94e3e3a20111c07b6340dad0af954",
+        "layers/integration/nemesis-claw/nemesis-claw-equipment-grisly-trophy.pdf": "f7beaaf7f78af44fa457ff3d0ce479a00f1850091c1cd895fbc091db9ce7e1ba",
+        "layers/integration/nemesis-claw/nemesis-claw-faction-rule-astartes.pdf": "16b063d025c26b48e075fdde4961679c38afa2cedfcd104b764a45dbda5e0589",
+        "layers/integration/nemesis-claw/nemesis-claw-faction-rule-in-midnight-clad.pdf": "fcb60b740b1ecfca90bdb7553b0dbbf6d8d9694b9c0a131a1ed06ab7635f2747",
+        "layers/integration/nemesis-claw/nemesis-claw-firefight-ploy-death-to-the-false-emperor.pdf": "f5c03def766a81eca41db8cb5b2eb3449b19710bd2334596c4f9c431d302b7a3",
+        "layers/integration/nemesis-claw/nemesis-claw-firefight-ploy-dirty-fighter.pdf": "442976106284fa63d45ccbfa671d009289aeefe5bb160842ec12500fb27670c4",
+        "layers/integration/nemesis-claw/nemesis-claw-firefight-ploy-proclivity-for-murder.pdf": "8309b5c7713219bcbb34e2d989e5105c71d3ad7b99ee4701988ca542675bbaa3",
+        "layers/integration/nemesis-claw/nemesis-claw-firefight-ploy-vox-scream.pdf": "2ea41ad3baeea17fcf9e0c84e84320f5bcd265bce5b652a44859800a319e6dcf",
+        "layers/integration/nemesis-claw/nemesis-claw-operatives-selection-operative-selection.pdf": "39a4091c641f5e4324e1bc45625eb8cc835b04fe5db63ee05fb1dc891f6b463e",
+        "layers/integration/nemesis-claw/nemesis-claw-strategy-ploy-preysight.pdf": "ce9cfdd5b395ff73d69f6ceb601f9ac7180495b676f0344f170291199ccfa44b",
+        "layers/integration/nemesis-claw/nemesis-claw-strategy-ploy-return-to-darkness.pdf": "f19cedb2b24653da932dea82eeb84da3489453949b86e7d26225580e0bb058f5",
+        "layers/integration/nemesis-claw/nemesis-claw-strategy-ploy-the-black-hunt.pdf": "ec24494d7b44726d8210971e72a21060ecb967eea4f8b9211a0b9509de1118c0",
+        "layers/integration/nemesis-claw/nemesis-claw-strategy-ploy-we-have-come-for-you.pdf": "fb48b17a3d8868a01f478333cad11dc997ec678f3733c2d9cd6d44801d1bcec4",
+        "layers/integration/nemesis-claw/nemesis-claw-token-guide-token-guide.pdf": "dfa04e0d63b1593b45aa2b4cd35f306d244be1376063aad1d83acdb5b5160f59"
+      }
+    },
+    "extract_backsides": {
+      "outputs": {
+        "backside-landscape.jpg": {
+          "path": "layers/integration/nemesis-claw/card-backside/nemesis-claw-backside-landscape.jpg",
+          "hash": "016b69cf309da6be099f1d5f608947b4f00f105729ae14cbc6f4871104dd6e52",
+          "modified": "2026-07-06T16:32:03.617369+00:00"
+        },
+        "backside-portrait.jpg": {
+          "path": "layers/integration/nemesis-claw/card-backside/nemesis-claw-backside-portrait.jpg",
+          "hash": "a609e89c0ec9df1a5fef297895dc36299543e0f599abc8a30a8efee0946cdf62",
+          "modified": "2026-07-06T16:32:03.649113+00:00"
+        }
+      },
+      "completed": "2026-07-06T16:32:03.653232+00:00",
+      "inputs": {
+        "layers/integration/nemesis-claw/artwork/icons/nemesis-claw-icon-token.jpg": "8b64f7a0b4d8e5eb6ba594f1580ce2c512c213a96289a2846416da1d2502838a",
+        "config/defaults/box/card-box-background.jpeg": "2dd1442a7c52ca1d66899333f678d60f48981ce20561ead77c1161d548176036"
+      }
+    },
+    "extract_tokens": {
+      "outputs": {
+        "tokens/nemesis-claw-disconcerting-mimicry.png": {
+          "path": "output/nemesis-claw/tokens/nemesis-claw-disconcerting-mimicry.png",
+          "hash": "6ab2a7d45a40fc589a9c29798079ac1078c5650720e4930bc31a4196ff9b456a",
+          "modified": "2026-07-06T21:02:48.051320+00:00"
+        },
+        "tokens/nemesis-claw-flay-them-alive.png": {
+          "path": "output/nemesis-claw/tokens/nemesis-claw-flay-them-alive.png",
+          "hash": "39a28bafad6c72a012a2d908dbdc26a390a0dab4308be4b3853b1ddbd959955b",
+          "modified": "2026-07-06T21:02:48.057828+00:00"
+        },
+        "tokens/nemesis-claw-grisly-trophy.png": {
+          "path": "output/nemesis-claw/tokens/nemesis-claw-grisly-trophy.png",
+          "hash": "054eb39af7a2c0be0615ea69521f0eb0593e800353f43fcb0d939b9a77d75fbd",
+          "modified": "2026-07-06T21:02:48.063619+00:00"
+        },
+        "tokens/nemesis-claw-nemexix-claw-prescience-points.png": {
+          "path": "output/nemesis-claw/tokens/nemesis-claw-nemexix-claw-prescience-points.png",
+          "hash": "81a295480289ce5413bc817cb18e46797f2bba4fba9d939166b33e1879ebd08f",
+          "modified": "2026-07-06T21:02:48.068822+00:00"
+        },
+        "tokens/nemesis-claw-poison-objective.png": {
+          "path": "output/nemesis-claw/tokens/nemesis-claw-poison-objective.png",
+          "hash": "971f1b2ab013c73740f24c5a8ca275be12fd607d2d27557508d1ab967aaa1f0f",
+          "modified": "2026-07-06T21:02:48.074016+00:00"
+        },
+        "tokens/nemesis-claw-portent.png": {
+          "path": "output/nemesis-claw/tokens/nemesis-claw-portent.png",
+          "hash": "23c13a820856484d6e70132a1b82fcfa42f84f32a14c58368e94269c28abff18",
+          "modified": "2026-07-06T21:02:48.079233+00:00"
+        },
+        "tokens/nemesis-claw-terrorchem.png": {
+          "path": "output/nemesis-claw/tokens/nemesis-claw-terrorchem.png",
+          "hash": "299c5fa60a7167a5479e52839ee84c321075cff4c3701bd80a930619f1e7717b",
+          "modified": "2026-07-06T21:02:48.086724+00:00"
+        },
+        "tokens/nemesis-claw-disconcerting-mimicry.obj": {
+          "path": "output/nemesis-claw/tokens/nemesis-claw-disconcerting-mimicry.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:48.088567+00:00"
+        },
+        "tokens/nemesis-claw-flay-them-alive.obj": {
+          "path": "output/nemesis-claw/tokens/nemesis-claw-flay-them-alive.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:48.089898+00:00"
+        },
+        "tokens/nemesis-claw-grisly-trophy.obj": {
+          "path": "output/nemesis-claw/tokens/nemesis-claw-grisly-trophy.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:48.091182+00:00"
+        },
+        "tokens/nemesis-claw-nemexix-claw-prescience-points.obj": {
+          "path": "output/nemesis-claw/tokens/nemesis-claw-nemexix-claw-prescience-points.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:48.092496+00:00"
+        },
+        "tokens/nemesis-claw-poison-objective.obj": {
+          "path": "output/nemesis-claw/tokens/nemesis-claw-poison-objective.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:48.093765+00:00"
+        },
+        "tokens/nemesis-claw-portent.obj": {
+          "path": "output/nemesis-claw/tokens/nemesis-claw-portent.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:48.094887+00:00"
+        },
+        "tokens/nemesis-claw-terrorchem.obj": {
+          "path": "output/nemesis-claw/tokens/nemesis-claw-terrorchem.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:48.095782+00:00"
+        },
+        "tokens/tokenbag/nemesis-claw-token-bag-icon.png": {
+          "path": "output/nemesis-claw/tokens/tokenbag/nemesis-claw-token-bag-icon.png",
+          "hash": "8b64f7a0b4d8e5eb6ba594f1580ce2c512c213a96289a2846416da1d2502838a",
+          "modified": "2026-07-06T21:02:48.102480+00:00"
+        },
+        "tokens/tokenbag/nemesis-claw-token-bag.obj": {
+          "path": "output/nemesis-claw/tokens/tokenbag/nemesis-claw-token-bag.obj",
+          "hash": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+          "modified": "2026-07-06T21:02:48.103483+00:00"
+        }
+      },
+      "completed": "2026-07-06T21:02:48.133880+00:00",
+      "inputs": {
+        "layers/integration/nemesis-claw/manifest.json": "c2d1ec610fec8c599b04353d228ab6a71883a41c702418b95e5922289cf9cbf5",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "layers/integration/nemesis-claw/artwork/icons/nemesis-claw-icon-token.jpg": "8b64f7a0b4d8e5eb6ba594f1580ce2c512c213a96289a2846416da1d2502838a",
+        "layers/integration/nemesis-claw/nemesis-claw-datacard-night-lord-fearmonger.pdf": "2ddff81fc37590f786db913eb989f6766047589914cc18ab34d2276e6a9a6b32",
+        "layers/integration/nemesis-claw/nemesis-claw-datacard-night-lord-gunner.pdf": "b68b3da62d91f84a6fec9ea51f98c828e01323c8c41c2a4901e13a5b26a06c96",
+        "layers/integration/nemesis-claw/nemesis-claw-datacard-night-lord-heavy-gunner.pdf": "1e76862400607369798e6890cd1afddfb7ed6efe7e1fdc589e111e5ba02061ad",
+        "layers/integration/nemesis-claw/nemesis-claw-datacard-night-lord-screecher.pdf": "9d1b62b8db378ba1fee3b87b68c6b48976533b026e664a11ac56145bad9fffc1",
+        "layers/integration/nemesis-claw/nemesis-claw-datacard-night-lord-skinthief.pdf": "be37bd73ddf622ff4d7c116edfb44d32bf9c7f9591ec0ca0989efc176a80188d",
+        "layers/integration/nemesis-claw/nemesis-claw-datacard-night-lord-ventrilokar.pdf": "ed5ca65fddfe3036f34f257d2e5036f776078bfbc00ea1e6222ed5d638664e71",
+        "layers/integration/nemesis-claw/nemesis-claw-datacard-night-lord-visionary.pdf": "ec74c7b1a6edd751cdfcfd60d03589773a1ab25d829bbdf741448e4b0f018a43",
+        "layers/integration/nemesis-claw/nemesis-claw-datacard-night-lord-warrior.pdf": "4b346fb330d6e9105de0a1a27ab74679459e92bcaa583d2db169cf13916dec08",
+        "layers/integration/nemesis-claw/nemesis-claw-equipment-chain-snare.pdf": "b472d1551873aa873a3eb534b1e36d2c2acdd526f37f9835e699b4c157a43e84",
+        "layers/integration/nemesis-claw/nemesis-claw-equipment-comms-jammers.pdf": "71021187740a25d613116a39a2d66be85eab67cb9d34278055a78654c2008cc0",
+        "layers/integration/nemesis-claw/nemesis-claw-equipment-flayed-skin.pdf": "7bcec0bbfbe992fcb4b54ad12d3f3cd2e8d94e3e3a20111c07b6340dad0af954",
+        "layers/integration/nemesis-claw/nemesis-claw-equipment-grisly-trophy.pdf": "f7beaaf7f78af44fa457ff3d0ce479a00f1850091c1cd895fbc091db9ce7e1ba",
+        "layers/integration/nemesis-claw/nemesis-claw-faction-rule-astartes.pdf": "16b063d025c26b48e075fdde4961679c38afa2cedfcd104b764a45dbda5e0589",
+        "layers/integration/nemesis-claw/nemesis-claw-faction-rule-in-midnight-clad.pdf": "fcb60b740b1ecfca90bdb7553b0dbbf6d8d9694b9c0a131a1ed06ab7635f2747",
+        "layers/integration/nemesis-claw/nemesis-claw-firefight-ploy-death-to-the-false-emperor.pdf": "f5c03def766a81eca41db8cb5b2eb3449b19710bd2334596c4f9c431d302b7a3",
+        "layers/integration/nemesis-claw/nemesis-claw-firefight-ploy-dirty-fighter.pdf": "442976106284fa63d45ccbfa671d009289aeefe5bb160842ec12500fb27670c4",
+        "layers/integration/nemesis-claw/nemesis-claw-firefight-ploy-proclivity-for-murder.pdf": "8309b5c7713219bcbb34e2d989e5105c71d3ad7b99ee4701988ca542675bbaa3",
+        "layers/integration/nemesis-claw/nemesis-claw-firefight-ploy-vox-scream.pdf": "2ea41ad3baeea17fcf9e0c84e84320f5bcd265bce5b652a44859800a319e6dcf",
+        "layers/integration/nemesis-claw/nemesis-claw-operatives-selection-operative-selection.pdf": "39a4091c641f5e4324e1bc45625eb8cc835b04fe5db63ee05fb1dc891f6b463e",
+        "layers/integration/nemesis-claw/nemesis-claw-strategy-ploy-preysight.pdf": "ce9cfdd5b395ff73d69f6ceb601f9ac7180495b676f0344f170291199ccfa44b",
+        "layers/integration/nemesis-claw/nemesis-claw-strategy-ploy-return-to-darkness.pdf": "f19cedb2b24653da932dea82eeb84da3489453949b86e7d26225580e0bb058f5",
+        "layers/integration/nemesis-claw/nemesis-claw-strategy-ploy-the-black-hunt.pdf": "ec24494d7b44726d8210971e72a21060ecb967eea4f8b9211a0b9509de1118c0",
+        "layers/integration/nemesis-claw/nemesis-claw-strategy-ploy-we-have-come-for-you.pdf": "fb48b17a3d8868a01f478333cad11dc997ec678f3733c2d9cd6d44801d1bcec4",
+        "layers/integration/nemesis-claw/nemesis-claw-token-guide-token-guide.pdf": "dfa04e0d63b1593b45aa2b4cd35f306d244be1376063aad1d83acdb5b5160f59",
+        "config/teams/nemesis-claw/custom-tokens/nemexix-claw-prescience-points.png": "48f78799ba4a77459feaf54a9e8061939ed9c0244e5d73314812d1aa8f4383f7"
+      }
+    },
+    "generate_dice": {
+      "outputs": {
+        "dice-light.jpg": {
+          "path": "output/nemesis-claw/dice/nemesis-claw-dice-light.jpg",
+          "hash": "759a55b30981cf9fd3fc43be88b45263f0f870eedb1b5dbf0266e2642f002406",
+          "modified": "2026-07-06T16:33:25.237536+00:00"
+        },
+        "dice-dark.jpg": {
+          "path": "output/nemesis-claw/dice/nemesis-claw-dice-dark.jpg",
+          "hash": "2e3cbe415ed9d59610b4c04206ee80026bee1380bce7041babdb0327a588e3b3",
+          "modified": "2026-07-06T16:33:25.245401+00:00"
+        },
+        "dice-team.jpg": {
+          "path": "output/nemesis-claw/dice/nemesis-claw-dice-team.jpg",
+          "hash": "d635daea8154978898d679cd17db2e7eadc66abd7ccb5fae953d9bae5c08d41f",
+          "modified": "2026-07-06T16:33:25.250910+00:00"
+        }
+      },
+      "completed": "2026-07-06T16:33:25.251911+00:00",
+      "inputs": {
+        "layers/integration/nemesis-claw/artwork/icons/nemesis-claw-icon-token-transparent.png": "4f5e33539e6a805aa90b8843bacb27193264b0a009721802467627a7527b7deb",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41"
+      }
+    },
+    "generate_box_texture": {
+      "outputs": {
+        "card-box-texture.jpg": {
+          "path": "output/nemesis-claw/cardbox/nemesis-claw-card-box-texture.jpg",
+          "hash": "929a571553772e830ddfd54f866919da37c7616b01a7f81f7bd6844ec243fc4c",
+          "modified": "2026-07-06T16:33:34.322508+00:00"
+        },
+        "card-box.obj": {
+          "path": "output/nemesis-claw/cardbox/nemesis-claw-card-box.obj",
+          "hash": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+          "modified": "2026-07-06T16:33:34.324533+00:00"
+        }
+      },
+      "completed": "2026-07-06T16:33:34.326719+00:00",
+      "inputs": {
+        "layers/integration/nemesis-claw/artwork/icons/nemesis-claw-icon-token.jpg": "8b64f7a0b4d8e5eb6ba594f1580ce2c512c213a96289a2846416da1d2502838a",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "config/defaults/box/card-box.obj": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+        "config/defaults/box/card-box-texture.jpg": "b2f310b01a0d28e8806e99ce0b972e8967e3014608eacefcb6ec51597695a313"
+      }
+    },
+    "generate_card_images": {
+      "outputs": {
+        "cards/datacards/night-lord-fearmonger-back.jpg": {
+          "path": "output/nemesis-claw/cards/datacards/night-lord-fearmonger-back.jpg",
+          "hash": "3b65f0a0ba2aa638a981a7fa59f0ab1b0e7d2dffac803902322fe11bdcaea399",
+          "modified": "2026-07-07T07:24:37.822891+00:00"
+        },
+        "cards/datacards/night-lord-fearmonger-front.jpg": {
+          "path": "output/nemesis-claw/cards/datacards/night-lord-fearmonger-front.jpg",
+          "hash": "0189a758cd8d24b7b2b53ec6a679c9c0a5ded7592ba7e8e71e51365f9e5f5902",
+          "modified": "2026-07-07T07:24:37.829431+00:00"
+        },
+        "cards/datacards/night-lord-gunner-back.jpg": {
+          "path": "output/nemesis-claw/cards/datacards/night-lord-gunner-back.jpg",
+          "hash": "016b69cf309da6be099f1d5f608947b4f00f105729ae14cbc6f4871104dd6e52",
+          "modified": "2026-07-07T07:24:37.835622+00:00"
+        },
+        "cards/datacards/night-lord-gunner-front.jpg": {
+          "path": "output/nemesis-claw/cards/datacards/night-lord-gunner-front.jpg",
+          "hash": "b6703ca1561a03496268a88d6fcc209b7e1c96bb2d439702b38b18da1a80e17b",
+          "modified": "2026-07-07T07:24:37.842215+00:00"
+        },
+        "cards/datacards/night-lord-heavy-gunner-back.jpg": {
+          "path": "output/nemesis-claw/cards/datacards/night-lord-heavy-gunner-back.jpg",
+          "hash": "016b69cf309da6be099f1d5f608947b4f00f105729ae14cbc6f4871104dd6e52",
+          "modified": "2026-07-07T07:24:37.848166+00:00"
+        },
+        "cards/datacards/night-lord-heavy-gunner-front.jpg": {
+          "path": "output/nemesis-claw/cards/datacards/night-lord-heavy-gunner-front.jpg",
+          "hash": "7c0e1932891e2ab4d0f6c17a8e958faf51ce02bddaba630d1d21e249428fb155",
+          "modified": "2026-07-07T07:24:37.854112+00:00"
+        },
+        "cards/datacards/night-lord-screecher-back.jpg": {
+          "path": "output/nemesis-claw/cards/datacards/night-lord-screecher-back.jpg",
+          "hash": "016b69cf309da6be099f1d5f608947b4f00f105729ae14cbc6f4871104dd6e52",
+          "modified": "2026-07-07T07:24:37.860126+00:00"
+        },
+        "cards/datacards/night-lord-screecher-front.jpg": {
+          "path": "output/nemesis-claw/cards/datacards/night-lord-screecher-front.jpg",
+          "hash": "bf46d9e9b19fd110e72a6937df62614be36b3e831e28c91e42fcbc721ec85b34",
+          "modified": "2026-07-07T07:24:37.868168+00:00"
+        },
+        "cards/datacards/night-lord-skinthief-back.jpg": {
+          "path": "output/nemesis-claw/cards/datacards/night-lord-skinthief-back.jpg",
+          "hash": "016b69cf309da6be099f1d5f608947b4f00f105729ae14cbc6f4871104dd6e52",
+          "modified": "2026-07-07T07:24:37.874491+00:00"
+        },
+        "cards/datacards/night-lord-skinthief-front.jpg": {
+          "path": "output/nemesis-claw/cards/datacards/night-lord-skinthief-front.jpg",
+          "hash": "418e417a15303630d71a25cef87e01b48178ad7830439adb6804f13fe981e9c1",
+          "modified": "2026-07-07T07:24:37.880494+00:00"
+        },
+        "cards/datacards/night-lord-ventrilokar-back.jpg": {
+          "path": "output/nemesis-claw/cards/datacards/night-lord-ventrilokar-back.jpg",
+          "hash": "016b69cf309da6be099f1d5f608947b4f00f105729ae14cbc6f4871104dd6e52",
+          "modified": "2026-07-07T07:24:37.885729+00:00"
+        },
+        "cards/datacards/night-lord-ventrilokar-front.jpg": {
+          "path": "output/nemesis-claw/cards/datacards/night-lord-ventrilokar-front.jpg",
+          "hash": "8af9b5b0942e365eacac2e984027a72f774dddec6cfb29df38e6ba8023a6439e",
+          "modified": "2026-07-07T07:24:37.892953+00:00"
+        },
+        "cards/datacards/night-lord-visionary-back.jpg": {
+          "path": "output/nemesis-claw/cards/datacards/night-lord-visionary-back.jpg",
+          "hash": "a7a05180c245dd667ae318333bdb79f49a59b874fbc8d5ee5f191f383522e438",
+          "modified": "2026-07-07T07:24:37.898999+00:00"
+        },
+        "cards/datacards/night-lord-visionary-front.jpg": {
+          "path": "output/nemesis-claw/cards/datacards/night-lord-visionary-front.jpg",
+          "hash": "f5d94bf644e45730893f18c477c96e86fe032b1b8a9707df08a2e4684b2e540c",
+          "modified": "2026-07-07T07:24:37.905482+00:00"
+        },
+        "cards/datacards/night-lord-warrior-back.jpg": {
+          "path": "output/nemesis-claw/cards/datacards/night-lord-warrior-back.jpg",
+          "hash": "016b69cf309da6be099f1d5f608947b4f00f105729ae14cbc6f4871104dd6e52",
+          "modified": "2026-07-07T07:24:37.911709+00:00"
+        },
+        "cards/datacards/night-lord-warrior-front.jpg": {
+          "path": "output/nemesis-claw/cards/datacards/night-lord-warrior-front.jpg",
+          "hash": "88b1e3eed96c37ceb0fcc8d64dbd511845a4683f1526b2406c11bf96f74223e5",
+          "modified": "2026-07-07T07:24:37.918015+00:00"
+        },
+        "cards/equipment/nemesis-claw-chain-snare-back.jpg": {
+          "path": "output/nemesis-claw/cards/equipment/nemesis-claw-chain-snare-back.jpg",
+          "hash": "a609e89c0ec9df1a5fef297895dc36299543e0f599abc8a30a8efee0946cdf62",
+          "modified": "2026-07-07T07:24:37.924815+00:00"
+        },
+        "cards/equipment/nemesis-claw-chain-snare-front.jpg": {
+          "path": "output/nemesis-claw/cards/equipment/nemesis-claw-chain-snare-front.jpg",
+          "hash": "b30bfa48088c661426bc6c94534c47c05c28979960a080334e8950d6442b08f8",
+          "modified": "2026-07-07T07:24:37.931406+00:00"
+        },
+        "cards/equipment/nemesis-claw-comms-jammers-back.jpg": {
+          "path": "output/nemesis-claw/cards/equipment/nemesis-claw-comms-jammers-back.jpg",
+          "hash": "a609e89c0ec9df1a5fef297895dc36299543e0f599abc8a30a8efee0946cdf62",
+          "modified": "2026-07-07T07:24:37.937444+00:00"
+        },
+        "cards/equipment/nemesis-claw-comms-jammers-front.jpg": {
+          "path": "output/nemesis-claw/cards/equipment/nemesis-claw-comms-jammers-front.jpg",
+          "hash": "497303c7d795a96a15ebf14bfd08944130e073457f134dd985573cf61bcc9d5c",
+          "modified": "2026-07-07T07:24:37.944224+00:00"
+        },
+        "cards/equipment/nemesis-claw-flayed-skin-back.jpg": {
+          "path": "output/nemesis-claw/cards/equipment/nemesis-claw-flayed-skin-back.jpg",
+          "hash": "a609e89c0ec9df1a5fef297895dc36299543e0f599abc8a30a8efee0946cdf62",
+          "modified": "2026-07-07T07:24:37.949873+00:00"
+        },
+        "cards/equipment/nemesis-claw-flayed-skin-front.jpg": {
+          "path": "output/nemesis-claw/cards/equipment/nemesis-claw-flayed-skin-front.jpg",
+          "hash": "45c146ed44c006bbb6ce94d30ab4af140cc44dc403d3905fe66627ab8510f703",
+          "modified": "2026-07-07T07:24:37.956975+00:00"
+        },
+        "cards/equipment/nemesis-claw-grisly-trophy-back.jpg": {
+          "path": "output/nemesis-claw/cards/equipment/nemesis-claw-grisly-trophy-back.jpg",
+          "hash": "a609e89c0ec9df1a5fef297895dc36299543e0f599abc8a30a8efee0946cdf62",
+          "modified": "2026-07-07T07:24:37.963082+00:00"
+        },
+        "cards/equipment/nemesis-claw-grisly-trophy-front.jpg": {
+          "path": "output/nemesis-claw/cards/equipment/nemesis-claw-grisly-trophy-front.jpg",
+          "hash": "9a7cd987527b9099bf287b617f232b1272302dc52a56bdaacf11a7a50e903b69",
+          "modified": "2026-07-07T07:24:37.968970+00:00"
+        },
+        "cards/faction_rules/nemesis-claw-astartes-back.jpg": {
+          "path": "output/nemesis-claw/cards/faction_rules/nemesis-claw-astartes-back.jpg",
+          "hash": "a609e89c0ec9df1a5fef297895dc36299543e0f599abc8a30a8efee0946cdf62",
+          "modified": "2026-07-07T07:24:37.975657+00:00"
+        },
+        "cards/faction_rules/nemesis-claw-astartes-front.jpg": {
+          "path": "output/nemesis-claw/cards/faction_rules/nemesis-claw-astartes-front.jpg",
+          "hash": "c72911bd15e0c8ac9c58a6c9345f1d9a6aa70e19468920bd1c89544844da01a8",
+          "modified": "2026-07-07T07:24:37.981721+00:00"
+        },
+        "cards/faction_rules/nemesis-claw-in-midnight-clad-back.jpg": {
+          "path": "output/nemesis-claw/cards/faction_rules/nemesis-claw-in-midnight-clad-back.jpg",
+          "hash": "a609e89c0ec9df1a5fef297895dc36299543e0f599abc8a30a8efee0946cdf62",
+          "modified": "2026-07-07T07:24:37.989280+00:00"
+        },
+        "cards/faction_rules/nemesis-claw-in-midnight-clad-front.jpg": {
+          "path": "output/nemesis-claw/cards/faction_rules/nemesis-claw-in-midnight-clad-front.jpg",
+          "hash": "66f5e4a414f351f979f77c7ea2f1ef3b203159f141927f95d0d19c5a563ecb3d",
+          "modified": "2026-07-07T07:24:37.995436+00:00"
+        },
+        "cards/firefight_ploys/nemesis-claw-death-to-the-false-emperor-back.jpg": {
+          "path": "output/nemesis-claw/cards/firefight_ploys/nemesis-claw-death-to-the-false-emperor-back.jpg",
+          "hash": "a609e89c0ec9df1a5fef297895dc36299543e0f599abc8a30a8efee0946cdf62",
+          "modified": "2026-07-07T07:24:38.000670+00:00"
+        },
+        "cards/firefight_ploys/nemesis-claw-death-to-the-false-emperor-front.jpg": {
+          "path": "output/nemesis-claw/cards/firefight_ploys/nemesis-claw-death-to-the-false-emperor-front.jpg",
+          "hash": "f6bdc4bfd67a0de8720571996e00c373bcc31f17725a4b6fba9df823bca2c0da",
+          "modified": "2026-07-07T07:24:38.007342+00:00"
+        },
+        "cards/firefight_ploys/nemesis-claw-dirty-fighter-back.jpg": {
+          "path": "output/nemesis-claw/cards/firefight_ploys/nemesis-claw-dirty-fighter-back.jpg",
+          "hash": "a609e89c0ec9df1a5fef297895dc36299543e0f599abc8a30a8efee0946cdf62",
+          "modified": "2026-07-07T07:24:38.013280+00:00"
+        },
+        "cards/firefight_ploys/nemesis-claw-dirty-fighter-front.jpg": {
+          "path": "output/nemesis-claw/cards/firefight_ploys/nemesis-claw-dirty-fighter-front.jpg",
+          "hash": "78835ebfa9c0a5f7244d8a11da9b44c62e2e4ee264b065b92a93aa07cf44cf18",
+          "modified": "2026-07-07T07:24:38.018559+00:00"
+        },
+        "cards/firefight_ploys/nemesis-claw-proclivity-for-murder-back.jpg": {
+          "path": "output/nemesis-claw/cards/firefight_ploys/nemesis-claw-proclivity-for-murder-back.jpg",
+          "hash": "a609e89c0ec9df1a5fef297895dc36299543e0f599abc8a30a8efee0946cdf62",
+          "modified": "2026-07-07T07:24:38.024752+00:00"
+        },
+        "cards/firefight_ploys/nemesis-claw-proclivity-for-murder-front.jpg": {
+          "path": "output/nemesis-claw/cards/firefight_ploys/nemesis-claw-proclivity-for-murder-front.jpg",
+          "hash": "580bb35b21b1d644f83ced3d23cd06053e4fd822c86a295fe8f3ac0cae265d05",
+          "modified": "2026-07-07T07:24:38.030578+00:00"
+        },
+        "cards/firefight_ploys/nemesis-claw-vox-scream-back.jpg": {
+          "path": "output/nemesis-claw/cards/firefight_ploys/nemesis-claw-vox-scream-back.jpg",
+          "hash": "a609e89c0ec9df1a5fef297895dc36299543e0f599abc8a30a8efee0946cdf62",
+          "modified": "2026-07-07T07:24:38.035856+00:00"
+        },
+        "cards/firefight_ploys/nemesis-claw-vox-scream-front.jpg": {
+          "path": "output/nemesis-claw/cards/firefight_ploys/nemesis-claw-vox-scream-front.jpg",
+          "hash": "30b605ade59a985501d1919f47291d070a28f6f72158b4df199fb35042d9b808",
+          "modified": "2026-07-07T07:24:38.042553+00:00"
+        },
+        "cards/operatives_selection/nemesis-claw-operative-selection-back.jpg": {
+          "path": "output/nemesis-claw/cards/operatives_selection/nemesis-claw-operative-selection-back.jpg",
+          "hash": "d0b9e70796f44b8e0d0acf1b7ceb0407a38de1b22a5550724f41df506e8b3fed",
+          "modified": "2026-07-07T07:24:38.048255+00:00"
+        },
+        "cards/operatives_selection/nemesis-claw-operative-selection-front.jpg": {
+          "path": "output/nemesis-claw/cards/operatives_selection/nemesis-claw-operative-selection-front.jpg",
+          "hash": "b13bdad77dedd7b1e9ec2b0efbd086b9d43947d52aee186aa23158d41b06f703",
+          "modified": "2026-07-07T07:24:38.054334+00:00"
+        },
+        "cards/strategy_ploys/nemesis-claw-preysight-back.jpg": {
+          "path": "output/nemesis-claw/cards/strategy_ploys/nemesis-claw-preysight-back.jpg",
+          "hash": "a609e89c0ec9df1a5fef297895dc36299543e0f599abc8a30a8efee0946cdf62",
+          "modified": "2026-07-07T07:24:38.060592+00:00"
+        },
+        "cards/strategy_ploys/nemesis-claw-preysight-front.jpg": {
+          "path": "output/nemesis-claw/cards/strategy_ploys/nemesis-claw-preysight-front.jpg",
+          "hash": "c7021a898372e36cdd978b5b420c02d561b54d27051d608e0402de42ac9bf1ee",
+          "modified": "2026-07-07T07:24:38.067801+00:00"
+        },
+        "cards/strategy_ploys/nemesis-claw-return-to-darkness-back.jpg": {
+          "path": "output/nemesis-claw/cards/strategy_ploys/nemesis-claw-return-to-darkness-back.jpg",
+          "hash": "a609e89c0ec9df1a5fef297895dc36299543e0f599abc8a30a8efee0946cdf62",
+          "modified": "2026-07-07T07:24:38.074733+00:00"
+        },
+        "cards/strategy_ploys/nemesis-claw-return-to-darkness-front.jpg": {
+          "path": "output/nemesis-claw/cards/strategy_ploys/nemesis-claw-return-to-darkness-front.jpg",
+          "hash": "9bf659ff1d3e2ea2653361ad0d34a5f77d443ab3d36ba962ef7eaea007341a8f",
+          "modified": "2026-07-07T07:24:38.081583+00:00"
+        },
+        "cards/strategy_ploys/nemesis-claw-the-black-hunt-back.jpg": {
+          "path": "output/nemesis-claw/cards/strategy_ploys/nemesis-claw-the-black-hunt-back.jpg",
+          "hash": "a609e89c0ec9df1a5fef297895dc36299543e0f599abc8a30a8efee0946cdf62",
+          "modified": "2026-07-07T07:24:38.088093+00:00"
+        },
+        "cards/strategy_ploys/nemesis-claw-the-black-hunt-front.jpg": {
+          "path": "output/nemesis-claw/cards/strategy_ploys/nemesis-claw-the-black-hunt-front.jpg",
+          "hash": "46a4e13549a0c7554faedf7658967e9524d7fbaf1b97e94ccd3802b4315a95ca",
+          "modified": "2026-07-07T07:24:38.094397+00:00"
+        },
+        "cards/strategy_ploys/nemesis-claw-we-have-come-for-you-back.jpg": {
+          "path": "output/nemesis-claw/cards/strategy_ploys/nemesis-claw-we-have-come-for-you-back.jpg",
+          "hash": "a609e89c0ec9df1a5fef297895dc36299543e0f599abc8a30a8efee0946cdf62",
+          "modified": "2026-07-07T07:24:38.099997+00:00"
+        },
+        "cards/strategy_ploys/nemesis-claw-we-have-come-for-you-front.jpg": {
+          "path": "output/nemesis-claw/cards/strategy_ploys/nemesis-claw-we-have-come-for-you-front.jpg",
+          "hash": "9376265b5d6a0f28c356ed2a0faf887a8ae4d79ea9642b51886dc82719e22431",
+          "modified": "2026-07-07T07:24:38.106820+00:00"
+        },
+        "cards/token_guide/nemesis-claw-token-guide-back.jpg": {
+          "path": "output/nemesis-claw/cards/token_guide/nemesis-claw-token-guide-back.jpg",
+          "hash": "a609e89c0ec9df1a5fef297895dc36299543e0f599abc8a30a8efee0946cdf62",
+          "modified": "2026-07-07T07:24:38.112563+00:00"
+        },
+        "cards/token_guide/nemesis-claw-token-guide-front.jpg": {
+          "path": "output/nemesis-claw/cards/token_guide/nemesis-claw-token-guide-front.jpg",
+          "hash": "b8381d02fcd9c91dc121cca1e55d77b0077e7f502fb65b409a5de7f473f80fab",
+          "modified": "2026-07-07T07:24:38.118089+00:00"
+        }
+      },
+      "completed": "2026-07-07T07:24:38.151398+00:00",
+      "inputs": {
+        "layers/integration/nemesis-claw/manifest.json": "c2d1ec610fec8c599b04353d228ab6a71883a41c702418b95e5922289cf9cbf5",
+        "layers/integration/nemesis-claw/nemesis-claw-datacard-night-lord-fearmonger.pdf": "2ddff81fc37590f786db913eb989f6766047589914cc18ab34d2276e6a9a6b32",
+        "layers/integration/nemesis-claw/nemesis-claw-datacard-night-lord-gunner.pdf": "b68b3da62d91f84a6fec9ea51f98c828e01323c8c41c2a4901e13a5b26a06c96",
+        "layers/integration/nemesis-claw/nemesis-claw-datacard-night-lord-heavy-gunner.pdf": "1e76862400607369798e6890cd1afddfb7ed6efe7e1fdc589e111e5ba02061ad",
+        "layers/integration/nemesis-claw/nemesis-claw-datacard-night-lord-screecher.pdf": "9d1b62b8db378ba1fee3b87b68c6b48976533b026e664a11ac56145bad9fffc1",
+        "layers/integration/nemesis-claw/nemesis-claw-datacard-night-lord-skinthief.pdf": "be37bd73ddf622ff4d7c116edfb44d32bf9c7f9591ec0ca0989efc176a80188d",
+        "layers/integration/nemesis-claw/nemesis-claw-datacard-night-lord-ventrilokar.pdf": "ed5ca65fddfe3036f34f257d2e5036f776078bfbc00ea1e6222ed5d638664e71",
+        "layers/integration/nemesis-claw/nemesis-claw-datacard-night-lord-visionary.pdf": "ec74c7b1a6edd751cdfcfd60d03589773a1ab25d829bbdf741448e4b0f018a43",
+        "layers/integration/nemesis-claw/nemesis-claw-datacard-night-lord-warrior.pdf": "4b346fb330d6e9105de0a1a27ab74679459e92bcaa583d2db169cf13916dec08",
+        "layers/integration/nemesis-claw/nemesis-claw-equipment-chain-snare.pdf": "b472d1551873aa873a3eb534b1e36d2c2acdd526f37f9835e699b4c157a43e84",
+        "layers/integration/nemesis-claw/nemesis-claw-equipment-comms-jammers.pdf": "71021187740a25d613116a39a2d66be85eab67cb9d34278055a78654c2008cc0",
+        "layers/integration/nemesis-claw/nemesis-claw-equipment-flayed-skin.pdf": "7bcec0bbfbe992fcb4b54ad12d3f3cd2e8d94e3e3a20111c07b6340dad0af954",
+        "layers/integration/nemesis-claw/nemesis-claw-equipment-grisly-trophy.pdf": "f7beaaf7f78af44fa457ff3d0ce479a00f1850091c1cd895fbc091db9ce7e1ba",
+        "layers/integration/nemesis-claw/nemesis-claw-faction-rule-astartes.pdf": "16b063d025c26b48e075fdde4961679c38afa2cedfcd104b764a45dbda5e0589",
+        "layers/integration/nemesis-claw/nemesis-claw-faction-rule-in-midnight-clad.pdf": "fcb60b740b1ecfca90bdb7553b0dbbf6d8d9694b9c0a131a1ed06ab7635f2747",
+        "layers/integration/nemesis-claw/nemesis-claw-firefight-ploy-death-to-the-false-emperor.pdf": "f5c03def766a81eca41db8cb5b2eb3449b19710bd2334596c4f9c431d302b7a3",
+        "layers/integration/nemesis-claw/nemesis-claw-firefight-ploy-dirty-fighter.pdf": "442976106284fa63d45ccbfa671d009289aeefe5bb160842ec12500fb27670c4",
+        "layers/integration/nemesis-claw/nemesis-claw-firefight-ploy-proclivity-for-murder.pdf": "8309b5c7713219bcbb34e2d989e5105c71d3ad7b99ee4701988ca542675bbaa3",
+        "layers/integration/nemesis-claw/nemesis-claw-firefight-ploy-vox-scream.pdf": "2ea41ad3baeea17fcf9e0c84e84320f5bcd265bce5b652a44859800a319e6dcf",
+        "layers/integration/nemesis-claw/nemesis-claw-operatives-selection-operative-selection.pdf": "39a4091c641f5e4324e1bc45625eb8cc835b04fe5db63ee05fb1dc891f6b463e",
+        "layers/integration/nemesis-claw/nemesis-claw-strategy-ploy-preysight.pdf": "ce9cfdd5b395ff73d69f6ceb601f9ac7180495b676f0344f170291199ccfa44b",
+        "layers/integration/nemesis-claw/nemesis-claw-strategy-ploy-return-to-darkness.pdf": "f19cedb2b24653da932dea82eeb84da3489453949b86e7d26225580e0bb058f5",
+        "layers/integration/nemesis-claw/nemesis-claw-strategy-ploy-the-black-hunt.pdf": "ec24494d7b44726d8210971e72a21060ecb967eea4f8b9211a0b9509de1118c0",
+        "layers/integration/nemesis-claw/nemesis-claw-strategy-ploy-we-have-come-for-you.pdf": "fb48b17a3d8868a01f478333cad11dc997ec678f3733c2d9cd6d44801d1bcec4",
+        "layers/integration/nemesis-claw/nemesis-claw-token-guide-token-guide.pdf": "dfa04e0d63b1593b45aa2b4cd35f306d244be1376063aad1d83acdb5b5160f59",
+        "layers/integration/nemesis-claw/card-backside/nemesis-claw-backside-portrait.jpg": "a609e89c0ec9df1a5fef297895dc36299543e0f599abc8a30a8efee0946cdf62",
+        "config/defaults/card-backside/default-backside-portrait.jpg": "f00ff15fa70005b9f804de08519e2e83485d7eaf78dfacea65dcef0eb1a29c22",
+        "layers/integration/nemesis-claw/card-backside/nemesis-claw-backside-landscape.jpg": "016b69cf309da6be099f1d5f608947b4f00f105729ae14cbc6f4871104dd6e52",
+        "config/defaults/card-backside/default-backside-landscape.jpg": "1cf5580a1dff0c10adb1a286edad4479c487f3d2d698b0b8be84fe653039fd7e"
+      }
+    },
+    "extract_stats": {
+      "outputs": {
+        "team-data.json": {
+          "path": "output/nemesis-claw/data/nemesis-claw-team-data.json",
+          "hash": "ee0016e3078fc5805ac6a85d91420830678b0a3e95bec195d68c8c5c5f2f358b",
+          "modified": "2026-07-07T07:29:45.073277+00:00"
+        }
+      },
+      "completed": "2026-07-07T07:29:45.073704+00:00",
+      "inputs": {
+        "layers/integration/nemesis-claw/content/nemesis-claw-content.json": "ee0016e3078fc5805ac6a85d91420830678b0a3e95bec195d68c8c5c5f2f358b"
+      }
+    },
+    "generate_tts": {
+      "outputs": {
+        "tts_objects/Nemesis Claw Box.json": {
+          "path": "output/nemesis-claw/tts_objects/Nemesis Claw Box.json",
+          "hash": "80ef710e72db635df87bd289de41f0cf2ac160fd1d83237c2e4f01184ac0bc67",
+          "modified": "2026-07-07T07:30:00.711482+00:00"
+        },
+        "tts_objects/Nemesis Claw.json": {
+          "path": "output/nemesis-claw/tts_objects/Nemesis Claw.json",
+          "hash": "e1b0455e73196a76f024414bf63310641ab0f91a41452bec140aaf7d431daf98",
+          "modified": "2026-07-07T07:30:00.720853+00:00"
+        }
+      },
+      "completed": "2026-07-07T07:30:00.760404+00:00",
+      "inputs": {
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "config/team-guids.json": "1dea0eaf2c7d1c37c86aba088cdf876f0638d2dcaca162888fea8422c2d5c9db",
+        "output/nemesis-claw/cards/datacards/night-lord-fearmonger-back.jpg": "3b65f0a0ba2aa638a981a7fa59f0ab1b0e7d2dffac803902322fe11bdcaea399",
+        "output/nemesis-claw/cards/datacards/night-lord-fearmonger-front.jpg": "0189a758cd8d24b7b2b53ec6a679c9c0a5ded7592ba7e8e71e51365f9e5f5902",
+        "output/nemesis-claw/cards/datacards/night-lord-gunner-back.jpg": "016b69cf309da6be099f1d5f608947b4f00f105729ae14cbc6f4871104dd6e52",
+        "output/nemesis-claw/cards/datacards/night-lord-gunner-front.jpg": "b6703ca1561a03496268a88d6fcc209b7e1c96bb2d439702b38b18da1a80e17b",
+        "output/nemesis-claw/cards/datacards/night-lord-heavy-gunner-back.jpg": "016b69cf309da6be099f1d5f608947b4f00f105729ae14cbc6f4871104dd6e52",
+        "output/nemesis-claw/cards/datacards/night-lord-heavy-gunner-front.jpg": "7c0e1932891e2ab4d0f6c17a8e958faf51ce02bddaba630d1d21e249428fb155",
+        "output/nemesis-claw/cards/datacards/night-lord-screecher-back.jpg": "016b69cf309da6be099f1d5f608947b4f00f105729ae14cbc6f4871104dd6e52",
+        "output/nemesis-claw/cards/datacards/night-lord-screecher-front.jpg": "bf46d9e9b19fd110e72a6937df62614be36b3e831e28c91e42fcbc721ec85b34",
+        "output/nemesis-claw/cards/datacards/night-lord-skinthief-back.jpg": "016b69cf309da6be099f1d5f608947b4f00f105729ae14cbc6f4871104dd6e52",
+        "output/nemesis-claw/cards/datacards/night-lord-skinthief-front.jpg": "418e417a15303630d71a25cef87e01b48178ad7830439adb6804f13fe981e9c1",
+        "output/nemesis-claw/cards/datacards/night-lord-ventrilokar-back.jpg": "016b69cf309da6be099f1d5f608947b4f00f105729ae14cbc6f4871104dd6e52",
+        "output/nemesis-claw/cards/datacards/night-lord-ventrilokar-front.jpg": "8af9b5b0942e365eacac2e984027a72f774dddec6cfb29df38e6ba8023a6439e",
+        "output/nemesis-claw/cards/datacards/night-lord-visionary-back.jpg": "a7a05180c245dd667ae318333bdb79f49a59b874fbc8d5ee5f191f383522e438",
+        "output/nemesis-claw/cards/datacards/night-lord-visionary-front.jpg": "f5d94bf644e45730893f18c477c96e86fe032b1b8a9707df08a2e4684b2e540c",
+        "output/nemesis-claw/cards/datacards/night-lord-warrior-back.jpg": "016b69cf309da6be099f1d5f608947b4f00f105729ae14cbc6f4871104dd6e52",
+        "output/nemesis-claw/cards/datacards/night-lord-warrior-front.jpg": "88b1e3eed96c37ceb0fcc8d64dbd511845a4683f1526b2406c11bf96f74223e5",
+        "output/nemesis-claw/cards/equipment/nemesis-claw-chain-snare-back.jpg": "a609e89c0ec9df1a5fef297895dc36299543e0f599abc8a30a8efee0946cdf62",
+        "output/nemesis-claw/cards/equipment/nemesis-claw-chain-snare-front.jpg": "b30bfa48088c661426bc6c94534c47c05c28979960a080334e8950d6442b08f8",
+        "output/nemesis-claw/cards/equipment/nemesis-claw-comms-jammers-back.jpg": "a609e89c0ec9df1a5fef297895dc36299543e0f599abc8a30a8efee0946cdf62",
+        "output/nemesis-claw/cards/equipment/nemesis-claw-comms-jammers-front.jpg": "497303c7d795a96a15ebf14bfd08944130e073457f134dd985573cf61bcc9d5c",
+        "output/nemesis-claw/cards/equipment/nemesis-claw-flayed-skin-back.jpg": "a609e89c0ec9df1a5fef297895dc36299543e0f599abc8a30a8efee0946cdf62",
+        "output/nemesis-claw/cards/equipment/nemesis-claw-flayed-skin-front.jpg": "45c146ed44c006bbb6ce94d30ab4af140cc44dc403d3905fe66627ab8510f703",
+        "output/nemesis-claw/cards/equipment/nemesis-claw-grisly-trophy-back.jpg": "a609e89c0ec9df1a5fef297895dc36299543e0f599abc8a30a8efee0946cdf62",
+        "output/nemesis-claw/cards/equipment/nemesis-claw-grisly-trophy-front.jpg": "9a7cd987527b9099bf287b617f232b1272302dc52a56bdaacf11a7a50e903b69",
+        "output/nemesis-claw/cards/faction_rules/nemesis-claw-astartes-back.jpg": "a609e89c0ec9df1a5fef297895dc36299543e0f599abc8a30a8efee0946cdf62",
+        "output/nemesis-claw/cards/faction_rules/nemesis-claw-astartes-front.jpg": "c72911bd15e0c8ac9c58a6c9345f1d9a6aa70e19468920bd1c89544844da01a8",
+        "output/nemesis-claw/cards/faction_rules/nemesis-claw-in-midnight-clad-back.jpg": "a609e89c0ec9df1a5fef297895dc36299543e0f599abc8a30a8efee0946cdf62",
+        "output/nemesis-claw/cards/faction_rules/nemesis-claw-in-midnight-clad-front.jpg": "66f5e4a414f351f979f77c7ea2f1ef3b203159f141927f95d0d19c5a563ecb3d",
+        "output/nemesis-claw/cards/firefight_ploys/nemesis-claw-death-to-the-false-emperor-back.jpg": "a609e89c0ec9df1a5fef297895dc36299543e0f599abc8a30a8efee0946cdf62",
+        "output/nemesis-claw/cards/firefight_ploys/nemesis-claw-death-to-the-false-emperor-front.jpg": "f6bdc4bfd67a0de8720571996e00c373bcc31f17725a4b6fba9df823bca2c0da",
+        "output/nemesis-claw/cards/firefight_ploys/nemesis-claw-dirty-fighter-back.jpg": "a609e89c0ec9df1a5fef297895dc36299543e0f599abc8a30a8efee0946cdf62",
+        "output/nemesis-claw/cards/firefight_ploys/nemesis-claw-dirty-fighter-front.jpg": "78835ebfa9c0a5f7244d8a11da9b44c62e2e4ee264b065b92a93aa07cf44cf18",
+        "output/nemesis-claw/cards/firefight_ploys/nemesis-claw-proclivity-for-murder-back.jpg": "a609e89c0ec9df1a5fef297895dc36299543e0f599abc8a30a8efee0946cdf62",
+        "output/nemesis-claw/cards/firefight_ploys/nemesis-claw-proclivity-for-murder-front.jpg": "580bb35b21b1d644f83ced3d23cd06053e4fd822c86a295fe8f3ac0cae265d05",
+        "output/nemesis-claw/cards/firefight_ploys/nemesis-claw-vox-scream-back.jpg": "a609e89c0ec9df1a5fef297895dc36299543e0f599abc8a30a8efee0946cdf62",
+        "output/nemesis-claw/cards/firefight_ploys/nemesis-claw-vox-scream-front.jpg": "30b605ade59a985501d1919f47291d070a28f6f72158b4df199fb35042d9b808",
+        "output/nemesis-claw/cards/operatives_selection/nemesis-claw-operative-selection-back.jpg": "d0b9e70796f44b8e0d0acf1b7ceb0407a38de1b22a5550724f41df506e8b3fed",
+        "output/nemesis-claw/cards/operatives_selection/nemesis-claw-operative-selection-front.jpg": "b13bdad77dedd7b1e9ec2b0efbd086b9d43947d52aee186aa23158d41b06f703",
+        "output/nemesis-claw/cards/strategy_ploys/nemesis-claw-preysight-back.jpg": "a609e89c0ec9df1a5fef297895dc36299543e0f599abc8a30a8efee0946cdf62",
+        "output/nemesis-claw/cards/strategy_ploys/nemesis-claw-preysight-front.jpg": "c7021a898372e36cdd978b5b420c02d561b54d27051d608e0402de42ac9bf1ee",
+        "output/nemesis-claw/cards/strategy_ploys/nemesis-claw-return-to-darkness-back.jpg": "a609e89c0ec9df1a5fef297895dc36299543e0f599abc8a30a8efee0946cdf62",
+        "output/nemesis-claw/cards/strategy_ploys/nemesis-claw-return-to-darkness-front.jpg": "9bf659ff1d3e2ea2653361ad0d34a5f77d443ab3d36ba962ef7eaea007341a8f",
+        "output/nemesis-claw/cards/strategy_ploys/nemesis-claw-the-black-hunt-back.jpg": "a609e89c0ec9df1a5fef297895dc36299543e0f599abc8a30a8efee0946cdf62",
+        "output/nemesis-claw/cards/strategy_ploys/nemesis-claw-the-black-hunt-front.jpg": "46a4e13549a0c7554faedf7658967e9524d7fbaf1b97e94ccd3802b4315a95ca",
+        "output/nemesis-claw/cards/strategy_ploys/nemesis-claw-we-have-come-for-you-back.jpg": "a609e89c0ec9df1a5fef297895dc36299543e0f599abc8a30a8efee0946cdf62",
+        "output/nemesis-claw/cards/strategy_ploys/nemesis-claw-we-have-come-for-you-front.jpg": "9376265b5d6a0f28c356ed2a0faf887a8ae4d79ea9642b51886dc82719e22431",
+        "output/nemesis-claw/cards/token_guide/nemesis-claw-token-guide-back.jpg": "a609e89c0ec9df1a5fef297895dc36299543e0f599abc8a30a8efee0946cdf62",
+        "output/nemesis-claw/cards/token_guide/nemesis-claw-token-guide-front.jpg": "b8381d02fcd9c91dc121cca1e55d77b0077e7f502fb65b409a5de7f473f80fab",
+        "output/nemesis-claw/cardbox/nemesis-claw-card-box-texture.jpg": "929a571553772e830ddfd54f866919da37c7616b01a7f81f7bd6844ec243fc4c",
+        "output/nemesis-claw/cardbox/nemesis-claw-card-box.obj": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+        "output/nemesis-claw/tokens/nemesis-claw-disconcerting-mimicry.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/nemesis-claw/tokens/nemesis-claw-disconcerting-mimicry.png": "6ab2a7d45a40fc589a9c29798079ac1078c5650720e4930bc31a4196ff9b456a",
+        "output/nemesis-claw/tokens/nemesis-claw-flay-them-alive.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/nemesis-claw/tokens/nemesis-claw-flay-them-alive.png": "39a28bafad6c72a012a2d908dbdc26a390a0dab4308be4b3853b1ddbd959955b",
+        "output/nemesis-claw/tokens/nemesis-claw-grisly-trophy.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/nemesis-claw/tokens/nemesis-claw-grisly-trophy.png": "054eb39af7a2c0be0615ea69521f0eb0593e800353f43fcb0d939b9a77d75fbd",
+        "output/nemesis-claw/tokens/nemesis-claw-nemexix-claw-prescience-points.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/nemesis-claw/tokens/nemesis-claw-nemexix-claw-prescience-points.png": "81a295480289ce5413bc817cb18e46797f2bba4fba9d939166b33e1879ebd08f",
+        "output/nemesis-claw/tokens/nemesis-claw-poison-objective.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/nemesis-claw/tokens/nemesis-claw-poison-objective.png": "971f1b2ab013c73740f24c5a8ca275be12fd607d2d27557508d1ab967aaa1f0f",
+        "output/nemesis-claw/tokens/nemesis-claw-portent.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/nemesis-claw/tokens/nemesis-claw-portent.png": "23c13a820856484d6e70132a1b82fcfa42f84f32a14c58368e94269c28abff18",
+        "output/nemesis-claw/tokens/nemesis-claw-terrorchem.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/nemesis-claw/tokens/nemesis-claw-terrorchem.png": "299c5fa60a7167a5479e52839ee84c321075cff4c3701bd80a930619f1e7717b",
+        "output/nemesis-claw/tokens/tokenbag/nemesis-claw-token-bag-icon.png": "8b64f7a0b4d8e5eb6ba594f1580ce2c512c213a96289a2846416da1d2502838a",
+        "output/nemesis-claw/tokens/tokenbag/nemesis-claw-token-bag.obj": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+        "output/nemesis-claw/dice/nemesis-claw-dice-dark.jpg": "2e3cbe415ed9d59610b4c04206ee80026bee1380bce7041babdb0327a588e3b3",
+        "output/nemesis-claw/dice/nemesis-claw-dice-light.jpg": "759a55b30981cf9fd3fc43be88b45263f0f870eedb1b5dbf0266e2642f002406",
+        "output/nemesis-claw/dice/nemesis-claw-dice-team.jpg": "d635daea8154978898d679cd17db2e7eadc66abd7ccb5fae953d9bae5c08d41f",
+        "output/nemesis-claw/data/nemesis-claw-team-data.json": "ee0016e3078fc5805ac6a85d91420830678b0a3e95bec195d68c8c5c5f2f358b",
+        "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
+        "config/defaults/tts-script/datacard-load-stats.lua": "2d5f4088c2ff09f54988cf8722080f536b4e1b998cc2b4c1f1ea94e6b18eb92e",
+        "config/defaults/tts-script/display-table-manager-script.lua": "0dab4381078d90802f25e2cc825bc3658be35ee13ab3e98831c9d248c2526689",
+        "config/defaults/tts-script/faction-rule-chapter-tactics.lua": "c906742268076fb91f7cb4a92c6b588e1122ccddb692688f635c8dd4f7110ad0",
+        "config/defaults/tts-script/intermediate-updater.lua": "1a2d6dbc1a8c9c57ba6a3e7a3d4bc4b7a38a6c242a93f6ef3dae698123384d35",
+        "config/defaults/tts-script/single-object-updater.lua": "3613b85169e986a8e50ebe221482079e27c18037e3f48920aa0f7e138c0ccacc",
+        "config/defaults/tts-script/team-spawner-clean-script.lua": "12457bff3961eee2293c42d81cf4f4eb8b103177245a1ab8b46fd65da40672a2",
+        "config/defaults/tts-script/team-spawner-script.lua": "a51ff45c8622923db909fb465781801511f235412f099f83dff728d4027650db",
+        "config/defaults/tts-script/tts-update-rules-in-box-script.lua": "1eddd1803087ed63181a1149c856db77eef3196dc45d0d283693fada44a357dd",
+        "config/defaults/tts-image/default-icon.png": "892aff2628b9685c813e77be05c66afc1dc4247bc1dc9ce6fe54f006c2608271",
+        "config/defaults/tts-image/spawner-token.png": "61903b093f01d834f5e4c4c069b1353ecf7d29f012fef914b3027266816d8a6b",
+        "config/defaults/tts-token/square-bag-mesh.obj": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+        "config/defaults/tts-token/template-diamond-cutter.png": "719f57ba2b86494be454a6d3d25d8567dde974a915f3dde5ddc0e2d8dafaa1a5",
+        "config/defaults/tts-token/template-octagon-cutter.png": "944632aeacab978293ae57758b63086166c5fbaf3b845f48b3dd61db67d5c076",
+        "config/defaults/tts-token/template-operative-cutter.png": "0e698ddd403d7f0e84f200eb42af73f5249a9c5539d773298ff4c700ac9fe153",
+        "config/defaults/tts-token/template-round-cutter.png": "6564e1451c9a135a1c756fd94cde1c71e373e3fa677b51bba9d4bbe9e795d544",
+        "config/defaults/tts-token/token-bag-script.lua": "1659887e0fbfb9e3ebbc1aa5f3df8e1ffd89ee192be24d2dd1f02fcb0407e486",
+        "config/defaults/tts-token/token-bg-sample.png": "f9f90664c7f1c877c6f050f6e85babde6523cdc0aed9c77de8c09214f44ee109",
+        "config/defaults/tts-token/token-mesh.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc"
+      }
+    },
+    "front_end": {
+      "outputs": {},
+      "sources": {
+        "operatives-selection": {
+          "hash": "942c1f5a5bc7ecf467f14739f905580d98104cb6a6c2b2dea4120ac63ee418fd",
+          "outputs": [
+            "layers/kt-app/extracted/nemesis-claw/cards/operatives-selection/nemesis-claw-operatives-selection-page_0.pdf",
+            "layers/kt-app/extracted/nemesis-claw/cards/operatives-selection/nemesis-claw-operatives-selection-page_1.pdf"
+          ],
+          "modified": "2026-07-06T15:58:47.627185+00:00"
+        },
+        "equipment": {
+          "hash": "c0abe1f5c7a381d4a83d4b8b3e4f4bf6a7a5b47f2348d7e7512fd6e7628c4ddd",
+          "outputs": [
+            "layers/kt-app/extracted/nemesis-claw/cards/equipment/nemesis-claw-equipment-page_0.pdf",
+            "layers/kt-app/extracted/nemesis-claw/cards/equipment/nemesis-claw-equipment-page_1.pdf",
+            "layers/kt-app/extracted/nemesis-claw/cards/equipment/nemesis-claw-equipment-page_2.pdf",
+            "layers/kt-app/extracted/nemesis-claw/cards/equipment/nemesis-claw-equipment-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:00:17.629726+00:00"
+        },
+        "firefight-ploys": {
+          "hash": "852c96daacdff39fb72ebe82ed45e5ccfe45418a031860df9b452e391f992932",
+          "outputs": [
+            "layers/kt-app/extracted/nemesis-claw/cards/firefight-ploys/nemesis-claw-firefight-ploys-page_0.pdf",
+            "layers/kt-app/extracted/nemesis-claw/cards/firefight-ploys/nemesis-claw-firefight-ploys-page_1.pdf",
+            "layers/kt-app/extracted/nemesis-claw/cards/firefight-ploys/nemesis-claw-firefight-ploys-page_2.pdf",
+            "layers/kt-app/extracted/nemesis-claw/cards/firefight-ploys/nemesis-claw-firefight-ploys-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:05:19.981545+00:00"
+        },
+        "datacards": {
+          "hash": "e56ab3ad81c633fb894ea15dc3ed1ecea8d135634675fed7b6df02da93350b5d",
+          "outputs": [
+            "layers/kt-app/extracted/nemesis-claw/cards/datacards/nemesis-claw-datacards-page_0.pdf",
+            "layers/kt-app/extracted/nemesis-claw/cards/datacards/nemesis-claw-datacards-page_1.pdf",
+            "layers/kt-app/extracted/nemesis-claw/cards/datacards/nemesis-claw-datacards-page_2.pdf",
+            "layers/kt-app/extracted/nemesis-claw/cards/datacards/nemesis-claw-datacards-page_3.pdf",
+            "layers/kt-app/extracted/nemesis-claw/cards/datacards/nemesis-claw-datacards-page_4.pdf",
+            "layers/kt-app/extracted/nemesis-claw/cards/datacards/nemesis-claw-datacards-page_5.pdf",
+            "layers/kt-app/extracted/nemesis-claw/cards/datacards/nemesis-claw-datacards-page_6.pdf",
+            "layers/kt-app/extracted/nemesis-claw/cards/datacards/nemesis-claw-datacards-page_7.pdf",
+            "layers/kt-app/extracted/nemesis-claw/cards/datacards/nemesis-claw-datacards-page_8.pdf",
+            "layers/kt-app/extracted/nemesis-claw/cards/datacards/nemesis-claw-datacards-page_9.pdf"
+          ],
+          "modified": "2026-07-06T16:12:25.242544+00:00"
+        },
+        "faction-rules": {
+          "hash": "cc6a785849c9a210205de967104734b502b87042146981211ba9f8ac2f5ecac3",
+          "outputs": [
+            "layers/kt-app/extracted/nemesis-claw/cards/faction-rules/nemesis-claw-faction-rules-page_0.pdf",
+            "layers/kt-app/extracted/nemesis-claw/cards/faction-rules/nemesis-claw-faction-rules-page_1.pdf",
+            "layers/kt-app/extracted/nemesis-claw/cards/faction-rules/nemesis-claw-faction-rules-page_2.pdf"
+          ],
+          "modified": "2026-07-06T16:12:27.996943+00:00"
+        },
+        "strategy-ploys": {
+          "hash": "5fae06430744a9064374b30a2b30afbaad6d6feac6c05379d531374b9fd5c5c0",
+          "outputs": [
+            "layers/kt-app/extracted/nemesis-claw/cards/strategy-ploys/nemesis-claw-strategy-ploys-page_0.pdf",
+            "layers/kt-app/extracted/nemesis-claw/cards/strategy-ploys/nemesis-claw-strategy-ploys-page_1.pdf",
+            "layers/kt-app/extracted/nemesis-claw/cards/strategy-ploys/nemesis-claw-strategy-ploys-page_2.pdf",
+            "layers/kt-app/extracted/nemesis-claw/cards/strategy-ploys/nemesis-claw-strategy-ploys-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:12:30.973178+00:00"
+        },
+        "cards": {
+          "hash": "2d966bb9fdaafb462586d735897c253174f75fa8de43d70c8a68229afff3e139",
+          "outputs": [
+            "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page01_card1_landscape.pdf",
+            "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page01_card2_landscape.pdf",
+            "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page01_card3_landscape.pdf",
+            "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page01_card4_landscape.pdf",
+            "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page02_card1_landscape.pdf",
+            "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page02_card2_landscape.pdf",
+            "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page02_card3_landscape.pdf",
+            "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page02_card4_landscape.pdf",
+            "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page03_card1_landscape.pdf",
+            "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page03_card2_landscape.pdf",
+            "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page03_card3_landscape.pdf",
+            "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page03_card4_landscape.pdf",
+            "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page04_card1_portrait.pdf",
+            "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page04_card2_portrait.pdf",
+            "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page04_card3_portrait.pdf",
+            "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page04_card4_portrait.pdf",
+            "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page05_card1_portrait.pdf",
+            "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page05_card2_portrait.pdf",
+            "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page05_card3_portrait.pdf",
+            "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page05_card4_portrait.pdf",
+            "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page06_card1_portrait.pdf",
+            "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page06_card2_portrait.pdf",
+            "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page06_card3_portrait.pdf",
+            "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page06_card4_portrait.pdf",
+            "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page07_card1_portrait.pdf",
+            "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page07_card2_portrait.pdf",
+            "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page07_card3_portrait.pdf",
+            "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page07_card4_portrait.pdf",
+            "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page08_card1_portrait.pdf",
+            "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page08_card2_portrait.pdf",
+            "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page08_card3_portrait.pdf",
+            "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page08_card4_portrait.pdf"
+          ],
+          "modified": "2026-07-06T20:23:52.339508+00:00"
+        }
+      },
+      "completed": "2026-07-06T20:23:52.339536+00:00"
+    },
+    "build_structure": {
+      "outputs": {
+        "structure": {
+          "path": "layers/warcom/structure/nemesis-claw-structure.json",
+          "hash": "c2d1ec610fec8c599b04353d228ab6a71883a41c702418b95e5922289cf9cbf5",
+          "modified": "2026-07-06T20:57:07.642666+00:00"
+        }
+      },
+      "inputs": {
+        "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page01_card1_landscape.pdf": "51b3822b690f18658b6b187cf9610b02439e4c09db4722c53bab97782c9a0efe",
+        "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page01_card2_landscape.pdf": "db762439c952c05e4f04976f1003cd7e19d4f1db8cc6fad63138d662627daae2",
+        "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page01_card3_landscape.pdf": "90c21b2d4c75c607152e605ec6c478e1c2e8ca4f111e4ec232690a430619a4de",
+        "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page01_card4_landscape.pdf": "d2fca28eb1e721c551c1631b52e0ed3788faeeac7625933c9c49bed8890a8b1d",
+        "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page02_card1_landscape.pdf": "96475ff378017ec7623bb1306f963443a9fd8fd6416df938bef51b9f9ee5e98e",
+        "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page02_card2_landscape.pdf": "1640cadc5acfa29f2db68038e9b064d4a0027f4d3f47b7a3b72d28a795954283",
+        "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page02_card3_landscape.pdf": "3ad8206cd3427fe63c5582a18290227602ed7e737aa0942450ee70416880ce5e",
+        "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page02_card4_landscape.pdf": "5a572ee0958108ab6fd55275a7622baa7d7788ebb5a8883a9cb58e7c1a05d0d9",
+        "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page03_card1_landscape.pdf": "1b7547ad8d5ffd6293cc0afcc32bc49621bf338efd40eb26d4a7021804aef97c",
+        "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page03_card2_landscape.pdf": "a895a38b8115a9bc055fc3adf3d2d27d2c635e4995395d2a04f7a98f008e13f7",
+        "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page03_card3_landscape.pdf": "28b896ae819917990c295426fea46e9026ceb6d2385b19b2f93e486107ad41cb",
+        "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page03_card4_landscape.pdf": "18377806c4f31a2b41c7f7148d787117e02962e7dff1ce4df43517281bf2b6bc",
+        "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page04_card1_portrait.pdf": "2a4c123065cb9a2fb0ea8d9f4073c4d7132567bd640bab0d095d02b8bbbe79a2",
+        "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page04_card2_portrait.pdf": "f708c3cdc16a540b477b7fd056a62e943a84c1cd7aa9a3d8387aee2b4e1150c0",
+        "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page04_card3_portrait.pdf": "6091edde1cea5822ba6c4ccb1cd4977c21bf0be4fd1fbcab9183f539a71c2607",
+        "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page04_card4_portrait.pdf": "749df51904db6d7bfd3d71497e9b0e4c980e1042e4928ff0cb596b15b64ac119",
+        "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page05_card1_portrait.pdf": "7e6cd57a53fe824afbceadc5003c730fccd8dd6f3f2197271643e5e57dd6b124",
+        "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page05_card2_portrait.pdf": "a898d59e0086f7d45b2460149fa7d13504793c292aeed5a926b1f05a26a0678a",
+        "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page05_card3_portrait.pdf": "c1eb926bcf8559a946966b598fc19b4da77140799244bfb609d471cc2521ae65",
+        "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page05_card4_portrait.pdf": "8b99480ac3a411ad40724905245a184ac984ad8e439b938184ffe810627aa4eb",
+        "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page06_card1_portrait.pdf": "14597b700f51d3a86c236356cdd030bcdcf7be7aa2e68e7799dd0b5ea1a6ca53",
+        "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page06_card2_portrait.pdf": "0c804e0c0e0c53fc3b059218cca375557777c1ade255ff0a7405b95b258de2dc",
+        "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page06_card3_portrait.pdf": "f9c7df71eb84c70c528b193a12f083dc56ff60be1b3c735374064c05a4cca62e",
+        "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page06_card4_portrait.pdf": "eb4b148accfb61620a25d5e5be20fee6eee22e85e3de5421c8a8a10abf992f08",
+        "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page07_card1_portrait.pdf": "0cfc9104c8a4d1c2910a972ca9e866c488ca86c051f9c6aa2803d50e872f73cc",
+        "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page07_card2_portrait.pdf": "e7be2969da2a6674dc456be29fb9912fb785bf5cf87be0cac3be43a190f07346",
+        "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page07_card3_portrait.pdf": "be03eb4f4c76dc715a22d8640a8dcef2a35f98a1642fb4bc32b365226ae67e6e",
+        "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page07_card4_portrait.pdf": "70bc6e4e90d121e45f0bb7c658c394a9026b3bf576cc46f7549a6cf172a4534c",
+        "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page08_card1_portrait.pdf": "ea51c83ec18e8404fcbe46843625a127cdf6092b3969716f829d2cf7cec3940a",
+        "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page08_card2_portrait.pdf": "58e712afa135e97df991d9fc3101bb1ba9f4aa93474faecade8f3dd9efb236cb",
+        "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page08_card3_portrait.pdf": "c0ae9c99344305de974caf355f6ab414bf0e76fef8e8a07102f5b8e6a419d7f1",
+        "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page08_card4_portrait.pdf": "ae3605b9e55f365bab4eee0ee5ec4033fa03a480a9e092c0d0ea362ec38e1857"
+      },
+      "completed": "2026-07-06T20:57:07.674461+00:00"
+    },
+    "integrate_classified": {
+      "outputs": {
+        "manifest.json": {
+          "path": "layers/integration/nemesis-claw/manifest.json",
+          "hash": "c2d1ec610fec8c599b04353d228ab6a71883a41c702418b95e5922289cf9cbf5",
+          "modified": "2026-07-06T20:57:44.223630+00:00"
+        },
+        "nemesis-claw-datacard-night-lord-visionary.pdf": {
+          "path": "layers/integration/nemesis-claw/nemesis-claw-datacard-night-lord-visionary.pdf",
+          "hash": "ec74c7b1a6edd751cdfcfd60d03589773a1ab25d829bbdf741448e4b0f018a43",
+          "modified": "2026-07-06T20:57:44.236421+00:00"
+        },
+        "nemesis-claw-datacard-night-lord-fearmonger.pdf": {
+          "path": "layers/integration/nemesis-claw/nemesis-claw-datacard-night-lord-fearmonger.pdf",
+          "hash": "2ddff81fc37590f786db913eb989f6766047589914cc18ab34d2276e6a9a6b32",
+          "modified": "2026-07-06T20:57:44.247679+00:00"
+        },
+        "nemesis-claw-datacard-night-lord-gunner.pdf": {
+          "path": "layers/integration/nemesis-claw/nemesis-claw-datacard-night-lord-gunner.pdf",
+          "hash": "b68b3da62d91f84a6fec9ea51f98c828e01323c8c41c2a4901e13a5b26a06c96",
+          "modified": "2026-07-06T20:57:44.259164+00:00"
+        },
+        "nemesis-claw-datacard-night-lord-heavy-gunner.pdf": {
+          "path": "layers/integration/nemesis-claw/nemesis-claw-datacard-night-lord-heavy-gunner.pdf",
+          "hash": "1e76862400607369798e6890cd1afddfb7ed6efe7e1fdc589e111e5ba02061ad",
+          "modified": "2026-07-06T20:57:44.271358+00:00"
+        },
+        "nemesis-claw-datacard-night-lord-screecher.pdf": {
+          "path": "layers/integration/nemesis-claw/nemesis-claw-datacard-night-lord-screecher.pdf",
+          "hash": "9d1b62b8db378ba1fee3b87b68c6b48976533b026e664a11ac56145bad9fffc1",
+          "modified": "2026-07-06T20:57:44.281508+00:00"
+        },
+        "nemesis-claw-datacard-night-lord-skinthief.pdf": {
+          "path": "layers/integration/nemesis-claw/nemesis-claw-datacard-night-lord-skinthief.pdf",
+          "hash": "be37bd73ddf622ff4d7c116edfb44d32bf9c7f9591ec0ca0989efc176a80188d",
+          "modified": "2026-07-06T20:57:44.292074+00:00"
+        },
+        "nemesis-claw-datacard-night-lord-ventrilokar.pdf": {
+          "path": "layers/integration/nemesis-claw/nemesis-claw-datacard-night-lord-ventrilokar.pdf",
+          "hash": "ed5ca65fddfe3036f34f257d2e5036f776078bfbc00ea1e6222ed5d638664e71",
+          "modified": "2026-07-06T20:57:44.302875+00:00"
+        },
+        "nemesis-claw-datacard-night-lord-warrior.pdf": {
+          "path": "layers/integration/nemesis-claw/nemesis-claw-datacard-night-lord-warrior.pdf",
+          "hash": "4b346fb330d6e9105de0a1a27ab74679459e92bcaa583d2db169cf13916dec08",
+          "modified": "2026-07-06T20:57:44.316142+00:00"
+        },
+        "nemesis-claw-equipment-flayed-skin.pdf": {
+          "path": "layers/integration/nemesis-claw/nemesis-claw-equipment-flayed-skin.pdf",
+          "hash": "7bcec0bbfbe992fcb4b54ad12d3f3cd2e8d94e3e3a20111c07b6340dad0af954",
+          "modified": "2026-07-06T20:57:44.337256+00:00"
+        },
+        "nemesis-claw-equipment-chain-snare.pdf": {
+          "path": "layers/integration/nemesis-claw/nemesis-claw-equipment-chain-snare.pdf",
+          "hash": "b472d1551873aa873a3eb534b1e36d2c2acdd526f37f9835e699b4c157a43e84",
+          "modified": "2026-07-06T20:57:44.358182+00:00"
+        },
+        "nemesis-claw-equipment-grisly-trophy.pdf": {
+          "path": "layers/integration/nemesis-claw/nemesis-claw-equipment-grisly-trophy.pdf",
+          "hash": "f7beaaf7f78af44fa457ff3d0ce479a00f1850091c1cd895fbc091db9ce7e1ba",
+          "modified": "2026-07-06T20:57:44.379023+00:00"
+        },
+        "nemesis-claw-equipment-comms-jammers.pdf": {
+          "path": "layers/integration/nemesis-claw/nemesis-claw-equipment-comms-jammers.pdf",
+          "hash": "71021187740a25d613116a39a2d66be85eab67cb9d34278055a78654c2008cc0",
+          "modified": "2026-07-06T20:57:44.400945+00:00"
+        },
+        "nemesis-claw-faction-rule-astartes.pdf": {
+          "path": "layers/integration/nemesis-claw/nemesis-claw-faction-rule-astartes.pdf",
+          "hash": "16b063d025c26b48e075fdde4961679c38afa2cedfcd104b764a45dbda5e0589",
+          "modified": "2026-07-06T20:57:44.411596+00:00"
+        },
+        "nemesis-claw-faction-rule-in-midnight-clad.pdf": {
+          "path": "layers/integration/nemesis-claw/nemesis-claw-faction-rule-in-midnight-clad.pdf",
+          "hash": "fcb60b740b1ecfca90bdb7553b0dbbf6d8d9694b9c0a131a1ed06ab7635f2747",
+          "modified": "2026-07-06T20:57:44.422783+00:00"
+        },
+        "nemesis-claw-token-guide-token-guide.pdf": {
+          "path": "layers/integration/nemesis-claw/nemesis-claw-token-guide-token-guide.pdf",
+          "hash": "dfa04e0d63b1593b45aa2b4cd35f306d244be1376063aad1d83acdb5b5160f59",
+          "modified": "2026-07-06T20:57:44.445031+00:00"
+        },
+        "nemesis-claw-firefight-ploy-vox-scream.pdf": {
+          "path": "layers/integration/nemesis-claw/nemesis-claw-firefight-ploy-vox-scream.pdf",
+          "hash": "2ea41ad3baeea17fcf9e0c84e84320f5bcd265bce5b652a44859800a319e6dcf",
+          "modified": "2026-07-06T20:57:44.474231+00:00"
+        },
+        "nemesis-claw-firefight-ploy-death-to-the-false-emperor.pdf": {
+          "path": "layers/integration/nemesis-claw/nemesis-claw-firefight-ploy-death-to-the-false-emperor.pdf",
+          "hash": "f5c03def766a81eca41db8cb5b2eb3449b19710bd2334596c4f9c431d302b7a3",
+          "modified": "2026-07-06T20:57:44.493308+00:00"
+        },
+        "nemesis-claw-firefight-ploy-proclivity-for-murder.pdf": {
+          "path": "layers/integration/nemesis-claw/nemesis-claw-firefight-ploy-proclivity-for-murder.pdf",
+          "hash": "8309b5c7713219bcbb34e2d989e5105c71d3ad7b99ee4701988ca542675bbaa3",
+          "modified": "2026-07-06T20:57:44.512967+00:00"
+        },
+        "nemesis-claw-firefight-ploy-dirty-fighter.pdf": {
+          "path": "layers/integration/nemesis-claw/nemesis-claw-firefight-ploy-dirty-fighter.pdf",
+          "hash": "442976106284fa63d45ccbfa671d009289aeefe5bb160842ec12500fb27670c4",
+          "modified": "2026-07-06T20:57:44.533242+00:00"
+        },
+        "nemesis-claw-operatives-selection-operative-selection.pdf": {
+          "path": "layers/integration/nemesis-claw/nemesis-claw-operatives-selection-operative-selection.pdf",
+          "hash": "39a4091c641f5e4324e1bc45625eb8cc835b04fe5db63ee05fb1dc891f6b463e",
+          "modified": "2026-07-06T20:57:44.547010+00:00"
+        },
+        "nemesis-claw-strategy-ploy-we-have-come-for-you.pdf": {
+          "path": "layers/integration/nemesis-claw/nemesis-claw-strategy-ploy-we-have-come-for-you.pdf",
+          "hash": "fb48b17a3d8868a01f478333cad11dc997ec678f3733c2d9cd6d44801d1bcec4",
+          "modified": "2026-07-06T20:57:44.571433+00:00"
+        },
+        "nemesis-claw-strategy-ploy-the-black-hunt.pdf": {
+          "path": "layers/integration/nemesis-claw/nemesis-claw-strategy-ploy-the-black-hunt.pdf",
+          "hash": "ec24494d7b44726d8210971e72a21060ecb967eea4f8b9211a0b9509de1118c0",
+          "modified": "2026-07-06T20:57:44.596410+00:00"
+        },
+        "nemesis-claw-strategy-ploy-preysight.pdf": {
+          "path": "layers/integration/nemesis-claw/nemesis-claw-strategy-ploy-preysight.pdf",
+          "hash": "ce9cfdd5b395ff73d69f6ceb601f9ac7180495b676f0344f170291199ccfa44b",
+          "modified": "2026-07-06T20:57:44.620988+00:00"
+        },
+        "nemesis-claw-strategy-ploy-return-to-darkness.pdf": {
+          "path": "layers/integration/nemesis-claw/nemesis-claw-strategy-ploy-return-to-darkness.pdf",
+          "hash": "f19cedb2b24653da932dea82eeb84da3489453949b86e7d26225580e0bb058f5",
+          "modified": "2026-07-06T20:57:44.640973+00:00"
+        }
+      },
+      "inputs": {
+        "layers/warcom/structure/nemesis-claw-structure.json": "c2d1ec610fec8c599b04353d228ab6a71883a41c702418b95e5922289cf9cbf5",
+        "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page01_card1_landscape.pdf": "51b3822b690f18658b6b187cf9610b02439e4c09db4722c53bab97782c9a0efe",
+        "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page01_card2_landscape.pdf": "db762439c952c05e4f04976f1003cd7e19d4f1db8cc6fad63138d662627daae2",
+        "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page01_card3_landscape.pdf": "90c21b2d4c75c607152e605ec6c478e1c2e8ca4f111e4ec232690a430619a4de",
+        "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page01_card4_landscape.pdf": "d2fca28eb1e721c551c1631b52e0ed3788faeeac7625933c9c49bed8890a8b1d",
+        "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page02_card1_landscape.pdf": "96475ff378017ec7623bb1306f963443a9fd8fd6416df938bef51b9f9ee5e98e",
+        "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page02_card2_landscape.pdf": "1640cadc5acfa29f2db68038e9b064d4a0027f4d3f47b7a3b72d28a795954283",
+        "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page02_card3_landscape.pdf": "3ad8206cd3427fe63c5582a18290227602ed7e737aa0942450ee70416880ce5e",
+        "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page02_card4_landscape.pdf": "5a572ee0958108ab6fd55275a7622baa7d7788ebb5a8883a9cb58e7c1a05d0d9",
+        "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page03_card1_landscape.pdf": "1b7547ad8d5ffd6293cc0afcc32bc49621bf338efd40eb26d4a7021804aef97c",
+        "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page03_card2_landscape.pdf": "a895a38b8115a9bc055fc3adf3d2d27d2c635e4995395d2a04f7a98f008e13f7",
+        "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page07_card2_portrait.pdf": "e7be2969da2a6674dc456be29fb9912fb785bf5cf87be0cac3be43a190f07346",
+        "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page07_card3_portrait.pdf": "be03eb4f4c76dc715a22d8640a8dcef2a35f98a1642fb4bc32b365226ae67e6e",
+        "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page07_card4_portrait.pdf": "70bc6e4e90d121e45f0bb7c658c394a9026b3bf576cc46f7549a6cf172a4534c",
+        "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page08_card1_portrait.pdf": "ea51c83ec18e8404fcbe46843625a127cdf6092b3969716f829d2cf7cec3940a",
+        "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page04_card3_portrait.pdf": "6091edde1cea5822ba6c4ccb1cd4977c21bf0be4fd1fbcab9183f539a71c2607",
+        "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page04_card4_portrait.pdf": "749df51904db6d7bfd3d71497e9b0e4c980e1042e4928ff0cb596b15b64ac119",
+        "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page05_card1_portrait.pdf": "7e6cd57a53fe824afbceadc5003c730fccd8dd6f3f2197271643e5e57dd6b124",
+        "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page06_card2_portrait.pdf": "0c804e0c0e0c53fc3b059218cca375557777c1ade255ff0a7405b95b258de2dc",
+        "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page06_card3_portrait.pdf": "f9c7df71eb84c70c528b193a12f083dc56ff60be1b3c735374064c05a4cca62e",
+        "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page06_card4_portrait.pdf": "eb4b148accfb61620a25d5e5be20fee6eee22e85e3de5421c8a8a10abf992f08",
+        "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page07_card1_portrait.pdf": "0cfc9104c8a4d1c2910a972ca9e866c488ca86c051f9c6aa2803d50e872f73cc",
+        "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page04_card1_portrait.pdf": "2a4c123065cb9a2fb0ea8d9f4073c4d7132567bd640bab0d095d02b8bbbe79a2",
+        "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page04_card2_portrait.pdf": "f708c3cdc16a540b477b7fd056a62e943a84c1cd7aa9a3d8387aee2b4e1150c0",
+        "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page05_card2_portrait.pdf": "a898d59e0086f7d45b2460149fa7d13504793c292aeed5a926b1f05a26a0678a",
+        "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page05_card3_portrait.pdf": "c1eb926bcf8559a946966b598fc19b4da77140799244bfb609d471cc2521ae65",
+        "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page05_card4_portrait.pdf": "8b99480ac3a411ad40724905245a184ac984ad8e439b938184ffe810627aa4eb",
+        "layers/warcom/extracted/nemesis-claw/cards/nemesis-claw_page06_card1_portrait.pdf": "14597b700f51d3a86c236356cdd030bcdcf7be7aa2e68e7799dd0b5ea1a6ca53"
+      },
+      "completed": "2026-07-06T20:57:44.670516+00:00"
+    },
+    "extract_artwork": {
+      "outputs": {},
+      "sources": {
+        "artwork": {
+          "hash": "2d966bb9fdaafb462586d735897c253174f75fa8de43d70c8a68229afff3e139",
+          "outputs": [
+            "layers/integration/nemesis-claw/artwork/nemesis-claw-artwork-01.jpeg",
+            "layers/integration/nemesis-claw/artwork/nemesis-claw-artwork-02.jpeg",
+            "layers/integration/nemesis-claw/artwork/nemesis-claw-artwork-03.jpeg",
+            "layers/integration/nemesis-claw/artwork/nemesis-claw-artwork-03.png",
+            "layers/integration/nemesis-claw/artwork/nemesis-claw-artwork-04.jpeg",
+            "layers/integration/nemesis-claw/artwork/nemesis-claw-artwork-05.jpeg",
+            "layers/integration/nemesis-claw/artwork/nemesis-claw-artwork-06.jpeg",
+            "layers/integration/nemesis-claw/artwork/nemesis-claw-artwork-06.png",
+            "layers/integration/nemesis-claw/artwork/nemesis-claw-artwork-07.jpeg",
+            "layers/integration/nemesis-claw/artwork/nemesis-claw-artwork-08.jpeg",
+            "layers/integration/nemesis-claw/artwork/nemesis-claw-artwork-09.jpeg",
+            "layers/integration/nemesis-claw/artwork/nemesis-claw-artwork-10.jpeg",
+            "layers/integration/nemesis-claw/artwork/nemesis-claw-artwork-11.jpeg",
+            "layers/integration/nemesis-claw/artwork/nemesis-claw-artwork-12.jpeg",
+            "layers/integration/nemesis-claw/artwork/nemesis-claw-artwork-13.jpeg",
+            "layers/integration/nemesis-claw/artwork/nemesis-claw-artwork-14.jpeg",
+            "layers/integration/nemesis-claw/artwork/nemesis-claw-artwork-15.jpeg",
+            "layers/integration/nemesis-claw/artwork/nemesis-claw-artwork-16.jpeg",
+            "layers/integration/nemesis-claw/artwork/nemesis-claw-artwork-17.jpeg",
+            "layers/integration/nemesis-claw/artwork/nemesis-claw-artwork-18.jpeg",
+            "layers/integration/nemesis-claw/artwork/nemesis-claw-artwork-19.jpeg",
+            "layers/integration/nemesis-claw/artwork/nemesis-claw-artwork-20.jpeg",
+            "layers/integration/nemesis-claw/artwork/nemesis-claw-artwork-21.jpeg",
+            "layers/integration/nemesis-claw/artwork/nemesis-claw-artwork-22.jpeg",
+            "layers/integration/nemesis-claw/artwork/nemesis-claw-artwork-23.jpeg",
+            "layers/integration/nemesis-claw/artwork/nemesis-claw-artwork-24.jpeg",
+            "layers/integration/nemesis-claw/artwork/nemesis-claw-artwork-25.jpeg",
+            "layers/integration/nemesis-claw/artwork/nemesis-claw-artwork-26.jpeg",
+            "layers/integration/nemesis-claw/artwork/nemesis-claw-artwork-27.jpeg",
+            "layers/integration/nemesis-claw/artwork/nemesis-claw-artwork-28.jpeg",
+            "layers/integration/nemesis-claw/artwork/nemesis-claw-artwork-29.jpeg",
+            "layers/integration/nemesis-claw/artwork/nemesis-claw-artwork-metadata.json",
+            "layers/integration/nemesis-claw/artwork/icons/nemesis-claw-icon-landscape.jpg",
+            "layers/integration/nemesis-claw/artwork/icons/nemesis-claw-icon-portrait.jpg",
+            "layers/integration/nemesis-claw/artwork/icons/nemesis-claw-icon-token-transparent.png",
+            "layers/integration/nemesis-claw/artwork/icons/nemesis-claw-icon-token.jpg"
+          ],
+          "modified": "2026-07-06T20:43:49.848635+00:00"
+        }
+      },
+      "completed": "2026-07-06T20:43:49.848653+00:00"
+    }
+  }
+}

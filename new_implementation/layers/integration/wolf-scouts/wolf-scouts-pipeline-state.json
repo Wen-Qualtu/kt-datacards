@@ -1,0 +1,1006 @@
+{
+  "team": "wolf-scouts",
+  "pipeline_version": "2.0",
+  "last_updated": "2026-07-07T07:30:01.634293+00:00",
+  "steps": {
+    "content_analysis": {
+      "outputs": {
+        "content.json": {
+          "path": "layers/integration/wolf-scouts/content/wolf-scouts-content.json",
+          "hash": "6f8c168f01b1a844ae7fbeae9436381aec200bd9378d92452b4de47431e7d07a",
+          "modified": "2026-07-06T21:02:08.589425+00:00"
+        }
+      },
+      "completed": "2026-07-06T21:02:08.620534+00:00",
+      "inputs": {
+        "layers/integration/wolf-scouts/manifest.json": "a4fcebc84e0047c4734322b0bd72d4a595a0afe00d41f5990f8d9b18585453d7",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "layers/integration/wolf-scouts/wolf-scouts-datacard-wolf-scout-fangbearer.pdf": "d7bc20ff58e5094c385d4c82c48400ee34773fd2a7f3f9e646d173e4714dc60d",
+        "layers/integration/wolf-scouts/wolf-scouts-datacard-wolf-scout-fenrisian-wolf.pdf": "87589ab77b778575bbea5e15a952f0c6c9d8da53fcbc0fce1288bc49d804308b",
+        "layers/integration/wolf-scouts/wolf-scouts-datacard-wolf-scout-frosteye.pdf": "40c057fa37c84156f3cd9923145ecd30334be7977a3a3cb8b8535012a14b3a5c",
+        "layers/integration/wolf-scouts/wolf-scouts-datacard-wolf-scout-gunner.pdf": "eb1a33344aa16806c5cddd1f51ae0c7c94ae1ea280d76df91d449bcef4ad1d27",
+        "layers/integration/wolf-scouts/wolf-scouts-datacard-wolf-scout-hunter.pdf": "901ebab25cadbea68f86c38ddf0c00d2276510c6986747f565384dc25037b323",
+        "layers/integration/wolf-scouts/wolf-scouts-datacard-wolf-scout-pack-leader.pdf": "1739aa9e8dbfbff5dd6b9d90d06f33393d53ff61760d61e5095dc40625b62650",
+        "layers/integration/wolf-scouts/wolf-scouts-datacard-wolf-scout-rune-priest-skjald.pdf": "393c1ac561b28299513ffe206f99d88e1f4f455313a0c0569c251ff3a3fc22e2",
+        "layers/integration/wolf-scouts/wolf-scouts-datacard-wolf-scout-trapmaster.pdf": "48524fbfbaa5e7d4c486d5d9b40c97ec376aeaff04a7500e64c456f06bfba3cf",
+        "layers/integration/wolf-scouts/wolf-scouts-equipment-frost-weapons.pdf": "87a53616305ec26e3173ad314d1b635b83aa119fa5f4f9940a259c038a40b4a2",
+        "layers/integration/wolf-scouts/wolf-scouts-equipment-runic-charms.pdf": "a3fa324e0ffbd73a63731c74642f0b8e803f5fcfb9d6d6a23b77f9011bce4004",
+        "layers/integration/wolf-scouts/wolf-scouts-equipment-talismanic-trophies.pdf": "6cddd1f537481f9255bda7a3a02acebfa32b25c4966680ca67b54e0653cf56b8",
+        "layers/integration/wolf-scouts/wolf-scouts-equipment-wolfteeth-necklaces.pdf": "5776c97a3a4004c29aa0f0b61602f322b766e8862e6232b813a9687de0eae48f",
+        "layers/integration/wolf-scouts/wolf-scouts-faction-rule-elemental-storm.pdf": "99141224ee4196d518424acee715f18ff13072a0a0de4ed9227191ffdfc9db99",
+        "layers/integration/wolf-scouts/wolf-scouts-faction-rule-hunting-astartes.pdf": "a42706933b3895b4c4124340b10774f80368006452bcb6da44d9b73259b2933e",
+        "layers/integration/wolf-scouts/wolf-scouts-firefight-ploy-acute-senses.pdf": "8428002920c27ddf5a04b9faaab23a67d9f09f06675efebd464b321ef6367b0b",
+        "layers/integration/wolf-scouts/wolf-scouts-firefight-ploy-counterattack.pdf": "0949ad7c47d86151cb58e9dfb222e4a435a2b19bcb03309451b0d74162bb320b",
+        "layers/integration/wolf-scouts/wolf-scouts-firefight-ploy-touched-by-lokyar.pdf": "a3c03ad1c0f24f9a2b196c4e3fa096b45187fce232b4838218a230020203ad0a",
+        "layers/integration/wolf-scouts/wolf-scouts-firefight-ploy-transhuman-physiology.pdf": "956795168be85255ba8504847ad6c8b396eeeb805aef78cae181658bf34589c3",
+        "layers/integration/wolf-scouts/wolf-scouts-operatives-selection-operative-selection.pdf": "cac18b3e90e992ace787d546fecdc6634897cf181f801a36ca1230ca78f14100",
+        "layers/integration/wolf-scouts/wolf-scouts-strategy-ploy-cloaked-by-the-storm.pdf": "33a9e175f814fee3e2151c0ea6781e73db112304879add3bb9740c814adbf325",
+        "layers/integration/wolf-scouts/wolf-scouts-strategy-ploy-savage-fighters.pdf": "37e885894e7930657e6416dfe3fb52e72d6df27a467ae5e4dec2510fb42c74f1",
+        "layers/integration/wolf-scouts/wolf-scouts-strategy-ploy-storms-bite.pdf": "dca3dd3fd9233b639ac829b71e09f3dec1a20d038c1b08f8509c4161f5807ab2",
+        "layers/integration/wolf-scouts/wolf-scouts-strategy-ploy-tempestuous-wrath.pdf": "222072d69ef9573e15a466070d8f0be29a51bee18265f46ed5d9c8623c7b0687",
+        "layers/integration/wolf-scouts/wolf-scouts-token-guide-token-guide.pdf": "b045926d6d798316f04af8487733d909810d2702f6abce847b408ab06c65d433"
+      }
+    },
+    "extract_backsides": {
+      "outputs": {
+        "backside-landscape.jpg": {
+          "path": "layers/integration/wolf-scouts/card-backside/wolf-scouts-backside-landscape.jpg",
+          "hash": "6195321f1ff1a8c30c8163739ca1f92b21dcf64580581d07dbe50ea533b69f94",
+          "modified": "2026-07-06T16:32:07.424035+00:00"
+        },
+        "backside-portrait.jpg": {
+          "path": "layers/integration/wolf-scouts/card-backside/wolf-scouts-backside-portrait.jpg",
+          "hash": "47e0939e8b7c6e51a0fb90f8de0292d43b24711504d65688ec3385d7d016a422",
+          "modified": "2026-07-06T16:32:07.448061+00:00"
+        }
+      },
+      "completed": "2026-07-06T16:32:07.453326+00:00",
+      "inputs": {
+        "layers/integration/wolf-scouts/artwork/icons/wolf-scouts-icon-token.jpg": "02025b01bc18ffc5e6b4c15087149e59c30af67a1c0024eaeb7d73f5d18e8205",
+        "config/defaults/box/card-box-background.jpeg": "2dd1442a7c52ca1d66899333f678d60f48981ce20561ead77c1161d548176036"
+      }
+    },
+    "extract_tokens": {
+      "outputs": {
+        "tokens/wolf-scouts-call-the-storm.png": {
+          "path": "output/wolf-scouts/tokens/wolf-scouts-call-the-storm.png",
+          "hash": "8ffcbbb4c6b5508167eb0f9c43a5fa937295525b4478365d26d3e7e1650d7f09",
+          "modified": "2026-07-06T21:02:58.237135+00:00"
+        },
+        "tokens/wolf-scouts-cast-the-runes.png": {
+          "path": "output/wolf-scouts/tokens/wolf-scouts-cast-the-runes.png",
+          "hash": "9168b38a3aba754730cf97a46a3feb8ef6e1d01ab69ba160a1f8ffa4f6269204",
+          "modified": "2026-07-06T21:02:58.242107+00:00"
+        },
+        "tokens/wolf-scouts-guard.png": {
+          "path": "output/wolf-scouts/tokens/wolf-scouts-guard.png",
+          "hash": "d564bf78bc58ce9b84ff2fad8cdaae677ba1755cd861e75b9ff941cf6b074d80",
+          "modified": "2026-07-06T21:02:58.246571+00:00"
+        },
+        "tokens/wolf-scouts-haywire-mine.png": {
+          "path": "output/wolf-scouts/tokens/wolf-scouts-haywire-mine.png",
+          "hash": "34a030ae07faadb373de750048682ef89b6c2c292b3e57722e2ead33a228c8b7",
+          "modified": "2026-07-06T21:02:58.250782+00:00"
+        },
+        "tokens/wolf-scouts-hunters-senses.png": {
+          "path": "output/wolf-scouts/tokens/wolf-scouts-hunters-senses.png",
+          "hash": "18253047a1d37be70124f7c30d7b3765d2523d1a217f7cf0939cfd8071a4cdfa",
+          "modified": "2026-07-06T21:02:58.254971+00:00"
+        },
+        "tokens/wolf-scouts-lupine-guile.png": {
+          "path": "output/wolf-scouts/tokens/wolf-scouts-lupine-guile.png",
+          "hash": "9a8fbe3bae8b5a2b6a3e39e511e2af8f1bced8d11a070103188ed74f0e31a457",
+          "modified": "2026-07-06T21:02:58.259231+00:00"
+        },
+        "tokens/wolf-scouts-pounce.png": {
+          "path": "output/wolf-scouts/tokens/wolf-scouts-pounce.png",
+          "hash": "119d6f56ad3e8dbaa31a3862929995df13f5179d90b0ed15b7c69b1887dfb195",
+          "modified": "2026-07-06T21:02:58.263598+00:00"
+        },
+        "tokens/wolf-scouts-runic-charms.png": {
+          "path": "output/wolf-scouts/tokens/wolf-scouts-runic-charms.png",
+          "hash": "dc7b45fe6f410c3584e85028137dc73edc0d3ac0c8b396b254709ccb48ee0d79",
+          "modified": "2026-07-06T21:02:58.267888+00:00"
+        },
+        "tokens/wolf-scouts-storm.png": {
+          "path": "output/wolf-scouts/tokens/wolf-scouts-storm.png",
+          "hash": "17c5b69811476da2ed080f0e664c8507ed8db62419c7a90f07e2765e4261f4b8",
+          "modified": "2026-07-06T21:02:58.272135+00:00"
+        },
+        "tokens/wolf-scouts-wolfteeth-necklaces.png": {
+          "path": "output/wolf-scouts/tokens/wolf-scouts-wolfteeth-necklaces.png",
+          "hash": "dc5ea3683ba31cda355cafa4c8c8cc1b0fee94c5f251d0e57a4546c6bd67ef2f",
+          "modified": "2026-07-06T21:02:58.276684+00:00"
+        },
+        "tokens/wolf-scouts-call-the-storm.obj": {
+          "path": "output/wolf-scouts/tokens/wolf-scouts-call-the-storm.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:58.278137+00:00"
+        },
+        "tokens/wolf-scouts-cast-the-runes.obj": {
+          "path": "output/wolf-scouts/tokens/wolf-scouts-cast-the-runes.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:58.279005+00:00"
+        },
+        "tokens/wolf-scouts-guard.obj": {
+          "path": "output/wolf-scouts/tokens/wolf-scouts-guard.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:58.279823+00:00"
+        },
+        "tokens/wolf-scouts-haywire-mine.obj": {
+          "path": "output/wolf-scouts/tokens/wolf-scouts-haywire-mine.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:58.280888+00:00"
+        },
+        "tokens/wolf-scouts-hunters-senses.obj": {
+          "path": "output/wolf-scouts/tokens/wolf-scouts-hunters-senses.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:58.281862+00:00"
+        },
+        "tokens/wolf-scouts-lupine-guile.obj": {
+          "path": "output/wolf-scouts/tokens/wolf-scouts-lupine-guile.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:58.283097+00:00"
+        },
+        "tokens/wolf-scouts-pounce.obj": {
+          "path": "output/wolf-scouts/tokens/wolf-scouts-pounce.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:58.284151+00:00"
+        },
+        "tokens/wolf-scouts-runic-charms.obj": {
+          "path": "output/wolf-scouts/tokens/wolf-scouts-runic-charms.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:58.285295+00:00"
+        },
+        "tokens/wolf-scouts-storm.obj": {
+          "path": "output/wolf-scouts/tokens/wolf-scouts-storm.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:58.286394+00:00"
+        },
+        "tokens/wolf-scouts-wolfteeth-necklaces.obj": {
+          "path": "output/wolf-scouts/tokens/wolf-scouts-wolfteeth-necklaces.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:58.287571+00:00"
+        },
+        "tokens/tokenbag/wolf-scouts-token-bag-icon.png": {
+          "path": "output/wolf-scouts/tokens/tokenbag/wolf-scouts-token-bag-icon.png",
+          "hash": "02025b01bc18ffc5e6b4c15087149e59c30af67a1c0024eaeb7d73f5d18e8205",
+          "modified": "2026-07-06T21:02:58.294480+00:00"
+        },
+        "tokens/tokenbag/wolf-scouts-token-bag.obj": {
+          "path": "output/wolf-scouts/tokens/tokenbag/wolf-scouts-token-bag.obj",
+          "hash": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+          "modified": "2026-07-06T21:02:58.295629+00:00"
+        }
+      },
+      "completed": "2026-07-06T21:02:58.327790+00:00",
+      "inputs": {
+        "layers/integration/wolf-scouts/manifest.json": "a4fcebc84e0047c4734322b0bd72d4a595a0afe00d41f5990f8d9b18585453d7",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "layers/integration/wolf-scouts/artwork/icons/wolf-scouts-icon-token.jpg": "02025b01bc18ffc5e6b4c15087149e59c30af67a1c0024eaeb7d73f5d18e8205",
+        "layers/integration/wolf-scouts/wolf-scouts-datacard-wolf-scout-fangbearer.pdf": "d7bc20ff58e5094c385d4c82c48400ee34773fd2a7f3f9e646d173e4714dc60d",
+        "layers/integration/wolf-scouts/wolf-scouts-datacard-wolf-scout-fenrisian-wolf.pdf": "87589ab77b778575bbea5e15a952f0c6c9d8da53fcbc0fce1288bc49d804308b",
+        "layers/integration/wolf-scouts/wolf-scouts-datacard-wolf-scout-frosteye.pdf": "40c057fa37c84156f3cd9923145ecd30334be7977a3a3cb8b8535012a14b3a5c",
+        "layers/integration/wolf-scouts/wolf-scouts-datacard-wolf-scout-gunner.pdf": "eb1a33344aa16806c5cddd1f51ae0c7c94ae1ea280d76df91d449bcef4ad1d27",
+        "layers/integration/wolf-scouts/wolf-scouts-datacard-wolf-scout-hunter.pdf": "901ebab25cadbea68f86c38ddf0c00d2276510c6986747f565384dc25037b323",
+        "layers/integration/wolf-scouts/wolf-scouts-datacard-wolf-scout-pack-leader.pdf": "1739aa9e8dbfbff5dd6b9d90d06f33393d53ff61760d61e5095dc40625b62650",
+        "layers/integration/wolf-scouts/wolf-scouts-datacard-wolf-scout-rune-priest-skjald.pdf": "393c1ac561b28299513ffe206f99d88e1f4f455313a0c0569c251ff3a3fc22e2",
+        "layers/integration/wolf-scouts/wolf-scouts-datacard-wolf-scout-trapmaster.pdf": "48524fbfbaa5e7d4c486d5d9b40c97ec376aeaff04a7500e64c456f06bfba3cf",
+        "layers/integration/wolf-scouts/wolf-scouts-equipment-frost-weapons.pdf": "87a53616305ec26e3173ad314d1b635b83aa119fa5f4f9940a259c038a40b4a2",
+        "layers/integration/wolf-scouts/wolf-scouts-equipment-runic-charms.pdf": "a3fa324e0ffbd73a63731c74642f0b8e803f5fcfb9d6d6a23b77f9011bce4004",
+        "layers/integration/wolf-scouts/wolf-scouts-equipment-talismanic-trophies.pdf": "6cddd1f537481f9255bda7a3a02acebfa32b25c4966680ca67b54e0653cf56b8",
+        "layers/integration/wolf-scouts/wolf-scouts-equipment-wolfteeth-necklaces.pdf": "5776c97a3a4004c29aa0f0b61602f322b766e8862e6232b813a9687de0eae48f",
+        "layers/integration/wolf-scouts/wolf-scouts-faction-rule-elemental-storm.pdf": "99141224ee4196d518424acee715f18ff13072a0a0de4ed9227191ffdfc9db99",
+        "layers/integration/wolf-scouts/wolf-scouts-faction-rule-hunting-astartes.pdf": "a42706933b3895b4c4124340b10774f80368006452bcb6da44d9b73259b2933e",
+        "layers/integration/wolf-scouts/wolf-scouts-firefight-ploy-acute-senses.pdf": "8428002920c27ddf5a04b9faaab23a67d9f09f06675efebd464b321ef6367b0b",
+        "layers/integration/wolf-scouts/wolf-scouts-firefight-ploy-counterattack.pdf": "0949ad7c47d86151cb58e9dfb222e4a435a2b19bcb03309451b0d74162bb320b",
+        "layers/integration/wolf-scouts/wolf-scouts-firefight-ploy-touched-by-lokyar.pdf": "a3c03ad1c0f24f9a2b196c4e3fa096b45187fce232b4838218a230020203ad0a",
+        "layers/integration/wolf-scouts/wolf-scouts-firefight-ploy-transhuman-physiology.pdf": "956795168be85255ba8504847ad6c8b396eeeb805aef78cae181658bf34589c3",
+        "layers/integration/wolf-scouts/wolf-scouts-operatives-selection-operative-selection.pdf": "cac18b3e90e992ace787d546fecdc6634897cf181f801a36ca1230ca78f14100",
+        "layers/integration/wolf-scouts/wolf-scouts-strategy-ploy-cloaked-by-the-storm.pdf": "33a9e175f814fee3e2151c0ea6781e73db112304879add3bb9740c814adbf325",
+        "layers/integration/wolf-scouts/wolf-scouts-strategy-ploy-savage-fighters.pdf": "37e885894e7930657e6416dfe3fb52e72d6df27a467ae5e4dec2510fb42c74f1",
+        "layers/integration/wolf-scouts/wolf-scouts-strategy-ploy-storms-bite.pdf": "dca3dd3fd9233b639ac829b71e09f3dec1a20d038c1b08f8509c4161f5807ab2",
+        "layers/integration/wolf-scouts/wolf-scouts-strategy-ploy-tempestuous-wrath.pdf": "222072d69ef9573e15a466070d8f0be29a51bee18265f46ed5d9c8623c7b0687",
+        "layers/integration/wolf-scouts/wolf-scouts-token-guide-token-guide.pdf": "b045926d6d798316f04af8487733d909810d2702f6abce847b408ab06c65d433"
+      }
+    },
+    "generate_dice": {
+      "outputs": {
+        "dice-light.jpg": {
+          "path": "output/wolf-scouts/dice/wolf-scouts-dice-light.jpg",
+          "hash": "4caa26d4bc484d7643cef443c4a6fa236609b6cbd11fa750b2e7f2d5d3eda6f9",
+          "modified": "2026-07-06T16:33:31.411646+00:00"
+        },
+        "dice-dark.jpg": {
+          "path": "output/wolf-scouts/dice/wolf-scouts-dice-dark.jpg",
+          "hash": "34eeda8f35b8004afee2e42e7644875d69c7c3467a2d0bd3133d289cb093b737",
+          "modified": "2026-07-06T16:33:31.418097+00:00"
+        },
+        "dice-team.jpg": {
+          "path": "output/wolf-scouts/dice/wolf-scouts-dice-team.jpg",
+          "hash": "1d4c7eed80bb29ffb7b398f786557edc338f68205f3262c77510c54ddb4b7130",
+          "modified": "2026-07-06T16:33:31.424551+00:00"
+        }
+      },
+      "completed": "2026-07-06T16:33:31.425669+00:00",
+      "inputs": {
+        "layers/integration/wolf-scouts/artwork/icons/wolf-scouts-icon-token-transparent.png": "ac5eab276122da7f409912ac3fc90b3cf14dfbfe5c72eba007e1d23f03ecc2db",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41"
+      }
+    },
+    "generate_box_texture": {
+      "outputs": {
+        "card-box-texture.jpg": {
+          "path": "output/wolf-scouts/cardbox/wolf-scouts-card-box-texture.jpg",
+          "hash": "6fef48ddc81fd2379a8e88a69c281c9d25f47c47439ea1d8c602df8694e40f29",
+          "modified": "2026-07-06T16:33:34.991630+00:00"
+        },
+        "card-box.obj": {
+          "path": "output/wolf-scouts/cardbox/wolf-scouts-card-box.obj",
+          "hash": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+          "modified": "2026-07-06T16:33:34.992840+00:00"
+        }
+      },
+      "completed": "2026-07-06T16:33:34.994518+00:00",
+      "inputs": {
+        "layers/integration/wolf-scouts/artwork/icons/wolf-scouts-icon-token.jpg": "02025b01bc18ffc5e6b4c15087149e59c30af67a1c0024eaeb7d73f5d18e8205",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "config/defaults/box/card-box.obj": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+        "config/defaults/box/card-box-texture.jpg": "b2f310b01a0d28e8806e99ce0b972e8967e3014608eacefcb6ec51597695a313"
+      }
+    },
+    "generate_card_images": {
+      "outputs": {
+        "cards/datacards/wolf-scout-fangbearer-back.jpg": {
+          "path": "output/wolf-scouts/cards/datacards/wolf-scout-fangbearer-back.jpg",
+          "hash": "6195321f1ff1a8c30c8163739ca1f92b21dcf64580581d07dbe50ea533b69f94",
+          "modified": "2026-07-07T07:28:49.558674+00:00"
+        },
+        "cards/datacards/wolf-scout-fangbearer-front.jpg": {
+          "path": "output/wolf-scouts/cards/datacards/wolf-scout-fangbearer-front.jpg",
+          "hash": "72dfcf626a972ec69ca70d537b17b109f027625e678b427a86b030cb3e4ddc11",
+          "modified": "2026-07-07T07:28:49.568471+00:00"
+        },
+        "cards/datacards/wolf-scout-fenrisian-wolf-back.jpg": {
+          "path": "output/wolf-scouts/cards/datacards/wolf-scout-fenrisian-wolf-back.jpg",
+          "hash": "6195321f1ff1a8c30c8163739ca1f92b21dcf64580581d07dbe50ea533b69f94",
+          "modified": "2026-07-07T07:28:49.579715+00:00"
+        },
+        "cards/datacards/wolf-scout-fenrisian-wolf-front.jpg": {
+          "path": "output/wolf-scouts/cards/datacards/wolf-scout-fenrisian-wolf-front.jpg",
+          "hash": "dfda9ef7357488114dc36084008bcc0611db56e6867d4e3630091f8f310c9989",
+          "modified": "2026-07-07T07:28:49.588867+00:00"
+        },
+        "cards/datacards/wolf-scout-frosteye-back.jpg": {
+          "path": "output/wolf-scouts/cards/datacards/wolf-scout-frosteye-back.jpg",
+          "hash": "0014ea253f608f5adfbecee6bf5c92cc3c16ff6b472fad8843b59e01e1426aa6",
+          "modified": "2026-07-07T07:28:49.599340+00:00"
+        },
+        "cards/datacards/wolf-scout-frosteye-front.jpg": {
+          "path": "output/wolf-scouts/cards/datacards/wolf-scout-frosteye-front.jpg",
+          "hash": "4cb250cbe45e9e7a145566b407c6f9809e5ce57943e8b45a1d4a30b871a5a241",
+          "modified": "2026-07-07T07:28:49.607711+00:00"
+        },
+        "cards/datacards/wolf-scout-gunner-back.jpg": {
+          "path": "output/wolf-scouts/cards/datacards/wolf-scout-gunner-back.jpg",
+          "hash": "6195321f1ff1a8c30c8163739ca1f92b21dcf64580581d07dbe50ea533b69f94",
+          "modified": "2026-07-07T07:28:49.615817+00:00"
+        },
+        "cards/datacards/wolf-scout-gunner-front.jpg": {
+          "path": "output/wolf-scouts/cards/datacards/wolf-scout-gunner-front.jpg",
+          "hash": "a76dbe95a7026f470b6e38488f962f3006893372fc61a81d2c1bb811f1aada4d",
+          "modified": "2026-07-07T07:28:49.626045+00:00"
+        },
+        "cards/datacards/wolf-scout-hunter-back.jpg": {
+          "path": "output/wolf-scouts/cards/datacards/wolf-scout-hunter-back.jpg",
+          "hash": "6195321f1ff1a8c30c8163739ca1f92b21dcf64580581d07dbe50ea533b69f94",
+          "modified": "2026-07-07T07:28:49.636678+00:00"
+        },
+        "cards/datacards/wolf-scout-hunter-front.jpg": {
+          "path": "output/wolf-scouts/cards/datacards/wolf-scout-hunter-front.jpg",
+          "hash": "ffac177962ce0dc1df07bf57c2556f05f785734d9eb96662197487bf44073fee",
+          "modified": "2026-07-07T07:28:49.646277+00:00"
+        },
+        "cards/datacards/wolf-scout-pack-leader-back.jpg": {
+          "path": "output/wolf-scouts/cards/datacards/wolf-scout-pack-leader-back.jpg",
+          "hash": "6195321f1ff1a8c30c8163739ca1f92b21dcf64580581d07dbe50ea533b69f94",
+          "modified": "2026-07-07T07:28:49.654986+00:00"
+        },
+        "cards/datacards/wolf-scout-pack-leader-front.jpg": {
+          "path": "output/wolf-scouts/cards/datacards/wolf-scout-pack-leader-front.jpg",
+          "hash": "7f592876b459fe6e73ebf178db9e910add53bea3aa9d45cf8e2bfb04b651958d",
+          "modified": "2026-07-07T07:28:49.662548+00:00"
+        },
+        "cards/datacards/wolf-scout-rune-priest-skjald-back.jpg": {
+          "path": "output/wolf-scouts/cards/datacards/wolf-scout-rune-priest-skjald-back.jpg",
+          "hash": "e847f0c22a3ee860177d4f2fd6eb948338dc920985636202f202c9f8b85227c3",
+          "modified": "2026-07-07T07:28:49.671007+00:00"
+        },
+        "cards/datacards/wolf-scout-rune-priest-skjald-front.jpg": {
+          "path": "output/wolf-scouts/cards/datacards/wolf-scout-rune-priest-skjald-front.jpg",
+          "hash": "aa89f6c20455b849d06f01e0ae5df5bbe1f1516621bdd1f207bf6b6051cc5756",
+          "modified": "2026-07-07T07:28:49.679927+00:00"
+        },
+        "cards/datacards/wolf-scout-trapmaster-back.jpg": {
+          "path": "output/wolf-scouts/cards/datacards/wolf-scout-trapmaster-back.jpg",
+          "hash": "f0ddabac3e07392282925134121756e350f9f08322115c6ba657dd93c2fe5a2f",
+          "modified": "2026-07-07T07:28:49.688982+00:00"
+        },
+        "cards/datacards/wolf-scout-trapmaster-front.jpg": {
+          "path": "output/wolf-scouts/cards/datacards/wolf-scout-trapmaster-front.jpg",
+          "hash": "08460f42aa35793bb993ffb62e0917dcb14cec4058e27b030bf3c733c5f46333",
+          "modified": "2026-07-07T07:28:49.697829+00:00"
+        },
+        "cards/equipment/wolf-scouts-frost-weapons-back.jpg": {
+          "path": "output/wolf-scouts/cards/equipment/wolf-scouts-frost-weapons-back.jpg",
+          "hash": "47e0939e8b7c6e51a0fb90f8de0292d43b24711504d65688ec3385d7d016a422",
+          "modified": "2026-07-07T07:28:49.706878+00:00"
+        },
+        "cards/equipment/wolf-scouts-frost-weapons-front.jpg": {
+          "path": "output/wolf-scouts/cards/equipment/wolf-scouts-frost-weapons-front.jpg",
+          "hash": "7fc5dccc7af0d690b1b498a8d57e58fafd85730c177344a96246dc1d106fd92f",
+          "modified": "2026-07-07T07:28:49.715411+00:00"
+        },
+        "cards/equipment/wolf-scouts-runic-charms-back.jpg": {
+          "path": "output/wolf-scouts/cards/equipment/wolf-scouts-runic-charms-back.jpg",
+          "hash": "47e0939e8b7c6e51a0fb90f8de0292d43b24711504d65688ec3385d7d016a422",
+          "modified": "2026-07-07T07:28:49.724126+00:00"
+        },
+        "cards/equipment/wolf-scouts-runic-charms-front.jpg": {
+          "path": "output/wolf-scouts/cards/equipment/wolf-scouts-runic-charms-front.jpg",
+          "hash": "17daf5662cb4cf9a29cfb1db5143492ea20b23b99dea1ef7faed419b6c8ad113",
+          "modified": "2026-07-07T07:28:49.731030+00:00"
+        },
+        "cards/equipment/wolf-scouts-talismanic-trophies-back.jpg": {
+          "path": "output/wolf-scouts/cards/equipment/wolf-scouts-talismanic-trophies-back.jpg",
+          "hash": "47e0939e8b7c6e51a0fb90f8de0292d43b24711504d65688ec3385d7d016a422",
+          "modified": "2026-07-07T07:28:49.737629+00:00"
+        },
+        "cards/equipment/wolf-scouts-talismanic-trophies-front.jpg": {
+          "path": "output/wolf-scouts/cards/equipment/wolf-scouts-talismanic-trophies-front.jpg",
+          "hash": "587b926c45c7ee73c2216154af846a77b9d4d2634e7ede6f0e665bde2cd8a24e",
+          "modified": "2026-07-07T07:28:49.745949+00:00"
+        },
+        "cards/equipment/wolf-scouts-wolfteeth-necklaces-back.jpg": {
+          "path": "output/wolf-scouts/cards/equipment/wolf-scouts-wolfteeth-necklaces-back.jpg",
+          "hash": "47e0939e8b7c6e51a0fb90f8de0292d43b24711504d65688ec3385d7d016a422",
+          "modified": "2026-07-07T07:28:49.754197+00:00"
+        },
+        "cards/equipment/wolf-scouts-wolfteeth-necklaces-front.jpg": {
+          "path": "output/wolf-scouts/cards/equipment/wolf-scouts-wolfteeth-necklaces-front.jpg",
+          "hash": "fd85d3cde3a3e83fd6d7b041072a73c39fffc5d90b556604870864a9d5d3a73f",
+          "modified": "2026-07-07T07:28:49.762185+00:00"
+        },
+        "cards/faction_rules/wolf-scouts-elemental-storm-back.jpg": {
+          "path": "output/wolf-scouts/cards/faction_rules/wolf-scouts-elemental-storm-back.jpg",
+          "hash": "47e0939e8b7c6e51a0fb90f8de0292d43b24711504d65688ec3385d7d016a422",
+          "modified": "2026-07-07T07:28:49.770897+00:00"
+        },
+        "cards/faction_rules/wolf-scouts-elemental-storm-front.jpg": {
+          "path": "output/wolf-scouts/cards/faction_rules/wolf-scouts-elemental-storm-front.jpg",
+          "hash": "0dde4a6c3bb49846a5d5f4e040c245e018f5698615c92937dc751fa72a289467",
+          "modified": "2026-07-07T07:28:49.780654+00:00"
+        },
+        "cards/faction_rules/wolf-scouts-hunting-astartes-back.jpg": {
+          "path": "output/wolf-scouts/cards/faction_rules/wolf-scouts-hunting-astartes-back.jpg",
+          "hash": "47e0939e8b7c6e51a0fb90f8de0292d43b24711504d65688ec3385d7d016a422",
+          "modified": "2026-07-07T07:28:49.790763+00:00"
+        },
+        "cards/faction_rules/wolf-scouts-hunting-astartes-front.jpg": {
+          "path": "output/wolf-scouts/cards/faction_rules/wolf-scouts-hunting-astartes-front.jpg",
+          "hash": "93ff761390800810c027aad3181e0ee3ba476c35df133fd548110c3f2b403282",
+          "modified": "2026-07-07T07:28:49.800368+00:00"
+        },
+        "cards/firefight_ploys/wolf-scouts-acute-senses-back.jpg": {
+          "path": "output/wolf-scouts/cards/firefight_ploys/wolf-scouts-acute-senses-back.jpg",
+          "hash": "47e0939e8b7c6e51a0fb90f8de0292d43b24711504d65688ec3385d7d016a422",
+          "modified": "2026-07-07T07:28:49.809304+00:00"
+        },
+        "cards/firefight_ploys/wolf-scouts-acute-senses-front.jpg": {
+          "path": "output/wolf-scouts/cards/firefight_ploys/wolf-scouts-acute-senses-front.jpg",
+          "hash": "be4e2e85b63229609e12b49ab34037ebdb4a547b12f2c9404e856a0422a4cc8e",
+          "modified": "2026-07-07T07:28:49.815660+00:00"
+        },
+        "cards/firefight_ploys/wolf-scouts-counterattack-back.jpg": {
+          "path": "output/wolf-scouts/cards/firefight_ploys/wolf-scouts-counterattack-back.jpg",
+          "hash": "47e0939e8b7c6e51a0fb90f8de0292d43b24711504d65688ec3385d7d016a422",
+          "modified": "2026-07-07T07:28:49.824571+00:00"
+        },
+        "cards/firefight_ploys/wolf-scouts-counterattack-front.jpg": {
+          "path": "output/wolf-scouts/cards/firefight_ploys/wolf-scouts-counterattack-front.jpg",
+          "hash": "358da496b7b2a705e06d34ca6903e35002d29bd09738e070e38da05f981a92d0",
+          "modified": "2026-07-07T07:28:49.833202+00:00"
+        },
+        "cards/firefight_ploys/wolf-scouts-touched-by-lokyar-back.jpg": {
+          "path": "output/wolf-scouts/cards/firefight_ploys/wolf-scouts-touched-by-lokyar-back.jpg",
+          "hash": "47e0939e8b7c6e51a0fb90f8de0292d43b24711504d65688ec3385d7d016a422",
+          "modified": "2026-07-07T07:28:49.842735+00:00"
+        },
+        "cards/firefight_ploys/wolf-scouts-touched-by-lokyar-front.jpg": {
+          "path": "output/wolf-scouts/cards/firefight_ploys/wolf-scouts-touched-by-lokyar-front.jpg",
+          "hash": "e7542df4c812cf35d22b58d84b966633db441cccc15bbcd14d71a161c38a7094",
+          "modified": "2026-07-07T07:28:49.850558+00:00"
+        },
+        "cards/firefight_ploys/wolf-scouts-transhuman-physiology-back.jpg": {
+          "path": "output/wolf-scouts/cards/firefight_ploys/wolf-scouts-transhuman-physiology-back.jpg",
+          "hash": "47e0939e8b7c6e51a0fb90f8de0292d43b24711504d65688ec3385d7d016a422",
+          "modified": "2026-07-07T07:28:49.860484+00:00"
+        },
+        "cards/firefight_ploys/wolf-scouts-transhuman-physiology-front.jpg": {
+          "path": "output/wolf-scouts/cards/firefight_ploys/wolf-scouts-transhuman-physiology-front.jpg",
+          "hash": "a064b84bc076f961987faa3775756a2916fdad78333a7103dc3ce3a18d689d76",
+          "modified": "2026-07-07T07:28:49.867611+00:00"
+        },
+        "cards/operatives_selection/wolf-scouts-operative-selection-back.jpg": {
+          "path": "output/wolf-scouts/cards/operatives_selection/wolf-scouts-operative-selection-back.jpg",
+          "hash": "47e0939e8b7c6e51a0fb90f8de0292d43b24711504d65688ec3385d7d016a422",
+          "modified": "2026-07-07T07:28:49.876652+00:00"
+        },
+        "cards/operatives_selection/wolf-scouts-operative-selection-front.jpg": {
+          "path": "output/wolf-scouts/cards/operatives_selection/wolf-scouts-operative-selection-front.jpg",
+          "hash": "56f3e067b3754c8fb7ce76ad22d30feb9e7da89730464c3013dbd5338912849c",
+          "modified": "2026-07-07T07:28:49.883821+00:00"
+        },
+        "cards/strategy_ploys/wolf-scouts-cloaked-by-the-storm-back.jpg": {
+          "path": "output/wolf-scouts/cards/strategy_ploys/wolf-scouts-cloaked-by-the-storm-back.jpg",
+          "hash": "47e0939e8b7c6e51a0fb90f8de0292d43b24711504d65688ec3385d7d016a422",
+          "modified": "2026-07-07T07:28:49.890377+00:00"
+        },
+        "cards/strategy_ploys/wolf-scouts-cloaked-by-the-storm-front.jpg": {
+          "path": "output/wolf-scouts/cards/strategy_ploys/wolf-scouts-cloaked-by-the-storm-front.jpg",
+          "hash": "b6714ec56758f7fe32565cdddb48d2c7cbe53d42144db8e1125f834899d4d28d",
+          "modified": "2026-07-07T07:28:49.896032+00:00"
+        },
+        "cards/strategy_ploys/wolf-scouts-savage-fighters-back.jpg": {
+          "path": "output/wolf-scouts/cards/strategy_ploys/wolf-scouts-savage-fighters-back.jpg",
+          "hash": "47e0939e8b7c6e51a0fb90f8de0292d43b24711504d65688ec3385d7d016a422",
+          "modified": "2026-07-07T07:28:49.901331+00:00"
+        },
+        "cards/strategy_ploys/wolf-scouts-savage-fighters-front.jpg": {
+          "path": "output/wolf-scouts/cards/strategy_ploys/wolf-scouts-savage-fighters-front.jpg",
+          "hash": "3c56ec8b2e4bda2ba4436601fdb4080c901f0a9c6224a44f01243539790df7eb",
+          "modified": "2026-07-07T07:28:49.908039+00:00"
+        },
+        "cards/strategy_ploys/wolf-scouts-storms-bite-back.jpg": {
+          "path": "output/wolf-scouts/cards/strategy_ploys/wolf-scouts-storms-bite-back.jpg",
+          "hash": "47e0939e8b7c6e51a0fb90f8de0292d43b24711504d65688ec3385d7d016a422",
+          "modified": "2026-07-07T07:28:49.914039+00:00"
+        },
+        "cards/strategy_ploys/wolf-scouts-storms-bite-front.jpg": {
+          "path": "output/wolf-scouts/cards/strategy_ploys/wolf-scouts-storms-bite-front.jpg",
+          "hash": "77a05dbcdb03da9622a4a7fba9ae7d4097dac37a30908d6bdcf4d3011b949a52",
+          "modified": "2026-07-07T07:28:49.919976+00:00"
+        },
+        "cards/strategy_ploys/wolf-scouts-tempestuous-wrath-back.jpg": {
+          "path": "output/wolf-scouts/cards/strategy_ploys/wolf-scouts-tempestuous-wrath-back.jpg",
+          "hash": "47e0939e8b7c6e51a0fb90f8de0292d43b24711504d65688ec3385d7d016a422",
+          "modified": "2026-07-07T07:28:49.926676+00:00"
+        },
+        "cards/strategy_ploys/wolf-scouts-tempestuous-wrath-front.jpg": {
+          "path": "output/wolf-scouts/cards/strategy_ploys/wolf-scouts-tempestuous-wrath-front.jpg",
+          "hash": "7961e31a58b87cce4e9c8f6011c176b0b0b6e97de276d035e52db4e4ce4bb0af",
+          "modified": "2026-07-07T07:28:49.932425+00:00"
+        },
+        "cards/token_guide/wolf-scouts-token-guide-back.jpg": {
+          "path": "output/wolf-scouts/cards/token_guide/wolf-scouts-token-guide-back.jpg",
+          "hash": "47e0939e8b7c6e51a0fb90f8de0292d43b24711504d65688ec3385d7d016a422",
+          "modified": "2026-07-07T07:28:49.938473+00:00"
+        },
+        "cards/token_guide/wolf-scouts-token-guide-front.jpg": {
+          "path": "output/wolf-scouts/cards/token_guide/wolf-scouts-token-guide-front.jpg",
+          "hash": "71ae203fc71e894f2394affe2e256910c1496899575b02801072c3b333c6b809",
+          "modified": "2026-07-07T07:28:49.944451+00:00"
+        }
+      },
+      "completed": "2026-07-07T07:28:49.989926+00:00",
+      "inputs": {
+        "layers/integration/wolf-scouts/manifest.json": "a4fcebc84e0047c4734322b0bd72d4a595a0afe00d41f5990f8d9b18585453d7",
+        "layers/integration/wolf-scouts/wolf-scouts-datacard-wolf-scout-fangbearer.pdf": "d7bc20ff58e5094c385d4c82c48400ee34773fd2a7f3f9e646d173e4714dc60d",
+        "layers/integration/wolf-scouts/wolf-scouts-datacard-wolf-scout-fenrisian-wolf.pdf": "87589ab77b778575bbea5e15a952f0c6c9d8da53fcbc0fce1288bc49d804308b",
+        "layers/integration/wolf-scouts/wolf-scouts-datacard-wolf-scout-frosteye.pdf": "40c057fa37c84156f3cd9923145ecd30334be7977a3a3cb8b8535012a14b3a5c",
+        "layers/integration/wolf-scouts/wolf-scouts-datacard-wolf-scout-gunner.pdf": "eb1a33344aa16806c5cddd1f51ae0c7c94ae1ea280d76df91d449bcef4ad1d27",
+        "layers/integration/wolf-scouts/wolf-scouts-datacard-wolf-scout-hunter.pdf": "901ebab25cadbea68f86c38ddf0c00d2276510c6986747f565384dc25037b323",
+        "layers/integration/wolf-scouts/wolf-scouts-datacard-wolf-scout-pack-leader.pdf": "1739aa9e8dbfbff5dd6b9d90d06f33393d53ff61760d61e5095dc40625b62650",
+        "layers/integration/wolf-scouts/wolf-scouts-datacard-wolf-scout-rune-priest-skjald.pdf": "393c1ac561b28299513ffe206f99d88e1f4f455313a0c0569c251ff3a3fc22e2",
+        "layers/integration/wolf-scouts/wolf-scouts-datacard-wolf-scout-trapmaster.pdf": "48524fbfbaa5e7d4c486d5d9b40c97ec376aeaff04a7500e64c456f06bfba3cf",
+        "layers/integration/wolf-scouts/wolf-scouts-equipment-frost-weapons.pdf": "87a53616305ec26e3173ad314d1b635b83aa119fa5f4f9940a259c038a40b4a2",
+        "layers/integration/wolf-scouts/wolf-scouts-equipment-runic-charms.pdf": "a3fa324e0ffbd73a63731c74642f0b8e803f5fcfb9d6d6a23b77f9011bce4004",
+        "layers/integration/wolf-scouts/wolf-scouts-equipment-talismanic-trophies.pdf": "6cddd1f537481f9255bda7a3a02acebfa32b25c4966680ca67b54e0653cf56b8",
+        "layers/integration/wolf-scouts/wolf-scouts-equipment-wolfteeth-necklaces.pdf": "5776c97a3a4004c29aa0f0b61602f322b766e8862e6232b813a9687de0eae48f",
+        "layers/integration/wolf-scouts/wolf-scouts-faction-rule-elemental-storm.pdf": "99141224ee4196d518424acee715f18ff13072a0a0de4ed9227191ffdfc9db99",
+        "layers/integration/wolf-scouts/wolf-scouts-faction-rule-hunting-astartes.pdf": "a42706933b3895b4c4124340b10774f80368006452bcb6da44d9b73259b2933e",
+        "layers/integration/wolf-scouts/wolf-scouts-firefight-ploy-acute-senses.pdf": "8428002920c27ddf5a04b9faaab23a67d9f09f06675efebd464b321ef6367b0b",
+        "layers/integration/wolf-scouts/wolf-scouts-firefight-ploy-counterattack.pdf": "0949ad7c47d86151cb58e9dfb222e4a435a2b19bcb03309451b0d74162bb320b",
+        "layers/integration/wolf-scouts/wolf-scouts-firefight-ploy-touched-by-lokyar.pdf": "a3c03ad1c0f24f9a2b196c4e3fa096b45187fce232b4838218a230020203ad0a",
+        "layers/integration/wolf-scouts/wolf-scouts-firefight-ploy-transhuman-physiology.pdf": "956795168be85255ba8504847ad6c8b396eeeb805aef78cae181658bf34589c3",
+        "layers/integration/wolf-scouts/wolf-scouts-operatives-selection-operative-selection.pdf": "cac18b3e90e992ace787d546fecdc6634897cf181f801a36ca1230ca78f14100",
+        "layers/integration/wolf-scouts/wolf-scouts-strategy-ploy-cloaked-by-the-storm.pdf": "33a9e175f814fee3e2151c0ea6781e73db112304879add3bb9740c814adbf325",
+        "layers/integration/wolf-scouts/wolf-scouts-strategy-ploy-savage-fighters.pdf": "37e885894e7930657e6416dfe3fb52e72d6df27a467ae5e4dec2510fb42c74f1",
+        "layers/integration/wolf-scouts/wolf-scouts-strategy-ploy-storms-bite.pdf": "dca3dd3fd9233b639ac829b71e09f3dec1a20d038c1b08f8509c4161f5807ab2",
+        "layers/integration/wolf-scouts/wolf-scouts-strategy-ploy-tempestuous-wrath.pdf": "222072d69ef9573e15a466070d8f0be29a51bee18265f46ed5d9c8623c7b0687",
+        "layers/integration/wolf-scouts/wolf-scouts-token-guide-token-guide.pdf": "b045926d6d798316f04af8487733d909810d2702f6abce847b408ab06c65d433",
+        "layers/integration/wolf-scouts/card-backside/wolf-scouts-backside-portrait.jpg": "47e0939e8b7c6e51a0fb90f8de0292d43b24711504d65688ec3385d7d016a422",
+        "config/defaults/card-backside/default-backside-portrait.jpg": "f00ff15fa70005b9f804de08519e2e83485d7eaf78dfacea65dcef0eb1a29c22",
+        "layers/integration/wolf-scouts/card-backside/wolf-scouts-backside-landscape.jpg": "6195321f1ff1a8c30c8163739ca1f92b21dcf64580581d07dbe50ea533b69f94",
+        "config/defaults/card-backside/default-backside-landscape.jpg": "1cf5580a1dff0c10adb1a286edad4479c487f3d2d698b0b8be84fe653039fd7e"
+      }
+    },
+    "extract_stats": {
+      "outputs": {
+        "team-data.json": {
+          "path": "output/wolf-scouts/data/wolf-scouts-team-data.json",
+          "hash": "6f8c168f01b1a844ae7fbeae9436381aec200bd9378d92452b4de47431e7d07a",
+          "modified": "2026-07-07T07:29:45.366881+00:00"
+        }
+      },
+      "completed": "2026-07-07T07:29:45.367463+00:00",
+      "inputs": {
+        "layers/integration/wolf-scouts/content/wolf-scouts-content.json": "6f8c168f01b1a844ae7fbeae9436381aec200bd9378d92452b4de47431e7d07a"
+      }
+    },
+    "generate_tts": {
+      "outputs": {
+        "tts_objects/Wolf Scouts Box.json": {
+          "path": "output/wolf-scouts/tts_objects/Wolf Scouts Box.json",
+          "hash": "eb0baf959e6da676980f177cb12682f9aa5f01a50897543824d89530257bfb6f",
+          "modified": "2026-07-07T07:30:01.583897+00:00"
+        },
+        "tts_objects/Wolf Scouts.json": {
+          "path": "output/wolf-scouts/tts_objects/Wolf Scouts.json",
+          "hash": "d87b1fef7f30c6f6bad0de5451205dc2b3637b03282b085ffaaf3dc6c7125e3a",
+          "modified": "2026-07-07T07:30:01.593847+00:00"
+        }
+      },
+      "completed": "2026-07-07T07:30:01.634161+00:00",
+      "inputs": {
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "config/team-guids.json": "1dea0eaf2c7d1c37c86aba088cdf876f0638d2dcaca162888fea8422c2d5c9db",
+        "output/wolf-scouts/cards/datacards/wolf-scout-fangbearer-back.jpg": "6195321f1ff1a8c30c8163739ca1f92b21dcf64580581d07dbe50ea533b69f94",
+        "output/wolf-scouts/cards/datacards/wolf-scout-fangbearer-front.jpg": "72dfcf626a972ec69ca70d537b17b109f027625e678b427a86b030cb3e4ddc11",
+        "output/wolf-scouts/cards/datacards/wolf-scout-fenrisian-wolf-back.jpg": "6195321f1ff1a8c30c8163739ca1f92b21dcf64580581d07dbe50ea533b69f94",
+        "output/wolf-scouts/cards/datacards/wolf-scout-fenrisian-wolf-front.jpg": "dfda9ef7357488114dc36084008bcc0611db56e6867d4e3630091f8f310c9989",
+        "output/wolf-scouts/cards/datacards/wolf-scout-frosteye-back.jpg": "0014ea253f608f5adfbecee6bf5c92cc3c16ff6b472fad8843b59e01e1426aa6",
+        "output/wolf-scouts/cards/datacards/wolf-scout-frosteye-front.jpg": "4cb250cbe45e9e7a145566b407c6f9809e5ce57943e8b45a1d4a30b871a5a241",
+        "output/wolf-scouts/cards/datacards/wolf-scout-gunner-back.jpg": "6195321f1ff1a8c30c8163739ca1f92b21dcf64580581d07dbe50ea533b69f94",
+        "output/wolf-scouts/cards/datacards/wolf-scout-gunner-front.jpg": "a76dbe95a7026f470b6e38488f962f3006893372fc61a81d2c1bb811f1aada4d",
+        "output/wolf-scouts/cards/datacards/wolf-scout-hunter-back.jpg": "6195321f1ff1a8c30c8163739ca1f92b21dcf64580581d07dbe50ea533b69f94",
+        "output/wolf-scouts/cards/datacards/wolf-scout-hunter-front.jpg": "ffac177962ce0dc1df07bf57c2556f05f785734d9eb96662197487bf44073fee",
+        "output/wolf-scouts/cards/datacards/wolf-scout-pack-leader-back.jpg": "6195321f1ff1a8c30c8163739ca1f92b21dcf64580581d07dbe50ea533b69f94",
+        "output/wolf-scouts/cards/datacards/wolf-scout-pack-leader-front.jpg": "7f592876b459fe6e73ebf178db9e910add53bea3aa9d45cf8e2bfb04b651958d",
+        "output/wolf-scouts/cards/datacards/wolf-scout-rune-priest-skjald-back.jpg": "e847f0c22a3ee860177d4f2fd6eb948338dc920985636202f202c9f8b85227c3",
+        "output/wolf-scouts/cards/datacards/wolf-scout-rune-priest-skjald-front.jpg": "aa89f6c20455b849d06f01e0ae5df5bbe1f1516621bdd1f207bf6b6051cc5756",
+        "output/wolf-scouts/cards/datacards/wolf-scout-trapmaster-back.jpg": "f0ddabac3e07392282925134121756e350f9f08322115c6ba657dd93c2fe5a2f",
+        "output/wolf-scouts/cards/datacards/wolf-scout-trapmaster-front.jpg": "08460f42aa35793bb993ffb62e0917dcb14cec4058e27b030bf3c733c5f46333",
+        "output/wolf-scouts/cards/equipment/wolf-scouts-frost-weapons-back.jpg": "47e0939e8b7c6e51a0fb90f8de0292d43b24711504d65688ec3385d7d016a422",
+        "output/wolf-scouts/cards/equipment/wolf-scouts-frost-weapons-front.jpg": "7fc5dccc7af0d690b1b498a8d57e58fafd85730c177344a96246dc1d106fd92f",
+        "output/wolf-scouts/cards/equipment/wolf-scouts-runic-charms-back.jpg": "47e0939e8b7c6e51a0fb90f8de0292d43b24711504d65688ec3385d7d016a422",
+        "output/wolf-scouts/cards/equipment/wolf-scouts-runic-charms-front.jpg": "17daf5662cb4cf9a29cfb1db5143492ea20b23b99dea1ef7faed419b6c8ad113",
+        "output/wolf-scouts/cards/equipment/wolf-scouts-talismanic-trophies-back.jpg": "47e0939e8b7c6e51a0fb90f8de0292d43b24711504d65688ec3385d7d016a422",
+        "output/wolf-scouts/cards/equipment/wolf-scouts-talismanic-trophies-front.jpg": "587b926c45c7ee73c2216154af846a77b9d4d2634e7ede6f0e665bde2cd8a24e",
+        "output/wolf-scouts/cards/equipment/wolf-scouts-wolfteeth-necklaces-back.jpg": "47e0939e8b7c6e51a0fb90f8de0292d43b24711504d65688ec3385d7d016a422",
+        "output/wolf-scouts/cards/equipment/wolf-scouts-wolfteeth-necklaces-front.jpg": "fd85d3cde3a3e83fd6d7b041072a73c39fffc5d90b556604870864a9d5d3a73f",
+        "output/wolf-scouts/cards/faction_rules/wolf-scouts-elemental-storm-back.jpg": "47e0939e8b7c6e51a0fb90f8de0292d43b24711504d65688ec3385d7d016a422",
+        "output/wolf-scouts/cards/faction_rules/wolf-scouts-elemental-storm-front.jpg": "0dde4a6c3bb49846a5d5f4e040c245e018f5698615c92937dc751fa72a289467",
+        "output/wolf-scouts/cards/faction_rules/wolf-scouts-hunting-astartes-back.jpg": "47e0939e8b7c6e51a0fb90f8de0292d43b24711504d65688ec3385d7d016a422",
+        "output/wolf-scouts/cards/faction_rules/wolf-scouts-hunting-astartes-front.jpg": "93ff761390800810c027aad3181e0ee3ba476c35df133fd548110c3f2b403282",
+        "output/wolf-scouts/cards/firefight_ploys/wolf-scouts-acute-senses-back.jpg": "47e0939e8b7c6e51a0fb90f8de0292d43b24711504d65688ec3385d7d016a422",
+        "output/wolf-scouts/cards/firefight_ploys/wolf-scouts-acute-senses-front.jpg": "be4e2e85b63229609e12b49ab34037ebdb4a547b12f2c9404e856a0422a4cc8e",
+        "output/wolf-scouts/cards/firefight_ploys/wolf-scouts-counterattack-back.jpg": "47e0939e8b7c6e51a0fb90f8de0292d43b24711504d65688ec3385d7d016a422",
+        "output/wolf-scouts/cards/firefight_ploys/wolf-scouts-counterattack-front.jpg": "358da496b7b2a705e06d34ca6903e35002d29bd09738e070e38da05f981a92d0",
+        "output/wolf-scouts/cards/firefight_ploys/wolf-scouts-touched-by-lokyar-back.jpg": "47e0939e8b7c6e51a0fb90f8de0292d43b24711504d65688ec3385d7d016a422",
+        "output/wolf-scouts/cards/firefight_ploys/wolf-scouts-touched-by-lokyar-front.jpg": "e7542df4c812cf35d22b58d84b966633db441cccc15bbcd14d71a161c38a7094",
+        "output/wolf-scouts/cards/firefight_ploys/wolf-scouts-transhuman-physiology-back.jpg": "47e0939e8b7c6e51a0fb90f8de0292d43b24711504d65688ec3385d7d016a422",
+        "output/wolf-scouts/cards/firefight_ploys/wolf-scouts-transhuman-physiology-front.jpg": "a064b84bc076f961987faa3775756a2916fdad78333a7103dc3ce3a18d689d76",
+        "output/wolf-scouts/cards/operatives_selection/wolf-scouts-operative-selection-back.jpg": "47e0939e8b7c6e51a0fb90f8de0292d43b24711504d65688ec3385d7d016a422",
+        "output/wolf-scouts/cards/operatives_selection/wolf-scouts-operative-selection-front.jpg": "56f3e067b3754c8fb7ce76ad22d30feb9e7da89730464c3013dbd5338912849c",
+        "output/wolf-scouts/cards/strategy_ploys/wolf-scouts-cloaked-by-the-storm-back.jpg": "47e0939e8b7c6e51a0fb90f8de0292d43b24711504d65688ec3385d7d016a422",
+        "output/wolf-scouts/cards/strategy_ploys/wolf-scouts-cloaked-by-the-storm-front.jpg": "b6714ec56758f7fe32565cdddb48d2c7cbe53d42144db8e1125f834899d4d28d",
+        "output/wolf-scouts/cards/strategy_ploys/wolf-scouts-savage-fighters-back.jpg": "47e0939e8b7c6e51a0fb90f8de0292d43b24711504d65688ec3385d7d016a422",
+        "output/wolf-scouts/cards/strategy_ploys/wolf-scouts-savage-fighters-front.jpg": "3c56ec8b2e4bda2ba4436601fdb4080c901f0a9c6224a44f01243539790df7eb",
+        "output/wolf-scouts/cards/strategy_ploys/wolf-scouts-storms-bite-back.jpg": "47e0939e8b7c6e51a0fb90f8de0292d43b24711504d65688ec3385d7d016a422",
+        "output/wolf-scouts/cards/strategy_ploys/wolf-scouts-storms-bite-front.jpg": "77a05dbcdb03da9622a4a7fba9ae7d4097dac37a30908d6bdcf4d3011b949a52",
+        "output/wolf-scouts/cards/strategy_ploys/wolf-scouts-tempestuous-wrath-back.jpg": "47e0939e8b7c6e51a0fb90f8de0292d43b24711504d65688ec3385d7d016a422",
+        "output/wolf-scouts/cards/strategy_ploys/wolf-scouts-tempestuous-wrath-front.jpg": "7961e31a58b87cce4e9c8f6011c176b0b0b6e97de276d035e52db4e4ce4bb0af",
+        "output/wolf-scouts/cards/token_guide/wolf-scouts-token-guide-back.jpg": "47e0939e8b7c6e51a0fb90f8de0292d43b24711504d65688ec3385d7d016a422",
+        "output/wolf-scouts/cards/token_guide/wolf-scouts-token-guide-front.jpg": "71ae203fc71e894f2394affe2e256910c1496899575b02801072c3b333c6b809",
+        "output/wolf-scouts/cardbox/wolf-scouts-card-box-texture.jpg": "6fef48ddc81fd2379a8e88a69c281c9d25f47c47439ea1d8c602df8694e40f29",
+        "output/wolf-scouts/cardbox/wolf-scouts-card-box.obj": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+        "output/wolf-scouts/tokens/tokenbag/wolf-scouts-token-bag-icon.png": "02025b01bc18ffc5e6b4c15087149e59c30af67a1c0024eaeb7d73f5d18e8205",
+        "output/wolf-scouts/tokens/tokenbag/wolf-scouts-token-bag.obj": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+        "output/wolf-scouts/tokens/wolf-scouts-call-the-storm.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/wolf-scouts/tokens/wolf-scouts-call-the-storm.png": "8ffcbbb4c6b5508167eb0f9c43a5fa937295525b4478365d26d3e7e1650d7f09",
+        "output/wolf-scouts/tokens/wolf-scouts-cast-the-runes.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/wolf-scouts/tokens/wolf-scouts-cast-the-runes.png": "9168b38a3aba754730cf97a46a3feb8ef6e1d01ab69ba160a1f8ffa4f6269204",
+        "output/wolf-scouts/tokens/wolf-scouts-guard.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/wolf-scouts/tokens/wolf-scouts-guard.png": "d564bf78bc58ce9b84ff2fad8cdaae677ba1755cd861e75b9ff941cf6b074d80",
+        "output/wolf-scouts/tokens/wolf-scouts-haywire-mine.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/wolf-scouts/tokens/wolf-scouts-haywire-mine.png": "34a030ae07faadb373de750048682ef89b6c2c292b3e57722e2ead33a228c8b7",
+        "output/wolf-scouts/tokens/wolf-scouts-hunters-senses.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/wolf-scouts/tokens/wolf-scouts-hunters-senses.png": "18253047a1d37be70124f7c30d7b3765d2523d1a217f7cf0939cfd8071a4cdfa",
+        "output/wolf-scouts/tokens/wolf-scouts-lupine-guile.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/wolf-scouts/tokens/wolf-scouts-lupine-guile.png": "9a8fbe3bae8b5a2b6a3e39e511e2af8f1bced8d11a070103188ed74f0e31a457",
+        "output/wolf-scouts/tokens/wolf-scouts-pounce.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/wolf-scouts/tokens/wolf-scouts-pounce.png": "119d6f56ad3e8dbaa31a3862929995df13f5179d90b0ed15b7c69b1887dfb195",
+        "output/wolf-scouts/tokens/wolf-scouts-runic-charms.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/wolf-scouts/tokens/wolf-scouts-runic-charms.png": "dc7b45fe6f410c3584e85028137dc73edc0d3ac0c8b396b254709ccb48ee0d79",
+        "output/wolf-scouts/tokens/wolf-scouts-storm.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/wolf-scouts/tokens/wolf-scouts-storm.png": "17c5b69811476da2ed080f0e664c8507ed8db62419c7a90f07e2765e4261f4b8",
+        "output/wolf-scouts/tokens/wolf-scouts-wolfteeth-necklaces.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/wolf-scouts/tokens/wolf-scouts-wolfteeth-necklaces.png": "dc5ea3683ba31cda355cafa4c8c8cc1b0fee94c5f251d0e57a4546c6bd67ef2f",
+        "output/wolf-scouts/dice/wolf-scouts-dice-dark.jpg": "34eeda8f35b8004afee2e42e7644875d69c7c3467a2d0bd3133d289cb093b737",
+        "output/wolf-scouts/dice/wolf-scouts-dice-light.jpg": "4caa26d4bc484d7643cef443c4a6fa236609b6cbd11fa750b2e7f2d5d3eda6f9",
+        "output/wolf-scouts/dice/wolf-scouts-dice-team.jpg": "1d4c7eed80bb29ffb7b398f786557edc338f68205f3262c77510c54ddb4b7130",
+        "output/wolf-scouts/data/wolf-scouts-team-data.json": "6f8c168f01b1a844ae7fbeae9436381aec200bd9378d92452b4de47431e7d07a",
+        "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
+        "config/defaults/tts-script/datacard-load-stats.lua": "2d5f4088c2ff09f54988cf8722080f536b4e1b998cc2b4c1f1ea94e6b18eb92e",
+        "config/defaults/tts-script/display-table-manager-script.lua": "0dab4381078d90802f25e2cc825bc3658be35ee13ab3e98831c9d248c2526689",
+        "config/defaults/tts-script/faction-rule-chapter-tactics.lua": "c906742268076fb91f7cb4a92c6b588e1122ccddb692688f635c8dd4f7110ad0",
+        "config/defaults/tts-script/intermediate-updater.lua": "1a2d6dbc1a8c9c57ba6a3e7a3d4bc4b7a38a6c242a93f6ef3dae698123384d35",
+        "config/defaults/tts-script/single-object-updater.lua": "3613b85169e986a8e50ebe221482079e27c18037e3f48920aa0f7e138c0ccacc",
+        "config/defaults/tts-script/team-spawner-clean-script.lua": "12457bff3961eee2293c42d81cf4f4eb8b103177245a1ab8b46fd65da40672a2",
+        "config/defaults/tts-script/team-spawner-script.lua": "a51ff45c8622923db909fb465781801511f235412f099f83dff728d4027650db",
+        "config/defaults/tts-script/tts-update-rules-in-box-script.lua": "1eddd1803087ed63181a1149c856db77eef3196dc45d0d283693fada44a357dd",
+        "config/defaults/tts-image/default-icon.png": "892aff2628b9685c813e77be05c66afc1dc4247bc1dc9ce6fe54f006c2608271",
+        "config/defaults/tts-image/spawner-token.png": "61903b093f01d834f5e4c4c069b1353ecf7d29f012fef914b3027266816d8a6b",
+        "config/defaults/tts-token/square-bag-mesh.obj": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+        "config/defaults/tts-token/template-diamond-cutter.png": "719f57ba2b86494be454a6d3d25d8567dde974a915f3dde5ddc0e2d8dafaa1a5",
+        "config/defaults/tts-token/template-octagon-cutter.png": "944632aeacab978293ae57758b63086166c5fbaf3b845f48b3dd61db67d5c076",
+        "config/defaults/tts-token/template-operative-cutter.png": "0e698ddd403d7f0e84f200eb42af73f5249a9c5539d773298ff4c700ac9fe153",
+        "config/defaults/tts-token/template-round-cutter.png": "6564e1451c9a135a1c756fd94cde1c71e373e3fa677b51bba9d4bbe9e795d544",
+        "config/defaults/tts-token/token-bag-script.lua": "1659887e0fbfb9e3ebbc1aa5f3df8e1ffd89ee192be24d2dd1f02fcb0407e486",
+        "config/defaults/tts-token/token-bg-sample.png": "f9f90664c7f1c877c6f050f6e85babde6523cdc0aed9c77de8c09214f44ee109",
+        "config/defaults/tts-token/token-mesh.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc"
+      }
+    },
+    "front_end": {
+      "outputs": {},
+      "sources": {
+        "strategy-ploys": {
+          "hash": "a5025fdaf28836b0ce9b3d0227aef281457ffd83becd26e135474dfc66717e4a",
+          "outputs": [
+            "layers/kt-app/extracted/wolf-scouts/cards/strategy-ploys/wolf-scouts-strategy-ploys-page_0.pdf",
+            "layers/kt-app/extracted/wolf-scouts/cards/strategy-ploys/wolf-scouts-strategy-ploys-page_1.pdf",
+            "layers/kt-app/extracted/wolf-scouts/cards/strategy-ploys/wolf-scouts-strategy-ploys-page_2.pdf",
+            "layers/kt-app/extracted/wolf-scouts/cards/strategy-ploys/wolf-scouts-strategy-ploys-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:07:45.560865+00:00"
+        },
+        "operatives-selection": {
+          "hash": "346c66b34b57455d6570b39d819e3dd11d924588f6df6a9a6fdef49721c9fd6f",
+          "outputs": [
+            "layers/kt-app/extracted/wolf-scouts/cards/operatives-selection/wolf-scouts-operatives-selection-page_0.pdf"
+          ],
+          "modified": "2026-07-06T16:10:14.558891+00:00"
+        },
+        "firefight-ploys": {
+          "hash": "4d4c5ff122212fd845dd727666818f50b3898fb5a34b1f3ed0f5417dd1f4d4eb",
+          "outputs": [
+            "layers/kt-app/extracted/wolf-scouts/cards/firefight-ploys/wolf-scouts-firefight-ploys-page_0.pdf",
+            "layers/kt-app/extracted/wolf-scouts/cards/firefight-ploys/wolf-scouts-firefight-ploys-page_1.pdf",
+            "layers/kt-app/extracted/wolf-scouts/cards/firefight-ploys/wolf-scouts-firefight-ploys-page_2.pdf",
+            "layers/kt-app/extracted/wolf-scouts/cards/firefight-ploys/wolf-scouts-firefight-ploys-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:10:34.723262+00:00"
+        },
+        "datacards": {
+          "hash": "525196b7403293f1866298317fb2b0435b8bb86d8f419a7f9fac389705338798",
+          "outputs": [
+            "layers/kt-app/extracted/wolf-scouts/cards/datacards/wolf-scouts-datacards-page_0.pdf",
+            "layers/kt-app/extracted/wolf-scouts/cards/datacards/wolf-scouts-datacards-page_1.pdf",
+            "layers/kt-app/extracted/wolf-scouts/cards/datacards/wolf-scouts-datacards-page_2.pdf",
+            "layers/kt-app/extracted/wolf-scouts/cards/datacards/wolf-scouts-datacards-page_3.pdf",
+            "layers/kt-app/extracted/wolf-scouts/cards/datacards/wolf-scouts-datacards-page_4.pdf",
+            "layers/kt-app/extracted/wolf-scouts/cards/datacards/wolf-scouts-datacards-page_5.pdf",
+            "layers/kt-app/extracted/wolf-scouts/cards/datacards/wolf-scouts-datacards-page_6.pdf",
+            "layers/kt-app/extracted/wolf-scouts/cards/datacards/wolf-scouts-datacards-page_7.pdf",
+            "layers/kt-app/extracted/wolf-scouts/cards/datacards/wolf-scouts-datacards-page_8.pdf",
+            "layers/kt-app/extracted/wolf-scouts/cards/datacards/wolf-scouts-datacards-page_9.pdf",
+            "layers/kt-app/extracted/wolf-scouts/cards/datacards/wolf-scouts-datacards-page_10.pdf"
+          ],
+          "modified": "2026-07-06T16:13:01.974789+00:00"
+        },
+        "equipment": {
+          "hash": "4d3a01e46bfd0f28f93f6adae807a6ba5de838f46eef5c707d91f06089bc1af2",
+          "outputs": [
+            "layers/kt-app/extracted/wolf-scouts/cards/equipment/wolf-scouts-equipment-page_0.pdf",
+            "layers/kt-app/extracted/wolf-scouts/cards/equipment/wolf-scouts-equipment-page_1.pdf",
+            "layers/kt-app/extracted/wolf-scouts/cards/equipment/wolf-scouts-equipment-page_2.pdf",
+            "layers/kt-app/extracted/wolf-scouts/cards/equipment/wolf-scouts-equipment-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:13:02.167002+00:00"
+        },
+        "faction-rules": {
+          "hash": "6b6f5bc430cce78b044d22772bd1ce05dc3012a069e3292ae2de1350f5f334d4",
+          "outputs": [
+            "layers/kt-app/extracted/wolf-scouts/cards/faction-rules/wolf-scouts-faction-rules-page_0.pdf",
+            "layers/kt-app/extracted/wolf-scouts/cards/faction-rules/wolf-scouts-faction-rules-page_1.pdf",
+            "layers/kt-app/extracted/wolf-scouts/cards/faction-rules/wolf-scouts-faction-rules-page_2.pdf"
+          ],
+          "modified": "2026-07-06T16:13:02.694403+00:00"
+        },
+        "cards": {
+          "hash": "0c8323d7b8b183609c78ed354ceedfcd5cdc5c07f9c88e32f8a21d53b95730a6",
+          "outputs": [
+            "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page01_card1_landscape.pdf",
+            "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page01_card2_landscape.pdf",
+            "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page01_card3_landscape.pdf",
+            "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page01_card4_landscape.pdf",
+            "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page02_card1_landscape.pdf",
+            "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page02_card2_landscape.pdf",
+            "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page02_card3_landscape.pdf",
+            "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page02_card4_landscape.pdf",
+            "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page03_card1_landscape.pdf",
+            "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page03_card2_landscape.pdf",
+            "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page03_card3_landscape.pdf",
+            "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page03_card4_landscape.pdf",
+            "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page04_card1_portrait.pdf",
+            "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page04_card2_portrait.pdf",
+            "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page04_card3_portrait.pdf",
+            "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page04_card4_portrait.pdf",
+            "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page05_card1_portrait.pdf",
+            "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page05_card2_portrait.pdf",
+            "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page05_card3_portrait.pdf",
+            "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page05_card4_portrait.pdf",
+            "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page06_card1_portrait.pdf",
+            "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page06_card2_portrait.pdf",
+            "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page06_card3_portrait.pdf",
+            "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page06_card4_portrait.pdf",
+            "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page07_card1_portrait.pdf",
+            "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page07_card2_portrait.pdf",
+            "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page07_card3_portrait.pdf",
+            "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page07_card4_portrait.pdf"
+          ],
+          "modified": "2026-07-06T20:28:25.806857+00:00"
+        }
+      },
+      "completed": "2026-07-06T20:28:25.806891+00:00"
+    },
+    "build_structure": {
+      "outputs": {
+        "structure": {
+          "path": "layers/warcom/structure/wolf-scouts-structure.json",
+          "hash": "a4fcebc84e0047c4734322b0bd72d4a595a0afe00d41f5990f8d9b18585453d7",
+          "modified": "2026-07-06T20:57:25.850733+00:00"
+        }
+      },
+      "inputs": {
+        "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page01_card1_landscape.pdf": "a0aeace11394c9f6e97f3d0a8bf72bdda76cc3aec02a4a8f8323bf88f8761e6d",
+        "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page01_card2_landscape.pdf": "6f837e78fcd9e311cff40604a5c7f640a18bfa618ac1b30c0cee13117f9e085c",
+        "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page01_card3_landscape.pdf": "1f605cda8b41e4ab68b5210c4aff908c99de3222144dbbdd7e40657f0dcf76e8",
+        "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page01_card4_landscape.pdf": "5a05e17734bca914ff4cb0fa13cae73be1676f4ca3cb417fabe20a4563bc18b4",
+        "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page02_card1_landscape.pdf": "059cacca4aa4d1fb3a1c32c667d4e47c8a9d542b5a51328d2382fc47cbffd403",
+        "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page02_card2_landscape.pdf": "1216db3a37ed146e1b29561abae5d75c5af574461bd6acca053c9d39ab70f505",
+        "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page02_card3_landscape.pdf": "7ed25dc06e4d4208f428f8e4d494c139c1f45bdd4abc8e17013c300a08e070a8",
+        "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page02_card4_landscape.pdf": "1718fe582eff886d99575eb71d9c1ab06ffd5d4ff520efe34275fa6a15d68c12",
+        "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page03_card1_landscape.pdf": "f671380c907ec293cf24ee8daa7c9fe4aefbe974a27f394963fe8dbcb13bef34",
+        "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page03_card2_landscape.pdf": "e40d2f03d508ef2782d8a9738417ec197d95be4e977cb27ec8490e3f8007991e",
+        "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page03_card3_landscape.pdf": "16d934c54efe8b0ab0597a914188718854d562c78d385771e9de71aaccfaf38d",
+        "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page03_card4_landscape.pdf": "b1c6e89381bc6e87a26557f2fc581c7937aad968d62facf883cc29d8f29b3daf",
+        "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page04_card1_portrait.pdf": "e04b82eb7cccd5c44bf85f2f0ed8b5303f6878ff1c740530f3e9e8a6f356bbac",
+        "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page04_card2_portrait.pdf": "d77d8b175fed9abee9029471ee54f643f10fd2af87a28856573874191c1173a5",
+        "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page04_card3_portrait.pdf": "425cb7a3ec8246f318c07445f84f33f5f63737d3bf2f2bee331fdb590b20cbeb",
+        "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page04_card4_portrait.pdf": "1a90dc4e02ad481dcb28c5528c457b7789ff5b32fc770b384b7c1d8db43f8544",
+        "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page05_card1_portrait.pdf": "c417bc7c42b3709348e752bccc013308946c9fe3296a954f6ffd8288c12accf7",
+        "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page05_card2_portrait.pdf": "4d88c640798fb22da14f25acc2b6db17e61a7711eb3538155649ebf1c163ba7e",
+        "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page05_card3_portrait.pdf": "e75a7d9911e6795e49feb32f68eab5b55b8ffd0eb233f4ae6a57c23590d32bb3",
+        "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page05_card4_portrait.pdf": "6641a46ec0f4e4c09cadbbab844560b832f6ec4f859f1ccb86fb6d10b9a4074f",
+        "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page06_card1_portrait.pdf": "5f6b442459377095558d541a736e4c2cda1bf30c2343cbc83ba0d5d71c3fd706",
+        "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page06_card2_portrait.pdf": "cb35d801be5c892dc4a9bd27a027f007ac86087392319e8e631196e7382488cd",
+        "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page06_card3_portrait.pdf": "130bfd9e085d8d4ec58be3cdad56ad20f92b178a2cee53a428cb40a120327969",
+        "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page06_card4_portrait.pdf": "25b8557306c38043155da43c156f12b6c705742cd17e8046cfc23a2215e01e6c",
+        "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page07_card1_portrait.pdf": "3908dabf9690beb8134fa52773b878e7c8abb2920f96e44ee12246c2f584da54",
+        "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page07_card2_portrait.pdf": "c9a47bf1b1fea7e8480bbf092a312023bfd0cf9ab3f11fdf665a2b646bb56b36",
+        "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page07_card3_portrait.pdf": "51cf7f413a7ae84f45bde5c08bbed4985667946a1ae105c11e459c01bbd32cdc",
+        "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page07_card4_portrait.pdf": "f83185e7f1c76b65f4253e2559a4c46cb24ecc080f3a1b785ac6adae4019e6c6"
+      },
+      "completed": "2026-07-06T20:57:25.884482+00:00"
+    },
+    "integrate_classified": {
+      "outputs": {
+        "manifest.json": {
+          "path": "layers/integration/wolf-scouts/manifest.json",
+          "hash": "a4fcebc84e0047c4734322b0bd72d4a595a0afe00d41f5990f8d9b18585453d7",
+          "modified": "2026-07-06T20:57:51.692300+00:00"
+        },
+        "wolf-scouts-datacard-wolf-scout-pack-leader.pdf": {
+          "path": "layers/integration/wolf-scouts/wolf-scouts-datacard-wolf-scout-pack-leader.pdf",
+          "hash": "1739aa9e8dbfbff5dd6b9d90d06f33393d53ff61760d61e5095dc40625b62650",
+          "modified": "2026-07-06T20:57:51.706341+00:00"
+        },
+        "wolf-scouts-datacard-wolf-scout-fangbearer.pdf": {
+          "path": "layers/integration/wolf-scouts/wolf-scouts-datacard-wolf-scout-fangbearer.pdf",
+          "hash": "d7bc20ff58e5094c385d4c82c48400ee34773fd2a7f3f9e646d173e4714dc60d",
+          "modified": "2026-07-06T20:57:51.717724+00:00"
+        },
+        "wolf-scouts-datacard-wolf-scout-frosteye.pdf": {
+          "path": "layers/integration/wolf-scouts/wolf-scouts-datacard-wolf-scout-frosteye.pdf",
+          "hash": "40c057fa37c84156f3cd9923145ecd30334be7977a3a3cb8b8535012a14b3a5c",
+          "modified": "2026-07-06T20:57:51.732851+00:00"
+        },
+        "wolf-scouts-datacard-wolf-scout-gunner.pdf": {
+          "path": "layers/integration/wolf-scouts/wolf-scouts-datacard-wolf-scout-gunner.pdf",
+          "hash": "eb1a33344aa16806c5cddd1f51ae0c7c94ae1ea280d76df91d449bcef4ad1d27",
+          "modified": "2026-07-06T20:57:51.743924+00:00"
+        },
+        "wolf-scouts-datacard-wolf-scout-hunter.pdf": {
+          "path": "layers/integration/wolf-scouts/wolf-scouts-datacard-wolf-scout-hunter.pdf",
+          "hash": "901ebab25cadbea68f86c38ddf0c00d2276510c6986747f565384dc25037b323",
+          "modified": "2026-07-06T20:57:51.756867+00:00"
+        },
+        "wolf-scouts-datacard-wolf-scout-rune-priest-skjald.pdf": {
+          "path": "layers/integration/wolf-scouts/wolf-scouts-datacard-wolf-scout-rune-priest-skjald.pdf",
+          "hash": "393c1ac561b28299513ffe206f99d88e1f4f455313a0c0569c251ff3a3fc22e2",
+          "modified": "2026-07-06T20:57:51.768586+00:00"
+        },
+        "wolf-scouts-datacard-wolf-scout-trapmaster.pdf": {
+          "path": "layers/integration/wolf-scouts/wolf-scouts-datacard-wolf-scout-trapmaster.pdf",
+          "hash": "48524fbfbaa5e7d4c486d5d9b40c97ec376aeaff04a7500e64c456f06bfba3cf",
+          "modified": "2026-07-06T20:57:51.781495+00:00"
+        },
+        "wolf-scouts-datacard-wolf-scout-fenrisian-wolf.pdf": {
+          "path": "layers/integration/wolf-scouts/wolf-scouts-datacard-wolf-scout-fenrisian-wolf.pdf",
+          "hash": "87589ab77b778575bbea5e15a952f0c6c9d8da53fcbc0fce1288bc49d804308b",
+          "modified": "2026-07-06T20:57:51.792633+00:00"
+        },
+        "wolf-scouts-equipment-frost-weapons.pdf": {
+          "path": "layers/integration/wolf-scouts/wolf-scouts-equipment-frost-weapons.pdf",
+          "hash": "87a53616305ec26e3173ad314d1b635b83aa119fa5f4f9940a259c038a40b4a2",
+          "modified": "2026-07-06T20:57:51.804433+00:00"
+        },
+        "wolf-scouts-equipment-runic-charms.pdf": {
+          "path": "layers/integration/wolf-scouts/wolf-scouts-equipment-runic-charms.pdf",
+          "hash": "a3fa324e0ffbd73a63731c74642f0b8e803f5fcfb9d6d6a23b77f9011bce4004",
+          "modified": "2026-07-06T20:57:51.815232+00:00"
+        },
+        "wolf-scouts-equipment-wolfteeth-necklaces.pdf": {
+          "path": "layers/integration/wolf-scouts/wolf-scouts-equipment-wolfteeth-necklaces.pdf",
+          "hash": "5776c97a3a4004c29aa0f0b61602f322b766e8862e6232b813a9687de0eae48f",
+          "modified": "2026-07-06T20:57:51.827990+00:00"
+        },
+        "wolf-scouts-equipment-talismanic-trophies.pdf": {
+          "path": "layers/integration/wolf-scouts/wolf-scouts-equipment-talismanic-trophies.pdf",
+          "hash": "6cddd1f537481f9255bda7a3a02acebfa32b25c4966680ca67b54e0653cf56b8",
+          "modified": "2026-07-06T20:57:51.840143+00:00"
+        },
+        "wolf-scouts-faction-rule-elemental-storm.pdf": {
+          "path": "layers/integration/wolf-scouts/wolf-scouts-faction-rule-elemental-storm.pdf",
+          "hash": "99141224ee4196d518424acee715f18ff13072a0a0de4ed9227191ffdfc9db99",
+          "modified": "2026-07-06T20:57:51.851946+00:00"
+        },
+        "wolf-scouts-faction-rule-hunting-astartes.pdf": {
+          "path": "layers/integration/wolf-scouts/wolf-scouts-faction-rule-hunting-astartes.pdf",
+          "hash": "a42706933b3895b4c4124340b10774f80368006452bcb6da44d9b73259b2933e",
+          "modified": "2026-07-06T20:57:51.862574+00:00"
+        },
+        "wolf-scouts-token-guide-token-guide.pdf": {
+          "path": "layers/integration/wolf-scouts/wolf-scouts-token-guide-token-guide.pdf",
+          "hash": "b045926d6d798316f04af8487733d909810d2702f6abce847b408ab06c65d433",
+          "modified": "2026-07-06T20:57:51.873771+00:00"
+        },
+        "wolf-scouts-firefight-ploy-acute-senses.pdf": {
+          "path": "layers/integration/wolf-scouts/wolf-scouts-firefight-ploy-acute-senses.pdf",
+          "hash": "8428002920c27ddf5a04b9faaab23a67d9f09f06675efebd464b321ef6367b0b",
+          "modified": "2026-07-06T20:57:51.884200+00:00"
+        },
+        "wolf-scouts-firefight-ploy-counterattack.pdf": {
+          "path": "layers/integration/wolf-scouts/wolf-scouts-firefight-ploy-counterattack.pdf",
+          "hash": "0949ad7c47d86151cb58e9dfb222e4a435a2b19bcb03309451b0d74162bb320b",
+          "modified": "2026-07-06T20:57:51.894679+00:00"
+        },
+        "wolf-scouts-firefight-ploy-touched-by-lokyar.pdf": {
+          "path": "layers/integration/wolf-scouts/wolf-scouts-firefight-ploy-touched-by-lokyar.pdf",
+          "hash": "a3c03ad1c0f24f9a2b196c4e3fa096b45187fce232b4838218a230020203ad0a",
+          "modified": "2026-07-06T20:57:51.906934+00:00"
+        },
+        "wolf-scouts-firefight-ploy-transhuman-physiology.pdf": {
+          "path": "layers/integration/wolf-scouts/wolf-scouts-firefight-ploy-transhuman-physiology.pdf",
+          "hash": "956795168be85255ba8504847ad6c8b396eeeb805aef78cae181658bf34589c3",
+          "modified": "2026-07-06T20:57:51.921142+00:00"
+        },
+        "wolf-scouts-operatives-selection-operative-selection.pdf": {
+          "path": "layers/integration/wolf-scouts/wolf-scouts-operatives-selection-operative-selection.pdf",
+          "hash": "cac18b3e90e992ace787d546fecdc6634897cf181f801a36ca1230ca78f14100",
+          "modified": "2026-07-06T20:57:51.934173+00:00"
+        },
+        "wolf-scouts-strategy-ploy-cloaked-by-the-storm.pdf": {
+          "path": "layers/integration/wolf-scouts/wolf-scouts-strategy-ploy-cloaked-by-the-storm.pdf",
+          "hash": "33a9e175f814fee3e2151c0ea6781e73db112304879add3bb9740c814adbf325",
+          "modified": "2026-07-06T20:57:51.950497+00:00"
+        },
+        "wolf-scouts-strategy-ploy-tempestuous-wrath.pdf": {
+          "path": "layers/integration/wolf-scouts/wolf-scouts-strategy-ploy-tempestuous-wrath.pdf",
+          "hash": "222072d69ef9573e15a466070d8f0be29a51bee18265f46ed5d9c8623c7b0687",
+          "modified": "2026-07-06T20:57:51.965442+00:00"
+        },
+        "wolf-scouts-strategy-ploy-storms-bite.pdf": {
+          "path": "layers/integration/wolf-scouts/wolf-scouts-strategy-ploy-storms-bite.pdf",
+          "hash": "dca3dd3fd9233b639ac829b71e09f3dec1a20d038c1b08f8509c4161f5807ab2",
+          "modified": "2026-07-06T20:57:51.981336+00:00"
+        },
+        "wolf-scouts-strategy-ploy-savage-fighters.pdf": {
+          "path": "layers/integration/wolf-scouts/wolf-scouts-strategy-ploy-savage-fighters.pdf",
+          "hash": "37e885894e7930657e6416dfe3fb52e72d6df27a467ae5e4dec2510fb42c74f1",
+          "modified": "2026-07-06T20:57:51.993420+00:00"
+        }
+      },
+      "inputs": {
+        "layers/warcom/structure/wolf-scouts-structure.json": "a4fcebc84e0047c4734322b0bd72d4a595a0afe00d41f5990f8d9b18585453d7",
+        "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page01_card1_landscape.pdf": "a0aeace11394c9f6e97f3d0a8bf72bdda76cc3aec02a4a8f8323bf88f8761e6d",
+        "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page01_card2_landscape.pdf": "6f837e78fcd9e311cff40604a5c7f640a18bfa618ac1b30c0cee13117f9e085c",
+        "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page01_card3_landscape.pdf": "1f605cda8b41e4ab68b5210c4aff908c99de3222144dbbdd7e40657f0dcf76e8",
+        "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page01_card4_landscape.pdf": "5a05e17734bca914ff4cb0fa13cae73be1676f4ca3cb417fabe20a4563bc18b4",
+        "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page02_card1_landscape.pdf": "059cacca4aa4d1fb3a1c32c667d4e47c8a9d542b5a51328d2382fc47cbffd403",
+        "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page02_card2_landscape.pdf": "1216db3a37ed146e1b29561abae5d75c5af574461bd6acca053c9d39ab70f505",
+        "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page02_card3_landscape.pdf": "7ed25dc06e4d4208f428f8e4d494c139c1f45bdd4abc8e17013c300a08e070a8",
+        "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page02_card4_landscape.pdf": "1718fe582eff886d99575eb71d9c1ab06ffd5d4ff520efe34275fa6a15d68c12",
+        "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page03_card1_landscape.pdf": "f671380c907ec293cf24ee8daa7c9fe4aefbe974a27f394963fe8dbcb13bef34",
+        "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page03_card2_landscape.pdf": "e40d2f03d508ef2782d8a9738417ec197d95be4e977cb27ec8490e3f8007991e",
+        "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page03_card3_landscape.pdf": "16d934c54efe8b0ab0597a914188718854d562c78d385771e9de71aaccfaf38d",
+        "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page07_card1_portrait.pdf": "3908dabf9690beb8134fa52773b878e7c8abb2920f96e44ee12246c2f584da54",
+        "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page07_card2_portrait.pdf": "c9a47bf1b1fea7e8480bbf092a312023bfd0cf9ab3f11fdf665a2b646bb56b36",
+        "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page07_card3_portrait.pdf": "51cf7f413a7ae84f45bde5c08bbed4985667946a1ae105c11e459c01bbd32cdc",
+        "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page07_card4_portrait.pdf": "f83185e7f1c76b65f4253e2559a4c46cb24ecc080f3a1b785ac6adae4019e6c6",
+        "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page04_card2_portrait.pdf": "d77d8b175fed9abee9029471ee54f643f10fd2af87a28856573874191c1173a5",
+        "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page04_card3_portrait.pdf": "425cb7a3ec8246f318c07445f84f33f5f63737d3bf2f2bee331fdb590b20cbeb",
+        "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page04_card4_portrait.pdf": "1a90dc4e02ad481dcb28c5528c457b7789ff5b32fc770b384b7c1d8db43f8544",
+        "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page06_card1_portrait.pdf": "5f6b442459377095558d541a736e4c2cda1bf30c2343cbc83ba0d5d71c3fd706",
+        "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page06_card2_portrait.pdf": "cb35d801be5c892dc4a9bd27a027f007ac86087392319e8e631196e7382488cd",
+        "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page06_card3_portrait.pdf": "130bfd9e085d8d4ec58be3cdad56ad20f92b178a2cee53a428cb40a120327969",
+        "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page06_card4_portrait.pdf": "25b8557306c38043155da43c156f12b6c705742cd17e8046cfc23a2215e01e6c",
+        "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page04_card1_portrait.pdf": "e04b82eb7cccd5c44bf85f2f0ed8b5303f6878ff1c740530f3e9e8a6f356bbac",
+        "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page05_card1_portrait.pdf": "c417bc7c42b3709348e752bccc013308946c9fe3296a954f6ffd8288c12accf7",
+        "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page05_card2_portrait.pdf": "4d88c640798fb22da14f25acc2b6db17e61a7711eb3538155649ebf1c163ba7e",
+        "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page05_card3_portrait.pdf": "e75a7d9911e6795e49feb32f68eab5b55b8ffd0eb233f4ae6a57c23590d32bb3",
+        "layers/warcom/extracted/wolf-scouts/cards/wolf-scouts_page05_card4_portrait.pdf": "6641a46ec0f4e4c09cadbbab844560b832f6ec4f859f1ccb86fb6d10b9a4074f"
+      },
+      "completed": "2026-07-06T20:57:52.031003+00:00"
+    },
+    "extract_artwork": {
+      "outputs": {},
+      "sources": {
+        "artwork": {
+          "hash": "0c8323d7b8b183609c78ed354ceedfcd5cdc5c07f9c88e32f8a21d53b95730a6",
+          "outputs": [
+            "layers/integration/wolf-scouts/artwork/wolf-scouts-artwork-01.jpeg",
+            "layers/integration/wolf-scouts/artwork/wolf-scouts-artwork-02.jpeg",
+            "layers/integration/wolf-scouts/artwork/wolf-scouts-artwork-03.png",
+            "layers/integration/wolf-scouts/artwork/wolf-scouts-artwork-04.jpeg",
+            "layers/integration/wolf-scouts/artwork/wolf-scouts-artwork-05.jpeg",
+            "layers/integration/wolf-scouts/artwork/wolf-scouts-artwork-06.jpeg",
+            "layers/integration/wolf-scouts/artwork/wolf-scouts-artwork-07.jpeg",
+            "layers/integration/wolf-scouts/artwork/wolf-scouts-artwork-08.jpeg",
+            "layers/integration/wolf-scouts/artwork/wolf-scouts-artwork-09.jpeg",
+            "layers/integration/wolf-scouts/artwork/wolf-scouts-artwork-10.jpeg",
+            "layers/integration/wolf-scouts/artwork/wolf-scouts-artwork-11.jpeg",
+            "layers/integration/wolf-scouts/artwork/wolf-scouts-artwork-12.jpeg",
+            "layers/integration/wolf-scouts/artwork/wolf-scouts-artwork-13.jpeg",
+            "layers/integration/wolf-scouts/artwork/wolf-scouts-artwork-14.jpeg",
+            "layers/integration/wolf-scouts/artwork/wolf-scouts-artwork-15.jpeg",
+            "layers/integration/wolf-scouts/artwork/wolf-scouts-artwork-16.jpeg",
+            "layers/integration/wolf-scouts/artwork/wolf-scouts-artwork-17.jpeg",
+            "layers/integration/wolf-scouts/artwork/wolf-scouts-artwork-18.jpeg",
+            "layers/integration/wolf-scouts/artwork/wolf-scouts-artwork-19.jpeg",
+            "layers/integration/wolf-scouts/artwork/wolf-scouts-artwork-20.jpeg",
+            "layers/integration/wolf-scouts/artwork/wolf-scouts-artwork-21.jpeg",
+            "layers/integration/wolf-scouts/artwork/wolf-scouts-artwork-22.jpeg",
+            "layers/integration/wolf-scouts/artwork/wolf-scouts-artwork-23.jpeg",
+            "layers/integration/wolf-scouts/artwork/wolf-scouts-artwork-24.jpeg",
+            "layers/integration/wolf-scouts/artwork/wolf-scouts-artwork-25.jpeg",
+            "layers/integration/wolf-scouts/artwork/wolf-scouts-artwork-26.jpeg",
+            "layers/integration/wolf-scouts/artwork/wolf-scouts-artwork-27.jpeg",
+            "layers/integration/wolf-scouts/artwork/wolf-scouts-artwork-28.jpeg",
+            "layers/integration/wolf-scouts/artwork/wolf-scouts-artwork-29.jpeg",
+            "layers/integration/wolf-scouts/artwork/wolf-scouts-artwork-30.jpeg",
+            "layers/integration/wolf-scouts/artwork/wolf-scouts-artwork-metadata.json",
+            "layers/integration/wolf-scouts/artwork/icons/wolf-scouts-icon-landscape.jpg",
+            "layers/integration/wolf-scouts/artwork/icons/wolf-scouts-icon-portrait.jpg",
+            "layers/integration/wolf-scouts/artwork/icons/wolf-scouts-icon-token-transparent.png",
+            "layers/integration/wolf-scouts/artwork/icons/wolf-scouts-icon-token.jpg"
+          ],
+          "modified": "2026-07-06T20:56:11.957676+00:00"
+        }
+      },
+      "completed": "2026-07-06T20:56:11.957691+00:00"
+    }
+  }
+}

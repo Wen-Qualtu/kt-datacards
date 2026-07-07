@@ -1,0 +1,1196 @@
+{
+  "team": "blades-of-khaine",
+  "pipeline_version": "2.0",
+  "last_updated": "2026-07-07T07:29:59.000639+00:00",
+  "steps": {
+    "content_analysis": {
+      "outputs": {
+        "content.json": {
+          "path": "layers/integration/blades-of-khaine/content/blades-of-khaine-content.json",
+          "hash": "0976e806a3e9e84ab96f2fc465b35edce1fb036951d890dc00a2b79e9c268e8a",
+          "modified": "2026-07-06T20:58:03.736742+00:00"
+        }
+      },
+      "completed": "2026-07-06T20:58:03.782385+00:00",
+      "inputs": {
+        "layers/integration/blades-of-khaine/manifest.json": "f8534eab0054b3fe24aa246915f14c7314a855387ac0f09024e9a8df76fb35ec",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "layers/integration/blades-of-khaine/blades-of-khaine-datacard-dire-avenger-exarch.pdf": "7186b8c5b1c4f2f1782526e8468c3a205f7e07a71ded2ea6a08b408f0b2f56a0",
+        "layers/integration/blades-of-khaine/blades-of-khaine-datacard-dire-avenger-warrior.pdf": "547d6d11e0cbc0de83348b4b7979b313aee35d90fe9b893bf0161d04b90fb7d3",
+        "layers/integration/blades-of-khaine/blades-of-khaine-datacard-howling-banshee-exarch.pdf": "de6978033d7738590d5480e2e3f2179fbf1d5e75ad3343acf3641a376527798d",
+        "layers/integration/blades-of-khaine/blades-of-khaine-datacard-howling-banshee-warrior.pdf": "6fd6467f48fb757e64815b78d5941d0a3329fe3e0efa15f1f48b6c54bb8d52f5",
+        "layers/integration/blades-of-khaine/blades-of-khaine-datacard-striking-scorpion-exarch.pdf": "0569efeefd54018b4637350e459ba52b7ce55c23d7bb388bd03519ee00d3477e",
+        "layers/integration/blades-of-khaine/blades-of-khaine-datacard-striking-scorpion-warrior.pdf": "e1a73374e1ccff3335aaa38b5ee03a4d4b9756c577b584116c20c48e64a20370",
+        "layers/integration/blades-of-khaine/blades-of-khaine-equipment-rune-of-foresight.pdf": "595b1c177b17432e6756981c87bda16921ed53f705fc7fe69e19d48a0122fe48",
+        "layers/integration/blades-of-khaine/blades-of-khaine-equipment-rune-of-prophecy.pdf": "eab9176dd45942168f4acb5968ee0767a9d9059be51db4c51e3e308ee4beefdf",
+        "layers/integration/blades-of-khaine/blades-of-khaine-equipment-rune-of-shielding.pdf": "13a0120e2c03dec607123df13bdc65c5eff846d0b7e15f22103476a65f615cb7",
+        "layers/integration/blades-of-khaine/blades-of-khaine-equipment-wraithbone-talisman.pdf": "d413f615f214db7cb0939352e06b73fe250f1cf40ca0cf01c875d7f6bf48e58a",
+        "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-aspect-techniques.pdf": "07b4541fd25bde7f663c566cf4371bb4bc3f18b1e3667ac0ffaaf55bfeb5d494",
+        "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-dire-avenger-1.pdf": "4ca63316b511a8b545629be38718c2b9366a0644e1dbec43fbbe9b961e98fd91",
+        "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-dire-avenger-2.pdf": "a42b81cbcfcf295074db515e370209523ea0d680af9c5310c61c22b684ed8837",
+        "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-dire-avenger-3.pdf": "36c78d95a4ed89d286ca009537d7d455dff5876e2476c140d1d856e0aa3543bf",
+        "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-dire-avenger-4.pdf": "8ea30a1ec298b1b9803b1969d6282357b51abf93555ea2a0fde8f060faa15046",
+        "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-dire-avenger-5.pdf": "58df50e61f5c96526c547428bdba6ad93215d00da9bb3430d4e54ef7d5a6fd83",
+        "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-howling-banshee-1.pdf": "33f6761edb6db35cbdfe298e845b4e5db0a78d0e6c26d22b781dd81cb802d8b0",
+        "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-howling-banshee-2.pdf": "6d600d0e2339ca6bf7c5da53a1ab3bdce660a4b79f6b7d3a8e3bbcccd9f4a69b",
+        "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-howling-banshee-3.pdf": "eee92ba5f92efb04ffda6ed7d297081c108888e5c008f989fb362586a9abda11",
+        "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-howling-banshee-4.pdf": "b322d666e99211d705a39e1cd9f2a2ab550721725cc3764ba9d17cc5b7812329",
+        "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-howling-banshee-5.pdf": "eec7eb17d7a775ce5ae1af69611b16d6a729aa863f0834165ae9ab34512098d8",
+        "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-striking-scorpion-1.pdf": "da2cbfe4b7616b07177fd6090125e36e9daccb27c341c1d7aa89350f463c00d9",
+        "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-striking-scorpion-2.pdf": "e646d028798c9397aac96e8fed76200604093d219898e001b2b4140a442c6310",
+        "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-striking-scorpion-3.pdf": "e8b51727d747a73e176723a0fda761acecf9dc50092466b7dacae3e416a8e495",
+        "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-striking-scorpion-4.pdf": "0037a353005370bcd5547d104bc9e2c4d7df78efb17056a878317edf0b468969",
+        "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-striking-scorpion-5.pdf": "db184d80d958e32a138af2fac27788163f2e9642d317e2cfdf6fdd42c24cbae6",
+        "layers/integration/blades-of-khaine/blades-of-khaine-firefight-ploy-bladewind.pdf": "aad8a0cffdca60085eacf1fb11f39bcd26eb3dd031c5240640982796c5fd2ef9",
+        "layers/integration/blades-of-khaine/blades-of-khaine-firefight-ploy-contempt.pdf": "a147fbe1d39ddeae42350b3bcc4f1ad2b0ef85e2f4e05c1313329d0a013511c2",
+        "layers/integration/blades-of-khaine/blades-of-khaine-firefight-ploy-fading-light.pdf": "a9ea9d4dd63101c87c03f3c88a1fb719d94c5ae04aaf10c197baafaf003cff95",
+        "layers/integration/blades-of-khaine/blades-of-khaine-firefight-ploy-starfall.pdf": "e91e07db6a5468a6fe770cdf09d1bf4bc33b2fc964b4fa8ac56be3c3923a759c",
+        "layers/integration/blades-of-khaine/blades-of-khaine-operatives-selection-operative-selection.pdf": "4436895dab3630fa2bf70d2738699a5d2d6750da1db4375edda60eda4d14518d",
+        "layers/integration/blades-of-khaine/blades-of-khaine-strategy-ploy-dance-of-death.pdf": "b8602f996c5ac305bb8822dab47364fc88f117e7b7b2a7d9b09a1e63ba49228d",
+        "layers/integration/blades-of-khaine/blades-of-khaine-strategy-ploy-forewarned.pdf": "7234b5851b8f5db12633e6a54a0224596d9ed9ae096ba96a4a31ae6cd33f5971",
+        "layers/integration/blades-of-khaine/blades-of-khaine-strategy-ploy-khaines-vengeance.pdf": "afb7494bf46c97a98408b12444d8e2726acdf6edd0400bf10c160c1c94c2fe2e",
+        "layers/integration/blades-of-khaine/blades-of-khaine-strategy-ploy-ruthless-poise.pdf": "4ac07bc4a192e119bc18b51b78ca24df0893a58394b5ca4c421a8c00cbdfe23f",
+        "layers/integration/blades-of-khaine/blades-of-khaine-token-guide-token-guide.pdf": "29187d80cfe7f0a0aef120cdd34b152ac552b82ad95395ddde43b6b80371848d"
+      }
+    },
+    "extract_backsides": {
+      "outputs": {
+        "backside-landscape.jpg": {
+          "path": "layers/integration/blades-of-khaine/card-backside/blades-of-khaine-backside-landscape.jpg",
+          "hash": "2f1f1af3343a2419ccd7311bb03415d20704325edd4712100e0906b91dca0240",
+          "modified": "2026-07-06T16:31:56.612680+00:00"
+        },
+        "backside-portrait.jpg": {
+          "path": "layers/integration/blades-of-khaine/card-backside/blades-of-khaine-backside-portrait.jpg",
+          "hash": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+          "modified": "2026-07-06T16:31:56.634756+00:00"
+        }
+      },
+      "completed": "2026-07-06T16:31:56.639749+00:00",
+      "inputs": {
+        "layers/integration/blades-of-khaine/artwork/icons/blades-of-khaine-icon-token.jpg": "6e83df17b193474f4838dd5f8fc2a725b71fba4e900fa5d0a9d9ac814010f2b5",
+        "config/defaults/box/card-box-background.jpeg": "2dd1442a7c52ca1d66899333f678d60f48981ce20561ead77c1161d548176036"
+      }
+    },
+    "extract_tokens": {
+      "outputs": {
+        "tokens/blades-of-khaine-rune-of-prophecy.png": {
+          "path": "output/blades-of-khaine/tokens/blades-of-khaine-rune-of-prophecy.png",
+          "hash": "00507450f8302669b85eb7c6a928f3e19d19829f30adaa5e78d2152adddae088",
+          "modified": "2026-07-06T21:02:24.619775+00:00"
+        },
+        "tokens/blades-of-khaine-rune-of-shielding.png": {
+          "path": "output/blades-of-khaine/tokens/blades-of-khaine-rune-of-shielding.png",
+          "hash": "d7800fd8edca8ad524581e757d6e7deb657708fc2e75ab08589375a239f87f37",
+          "modified": "2026-07-06T21:02:24.624768+00:00"
+        },
+        "tokens/blades-of-khaine-wraithbone-talisman.png": {
+          "path": "output/blades-of-khaine/tokens/blades-of-khaine-wraithbone-talisman.png",
+          "hash": "0ae82c6c8693f791edac85e402caa2162b3b7e1cf094ac5ad8f2366bc5d82655",
+          "modified": "2026-07-06T21:02:24.630900+00:00"
+        },
+        "tokens/blades-of-khaine-rune-of-prophecy.obj": {
+          "path": "output/blades-of-khaine/tokens/blades-of-khaine-rune-of-prophecy.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:24.632379+00:00"
+        },
+        "tokens/blades-of-khaine-rune-of-shielding.obj": {
+          "path": "output/blades-of-khaine/tokens/blades-of-khaine-rune-of-shielding.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:24.633255+00:00"
+        },
+        "tokens/blades-of-khaine-wraithbone-talisman.obj": {
+          "path": "output/blades-of-khaine/tokens/blades-of-khaine-wraithbone-talisman.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:24.634084+00:00"
+        },
+        "tokens/tokenbag/blades-of-khaine-token-bag-icon.png": {
+          "path": "output/blades-of-khaine/tokens/tokenbag/blades-of-khaine-token-bag-icon.png",
+          "hash": "6e83df17b193474f4838dd5f8fc2a725b71fba4e900fa5d0a9d9ac814010f2b5",
+          "modified": "2026-07-06T21:02:24.639532+00:00"
+        },
+        "tokens/tokenbag/blades-of-khaine-token-bag.obj": {
+          "path": "output/blades-of-khaine/tokens/tokenbag/blades-of-khaine-token-bag.obj",
+          "hash": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+          "modified": "2026-07-06T21:02:24.640482+00:00"
+        }
+      },
+      "completed": "2026-07-06T21:02:24.682529+00:00",
+      "inputs": {
+        "layers/integration/blades-of-khaine/manifest.json": "f8534eab0054b3fe24aa246915f14c7314a855387ac0f09024e9a8df76fb35ec",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "layers/integration/blades-of-khaine/artwork/icons/blades-of-khaine-icon-token.jpg": "6e83df17b193474f4838dd5f8fc2a725b71fba4e900fa5d0a9d9ac814010f2b5",
+        "layers/integration/blades-of-khaine/blades-of-khaine-datacard-dire-avenger-exarch.pdf": "7186b8c5b1c4f2f1782526e8468c3a205f7e07a71ded2ea6a08b408f0b2f56a0",
+        "layers/integration/blades-of-khaine/blades-of-khaine-datacard-dire-avenger-warrior.pdf": "547d6d11e0cbc0de83348b4b7979b313aee35d90fe9b893bf0161d04b90fb7d3",
+        "layers/integration/blades-of-khaine/blades-of-khaine-datacard-howling-banshee-exarch.pdf": "de6978033d7738590d5480e2e3f2179fbf1d5e75ad3343acf3641a376527798d",
+        "layers/integration/blades-of-khaine/blades-of-khaine-datacard-howling-banshee-warrior.pdf": "6fd6467f48fb757e64815b78d5941d0a3329fe3e0efa15f1f48b6c54bb8d52f5",
+        "layers/integration/blades-of-khaine/blades-of-khaine-datacard-striking-scorpion-exarch.pdf": "0569efeefd54018b4637350e459ba52b7ce55c23d7bb388bd03519ee00d3477e",
+        "layers/integration/blades-of-khaine/blades-of-khaine-datacard-striking-scorpion-warrior.pdf": "e1a73374e1ccff3335aaa38b5ee03a4d4b9756c577b584116c20c48e64a20370",
+        "layers/integration/blades-of-khaine/blades-of-khaine-equipment-rune-of-foresight.pdf": "595b1c177b17432e6756981c87bda16921ed53f705fc7fe69e19d48a0122fe48",
+        "layers/integration/blades-of-khaine/blades-of-khaine-equipment-rune-of-prophecy.pdf": "eab9176dd45942168f4acb5968ee0767a9d9059be51db4c51e3e308ee4beefdf",
+        "layers/integration/blades-of-khaine/blades-of-khaine-equipment-rune-of-shielding.pdf": "13a0120e2c03dec607123df13bdc65c5eff846d0b7e15f22103476a65f615cb7",
+        "layers/integration/blades-of-khaine/blades-of-khaine-equipment-wraithbone-talisman.pdf": "d413f615f214db7cb0939352e06b73fe250f1cf40ca0cf01c875d7f6bf48e58a",
+        "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-aspect-techniques.pdf": "07b4541fd25bde7f663c566cf4371bb4bc3f18b1e3667ac0ffaaf55bfeb5d494",
+        "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-dire-avenger-1.pdf": "4ca63316b511a8b545629be38718c2b9366a0644e1dbec43fbbe9b961e98fd91",
+        "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-dire-avenger-2.pdf": "a42b81cbcfcf295074db515e370209523ea0d680af9c5310c61c22b684ed8837",
+        "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-dire-avenger-3.pdf": "36c78d95a4ed89d286ca009537d7d455dff5876e2476c140d1d856e0aa3543bf",
+        "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-dire-avenger-4.pdf": "8ea30a1ec298b1b9803b1969d6282357b51abf93555ea2a0fde8f060faa15046",
+        "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-dire-avenger-5.pdf": "58df50e61f5c96526c547428bdba6ad93215d00da9bb3430d4e54ef7d5a6fd83",
+        "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-howling-banshee-1.pdf": "33f6761edb6db35cbdfe298e845b4e5db0a78d0e6c26d22b781dd81cb802d8b0",
+        "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-howling-banshee-2.pdf": "6d600d0e2339ca6bf7c5da53a1ab3bdce660a4b79f6b7d3a8e3bbcccd9f4a69b",
+        "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-howling-banshee-3.pdf": "eee92ba5f92efb04ffda6ed7d297081c108888e5c008f989fb362586a9abda11",
+        "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-howling-banshee-4.pdf": "b322d666e99211d705a39e1cd9f2a2ab550721725cc3764ba9d17cc5b7812329",
+        "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-howling-banshee-5.pdf": "eec7eb17d7a775ce5ae1af69611b16d6a729aa863f0834165ae9ab34512098d8",
+        "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-striking-scorpion-1.pdf": "da2cbfe4b7616b07177fd6090125e36e9daccb27c341c1d7aa89350f463c00d9",
+        "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-striking-scorpion-2.pdf": "e646d028798c9397aac96e8fed76200604093d219898e001b2b4140a442c6310",
+        "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-striking-scorpion-3.pdf": "e8b51727d747a73e176723a0fda761acecf9dc50092466b7dacae3e416a8e495",
+        "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-striking-scorpion-4.pdf": "0037a353005370bcd5547d104bc9e2c4d7df78efb17056a878317edf0b468969",
+        "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-striking-scorpion-5.pdf": "db184d80d958e32a138af2fac27788163f2e9642d317e2cfdf6fdd42c24cbae6",
+        "layers/integration/blades-of-khaine/blades-of-khaine-firefight-ploy-bladewind.pdf": "aad8a0cffdca60085eacf1fb11f39bcd26eb3dd031c5240640982796c5fd2ef9",
+        "layers/integration/blades-of-khaine/blades-of-khaine-firefight-ploy-contempt.pdf": "a147fbe1d39ddeae42350b3bcc4f1ad2b0ef85e2f4e05c1313329d0a013511c2",
+        "layers/integration/blades-of-khaine/blades-of-khaine-firefight-ploy-fading-light.pdf": "a9ea9d4dd63101c87c03f3c88a1fb719d94c5ae04aaf10c197baafaf003cff95",
+        "layers/integration/blades-of-khaine/blades-of-khaine-firefight-ploy-starfall.pdf": "e91e07db6a5468a6fe770cdf09d1bf4bc33b2fc964b4fa8ac56be3c3923a759c",
+        "layers/integration/blades-of-khaine/blades-of-khaine-operatives-selection-operative-selection.pdf": "4436895dab3630fa2bf70d2738699a5d2d6750da1db4375edda60eda4d14518d",
+        "layers/integration/blades-of-khaine/blades-of-khaine-strategy-ploy-dance-of-death.pdf": "b8602f996c5ac305bb8822dab47364fc88f117e7b7b2a7d9b09a1e63ba49228d",
+        "layers/integration/blades-of-khaine/blades-of-khaine-strategy-ploy-forewarned.pdf": "7234b5851b8f5db12633e6a54a0224596d9ed9ae096ba96a4a31ae6cd33f5971",
+        "layers/integration/blades-of-khaine/blades-of-khaine-strategy-ploy-khaines-vengeance.pdf": "afb7494bf46c97a98408b12444d8e2726acdf6edd0400bf10c160c1c94c2fe2e",
+        "layers/integration/blades-of-khaine/blades-of-khaine-strategy-ploy-ruthless-poise.pdf": "4ac07bc4a192e119bc18b51b78ca24df0893a58394b5ca4c421a8c00cbdfe23f",
+        "layers/integration/blades-of-khaine/blades-of-khaine-token-guide-token-guide.pdf": "29187d80cfe7f0a0aef120cdd34b152ac552b82ad95395ddde43b6b80371848d"
+      }
+    },
+    "generate_dice": {
+      "outputs": {
+        "dice-light.jpg": {
+          "path": "output/blades-of-khaine/dice/blades-of-khaine-dice-light.jpg",
+          "hash": "95aefaf9936131ca05cda93cf4e8d809f1637ccba537698851f4e89766d4dd7c",
+          "modified": "2026-07-06T16:33:14.007545+00:00"
+        },
+        "dice-dark.jpg": {
+          "path": "output/blades-of-khaine/dice/blades-of-khaine-dice-dark.jpg",
+          "hash": "45956331cc9471f94265446bdc057b80a12e44e23d137410ff8a88faea2d989e",
+          "modified": "2026-07-06T16:33:14.015970+00:00"
+        },
+        "dice-team.jpg": {
+          "path": "output/blades-of-khaine/dice/blades-of-khaine-dice-team.jpg",
+          "hash": "140ef09c97c247497aad2eb588cb6b9a0787745a931c96abfdfe3faa2c3cfd9b",
+          "modified": "2026-07-06T16:33:14.023819+00:00"
+        }
+      },
+      "completed": "2026-07-06T16:33:14.025728+00:00",
+      "inputs": {
+        "layers/integration/blades-of-khaine/artwork/icons/blades-of-khaine-icon-token-transparent.png": "fb0d1daa3c6c8dfb74889f94bcc2cab9effd624a4f86a48b7711e25fa258fec4",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41"
+      }
+    },
+    "generate_box_texture": {
+      "outputs": {
+        "card-box-texture.jpg": {
+          "path": "output/blades-of-khaine/cardbox/blades-of-khaine-card-box-texture.jpg",
+          "hash": "e73e35de75019642b8f5de1f38c1d19393b17dc0d4efaded6bbdfc83d83ba554",
+          "modified": "2026-07-06T16:33:33.093566+00:00"
+        },
+        "card-box.obj": {
+          "path": "output/blades-of-khaine/cardbox/blades-of-khaine-card-box.obj",
+          "hash": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+          "modified": "2026-07-06T16:33:33.094936+00:00"
+        }
+      },
+      "completed": "2026-07-06T16:33:33.096560+00:00",
+      "inputs": {
+        "layers/integration/blades-of-khaine/artwork/icons/blades-of-khaine-icon-token.jpg": "6e83df17b193474f4838dd5f8fc2a725b71fba4e900fa5d0a9d9ac814010f2b5",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "config/defaults/box/card-box.obj": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+        "config/defaults/box/card-box-texture.jpg": "b2f310b01a0d28e8806e99ce0b972e8967e3014608eacefcb6ec51597695a313"
+      }
+    },
+    "generate_card_images": {
+      "outputs": {
+        "cards/datacards/dire-avenger-exarch-back.jpg": {
+          "path": "output/blades-of-khaine/cards/datacards/dire-avenger-exarch-back.jpg",
+          "hash": "03e66c59327ab35a87eccdbec22e1a77d4b9143ae874c4a8f4392b9e95eb4d88",
+          "modified": "2026-07-06T21:03:56.472924+00:00"
+        },
+        "cards/datacards/dire-avenger-exarch-front.jpg": {
+          "path": "output/blades-of-khaine/cards/datacards/dire-avenger-exarch-front.jpg",
+          "hash": "4399a3e8cb5294daa361fffb666947f3a9e1d365a240cb71e206c33895259251",
+          "modified": "2026-07-06T21:03:56.478382+00:00"
+        },
+        "cards/datacards/dire-avenger-warrior-back.jpg": {
+          "path": "output/blades-of-khaine/cards/datacards/dire-avenger-warrior-back.jpg",
+          "hash": "2f1f1af3343a2419ccd7311bb03415d20704325edd4712100e0906b91dca0240",
+          "modified": "2026-07-06T21:03:56.483029+00:00"
+        },
+        "cards/datacards/dire-avenger-warrior-front.jpg": {
+          "path": "output/blades-of-khaine/cards/datacards/dire-avenger-warrior-front.jpg",
+          "hash": "3697a157187414d23b0c099cb183737741cdd0492d2d8b55bd3a972ca5fd047d",
+          "modified": "2026-07-06T21:03:56.487654+00:00"
+        },
+        "cards/datacards/howling-banshee-exarch-back.jpg": {
+          "path": "output/blades-of-khaine/cards/datacards/howling-banshee-exarch-back.jpg",
+          "hash": "2f1f1af3343a2419ccd7311bb03415d20704325edd4712100e0906b91dca0240",
+          "modified": "2026-07-06T21:03:56.492258+00:00"
+        },
+        "cards/datacards/howling-banshee-exarch-front.jpg": {
+          "path": "output/blades-of-khaine/cards/datacards/howling-banshee-exarch-front.jpg",
+          "hash": "de5065c35d97195811a216bcabe378ff198597927b5e0befa5307b8cec18c701",
+          "modified": "2026-07-06T21:03:56.496914+00:00"
+        },
+        "cards/datacards/howling-banshee-warrior-back.jpg": {
+          "path": "output/blades-of-khaine/cards/datacards/howling-banshee-warrior-back.jpg",
+          "hash": "2f1f1af3343a2419ccd7311bb03415d20704325edd4712100e0906b91dca0240",
+          "modified": "2026-07-06T21:03:56.501352+00:00"
+        },
+        "cards/datacards/howling-banshee-warrior-front.jpg": {
+          "path": "output/blades-of-khaine/cards/datacards/howling-banshee-warrior-front.jpg",
+          "hash": "a8fee5786e2ac4ac74abc150840a132f1f3119859d563be5834a4e153021c421",
+          "modified": "2026-07-06T21:03:56.506098+00:00"
+        },
+        "cards/datacards/striking-scorpion-exarch-back.jpg": {
+          "path": "output/blades-of-khaine/cards/datacards/striking-scorpion-exarch-back.jpg",
+          "hash": "2f1f1af3343a2419ccd7311bb03415d20704325edd4712100e0906b91dca0240",
+          "modified": "2026-07-06T21:03:56.510532+00:00"
+        },
+        "cards/datacards/striking-scorpion-exarch-front.jpg": {
+          "path": "output/blades-of-khaine/cards/datacards/striking-scorpion-exarch-front.jpg",
+          "hash": "5e4ed794471a8201b92f1ca397b58262c1bcfaa0472930c4f35474379485672c",
+          "modified": "2026-07-06T21:03:56.515171+00:00"
+        },
+        "cards/datacards/striking-scorpion-warrior-back.jpg": {
+          "path": "output/blades-of-khaine/cards/datacards/striking-scorpion-warrior-back.jpg",
+          "hash": "2f1f1af3343a2419ccd7311bb03415d20704325edd4712100e0906b91dca0240",
+          "modified": "2026-07-06T21:03:56.519581+00:00"
+        },
+        "cards/datacards/striking-scorpion-warrior-front.jpg": {
+          "path": "output/blades-of-khaine/cards/datacards/striking-scorpion-warrior-front.jpg",
+          "hash": "40c5d2a1764d71c6ecb700a6c6d402640d969231a5ff88e392eac139e8d53aac",
+          "modified": "2026-07-06T21:03:56.524472+00:00"
+        },
+        "cards/equipment/blades-of-khaine-rune-of-foresight-back.jpg": {
+          "path": "output/blades-of-khaine/cards/equipment/blades-of-khaine-rune-of-foresight-back.jpg",
+          "hash": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+          "modified": "2026-07-06T21:03:56.529046+00:00"
+        },
+        "cards/equipment/blades-of-khaine-rune-of-foresight-front.jpg": {
+          "path": "output/blades-of-khaine/cards/equipment/blades-of-khaine-rune-of-foresight-front.jpg",
+          "hash": "08ff27389cddb6069a81ee5db34e6daabcd71f815ee207ba102a28e93da18e32",
+          "modified": "2026-07-06T21:03:56.533660+00:00"
+        },
+        "cards/equipment/blades-of-khaine-rune-of-prophecy-back.jpg": {
+          "path": "output/blades-of-khaine/cards/equipment/blades-of-khaine-rune-of-prophecy-back.jpg",
+          "hash": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+          "modified": "2026-07-06T21:03:56.538126+00:00"
+        },
+        "cards/equipment/blades-of-khaine-rune-of-prophecy-front.jpg": {
+          "path": "output/blades-of-khaine/cards/equipment/blades-of-khaine-rune-of-prophecy-front.jpg",
+          "hash": "ae8eb1e039def1b68392146b3592aaa39d67d11acca1a8d0af051d9a9b54582a",
+          "modified": "2026-07-06T21:03:56.542667+00:00"
+        },
+        "cards/equipment/blades-of-khaine-rune-of-shielding-back.jpg": {
+          "path": "output/blades-of-khaine/cards/equipment/blades-of-khaine-rune-of-shielding-back.jpg",
+          "hash": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+          "modified": "2026-07-06T21:03:56.547106+00:00"
+        },
+        "cards/equipment/blades-of-khaine-rune-of-shielding-front.jpg": {
+          "path": "output/blades-of-khaine/cards/equipment/blades-of-khaine-rune-of-shielding-front.jpg",
+          "hash": "43d7d046647ade2c1d80def49d61b3bd6f2811d5d91e4df09d6933ce05fdeaf1",
+          "modified": "2026-07-06T21:03:56.551657+00:00"
+        },
+        "cards/equipment/blades-of-khaine-wraithbone-talisman-back.jpg": {
+          "path": "output/blades-of-khaine/cards/equipment/blades-of-khaine-wraithbone-talisman-back.jpg",
+          "hash": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+          "modified": "2026-07-06T21:03:56.556725+00:00"
+        },
+        "cards/equipment/blades-of-khaine-wraithbone-talisman-front.jpg": {
+          "path": "output/blades-of-khaine/cards/equipment/blades-of-khaine-wraithbone-talisman-front.jpg",
+          "hash": "0ffa9eb74a3876942969f33675aae6ae6d472d0dca085b6700ea5f19b0733612",
+          "modified": "2026-07-06T21:03:56.561341+00:00"
+        },
+        "cards/faction_rules/blades-of-khaine-aspect-techniques-back.jpg": {
+          "path": "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-aspect-techniques-back.jpg",
+          "hash": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+          "modified": "2026-07-06T21:03:56.565785+00:00"
+        },
+        "cards/faction_rules/blades-of-khaine-aspect-techniques-front.jpg": {
+          "path": "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-aspect-techniques-front.jpg",
+          "hash": "bf6f2d2f429353aaf9b3ed85670c366bb94e40ecf838c6fa1fda11a3003e3442",
+          "modified": "2026-07-06T21:03:56.571717+00:00"
+        },
+        "cards/faction_rules/blades-of-khaine-dire-avenger-card1-back.jpg": {
+          "path": "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-dire-avenger-card1-back.jpg",
+          "hash": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+          "modified": "2026-07-06T21:03:56.576479+00:00"
+        },
+        "cards/faction_rules/blades-of-khaine-dire-avenger-card1-front.jpg": {
+          "path": "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-dire-avenger-card1-front.jpg",
+          "hash": "8bb06025a2ada5f7dee763a8e28e491dfcb9b868d4e474f96f6e48afc75d5f9d",
+          "modified": "2026-07-06T21:03:56.581184+00:00"
+        },
+        "cards/faction_rules/blades-of-khaine-dire-avenger-card2-back.jpg": {
+          "path": "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-dire-avenger-card2-back.jpg",
+          "hash": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+          "modified": "2026-07-06T21:03:56.585728+00:00"
+        },
+        "cards/faction_rules/blades-of-khaine-dire-avenger-card2-front.jpg": {
+          "path": "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-dire-avenger-card2-front.jpg",
+          "hash": "eb9265f9327eb8b0e4fc46431cba52f1812df39cfd8bad143b76795b4542f2e6",
+          "modified": "2026-07-06T21:03:56.590400+00:00"
+        },
+        "cards/faction_rules/blades-of-khaine-dire-avenger-card3-back.jpg": {
+          "path": "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-dire-avenger-card3-back.jpg",
+          "hash": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+          "modified": "2026-07-06T21:03:56.594890+00:00"
+        },
+        "cards/faction_rules/blades-of-khaine-dire-avenger-card3-front.jpg": {
+          "path": "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-dire-avenger-card3-front.jpg",
+          "hash": "08e4c2217bd1b3a705aba9141b6a34500e7368c86cf2e04108b0b395d77a08fa",
+          "modified": "2026-07-06T21:03:56.599492+00:00"
+        },
+        "cards/faction_rules/blades-of-khaine-dire-avenger-card4-back.jpg": {
+          "path": "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-dire-avenger-card4-back.jpg",
+          "hash": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+          "modified": "2026-07-06T21:03:56.604259+00:00"
+        },
+        "cards/faction_rules/blades-of-khaine-dire-avenger-card4-front.jpg": {
+          "path": "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-dire-avenger-card4-front.jpg",
+          "hash": "7d1bd2f8adebaf7196d0c5fa55643f786f1b03071b12d073a76983b398841ae6",
+          "modified": "2026-07-06T21:03:56.609052+00:00"
+        },
+        "cards/faction_rules/blades-of-khaine-dire-avenger-card5-back.jpg": {
+          "path": "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-dire-avenger-card5-back.jpg",
+          "hash": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+          "modified": "2026-07-06T21:03:56.613498+00:00"
+        },
+        "cards/faction_rules/blades-of-khaine-dire-avenger-card5-front.jpg": {
+          "path": "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-dire-avenger-card5-front.jpg",
+          "hash": "53f3b6326d7ef43d87ca5d949e106b3eee972d0772159f9cb5240cf25df5cad8",
+          "modified": "2026-07-06T21:03:56.618413+00:00"
+        },
+        "cards/faction_rules/blades-of-khaine-howling-banshee-card1-back.jpg": {
+          "path": "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-howling-banshee-card1-back.jpg",
+          "hash": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+          "modified": "2026-07-06T21:03:56.622882+00:00"
+        },
+        "cards/faction_rules/blades-of-khaine-howling-banshee-card1-front.jpg": {
+          "path": "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-howling-banshee-card1-front.jpg",
+          "hash": "16dac246bdf24616b3cfd9074138dedc74d12a47ae6d26a06c7ba296515e8deb",
+          "modified": "2026-07-06T21:03:56.627626+00:00"
+        },
+        "cards/faction_rules/blades-of-khaine-howling-banshee-card2-back.jpg": {
+          "path": "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-howling-banshee-card2-back.jpg",
+          "hash": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+          "modified": "2026-07-06T21:03:56.632126+00:00"
+        },
+        "cards/faction_rules/blades-of-khaine-howling-banshee-card2-front.jpg": {
+          "path": "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-howling-banshee-card2-front.jpg",
+          "hash": "d08eea8c8e319e9112b8fd4ae8231e4ddce10fbe2d8bcdaebb1aef4b73de10ff",
+          "modified": "2026-07-06T21:03:56.636836+00:00"
+        },
+        "cards/faction_rules/blades-of-khaine-howling-banshee-card3-back.jpg": {
+          "path": "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-howling-banshee-card3-back.jpg",
+          "hash": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+          "modified": "2026-07-06T21:03:56.641235+00:00"
+        },
+        "cards/faction_rules/blades-of-khaine-howling-banshee-card3-front.jpg": {
+          "path": "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-howling-banshee-card3-front.jpg",
+          "hash": "591d2d41e125da3d3aa46b4900cfe569cc6f1cffee572aebce6c0876f17700a5",
+          "modified": "2026-07-06T21:03:56.645969+00:00"
+        },
+        "cards/faction_rules/blades-of-khaine-howling-banshee-card4-back.jpg": {
+          "path": "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-howling-banshee-card4-back.jpg",
+          "hash": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+          "modified": "2026-07-06T21:03:56.650447+00:00"
+        },
+        "cards/faction_rules/blades-of-khaine-howling-banshee-card4-front.jpg": {
+          "path": "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-howling-banshee-card4-front.jpg",
+          "hash": "90d77677a8d9002e1791f54deff207763de1c554dcaa6bf5d0d55d335593b80b",
+          "modified": "2026-07-06T21:03:56.655047+00:00"
+        },
+        "cards/faction_rules/blades-of-khaine-howling-banshee-card5-back.jpg": {
+          "path": "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-howling-banshee-card5-back.jpg",
+          "hash": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+          "modified": "2026-07-06T21:03:56.659454+00:00"
+        },
+        "cards/faction_rules/blades-of-khaine-howling-banshee-card5-front.jpg": {
+          "path": "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-howling-banshee-card5-front.jpg",
+          "hash": "6c6ca4885ad5ce880b3ed3bc6fe74db3475a2a2d43d63e48484148557d63379d",
+          "modified": "2026-07-06T21:03:56.664088+00:00"
+        },
+        "cards/faction_rules/blades-of-khaine-striking-scorpion-card1-back.jpg": {
+          "path": "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-striking-scorpion-card1-back.jpg",
+          "hash": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+          "modified": "2026-07-06T21:03:56.668454+00:00"
+        },
+        "cards/faction_rules/blades-of-khaine-striking-scorpion-card1-front.jpg": {
+          "path": "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-striking-scorpion-card1-front.jpg",
+          "hash": "4080d4469712227844ae8a3a5ec2a3162656f5761c2957fdc78f9cc077ca4cf0",
+          "modified": "2026-07-06T21:03:56.673090+00:00"
+        },
+        "cards/faction_rules/blades-of-khaine-striking-scorpion-card2-back.jpg": {
+          "path": "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-striking-scorpion-card2-back.jpg",
+          "hash": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+          "modified": "2026-07-06T21:03:56.677540+00:00"
+        },
+        "cards/faction_rules/blades-of-khaine-striking-scorpion-card2-front.jpg": {
+          "path": "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-striking-scorpion-card2-front.jpg",
+          "hash": "b2aebe229c1dd75bc4b4f05c6a16fd0b322a63e9fe4da77266ed018a3987eaa4",
+          "modified": "2026-07-06T21:03:56.682310+00:00"
+        },
+        "cards/faction_rules/blades-of-khaine-striking-scorpion-card3-back.jpg": {
+          "path": "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-striking-scorpion-card3-back.jpg",
+          "hash": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+          "modified": "2026-07-06T21:03:56.686715+00:00"
+        },
+        "cards/faction_rules/blades-of-khaine-striking-scorpion-card3-front.jpg": {
+          "path": "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-striking-scorpion-card3-front.jpg",
+          "hash": "b22ace5cbfa2e80b1cb288d034b6a708d31b86d9444edfbf24bab889aaf8f1b5",
+          "modified": "2026-07-06T21:03:56.691310+00:00"
+        },
+        "cards/faction_rules/blades-of-khaine-striking-scorpion-card4-back.jpg": {
+          "path": "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-striking-scorpion-card4-back.jpg",
+          "hash": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+          "modified": "2026-07-06T21:03:56.695896+00:00"
+        },
+        "cards/faction_rules/blades-of-khaine-striking-scorpion-card4-front.jpg": {
+          "path": "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-striking-scorpion-card4-front.jpg",
+          "hash": "6273d320c380d873e9c033d2c257ca94f059a9fc3508254445ff397d2cc26bd9",
+          "modified": "2026-07-06T21:03:56.700498+00:00"
+        },
+        "cards/faction_rules/blades-of-khaine-striking-scorpion-card5-back.jpg": {
+          "path": "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-striking-scorpion-card5-back.jpg",
+          "hash": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+          "modified": "2026-07-06T21:03:56.704868+00:00"
+        },
+        "cards/faction_rules/blades-of-khaine-striking-scorpion-card5-front.jpg": {
+          "path": "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-striking-scorpion-card5-front.jpg",
+          "hash": "ac93578477c11a914c4869ef5fbda41d8ecf06defd1e5640b76314ae36a6b839",
+          "modified": "2026-07-06T21:03:56.709532+00:00"
+        },
+        "cards/firefight_ploys/blades-of-khaine-bladewind-back.jpg": {
+          "path": "output/blades-of-khaine/cards/firefight_ploys/blades-of-khaine-bladewind-back.jpg",
+          "hash": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+          "modified": "2026-07-06T21:03:56.714021+00:00"
+        },
+        "cards/firefight_ploys/blades-of-khaine-bladewind-front.jpg": {
+          "path": "output/blades-of-khaine/cards/firefight_ploys/blades-of-khaine-bladewind-front.jpg",
+          "hash": "86d3925e104380d1924b393887433125102084c84b0fe395ac7eff5d0e7253d2",
+          "modified": "2026-07-06T21:03:56.718560+00:00"
+        },
+        "cards/firefight_ploys/blades-of-khaine-contempt-back.jpg": {
+          "path": "output/blades-of-khaine/cards/firefight_ploys/blades-of-khaine-contempt-back.jpg",
+          "hash": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+          "modified": "2026-07-06T21:03:56.722934+00:00"
+        },
+        "cards/firefight_ploys/blades-of-khaine-contempt-front.jpg": {
+          "path": "output/blades-of-khaine/cards/firefight_ploys/blades-of-khaine-contempt-front.jpg",
+          "hash": "44977ba0c3af8b70f4fa6450c0ba709377e169544e061a4352fb429d554ee8eb",
+          "modified": "2026-07-06T21:03:56.727755+00:00"
+        },
+        "cards/firefight_ploys/blades-of-khaine-fading-light-back.jpg": {
+          "path": "output/blades-of-khaine/cards/firefight_ploys/blades-of-khaine-fading-light-back.jpg",
+          "hash": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+          "modified": "2026-07-06T21:03:56.732489+00:00"
+        },
+        "cards/firefight_ploys/blades-of-khaine-fading-light-front.jpg": {
+          "path": "output/blades-of-khaine/cards/firefight_ploys/blades-of-khaine-fading-light-front.jpg",
+          "hash": "3e06b8f41e6ab5450ff02f895dac6a17947d8812ac63950ebc68dc460d099031",
+          "modified": "2026-07-06T21:03:56.737206+00:00"
+        },
+        "cards/firefight_ploys/blades-of-khaine-starfall-back.jpg": {
+          "path": "output/blades-of-khaine/cards/firefight_ploys/blades-of-khaine-starfall-back.jpg",
+          "hash": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+          "modified": "2026-07-06T21:03:56.741619+00:00"
+        },
+        "cards/firefight_ploys/blades-of-khaine-starfall-front.jpg": {
+          "path": "output/blades-of-khaine/cards/firefight_ploys/blades-of-khaine-starfall-front.jpg",
+          "hash": "81f72a0d38bcb7a346309b57647c56eb28353d5aa11e9e0d88e341a43068b86c",
+          "modified": "2026-07-06T21:03:56.746210+00:00"
+        },
+        "cards/operatives_selection/blades-of-khaine-operative-selection-back.jpg": {
+          "path": "output/blades-of-khaine/cards/operatives_selection/blades-of-khaine-operative-selection-back.jpg",
+          "hash": "573c490a7327a8540ef2c353c28544adcd4f805baeed8cacdb8d9cd685355513",
+          "modified": "2026-07-06T21:03:56.750935+00:00"
+        },
+        "cards/operatives_selection/blades-of-khaine-operative-selection-front.jpg": {
+          "path": "output/blades-of-khaine/cards/operatives_selection/blades-of-khaine-operative-selection-front.jpg",
+          "hash": "3c633706883ba05054e3d282b55f6b700bd88a4ffcbf9a001a38b5774954fc39",
+          "modified": "2026-07-06T21:03:56.755607+00:00"
+        },
+        "cards/strategy_ploys/blades-of-khaine-dance-of-death-back.jpg": {
+          "path": "output/blades-of-khaine/cards/strategy_ploys/blades-of-khaine-dance-of-death-back.jpg",
+          "hash": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+          "modified": "2026-07-06T21:03:56.760057+00:00"
+        },
+        "cards/strategy_ploys/blades-of-khaine-dance-of-death-front.jpg": {
+          "path": "output/blades-of-khaine/cards/strategy_ploys/blades-of-khaine-dance-of-death-front.jpg",
+          "hash": "9190eee0c0e89c21ee2d72aba9c512a4a38e3ac03c0293b7758265a4b1355594",
+          "modified": "2026-07-06T21:03:56.764638+00:00"
+        },
+        "cards/strategy_ploys/blades-of-khaine-forewarned-back.jpg": {
+          "path": "output/blades-of-khaine/cards/strategy_ploys/blades-of-khaine-forewarned-back.jpg",
+          "hash": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+          "modified": "2026-07-06T21:03:56.769087+00:00"
+        },
+        "cards/strategy_ploys/blades-of-khaine-forewarned-front.jpg": {
+          "path": "output/blades-of-khaine/cards/strategy_ploys/blades-of-khaine-forewarned-front.jpg",
+          "hash": "c0211a1b36f393998235d3e9e7b4fddbc618f3a3e8819b58674584bfadc1349e",
+          "modified": "2026-07-06T21:03:56.773666+00:00"
+        },
+        "cards/strategy_ploys/blades-of-khaine-khaines-vengeance-back.jpg": {
+          "path": "output/blades-of-khaine/cards/strategy_ploys/blades-of-khaine-khaines-vengeance-back.jpg",
+          "hash": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+          "modified": "2026-07-06T21:03:56.778150+00:00"
+        },
+        "cards/strategy_ploys/blades-of-khaine-khaines-vengeance-front.jpg": {
+          "path": "output/blades-of-khaine/cards/strategy_ploys/blades-of-khaine-khaines-vengeance-front.jpg",
+          "hash": "3d5efcecd688ad3f886b10942be5676147e2b8a90f8bae90225f362ecd84bb3c",
+          "modified": "2026-07-06T21:03:56.782708+00:00"
+        },
+        "cards/strategy_ploys/blades-of-khaine-ruthless-poise-back.jpg": {
+          "path": "output/blades-of-khaine/cards/strategy_ploys/blades-of-khaine-ruthless-poise-back.jpg",
+          "hash": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+          "modified": "2026-07-06T21:03:56.787024+00:00"
+        },
+        "cards/strategy_ploys/blades-of-khaine-ruthless-poise-front.jpg": {
+          "path": "output/blades-of-khaine/cards/strategy_ploys/blades-of-khaine-ruthless-poise-front.jpg",
+          "hash": "db3c865c684a59b14e10e4ea5ab1797843c51f2e98a4b879dad69a81815dba99",
+          "modified": "2026-07-06T21:03:56.791646+00:00"
+        },
+        "cards/token_guide/blades-of-khaine-token-guide-back.jpg": {
+          "path": "output/blades-of-khaine/cards/token_guide/blades-of-khaine-token-guide-back.jpg",
+          "hash": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+          "modified": "2026-07-06T21:03:56.796045+00:00"
+        },
+        "cards/token_guide/blades-of-khaine-token-guide-front.jpg": {
+          "path": "output/blades-of-khaine/cards/token_guide/blades-of-khaine-token-guide-front.jpg",
+          "hash": "a4130190748d3cf28ce47bb2e055702bc2c9b85c9b30a680d7fa19f67ef3eaf2",
+          "modified": "2026-07-06T21:03:56.800890+00:00"
+        }
+      },
+      "completed": "2026-07-06T21:03:56.844073+00:00",
+      "inputs": {
+        "layers/integration/blades-of-khaine/manifest.json": "f8534eab0054b3fe24aa246915f14c7314a855387ac0f09024e9a8df76fb35ec",
+        "layers/integration/blades-of-khaine/blades-of-khaine-datacard-dire-avenger-exarch.pdf": "7186b8c5b1c4f2f1782526e8468c3a205f7e07a71ded2ea6a08b408f0b2f56a0",
+        "layers/integration/blades-of-khaine/blades-of-khaine-datacard-dire-avenger-warrior.pdf": "547d6d11e0cbc0de83348b4b7979b313aee35d90fe9b893bf0161d04b90fb7d3",
+        "layers/integration/blades-of-khaine/blades-of-khaine-datacard-howling-banshee-exarch.pdf": "de6978033d7738590d5480e2e3f2179fbf1d5e75ad3343acf3641a376527798d",
+        "layers/integration/blades-of-khaine/blades-of-khaine-datacard-howling-banshee-warrior.pdf": "6fd6467f48fb757e64815b78d5941d0a3329fe3e0efa15f1f48b6c54bb8d52f5",
+        "layers/integration/blades-of-khaine/blades-of-khaine-datacard-striking-scorpion-exarch.pdf": "0569efeefd54018b4637350e459ba52b7ce55c23d7bb388bd03519ee00d3477e",
+        "layers/integration/blades-of-khaine/blades-of-khaine-datacard-striking-scorpion-warrior.pdf": "e1a73374e1ccff3335aaa38b5ee03a4d4b9756c577b584116c20c48e64a20370",
+        "layers/integration/blades-of-khaine/blades-of-khaine-equipment-rune-of-foresight.pdf": "595b1c177b17432e6756981c87bda16921ed53f705fc7fe69e19d48a0122fe48",
+        "layers/integration/blades-of-khaine/blades-of-khaine-equipment-rune-of-prophecy.pdf": "eab9176dd45942168f4acb5968ee0767a9d9059be51db4c51e3e308ee4beefdf",
+        "layers/integration/blades-of-khaine/blades-of-khaine-equipment-rune-of-shielding.pdf": "13a0120e2c03dec607123df13bdc65c5eff846d0b7e15f22103476a65f615cb7",
+        "layers/integration/blades-of-khaine/blades-of-khaine-equipment-wraithbone-talisman.pdf": "d413f615f214db7cb0939352e06b73fe250f1cf40ca0cf01c875d7f6bf48e58a",
+        "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-aspect-techniques.pdf": "07b4541fd25bde7f663c566cf4371bb4bc3f18b1e3667ac0ffaaf55bfeb5d494",
+        "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-dire-avenger-1.pdf": "4ca63316b511a8b545629be38718c2b9366a0644e1dbec43fbbe9b961e98fd91",
+        "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-dire-avenger-2.pdf": "a42b81cbcfcf295074db515e370209523ea0d680af9c5310c61c22b684ed8837",
+        "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-dire-avenger-3.pdf": "36c78d95a4ed89d286ca009537d7d455dff5876e2476c140d1d856e0aa3543bf",
+        "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-dire-avenger-4.pdf": "8ea30a1ec298b1b9803b1969d6282357b51abf93555ea2a0fde8f060faa15046",
+        "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-dire-avenger-5.pdf": "58df50e61f5c96526c547428bdba6ad93215d00da9bb3430d4e54ef7d5a6fd83",
+        "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-howling-banshee-1.pdf": "33f6761edb6db35cbdfe298e845b4e5db0a78d0e6c26d22b781dd81cb802d8b0",
+        "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-howling-banshee-2.pdf": "6d600d0e2339ca6bf7c5da53a1ab3bdce660a4b79f6b7d3a8e3bbcccd9f4a69b",
+        "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-howling-banshee-3.pdf": "eee92ba5f92efb04ffda6ed7d297081c108888e5c008f989fb362586a9abda11",
+        "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-howling-banshee-4.pdf": "b322d666e99211d705a39e1cd9f2a2ab550721725cc3764ba9d17cc5b7812329",
+        "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-howling-banshee-5.pdf": "eec7eb17d7a775ce5ae1af69611b16d6a729aa863f0834165ae9ab34512098d8",
+        "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-striking-scorpion-1.pdf": "da2cbfe4b7616b07177fd6090125e36e9daccb27c341c1d7aa89350f463c00d9",
+        "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-striking-scorpion-2.pdf": "e646d028798c9397aac96e8fed76200604093d219898e001b2b4140a442c6310",
+        "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-striking-scorpion-3.pdf": "e8b51727d747a73e176723a0fda761acecf9dc50092466b7dacae3e416a8e495",
+        "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-striking-scorpion-4.pdf": "0037a353005370bcd5547d104bc9e2c4d7df78efb17056a878317edf0b468969",
+        "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-striking-scorpion-5.pdf": "db184d80d958e32a138af2fac27788163f2e9642d317e2cfdf6fdd42c24cbae6",
+        "layers/integration/blades-of-khaine/blades-of-khaine-firefight-ploy-bladewind.pdf": "aad8a0cffdca60085eacf1fb11f39bcd26eb3dd031c5240640982796c5fd2ef9",
+        "layers/integration/blades-of-khaine/blades-of-khaine-firefight-ploy-contempt.pdf": "a147fbe1d39ddeae42350b3bcc4f1ad2b0ef85e2f4e05c1313329d0a013511c2",
+        "layers/integration/blades-of-khaine/blades-of-khaine-firefight-ploy-fading-light.pdf": "a9ea9d4dd63101c87c03f3c88a1fb719d94c5ae04aaf10c197baafaf003cff95",
+        "layers/integration/blades-of-khaine/blades-of-khaine-firefight-ploy-starfall.pdf": "e91e07db6a5468a6fe770cdf09d1bf4bc33b2fc964b4fa8ac56be3c3923a759c",
+        "layers/integration/blades-of-khaine/blades-of-khaine-operatives-selection-operative-selection.pdf": "4436895dab3630fa2bf70d2738699a5d2d6750da1db4375edda60eda4d14518d",
+        "layers/integration/blades-of-khaine/blades-of-khaine-strategy-ploy-dance-of-death.pdf": "b8602f996c5ac305bb8822dab47364fc88f117e7b7b2a7d9b09a1e63ba49228d",
+        "layers/integration/blades-of-khaine/blades-of-khaine-strategy-ploy-forewarned.pdf": "7234b5851b8f5db12633e6a54a0224596d9ed9ae096ba96a4a31ae6cd33f5971",
+        "layers/integration/blades-of-khaine/blades-of-khaine-strategy-ploy-khaines-vengeance.pdf": "afb7494bf46c97a98408b12444d8e2726acdf6edd0400bf10c160c1c94c2fe2e",
+        "layers/integration/blades-of-khaine/blades-of-khaine-strategy-ploy-ruthless-poise.pdf": "4ac07bc4a192e119bc18b51b78ca24df0893a58394b5ca4c421a8c00cbdfe23f",
+        "layers/integration/blades-of-khaine/blades-of-khaine-token-guide-token-guide.pdf": "29187d80cfe7f0a0aef120cdd34b152ac552b82ad95395ddde43b6b80371848d",
+        "layers/integration/blades-of-khaine/card-backside/blades-of-khaine-backside-portrait.jpg": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+        "config/defaults/card-backside/default-backside-portrait.jpg": "f00ff15fa70005b9f804de08519e2e83485d7eaf78dfacea65dcef0eb1a29c22",
+        "layers/integration/blades-of-khaine/card-backside/blades-of-khaine-backside-landscape.jpg": "2f1f1af3343a2419ccd7311bb03415d20704325edd4712100e0906b91dca0240",
+        "config/defaults/card-backside/default-backside-landscape.jpg": "1cf5580a1dff0c10adb1a286edad4479c487f3d2d698b0b8be84fe653039fd7e"
+      }
+    },
+    "extract_stats": {
+      "outputs": {
+        "team-data.json": {
+          "path": "output/blades-of-khaine/data/blades-of-khaine-team-data.json",
+          "hash": "0976e806a3e9e84ab96f2fc465b35edce1fb036951d890dc00a2b79e9c268e8a",
+          "modified": "2026-07-07T07:29:44.520359+00:00"
+        }
+      },
+      "completed": "2026-07-07T07:29:44.520795+00:00",
+      "inputs": {
+        "layers/integration/blades-of-khaine/content/blades-of-khaine-content.json": "0976e806a3e9e84ab96f2fc465b35edce1fb036951d890dc00a2b79e9c268e8a"
+      }
+    },
+    "generate_tts": {
+      "outputs": {
+        "tts_objects/Blades Of Khaine Box.json": {
+          "path": "output/blades-of-khaine/tts_objects/Blades Of Khaine Box.json",
+          "hash": "9f3851230cbf5abc2471cd8647b55283df7e6efe2ac4c4f1e5ab8ba814d6847c",
+          "modified": "2026-07-07T07:29:58.941456+00:00"
+        },
+        "tts_objects/Blades Of Khaine.json": {
+          "path": "output/blades-of-khaine/tts_objects/Blades Of Khaine.json",
+          "hash": "d177bfa8307c554dc50eba2090e01bddb484853d09d808822c6205ed97af2f81",
+          "modified": "2026-07-07T07:29:58.951461+00:00"
+        }
+      },
+      "completed": "2026-07-07T07:29:59.000493+00:00",
+      "inputs": {
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "config/team-guids.json": "1dea0eaf2c7d1c37c86aba088cdf876f0638d2dcaca162888fea8422c2d5c9db",
+        "output/blades-of-khaine/cards/datacards/dire-avenger-exarch-back.jpg": "03e66c59327ab35a87eccdbec22e1a77d4b9143ae874c4a8f4392b9e95eb4d88",
+        "output/blades-of-khaine/cards/datacards/dire-avenger-exarch-front.jpg": "4399a3e8cb5294daa361fffb666947f3a9e1d365a240cb71e206c33895259251",
+        "output/blades-of-khaine/cards/datacards/dire-avenger-warrior-back.jpg": "2f1f1af3343a2419ccd7311bb03415d20704325edd4712100e0906b91dca0240",
+        "output/blades-of-khaine/cards/datacards/dire-avenger-warrior-front.jpg": "3697a157187414d23b0c099cb183737741cdd0492d2d8b55bd3a972ca5fd047d",
+        "output/blades-of-khaine/cards/datacards/howling-banshee-exarch-back.jpg": "2f1f1af3343a2419ccd7311bb03415d20704325edd4712100e0906b91dca0240",
+        "output/blades-of-khaine/cards/datacards/howling-banshee-exarch-front.jpg": "de5065c35d97195811a216bcabe378ff198597927b5e0befa5307b8cec18c701",
+        "output/blades-of-khaine/cards/datacards/howling-banshee-warrior-back.jpg": "2f1f1af3343a2419ccd7311bb03415d20704325edd4712100e0906b91dca0240",
+        "output/blades-of-khaine/cards/datacards/howling-banshee-warrior-front.jpg": "a8fee5786e2ac4ac74abc150840a132f1f3119859d563be5834a4e153021c421",
+        "output/blades-of-khaine/cards/datacards/striking-scorpion-exarch-back.jpg": "2f1f1af3343a2419ccd7311bb03415d20704325edd4712100e0906b91dca0240",
+        "output/blades-of-khaine/cards/datacards/striking-scorpion-exarch-front.jpg": "5e4ed794471a8201b92f1ca397b58262c1bcfaa0472930c4f35474379485672c",
+        "output/blades-of-khaine/cards/datacards/striking-scorpion-warrior-back.jpg": "2f1f1af3343a2419ccd7311bb03415d20704325edd4712100e0906b91dca0240",
+        "output/blades-of-khaine/cards/datacards/striking-scorpion-warrior-front.jpg": "40c5d2a1764d71c6ecb700a6c6d402640d969231a5ff88e392eac139e8d53aac",
+        "output/blades-of-khaine/cards/equipment/blades-of-khaine-rune-of-foresight-back.jpg": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+        "output/blades-of-khaine/cards/equipment/blades-of-khaine-rune-of-foresight-front.jpg": "08ff27389cddb6069a81ee5db34e6daabcd71f815ee207ba102a28e93da18e32",
+        "output/blades-of-khaine/cards/equipment/blades-of-khaine-rune-of-prophecy-back.jpg": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+        "output/blades-of-khaine/cards/equipment/blades-of-khaine-rune-of-prophecy-front.jpg": "ae8eb1e039def1b68392146b3592aaa39d67d11acca1a8d0af051d9a9b54582a",
+        "output/blades-of-khaine/cards/equipment/blades-of-khaine-rune-of-shielding-back.jpg": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+        "output/blades-of-khaine/cards/equipment/blades-of-khaine-rune-of-shielding-front.jpg": "43d7d046647ade2c1d80def49d61b3bd6f2811d5d91e4df09d6933ce05fdeaf1",
+        "output/blades-of-khaine/cards/equipment/blades-of-khaine-wraithbone-talisman-back.jpg": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+        "output/blades-of-khaine/cards/equipment/blades-of-khaine-wraithbone-talisman-front.jpg": "0ffa9eb74a3876942969f33675aae6ae6d472d0dca085b6700ea5f19b0733612",
+        "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-aspect-techniques-back.jpg": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+        "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-aspect-techniques-front.jpg": "bf6f2d2f429353aaf9b3ed85670c366bb94e40ecf838c6fa1fda11a3003e3442",
+        "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-dire-avenger-card1-back.jpg": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+        "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-dire-avenger-card1-front.jpg": "8bb06025a2ada5f7dee763a8e28e491dfcb9b868d4e474f96f6e48afc75d5f9d",
+        "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-dire-avenger-card2-back.jpg": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+        "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-dire-avenger-card2-front.jpg": "eb9265f9327eb8b0e4fc46431cba52f1812df39cfd8bad143b76795b4542f2e6",
+        "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-dire-avenger-card3-back.jpg": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+        "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-dire-avenger-card3-front.jpg": "08e4c2217bd1b3a705aba9141b6a34500e7368c86cf2e04108b0b395d77a08fa",
+        "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-dire-avenger-card4-back.jpg": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+        "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-dire-avenger-card4-front.jpg": "7d1bd2f8adebaf7196d0c5fa55643f786f1b03071b12d073a76983b398841ae6",
+        "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-dire-avenger-card5-back.jpg": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+        "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-dire-avenger-card5-front.jpg": "53f3b6326d7ef43d87ca5d949e106b3eee972d0772159f9cb5240cf25df5cad8",
+        "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-howling-banshee-card1-back.jpg": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+        "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-howling-banshee-card1-front.jpg": "16dac246bdf24616b3cfd9074138dedc74d12a47ae6d26a06c7ba296515e8deb",
+        "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-howling-banshee-card2-back.jpg": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+        "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-howling-banshee-card2-front.jpg": "d08eea8c8e319e9112b8fd4ae8231e4ddce10fbe2d8bcdaebb1aef4b73de10ff",
+        "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-howling-banshee-card3-back.jpg": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+        "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-howling-banshee-card3-front.jpg": "591d2d41e125da3d3aa46b4900cfe569cc6f1cffee572aebce6c0876f17700a5",
+        "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-howling-banshee-card4-back.jpg": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+        "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-howling-banshee-card4-front.jpg": "90d77677a8d9002e1791f54deff207763de1c554dcaa6bf5d0d55d335593b80b",
+        "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-howling-banshee-card5-back.jpg": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+        "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-howling-banshee-card5-front.jpg": "6c6ca4885ad5ce880b3ed3bc6fe74db3475a2a2d43d63e48484148557d63379d",
+        "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-striking-scorpion-card1-back.jpg": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+        "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-striking-scorpion-card1-front.jpg": "4080d4469712227844ae8a3a5ec2a3162656f5761c2957fdc78f9cc077ca4cf0",
+        "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-striking-scorpion-card2-back.jpg": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+        "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-striking-scorpion-card2-front.jpg": "b2aebe229c1dd75bc4b4f05c6a16fd0b322a63e9fe4da77266ed018a3987eaa4",
+        "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-striking-scorpion-card3-back.jpg": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+        "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-striking-scorpion-card3-front.jpg": "b22ace5cbfa2e80b1cb288d034b6a708d31b86d9444edfbf24bab889aaf8f1b5",
+        "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-striking-scorpion-card4-back.jpg": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+        "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-striking-scorpion-card4-front.jpg": "6273d320c380d873e9c033d2c257ca94f059a9fc3508254445ff397d2cc26bd9",
+        "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-striking-scorpion-card5-back.jpg": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+        "output/blades-of-khaine/cards/faction_rules/blades-of-khaine-striking-scorpion-card5-front.jpg": "ac93578477c11a914c4869ef5fbda41d8ecf06defd1e5640b76314ae36a6b839",
+        "output/blades-of-khaine/cards/firefight_ploys/blades-of-khaine-bladewind-back.jpg": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+        "output/blades-of-khaine/cards/firefight_ploys/blades-of-khaine-bladewind-front.jpg": "86d3925e104380d1924b393887433125102084c84b0fe395ac7eff5d0e7253d2",
+        "output/blades-of-khaine/cards/firefight_ploys/blades-of-khaine-contempt-back.jpg": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+        "output/blades-of-khaine/cards/firefight_ploys/blades-of-khaine-contempt-front.jpg": "44977ba0c3af8b70f4fa6450c0ba709377e169544e061a4352fb429d554ee8eb",
+        "output/blades-of-khaine/cards/firefight_ploys/blades-of-khaine-fading-light-back.jpg": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+        "output/blades-of-khaine/cards/firefight_ploys/blades-of-khaine-fading-light-front.jpg": "3e06b8f41e6ab5450ff02f895dac6a17947d8812ac63950ebc68dc460d099031",
+        "output/blades-of-khaine/cards/firefight_ploys/blades-of-khaine-starfall-back.jpg": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+        "output/blades-of-khaine/cards/firefight_ploys/blades-of-khaine-starfall-front.jpg": "81f72a0d38bcb7a346309b57647c56eb28353d5aa11e9e0d88e341a43068b86c",
+        "output/blades-of-khaine/cards/operatives_selection/blades-of-khaine-operative-selection-back.jpg": "573c490a7327a8540ef2c353c28544adcd4f805baeed8cacdb8d9cd685355513",
+        "output/blades-of-khaine/cards/operatives_selection/blades-of-khaine-operative-selection-front.jpg": "3c633706883ba05054e3d282b55f6b700bd88a4ffcbf9a001a38b5774954fc39",
+        "output/blades-of-khaine/cards/strategy_ploys/blades-of-khaine-dance-of-death-back.jpg": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+        "output/blades-of-khaine/cards/strategy_ploys/blades-of-khaine-dance-of-death-front.jpg": "9190eee0c0e89c21ee2d72aba9c512a4a38e3ac03c0293b7758265a4b1355594",
+        "output/blades-of-khaine/cards/strategy_ploys/blades-of-khaine-forewarned-back.jpg": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+        "output/blades-of-khaine/cards/strategy_ploys/blades-of-khaine-forewarned-front.jpg": "c0211a1b36f393998235d3e9e7b4fddbc618f3a3e8819b58674584bfadc1349e",
+        "output/blades-of-khaine/cards/strategy_ploys/blades-of-khaine-khaines-vengeance-back.jpg": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+        "output/blades-of-khaine/cards/strategy_ploys/blades-of-khaine-khaines-vengeance-front.jpg": "3d5efcecd688ad3f886b10942be5676147e2b8a90f8bae90225f362ecd84bb3c",
+        "output/blades-of-khaine/cards/strategy_ploys/blades-of-khaine-ruthless-poise-back.jpg": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+        "output/blades-of-khaine/cards/strategy_ploys/blades-of-khaine-ruthless-poise-front.jpg": "db3c865c684a59b14e10e4ea5ab1797843c51f2e98a4b879dad69a81815dba99",
+        "output/blades-of-khaine/cards/token_guide/blades-of-khaine-token-guide-back.jpg": "c73ce4c0825e70cdfa7fb8e7e1572bd8c45810453c92204e461ce008d289c118",
+        "output/blades-of-khaine/cards/token_guide/blades-of-khaine-token-guide-front.jpg": "a4130190748d3cf28ce47bb2e055702bc2c9b85c9b30a680d7fa19f67ef3eaf2",
+        "output/blades-of-khaine/cardbox/blades-of-khaine-card-box-texture.jpg": "e73e35de75019642b8f5de1f38c1d19393b17dc0d4efaded6bbdfc83d83ba554",
+        "output/blades-of-khaine/cardbox/blades-of-khaine-card-box.obj": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+        "output/blades-of-khaine/tokens/blades-of-khaine-rune-of-prophecy.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/blades-of-khaine/tokens/blades-of-khaine-rune-of-prophecy.png": "00507450f8302669b85eb7c6a928f3e19d19829f30adaa5e78d2152adddae088",
+        "output/blades-of-khaine/tokens/blades-of-khaine-rune-of-shielding.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/blades-of-khaine/tokens/blades-of-khaine-rune-of-shielding.png": "d7800fd8edca8ad524581e757d6e7deb657708fc2e75ab08589375a239f87f37",
+        "output/blades-of-khaine/tokens/blades-of-khaine-wraithbone-talisman.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/blades-of-khaine/tokens/blades-of-khaine-wraithbone-talisman.png": "0ae82c6c8693f791edac85e402caa2162b3b7e1cf094ac5ad8f2366bc5d82655",
+        "output/blades-of-khaine/tokens/tokenbag/blades-of-khaine-token-bag-icon.png": "6e83df17b193474f4838dd5f8fc2a725b71fba4e900fa5d0a9d9ac814010f2b5",
+        "output/blades-of-khaine/tokens/tokenbag/blades-of-khaine-token-bag.obj": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+        "output/blades-of-khaine/dice/blades-of-khaine-dice-dark.jpg": "45956331cc9471f94265446bdc057b80a12e44e23d137410ff8a88faea2d989e",
+        "output/blades-of-khaine/dice/blades-of-khaine-dice-light.jpg": "95aefaf9936131ca05cda93cf4e8d809f1637ccba537698851f4e89766d4dd7c",
+        "output/blades-of-khaine/dice/blades-of-khaine-dice-team.jpg": "140ef09c97c247497aad2eb588cb6b9a0787745a931c96abfdfe3faa2c3cfd9b",
+        "output/blades-of-khaine/data/blades-of-khaine-team-data.json": "0976e806a3e9e84ab96f2fc465b35edce1fb036951d890dc00a2b79e9c268e8a",
+        "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
+        "config/defaults/tts-script/datacard-load-stats.lua": "2d5f4088c2ff09f54988cf8722080f536b4e1b998cc2b4c1f1ea94e6b18eb92e",
+        "config/defaults/tts-script/display-table-manager-script.lua": "0dab4381078d90802f25e2cc825bc3658be35ee13ab3e98831c9d248c2526689",
+        "config/defaults/tts-script/faction-rule-chapter-tactics.lua": "c906742268076fb91f7cb4a92c6b588e1122ccddb692688f635c8dd4f7110ad0",
+        "config/defaults/tts-script/intermediate-updater.lua": "1a2d6dbc1a8c9c57ba6a3e7a3d4bc4b7a38a6c242a93f6ef3dae698123384d35",
+        "config/defaults/tts-script/single-object-updater.lua": "3613b85169e986a8e50ebe221482079e27c18037e3f48920aa0f7e138c0ccacc",
+        "config/defaults/tts-script/team-spawner-clean-script.lua": "12457bff3961eee2293c42d81cf4f4eb8b103177245a1ab8b46fd65da40672a2",
+        "config/defaults/tts-script/team-spawner-script.lua": "a51ff45c8622923db909fb465781801511f235412f099f83dff728d4027650db",
+        "config/defaults/tts-script/tts-update-rules-in-box-script.lua": "1eddd1803087ed63181a1149c856db77eef3196dc45d0d283693fada44a357dd",
+        "config/defaults/tts-image/default-icon.png": "892aff2628b9685c813e77be05c66afc1dc4247bc1dc9ce6fe54f006c2608271",
+        "config/defaults/tts-image/spawner-token.png": "61903b093f01d834f5e4c4c069b1353ecf7d29f012fef914b3027266816d8a6b",
+        "config/defaults/tts-token/square-bag-mesh.obj": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+        "config/defaults/tts-token/template-diamond-cutter.png": "719f57ba2b86494be454a6d3d25d8567dde974a915f3dde5ddc0e2d8dafaa1a5",
+        "config/defaults/tts-token/template-octagon-cutter.png": "944632aeacab978293ae57758b63086166c5fbaf3b845f48b3dd61db67d5c076",
+        "config/defaults/tts-token/template-operative-cutter.png": "0e698ddd403d7f0e84f200eb42af73f5249a9c5539d773298ff4c700ac9fe153",
+        "config/defaults/tts-token/template-round-cutter.png": "6564e1451c9a135a1c756fd94cde1c71e373e3fa677b51bba9d4bbe9e795d544",
+        "config/defaults/tts-token/token-bag-script.lua": "1659887e0fbfb9e3ebbc1aa5f3df8e1ffd89ee192be24d2dd1f02fcb0407e486",
+        "config/defaults/tts-token/token-bg-sample.png": "f9f90664c7f1c877c6f050f6e85babde6523cdc0aed9c77de8c09214f44ee109",
+        "config/defaults/tts-token/token-mesh.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc"
+      }
+    },
+    "front_end": {
+      "outputs": {},
+      "sources": {
+        "faction-rules": {
+          "hash": "8d04eb96b9779c591b0c15c5f8e5894531169958567eed2e0fdaf5c730f72c3f",
+          "outputs": [
+            "layers/kt-app/extracted/blades-of-khaine/cards/faction-rules/blades-of-khaine-faction-rules-page_0.pdf",
+            "layers/kt-app/extracted/blades-of-khaine/cards/faction-rules/blades-of-khaine-faction-rules-page_1.pdf",
+            "layers/kt-app/extracted/blades-of-khaine/cards/faction-rules/blades-of-khaine-faction-rules-page_2.pdf",
+            "layers/kt-app/extracted/blades-of-khaine/cards/faction-rules/blades-of-khaine-faction-rules-page_3.pdf",
+            "layers/kt-app/extracted/blades-of-khaine/cards/faction-rules/blades-of-khaine-faction-rules-page_4.pdf",
+            "layers/kt-app/extracted/blades-of-khaine/cards/faction-rules/blades-of-khaine-faction-rules-page_5.pdf",
+            "layers/kt-app/extracted/blades-of-khaine/cards/faction-rules/blades-of-khaine-faction-rules-page_6.pdf",
+            "layers/kt-app/extracted/blades-of-khaine/cards/faction-rules/blades-of-khaine-faction-rules-page_7.pdf",
+            "layers/kt-app/extracted/blades-of-khaine/cards/faction-rules/blades-of-khaine-faction-rules-page_8.pdf",
+            "layers/kt-app/extracted/blades-of-khaine/cards/faction-rules/blades-of-khaine-faction-rules-page_9.pdf",
+            "layers/kt-app/extracted/blades-of-khaine/cards/faction-rules/blades-of-khaine-faction-rules-page_10.pdf",
+            "layers/kt-app/extracted/blades-of-khaine/cards/faction-rules/blades-of-khaine-faction-rules-page_11.pdf",
+            "layers/kt-app/extracted/blades-of-khaine/cards/faction-rules/blades-of-khaine-faction-rules-page_12.pdf",
+            "layers/kt-app/extracted/blades-of-khaine/cards/faction-rules/blades-of-khaine-faction-rules-page_13.pdf",
+            "layers/kt-app/extracted/blades-of-khaine/cards/faction-rules/blades-of-khaine-faction-rules-page_14.pdf",
+            "layers/kt-app/extracted/blades-of-khaine/cards/faction-rules/blades-of-khaine-faction-rules-page_15.pdf",
+            "layers/kt-app/extracted/blades-of-khaine/cards/faction-rules/blades-of-khaine-faction-rules-page_16.pdf"
+          ],
+          "modified": "2026-07-06T15:59:22.262319+00:00"
+        },
+        "strategy-ploys": {
+          "hash": "0d682dadd273f86d363959163615aabe30c7272c5b85dbe2f0a9ba9a2e88c69b",
+          "outputs": [
+            "layers/kt-app/extracted/blades-of-khaine/cards/strategy-ploys/blades-of-khaine-strategy-ploys-page_0.pdf",
+            "layers/kt-app/extracted/blades-of-khaine/cards/strategy-ploys/blades-of-khaine-strategy-ploys-page_1.pdf",
+            "layers/kt-app/extracted/blades-of-khaine/cards/strategy-ploys/blades-of-khaine-strategy-ploys-page_2.pdf",
+            "layers/kt-app/extracted/blades-of-khaine/cards/strategy-ploys/blades-of-khaine-strategy-ploys-page_3.pdf"
+          ],
+          "modified": "2026-07-06T15:59:53.459441+00:00"
+        },
+        "operatives-selection": {
+          "hash": "38f89afdb925460e44539c8e1f59ccb523b3baa46f6e75f26343ced327e92bba",
+          "outputs": [
+            "layers/kt-app/extracted/blades-of-khaine/cards/operatives-selection/blades-of-khaine-operatives-selection-page_0.pdf",
+            "layers/kt-app/extracted/blades-of-khaine/cards/operatives-selection/blades-of-khaine-operatives-selection-page_1.pdf"
+          ],
+          "modified": "2026-07-06T16:06:10.069503+00:00"
+        },
+        "equipment": {
+          "hash": "764c3dc8b6e8239eb44b632bb24435febd0f2bfe20e5bca194490ed98099b463",
+          "outputs": [
+            "layers/kt-app/extracted/blades-of-khaine/cards/equipment/blades-of-khaine-equipment-page_0.pdf",
+            "layers/kt-app/extracted/blades-of-khaine/cards/equipment/blades-of-khaine-equipment-page_1.pdf",
+            "layers/kt-app/extracted/blades-of-khaine/cards/equipment/blades-of-khaine-equipment-page_2.pdf",
+            "layers/kt-app/extracted/blades-of-khaine/cards/equipment/blades-of-khaine-equipment-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:06:30.944749+00:00"
+        },
+        "firefight-ploys": {
+          "hash": "92909beaec5319c4e555197e60169131345c755f27464df4a4a21b7290926711",
+          "outputs": [
+            "layers/kt-app/extracted/blades-of-khaine/cards/firefight-ploys/blades-of-khaine-firefight-ploys-page_0.pdf",
+            "layers/kt-app/extracted/blades-of-khaine/cards/firefight-ploys/blades-of-khaine-firefight-ploys-page_1.pdf",
+            "layers/kt-app/extracted/blades-of-khaine/cards/firefight-ploys/blades-of-khaine-firefight-ploys-page_2.pdf",
+            "layers/kt-app/extracted/blades-of-khaine/cards/firefight-ploys/blades-of-khaine-firefight-ploys-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:07:10.695139+00:00"
+        },
+        "datacards": {
+          "hash": "bc330bf59bce28620d831e98b14d15d6ba7c9a153307c8ada551c8bf78ca7369",
+          "outputs": [
+            "layers/kt-app/extracted/blades-of-khaine/cards/datacards/blades-of-khaine-datacards-page_0.pdf",
+            "layers/kt-app/extracted/blades-of-khaine/cards/datacards/blades-of-khaine-datacards-page_1.pdf",
+            "layers/kt-app/extracted/blades-of-khaine/cards/datacards/blades-of-khaine-datacards-page_2.pdf",
+            "layers/kt-app/extracted/blades-of-khaine/cards/datacards/blades-of-khaine-datacards-page_3.pdf",
+            "layers/kt-app/extracted/blades-of-khaine/cards/datacards/blades-of-khaine-datacards-page_4.pdf",
+            "layers/kt-app/extracted/blades-of-khaine/cards/datacards/blades-of-khaine-datacards-page_5.pdf",
+            "layers/kt-app/extracted/blades-of-khaine/cards/datacards/blades-of-khaine-datacards-page_6.pdf"
+          ],
+          "modified": "2026-07-06T16:08:20.761774+00:00"
+        },
+        "cards": {
+          "hash": "02458a0f200bd931a7bee1d429c559502c4a224572fd047e4a80aba6bd794e43",
+          "outputs": [
+            "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page01_card1_landscape.pdf",
+            "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page01_card2_landscape.pdf",
+            "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page01_card3_landscape.pdf",
+            "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page01_card4_landscape.pdf",
+            "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page02_card1_landscape.pdf",
+            "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page02_card2_landscape.pdf",
+            "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page02_card3_landscape.pdf",
+            "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page02_card4_landscape.pdf",
+            "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page03_card1_portrait.pdf",
+            "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page03_card2_portrait.pdf",
+            "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page03_card3_portrait.pdf",
+            "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page03_card4_portrait.pdf",
+            "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page04_card1_portrait.pdf",
+            "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page04_card2_portrait.pdf",
+            "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page04_card3_portrait.pdf",
+            "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page04_card4_portrait.pdf",
+            "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page05_card1_portrait.pdf",
+            "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page05_card2_portrait.pdf",
+            "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page05_card3_portrait.pdf",
+            "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page05_card4_portrait.pdf",
+            "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page06_card1_portrait.pdf",
+            "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page06_card2_portrait.pdf",
+            "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page06_card3_portrait.pdf",
+            "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page06_card4_portrait.pdf",
+            "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page07_card1_portrait.pdf",
+            "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page07_card2_portrait.pdf",
+            "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page07_card3_portrait.pdf",
+            "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page07_card4_portrait.pdf",
+            "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page08_card1_portrait.pdf",
+            "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page08_card2_portrait.pdf",
+            "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page08_card3_portrait.pdf",
+            "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page08_card4_portrait.pdf",
+            "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page09_card1_portrait.pdf",
+            "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page09_card2_portrait.pdf",
+            "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page09_card3_portrait.pdf",
+            "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page09_card4_portrait.pdf",
+            "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page10_card1_portrait.pdf",
+            "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page10_card2_portrait.pdf",
+            "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page10_card3_portrait.pdf",
+            "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page10_card4_portrait.pdf"
+          ],
+          "modified": "2026-07-06T20:26:51.632894+00:00"
+        }
+      },
+      "completed": "2026-07-06T20:26:51.632921+00:00"
+    },
+    "build_structure": {
+      "outputs": {
+        "structure": {
+          "path": "layers/warcom/structure/blades-of-khaine-structure.json",
+          "hash": "f8534eab0054b3fe24aa246915f14c7314a855387ac0f09024e9a8df76fb35ec",
+          "modified": "2026-07-06T20:56:32.072612+00:00"
+        }
+      },
+      "inputs": {
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page01_card1_landscape.pdf": "c1547455805de38ba1d7553bc5a32a577323bd3867cc0f63d80a547323e2c9fb",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page01_card2_landscape.pdf": "05d33ced2a911d90f39cd27dd98144a3349343040eeb506ba67966e796072ff0",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page01_card3_landscape.pdf": "77e9dc05a6417a23925337aa35df4c757a2b01edf88c1fe75f6698cdd4a2a710",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page01_card4_landscape.pdf": "d9c8d0b56b40122694ba4a07cae356e2e69f3dfc31cd8fb86a12760bd9adcc8d",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page02_card1_landscape.pdf": "49e8a1f10d78a8555ffaa824b6ee758cb67a08e151b3b6dfb0ba8b63fd042482",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page02_card2_landscape.pdf": "d24e4e342e80d56fb0f38dec85837a34501842fd19127d5b79c7a48f476bebf5",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page02_card3_landscape.pdf": "ffe87c6fcc8f7e98edfa40030d25036a62cc0577086787eb232f1d34b167ac32",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page02_card4_landscape.pdf": "df82677ca45b27f62fa859a40a43f0af7fce09c247e16b48c97833777680d3c4",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page03_card1_portrait.pdf": "11e4fa3cda76ecad66f7110393839c7aeaba27b584b33c8e0628b81ae46723e1",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page03_card2_portrait.pdf": "7e767fa7f7075287719eefb9532296fdd085de28e50d8cb245d1dd555f8cbef5",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page03_card3_portrait.pdf": "0795566a4655a29cee15f3f2c962c11c32bc2ac36396b183aa12986afe2bf875",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page03_card4_portrait.pdf": "c7053c9af918aac1d8298849c6537f0136fd88c58be8deb88b7b8fa1a95b63b0",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page04_card1_portrait.pdf": "20768a53160e56496c5c58cab66db4de6c34454af8ad4044fc51bf90450c60fd",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page04_card2_portrait.pdf": "5405989845c3db83837c11bdd38862be3d6e3dc31bbac063071528227d1a0490",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page04_card3_portrait.pdf": "4dff00d604cabe23a1933c00ae8c1ed13ceb03ee6d50401513c0dd4023408801",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page04_card4_portrait.pdf": "9d0f33ffe5b85b216b3e4824fe966e92e0028eb6c59795914e04a7c10683c6a1",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page05_card1_portrait.pdf": "f2da3885c19b0acfbd37339fde6b256d027b6a14f70111e40b591381ef3a8dc1",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page05_card2_portrait.pdf": "22c10a9e0bcc899b9c7f967a82357a91b0a06ad4b491a5f858b1e5a05bbf3c87",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page05_card3_portrait.pdf": "2d4b680760271f0ede48165c686d458754e6a01c67c070a5b6fa5308186ec300",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page05_card4_portrait.pdf": "3765b792570410ea38ddb6033f829c1b6d35e921b94b713489d8c45684d16dc6",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page06_card1_portrait.pdf": "7ddd6454464000537288421c1f2e5d7a124a2c32c822d091e5acfacd8fcb0f82",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page06_card2_portrait.pdf": "e169d42ca96c4f90a9a3390168dede4437f78eebd4347abe36048496cfde7f73",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page06_card3_portrait.pdf": "91cc76eb53760839961b48c1e12f2781a4fed9b6915ca2ece2ff0607e4ee6960",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page06_card4_portrait.pdf": "b938718d3ffd6c1a946a84486110938d0a9a160eaacba115675ef628da1fd6bf",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page07_card1_portrait.pdf": "4f60d328692ee887aa2a12a04f1c7b99ae16b1d7b60a4867c963f290d9066203",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page07_card2_portrait.pdf": "bdf8809709190c6ab8954447916c6bdb0d9dfa7cd0021f59f4ef3fafb2355832",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page07_card3_portrait.pdf": "eaea91dffaaccfca631e8cd4eeea807e82690b6dfa90fe15236b3e217da056e5",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page07_card4_portrait.pdf": "3af83e6003c1f4133094f7ccd2af4464ff1a1bc47405ad7c2862ae0cee967451",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page08_card1_portrait.pdf": "96c50f3c2df5fa799a2187ec3ed470392bee74b75da54e3d210c1ba95a152d3a",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page08_card2_portrait.pdf": "f1735c835ab918a2e59a4e8e6be6c9d81ee1f14fc268c48d821c12f85ae4320f",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page08_card3_portrait.pdf": "3951598257b521c018d5f1a64c60f13ea410b576d9a2629729d55a19348e738e",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page08_card4_portrait.pdf": "429c50707da2c53100aa8c52c2eb46d3820d2e2ae3ded710202863a8a53b001e",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page09_card1_portrait.pdf": "af7ede7a4617337c138b8f772e8ff9901257a5bf0a8cb2a0d5b674575adb363b",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page09_card2_portrait.pdf": "5c12b38c24f64561b67c1bf0a6f71f24fa8960ab30978c0ed8b1b87173272d2d",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page09_card3_portrait.pdf": "a2457e513afc58b9b58cf18faf46bf2c0d76ae90ee4621e2817cadb5285b69be",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page09_card4_portrait.pdf": "26ab4bc225fa629a6a8a2988154225c71175ca99263ba3e0075ac36e40debcd6",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page10_card1_portrait.pdf": "81288520a02cc038c81737fdfcc1a49c23e2f76f4f36932ed0c552cc3f7b28a2",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page10_card2_portrait.pdf": "fa767e3ddfc9f5fa71ef6c312592a7c9f6f916ce37c80fe15e78ba513a657aa8",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page10_card3_portrait.pdf": "292ad3c83a2c91038f6dc9bbc97edad138ae4cf9f8947ccc17259878c9424a59",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page10_card4_portrait.pdf": "973d2f5c5cb2590f3741db98802bd6b0df4c7ed257f6c08a8463453aaf27ba17"
+      },
+      "completed": "2026-07-06T20:56:32.119817+00:00"
+    },
+    "integrate_classified": {
+      "outputs": {
+        "manifest.json": {
+          "path": "layers/integration/blades-of-khaine/manifest.json",
+          "hash": "f8534eab0054b3fe24aa246915f14c7314a855387ac0f09024e9a8df76fb35ec",
+          "modified": "2026-07-06T20:57:30.583632+00:00"
+        },
+        "blades-of-khaine-datacard-dire-avenger-exarch.pdf": {
+          "path": "layers/integration/blades-of-khaine/blades-of-khaine-datacard-dire-avenger-exarch.pdf",
+          "hash": "7186b8c5b1c4f2f1782526e8468c3a205f7e07a71ded2ea6a08b408f0b2f56a0",
+          "modified": "2026-07-06T20:57:30.594052+00:00"
+        },
+        "blades-of-khaine-datacard-dire-avenger-warrior.pdf": {
+          "path": "layers/integration/blades-of-khaine/blades-of-khaine-datacard-dire-avenger-warrior.pdf",
+          "hash": "547d6d11e0cbc0de83348b4b7979b313aee35d90fe9b893bf0161d04b90fb7d3",
+          "modified": "2026-07-06T20:57:30.603228+00:00"
+        },
+        "blades-of-khaine-datacard-howling-banshee-exarch.pdf": {
+          "path": "layers/integration/blades-of-khaine/blades-of-khaine-datacard-howling-banshee-exarch.pdf",
+          "hash": "de6978033d7738590d5480e2e3f2179fbf1d5e75ad3343acf3641a376527798d",
+          "modified": "2026-07-06T20:57:30.611996+00:00"
+        },
+        "blades-of-khaine-datacard-howling-banshee-warrior.pdf": {
+          "path": "layers/integration/blades-of-khaine/blades-of-khaine-datacard-howling-banshee-warrior.pdf",
+          "hash": "6fd6467f48fb757e64815b78d5941d0a3329fe3e0efa15f1f48b6c54bb8d52f5",
+          "modified": "2026-07-06T20:57:30.622739+00:00"
+        },
+        "blades-of-khaine-datacard-striking-scorpion-exarch.pdf": {
+          "path": "layers/integration/blades-of-khaine/blades-of-khaine-datacard-striking-scorpion-exarch.pdf",
+          "hash": "0569efeefd54018b4637350e459ba52b7ce55c23d7bb388bd03519ee00d3477e",
+          "modified": "2026-07-06T20:57:30.632392+00:00"
+        },
+        "blades-of-khaine-datacard-striking-scorpion-warrior.pdf": {
+          "path": "layers/integration/blades-of-khaine/blades-of-khaine-datacard-striking-scorpion-warrior.pdf",
+          "hash": "e1a73374e1ccff3335aaa38b5ee03a4d4b9756c577b584116c20c48e64a20370",
+          "modified": "2026-07-06T20:57:30.642672+00:00"
+        },
+        "blades-of-khaine-equipment-rune-of-prophecy.pdf": {
+          "path": "layers/integration/blades-of-khaine/blades-of-khaine-equipment-rune-of-prophecy.pdf",
+          "hash": "eab9176dd45942168f4acb5968ee0767a9d9059be51db4c51e3e308ee4beefdf",
+          "modified": "2026-07-06T20:57:30.651456+00:00"
+        },
+        "blades-of-khaine-equipment-rune-of-shielding.pdf": {
+          "path": "layers/integration/blades-of-khaine/blades-of-khaine-equipment-rune-of-shielding.pdf",
+          "hash": "13a0120e2c03dec607123df13bdc65c5eff846d0b7e15f22103476a65f615cb7",
+          "modified": "2026-07-06T20:57:30.660603+00:00"
+        },
+        "blades-of-khaine-equipment-rune-of-foresight.pdf": {
+          "path": "layers/integration/blades-of-khaine/blades-of-khaine-equipment-rune-of-foresight.pdf",
+          "hash": "595b1c177b17432e6756981c87bda16921ed53f705fc7fe69e19d48a0122fe48",
+          "modified": "2026-07-06T20:57:30.669640+00:00"
+        },
+        "blades-of-khaine-equipment-wraithbone-talisman.pdf": {
+          "path": "layers/integration/blades-of-khaine/blades-of-khaine-equipment-wraithbone-talisman.pdf",
+          "hash": "d413f615f214db7cb0939352e06b73fe250f1cf40ca0cf01c875d7f6bf48e58a",
+          "modified": "2026-07-06T20:57:30.678619+00:00"
+        },
+        "blades-of-khaine-faction-rule-aspect-techniques.pdf": {
+          "path": "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-aspect-techniques.pdf",
+          "hash": "07b4541fd25bde7f663c566cf4371bb4bc3f18b1e3667ac0ffaaf55bfeb5d494",
+          "modified": "2026-07-06T20:57:30.687895+00:00"
+        },
+        "blades-of-khaine-faction-rule-howling-banshee-1.pdf": {
+          "path": "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-howling-banshee-1.pdf",
+          "hash": "33f6761edb6db35cbdfe298e845b4e5db0a78d0e6c26d22b781dd81cb802d8b0",
+          "modified": "2026-07-06T20:57:30.696216+00:00"
+        },
+        "blades-of-khaine-faction-rule-howling-banshee-2.pdf": {
+          "path": "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-howling-banshee-2.pdf",
+          "hash": "6d600d0e2339ca6bf7c5da53a1ab3bdce660a4b79f6b7d3a8e3bbcccd9f4a69b",
+          "modified": "2026-07-06T20:57:30.704782+00:00"
+        },
+        "blades-of-khaine-faction-rule-howling-banshee-3.pdf": {
+          "path": "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-howling-banshee-3.pdf",
+          "hash": "eee92ba5f92efb04ffda6ed7d297081c108888e5c008f989fb362586a9abda11",
+          "modified": "2026-07-06T20:57:30.712848+00:00"
+        },
+        "blades-of-khaine-faction-rule-howling-banshee-4.pdf": {
+          "path": "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-howling-banshee-4.pdf",
+          "hash": "b322d666e99211d705a39e1cd9f2a2ab550721725cc3764ba9d17cc5b7812329",
+          "modified": "2026-07-06T20:57:30.721990+00:00"
+        },
+        "blades-of-khaine-faction-rule-howling-banshee-5.pdf": {
+          "path": "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-howling-banshee-5.pdf",
+          "hash": "eec7eb17d7a775ce5ae1af69611b16d6a729aa863f0834165ae9ab34512098d8",
+          "modified": "2026-07-06T20:57:30.730158+00:00"
+        },
+        "blades-of-khaine-faction-rule-dire-avenger-1.pdf": {
+          "path": "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-dire-avenger-1.pdf",
+          "hash": "4ca63316b511a8b545629be38718c2b9366a0644e1dbec43fbbe9b961e98fd91",
+          "modified": "2026-07-06T20:57:30.739188+00:00"
+        },
+        "blades-of-khaine-faction-rule-dire-avenger-2.pdf": {
+          "path": "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-dire-avenger-2.pdf",
+          "hash": "a42b81cbcfcf295074db515e370209523ea0d680af9c5310c61c22b684ed8837",
+          "modified": "2026-07-06T20:57:30.747283+00:00"
+        },
+        "blades-of-khaine-faction-rule-dire-avenger-3.pdf": {
+          "path": "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-dire-avenger-3.pdf",
+          "hash": "36c78d95a4ed89d286ca009537d7d455dff5876e2476c140d1d856e0aa3543bf",
+          "modified": "2026-07-06T20:57:30.756010+00:00"
+        },
+        "blades-of-khaine-faction-rule-dire-avenger-4.pdf": {
+          "path": "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-dire-avenger-4.pdf",
+          "hash": "8ea30a1ec298b1b9803b1969d6282357b51abf93555ea2a0fde8f060faa15046",
+          "modified": "2026-07-06T20:57:30.764030+00:00"
+        },
+        "blades-of-khaine-faction-rule-dire-avenger-5.pdf": {
+          "path": "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-dire-avenger-5.pdf",
+          "hash": "58df50e61f5c96526c547428bdba6ad93215d00da9bb3430d4e54ef7d5a6fd83",
+          "modified": "2026-07-06T20:57:30.772517+00:00"
+        },
+        "blades-of-khaine-faction-rule-striking-scorpion-1.pdf": {
+          "path": "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-striking-scorpion-1.pdf",
+          "hash": "da2cbfe4b7616b07177fd6090125e36e9daccb27c341c1d7aa89350f463c00d9",
+          "modified": "2026-07-06T20:57:30.780482+00:00"
+        },
+        "blades-of-khaine-faction-rule-striking-scorpion-2.pdf": {
+          "path": "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-striking-scorpion-2.pdf",
+          "hash": "e646d028798c9397aac96e8fed76200604093d219898e001b2b4140a442c6310",
+          "modified": "2026-07-06T20:57:30.789154+00:00"
+        },
+        "blades-of-khaine-faction-rule-striking-scorpion-3.pdf": {
+          "path": "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-striking-scorpion-3.pdf",
+          "hash": "e8b51727d747a73e176723a0fda761acecf9dc50092466b7dacae3e416a8e495",
+          "modified": "2026-07-06T20:57:30.797185+00:00"
+        },
+        "blades-of-khaine-faction-rule-striking-scorpion-4.pdf": {
+          "path": "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-striking-scorpion-4.pdf",
+          "hash": "0037a353005370bcd5547d104bc9e2c4d7df78efb17056a878317edf0b468969",
+          "modified": "2026-07-06T20:57:30.805652+00:00"
+        },
+        "blades-of-khaine-faction-rule-striking-scorpion-5.pdf": {
+          "path": "layers/integration/blades-of-khaine/blades-of-khaine-faction-rule-striking-scorpion-5.pdf",
+          "hash": "db184d80d958e32a138af2fac27788163f2e9642d317e2cfdf6fdd42c24cbae6",
+          "modified": "2026-07-06T20:57:30.813678+00:00"
+        },
+        "blades-of-khaine-token-guide-token-guide.pdf": {
+          "path": "layers/integration/blades-of-khaine/blades-of-khaine-token-guide-token-guide.pdf",
+          "hash": "29187d80cfe7f0a0aef120cdd34b152ac552b82ad95395ddde43b6b80371848d",
+          "modified": "2026-07-06T20:57:30.823734+00:00"
+        },
+        "blades-of-khaine-firefight-ploy-bladewind.pdf": {
+          "path": "layers/integration/blades-of-khaine/blades-of-khaine-firefight-ploy-bladewind.pdf",
+          "hash": "aad8a0cffdca60085eacf1fb11f39bcd26eb3dd031c5240640982796c5fd2ef9",
+          "modified": "2026-07-06T20:57:30.832038+00:00"
+        },
+        "blades-of-khaine-firefight-ploy-starfall.pdf": {
+          "path": "layers/integration/blades-of-khaine/blades-of-khaine-firefight-ploy-starfall.pdf",
+          "hash": "e91e07db6a5468a6fe770cdf09d1bf4bc33b2fc964b4fa8ac56be3c3923a759c",
+          "modified": "2026-07-06T20:57:30.840749+00:00"
+        },
+        "blades-of-khaine-firefight-ploy-fading-light.pdf": {
+          "path": "layers/integration/blades-of-khaine/blades-of-khaine-firefight-ploy-fading-light.pdf",
+          "hash": "a9ea9d4dd63101c87c03f3c88a1fb719d94c5ae04aaf10c197baafaf003cff95",
+          "modified": "2026-07-06T20:57:30.848586+00:00"
+        },
+        "blades-of-khaine-firefight-ploy-contempt.pdf": {
+          "path": "layers/integration/blades-of-khaine/blades-of-khaine-firefight-ploy-contempt.pdf",
+          "hash": "a147fbe1d39ddeae42350b3bcc4f1ad2b0ef85e2f4e05c1313329d0a013511c2",
+          "modified": "2026-07-06T20:57:30.858020+00:00"
+        },
+        "blades-of-khaine-operatives-selection-operative-selection.pdf": {
+          "path": "layers/integration/blades-of-khaine/blades-of-khaine-operatives-selection-operative-selection.pdf",
+          "hash": "4436895dab3630fa2bf70d2738699a5d2d6750da1db4375edda60eda4d14518d",
+          "modified": "2026-07-06T20:57:30.867612+00:00"
+        },
+        "blades-of-khaine-strategy-ploy-forewarned.pdf": {
+          "path": "layers/integration/blades-of-khaine/blades-of-khaine-strategy-ploy-forewarned.pdf",
+          "hash": "7234b5851b8f5db12633e6a54a0224596d9ed9ae096ba96a4a31ae6cd33f5971",
+          "modified": "2026-07-06T20:57:30.876047+00:00"
+        },
+        "blades-of-khaine-strategy-ploy-ruthless-poise.pdf": {
+          "path": "layers/integration/blades-of-khaine/blades-of-khaine-strategy-ploy-ruthless-poise.pdf",
+          "hash": "4ac07bc4a192e119bc18b51b78ca24df0893a58394b5ca4c421a8c00cbdfe23f",
+          "modified": "2026-07-06T20:57:30.884326+00:00"
+        },
+        "blades-of-khaine-strategy-ploy-khaines-vengeance.pdf": {
+          "path": "layers/integration/blades-of-khaine/blades-of-khaine-strategy-ploy-khaines-vengeance.pdf",
+          "hash": "afb7494bf46c97a98408b12444d8e2726acdf6edd0400bf10c160c1c94c2fe2e",
+          "modified": "2026-07-06T20:57:30.892696+00:00"
+        },
+        "blades-of-khaine-strategy-ploy-dance-of-death.pdf": {
+          "path": "layers/integration/blades-of-khaine/blades-of-khaine-strategy-ploy-dance-of-death.pdf",
+          "hash": "b8602f996c5ac305bb8822dab47364fc88f117e7b7b2a7d9b09a1e63ba49228d",
+          "modified": "2026-07-06T20:57:30.900745+00:00"
+        }
+      },
+      "inputs": {
+        "layers/warcom/structure/blades-of-khaine-structure.json": "f8534eab0054b3fe24aa246915f14c7314a855387ac0f09024e9a8df76fb35ec",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page01_card1_landscape.pdf": "c1547455805de38ba1d7553bc5a32a577323bd3867cc0f63d80a547323e2c9fb",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page01_card2_landscape.pdf": "05d33ced2a911d90f39cd27dd98144a3349343040eeb506ba67966e796072ff0",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page01_card3_landscape.pdf": "77e9dc05a6417a23925337aa35df4c757a2b01edf88c1fe75f6698cdd4a2a710",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page01_card4_landscape.pdf": "d9c8d0b56b40122694ba4a07cae356e2e69f3dfc31cd8fb86a12760bd9adcc8d",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page02_card1_landscape.pdf": "49e8a1f10d78a8555ffaa824b6ee758cb67a08e151b3b6dfb0ba8b63fd042482",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page02_card2_landscape.pdf": "d24e4e342e80d56fb0f38dec85837a34501842fd19127d5b79c7a48f476bebf5",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page02_card3_landscape.pdf": "ffe87c6fcc8f7e98edfa40030d25036a62cc0577086787eb232f1d34b167ac32",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page09_card4_portrait.pdf": "26ab4bc225fa629a6a8a2988154225c71175ca99263ba3e0075ac36e40debcd6",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page10_card1_portrait.pdf": "81288520a02cc038c81737fdfcc1a49c23e2f76f4f36932ed0c552cc3f7b28a2",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page10_card2_portrait.pdf": "fa767e3ddfc9f5fa71ef6c312592a7c9f6f916ce37c80fe15e78ba513a657aa8",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page10_card3_portrait.pdf": "292ad3c83a2c91038f6dc9bbc97edad138ae4cf9f8947ccc17259878c9424a59",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page03_card3_portrait.pdf": "0795566a4655a29cee15f3f2c962c11c32bc2ac36396b183aa12986afe2bf875",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page03_card4_portrait.pdf": "c7053c9af918aac1d8298849c6537f0136fd88c58be8deb88b7b8fa1a95b63b0",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page04_card1_portrait.pdf": "20768a53160e56496c5c58cab66db4de6c34454af8ad4044fc51bf90450c60fd",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page04_card2_portrait.pdf": "5405989845c3db83837c11bdd38862be3d6e3dc31bbac063071528227d1a0490",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page04_card3_portrait.pdf": "4dff00d604cabe23a1933c00ae8c1ed13ceb03ee6d50401513c0dd4023408801",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page04_card4_portrait.pdf": "9d0f33ffe5b85b216b3e4824fe966e92e0028eb6c59795914e04a7c10683c6a1",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page05_card1_portrait.pdf": "f2da3885c19b0acfbd37339fde6b256d027b6a14f70111e40b591381ef3a8dc1",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page05_card2_portrait.pdf": "22c10a9e0bcc899b9c7f967a82357a91b0a06ad4b491a5f858b1e5a05bbf3c87",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page05_card3_portrait.pdf": "2d4b680760271f0ede48165c686d458754e6a01c67c070a5b6fa5308186ec300",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page05_card4_portrait.pdf": "3765b792570410ea38ddb6033f829c1b6d35e921b94b713489d8c45684d16dc6",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page06_card1_portrait.pdf": "7ddd6454464000537288421c1f2e5d7a124a2c32c822d091e5acfacd8fcb0f82",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page06_card2_portrait.pdf": "e169d42ca96c4f90a9a3390168dede4437f78eebd4347abe36048496cfde7f73",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page06_card3_portrait.pdf": "91cc76eb53760839961b48c1e12f2781a4fed9b6915ca2ece2ff0607e4ee6960",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page06_card4_portrait.pdf": "b938718d3ffd6c1a946a84486110938d0a9a160eaacba115675ef628da1fd6bf",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page07_card1_portrait.pdf": "4f60d328692ee887aa2a12a04f1c7b99ae16b1d7b60a4867c963f290d9066203",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page07_card2_portrait.pdf": "bdf8809709190c6ab8954447916c6bdb0d9dfa7cd0021f59f4ef3fafb2355832",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page07_card3_portrait.pdf": "eaea91dffaaccfca631e8cd4eeea807e82690b6dfa90fe15236b3e217da056e5",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page08_card4_portrait.pdf": "429c50707da2c53100aa8c52c2eb46d3820d2e2ae3ded710202863a8a53b001e",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page09_card1_portrait.pdf": "af7ede7a4617337c138b8f772e8ff9901257a5bf0a8cb2a0d5b674575adb363b",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page09_card2_portrait.pdf": "5c12b38c24f64561b67c1bf0a6f71f24fa8960ab30978c0ed8b1b87173272d2d",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page09_card3_portrait.pdf": "a2457e513afc58b9b58cf18faf46bf2c0d76ae90ee4621e2817cadb5285b69be",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page03_card1_portrait.pdf": "11e4fa3cda76ecad66f7110393839c7aeaba27b584b33c8e0628b81ae46723e1",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page03_card2_portrait.pdf": "7e767fa7f7075287719eefb9532296fdd085de28e50d8cb245d1dd555f8cbef5",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page07_card4_portrait.pdf": "3af83e6003c1f4133094f7ccd2af4464ff1a1bc47405ad7c2862ae0cee967451",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page08_card1_portrait.pdf": "96c50f3c2df5fa799a2187ec3ed470392bee74b75da54e3d210c1ba95a152d3a",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page08_card2_portrait.pdf": "f1735c835ab918a2e59a4e8e6be6c9d81ee1f14fc268c48d821c12f85ae4320f",
+        "layers/warcom/extracted/blades-of-khaine/cards/blades-of-khaine_page08_card3_portrait.pdf": "3951598257b521c018d5f1a64c60f13ea410b576d9a2629729d55a19348e738e"
+      },
+      "completed": "2026-07-06T20:57:30.941502+00:00"
+    },
+    "extract_artwork": {
+      "outputs": {},
+      "sources": {
+        "artwork": {
+          "hash": "02458a0f200bd931a7bee1d429c559502c4a224572fd047e4a80aba6bd794e43",
+          "outputs": [
+            "layers/integration/blades-of-khaine/artwork/blades-of-khaine-artwork-01.jpeg",
+            "layers/integration/blades-of-khaine/artwork/blades-of-khaine-artwork-02.jpeg",
+            "layers/integration/blades-of-khaine/artwork/blades-of-khaine-artwork-03.png",
+            "layers/integration/blades-of-khaine/artwork/blades-of-khaine-artwork-04.jpeg",
+            "layers/integration/blades-of-khaine/artwork/blades-of-khaine-artwork-05.jpeg",
+            "layers/integration/blades-of-khaine/artwork/blades-of-khaine-artwork-06.png",
+            "layers/integration/blades-of-khaine/artwork/blades-of-khaine-artwork-07.jpeg",
+            "layers/integration/blades-of-khaine/artwork/blades-of-khaine-artwork-08.jpeg",
+            "layers/integration/blades-of-khaine/artwork/blades-of-khaine-artwork-09.jpeg",
+            "layers/integration/blades-of-khaine/artwork/blades-of-khaine-artwork-10.jpeg",
+            "layers/integration/blades-of-khaine/artwork/blades-of-khaine-artwork-11.jpeg",
+            "layers/integration/blades-of-khaine/artwork/blades-of-khaine-artwork-12.jpeg",
+            "layers/integration/blades-of-khaine/artwork/blades-of-khaine-artwork-13.jpeg",
+            "layers/integration/blades-of-khaine/artwork/blades-of-khaine-artwork-14.jpeg",
+            "layers/integration/blades-of-khaine/artwork/blades-of-khaine-artwork-15.jpeg",
+            "layers/integration/blades-of-khaine/artwork/blades-of-khaine-artwork-16.jpeg",
+            "layers/integration/blades-of-khaine/artwork/blades-of-khaine-artwork-17.jpeg",
+            "layers/integration/blades-of-khaine/artwork/blades-of-khaine-artwork-18.jpeg",
+            "layers/integration/blades-of-khaine/artwork/blades-of-khaine-artwork-metadata.json",
+            "layers/integration/blades-of-khaine/artwork/icons/blades-of-khaine-icon-landscape.jpg",
+            "layers/integration/blades-of-khaine/artwork/icons/blades-of-khaine-icon-portrait.jpg",
+            "layers/integration/blades-of-khaine/artwork/icons/blades-of-khaine-icon-token-transparent.png",
+            "layers/integration/blades-of-khaine/artwork/icons/blades-of-khaine-icon-token.jpg"
+          ],
+          "modified": "2026-07-06T20:53:41.009125+00:00"
+        }
+      },
+      "completed": "2026-07-06T20:53:41.009141+00:00"
+    }
+  }
+}

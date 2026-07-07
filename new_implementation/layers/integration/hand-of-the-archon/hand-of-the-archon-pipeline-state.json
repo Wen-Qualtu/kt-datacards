@@ -1,0 +1,1029 @@
+{
+  "team": "hand-of-the-archon",
+  "pipeline_version": "2.0",
+  "last_updated": "2026-07-07T07:29:59.967248+00:00",
+  "steps": {
+    "content_analysis": {
+      "outputs": {
+        "content.json": {
+          "path": "layers/integration/hand-of-the-archon/content/hand-of-the-archon-content.json",
+          "hash": "f7b92a37cb00b2a896481fd5dffe629310fa8416059691644e1a22c9a9cf6852",
+          "modified": "2026-07-06T20:59:34.594673+00:00"
+        }
+      },
+      "completed": "2026-07-06T20:59:34.628863+00:00",
+      "inputs": {
+        "layers/integration/hand-of-the-archon/manifest.json": "009adc35963fa176f43bc19e0c255789aecf2314998a750b55c0ff6602a9d4e7",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-datacard-kabalite-agent.pdf": "7e0ad30b159fb6745eabd401cb7af1643e130faf779d2b31ef21e57dcf9cbeb4",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-datacard-kabalite-archsybarite.pdf": "d3d8c51d884242cf11689766b68370a030ffb78642fb643a7ea7d8901de9f7e3",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-datacard-kabalite-crimson-duellist.pdf": "0ee5cf4fa441f560fe13d4754f45bbbaca27cf4f94d2f95ab3abdbbd598c35dc",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-datacard-kabalite-disciple-of-yaelindra.pdf": "496360459112e23bc535d7ea4f7cdb3f7eada595cb5426ba498ca723de2512b7",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-datacard-kabalite-elixicant.pdf": "a4302eec2316b74b86eacb65440bbd1ef31c4391d1421579ae30781250658dff",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-datacard-kabalite-flayer.pdf": "d23cef374d34e17eebc1040949228b49a658a441c8169b3959c59dd9454df24f",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-datacard-kabalite-gunner.pdf": "d1e2b662be420ed65b3f27893ad802a7614d6cba528e4425351adf783c32ea54",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-datacard-kabalite-heavy-gunner.pdf": "2ea2e78148d658353cf97889ee26c18487e1f4c93a7d1dd00968fa4930b5440c",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-datacard-kabalite-skysplinter-assassin.pdf": "97629335d69227f7eeef2c55dfd02b869401cfbf531b37fad05e9db69b8c1f5a",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-equipment-chain-snare.pdf": "c47c6276c72736457d9efc09f72d8356a6eec88a7ae7f1feb8373174273f61b5",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-equipment-refined-poison.pdf": "7fd9241076393a4254b09431985df90df0f87c8d8312ebffbee49d319af97c49",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-equipment-toxin-coating.pdf": "90c6b6e36902363c254c000f26a2f214eeba3377da098d905df1a467f71cdb5f",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-equipment-wicked-blades.pdf": "7d3d2fecef7984fd40ac4ea9b6ae980fe8d75d42c9dcf09698db1047e80ca863",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-faction-rule-power-from-pain.pdf": "8a6ec2b5ca2c1491dcbcf762ddda0550704ab5b7722834c155cd565fb4c0840d",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-faction-rule-rifles.pdf": "1c0b4626a83fdc07463b294e1f29e5507099c1bf14633a5bd4f803f19b9d2d1f",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-firefight-ploy-cruel-deception.pdf": "8c3337105e8248708a059af7bdad5b25214ccab38e4df8aa71e0a9fbc46fdb65",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-firefight-ploy-devious-scheme.pdf": "2523855652aac507b25315b38cbd4d51c8520aba32d04e7c07da5c739bf8fb14",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-firefight-ploy-heinous-arrogance.pdf": "66fb0421544e2cfe734891db6de3b04376837dfd5548e5abb6c0e88d48404a35",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-firefight-ploy-prey-on-the-wounded.pdf": "ce3a9ec9ac1897678f29a5fff23bbf1a2f2f61f86613d915b4af9d33ee18d7d7",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-operatives-selection-operative-selection.pdf": "13f84326515583e796657cdad931b8e5ca68c2755b39956de57aad420776b23c",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-strategy-ploy-blade-artists.pdf": "0c224e3fe8239d86be3ae726f52558ed46f88b5e0020b0a722508c61cf6c47fd",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-strategy-ploy-denizens-of-night.pdf": "4b202be875bd6381d368ada950c4aa229ab3410610ad98b77c616b02393d56d8",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-strategy-ploy-from-darkness-death.pdf": "4f7ce6c27725fd4ca258e88d423972b9660e836e111b5382525549ed9da1f1ca",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-strategy-ploy-merciless-sadists.pdf": "d5b8afc8b7be611450a011bcc5de11924f343398578ed9c4deb501dc5290eef0",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-token-guide-token-guide.pdf": "883896a1e85779d97cf9e5f478dc1821f8196679e9b5423bab15298e6c29b525"
+      }
+    },
+    "extract_backsides": {
+      "outputs": {
+        "backside-landscape.jpg": {
+          "path": "layers/integration/hand-of-the-archon/card-backside/hand-of-the-archon-backside-landscape.jpg",
+          "hash": "778594a4456afd3e9fa869a26779935087c1f96fc7330f553682e9be2bb86c2a",
+          "modified": "2026-07-06T16:32:00.559065+00:00"
+        },
+        "backside-portrait.jpg": {
+          "path": "layers/integration/hand-of-the-archon/card-backside/hand-of-the-archon-backside-portrait.jpg",
+          "hash": "207ae4d66e23a4b38e063561bc90c4e683461f317ebe6af2ec0db3eda11c3863",
+          "modified": "2026-07-06T16:32:00.584231+00:00"
+        }
+      },
+      "completed": "2026-07-06T16:32:00.590177+00:00",
+      "inputs": {
+        "layers/integration/hand-of-the-archon/artwork/icons/hand-of-the-archon-icon-token.jpg": "f8cb07e68e8eef8b76dcd2f12a3f6441477b2e4c3484c48ca76476cdb6b9b7e4",
+        "config/defaults/box/card-box-background.jpeg": "2dd1442a7c52ca1d66899333f678d60f48981ce20561ead77c1161d548176036"
+      }
+    },
+    "extract_tokens": {
+      "outputs": {
+        "tokens/hand-of-the-archon-brutal-display.png": {
+          "path": "output/hand-of-the-archon/tokens/hand-of-the-archon-brutal-display.png",
+          "hash": "d550d7520677562b45a5e82cf2f8ade89a34dd1020c0448b9405b3215910e7d4",
+          "modified": "2026-07-06T21:02:35.888407+00:00"
+        },
+        "tokens/hand-of-the-archon-hypex.png": {
+          "path": "output/hand-of-the-archon/tokens/hand-of-the-archon-hypex.png",
+          "hash": "b19c3b271b145169fd3f87c9c50b82bffe6e8b8f789d22287a2a7e5fee730507",
+          "modified": "2026-07-06T21:02:35.894244+00:00"
+        },
+        "tokens/hand-of-the-archon-omen.png": {
+          "path": "output/hand-of-the-archon/tokens/hand-of-the-archon-omen.png",
+          "hash": "acb1ae689ef4d299c7ba4077687be0b5afd36780140e30d322acfc48e7e22cf3",
+          "modified": "2026-07-06T21:02:35.899347+00:00"
+        },
+        "tokens/hand-of-the-archon-pain.png": {
+          "path": "output/hand-of-the-archon/tokens/hand-of-the-archon-pain.png",
+          "hash": "899b26ff401e5e352bc397cb437f35b0526a35bb539af77eeac919a523353ffe",
+          "modified": "2026-07-06T21:02:35.904250+00:00"
+        },
+        "tokens/hand-of-the-archon-painbringer.png": {
+          "path": "output/hand-of-the-archon/tokens/hand-of-the-archon-painbringer.png",
+          "hash": "62e85ebc938a5ebca0e062142ee94271ea40a728b10da342fed10ca057426050",
+          "modified": "2026-07-06T21:02:35.910226+00:00"
+        },
+        "tokens/hand-of-the-archon-poison.png": {
+          "path": "output/hand-of-the-archon/tokens/hand-of-the-archon-poison.png",
+          "hash": "941717c26315f065cee6c236c38a447e9c08d929536fb7e27a123e745da021e0",
+          "modified": "2026-07-06T21:02:35.915016+00:00"
+        },
+        "tokens/hand-of-the-archon-refined-poison.png": {
+          "path": "output/hand-of-the-archon/tokens/hand-of-the-archon-refined-poison.png",
+          "hash": "1bdad1675bc3b7b23ba56389f536941b1f558b36ad7661f2be1c61bd302a4939",
+          "modified": "2026-07-06T21:02:35.919673+00:00"
+        },
+        "tokens/hand-of-the-archon-sadistic-competition.png": {
+          "path": "output/hand-of-the-archon/tokens/hand-of-the-archon-sadistic-competition.png",
+          "hash": "6ec92db3033df88f167a9259d0dd722cae77f420f1a97130a8d9c67283aaeee9",
+          "modified": "2026-07-06T21:02:35.924479+00:00"
+        },
+        "tokens/hand-of-the-archon-toxin-coating.png": {
+          "path": "output/hand-of-the-archon/tokens/hand-of-the-archon-toxin-coating.png",
+          "hash": "3ea947322f8b0e3896b0978c8020f496a8516349f536535ca3d4eac8cc780508",
+          "modified": "2026-07-06T21:02:35.929107+00:00"
+        },
+        "tokens/hand-of-the-archon-brutal-display.obj": {
+          "path": "output/hand-of-the-archon/tokens/hand-of-the-archon-brutal-display.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:35.930397+00:00"
+        },
+        "tokens/hand-of-the-archon-hypex.obj": {
+          "path": "output/hand-of-the-archon/tokens/hand-of-the-archon-hypex.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:35.931265+00:00"
+        },
+        "tokens/hand-of-the-archon-omen.obj": {
+          "path": "output/hand-of-the-archon/tokens/hand-of-the-archon-omen.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:35.932109+00:00"
+        },
+        "tokens/hand-of-the-archon-pain.obj": {
+          "path": "output/hand-of-the-archon/tokens/hand-of-the-archon-pain.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:35.932960+00:00"
+        },
+        "tokens/hand-of-the-archon-painbringer.obj": {
+          "path": "output/hand-of-the-archon/tokens/hand-of-the-archon-painbringer.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:35.933824+00:00"
+        },
+        "tokens/hand-of-the-archon-poison.obj": {
+          "path": "output/hand-of-the-archon/tokens/hand-of-the-archon-poison.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:35.934689+00:00"
+        },
+        "tokens/hand-of-the-archon-refined-poison.obj": {
+          "path": "output/hand-of-the-archon/tokens/hand-of-the-archon-refined-poison.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:35.935552+00:00"
+        },
+        "tokens/hand-of-the-archon-sadistic-competition.obj": {
+          "path": "output/hand-of-the-archon/tokens/hand-of-the-archon-sadistic-competition.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:35.936418+00:00"
+        },
+        "tokens/hand-of-the-archon-toxin-coating.obj": {
+          "path": "output/hand-of-the-archon/tokens/hand-of-the-archon-toxin-coating.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-06T21:02:35.937272+00:00"
+        },
+        "tokens/tokenbag/hand-of-the-archon-token-bag-icon.png": {
+          "path": "output/hand-of-the-archon/tokens/tokenbag/hand-of-the-archon-token-bag-icon.png",
+          "hash": "f8cb07e68e8eef8b76dcd2f12a3f6441477b2e4c3484c48ca76476cdb6b9b7e4",
+          "modified": "2026-07-06T21:02:35.942349+00:00"
+        },
+        "tokens/tokenbag/hand-of-the-archon-token-bag.obj": {
+          "path": "output/hand-of-the-archon/tokens/tokenbag/hand-of-the-archon-token-bag.obj",
+          "hash": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+          "modified": "2026-07-06T21:02:35.943255+00:00"
+        }
+      },
+      "completed": "2026-07-06T21:02:35.978520+00:00",
+      "inputs": {
+        "layers/integration/hand-of-the-archon/manifest.json": "009adc35963fa176f43bc19e0c255789aecf2314998a750b55c0ff6602a9d4e7",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "layers/integration/hand-of-the-archon/artwork/icons/hand-of-the-archon-icon-token.jpg": "f8cb07e68e8eef8b76dcd2f12a3f6441477b2e4c3484c48ca76476cdb6b9b7e4",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-datacard-kabalite-agent.pdf": "7e0ad30b159fb6745eabd401cb7af1643e130faf779d2b31ef21e57dcf9cbeb4",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-datacard-kabalite-archsybarite.pdf": "d3d8c51d884242cf11689766b68370a030ffb78642fb643a7ea7d8901de9f7e3",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-datacard-kabalite-crimson-duellist.pdf": "0ee5cf4fa441f560fe13d4754f45bbbaca27cf4f94d2f95ab3abdbbd598c35dc",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-datacard-kabalite-disciple-of-yaelindra.pdf": "496360459112e23bc535d7ea4f7cdb3f7eada595cb5426ba498ca723de2512b7",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-datacard-kabalite-elixicant.pdf": "a4302eec2316b74b86eacb65440bbd1ef31c4391d1421579ae30781250658dff",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-datacard-kabalite-flayer.pdf": "d23cef374d34e17eebc1040949228b49a658a441c8169b3959c59dd9454df24f",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-datacard-kabalite-gunner.pdf": "d1e2b662be420ed65b3f27893ad802a7614d6cba528e4425351adf783c32ea54",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-datacard-kabalite-heavy-gunner.pdf": "2ea2e78148d658353cf97889ee26c18487e1f4c93a7d1dd00968fa4930b5440c",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-datacard-kabalite-skysplinter-assassin.pdf": "97629335d69227f7eeef2c55dfd02b869401cfbf531b37fad05e9db69b8c1f5a",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-equipment-chain-snare.pdf": "c47c6276c72736457d9efc09f72d8356a6eec88a7ae7f1feb8373174273f61b5",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-equipment-refined-poison.pdf": "7fd9241076393a4254b09431985df90df0f87c8d8312ebffbee49d319af97c49",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-equipment-toxin-coating.pdf": "90c6b6e36902363c254c000f26a2f214eeba3377da098d905df1a467f71cdb5f",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-equipment-wicked-blades.pdf": "7d3d2fecef7984fd40ac4ea9b6ae980fe8d75d42c9dcf09698db1047e80ca863",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-faction-rule-power-from-pain.pdf": "8a6ec2b5ca2c1491dcbcf762ddda0550704ab5b7722834c155cd565fb4c0840d",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-faction-rule-rifles.pdf": "1c0b4626a83fdc07463b294e1f29e5507099c1bf14633a5bd4f803f19b9d2d1f",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-firefight-ploy-cruel-deception.pdf": "8c3337105e8248708a059af7bdad5b25214ccab38e4df8aa71e0a9fbc46fdb65",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-firefight-ploy-devious-scheme.pdf": "2523855652aac507b25315b38cbd4d51c8520aba32d04e7c07da5c739bf8fb14",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-firefight-ploy-heinous-arrogance.pdf": "66fb0421544e2cfe734891db6de3b04376837dfd5548e5abb6c0e88d48404a35",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-firefight-ploy-prey-on-the-wounded.pdf": "ce3a9ec9ac1897678f29a5fff23bbf1a2f2f61f86613d915b4af9d33ee18d7d7",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-operatives-selection-operative-selection.pdf": "13f84326515583e796657cdad931b8e5ca68c2755b39956de57aad420776b23c",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-strategy-ploy-blade-artists.pdf": "0c224e3fe8239d86be3ae726f52558ed46f88b5e0020b0a722508c61cf6c47fd",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-strategy-ploy-denizens-of-night.pdf": "4b202be875bd6381d368ada950c4aa229ab3410610ad98b77c616b02393d56d8",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-strategy-ploy-from-darkness-death.pdf": "4f7ce6c27725fd4ca258e88d423972b9660e836e111b5382525549ed9da1f1ca",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-strategy-ploy-merciless-sadists.pdf": "d5b8afc8b7be611450a011bcc5de11924f343398578ed9c4deb501dc5290eef0",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-token-guide-token-guide.pdf": "883896a1e85779d97cf9e5f478dc1821f8196679e9b5423bab15298e6c29b525",
+        "config/teams/hand-of-the-archon/custom-tokens/hand-of-the-archon-pain.png": "3ea4b9d92e67c4a0dadc7c6ef67d3e5eaeb443f68631c2a4f84a3ed8bb1bcfbf"
+      }
+    },
+    "generate_dice": {
+      "outputs": {
+        "dice-light.jpg": {
+          "path": "output/hand-of-the-archon/dice/hand-of-the-archon-dice-light.jpg",
+          "hash": "f55226c0241fd3fd07c4c3cc93de1462dbdf06e9a5cc5ffe4981fb92305c1d1d",
+          "modified": "2026-07-06T16:33:20.192391+00:00"
+        },
+        "dice-dark.jpg": {
+          "path": "output/hand-of-the-archon/dice/hand-of-the-archon-dice-dark.jpg",
+          "hash": "ce70f336af07329c189f01880841f4fa8c58dd0561814f8bad78e079359548cf",
+          "modified": "2026-07-06T16:33:20.198751+00:00"
+        },
+        "dice-team.jpg": {
+          "path": "output/hand-of-the-archon/dice/hand-of-the-archon-dice-team.jpg",
+          "hash": "d7c1b550a8fc61d0a23b032a6f06130e6236824d8bcac8ef91d6148044be8c14",
+          "modified": "2026-07-06T16:33:20.204088+00:00"
+        }
+      },
+      "completed": "2026-07-06T16:33:20.205042+00:00",
+      "inputs": {
+        "layers/integration/hand-of-the-archon/artwork/icons/hand-of-the-archon-icon-token-transparent.png": "42870f60e32019f5331f1dbaa2a6f838c90dc11c62f7bf8ff2dbaf30d171226c",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41"
+      }
+    },
+    "generate_box_texture": {
+      "outputs": {
+        "card-box-texture.jpg": {
+          "path": "output/hand-of-the-archon/cardbox/hand-of-the-archon-card-box-texture.jpg",
+          "hash": "8fb3d4157a4f683e8026546dd028452fe5966ba2decb3f1830a47867a7fbe611",
+          "modified": "2026-07-06T16:33:33.780824+00:00"
+        },
+        "card-box.obj": {
+          "path": "output/hand-of-the-archon/cardbox/hand-of-the-archon-card-box.obj",
+          "hash": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+          "modified": "2026-07-06T16:33:33.781966+00:00"
+        }
+      },
+      "completed": "2026-07-06T16:33:33.783549+00:00",
+      "inputs": {
+        "layers/integration/hand-of-the-archon/artwork/icons/hand-of-the-archon-icon-token.jpg": "f8cb07e68e8eef8b76dcd2f12a3f6441477b2e4c3484c48ca76476cdb6b9b7e4",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "config/defaults/box/card-box.obj": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+        "config/defaults/box/card-box-texture.jpg": "b2f310b01a0d28e8806e99ce0b972e8967e3014608eacefcb6ec51597695a313"
+      }
+    },
+    "generate_card_images": {
+      "outputs": {
+        "cards/datacards/kabalite-agent-back.jpg": {
+          "path": "output/hand-of-the-archon/cards/datacards/kabalite-agent-back.jpg",
+          "hash": "778594a4456afd3e9fa869a26779935087c1f96fc7330f553682e9be2bb86c2a",
+          "modified": "2026-07-06T21:08:09.004925+00:00"
+        },
+        "cards/datacards/kabalite-agent-front.jpg": {
+          "path": "output/hand-of-the-archon/cards/datacards/kabalite-agent-front.jpg",
+          "hash": "e0886121f368e6787fc24c94f4c83a1179f6a5698ca4fad5feae65aea8be04e4",
+          "modified": "2026-07-06T21:08:09.010709+00:00"
+        },
+        "cards/datacards/kabalite-archsybarite-back.jpg": {
+          "path": "output/hand-of-the-archon/cards/datacards/kabalite-archsybarite-back.jpg",
+          "hash": "f4798d26a4f903f23b9c1deb0e2f5fe81bb394a7d3547d904dbc97c8980ad28a",
+          "modified": "2026-07-06T21:08:09.015811+00:00"
+        },
+        "cards/datacards/kabalite-archsybarite-front.jpg": {
+          "path": "output/hand-of-the-archon/cards/datacards/kabalite-archsybarite-front.jpg",
+          "hash": "5419d72308b4bd0e188df9a8bca677c032926401cbcd94edac8bff036a5ffd45",
+          "modified": "2026-07-06T21:08:09.020968+00:00"
+        },
+        "cards/datacards/kabalite-crimson-duellist-back.jpg": {
+          "path": "output/hand-of-the-archon/cards/datacards/kabalite-crimson-duellist-back.jpg",
+          "hash": "778594a4456afd3e9fa869a26779935087c1f96fc7330f553682e9be2bb86c2a",
+          "modified": "2026-07-06T21:08:09.025885+00:00"
+        },
+        "cards/datacards/kabalite-crimson-duellist-front.jpg": {
+          "path": "output/hand-of-the-archon/cards/datacards/kabalite-crimson-duellist-front.jpg",
+          "hash": "dfa09a90ddb07839ee2cafb412cba8e372b6260e9b8edc34b276dc63bef2ca45",
+          "modified": "2026-07-06T21:08:09.030928+00:00"
+        },
+        "cards/datacards/kabalite-disciple-of-yaelindra-back.jpg": {
+          "path": "output/hand-of-the-archon/cards/datacards/kabalite-disciple-of-yaelindra-back.jpg",
+          "hash": "49bbe7cad356514d0528c7279c71ea8aff5bb5af6aad965b4f8030de94fef3fe",
+          "modified": "2026-07-06T21:08:09.035890+00:00"
+        },
+        "cards/datacards/kabalite-disciple-of-yaelindra-front.jpg": {
+          "path": "output/hand-of-the-archon/cards/datacards/kabalite-disciple-of-yaelindra-front.jpg",
+          "hash": "ce25aac67920ed8e249e62da0ae38e005f483c82a10adedf7ff92a54ba9ce585",
+          "modified": "2026-07-06T21:08:09.040951+00:00"
+        },
+        "cards/datacards/kabalite-elixicant-back.jpg": {
+          "path": "output/hand-of-the-archon/cards/datacards/kabalite-elixicant-back.jpg",
+          "hash": "39dcd5fc545226d0eb978a76597282cc8c04410e941eef0b34b769ae23d17097",
+          "modified": "2026-07-06T21:08:09.045773+00:00"
+        },
+        "cards/datacards/kabalite-elixicant-front.jpg": {
+          "path": "output/hand-of-the-archon/cards/datacards/kabalite-elixicant-front.jpg",
+          "hash": "022899ce80b79ffb5e19df03a75641903112241fd2189605b6092665c375458c",
+          "modified": "2026-07-06T21:08:09.050771+00:00"
+        },
+        "cards/datacards/kabalite-flayer-back.jpg": {
+          "path": "output/hand-of-the-archon/cards/datacards/kabalite-flayer-back.jpg",
+          "hash": "778594a4456afd3e9fa869a26779935087c1f96fc7330f553682e9be2bb86c2a",
+          "modified": "2026-07-06T21:08:09.055598+00:00"
+        },
+        "cards/datacards/kabalite-flayer-front.jpg": {
+          "path": "output/hand-of-the-archon/cards/datacards/kabalite-flayer-front.jpg",
+          "hash": "e2756f728be6e8808dc18b23a3360e5e93d93185dbf72cb55a77b34e27e377b3",
+          "modified": "2026-07-06T21:08:09.060473+00:00"
+        },
+        "cards/datacards/kabalite-gunner-back.jpg": {
+          "path": "output/hand-of-the-archon/cards/datacards/kabalite-gunner-back.jpg",
+          "hash": "778594a4456afd3e9fa869a26779935087c1f96fc7330f553682e9be2bb86c2a",
+          "modified": "2026-07-06T21:08:09.065120+00:00"
+        },
+        "cards/datacards/kabalite-gunner-front.jpg": {
+          "path": "output/hand-of-the-archon/cards/datacards/kabalite-gunner-front.jpg",
+          "hash": "207fccb4e47786435767e45c605104d68958917a021fdec148d7d99b3ab172a6",
+          "modified": "2026-07-06T21:08:09.070123+00:00"
+        },
+        "cards/datacards/kabalite-heavy-gunner-back.jpg": {
+          "path": "output/hand-of-the-archon/cards/datacards/kabalite-heavy-gunner-back.jpg",
+          "hash": "778594a4456afd3e9fa869a26779935087c1f96fc7330f553682e9be2bb86c2a",
+          "modified": "2026-07-06T21:08:09.075011+00:00"
+        },
+        "cards/datacards/kabalite-heavy-gunner-front.jpg": {
+          "path": "output/hand-of-the-archon/cards/datacards/kabalite-heavy-gunner-front.jpg",
+          "hash": "9b8274867c4e5d9c3886334ac4bc4ac3b4b06cdcbe3795d1f6d120be3e6bd247",
+          "modified": "2026-07-06T21:08:09.080045+00:00"
+        },
+        "cards/datacards/kabalite-skysplinter-assassin-back.jpg": {
+          "path": "output/hand-of-the-archon/cards/datacards/kabalite-skysplinter-assassin-back.jpg",
+          "hash": "6d801bd43e9eee62b45652933c2bbe93ea85e10dec9cda3230d6163a10664915",
+          "modified": "2026-07-06T21:08:09.085031+00:00"
+        },
+        "cards/datacards/kabalite-skysplinter-assassin-front.jpg": {
+          "path": "output/hand-of-the-archon/cards/datacards/kabalite-skysplinter-assassin-front.jpg",
+          "hash": "3cc14c5aac380ca3a0af3ba5e84ef884ca3a4d9a4ee3719c810fcd812f13f82e",
+          "modified": "2026-07-06T21:08:09.090273+00:00"
+        },
+        "cards/equipment/hand-of-the-archon-chain-snare-back.jpg": {
+          "path": "output/hand-of-the-archon/cards/equipment/hand-of-the-archon-chain-snare-back.jpg",
+          "hash": "207ae4d66e23a4b38e063561bc90c4e683461f317ebe6af2ec0db3eda11c3863",
+          "modified": "2026-07-06T21:08:09.095185+00:00"
+        },
+        "cards/equipment/hand-of-the-archon-chain-snare-front.jpg": {
+          "path": "output/hand-of-the-archon/cards/equipment/hand-of-the-archon-chain-snare-front.jpg",
+          "hash": "1f7be9660c284819edc8b1e13243f76576c17001e4aa1aa8d1ab8caef48d3974",
+          "modified": "2026-07-06T21:08:09.100240+00:00"
+        },
+        "cards/equipment/hand-of-the-archon-refined-poison-back.jpg": {
+          "path": "output/hand-of-the-archon/cards/equipment/hand-of-the-archon-refined-poison-back.jpg",
+          "hash": "207ae4d66e23a4b38e063561bc90c4e683461f317ebe6af2ec0db3eda11c3863",
+          "modified": "2026-07-06T21:08:09.105086+00:00"
+        },
+        "cards/equipment/hand-of-the-archon-refined-poison-front.jpg": {
+          "path": "output/hand-of-the-archon/cards/equipment/hand-of-the-archon-refined-poison-front.jpg",
+          "hash": "118c657759760cbb44925f940e132e97505855e799658a832ec9993a73210809",
+          "modified": "2026-07-06T21:08:09.109833+00:00"
+        },
+        "cards/equipment/hand-of-the-archon-toxin-coating-back.jpg": {
+          "path": "output/hand-of-the-archon/cards/equipment/hand-of-the-archon-toxin-coating-back.jpg",
+          "hash": "207ae4d66e23a4b38e063561bc90c4e683461f317ebe6af2ec0db3eda11c3863",
+          "modified": "2026-07-06T21:08:09.114430+00:00"
+        },
+        "cards/equipment/hand-of-the-archon-toxin-coating-front.jpg": {
+          "path": "output/hand-of-the-archon/cards/equipment/hand-of-the-archon-toxin-coating-front.jpg",
+          "hash": "7889ba5fbf197e47400ab937c76ec40bc859f2d68ef226e91d3834783c7fc880",
+          "modified": "2026-07-06T21:08:09.119245+00:00"
+        },
+        "cards/equipment/hand-of-the-archon-wicked-blades-back.jpg": {
+          "path": "output/hand-of-the-archon/cards/equipment/hand-of-the-archon-wicked-blades-back.jpg",
+          "hash": "207ae4d66e23a4b38e063561bc90c4e683461f317ebe6af2ec0db3eda11c3863",
+          "modified": "2026-07-06T21:08:09.123991+00:00"
+        },
+        "cards/equipment/hand-of-the-archon-wicked-blades-front.jpg": {
+          "path": "output/hand-of-the-archon/cards/equipment/hand-of-the-archon-wicked-blades-front.jpg",
+          "hash": "b5d44300ff9a5cebdfc3d94cd16f88fdee632faca7817f97bc6ab154ae42c8a4",
+          "modified": "2026-07-06T21:08:09.128787+00:00"
+        },
+        "cards/faction_rules/hand-of-the-archon-power-from-pain-back.jpg": {
+          "path": "output/hand-of-the-archon/cards/faction_rules/hand-of-the-archon-power-from-pain-back.jpg",
+          "hash": "4d727d62aed17f62cf0d3c43437f80546d5400733ba990a18882b820e1535149",
+          "modified": "2026-07-06T21:08:09.133919+00:00"
+        },
+        "cards/faction_rules/hand-of-the-archon-power-from-pain-front.jpg": {
+          "path": "output/hand-of-the-archon/cards/faction_rules/hand-of-the-archon-power-from-pain-front.jpg",
+          "hash": "d845198a897d8dab815a508704ca7cfcc9a09b7923dc76f02990af46b0de1fdb",
+          "modified": "2026-07-06T21:08:09.138957+00:00"
+        },
+        "cards/faction_rules/hand-of-the-archon-rifles-back.jpg": {
+          "path": "output/hand-of-the-archon/cards/faction_rules/hand-of-the-archon-rifles-back.jpg",
+          "hash": "207ae4d66e23a4b38e063561bc90c4e683461f317ebe6af2ec0db3eda11c3863",
+          "modified": "2026-07-06T21:08:09.143656+00:00"
+        },
+        "cards/faction_rules/hand-of-the-archon-rifles-front.jpg": {
+          "path": "output/hand-of-the-archon/cards/faction_rules/hand-of-the-archon-rifles-front.jpg",
+          "hash": "afef1d254db317d4a2459be9ce9ac2e7b13f11349f166aa474cac6bc7e2ef0ae",
+          "modified": "2026-07-06T21:08:09.148544+00:00"
+        },
+        "cards/firefight_ploys/hand-of-the-archon-cruel-deception-back.jpg": {
+          "path": "output/hand-of-the-archon/cards/firefight_ploys/hand-of-the-archon-cruel-deception-back.jpg",
+          "hash": "207ae4d66e23a4b38e063561bc90c4e683461f317ebe6af2ec0db3eda11c3863",
+          "modified": "2026-07-06T21:08:09.153134+00:00"
+        },
+        "cards/firefight_ploys/hand-of-the-archon-cruel-deception-front.jpg": {
+          "path": "output/hand-of-the-archon/cards/firefight_ploys/hand-of-the-archon-cruel-deception-front.jpg",
+          "hash": "c6292317326824d33c0ba4f8cf54bde6844af2e239cae75429963570899d472c",
+          "modified": "2026-07-06T21:08:09.158669+00:00"
+        },
+        "cards/firefight_ploys/hand-of-the-archon-devious-scheme-back.jpg": {
+          "path": "output/hand-of-the-archon/cards/firefight_ploys/hand-of-the-archon-devious-scheme-back.jpg",
+          "hash": "207ae4d66e23a4b38e063561bc90c4e683461f317ebe6af2ec0db3eda11c3863",
+          "modified": "2026-07-06T21:08:09.163365+00:00"
+        },
+        "cards/firefight_ploys/hand-of-the-archon-devious-scheme-front.jpg": {
+          "path": "output/hand-of-the-archon/cards/firefight_ploys/hand-of-the-archon-devious-scheme-front.jpg",
+          "hash": "1779f5933bddcf90291fa26936135427c482da200d4ee458dfe31468b66a2908",
+          "modified": "2026-07-06T21:08:09.168546+00:00"
+        },
+        "cards/firefight_ploys/hand-of-the-archon-heinous-arrogance-back.jpg": {
+          "path": "output/hand-of-the-archon/cards/firefight_ploys/hand-of-the-archon-heinous-arrogance-back.jpg",
+          "hash": "207ae4d66e23a4b38e063561bc90c4e683461f317ebe6af2ec0db3eda11c3863",
+          "modified": "2026-07-06T21:08:09.173352+00:00"
+        },
+        "cards/firefight_ploys/hand-of-the-archon-heinous-arrogance-front.jpg": {
+          "path": "output/hand-of-the-archon/cards/firefight_ploys/hand-of-the-archon-heinous-arrogance-front.jpg",
+          "hash": "d989ade92d1ec5aade674187ee890b0bdf91b731121de2e209a219f0925bc374",
+          "modified": "2026-07-06T21:08:09.178230+00:00"
+        },
+        "cards/firefight_ploys/hand-of-the-archon-prey-on-the-wounded-back.jpg": {
+          "path": "output/hand-of-the-archon/cards/firefight_ploys/hand-of-the-archon-prey-on-the-wounded-back.jpg",
+          "hash": "207ae4d66e23a4b38e063561bc90c4e683461f317ebe6af2ec0db3eda11c3863",
+          "modified": "2026-07-06T21:08:09.183335+00:00"
+        },
+        "cards/firefight_ploys/hand-of-the-archon-prey-on-the-wounded-front.jpg": {
+          "path": "output/hand-of-the-archon/cards/firefight_ploys/hand-of-the-archon-prey-on-the-wounded-front.jpg",
+          "hash": "760e05b43344d61f57a396bb97883221e467ad6507448c719d6584ba93676768",
+          "modified": "2026-07-06T21:08:09.188510+00:00"
+        },
+        "cards/operatives_selection/hand-of-the-archon-operative-selection-back.jpg": {
+          "path": "output/hand-of-the-archon/cards/operatives_selection/hand-of-the-archon-operative-selection-back.jpg",
+          "hash": "7dd4e1bb03818ddd9d0cfc6ab1dd4dbf5e9cfbf1745c0d64c0457d882eb35f03",
+          "modified": "2026-07-06T21:08:09.194583+00:00"
+        },
+        "cards/operatives_selection/hand-of-the-archon-operative-selection-front.jpg": {
+          "path": "output/hand-of-the-archon/cards/operatives_selection/hand-of-the-archon-operative-selection-front.jpg",
+          "hash": "ba1a82e8b583202ce737119275a4b83c164f30c9300276a6eb6091edf0982b35",
+          "modified": "2026-07-06T21:08:09.199943+00:00"
+        },
+        "cards/strategy_ploys/hand-of-the-archon-blade-artists-back.jpg": {
+          "path": "output/hand-of-the-archon/cards/strategy_ploys/hand-of-the-archon-blade-artists-back.jpg",
+          "hash": "207ae4d66e23a4b38e063561bc90c4e683461f317ebe6af2ec0db3eda11c3863",
+          "modified": "2026-07-06T21:08:09.204927+00:00"
+        },
+        "cards/strategy_ploys/hand-of-the-archon-blade-artists-front.jpg": {
+          "path": "output/hand-of-the-archon/cards/strategy_ploys/hand-of-the-archon-blade-artists-front.jpg",
+          "hash": "9c2f005cecab3442298a0be97f77a35d10df24e8e8dab3f723238bdebae1a849",
+          "modified": "2026-07-06T21:08:09.209954+00:00"
+        },
+        "cards/strategy_ploys/hand-of-the-archon-denizens-of-night-back.jpg": {
+          "path": "output/hand-of-the-archon/cards/strategy_ploys/hand-of-the-archon-denizens-of-night-back.jpg",
+          "hash": "207ae4d66e23a4b38e063561bc90c4e683461f317ebe6af2ec0db3eda11c3863",
+          "modified": "2026-07-06T21:08:09.215720+00:00"
+        },
+        "cards/strategy_ploys/hand-of-the-archon-denizens-of-night-front.jpg": {
+          "path": "output/hand-of-the-archon/cards/strategy_ploys/hand-of-the-archon-denizens-of-night-front.jpg",
+          "hash": "d6c43e7efab4db0fd8ac369b42e57508216051e871411bb025de2fc87611f3a9",
+          "modified": "2026-07-06T21:08:09.221004+00:00"
+        },
+        "cards/strategy_ploys/hand-of-the-archon-from-darkness-death-back.jpg": {
+          "path": "output/hand-of-the-archon/cards/strategy_ploys/hand-of-the-archon-from-darkness-death-back.jpg",
+          "hash": "207ae4d66e23a4b38e063561bc90c4e683461f317ebe6af2ec0db3eda11c3863",
+          "modified": "2026-07-06T21:08:09.225831+00:00"
+        },
+        "cards/strategy_ploys/hand-of-the-archon-from-darkness-death-front.jpg": {
+          "path": "output/hand-of-the-archon/cards/strategy_ploys/hand-of-the-archon-from-darkness-death-front.jpg",
+          "hash": "4ec84c859ca02883b9eb38173cdd36c52b1ad97348b8cd9211b28fec8da92502",
+          "modified": "2026-07-06T21:08:09.230875+00:00"
+        },
+        "cards/strategy_ploys/hand-of-the-archon-merciless-sadists-back.jpg": {
+          "path": "output/hand-of-the-archon/cards/strategy_ploys/hand-of-the-archon-merciless-sadists-back.jpg",
+          "hash": "207ae4d66e23a4b38e063561bc90c4e683461f317ebe6af2ec0db3eda11c3863",
+          "modified": "2026-07-06T21:08:09.235606+00:00"
+        },
+        "cards/strategy_ploys/hand-of-the-archon-merciless-sadists-front.jpg": {
+          "path": "output/hand-of-the-archon/cards/strategy_ploys/hand-of-the-archon-merciless-sadists-front.jpg",
+          "hash": "1e4247885bcbcefada3c19a32227368bc2104e1b74075d8823626d09fae45c85",
+          "modified": "2026-07-06T21:08:09.240588+00:00"
+        },
+        "cards/token_guide/hand-of-the-archon-token-guide-back.jpg": {
+          "path": "output/hand-of-the-archon/cards/token_guide/hand-of-the-archon-token-guide-back.jpg",
+          "hash": "207ae4d66e23a4b38e063561bc90c4e683461f317ebe6af2ec0db3eda11c3863",
+          "modified": "2026-07-06T21:08:09.245723+00:00"
+        },
+        "cards/token_guide/hand-of-the-archon-token-guide-front.jpg": {
+          "path": "output/hand-of-the-archon/cards/token_guide/hand-of-the-archon-token-guide-front.jpg",
+          "hash": "3102388e7963fdfe961676c39e4b31df509258dbde34421e93549df718526f5b",
+          "modified": "2026-07-06T21:08:09.250774+00:00"
+        }
+      },
+      "completed": "2026-07-06T21:08:09.285372+00:00",
+      "inputs": {
+        "layers/integration/hand-of-the-archon/manifest.json": "009adc35963fa176f43bc19e0c255789aecf2314998a750b55c0ff6602a9d4e7",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-datacard-kabalite-agent.pdf": "7e0ad30b159fb6745eabd401cb7af1643e130faf779d2b31ef21e57dcf9cbeb4",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-datacard-kabalite-archsybarite.pdf": "d3d8c51d884242cf11689766b68370a030ffb78642fb643a7ea7d8901de9f7e3",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-datacard-kabalite-crimson-duellist.pdf": "0ee5cf4fa441f560fe13d4754f45bbbaca27cf4f94d2f95ab3abdbbd598c35dc",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-datacard-kabalite-disciple-of-yaelindra.pdf": "496360459112e23bc535d7ea4f7cdb3f7eada595cb5426ba498ca723de2512b7",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-datacard-kabalite-elixicant.pdf": "a4302eec2316b74b86eacb65440bbd1ef31c4391d1421579ae30781250658dff",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-datacard-kabalite-flayer.pdf": "d23cef374d34e17eebc1040949228b49a658a441c8169b3959c59dd9454df24f",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-datacard-kabalite-gunner.pdf": "d1e2b662be420ed65b3f27893ad802a7614d6cba528e4425351adf783c32ea54",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-datacard-kabalite-heavy-gunner.pdf": "2ea2e78148d658353cf97889ee26c18487e1f4c93a7d1dd00968fa4930b5440c",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-datacard-kabalite-skysplinter-assassin.pdf": "97629335d69227f7eeef2c55dfd02b869401cfbf531b37fad05e9db69b8c1f5a",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-equipment-chain-snare.pdf": "c47c6276c72736457d9efc09f72d8356a6eec88a7ae7f1feb8373174273f61b5",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-equipment-refined-poison.pdf": "7fd9241076393a4254b09431985df90df0f87c8d8312ebffbee49d319af97c49",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-equipment-toxin-coating.pdf": "90c6b6e36902363c254c000f26a2f214eeba3377da098d905df1a467f71cdb5f",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-equipment-wicked-blades.pdf": "7d3d2fecef7984fd40ac4ea9b6ae980fe8d75d42c9dcf09698db1047e80ca863",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-faction-rule-power-from-pain.pdf": "8a6ec2b5ca2c1491dcbcf762ddda0550704ab5b7722834c155cd565fb4c0840d",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-faction-rule-rifles.pdf": "1c0b4626a83fdc07463b294e1f29e5507099c1bf14633a5bd4f803f19b9d2d1f",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-firefight-ploy-cruel-deception.pdf": "8c3337105e8248708a059af7bdad5b25214ccab38e4df8aa71e0a9fbc46fdb65",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-firefight-ploy-devious-scheme.pdf": "2523855652aac507b25315b38cbd4d51c8520aba32d04e7c07da5c739bf8fb14",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-firefight-ploy-heinous-arrogance.pdf": "66fb0421544e2cfe734891db6de3b04376837dfd5548e5abb6c0e88d48404a35",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-firefight-ploy-prey-on-the-wounded.pdf": "ce3a9ec9ac1897678f29a5fff23bbf1a2f2f61f86613d915b4af9d33ee18d7d7",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-operatives-selection-operative-selection.pdf": "13f84326515583e796657cdad931b8e5ca68c2755b39956de57aad420776b23c",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-strategy-ploy-blade-artists.pdf": "0c224e3fe8239d86be3ae726f52558ed46f88b5e0020b0a722508c61cf6c47fd",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-strategy-ploy-denizens-of-night.pdf": "4b202be875bd6381d368ada950c4aa229ab3410610ad98b77c616b02393d56d8",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-strategy-ploy-from-darkness-death.pdf": "4f7ce6c27725fd4ca258e88d423972b9660e836e111b5382525549ed9da1f1ca",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-strategy-ploy-merciless-sadists.pdf": "d5b8afc8b7be611450a011bcc5de11924f343398578ed9c4deb501dc5290eef0",
+        "layers/integration/hand-of-the-archon/hand-of-the-archon-token-guide-token-guide.pdf": "883896a1e85779d97cf9e5f478dc1821f8196679e9b5423bab15298e6c29b525",
+        "layers/integration/hand-of-the-archon/card-backside/hand-of-the-archon-backside-portrait.jpg": "207ae4d66e23a4b38e063561bc90c4e683461f317ebe6af2ec0db3eda11c3863",
+        "config/defaults/card-backside/default-backside-portrait.jpg": "f00ff15fa70005b9f804de08519e2e83485d7eaf78dfacea65dcef0eb1a29c22",
+        "layers/integration/hand-of-the-archon/card-backside/hand-of-the-archon-backside-landscape.jpg": "778594a4456afd3e9fa869a26779935087c1f96fc7330f553682e9be2bb86c2a",
+        "config/defaults/card-backside/default-backside-landscape.jpg": "1cf5580a1dff0c10adb1a286edad4479c487f3d2d698b0b8be84fe653039fd7e"
+      }
+    },
+    "extract_stats": {
+      "outputs": {
+        "team-data.json": {
+          "path": "output/hand-of-the-archon/data/hand-of-the-archon-team-data.json",
+          "hash": "f7b92a37cb00b2a896481fd5dffe629310fa8416059691644e1a22c9a9cf6852",
+          "modified": "2026-07-07T07:29:44.826610+00:00"
+        }
+      },
+      "completed": "2026-07-07T07:29:44.827224+00:00",
+      "inputs": {
+        "layers/integration/hand-of-the-archon/content/hand-of-the-archon-content.json": "f7b92a37cb00b2a896481fd5dffe629310fa8416059691644e1a22c9a9cf6852"
+      }
+    },
+    "generate_tts": {
+      "outputs": {
+        "tts_objects/Hand Of The Archon Box.json": {
+          "path": "output/hand-of-the-archon/tts_objects/Hand Of The Archon Box.json",
+          "hash": "fd508cb544fbb3ae044e4167d000663dff2eef1f7c731f0bc282f12af0c56f16",
+          "modified": "2026-07-07T07:29:59.915955+00:00"
+        },
+        "tts_objects/Hand Of The Archon.json": {
+          "path": "output/hand-of-the-archon/tts_objects/Hand Of The Archon.json",
+          "hash": "803320efffb0910d962b362c8fbd9d4510a884214e056e688834eca2ffdb32b8",
+          "modified": "2026-07-07T07:29:59.924833+00:00"
+        }
+      },
+      "completed": "2026-07-07T07:29:59.967115+00:00",
+      "inputs": {
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "config/team-guids.json": "1dea0eaf2c7d1c37c86aba088cdf876f0638d2dcaca162888fea8422c2d5c9db",
+        "output/hand-of-the-archon/cards/datacards/kabalite-agent-back.jpg": "778594a4456afd3e9fa869a26779935087c1f96fc7330f553682e9be2bb86c2a",
+        "output/hand-of-the-archon/cards/datacards/kabalite-agent-front.jpg": "e0886121f368e6787fc24c94f4c83a1179f6a5698ca4fad5feae65aea8be04e4",
+        "output/hand-of-the-archon/cards/datacards/kabalite-archsybarite-back.jpg": "f4798d26a4f903f23b9c1deb0e2f5fe81bb394a7d3547d904dbc97c8980ad28a",
+        "output/hand-of-the-archon/cards/datacards/kabalite-archsybarite-front.jpg": "5419d72308b4bd0e188df9a8bca677c032926401cbcd94edac8bff036a5ffd45",
+        "output/hand-of-the-archon/cards/datacards/kabalite-crimson-duellist-back.jpg": "778594a4456afd3e9fa869a26779935087c1f96fc7330f553682e9be2bb86c2a",
+        "output/hand-of-the-archon/cards/datacards/kabalite-crimson-duellist-front.jpg": "dfa09a90ddb07839ee2cafb412cba8e372b6260e9b8edc34b276dc63bef2ca45",
+        "output/hand-of-the-archon/cards/datacards/kabalite-disciple-of-yaelindra-back.jpg": "49bbe7cad356514d0528c7279c71ea8aff5bb5af6aad965b4f8030de94fef3fe",
+        "output/hand-of-the-archon/cards/datacards/kabalite-disciple-of-yaelindra-front.jpg": "ce25aac67920ed8e249e62da0ae38e005f483c82a10adedf7ff92a54ba9ce585",
+        "output/hand-of-the-archon/cards/datacards/kabalite-elixicant-back.jpg": "39dcd5fc545226d0eb978a76597282cc8c04410e941eef0b34b769ae23d17097",
+        "output/hand-of-the-archon/cards/datacards/kabalite-elixicant-front.jpg": "022899ce80b79ffb5e19df03a75641903112241fd2189605b6092665c375458c",
+        "output/hand-of-the-archon/cards/datacards/kabalite-flayer-back.jpg": "778594a4456afd3e9fa869a26779935087c1f96fc7330f553682e9be2bb86c2a",
+        "output/hand-of-the-archon/cards/datacards/kabalite-flayer-front.jpg": "e2756f728be6e8808dc18b23a3360e5e93d93185dbf72cb55a77b34e27e377b3",
+        "output/hand-of-the-archon/cards/datacards/kabalite-gunner-back.jpg": "778594a4456afd3e9fa869a26779935087c1f96fc7330f553682e9be2bb86c2a",
+        "output/hand-of-the-archon/cards/datacards/kabalite-gunner-front.jpg": "207fccb4e47786435767e45c605104d68958917a021fdec148d7d99b3ab172a6",
+        "output/hand-of-the-archon/cards/datacards/kabalite-heavy-gunner-back.jpg": "778594a4456afd3e9fa869a26779935087c1f96fc7330f553682e9be2bb86c2a",
+        "output/hand-of-the-archon/cards/datacards/kabalite-heavy-gunner-front.jpg": "9b8274867c4e5d9c3886334ac4bc4ac3b4b06cdcbe3795d1f6d120be3e6bd247",
+        "output/hand-of-the-archon/cards/datacards/kabalite-skysplinter-assassin-back.jpg": "6d801bd43e9eee62b45652933c2bbe93ea85e10dec9cda3230d6163a10664915",
+        "output/hand-of-the-archon/cards/datacards/kabalite-skysplinter-assassin-front.jpg": "3cc14c5aac380ca3a0af3ba5e84ef884ca3a4d9a4ee3719c810fcd812f13f82e",
+        "output/hand-of-the-archon/cards/equipment/hand-of-the-archon-chain-snare-back.jpg": "207ae4d66e23a4b38e063561bc90c4e683461f317ebe6af2ec0db3eda11c3863",
+        "output/hand-of-the-archon/cards/equipment/hand-of-the-archon-chain-snare-front.jpg": "1f7be9660c284819edc8b1e13243f76576c17001e4aa1aa8d1ab8caef48d3974",
+        "output/hand-of-the-archon/cards/equipment/hand-of-the-archon-refined-poison-back.jpg": "207ae4d66e23a4b38e063561bc90c4e683461f317ebe6af2ec0db3eda11c3863",
+        "output/hand-of-the-archon/cards/equipment/hand-of-the-archon-refined-poison-front.jpg": "118c657759760cbb44925f940e132e97505855e799658a832ec9993a73210809",
+        "output/hand-of-the-archon/cards/equipment/hand-of-the-archon-toxin-coating-back.jpg": "207ae4d66e23a4b38e063561bc90c4e683461f317ebe6af2ec0db3eda11c3863",
+        "output/hand-of-the-archon/cards/equipment/hand-of-the-archon-toxin-coating-front.jpg": "7889ba5fbf197e47400ab937c76ec40bc859f2d68ef226e91d3834783c7fc880",
+        "output/hand-of-the-archon/cards/equipment/hand-of-the-archon-wicked-blades-back.jpg": "207ae4d66e23a4b38e063561bc90c4e683461f317ebe6af2ec0db3eda11c3863",
+        "output/hand-of-the-archon/cards/equipment/hand-of-the-archon-wicked-blades-front.jpg": "b5d44300ff9a5cebdfc3d94cd16f88fdee632faca7817f97bc6ab154ae42c8a4",
+        "output/hand-of-the-archon/cards/faction_rules/hand-of-the-archon-power-from-pain-back.jpg": "4d727d62aed17f62cf0d3c43437f80546d5400733ba990a18882b820e1535149",
+        "output/hand-of-the-archon/cards/faction_rules/hand-of-the-archon-power-from-pain-front.jpg": "d845198a897d8dab815a508704ca7cfcc9a09b7923dc76f02990af46b0de1fdb",
+        "output/hand-of-the-archon/cards/faction_rules/hand-of-the-archon-rifles-back.jpg": "207ae4d66e23a4b38e063561bc90c4e683461f317ebe6af2ec0db3eda11c3863",
+        "output/hand-of-the-archon/cards/faction_rules/hand-of-the-archon-rifles-front.jpg": "afef1d254db317d4a2459be9ce9ac2e7b13f11349f166aa474cac6bc7e2ef0ae",
+        "output/hand-of-the-archon/cards/firefight_ploys/hand-of-the-archon-cruel-deception-back.jpg": "207ae4d66e23a4b38e063561bc90c4e683461f317ebe6af2ec0db3eda11c3863",
+        "output/hand-of-the-archon/cards/firefight_ploys/hand-of-the-archon-cruel-deception-front.jpg": "c6292317326824d33c0ba4f8cf54bde6844af2e239cae75429963570899d472c",
+        "output/hand-of-the-archon/cards/firefight_ploys/hand-of-the-archon-devious-scheme-back.jpg": "207ae4d66e23a4b38e063561bc90c4e683461f317ebe6af2ec0db3eda11c3863",
+        "output/hand-of-the-archon/cards/firefight_ploys/hand-of-the-archon-devious-scheme-front.jpg": "1779f5933bddcf90291fa26936135427c482da200d4ee458dfe31468b66a2908",
+        "output/hand-of-the-archon/cards/firefight_ploys/hand-of-the-archon-heinous-arrogance-back.jpg": "207ae4d66e23a4b38e063561bc90c4e683461f317ebe6af2ec0db3eda11c3863",
+        "output/hand-of-the-archon/cards/firefight_ploys/hand-of-the-archon-heinous-arrogance-front.jpg": "d989ade92d1ec5aade674187ee890b0bdf91b731121de2e209a219f0925bc374",
+        "output/hand-of-the-archon/cards/firefight_ploys/hand-of-the-archon-prey-on-the-wounded-back.jpg": "207ae4d66e23a4b38e063561bc90c4e683461f317ebe6af2ec0db3eda11c3863",
+        "output/hand-of-the-archon/cards/firefight_ploys/hand-of-the-archon-prey-on-the-wounded-front.jpg": "760e05b43344d61f57a396bb97883221e467ad6507448c719d6584ba93676768",
+        "output/hand-of-the-archon/cards/operatives_selection/hand-of-the-archon-operative-selection-back.jpg": "7dd4e1bb03818ddd9d0cfc6ab1dd4dbf5e9cfbf1745c0d64c0457d882eb35f03",
+        "output/hand-of-the-archon/cards/operatives_selection/hand-of-the-archon-operative-selection-front.jpg": "ba1a82e8b583202ce737119275a4b83c164f30c9300276a6eb6091edf0982b35",
+        "output/hand-of-the-archon/cards/strategy_ploys/hand-of-the-archon-blade-artists-back.jpg": "207ae4d66e23a4b38e063561bc90c4e683461f317ebe6af2ec0db3eda11c3863",
+        "output/hand-of-the-archon/cards/strategy_ploys/hand-of-the-archon-blade-artists-front.jpg": "9c2f005cecab3442298a0be97f77a35d10df24e8e8dab3f723238bdebae1a849",
+        "output/hand-of-the-archon/cards/strategy_ploys/hand-of-the-archon-denizens-of-night-back.jpg": "207ae4d66e23a4b38e063561bc90c4e683461f317ebe6af2ec0db3eda11c3863",
+        "output/hand-of-the-archon/cards/strategy_ploys/hand-of-the-archon-denizens-of-night-front.jpg": "d6c43e7efab4db0fd8ac369b42e57508216051e871411bb025de2fc87611f3a9",
+        "output/hand-of-the-archon/cards/strategy_ploys/hand-of-the-archon-from-darkness-death-back.jpg": "207ae4d66e23a4b38e063561bc90c4e683461f317ebe6af2ec0db3eda11c3863",
+        "output/hand-of-the-archon/cards/strategy_ploys/hand-of-the-archon-from-darkness-death-front.jpg": "4ec84c859ca02883b9eb38173cdd36c52b1ad97348b8cd9211b28fec8da92502",
+        "output/hand-of-the-archon/cards/strategy_ploys/hand-of-the-archon-merciless-sadists-back.jpg": "207ae4d66e23a4b38e063561bc90c4e683461f317ebe6af2ec0db3eda11c3863",
+        "output/hand-of-the-archon/cards/strategy_ploys/hand-of-the-archon-merciless-sadists-front.jpg": "1e4247885bcbcefada3c19a32227368bc2104e1b74075d8823626d09fae45c85",
+        "output/hand-of-the-archon/cards/token_guide/hand-of-the-archon-token-guide-back.jpg": "207ae4d66e23a4b38e063561bc90c4e683461f317ebe6af2ec0db3eda11c3863",
+        "output/hand-of-the-archon/cards/token_guide/hand-of-the-archon-token-guide-front.jpg": "3102388e7963fdfe961676c39e4b31df509258dbde34421e93549df718526f5b",
+        "output/hand-of-the-archon/cardbox/hand-of-the-archon-card-box-texture.jpg": "8fb3d4157a4f683e8026546dd028452fe5966ba2decb3f1830a47867a7fbe611",
+        "output/hand-of-the-archon/cardbox/hand-of-the-archon-card-box.obj": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+        "output/hand-of-the-archon/tokens/hand-of-the-archon-brutal-display.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/hand-of-the-archon/tokens/hand-of-the-archon-brutal-display.png": "d550d7520677562b45a5e82cf2f8ade89a34dd1020c0448b9405b3215910e7d4",
+        "output/hand-of-the-archon/tokens/hand-of-the-archon-hypex.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/hand-of-the-archon/tokens/hand-of-the-archon-hypex.png": "b19c3b271b145169fd3f87c9c50b82bffe6e8b8f789d22287a2a7e5fee730507",
+        "output/hand-of-the-archon/tokens/hand-of-the-archon-omen.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/hand-of-the-archon/tokens/hand-of-the-archon-omen.png": "acb1ae689ef4d299c7ba4077687be0b5afd36780140e30d322acfc48e7e22cf3",
+        "output/hand-of-the-archon/tokens/hand-of-the-archon-pain.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/hand-of-the-archon/tokens/hand-of-the-archon-pain.png": "899b26ff401e5e352bc397cb437f35b0526a35bb539af77eeac919a523353ffe",
+        "output/hand-of-the-archon/tokens/hand-of-the-archon-painbringer.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/hand-of-the-archon/tokens/hand-of-the-archon-painbringer.png": "62e85ebc938a5ebca0e062142ee94271ea40a728b10da342fed10ca057426050",
+        "output/hand-of-the-archon/tokens/hand-of-the-archon-poison.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/hand-of-the-archon/tokens/hand-of-the-archon-poison.png": "941717c26315f065cee6c236c38a447e9c08d929536fb7e27a123e745da021e0",
+        "output/hand-of-the-archon/tokens/hand-of-the-archon-refined-poison.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/hand-of-the-archon/tokens/hand-of-the-archon-refined-poison.png": "1bdad1675bc3b7b23ba56389f536941b1f558b36ad7661f2be1c61bd302a4939",
+        "output/hand-of-the-archon/tokens/hand-of-the-archon-sadistic-competition.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/hand-of-the-archon/tokens/hand-of-the-archon-sadistic-competition.png": "6ec92db3033df88f167a9259d0dd722cae77f420f1a97130a8d9c67283aaeee9",
+        "output/hand-of-the-archon/tokens/hand-of-the-archon-toxin-coating.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/hand-of-the-archon/tokens/hand-of-the-archon-toxin-coating.png": "3ea947322f8b0e3896b0978c8020f496a8516349f536535ca3d4eac8cc780508",
+        "output/hand-of-the-archon/tokens/tokenbag/hand-of-the-archon-token-bag-icon.png": "f8cb07e68e8eef8b76dcd2f12a3f6441477b2e4c3484c48ca76476cdb6b9b7e4",
+        "output/hand-of-the-archon/tokens/tokenbag/hand-of-the-archon-token-bag.obj": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+        "output/hand-of-the-archon/dice/hand-of-the-archon-dice-dark.jpg": "ce70f336af07329c189f01880841f4fa8c58dd0561814f8bad78e079359548cf",
+        "output/hand-of-the-archon/dice/hand-of-the-archon-dice-light.jpg": "f55226c0241fd3fd07c4c3cc93de1462dbdf06e9a5cc5ffe4981fb92305c1d1d",
+        "output/hand-of-the-archon/dice/hand-of-the-archon-dice-team.jpg": "d7c1b550a8fc61d0a23b032a6f06130e6236824d8bcac8ef91d6148044be8c14",
+        "output/hand-of-the-archon/data/hand-of-the-archon-team-data.json": "f7b92a37cb00b2a896481fd5dffe629310fa8416059691644e1a22c9a9cf6852",
+        "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
+        "config/defaults/tts-script/datacard-load-stats.lua": "2d5f4088c2ff09f54988cf8722080f536b4e1b998cc2b4c1f1ea94e6b18eb92e",
+        "config/defaults/tts-script/display-table-manager-script.lua": "0dab4381078d90802f25e2cc825bc3658be35ee13ab3e98831c9d248c2526689",
+        "config/defaults/tts-script/faction-rule-chapter-tactics.lua": "c906742268076fb91f7cb4a92c6b588e1122ccddb692688f635c8dd4f7110ad0",
+        "config/defaults/tts-script/intermediate-updater.lua": "1a2d6dbc1a8c9c57ba6a3e7a3d4bc4b7a38a6c242a93f6ef3dae698123384d35",
+        "config/defaults/tts-script/single-object-updater.lua": "3613b85169e986a8e50ebe221482079e27c18037e3f48920aa0f7e138c0ccacc",
+        "config/defaults/tts-script/team-spawner-clean-script.lua": "12457bff3961eee2293c42d81cf4f4eb8b103177245a1ab8b46fd65da40672a2",
+        "config/defaults/tts-script/team-spawner-script.lua": "a51ff45c8622923db909fb465781801511f235412f099f83dff728d4027650db",
+        "config/defaults/tts-script/tts-update-rules-in-box-script.lua": "1eddd1803087ed63181a1149c856db77eef3196dc45d0d283693fada44a357dd",
+        "config/defaults/tts-image/default-icon.png": "892aff2628b9685c813e77be05c66afc1dc4247bc1dc9ce6fe54f006c2608271",
+        "config/defaults/tts-image/spawner-token.png": "61903b093f01d834f5e4c4c069b1353ecf7d29f012fef914b3027266816d8a6b",
+        "config/defaults/tts-token/square-bag-mesh.obj": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+        "config/defaults/tts-token/template-diamond-cutter.png": "719f57ba2b86494be454a6d3d25d8567dde974a915f3dde5ddc0e2d8dafaa1a5",
+        "config/defaults/tts-token/template-octagon-cutter.png": "944632aeacab978293ae57758b63086166c5fbaf3b845f48b3dd61db67d5c076",
+        "config/defaults/tts-token/template-operative-cutter.png": "0e698ddd403d7f0e84f200eb42af73f5249a9c5539d773298ff4c700ac9fe153",
+        "config/defaults/tts-token/template-round-cutter.png": "6564e1451c9a135a1c756fd94cde1c71e373e3fa677b51bba9d4bbe9e795d544",
+        "config/defaults/tts-token/token-bag-script.lua": "1659887e0fbfb9e3ebbc1aa5f3df8e1ffd89ee192be24d2dd1f02fcb0407e486",
+        "config/defaults/tts-token/token-bg-sample.png": "f9f90664c7f1c877c6f050f6e85babde6523cdc0aed9c77de8c09214f44ee109",
+        "config/defaults/tts-token/token-mesh.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc"
+      }
+    },
+    "front_end": {
+      "outputs": {},
+      "sources": {
+        "datacards": {
+          "hash": "fa3ee819e66d4d60a0d7f08b63bfe2e855128c4e9a1858ad18fc6d141a629f2e",
+          "outputs": [
+            "layers/kt-app/extracted/hand-of-the-archon/cards/datacards/hand-of-the-archon-datacards-page_0.pdf",
+            "layers/kt-app/extracted/hand-of-the-archon/cards/datacards/hand-of-the-archon-datacards-page_1.pdf",
+            "layers/kt-app/extracted/hand-of-the-archon/cards/datacards/hand-of-the-archon-datacards-page_2.pdf",
+            "layers/kt-app/extracted/hand-of-the-archon/cards/datacards/hand-of-the-archon-datacards-page_3.pdf",
+            "layers/kt-app/extracted/hand-of-the-archon/cards/datacards/hand-of-the-archon-datacards-page_4.pdf",
+            "layers/kt-app/extracted/hand-of-the-archon/cards/datacards/hand-of-the-archon-datacards-page_5.pdf",
+            "layers/kt-app/extracted/hand-of-the-archon/cards/datacards/hand-of-the-archon-datacards-page_6.pdf",
+            "layers/kt-app/extracted/hand-of-the-archon/cards/datacards/hand-of-the-archon-datacards-page_7.pdf",
+            "layers/kt-app/extracted/hand-of-the-archon/cards/datacards/hand-of-the-archon-datacards-page_8.pdf",
+            "layers/kt-app/extracted/hand-of-the-archon/cards/datacards/hand-of-the-archon-datacards-page_9.pdf",
+            "layers/kt-app/extracted/hand-of-the-archon/cards/datacards/hand-of-the-archon-datacards-page_10.pdf",
+            "layers/kt-app/extracted/hand-of-the-archon/cards/datacards/hand-of-the-archon-datacards-page_11.pdf",
+            "layers/kt-app/extracted/hand-of-the-archon/cards/datacards/hand-of-the-archon-datacards-page_12.pdf"
+          ],
+          "modified": "2026-07-06T16:00:27.508961+00:00"
+        },
+        "strategy-ploys": {
+          "hash": "22ba0559157ee21dcaea5fdbbfc74d3cdb7a1f2bab1d31141bfd69cb33be289f",
+          "outputs": [
+            "layers/kt-app/extracted/hand-of-the-archon/cards/strategy-ploys/hand-of-the-archon-strategy-ploys-page_0.pdf",
+            "layers/kt-app/extracted/hand-of-the-archon/cards/strategy-ploys/hand-of-the-archon-strategy-ploys-page_1.pdf",
+            "layers/kt-app/extracted/hand-of-the-archon/cards/strategy-ploys/hand-of-the-archon-strategy-ploys-page_2.pdf",
+            "layers/kt-app/extracted/hand-of-the-archon/cards/strategy-ploys/hand-of-the-archon-strategy-ploys-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:01:43.794677+00:00"
+        },
+        "operatives-selection": {
+          "hash": "9a3d1525929cd42544bdd9a4056617eec04efe96cddc7817236f5a687747c441",
+          "outputs": [
+            "layers/kt-app/extracted/hand-of-the-archon/cards/operatives-selection/hand-of-the-archon-operatives-selection-page_0.pdf",
+            "layers/kt-app/extracted/hand-of-the-archon/cards/operatives-selection/hand-of-the-archon-operatives-selection-page_1.pdf"
+          ],
+          "modified": "2026-07-06T16:02:26.096827+00:00"
+        },
+        "faction-rules": {
+          "hash": "95ac28807b5b29475af997a49e8239ac976f221aa4f6cc694ef4b5c2cc9418ab",
+          "outputs": [
+            "layers/kt-app/extracted/hand-of-the-archon/cards/faction-rules/hand-of-the-archon-faction-rules-page_0.pdf",
+            "layers/kt-app/extracted/hand-of-the-archon/cards/faction-rules/hand-of-the-archon-faction-rules-page_1.pdf",
+            "layers/kt-app/extracted/hand-of-the-archon/cards/faction-rules/hand-of-the-archon-faction-rules-page_2.pdf",
+            "layers/kt-app/extracted/hand-of-the-archon/cards/faction-rules/hand-of-the-archon-faction-rules-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:04:28.904144+00:00"
+        },
+        "equipment": {
+          "hash": "63dcaedf408f370e33dbc7b5e62e1bcbef712abca91fcd3dc415bb5f7600b5aa",
+          "outputs": [
+            "layers/kt-app/extracted/hand-of-the-archon/cards/equipment/hand-of-the-archon-equipment-page_0.pdf",
+            "layers/kt-app/extracted/hand-of-the-archon/cards/equipment/hand-of-the-archon-equipment-page_1.pdf",
+            "layers/kt-app/extracted/hand-of-the-archon/cards/equipment/hand-of-the-archon-equipment-page_2.pdf",
+            "layers/kt-app/extracted/hand-of-the-archon/cards/equipment/hand-of-the-archon-equipment-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:04:59.114550+00:00"
+        },
+        "firefight-ploys": {
+          "hash": "97c8dd0d1ed32eed2d17ca6e4c3f2c864fa2f57603c03902f785707f17c4fdfd",
+          "outputs": [
+            "layers/kt-app/extracted/hand-of-the-archon/cards/firefight-ploys/hand-of-the-archon-firefight-ploys-page_0.pdf",
+            "layers/kt-app/extracted/hand-of-the-archon/cards/firefight-ploys/hand-of-the-archon-firefight-ploys-page_1.pdf",
+            "layers/kt-app/extracted/hand-of-the-archon/cards/firefight-ploys/hand-of-the-archon-firefight-ploys-page_2.pdf",
+            "layers/kt-app/extracted/hand-of-the-archon/cards/firefight-ploys/hand-of-the-archon-firefight-ploys-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:08:01.703345+00:00"
+        },
+        "cards": {
+          "hash": "283d3718baa5b5731c18e542f5bbeb0e96db6b864744191dfc43b40adb60e560",
+          "outputs": [
+            "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page01_card1_landscape.pdf",
+            "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page01_card2_landscape.pdf",
+            "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page01_card3_landscape.pdf",
+            "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page01_card4_landscape.pdf",
+            "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page02_card1_landscape.pdf",
+            "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page02_card2_landscape.pdf",
+            "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page02_card3_landscape.pdf",
+            "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page02_card4_landscape.pdf",
+            "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page03_card1_landscape.pdf",
+            "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page03_card2_landscape.pdf",
+            "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page03_card3_landscape.pdf",
+            "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page03_card4_landscape.pdf",
+            "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page04_card1_landscape.pdf",
+            "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page04_card2_landscape.pdf",
+            "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page04_card3_landscape.pdf",
+            "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page04_card4_landscape.pdf",
+            "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page05_card1_portrait.pdf",
+            "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page05_card2_portrait.pdf",
+            "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page05_card3_portrait.pdf",
+            "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page05_card4_portrait.pdf",
+            "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page06_card1_portrait.pdf",
+            "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page06_card2_portrait.pdf",
+            "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page06_card3_portrait.pdf",
+            "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page06_card4_portrait.pdf",
+            "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page07_card1_portrait.pdf",
+            "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page07_card2_portrait.pdf",
+            "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page07_card3_portrait.pdf",
+            "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page07_card4_portrait.pdf",
+            "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page08_card1_portrait.pdf",
+            "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page08_card2_portrait.pdf",
+            "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page08_card3_portrait.pdf",
+            "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page08_card4_portrait.pdf",
+            "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page09_card1_portrait.pdf",
+            "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page09_card2_portrait.pdf",
+            "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page09_card3_portrait.pdf",
+            "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page09_card4_portrait.pdf"
+          ],
+          "modified": "2026-07-06T20:38:14.210742+00:00"
+        }
+      },
+      "completed": "2026-07-06T20:38:14.210791+00:00"
+    },
+    "build_structure": {
+      "outputs": {
+        "structure": {
+          "path": "layers/warcom/structure/hand-of-the-archon-structure.json",
+          "hash": "009adc35963fa176f43bc19e0c255789aecf2314998a750b55c0ff6602a9d4e7",
+          "modified": "2026-07-06T20:56:51.748744+00:00"
+        }
+      },
+      "inputs": {
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page01_card1_landscape.pdf": "966f0e6752e09f8aaf5a957ce335e944fc6764c3861e9b10b83691cefe7337ef",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page01_card2_landscape.pdf": "4fc7584398793a306977bb99b69a2136d260dc2b84a4d26f5ff6b129331626fc",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page01_card3_landscape.pdf": "ce4cf1ec26407bfee3ecf2e506ae31c633a2281c61c4e2d2577d43a25497c78e",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page01_card4_landscape.pdf": "2161324181ef1558ec813962f0e72281302cdc64df02a2e8691d14f043835f39",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page02_card1_landscape.pdf": "17fec4fbd1b1277e9fcc68c006af90e9eb12a69676b9ffbb3911921757371e27",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page02_card2_landscape.pdf": "6922dc8a3da511bc418ce72d311d3857f3e8a41b1db7882b0a65c0a1b102b29e",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page02_card3_landscape.pdf": "286bbd9c26beb18681225b6407a36e39d4e89b27fd8507c87b458230210f8688",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page02_card4_landscape.pdf": "f9dca0585e2c64634aabe90344736e2dd8bdc99190682be306f2b642befab798",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page03_card1_landscape.pdf": "6de64f4ab5e03e031a4d5e763915cdf7876106a18e6c93dd93fac2e2c9f4084b",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page03_card2_landscape.pdf": "e6f1dec94098a17ad9eea4b6b7202ba049597122ece18046197f297c551ea561",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page03_card3_landscape.pdf": "f2fb10c3a7a7871eee5f217755828455fd1d2e7f359b8cf3b1cc632aab1baba5",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page03_card4_landscape.pdf": "02f169d4489503e4d8137b1decc204c95586d3c7315e84b5d8aecf6d31d73f9b",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page04_card1_landscape.pdf": "17426d5c80c3558d3c1fafcbb60d40e9ce3c670d85852b2c00d6138fbfc036d4",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page04_card2_landscape.pdf": "1752bcb90952014cb0cfcebdb599c903cc167ec72ef6193296db30574477b947",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page04_card3_landscape.pdf": "533d72a6e94eb04fc9983c7c83b0fd04d90f211ffb175d5fe3d835d8481c8b22",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page04_card4_landscape.pdf": "fbde6288bc56c483eaa4fefc942d2669e5877131091403f1c5e8a8980d42199d",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page05_card1_portrait.pdf": "7bf8f32f3ee7a95941e197f78694fae5259a9a64f5eeee33024c3cb7408de4a3",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page05_card2_portrait.pdf": "79dd6c299ca5e77917eaa4d529874baa0f18d4d9dae4821003ba9c04ed782d8e",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page05_card3_portrait.pdf": "4bcd4b3ccdcb8dc27b478e982e64fd65051800eeb4012f7f877e5c8c9bcd279e",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page05_card4_portrait.pdf": "c31f0e1f6ecb7ceffe7f6744a0e8cbfb49c8ee2246415cfab0e9c94506aa39ae",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page06_card1_portrait.pdf": "47fac6dcb2f36c75a4c84e433927ba5a5604eecdcccd778f30c9a058ff4adcaf",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page06_card2_portrait.pdf": "5812c7abc28ab458db4acf3fe49c988915505405e03f325ae529c5b551f405ae",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page06_card3_portrait.pdf": "9b0224a970e90b2b622957f222b463030c0fd3c7d810e90ba8ea1a4746227efa",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page06_card4_portrait.pdf": "8bc9297c30e8bbd5b9cc31906bc2a0e96a0a7dd3763025136c32cc9ba71b7b24",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page07_card1_portrait.pdf": "90b88ab81e0b4715bf282dd29b579700eca7cb505d4547fb31aac1d51793eb4c",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page07_card2_portrait.pdf": "0403c24be3cb866bc55d81ad3746ce9cd46c8a1272d8aca491ed8f34cbb1c3e0",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page07_card3_portrait.pdf": "c288fb4e37c44f27a2d67f270e280936b7fbbe7dc27d62ee78688665c280a40e",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page07_card4_portrait.pdf": "fe0ee2916d17f63d719dd99624e6164db7550243ba9d99f53138ab7cf7b89428",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page08_card1_portrait.pdf": "e66ea8cff64ad35bd053def3094991a9149cefdf2dd5a950dbe77b3ee054faa2",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page08_card2_portrait.pdf": "86daabe684ba15c6995c0974479047162d88b0a8dd573350d419e1d7a19c93dd",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page08_card3_portrait.pdf": "c4a00c2c26d5799ee6f15b6e068ead1e983b618ea13c4ab7f00aadbe7c40b7d1",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page08_card4_portrait.pdf": "43359c9b88dbe5577b4eebbca2fcd25417c7cbbbbabef9a16aed189e0d840106",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page09_card1_portrait.pdf": "fae5cb7a80c30667d19913a3bc1a54995a130409aa0d1f3e66f51ced430b61c2",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page09_card2_portrait.pdf": "0d2ac2bf7e1cc1bcabe1ec6a58d7f2d90206152723a67dc1cb132e5e543ee7bd",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page09_card3_portrait.pdf": "1389ae02568b4c894fc3f4557d6512b87d271404a91c71e7d2c91b899c60d577",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page09_card4_portrait.pdf": "4b51b3054463c23b86ccdc4dec91779e9c98849df7b8644df88c6c7ab15559c4"
+      },
+      "completed": "2026-07-06T20:56:51.793542+00:00"
+    },
+    "integrate_classified": {
+      "outputs": {
+        "manifest.json": {
+          "path": "layers/integration/hand-of-the-archon/manifest.json",
+          "hash": "009adc35963fa176f43bc19e0c255789aecf2314998a750b55c0ff6602a9d4e7",
+          "modified": "2026-07-06T20:57:37.676244+00:00"
+        },
+        "hand-of-the-archon-datacard-kabalite-archsybarite.pdf": {
+          "path": "layers/integration/hand-of-the-archon/hand-of-the-archon-datacard-kabalite-archsybarite.pdf",
+          "hash": "d3d8c51d884242cf11689766b68370a030ffb78642fb643a7ea7d8901de9f7e3",
+          "modified": "2026-07-06T20:57:37.687234+00:00"
+        },
+        "hand-of-the-archon-datacard-kabalite-agent.pdf": {
+          "path": "layers/integration/hand-of-the-archon/hand-of-the-archon-datacard-kabalite-agent.pdf",
+          "hash": "7e0ad30b159fb6745eabd401cb7af1643e130faf779d2b31ef21e57dcf9cbeb4",
+          "modified": "2026-07-06T20:57:37.695984+00:00"
+        },
+        "hand-of-the-archon-datacard-kabalite-crimson-duellist.pdf": {
+          "path": "layers/integration/hand-of-the-archon/hand-of-the-archon-datacard-kabalite-crimson-duellist.pdf",
+          "hash": "0ee5cf4fa441f560fe13d4754f45bbbaca27cf4f94d2f95ab3abdbbd598c35dc",
+          "modified": "2026-07-06T20:57:37.705271+00:00"
+        },
+        "hand-of-the-archon-datacard-kabalite-disciple-of-yaelindra.pdf": {
+          "path": "layers/integration/hand-of-the-archon/hand-of-the-archon-datacard-kabalite-disciple-of-yaelindra.pdf",
+          "hash": "496360459112e23bc535d7ea4f7cdb3f7eada595cb5426ba498ca723de2512b7",
+          "modified": "2026-07-06T20:57:37.716045+00:00"
+        },
+        "hand-of-the-archon-datacard-kabalite-elixicant.pdf": {
+          "path": "layers/integration/hand-of-the-archon/hand-of-the-archon-datacard-kabalite-elixicant.pdf",
+          "hash": "a4302eec2316b74b86eacb65440bbd1ef31c4391d1421579ae30781250658dff",
+          "modified": "2026-07-06T20:57:37.727059+00:00"
+        },
+        "hand-of-the-archon-datacard-kabalite-flayer.pdf": {
+          "path": "layers/integration/hand-of-the-archon/hand-of-the-archon-datacard-kabalite-flayer.pdf",
+          "hash": "d23cef374d34e17eebc1040949228b49a658a441c8169b3959c59dd9454df24f",
+          "modified": "2026-07-06T20:57:37.738298+00:00"
+        },
+        "hand-of-the-archon-datacard-kabalite-gunner.pdf": {
+          "path": "layers/integration/hand-of-the-archon/hand-of-the-archon-datacard-kabalite-gunner.pdf",
+          "hash": "d1e2b662be420ed65b3f27893ad802a7614d6cba528e4425351adf783c32ea54",
+          "modified": "2026-07-06T20:57:37.747939+00:00"
+        },
+        "hand-of-the-archon-datacard-kabalite-heavy-gunner.pdf": {
+          "path": "layers/integration/hand-of-the-archon/hand-of-the-archon-datacard-kabalite-heavy-gunner.pdf",
+          "hash": "2ea2e78148d658353cf97889ee26c18487e1f4c93a7d1dd00968fa4930b5440c",
+          "modified": "2026-07-06T20:57:37.758175+00:00"
+        },
+        "hand-of-the-archon-datacard-kabalite-skysplinter-assassin.pdf": {
+          "path": "layers/integration/hand-of-the-archon/hand-of-the-archon-datacard-kabalite-skysplinter-assassin.pdf",
+          "hash": "97629335d69227f7eeef2c55dfd02b869401cfbf531b37fad05e9db69b8c1f5a",
+          "modified": "2026-07-06T20:57:37.770130+00:00"
+        },
+        "hand-of-the-archon-equipment-chain-snare.pdf": {
+          "path": "layers/integration/hand-of-the-archon/hand-of-the-archon-equipment-chain-snare.pdf",
+          "hash": "c47c6276c72736457d9efc09f72d8356a6eec88a7ae7f1feb8373174273f61b5",
+          "modified": "2026-07-06T20:57:37.778578+00:00"
+        },
+        "hand-of-the-archon-equipment-wicked-blades.pdf": {
+          "path": "layers/integration/hand-of-the-archon/hand-of-the-archon-equipment-wicked-blades.pdf",
+          "hash": "7d3d2fecef7984fd40ac4ea9b6ae980fe8d75d42c9dcf09698db1047e80ca863",
+          "modified": "2026-07-06T20:57:37.787144+00:00"
+        },
+        "hand-of-the-archon-equipment-toxin-coating.pdf": {
+          "path": "layers/integration/hand-of-the-archon/hand-of-the-archon-equipment-toxin-coating.pdf",
+          "hash": "90c6b6e36902363c254c000f26a2f214eeba3377da098d905df1a467f71cdb5f",
+          "modified": "2026-07-06T20:57:37.795929+00:00"
+        },
+        "hand-of-the-archon-equipment-refined-poison.pdf": {
+          "path": "layers/integration/hand-of-the-archon/hand-of-the-archon-equipment-refined-poison.pdf",
+          "hash": "7fd9241076393a4254b09431985df90df0f87c8d8312ebffbee49d319af97c49",
+          "modified": "2026-07-06T20:57:37.805047+00:00"
+        },
+        "hand-of-the-archon-faction-rule-power-from-pain.pdf": {
+          "path": "layers/integration/hand-of-the-archon/hand-of-the-archon-faction-rule-power-from-pain.pdf",
+          "hash": "8a6ec2b5ca2c1491dcbcf762ddda0550704ab5b7722834c155cd565fb4c0840d",
+          "modified": "2026-07-06T20:57:37.835096+00:00"
+        },
+        "hand-of-the-archon-faction-rule-rifles.pdf": {
+          "path": "layers/integration/hand-of-the-archon/hand-of-the-archon-faction-rule-rifles.pdf",
+          "hash": "1c0b4626a83fdc07463b294e1f29e5507099c1bf14633a5bd4f803f19b9d2d1f",
+          "modified": "2026-07-06T20:57:37.845292+00:00"
+        },
+        "hand-of-the-archon-token-guide-token-guide.pdf": {
+          "path": "layers/integration/hand-of-the-archon/hand-of-the-archon-token-guide-token-guide.pdf",
+          "hash": "883896a1e85779d97cf9e5f478dc1821f8196679e9b5423bab15298e6c29b525",
+          "modified": "2026-07-06T20:57:37.856933+00:00"
+        },
+        "hand-of-the-archon-firefight-ploy-cruel-deception.pdf": {
+          "path": "layers/integration/hand-of-the-archon/hand-of-the-archon-firefight-ploy-cruel-deception.pdf",
+          "hash": "8c3337105e8248708a059af7bdad5b25214ccab38e4df8aa71e0a9fbc46fdb65",
+          "modified": "2026-07-06T20:57:37.867928+00:00"
+        },
+        "hand-of-the-archon-firefight-ploy-devious-scheme.pdf": {
+          "path": "layers/integration/hand-of-the-archon/hand-of-the-archon-firefight-ploy-devious-scheme.pdf",
+          "hash": "2523855652aac507b25315b38cbd4d51c8520aba32d04e7c07da5c739bf8fb14",
+          "modified": "2026-07-06T20:57:37.877975+00:00"
+        },
+        "hand-of-the-archon-firefight-ploy-heinous-arrogance.pdf": {
+          "path": "layers/integration/hand-of-the-archon/hand-of-the-archon-firefight-ploy-heinous-arrogance.pdf",
+          "hash": "66fb0421544e2cfe734891db6de3b04376837dfd5548e5abb6c0e88d48404a35",
+          "modified": "2026-07-06T20:57:37.889022+00:00"
+        },
+        "hand-of-the-archon-firefight-ploy-prey-on-the-wounded.pdf": {
+          "path": "layers/integration/hand-of-the-archon/hand-of-the-archon-firefight-ploy-prey-on-the-wounded.pdf",
+          "hash": "ce3a9ec9ac1897678f29a5fff23bbf1a2f2f61f86613d915b4af9d33ee18d7d7",
+          "modified": "2026-07-06T20:57:37.897129+00:00"
+        },
+        "hand-of-the-archon-operatives-selection-operative-selection.pdf": {
+          "path": "layers/integration/hand-of-the-archon/hand-of-the-archon-operatives-selection-operative-selection.pdf",
+          "hash": "13f84326515583e796657cdad931b8e5ca68c2755b39956de57aad420776b23c",
+          "modified": "2026-07-06T20:57:37.924782+00:00"
+        },
+        "hand-of-the-archon-strategy-ploy-blade-artists.pdf": {
+          "path": "layers/integration/hand-of-the-archon/hand-of-the-archon-strategy-ploy-blade-artists.pdf",
+          "hash": "0c224e3fe8239d86be3ae726f52558ed46f88b5e0020b0a722508c61cf6c47fd",
+          "modified": "2026-07-06T20:57:37.934376+00:00"
+        },
+        "hand-of-the-archon-strategy-ploy-merciless-sadists.pdf": {
+          "path": "layers/integration/hand-of-the-archon/hand-of-the-archon-strategy-ploy-merciless-sadists.pdf",
+          "hash": "d5b8afc8b7be611450a011bcc5de11924f343398578ed9c4deb501dc5290eef0",
+          "modified": "2026-07-06T20:57:37.943127+00:00"
+        },
+        "hand-of-the-archon-strategy-ploy-from-darkness-death.pdf": {
+          "path": "layers/integration/hand-of-the-archon/hand-of-the-archon-strategy-ploy-from-darkness-death.pdf",
+          "hash": "4f7ce6c27725fd4ca258e88d423972b9660e836e111b5382525549ed9da1f1ca",
+          "modified": "2026-07-06T20:57:37.951679+00:00"
+        },
+        "hand-of-the-archon-strategy-ploy-denizens-of-night.pdf": {
+          "path": "layers/integration/hand-of-the-archon/hand-of-the-archon-strategy-ploy-denizens-of-night.pdf",
+          "hash": "4b202be875bd6381d368ada950c4aa229ab3410610ad98b77c616b02393d56d8",
+          "modified": "2026-07-06T20:57:37.959970+00:00"
+        }
+      },
+      "inputs": {
+        "layers/warcom/structure/hand-of-the-archon-structure.json": "009adc35963fa176f43bc19e0c255789aecf2314998a750b55c0ff6602a9d4e7",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page01_card1_landscape.pdf": "966f0e6752e09f8aaf5a957ce335e944fc6764c3861e9b10b83691cefe7337ef",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page01_card2_landscape.pdf": "4fc7584398793a306977bb99b69a2136d260dc2b84a4d26f5ff6b129331626fc",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page01_card3_landscape.pdf": "ce4cf1ec26407bfee3ecf2e506ae31c633a2281c61c4e2d2577d43a25497c78e",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page01_card4_landscape.pdf": "2161324181ef1558ec813962f0e72281302cdc64df02a2e8691d14f043835f39",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page02_card1_landscape.pdf": "17fec4fbd1b1277e9fcc68c006af90e9eb12a69676b9ffbb3911921757371e27",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page02_card2_landscape.pdf": "6922dc8a3da511bc418ce72d311d3857f3e8a41b1db7882b0a65c0a1b102b29e",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page02_card3_landscape.pdf": "286bbd9c26beb18681225b6407a36e39d4e89b27fd8507c87b458230210f8688",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page02_card4_landscape.pdf": "f9dca0585e2c64634aabe90344736e2dd8bdc99190682be306f2b642befab798",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page03_card1_landscape.pdf": "6de64f4ab5e03e031a4d5e763915cdf7876106a18e6c93dd93fac2e2c9f4084b",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page03_card2_landscape.pdf": "e6f1dec94098a17ad9eea4b6b7202ba049597122ece18046197f297c551ea561",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page03_card3_landscape.pdf": "f2fb10c3a7a7871eee5f217755828455fd1d2e7f359b8cf3b1cc632aab1baba5",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page03_card4_landscape.pdf": "02f169d4489503e4d8137b1decc204c95586d3c7315e84b5d8aecf6d31d73f9b",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page04_card1_landscape.pdf": "17426d5c80c3558d3c1fafcbb60d40e9ce3c670d85852b2c00d6138fbfc036d4",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page08_card3_portrait.pdf": "c4a00c2c26d5799ee6f15b6e068ead1e983b618ea13c4ab7f00aadbe7c40b7d1",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page08_card4_portrait.pdf": "43359c9b88dbe5577b4eebbca2fcd25417c7cbbbbabef9a16aed189e0d840106",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page09_card1_portrait.pdf": "fae5cb7a80c30667d19913a3bc1a54995a130409aa0d1f3e66f51ced430b61c2",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page09_card2_portrait.pdf": "0d2ac2bf7e1cc1bcabe1ec6a58d7f2d90206152723a67dc1cb132e5e543ee7bd",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page05_card3_portrait.pdf": "4bcd4b3ccdcb8dc27b478e982e64fd65051800eeb4012f7f877e5c8c9bcd279e",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page05_card4_portrait.pdf": "c31f0e1f6ecb7ceffe7f6744a0e8cbfb49c8ee2246415cfab0e9c94506aa39ae",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page06_card1_portrait.pdf": "47fac6dcb2f36c75a4c84e433927ba5a5604eecdcccd778f30c9a058ff4adcaf",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page06_card2_portrait.pdf": "5812c7abc28ab458db4acf3fe49c988915505405e03f325ae529c5b551f405ae",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page07_card3_portrait.pdf": "c288fb4e37c44f27a2d67f270e280936b7fbbe7dc27d62ee78688665c280a40e",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page07_card4_portrait.pdf": "fe0ee2916d17f63d719dd99624e6164db7550243ba9d99f53138ab7cf7b89428",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page08_card1_portrait.pdf": "e66ea8cff64ad35bd053def3094991a9149cefdf2dd5a950dbe77b3ee054faa2",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page08_card2_portrait.pdf": "86daabe684ba15c6995c0974479047162d88b0a8dd573350d419e1d7a19c93dd",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page05_card1_portrait.pdf": "7bf8f32f3ee7a95941e197f78694fae5259a9a64f5eeee33024c3cb7408de4a3",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page05_card2_portrait.pdf": "79dd6c299ca5e77917eaa4d529874baa0f18d4d9dae4821003ba9c04ed782d8e",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page06_card3_portrait.pdf": "9b0224a970e90b2b622957f222b463030c0fd3c7d810e90ba8ea1a4746227efa",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page06_card4_portrait.pdf": "8bc9297c30e8bbd5b9cc31906bc2a0e96a0a7dd3763025136c32cc9ba71b7b24",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page07_card1_portrait.pdf": "90b88ab81e0b4715bf282dd29b579700eca7cb505d4547fb31aac1d51793eb4c",
+        "layers/warcom/extracted/hand-of-the-archon/cards/hand-of-the-archon_page07_card2_portrait.pdf": "0403c24be3cb866bc55d81ad3746ce9cd46c8a1272d8aca491ed8f34cbb1c3e0"
+      },
+      "completed": "2026-07-06T20:57:37.993287+00:00"
+    },
+    "extract_artwork": {
+      "outputs": {},
+      "sources": {
+        "artwork": {
+          "hash": "283d3718baa5b5731c18e542f5bbeb0e96db6b864744191dfc43b40adb60e560",
+          "outputs": [
+            "layers/integration/hand-of-the-archon/artwork/hand-of-the-archon-artwork-01.jpeg",
+            "layers/integration/hand-of-the-archon/artwork/hand-of-the-archon-artwork-02.jpeg",
+            "layers/integration/hand-of-the-archon/artwork/hand-of-the-archon-artwork-03.png",
+            "layers/integration/hand-of-the-archon/artwork/hand-of-the-archon-artwork-04.jpeg",
+            "layers/integration/hand-of-the-archon/artwork/hand-of-the-archon-artwork-05.jpeg",
+            "layers/integration/hand-of-the-archon/artwork/hand-of-the-archon-artwork-06.jpeg",
+            "layers/integration/hand-of-the-archon/artwork/hand-of-the-archon-artwork-07.png",
+            "layers/integration/hand-of-the-archon/artwork/hand-of-the-archon-artwork-08.jpeg",
+            "layers/integration/hand-of-the-archon/artwork/hand-of-the-archon-artwork-09.jpeg",
+            "layers/integration/hand-of-the-archon/artwork/hand-of-the-archon-artwork-10.jpeg",
+            "layers/integration/hand-of-the-archon/artwork/hand-of-the-archon-artwork-11.jpeg",
+            "layers/integration/hand-of-the-archon/artwork/hand-of-the-archon-artwork-12.jpeg",
+            "layers/integration/hand-of-the-archon/artwork/hand-of-the-archon-artwork-13.jpeg",
+            "layers/integration/hand-of-the-archon/artwork/hand-of-the-archon-artwork-14.jpeg",
+            "layers/integration/hand-of-the-archon/artwork/hand-of-the-archon-artwork-15.jpeg",
+            "layers/integration/hand-of-the-archon/artwork/hand-of-the-archon-artwork-16.jpeg",
+            "layers/integration/hand-of-the-archon/artwork/hand-of-the-archon-artwork-17.jpeg",
+            "layers/integration/hand-of-the-archon/artwork/hand-of-the-archon-artwork-18.jpeg",
+            "layers/integration/hand-of-the-archon/artwork/hand-of-the-archon-artwork-19.jpeg",
+            "layers/integration/hand-of-the-archon/artwork/hand-of-the-archon-artwork-20.jpeg",
+            "layers/integration/hand-of-the-archon/artwork/hand-of-the-archon-artwork-metadata.json",
+            "layers/integration/hand-of-the-archon/artwork/icons/hand-of-the-archon-icon-landscape.jpg",
+            "layers/integration/hand-of-the-archon/artwork/icons/hand-of-the-archon-icon-portrait.jpg",
+            "layers/integration/hand-of-the-archon/artwork/icons/hand-of-the-archon-icon-token-transparent.png",
+            "layers/integration/hand-of-the-archon/artwork/icons/hand-of-the-archon-icon-token.jpg"
+          ],
+          "modified": "2026-07-06T20:50:06.266674+00:00"
+        }
+      },
+      "completed": "2026-07-06T20:50:06.266693+00:00"
+    }
+  }
+}
