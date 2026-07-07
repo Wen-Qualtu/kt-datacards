@@ -1,0 +1,3082 @@
+{
+  "SaveName": "Corsair Voidscarred",
+  "Date": "",
+  "VersionNumber": "",
+  "GameMode": "",
+  "GameType": "",
+  "GameComplexity": "",
+  "Tags": [],
+  "Gravity": 0.5,
+  "PlayArea": 0.5,
+  "Table": "",
+  "Sky": "",
+  "Note": "",
+  "TabStates": {},
+  "LuaScript": "",
+  "LuaScriptState": "",
+  "XmlUI": "",
+  "ObjectStates": [
+    {
+      "GUID": "e20f3e",
+      "Name": "Custom_Model_Bag",
+      "Transform": {
+        "posX": 0.0,
+        "posY": 3.5,
+        "posZ": 0.0,
+        "rotX": 0.0,
+        "rotY": 270.0,
+        "rotZ": 0.0,
+        "scaleX": 1.0,
+        "scaleY": 1.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "Corsair Voidscarred",
+      "Description": "OUTDATED VERSION. Click the red UPDATE button (or right-click -> Update to latest) to replace this with the full current team box. This intermediate is a one-time bridge and should not be reused.",
+      "GMNotes": "_Corsair Voidscarred",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
+      },
+      "Tags": [
+        "_Faction_Decks"
+      ],
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": false,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": true,
+      "MaterialIndex": -1,
+      "MeshIndex": -1,
+      "CustomMesh": {
+        "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/cardbox/corsair-voidscarred-card-box.obj?v=1781895962",
+        "DiffuseURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/cardbox/corsair-voidscarred-card-box-texture.jpg?v=1783355613",
+        "NormalURL": "",
+        "ColliderURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/cardbox/corsair-voidscarred-card-box.obj?v=1781895962",
+        "Convex": true,
+        "MaterialIndex": 3,
+        "TypeIndex": 6,
+        "CastShadows": true
+      },
+      "Bag": {
+        "Order": 0
+      },
+      "LuaScript": "-- Intermediate box updater (slim).\r\n--\r\n-- Embedded in the legacy save-file wrapper {Team} Box.json. Sole purpose:\r\n-- replace this box with the full clean {Team}.json from team-urls.json.\r\n--\r\n-- The wrapper exists only as a compatibility hop for in-the-wild boxes that\r\n-- still reference the old Box.json filename. Users who land here should\r\n-- update immediately and never reuse this intermediate.\r\n--\r\n-- Spawn-format note: the target file is a bare Custom_Model_Bag object\r\n-- handed straight to spawnObjectJSON (no save-file slicing needed).\r\n\r\nlocal BUTTON_UPDATE_NOW = {\r\n    label = \"UPDATE\\nNOW\",\r\n    click_function = \"click_update_now\",\r\n    function_owner = self,\r\n    position = {0, 0.3, 0},\r\n    rotation = {0, 180, 0},\r\n    height = 900, width = 1400,\r\n    font_size = 280,\r\n    color = {0.85, 0.1, 0.1}, font_color = {1, 1, 1},\r\n    tooltip = \"Replace this intermediate box with the latest full version.\"\r\n}\r\n\r\nfunction onLoad()\r\n    self.clearButtons()\r\n    self.createButton(BUTTON_UPDATE_NOW)\r\n    self.addContextMenuItem(\"Update to latest\", click_update_now)\r\nend\r\n\r\nfunction click_update_now()\r\n    -- Derive team slug + base repo URL from this box's MeshURL so we follow\r\n    -- whichever branch/fork the user spawned the box from.\r\n    local data = self.getData() or {}\r\n    local meshUrl = ((data.CustomMesh or {}).MeshURL) or \"\"\r\n    if meshUrl == \"\" then\r\n        broadcastToAll(\"Update failed: missing box mesh URL\", {1, 0.5, 0})\r\n        return\r\n    end\r\n    local cleanMeshUrl = string.match(meshUrl, \"^[^?]+\") or meshUrl\r\n    local baseUrl = string.match(cleanMeshUrl, \"^(.-)/output/\")\r\n    local teamSlug = string.match(cleanMeshUrl, \"/output/([^/]+)/\")\r\n    if not baseUrl or baseUrl == \"\" or not teamSlug or teamSlug == \"\" then\r\n        broadcastToAll(\"Update failed: could not parse repository URL\", {1, 0.5, 0})\r\n        return\r\n    end\r\n\r\n    local metadataUrl = baseUrl .. \"/output/team-urls.json?v=\" .. tostring(os.time())\r\n    broadcastToAll(\"Checking for latest \" .. teamSlug .. \"...\", {1, 1, 0})\r\n\r\n    WebRequest.get(metadataUrl, function(req)\r\n        if req.is_error then\r\n            broadcastToAll(\"Update failed: \" .. req.error, {1, 0.5, 0})\r\n            return\r\n        end\r\n        local ok, metadata = pcall(function() return JSON.decode(req.text) end)\r\n        if not ok or type(metadata) ~= \"table\" then\r\n            broadcastToAll(\"Update failed: could not parse team-urls.json\", {1, 0.5, 0})\r\n            return\r\n        end\r\n        local entry = metadata[teamSlug]\r\n        if type(entry) ~= \"table\" or type(entry.box) ~= \"table\" then\r\n            broadcastToAll(\"Update failed: team not found in team-urls.json\", {1, 0.5, 0})\r\n            return\r\n        end\r\n        local boxUrl = entry.box.url or \"\"\r\n        if boxUrl == \"\" then\r\n            broadcastToAll(\"Update failed: no box URL for team\", {1, 0.5, 0})\r\n            return\r\n        end\r\n\r\n        broadcastToAll(\"Downloading latest version...\", {0, 0.7, 1})\r\n        WebRequest.get(boxUrl, function(resp)\r\n            local code = tonumber(resp.response_code) or 0\r\n            if resp.is_error or code >= 400 then\r\n                local msg = resp.error\r\n                if msg == nil or msg == \"\" then msg = \"HTTP \" .. tostring(code) end\r\n                broadcastToAll(\"Download failed: \" .. msg .. \" (\" .. boxUrl .. \")\", {1, 0.5, 0})\r\n                return\r\n            end\r\n            local body = resp.text or \"\"\r\n            -- Strip leading whitespace; bare object must start with '{'.\r\n            local startIdx = 1\r\n            while startIdx <= #body and (body:byte(startIdx) == 32 or body:byte(startIdx) == 9 or body:byte(startIdx) == 10 or body:byte(startIdx) == 13) do\r\n                startIdx = startIdx + 1\r\n            end\r\n            if startIdx > #body or body:byte(startIdx) ~= 123 then\r\n                broadcastToAll(\"Update failed: unexpected response format (HTTP \" .. tostring(code) .. \")\", {1, 0.5, 0})\r\n                return\r\n            end\r\n            local objJson = (startIdx == 1) and body or body:sub(startIdx)\r\n\r\n            local pos = self.getPosition()\r\n            local rot = self.getRotation()\r\n            local locked = self.getLock()\r\n\r\n            local spawned = spawnObjectJSON({\r\n                json = objJson,\r\n                position = pos + Vector(5, 0, 0),\r\n                rotation = rot\r\n            })\r\n            if spawned == nil then\r\n                broadcastToAll(\"Update failed: could not spawn new box\", {1, 0.5, 0})\r\n                return\r\n            end\r\n\r\n            Wait.condition(\r\n                function()\r\n                    Wait.time(function()\r\n                        if spawned == nil or spawned.isDestroyed() then\r\n                            broadcastToAll(\"Update failed during spawn\", {1, 0.5, 0})\r\n                            return\r\n                        end\r\n                        spawned.setLock(locked)\r\n                        self.destruct()\r\n                        Wait.time(function()\r\n                            spawned.setPositionSmooth(pos, false, true)\r\n                            spawned.setRotationSmooth(rot, false, true)\r\n                            broadcastToAll(\"Updated to latest version!\", {0, 1, 0})\r\n                        end, 0.5)\r\n                    end, 0.5)\r\n                end,\r\n                function() return spawned ~= nil and not spawned.spawning end,\r\n                10\r\n            )\r\n        end)\r\n    end)\r\nend\r\n",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "ContainedObjects": [
+        {
+          "GUID": "c47814",
+          "Name": "Custom_Model_Bag",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 1.01,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 270.0,
+            "rotZ": 0.0,
+            "scaleX": 1.47,
+            "scaleY": 0.1,
+            "scaleZ": 1.47
+          },
+          "Nickname": "Corsair Voidscarred tokens",
+          "Description": "If errors pop up, just wait for few sec and try again",
+          "GMNotes": "_corsair-voidscarred_tokens",
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0,
+            "a": 0.0
+          },
+          "Tags": [
+            "_corsair-voidscarred",
+            "KTCardsTokenBag"
+          ],
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "Hands": false,
+          "Number": 0,
+          "CustomMesh": {
+            "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/tokens/tokenbag/corsair-voidscarred-token-bag.obj?v=1779121408",
+            "DiffuseURL": "",
+            "NormalURL": "",
+            "ColliderURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/tokens/tokenbag/corsair-voidscarred-token-bag.obj?v=1779121408",
+            "Convex": true,
+            "MaterialIndex": 0,
+            "TypeIndex": 6,
+            "CastShadows": true
+          },
+          "Bag": {
+            "Order": 0
+          },
+          "LuaScript": "",
+          "LuaScriptState": "{\"ml\": {\"d5e233\": {\"lock\": false, \"pos\": {\"x\": -2.25, \"y\": 0.0213, \"z\": -3.0}, \"rot\": {\"x\": 0.0, \"y\": 180.0, \"z\": 0.0}}, \"cb0ab5\": {\"lock\": false, \"pos\": {\"x\": -0.75, \"y\": 0.0213, \"z\": -3.0}, \"rot\": {\"x\": 0.0, \"y\": 180.0, \"z\": 0.0}}, \"bba36e\": {\"lock\": false, \"pos\": {\"x\": 0.75, \"y\": 0.0213, \"z\": -3.0}, \"rot\": {\"x\": 0.0, \"y\": 180.0, \"z\": 0.0}}, \"b0832f\": {\"lock\": false, \"pos\": {\"x\": 2.25, \"y\": 0.0213, \"z\": -3.0}, \"rot\": {\"x\": 0.0, \"y\": 180.0, \"z\": 0.0}}, \"96e431\": {\"lock\": false, \"pos\": {\"x\": -2.25, \"y\": 0.0213, \"z\": -4.5}, \"rot\": {\"x\": 0.0, \"y\": 180.0, \"z\": 0.0}}, \"b90bf7\": {\"lock\": false, \"pos\": {\"x\": -0.75, \"y\": 0.0213, \"z\": -4.5}, \"rot\": {\"x\": 0.0, \"y\": 180.0, \"z\": 0.0}}}, \"rr\": 270, \"lastUpdate\": \"2026-07-07T07:29:50.219681+00:00\"}",
+          "XmlUI": "",
+          "ChildObjects": [
+            {
+              "GUID": "cee34e",
+              "Name": "Custom_Tile",
+              "Transform": {
+                "posX": 0.0,
+                "posY": -0.5,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 270.0,
+                "rotZ": 0.0,
+                "scaleX": 0.5,
+                "scaleY": 10.0,
+                "scaleZ": 0.5
+              },
+              "Nickname": "",
+              "Description": "",
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0
+              },
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "Hands": false,
+              "CustomImage": {
+                "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/tokens/tokenbag/corsair-voidscarred-token-bag-icon.png?v=1783370963",
+                "ImageSecondaryURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/tokens/tokenbag/corsair-voidscarred-token-bag-icon.png?v=1783370963",
+                "ImageScalar": 1.0,
+                "WidthScale": 0.0,
+                "CustomTile": {
+                  "Type": 0,
+                  "Thickness": 0.1,
+                  "Stackable": false,
+                  "Stretch": true
+                }
+              }
+            }
+          ],
+          "ContainedObjects": [
+            {
+              "GUID": "d5e233",
+              "Name": "Custom_Model_Infinite_Bag",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 1.03,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 270.0,
+                "rotZ": 0.0,
+                "scaleX": 1.8351557,
+                "scaleY": 0.1,
+                "scaleZ": 1.7720486
+              },
+              "Nickname": "Erudite Hunter",
+              "Description": "Infinite Erudite Hunter tokens",
+              "GMNotes": "",
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 0.0
+              },
+              "Tags": [
+                "_corsair-voidscarred_tokens"
+              ],
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "Hands": false,
+              "CustomMesh": {
+                "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/tokens/corsair-voidscarred-erudite-hunter.obj?v=1772029953",
+                "DiffuseURL": "",
+                "NormalURL": "",
+                "ColliderURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/tokens/corsair-voidscarred-erudite-hunter.obj?v=1772029953",
+                "Convex": true,
+                "MaterialIndex": 0,
+                "TypeIndex": 7,
+                "CastShadows": true
+              },
+              "Bag": {
+                "Order": 0
+              },
+              "ContainedObjects": [
+                {
+                  "GUID": "3a3803",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 1.63,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Erudite Hunter",
+                  "Description": "Erudite Hunter",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": false,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/tokens/corsair-voidscarred-erudite-hunter.png?v=1783371749",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "ChildObjects": [
+                {
+                  "GUID": "fb1171",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 0.0,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Erudite Hunter",
+                  "Description": "Erudite Hunter",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": true,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/tokens/corsair-voidscarred-erudite-hunter.png?v=1783371749",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "cb0ab5",
+              "Name": "Custom_Model_Infinite_Bag",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 1.03,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 270.0,
+                "rotZ": 0.0,
+                "scaleX": 1.8351557,
+                "scaleY": 0.1,
+                "scaleZ": 1.7720486
+              },
+              "Nickname": "Faolchs Bond",
+              "Description": "Infinite Faolchs Bond tokens",
+              "GMNotes": "",
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 0.0
+              },
+              "Tags": [
+                "_corsair-voidscarred_tokens"
+              ],
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "Hands": false,
+              "CustomMesh": {
+                "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/tokens/corsair-voidscarred-faolchs-bond.obj?v=1772029953",
+                "DiffuseURL": "",
+                "NormalURL": "",
+                "ColliderURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/tokens/corsair-voidscarred-faolchs-bond.obj?v=1772029953",
+                "Convex": true,
+                "MaterialIndex": 0,
+                "TypeIndex": 7,
+                "CastShadows": true
+              },
+              "Bag": {
+                "Order": 0
+              },
+              "ContainedObjects": [
+                {
+                  "GUID": "6c3b3b",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 1.63,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Faolchs Bond",
+                  "Description": "Faolchs Bond",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": false,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/tokens/corsair-voidscarred-faolchs-bond.png?v=1783371749",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "ChildObjects": [
+                {
+                  "GUID": "e4533a",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 0.0,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Faolchs Bond",
+                  "Description": "Faolchs Bond",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": true,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/tokens/corsair-voidscarred-faolchs-bond.png?v=1783371749",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "bba36e",
+              "Name": "Custom_Model_Infinite_Bag",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 1.03,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 270.0,
+                "rotZ": 0.0,
+                "scaleX": 1.8351557,
+                "scaleY": 0.1,
+                "scaleZ": 1.7720486
+              },
+              "Nickname": "Mistfield",
+              "Description": "Infinite Mistfield tokens",
+              "GMNotes": "",
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 0.0
+              },
+              "Tags": [
+                "_corsair-voidscarred_tokens"
+              ],
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "Hands": false,
+              "CustomMesh": {
+                "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/tokens/corsair-voidscarred-mistfield.obj?v=1772029953",
+                "DiffuseURL": "",
+                "NormalURL": "",
+                "ColliderURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/tokens/corsair-voidscarred-mistfield.obj?v=1772029953",
+                "Convex": true,
+                "MaterialIndex": 0,
+                "TypeIndex": 7,
+                "CastShadows": true
+              },
+              "Bag": {
+                "Order": 0
+              },
+              "ContainedObjects": [
+                {
+                  "GUID": "f36988",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 1.63,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Mistfield",
+                  "Description": "Mistfield",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": false,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/tokens/corsair-voidscarred-mistfield.png?v=1783371749",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "ChildObjects": [
+                {
+                  "GUID": "7e80a9",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 0.0,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Mistfield",
+                  "Description": "Mistfield",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": true,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/tokens/corsair-voidscarred-mistfield.png?v=1783371749",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "b0832f",
+              "Name": "Custom_Model_Infinite_Bag",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 1.03,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 270.0,
+                "rotZ": 0.0,
+                "scaleX": 1.8351557,
+                "scaleY": 0.1,
+                "scaleZ": 1.7720486
+              },
+              "Nickname": "One Step Ahead",
+              "Description": "Infinite One Step Ahead tokens",
+              "GMNotes": "",
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 0.0
+              },
+              "Tags": [
+                "_corsair-voidscarred_tokens"
+              ],
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "Hands": false,
+              "CustomMesh": {
+                "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/tokens/corsair-voidscarred-one-step-ahead.obj?v=1772029953",
+                "DiffuseURL": "",
+                "NormalURL": "",
+                "ColliderURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/tokens/corsair-voidscarred-one-step-ahead.obj?v=1772029953",
+                "Convex": true,
+                "MaterialIndex": 0,
+                "TypeIndex": 7,
+                "CastShadows": true
+              },
+              "Bag": {
+                "Order": 0
+              },
+              "ContainedObjects": [
+                {
+                  "GUID": "5e58ec",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 1.63,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "One Step Ahead",
+                  "Description": "One Step Ahead",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": false,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/tokens/corsair-voidscarred-one-step-ahead.png?v=1783371749",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "ChildObjects": [
+                {
+                  "GUID": "4d21b8",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 0.0,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "One Step Ahead",
+                  "Description": "One Step Ahead",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": true,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/tokens/corsair-voidscarred-one-step-ahead.png?v=1783371749",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "96e431",
+              "Name": "Custom_Model_Infinite_Bag",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 1.03,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 270.0,
+                "rotZ": 0.0,
+                "scaleX": 1.8351557,
+                "scaleY": 0.1,
+                "scaleZ": 1.7720486
+              },
+              "Nickname": "Runes Of Guidance",
+              "Description": "Infinite Runes Of Guidance tokens",
+              "GMNotes": "",
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 0.0
+              },
+              "Tags": [
+                "_corsair-voidscarred_tokens"
+              ],
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "Hands": false,
+              "CustomMesh": {
+                "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/tokens/corsair-voidscarred-runes-of-guidance.obj?v=1772029953",
+                "DiffuseURL": "",
+                "NormalURL": "",
+                "ColliderURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/tokens/corsair-voidscarred-runes-of-guidance.obj?v=1772029953",
+                "Convex": true,
+                "MaterialIndex": 0,
+                "TypeIndex": 7,
+                "CastShadows": true
+              },
+              "Bag": {
+                "Order": 0
+              },
+              "ContainedObjects": [
+                {
+                  "GUID": "aec418",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 1.63,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Runes Of Guidance",
+                  "Description": "Runes Of Guidance",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": false,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/tokens/corsair-voidscarred-runes-of-guidance.png?v=1783371749",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "ChildObjects": [
+                {
+                  "GUID": "ea3134",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 0.0,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Runes Of Guidance",
+                  "Description": "Runes Of Guidance",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": true,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/tokens/corsair-voidscarred-runes-of-guidance.png?v=1783371749",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "b90bf7",
+              "Name": "Custom_Model_Infinite_Bag",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 1.03,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 270.0,
+                "rotZ": 0.0,
+                "scaleX": 1.8351557,
+                "scaleY": 0.1,
+                "scaleZ": 1.7720486
+              },
+              "Nickname": "Warding Shield",
+              "Description": "Infinite Warding Shield tokens",
+              "GMNotes": "",
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 0.0
+              },
+              "Tags": [
+                "_corsair-voidscarred_tokens"
+              ],
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "Hands": false,
+              "CustomMesh": {
+                "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/tokens/corsair-voidscarred-warding-shield.obj?v=1772029953",
+                "DiffuseURL": "",
+                "NormalURL": "",
+                "ColliderURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/tokens/corsair-voidscarred-warding-shield.obj?v=1772029953",
+                "Convex": true,
+                "MaterialIndex": 0,
+                "TypeIndex": 7,
+                "CastShadows": true
+              },
+              "Bag": {
+                "Order": 0
+              },
+              "ContainedObjects": [
+                {
+                  "GUID": "79bed6",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 1.63,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Warding Shield",
+                  "Description": "Warding Shield",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": false,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/tokens/corsair-voidscarred-warding-shield.png?v=1783371749",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "ChildObjects": [
+                {
+                  "GUID": "80918f",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 0.0,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Warding Shield",
+                  "Description": "Warding Shield",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": true,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/tokens/corsair-voidscarred-warding-shield.png?v=1783371749",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            }
+          ]
+        },
+        {
+          "GUID": "05ce01",
+          "Name": "Custom_Dice",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 0.0,
+            "rotZ": 0.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Corsair Voidscarred Dice",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "_Corsair Voidscarred",
+            "KTDice_Team"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomImage": {
+            "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/dice/corsair-voidscarred-dice-team.jpg?v=1783355596",
+            "ImageSecondaryURL": "",
+            "WidthScale": 0.0
+          },
+          "CustomDice": {
+            "Type": 1
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "da19c9",
+          "Name": "Custom_Dice",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 0.0,
+            "rotZ": 0.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Corsair Voidscarred Light Dice",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "_Corsair Voidscarred",
+            "KTDice_Light"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomImage": {
+            "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/dice/corsair-voidscarred-dice-light.jpg?v=1783355596",
+            "ImageSecondaryURL": "",
+            "WidthScale": 0.0
+          },
+          "CustomDice": {
+            "Type": 1
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "09dfd3",
+          "Name": "Custom_Dice",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 0.0,
+            "rotZ": 0.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Corsair Voidscarred Dark Dice",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "_Corsair Voidscarred",
+            "KTDice_Dark"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomImage": {
+            "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/dice/corsair-voidscarred-dice-dark.jpg?v=1783355596",
+            "ImageSecondaryURL": "",
+            "WidthScale": 0.0
+          },
+          "CustomDice": {
+            "Type": 1
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "0e333d",
+          "Name": "Card",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 180.0,
+            "rotZ": 0.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "corsair-voidscarred-operatives",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.713235259,
+            "g": 0.713235259,
+            "b": 0.713235259
+          },
+          "Tags": [
+            "_Corsair Voidscarred",
+            "KTCardsOperativeSelection"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": true,
+          "CardID": 100000,
+          "SidewaysCard": false,
+          "CustomDeck": {
+            "1000": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/cards/operatives_selection/corsair-voidscarred-operative-selection-front.jpg?v=1783371929",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/cards/operatives_selection/corsair-voidscarred-operative-selection-back.jpg?v=1783371929",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "1969e6",
+          "Name": "Deck",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 180.0,
+            "rotZ": 180.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Faction Rules",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.713235259,
+            "g": 0.713235259,
+            "b": 0.713235259
+          },
+          "Tags": [
+            "_Corsair Voidscarred",
+            "KTCardsFactionRule"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": false,
+          "SidewaysCard": false,
+          "DeckIDs": [
+            100200,
+            100100
+          ],
+          "CustomDeck": {
+            "1001": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/cards/faction_rules/corsair-voidscarred-aeldari-raiders-front.jpg?v=1783371930",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/cards/faction_rules/corsair-voidscarred-aeldari-raiders-back.jpg?v=1783355518",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1002": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/cards/faction_rules/corsair-voidscarred-rifles-front.jpg?v=1783371930",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/cards/faction_rules/corsair-voidscarred-rifles-back.jpg?v=1783355518",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "ContainedObjects": [
+            {
+              "GUID": "1ab594",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "corsair-voidscarred-rifles",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 100200,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "2dfdbd",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "corsair-voidscarred-aeldari-raiders",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 100100,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            }
+          ]
+        },
+        {
+          "GUID": "39d9d7",
+          "Name": "Card",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 180.0,
+            "rotZ": 0.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "corsair-voidscarred-markertoken-guide",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.713235259,
+            "g": 0.713235259,
+            "b": 0.713235259
+          },
+          "Tags": [
+            "_Corsair Voidscarred",
+            "KTCardsTokenGuide"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": true,
+          "CardID": 100300,
+          "SidewaysCard": false,
+          "CustomDeck": {
+            "1003": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/cards/token_guide/corsair-voidscarred-token-guide-front.jpg?v=1783371936",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/cards/token_guide/corsair-voidscarred-token-guide-back.jpg?v=1783355518",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "5e2522",
+          "Name": "Deck",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 180.0,
+            "rotZ": 180.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Datacards",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.713235259,
+            "g": 0.713235259,
+            "b": 0.713235259
+          },
+          "Tags": [
+            "_Corsair Voidscarred",
+            "KTCardsDatacard"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": false,
+          "SidewaysCard": false,
+          "DeckIDs": [
+            101400,
+            101300,
+            101200,
+            101100,
+            101000,
+            100900,
+            100800,
+            100700,
+            100600,
+            100500,
+            100400
+          ],
+          "CustomDeck": {
+            "1004": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/cards/datacards/voidscarred-fate-dealer-front.jpg?v=1783371924",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/cards/datacards/voidscarred-fate-dealer-back.jpg?v=1783355518",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1005": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/cards/datacards/voidscarred-felarch-front.jpg?v=1783371923",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/cards/datacards/voidscarred-felarch-back.jpg?v=1783355518",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1006": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/cards/datacards/voidscarred-gunner-front.jpg?v=1783371924",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/cards/datacards/voidscarred-gunner-back.jpg?v=1783355518",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1007": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/cards/datacards/voidscarred-heavy-gunner-front.jpg?v=1783371925",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/cards/datacards/voidscarred-heavy-gunner-back.jpg?v=1783355518",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1008": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/cards/datacards/voidscarred-kurnathi-front.jpg?v=1783371925",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/cards/datacards/voidscarred-kurnathi-back.jpg?v=1783355518",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1009": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/cards/datacards/voidscarred-kurnite-hunter-front.jpg?v=1783371926",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/cards/datacards/voidscarred-kurnite-hunter-back.jpg?v=1783355518",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1010": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/cards/datacards/voidscarred-shade-runner-front.jpg?v=1783371926",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/cards/datacards/voidscarred-shade-runner-back.jpg?v=1783371926",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1011": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/cards/datacards/voidscarred-soul-weaver-front.jpg?v=1783371927",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/cards/datacards/voidscarred-soul-weaver-back.jpg?v=1783355518",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1012": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/cards/datacards/voidscarred-starstorm-duellist-front.jpg?v=1783371927",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/cards/datacards/voidscarred-starstorm-duellist-back.jpg?v=1783355518",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1013": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/cards/datacards/voidscarred-warrior-front.jpg?v=1783371928",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/cards/datacards/voidscarred-warrior-back.jpg?v=1783355518",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1014": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/cards/datacards/voidscarred-way-seeker-front.jpg?v=1783371928",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/cards/datacards/voidscarred-way-seeker-back.jpg?v=1783371929",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "ContainedObjects": [
+            {
+              "GUID": "c87b5f",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "voidscarred-way-seeker",
+              "Description": "",
+              "GMNotes": "{\"name\":\"voidscarred-way-seeker\",\"stats\":{\"APL\":2,\"Move\":7,\"Save\":4,\"Wounds\":8,\"Base\":28},\"keywords\":[\"Operative\",\"CORSAIR VOIDSCARRED\",\"AELDARI\",\"ANHRATHE\",\"PSYKER\",\"WAY SEEKER\"],\"weapons\":[{\"name\":\"[1E87FF]R[-] Freezing grasp\",\"plain_name\":\"Freezing grasp\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"1/2\",\"WR\":\"PSYCHIC, Severe, Silent, Stun\"}},{\"name\":\"[F4641D]M[-] Lightning strike\",\"plain_name\":\"Lightning strike\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"4/3\",\"WR\":\"PSYCHIC, 2\\\" Devastating 2\"}},{\"name\":\"[1E87FF]R[-] Shuriken pistol\",\"plain_name\":\"Shuriken pistol\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"3/4\",\"WR\":\"Range 8\\\", Rending\"}},{\"name\":\"[F4641D]M[-] Witch staff\",\"plain_name\":\"Witch staff\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"3/5\",\"WR\":\"PSYCHIC, Shock\"}}],\"abilities\":[],\"actions\":[{\"name\":\"WARP FOLD (1AP)\",\"text\":\"PSYCHIC. Select two friendly CORSAIR VOIDSCARRED operatives visible to and within 5\\\" of this operative. Remove them both from the killzone and set them back up in each other's previous locations (in other words, swap their positions). If one of them performed the Charge, Fall Back or Reposition action during this turning point and the other is ready, the other cannot perform any of those actions in its activation during this turning point. This operative cannot perform this action while within control range of an enemy operative.\"},{\"name\":\"WARDING SHIELD (1AP)\",\"text\":\"PSYCHIC. Select one friendly CORSAIR VOIDSCARRED operative visible to and within 6\\\" of this operative. Until the start of this operative's next activation, until it's incapacitated or until it performs this action again (whichever comes first), the first time an attack dice inflicts Normal Dmg on that friendly operative, ignore that inflicted damage. This operative cannot perform this action while within control range of an enemy operative. VOIDSCARRED WAY SEEKER\"}],\"weapon_rules\":{\"Severe\":\"If you don't retain any critical successes, you can change one of your normal successes to a critical success. The Devastating and Piercing Crits weapon rules still take effect, but Punishing and Rending don't.\",\"Silent\":\"An operative can perform the Shoot action with this weapon while it has a Conceal order.\",\"Stun\":\"If you retain any critical successes, subtract 1 from the APL stat of the operative this weapon is being used against until the end of its next activation.\",\"Devastating x\":\"Each retained critical success immediately inflicts x damage on the operative this weapon is being used against, e.g. Devastating 3. If the rule starts with a distance (e.g. 1\\\" Devastating x), inflict x damage on that operative and each other operative visible to and within that distance of it. Note that success isn't discarded after doing so - it can still be resolved later in the sequence.\",\"Range x\":\"Only operatives within x of the active operative can be valid targets, e.g. Range 9\\\".\",\"Rending\":\"If you retain any critical successes, you can retain one of your normal successes as a critical success instead.\",\"Shock\":\"The first time you strike with a critical success in each sequence, also discard one of your opponent's unresolved normal successes (or one of their critical successes if there are none).\"},\"description\":\"[D36B3E][[84E680]APL[-] [ffffff]2[-]] [[84E680]MOVE[-] [ffffff]7\\\"[-]]\\n[[84E680]SAVE[-] [ffffff]4+[-]] [[84E680]WOUNDS[-] [ffffff]8[-]][-]\\n[C5C5C5]Operative, CORSAIR VOIDSCARRED, AELDARI, ANHRATHE, PSYKER, WAY SEEKER[-]\\n[31B32B]Weapons[-]\\n[1E87FF]R[-] Freezing grasp\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 1/2\\n[84E680]WR[-]: PSYCHIC, Severe, Silent, Stun\\n\\n[F4641D]M[-] Lightning strike\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 4/3\\n[84E680]WR[-]: PSYCHIC, 2\\\" Devastating 2\\n\\n[1E87FF]R[-] Shuriken pistol\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 3/4\\n[84E680]WR[-]: Range 8\\\", Rending\\n\\n[F4641D]M[-] Witch staff\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 3/5\\n[84E680]WR[-]: PSYCHIC, Shock\\n\\n---\\n[31B32B]Unique Actions[-]\\n- [EF8450]WARP FOLD (1AP)[-]\\n- [EF8450]WARDING SHIELD (1AP)[-]\"}",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 101400,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "ccb5e7",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "voidscarred-warrior",
+              "Description": "",
+              "GMNotes": "{\"name\":\"voidscarred-warrior\",\"stats\":{\"APL\":2,\"Move\":7,\"Save\":4,\"Wounds\":8,\"Base\":28},\"keywords\":[\"Operative\",\"CORSAIR VOIDSCARRED\",\"AELDARI\",\"ANHRATHE\",\"WARRIOR\"],\"weapons\":[{\"name\":\"[1E87FF]R[-] Shuriken pistol\",\"plain_name\":\"Shuriken pistol\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"3/4\",\"WR\":\"Range 8\\\", Rending\"}},{\"name\":\"[1E87FF]R[-] Shuriken rifle\",\"plain_name\":\"Shuriken rifle\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"3/4\",\"WR\":\"Rending\"}},{\"name\":\"[F4641D]M[-] Power weapon\",\"plain_name\":\"Power weapon\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"4/6\",\"WR\":\"Lethal 5+\"}},{\"name\":\"[F4641D]M[-] Fists\",\"plain_name\":\"Fists\",\"stats\":{\"ATK\":\"3\",\"HIT\":\"3+\",\"DMG\":\"2/3\",\"WR\":\"\"}}],\"abilities\":[{\"name\":\"Prowling Raiders\",\"text\":\"You can use the Capricious Flight and Light Fingers firefight ploys for 0CP each if a friendly WARRIOR operative is the specified CORSAIR VOIDSCARRED operative.\"}],\"actions\":[],\"weapon_rules\":{\"Range x\":\"Only operatives within x of the active operative can be valid targets, e.g. Range 9\\\".\",\"Rending\":\"If you retain any critical successes, you can retain one of your normal successes as a critical success instead.\"},\"description\":\"[D36B3E][[84E680]APL[-] [ffffff]2[-]] [[84E680]MOVE[-] [ffffff]7\\\"[-]]\\n[[84E680]SAVE[-] [ffffff]4+[-]] [[84E680]WOUNDS[-] [ffffff]8[-]][-]\\n[C5C5C5]Operative, CORSAIR VOIDSCARRED, AELDARI, ANHRATHE, WARRIOR[-]\\n[31B32B]Weapons[-]\\n[1E87FF]R[-] Shuriken pistol\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 3/4\\n[84E680]WR[-]: Range 8\\\", Rending\\n\\n[1E87FF]R[-] Shuriken rifle\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 3/4\\n[84E680]WR[-]: Rending\\n\\n[F4641D]M[-] Power weapon\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 4/6\\n[84E680]WR[-]: Lethal 5+\\n\\n[F4641D]M[-] Fists\\n[84E680]ATK[-] 3 [84E680]HIT[-] 3+ [84E680]DMG[-] 2/3\\n\\n---\\n[31B32B]Abilities[-]\\n- [EF8450]Prowling Raiders[-]\"}",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 101300,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "6688a0",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "voidscarred-starstorm-duellist",
+              "Description": "",
+              "GMNotes": "{\"name\":\"voidscarred-starstorm-duellist\",\"stats\":{\"APL\":2,\"Move\":7,\"Save\":4,\"Wounds\":8,\"Base\":28},\"keywords\":[\"Operative\",\"CORSAIR VOIDSCARRED\",\"AELDARI\",\"ANHRATHE\",\"STARSTORM DUELLIST\"],\"weapons\":[{\"name\":\"[1E87FF]R[-] Fusion pistol\",\"plain_name\":\"Fusion pistol\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"5/3\",\"WR\":\"Range 3\\\", Devastating 3, Piercing 2\"}},{\"name\":\"[1E87FF]R[-] Shuriken pistol\",\"plain_name\":\"Shuriken pistol\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"3/4\",\"WR\":\"Range 8\\\", Rending\"}},{\"name\":\"[F4641D]M[-] Fists\",\"plain_name\":\"Fists\",\"stats\":{\"ATK\":\"3\",\"HIT\":\"3+\",\"DMG\":\"2/3\",\"WR\":\"\"}}],\"abilities\":[{\"name\":\"Quick on the Trigger\",\"text\":\"This operative can perform the Shoot action while within control range of an enemy operative. If it does, when selecting a valid target, you can only select an enemy operative within this operative's control range, and can do so even if other friendly operatives are within that enemy operative's control range.\"}],\"actions\":[{\"name\":\"PISTOL BARRAGE (1AP)\",\"text\":\"Perform two free Shoot actions with this operative (this takes precedence over action restrictions). You must select its fusion pistol for one action and its shuriken pistol for the other (in any order). This operative cannot perform this action while it has a Conceal order, or during an activation in which it performed the Shoot action (or vice versa).\"}],\"weapon_rules\":{\"Devastating x\":\"Each retained critical success immediately inflicts x damage on the operative this weapon is being used against, e.g. Devastating 3. If the rule starts with a distance (e.g. 1\\\" Devastating x), inflict x damage on that operative and each other operative visible to and within that distance of it. Note that success isn't discarded after doing so - it can still be resolved later in the sequence.\",\"Piercing x\":\"The defender collects x less defence dice, e.g. Piercing 1. If the rule is Piercing Crits x, this only comes into effect if you retain any critical successes.\",\"Range x\":\"Only operatives within x of the active operative can be valid targets, e.g. Range 9\\\".\",\"Rending\":\"If you retain any critical successes, you can retain one of your normal successes as a critical success instead.\"},\"description\":\"[D36B3E][[84E680]APL[-] [ffffff]2[-]] [[84E680]MOVE[-] [ffffff]7\\\"[-]]\\n[[84E680]SAVE[-] [ffffff]4+[-]] [[84E680]WOUNDS[-] [ffffff]8[-]][-]\\n[C5C5C5]Operative, CORSAIR VOIDSCARRED, AELDARI, ANHRATHE, STARSTORM DUELLIST[-]\\n[31B32B]Weapons[-]\\n[1E87FF]R[-] Fusion pistol\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 5/3\\n[84E680]WR[-]: Range 3\\\", Devastating 3, Piercing 2\\n\\n[1E87FF]R[-] Shuriken pistol\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 3/4\\n[84E680]WR[-]: Range 8\\\", Rending\\n\\n[F4641D]M[-] Fists\\n[84E680]ATK[-] 3 [84E680]HIT[-] 3+ [84E680]DMG[-] 2/3\\n\\n---\\n[31B32B]Abilities[-]\\n- [EF8450]Quick on the Trigger[-]\\n---\\n[31B32B]Unique Actions[-]\\n- [EF8450]PISTOL BARRAGE (1AP)[-]\"}",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 101200,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "c37ced",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "voidscarred-soul-weaver",
+              "Description": "",
+              "GMNotes": "{\"name\":\"voidscarred-soul-weaver\",\"stats\":{\"APL\":2,\"Move\":7,\"Save\":4,\"Wounds\":8,\"Base\":28},\"keywords\":[\"Operative\",\"CORSAIR VOIDSCARRED\",\"AELDARI\",\"ANHRATHE\",\"PSYKER\",\"MEDIC\",\"SOUL WEAVER\"],\"weapons\":[{\"name\":\"[1E87FF]R[-] Shuriken pistol\",\"plain_name\":\"Shuriken pistol\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"3/4\",\"WR\":\"Range 8\\\", Rending\"}},{\"name\":\"[F4641D]M[-] Power weapon\",\"plain_name\":\"Power weapon\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"4/6\",\"WR\":\"Lethal 5+\"}}],\"abilities\":[],\"actions\":[{\"name\":\"SOUL CHANNEL (1AP)\",\"text\":\"PSYCHIC. Select one other friendly CORSAIR VOIDSCARRED operative visible to and within 6\\\" of this operative. Until the end of that operative's next activation, add 1 to its APL stat. This operative cannot perform this action while within control range of an enemy operative.\"},{\"name\":\"SOUL HEAL (1AP)\",\"text\":\"PSYCHIC. Select one friendly CORSAIR VOIDSCARRED operative visible to and within 6\\\" of this operative. That operative regains up to 2D3 lost wounds. This operative cannot perform this action while within control range of an enemy operative.\"}],\"weapon_rules\":{\"Range x\":\"Only operatives within x of the active operative can be valid targets, e.g. Range 9\\\".\",\"Rending\":\"If you retain any critical successes, you can retain one of your normal successes as a critical success instead.\"},\"description\":\"[D36B3E][[84E680]APL[-] [ffffff]2[-]] [[84E680]MOVE[-] [ffffff]7\\\"[-]]\\n[[84E680]SAVE[-] [ffffff]4+[-]] [[84E680]WOUNDS[-] [ffffff]8[-]][-]\\n[C5C5C5]Operative, CORSAIR VOIDSCARRED, AELDARI, ANHRATHE, PSYKER, MEDIC, SOUL WEAVER[-]\\n[31B32B]Weapons[-]\\n[1E87FF]R[-] Shuriken pistol\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 3/4\\n[84E680]WR[-]: Range 8\\\", Rending\\n\\n[F4641D]M[-] Power weapon\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 4/6\\n[84E680]WR[-]: Lethal 5+\\n\\n---\\n[31B32B]Unique Actions[-]\\n- [EF8450]SOUL CHANNEL (1AP)[-]\\n- [EF8450]SOUL HEAL (1AP)[-]\"}",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 101100,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "000a2c",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "voidscarred-shade-runner",
+              "Description": "",
+              "GMNotes": "{\"name\":\"voidscarred-shade-runner\",\"stats\":{\"APL\":2,\"Move\":7,\"Save\":4,\"Wounds\":8,\"Base\":28},\"keywords\":[\"Operative\",\"CORSAIR VOIDSCARRED\",\"AELDARI\",\"ANHRATHE\",\"SHADE RUNNER\"],\"weapons\":[{\"name\":\"[1E87FF]R[-] Shuriken pistol\",\"plain_name\":\"Shuriken pistol\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"3/4\",\"WR\":\"Range 8\\\", Rending\"}},{\"name\":\"[1E87FF]R[-] Throwing blades\",\"plain_name\":\"Throwing blades\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"2/4\",\"WR\":\"Range 6\\\", Silent\"}},{\"name\":\"[F4641D]M[-] Hekatarii blades\",\"plain_name\":\"Hekatarii blades\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"3/5\",\"WR\":\"Ceaseless, Lethal 5+\"}}],\"abilities\":[{\"name\":\"Blink Pack\",\"text\":\"Whenever this operative performs the Charge, Fall Back or Reposition action, it can warp jump. If it does, don't move it. Instead, remove it from the killzone and set it back up wholly within 7\\\" horizontally of its original location (in a killzone that uses the close quarters rules, e.g. Killzone: Tomb World, this distance can be measured through Wall terrain). It must be set up in a location it can be placed, and unless it's the Charge action, it cannot be set up within control range of an enemy operative.\"},{\"name\":\"Slicing Attack\",\"text\":\"Whenever this operative performs the Reposition action with a warp jump (see other side of card), you can use this rule. If you do, after it moves, draw an imaginary line 1mm in diameter and up to 7\\\" long between it and its previous location. Note this doesn't have to be a straight line. Inflict D3+2 damage on one enemy operative that line crosses. You cannot inflict damage on an enemy operative that was not visible to this operative at the start of that action. A 28mm round marker can be temporarily placed underneath this operative before it moves to help determine this. VOIDSCARRED SHADE RUNNER 2 APL WOUNDS SAVE MOVE 7\\\" 4+ 8 Enemy operative Up to 7\\\" Shade Runner previous location Shade Runner\"}],\"actions\":[],\"weapon_rules\":{\"Range x\":\"Only operatives within x of the active operative can be valid targets, e.g. Range 9\\\".\",\"Rending\":\"If you retain any critical successes, you can retain one of your normal successes as a critical success instead.\",\"Silent\":\"An operative can perform the Shoot action with this weapon while it has a Conceal order.\",\"Ceaseless\":\"You can re-roll any of your attack dice results of one result (e.g. results of 2).\"},\"description\":\"[D36B3E][[84E680]APL[-] [ffffff]2[-]] [[84E680]MOVE[-] [ffffff]7\\\"[-]]\\n[[84E680]SAVE[-] [ffffff]4+[-]] [[84E680]WOUNDS[-] [ffffff]8[-]][-]\\n[C5C5C5]Operative, CORSAIR VOIDSCARRED, AELDARI, ANHRATHE, SHADE RUNNER[-]\\n[31B32B]Weapons[-]\\n[1E87FF]R[-] Shuriken pistol\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 3/4\\n[84E680]WR[-]: Range 8\\\", Rending\\n\\n[1E87FF]R[-] Throwing blades\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 2/4\\n[84E680]WR[-]: Range 6\\\", Silent\\n\\n[F4641D]M[-] Hekatarii blades\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 3/5\\n[84E680]WR[-]: Ceaseless, Lethal 5+\\n\\n---\\n[31B32B]Abilities[-]\\n- [EF8450]Blink Pack[-]\\n- [EF8450]Slicing Attack[-]\"}",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 101000,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "9d705c",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "voidscarred-kurnite-hunter",
+              "Description": "",
+              "GMNotes": "{\"name\":\"voidscarred-kurnite-hunter\",\"stats\":{\"APL\":2,\"Move\":7,\"Save\":4,\"Wounds\":8,\"Base\":28},\"keywords\":[\"Operative\",\"CORSAIR VOIDSCARRED\",\"AELDARI\",\"ANHRATHE\",\"KURNITE HUNTER\"],\"weapons\":[{\"name\":\"[1E87FF]R[-] Faolch\u00fa\",\"plain_name\":\"Faolch\u00fa\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"1/2\",\"WR\":\"Rending, Saturate, Seek Light, Silent\"}},{\"name\":\"[1E87FF]R[-] Shuriken pistol\",\"plain_name\":\"Shuriken pistol\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"3/4\",\"WR\":\"Range 8\\\", Rending\"}},{\"name\":\"[F4641D]M[-] Power weapon\",\"plain_name\":\"Power weapon\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"4/6\",\"WR\":\"Lethal 5+\"}}],\"abilities\":[{\"name\":\"Faolch\u00fa's Bond\",\"text\":\"The first time during each turning point that this operative is retaliating, if it's ready, in the Resolve Attack Dice step of that sequence, you resolve the first attack dice (i.e. defender instead of attacker).\"},{\"name\":\"Erudite Hunter\",\"text\":\"STRATEGIC GAMBIT. Select one enemy operative within 9\\\" of this operative. Once during this turning point, after that enemy operative performs an action in which it moves, you can interrupt to use this rule. If you do, this operative can immediately perform either a free Reposition action (it cannot end that move further away from that enemy operative), or a free Charge action (you can change its order to do so, and it must end that move within control range of that enemy operative). In a killzone that uses the close quarters rules (e.g. Killzone: Tomb World), ignore Wall terrain when determining further away.\"}],\"actions\":[],\"weapon_rules\":{\"Rending\":\"If you retain any critical successes, you can retain one of your normal successes as a critical success instead.\",\"Saturate\":\"The defender cannot retain cover saves.\",\"Seek\":\"When selecting a valid target, operatives with a Conceal order cannot use terrain for cover. If the rule is Seek Light, they cannot use Light terrain for cover. While this can allow operatives to be targeted (assuming they're visible), it doesn't remove their cover save (if any).\",\"Silent\":\"An operative can perform the Shoot action with this weapon while it has a Conceal order.\",\"Range x\":\"Only operatives within x of the active operative can be valid targets, e.g. Range 9\\\".\"},\"description\":\"[D36B3E][[84E680]APL[-] [ffffff]2[-]] [[84E680]MOVE[-] [ffffff]7\\\"[-]]\\n[[84E680]SAVE[-] [ffffff]4+[-]] [[84E680]WOUNDS[-] [ffffff]8[-]][-]\\n[C5C5C5]Operative, CORSAIR VOIDSCARRED, AELDARI, ANHRATHE, KURNITE HUNTER[-]\\n[31B32B]Weapons[-]\\n[1E87FF]R[-] Faolch\u00fa\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 1/2\\n[84E680]WR[-]: Rending, Saturate, Seek Light, Silent\\n\\n[1E87FF]R[-] Shuriken pistol\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 3/4\\n[84E680]WR[-]: Range 8\\\", Rending\\n\\n[F4641D]M[-] Power weapon\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 4/6\\n[84E680]WR[-]: Lethal 5+\\n\\n---\\n[31B32B]Abilities[-]\\n- [EF8450]Faolch\u00fa's Bond[-]\\n- [EF8450]Erudite Hunter[-]\"}",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 100900,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "71258b",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "voidscarred-kurnathi",
+              "Description": "",
+              "GMNotes": "{\"name\":\"voidscarred-kurnathi\",\"stats\":{\"APL\":2,\"Move\":7,\"Save\":4,\"Wounds\":8,\"Base\":28},\"keywords\":[\"Operative\",\"CORSAIR VOIDSCARRED\",\"AELDARI\",\"ANHRATHE\",\"KURNATHI\"],\"weapons\":[{\"name\":\"[1E87FF]R[-] Shuriken pistol\",\"plain_name\":\"Shuriken pistol\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"3/4\",\"WR\":\"Range 8\\\", Rending\"}},{\"name\":\"[F4641D]M[-] Dual power weapons\",\"plain_name\":\"Dual power weapons\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"4/6\",\"WR\":\"Ceaseless, Lethal 5+\"}}],\"abilities\":[{\"name\":\"Blademaster\",\"text\":\"This operative can perform the Dash action during an activation in which it performed the Charge action, but can only use any remaining move distance it had from that Charge action (to a maximum of 3\\\").\"},{\"name\":\"Bladed Stance\",\"text\":\"Whenever this operative is fighting or retaliating, you can resolve one of your successes before the normal order. If you do, that success must be used to block.\"}],\"actions\":[],\"weapon_rules\":{\"Range x\":\"Only operatives within x of the active operative can be valid targets, e.g. Range 9\\\".\",\"Rending\":\"If you retain any critical successes, you can retain one of your normal successes as a critical success instead.\",\"Ceaseless\":\"You can re-roll any of your attack dice results of one result (e.g. results of 2).\"},\"description\":\"[D36B3E][[84E680]APL[-] [ffffff]2[-]] [[84E680]MOVE[-] [ffffff]7\\\"[-]]\\n[[84E680]SAVE[-] [ffffff]4+[-]] [[84E680]WOUNDS[-] [ffffff]8[-]][-]\\n[C5C5C5]Operative, CORSAIR VOIDSCARRED, AELDARI, ANHRATHE, KURNATHI[-]\\n[31B32B]Weapons[-]\\n[1E87FF]R[-] Shuriken pistol\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 3/4\\n[84E680]WR[-]: Range 8\\\", Rending\\n\\n[F4641D]M[-] Dual power weapons\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 4/6\\n[84E680]WR[-]: Ceaseless, Lethal 5+\\n\\n---\\n[31B32B]Abilities[-]\\n- [EF8450]Blademaster[-]\\n- [EF8450]Bladed Stance[-]\"}",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 100800,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "d1ea21",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "voidscarred-heavy-gunner",
+              "Description": "",
+              "GMNotes": "{\"name\":\"voidscarred-heavy-gunner\",\"stats\":{\"APL\":2,\"Move\":7,\"Save\":4,\"Wounds\":8,\"Base\":28},\"keywords\":[\"Operative\",\"CORSAIR VOIDSCARRED\",\"AELDARI\",\"ANHRATHE\",\"HEAVY GUNNER\"],\"weapons\":[{\"name\":\"[1E87FF]R[-] Shuriken cannon (focused)\",\"plain_name\":\"Shuriken cannon (focused)\",\"stats\":{\"ATK\":\"5\",\"HIT\":\"3+\",\"DMG\":\"4/5\",\"WR\":\"Heavy (Dash only), Rending\"}},{\"name\":\"[1E87FF]R[-] Shuriken cannon (sweeping)\",\"plain_name\":\"Shuriken cannon (sweeping)\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"4/5\",\"WR\":\"Heavy (Dash only), Rending, Torrent 1\\\"\"}},{\"name\":\"[1E87FF]R[-] Shuriken pistol\",\"plain_name\":\"Shuriken pistol\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"3/4\",\"WR\":\"Range 8\\\", Rending\"}},{\"name\":\"[1E87FF]R[-] Wraithcannon\",\"plain_name\":\"Wraithcannon\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"6/3\",\"WR\":\"Devastating 4, Heavy (Dash only), Piercing 2\"}},{\"name\":\"[F4641D]M[-] Fists\",\"plain_name\":\"Fists\",\"stats\":{\"ATK\":\"3\",\"HIT\":\"3+\",\"DMG\":\"2/3\",\"WR\":\"\"}}],\"abilities\":[],\"actions\":[],\"weapon_rules\":{\"Heavy\":\"An operative cannot use this weapon in an activation or counteraction in which it moved, and it cannot move in an activation or counteraction in which it used this weapon. If the rule is Heavy (x only), where x is a move action, only that move is allowed, e.g. Heavy (Dash only). This weapon rule has no effect on preventing the Guard action.\",\"Rending\":\"If you retain any critical successes, you can retain one of your normal successes as a critical success instead.\",\"Torrent x\":\"Select a valid target as normal as the primary target, then select any number of other valid targets within x of the first valid target, but not within control range of friendly operatives, as secondary targets, e.g. Torrent 2\\\". Shoot with this weapon against all of them in an order of your choice (roll each sequence separately).\",\"Range x\":\"Only operatives within x of the active operative can be valid targets, e.g. Range 9\\\".\",\"Devastating x\":\"Each retained critical success immediately inflicts x damage on the operative this weapon is being used against, e.g. Devastating 3. If the rule starts with a distance (e.g. 1\\\" Devastating x), inflict x damage on that operative and each other operative visible to and within that distance of it. Note that success isn't discarded after doing so - it can still be resolved later in the sequence.\",\"Piercing x\":\"The defender collects x less defence dice, e.g. Piercing 1. If the rule is Piercing Crits x, this only comes into effect if you retain any critical successes.\"},\"description\":\"[D36B3E][[84E680]APL[-] [ffffff]2[-]] [[84E680]MOVE[-] [ffffff]7\\\"[-]]\\n[[84E680]SAVE[-] [ffffff]4+[-]] [[84E680]WOUNDS[-] [ffffff]8[-]][-]\\n[C5C5C5]Operative, CORSAIR VOIDSCARRED, AELDARI, ANHRATHE, HEAVY GUNNER[-]\\n[31B32B]Weapons[-]\\n[1E87FF]R[-] Shuriken cannon (focused)\\n[84E680]ATK[-] 5 [84E680]HIT[-] 3+ [84E680]DMG[-] 4/5\\n[84E680]WR[-]: Heavy (Dash only), Rending\\n\\n[1E87FF]R[-] Shuriken cannon (sweeping)\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 4/5\\n[84E680]WR[-]: Heavy (Dash only), Rending, Torrent 1\\\"\\n\\n[1E87FF]R[-] Shuriken pistol\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 3/4\\n[84E680]WR[-]: Range 8\\\", Rending\\n\\n[1E87FF]R[-] Wraithcannon\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 6/3\\n[84E680]WR[-]: Devastating 4, Heavy (Dash only), Piercing 2\\n\\n[F4641D]M[-] Fists\\n[84E680]ATK[-] 3 [84E680]HIT[-] 3+ [84E680]DMG[-] 2/3\\n\"}",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 100700,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "28c294",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "voidscarred-gunner",
+              "Description": "",
+              "GMNotes": "{\"name\":\"voidscarred-gunner\",\"stats\":{\"APL\":2,\"Move\":7,\"Save\":4,\"Wounds\":8,\"Base\":28},\"keywords\":[\"Operative\",\"CORSAIR VOIDSCARRED\",\"AELDARI\",\"ANHRATHE\",\"GUNNER\"],\"weapons\":[{\"name\":\"[1E87FF]R[-] Blaster\",\"plain_name\":\"Blaster\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"4/5\",\"WR\":\"Piercing 2\"}},{\"name\":\"[1E87FF]R[-] Shredder\",\"plain_name\":\"Shredder\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"4/5\",\"WR\":\"Rending, Torrent 2\\\"\"}},{\"name\":\"[1E87FF]R[-] Shuriken pistol\",\"plain_name\":\"Shuriken pistol\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"3/4\",\"WR\":\"Range 8\\\", Rending\"}},{\"name\":\"[F4641D]M[-] Fists\",\"plain_name\":\"Fists\",\"stats\":{\"ATK\":\"3\",\"HIT\":\"3+\",\"DMG\":\"2/3\",\"WR\":\"\"}}],\"abilities\":[],\"actions\":[],\"weapon_rules\":{\"Piercing x\":\"The defender collects x less defence dice, e.g. Piercing 1. If the rule is Piercing Crits x, this only comes into effect if you retain any critical successes.\",\"Rending\":\"If you retain any critical successes, you can retain one of your normal successes as a critical success instead.\",\"Torrent x\":\"Select a valid target as normal as the primary target, then select any number of other valid targets within x of the first valid target, but not within control range of friendly operatives, as secondary targets, e.g. Torrent 2\\\". Shoot with this weapon against all of them in an order of your choice (roll each sequence separately).\",\"Range x\":\"Only operatives within x of the active operative can be valid targets, e.g. Range 9\\\".\"},\"description\":\"[D36B3E][[84E680]APL[-] [ffffff]2[-]] [[84E680]MOVE[-] [ffffff]7\\\"[-]]\\n[[84E680]SAVE[-] [ffffff]4+[-]] [[84E680]WOUNDS[-] [ffffff]8[-]][-]\\n[C5C5C5]Operative, CORSAIR VOIDSCARRED, AELDARI, ANHRATHE, GUNNER[-]\\n[31B32B]Weapons[-]\\n[1E87FF]R[-] Blaster\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 4/5\\n[84E680]WR[-]: Piercing 2\\n\\n[1E87FF]R[-] Shredder\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 4/5\\n[84E680]WR[-]: Rending, Torrent 2\\\"\\n\\n[1E87FF]R[-] Shuriken pistol\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 3/4\\n[84E680]WR[-]: Range 8\\\", Rending\\n\\n[F4641D]M[-] Fists\\n[84E680]ATK[-] 3 [84E680]HIT[-] 3+ [84E680]DMG[-] 2/3\\n\"}",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 100600,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "d9bbee",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "voidscarred-felarch",
+              "Description": "",
+              "GMNotes": "{\"name\":\"voidscarred-felarch\",\"stats\":{\"APL\":2,\"Move\":7,\"Save\":4,\"Wounds\":9,\"Base\":28},\"keywords\":[\"Operative\",\"CORSAIR VOIDSCARRED\",\"AELDARI\",\"ANHRATHE\",\"LEADER\",\"FELARCH\"],\"weapons\":[{\"name\":\"[1E87FF]R[-] Neuro disruptor\",\"plain_name\":\"Neuro disruptor\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"4/5\",\"WR\":\"Range 8\\\", Piercing 1, Stun\"}},{\"name\":\"[1E87FF]R[-] Shuriken pistol\",\"plain_name\":\"Shuriken pistol\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"3/4\",\"WR\":\"Range 8\\\", Rending\"}},{\"name\":\"[1E87FF]R[-] Shuriken rifle\",\"plain_name\":\"Shuriken rifle\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"3/4\",\"WR\":\"Rending\"}},{\"name\":\"[F4641D]M[-] Power weapon\",\"plain_name\":\"Power weapon\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"4/6\",\"WR\":\"Lethal 5+\"}}],\"abilities\":[{\"name\":\"Veteran Raider\",\"text\":\"This operative can perform a 1AP action for free during their activation as a result of the Aeldari Raiders rule (instead of the Dash action).\"},{\"name\":\"One Step Ahead\",\"text\":\"Once per battle, after an enemy operative performs an action, if this operative is ready, you can use this rule. If you do, roll one D6: if the result is higher than that enemy operative's APL stat, you can interrupt and immediately perform either a free Shoot or a free Fight action with this operative, but you cannot select any other enemy operative as a valid target or to fight against during that action (note that secondary targets from the Blast weapon rule can still be targeted). After you perform that action, subtract 1 from this operative's APL stat until the end of its next activation.\"}],\"actions\":[],\"weapon_rules\":{\"Piercing x\":\"The defender collects x less defence dice, e.g. Piercing 1. If the rule is Piercing Crits x, this only comes into effect if you retain any critical successes.\",\"Range x\":\"Only operatives within x of the active operative can be valid targets, e.g. Range 9\\\".\",\"Stun\":\"If you retain any critical successes, subtract 1 from the APL stat of the operative this weapon is being used against until the end of its next activation.\",\"Rending\":\"If you retain any critical successes, you can retain one of your normal successes as a critical success instead.\"},\"description\":\"[D36B3E][[84E680]APL[-] [ffffff]2[-]] [[84E680]MOVE[-] [ffffff]7\\\"[-]]\\n[[84E680]SAVE[-] [ffffff]4+[-]] [[84E680]WOUNDS[-] [ffffff]9[-]][-]\\n[C5C5C5]Operative, CORSAIR VOIDSCARRED, AELDARI, ANHRATHE, LEADER, FELARCH[-]\\n[31B32B]Weapons[-]\\n[1E87FF]R[-] Neuro disruptor\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 4/5\\n[84E680]WR[-]: Range 8\\\", Piercing 1, Stun\\n\\n[1E87FF]R[-] Shuriken pistol\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 3/4\\n[84E680]WR[-]: Range 8\\\", Rending\\n\\n[1E87FF]R[-] Shuriken rifle\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 3/4\\n[84E680]WR[-]: Rending\\n\\n[F4641D]M[-] Power weapon\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 4/6\\n[84E680]WR[-]: Lethal 5+\\n\\n---\\n[31B32B]Abilities[-]\\n- [EF8450]Veteran Raider[-]\\n- [EF8450]One Step Ahead[-]\"}",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 100500,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "aa35b5",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "voidscarred-fate-dealer",
+              "Description": "",
+              "GMNotes": "{\"name\":\"voidscarred-fate-dealer\",\"stats\":{\"APL\":2,\"Move\":7,\"Save\":4,\"Wounds\":8,\"Base\":28},\"keywords\":[\"Operative\",\"CORSAIR VOIDSCARRED\",\"AELDARI\",\"ANHRATHE\",\"FATE DEALER\"],\"weapons\":[{\"name\":\"[1E87FF]R[-] Ranger long rifle (mobile)\",\"plain_name\":\"Ranger long rifle (mobile)\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"3/4\",\"WR\":\"\"}},{\"name\":\"[1E87FF]R[-] Ranger long rifle (stationary)\",\"plain_name\":\"Ranger long rifle (stationary)\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"2+\",\"DMG\":\"3/3\",\"WR\":\"Devastating 3, Heavy, Silent\"}},{\"name\":\"[1E87FF]R[-] Shuriken pistol\",\"plain_name\":\"Shuriken pistol\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"3/4\",\"WR\":\"Range 8\\\", Rending\"}},{\"name\":\"[F4641D]M[-] Fists\",\"plain_name\":\"Fists\",\"stats\":{\"ATK\":\"3\",\"HIT\":\"3+\",\"DMG\":\"2/3\",\"WR\":\"\"}}],\"abilities\":[{\"name\":\"Camo Cloak\",\"text\":\"Whenever an operative is shooting this operative:\\n\u2022 Ignore the Saturate weapon rule.\\n\u2022 If you can retain any cover saves, you can retain one additional cover save, or you can retain one cover save as a critical success instead. This isn't cumulative with improved cover saves from Vantage terrain.\"}],\"actions\":[],\"weapon_rules\":{\"Devastating x\":\"Each retained critical success immediately inflicts x damage on the operative this weapon is being used against, e.g. Devastating 3. If the rule starts with a distance (e.g. 1\\\" Devastating x), inflict x damage on that operative and each other operative visible to and within that distance of it. Note that success isn't discarded after doing so - it can still be resolved later in the sequence.\",\"Heavy\":\"An operative cannot use this weapon in an activation or counteraction in which it moved, and it cannot move in an activation or counteraction in which it used this weapon. If the rule is Heavy (x only), where x is a move action, only that move is allowed, e.g. Heavy (Dash only). This weapon rule has no effect on preventing the Guard action.\",\"Silent\":\"An operative can perform the Shoot action with this weapon while it has a Conceal order.\",\"Range x\":\"Only operatives within x of the active operative can be valid targets, e.g. Range 9\\\".\",\"Rending\":\"If you retain any critical successes, you can retain one of your normal successes as a critical success instead.\"},\"description\":\"[D36B3E][[84E680]APL[-] [ffffff]2[-]] [[84E680]MOVE[-] [ffffff]7\\\"[-]]\\n[[84E680]SAVE[-] [ffffff]4+[-]] [[84E680]WOUNDS[-] [ffffff]8[-]][-]\\n[C5C5C5]Operative, CORSAIR VOIDSCARRED, AELDARI, ANHRATHE, FATE DEALER[-]\\n[31B32B]Weapons[-]\\n[1E87FF]R[-] Ranger long rifle (mobile)\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 3/4\\n\\n[1E87FF]R[-] Ranger long rifle (stationary)\\n[84E680]ATK[-] 4 [84E680]HIT[-] 2+ [84E680]DMG[-] 3/3\\n[84E680]WR[-]: Devastating 3, Heavy, Silent\\n\\n[1E87FF]R[-] Shuriken pistol\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 3/4\\n[84E680]WR[-]: Range 8\\\", Rending\\n\\n[F4641D]M[-] Fists\\n[84E680]ATK[-] 3 [84E680]HIT[-] 3+ [84E680]DMG[-] 2/3\\n\\n---\\n[31B32B]Abilities[-]\\n- [EF8450]Camo Cloak[-]\"}",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 100400,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            }
+          ]
+        },
+        {
+          "GUID": "9fec1d",
+          "Name": "Deck",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 180.0,
+            "rotZ": 180.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Equipment",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.713235259,
+            "g": 0.713235259,
+            "b": 0.713235259
+          },
+          "Tags": [
+            "_Corsair Voidscarred",
+            "KTCardsEquipment"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": false,
+          "SidewaysCard": false,
+          "DeckIDs": [
+            101800,
+            101700,
+            101600,
+            101500
+          ],
+          "CustomDeck": {
+            "1015": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/cards/equipment/corsair-voidscarred-diuturnal-mantles-front.jpg?v=1783371931",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/cards/equipment/corsair-voidscarred-diuturnal-mantles-back.jpg?v=1783355518",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1016": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/cards/equipment/corsair-voidscarred-mistfield-front.jpg?v=1783371931",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/cards/equipment/corsair-voidscarred-mistfield-back.jpg?v=1783355518",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1017": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/cards/equipment/corsair-voidscarred-runes-of-guidance-front.jpg?v=1783371932",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/cards/equipment/corsair-voidscarred-runes-of-guidance-back.jpg?v=1783355518",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1018": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/cards/equipment/corsair-voidscarred-star-charts-front.jpg?v=1783371932",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/cards/equipment/corsair-voidscarred-star-charts-back.jpg?v=1783355518",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "ContainedObjects": [
+            {
+              "GUID": "f0d786",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "corsair-voidscarred-star-charts",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 101800,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "47cc7f",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "corsair-voidscarred-runes-of-guidance",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 101700,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "f3bd9c",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "corsair-voidscarred-mistfield",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 101600,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "11c222",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "corsair-voidscarred-diuturnal-mantles",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 101500,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            }
+          ]
+        },
+        {
+          "GUID": "bdcc7e",
+          "Name": "Deck",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 180.0,
+            "rotZ": 180.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Firefight Ploys",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.713235259,
+            "g": 0.713235259,
+            "b": 0.713235259
+          },
+          "Tags": [
+            "_Corsair Voidscarred",
+            "KTCardsFirefightPloy"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": false,
+          "SidewaysCard": false,
+          "DeckIDs": [
+            102200,
+            102100,
+            102000,
+            101900
+          ],
+          "CustomDeck": {
+            "1019": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/cards/firefight_ploys/corsair-voidscarred-capricious-flight-front.jpg?v=1783371933",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/cards/firefight_ploys/corsair-voidscarred-capricious-flight-back.jpg?v=1783355518",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1020": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/cards/firefight_ploys/corsair-voidscarred-contemptuous-adventurer-front.jpg?v=1783371934",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/cards/firefight_ploys/corsair-voidscarred-contemptuous-adventurer-back.jpg?v=1783355518",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1021": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/cards/firefight_ploys/corsair-voidscarred-light-fingers-front.jpg?v=1783371933",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/cards/firefight_ploys/corsair-voidscarred-light-fingers-back.jpg?v=1783355518",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1022": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/cards/firefight_ploys/corsair-voidscarred-opportunistic-fighters-front.jpg?v=1783371932",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/cards/firefight_ploys/corsair-voidscarred-opportunistic-fighters-back.jpg?v=1783355518",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "ContainedObjects": [
+            {
+              "GUID": "0c20c0",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "corsair-voidscarred-opportunistic-fighters",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 102200,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "a2244b",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "corsair-voidscarred-light-fingers",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 102100,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "5677e7",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "corsair-voidscarred-contemptuous-adventurer",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 102000,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "905478",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "corsair-voidscarred-capricious-flight",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 101900,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            }
+          ]
+        },
+        {
+          "GUID": "988400",
+          "Name": "Deck",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 180.0,
+            "rotZ": 180.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Strategy Ploys",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.713235259,
+            "g": 0.713235259,
+            "b": 0.713235259
+          },
+          "Tags": [
+            "_Corsair Voidscarred",
+            "KTCardsStrategyPloy"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": false,
+          "SidewaysCard": false,
+          "DeckIDs": [
+            102600,
+            102500,
+            102400,
+            102300
+          ],
+          "CustomDeck": {
+            "1023": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/cards/strategy_ploys/corsair-voidscarred-mobile-engagement-front.jpg?v=1783371935",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/cards/strategy_ploys/corsair-voidscarred-mobile-engagement-back.jpg?v=1783355518",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1024": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/cards/strategy_ploys/corsair-voidscarred-outcasts-front.jpg?v=1783371935",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/cards/strategy_ploys/corsair-voidscarred-outcasts-back.jpg?v=1783355518",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1025": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/cards/strategy_ploys/corsair-voidscarred-piratical-profiteers-front.jpg?v=1783371935",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/cards/strategy_ploys/corsair-voidscarred-piratical-profiteers-back.jpg?v=1783355518",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1026": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/cards/strategy_ploys/corsair-voidscarred-plunderers-front.jpg?v=1783371934",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/corsair-voidscarred/cards/strategy_ploys/corsair-voidscarred-plunderers-back.jpg?v=1783355518",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "ContainedObjects": [
+            {
+              "GUID": "fee6b6",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "corsair-voidscarred-plunderers",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 102600,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "d8edd1",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "corsair-voidscarred-piratical-profiteers",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 102500,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "87a803",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "corsair-voidscarred-outcasts",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 102400,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "b33622",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "corsair-voidscarred-mobile-engagement",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 102300,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

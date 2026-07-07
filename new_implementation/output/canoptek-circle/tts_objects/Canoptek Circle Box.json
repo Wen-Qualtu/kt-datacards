@@ -1,0 +1,2746 @@
+{
+  "SaveName": "Canoptek Circle",
+  "Date": "",
+  "VersionNumber": "",
+  "GameMode": "",
+  "GameType": "",
+  "GameComplexity": "",
+  "Tags": [],
+  "Gravity": 0.5,
+  "PlayArea": 0.5,
+  "Table": "",
+  "Sky": "",
+  "Note": "",
+  "TabStates": {},
+  "LuaScript": "",
+  "LuaScriptState": "",
+  "XmlUI": "",
+  "ObjectStates": [
+    {
+      "GUID": "66c12f",
+      "Name": "Custom_Model_Bag",
+      "Transform": {
+        "posX": 0.0,
+        "posY": 3.5,
+        "posZ": 0.0,
+        "rotX": 0.0,
+        "rotY": 270.0,
+        "rotZ": 0.0,
+        "scaleX": 1.0,
+        "scaleY": 1.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "Canoptek Circle",
+      "Description": "OUTDATED VERSION. Click the red UPDATE button (or right-click -> Update to latest) to replace this with the full current team box. This intermediate is a one-time bridge and should not be reused.",
+      "GMNotes": "_Canoptek Circle",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
+      },
+      "Tags": [
+        "_Faction_Decks"
+      ],
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": false,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": true,
+      "MaterialIndex": -1,
+      "MeshIndex": -1,
+      "CustomMesh": {
+        "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/cardbox/canoptek-circle-card-box.obj?v=1781895962",
+        "DiffuseURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/cardbox/canoptek-circle-card-box-texture.jpg?v=1783355613",
+        "NormalURL": "",
+        "ColliderURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/cardbox/canoptek-circle-card-box.obj?v=1781895962",
+        "Convex": true,
+        "MaterialIndex": 3,
+        "TypeIndex": 6,
+        "CastShadows": true
+      },
+      "Bag": {
+        "Order": 0
+      },
+      "LuaScript": "-- Intermediate box updater (slim).\r\n--\r\n-- Embedded in the legacy save-file wrapper {Team} Box.json. Sole purpose:\r\n-- replace this box with the full clean {Team}.json from team-urls.json.\r\n--\r\n-- The wrapper exists only as a compatibility hop for in-the-wild boxes that\r\n-- still reference the old Box.json filename. Users who land here should\r\n-- update immediately and never reuse this intermediate.\r\n--\r\n-- Spawn-format note: the target file is a bare Custom_Model_Bag object\r\n-- handed straight to spawnObjectJSON (no save-file slicing needed).\r\n\r\nlocal BUTTON_UPDATE_NOW = {\r\n    label = \"UPDATE\\nNOW\",\r\n    click_function = \"click_update_now\",\r\n    function_owner = self,\r\n    position = {0, 0.3, 0},\r\n    rotation = {0, 180, 0},\r\n    height = 900, width = 1400,\r\n    font_size = 280,\r\n    color = {0.85, 0.1, 0.1}, font_color = {1, 1, 1},\r\n    tooltip = \"Replace this intermediate box with the latest full version.\"\r\n}\r\n\r\nfunction onLoad()\r\n    self.clearButtons()\r\n    self.createButton(BUTTON_UPDATE_NOW)\r\n    self.addContextMenuItem(\"Update to latest\", click_update_now)\r\nend\r\n\r\nfunction click_update_now()\r\n    -- Derive team slug + base repo URL from this box's MeshURL so we follow\r\n    -- whichever branch/fork the user spawned the box from.\r\n    local data = self.getData() or {}\r\n    local meshUrl = ((data.CustomMesh or {}).MeshURL) or \"\"\r\n    if meshUrl == \"\" then\r\n        broadcastToAll(\"Update failed: missing box mesh URL\", {1, 0.5, 0})\r\n        return\r\n    end\r\n    local cleanMeshUrl = string.match(meshUrl, \"^[^?]+\") or meshUrl\r\n    local baseUrl = string.match(cleanMeshUrl, \"^(.-)/output/\")\r\n    local teamSlug = string.match(cleanMeshUrl, \"/output/([^/]+)/\")\r\n    if not baseUrl or baseUrl == \"\" or not teamSlug or teamSlug == \"\" then\r\n        broadcastToAll(\"Update failed: could not parse repository URL\", {1, 0.5, 0})\r\n        return\r\n    end\r\n\r\n    local metadataUrl = baseUrl .. \"/output/team-urls.json?v=\" .. tostring(os.time())\r\n    broadcastToAll(\"Checking for latest \" .. teamSlug .. \"...\", {1, 1, 0})\r\n\r\n    WebRequest.get(metadataUrl, function(req)\r\n        if req.is_error then\r\n            broadcastToAll(\"Update failed: \" .. req.error, {1, 0.5, 0})\r\n            return\r\n        end\r\n        local ok, metadata = pcall(function() return JSON.decode(req.text) end)\r\n        if not ok or type(metadata) ~= \"table\" then\r\n            broadcastToAll(\"Update failed: could not parse team-urls.json\", {1, 0.5, 0})\r\n            return\r\n        end\r\n        local entry = metadata[teamSlug]\r\n        if type(entry) ~= \"table\" or type(entry.box) ~= \"table\" then\r\n            broadcastToAll(\"Update failed: team not found in team-urls.json\", {1, 0.5, 0})\r\n            return\r\n        end\r\n        local boxUrl = entry.box.url or \"\"\r\n        if boxUrl == \"\" then\r\n            broadcastToAll(\"Update failed: no box URL for team\", {1, 0.5, 0})\r\n            return\r\n        end\r\n\r\n        broadcastToAll(\"Downloading latest version...\", {0, 0.7, 1})\r\n        WebRequest.get(boxUrl, function(resp)\r\n            local code = tonumber(resp.response_code) or 0\r\n            if resp.is_error or code >= 400 then\r\n                local msg = resp.error\r\n                if msg == nil or msg == \"\" then msg = \"HTTP \" .. tostring(code) end\r\n                broadcastToAll(\"Download failed: \" .. msg .. \" (\" .. boxUrl .. \")\", {1, 0.5, 0})\r\n                return\r\n            end\r\n            local body = resp.text or \"\"\r\n            -- Strip leading whitespace; bare object must start with '{'.\r\n            local startIdx = 1\r\n            while startIdx <= #body and (body:byte(startIdx) == 32 or body:byte(startIdx) == 9 or body:byte(startIdx) == 10 or body:byte(startIdx) == 13) do\r\n                startIdx = startIdx + 1\r\n            end\r\n            if startIdx > #body or body:byte(startIdx) ~= 123 then\r\n                broadcastToAll(\"Update failed: unexpected response format (HTTP \" .. tostring(code) .. \")\", {1, 0.5, 0})\r\n                return\r\n            end\r\n            local objJson = (startIdx == 1) and body or body:sub(startIdx)\r\n\r\n            local pos = self.getPosition()\r\n            local rot = self.getRotation()\r\n            local locked = self.getLock()\r\n\r\n            local spawned = spawnObjectJSON({\r\n                json = objJson,\r\n                position = pos + Vector(5, 0, 0),\r\n                rotation = rot\r\n            })\r\n            if spawned == nil then\r\n                broadcastToAll(\"Update failed: could not spawn new box\", {1, 0.5, 0})\r\n                return\r\n            end\r\n\r\n            Wait.condition(\r\n                function()\r\n                    Wait.time(function()\r\n                        if spawned == nil or spawned.isDestroyed() then\r\n                            broadcastToAll(\"Update failed during spawn\", {1, 0.5, 0})\r\n                            return\r\n                        end\r\n                        spawned.setLock(locked)\r\n                        self.destruct()\r\n                        Wait.time(function()\r\n                            spawned.setPositionSmooth(pos, false, true)\r\n                            spawned.setRotationSmooth(rot, false, true)\r\n                            broadcastToAll(\"Updated to latest version!\", {0, 1, 0})\r\n                        end, 0.5)\r\n                    end, 0.5)\r\n                end,\r\n                function() return spawned ~= nil and not spawned.spawning end,\r\n                10\r\n            )\r\n        end)\r\n    end)\r\nend\r\n",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "ContainedObjects": [
+        {
+          "GUID": "9ef54a",
+          "Name": "Custom_Model_Bag",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 1.01,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 270.0,
+            "rotZ": 0.0,
+            "scaleX": 1.47,
+            "scaleY": 0.1,
+            "scaleZ": 1.47
+          },
+          "Nickname": "Canoptek Circle tokens",
+          "Description": "If errors pop up, just wait for few sec and try again",
+          "GMNotes": "_canoptek-circle_tokens",
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0,
+            "a": 0.0
+          },
+          "Tags": [
+            "_canoptek-circle",
+            "KTCardsTokenBag"
+          ],
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "Hands": false,
+          "Number": 0,
+          "CustomMesh": {
+            "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/tokens/tokenbag/canoptek-circle-token-bag.obj?v=1779121408",
+            "DiffuseURL": "",
+            "NormalURL": "",
+            "ColliderURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/tokens/tokenbag/canoptek-circle-token-bag.obj?v=1779121408",
+            "Convex": true,
+            "MaterialIndex": 0,
+            "TypeIndex": 6,
+            "CastShadows": true
+          },
+          "Bag": {
+            "Order": 0
+          },
+          "LuaScript": "",
+          "LuaScriptState": "{\"ml\": {\"a4852f\": {\"lock\": false, \"pos\": {\"x\": -2.25, \"y\": 0.0213, \"z\": -3.0}, \"rot\": {\"x\": 0.0, \"y\": 180.0, \"z\": 0.0}}, \"703e06\": {\"lock\": false, \"pos\": {\"x\": -0.75, \"y\": 0.0213, \"z\": -3.0}, \"rot\": {\"x\": 0.0, \"y\": 180.0, \"z\": 0.0}}, \"ef963c\": {\"lock\": false, \"pos\": {\"x\": 0.75, \"y\": 0.0213, \"z\": -3.0}, \"rot\": {\"x\": 0.0, \"y\": 180.0, \"z\": 0.0}}, \"40aa0b\": {\"lock\": false, \"pos\": {\"x\": 2.25, \"y\": 0.0213, \"z\": -3.0}, \"rot\": {\"x\": 0.0, \"y\": 180.0, \"z\": 0.0}}, \"98270d\": {\"lock\": false, \"pos\": {\"x\": -2.25, \"y\": 0.0213, \"z\": -4.5}, \"rot\": {\"x\": 0.0, \"y\": 180.0, \"z\": 0.0}}, \"d481eb\": {\"lock\": false, \"pos\": {\"x\": -0.75, \"y\": 0.0213, \"z\": -4.5}, \"rot\": {\"x\": 0.0, \"y\": 180.0, \"z\": 0.0}}}, \"rr\": 270, \"lastUpdate\": \"2026-07-07T07:29:49.615598+00:00\"}",
+          "XmlUI": "",
+          "ChildObjects": [
+            {
+              "GUID": "c15dae",
+              "Name": "Custom_Tile",
+              "Transform": {
+                "posX": 0.0,
+                "posY": -0.5,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 270.0,
+                "rotZ": 0.0,
+                "scaleX": 0.5,
+                "scaleY": 10.0,
+                "scaleZ": 0.5
+              },
+              "Nickname": "",
+              "Description": "",
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0
+              },
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "Hands": false,
+              "CustomImage": {
+                "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/tokens/tokenbag/canoptek-circle-token-bag-icon.png?v=1783371131",
+                "ImageSecondaryURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/tokens/tokenbag/canoptek-circle-token-bag-icon.png?v=1783371131",
+                "ImageScalar": 1.0,
+                "WidthScale": 0.0,
+                "CustomTile": {
+                  "Type": 0,
+                  "Thickness": 0.1,
+                  "Stackable": false,
+                  "Stretch": true
+                }
+              }
+            }
+          ],
+          "ContainedObjects": [
+            {
+              "GUID": "a4852f",
+              "Name": "Custom_Model_Infinite_Bag",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 1.03,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 270.0,
+                "rotZ": 0.0,
+                "scaleX": 1.8351557,
+                "scaleY": 0.1,
+                "scaleZ": 1.7720486
+              },
+              "Nickname": "Awakened Obelisk Node",
+              "Description": "Infinite Awakened Obelisk Node tokens",
+              "GMNotes": "",
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 0.0
+              },
+              "Tags": [
+                "_canoptek-circle_tokens"
+              ],
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "Hands": false,
+              "CustomMesh": {
+                "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/tokens/canoptek-circle-awakened-obelisk-node.obj?v=1772029953",
+                "DiffuseURL": "",
+                "NormalURL": "",
+                "ColliderURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/tokens/canoptek-circle-awakened-obelisk-node.obj?v=1772029953",
+                "Convex": true,
+                "MaterialIndex": 0,
+                "TypeIndex": 7,
+                "CastShadows": true
+              },
+              "Bag": {
+                "Order": 0
+              },
+              "ContainedObjects": [
+                {
+                  "GUID": "f47f02",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 1.63,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Awakened Obelisk Node",
+                  "Description": "Awakened Obelisk Node",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": false,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/tokens/canoptek-circle-awakened-obelisk-node.png?v=1783371747",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "ChildObjects": [
+                {
+                  "GUID": "6540b1",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 0.0,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Awakened Obelisk Node",
+                  "Description": "Awakened Obelisk Node",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": true,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/tokens/canoptek-circle-awakened-obelisk-node.png?v=1783371747",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "703e06",
+              "Name": "Custom_Model_Infinite_Bag",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 1.03,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 270.0,
+                "rotZ": 0.0,
+                "scaleX": 1.8351557,
+                "scaleY": 0.1,
+                "scaleZ": 1.7720486
+              },
+              "Nickname": "Matrix Manipulator",
+              "Description": "Infinite Matrix Manipulator tokens",
+              "GMNotes": "",
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 0.0
+              },
+              "Tags": [
+                "_canoptek-circle_tokens"
+              ],
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "Hands": false,
+              "CustomMesh": {
+                "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/tokens/canoptek-circle-matrix-manipulator.obj?v=1772029953",
+                "DiffuseURL": "",
+                "NormalURL": "",
+                "ColliderURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/tokens/canoptek-circle-matrix-manipulator.obj?v=1772029953",
+                "Convex": true,
+                "MaterialIndex": 0,
+                "TypeIndex": 7,
+                "CastShadows": true
+              },
+              "Bag": {
+                "Order": 0
+              },
+              "ContainedObjects": [
+                {
+                  "GUID": "269162",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 1.63,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Matrix Manipulator",
+                  "Description": "Matrix Manipulator",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": false,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/tokens/canoptek-circle-matrix-manipulator.png?v=1783371747",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "ChildObjects": [
+                {
+                  "GUID": "19c29a",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 0.0,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Matrix Manipulator",
+                  "Description": "Matrix Manipulator",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": true,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/tokens/canoptek-circle-matrix-manipulator.png?v=1783371747",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "ef963c",
+              "Name": "Custom_Model_Infinite_Bag",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 1.03,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 270.0,
+                "rotZ": 0.0,
+                "scaleX": 1.8351557,
+                "scaleY": 0.1,
+                "scaleZ": 1.7720486
+              },
+              "Nickname": "Molecular Breach",
+              "Description": "Infinite Molecular Breach tokens",
+              "GMNotes": "",
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 0.0
+              },
+              "Tags": [
+                "_canoptek-circle_tokens"
+              ],
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "Hands": false,
+              "CustomMesh": {
+                "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/tokens/canoptek-circle-molecular-breach.obj?v=1772029953",
+                "DiffuseURL": "",
+                "NormalURL": "",
+                "ColliderURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/tokens/canoptek-circle-molecular-breach.obj?v=1772029953",
+                "Convex": true,
+                "MaterialIndex": 0,
+                "TypeIndex": 7,
+                "CastShadows": true
+              },
+              "Bag": {
+                "Order": 0
+              },
+              "ContainedObjects": [
+                {
+                  "GUID": "dd26e4",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 1.63,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Molecular Breach",
+                  "Description": "Molecular Breach",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": false,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/tokens/canoptek-circle-molecular-breach.png?v=1783371747",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "ChildObjects": [
+                {
+                  "GUID": "2c3760",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 0.0,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Molecular Breach",
+                  "Description": "Molecular Breach",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": true,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/tokens/canoptek-circle-molecular-breach.png?v=1783371747",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "40aa0b",
+              "Name": "Custom_Model_Infinite_Bag",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 1.03,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 270.0,
+                "rotZ": 0.0,
+                "scaleX": 1.8351557,
+                "scaleY": 0.1,
+                "scaleZ": 1.7720486
+              },
+              "Nickname": "Obelisk Node",
+              "Description": "Infinite Obelisk Node tokens",
+              "GMNotes": "",
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 0.0
+              },
+              "Tags": [
+                "_canoptek-circle_tokens"
+              ],
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "Hands": false,
+              "CustomMesh": {
+                "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/tokens/canoptek-circle-obelisk-node.obj?v=1772029953",
+                "DiffuseURL": "",
+                "NormalURL": "",
+                "ColliderURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/tokens/canoptek-circle-obelisk-node.obj?v=1772029953",
+                "Convex": true,
+                "MaterialIndex": 0,
+                "TypeIndex": 7,
+                "CastShadows": true
+              },
+              "Bag": {
+                "Order": 0
+              },
+              "ContainedObjects": [
+                {
+                  "GUID": "c765f3",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 1.63,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Obelisk Node",
+                  "Description": "Obelisk Node",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUIMarker"
+                  ],
+                  "Locked": false,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/tokens/canoptek-circle-obelisk-node.png?v=1783371747",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "ChildObjects": [
+                {
+                  "GUID": "560e03",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 0.0,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Obelisk Node",
+                  "Description": "Obelisk Node",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUIMarker"
+                  ],
+                  "Locked": true,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/tokens/canoptek-circle-obelisk-node.png?v=1783371747",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "98270d",
+              "Name": "Custom_Model_Infinite_Bag",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 1.03,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 270.0,
+                "rotZ": 0.0,
+                "scaleX": 1.8351557,
+                "scaleY": 0.1,
+                "scaleZ": 1.7720486
+              },
+              "Nickname": "Phase Shifter",
+              "Description": "Infinite Phase Shifter tokens",
+              "GMNotes": "",
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 0.0
+              },
+              "Tags": [
+                "_canoptek-circle_tokens"
+              ],
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "Hands": false,
+              "CustomMesh": {
+                "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/tokens/canoptek-circle-phase-shifter.obj?v=1772029953",
+                "DiffuseURL": "",
+                "NormalURL": "",
+                "ColliderURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/tokens/canoptek-circle-phase-shifter.obj?v=1772029953",
+                "Convex": true,
+                "MaterialIndex": 0,
+                "TypeIndex": 7,
+                "CastShadows": true
+              },
+              "Bag": {
+                "Order": 0
+              },
+              "ContainedObjects": [
+                {
+                  "GUID": "cd570e",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 1.63,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Phase Shifter",
+                  "Description": "Phase Shifter",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": false,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/tokens/canoptek-circle-phase-shifter.png?v=1783371747",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "ChildObjects": [
+                {
+                  "GUID": "fa02f0",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 0.0,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Phase Shifter",
+                  "Description": "Phase Shifter",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": true,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/tokens/canoptek-circle-phase-shifter.png?v=1783371747",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "d481eb",
+              "Name": "Custom_Model_Infinite_Bag",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 1.03,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 270.0,
+                "rotZ": 0.0,
+                "scaleX": 1.8351557,
+                "scaleY": 0.1,
+                "scaleZ": 1.7720486
+              },
+              "Nickname": "Reanimate",
+              "Description": "Infinite Reanimate tokens",
+              "GMNotes": "",
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 0.0
+              },
+              "Tags": [
+                "_canoptek-circle_tokens"
+              ],
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "Hands": false,
+              "CustomMesh": {
+                "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/tokens/canoptek-circle-reanimate.obj?v=1772029953",
+                "DiffuseURL": "",
+                "NormalURL": "",
+                "ColliderURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/tokens/canoptek-circle-reanimate.obj?v=1772029953",
+                "Convex": true,
+                "MaterialIndex": 0,
+                "TypeIndex": 7,
+                "CastShadows": true
+              },
+              "Bag": {
+                "Order": 0
+              },
+              "ContainedObjects": [
+                {
+                  "GUID": "6ae44f",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 1.63,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Reanimate",
+                  "Description": "Reanimate",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": false,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/tokens/canoptek-circle-reanimate.png?v=1783371747",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "ChildObjects": [
+                {
+                  "GUID": "208362",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 0.0,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Reanimate",
+                  "Description": "Reanimate",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": true,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/tokens/canoptek-circle-reanimate.png?v=1783371747",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            }
+          ]
+        },
+        {
+          "GUID": "d9e853",
+          "Name": "Custom_Dice",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 0.0,
+            "rotZ": 0.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Canoptek Circle Dice",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "_Canoptek Circle",
+            "KTDice_Team"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomImage": {
+            "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/dice/canoptek-circle-dice-team.jpg?v=1783355595",
+            "ImageSecondaryURL": "",
+            "WidthScale": 0.0
+          },
+          "CustomDice": {
+            "Type": 1
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "061c9e",
+          "Name": "Custom_Dice",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 0.0,
+            "rotZ": 0.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Canoptek Circle Light Dice",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "_Canoptek Circle",
+            "KTDice_Light"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomImage": {
+            "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/dice/canoptek-circle-dice-light.jpg?v=1783355595",
+            "ImageSecondaryURL": "",
+            "WidthScale": 0.0
+          },
+          "CustomDice": {
+            "Type": 1
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "6bdbbf",
+          "Name": "Custom_Dice",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 0.0,
+            "rotZ": 0.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Canoptek Circle Dark Dice",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "_Canoptek Circle",
+            "KTDice_Dark"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomImage": {
+            "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/dice/canoptek-circle-dice-dark.jpg?v=1783355595",
+            "ImageSecondaryURL": "",
+            "WidthScale": 0.0
+          },
+          "CustomDice": {
+            "Type": 1
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "58d5a0",
+          "Name": "Card",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 180.0,
+            "rotZ": 0.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "canoptek-circle-operatives",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.713235259,
+            "g": 0.713235259,
+            "b": 0.713235259
+          },
+          "Tags": [
+            "_Canoptek Circle",
+            "KTCardsOperativeSelection"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": true,
+          "CardID": 100000,
+          "SidewaysCard": false,
+          "CustomDeck": {
+            "1000": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/cards/operatives_selection/canoptek-circle-operative-selection-front.jpg?v=1783371875",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/cards/operatives_selection/canoptek-circle-operative-selection-back.jpg?v=1783355517",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "3818b3",
+          "Name": "Card",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 180.0,
+            "rotZ": 0.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "canoptek-circle-obelisk-node-matrix",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.713235259,
+            "g": 0.713235259,
+            "b": 0.713235259
+          },
+          "Tags": [
+            "_Canoptek Circle",
+            "KTCardsFactionRule"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": true,
+          "CardID": 100100,
+          "SidewaysCard": false,
+          "CustomDeck": {
+            "1001": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/cards/faction_rules/canoptek-circle-obelisk-node-matrix-front.jpg?v=1783371875",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/cards/faction_rules/canoptek-circle-obelisk-node-matrix-back.jpg?v=1783371876",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "5a66b9",
+          "Name": "Card",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 180.0,
+            "rotZ": 0.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "canoptek-circle-markertoken-guide",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.713235259,
+            "g": 0.713235259,
+            "b": 0.713235259
+          },
+          "Tags": [
+            "_Canoptek Circle",
+            "KTCardsTokenGuide"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": true,
+          "CardID": 100200,
+          "SidewaysCard": false,
+          "CustomDeck": {
+            "1002": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/cards/token_guide/canoptek-circle-token-guide-front.jpg?v=1783371885",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/cards/token_guide/canoptek-circle-token-guide-back.jpg?v=1783355517",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "2330a6",
+          "Name": "Deck",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 180.0,
+            "rotZ": 180.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Datacards",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.713235259,
+            "g": 0.713235259,
+            "b": 0.713235259
+          },
+          "Tags": [
+            "_Canoptek Circle",
+            "KTCardsDatacard"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": false,
+          "SidewaysCard": false,
+          "DeckIDs": [
+            100900,
+            100800,
+            100700,
+            100600,
+            100500,
+            100400,
+            100300
+          ],
+          "CustomDeck": {
+            "1003": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/cards/datacards/canoptek-macrocyte-accelerator-front.jpg?v=1783371870",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/cards/datacards/canoptek-macrocyte-accelerator-back.jpg?v=1783371870",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1004": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/cards/datacards/canoptek-macrocyte-reanimator-front.jpg?v=1783371871",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/cards/datacards/canoptek-macrocyte-reanimator-back.jpg?v=1783371872",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1005": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/cards/datacards/canoptek-macrocyte-warrior-front.jpg?v=1783371872",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/cards/datacards/canoptek-macrocyte-warrior-back.jpg?v=1783371873",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1006": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/cards/datacards/canoptek-tomb-crawler-front.jpg?v=1783371874",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/cards/datacards/canoptek-tomb-crawler-back.jpg?v=1783371874",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1007": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/cards/datacards/geomancer-card1-front.jpg?v=1783371867",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/cards/datacards/geomancer-card1-back.jpg?v=1783355517",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1008": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/cards/datacards/geomancer-card2-front.jpg?v=1783371868",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/cards/datacards/geomancer-card2-back.jpg?v=1783355517",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1009": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/cards/datacards/geomancer-card3-front.jpg?v=1783371869",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/cards/datacards/geomancer-card3-back.jpg?v=1783355517",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "ContainedObjects": [
+            {
+              "GUID": "992bec",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "geomancer-card3",
+              "Description": "",
+              "GMNotes": "{\"name\":\"geomancer\",\"stats\":{\"APL\":3,\"Move\":6,\"Save\":3,\"Wounds\":14,\"Base\":50},\"keywords\":[\"Operative\",\"CANOPTEK CIRCLE\",\"NECRON\",\"LEADER\",\"CRYPTEK\",\"GEOMANCER\"],\"weapons\":[{\"name\":\"[F4641D]M[-] Tremorglaive (part matter)\",\"plain_name\":\"Tremorglaive (part matter)\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"4/5\",\"WR\":\"Piercing 1, Piercing Crits 2\"}},{\"name\":\"[1E87FF]R[-] Tremorglaive (quake)\",\"plain_name\":\"Tremorglaive (quake)\",\"stats\":{\"ATK\":\"5\",\"HIT\":\"3+\",\"DMG\":\"1/2\",\"WR\":\"Blast 2\\\", Seek Light, Stun\"}},{\"name\":\"[F4641D]M[-] Tremorglaive (sweep)\",\"plain_name\":\"Tremorglaive (sweep)\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"4+\",\"DMG\":\"4/5\",\"WR\":\"Severe, Shock, Stun\"}}],\"abilities\":[{\"name\":\"Obelisk Node Control\",\"text\":\"Whenever this operative would perform a mission action (excluding Retrieve, Approved Ops 2025), if it requires this operative to control an objective marker, you can instead determine control from one of your OBELISK NODE markers (see Obelisk Node Matrix faction rule). Whenever this operative would perform the Operate Hatch action, you can open or close a hatchway thats access point is within 1\\\" of one of your OBELISK NODE markers instead. Note that you must still fulfil the Operate Hatch action's conditions.\"}],\"actions\":[{\"name\":\"GEOMANTIC DISTURBANCE (1AP)\",\"text\":\"Select a point on a terrain feature; that point must be visible to and within 8\\\" of this operative. Separately roll 2D6 for each operative within 2\\\" of that point. If the result is higher than that operative's remaining wounds, inflict damage on it equal to the difference. This operative cannot perform this action while it has a Conceal order, or while within control range of an enemy operative.\"},{\"name\":\"CANOPTEK CONTROL (1AP)\",\"text\":\"SUPPORT. Select one friendly CANOPTEK CIRCLE CANOPTEK operative visible to and within 6\\\" of this operative. Alternatively, you can select one friendly CANOPTEK CIRCLE CANOPTEK operative that's visible to this operative and within your OBELISK NODE MATRIX (SUPPORT doesn't apply to this selection). That selected operative can immediately perform a 1AP action for free; it cannot move more than or be removed and set up more than 2\\\" during that action. This operative cannot perform this action while within control range of an enemy operative, or while counteracting. GEOMANCER ACTIONS\"},{\"name\":\"MOLECULAR BREACH (1AP)\",\"text\":\"SUPPORT. Select one friendly CANOPTEK CIRCLE operative visible to and within 6\\\" of this operative. Alternatively, you can select one friendly CANOPTEK CIRCLE operative visible to this operative and within your OBELISK NODE MATRIX (SUPPORT doesn't apply to this selection). The next time the selected operative performs an action in which it moves, don't move it. Instead, remove it from the killzone and set it back up wholly within a distance equal to its Move stat (or 3\\\" if it was a Dash) horizontally of its original location (in a killzone that uses the close quarters rules, e.g. Killzone: Tomb World, this distance can be measured over and through Wall terrain and the operative can be set up on the other side). Note that it gains no additional distance when performing the Charge action. It must be set up in a location it can be placed, and unless it's the Charge action, it cannot be set up within control range of an enemy operative.\"}],\"weapon_rules\":{\"Piercing x\":\"The defender collects x less defence dice, e.g. Piercing 1. If the rule is Piercing Crits x, this only comes into effect if you retain any critical successes.\",\"Blast x\":\"The target you select is the primary target. After shooting the primary target, shoot with this weapon against each secondary target in an order of your choice (roll each sequence separately). Secondary targets are other operatives visible to and within x of the primary target, e.g. Blast 2\\\" (they are all valid targets, regardless of a Conceal order). Secondary targets are in cover and obscured if the primary target was.\",\"Seek\":\"When selecting a valid target, operatives with a Conceal order cannot use terrain for cover. If the rule is Seek Light, they cannot use Light terrain for cover. While this can allow operatives to be targeted (assuming they're visible), it doesn't remove their cover save (if any).\",\"Stun\":\"If you retain any critical successes, subtract 1 from the APL stat of the operative this weapon is being used against until the end of its next activation.\",\"Severe\":\"If you don't retain any critical successes, you can change one of your normal successes to a critical success. The Devastating and Piercing Crits weapon rules still take effect, but Punishing and Rending don't.\",\"Shock\":\"The first time you strike with a critical success in each sequence, also discard one of your opponent's unresolved normal successes (or one of their critical successes if there are none).\"},\"description\":\"[D36B3E][[84E680]APL[-] [ffffff]3[-]] [[84E680]MOVE[-] [ffffff]6\\\"[-]]\\n[[84E680]SAVE[-] [ffffff]3+[-]] [[84E680]WOUNDS[-] [ffffff]14[-]][-]\\n[C5C5C5]Operative, CANOPTEK CIRCLE, NECRON, LEADER, CRYPTEK, GEOMANCER[-]\\n[31B32B]Weapons[-]\\n[F4641D]M[-] Tremorglaive (part matter)\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 4/5\\n[84E680]WR[-]: Piercing 1, Piercing Crits 2\\n\\n[1E87FF]R[-] Tremorglaive (quake)\\n[84E680]ATK[-] 5 [84E680]HIT[-] 3+ [84E680]DMG[-] 1/2\\n[84E680]WR[-]: Blast 2\\\", Seek Light, Stun\\n\\n[F4641D]M[-] Tremorglaive (sweep)\\n[84E680]ATK[-] 4 [84E680]HIT[-] 4+ [84E680]DMG[-] 4/5\\n[84E680]WR[-]: Severe, Shock, Stun\\n\\n---\\n[31B32B]Abilities[-]\\n- [EF8450]Obelisk Node Control[-]\\n---\\n[31B32B]Unique Actions[-]\\n- [EF8450]GEOMANTIC DISTURBANCE (1AP)[-]\\n- [EF8450]CANOPTEK CONTROL (1AP)[-]\\n- [EF8450]MOLECULAR BREACH (1AP)[-]\"}",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 100900,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "fa2858",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "geomancer-card2",
+              "Description": "",
+              "GMNotes": "{\"name\":\"geomancer\",\"stats\":{\"APL\":3,\"Move\":6,\"Save\":3,\"Wounds\":14,\"Base\":50},\"keywords\":[\"Operative\",\"CANOPTEK CIRCLE\",\"NECRON\",\"LEADER\",\"CRYPTEK\",\"GEOMANCER\"],\"weapons\":[{\"name\":\"[F4641D]M[-] Tremorglaive (part matter)\",\"plain_name\":\"Tremorglaive (part matter)\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"4/5\",\"WR\":\"Piercing 1, Piercing Crits 2\"}},{\"name\":\"[1E87FF]R[-] Tremorglaive (quake)\",\"plain_name\":\"Tremorglaive (quake)\",\"stats\":{\"ATK\":\"5\",\"HIT\":\"3+\",\"DMG\":\"1/2\",\"WR\":\"Blast 2\\\", Seek Light, Stun\"}},{\"name\":\"[F4641D]M[-] Tremorglaive (sweep)\",\"plain_name\":\"Tremorglaive (sweep)\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"4+\",\"DMG\":\"4/5\",\"WR\":\"Severe, Shock, Stun\"}}],\"abilities\":[{\"name\":\"Obelisk Node Control\",\"text\":\"Whenever this operative would perform a mission action (excluding Retrieve, Approved Ops 2025), if it requires this operative to control an objective marker, you can instead determine control from one of your OBELISK NODE markers (see Obelisk Node Matrix faction rule). Whenever this operative would perform the Operate Hatch action, you can open or close a hatchway thats access point is within 1\\\" of one of your OBELISK NODE markers instead. Note that you must still fulfil the Operate Hatch action's conditions.\"}],\"actions\":[{\"name\":\"GEOMANTIC DISTURBANCE (1AP)\",\"text\":\"Select a point on a terrain feature; that point must be visible to and within 8\\\" of this operative. Separately roll 2D6 for each operative within 2\\\" of that point. If the result is higher than that operative's remaining wounds, inflict damage on it equal to the difference. This operative cannot perform this action while it has a Conceal order, or while within control range of an enemy operative.\"},{\"name\":\"CANOPTEK CONTROL (1AP)\",\"text\":\"SUPPORT. Select one friendly CANOPTEK CIRCLE CANOPTEK operative visible to and within 6\\\" of this operative. Alternatively, you can select one friendly CANOPTEK CIRCLE CANOPTEK operative that's visible to this operative and within your OBELISK NODE MATRIX (SUPPORT doesn't apply to this selection). That selected operative can immediately perform a 1AP action for free; it cannot move more than or be removed and set up more than 2\\\" during that action. This operative cannot perform this action while within control range of an enemy operative, or while counteracting. GEOMANCER ACTIONS\"},{\"name\":\"MOLECULAR BREACH (1AP)\",\"text\":\"SUPPORT. Select one friendly CANOPTEK CIRCLE operative visible to and within 6\\\" of this operative. Alternatively, you can select one friendly CANOPTEK CIRCLE operative visible to this operative and within your OBELISK NODE MATRIX (SUPPORT doesn't apply to this selection). The next time the selected operative performs an action in which it moves, don't move it. Instead, remove it from the killzone and set it back up wholly within a distance equal to its Move stat (or 3\\\" if it was a Dash) horizontally of its original location (in a killzone that uses the close quarters rules, e.g. Killzone: Tomb World, this distance can be measured over and through Wall terrain and the operative can be set up on the other side). Note that it gains no additional distance when performing the Charge action. It must be set up in a location it can be placed, and unless it's the Charge action, it cannot be set up within control range of an enemy operative.\"}],\"weapon_rules\":{\"Piercing x\":\"The defender collects x less defence dice, e.g. Piercing 1. If the rule is Piercing Crits x, this only comes into effect if you retain any critical successes.\",\"Blast x\":\"The target you select is the primary target. After shooting the primary target, shoot with this weapon against each secondary target in an order of your choice (roll each sequence separately). Secondary targets are other operatives visible to and within x of the primary target, e.g. Blast 2\\\" (they are all valid targets, regardless of a Conceal order). Secondary targets are in cover and obscured if the primary target was.\",\"Seek\":\"When selecting a valid target, operatives with a Conceal order cannot use terrain for cover. If the rule is Seek Light, they cannot use Light terrain for cover. While this can allow operatives to be targeted (assuming they're visible), it doesn't remove their cover save (if any).\",\"Stun\":\"If you retain any critical successes, subtract 1 from the APL stat of the operative this weapon is being used against until the end of its next activation.\",\"Severe\":\"If you don't retain any critical successes, you can change one of your normal successes to a critical success. The Devastating and Piercing Crits weapon rules still take effect, but Punishing and Rending don't.\",\"Shock\":\"The first time you strike with a critical success in each sequence, also discard one of your opponent's unresolved normal successes (or one of their critical successes if there are none).\"},\"description\":\"[D36B3E][[84E680]APL[-] [ffffff]3[-]] [[84E680]MOVE[-] [ffffff]6\\\"[-]]\\n[[84E680]SAVE[-] [ffffff]3+[-]] [[84E680]WOUNDS[-] [ffffff]14[-]][-]\\n[C5C5C5]Operative, CANOPTEK CIRCLE, NECRON, LEADER, CRYPTEK, GEOMANCER[-]\\n[31B32B]Weapons[-]\\n[F4641D]M[-] Tremorglaive (part matter)\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 4/5\\n[84E680]WR[-]: Piercing 1, Piercing Crits 2\\n\\n[1E87FF]R[-] Tremorglaive (quake)\\n[84E680]ATK[-] 5 [84E680]HIT[-] 3+ [84E680]DMG[-] 1/2\\n[84E680]WR[-]: Blast 2\\\", Seek Light, Stun\\n\\n[F4641D]M[-] Tremorglaive (sweep)\\n[84E680]ATK[-] 4 [84E680]HIT[-] 4+ [84E680]DMG[-] 4/5\\n[84E680]WR[-]: Severe, Shock, Stun\\n\\n---\\n[31B32B]Abilities[-]\\n- [EF8450]Obelisk Node Control[-]\\n---\\n[31B32B]Unique Actions[-]\\n- [EF8450]GEOMANTIC DISTURBANCE (1AP)[-]\\n- [EF8450]CANOPTEK CONTROL (1AP)[-]\\n- [EF8450]MOLECULAR BREACH (1AP)[-]\"}",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 100800,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "3677fd",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "geomancer-card1",
+              "Description": "",
+              "GMNotes": "{\"name\":\"geomancer\",\"stats\":{\"APL\":3,\"Move\":6,\"Save\":3,\"Wounds\":14,\"Base\":50},\"keywords\":[\"Operative\",\"CANOPTEK CIRCLE\",\"NECRON\",\"LEADER\",\"CRYPTEK\",\"GEOMANCER\"],\"weapons\":[{\"name\":\"[F4641D]M[-] Tremorglaive (part matter)\",\"plain_name\":\"Tremorglaive (part matter)\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"4/5\",\"WR\":\"Piercing 1, Piercing Crits 2\"}},{\"name\":\"[1E87FF]R[-] Tremorglaive (quake)\",\"plain_name\":\"Tremorglaive (quake)\",\"stats\":{\"ATK\":\"5\",\"HIT\":\"3+\",\"DMG\":\"1/2\",\"WR\":\"Blast 2\\\", Seek Light, Stun\"}},{\"name\":\"[F4641D]M[-] Tremorglaive (sweep)\",\"plain_name\":\"Tremorglaive (sweep)\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"4+\",\"DMG\":\"4/5\",\"WR\":\"Severe, Shock, Stun\"}}],\"abilities\":[{\"name\":\"Obelisk Node Control\",\"text\":\"Whenever this operative would perform a mission action (excluding Retrieve, Approved Ops 2025), if it requires this operative to control an objective marker, you can instead determine control from one of your OBELISK NODE markers (see Obelisk Node Matrix faction rule). Whenever this operative would perform the Operate Hatch action, you can open or close a hatchway thats access point is within 1\\\" of one of your OBELISK NODE markers instead. Note that you must still fulfil the Operate Hatch action's conditions.\"}],\"actions\":[{\"name\":\"GEOMANTIC DISTURBANCE (1AP)\",\"text\":\"Select a point on a terrain feature; that point must be visible to and within 8\\\" of this operative. Separately roll 2D6 for each operative within 2\\\" of that point. If the result is higher than that operative's remaining wounds, inflict damage on it equal to the difference. This operative cannot perform this action while it has a Conceal order, or while within control range of an enemy operative.\"},{\"name\":\"CANOPTEK CONTROL (1AP)\",\"text\":\"SUPPORT. Select one friendly CANOPTEK CIRCLE CANOPTEK operative visible to and within 6\\\" of this operative. Alternatively, you can select one friendly CANOPTEK CIRCLE CANOPTEK operative that's visible to this operative and within your OBELISK NODE MATRIX (SUPPORT doesn't apply to this selection). That selected operative can immediately perform a 1AP action for free; it cannot move more than or be removed and set up more than 2\\\" during that action. This operative cannot perform this action while within control range of an enemy operative, or while counteracting. GEOMANCER ACTIONS\"},{\"name\":\"MOLECULAR BREACH (1AP)\",\"text\":\"SUPPORT. Select one friendly CANOPTEK CIRCLE operative visible to and within 6\\\" of this operative. Alternatively, you can select one friendly CANOPTEK CIRCLE operative visible to this operative and within your OBELISK NODE MATRIX (SUPPORT doesn't apply to this selection). The next time the selected operative performs an action in which it moves, don't move it. Instead, remove it from the killzone and set it back up wholly within a distance equal to its Move stat (or 3\\\" if it was a Dash) horizontally of its original location (in a killzone that uses the close quarters rules, e.g. Killzone: Tomb World, this distance can be measured over and through Wall terrain and the operative can be set up on the other side). Note that it gains no additional distance when performing the Charge action. It must be set up in a location it can be placed, and unless it's the Charge action, it cannot be set up within control range of an enemy operative.\"}],\"weapon_rules\":{\"Piercing x\":\"The defender collects x less defence dice, e.g. Piercing 1. If the rule is Piercing Crits x, this only comes into effect if you retain any critical successes.\",\"Blast x\":\"The target you select is the primary target. After shooting the primary target, shoot with this weapon against each secondary target in an order of your choice (roll each sequence separately). Secondary targets are other operatives visible to and within x of the primary target, e.g. Blast 2\\\" (they are all valid targets, regardless of a Conceal order). Secondary targets are in cover and obscured if the primary target was.\",\"Seek\":\"When selecting a valid target, operatives with a Conceal order cannot use terrain for cover. If the rule is Seek Light, they cannot use Light terrain for cover. While this can allow operatives to be targeted (assuming they're visible), it doesn't remove their cover save (if any).\",\"Stun\":\"If you retain any critical successes, subtract 1 from the APL stat of the operative this weapon is being used against until the end of its next activation.\",\"Severe\":\"If you don't retain any critical successes, you can change one of your normal successes to a critical success. The Devastating and Piercing Crits weapon rules still take effect, but Punishing and Rending don't.\",\"Shock\":\"The first time you strike with a critical success in each sequence, also discard one of your opponent's unresolved normal successes (or one of their critical successes if there are none).\"},\"description\":\"[D36B3E][[84E680]APL[-] [ffffff]3[-]] [[84E680]MOVE[-] [ffffff]6\\\"[-]]\\n[[84E680]SAVE[-] [ffffff]3+[-]] [[84E680]WOUNDS[-] [ffffff]14[-]][-]\\n[C5C5C5]Operative, CANOPTEK CIRCLE, NECRON, LEADER, CRYPTEK, GEOMANCER[-]\\n[31B32B]Weapons[-]\\n[F4641D]M[-] Tremorglaive (part matter)\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 4/5\\n[84E680]WR[-]: Piercing 1, Piercing Crits 2\\n\\n[1E87FF]R[-] Tremorglaive (quake)\\n[84E680]ATK[-] 5 [84E680]HIT[-] 3+ [84E680]DMG[-] 1/2\\n[84E680]WR[-]: Blast 2\\\", Seek Light, Stun\\n\\n[F4641D]M[-] Tremorglaive (sweep)\\n[84E680]ATK[-] 4 [84E680]HIT[-] 4+ [84E680]DMG[-] 4/5\\n[84E680]WR[-]: Severe, Shock, Stun\\n\\n---\\n[31B32B]Abilities[-]\\n- [EF8450]Obelisk Node Control[-]\\n---\\n[31B32B]Unique Actions[-]\\n- [EF8450]GEOMANTIC DISTURBANCE (1AP)[-]\\n- [EF8450]CANOPTEK CONTROL (1AP)[-]\\n- [EF8450]MOLECULAR BREACH (1AP)[-]\"}",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 100700,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "90ee83",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "canoptek-tomb-crawler",
+              "Description": "",
+              "GMNotes": "{\"name\":\"canoptek-tomb-crawler\",\"stats\":{\"APL\":2,\"Move\":5,\"Save\":3,\"Wounds\":18,\"Base\":50},\"keywords\":[\"Operative\",\"CANOPTEK CIRCLE\",\"NECRON\",\"CANOPTEK\",\"TOMB CRAWLER\"],\"weapons\":[{\"name\":\"[F4641D]M[-] Transdimensional isolator\",\"plain_name\":\"Transdimensional isolator\",\"stats\":{\"ATK\":\"5\",\"HIT\":\"4+\",\"DMG\":\"5/6\",\"WR\":\"Dimensional Banishment*\"}},{\"name\":\"[F4641D]M[-] Twin gauss reapers (focused)\",\"plain_name\":\"Twin gauss reapers (focused)\",\"stats\":{\"ATK\":\"5\",\"HIT\":\"4+\",\"DMG\":\"4/5\",\"WR\":\"Piercing 1, Severe\"}},{\"name\":\"[1E87FF]R[-] Twin gauss reapers (sweeping)\",\"plain_name\":\"Twin gauss reapers (sweeping)\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"4+\",\"DMG\":\"4/5\",\"WR\":\"Piercing 1, Severe, Torrent 1\\\"\"}},{\"name\":\"[F4641D]M[-] Claws\",\"plain_name\":\"Claws\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"4+\",\"DMG\":\"4/4\",\"WR\":\"\"}}],\"abilities\":[{\"name\":\"*Dimensional Banishment\",\"text\":\"After this operative uses this weapon, if you inflicted damage or retained any critical successes, if the target wasn't incapacitated, roll 2D6: if the result is higher than the target's remaining wounds, the target is incapacitated (taking precedence over rules that prevent incapacitation, e.g. Medic!, FELLGOR RAVAGER Frenzy) and your opponent cannot place a Reanimation marker (HIEROTEK CIRCLE ) for that operative, if relevant.\"},{\"name\":\"Weapon Sentinel\",\"text\":\"Whenever your opponent is selecting a valid target, if this operative has a Conceal order, it cannot use Light terrain for cover. While this can allow this operative to be targeted (assuming it's visible), it doesn't remove its cover save (if any).\"},{\"name\":\"Steadfast\",\"text\":\"Whenever determining control of a marker, you can treat this operative's APL stat as 3. If you do, this takes precedence over all other rules, meaning any changes to its APL stat are ignored for this. CANOPTEK TOMB CRAWLER 2 APL WOUNDS SAVE MOVE 5\\\" 3+ 18\"}],\"actions\":[],\"weapon_rules\":{\"Piercing x\":\"The defender collects x less defence dice, e.g. Piercing 1. If the rule is Piercing Crits x, this only comes into effect if you retain any critical successes.\",\"Severe\":\"If you don't retain any critical successes, you can change one of your normal successes to a critical success. The Devastating and Piercing Crits weapon rules still take effect, but Punishing and Rending don't.\",\"Torrent x\":\"Select a valid target as normal as the primary target, then select any number of other valid targets within x of the first valid target, but not within control range of friendly operatives, as secondary targets, e.g. Torrent 2\\\". Shoot with this weapon against all of them in an order of your choice (roll each sequence separately).\"},\"description\":\"[D36B3E][[84E680]APL[-] [ffffff]2[-]] [[84E680]MOVE[-] [ffffff]5\\\"[-]]\\n[[84E680]SAVE[-] [ffffff]3+[-]] [[84E680]WOUNDS[-] [ffffff]18[-]][-]\\n[C5C5C5]Operative, CANOPTEK CIRCLE, NECRON, CANOPTEK, TOMB CRAWLER[-]\\n[31B32B]Weapons[-]\\n[F4641D]M[-] Transdimensional isolator\\n[84E680]ATK[-] 5 [84E680]HIT[-] 4+ [84E680]DMG[-] 5/6\\n[84E680]WR[-]: Dimensional Banishment*\\n\\n[F4641D]M[-] Twin gauss reapers (focused)\\n[84E680]ATK[-] 5 [84E680]HIT[-] 4+ [84E680]DMG[-] 4/5\\n[84E680]WR[-]: Piercing 1, Severe\\n\\n[1E87FF]R[-] Twin gauss reapers (sweeping)\\n[84E680]ATK[-] 4 [84E680]HIT[-] 4+ [84E680]DMG[-] 4/5\\n[84E680]WR[-]: Piercing 1, Severe, Torrent 1\\\"\\n\\n[F4641D]M[-] Claws\\n[84E680]ATK[-] 4 [84E680]HIT[-] 4+ [84E680]DMG[-] 4/4\\n\\n---\\n[31B32B]Abilities[-]\\n- [EF8450]*Dimensional Banishment[-]\\n- [EF8450]Weapon Sentinel[-]\\n- [EF8450]Steadfast[-]\"}",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 100600,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "515be0",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "canoptek-macrocyte-warrior",
+              "Description": "",
+              "GMNotes": "{\"name\":\"canoptek-macrocyte-warrior\",\"stats\":{\"APL\":2,\"Move\":7,\"Save\":4,\"Wounds\":7,\"Base\":28},\"keywords\":[\"Operative\",\"CANOPTEK CIRCLE\",\"NECRON\",\"CANOPTEK\",\"MACROCYTE\",\"WARRIOR\"],\"weapons\":[{\"name\":\"[F4641D]M[-] Gauss scalpel\",\"plain_name\":\"Gauss scalpel\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"4+\",\"DMG\":\"2/3\",\"WR\":\"Piercing 1\"}},{\"name\":\"[F4641D]M[-] Tesla caster (focused)\",\"plain_name\":\"Tesla caster (focused)\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"4+\",\"DMG\":\"2/3\",\"WR\":\"\"}},{\"name\":\"[1E87FF]R[-] Tesla caster (living lightning)\",\"plain_name\":\"Tesla caster (living lightning)\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"4+\",\"DMG\":\"2/3\",\"WR\":\"Blast 2\\\"\"}},{\"name\":\"[F4641D]M[-] Claws & tail\",\"plain_name\":\"Claws & tail\",\"stats\":{\"ATK\":\"3\",\"HIT\":\"4+\",\"DMG\":\"3/4\",\"WR\":\"\"}}],\"abilities\":[{\"name\":\"Aggressive Defence\",\"text\":\"If this operative is incapacitated by an enemy operative within 2\\\" of it, before this operative is removed from the killzone, roll one D3: on a 2+, inflict 1 damage on that enemy operative.\"},{\"name\":\"Expendable Construct\",\"text\":\"This operative is ignored for your opponent's kill/elimination op (when it's incapacitated, and when determining your starting number of operatives). It's also ignored for victory conditions and scoring VPs if either require operatives to 'escape', 'survive' or be incapacitated by enemy operatives (if it escapes/survives/is incapacitated, determining how many operatives must escape/survive/be incapacitated, etc.).\"},{\"name\":\"A Ceaseless Scuttling\",\"text\":\"As a STRATEGIC GAMBIT in each turning point after the first, if you have less than three non-incapacitated friendly CANOPTEK CIRCLE WARRIOR operatives, you can set up another one ready and with a Conceal order wholly within your drop zone (you can select its weapon options as normal). CANOPTEK MACROCYTE WARRIOR 2 APL WOUNDS SAVE MOVE 7\\\" 4+ 7\"}],\"actions\":[],\"weapon_rules\":{\"Piercing x\":\"The defender collects x less defence dice, e.g. Piercing 1. If the rule is Piercing Crits x, this only comes into effect if you retain any critical successes.\",\"Blast x\":\"The target you select is the primary target. After shooting the primary target, shoot with this weapon against each secondary target in an order of your choice (roll each sequence separately). Secondary targets are other operatives visible to and within x of the primary target, e.g. Blast 2\\\" (they are all valid targets, regardless of a Conceal order). Secondary targets are in cover and obscured if the primary target was.\"},\"description\":\"[D36B3E][[84E680]APL[-] [ffffff]2[-]] [[84E680]MOVE[-] [ffffff]7\\\"[-]]\\n[[84E680]SAVE[-] [ffffff]4+[-]] [[84E680]WOUNDS[-] [ffffff]7[-]][-]\\n[C5C5C5]Operative, CANOPTEK CIRCLE, NECRON, CANOPTEK, MACROCYTE, WARRIOR[-]\\n[31B32B]Weapons[-]\\n[F4641D]M[-] Gauss scalpel\\n[84E680]ATK[-] 4 [84E680]HIT[-] 4+ [84E680]DMG[-] 2/3\\n[84E680]WR[-]: Piercing 1\\n\\n[F4641D]M[-] Tesla caster (focused)\\n[84E680]ATK[-] 4 [84E680]HIT[-] 4+ [84E680]DMG[-] 2/3\\n\\n[1E87FF]R[-] Tesla caster (living lightning)\\n[84E680]ATK[-] 4 [84E680]HIT[-] 4+ [84E680]DMG[-] 2/3\\n[84E680]WR[-]: Blast 2\\\"\\n\\n[F4641D]M[-] Claws & tail\\n[84E680]ATK[-] 3 [84E680]HIT[-] 4+ [84E680]DMG[-] 3/4\\n\\n---\\n[31B32B]Abilities[-]\\n- [EF8450]Aggressive Defence[-]\\n- [EF8450]Expendable Construct[-]\\n- [EF8450]A Ceaseless Scuttling[-]\"}",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 100500,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "ffb02a",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "canoptek-macrocyte-reanimator",
+              "Description": "",
+              "GMNotes": "{\"name\":\"canoptek-macrocyte-reanimator\",\"stats\":{\"APL\":2,\"Move\":7,\"Save\":4,\"Wounds\":7,\"Base\":28},\"keywords\":[\"Operative\",\"CANOPTEK CIRCLE\",\"NECRON\",\"CANOPTEK\",\"MACROCYTE\",\"REANIMATOR\"],\"weapons\":[{\"name\":\"[1E87FF]R[-] Atomiser beam\",\"plain_name\":\"Atomiser beam\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"4+\",\"DMG\":\"3/4\",\"WR\":\"Range 6\\\", Lethal 5+\"}},{\"name\":\"[F4641D]M[-] Claws & tail\",\"plain_name\":\"Claws & tail\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"4+\",\"DMG\":\"3/4\",\"WR\":\"\"}}],\"abilities\":[{\"name\":\"Reanimate\",\"text\":\"Once per turning point, when another friendly CANOPTEK CIRCLE operative would be incapacitated, if that operative is visible to and within 6\\\" of this operative, or if this and that operative are within your OBELISK NODE MATRIX, you can use this rule, providing neither this nor that operative is within control range of an enemy operative. If you do, that friendly operative isn't incapacitated, has 1 wound remaining and cannot be incapacitated for the remainder of the action. After that action, that friendly operative can immediately perform a free Dash action, but must end that action within this operative's control range or within your OBELISK NODE MATRIX. Subtract 1 from this and that operative's APL stats until the end of their next activations respectively, and if this rule was used during that friendly operative's activation, that activation ends. You cannot use this rule if this operative is incapacitated, or if it's a Shoot action and this operative would be a primary or secondary target.\"}],\"actions\":[{\"name\":\"NANOSCARAB BEAM (1AP)\",\"text\":\"Select one friendly CANOPTEK CIRCLE operative visible to and within 6\\\" of this operative. Alternatively, if this operative is within your OBELISK NODE MATRIX, you can select one other friendly CANOPTEK CIRCLE operative within your OBELISK NODE MATRIX. The selected operative regains up to 3D3 lost wounds. It cannot be an operative that the Reanimate rule was used on during this turning point. This operative cannot perform this action while within control range of an enemy operative, or more than once per turning point. CANOPTEK MACROCYTE REANIMATOR 2 APL WOUNDS SAVE MOVE 7\\\" 4+ 7\"}],\"weapon_rules\":{\"Range x\":\"Only operatives within x of the active operative can be valid targets, e.g. Range 9\\\".\"},\"description\":\"[D36B3E][[84E680]APL[-] [ffffff]2[-]] [[84E680]MOVE[-] [ffffff]7\\\"[-]]\\n[[84E680]SAVE[-] [ffffff]4+[-]] [[84E680]WOUNDS[-] [ffffff]7[-]][-]\\n[C5C5C5]Operative, CANOPTEK CIRCLE, NECRON, CANOPTEK, MACROCYTE, REANIMATOR[-]\\n[31B32B]Weapons[-]\\n[1E87FF]R[-] Atomiser beam\\n[84E680]ATK[-] 4 [84E680]HIT[-] 4+ [84E680]DMG[-] 3/4\\n[84E680]WR[-]: Range 6\\\", Lethal 5+\\n\\n[F4641D]M[-] Claws & tail\\n[84E680]ATK[-] 4 [84E680]HIT[-] 4+ [84E680]DMG[-] 3/4\\n\\n---\\n[31B32B]Abilities[-]\\n- [EF8450]Reanimate[-]\\n---\\n[31B32B]Unique Actions[-]\\n- [EF8450]NANOSCARAB BEAM (1AP)[-]\"}",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 100400,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "ea38bf",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "canoptek-macrocyte-accelerator",
+              "Description": "",
+              "GMNotes": "{\"name\":\"canoptek-macrocyte-accelerator\",\"stats\":{\"APL\":2,\"Move\":7,\"Save\":4,\"Wounds\":7,\"Base\":28},\"keywords\":[\"Operative\",\"CANOPTEK CIRCLE\",\"NECRON\",\"CANOPTEK\",\"MACROCYTE\",\"ACCELERATOR\"],\"weapons\":[{\"name\":\"[1E87FF]R[-] Spark\",\"plain_name\":\"Spark\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"4+\",\"DMG\":\"2/3\",\"WR\":\"Range 4\\\", Piercing 1\"}},{\"name\":\"[F4641D]M[-] Claws & spark\",\"plain_name\":\"Claws & spark\",\"stats\":{\"ATK\":\"3\",\"HIT\":\"4+\",\"DMG\":\"3/4\",\"WR\":\"Lethal 5+, Stun\"}}],\"abilities\":[],\"actions\":[{\"name\":\"OVERCHARGE (1AP)\",\"text\":\"Select one other friendly CANOPTEK CIRCLE CANOPTEK operative visible to and within 3\\\" of this operative. Alternatively, if this operative is within your OBELISK NODE MATRIX, you can select one other friendly CANOPTEK CIRCLE CANOPTEK operative within your OBELISK NODE MATRIX. Until the end of that selected operative's next activation, add 1 to its APL stat. This operative cannot perform this action while within control range of an enemy operative.\"},{\"name\":\"CRANIAL OVERLOAD (1AP)\",\"text\":\"Select one enemy operative visible to and within 3\\\" of this operative. Alternatively, if this operative is within your OBELISK NODE MATRIX, you can select one enemy operative within your OBELISK NODE MATRIX. Until the end of that enemy operative's next activation, subtract 1 from its APL stat. This operative cannot perform this action while within control range of an enemy operative. CANOPTEK MACROCYTE ACCELERATOR\"}],\"weapon_rules\":{\"Piercing x\":\"The defender collects x less defence dice, e.g. Piercing 1. If the rule is Piercing Crits x, this only comes into effect if you retain any critical successes.\",\"Range x\":\"Only operatives within x of the active operative can be valid targets, e.g. Range 9\\\".\",\"Stun\":\"If you retain any critical successes, subtract 1 from the APL stat of the operative this weapon is being used against until the end of its next activation.\"},\"description\":\"[D36B3E][[84E680]APL[-] [ffffff]2[-]] [[84E680]MOVE[-] [ffffff]7\\\"[-]]\\n[[84E680]SAVE[-] [ffffff]4+[-]] [[84E680]WOUNDS[-] [ffffff]7[-]][-]\\n[C5C5C5]Operative, CANOPTEK CIRCLE, NECRON, CANOPTEK, MACROCYTE, ACCELERATOR[-]\\n[31B32B]Weapons[-]\\n[1E87FF]R[-] Spark\\n[84E680]ATK[-] 4 [84E680]HIT[-] 4+ [84E680]DMG[-] 2/3\\n[84E680]WR[-]: Range 4\\\", Piercing 1\\n\\n[F4641D]M[-] Claws & spark\\n[84E680]ATK[-] 3 [84E680]HIT[-] 4+ [84E680]DMG[-] 3/4\\n[84E680]WR[-]: Lethal 5+, Stun\\n\\n---\\n[31B32B]Unique Actions[-]\\n- [EF8450]OVERCHARGE (1AP)[-]\\n- [EF8450]CRANIAL OVERLOAD (1AP)[-]\"}",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 100300,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            }
+          ]
+        },
+        {
+          "GUID": "e380e3",
+          "Name": "Deck",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 180.0,
+            "rotZ": 180.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Equipment",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.713235259,
+            "g": 0.713235259,
+            "b": 0.713235259
+          },
+          "Tags": [
+            "_Canoptek Circle",
+            "KTCardsEquipment"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": false,
+          "SidewaysCard": false,
+          "DeckIDs": [
+            101300,
+            101200,
+            101100,
+            101000
+          ],
+          "CustomDeck": {
+            "1010": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/cards/equipment/canoptek-circle-awakened-obelisk-nodes-front.jpg?v=1783371878",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/cards/equipment/canoptek-circle-awakened-obelisk-nodes-back.jpg?v=1783355517",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1011": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/cards/equipment/canoptek-circle-matrix-manipulator-front.jpg?v=1783371877",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/cards/equipment/canoptek-circle-matrix-manipulator-back.jpg?v=1783355517",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1012": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/cards/equipment/canoptek-circle-nanoscarab-caskets-front.jpg?v=1783371878",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/cards/equipment/canoptek-circle-nanoscarab-caskets-back.jpg?v=1783355517",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1013": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/cards/equipment/canoptek-circle-phase-shifter-front.jpg?v=1783371879",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/cards/equipment/canoptek-circle-phase-shifter-back.jpg?v=1783355517",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "ContainedObjects": [
+            {
+              "GUID": "360140",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "canoptek-circle-phase-shifter",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 101300,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "3302e0",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "canoptek-circle-nanoscarab-caskets",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 101200,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "e83b0c",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "canoptek-circle-matrix-manipulator",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 101100,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "868704",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "canoptek-circle-awakened-obelisk-nodes",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 101000,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            }
+          ]
+        },
+        {
+          "GUID": "197770",
+          "Name": "Deck",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 180.0,
+            "rotZ": 180.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Firefight Ploys",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.713235259,
+            "g": 0.713235259,
+            "b": 0.713235259
+          },
+          "Tags": [
+            "_Canoptek Circle",
+            "KTCardsFirefightPloy"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": false,
+          "SidewaysCard": false,
+          "DeckIDs": [
+            101700,
+            101600,
+            101500,
+            101400
+          ],
+          "CustomDeck": {
+            "1014": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/cards/firefight_ploys/canoptek-circle-animate-obelisk-nodes-front.jpg?v=1783371880",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/cards/firefight_ploys/canoptek-circle-animate-obelisk-nodes-back.jpg?v=1783355517",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1015": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/cards/firefight_ploys/canoptek-circle-nodal-response-front.jpg?v=1783371881",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/cards/firefight_ploys/canoptek-circle-nodal-response-back.jpg?v=1783355517",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1016": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/cards/firefight_ploys/canoptek-circle-sacrificial-thrall-front.jpg?v=1783371882",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/cards/firefight_ploys/canoptek-circle-sacrificial-thrall-back.jpg?v=1783355517",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1017": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/cards/firefight_ploys/canoptek-circle-shield-flare-front.jpg?v=1783371880",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/cards/firefight_ploys/canoptek-circle-shield-flare-back.jpg?v=1783355517",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "ContainedObjects": [
+            {
+              "GUID": "940861",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "canoptek-circle-shield-flare",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 101700,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "0ad703",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "canoptek-circle-sacrificial-thrall",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 101600,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "461646",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "canoptek-circle-nodal-response",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 101500,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "13f33d",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "canoptek-circle-animate-obelisk-nodes",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 101400,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            }
+          ]
+        },
+        {
+          "GUID": "47a409",
+          "Name": "Deck",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 180.0,
+            "rotZ": 180.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Strategy Ploys",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.713235259,
+            "g": 0.713235259,
+            "b": 0.713235259
+          },
+          "Tags": [
+            "_Canoptek Circle",
+            "KTCardsStrategyPloy"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": false,
+          "SidewaysCard": false,
+          "DeckIDs": [
+            102100,
+            102000,
+            101900,
+            101800
+          ],
+          "CustomDeck": {
+            "1018": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/cards/strategy_ploys/canoptek-circle-cryptogravitic-repulsion-front.jpg?v=1783371884",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/cards/strategy_ploys/canoptek-circle-cryptogravitic-repulsion-back.jpg?v=1783355517",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1019": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/cards/strategy_ploys/canoptek-circle-hypershielding-front.jpg?v=1783371883",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/cards/strategy_ploys/canoptek-circle-hypershielding-back.jpg?v=1783355517",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1020": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/cards/strategy_ploys/canoptek-circle-souldrain-front.jpg?v=1783371885",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/cards/strategy_ploys/canoptek-circle-souldrain-back.jpg?v=1783355517",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1021": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/cards/strategy_ploys/canoptek-circle-transdynamic-amplification-front.jpg?v=1783371883",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/canoptek-circle/cards/strategy_ploys/canoptek-circle-transdynamic-amplification-back.jpg?v=1783355517",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "ContainedObjects": [
+            {
+              "GUID": "67cb0d",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "canoptek-circle-transdynamic-amplification",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 102100,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "c71e98",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "canoptek-circle-souldrain",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 102000,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "c94ea0",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "canoptek-circle-hypershielding",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 101900,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "046a17",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "canoptek-circle-cryptogravitic-repulsion",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 101800,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

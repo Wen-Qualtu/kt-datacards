@@ -1,0 +1,3418 @@
+{
+  "SaveName": "Hand Of The Archon",
+  "Date": "",
+  "VersionNumber": "",
+  "GameMode": "",
+  "GameType": "",
+  "GameComplexity": "",
+  "Tags": [],
+  "Gravity": 0.5,
+  "PlayArea": 0.5,
+  "Table": "",
+  "Sky": "",
+  "Note": "",
+  "TabStates": {},
+  "LuaScript": "",
+  "LuaScriptState": "",
+  "XmlUI": "",
+  "ObjectStates": [
+    {
+      "GUID": "cfb091",
+      "Name": "Custom_Model_Bag",
+      "Transform": {
+        "posX": 0.0,
+        "posY": 3.5,
+        "posZ": 0.0,
+        "rotX": 0.0,
+        "rotY": 270.0,
+        "rotZ": 0.0,
+        "scaleX": 1.0,
+        "scaleY": 1.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "Hand Of The Archon",
+      "Description": "OUTDATED VERSION. Click the red UPDATE button (or right-click -> Update to latest) to replace this with the full current team box. This intermediate is a one-time bridge and should not be reused.",
+      "GMNotes": "_Hand Of The Archon",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
+      },
+      "Tags": [
+        "_Faction_Decks"
+      ],
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": false,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": true,
+      "MaterialIndex": -1,
+      "MeshIndex": -1,
+      "CustomMesh": {
+        "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/cardbox/hand-of-the-archon-card-box.obj?v=1781895962",
+        "DiffuseURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/cardbox/hand-of-the-archon-card-box-texture.jpg?v=1783355613",
+        "NormalURL": "",
+        "ColliderURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/cardbox/hand-of-the-archon-card-box.obj?v=1781895962",
+        "Convex": true,
+        "MaterialIndex": 3,
+        "TypeIndex": 6,
+        "CastShadows": true
+      },
+      "Bag": {
+        "Order": 0
+      },
+      "LuaScript": "-- Intermediate box updater (slim).\r\n--\r\n-- Embedded in the legacy save-file wrapper {Team} Box.json. Sole purpose:\r\n-- replace this box with the full clean {Team}.json from team-urls.json.\r\n--\r\n-- The wrapper exists only as a compatibility hop for in-the-wild boxes that\r\n-- still reference the old Box.json filename. Users who land here should\r\n-- update immediately and never reuse this intermediate.\r\n--\r\n-- Spawn-format note: the target file is a bare Custom_Model_Bag object\r\n-- handed straight to spawnObjectJSON (no save-file slicing needed).\r\n\r\nlocal BUTTON_UPDATE_NOW = {\r\n    label = \"UPDATE\\nNOW\",\r\n    click_function = \"click_update_now\",\r\n    function_owner = self,\r\n    position = {0, 0.3, 0},\r\n    rotation = {0, 180, 0},\r\n    height = 900, width = 1400,\r\n    font_size = 280,\r\n    color = {0.85, 0.1, 0.1}, font_color = {1, 1, 1},\r\n    tooltip = \"Replace this intermediate box with the latest full version.\"\r\n}\r\n\r\nfunction onLoad()\r\n    self.clearButtons()\r\n    self.createButton(BUTTON_UPDATE_NOW)\r\n    self.addContextMenuItem(\"Update to latest\", click_update_now)\r\nend\r\n\r\nfunction click_update_now()\r\n    -- Derive team slug + base repo URL from this box's MeshURL so we follow\r\n    -- whichever branch/fork the user spawned the box from.\r\n    local data = self.getData() or {}\r\n    local meshUrl = ((data.CustomMesh or {}).MeshURL) or \"\"\r\n    if meshUrl == \"\" then\r\n        broadcastToAll(\"Update failed: missing box mesh URL\", {1, 0.5, 0})\r\n        return\r\n    end\r\n    local cleanMeshUrl = string.match(meshUrl, \"^[^?]+\") or meshUrl\r\n    local baseUrl = string.match(cleanMeshUrl, \"^(.-)/output/\")\r\n    local teamSlug = string.match(cleanMeshUrl, \"/output/([^/]+)/\")\r\n    if not baseUrl or baseUrl == \"\" or not teamSlug or teamSlug == \"\" then\r\n        broadcastToAll(\"Update failed: could not parse repository URL\", {1, 0.5, 0})\r\n        return\r\n    end\r\n\r\n    local metadataUrl = baseUrl .. \"/output/team-urls.json?v=\" .. tostring(os.time())\r\n    broadcastToAll(\"Checking for latest \" .. teamSlug .. \"...\", {1, 1, 0})\r\n\r\n    WebRequest.get(metadataUrl, function(req)\r\n        if req.is_error then\r\n            broadcastToAll(\"Update failed: \" .. req.error, {1, 0.5, 0})\r\n            return\r\n        end\r\n        local ok, metadata = pcall(function() return JSON.decode(req.text) end)\r\n        if not ok or type(metadata) ~= \"table\" then\r\n            broadcastToAll(\"Update failed: could not parse team-urls.json\", {1, 0.5, 0})\r\n            return\r\n        end\r\n        local entry = metadata[teamSlug]\r\n        if type(entry) ~= \"table\" or type(entry.box) ~= \"table\" then\r\n            broadcastToAll(\"Update failed: team not found in team-urls.json\", {1, 0.5, 0})\r\n            return\r\n        end\r\n        local boxUrl = entry.box.url or \"\"\r\n        if boxUrl == \"\" then\r\n            broadcastToAll(\"Update failed: no box URL for team\", {1, 0.5, 0})\r\n            return\r\n        end\r\n\r\n        broadcastToAll(\"Downloading latest version...\", {0, 0.7, 1})\r\n        WebRequest.get(boxUrl, function(resp)\r\n            local code = tonumber(resp.response_code) or 0\r\n            if resp.is_error or code >= 400 then\r\n                local msg = resp.error\r\n                if msg == nil or msg == \"\" then msg = \"HTTP \" .. tostring(code) end\r\n                broadcastToAll(\"Download failed: \" .. msg .. \" (\" .. boxUrl .. \")\", {1, 0.5, 0})\r\n                return\r\n            end\r\n            local body = resp.text or \"\"\r\n            -- Strip leading whitespace; bare object must start with '{'.\r\n            local startIdx = 1\r\n            while startIdx <= #body and (body:byte(startIdx) == 32 or body:byte(startIdx) == 9 or body:byte(startIdx) == 10 or body:byte(startIdx) == 13) do\r\n                startIdx = startIdx + 1\r\n            end\r\n            if startIdx > #body or body:byte(startIdx) ~= 123 then\r\n                broadcastToAll(\"Update failed: unexpected response format (HTTP \" .. tostring(code) .. \")\", {1, 0.5, 0})\r\n                return\r\n            end\r\n            local objJson = (startIdx == 1) and body or body:sub(startIdx)\r\n\r\n            local pos = self.getPosition()\r\n            local rot = self.getRotation()\r\n            local locked = self.getLock()\r\n\r\n            local spawned = spawnObjectJSON({\r\n                json = objJson,\r\n                position = pos + Vector(5, 0, 0),\r\n                rotation = rot\r\n            })\r\n            if spawned == nil then\r\n                broadcastToAll(\"Update failed: could not spawn new box\", {1, 0.5, 0})\r\n                return\r\n            end\r\n\r\n            Wait.condition(\r\n                function()\r\n                    Wait.time(function()\r\n                        if spawned == nil or spawned.isDestroyed() then\r\n                            broadcastToAll(\"Update failed during spawn\", {1, 0.5, 0})\r\n                            return\r\n                        end\r\n                        spawned.setLock(locked)\r\n                        self.destruct()\r\n                        Wait.time(function()\r\n                            spawned.setPositionSmooth(pos, false, true)\r\n                            spawned.setRotationSmooth(rot, false, true)\r\n                            broadcastToAll(\"Updated to latest version!\", {0, 1, 0})\r\n                        end, 0.5)\r\n                    end, 0.5)\r\n                end,\r\n                function() return spawned ~= nil and not spawned.spawning end,\r\n                10\r\n            )\r\n        end)\r\n    end)\r\nend\r\n",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "ContainedObjects": [
+        {
+          "GUID": "523cca",
+          "Name": "Custom_Model_Bag",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 1.01,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 270.0,
+            "rotZ": 0.0,
+            "scaleX": 1.47,
+            "scaleY": 0.1,
+            "scaleZ": 1.47
+          },
+          "Nickname": "Hand Of The Archon tokens",
+          "Description": "If errors pop up, just wait for few sec and try again",
+          "GMNotes": "_hand-of-the-archon_tokens",
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0,
+            "a": 0.0
+          },
+          "Tags": [
+            "_hand-of-the-archon",
+            "KTCardsTokenBag"
+          ],
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "Hands": false,
+          "Number": 0,
+          "CustomMesh": {
+            "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/tokens/tokenbag/hand-of-the-archon-token-bag.obj?v=1779121408",
+            "DiffuseURL": "",
+            "NormalURL": "",
+            "ColliderURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/tokens/tokenbag/hand-of-the-archon-token-bag.obj?v=1779121408",
+            "Convex": true,
+            "MaterialIndex": 0,
+            "TypeIndex": 6,
+            "CastShadows": true
+          },
+          "Bag": {
+            "Order": 0
+          },
+          "LuaScript": "",
+          "LuaScriptState": "{\"ml\": {\"f6285f\": {\"lock\": false, \"pos\": {\"x\": -2.25, \"y\": 0.0213, \"z\": -3.0}, \"rot\": {\"x\": 0.0, \"y\": 180.0, \"z\": 0.0}}, \"e8eb4c\": {\"lock\": false, \"pos\": {\"x\": -0.75, \"y\": 0.0213, \"z\": -3.0}, \"rot\": {\"x\": 0.0, \"y\": 180.0, \"z\": 0.0}}, \"9f5996\": {\"lock\": false, \"pos\": {\"x\": 0.75, \"y\": 0.0213, \"z\": -3.0}, \"rot\": {\"x\": 0.0, \"y\": 180.0, \"z\": 0.0}}, \"d7f94b\": {\"lock\": false, \"pos\": {\"x\": 2.25, \"y\": 0.0213, \"z\": -3.0}, \"rot\": {\"x\": 0.0, \"y\": 180.0, \"z\": 0.0}}, \"e87377\": {\"lock\": false, \"pos\": {\"x\": -2.25, \"y\": 0.0213, \"z\": -4.5}, \"rot\": {\"x\": 0.0, \"y\": 180.0, \"z\": 0.0}}, \"53beb4\": {\"lock\": false, \"pos\": {\"x\": -0.75, \"y\": 0.0213, \"z\": -4.5}, \"rot\": {\"x\": 0.0, \"y\": 180.0, \"z\": 0.0}}, \"e04400\": {\"lock\": false, \"pos\": {\"x\": 0.75, \"y\": 0.0213, \"z\": -4.5}, \"rot\": {\"x\": 0.0, \"y\": 180.0, \"z\": 0.0}}, \"49624a\": {\"lock\": false, \"pos\": {\"x\": 2.25, \"y\": 0.0213, \"z\": -4.5}, \"rot\": {\"x\": 0.0, \"y\": 180.0, \"z\": 0.0}}, \"fe76c0\": {\"lock\": false, \"pos\": {\"x\": -2.25, \"y\": 0.0213, \"z\": -6.0}, \"rot\": {\"x\": 0.0, \"y\": 180.0, \"z\": 0.0}}}, \"rr\": 270, \"lastUpdate\": \"2026-07-07T07:29:52.226410+00:00\"}",
+          "XmlUI": "",
+          "ChildObjects": [
+            {
+              "GUID": "9dbfb9",
+              "Name": "Custom_Tile",
+              "Transform": {
+                "posX": 0.0,
+                "posY": -0.5,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 270.0,
+                "rotZ": 0.0,
+                "scaleX": 0.5,
+                "scaleY": 10.0,
+                "scaleZ": 0.5
+              },
+              "Nickname": "",
+              "Description": "",
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0
+              },
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "Hands": false,
+              "CustomImage": {
+                "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/tokens/tokenbag/hand-of-the-archon-token-bag-icon.png?v=1783371000",
+                "ImageSecondaryURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/tokens/tokenbag/hand-of-the-archon-token-bag-icon.png?v=1783371000",
+                "ImageScalar": 1.0,
+                "WidthScale": 0.0,
+                "CustomTile": {
+                  "Type": 0,
+                  "Thickness": 0.1,
+                  "Stackable": false,
+                  "Stretch": true
+                }
+              }
+            }
+          ],
+          "ContainedObjects": [
+            {
+              "GUID": "f6285f",
+              "Name": "Custom_Model_Infinite_Bag",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 1.03,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 270.0,
+                "rotZ": 0.0,
+                "scaleX": 1.8351557,
+                "scaleY": 0.1,
+                "scaleZ": 1.7720486
+              },
+              "Nickname": "Brutal Display",
+              "Description": "Infinite Brutal Display tokens",
+              "GMNotes": "",
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 0.0
+              },
+              "Tags": [
+                "_hand-of-the-archon_tokens"
+              ],
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "Hands": false,
+              "CustomMesh": {
+                "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/tokens/hand-of-the-archon-brutal-display.obj?v=1772029953",
+                "DiffuseURL": "",
+                "NormalURL": "",
+                "ColliderURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/tokens/hand-of-the-archon-brutal-display.obj?v=1772029953",
+                "Convex": true,
+                "MaterialIndex": 0,
+                "TypeIndex": 7,
+                "CastShadows": true
+              },
+              "Bag": {
+                "Order": 0
+              },
+              "ContainedObjects": [
+                {
+                  "GUID": "558ff1",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 1.63,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Brutal Display",
+                  "Description": "Brutal Display",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": false,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/tokens/hand-of-the-archon-brutal-display.png?v=1783371755",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "ChildObjects": [
+                {
+                  "GUID": "d21347",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 0.0,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Brutal Display",
+                  "Description": "Brutal Display",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": true,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/tokens/hand-of-the-archon-brutal-display.png?v=1783371755",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "e8eb4c",
+              "Name": "Custom_Model_Infinite_Bag",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 1.03,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 270.0,
+                "rotZ": 0.0,
+                "scaleX": 1.8351557,
+                "scaleY": 0.1,
+                "scaleZ": 1.7720486
+              },
+              "Nickname": "Hypex",
+              "Description": "Infinite Hypex tokens",
+              "GMNotes": "",
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 0.0
+              },
+              "Tags": [
+                "_hand-of-the-archon_tokens"
+              ],
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "Hands": false,
+              "CustomMesh": {
+                "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/tokens/hand-of-the-archon-hypex.obj?v=1772029953",
+                "DiffuseURL": "",
+                "NormalURL": "",
+                "ColliderURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/tokens/hand-of-the-archon-hypex.obj?v=1772029953",
+                "Convex": true,
+                "MaterialIndex": 0,
+                "TypeIndex": 7,
+                "CastShadows": true
+              },
+              "Bag": {
+                "Order": 0
+              },
+              "ContainedObjects": [
+                {
+                  "GUID": "a4d15f",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 1.63,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Hypex",
+                  "Description": "Hypex",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": false,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/tokens/hand-of-the-archon-hypex.png?v=1783371755",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "ChildObjects": [
+                {
+                  "GUID": "7434fc",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 0.0,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Hypex",
+                  "Description": "Hypex",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": true,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/tokens/hand-of-the-archon-hypex.png?v=1783371755",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "9f5996",
+              "Name": "Custom_Model_Infinite_Bag",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 1.03,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 270.0,
+                "rotZ": 0.0,
+                "scaleX": 1.8351557,
+                "scaleY": 0.1,
+                "scaleZ": 1.7720486
+              },
+              "Nickname": "Omen",
+              "Description": "Infinite Omen tokens",
+              "GMNotes": "",
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 0.0
+              },
+              "Tags": [
+                "_hand-of-the-archon_tokens"
+              ],
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "Hands": false,
+              "CustomMesh": {
+                "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/tokens/hand-of-the-archon-omen.obj?v=1772029953",
+                "DiffuseURL": "",
+                "NormalURL": "",
+                "ColliderURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/tokens/hand-of-the-archon-omen.obj?v=1772029953",
+                "Convex": true,
+                "MaterialIndex": 0,
+                "TypeIndex": 7,
+                "CastShadows": true
+              },
+              "Bag": {
+                "Order": 0
+              },
+              "ContainedObjects": [
+                {
+                  "GUID": "7eec0d",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 1.63,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Omen",
+                  "Description": "Omen",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": false,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/tokens/hand-of-the-archon-omen.png?v=1783371755",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "ChildObjects": [
+                {
+                  "GUID": "6e23c5",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 0.0,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Omen",
+                  "Description": "Omen",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": true,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/tokens/hand-of-the-archon-omen.png?v=1783371755",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "d7f94b",
+              "Name": "Custom_Model_Infinite_Bag",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 1.03,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 270.0,
+                "rotZ": 0.0,
+                "scaleX": 1.8351557,
+                "scaleY": 0.1,
+                "scaleZ": 1.7720486
+              },
+              "Nickname": "Pain",
+              "Description": "Infinite Pain tokens",
+              "GMNotes": "",
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 0.0
+              },
+              "Tags": [
+                "_hand-of-the-archon_tokens"
+              ],
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "Hands": false,
+              "CustomMesh": {
+                "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/tokens/hand-of-the-archon-pain.obj?v=1772029953",
+                "DiffuseURL": "",
+                "NormalURL": "",
+                "ColliderURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/tokens/hand-of-the-archon-pain.obj?v=1772029953",
+                "Convex": true,
+                "MaterialIndex": 0,
+                "TypeIndex": 7,
+                "CastShadows": true
+              },
+              "Bag": {
+                "Order": 0
+              },
+              "ContainedObjects": [
+                {
+                  "GUID": "c3071f",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 1.63,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Pain",
+                  "Description": "Pain",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": false,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/tokens/hand-of-the-archon-pain.png?v=1783371755",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "ChildObjects": [
+                {
+                  "GUID": "c7fc7c",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 0.0,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Pain",
+                  "Description": "Pain",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": true,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/tokens/hand-of-the-archon-pain.png?v=1783371755",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "e87377",
+              "Name": "Custom_Model_Infinite_Bag",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 1.03,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 270.0,
+                "rotZ": 0.0,
+                "scaleX": 1.8351557,
+                "scaleY": 0.1,
+                "scaleZ": 1.7720486
+              },
+              "Nickname": "Painbringer",
+              "Description": "Infinite Painbringer tokens",
+              "GMNotes": "",
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 0.0
+              },
+              "Tags": [
+                "_hand-of-the-archon_tokens"
+              ],
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "Hands": false,
+              "CustomMesh": {
+                "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/tokens/hand-of-the-archon-painbringer.obj?v=1772029953",
+                "DiffuseURL": "",
+                "NormalURL": "",
+                "ColliderURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/tokens/hand-of-the-archon-painbringer.obj?v=1772029953",
+                "Convex": true,
+                "MaterialIndex": 0,
+                "TypeIndex": 7,
+                "CastShadows": true
+              },
+              "Bag": {
+                "Order": 0
+              },
+              "ContainedObjects": [
+                {
+                  "GUID": "31155b",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 1.63,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Painbringer",
+                  "Description": "Painbringer",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": false,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/tokens/hand-of-the-archon-painbringer.png?v=1783371755",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "ChildObjects": [
+                {
+                  "GUID": "600d3b",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 0.0,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Painbringer",
+                  "Description": "Painbringer",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": true,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/tokens/hand-of-the-archon-painbringer.png?v=1783371755",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "53beb4",
+              "Name": "Custom_Model_Infinite_Bag",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 1.03,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 270.0,
+                "rotZ": 0.0,
+                "scaleX": 1.8351557,
+                "scaleY": 0.1,
+                "scaleZ": 1.7720486
+              },
+              "Nickname": "Poison",
+              "Description": "Infinite Poison tokens",
+              "GMNotes": "",
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 0.0
+              },
+              "Tags": [
+                "_hand-of-the-archon_tokens"
+              ],
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "Hands": false,
+              "CustomMesh": {
+                "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/tokens/hand-of-the-archon-poison.obj?v=1772029953",
+                "DiffuseURL": "",
+                "NormalURL": "",
+                "ColliderURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/tokens/hand-of-the-archon-poison.obj?v=1772029953",
+                "Convex": true,
+                "MaterialIndex": 0,
+                "TypeIndex": 7,
+                "CastShadows": true
+              },
+              "Bag": {
+                "Order": 0
+              },
+              "ContainedObjects": [
+                {
+                  "GUID": "90befb",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 1.63,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Poison",
+                  "Description": "Poison",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": false,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/tokens/hand-of-the-archon-poison.png?v=1783371755",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "ChildObjects": [
+                {
+                  "GUID": "e50226",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 0.0,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Poison",
+                  "Description": "Poison",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": true,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/tokens/hand-of-the-archon-poison.png?v=1783371755",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "e04400",
+              "Name": "Custom_Model_Infinite_Bag",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 1.03,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 270.0,
+                "rotZ": 0.0,
+                "scaleX": 1.8351557,
+                "scaleY": 0.1,
+                "scaleZ": 1.7720486
+              },
+              "Nickname": "Refined Poison",
+              "Description": "Infinite Refined Poison tokens",
+              "GMNotes": "",
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 0.0
+              },
+              "Tags": [
+                "_hand-of-the-archon_tokens"
+              ],
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "Hands": false,
+              "CustomMesh": {
+                "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/tokens/hand-of-the-archon-refined-poison.obj?v=1772029953",
+                "DiffuseURL": "",
+                "NormalURL": "",
+                "ColliderURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/tokens/hand-of-the-archon-refined-poison.obj?v=1772029953",
+                "Convex": true,
+                "MaterialIndex": 0,
+                "TypeIndex": 7,
+                "CastShadows": true
+              },
+              "Bag": {
+                "Order": 0
+              },
+              "ContainedObjects": [
+                {
+                  "GUID": "f16a4a",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 1.63,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Refined Poison",
+                  "Description": "Refined Poison",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": false,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/tokens/hand-of-the-archon-refined-poison.png?v=1783371755",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "ChildObjects": [
+                {
+                  "GUID": "ee64ff",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 0.0,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Refined Poison",
+                  "Description": "Refined Poison",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": true,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/tokens/hand-of-the-archon-refined-poison.png?v=1783371755",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "49624a",
+              "Name": "Custom_Model_Infinite_Bag",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 1.03,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 270.0,
+                "rotZ": 0.0,
+                "scaleX": 1.8351557,
+                "scaleY": 0.1,
+                "scaleZ": 1.7720486
+              },
+              "Nickname": "Sadistic Competition",
+              "Description": "Infinite Sadistic Competition tokens",
+              "GMNotes": "",
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 0.0
+              },
+              "Tags": [
+                "_hand-of-the-archon_tokens"
+              ],
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "Hands": false,
+              "CustomMesh": {
+                "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/tokens/hand-of-the-archon-sadistic-competition.obj?v=1772029953",
+                "DiffuseURL": "",
+                "NormalURL": "",
+                "ColliderURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/tokens/hand-of-the-archon-sadistic-competition.obj?v=1772029953",
+                "Convex": true,
+                "MaterialIndex": 0,
+                "TypeIndex": 7,
+                "CastShadows": true
+              },
+              "Bag": {
+                "Order": 0
+              },
+              "ContainedObjects": [
+                {
+                  "GUID": "24c771",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 1.63,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Sadistic Competition",
+                  "Description": "Sadistic Competition",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": false,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/tokens/hand-of-the-archon-sadistic-competition.png?v=1783371755",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "ChildObjects": [
+                {
+                  "GUID": "d43c76",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 0.0,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Sadistic Competition",
+                  "Description": "Sadistic Competition",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": true,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/tokens/hand-of-the-archon-sadistic-competition.png?v=1783371755",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "fe76c0",
+              "Name": "Custom_Model_Infinite_Bag",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 1.03,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 270.0,
+                "rotZ": 0.0,
+                "scaleX": 1.8351557,
+                "scaleY": 0.1,
+                "scaleZ": 1.7720486
+              },
+              "Nickname": "Toxin Coating",
+              "Description": "Infinite Toxin Coating tokens",
+              "GMNotes": "",
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 0.0
+              },
+              "Tags": [
+                "_hand-of-the-archon_tokens"
+              ],
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "Hands": false,
+              "CustomMesh": {
+                "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/tokens/hand-of-the-archon-toxin-coating.obj?v=1772029953",
+                "DiffuseURL": "",
+                "NormalURL": "",
+                "ColliderURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/tokens/hand-of-the-archon-toxin-coating.obj?v=1772029953",
+                "Convex": true,
+                "MaterialIndex": 0,
+                "TypeIndex": 7,
+                "CastShadows": true
+              },
+              "Bag": {
+                "Order": 0
+              },
+              "ContainedObjects": [
+                {
+                  "GUID": "dc895e",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 1.63,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Toxin Coating",
+                  "Description": "Toxin Coating",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": false,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/tokens/hand-of-the-archon-toxin-coating.png?v=1783371755",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "ChildObjects": [
+                {
+                  "GUID": "833da0",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 0.0,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Toxin Coating",
+                  "Description": "Toxin Coating",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": true,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/tokens/hand-of-the-archon-toxin-coating.png?v=1783371755",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            }
+          ]
+        },
+        {
+          "GUID": "c57022",
+          "Name": "Custom_Dice",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 0.0,
+            "rotZ": 0.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Hand Of The Archon Dice",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "_Hand Of The Archon",
+            "KTDice_Team"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomImage": {
+            "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/dice/hand-of-the-archon-dice-team.jpg?v=1783355600",
+            "ImageSecondaryURL": "",
+            "WidthScale": 0.0
+          },
+          "CustomDice": {
+            "Type": 1
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "ff72cf",
+          "Name": "Custom_Dice",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 0.0,
+            "rotZ": 0.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Hand Of The Archon Light Dice",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "_Hand Of The Archon",
+            "KTDice_Light"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomImage": {
+            "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/dice/hand-of-the-archon-dice-light.jpg?v=1783355599",
+            "ImageSecondaryURL": "",
+            "WidthScale": 0.0
+          },
+          "CustomDice": {
+            "Type": 1
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "03b330",
+          "Name": "Custom_Dice",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 0.0,
+            "rotZ": 0.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Hand Of The Archon Dark Dice",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "_Hand Of The Archon",
+            "KTDice_Dark"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomImage": {
+            "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/dice/hand-of-the-archon-dice-dark.jpg?v=1783355599",
+            "ImageSecondaryURL": "",
+            "WidthScale": 0.0
+          },
+          "CustomDice": {
+            "Type": 1
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "b75724",
+          "Name": "Card",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 180.0,
+            "rotZ": 0.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "hand-of-the-archon-operatives",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.713235259,
+            "g": 0.713235259,
+            "b": 0.713235259
+          },
+          "Tags": [
+            "_Hand Of The Archon",
+            "KTCardsOperativeSelection"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": true,
+          "CardID": 100000,
+          "SidewaysCard": false,
+          "CustomDeck": {
+            "1000": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/cards/operatives_selection/hand-of-the-archon-operative-selection-front.jpg?v=1783372081",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/cards/operatives_selection/hand-of-the-archon-operative-selection-back.jpg?v=1783372082",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "3a2f95",
+          "Name": "Deck",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 180.0,
+            "rotZ": 180.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Faction Rules",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.713235259,
+            "g": 0.713235259,
+            "b": 0.713235259
+          },
+          "Tags": [
+            "_Hand Of The Archon",
+            "KTCardsFactionRule"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": false,
+          "SidewaysCard": false,
+          "DeckIDs": [
+            100200,
+            100100
+          ],
+          "CustomDeck": {
+            "1001": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/cards/faction_rules/hand-of-the-archon-power-from-pain-front.jpg?v=1783372082",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/cards/faction_rules/hand-of-the-archon-power-from-pain-back.jpg?v=1783372083",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1002": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/cards/faction_rules/hand-of-the-archon-rifles-front.jpg?v=1783372083",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/cards/faction_rules/hand-of-the-archon-rifles-back.jpg?v=1783355520",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "ContainedObjects": [
+            {
+              "GUID": "3dcb50",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "hand-of-the-archon-rifles",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 100200,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "db58bd",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "hand-of-the-archon-power-from-pain",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 100100,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            }
+          ]
+        },
+        {
+          "GUID": "04e57b",
+          "Name": "Card",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 180.0,
+            "rotZ": 0.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "hand-of-the-archon-markertoken-guide",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.713235259,
+            "g": 0.713235259,
+            "b": 0.713235259
+          },
+          "Tags": [
+            "_Hand Of The Archon",
+            "KTCardsTokenGuide"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": true,
+          "CardID": 100300,
+          "SidewaysCard": false,
+          "CustomDeck": {
+            "1003": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/cards/token_guide/hand-of-the-archon-token-guide-front.jpg?v=1783372088",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/cards/token_guide/hand-of-the-archon-token-guide-back.jpg?v=1783355520",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "c45e5c",
+          "Name": "Deck",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 180.0,
+            "rotZ": 180.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Datacards",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.713235259,
+            "g": 0.713235259,
+            "b": 0.713235259
+          },
+          "Tags": [
+            "_Hand Of The Archon",
+            "KTCardsDatacard"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": false,
+          "SidewaysCard": false,
+          "DeckIDs": [
+            101200,
+            101100,
+            101000,
+            100900,
+            100800,
+            100700,
+            100600,
+            100500,
+            100400
+          ],
+          "CustomDeck": {
+            "1004": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/cards/datacards/kabalite-agent-front.jpg?v=1783372077",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/cards/datacards/kabalite-agent-back.jpg?v=1783355520",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1005": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/cards/datacards/kabalite-archsybarite-front.jpg?v=1783372076",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/cards/datacards/kabalite-archsybarite-back.jpg?v=1783372076",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1006": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/cards/datacards/kabalite-crimson-duellist-front.jpg?v=1783372077",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/cards/datacards/kabalite-crimson-duellist-back.jpg?v=1783355520",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1007": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/cards/datacards/kabalite-disciple-of-yaelindra-front.jpg?v=1783372078",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/cards/datacards/kabalite-disciple-of-yaelindra-back.jpg?v=1783372078",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1008": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/cards/datacards/kabalite-elixicant-front.jpg?v=1783372078",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/cards/datacards/kabalite-elixicant-back.jpg?v=1783372079",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1009": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/cards/datacards/kabalite-flayer-front.jpg?v=1783372079",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/cards/datacards/kabalite-flayer-back.jpg?v=1783355520",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1010": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/cards/datacards/kabalite-gunner-front.jpg?v=1783372080",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/cards/datacards/kabalite-gunner-back.jpg?v=1783355520",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1011": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/cards/datacards/kabalite-heavy-gunner-front.jpg?v=1783372080",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/cards/datacards/kabalite-heavy-gunner-back.jpg?v=1783355520",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1012": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/cards/datacards/kabalite-skysplinter-assassin-front.jpg?v=1783372080",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/cards/datacards/kabalite-skysplinter-assassin-back.jpg?v=1783372081",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "ContainedObjects": [
+            {
+              "GUID": "5de855",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "kabalite-skysplinter-assassin",
+              "Description": "",
+              "GMNotes": "{\"name\":\"kabalite-skysplinter-assassin\",\"stats\":{\"APL\":2,\"Move\":7,\"Save\":4,\"Wounds\":8,\"Base\":25},\"keywords\":[\"Operative\",\"HAND OF THE ARCHON\",\"AELDARI\",\"DRUKHARI\",\"SKYSPLINTER ASSASSIN\"],\"weapons\":[{\"name\":\"[1E87FF]R[-] Razorwing\",\"plain_name\":\"Razorwing\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"4+\",\"DMG\":\"1/2\",\"WR\":\"Saturate, Seek, Silent\"}},{\"name\":\"[1E87FF]R[-] Shardcarbine\",\"plain_name\":\"Shardcarbine\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"2+\",\"DMG\":\"2/2\",\"WR\":\"Devastating 2,  Lethal 5+\"}},{\"name\":\"[F4641D]M[-] Array of blades\",\"plain_name\":\"Array of blades\",\"stats\":{\"ATK\":\"3\",\"HIT\":\"3+\",\"DMG\":\"3/4\",\"WR\":\"\"}}],\"abilities\":[{\"name\":\"Merciless Hunter\",\"text\":\"If this operative doesn't perform the Mark unique action (see other side of card) during its activation, it can perform two Shoot actions during its activation, but a razorwing must be selected for one (and only one) of those actions.\"},{\"name\":\"Omen\",\"text\":\"In the Select Operatives step, when you're selecting equipment, you can select one enemy operative or one other friendly HAND OF THE ARCHON operative (reveal your selection when you reveal equipment). Whenever attack or defence dice are rolled for that operative:\\n\u2022 If it's an enemy operative, your opponent must re-roll their dice results of 6.\\n\u2022 If it's a friendly operative, you can re-roll any of your dice results of 1.\"}],\"actions\":[{\"name\":\"MARK (1AP)\",\"text\":\"Select one enemy operative visible to this operative. Until the end of the turning point, whenever this operative is shooting that enemy operative you can use this effect. If you do:\\n\u2022 This operative's ranged weapons have the Seek Light weapon rule.\\n\u2022 That enemy operative cannot be obscured. This operative cannot perform this action while within control range of an enemy operative. KABALITE SKYSPLINTER ASSASSIN\"}],\"weapon_rules\":{\"Saturate\":\"The defender cannot retain cover saves.\",\"Seek\":\"When selecting a valid target, operatives with a Conceal order cannot use terrain for cover. If the rule is Seek Light, they cannot use Light terrain for cover. While this can allow operatives to be targeted (assuming they're visible), it doesn't remove their cover save (if any).\",\"Silent\":\"An operative can perform the Shoot action with this weapon while it has a Conceal order.\",\"Devastating x\":\"Each retained critical success immediately inflicts x damage on the operative this weapon is being used against, e.g. Devastating 3. If the rule starts with a distance (e.g. 1\\\" Devastating x), inflict x damage on that operative and each other operative visible to and within that distance of it. Note that success isn't discarded after doing so - it can still be resolved later in the sequence.\"},\"description\":\"[D36B3E][[84E680]APL[-] [ffffff]2[-]] [[84E680]MOVE[-] [ffffff]7\\\"[-]]\\n[[84E680]SAVE[-] [ffffff]4+[-]] [[84E680]WOUNDS[-] [ffffff]8[-]][-]\\n[C5C5C5]Operative, HAND OF THE ARCHON, AELDARI, DRUKHARI, SKYSPLINTER ASSASSIN[-]\\n[31B32B]Weapons[-]\\n[1E87FF]R[-] Razorwing\\n[84E680]ATK[-] 4 [84E680]HIT[-] 4+ [84E680]DMG[-] 1/2\\n[84E680]WR[-]: Saturate, Seek, Silent\\n\\n[1E87FF]R[-] Shardcarbine\\n[84E680]ATK[-] 4 [84E680]HIT[-] 2+ [84E680]DMG[-] 2/2\\n[84E680]WR[-]: Devastating 2,  Lethal 5+\\n\\n[F4641D]M[-] Array of blades\\n[84E680]ATK[-] 3 [84E680]HIT[-] 3+ [84E680]DMG[-] 3/4\\n\\n---\\n[31B32B]Abilities[-]\\n- [EF8450]Merciless Hunter[-]\\n- [EF8450]Omen[-]\\n---\\n[31B32B]Unique Actions[-]\\n- [EF8450]MARK (1AP)[-]\"}",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 101200,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "28b8a3",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "kabalite-heavy-gunner",
+              "Description": "",
+              "GMNotes": "{\"name\":\"kabalite-heavy-gunner\",\"stats\":{\"APL\":2,\"Move\":7,\"Save\":4,\"Wounds\":8,\"Base\":25},\"keywords\":[\"Operative\",\"HAND OF THE ARCHON\",\"AELDARI\",\"DRUKHARI\",\"HEAVY GUNNER\"],\"weapons\":[{\"name\":\"[F4641D]M[-] Dark lance\",\"plain_name\":\"Dark lance\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"6/7\",\"WR\":\"Heavy (Dash only), Piercing 2\"}},{\"name\":\"[1E87FF]R[-] Splinter cannon (focused)\",\"plain_name\":\"Splinter cannon (focused)\",\"stats\":{\"ATK\":\"5\",\"HIT\":\"3+\",\"DMG\":\"3/5\",\"WR\":\"Heavy (Dash only), Lethal 5+\"}},{\"name\":\"[1E87FF]R[-] Splinter cannon (sweeping)\",\"plain_name\":\"Splinter cannon (sweeping)\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"3/5\",\"WR\":\"Heavy (Dash only), Lethal 5+, Torrent 1\\\"\"}},{\"name\":\"[F4641D]M[-] Array of blades\",\"plain_name\":\"Array of blades\",\"stats\":{\"ATK\":\"3\",\"HIT\":\"3+\",\"DMG\":\"3/4\",\"WR\":\"\"}}],\"abilities\":[],\"actions\":[],\"weapon_rules\":{\"Heavy\":\"An operative cannot use this weapon in an activation or counteraction in which it moved, and it cannot move in an activation or counteraction in which it used this weapon. If the rule is Heavy (x only), where x is a move action, only that move is allowed, e.g. Heavy (Dash only). This weapon rule has no effect on preventing the Guard action.\",\"Piercing x\":\"The defender collects x less defence dice, e.g. Piercing 1. If the rule is Piercing Crits x, this only comes into effect if you retain any critical successes.\",\"Torrent x\":\"Select a valid target as normal as the primary target, then select any number of other valid targets within x of the first valid target, but not within control range of friendly operatives, as secondary targets, e.g. Torrent 2\\\". Shoot with this weapon against all of them in an order of your choice (roll each sequence separately).\"},\"description\":\"[D36B3E][[84E680]APL[-] [ffffff]2[-]] [[84E680]MOVE[-] [ffffff]7\\\"[-]]\\n[[84E680]SAVE[-] [ffffff]4+[-]] [[84E680]WOUNDS[-] [ffffff]8[-]][-]\\n[C5C5C5]Operative, HAND OF THE ARCHON, AELDARI, DRUKHARI, HEAVY GUNNER[-]\\n[31B32B]Weapons[-]\\n[F4641D]M[-] Dark lance\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 6/7\\n[84E680]WR[-]: Heavy (Dash only), Piercing 2\\n\\n[1E87FF]R[-] Splinter cannon (focused)\\n[84E680]ATK[-] 5 [84E680]HIT[-] 3+ [84E680]DMG[-] 3/5\\n[84E680]WR[-]: Heavy (Dash only), Lethal 5+\\n\\n[1E87FF]R[-] Splinter cannon (sweeping)\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 3/5\\n[84E680]WR[-]: Heavy (Dash only), Lethal 5+, Torrent 1\\\"\\n\\n[F4641D]M[-] Array of blades\\n[84E680]ATK[-] 3 [84E680]HIT[-] 3+ [84E680]DMG[-] 3/4\\n\"}",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 101100,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "a2d899",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "kabalite-gunner",
+              "Description": "",
+              "GMNotes": "{\"name\":\"kabalite-gunner\",\"stats\":{\"APL\":2,\"Move\":7,\"Save\":4,\"Wounds\":8,\"Base\":25},\"keywords\":[\"Operative\",\"HAND OF THE ARCHON\",\"AELDARI\",\"DRUKHARI\",\"GUNNER\"],\"weapons\":[{\"name\":\"[1E87FF]R[-] Blaster\",\"plain_name\":\"Blaster\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"4/5\",\"WR\":\"Piercing 2\"}},{\"name\":\"[1E87FF]R[-] Shredder\",\"plain_name\":\"Shredder\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"4/5\",\"WR\":\"Rending, Torrent 2\\\"\"}},{\"name\":\"[F4641D]M[-] Array of blades\",\"plain_name\":\"Array of blades\",\"stats\":{\"ATK\":\"3\",\"HIT\":\"3+\",\"DMG\":\"3/4\",\"WR\":\"\"}}],\"abilities\":[],\"actions\":[],\"weapon_rules\":{\"Piercing x\":\"The defender collects x less defence dice, e.g. Piercing 1. If the rule is Piercing Crits x, this only comes into effect if you retain any critical successes.\",\"Rending\":\"If you retain any critical successes, you can retain one of your normal successes as a critical success instead.\",\"Torrent x\":\"Select a valid target as normal as the primary target, then select any number of other valid targets within x of the first valid target, but not within control range of friendly operatives, as secondary targets, e.g. Torrent 2\\\". Shoot with this weapon against all of them in an order of your choice (roll each sequence separately).\"},\"description\":\"[D36B3E][[84E680]APL[-] [ffffff]2[-]] [[84E680]MOVE[-] [ffffff]7\\\"[-]]\\n[[84E680]SAVE[-] [ffffff]4+[-]] [[84E680]WOUNDS[-] [ffffff]8[-]][-]\\n[C5C5C5]Operative, HAND OF THE ARCHON, AELDARI, DRUKHARI, GUNNER[-]\\n[31B32B]Weapons[-]\\n[1E87FF]R[-] Blaster\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 4/5\\n[84E680]WR[-]: Piercing 2\\n\\n[1E87FF]R[-] Shredder\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 4/5\\n[84E680]WR[-]: Rending, Torrent 2\\\"\\n\\n[F4641D]M[-] Array of blades\\n[84E680]ATK[-] 3 [84E680]HIT[-] 3+ [84E680]DMG[-] 3/4\\n\"}",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 101000,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "3691d4",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "kabalite-flayer",
+              "Description": "",
+              "GMNotes": "{\"name\":\"kabalite-flayer\",\"stats\":{\"APL\":2,\"Move\":7,\"Save\":4,\"Wounds\":8,\"Base\":25},\"keywords\":[\"Operative\",\"HAND OF THE ARCHON\",\"AELDARI\",\"DRUKHARI\",\"FLAYER\"],\"weapons\":[{\"name\":\"[F4641D]M[-] Pain sculptors\",\"plain_name\":\"Pain sculptors\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"4/5\",\"WR\":\"Ceaseless, Flay*\"}}],\"abilities\":[{\"name\":\"Insensible to Pain\",\"text\":\"Normal and Critical Dmg of 3 or more inflicts 1 less damage on this operative.\"},{\"name\":\"*Flay\",\"text\":\"Whenever this operative is using this weapon, the first time you strike with a critical success during that sequence, you can select one friendly HAND OF THE ARCHON operative within 6\\\" of it to gain one of your Pain tokens.\"}],\"actions\":[],\"weapon_rules\":{\"Ceaseless\":\"You can re-roll any of your attack dice results of one result (e.g. results of 2).\"},\"description\":\"[D36B3E][[84E680]APL[-] [ffffff]2[-]] [[84E680]MOVE[-] [ffffff]7\\\"[-]]\\n[[84E680]SAVE[-] [ffffff]4+[-]] [[84E680]WOUNDS[-] [ffffff]8[-]][-]\\n[C5C5C5]Operative, HAND OF THE ARCHON, AELDARI, DRUKHARI, FLAYER[-]\\n[31B32B]Weapons[-]\\n[F4641D]M[-] Pain sculptors\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 4/5\\n[84E680]WR[-]: Ceaseless, Flay*\\n\\n---\\n[31B32B]Abilities[-]\\n- [EF8450]Insensible to Pain[-]\\n- [EF8450]*Flay[-]\"}",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 100900,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "077fc9",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "kabalite-elixicant",
+              "Description": "",
+              "GMNotes": "{\"name\":\"kabalite-elixicant\",\"stats\":{\"APL\":2,\"Move\":7,\"Save\":4,\"Wounds\":8,\"Base\":25},\"keywords\":[\"Operative\",\"HAND OF THE ARCHON\",\"AELDARI\",\"DRUKHARI\",\"ELIXICANT\"],\"weapons\":[{\"name\":\"[1E87FF]R[-] Splinter rifle\",\"plain_name\":\"Splinter rifle\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"2/4\",\"WR\":\"Lethal 5+\"}},{\"name\":\"[1E87FF]R[-] Stim-needler\",\"plain_name\":\"Stim-needler\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"0/0\",\"WR\":\"Range 3\\\", Lethal 3+, Stun\"}},{\"name\":\"[F4641D]M[-] Array of blades\",\"plain_name\":\"Array of blades\",\"stats\":{\"ATK\":\"3\",\"HIT\":\"3+\",\"DMG\":\"3/4\",\"WR\":\"\"}}],\"abilities\":[{\"name\":\"Combat Drugs\",\"text\":\"At the end of the Select Operatives step, if this operative is selected for deployment, select one of the following\"},{\"name\":\"COMBAT DRUG rules for friendly HAND OF THE ARCHON  operatives to have for the battle\",\"text\":\"\"},{\"name\":\"Painbringer\",\"text\":\"Whenever an attack dice inflicts damage of 3 or more on this operative, roll one D6: on a 6, subtract 1 from that inflicted damage.\"},{\"name\":\"Adrenalight\",\"text\":\"In the Ready step of each Strategy phase, you can select one friendly operative that has this COMBAT DRUG to gain one of your Pain tokens.\"},{\"name\":\"Hypex\",\"text\":\"You can ignore any changes to this operative's Move stat from being injured.\"}],\"actions\":[{\"name\":\"ADMINISTER DRUG (1AP)\",\"text\":\"Select one friendly HAND OF THE ARCHON operative visible to and within 3\\\" of this operative, then select one of the following for that friendly operative:\\n\u2022 It regains up to 2D3 lost wounds.\\n\u2022 Select a different COMBAT DRUG rule for it to have for the battle (this replaces its previous one). This operative cannot perform this action while within control range of an enemy operative. KABALITE ELIXICANT\"}],\"weapon_rules\":{\"Range x\":\"Only operatives within x of the active operative can be valid targets, e.g. Range 9\\\".\",\"Stun\":\"If you retain any critical successes, subtract 1 from the APL stat of the operative this weapon is being used against until the end of its next activation.\"},\"description\":\"[D36B3E][[84E680]APL[-] [ffffff]2[-]] [[84E680]MOVE[-] [ffffff]7\\\"[-]]\\n[[84E680]SAVE[-] [ffffff]4+[-]] [[84E680]WOUNDS[-] [ffffff]8[-]][-]\\n[C5C5C5]Operative, HAND OF THE ARCHON, AELDARI, DRUKHARI, ELIXICANT[-]\\n[31B32B]Weapons[-]\\n[1E87FF]R[-] Splinter rifle\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 2/4\\n[84E680]WR[-]: Lethal 5+\\n\\n[1E87FF]R[-] Stim-needler\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 0/0\\n[84E680]WR[-]: Range 3\\\", Lethal 3+, Stun\\n\\n[F4641D]M[-] Array of blades\\n[84E680]ATK[-] 3 [84E680]HIT[-] 3+ [84E680]DMG[-] 3/4\\n\\n---\\n[31B32B]Abilities[-]\\n- [EF8450]Combat Drugs[-]\\n- [EF8450]COMBAT DRUG rules for friendly HAND OF THE ARCHON  operatives to have for the battle[-]\\n- [EF8450]Painbringer[-]\\n- [EF8450]Adrenalight[-]\\n- [EF8450]Hypex[-]\\n---\\n[31B32B]Unique Actions[-]\\n- [EF8450]ADMINISTER DRUG (1AP)[-]\"}",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 100800,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "fdea14",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "kabalite-disciple-of-yaelindra",
+              "Description": "",
+              "GMNotes": "{\"name\":\"kabalite-disciple-of-yaelindra\",\"stats\":{\"APL\":2,\"Move\":7,\"Save\":4,\"Wounds\":8,\"Base\":25},\"keywords\":[\"Operative\",\"HAND OF THE ARCHON\",\"AELDARI\",\"DRUKHARI\",\"DISCIPLE OF YAELINDRA\"],\"weapons\":[{\"name\":\"[1E87FF]R[-] Stinger pistol\",\"plain_name\":\"Stinger pistol\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"3/5\",\"WR\":\"Range 8\\\", Lethal 5+, Stinger*\"}},{\"name\":\"[F4641D]M[-] Array of blades\",\"plain_name\":\"Array of blades\",\"stats\":{\"ATK\":\"3\",\"HIT\":\"3+\",\"DMG\":\"3/4\",\"WR\":\"\"}}],\"abilities\":[{\"name\":\"*Stinger\",\"text\":\"Whenever an enemy operative is incapacitated by this weapon, before it's removed from the killzone, inflict D3 damage on each other operative visible to and within 2\\\" of it (roll separately for each). Each operative subsequently incapacitated as a result of this weapon rule will cause this to happen again.\"}],\"actions\":[{\"name\":\"TORMENT GRENADE (1AP)\",\"text\":\"Select one enemy operative visible to and within 6\\\" of this operative. That operative and each other operative within 1\\\" of it takes a poison test. For an operative to take a poison test, roll one D6, adding 1 to the result if that operative has a Save stat of 4+ or worse: on a 3+, inflict D3 damage on that operative and it gains one of your Poison tokens (if it doesn't already have one). Whenever an operative that has one of your Poison tokens is activated, inflict D3 damage on it. This operative cannot perform this action while within control range of an enemy operative. KABALITE DISCIPLE OF YAELINDRA\"}],\"weapon_rules\":{\"Range x\":\"Only operatives within x of the active operative can be valid targets, e.g. Range 9\\\".\"},\"description\":\"[D36B3E][[84E680]APL[-] [ffffff]2[-]] [[84E680]MOVE[-] [ffffff]7\\\"[-]]\\n[[84E680]SAVE[-] [ffffff]4+[-]] [[84E680]WOUNDS[-] [ffffff]8[-]][-]\\n[C5C5C5]Operative, HAND OF THE ARCHON, AELDARI, DRUKHARI, DISCIPLE OF YAELINDRA[-]\\n[31B32B]Weapons[-]\\n[1E87FF]R[-] Stinger pistol\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 3/5\\n[84E680]WR[-]: Range 8\\\", Lethal 5+, Stinger*\\n\\n[F4641D]M[-] Array of blades\\n[84E680]ATK[-] 3 [84E680]HIT[-] 3+ [84E680]DMG[-] 3/4\\n\\n---\\n[31B32B]Abilities[-]\\n- [EF8450]*Stinger[-]\\n---\\n[31B32B]Unique Actions[-]\\n- [EF8450]TORMENT GRENADE (1AP)[-]\"}",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 100700,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "97cb69",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "kabalite-crimson-duellist",
+              "Description": "",
+              "GMNotes": "{\"name\":\"kabalite-crimson-duellist\",\"stats\":{\"APL\":2,\"Move\":7,\"Save\":4,\"Wounds\":8,\"Base\":25},\"keywords\":[\"Operative\",\"HAND OF THE ARCHON\",\"AELDARI\",\"DRUKHARI\",\"CRIMSON DUELLIST\"],\"weapons\":[{\"name\":\"[1E87FF]R[-] Splinter pistol\",\"plain_name\":\"Splinter pistol\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"2/4\",\"WR\":\"Range 8\\\", Lethal 5+\"}},{\"name\":\"[F4641D]M[-] Razorflail\",\"plain_name\":\"Razorflail\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"2+\",\"DMG\":\"4/5\",\"WR\":\"Brutal, Tangle*\"}}],\"abilities\":[{\"name\":\"Brutal Display\",\"text\":\"Once per turning point, when this operative incapacitates an enemy operative within its control range, you can select one other enemy operative visible to and within 6\\\" of either this operative or the incapacitated enemy operative. Until the start of the next turning point, that other enemy operative cannot control markers or perform the Pick Up Marker or mission actions.\"},{\"name\":\"Crimson Duellist\",\"text\":\"This operative can perform two Fight actions during its activation.\"},{\"name\":\"*Tangle\",\"text\":\"Whenever this operative is fighting or retaliating with this weapon, each of your blocks can be allocated to block two unresolved successes (instead of one).\"}],\"actions\":[],\"weapon_rules\":{\"Range x\":\"Only operatives within x of the active operative can be valid targets, e.g. Range 9\\\".\",\"Brutal\":\"Your opponent can only block with critical successes.\"},\"description\":\"[D36B3E][[84E680]APL[-] [ffffff]2[-]] [[84E680]MOVE[-] [ffffff]7\\\"[-]]\\n[[84E680]SAVE[-] [ffffff]4+[-]] [[84E680]WOUNDS[-] [ffffff]8[-]][-]\\n[C5C5C5]Operative, HAND OF THE ARCHON, AELDARI, DRUKHARI, CRIMSON DUELLIST[-]\\n[31B32B]Weapons[-]\\n[1E87FF]R[-] Splinter pistol\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 2/4\\n[84E680]WR[-]: Range 8\\\", Lethal 5+\\n\\n[F4641D]M[-] Razorflail\\n[84E680]ATK[-] 4 [84E680]HIT[-] 2+ [84E680]DMG[-] 4/5\\n[84E680]WR[-]: Brutal, Tangle*\\n\\n---\\n[31B32B]Abilities[-]\\n- [EF8450]Brutal Display[-]\\n- [EF8450]Crimson Duellist[-]\\n- [EF8450]*Tangle[-]\"}",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 100600,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "5032ee",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "kabalite-archsybarite",
+              "Description": "",
+              "GMNotes": "{\"name\":\"kabalite-archsybarite\",\"stats\":{\"APL\":2,\"Move\":7,\"Save\":4,\"Wounds\":9,\"Base\":25},\"keywords\":[\"Operative\",\"HAND OF THE ARCHON\",\"AELDARI\",\"DRUKHARI\",\"LEADER\",\"ARCHSYBARITE\"],\"weapons\":[{\"name\":\"[1E87FF]R[-] Blast pistol\",\"plain_name\":\"Blast pistol\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"3/4\",\"WR\":\"Range 8\\\", Piercing 2\"}},{\"name\":\"[1E87FF]R[-] Splinter pistol\",\"plain_name\":\"Splinter pistol\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"2/4\",\"WR\":\"Range 8\\\", Lethal 5+\"}},{\"name\":\"[1E87FF]R[-] Splinter rifle\",\"plain_name\":\"Splinter rifle\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"2/4\",\"WR\":\"Lethal 5+\"}},{\"name\":\"[F4641D]M[-] Agoniser\",\"plain_name\":\"Agoniser\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"3/5\",\"WR\":\"Brutal, Lethal 5+, Shock\"}},{\"name\":\"[F4641D]M[-] Array of blades\",\"plain_name\":\"Array of blades\",\"stats\":{\"ATK\":\"3\",\"HIT\":\"3+\",\"DMG\":\"3/4\",\"WR\":\"\"}},{\"name\":\"[F4641D]M[-] Power weapon\",\"plain_name\":\"Power weapon\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"4/6\",\"WR\":\"Lethal 5+\"}},{\"name\":\"[F4641D]M[-] Venom blade\",\"plain_name\":\"Venom blade\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"4/5\",\"WR\":\"Lethal 4+\"}}],\"abilities\":[{\"name\":\"Cunning\",\"text\":\"In the Gambit step of each Strategy phase, if this operative is in the killzone and you pass at the first opportunity, you gain 1CP. Ignore each STRATEGIC GAMBIT from the mission pack (if any) when determining this.\"},{\"name\":\"Torturous Vision\",\"text\":\"Once during each of this operative's activations, if it doesn't have any of your Pain tokens when it performs either the Fight or Shoot action, it can gain one of your Pain tokens when you select a valid target or an enemy operative to fight against. 2 APL WOUNDS SAVE MOVE 7\\\" 4+ 9 KABALITE ARCHSYBARITE\"}],\"actions\":[],\"weapon_rules\":{\"Piercing x\":\"The defender collects x less defence dice, e.g. Piercing 1. If the rule is Piercing Crits x, this only comes into effect if you retain any critical successes.\",\"Range x\":\"Only operatives within x of the active operative can be valid targets, e.g. Range 9\\\".\",\"Brutal\":\"Your opponent can only block with critical successes.\",\"Shock\":\"The first time you strike with a critical success in each sequence, also discard one of your opponent's unresolved normal successes (or one of their critical successes if there are none).\"},\"description\":\"[D36B3E][[84E680]APL[-] [ffffff]2[-]] [[84E680]MOVE[-] [ffffff]7\\\"[-]]\\n[[84E680]SAVE[-] [ffffff]4+[-]] [[84E680]WOUNDS[-] [ffffff]9[-]][-]\\n[C5C5C5]Operative, HAND OF THE ARCHON, AELDARI, DRUKHARI, LEADER, ARCHSYBARITE[-]\\n[31B32B]Weapons[-]\\n[1E87FF]R[-] Blast pistol\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 3/4\\n[84E680]WR[-]: Range 8\\\", Piercing 2\\n\\n[1E87FF]R[-] Splinter pistol\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 2/4\\n[84E680]WR[-]: Range 8\\\", Lethal 5+\\n\\n[1E87FF]R[-] Splinter rifle\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 2/4\\n[84E680]WR[-]: Lethal 5+\\n\\n[F4641D]M[-] Agoniser\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 3/5\\n[84E680]WR[-]: Brutal, Lethal 5+, Shock\\n\\n[F4641D]M[-] Array of blades\\n[84E680]ATK[-] 3 [84E680]HIT[-] 3+ [84E680]DMG[-] 3/4\\n\\n[F4641D]M[-] Power weapon\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 4/6\\n[84E680]WR[-]: Lethal 5+\\n\\n[F4641D]M[-] Venom blade\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 4/5\\n[84E680]WR[-]: Lethal 4+\\n\\n---\\n[31B32B]Abilities[-]\\n- [EF8450]Cunning[-]\\n- [EF8450]Torturous Vision[-]\"}",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 100500,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "93862b",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "kabalite-agent",
+              "Description": "",
+              "GMNotes": "{\"name\":\"kabalite-agent\",\"stats\":{\"APL\":2,\"Move\":7,\"Save\":4,\"Wounds\":8,\"Base\":25},\"keywords\":[\"Operative\",\"HAND OF THE ARCHON\",\"AELDARI\",\"DRUKHARI\",\"AGENT\"],\"weapons\":[{\"name\":\"[1E87FF]R[-] Splinter rifle\",\"plain_name\":\"Splinter rifle\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"2/4\",\"WR\":\"Lethal 5+\"}},{\"name\":\"[F4641D]M[-] Array of blades\",\"plain_name\":\"Array of blades\",\"stats\":{\"ATK\":\"3\",\"HIT\":\"3+\",\"DMG\":\"3/4\",\"WR\":\"\"}}],\"abilities\":[{\"name\":\"Sadistic Competition\",\"text\":\"Once per turning point, when a friendly HAND OF THE ARCHON operative gains one of your Pain tokens, one friendly HAND OF THE ARCHON AGENT operative that doesn't have one of your Pain tokens can also gain one.\"}],\"actions\":[],\"weapon_rules\":{},\"description\":\"[D36B3E][[84E680]APL[-] [ffffff]2[-]] [[84E680]MOVE[-] [ffffff]7\\\"[-]]\\n[[84E680]SAVE[-] [ffffff]4+[-]] [[84E680]WOUNDS[-] [ffffff]8[-]][-]\\n[C5C5C5]Operative, HAND OF THE ARCHON, AELDARI, DRUKHARI, AGENT[-]\\n[31B32B]Weapons[-]\\n[1E87FF]R[-] Splinter rifle\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 2/4\\n[84E680]WR[-]: Lethal 5+\\n\\n[F4641D]M[-] Array of blades\\n[84E680]ATK[-] 3 [84E680]HIT[-] 3+ [84E680]DMG[-] 3/4\\n\\n---\\n[31B32B]Abilities[-]\\n- [EF8450]Sadistic Competition[-]\"}",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 100400,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            }
+          ]
+        },
+        {
+          "GUID": "cad436",
+          "Name": "Deck",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 180.0,
+            "rotZ": 180.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Equipment",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.713235259,
+            "g": 0.713235259,
+            "b": 0.713235259
+          },
+          "Tags": [
+            "_Hand Of The Archon",
+            "KTCardsEquipment"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": false,
+          "SidewaysCard": false,
+          "DeckIDs": [
+            101600,
+            101500,
+            101400,
+            101300
+          ],
+          "CustomDeck": {
+            "1013": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/cards/equipment/hand-of-the-archon-chain-snare-front.jpg?v=1783372083",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/cards/equipment/hand-of-the-archon-chain-snare-back.jpg?v=1783355520",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1014": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/cards/equipment/hand-of-the-archon-refined-poison-front.jpg?v=1783372085",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/cards/equipment/hand-of-the-archon-refined-poison-back.jpg?v=1783355520",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1015": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/cards/equipment/hand-of-the-archon-toxin-coating-front.jpg?v=1783372084",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/cards/equipment/hand-of-the-archon-toxin-coating-back.jpg?v=1783355520",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1016": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/cards/equipment/hand-of-the-archon-wicked-blades-front.jpg?v=1783372084",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/cards/equipment/hand-of-the-archon-wicked-blades-back.jpg?v=1783355520",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "ContainedObjects": [
+            {
+              "GUID": "65ab97",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "hand-of-the-archon-wicked-blades",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 101600,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "2ec2ba",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "hand-of-the-archon-toxin-coating",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 101500,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "22cbf1",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "hand-of-the-archon-refined-poison",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 101400,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "4ccf9c",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "hand-of-the-archon-chain-snare",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 101300,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            }
+          ]
+        },
+        {
+          "GUID": "1d83b1",
+          "Name": "Deck",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 180.0,
+            "rotZ": 180.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Firefight Ploys",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.713235259,
+            "g": 0.713235259,
+            "b": 0.713235259
+          },
+          "Tags": [
+            "_Hand Of The Archon",
+            "KTCardsFirefightPloy"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": false,
+          "SidewaysCard": false,
+          "DeckIDs": [
+            102000,
+            101900,
+            101800,
+            101700
+          ],
+          "CustomDeck": {
+            "1017": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/cards/firefight_ploys/hand-of-the-archon-cruel-deception-front.jpg?v=1783372085",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/cards/firefight_ploys/hand-of-the-archon-cruel-deception-back.jpg?v=1783355520",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1018": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/cards/firefight_ploys/hand-of-the-archon-devious-scheme-front.jpg?v=1783372086",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/cards/firefight_ploys/hand-of-the-archon-devious-scheme-back.jpg?v=1783355520",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1019": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/cards/firefight_ploys/hand-of-the-archon-heinous-arrogance-front.jpg?v=1783372086",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/cards/firefight_ploys/hand-of-the-archon-heinous-arrogance-back.jpg?v=1783355520",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1020": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/cards/firefight_ploys/hand-of-the-archon-prey-on-the-wounded-front.jpg?v=1783372086",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/cards/firefight_ploys/hand-of-the-archon-prey-on-the-wounded-back.jpg?v=1783355520",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "ContainedObjects": [
+            {
+              "GUID": "a9340e",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "hand-of-the-archon-prey-on-the-wounded",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 102000,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "3ab125",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "hand-of-the-archon-heinous-arrogance",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 101900,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "d8aa3d",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "hand-of-the-archon-devious-scheme",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 101800,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "0c5ec6",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "hand-of-the-archon-cruel-deception",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 101700,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            }
+          ]
+        },
+        {
+          "GUID": "e1eafd",
+          "Name": "Deck",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 180.0,
+            "rotZ": 180.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Strategy Ploys",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.713235259,
+            "g": 0.713235259,
+            "b": 0.713235259
+          },
+          "Tags": [
+            "_Hand Of The Archon",
+            "KTCardsStrategyPloy"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": false,
+          "SidewaysCard": false,
+          "DeckIDs": [
+            102400,
+            102300,
+            102200,
+            102100
+          ],
+          "CustomDeck": {
+            "1021": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/cards/strategy_ploys/hand-of-the-archon-blade-artists-front.jpg?v=1783372087",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/cards/strategy_ploys/hand-of-the-archon-blade-artists-back.jpg?v=1783355520",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1022": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/cards/strategy_ploys/hand-of-the-archon-denizens-of-night-front.jpg?v=1783372088",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/cards/strategy_ploys/hand-of-the-archon-denizens-of-night-back.jpg?v=1783355520",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1023": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/cards/strategy_ploys/hand-of-the-archon-from-darkness-death-front.jpg?v=1783372088",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/cards/strategy_ploys/hand-of-the-archon-from-darkness-death-back.jpg?v=1783355520",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1024": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/cards/strategy_ploys/hand-of-the-archon-merciless-sadists-front.jpg?v=1783372087",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/hand-of-the-archon/cards/strategy_ploys/hand-of-the-archon-merciless-sadists-back.jpg?v=1783355520",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "ContainedObjects": [
+            {
+              "GUID": "a5ff96",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "hand-of-the-archon-merciless-sadists",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 102400,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "096604",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "hand-of-the-archon-from-darkness-death",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 102300,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "7dcc77",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "hand-of-the-archon-denizens-of-night",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 102200,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "13f84f",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "hand-of-the-archon-blade-artists",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 102100,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

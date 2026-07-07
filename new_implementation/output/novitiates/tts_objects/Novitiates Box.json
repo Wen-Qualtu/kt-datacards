@@ -1,0 +1,3631 @@
+{
+  "SaveName": "Novitiates",
+  "Date": "",
+  "VersionNumber": "",
+  "GameMode": "",
+  "GameType": "",
+  "GameComplexity": "",
+  "Tags": [],
+  "Gravity": 0.5,
+  "PlayArea": 0.5,
+  "Table": "",
+  "Sky": "",
+  "Note": "",
+  "TabStates": {},
+  "LuaScript": "",
+  "LuaScriptState": "",
+  "XmlUI": "",
+  "ObjectStates": [
+    {
+      "GUID": "71fe3c",
+      "Name": "Custom_Model_Bag",
+      "Transform": {
+        "posX": 0.0,
+        "posY": 3.5,
+        "posZ": 0.0,
+        "rotX": 0.0,
+        "rotY": 270.0,
+        "rotZ": 0.0,
+        "scaleX": 1.0,
+        "scaleY": 1.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "Novitiates",
+      "Description": "OUTDATED VERSION. Click the red UPDATE button (or right-click -> Update to latest) to replace this with the full current team box. This intermediate is a one-time bridge and should not be reused.",
+      "GMNotes": "_Novitiates",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
+      },
+      "Tags": [
+        "_Faction_Decks"
+      ],
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": false,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": true,
+      "MaterialIndex": -1,
+      "MeshIndex": -1,
+      "CustomMesh": {
+        "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/cardbox/novitiates-card-box.obj?v=1781895962",
+        "DiffuseURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/cardbox/novitiates-card-box-texture.jpg?v=1783355614",
+        "NormalURL": "",
+        "ColliderURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/cardbox/novitiates-card-box.obj?v=1781895962",
+        "Convex": true,
+        "MaterialIndex": 3,
+        "TypeIndex": 6,
+        "CastShadows": true
+      },
+      "Bag": {
+        "Order": 0
+      },
+      "LuaScript": "-- Intermediate box updater (slim).\r\n--\r\n-- Embedded in the legacy save-file wrapper {Team} Box.json. Sole purpose:\r\n-- replace this box with the full clean {Team}.json from team-urls.json.\r\n--\r\n-- The wrapper exists only as a compatibility hop for in-the-wild boxes that\r\n-- still reference the old Box.json filename. Users who land here should\r\n-- update immediately and never reuse this intermediate.\r\n--\r\n-- Spawn-format note: the target file is a bare Custom_Model_Bag object\r\n-- handed straight to spawnObjectJSON (no save-file slicing needed).\r\n\r\nlocal BUTTON_UPDATE_NOW = {\r\n    label = \"UPDATE\\nNOW\",\r\n    click_function = \"click_update_now\",\r\n    function_owner = self,\r\n    position = {0, 0.3, 0},\r\n    rotation = {0, 180, 0},\r\n    height = 900, width = 1400,\r\n    font_size = 280,\r\n    color = {0.85, 0.1, 0.1}, font_color = {1, 1, 1},\r\n    tooltip = \"Replace this intermediate box with the latest full version.\"\r\n}\r\n\r\nfunction onLoad()\r\n    self.clearButtons()\r\n    self.createButton(BUTTON_UPDATE_NOW)\r\n    self.addContextMenuItem(\"Update to latest\", click_update_now)\r\nend\r\n\r\nfunction click_update_now()\r\n    -- Derive team slug + base repo URL from this box's MeshURL so we follow\r\n    -- whichever branch/fork the user spawned the box from.\r\n    local data = self.getData() or {}\r\n    local meshUrl = ((data.CustomMesh or {}).MeshURL) or \"\"\r\n    if meshUrl == \"\" then\r\n        broadcastToAll(\"Update failed: missing box mesh URL\", {1, 0.5, 0})\r\n        return\r\n    end\r\n    local cleanMeshUrl = string.match(meshUrl, \"^[^?]+\") or meshUrl\r\n    local baseUrl = string.match(cleanMeshUrl, \"^(.-)/output/\")\r\n    local teamSlug = string.match(cleanMeshUrl, \"/output/([^/]+)/\")\r\n    if not baseUrl or baseUrl == \"\" or not teamSlug or teamSlug == \"\" then\r\n        broadcastToAll(\"Update failed: could not parse repository URL\", {1, 0.5, 0})\r\n        return\r\n    end\r\n\r\n    local metadataUrl = baseUrl .. \"/output/team-urls.json?v=\" .. tostring(os.time())\r\n    broadcastToAll(\"Checking for latest \" .. teamSlug .. \"...\", {1, 1, 0})\r\n\r\n    WebRequest.get(metadataUrl, function(req)\r\n        if req.is_error then\r\n            broadcastToAll(\"Update failed: \" .. req.error, {1, 0.5, 0})\r\n            return\r\n        end\r\n        local ok, metadata = pcall(function() return JSON.decode(req.text) end)\r\n        if not ok or type(metadata) ~= \"table\" then\r\n            broadcastToAll(\"Update failed: could not parse team-urls.json\", {1, 0.5, 0})\r\n            return\r\n        end\r\n        local entry = metadata[teamSlug]\r\n        if type(entry) ~= \"table\" or type(entry.box) ~= \"table\" then\r\n            broadcastToAll(\"Update failed: team not found in team-urls.json\", {1, 0.5, 0})\r\n            return\r\n        end\r\n        local boxUrl = entry.box.url or \"\"\r\n        if boxUrl == \"\" then\r\n            broadcastToAll(\"Update failed: no box URL for team\", {1, 0.5, 0})\r\n            return\r\n        end\r\n\r\n        broadcastToAll(\"Downloading latest version...\", {0, 0.7, 1})\r\n        WebRequest.get(boxUrl, function(resp)\r\n            local code = tonumber(resp.response_code) or 0\r\n            if resp.is_error or code >= 400 then\r\n                local msg = resp.error\r\n                if msg == nil or msg == \"\" then msg = \"HTTP \" .. tostring(code) end\r\n                broadcastToAll(\"Download failed: \" .. msg .. \" (\" .. boxUrl .. \")\", {1, 0.5, 0})\r\n                return\r\n            end\r\n            local body = resp.text or \"\"\r\n            -- Strip leading whitespace; bare object must start with '{'.\r\n            local startIdx = 1\r\n            while startIdx <= #body and (body:byte(startIdx) == 32 or body:byte(startIdx) == 9 or body:byte(startIdx) == 10 or body:byte(startIdx) == 13) do\r\n                startIdx = startIdx + 1\r\n            end\r\n            if startIdx > #body or body:byte(startIdx) ~= 123 then\r\n                broadcastToAll(\"Update failed: unexpected response format (HTTP \" .. tostring(code) .. \")\", {1, 0.5, 0})\r\n                return\r\n            end\r\n            local objJson = (startIdx == 1) and body or body:sub(startIdx)\r\n\r\n            local pos = self.getPosition()\r\n            local rot = self.getRotation()\r\n            local locked = self.getLock()\r\n\r\n            local spawned = spawnObjectJSON({\r\n                json = objJson,\r\n                position = pos + Vector(5, 0, 0),\r\n                rotation = rot\r\n            })\r\n            if spawned == nil then\r\n                broadcastToAll(\"Update failed: could not spawn new box\", {1, 0.5, 0})\r\n                return\r\n            end\r\n\r\n            Wait.condition(\r\n                function()\r\n                    Wait.time(function()\r\n                        if spawned == nil or spawned.isDestroyed() then\r\n                            broadcastToAll(\"Update failed during spawn\", {1, 0.5, 0})\r\n                            return\r\n                        end\r\n                        spawned.setLock(locked)\r\n                        self.destruct()\r\n                        Wait.time(function()\r\n                            spawned.setPositionSmooth(pos, false, true)\r\n                            spawned.setRotationSmooth(rot, false, true)\r\n                            broadcastToAll(\"Updated to latest version!\", {0, 1, 0})\r\n                        end, 0.5)\r\n                    end, 0.5)\r\n                end,\r\n                function() return spawned ~= nil and not spawned.spawning end,\r\n                10\r\n            )\r\n        end)\r\n    end)\r\nend\r\n",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "ContainedObjects": [
+        {
+          "GUID": "ea6eb7",
+          "Name": "Custom_Model_Bag",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 1.01,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 270.0,
+            "rotZ": 0.0,
+            "scaleX": 1.47,
+            "scaleY": 0.1,
+            "scaleZ": 1.47
+          },
+          "Nickname": "Novitiates tokens",
+          "Description": "If errors pop up, just wait for few sec and try again",
+          "GMNotes": "_novitiates_tokens",
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0,
+            "a": 0.0
+          },
+          "Tags": [
+            "_novitiates",
+            "KTCardsTokenBag"
+          ],
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "Hands": false,
+          "Number": 0,
+          "CustomMesh": {
+            "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/tokens/tokenbag/novitiates-token-bag.obj?v=1779121408",
+            "DiffuseURL": "",
+            "NormalURL": "",
+            "ColliderURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/tokens/tokenbag/novitiates-token-bag.obj?v=1779121408",
+            "Convex": true,
+            "MaterialIndex": 0,
+            "TypeIndex": 6,
+            "CastShadows": true
+          },
+          "Bag": {
+            "Order": 0
+          },
+          "LuaScript": "",
+          "LuaScriptState": "{\"ml\": {\"8abd5d\": {\"lock\": false, \"pos\": {\"x\": -2.25, \"y\": 0.0213, \"z\": -3.0}, \"rot\": {\"x\": 0.0, \"y\": 180.0, \"z\": 0.0}}, \"262b8e\": {\"lock\": false, \"pos\": {\"x\": -0.75, \"y\": 0.0213, \"z\": -3.0}, \"rot\": {\"x\": 0.0, \"y\": 180.0, \"z\": 0.0}}, \"a89d50\": {\"lock\": false, \"pos\": {\"x\": 0.75, \"y\": 0.0213, \"z\": -3.0}, \"rot\": {\"x\": 0.0, \"y\": 180.0, \"z\": 0.0}}, \"1f9f89\": {\"lock\": false, \"pos\": {\"x\": 2.25, \"y\": 0.0213, \"z\": -3.0}, \"rot\": {\"x\": 0.0, \"y\": 180.0, \"z\": 0.0}}, \"933c88\": {\"lock\": false, \"pos\": {\"x\": -2.25, \"y\": 0.0213, \"z\": -4.5}, \"rot\": {\"x\": 0.0, \"y\": 180.0, \"z\": 0.0}}, \"574050\": {\"lock\": false, \"pos\": {\"x\": -0.75, \"y\": 0.0213, \"z\": -4.5}, \"rot\": {\"x\": 0.0, \"y\": 180.0, \"z\": 0.0}}, \"0665c9\": {\"lock\": false, \"pos\": {\"x\": 0.75, \"y\": 0.0213, \"z\": -4.5}, \"rot\": {\"x\": 0.0, \"y\": 180.0, \"z\": 0.0}}, \"4eab2c\": {\"lock\": false, \"pos\": {\"x\": 2.25, \"y\": 0.0213, \"z\": -4.5}, \"rot\": {\"x\": 0.0, \"y\": 180.0, \"z\": 0.0}}, \"468576\": {\"lock\": false, \"pos\": {\"x\": -2.25, \"y\": 0.0213, \"z\": -6.0}, \"rot\": {\"x\": 0.0, \"y\": 180.0, \"z\": 0.0}}, \"7a0e4a\": {\"lock\": false, \"pos\": {\"x\": -0.75, \"y\": 0.0213, \"z\": -6.0}, \"rot\": {\"x\": 0.0, \"y\": 180.0, \"z\": 0.0}}}, \"rr\": 270, \"lastUpdate\": \"2026-07-07T07:29:55.285347+00:00\"}",
+          "XmlUI": "",
+          "ChildObjects": [
+            {
+              "GUID": "6d4402",
+              "Name": "Custom_Tile",
+              "Transform": {
+                "posX": 0.0,
+                "posY": -0.5,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 270.0,
+                "rotZ": 0.0,
+                "scaleX": 0.5,
+                "scaleY": 10.0,
+                "scaleZ": 0.5
+              },
+              "Nickname": "",
+              "Description": "",
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0
+              },
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "Hands": false,
+              "CustomImage": {
+                "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/tokens/tokenbag/novitiates-token-bag-icon.png?v=1783371271",
+                "ImageSecondaryURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/tokens/tokenbag/novitiates-token-bag-icon.png?v=1783371271",
+                "ImageScalar": 1.0,
+                "WidthScale": 0.0,
+                "CustomTile": {
+                  "Type": 0,
+                  "Thickness": 0.1,
+                  "Stackable": false,
+                  "Stretch": true
+                }
+              }
+            }
+          ],
+          "ContainedObjects": [
+            {
+              "GUID": "8abd5d",
+              "Name": "Custom_Model_Infinite_Bag",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 1.03,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 270.0,
+                "rotZ": 0.0,
+                "scaleX": 1.8351557,
+                "scaleY": 0.1,
+                "scaleZ": 1.7720486
+              },
+              "Nickname": "Auto Broadcaster",
+              "Description": "Infinite Auto Broadcaster tokens",
+              "GMNotes": "",
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 0.0
+              },
+              "Tags": [
+                "_novitiates_tokens"
+              ],
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "Hands": false,
+              "CustomMesh": {
+                "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/tokens/novitiates-auto-broadcaster.obj?v=1772029953",
+                "DiffuseURL": "",
+                "NormalURL": "",
+                "ColliderURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/tokens/novitiates-auto-broadcaster.obj?v=1772029953",
+                "Convex": true,
+                "MaterialIndex": 0,
+                "TypeIndex": 7,
+                "CastShadows": true
+              },
+              "Bag": {
+                "Order": 0
+              },
+              "ContainedObjects": [
+                {
+                  "GUID": "fcd570",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 1.63,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Auto Broadcaster",
+                  "Description": "Auto Broadcaster",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": false,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/tokens/novitiates-auto-broadcaster.png?v=1783371768",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "ChildObjects": [
+                {
+                  "GUID": "6de12a",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 0.0,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Auto Broadcaster",
+                  "Description": "Auto Broadcaster",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": true,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/tokens/novitiates-auto-broadcaster.png?v=1783371768",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "262b8e",
+              "Name": "Custom_Model_Infinite_Bag",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 1.03,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 270.0,
+                "rotZ": 0.0,
+                "scaleX": 1.8351557,
+                "scaleY": 0.1,
+                "scaleZ": 1.7720486
+              },
+              "Nickname": "Auto Chastisers",
+              "Description": "Infinite Auto Chastisers tokens",
+              "GMNotes": "",
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 0.0
+              },
+              "Tags": [
+                "_novitiates_tokens"
+              ],
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "Hands": false,
+              "CustomMesh": {
+                "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/tokens/novitiates-auto-chastisers.obj?v=1772029953",
+                "DiffuseURL": "",
+                "NormalURL": "",
+                "ColliderURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/tokens/novitiates-auto-chastisers.obj?v=1772029953",
+                "Convex": true,
+                "MaterialIndex": 0,
+                "TypeIndex": 7,
+                "CastShadows": true
+              },
+              "Bag": {
+                "Order": 0
+              },
+              "ContainedObjects": [
+                {
+                  "GUID": "3cf1d1",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 1.63,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Auto Chastisers",
+                  "Description": "Auto Chastisers",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": false,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/tokens/novitiates-auto-chastisers.png?v=1783371768",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "ChildObjects": [
+                {
+                  "GUID": "7c155c",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 0.0,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Auto Chastisers",
+                  "Description": "Auto Chastisers",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": true,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/tokens/novitiates-auto-chastisers.png?v=1783371768",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "a89d50",
+              "Name": "Custom_Model_Infinite_Bag",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 1.03,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 270.0,
+                "rotZ": 0.0,
+                "scaleX": 1.8351557,
+                "scaleY": 0.1,
+                "scaleZ": 1.7720486
+              },
+              "Nickname": "Blaze",
+              "Description": "Infinite Blaze tokens",
+              "GMNotes": "",
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 0.0
+              },
+              "Tags": [
+                "_novitiates_tokens"
+              ],
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "Hands": false,
+              "CustomMesh": {
+                "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/tokens/novitiates-blaze.obj?v=1772029953",
+                "DiffuseURL": "",
+                "NormalURL": "",
+                "ColliderURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/tokens/novitiates-blaze.obj?v=1772029953",
+                "Convex": true,
+                "MaterialIndex": 0,
+                "TypeIndex": 7,
+                "CastShadows": true
+              },
+              "Bag": {
+                "Order": 0
+              },
+              "ContainedObjects": [
+                {
+                  "GUID": "277f22",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 1.63,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Blaze",
+                  "Description": "Blaze",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": false,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/tokens/novitiates-blaze.png?v=1783371768",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "ChildObjects": [
+                {
+                  "GUID": "678b76",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 0.0,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Blaze",
+                  "Description": "Blaze",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": true,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/tokens/novitiates-blaze.png?v=1783371768",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "1f9f89",
+              "Name": "Custom_Model_Infinite_Bag",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 1.03,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 270.0,
+                "rotZ": 0.0,
+                "scaleX": 1.8351557,
+                "scaleY": 0.1,
+                "scaleZ": 1.7720486
+              },
+              "Nickname": "Divine Acquisition",
+              "Description": "Infinite Divine Acquisition tokens",
+              "GMNotes": "",
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 0.0
+              },
+              "Tags": [
+                "_novitiates_tokens"
+              ],
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "Hands": false,
+              "CustomMesh": {
+                "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/tokens/novitiates-divine-acquisition.obj?v=1772029953",
+                "DiffuseURL": "",
+                "NormalURL": "",
+                "ColliderURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/tokens/novitiates-divine-acquisition.obj?v=1772029953",
+                "Convex": true,
+                "MaterialIndex": 0,
+                "TypeIndex": 7,
+                "CastShadows": true
+              },
+              "Bag": {
+                "Order": 0
+              },
+              "ContainedObjects": [
+                {
+                  "GUID": "59517a",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 1.63,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Divine Acquisition",
+                  "Description": "Divine Acquisition",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": false,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/tokens/novitiates-divine-acquisition.png?v=1783371768",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "ChildObjects": [
+                {
+                  "GUID": "88c2da",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 0.0,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Divine Acquisition",
+                  "Description": "Divine Acquisition",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": true,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/tokens/novitiates-divine-acquisition.png?v=1783371768",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "933c88",
+              "Name": "Custom_Model_Infinite_Bag",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 1.03,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 270.0,
+                "rotZ": 0.0,
+                "scaleX": 1.8351557,
+                "scaleY": 0.1,
+                "scaleZ": 1.7720486
+              },
+              "Nickname": "Faith Points",
+              "Description": "Infinite Faith Points tokens",
+              "GMNotes": "",
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 0.0
+              },
+              "Tags": [
+                "_novitiates_tokens"
+              ],
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "Hands": false,
+              "CustomMesh": {
+                "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/tokens/novitiates-faith-points.obj?v=1772029953",
+                "DiffuseURL": "",
+                "NormalURL": "",
+                "ColliderURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/tokens/novitiates-faith-points.obj?v=1772029953",
+                "Convex": true,
+                "MaterialIndex": 0,
+                "TypeIndex": 7,
+                "CastShadows": true
+              },
+              "Bag": {
+                "Order": 0
+              },
+              "ContainedObjects": [
+                {
+                  "GUID": "66b15f",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 1.63,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Faith Points",
+                  "Description": "Faith Points",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": false,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/tokens/novitiates-faith-points.png?v=1783371768",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "ChildObjects": [
+                {
+                  "GUID": "f36d75",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 0.0,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Faith Points",
+                  "Description": "Faith Points",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": true,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/tokens/novitiates-faith-points.png?v=1783371768",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "574050",
+              "Name": "Custom_Model_Infinite_Bag",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 1.03,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 270.0,
+                "rotZ": 0.0,
+                "scaleX": 1.8351557,
+                "scaleY": 0.1,
+                "scaleZ": 1.7720486
+              },
+              "Nickname": "Faith_1",
+              "Description": "Infinite Faith_1 tokens",
+              "GMNotes": "",
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 0.0
+              },
+              "Tags": [
+                "_novitiates_tokens"
+              ],
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "Hands": false,
+              "CustomMesh": {
+                "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/tokens/novitiates-faith_1.obj?v=1772029953",
+                "DiffuseURL": "",
+                "NormalURL": "",
+                "ColliderURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/tokens/novitiates-faith_1.obj?v=1772029953",
+                "Convex": true,
+                "MaterialIndex": 0,
+                "TypeIndex": 7,
+                "CastShadows": true
+              },
+              "Bag": {
+                "Order": 0
+              },
+              "ContainedObjects": [
+                {
+                  "GUID": "72101e",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 1.63,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Faith_1",
+                  "Description": "Faith_1",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": false,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/tokens/novitiates-faith_1.png?v=1783371768",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "ChildObjects": [
+                {
+                  "GUID": "40c4b3",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 0.0,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Faith_1",
+                  "Description": "Faith_1",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": true,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/tokens/novitiates-faith_1.png?v=1783371768",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "0665c9",
+              "Name": "Custom_Model_Infinite_Bag",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 1.03,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 270.0,
+                "rotZ": 0.0,
+                "scaleX": 1.8351557,
+                "scaleY": 0.1,
+                "scaleZ": 1.7720486
+              },
+              "Nickname": "Faith_2",
+              "Description": "Infinite Faith_2 tokens",
+              "GMNotes": "",
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 0.0
+              },
+              "Tags": [
+                "_novitiates_tokens"
+              ],
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "Hands": false,
+              "CustomMesh": {
+                "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/tokens/novitiates-faith_2.obj?v=1772029953",
+                "DiffuseURL": "",
+                "NormalURL": "",
+                "ColliderURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/tokens/novitiates-faith_2.obj?v=1772029953",
+                "Convex": true,
+                "MaterialIndex": 0,
+                "TypeIndex": 7,
+                "CastShadows": true
+              },
+              "Bag": {
+                "Order": 0
+              },
+              "ContainedObjects": [
+                {
+                  "GUID": "f0b5dd",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 1.63,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Faith_2",
+                  "Description": "Faith_2",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": false,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/tokens/novitiates-faith_2.png?v=1783371768",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "ChildObjects": [
+                {
+                  "GUID": "bec148",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 0.0,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Faith_2",
+                  "Description": "Faith_2",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": true,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/tokens/novitiates-faith_2.png?v=1783371768",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "4eab2c",
+              "Name": "Custom_Model_Infinite_Bag",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 1.03,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 270.0,
+                "rotZ": 0.0,
+                "scaleX": 1.8351557,
+                "scaleY": 0.1,
+                "scaleZ": 1.7720486
+              },
+              "Nickname": "Icon Of Faith",
+              "Description": "Infinite Icon Of Faith tokens",
+              "GMNotes": "",
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 0.0
+              },
+              "Tags": [
+                "_novitiates_tokens"
+              ],
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "Hands": false,
+              "CustomMesh": {
+                "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/tokens/novitiates-icon-of-faith.obj?v=1772029953",
+                "DiffuseURL": "",
+                "NormalURL": "",
+                "ColliderURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/tokens/novitiates-icon-of-faith.obj?v=1772029953",
+                "Convex": true,
+                "MaterialIndex": 0,
+                "TypeIndex": 7,
+                "CastShadows": true
+              },
+              "Bag": {
+                "Order": 0
+              },
+              "ContainedObjects": [
+                {
+                  "GUID": "2f7f06",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 1.63,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Icon Of Faith",
+                  "Description": "Icon Of Faith",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": false,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/tokens/novitiates-icon-of-faith.png?v=1783371768",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "ChildObjects": [
+                {
+                  "GUID": "4f5921",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 0.0,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Icon Of Faith",
+                  "Description": "Icon Of Faith",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": true,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/tokens/novitiates-icon-of-faith.png?v=1783371768",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "468576",
+              "Name": "Custom_Model_Infinite_Bag",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 1.03,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 270.0,
+                "rotZ": 0.0,
+                "scaleX": 1.8351557,
+                "scaleY": 0.1,
+                "scaleZ": 1.7720486
+              },
+              "Nickname": "Medic",
+              "Description": "Infinite Medic tokens",
+              "GMNotes": "",
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 0.0
+              },
+              "Tags": [
+                "_novitiates_tokens"
+              ],
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "Hands": false,
+              "CustomMesh": {
+                "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/tokens/novitiates-medic.obj?v=1772029953",
+                "DiffuseURL": "",
+                "NormalURL": "",
+                "ColliderURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/tokens/novitiates-medic.obj?v=1772029953",
+                "Convex": true,
+                "MaterialIndex": 0,
+                "TypeIndex": 7,
+                "CastShadows": true
+              },
+              "Bag": {
+                "Order": 0
+              },
+              "ContainedObjects": [
+                {
+                  "GUID": "49ed23",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 1.63,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Medic",
+                  "Description": "Medic",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": false,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/tokens/novitiates-medic.png?v=1783371768",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "ChildObjects": [
+                {
+                  "GUID": "264790",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 0.0,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Medic",
+                  "Description": "Medic",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": true,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/tokens/novitiates-medic.png?v=1783371768",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "7a0e4a",
+              "Name": "Custom_Model_Infinite_Bag",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 1.03,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 270.0,
+                "rotZ": 0.0,
+                "scaleX": 1.8351557,
+                "scaleY": 0.1,
+                "scaleZ": 1.7720486
+              },
+              "Nickname": "Whip Into Frenzy",
+              "Description": "Infinite Whip Into Frenzy tokens",
+              "GMNotes": "",
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 0.0
+              },
+              "Tags": [
+                "_novitiates_tokens"
+              ],
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "Hands": false,
+              "CustomMesh": {
+                "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/tokens/novitiates-whip-into-frenzy.obj?v=1772029953",
+                "DiffuseURL": "",
+                "NormalURL": "",
+                "ColliderURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/tokens/novitiates-whip-into-frenzy.obj?v=1772029953",
+                "Convex": true,
+                "MaterialIndex": 0,
+                "TypeIndex": 7,
+                "CastShadows": true
+              },
+              "Bag": {
+                "Order": 0
+              },
+              "ContainedObjects": [
+                {
+                  "GUID": "e7c9db",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 1.63,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Whip Into Frenzy",
+                  "Description": "Whip Into Frenzy",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": false,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/tokens/novitiates-whip-into-frenzy.png?v=1783371768",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "ChildObjects": [
+                {
+                  "GUID": "625ed8",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 0.0,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Whip Into Frenzy",
+                  "Description": "Whip Into Frenzy",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": true,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/tokens/novitiates-whip-into-frenzy.png?v=1783371768",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            }
+          ]
+        },
+        {
+          "GUID": "0c60d3",
+          "Name": "Custom_Dice",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 0.0,
+            "rotZ": 0.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Novitiates Dice",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "_Novitiates",
+            "KTDice_Team"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomImage": {
+            "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/dice/novitiates-dice-team.jpg?v=1783355605",
+            "ImageSecondaryURL": "",
+            "WidthScale": 0.0
+          },
+          "CustomDice": {
+            "Type": 1
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "0c1233",
+          "Name": "Custom_Dice",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 0.0,
+            "rotZ": 0.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Novitiates Light Dice",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "_Novitiates",
+            "KTDice_Light"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomImage": {
+            "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/dice/novitiates-dice-light.jpg?v=1783355605",
+            "ImageSecondaryURL": "",
+            "WidthScale": 0.0
+          },
+          "CustomDice": {
+            "Type": 1
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "bb5eeb",
+          "Name": "Custom_Dice",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 0.0,
+            "rotZ": 0.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Novitiates Dark Dice",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "_Novitiates",
+            "KTDice_Dark"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomImage": {
+            "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/dice/novitiates-dice-dark.jpg?v=1783355605",
+            "ImageSecondaryURL": "",
+            "WidthScale": 0.0
+          },
+          "CustomDice": {
+            "Type": 1
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "073ff4",
+          "Name": "Card",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 180.0,
+            "rotZ": 0.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "novitiates-operatives",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.713235259,
+            "g": 0.713235259,
+            "b": 0.713235259
+          },
+          "Tags": [
+            "_Novitiates",
+            "KTCardsOperativeSelection"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": true,
+          "CardID": 100000,
+          "SidewaysCard": false,
+          "CustomDeck": {
+            "1000": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/cards/operatives_selection/novitiates-operative-selection-front.jpg?v=1783409085",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/cards/operatives_selection/novitiates-operative-selection-back.jpg?v=1783355523",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "e0d92a",
+          "Name": "Card",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 180.0,
+            "rotZ": 0.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "novitiates-acts-of-faith",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.713235259,
+            "g": 0.713235259,
+            "b": 0.713235259
+          },
+          "Tags": [
+            "_Novitiates",
+            "KTCardsFactionRule"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": true,
+          "CardID": 100100,
+          "SidewaysCard": false,
+          "CustomDeck": {
+            "1001": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/cards/faction_rules/novitiates-acts-of-faith-front.jpg?v=1783409085",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/cards/faction_rules/novitiates-acts-of-faith-back.jpg?v=1783409086",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "a05b68",
+          "Name": "Card",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 180.0,
+            "rotZ": 0.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "novitiates-markertoken-guide",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.713235259,
+            "g": 0.713235259,
+            "b": 0.713235259
+          },
+          "Tags": [
+            "_Novitiates",
+            "KTCardsTokenGuide"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": true,
+          "CardID": 100200,
+          "SidewaysCard": false,
+          "CustomDeck": {
+            "1002": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/cards/token_guide/novitiates-token-guide-front.jpg?v=1783409092",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/cards/token_guide/novitiates-token-guide-back.jpg?v=1783355523",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "86207b",
+          "Name": "Deck",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 180.0,
+            "rotZ": 180.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Datacards",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.713235259,
+            "g": 0.713235259,
+            "b": 0.713235259
+          },
+          "Tags": [
+            "_Novitiates",
+            "KTCardsDatacard"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": false,
+          "SidewaysCard": false,
+          "DeckIDs": [
+            101400,
+            101300,
+            101200,
+            101100,
+            101000,
+            100900,
+            100800,
+            100700,
+            100600,
+            100500,
+            100400,
+            100300
+          ],
+          "CustomDeck": {
+            "1003": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/cards/datacards/novitiate-condemnor-front.jpg?v=1783409079",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/cards/datacards/novitiate-condemnor-back.jpg?v=1783355523",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1004": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/cards/datacards/novitiate-dialogus-front.jpg?v=1783409079",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/cards/datacards/novitiate-dialogus-back.jpg?v=1783409080",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1005": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/cards/datacards/novitiate-duellist-front.jpg?v=1783409080",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/cards/datacards/novitiate-duellist-back.jpg?v=1783355523",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1006": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/cards/datacards/novitiate-exactor-front.jpg?v=1783409080",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/cards/datacards/novitiate-exactor-back.jpg?v=1783355523",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1007": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/cards/datacards/novitiate-hospitaller-front.jpg?v=1783409081",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/cards/datacards/novitiate-hospitaller-back.jpg?v=1783409081",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1008": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/cards/datacards/novitiate-militant-front.jpg?v=1783409082",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/cards/datacards/novitiate-militant-back.jpg?v=1783355523",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1009": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/cards/datacards/novitiate-penitent-front.jpg?v=1783409082",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/cards/datacards/novitiate-penitent-back.jpg?v=1783355523",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1010": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/cards/datacards/novitiate-preceptor-front.jpg?v=1783409083",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/cards/datacards/novitiate-preceptor-back.jpg?v=1783355523",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1011": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/cards/datacards/novitiate-pronatus-front.jpg?v=1783409083",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/cards/datacards/novitiate-pronatus-back.jpg?v=1783355523",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1012": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/cards/datacards/novitiate-purgatus-front.jpg?v=1783409084",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/cards/datacards/novitiate-purgatus-back.jpg?v=1783355523",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1013": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/cards/datacards/novitiate-reliquarius-front.jpg?v=1783409084",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/cards/datacards/novitiate-reliquarius-back.jpg?v=1783355523",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1014": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/cards/datacards/novitiate-superior-front.jpg?v=1783409078",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/cards/datacards/novitiate-superior-back.jpg?v=1783355523",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "ContainedObjects": [
+            {
+              "GUID": "e615e2",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "novitiate-superior",
+              "Description": "",
+              "GMNotes": "{\"name\":\"novitiate-superior\",\"stats\":{\"APL\":3,\"Move\":6,\"Save\":3,\"Wounds\":9,\"Base\":32},\"keywords\":[\"Operative\",\"NOVITIATE\",\"IMPERIUM\",\"ADEPTA SORORITAS\",\"LEADER\",\"SUPERIOR\"],\"weapons\":[{\"name\":\"[1E87FF]R[-] Plasma pistol (standard)\",\"plain_name\":\"Plasma pistol (standard)\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"3/5\",\"WR\":\"Range 8\\\", Piercing 1\"}},{\"name\":\"[1E87FF]R[-] Plasma pistol (supercharge)\",\"plain_name\":\"Plasma pistol (supercharge)\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"4/5\",\"WR\":\"Range 8\\\", Hot, Lethal 5+, Piercing 1\"}},{\"name\":\"[1E87FF]R[-] Relic bolt pistol\",\"plain_name\":\"Relic bolt pistol\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"3/5\",\"WR\":\"Range 8\\\", Lethal 5+\"}},{\"name\":\"[1E87FF]R[-] Relic boltgun\",\"plain_name\":\"Relic boltgun\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"3/5\",\"WR\":\"Lethal 5+\"}},{\"name\":\"[1E87FF]R[-] Gun butt\",\"plain_name\":\"Gun butt\",\"stats\":{\"ATK\":\"3\",\"HIT\":\"3+\",\"DMG\":\"2/3\",\"WR\":\"\"}},{\"name\":\"[F4641D]M[-] Power weapon\",\"plain_name\":\"Power weapon\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"4/6\",\"WR\":\"Lethal 5+\"}}],\"abilities\":[{\"name\":\"Inspirational Example\",\"text\":\"Whenever this operative incapacitates an enemy operative, you gain 1 Faith point, or 2 Faith points if that enemy operative had a Wounds stat of 12 or more. This rule has no effect when using the Glorious Martyrdom firefight ploy.\"}],\"actions\":[],\"weapon_rules\":{\"Piercing x\":\"The defender collects x less defence dice, e.g. Piercing 1. If the rule is Piercing Crits x, this only comes into effect if you retain any critical successes.\",\"Range x\":\"Only operatives within x of the active operative can be valid targets, e.g. Range 9\\\".\",\"Hot\":\"After an operative uses this weapon, roll one D6: if the result is less than the weapon's Hit stat, inflict damage on that operative equal to the result multiplied by two. If it's used multiple times in one action (e.g. Blast), still only roll one D6.\"},\"description\":\"[D36B3E][[84E680]APL[-] [ffffff]3[-]] [[84E680]MOVE[-] [ffffff]6\\\"[-]]\\n[[84E680]SAVE[-] [ffffff]3+[-]] [[84E680]WOUNDS[-] [ffffff]9[-]][-]\\n[C5C5C5]Operative, NOVITIATE, IMPERIUM, ADEPTA SORORITAS, LEADER, SUPERIOR[-]\\n[31B32B]Weapons[-]\\n[1E87FF]R[-] Plasma pistol (standard)\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 3/5\\n[84E680]WR[-]: Range 8\\\", Piercing 1\\n\\n[1E87FF]R[-] Plasma pistol (supercharge)\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 4/5\\n[84E680]WR[-]: Range 8\\\", Hot, Lethal 5+, Piercing 1\\n\\n[1E87FF]R[-] Relic bolt pistol\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 3/5\\n[84E680]WR[-]: Range 8\\\", Lethal 5+\\n\\n[1E87FF]R[-] Relic boltgun\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 3/5\\n[84E680]WR[-]: Lethal 5+\\n\\n[1E87FF]R[-] Gun butt\\n[84E680]ATK[-] 3 [84E680]HIT[-] 3+ [84E680]DMG[-] 2/3\\n\\n[F4641D]M[-] Power weapon\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 4/6\\n[84E680]WR[-]: Lethal 5+\\n\\n---\\n[31B32B]Abilities[-]\\n- [EF8450]Inspirational Example[-]\"}",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 101400,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "a17856",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "novitiate-reliquarius",
+              "Description": "",
+              "GMNotes": "{\"name\":\"novitiate-reliquarius\",\"stats\":{\"APL\":2,\"Move\":6,\"Save\":4,\"Wounds\":7,\"Base\":28},\"keywords\":[\"Operative\",\"NOVITIATE\",\"IMPERIUM\",\"ADEPTA SORORITAS\",\"RELIQUARIUS\"],\"weapons\":[{\"name\":\"[1E87FF]R[-] Autopistol\",\"plain_name\":\"Autopistol\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"4+\",\"DMG\":\"2/3\",\"WR\":\"Range 8\\\"\"}},{\"name\":\"[1E87FF]R[-] Gun butt\",\"plain_name\":\"Gun butt\",\"stats\":{\"ATK\":\"3\",\"HIT\":\"4+\",\"DMG\":\"2/3\",\"WR\":\"\"}}],\"abilities\":[{\"name\":\"Icon Bearer\",\"text\":\"Whenever determining control of a marker, treat this operative's APL stat as 1 higher. Note this isn't a change to its APL stat, so any changes are cumulative with this.\"}],\"actions\":[{\"name\":\"RAISE ICON (1AP)\",\"text\":\"You gain 1 Faith point. If this operative controls an objective marker, you also gain a number of Faith points equal to the turning point number. This operative cannot perform this action more than once per turning point, and cannot perform it while within control range of an enemy operative.\"}],\"weapon_rules\":{\"Range x\":\"Only operatives within x of the active operative can be valid targets, e.g. Range 9\\\".\"},\"description\":\"[D36B3E][[84E680]APL[-] [ffffff]2[-]] [[84E680]MOVE[-] [ffffff]6\\\"[-]]\\n[[84E680]SAVE[-] [ffffff]4+[-]] [[84E680]WOUNDS[-] [ffffff]7[-]][-]\\n[C5C5C5]Operative, NOVITIATE, IMPERIUM, ADEPTA SORORITAS, RELIQUARIUS[-]\\n[31B32B]Weapons[-]\\n[1E87FF]R[-] Autopistol\\n[84E680]ATK[-] 4 [84E680]HIT[-] 4+ [84E680]DMG[-] 2/3\\n[84E680]WR[-]: Range 8\\\"\\n\\n[1E87FF]R[-] Gun butt\\n[84E680]ATK[-] 3 [84E680]HIT[-] 4+ [84E680]DMG[-] 2/3\\n\\n---\\n[31B32B]Abilities[-]\\n- [EF8450]Icon Bearer[-]\\n---\\n[31B32B]Unique Actions[-]\\n- [EF8450]RAISE ICON (1AP)[-]\"}",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 101300,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "69f99c",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "novitiate-purgatus",
+              "Description": "",
+              "GMNotes": "{\"name\":\"novitiate-purgatus\",\"stats\":{\"APL\":2,\"Move\":6,\"Save\":4,\"Wounds\":7,\"Base\":28},\"keywords\":[\"Operative\",\"NOVITIATE\",\"IMPERIUM\",\"ADEPTA SORORITAS\",\"PURGATUS\"],\"weapons\":[{\"name\":\"[1E87FF]R[-] Ministorum flamer\",\"plain_name\":\"Ministorum flamer\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"2+\",\"DMG\":\"4/4\",\"WR\":\"Range 8\\\", Saturate, Torrent 2\\\"\"}},{\"name\":\"[1E87FF]R[-] Gun butt\",\"plain_name\":\"Gun butt\",\"stats\":{\"ATK\":\"3\",\"HIT\":\"4+\",\"DMG\":\"2/3\",\"WR\":\"\"}}],\"abilities\":[{\"name\":\"Purge with Flame\",\"text\":\"Once per turning point, you can use the Inferno firefight ploy for 0CP if this is the specified friendly NOVITIATE operative.\"}],\"actions\":[],\"weapon_rules\":{\"Range x\":\"Only operatives within x of the active operative can be valid targets, e.g. Range 9\\\".\",\"Saturate\":\"The defender cannot retain cover saves.\",\"Torrent x\":\"Select a valid target as normal as the primary target, then select any number of other valid targets within x of the first valid target, but not within control range of friendly operatives, as secondary targets, e.g. Torrent 2\\\". Shoot with this weapon against all of them in an order of your choice (roll each sequence separately).\"},\"description\":\"[D36B3E][[84E680]APL[-] [ffffff]2[-]] [[84E680]MOVE[-] [ffffff]6\\\"[-]]\\n[[84E680]SAVE[-] [ffffff]4+[-]] [[84E680]WOUNDS[-] [ffffff]7[-]][-]\\n[C5C5C5]Operative, NOVITIATE, IMPERIUM, ADEPTA SORORITAS, PURGATUS[-]\\n[31B32B]Weapons[-]\\n[1E87FF]R[-] Ministorum flamer\\n[84E680]ATK[-] 4 [84E680]HIT[-] 2+ [84E680]DMG[-] 4/4\\n[84E680]WR[-]: Range 8\\\", Saturate, Torrent 2\\\"\\n\\n[1E87FF]R[-] Gun butt\\n[84E680]ATK[-] 3 [84E680]HIT[-] 4+ [84E680]DMG[-] 2/3\\n\\n---\\n[31B32B]Abilities[-]\\n- [EF8450]Purge with Flame[-]\"}",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 101200,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "b269a7",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "novitiate-pronatus",
+              "Description": "",
+              "GMNotes": "{\"name\":\"novitiate-pronatus\",\"stats\":{\"APL\":2,\"Move\":6,\"Save\":4,\"Wounds\":7,\"Base\":28},\"keywords\":[\"Operative\",\"NOVITIATE\",\"IMPERIUM\",\"ADEPTA SORORITAS\",\"PRONATUS\"],\"weapons\":[{\"name\":\"[1E87FF]R[-] Autopistol\",\"plain_name\":\"Autopistol\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"4+\",\"DMG\":\"2/3\",\"WR\":\"Range 8\\\"\"}},{\"name\":\"[1E87FF]R[-] Gun butt\",\"plain_name\":\"Gun butt\",\"stats\":{\"ATK\":\"3\",\"HIT\":\"4+\",\"DMG\":\"2/3\",\"WR\":\"\"}}],\"abilities\":[{\"name\":\"Relic Seeker\",\"text\":\"Once during each of this operative's activations, it can perform the Pick Up Marker, Place Marker or a mission action for 1 less AP.\"},{\"name\":\"Divine Acquisition\",\"text\":\"Once per turning point, when this operative performs a mission action that requires it to control an objective or mission marker, you gain a number of Faith points equal to the turning point number.\"}],\"actions\":[],\"weapon_rules\":{\"Range x\":\"Only operatives within x of the active operative can be valid targets, e.g. Range 9\\\".\"},\"description\":\"[D36B3E][[84E680]APL[-] [ffffff]2[-]] [[84E680]MOVE[-] [ffffff]6\\\"[-]]\\n[[84E680]SAVE[-] [ffffff]4+[-]] [[84E680]WOUNDS[-] [ffffff]7[-]][-]\\n[C5C5C5]Operative, NOVITIATE, IMPERIUM, ADEPTA SORORITAS, PRONATUS[-]\\n[31B32B]Weapons[-]\\n[1E87FF]R[-] Autopistol\\n[84E680]ATK[-] 4 [84E680]HIT[-] 4+ [84E680]DMG[-] 2/3\\n[84E680]WR[-]: Range 8\\\"\\n\\n[1E87FF]R[-] Gun butt\\n[84E680]ATK[-] 3 [84E680]HIT[-] 4+ [84E680]DMG[-] 2/3\\n\\n---\\n[31B32B]Abilities[-]\\n- [EF8450]Relic Seeker[-]\\n- [EF8450]Divine Acquisition[-]\"}",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 101100,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "1c8759",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "novitiate-preceptor",
+              "Description": "",
+              "GMNotes": "{\"name\":\"novitiate-preceptor\",\"stats\":{\"APL\":2,\"Move\":6,\"Save\":4,\"Wounds\":7,\"Base\":28},\"keywords\":[\"Operative\",\"NOVITIATE\",\"IMPERIUM\",\"ADEPTA SORORITAS\",\"PRECEPTOR\"],\"weapons\":[{\"name\":\"[F4641D]M[-] Mace of the Righteous\",\"plain_name\":\"Mace of the Righteous\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"4+\",\"DMG\":\"5/5\",\"WR\":\"Brutal, Severe\"}}],\"abilities\":[{\"name\":\"Unflinching Example\",\"text\":\"Whenever this operative incapacitates a ready enemy operative within its control range, you gain 1 Faith point, or 2 Faith points if that enemy operative had a Wounds stat of 12 or more.\"},{\"name\":\"Glorious Hymnal\",\"text\":\"SUPPORT. Whenever a friendly NOVITIATE operative is within 3\\\" of this operative, that friendly operative's weapons have the Severe weapon rule.\"}],\"actions\":[],\"weapon_rules\":{\"Brutal\":\"Your opponent can only block with critical successes.\",\"Severe\":\"If you don't retain any critical successes, you can change one of your normal successes to a critical success. The Devastating and Piercing Crits weapon rules still take effect, but Punishing and Rending don't.\"},\"description\":\"[D36B3E][[84E680]APL[-] [ffffff]2[-]] [[84E680]MOVE[-] [ffffff]6\\\"[-]]\\n[[84E680]SAVE[-] [ffffff]4+[-]] [[84E680]WOUNDS[-] [ffffff]7[-]][-]\\n[C5C5C5]Operative, NOVITIATE, IMPERIUM, ADEPTA SORORITAS, PRECEPTOR[-]\\n[31B32B]Weapons[-]\\n[F4641D]M[-] Mace of the Righteous\\n[84E680]ATK[-] 4 [84E680]HIT[-] 4+ [84E680]DMG[-] 5/5\\n[84E680]WR[-]: Brutal, Severe\\n\\n---\\n[31B32B]Abilities[-]\\n- [EF8450]Unflinching Example[-]\\n- [EF8450]Glorious Hymnal[-]\"}",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 101000,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "cc3989",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "novitiate-penitent",
+              "Description": "",
+              "GMNotes": "{\"name\":\"novitiate-penitent\",\"stats\":{\"APL\":2,\"Move\":6,\"Save\":4,\"Wounds\":7,\"Base\":28},\"keywords\":[\"Operative\",\"NOVITIATE\",\"IMPERIUM\",\"ADEPTA SORORITAS\",\"PENITENT\"],\"weapons\":[{\"name\":\"[1E87FF]R[-] Autopistol\",\"plain_name\":\"Autopistol\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"4+\",\"DMG\":\"2/3\",\"WR\":\"Range 8\\\"\"}},{\"name\":\"[F4641D]M[-] Penitent eviscerator\",\"plain_name\":\"Penitent eviscerator\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"4+\",\"DMG\":\"5/6\",\"WR\":\"Brutal, Zealous Rage*\"}}],\"abilities\":[{\"name\":\"*Zealous Rage\",\"text\":\"Whenever this operative is fighting with this weapon, it has the Ceaseless weapon rule.\"},{\"name\":\"Absolution Through Destruction\",\"text\":\"Whenever this operative performs the Fight action, if it isn't incapacitated, it can immediately perform a free Fight action afterwards. This takes precedence over action restrictions, and you cannot perform more than two Fight actions in succession as a result of this rule. If this operative is benefitting from the effects of the Whip Into Frenzy action (see EXACTOR), this applies to each of the Fight actions from those effects.\"}],\"actions\":[],\"weapon_rules\":{\"Range x\":\"Only operatives within x of the active operative can be valid targets, e.g. Range 9\\\".\",\"Brutal\":\"Your opponent can only block with critical successes.\"},\"description\":\"[D36B3E][[84E680]APL[-] [ffffff]2[-]] [[84E680]MOVE[-] [ffffff]6\\\"[-]]\\n[[84E680]SAVE[-] [ffffff]4+[-]] [[84E680]WOUNDS[-] [ffffff]7[-]][-]\\n[C5C5C5]Operative, NOVITIATE, IMPERIUM, ADEPTA SORORITAS, PENITENT[-]\\n[31B32B]Weapons[-]\\n[1E87FF]R[-] Autopistol\\n[84E680]ATK[-] 4 [84E680]HIT[-] 4+ [84E680]DMG[-] 2/3\\n[84E680]WR[-]: Range 8\\\"\\n\\n[F4641D]M[-] Penitent eviscerator\\n[84E680]ATK[-] 4 [84E680]HIT[-] 4+ [84E680]DMG[-] 5/6\\n[84E680]WR[-]: Brutal, Zealous Rage*\\n\\n---\\n[31B32B]Abilities[-]\\n- [EF8450]*Zealous Rage[-]\\n- [EF8450]Absolution Through Destruction[-]\"}",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 100900,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "6ad47e",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "novitiate-militant",
+              "Description": "",
+              "GMNotes": "{\"name\":\"novitiate-militant\",\"stats\":{\"APL\":2,\"Move\":6,\"Save\":4,\"Wounds\":7,\"Base\":28},\"keywords\":[\"Operative\",\"NOVITIATE\",\"IMPERIUM\",\"ADEPTA SORORITAS\",\"MILITANT\"],\"weapons\":[{\"name\":\"[1E87FF]R[-] Autogun\",\"plain_name\":\"Autogun\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"4+\",\"DMG\":\"2/3\",\"WR\":\"\"}},{\"name\":\"[1E87FF]R[-] Autopistol\",\"plain_name\":\"Autopistol\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"4+\",\"DMG\":\"2/3\",\"WR\":\"Range 8\\\"\"}},{\"name\":\"[1E87FF]R[-] Gun butt\",\"plain_name\":\"Gun butt\",\"stats\":{\"ATK\":\"3\",\"HIT\":\"4+\",\"DMG\":\"2/3\",\"WR\":\"\"}},{\"name\":\"[F4641D]M[-] Novitiate blade\",\"plain_name\":\"Novitiate blade\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"4+\",\"DMG\":\"4/5\",\"WR\":\"\"}}],\"abilities\":[{\"name\":\"Militant Faith\",\"text\":\"Whenever this operative is shooting, fighting or retaliating, if you use an ACT OF FAITH during that sequence and an enemy operative is incapacitated, the Faith points spent on that ACT OF FAITH are refunded. If you use the Icon of Faith equipment, Faith points are only refunded for one of those ACTS OF FAITH (your choice).\"}],\"actions\":[],\"weapon_rules\":{\"Range x\":\"Only operatives within x of the active operative can be valid targets, e.g. Range 9\\\".\"},\"description\":\"[D36B3E][[84E680]APL[-] [ffffff]2[-]] [[84E680]MOVE[-] [ffffff]6\\\"[-]]\\n[[84E680]SAVE[-] [ffffff]4+[-]] [[84E680]WOUNDS[-] [ffffff]7[-]][-]\\n[C5C5C5]Operative, NOVITIATE, IMPERIUM, ADEPTA SORORITAS, MILITANT[-]\\n[31B32B]Weapons[-]\\n[1E87FF]R[-] Autogun\\n[84E680]ATK[-] 4 [84E680]HIT[-] 4+ [84E680]DMG[-] 2/3\\n\\n[1E87FF]R[-] Autopistol\\n[84E680]ATK[-] 4 [84E680]HIT[-] 4+ [84E680]DMG[-] 2/3\\n[84E680]WR[-]: Range 8\\\"\\n\\n[1E87FF]R[-] Gun butt\\n[84E680]ATK[-] 3 [84E680]HIT[-] 4+ [84E680]DMG[-] 2/3\\n\\n[F4641D]M[-] Novitiate blade\\n[84E680]ATK[-] 4 [84E680]HIT[-] 4+ [84E680]DMG[-] 4/5\\n\\n---\\n[31B32B]Abilities[-]\\n- [EF8450]Militant Faith[-]\"}",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 100800,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "cff74f",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "novitiate-hospitaller",
+              "Description": "",
+              "GMNotes": "{\"name\":\"novitiate-hospitaller\",\"stats\":{\"APL\":2,\"Move\":6,\"Save\":4,\"Wounds\":7,\"Base\":28},\"keywords\":[\"Operative\",\"NOVITIATE\",\"IMPERIUM\",\"ADEPTA SORORITAS\",\"MEDIC\",\"HOSPITALLER\"],\"weapons\":[{\"name\":\"[1E87FF]R[-] Autopistol\",\"plain_name\":\"Autopistol\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"4+\",\"DMG\":\"2/3\",\"WR\":\"Range 8\\\"\"}},{\"name\":\"[F4641D]M[-] Surgical saw\",\"plain_name\":\"Surgical saw\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"4+\",\"DMG\":\"2/3\",\"WR\":\"Lethal 5+, Rending\"}}],\"abilities\":[{\"name\":\"Medic!\",\"text\":\"The first time during each turning point that another friendly NOVITIATE operative would be incapacitated while visible to and within 3\\\" of this operative, you can use this rule, providing neither this nor that operative is within control range of an enemy operative. If you do, that friendly operative isn't incapacitated, has 1 wound remaining and cannot be incapacitated for the remainder of the action. After that action, that friendly operative can immediately perform a free Dash action, but must end that move within this operative's control range. Subtract 1 from this and that operative's APL stats until the end of their next activations respectively, and if this rule was used during that friendly operative's activation, that activation ends. You cannot use this rule if this operative is incapacitated, or if it's a Shoot action and this operative would be a primary or secondary target.\"}],\"actions\":[{\"name\":\"CHIRURGEON'S TOOLS (1AP)\",\"text\":\"Select one friendly NOVITIATE operative within this operative's control range to regain up to 2D3 lost wounds. It cannot be an operative that the Medic! rule was used on during this turning point. This operative cannot perform this action while within control range of an enemy operative. NOVITIATE HOSPITALLER\"}],\"weapon_rules\":{\"Range x\":\"Only operatives within x of the active operative can be valid targets, e.g. Range 9\\\".\",\"Rending\":\"If you retain any critical successes, you can retain one of your normal successes as a critical success instead.\"},\"description\":\"[D36B3E][[84E680]APL[-] [ffffff]2[-]] [[84E680]MOVE[-] [ffffff]6\\\"[-]]\\n[[84E680]SAVE[-] [ffffff]4+[-]] [[84E680]WOUNDS[-] [ffffff]7[-]][-]\\n[C5C5C5]Operative, NOVITIATE, IMPERIUM, ADEPTA SORORITAS, MEDIC, HOSPITALLER[-]\\n[31B32B]Weapons[-]\\n[1E87FF]R[-] Autopistol\\n[84E680]ATK[-] 4 [84E680]HIT[-] 4+ [84E680]DMG[-] 2/3\\n[84E680]WR[-]: Range 8\\\"\\n\\n[F4641D]M[-] Surgical saw\\n[84E680]ATK[-] 4 [84E680]HIT[-] 4+ [84E680]DMG[-] 2/3\\n[84E680]WR[-]: Lethal 5+, Rending\\n\\n---\\n[31B32B]Abilities[-]\\n- [EF8450]Medic![-]\\n---\\n[31B32B]Unique Actions[-]\\n- [EF8450]CHIRURGEON'S TOOLS (1AP)[-]\"}",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 100700,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "1f9546",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "novitiate-exactor",
+              "Description": "",
+              "GMNotes": "{\"name\":\"novitiate-exactor\",\"stats\":{\"APL\":2,\"Move\":6,\"Save\":4,\"Wounds\":7,\"Base\":28},\"keywords\":[\"Operative\",\"NOVITIATE\",\"IMPERIUM\",\"ADEPTA SORORITAS\",\"EXACTOR\"],\"weapons\":[{\"name\":\"[1E87FF]R[-] Neural whips (ranged)\",\"plain_name\":\"Neural whips (ranged)\",\"stats\":{\"ATK\":\"5\",\"HIT\":\"3+\",\"DMG\":\"2/3\",\"WR\":\"Range 3\\\", Lethal 5+, Stun\"}},{\"name\":\"[F4641D]M[-] Neural whips (melee)\",\"plain_name\":\"Neural whips (melee)\",\"stats\":{\"ATK\":\"5\",\"HIT\":\"3+\",\"DMG\":\"2/3\",\"WR\":\"Lethal 5+, Shock\"}}],\"abilities\":[],\"actions\":[{\"name\":\"WHIP INTO FRENZY (1AP)\",\"text\":\"Select one other friendly NOVITIATE operative (excluding SUPERIOR) visible to and within 3\\\" of this operative that isn't currently benefitting from the effects of this action. Until the end of that operative's next activation, add 1\\\" to its Move stat, it can perform two Fight actions during its next activation, and one of them can be free. This operative cannot perform this action while within control range of an enemy operative.\"}],\"weapon_rules\":{\"Range x\":\"Only operatives within x of the active operative can be valid targets, e.g. Range 9\\\".\",\"Stun\":\"If you retain any critical successes, subtract 1 from the APL stat of the operative this weapon is being used against until the end of its next activation.\",\"Shock\":\"The first time you strike with a critical success in each sequence, also discard one of your opponent's unresolved normal successes (or one of their critical successes if there are none).\"},\"description\":\"[D36B3E][[84E680]APL[-] [ffffff]2[-]] [[84E680]MOVE[-] [ffffff]6\\\"[-]]\\n[[84E680]SAVE[-] [ffffff]4+[-]] [[84E680]WOUNDS[-] [ffffff]7[-]][-]\\n[C5C5C5]Operative, NOVITIATE, IMPERIUM, ADEPTA SORORITAS, EXACTOR[-]\\n[31B32B]Weapons[-]\\n[1E87FF]R[-] Neural whips (ranged)\\n[84E680]ATK[-] 5 [84E680]HIT[-] 3+ [84E680]DMG[-] 2/3\\n[84E680]WR[-]: Range 3\\\", Lethal 5+, Stun\\n\\n[F4641D]M[-] Neural whips (melee)\\n[84E680]ATK[-] 5 [84E680]HIT[-] 3+ [84E680]DMG[-] 2/3\\n[84E680]WR[-]: Lethal 5+, Shock\\n\\n---\\n[31B32B]Unique Actions[-]\\n- [EF8450]WHIP INTO FRENZY (1AP)[-]\"}",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 100600,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "218c20",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "novitiate-duellist",
+              "Description": "",
+              "GMNotes": "{\"name\":\"novitiate-duellist\",\"stats\":{\"APL\":2,\"Move\":6,\"Save\":4,\"Wounds\":7,\"Base\":28},\"keywords\":[\"Operative\",\"NOVITIATE\",\"IMPERIUM\",\"ADEPTA SORORITAS\",\"DUELLIST\"],\"weapons\":[{\"name\":\"[1E87FF]R[-] Autopistol\",\"plain_name\":\"Autopistol\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"4+\",\"DMG\":\"2/3\",\"WR\":\"Range 8\\\"\"}},{\"name\":\"[F4641D]M[-] Duelling blades\",\"plain_name\":\"Duelling blades\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"4/5\",\"WR\":\"Ceaseless, Riposte*\"}}],\"abilities\":[{\"name\":\"*Riposte\",\"text\":\"Whenever you block with a critical success, you can also inflict damage equal to the weapon's Critical Dmg stat on the enemy operative in that sequence.\"}],\"actions\":[],\"weapon_rules\":{\"Range x\":\"Only operatives within x of the active operative can be valid targets, e.g. Range 9\\\".\",\"Ceaseless\":\"You can re-roll any of your attack dice results of one result (e.g. results of 2).\"},\"description\":\"[D36B3E][[84E680]APL[-] [ffffff]2[-]] [[84E680]MOVE[-] [ffffff]6\\\"[-]]\\n[[84E680]SAVE[-] [ffffff]4+[-]] [[84E680]WOUNDS[-] [ffffff]7[-]][-]\\n[C5C5C5]Operative, NOVITIATE, IMPERIUM, ADEPTA SORORITAS, DUELLIST[-]\\n[31B32B]Weapons[-]\\n[1E87FF]R[-] Autopistol\\n[84E680]ATK[-] 4 [84E680]HIT[-] 4+ [84E680]DMG[-] 2/3\\n[84E680]WR[-]: Range 8\\\"\\n\\n[F4641D]M[-] Duelling blades\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 4/5\\n[84E680]WR[-]: Ceaseless, Riposte*\\n\\n---\\n[31B32B]Abilities[-]\\n- [EF8450]*Riposte[-]\"}",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 100500,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "8a3d87",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "novitiate-dialogus",
+              "Description": "",
+              "GMNotes": "{\"name\":\"novitiate-dialogus\",\"stats\":{\"APL\":2,\"Move\":6,\"Save\":4,\"Wounds\":7,\"Base\":28},\"keywords\":[\"Operative\",\"NOVITIATE\",\"IMPERIUM\",\"ADEPTA SORORITAS\",\"DIALOGUS\"],\"weapons\":[{\"name\":\"[1E87FF]R[-] Autopistol\",\"plain_name\":\"Autopistol\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"4+\",\"DMG\":\"2/3\",\"WR\":\"Range 8\\\"\"}},{\"name\":\"[F4641D]M[-] Dialogus stave\",\"plain_name\":\"Dialogus stave\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"4+\",\"DMG\":\"3/3\",\"WR\":\"Shock\"}}],\"abilities\":[{\"name\":\"AUTO-BROADCASTER\",\"text\":\"If your Auto-broadcaster marker isn't in the killzone, place it within 8\\\" horizontally of this operative; otherwise, move your Auto- broadcaster marker up to 8\\\" horizontally. If this operative is removed from the killzone, remove your Auto-broadcaster marker from the killzone. Whenever an enemy operative within 3\\\" of your Auto-broadcaster marker is shooting, fighting or retaliating, your opponent cannot re-roll their attack dice. This operative cannot perform this action while within control range of an enemy operative.\"}],\"actions\":[{\"name\":\"STIRRING RHETORIC (1AP)\",\"text\":\"SUPPORT. Select one other friendly NOVITIATE operative visible to and within 6\\\" of this operative, or within 6\\\" of your Auto-broadcaster marker. Until the end of that operative's next activation, add 1 to its APL stat (to a maximum of 3 after all APL stat changes have been totalled). This operative cannot perform this action while within control range of an enemy operative.\"}],\"weapon_rules\":{\"Range x\":\"Only operatives within x of the active operative can be valid targets, e.g. Range 9\\\".\",\"Shock\":\"The first time you strike with a critical success in each sequence, also discard one of your opponent's unresolved normal successes (or one of their critical successes if there are none).\"},\"description\":\"[D36B3E][[84E680]APL[-] [ffffff]2[-]] [[84E680]MOVE[-] [ffffff]6\\\"[-]]\\n[[84E680]SAVE[-] [ffffff]4+[-]] [[84E680]WOUNDS[-] [ffffff]7[-]][-]\\n[C5C5C5]Operative, NOVITIATE, IMPERIUM, ADEPTA SORORITAS, DIALOGUS[-]\\n[31B32B]Weapons[-]\\n[1E87FF]R[-] Autopistol\\n[84E680]ATK[-] 4 [84E680]HIT[-] 4+ [84E680]DMG[-] 2/3\\n[84E680]WR[-]: Range 8\\\"\\n\\n[F4641D]M[-] Dialogus stave\\n[84E680]ATK[-] 4 [84E680]HIT[-] 4+ [84E680]DMG[-] 3/3\\n[84E680]WR[-]: Shock\\n\\n---\\n[31B32B]Abilities[-]\\n- [EF8450]AUTO-BROADCASTER[-]\\n---\\n[31B32B]Unique Actions[-]\\n- [EF8450]STIRRING RHETORIC (1AP)[-]\"}",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 100400,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "bb3452",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "novitiate-condemnor",
+              "Description": "",
+              "GMNotes": "{\"name\":\"novitiate-condemnor\",\"stats\":{\"APL\":2,\"Move\":6,\"Save\":4,\"Wounds\":7,\"Base\":28},\"keywords\":[\"Operative\",\"NOVITIATE\",\"IMPERIUM\",\"ADEPTA SORORITAS\",\"CONDEMNOR\"],\"weapons\":[{\"name\":\"[1E87FF]R[-] Condemnor stakethrower\",\"plain_name\":\"Condemnor stakethrower\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"3/3\",\"WR\":\"Anti-PSYKER*, Devastating 2, Piercing Crits 1, Silent\"}},{\"name\":\"[F4641D]M[-] Null rod\",\"plain_name\":\"Null rod\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"4+\",\"DMG\":\"3/3\",\"WR\":\"Anti-PSYKER*, Shock\"}}],\"abilities\":[{\"name\":\"Null Rod\",\"text\":\"PSYCHIC ranged weapons cannot inflict damage on this operative. For the effects of PSYCHIC actions, this operative cannot be selected and is never treated as being within those actions' required distances. Whenever an operative is within 6\\\" of this operative:\\n\u2022 That operative cannot perform PSYCHIC actions or use PSYCHIC additional rules.\\n\u2022 That operative cannot use PSYCHIC ranged weapons.\\n\u2022 PSYCHIC melee weapons have no weapon rules and cannot have Dmg stats higher than 3/4.\"},{\"name\":\"*Anti-PSYKER\",\"text\":\"Whenever this weapon is being used against an operative that has the PSYKER keyword, add 1 to both Dmg stats of this weapon and it has the Lethal 5+ weapon rule.\"}],\"actions\":[],\"weapon_rules\":{\"Devastating x\":\"Each retained critical success immediately inflicts x damage on the operative this weapon is being used against, e.g. Devastating 3. If the rule starts with a distance (e.g. 1\\\" Devastating x), inflict x damage on that operative and each other operative visible to and within that distance of it. Note that success isn't discarded after doing so - it can still be resolved later in the sequence.\",\"Piercing x\":\"The defender collects x less defence dice, e.g. Piercing 1. If the rule is Piercing Crits x, this only comes into effect if you retain any critical successes.\",\"Silent\":\"An operative can perform the Shoot action with this weapon while it has a Conceal order.\",\"Shock\":\"The first time you strike with a critical success in each sequence, also discard one of your opponent's unresolved normal successes (or one of their critical successes if there are none).\"},\"description\":\"[D36B3E][[84E680]APL[-] [ffffff]2[-]] [[84E680]MOVE[-] [ffffff]6\\\"[-]]\\n[[84E680]SAVE[-] [ffffff]4+[-]] [[84E680]WOUNDS[-] [ffffff]7[-]][-]\\n[C5C5C5]Operative, NOVITIATE, IMPERIUM, ADEPTA SORORITAS, CONDEMNOR[-]\\n[31B32B]Weapons[-]\\n[1E87FF]R[-] Condemnor stakethrower\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 3/3\\n[84E680]WR[-]: Anti-PSYKER*, Devastating 2, Piercing Crits 1, Silent\\n\\n[F4641D]M[-] Null rod\\n[84E680]ATK[-] 4 [84E680]HIT[-] 4+ [84E680]DMG[-] 3/3\\n[84E680]WR[-]: Anti-PSYKER*, Shock\\n\\n---\\n[31B32B]Abilities[-]\\n- [EF8450]Null Rod[-]\\n- [EF8450]*Anti-PSYKER[-]\"}",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 100300,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            }
+          ]
+        },
+        {
+          "GUID": "af74b0",
+          "Name": "Deck",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 180.0,
+            "rotZ": 180.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Equipment",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.713235259,
+            "g": 0.713235259,
+            "b": 0.713235259
+          },
+          "Tags": [
+            "_Novitiates",
+            "KTCardsEquipment"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": false,
+          "SidewaysCard": false,
+          "DeckIDs": [
+            101800,
+            101700,
+            101600,
+            101500
+          ],
+          "CustomDeck": {
+            "1015": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/cards/equipment/novitiates-auto-chastisers-front.jpg?v=1783409087",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/cards/equipment/novitiates-auto-chastisers-back.jpg?v=1783355523",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1016": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/cards/equipment/novitiates-holy-embrocations-front.jpg?v=1783409088",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/cards/equipment/novitiates-holy-embrocations-back.jpg?v=1783355523",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1017": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/cards/equipment/novitiates-icon-of-faith-front.jpg?v=1783409086",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/cards/equipment/novitiates-icon-of-faith-back.jpg?v=1783355523",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1018": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/cards/equipment/novitiates-sanctified-rounds-front.jpg?v=1783409087",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/cards/equipment/novitiates-sanctified-rounds-back.jpg?v=1783355523",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "ContainedObjects": [
+            {
+              "GUID": "9fafa7",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "novitiates-sanctified-rounds",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 101800,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "e1a86b",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "novitiates-icon-of-faith",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 101700,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "0f5fd6",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "novitiates-holy-embrocations",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 101600,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "7e50c9",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "novitiates-auto-chastisers",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 101500,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            }
+          ]
+        },
+        {
+          "GUID": "c29c1d",
+          "Name": "Deck",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 180.0,
+            "rotZ": 180.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Firefight Ploys",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.713235259,
+            "g": 0.713235259,
+            "b": 0.713235259
+          },
+          "Tags": [
+            "_Novitiates",
+            "KTCardsFirefightPloy"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": false,
+          "SidewaysCard": false,
+          "DeckIDs": [
+            102200,
+            102100,
+            102000,
+            101900
+          ],
+          "CustomDeck": {
+            "1019": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/cards/firefight_ploys/novitiates-blazing-inferno-front.jpg?v=1783409088",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/cards/firefight_ploys/novitiates-blazing-inferno-back.jpg?v=1783355523",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1020": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/cards/firefight_ploys/novitiates-blinding-aura-front.jpg?v=1783409089",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/cards/firefight_ploys/novitiates-blinding-aura-back.jpg?v=1783355523",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1021": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/cards/firefight_ploys/novitiates-glorious-martyrdom-front.jpg?v=1783409088",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/cards/firefight_ploys/novitiates-glorious-martyrdom-back.jpg?v=1783355523",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1022": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/cards/firefight_ploys/novitiates-guided-by-faith-front.jpg?v=1783409089",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/cards/firefight_ploys/novitiates-guided-by-faith-back.jpg?v=1783355523",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "ContainedObjects": [
+            {
+              "GUID": "48525b",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "novitiates-guided-by-faith",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 102200,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "d177b2",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "novitiates-glorious-martyrdom",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 102100,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "0456bf",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "novitiates-blinding-aura",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 102000,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "36996b",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "novitiates-blazing-inferno",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 101900,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            }
+          ]
+        },
+        {
+          "GUID": "d501a4",
+          "Name": "Deck",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 180.0,
+            "rotZ": 180.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Strategy Ploys",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.713235259,
+            "g": 0.713235259,
+            "b": 0.713235259
+          },
+          "Tags": [
+            "_Novitiates",
+            "KTCardsStrategyPloy"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": false,
+          "SidewaysCard": false,
+          "DeckIDs": [
+            102600,
+            102500,
+            102400,
+            102300
+          ],
+          "CustomDeck": {
+            "1023": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/cards/strategy_ploys/novitiates-ardent-vengeance-front.jpg?v=1783409090",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/cards/strategy_ploys/novitiates-ardent-vengeance-back.jpg?v=1783355523",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1024": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/cards/strategy_ploys/novitiates-blessed-rejuvenation-front.jpg?v=1783409091",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/cards/strategy_ploys/novitiates-blessed-rejuvenation-back.jpg?v=1783355523",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1025": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/cards/strategy_ploys/novitiates-defenders-of-the-faith-front.jpg?v=1783409090",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/cards/strategy_ploys/novitiates-defenders-of-the-faith-back.jpg?v=1783355523",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1026": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/cards/strategy_ploys/novitiates-righteous-advance-front.jpg?v=1783409091",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/novitiates/cards/strategy_ploys/novitiates-righteous-advance-back.jpg?v=1783355523",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "ContainedObjects": [
+            {
+              "GUID": "f34f12",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "novitiates-righteous-advance",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 102600,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "1a0d1a",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "novitiates-defenders-of-the-faith",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 102500,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "28c691",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "novitiates-blessed-rejuvenation",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 102400,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "cb9d28",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "novitiates-ardent-vengeance",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 102300,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

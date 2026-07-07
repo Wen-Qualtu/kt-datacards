@@ -1,0 +1,3382 @@
+{
+  "SaveName": "Deathwatch",
+  "Date": "",
+  "VersionNumber": "",
+  "GameMode": "",
+  "GameType": "",
+  "GameComplexity": "",
+  "Tags": [],
+  "Gravity": 0.5,
+  "PlayArea": 0.5,
+  "Table": "",
+  "Sky": "",
+  "Note": "",
+  "TabStates": {},
+  "LuaScript": "",
+  "LuaScriptState": "",
+  "XmlUI": "",
+  "ObjectStates": [
+    {
+      "GUID": "b3a1bc",
+      "Name": "Custom_Model_Bag",
+      "Transform": {
+        "posX": 0.0,
+        "posY": 3.5,
+        "posZ": 0.0,
+        "rotX": 0.0,
+        "rotY": 270.0,
+        "rotZ": 0.0,
+        "scaleX": 1.0,
+        "scaleY": 1.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "Deathwatch",
+      "Description": "OUTDATED VERSION. Click the red UPDATE button (or right-click -> Update to latest) to replace this with the full current team box. This intermediate is a one-time bridge and should not be reused.",
+      "GMNotes": "_Deathwatch",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
+      },
+      "Tags": [
+        "_Faction_Decks"
+      ],
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": false,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": true,
+      "MaterialIndex": -1,
+      "MeshIndex": -1,
+      "CustomMesh": {
+        "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/cardbox/deathwatch-card-box.obj?v=1781895962",
+        "DiffuseURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/cardbox/deathwatch-card-box-texture.jpg?v=1783355613",
+        "NormalURL": "",
+        "ColliderURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/cardbox/deathwatch-card-box.obj?v=1781895962",
+        "Convex": true,
+        "MaterialIndex": 3,
+        "TypeIndex": 6,
+        "CastShadows": true
+      },
+      "Bag": {
+        "Order": 0
+      },
+      "LuaScript": "-- Intermediate box updater (slim).\r\n--\r\n-- Embedded in the legacy save-file wrapper {Team} Box.json. Sole purpose:\r\n-- replace this box with the full clean {Team}.json from team-urls.json.\r\n--\r\n-- The wrapper exists only as a compatibility hop for in-the-wild boxes that\r\n-- still reference the old Box.json filename. Users who land here should\r\n-- update immediately and never reuse this intermediate.\r\n--\r\n-- Spawn-format note: the target file is a bare Custom_Model_Bag object\r\n-- handed straight to spawnObjectJSON (no save-file slicing needed).\r\n\r\nlocal BUTTON_UPDATE_NOW = {\r\n    label = \"UPDATE\\nNOW\",\r\n    click_function = \"click_update_now\",\r\n    function_owner = self,\r\n    position = {0, 0.3, 0},\r\n    rotation = {0, 180, 0},\r\n    height = 900, width = 1400,\r\n    font_size = 280,\r\n    color = {0.85, 0.1, 0.1}, font_color = {1, 1, 1},\r\n    tooltip = \"Replace this intermediate box with the latest full version.\"\r\n}\r\n\r\nfunction onLoad()\r\n    self.clearButtons()\r\n    self.createButton(BUTTON_UPDATE_NOW)\r\n    self.addContextMenuItem(\"Update to latest\", click_update_now)\r\nend\r\n\r\nfunction click_update_now()\r\n    -- Derive team slug + base repo URL from this box's MeshURL so we follow\r\n    -- whichever branch/fork the user spawned the box from.\r\n    local data = self.getData() or {}\r\n    local meshUrl = ((data.CustomMesh or {}).MeshURL) or \"\"\r\n    if meshUrl == \"\" then\r\n        broadcastToAll(\"Update failed: missing box mesh URL\", {1, 0.5, 0})\r\n        return\r\n    end\r\n    local cleanMeshUrl = string.match(meshUrl, \"^[^?]+\") or meshUrl\r\n    local baseUrl = string.match(cleanMeshUrl, \"^(.-)/output/\")\r\n    local teamSlug = string.match(cleanMeshUrl, \"/output/([^/]+)/\")\r\n    if not baseUrl or baseUrl == \"\" or not teamSlug or teamSlug == \"\" then\r\n        broadcastToAll(\"Update failed: could not parse repository URL\", {1, 0.5, 0})\r\n        return\r\n    end\r\n\r\n    local metadataUrl = baseUrl .. \"/output/team-urls.json?v=\" .. tostring(os.time())\r\n    broadcastToAll(\"Checking for latest \" .. teamSlug .. \"...\", {1, 1, 0})\r\n\r\n    WebRequest.get(metadataUrl, function(req)\r\n        if req.is_error then\r\n            broadcastToAll(\"Update failed: \" .. req.error, {1, 0.5, 0})\r\n            return\r\n        end\r\n        local ok, metadata = pcall(function() return JSON.decode(req.text) end)\r\n        if not ok or type(metadata) ~= \"table\" then\r\n            broadcastToAll(\"Update failed: could not parse team-urls.json\", {1, 0.5, 0})\r\n            return\r\n        end\r\n        local entry = metadata[teamSlug]\r\n        if type(entry) ~= \"table\" or type(entry.box) ~= \"table\" then\r\n            broadcastToAll(\"Update failed: team not found in team-urls.json\", {1, 0.5, 0})\r\n            return\r\n        end\r\n        local boxUrl = entry.box.url or \"\"\r\n        if boxUrl == \"\" then\r\n            broadcastToAll(\"Update failed: no box URL for team\", {1, 0.5, 0})\r\n            return\r\n        end\r\n\r\n        broadcastToAll(\"Downloading latest version...\", {0, 0.7, 1})\r\n        WebRequest.get(boxUrl, function(resp)\r\n            local code = tonumber(resp.response_code) or 0\r\n            if resp.is_error or code >= 400 then\r\n                local msg = resp.error\r\n                if msg == nil or msg == \"\" then msg = \"HTTP \" .. tostring(code) end\r\n                broadcastToAll(\"Download failed: \" .. msg .. \" (\" .. boxUrl .. \")\", {1, 0.5, 0})\r\n                return\r\n            end\r\n            local body = resp.text or \"\"\r\n            -- Strip leading whitespace; bare object must start with '{'.\r\n            local startIdx = 1\r\n            while startIdx <= #body and (body:byte(startIdx) == 32 or body:byte(startIdx) == 9 or body:byte(startIdx) == 10 or body:byte(startIdx) == 13) do\r\n                startIdx = startIdx + 1\r\n            end\r\n            if startIdx > #body or body:byte(startIdx) ~= 123 then\r\n                broadcastToAll(\"Update failed: unexpected response format (HTTP \" .. tostring(code) .. \")\", {1, 0.5, 0})\r\n                return\r\n            end\r\n            local objJson = (startIdx == 1) and body or body:sub(startIdx)\r\n\r\n            local pos = self.getPosition()\r\n            local rot = self.getRotation()\r\n            local locked = self.getLock()\r\n\r\n            local spawned = spawnObjectJSON({\r\n                json = objJson,\r\n                position = pos + Vector(5, 0, 0),\r\n                rotation = rot\r\n            })\r\n            if spawned == nil then\r\n                broadcastToAll(\"Update failed: could not spawn new box\", {1, 0.5, 0})\r\n                return\r\n            end\r\n\r\n            Wait.condition(\r\n                function()\r\n                    Wait.time(function()\r\n                        if spawned == nil or spawned.isDestroyed() then\r\n                            broadcastToAll(\"Update failed during spawn\", {1, 0.5, 0})\r\n                            return\r\n                        end\r\n                        spawned.setLock(locked)\r\n                        self.destruct()\r\n                        Wait.time(function()\r\n                            spawned.setPositionSmooth(pos, false, true)\r\n                            spawned.setRotationSmooth(rot, false, true)\r\n                            broadcastToAll(\"Updated to latest version!\", {0, 1, 0})\r\n                        end, 0.5)\r\n                    end, 0.5)\r\n                end,\r\n                function() return spawned ~= nil and not spawned.spawning end,\r\n                10\r\n            )\r\n        end)\r\n    end)\r\nend\r\n",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "ContainedObjects": [
+        {
+          "GUID": "bc9849",
+          "Name": "Custom_Model_Bag",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 1.01,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 270.0,
+            "rotZ": 0.0,
+            "scaleX": 1.47,
+            "scaleY": 0.1,
+            "scaleZ": 1.47
+          },
+          "Nickname": "Deathwatch tokens",
+          "Description": "If errors pop up, just wait for few sec and try again",
+          "GMNotes": "_deathwatch_tokens",
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0,
+            "a": 0.0
+          },
+          "Tags": [
+            "_deathwatch",
+            "KTCardsTokenBag"
+          ],
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "Hands": false,
+          "Number": 0,
+          "CustomMesh": {
+            "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/tokens/tokenbag/deathwatch-token-bag.obj?v=1779121408",
+            "DiffuseURL": "",
+            "NormalURL": "",
+            "ColliderURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/tokens/tokenbag/deathwatch-token-bag.obj?v=1779121408",
+            "Convex": true,
+            "MaterialIndex": 0,
+            "TypeIndex": 6,
+            "CastShadows": true
+          },
+          "Bag": {
+            "Order": 0
+          },
+          "LuaScript": "",
+          "LuaScriptState": "{\"ml\": {\"4aa058\": {\"lock\": false, \"pos\": {\"x\": -2.25, \"y\": 0.0213, \"z\": -3.0}, \"rot\": {\"x\": 0.0, \"y\": 180.0, \"z\": 0.0}}, \"9ad514\": {\"lock\": false, \"pos\": {\"x\": -0.75, \"y\": 0.0213, \"z\": -3.0}, \"rot\": {\"x\": 0.0, \"y\": 180.0, \"z\": 0.0}}, \"1fc68a\": {\"lock\": false, \"pos\": {\"x\": 0.75, \"y\": 0.0213, \"z\": -3.0}, \"rot\": {\"x\": 0.0, \"y\": 180.0, \"z\": 0.0}}, \"be7b28\": {\"lock\": false, \"pos\": {\"x\": 2.25, \"y\": 0.0213, \"z\": -3.0}, \"rot\": {\"x\": 0.0, \"y\": 180.0, \"z\": 0.0}}, \"36bacd\": {\"lock\": false, \"pos\": {\"x\": -2.25, \"y\": 0.0213, \"z\": -4.5}, \"rot\": {\"x\": 0.0, \"y\": 180.0, \"z\": 0.0}}, \"97d42c\": {\"lock\": false, \"pos\": {\"x\": -0.75, \"y\": 0.0213, \"z\": -4.5}, \"rot\": {\"x\": 0.0, \"y\": 180.0, \"z\": 0.0}}, \"851364\": {\"lock\": false, \"pos\": {\"x\": 0.75, \"y\": 0.0213, \"z\": -4.5}, \"rot\": {\"x\": 0.0, \"y\": 180.0, \"z\": 0.0}}, \"402516\": {\"lock\": false, \"pos\": {\"x\": 2.25, \"y\": 0.0213, \"z\": -4.5}, \"rot\": {\"x\": 0.0, \"y\": 180.0, \"z\": 0.0}}}, \"rr\": 270, \"lastUpdate\": \"2026-07-07T07:29:50.755544+00:00\"}",
+          "XmlUI": "",
+          "ChildObjects": [
+            {
+              "GUID": "afadc6",
+              "Name": "Custom_Tile",
+              "Transform": {
+                "posX": 0.0,
+                "posY": -0.5,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 270.0,
+                "rotZ": 0.0,
+                "scaleX": 0.5,
+                "scaleY": 10.0,
+                "scaleZ": 0.5
+              },
+              "Nickname": "",
+              "Description": "",
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0
+              },
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "Hands": false,
+              "CustomImage": {
+                "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/tokens/tokenbag/deathwatch-token-bag-icon.png?v=1783370981",
+                "ImageSecondaryURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/tokens/tokenbag/deathwatch-token-bag-icon.png?v=1783370981",
+                "ImageScalar": 1.0,
+                "WidthScale": 0.0,
+                "CustomTile": {
+                  "Type": 0,
+                  "Thickness": 0.1,
+                  "Stackable": false,
+                  "Stretch": true
+                }
+              }
+            }
+          ],
+          "ContainedObjects": [
+            {
+              "GUID": "4aa058",
+              "Name": "Custom_Model_Infinite_Bag",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 1.03,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 270.0,
+                "rotZ": 0.0,
+                "scaleX": 1.8351557,
+                "scaleY": 0.1,
+                "scaleZ": 1.7720486
+              },
+              "Nickname": "Advanced Omni Scrambler",
+              "Description": "Infinite Advanced Omni Scrambler tokens",
+              "GMNotes": "",
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 0.0
+              },
+              "Tags": [
+                "_deathwatch_tokens"
+              ],
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "Hands": false,
+              "CustomMesh": {
+                "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/tokens/deathwatch-advanced-omni-scrambler.obj?v=1772029953",
+                "DiffuseURL": "",
+                "NormalURL": "",
+                "ColliderURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/tokens/deathwatch-advanced-omni-scrambler.obj?v=1772029953",
+                "Convex": true,
+                "MaterialIndex": 0,
+                "TypeIndex": 7,
+                "CastShadows": true
+              },
+              "Bag": {
+                "Order": 0
+              },
+              "ContainedObjects": [
+                {
+                  "GUID": "f2068f",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 1.63,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Advanced Omni Scrambler",
+                  "Description": "Advanced Omni Scrambler",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": false,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/tokens/deathwatch-advanced-omni-scrambler.png?v=1783371751",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "ChildObjects": [
+                {
+                  "GUID": "dad531",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 0.0,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Advanced Omni Scrambler",
+                  "Description": "Advanced Omni Scrambler",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": true,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/tokens/deathwatch-advanced-omni-scrambler.png?v=1783371751",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "9ad514",
+              "Name": "Custom_Model_Infinite_Bag",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 1.03,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 270.0,
+                "rotZ": 0.0,
+                "scaleX": 1.8351557,
+                "scaleY": 0.1,
+                "scaleZ": 1.7720486
+              },
+              "Nickname": "Ammunition Reserve",
+              "Description": "Infinite Ammunition Reserve tokens",
+              "GMNotes": "",
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 0.0
+              },
+              "Tags": [
+                "_deathwatch_tokens"
+              ],
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "Hands": false,
+              "CustomMesh": {
+                "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/tokens/deathwatch-ammunition-reserve.obj?v=1772029953",
+                "DiffuseURL": "",
+                "NormalURL": "",
+                "ColliderURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/tokens/deathwatch-ammunition-reserve.obj?v=1772029953",
+                "Convex": true,
+                "MaterialIndex": 0,
+                "TypeIndex": 7,
+                "CastShadows": true
+              },
+              "Bag": {
+                "Order": 0
+              },
+              "ContainedObjects": [
+                {
+                  "GUID": "a59186",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 1.63,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Ammunition Reserve",
+                  "Description": "Ammunition Reserve",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": false,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/tokens/deathwatch-ammunition-reserve.png?v=1783371751",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "ChildObjects": [
+                {
+                  "GUID": "df4099",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 0.0,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Ammunition Reserve",
+                  "Description": "Ammunition Reserve",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": true,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/tokens/deathwatch-ammunition-reserve.png?v=1783371751",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "1fc68a",
+              "Name": "Custom_Model_Infinite_Bag",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 1.03,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 270.0,
+                "rotZ": 0.0,
+                "scaleX": 1.8351557,
+                "scaleY": 0.1,
+                "scaleZ": 1.7720486
+              },
+              "Nickname": "Digital Weapons",
+              "Description": "Infinite Digital Weapons tokens",
+              "GMNotes": "",
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 0.0
+              },
+              "Tags": [
+                "_deathwatch_tokens"
+              ],
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "Hands": false,
+              "CustomMesh": {
+                "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/tokens/deathwatch-digital-weapons.obj?v=1772029953",
+                "DiffuseURL": "",
+                "NormalURL": "",
+                "ColliderURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/tokens/deathwatch-digital-weapons.obj?v=1772029953",
+                "Convex": true,
+                "MaterialIndex": 0,
+                "TypeIndex": 7,
+                "CastShadows": true
+              },
+              "Bag": {
+                "Order": 0
+              },
+              "ContainedObjects": [
+                {
+                  "GUID": "856751",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 1.63,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Digital Weapons",
+                  "Description": "Digital Weapons",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": false,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/tokens/deathwatch-digital-weapons.png?v=1783371751",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "ChildObjects": [
+                {
+                  "GUID": "ec5914",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 0.0,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Digital Weapons",
+                  "Description": "Digital Weapons",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": true,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/tokens/deathwatch-digital-weapons.png?v=1783371751",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "be7b28",
+              "Name": "Custom_Model_Infinite_Bag",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 1.03,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 270.0,
+                "rotZ": 0.0,
+                "scaleX": 1.8351557,
+                "scaleY": 0.1,
+                "scaleZ": 1.7720486
+              },
+              "Nickname": "Melta Bomb",
+              "Description": "Infinite Melta Bomb tokens",
+              "GMNotes": "",
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 0.0
+              },
+              "Tags": [
+                "_deathwatch_tokens"
+              ],
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "Hands": false,
+              "CustomMesh": {
+                "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/tokens/deathwatch-melta-bomb.obj?v=1772029953",
+                "DiffuseURL": "",
+                "NormalURL": "",
+                "ColliderURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/tokens/deathwatch-melta-bomb.obj?v=1772029953",
+                "Convex": true,
+                "MaterialIndex": 0,
+                "TypeIndex": 7,
+                "CastShadows": true
+              },
+              "Bag": {
+                "Order": 0
+              },
+              "ContainedObjects": [
+                {
+                  "GUID": "399d4b",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 1.63,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Melta Bomb",
+                  "Description": "Melta Bomb",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": false,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/tokens/deathwatch-melta-bomb.png?v=1783371751",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "ChildObjects": [
+                {
+                  "GUID": "9c8a40",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 0.0,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Melta Bomb",
+                  "Description": "Melta Bomb",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": true,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/tokens/deathwatch-melta-bomb.png?v=1783371751",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "36bacd",
+              "Name": "Custom_Model_Infinite_Bag",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 1.03,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 270.0,
+                "rotZ": 0.0,
+                "scaleX": 1.8351557,
+                "scaleY": 0.1,
+                "scaleZ": 1.7720486
+              },
+              "Nickname": "Scrutavore Servo Thrall",
+              "Description": "Infinite Scrutavore Servo Thrall tokens",
+              "GMNotes": "",
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 0.0
+              },
+              "Tags": [
+                "_deathwatch_tokens"
+              ],
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "Hands": false,
+              "CustomMesh": {
+                "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/tokens/deathwatch-scrutavore-servo-thrall.obj?v=1772029953",
+                "DiffuseURL": "",
+                "NormalURL": "",
+                "ColliderURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/tokens/deathwatch-scrutavore-servo-thrall.obj?v=1772029953",
+                "Convex": true,
+                "MaterialIndex": 0,
+                "TypeIndex": 7,
+                "CastShadows": true
+              },
+              "Bag": {
+                "Order": 0
+              },
+              "ContainedObjects": [
+                {
+                  "GUID": "310183",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 1.63,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Scrutavore Servo Thrall",
+                  "Description": "Scrutavore Servo Thrall",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": false,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/tokens/deathwatch-scrutavore-servo-thrall.png?v=1783371751",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "ChildObjects": [
+                {
+                  "GUID": "b63809",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 0.0,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Scrutavore Servo Thrall",
+                  "Description": "Scrutavore Servo Thrall",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": true,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/tokens/deathwatch-scrutavore-servo-thrall.png?v=1783371751",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "97d42c",
+              "Name": "Custom_Model_Infinite_Bag",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 1.03,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 270.0,
+                "rotZ": 0.0,
+                "scaleX": 1.8351557,
+                "scaleY": 0.1,
+                "scaleZ": 1.7720486
+              },
+              "Nickname": "Strategic Command Firefight Ploy",
+              "Description": "Infinite Strategic Command Firefight Ploy tokens",
+              "GMNotes": "",
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 0.0
+              },
+              "Tags": [
+                "_deathwatch_tokens"
+              ],
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "Hands": false,
+              "CustomMesh": {
+                "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/tokens/deathwatch-strategic-command-firefight-ploy.obj?v=1772029953",
+                "DiffuseURL": "",
+                "NormalURL": "",
+                "ColliderURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/tokens/deathwatch-strategic-command-firefight-ploy.obj?v=1772029953",
+                "Convex": true,
+                "MaterialIndex": 0,
+                "TypeIndex": 7,
+                "CastShadows": true
+              },
+              "Bag": {
+                "Order": 0
+              },
+              "ContainedObjects": [
+                {
+                  "GUID": "c00864",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 1.63,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Strategic Command Firefight Ploy",
+                  "Description": "Strategic Command Firefight Ploy",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": false,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/tokens/deathwatch-strategic-command-firefight-ploy.png?v=1783371751",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "ChildObjects": [
+                {
+                  "GUID": "7bd8a0",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 0.0,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Strategic Command Firefight Ploy",
+                  "Description": "Strategic Command Firefight Ploy",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": true,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/tokens/deathwatch-strategic-command-firefight-ploy.png?v=1783371751",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "851364",
+              "Name": "Custom_Model_Infinite_Bag",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 1.03,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 270.0,
+                "rotZ": 0.0,
+                "scaleX": 1.8351557,
+                "scaleY": 0.1,
+                "scaleZ": 1.7720486
+              },
+              "Nickname": "Strategic Command Strategy Ploy",
+              "Description": "Infinite Strategic Command Strategy Ploy tokens",
+              "GMNotes": "",
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 0.0
+              },
+              "Tags": [
+                "_deathwatch_tokens"
+              ],
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "Hands": false,
+              "CustomMesh": {
+                "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/tokens/deathwatch-strategic-command-strategy-ploy.obj?v=1772029953",
+                "DiffuseURL": "",
+                "NormalURL": "",
+                "ColliderURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/tokens/deathwatch-strategic-command-strategy-ploy.obj?v=1772029953",
+                "Convex": true,
+                "MaterialIndex": 0,
+                "TypeIndex": 7,
+                "CastShadows": true
+              },
+              "Bag": {
+                "Order": 0
+              },
+              "ContainedObjects": [
+                {
+                  "GUID": "93d950",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 1.63,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Strategic Command Strategy Ploy",
+                  "Description": "Strategic Command Strategy Ploy",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": false,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/tokens/deathwatch-strategic-command-strategy-ploy.png?v=1783371751",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "ChildObjects": [
+                {
+                  "GUID": "0c5662",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 0.0,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Strategic Command Strategy Ploy",
+                  "Description": "Strategic Command Strategy Ploy",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": true,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/tokens/deathwatch-strategic-command-strategy-ploy.png?v=1783371751",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "402516",
+              "Name": "Custom_Model_Infinite_Bag",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 1.03,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 270.0,
+                "rotZ": 0.0,
+                "scaleX": 1.8351557,
+                "scaleY": 0.1,
+                "scaleZ": 1.7720486
+              },
+              "Nickname": "Vigilant Marksman",
+              "Description": "Infinite Vigilant Marksman tokens",
+              "GMNotes": "",
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 0.0
+              },
+              "Tags": [
+                "_deathwatch_tokens"
+              ],
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "Hands": false,
+              "CustomMesh": {
+                "MeshURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/tokens/deathwatch-vigilant-marksman.obj?v=1772029953",
+                "DiffuseURL": "",
+                "NormalURL": "",
+                "ColliderURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/tokens/deathwatch-vigilant-marksman.obj?v=1772029953",
+                "Convex": true,
+                "MaterialIndex": 0,
+                "TypeIndex": 7,
+                "CastShadows": true
+              },
+              "Bag": {
+                "Order": 0
+              },
+              "ContainedObjects": [
+                {
+                  "GUID": "6154aa",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 1.63,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Vigilant Marksman",
+                  "Description": "Vigilant Marksman",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": false,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/tokens/deathwatch-vigilant-marksman.png?v=1783371751",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "ChildObjects": [
+                {
+                  "GUID": "d32244",
+                  "Name": "Custom_Token",
+                  "Transform": {
+                    "posX": 0.0,
+                    "posY": 0.0,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 0.21,
+                    "scaleY": 1.0,
+                    "scaleZ": 0.21
+                  },
+                  "Nickname": "Vigilant Marksman",
+                  "Description": "Vigilant Marksman",
+                  "ColorDiffuse": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                  },
+                  "Tags": [
+                    "KTUIToken",
+                    "KTUITokenSimple"
+                  ],
+                  "Locked": true,
+                  "Grid": true,
+                  "Snap": false,
+                  "Autoraise": true,
+                  "Sticky": false,
+                  "Tooltip": false,
+                  "Hands": false,
+                  "CustomImage": {
+                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/tokens/deathwatch-vigilant-marksman.png?v=1783371751",
+                    "ImageSecondaryURL": "",
+                    "ImageScalar": 1.0,
+                    "WidthScale": 0.0,
+                    "CustomToken": {
+                      "Thickness": 0.1,
+                      "MergeDistancePixels": 6.0,
+                      "StandUp": false,
+                      "Stackable": false
+                    }
+                  },
+                  "LuaScript": "",
+                  "LuaScriptState": "",
+                  "XmlUI": ""
+                }
+              ],
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            }
+          ]
+        },
+        {
+          "GUID": "dda549",
+          "Name": "Custom_Dice",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 0.0,
+            "rotZ": 0.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Deathwatch Dice",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "_Deathwatch",
+            "KTDice_Team"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomImage": {
+            "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/dice/deathwatch-dice-team.jpg?v=1783355597",
+            "ImageSecondaryURL": "",
+            "WidthScale": 0.0
+          },
+          "CustomDice": {
+            "Type": 1
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "258c42",
+          "Name": "Custom_Dice",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 0.0,
+            "rotZ": 0.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Deathwatch Light Dice",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "_Deathwatch",
+            "KTDice_Light"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomImage": {
+            "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/dice/deathwatch-dice-light.jpg?v=1783355597",
+            "ImageSecondaryURL": "",
+            "WidthScale": 0.0
+          },
+          "CustomDice": {
+            "Type": 1
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "a7644a",
+          "Name": "Custom_Dice",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 0.0,
+            "rotZ": 0.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Deathwatch Dark Dice",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "_Deathwatch",
+            "KTDice_Dark"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomImage": {
+            "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/dice/deathwatch-dice-dark.jpg?v=1783355597",
+            "ImageSecondaryURL": "",
+            "WidthScale": 0.0
+          },
+          "CustomDice": {
+            "Type": 1
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "092fd2",
+          "Name": "Card",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 180.0,
+            "rotZ": 0.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "deathwatch-operatives",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.713235259,
+            "g": 0.713235259,
+            "b": 0.713235259
+          },
+          "Tags": [
+            "_Deathwatch",
+            "KTCardsOperativeSelection"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": true,
+          "CardID": 100000,
+          "SidewaysCard": false,
+          "CustomDeck": {
+            "1000": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/cards/operatives_selection/deathwatch-operative-selection-front.jpg?v=1783371959",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/cards/operatives_selection/deathwatch-operative-selection-back.jpg?v=1783355518",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "789d5f",
+          "Name": "Deck",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 180.0,
+            "rotZ": 180.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Faction Rules",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.713235259,
+            "g": 0.713235259,
+            "b": 0.713235259
+          },
+          "Tags": [
+            "_Deathwatch",
+            "KTCardsFactionRule"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": false,
+          "SidewaysCard": false,
+          "DeckIDs": [
+            100200,
+            100100
+          ],
+          "CustomDeck": {
+            "1001": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/cards/faction_rules/deathwatch-special-issue-ammunition-front.jpg?v=1783371960",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/cards/faction_rules/deathwatch-special-issue-ammunition-back.jpg?v=1783355518",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1002": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/cards/faction_rules/deathwatch-veteran-astartes-front.jpg?v=1783371960",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/cards/faction_rules/deathwatch-veteran-astartes-back.jpg?v=1783355518",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "ContainedObjects": [
+            {
+              "GUID": "5fc413",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "deathwatch-veteran-astartes",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 100200,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "a9ecee",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "deathwatch-special-issue-ammunition",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 100100,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            }
+          ]
+        },
+        {
+          "GUID": "956973",
+          "Name": "Card",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 180.0,
+            "rotZ": 0.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "deathwatch-markertoken-guide",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.713235259,
+            "g": 0.713235259,
+            "b": 0.713235259
+          },
+          "Tags": [
+            "_Deathwatch",
+            "KTCardsTokenGuide"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": true,
+          "CardID": 100300,
+          "SidewaysCard": false,
+          "CustomDeck": {
+            "1003": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/cards/token_guide/deathwatch-token-guide-front.jpg?v=1783371969",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/cards/token_guide/deathwatch-token-guide-back.jpg?v=1783355518",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "dee1e2",
+          "Name": "Deck",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 180.0,
+            "rotZ": 180.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Datacards",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.713235259,
+            "g": 0.713235259,
+            "b": 0.713235259
+          },
+          "Tags": [
+            "_Deathwatch",
+            "KTCardsDatacard"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": false,
+          "SidewaysCard": false,
+          "DeckIDs": [
+            101400,
+            101300,
+            101200,
+            101100,
+            101000,
+            100900,
+            100800,
+            100700,
+            100600,
+            100500,
+            100400
+          ],
+          "CustomDeck": {
+            "1004": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/cards/datacards/deathwatch-aegis-veteran-front.jpg?v=1783371953",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/cards/datacards/deathwatch-aegis-veteran-back.jpg?v=1783355518",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1005": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/cards/datacards/deathwatch-blademaster-veteran-front.jpg?v=1783371953",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/cards/datacards/deathwatch-blademaster-veteran-back.jpg?v=1783355518",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1006": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/cards/datacards/deathwatch-bombard-veteran-front.jpg?v=1783371954",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/cards/datacards/deathwatch-bombard-veteran-back.jpg?v=1783355518",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1007": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/cards/datacards/deathwatch-breacher-veteran-front.jpg?v=1783371955",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/cards/datacards/deathwatch-breacher-veteran-back.jpg?v=1783355518",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1008": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/cards/datacards/deathwatch-demolisher-veteran-front.jpg?v=1783371955",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/cards/datacards/deathwatch-demolisher-veteran-back.jpg?v=1783355518",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1009": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/cards/datacards/deathwatch-disruptor-veteran-front.jpg?v=1783371956",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/cards/datacards/deathwatch-disruptor-veteran-back.jpg?v=1783355518",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1010": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/cards/datacards/deathwatch-gunner-veteran-front.jpg?v=1783371957",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/cards/datacards/deathwatch-gunner-veteran-back.jpg?v=1783355518",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1011": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/cards/datacards/deathwatch-headtaker-veteran-front.jpg?v=1783371957",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/cards/datacards/deathwatch-headtaker-veteran-back.jpg?v=1783355518",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1012": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/cards/datacards/deathwatch-horde-slayer-veteran-front.jpg?v=1783371958",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/cards/datacards/deathwatch-horde-slayer-veteran-back.jpg?v=1783355518",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1013": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/cards/datacards/deathwatch-marksman-veteran-front.jpg?v=1783371959",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/cards/datacards/deathwatch-marksman-veteran-back.jpg?v=1783355518",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1014": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/cards/datacards/deathwatch-watch-sergeant-front.jpg?v=1783371952",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/cards/datacards/deathwatch-watch-sergeant-back.jpg?v=1783355518",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "ContainedObjects": [
+            {
+              "GUID": "6cbf37",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "deathwatch-watch-sergeant",
+              "Description": "",
+              "GMNotes": "{\"name\":\"deathwatch-watch-sergeant\",\"stats\":{\"APL\":3,\"Move\":6,\"Save\":3,\"Wounds\":15,\"Base\":32},\"keywords\":[\"Operative\",\"DEATHWATCH\",\"IMPERIUM\",\"ADEPTUS ASTARTES\",\"LEADER\",\"WATCH SERGEANT\"],\"weapons\":[{\"name\":\"[1E87FF]R[-] Plasma pistol (standard)\",\"plain_name\":\"Plasma pistol (standard)\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"3/5\",\"WR\":\"Range 8\\\", Piercing 1\"}},{\"name\":\"[1E87FF]R[-] Plasma pistol (supercharge)\",\"plain_name\":\"Plasma pistol (supercharge)\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"4/5\",\"WR\":\"Range 8\\\", Hot, Lethal 5+, Piercing 1\"}},{\"name\":\"[F4641D]M[-] Power weapon\",\"plain_name\":\"Power weapon\",\"stats\":{\"ATK\":\"5\",\"HIT\":\"3+\",\"DMG\":\"4/6\",\"WR\":\"Lethal 5+\"}}],\"abilities\":[{\"name\":\"Adaptable Armoury\",\"text\":\"You can select one additional equipment option.\"},{\"name\":\"Strategic Command\",\"text\":\"You can do each of the following once per battle if this operative is in the killzone:\\n\u2022 Use a DEATHWATCH strategy ploy for 0CP.\\n\u2022 Use a DEATHWATCH firefight ploy for 0CP.\"}],\"actions\":[],\"weapon_rules\":{\"Piercing x\":\"The defender collects x less defence dice, e.g. Piercing 1. If the rule is Piercing Crits x, this only comes into effect if you retain any critical successes.\",\"Range x\":\"Only operatives within x of the active operative can be valid targets, e.g. Range 9\\\".\",\"Hot\":\"After an operative uses this weapon, roll one D6: if the result is less than the weapon's Hit stat, inflict damage on that operative equal to the result multiplied by two. If it's used multiple times in one action (e.g. Blast), still only roll one D6.\"},\"description\":\"[D36B3E][[84E680]APL[-] [ffffff]3[-]] [[84E680]MOVE[-] [ffffff]6\\\"[-]]\\n[[84E680]SAVE[-] [ffffff]3+[-]] [[84E680]WOUNDS[-] [ffffff]15[-]][-]\\n[C5C5C5]Operative, DEATHWATCH, IMPERIUM, ADEPTUS ASTARTES, LEADER, WATCH SERGEANT[-]\\n[31B32B]Weapons[-]\\n[1E87FF]R[-] Plasma pistol (standard)\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 3/5\\n[84E680]WR[-]: Range 8\\\", Piercing 1\\n\\n[1E87FF]R[-] Plasma pistol (supercharge)\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 4/5\\n[84E680]WR[-]: Range 8\\\", Hot, Lethal 5+, Piercing 1\\n\\n[F4641D]M[-] Power weapon\\n[84E680]ATK[-] 5 [84E680]HIT[-] 3+ [84E680]DMG[-] 4/6\\n[84E680]WR[-]: Lethal 5+\\n\\n---\\n[31B32B]Abilities[-]\\n- [EF8450]Adaptable Armoury[-]\\n- [EF8450]Strategic Command[-]\"}",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 101400,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "ff5ee2",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "deathwatch-marksman-veteran",
+              "Description": "",
+              "GMNotes": "{\"name\":\"deathwatch-marksman-veteran\",\"stats\":{\"APL\":3,\"Move\":6,\"Save\":3,\"Wounds\":15,\"Base\":32},\"keywords\":[\"Operative\",\"DEATHWATCH\",\"IMPERIUM\",\"ADEPTUS ASTARTES\",\"MARKSMAN\"],\"weapons\":[{\"name\":\"[1E87FF]R[-] Stalker bolt rifle (mobile)\",\"plain_name\":\"Stalker bolt rifle (mobile)\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"3/4\",\"WR\":\"\"}},{\"name\":\"[1E87FF]R[-] Stalker bolt rifle (heavy)\",\"plain_name\":\"Stalker bolt rifle (heavy)\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"2+\",\"DMG\":\"3/5\",\"WR\":\"Heavy (Dash only), Lethal 5+, Piercing Crits 1\"}},{\"name\":\"[F4641D]M[-] Fists\",\"plain_name\":\"Fists\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"3/4\",\"WR\":\"\"}}],\"abilities\":[{\"name\":\"Vigilant Marksman\",\"text\":\"This operative can perform the Guard action during its activation regardless of the killzone (see close quarters rules, Kill Team: Tomb World). When using the close quarters rules, once per turning point, after this operative performs a free Shoot action on guard, it can immediately perform a free Guard action. However, if it does, it cannot counteract during that turning point (nor Guard twice if it's counteracted).\"}],\"actions\":[],\"weapon_rules\":{\"Heavy\":\"An operative cannot use this weapon in an activation or counteraction in which it moved, and it cannot move in an activation or counteraction in which it used this weapon. If the rule is Heavy (x only), where x is a move action, only that move is allowed, e.g. Heavy (Dash only). This weapon rule has no effect on preventing the Guard action.\",\"Piercing x\":\"The defender collects x less defence dice, e.g. Piercing 1. If the rule is Piercing Crits x, this only comes into effect if you retain any critical successes.\"},\"description\":\"[D36B3E][[84E680]APL[-] [ffffff]3[-]] [[84E680]MOVE[-] [ffffff]6\\\"[-]]\\n[[84E680]SAVE[-] [ffffff]3+[-]] [[84E680]WOUNDS[-] [ffffff]15[-]][-]\\n[C5C5C5]Operative, DEATHWATCH, IMPERIUM, ADEPTUS ASTARTES, MARKSMAN[-]\\n[31B32B]Weapons[-]\\n[1E87FF]R[-] Stalker bolt rifle (mobile)\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 3/4\\n\\n[1E87FF]R[-] Stalker bolt rifle (heavy)\\n[84E680]ATK[-] 4 [84E680]HIT[-] 2+ [84E680]DMG[-] 3/5\\n[84E680]WR[-]: Heavy (Dash only), Lethal 5+, Piercing Crits 1\\n\\n[F4641D]M[-] Fists\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 3/4\\n\\n---\\n[31B32B]Abilities[-]\\n- [EF8450]Vigilant Marksman[-]\"}",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 101300,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "44ad0e",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "deathwatch-horde-slayer-veteran",
+              "Description": "",
+              "GMNotes": "{\"name\":\"deathwatch-horde-slayer-veteran\",\"stats\":{\"APL\":3,\"Move\":5,\"Save\":3,\"Wounds\":18,\"Base\":40},\"keywords\":[\"Operative\",\"DEATHWATCH\",\"IMPERIUM\",\"ADEPTUS ASTARTES\",\"GRAVIS\",\"HORDE-SLAYER\"],\"weapons\":[{\"name\":\"[1E87FF]R[-] Bolt pistol\",\"plain_name\":\"Bolt pistol\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"3/4\",\"WR\":\"Range 8\\\"\"}},{\"name\":\"[1E87FF]R[-] Infernus heavy bolter (flame)\",\"plain_name\":\"Infernus heavy bolter (flame)\",\"stats\":{\"ATK\":\"5\",\"HIT\":\"2+\",\"DMG\":\"3/3\",\"WR\":\"Range 8\\\", Saturate, Torrent 2\\\"\"}},{\"name\":\"[1E87FF]R[-] Infernus heavy bolter\",\"plain_name\":\"Infernus heavy bolter\",\"stats\":{\"ATK\":\"5\",\"HIT\":\"3+\",\"DMG\":\"4/5\",\"WR\":\"Piercing Crits 1 (focused bolt)\"}},{\"name\":\"[1E87FF]R[-] Infernus heavy bolter\",\"plain_name\":\"Infernus heavy bolter\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"4/5\",\"WR\":\"Piercing Crits 1, Torrent 1\\\" (sweeping bolt)\"}},{\"name\":\"[F4641D]M[-] Fists\",\"plain_name\":\"Fists\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"3/4\",\"WR\":\"\"}}],\"abilities\":[],\"actions\":[],\"weapon_rules\":{\"Range x\":\"Only operatives within x of the active operative can be valid targets, e.g. Range 9\\\".\",\"Saturate\":\"The defender cannot retain cover saves.\",\"Torrent x\":\"Select a valid target as normal as the primary target, then select any number of other valid targets within x of the first valid target, but not within control range of friendly operatives, as secondary targets, e.g. Torrent 2\\\". Shoot with this weapon against all of them in an order of your choice (roll each sequence separately).\",\"Piercing x\":\"The defender collects x less defence dice, e.g. Piercing 1. If the rule is Piercing Crits x, this only comes into effect if you retain any critical successes.\"},\"description\":\"[D36B3E][[84E680]APL[-] [ffffff]3[-]] [[84E680]MOVE[-] [ffffff]5\\\"[-]]\\n[[84E680]SAVE[-] [ffffff]3+[-]] [[84E680]WOUNDS[-] [ffffff]18[-]][-]\\n[C5C5C5]Operative, DEATHWATCH, IMPERIUM, ADEPTUS ASTARTES, GRAVIS, HORDE-SLAYER[-]\\n[31B32B]Weapons[-]\\n[1E87FF]R[-] Bolt pistol\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 3/4\\n[84E680]WR[-]: Range 8\\\"\\n\\n[1E87FF]R[-] Infernus heavy bolter (flame)\\n[84E680]ATK[-] 5 [84E680]HIT[-] 2+ [84E680]DMG[-] 3/3\\n[84E680]WR[-]: Range 8\\\", Saturate, Torrent 2\\\"\\n\\n[1E87FF]R[-] Infernus heavy bolter\\n[84E680]ATK[-] 5 [84E680]HIT[-] 3+ [84E680]DMG[-] 4/5\\n[84E680]WR[-]: Piercing Crits 1 (focused bolt)\\n\\n[1E87FF]R[-] Infernus heavy bolter\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 4/5\\n[84E680]WR[-]: Piercing Crits 1, Torrent 1\\\" (sweeping bolt)\\n\\n[F4641D]M[-] Fists\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 3/4\\n\"}",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 101200,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "360771",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "deathwatch-headtaker-veteran",
+              "Description": "",
+              "GMNotes": "{\"name\":\"deathwatch-headtaker-veteran\",\"stats\":{\"APL\":3,\"Move\":7,\"Save\":3,\"Wounds\":13,\"Base\":32},\"keywords\":[\"Operative\",\"DEATHWATCH\",\"IMPERIUM\",\"ADEPTUS ASTARTES\",\"HEADTAKER\"],\"weapons\":[{\"name\":\"[1E87FF]R[-] Special issue bolt pistol\",\"plain_name\":\"Special issue bolt pistol\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"3/4\",\"WR\":\"Range 8\\\", Piercing 1\"}},{\"name\":\"[F4641D]M[-] Combat knives\",\"plain_name\":\"Combat knives\",\"stats\":{\"ATK\":\"5\",\"HIT\":\"3+\",\"DMG\":\"4/5\",\"WR\":\"\"}}],\"abilities\":[{\"name\":\"Grav-chute and Grapnel Launcher\",\"text\":\"Whenever this operative is climbing, treat the vertical distance as 2\\\" (regardless of how far the operative actually moves vertically). Whenever this operative is dropping, ignore the vertical distance.\"},{\"name\":\"Clandestine Headtaker\",\"text\":\"This operative can perform the Charge action while it has a Conceal order. Whenever this operative is fighting against an operative it wasn't visible to at the start of the activation/counteraction, the first time you strike during that sequence, you can immediately resolve another of your successes as a strike (before your opponent).\"}],\"actions\":[],\"weapon_rules\":{\"Piercing x\":\"The defender collects x less defence dice, e.g. Piercing 1. If the rule is Piercing Crits x, this only comes into effect if you retain any critical successes.\",\"Range x\":\"Only operatives within x of the active operative can be valid targets, e.g. Range 9\\\".\"},\"description\":\"[D36B3E][[84E680]APL[-] [ffffff]3[-]] [[84E680]MOVE[-] [ffffff]7\\\"[-]]\\n[[84E680]SAVE[-] [ffffff]3+[-]] [[84E680]WOUNDS[-] [ffffff]13[-]][-]\\n[C5C5C5]Operative, DEATHWATCH, IMPERIUM, ADEPTUS ASTARTES, HEADTAKER[-]\\n[31B32B]Weapons[-]\\n[1E87FF]R[-] Special issue bolt pistol\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 3/4\\n[84E680]WR[-]: Range 8\\\", Piercing 1\\n\\n[F4641D]M[-] Combat knives\\n[84E680]ATK[-] 5 [84E680]HIT[-] 3+ [84E680]DMG[-] 4/5\\n\\n---\\n[31B32B]Abilities[-]\\n- [EF8450]Grav-chute and Grapnel Launcher[-]\\n- [EF8450]Clandestine Headtaker[-]\"}",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 101100,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "dcbe2c",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "deathwatch-gunner-veteran",
+              "Description": "",
+              "GMNotes": "{\"name\":\"deathwatch-gunner-veteran\",\"stats\":{\"APL\":3,\"Move\":6,\"Save\":3,\"Wounds\":15,\"Base\":32},\"keywords\":[\"Operative\",\"DEATHWATCH\",\"IMPERIUM\",\"ADEPTUS ASTARTES\",\"GUNNER\"],\"weapons\":[{\"name\":\"[1E87FF]R[-] Bolt pistol\",\"plain_name\":\"Bolt pistol\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"3/4\",\"WR\":\"Range 8\\\"\"}},{\"name\":\"[1E87FF]R[-] Heavy plasma incinerator\",\"plain_name\":\"Heavy plasma incinerator\",\"stats\":{\"ATK\":\"5\",\"HIT\":\"3+\",\"DMG\":\"4/6\",\"WR\":\"Piercing 1 (standard)\"}},{\"name\":\"[1E87FF]R[-] Heavy plasma incinerator\",\"plain_name\":\"Heavy plasma incinerator\",\"stats\":{\"ATK\":\"5\",\"HIT\":\"3+\",\"DMG\":\"5/6\",\"WR\":\"Hot, Lethal 5+, Piercing 1 (supercharge)\"}},{\"name\":\"[F4641D]M[-] Fists\",\"plain_name\":\"Fists\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"3/4\",\"WR\":\"\"}}],\"abilities\":[],\"actions\":[],\"weapon_rules\":{\"Range x\":\"Only operatives within x of the active operative can be valid targets, e.g. Range 9\\\".\",\"Piercing x\":\"The defender collects x less defence dice, e.g. Piercing 1. If the rule is Piercing Crits x, this only comes into effect if you retain any critical successes.\",\"Hot\":\"After an operative uses this weapon, roll one D6: if the result is less than the weapon's Hit stat, inflict damage on that operative equal to the result multiplied by two. If it's used multiple times in one action (e.g. Blast), still only roll one D6.\"},\"description\":\"[D36B3E][[84E680]APL[-] [ffffff]3[-]] [[84E680]MOVE[-] [ffffff]6\\\"[-]]\\n[[84E680]SAVE[-] [ffffff]3+[-]] [[84E680]WOUNDS[-] [ffffff]15[-]][-]\\n[C5C5C5]Operative, DEATHWATCH, IMPERIUM, ADEPTUS ASTARTES, GUNNER[-]\\n[31B32B]Weapons[-]\\n[1E87FF]R[-] Bolt pistol\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 3/4\\n[84E680]WR[-]: Range 8\\\"\\n\\n[1E87FF]R[-] Heavy plasma incinerator\\n[84E680]ATK[-] 5 [84E680]HIT[-] 3+ [84E680]DMG[-] 4/6\\n[84E680]WR[-]: Piercing 1 (standard)\\n\\n[1E87FF]R[-] Heavy plasma incinerator\\n[84E680]ATK[-] 5 [84E680]HIT[-] 3+ [84E680]DMG[-] 5/6\\n[84E680]WR[-]: Hot, Lethal 5+, Piercing 1 (supercharge)\\n\\n[F4641D]M[-] Fists\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 3/4\\n\"}",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 101000,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "132166",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "deathwatch-disruptor-veteran",
+              "Description": "",
+              "GMNotes": "{\"name\":\"deathwatch-disruptor-veteran\",\"stats\":{\"APL\":3,\"Move\":7,\"Save\":3,\"Wounds\":13,\"Base\":32},\"keywords\":[\"Operative\",\"DEATHWATCH\",\"IMPERIUM\",\"ADEPTUS ASTARTES\",\"DISRUPTOR\"],\"weapons\":[{\"name\":\"[1E87FF]R[-] Marksman bolt carbine\",\"plain_name\":\"Marksman bolt carbine\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"3/4\",\"WR\":\"Lethal 5+\"}},{\"name\":\"[F4641D]M[-] Fists\",\"plain_name\":\"Fists\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"3/4\",\"WR\":\"\"}}],\"abilities\":[{\"name\":\"Advanced Omni-Scrambler\",\"text\":\"STRATEGIC GAMBIT. Select one enemy operative visible to or within 6\\\" of this operative, then roll one D6. In the Firefight phase of this turning point, that enemy operative cannot be activated or perform actions until one of the following is true:\\n\u2022 Your opponent has activated a number of enemy operatives equal to the result of the D6.\\n\u2022 It's the last enemy operative to be activated.\"},{\"name\":\"Auspex Triangulation\",\"text\":\"The Advanced Auspex Scan firefight ploy costs you 0CP when both of the following are true:\\n\u2022 This operative isn't within control range of enemy operatives.\\n\u2022 The target of that Shoot action (primary target, if relevant) is visible to this operative. Note that it doesn't have to be this operative performing the Shoot action, and that any subsequent Shoot actions during that activation/counteraction must meet these same requirements (or that ploy has no effect on those subsequent Shoot actions).\"}],\"actions\":[],\"weapon_rules\":{},\"description\":\"[D36B3E][[84E680]APL[-] [ffffff]3[-]] [[84E680]MOVE[-] [ffffff]7\\\"[-]]\\n[[84E680]SAVE[-] [ffffff]3+[-]] [[84E680]WOUNDS[-] [ffffff]13[-]][-]\\n[C5C5C5]Operative, DEATHWATCH, IMPERIUM, ADEPTUS ASTARTES, DISRUPTOR[-]\\n[31B32B]Weapons[-]\\n[1E87FF]R[-] Marksman bolt carbine\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 3/4\\n[84E680]WR[-]: Lethal 5+\\n\\n[F4641D]M[-] Fists\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 3/4\\n\\n---\\n[31B32B]Abilities[-]\\n- [EF8450]Advanced Omni-Scrambler[-]\\n- [EF8450]Auspex Triangulation[-]\"}",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 100900,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "5c6a82",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "deathwatch-demolisher-veteran",
+              "Description": "",
+              "GMNotes": "{\"name\":\"deathwatch-demolisher-veteran\",\"stats\":{\"APL\":3,\"Move\":6,\"Save\":3,\"Wounds\":15,\"Base\":32},\"keywords\":[\"Operative\",\"DEATHWATCH\",\"IMPERIUM\",\"ADEPTUS ASTARTES\",\"DEMOLISHER\"],\"weapons\":[{\"name\":\"[1E87FF]R[-] Bolt pistol\",\"plain_name\":\"Bolt pistol\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"3/4\",\"WR\":\"Range 8\\\"\"}},{\"name\":\"[F4641D]M[-] Heavy thunder hammer\",\"plain_name\":\"Heavy thunder hammer\",\"stats\":{\"ATK\":\"5\",\"HIT\":\"4+\",\"DMG\":\"6/7\",\"WR\":\"Shock, Stun\"}}],\"abilities\":[{\"name\":\"Brutal Assault\",\"text\":\"Whenever this operative is fighting, its heavy thunder hammer has the Brutal weapon rule. Whenever this operative performs the Charge action, its heavy thunder hammer has the Ceaseless weapon rule until the end of the activation/counteraction.\"},{\"name\":\"Aggressive Force\",\"text\":\"Whenever this operative is fighting or retaliating, Normal and Critical Dmg of 3 or more inflicts 1 less damage on it. This isn't cumulative with the Shield that Slays strategy ploy.\"}],\"actions\":[],\"weapon_rules\":{\"Range x\":\"Only operatives within x of the active operative can be valid targets, e.g. Range 9\\\".\",\"Shock\":\"The first time you strike with a critical success in each sequence, also discard one of your opponent's unresolved normal successes (or one of their critical successes if there are none).\",\"Stun\":\"If you retain any critical successes, subtract 1 from the APL stat of the operative this weapon is being used against until the end of its next activation.\"},\"description\":\"[D36B3E][[84E680]APL[-] [ffffff]3[-]] [[84E680]MOVE[-] [ffffff]6\\\"[-]]\\n[[84E680]SAVE[-] [ffffff]3+[-]] [[84E680]WOUNDS[-] [ffffff]15[-]][-]\\n[C5C5C5]Operative, DEATHWATCH, IMPERIUM, ADEPTUS ASTARTES, DEMOLISHER[-]\\n[31B32B]Weapons[-]\\n[1E87FF]R[-] Bolt pistol\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 3/4\\n[84E680]WR[-]: Range 8\\\"\\n\\n[F4641D]M[-] Heavy thunder hammer\\n[84E680]ATK[-] 5 [84E680]HIT[-] 4+ [84E680]DMG[-] 6/7\\n[84E680]WR[-]: Shock, Stun\\n\\n---\\n[31B32B]Abilities[-]\\n- [EF8450]Brutal Assault[-]\\n- [EF8450]Aggressive Force[-]\"}",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 100800,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "7fdb3c",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "deathwatch-breacher-veteran",
+              "Description": "",
+              "GMNotes": "{\"name\":\"deathwatch-breacher-veteran\",\"stats\":{\"APL\":3,\"Move\":5,\"Save\":3,\"Wounds\":18,\"Base\":40},\"keywords\":[\"Operative\",\"DEATHWATCH\",\"IMPERIUM\",\"ADEPTUS ASTARTES\",\"GRAVIS\",\"BREACHER\"],\"weapons\":[{\"name\":\"[1E87FF]R[-] Auxiliary grenade launcher\",\"plain_name\":\"Auxiliary grenade launcher\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"2/4\",\"WR\":\"Blast 2\\\" (frag)\"}},{\"name\":\"[1E87FF]R[-] Auxiliary grenade launcher\",\"plain_name\":\"Auxiliary grenade launcher\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"4/5\",\"WR\":\"Piercing 1 (krak)\"}},{\"name\":\"[1E87FF]R[-] Hellstorm bolt rifle\",\"plain_name\":\"Hellstorm bolt rifle\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"4/5\",\"WR\":\"Torrent 1\\\"\"}},{\"name\":\"[1E87FF]R[-] Melta bomb\",\"plain_name\":\"Melta bomb\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"5/3\",\"WR\":\"Range 3\\\", Devastating 3, Heavy (Reposition only), Limited 1, Piercing 2\"}},{\"name\":\"[F4641D]M[-] Fists\",\"plain_name\":\"Fists\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"3/4\",\"WR\":\"\"}}],\"abilities\":[],\"actions\":[],\"weapon_rules\":{\"Blast x\":\"The target you select is the primary target. After shooting the primary target, shoot with this weapon against each secondary target in an order of your choice (roll each sequence separately). Secondary targets are other operatives visible to and within x of the primary target, e.g. Blast 2\\\" (they are all valid targets, regardless of a Conceal order). Secondary targets are in cover and obscured if the primary target was.\",\"Piercing x\":\"The defender collects x less defence dice, e.g. Piercing 1. If the rule is Piercing Crits x, this only comes into effect if you retain any critical successes.\",\"Torrent x\":\"Select a valid target as normal as the primary target, then select any number of other valid targets within x of the first valid target, but not within control range of friendly operatives, as secondary targets, e.g. Torrent 2\\\". Shoot with this weapon against all of them in an order of your choice (roll each sequence separately).\",\"Devastating x\":\"Each retained critical success immediately inflicts x damage on the operative this weapon is being used against, e.g. Devastating 3. If the rule starts with a distance (e.g. 1\\\" Devastating x), inflict x damage on that operative and each other operative visible to and within that distance of it. Note that success isn't discarded after doing so - it can still be resolved later in the sequence.\",\"Heavy\":\"An operative cannot use this weapon in an activation or counteraction in which it moved, and it cannot move in an activation or counteraction in which it used this weapon. If the rule is Heavy (x only), where x is a move action, only that move is allowed, e.g. Heavy (Dash only). This weapon rule has no effect on preventing the Guard action.\",\"Limited x\":\"After an operative uses this weapon a number of times in the battle equal to x, they no longer have it. If it's used multiple times in one action (e.g. Blast), treat this as one use.\",\"Range x\":\"Only operatives within x of the active operative can be valid targets, e.g. Range 9\\\".\"},\"description\":\"[D36B3E][[84E680]APL[-] [ffffff]3[-]] [[84E680]MOVE[-] [ffffff]5\\\"[-]]\\n[[84E680]SAVE[-] [ffffff]3+[-]] [[84E680]WOUNDS[-] [ffffff]18[-]][-]\\n[C5C5C5]Operative, DEATHWATCH, IMPERIUM, ADEPTUS ASTARTES, GRAVIS, BREACHER[-]\\n[31B32B]Weapons[-]\\n[1E87FF]R[-] Auxiliary grenade launcher\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 2/4\\n[84E680]WR[-]: Blast 2\\\" (frag)\\n\\n[1E87FF]R[-] Auxiliary grenade launcher\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 4/5\\n[84E680]WR[-]: Piercing 1 (krak)\\n\\n[1E87FF]R[-] Hellstorm bolt rifle\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 4/5\\n[84E680]WR[-]: Torrent 1\\\"\\n\\n[1E87FF]R[-] Melta bomb\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 5/3\\n[84E680]WR[-]: Range 3\\\", Devastating 3, Heavy (Reposition only), Limited 1, Piercing 2\\n\\n[F4641D]M[-] Fists\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 3/4\\n\"}",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 100700,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "d1a3ba",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "deathwatch-bombard-veteran",
+              "Description": "",
+              "GMNotes": "{\"name\":\"deathwatch-bombard-veteran\",\"stats\":{\"APL\":3,\"Move\":5,\"Save\":3,\"Wounds\":18,\"Base\":40},\"keywords\":[\"Operative\",\"DEATHWATCH\",\"IMPERIUM\",\"ADEPTUS ASTARTES\",\"GRAVIS\",\"BOMBARD\"],\"weapons\":[{\"name\":\"[1E87FF]R[-] Bolt pistol\",\"plain_name\":\"Bolt pistol\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"3/4\",\"WR\":\"Range 8\\\"\"}},{\"name\":\"[1E87FF]R[-] Frag cannon (shell)\",\"plain_name\":\"Frag cannon (shell)\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"5/7\",\"WR\":\"Piercing 1\"}},{\"name\":\"[1E87FF]R[-] Frag cannon (shrapnel)\",\"plain_name\":\"Frag cannon (shrapnel)\",\"stats\":{\"ATK\":\"5\",\"HIT\":\"3+\",\"DMG\":\"4/5\",\"WR\":\"Torrent 2\\\"\"}},{\"name\":\"[F4641D]M[-] Fists\",\"plain_name\":\"Fists\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"3/4\",\"WR\":\"\"}}],\"abilities\":[],\"actions\":[],\"weapon_rules\":{\"Range x\":\"Only operatives within x of the active operative can be valid targets, e.g. Range 9\\\".\",\"Piercing x\":\"The defender collects x less defence dice, e.g. Piercing 1. If the rule is Piercing Crits x, this only comes into effect if you retain any critical successes.\",\"Torrent x\":\"Select a valid target as normal as the primary target, then select any number of other valid targets within x of the first valid target, but not within control range of friendly operatives, as secondary targets, e.g. Torrent 2\\\". Shoot with this weapon against all of them in an order of your choice (roll each sequence separately).\"},\"description\":\"[D36B3E][[84E680]APL[-] [ffffff]3[-]] [[84E680]MOVE[-] [ffffff]5\\\"[-]]\\n[[84E680]SAVE[-] [ffffff]3+[-]] [[84E680]WOUNDS[-] [ffffff]18[-]][-]\\n[C5C5C5]Operative, DEATHWATCH, IMPERIUM, ADEPTUS ASTARTES, GRAVIS, BOMBARD[-]\\n[31B32B]Weapons[-]\\n[1E87FF]R[-] Bolt pistol\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 3/4\\n[84E680]WR[-]: Range 8\\\"\\n\\n[1E87FF]R[-] Frag cannon (shell)\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 5/7\\n[84E680]WR[-]: Piercing 1\\n\\n[1E87FF]R[-] Frag cannon (shrapnel)\\n[84E680]ATK[-] 5 [84E680]HIT[-] 3+ [84E680]DMG[-] 4/5\\n[84E680]WR[-]: Torrent 2\\\"\\n\\n[F4641D]M[-] Fists\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 3/4\\n\"}",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 100600,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "babb88",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "deathwatch-blademaster-veteran",
+              "Description": "",
+              "GMNotes": "{\"name\":\"deathwatch-blademaster-veteran\",\"stats\":{\"APL\":3,\"Move\":6,\"Save\":3,\"Wounds\":15,\"Base\":32},\"keywords\":[\"Operative\",\"DEATHWATCH\",\"IMPERIUM\",\"ADEPTUS ASTARTES\",\"BLADEMASTER\"],\"weapons\":[{\"name\":\"[1E87FF]R[-] Special issue bolt pistol\",\"plain_name\":\"Special issue bolt pistol\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"3/4\",\"WR\":\"Range 8\\\", Piercing 1\"}},{\"name\":\"[F4641D]M[-] Xenophase blade (duel)\",\"plain_name\":\"Xenophase blade (duel)\",\"stats\":{\"ATK\":\"5\",\"HIT\":\"3+\",\"DMG\":\"4/6\",\"WR\":\"Brutal, Lethal 5+\"}}],\"abilities\":[{\"name\":\"Adaptive Swordsmanship\",\"text\":\"You can ignore any changes to the Hit stat of this operative's xenophase blade. Whenever this operative is fighting or retaliating, you can resolve one of your successes before the normal order. If you do, that success must be used to block.\"},{\"name\":\"*Phase Sweep\",\"text\":\"Whenever this operative performs the Fight action with this weapon profile, if it isn't incapacitated, it can immediately perform a free Fight action afterwards, but you must select this weapon profile and it can only fight against each enemy operative within its control range once per activation or counteraction using this weapon profile. This takes precedence over action restrictions, and you can continue to perform free Fight actions until this operative is incapacitated or has fought against every enemy operative within its control range.\"}],\"actions\":[],\"weapon_rules\":{\"Piercing x\":\"The defender collects x less defence dice, e.g. Piercing 1. If the rule is Piercing Crits x, this only comes into effect if you retain any critical successes.\",\"Range x\":\"Only operatives within x of the active operative can be valid targets, e.g. Range 9\\\".\",\"Brutal\":\"Your opponent can only block with critical successes.\"},\"description\":\"[D36B3E][[84E680]APL[-] [ffffff]3[-]] [[84E680]MOVE[-] [ffffff]6\\\"[-]]\\n[[84E680]SAVE[-] [ffffff]3+[-]] [[84E680]WOUNDS[-] [ffffff]15[-]][-]\\n[C5C5C5]Operative, DEATHWATCH, IMPERIUM, ADEPTUS ASTARTES, BLADEMASTER[-]\\n[31B32B]Weapons[-]\\n[1E87FF]R[-] Special issue bolt pistol\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 3/4\\n[84E680]WR[-]: Range 8\\\", Piercing 1\\n\\n[F4641D]M[-] Xenophase blade (duel)\\n[84E680]ATK[-] 5 [84E680]HIT[-] 3+ [84E680]DMG[-] 4/6\\n[84E680]WR[-]: Brutal, Lethal 5+\\n\\n---\\n[31B32B]Abilities[-]\\n- [EF8450]Adaptive Swordsmanship[-]\\n- [EF8450]*Phase Sweep[-]\"}",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 100500,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "5b9cd7",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "deathwatch-aegis-veteran",
+              "Description": "",
+              "GMNotes": "{\"name\":\"deathwatch-aegis-veteran\",\"stats\":{\"APL\":3,\"Move\":6,\"Save\":2,\"Wounds\":15,\"Base\":32},\"keywords\":[\"Operative\",\"DEATHWATCH\",\"IMPERIUM\",\"ADEPTUS ASTARTES\",\"AEGIS\"],\"weapons\":[{\"name\":\"[1E87FF]R[-] Bolt pistol\",\"plain_name\":\"Bolt pistol\",\"stats\":{\"ATK\":\"4\",\"HIT\":\"3+\",\"DMG\":\"3/4\",\"WR\":\"Range 8\\\"\"}},{\"name\":\"[F4641D]M[-] Power maul & storm shield\",\"plain_name\":\"Power maul & storm shield\",\"stats\":{\"ATK\":\"5\",\"HIT\":\"3+\",\"DMG\":\"4/6\",\"WR\":\"Shock, Shield*\"}}],\"abilities\":[{\"name\":\"*Shield\",\"text\":\"Whenever this operative is fighting or retaliating with this weapon, each of your blocks can be allocated to block two unresolved successes (instead of one).\"},{\"name\":\"Storm Shield\",\"text\":\"Whenever an operative is shooting this operative, worsen the x of the Piercing weapon rule by 1 (if any). Note that Piercing 1 would therefore be ignored.\"}],\"actions\":[],\"weapon_rules\":{\"Range x\":\"Only operatives within x of the active operative can be valid targets, e.g. Range 9\\\".\",\"Shock\":\"The first time you strike with a critical success in each sequence, also discard one of your opponent's unresolved normal successes (or one of their critical successes if there are none).\"},\"description\":\"[D36B3E][[84E680]APL[-] [ffffff]3[-]] [[84E680]MOVE[-] [ffffff]6\\\"[-]]\\n[[84E680]SAVE[-] [ffffff]2+[-]] [[84E680]WOUNDS[-] [ffffff]15[-]][-]\\n[C5C5C5]Operative, DEATHWATCH, IMPERIUM, ADEPTUS ASTARTES, AEGIS[-]\\n[31B32B]Weapons[-]\\n[1E87FF]R[-] Bolt pistol\\n[84E680]ATK[-] 4 [84E680]HIT[-] 3+ [84E680]DMG[-] 3/4\\n[84E680]WR[-]: Range 8\\\"\\n\\n[F4641D]M[-] Power maul & storm shield\\n[84E680]ATK[-] 5 [84E680]HIT[-] 3+ [84E680]DMG[-] 4/6\\n[84E680]WR[-]: Shock, Shield*\\n\\n---\\n[31B32B]Abilities[-]\\n- [EF8450]*Shield[-]\\n- [EF8450]Storm Shield[-]\"}",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 100400,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            }
+          ]
+        },
+        {
+          "GUID": "412917",
+          "Name": "Deck",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 180.0,
+            "rotZ": 180.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Equipment",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.713235259,
+            "g": 0.713235259,
+            "b": 0.713235259
+          },
+          "Tags": [
+            "_Deathwatch",
+            "KTCardsEquipment"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": false,
+          "SidewaysCard": false,
+          "DeckIDs": [
+            101800,
+            101700,
+            101600,
+            101500
+          ],
+          "CustomDeck": {
+            "1015": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/cards/equipment/deathwatch-ammunition-reserve-front.jpg?v=1783371963",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/cards/equipment/deathwatch-ammunition-reserve-back.jpg?v=1783355518",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1016": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/cards/equipment/deathwatch-digital-weapons-front.jpg?v=1783371961",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/cards/equipment/deathwatch-digital-weapons-back.jpg?v=1783355518",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1017": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/cards/equipment/deathwatch-sanctus-v-bioscryer-cuffs-front.jpg?v=1783371962",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/cards/equipment/deathwatch-sanctus-v-bioscryer-cuffs-back.jpg?v=1783355518",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1018": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/cards/equipment/deathwatch-scrutavore-servo-thrall-front.jpg?v=1783371962",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/cards/equipment/deathwatch-scrutavore-servo-thrall-back.jpg?v=1783355518",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "ContainedObjects": [
+            {
+              "GUID": "106392",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "deathwatch-scrutavore-servo-thrall",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 101800,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "9f7265",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "deathwatch-sanctus-v-bioscryer-cuffs",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 101700,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "34d0d6",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "deathwatch-digital-weapons",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 101600,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "478a4d",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "deathwatch-ammunition-reserve",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 101500,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            }
+          ]
+        },
+        {
+          "GUID": "e387e6",
+          "Name": "Deck",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 180.0,
+            "rotZ": 180.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Firefight Ploys",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.713235259,
+            "g": 0.713235259,
+            "b": 0.713235259
+          },
+          "Tags": [
+            "_Deathwatch",
+            "KTCardsFirefightPloy"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": false,
+          "SidewaysCard": false,
+          "DeckIDs": [
+            102200,
+            102100,
+            102000,
+            101900
+          ],
+          "CustomDeck": {
+            "1019": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/cards/firefight_ploys/deathwatch-advanced-auspex-scan-front.jpg?v=1783371965",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/cards/firefight_ploys/deathwatch-advanced-auspex-scan-back.jpg?v=1783355518",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1020": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/cards/firefight_ploys/deathwatch-auspicator-tracking-front.jpg?v=1783371964",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/cards/firefight_ploys/deathwatch-auspicator-tracking-back.jpg?v=1783355518",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1021": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/cards/firefight_ploys/deathwatch-suffer-not-the-alien-front.jpg?v=1783371964",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/cards/firefight_ploys/deathwatch-suffer-not-the-alien-back.jpg?v=1783355518",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1022": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/cards/firefight_ploys/deathwatch-transhuman-physiology-front.jpg?v=1783371966",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/cards/firefight_ploys/deathwatch-transhuman-physiology-back.jpg?v=1783355518",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "ContainedObjects": [
+            {
+              "GUID": "cf0c24",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "deathwatch-transhuman-physiology",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 102200,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "bdd465",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "deathwatch-suffer-not-the-alien",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 102100,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "c2da3f",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "deathwatch-auspicator-tracking",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 102000,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "258e0d",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "deathwatch-advanced-auspex-scan",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 101900,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            }
+          ]
+        },
+        {
+          "GUID": "888569",
+          "Name": "Deck",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 3.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 180.0,
+            "rotZ": 180.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Strategy Ploys",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.713235259,
+            "g": 0.713235259,
+            "b": 0.713235259
+          },
+          "Tags": [
+            "_Deathwatch",
+            "KTCardsStrategyPloy"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": false,
+          "SidewaysCard": false,
+          "DeckIDs": [
+            102600,
+            102500,
+            102400,
+            102300
+          ],
+          "CustomDeck": {
+            "1023": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/cards/strategy_ploys/deathwatch-and-they-shall-know-no-fear-front.jpg?v=1783371968",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/cards/strategy_ploys/deathwatch-and-they-shall-know-no-fear-back.jpg?v=1783355518",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1024": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/cards/strategy_ploys/deathwatch-mission-tactics-front.jpg?v=1783371966",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/cards/strategy_ploys/deathwatch-mission-tactics-back.jpg?v=1783355518",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1025": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/cards/strategy_ploys/deathwatch-the-long-vigil-front.jpg?v=1783371967",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/cards/strategy_ploys/deathwatch-the-long-vigil-back.jpg?v=1783355518",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            },
+            "1026": {
+              "FaceURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/cards/strategy_ploys/deathwatch-the-shield-that-slays-front.jpg?v=1783371968",
+              "BackURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/new_implementation/output/deathwatch/cards/strategy_ploys/deathwatch-the-shield-that-slays-back.jpg?v=1783355518",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "ContainedObjects": [
+            {
+              "GUID": "c03b90",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "deathwatch-the-shield-that-slays",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 102600,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "438cfe",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "deathwatch-the-long-vigil",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 102500,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "dad918",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "deathwatch-mission-tactics",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 102400,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "95ab00",
+              "Name": "Card",
+              "Transform": {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 1.0,
+                "scaleZ": 1.0
+              },
+              "Nickname": "deathwatch-and-they-shall-know-no-fear",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 102300,
+              "SidewaysCard": false,
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
