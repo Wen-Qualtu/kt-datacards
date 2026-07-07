@@ -105,7 +105,7 @@ Flags: `--source kt-app|warcom` (required for front-end/source steps), `--teams 
 | 9 | `generate_box_texture` | shared | artwork + config → `output/{team}/cardbox/*` |
 | 10 | `generate_card_images` | shared | integration PDFs + backsides + content → `output/{team}/cards/*` |
 | 11 | `extract_stats` | shared | content → `output/{team}/data/{team}-team-data.json` |
-| 12 | `generate_tts` | shared | all of the above → TTS objects |
+| 12 | `generate_tts` | shared | cards + stats + dice + cardbox → `output/{team}/tts_objects/{Team}.json` (+ `{Team} Box.json` wrapper, per-card/dice JSONs) |
 
 Scope meaning: **track** = front-end resolved by `--source`; **source** = shared code that
 still needs the raw/track input (takes `--source`); **shared** = operates only on the
@@ -124,6 +124,19 @@ integration layer, source-agnostic (no `--source` needed).
   state files, so it stays authoritative automatically — no delete-and-regenerate dance.
 - **ETL rule:** never hand-edit intermediate/output artifacts (`*-content.json`, `manifest.json`,
   extracted images, `output/*`, metadata). Fix the step source and re-run with `--force`.
+- **`generate_tts` internals** live in `pipeline/steps/tts_impl.py` (adapted copy of legacy
+  `7_generate_tts_objects.py`) + `pipeline/steps/templates/tts_templates.py`; `generate_tts.py`
+  is a thin `run()` wrapper. Image URLs default to
+  `…/kt-datacards/{branch}/new_implementation/output` (override via `KT_DATACARDS_URL_BASE` /
+  `KT_DATACARDS_URL_BRANCH`). `base_size` is embedded as GMNotes `stats['Base']`; token
+  `type: both` → tags `[KTUIToken, KTUIMarker, KTUITokenSimple]`.
+- **`generate_tts` known gaps** (by design, not bugs): (a) **no token bag** — `load_token_bag`
+  needs per-token `.obj` meshes that legacy step 6 copied from `output_v2`; the integrated
+  pipeline only produces token `.png`, so the bag is omitted and the box ships with card decks
+  + dice. (b) **no weapon-selection groups** — `embed_datacard_stats` reads them from
+  `output_v2/{faction}/{team}/statlines/roster.json`, which the sandbox lacks, so the
+  `selection` key is skipped (stats/weapons/abilities still embed). (c) KTUI enhanced
+  stat-loading (`ktui-mini-modelscript.lua`) is intentionally excluded.
 
 ## Onboarding on a New Machine
 
