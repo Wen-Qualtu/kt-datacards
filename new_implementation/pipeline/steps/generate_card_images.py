@@ -30,6 +30,13 @@ DPI = 300
 ZOOM = DPI / 72  # PDF base is 72 DPI
 JPEG_QUALITY = 90
 
+# Trim this many pixels off each side of every rendered card face. The warcom
+# scrape leaves a thin light margin (and slightly variable card edges); trimming a
+# few px drops it and keeps both tracks the same size. kt-app cards are already
+# clean, so this just crops them equally. Pre-made default backsides are already
+# clean and are left untouched. Bump this if any edge sliver remains.
+CARD_TRIM_PX = 5
+
 # Card types in manifest order (plural underscore keys == output subdir names).
 CARD_TYPES = (
     "datacards",
@@ -88,7 +95,13 @@ def _entity_pdfs(team: str, entity: dict, card_type_key: str) -> list[Path]:
 
 def _render_page(doc: fitz.Document, page_idx: int, out_path: Path) -> bool:
     try:
-        pix = doc[page_idx].get_pixmap(matrix=fitz.Matrix(ZOOM, ZOOM), alpha=False)
+        page = doc[page_idx]
+        clip = None
+        if CARD_TRIM_PX > 0:
+            inset = CARD_TRIM_PX / ZOOM  # rendered px -> PDF points
+            r = page.rect
+            clip = fitz.Rect(r.x0 + inset, r.y0 + inset, r.x1 - inset, r.y1 - inset)
+        pix = page.get_pixmap(matrix=fitz.Matrix(ZOOM, ZOOM), clip=clip, alpha=False)
         out_path.parent.mkdir(parents=True, exist_ok=True)
         pix.save(out_path, jpg_quality=JPEG_QUALITY)
         return True

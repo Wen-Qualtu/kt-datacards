@@ -211,8 +211,24 @@ def render_page_to_image(page: fitz.Page, dpi: int = 150) -> np.ndarray:
     return img
 
 
-def save_single_card_as_pdf(page: fitz.Page, card_coords: dict, output_path: Path, dpi: int = 150) -> None:
-    """Crop one card region from ``page`` and save it as a single-page PDF (text preserved)."""
+# Canonical card page size (PDF points) — matches the kt-app page extraction so
+# both tracks render to the same pixel dimensions. landscape / portrait.
+_CANON_CARD_PT = {
+    "landscape": (343.0, 198.4),
+    "portrait": (198.4, 343.0),
+}
+
+
+def save_single_card_as_pdf(page: fitz.Page, card_coords: dict, output_path: Path,
+                            dpi: int = 150, template_type: Optional[str] = None) -> None:
+    """Crop one card region from ``page`` and save it as a single-page PDF (text preserved).
+
+    The raw template corner coords vary by 1-2px per card, which makes each card a
+    slightly different size (and none exactly matches the kt-app extraction). When
+    ``template_type`` is given the crop is normalised to a single canonical size
+    (``_CANON_CARD_PT``, the kt-app page size), *centred on the detected card box* so
+    the content position is preserved while every card comes out uniform.
+    """
     scale = dpi / 300.0  # template coords are at 300 DPI
     pdf_scale = 72 / dpi  # image px -> PDF points
 
@@ -231,6 +247,13 @@ def save_single_card_as_pdf(page: fitz.Page, card_coords: dict, output_path: Pat
         bottom += adjust.get("bottom", 0) * pdf_scale
 
     crop_rect = fitz.Rect(left, top, right, bottom)
+
+    canon = _CANON_CARD_PT.get(template_type)
+    if canon:
+        cw, ch = canon
+        cx, cy = (left + right) / 2.0, (top + bottom) / 2.0
+        crop_rect = fitz.Rect(cx - cw / 2.0, cy - ch / 2.0, cx + cw / 2.0, cy + ch / 2.0)
+
     new_doc = fitz.open()
     new_page = new_doc.new_page(width=crop_rect.width, height=crop_rect.height)
     new_page.show_pdf_page(new_page.rect, page.parent, page.number, clip=crop_rect)
@@ -269,7 +292,7 @@ def extract_cards(pdf_path: Path, templates: dict, output_dir: Path,
                     break  # past the card section
                 for card_idx, card_coords in enumerate(templates[template_type]["cards"], 1):
                     out_path = output_dir / _card_filename(team_name, page_num, card_idx, template_type)
-                    save_single_card_as_pdf(page, card_coords, out_path, dpi)
+                    save_single_card_as_pdf(page, card_coords, out_path, dpi, template_type)
                     total_cards += 1
                 pages_processed += 1
             finally:
