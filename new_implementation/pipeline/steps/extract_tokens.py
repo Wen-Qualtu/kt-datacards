@@ -299,7 +299,7 @@ def _extract_team(team: str) -> bool:
 
     if not extractor.find_marker_guides(team):
         logger.info(f"  {team}: no token-guide page in manifest — skipping")
-        return False
+        return None  # not a failure: this team simply has no tokens
 
     ok = extractor.process_team_auto_tuned(team, method="auto", debug=False,
                                            clean=False, expected_token_count=None)
@@ -425,7 +425,15 @@ def run(teams: Optional[list] = None, source=None, force: bool = False):
         except Exception as e:
             logger.warning(f"  {team}: extraction error: {e}")
             ok = False
+        finally:
+            # Per-team scratch cleanup: remove only THIS team's work dir so
+            # parallel workers never delete each other's in-progress extraction
+            # (the old global rmtree of TOKEN_WORK_ROOT raced under --jobs).
+            shutil.rmtree(TOKEN_WORK_ROOT / team, ignore_errors=True)
 
+        if ok is None:
+            skipped += 1  # no token guide -> nothing to do (not a failure)
+            continue
         if not ok:
             failed += 1
             continue
@@ -443,9 +451,6 @@ def run(teams: Optional[list] = None, source=None, force: bool = False):
         state.record_inputs("extract_tokens", inputs)
         state.mark_complete("extract_tokens")
         state.save()
-
-    # Clean up the scratch extraction directory.
-    shutil.rmtree(TOKEN_WORK_ROOT, ignore_errors=True)
 
     StateIndex().rebuild_and_save()
     logger.info(f"extract_tokens done: processed={processed} skipped={skipped} failed={failed}")

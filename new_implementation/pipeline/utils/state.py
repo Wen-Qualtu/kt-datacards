@@ -13,6 +13,8 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import threading
+import time
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
@@ -20,19 +22,35 @@ from typing import Dict
 
 from . import paths
 
+# Serializes writes to the single global index file so concurrent team workers
+# never race on os.replace of the same destination (Windows raises WinError 5).
+_INDEX_LOCK = threading.Lock()
 
-def _atomic_write_json(path: Path, data) -> None:
+
+def _atomic_write_json(path: Path, data, retries: int = 8) -> None:
     """Write JSON to ``path`` atomically (temp file + os.replace).
 
-    Safe when several threads write different files concurrently and, for the
-    global index, when concurrent rebuilds race — os.replace swaps the file in
-    one step so readers never see a half-written file.
+    os.replace swaps the file in one step so readers never see a half-written
+    file. The replace is retried on transient PermissionError: on Windows a
+    just-written file can be briefly locked by the AV/search indexer (or by a
+    concurrent replace of the same path), which surfaces as WinError 5.
     """
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp = path.with_name(f"{path.name}.{uuid.uuid4().hex}.tmp")
     with open(tmp, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
-    os.replace(tmp, path)
+    for attempt in range(retries):
+        try:
+            os.replace(tmp, path)
+            return
+        except PermissionError:
+            if attempt == retries - 1:
+                try:
+                    os.unlink(tmp)
+                except OSError:
+                    pass
+                raise
+            time.sleep(0.05 * (attempt + 1))
 
 
 class StateManager:
@@ -207,4 +225,5 @@ class StateIndex:
             "last_run": datetime.now(timezone.utc).isoformat(),
             "teams": teams,
         }
-        _atomic_write_json(self.index_file, index)
+        with _INDEX_LOCK:
+            _atomic_write_json(self.index_file, index)
