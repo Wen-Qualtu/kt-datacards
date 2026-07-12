@@ -922,10 +922,15 @@ function click_place_kt_table(obj, player_color, alt_click)
                 }
               end
             elseif cardType == "faction_rules" then
-              -- Unpack first 2 cards, keep rest as deck at position 3
+              -- 3-card teams: place all 3 individually in slots 1/2/3.
+              -- 4+ card teams: place first 2 individually, remainder as deck at slot 3.
               local originalDeckGuid = guid
-              local deckSize = #obj.getObjects()
-              local cardsToUnpack = math.min(2, deckSize)
+              local allCardGuids = {}
+              for _, cardInfo in ipairs(obj.getObjects()) do
+                table.insert(allCardGuids, cardInfo.guid)
+              end
+              local deckSize = #allCardGuids
+              local cardsToUnpack = (deckSize <= 3) and deckSize or 2
               deckUnpackTracking[originalDeckGuid] = {
                 name = obj.getName(),
                 description = obj.getDescription(),
@@ -933,26 +938,53 @@ function click_place_kt_table(obj, player_color, alt_click)
                 originalEntry = entry,
                 cardType = cardType
               }
-              
-              -- Unpack first 2 cards individually
+
+              -- Unpack cards individually
               for i = 1, cardsToUnpack do
                 local customPos = getWorkshopPosition(player_color, cardType, cardTypeIndices[cardType])
                 if customPos then
-                  local card = obj.takeObject({
-                    position = customPos,
-                    rotation = absoluteRot,
-                    smooth = false
-                  })
-                  if card then
-                    card.setLock(entry.lock)
-                    table.insert(deckUnpackTracking[originalDeckGuid].cardGuids, card.guid)
+                  if obj and not obj.isDestroyed() then
+                    local card = obj.takeObject({
+                      position = customPos,
+                      rotation = absoluteRot,
+                      smooth = false
+                    })
+                    if card then
+                      card.setLock(entry.lock)
+                      table.insert(deckUnpackTracking[originalDeckGuid].cardGuids, card.guid)
+                    end
                   end
                   cardTypeIndices[cardType] = cardTypeIndices[cardType] + 1
                 end
               end
-              
-              -- If there are remaining cards, place them as deck at position 3
-              if deckSize > 2 and obj and not obj.isDestroyed() then
+
+              -- Collapsed-card recovery: TTS auto-destroys a Deck when takeObject
+              -- reduces it to 1 card, leaving the final card untracked at the
+              -- deck's old position. Pick it up and place it in the next slot.
+              if #deckUnpackTracking[originalDeckGuid].cardGuids < cardsToUnpack then
+                local trackedSet = {}
+                for _, cguid in ipairs(deckUnpackTracking[originalDeckGuid].cardGuids) do
+                  trackedSet[cguid] = true
+                end
+                for _, cguid in ipairs(allCardGuids) do
+                  if cguid and not trackedSet[cguid] then
+                    local remainingCard = getObjectFromGUID(cguid)
+                    if remainingCard and not remainingCard.isDestroyed() then
+                      local customPos = getWorkshopPosition(player_color, cardType, cardTypeIndices[cardType] - 1)
+                      if customPos then
+                        remainingCard.setPosition(customPos)
+                        remainingCard.setRotation(absoluteRot)
+                        remainingCard.setLock(entry.lock)
+                      end
+                      table.insert(deckUnpackTracking[originalDeckGuid].cardGuids, cguid)
+                      trackedSet[cguid] = true
+                    end
+                  end
+                end
+              end
+
+              -- 4+ cards: remaining deck goes to slot 3.
+              if deckSize > 3 and obj and not obj.isDestroyed() then
                 local customPos = getWorkshopPosition(player_color, cardType, 3)
                 if customPos then
                   obj.setPosition(customPos)
