@@ -56,7 +56,7 @@ logger = logging.getLogger(__name__)
 PROJECT_ROOT = _paths.ROOT  # repo root
 PIPELINE_METADATA_FILE = PROJECT_ROOT / "layers" / "metadata.json"
 OUTPUT_METADATA_FILE = PROJECT_ROOT / "output" / "metadata.json"
-URL_BRANCH = os.environ.get("KT_DATACARDS_URL_BRANCH", "main")
+URL_BRANCH = os.environ.get("KT_DATACARDS_URL_BRANCH", "acc")
 # Base path (under the repo) that hosts the generated output. Output lives at the
 # repo-root ``output/``, so URLs point there directly. Overridable via env.
 URL_OUTPUT_BASE = os.environ.get(

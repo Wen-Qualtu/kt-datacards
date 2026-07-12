@@ -1,48 +1,48 @@
 {
   "team": "kasrkin",
   "pipeline_version": "2.0",
-  "last_updated": "2026-07-12T18:32:27.101267+00:00",
+  "last_updated": "2026-07-12T19:25:34.166314+00:00",
   "steps": {
     "content_analysis": {
       "outputs": {
         "content.json": {
           "path": "layers/integration/kasrkin/content/kasrkin-content.json",
           "hash": "a886ae74067f34b2bbe592b25e0005b27d1fd1c39ba48c0f52ba465f5b5a7a26",
-          "modified": "2026-07-11T07:02:13.566271+00:00"
+          "modified": "2026-07-12T19:14:45.854627+00:00"
         }
       },
-      "completed": "2026-07-11T07:02:26.028380+00:00",
+      "completed": "2026-07-12T19:15:02.569101+00:00",
       "inputs": {
         "layers/integration/kasrkin/manifest.json": "73cdfe2daa03dbd56faff04ffbd413453db19857324473ada9de88a13727f6cf",
         "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
-        "layers/integration/kasrkin/kasrkin-datacard-kasrkin-combat-medic.pdf": "ea79e42159834ab70422b02a9aedb3fc5dec01a0c4bbb69c1e0eb1fb28b5534d",
-        "layers/integration/kasrkin/kasrkin-datacard-kasrkin-demo-trooper.pdf": "b0bc65e9c5e0fe2671376ac850e80d1b9d33ce64969e2d012c324877f923d2eb",
-        "layers/integration/kasrkin/kasrkin-datacard-kasrkin-gunner.pdf": "2bb4edcc5a7e007794be1467fb86beebd97020de40c41f0aaeb54cb46f221002",
-        "layers/integration/kasrkin/kasrkin-datacard-kasrkin-recon-trooper.pdf": "5197fbe6ff235186530d46e45809a24fd9e8c0d1cbce2db1be3e10c744d54f1e",
-        "layers/integration/kasrkin/kasrkin-datacard-kasrkin-sergeant.pdf": "69403695db3212ff764c33a134007afc8dafb6998b26f319a8b784bd5e38d887",
-        "layers/integration/kasrkin/kasrkin-datacard-kasrkin-sharpshooter.pdf": "edc617f876aa912898c92c65347c23cfb4ddf1dc2faedef69cc96d4ea5c3ddf1",
-        "layers/integration/kasrkin/kasrkin-datacard-kasrkin-trooper.pdf": "dbfa8662feb1306a95e536aa94d8f8d7df8937da1f1bc04a71e28fcd105fbd97",
-        "layers/integration/kasrkin/kasrkin-datacard-kasrkin-vox-trooper.pdf": "89e1c1b63232afcd9e1f3b90ef01d9548e932ed9d60ede8ad9b1b357f3e0a5ad",
-        "layers/integration/kasrkin/kasrkin-equipment-combat-daggers.pdf": "d7b2f073c4e9ceb156801b6f8b361f201ce0caa2d344b155e9e0a80154c52c0e",
-        "layers/integration/kasrkin/kasrkin-equipment-foregrip.pdf": "980310b89189279837d0831891303d1439a81ce46733608624427c4824dd44d6",
-        "layers/integration/kasrkin/kasrkin-equipment-long-range-scope.pdf": "63c31c90a01281cebab0e0bb737fafb5f37c7e16d2bf18190f301bb3715151cc",
-        "layers/integration/kasrkin/kasrkin-equipment-relics-of-cadia.pdf": "a47e92c2e0c2dd81393e88009194dab3a85111a2cf3f1dc981083ab3bf1bf80d",
-        "layers/integration/kasrkin/kasrkin-faction-rule-rapid-fire.pdf": "1d26cf580179db1faf643a65532e7a0c6aed8e93f900e97a6ee12e4f297abba2",
-        "layers/integration/kasrkin/kasrkin-faction-rule-skill-at-arms-1.pdf": "d506a6ce19c0d90f7792132d8fc1adba7417ead5d96f674e83a1d99c5fb3aaf8",
-        "layers/integration/kasrkin/kasrkin-faction-rule-skill-at-arms-2.pdf": "a758f80ad10f8adc1ed7b3b654e1204f463282be2705f2818f1301ef8695b6ad",
-        "layers/integration/kasrkin/kasrkin-faction-rule-skill-at-arms-3.pdf": "c7093b45f4b7e99950ffb163f62a39c5b7c4b498ca5ab8ad6b153e7a9fc90435",
-        "layers/integration/kasrkin/kasrkin-faction-rule-skill-at-arms-4.pdf": "45f26f96033d74cae160638b2fdff9b992239e737d907056d79f28756a80d8cc",
-        "layers/integration/kasrkin/kasrkin-faction-rule-skill-at-arms-5.pdf": "960e97a396e58a9249099facaac3c4859388e046b32355cbf3914aacb93a6839",
-        "layers/integration/kasrkin/kasrkin-firefight-ploy-cover-retreat.pdf": "849dd5d53226acc562927f3eccd14fdd7c3efbec2c024edac45feaf07063d726",
-        "layers/integration/kasrkin/kasrkin-firefight-ploy-give-no-ground.pdf": "9b45b7bc4497387ae730e00d94d121b98decd44c90ec78b45a0c83c0f670f6a8",
-        "layers/integration/kasrkin/kasrkin-firefight-ploy-neutralise-target.pdf": "670bcf7907a3eb205a49d95c2f9de76dcfd7a298482f23b3d5a9eca267f71285",
-        "layers/integration/kasrkin/kasrkin-firefight-ploy-seize-the-initiative.pdf": "4d232afd4b91cb2726ef387046d75df121a9f0c8190fb0b5a47abe3df68ab8be",
-        "layers/integration/kasrkin/kasrkin-operatives-selection-operative-selection.pdf": "498406c4feb57e8d3cfc833fd442677cf215a9a318cd8fda4ac835043b8c86e7",
-        "layers/integration/kasrkin/kasrkin-strategy-ploy-clearance-sweep.pdf": "ba4df5ab0c37313fb624e215ce1fc9168562a29e79df80ad48f65f72e7210c89",
-        "layers/integration/kasrkin/kasrkin-strategy-ploy-elimination-pattern.pdf": "921da3548194bd49225c7d7c5aee9b5739f5291267d9a8d9d3570bcbdacb72f9",
-        "layers/integration/kasrkin/kasrkin-strategy-ploy-engage-from-cover.pdf": "31529c9e7b42090b420148b297c2238fc460a86350a500b614d39eb872bd9d97",
-        "layers/integration/kasrkin/kasrkin-strategy-ploy-relocate.pdf": "2d6d76ff9f89ee380666f4df31570f231df9d61364b444e1001bec742595f594",
-        "layers/integration/kasrkin/kasrkin-token-guide-token-guide.pdf": "a39d83e301b2107198558ca7997a78b6860732f615814f243c34f8f6f6614014"
+        "layers/integration/kasrkin/kasrkin-datacard-kasrkin-combat-medic.pdf": "da6ba48958789dc9860dc569cf814b7f64e29e008a8914492f4d0582432227b2",
+        "layers/integration/kasrkin/kasrkin-datacard-kasrkin-demo-trooper.pdf": "cd676aac6530ed40be08c7c2c3f6ebe00017e2a7f355f3b751c64bf6aefc712f",
+        "layers/integration/kasrkin/kasrkin-datacard-kasrkin-gunner.pdf": "14f59fa253836a971942c0d6451aa5261842fdf59a5ba658da8bca09c2a1fd03",
+        "layers/integration/kasrkin/kasrkin-datacard-kasrkin-recon-trooper.pdf": "407de41e7f3e16c1ac3d827e061301d308362e1c069d9ee217196e8ef97942b2",
+        "layers/integration/kasrkin/kasrkin-datacard-kasrkin-sergeant.pdf": "c6c4b44baaa0c496b600cd7be8681f255406b91c9d7f1e930d620ce710d7816d",
+        "layers/integration/kasrkin/kasrkin-datacard-kasrkin-sharpshooter.pdf": "63fee54047db8d43847ef006012d923a691e7db19d099679cd929c81778e3665",
+        "layers/integration/kasrkin/kasrkin-datacard-kasrkin-trooper.pdf": "a5dadac9ad1813831ccd42abe59aea1a1d5822b25c1ec5547e596d48ed65e399",
+        "layers/integration/kasrkin/kasrkin-datacard-kasrkin-vox-trooper.pdf": "e750a818a0619e14b20c86fb7cc9291a06f35bb675a74502e15ab17148873373",
+        "layers/integration/kasrkin/kasrkin-equipment-combat-daggers.pdf": "feaf84d06623d4b64466ee1b5d0269e1828680c0877a598caa962c61427ea2cf",
+        "layers/integration/kasrkin/kasrkin-equipment-foregrip.pdf": "6e03c78505572010164121f44388d28cea424474ddbc52df8ab0c66d6adc9758",
+        "layers/integration/kasrkin/kasrkin-equipment-long-range-scope.pdf": "5c38c15f4c7bae9071ffe5805a550fd53da8fb2d4cff6e3e1279a26c9a1582e4",
+        "layers/integration/kasrkin/kasrkin-equipment-relics-of-cadia.pdf": "d544cb83f087bc9964fa0365e1e3af0f122350adfe0e0f3e00d6271949503f0d",
+        "layers/integration/kasrkin/kasrkin-faction-rule-rapid-fire.pdf": "683114f2adf44ea3a321f86674d0bf9942ec4c147625e91683233ee1c39e4ac9",
+        "layers/integration/kasrkin/kasrkin-faction-rule-skill-at-arms-1.pdf": "68b78980908d043ba58935b2943a5efd5e04b9e7d1ad22fd2f9e7ca8b95c8050",
+        "layers/integration/kasrkin/kasrkin-faction-rule-skill-at-arms-2.pdf": "f8ec0b645b2056dafbf3c40daabd3dca544ec039ffd064e3e8f5565f8425cbed",
+        "layers/integration/kasrkin/kasrkin-faction-rule-skill-at-arms-3.pdf": "c81600e2156af0b146ebf94fa8bc3b1dc8ac1af358fa97b19a0c55b2fd3f2ceb",
+        "layers/integration/kasrkin/kasrkin-faction-rule-skill-at-arms-4.pdf": "85e9c0c67149eaf01b7828b0e156219a895330e76a09805145a1fa9ca11e9b01",
+        "layers/integration/kasrkin/kasrkin-faction-rule-skill-at-arms-5.pdf": "f22225d39288848654463b4dc98d6c7d8df26345b41f8f4b8d6b8d8a9fa98098",
+        "layers/integration/kasrkin/kasrkin-firefight-ploy-cover-retreat.pdf": "e37f053c18ed0d36ea8771df88f0dcfaf23f76df44fd2bbb5ad3dae2ee8b8155",
+        "layers/integration/kasrkin/kasrkin-firefight-ploy-give-no-ground.pdf": "3d60beae399244646f2988b22a97556e80631706f9d2a9001a0dfedc693062e7",
+        "layers/integration/kasrkin/kasrkin-firefight-ploy-neutralise-target.pdf": "16b3da37faeeb6e5923efe26405800a0323f1e1d25029bf883ad597c6c749e31",
+        "layers/integration/kasrkin/kasrkin-firefight-ploy-seize-the-initiative.pdf": "98647385dc252e7cf0994dab7dcc331f6a7c868089dfaa612dcf1d539ed2bf61",
+        "layers/integration/kasrkin/kasrkin-operatives-selection-operative-selection.pdf": "181d7be947118095b9914bf902f32abf22d2b43718b1e062ff0934f3af134237",
+        "layers/integration/kasrkin/kasrkin-strategy-ploy-clearance-sweep.pdf": "e583f43a9adc338ace53fdfb53aed150909b15ae6836c77cad2822164874817a",
+        "layers/integration/kasrkin/kasrkin-strategy-ploy-elimination-pattern.pdf": "05d88af583a59985a8f3a79024b6b6e7454a2e2df2b5847423ca0437ab4d1dea",
+        "layers/integration/kasrkin/kasrkin-strategy-ploy-engage-from-cover.pdf": "3dac918536a56b158de229fe40459adb1152c3160d166218bfc0bbd88eb13bde",
+        "layers/integration/kasrkin/kasrkin-strategy-ploy-relocate.pdf": "a6f2d820899e9141a0fd42553c017859bfdda212bc2d53f9a4678b6397030485",
+        "layers/integration/kasrkin/kasrkin-token-guide-token-guide.pdf": "c533b027e0bb7e12d14dd183943f781ab304f40bdfe9739da06831e15a200ae9"
       }
     },
     "extract_backsides": {
@@ -50,15 +50,15 @@
         "backside-landscape.jpg": {
           "path": "layers/integration/kasrkin/card-backside/kasrkin-backside-landscape.jpg",
           "hash": "8a55333a032c89888c241ca6726c637fdfc74c774cb2adae02a3c592938511c3",
-          "modified": "2026-07-11T07:02:26.655312+00:00"
+          "modified": "2026-07-12T18:51:03.272501+00:00"
         },
         "backside-portrait.jpg": {
           "path": "layers/integration/kasrkin/card-backside/kasrkin-backside-portrait.jpg",
           "hash": "91f3e4cd5c94d818301288669a039d0eb65ec0cd6c4ce1aca3d71856a6dd6687",
-          "modified": "2026-07-11T07:02:26.658959+00:00"
+          "modified": "2026-07-12T18:51:03.390475+00:00"
         }
       },
-      "completed": "2026-07-11T07:02:26.663821+00:00",
+      "completed": "2026-07-12T18:51:03.438124+00:00",
       "inputs": {
         "layers/integration/kasrkin/artwork/icons/kasrkin-icon-token.jpg": "c4b664397f2e392f88454a7bafc979fbbe31593c432ca353b92d855730436d3b",
         "config/defaults/box/card-box-background.jpeg": "2dd1442a7c52ca1d66899333f678d60f48981ce20561ead77c1161d548176036"
@@ -69,107 +69,107 @@
         "tokens/kasrkin-auspex-scan.png": {
           "path": "output/kasrkin/tokens/kasrkin-auspex-scan.png",
           "hash": "bd91822c9da575fe7ea54ce01fac5587800f6dff93d535e48ff122bf4f23b7e2",
-          "modified": "2026-07-11T07:02:39.949538+00:00"
+          "modified": "2026-07-12T19:15:14.457124+00:00"
         },
         "tokens/kasrkin-clearance-sweep.png": {
           "path": "output/kasrkin/tokens/kasrkin-clearance-sweep.png",
           "hash": "7d6f0dd96322a7778e2c7da6cf5f224edd41552095bc209c9ea528a7fc1286e0",
-          "modified": "2026-07-11T07:02:39.950620+00:00"
+          "modified": "2026-07-12T19:15:14.831706+00:00"
         },
         "tokens/kasrkin-medic.png": {
           "path": "output/kasrkin/tokens/kasrkin-medic.png",
           "hash": "099b94abc4cb4b4100bcd0b34013a10cd246917fc56cd8b6c3e2c944cc8a2ec9",
-          "modified": "2026-07-11T07:02:39.954032+00:00"
+          "modified": "2026-07-12T19:15:14.840666+00:00"
         },
         "tokens/kasrkin-melta-mine.png": {
           "path": "output/kasrkin/tokens/kasrkin-melta-mine.png",
           "hash": "cc94fd3cdf3643596d18948bbcde96da744e0376f997df8e66a6b76502f41fa4",
-          "modified": "2026-07-11T07:02:39.957355+00:00"
+          "modified": "2026-07-12T19:15:14.842757+00:00"
         },
         "tokens/kasrkin-relics-of-cadia.png": {
           "path": "output/kasrkin/tokens/kasrkin-relics-of-cadia.png",
           "hash": "8a4d4d3cf431d9ae4ab9b7aeba0b98b3710a075d133f947de21db924624e84ca",
-          "modified": "2026-07-11T07:02:39.964715+00:00"
+          "modified": "2026-07-12T19:15:14.848763+00:00"
         },
         "tokens/kasrkin-tactical-command.png": {
           "path": "output/kasrkin/tokens/kasrkin-tactical-command.png",
           "hash": "65e116c53f1079a829d55fc9baaa9df09c1bbf352143fcc464f05664ad3ffb99",
-          "modified": "2026-07-11T07:02:39.967984+00:00"
+          "modified": "2026-07-12T19:15:14.852808+00:00"
         },
         "tokens/kasrkin-auspex-scan.obj": {
           "path": "output/kasrkin/tokens/kasrkin-auspex-scan.obj",
           "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
-          "modified": "2026-07-11T07:02:39.971505+00:00"
+          "modified": "2026-07-12T19:15:14.855129+00:00"
         },
         "tokens/kasrkin-clearance-sweep.obj": {
           "path": "output/kasrkin/tokens/kasrkin-clearance-sweep.obj",
           "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
-          "modified": "2026-07-11T07:02:39.977239+00:00"
+          "modified": "2026-07-12T19:15:14.857321+00:00"
         },
         "tokens/kasrkin-medic.obj": {
           "path": "output/kasrkin/tokens/kasrkin-medic.obj",
           "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
-          "modified": "2026-07-11T07:02:39.980579+00:00"
+          "modified": "2026-07-12T19:15:14.859436+00:00"
         },
         "tokens/kasrkin-melta-mine.obj": {
           "path": "output/kasrkin/tokens/kasrkin-melta-mine.obj",
           "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
-          "modified": "2026-07-11T07:02:39.984097+00:00"
+          "modified": "2026-07-12T19:15:14.861273+00:00"
         },
         "tokens/kasrkin-relics-of-cadia.obj": {
           "path": "output/kasrkin/tokens/kasrkin-relics-of-cadia.obj",
           "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
-          "modified": "2026-07-11T07:02:39.986916+00:00"
+          "modified": "2026-07-12T19:15:14.863351+00:00"
         },
         "tokens/kasrkin-tactical-command.obj": {
           "path": "output/kasrkin/tokens/kasrkin-tactical-command.obj",
           "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
-          "modified": "2026-07-11T07:02:39.989989+00:00"
+          "modified": "2026-07-12T19:15:14.865227+00:00"
         },
         "tokens/tokenbag/kasrkin-token-bag-icon.png": {
           "path": "output/kasrkin/tokens/tokenbag/kasrkin-token-bag-icon.png",
           "hash": "c4b664397f2e392f88454a7bafc979fbbe31593c432ca353b92d855730436d3b",
-          "modified": "2026-07-11T07:02:39.999800+00:00"
+          "modified": "2026-07-12T19:15:14.942012+00:00"
         },
         "tokens/tokenbag/kasrkin-token-bag.obj": {
           "path": "output/kasrkin/tokens/tokenbag/kasrkin-token-bag.obj",
           "hash": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
-          "modified": "2026-07-11T07:02:40.001857+00:00"
+          "modified": "2026-07-12T19:15:14.946002+00:00"
         }
       },
-      "completed": "2026-07-11T07:03:05.677783+00:00",
+      "completed": "2026-07-12T19:15:29.375026+00:00",
       "inputs": {
         "layers/integration/kasrkin/manifest.json": "73cdfe2daa03dbd56faff04ffbd413453db19857324473ada9de88a13727f6cf",
         "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
         "layers/integration/kasrkin/artwork/icons/kasrkin-icon-token.jpg": "c4b664397f2e392f88454a7bafc979fbbe31593c432ca353b92d855730436d3b",
-        "layers/integration/kasrkin/kasrkin-datacard-kasrkin-combat-medic.pdf": "ea79e42159834ab70422b02a9aedb3fc5dec01a0c4bbb69c1e0eb1fb28b5534d",
-        "layers/integration/kasrkin/kasrkin-datacard-kasrkin-demo-trooper.pdf": "b0bc65e9c5e0fe2671376ac850e80d1b9d33ce64969e2d012c324877f923d2eb",
-        "layers/integration/kasrkin/kasrkin-datacard-kasrkin-gunner.pdf": "2bb4edcc5a7e007794be1467fb86beebd97020de40c41f0aaeb54cb46f221002",
-        "layers/integration/kasrkin/kasrkin-datacard-kasrkin-recon-trooper.pdf": "5197fbe6ff235186530d46e45809a24fd9e8c0d1cbce2db1be3e10c744d54f1e",
-        "layers/integration/kasrkin/kasrkin-datacard-kasrkin-sergeant.pdf": "69403695db3212ff764c33a134007afc8dafb6998b26f319a8b784bd5e38d887",
-        "layers/integration/kasrkin/kasrkin-datacard-kasrkin-sharpshooter.pdf": "edc617f876aa912898c92c65347c23cfb4ddf1dc2faedef69cc96d4ea5c3ddf1",
-        "layers/integration/kasrkin/kasrkin-datacard-kasrkin-trooper.pdf": "dbfa8662feb1306a95e536aa94d8f8d7df8937da1f1bc04a71e28fcd105fbd97",
-        "layers/integration/kasrkin/kasrkin-datacard-kasrkin-vox-trooper.pdf": "89e1c1b63232afcd9e1f3b90ef01d9548e932ed9d60ede8ad9b1b357f3e0a5ad",
-        "layers/integration/kasrkin/kasrkin-equipment-combat-daggers.pdf": "d7b2f073c4e9ceb156801b6f8b361f201ce0caa2d344b155e9e0a80154c52c0e",
-        "layers/integration/kasrkin/kasrkin-equipment-foregrip.pdf": "980310b89189279837d0831891303d1439a81ce46733608624427c4824dd44d6",
-        "layers/integration/kasrkin/kasrkin-equipment-long-range-scope.pdf": "63c31c90a01281cebab0e0bb737fafb5f37c7e16d2bf18190f301bb3715151cc",
-        "layers/integration/kasrkin/kasrkin-equipment-relics-of-cadia.pdf": "a47e92c2e0c2dd81393e88009194dab3a85111a2cf3f1dc981083ab3bf1bf80d",
-        "layers/integration/kasrkin/kasrkin-faction-rule-rapid-fire.pdf": "1d26cf580179db1faf643a65532e7a0c6aed8e93f900e97a6ee12e4f297abba2",
-        "layers/integration/kasrkin/kasrkin-faction-rule-skill-at-arms-1.pdf": "d506a6ce19c0d90f7792132d8fc1adba7417ead5d96f674e83a1d99c5fb3aaf8",
-        "layers/integration/kasrkin/kasrkin-faction-rule-skill-at-arms-2.pdf": "a758f80ad10f8adc1ed7b3b654e1204f463282be2705f2818f1301ef8695b6ad",
-        "layers/integration/kasrkin/kasrkin-faction-rule-skill-at-arms-3.pdf": "c7093b45f4b7e99950ffb163f62a39c5b7c4b498ca5ab8ad6b153e7a9fc90435",
-        "layers/integration/kasrkin/kasrkin-faction-rule-skill-at-arms-4.pdf": "45f26f96033d74cae160638b2fdff9b992239e737d907056d79f28756a80d8cc",
-        "layers/integration/kasrkin/kasrkin-faction-rule-skill-at-arms-5.pdf": "960e97a396e58a9249099facaac3c4859388e046b32355cbf3914aacb93a6839",
-        "layers/integration/kasrkin/kasrkin-firefight-ploy-cover-retreat.pdf": "849dd5d53226acc562927f3eccd14fdd7c3efbec2c024edac45feaf07063d726",
-        "layers/integration/kasrkin/kasrkin-firefight-ploy-give-no-ground.pdf": "9b45b7bc4497387ae730e00d94d121b98decd44c90ec78b45a0c83c0f670f6a8",
-        "layers/integration/kasrkin/kasrkin-firefight-ploy-neutralise-target.pdf": "670bcf7907a3eb205a49d95c2f9de76dcfd7a298482f23b3d5a9eca267f71285",
-        "layers/integration/kasrkin/kasrkin-firefight-ploy-seize-the-initiative.pdf": "4d232afd4b91cb2726ef387046d75df121a9f0c8190fb0b5a47abe3df68ab8be",
-        "layers/integration/kasrkin/kasrkin-operatives-selection-operative-selection.pdf": "498406c4feb57e8d3cfc833fd442677cf215a9a318cd8fda4ac835043b8c86e7",
-        "layers/integration/kasrkin/kasrkin-strategy-ploy-clearance-sweep.pdf": "ba4df5ab0c37313fb624e215ce1fc9168562a29e79df80ad48f65f72e7210c89",
-        "layers/integration/kasrkin/kasrkin-strategy-ploy-elimination-pattern.pdf": "921da3548194bd49225c7d7c5aee9b5739f5291267d9a8d9d3570bcbdacb72f9",
-        "layers/integration/kasrkin/kasrkin-strategy-ploy-engage-from-cover.pdf": "31529c9e7b42090b420148b297c2238fc460a86350a500b614d39eb872bd9d97",
-        "layers/integration/kasrkin/kasrkin-strategy-ploy-relocate.pdf": "2d6d76ff9f89ee380666f4df31570f231df9d61364b444e1001bec742595f594",
-        "layers/integration/kasrkin/kasrkin-token-guide-token-guide.pdf": "a39d83e301b2107198558ca7997a78b6860732f615814f243c34f8f6f6614014"
+        "layers/integration/kasrkin/kasrkin-datacard-kasrkin-combat-medic.pdf": "da6ba48958789dc9860dc569cf814b7f64e29e008a8914492f4d0582432227b2",
+        "layers/integration/kasrkin/kasrkin-datacard-kasrkin-demo-trooper.pdf": "cd676aac6530ed40be08c7c2c3f6ebe00017e2a7f355f3b751c64bf6aefc712f",
+        "layers/integration/kasrkin/kasrkin-datacard-kasrkin-gunner.pdf": "14f59fa253836a971942c0d6451aa5261842fdf59a5ba658da8bca09c2a1fd03",
+        "layers/integration/kasrkin/kasrkin-datacard-kasrkin-recon-trooper.pdf": "407de41e7f3e16c1ac3d827e061301d308362e1c069d9ee217196e8ef97942b2",
+        "layers/integration/kasrkin/kasrkin-datacard-kasrkin-sergeant.pdf": "c6c4b44baaa0c496b600cd7be8681f255406b91c9d7f1e930d620ce710d7816d",
+        "layers/integration/kasrkin/kasrkin-datacard-kasrkin-sharpshooter.pdf": "63fee54047db8d43847ef006012d923a691e7db19d099679cd929c81778e3665",
+        "layers/integration/kasrkin/kasrkin-datacard-kasrkin-trooper.pdf": "a5dadac9ad1813831ccd42abe59aea1a1d5822b25c1ec5547e596d48ed65e399",
+        "layers/integration/kasrkin/kasrkin-datacard-kasrkin-vox-trooper.pdf": "e750a818a0619e14b20c86fb7cc9291a06f35bb675a74502e15ab17148873373",
+        "layers/integration/kasrkin/kasrkin-equipment-combat-daggers.pdf": "feaf84d06623d4b64466ee1b5d0269e1828680c0877a598caa962c61427ea2cf",
+        "layers/integration/kasrkin/kasrkin-equipment-foregrip.pdf": "6e03c78505572010164121f44388d28cea424474ddbc52df8ab0c66d6adc9758",
+        "layers/integration/kasrkin/kasrkin-equipment-long-range-scope.pdf": "5c38c15f4c7bae9071ffe5805a550fd53da8fb2d4cff6e3e1279a26c9a1582e4",
+        "layers/integration/kasrkin/kasrkin-equipment-relics-of-cadia.pdf": "d544cb83f087bc9964fa0365e1e3af0f122350adfe0e0f3e00d6271949503f0d",
+        "layers/integration/kasrkin/kasrkin-faction-rule-rapid-fire.pdf": "683114f2adf44ea3a321f86674d0bf9942ec4c147625e91683233ee1c39e4ac9",
+        "layers/integration/kasrkin/kasrkin-faction-rule-skill-at-arms-1.pdf": "68b78980908d043ba58935b2943a5efd5e04b9e7d1ad22fd2f9e7ca8b95c8050",
+        "layers/integration/kasrkin/kasrkin-faction-rule-skill-at-arms-2.pdf": "f8ec0b645b2056dafbf3c40daabd3dca544ec039ffd064e3e8f5565f8425cbed",
+        "layers/integration/kasrkin/kasrkin-faction-rule-skill-at-arms-3.pdf": "c81600e2156af0b146ebf94fa8bc3b1dc8ac1af358fa97b19a0c55b2fd3f2ceb",
+        "layers/integration/kasrkin/kasrkin-faction-rule-skill-at-arms-4.pdf": "85e9c0c67149eaf01b7828b0e156219a895330e76a09805145a1fa9ca11e9b01",
+        "layers/integration/kasrkin/kasrkin-faction-rule-skill-at-arms-5.pdf": "f22225d39288848654463b4dc98d6c7d8df26345b41f8f4b8d6b8d8a9fa98098",
+        "layers/integration/kasrkin/kasrkin-firefight-ploy-cover-retreat.pdf": "e37f053c18ed0d36ea8771df88f0dcfaf23f76df44fd2bbb5ad3dae2ee8b8155",
+        "layers/integration/kasrkin/kasrkin-firefight-ploy-give-no-ground.pdf": "3d60beae399244646f2988b22a97556e80631706f9d2a9001a0dfedc693062e7",
+        "layers/integration/kasrkin/kasrkin-firefight-ploy-neutralise-target.pdf": "16b3da37faeeb6e5923efe26405800a0323f1e1d25029bf883ad597c6c749e31",
+        "layers/integration/kasrkin/kasrkin-firefight-ploy-seize-the-initiative.pdf": "98647385dc252e7cf0994dab7dcc331f6a7c868089dfaa612dcf1d539ed2bf61",
+        "layers/integration/kasrkin/kasrkin-operatives-selection-operative-selection.pdf": "181d7be947118095b9914bf902f32abf22d2b43718b1e062ff0934f3af134237",
+        "layers/integration/kasrkin/kasrkin-strategy-ploy-clearance-sweep.pdf": "e583f43a9adc338ace53fdfb53aed150909b15ae6836c77cad2822164874817a",
+        "layers/integration/kasrkin/kasrkin-strategy-ploy-elimination-pattern.pdf": "05d88af583a59985a8f3a79024b6b6e7454a2e2df2b5847423ca0437ab4d1dea",
+        "layers/integration/kasrkin/kasrkin-strategy-ploy-engage-from-cover.pdf": "3dac918536a56b158de229fe40459adb1152c3160d166218bfc0bbd88eb13bde",
+        "layers/integration/kasrkin/kasrkin-strategy-ploy-relocate.pdf": "a6f2d820899e9141a0fd42553c017859bfdda212bc2d53f9a4678b6397030485",
+        "layers/integration/kasrkin/kasrkin-token-guide-token-guide.pdf": "c533b027e0bb7e12d14dd183943f781ab304f40bdfe9739da06831e15a200ae9"
       }
     },
     "generate_dice": {
@@ -177,20 +177,20 @@
         "dice-light.jpg": {
           "path": "output/kasrkin/dice/kasrkin-dice-light.jpg",
           "hash": "6ec9cc8dbcbe2e47945098452f8a3e756ad488c221606c1bc0ecab67adfe0e37",
-          "modified": "2026-07-11T07:03:32.645134+00:00"
+          "modified": "2026-07-12T18:51:48.362829+00:00"
         },
         "dice-dark.jpg": {
           "path": "output/kasrkin/dice/kasrkin-dice-dark.jpg",
           "hash": "6a5292b0c78b9545920ed69d79b3b9097ee955485e7c07f4ab53f78935b45801",
-          "modified": "2026-07-11T07:03:32.648955+00:00"
+          "modified": "2026-07-12T18:51:51.837238+00:00"
         },
         "dice-team.jpg": {
           "path": "output/kasrkin/dice/kasrkin-dice-team.jpg",
           "hash": "41e460be709f670a05e2c10c7cbc5ce2e914c162bdb4cd3ded86f153340bc9b2",
-          "modified": "2026-07-11T07:03:33.064416+00:00"
+          "modified": "2026-07-12T18:51:53.784100+00:00"
         }
       },
-      "completed": "2026-07-11T07:03:34.275005+00:00",
+      "completed": "2026-07-12T18:51:55.690234+00:00",
       "inputs": {
         "layers/integration/kasrkin/artwork/icons/kasrkin-icon-token-transparent.png": "83bd32bf7cb60bd454c132c85c7d623d2206affe32e45d72cb65f13bcc0f0cef",
         "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41"
@@ -201,15 +201,15 @@
         "card-box-texture.jpg": {
           "path": "output/kasrkin/cardbox/kasrkin-card-box-texture.jpg",
           "hash": "0572e3e2e40bea122c5228e177b2440a70202717b66e1d6dd0d29b5aef4e8d37",
-          "modified": "2026-07-11T07:03:43.729204+00:00"
+          "modified": "2026-07-12T18:52:10.068096+00:00"
         },
         "card-box.obj": {
           "path": "output/kasrkin/cardbox/kasrkin-card-box.obj",
           "hash": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
-          "modified": "2026-07-11T07:03:43.731861+00:00"
+          "modified": "2026-07-12T18:52:10.073774+00:00"
         }
       },
-      "completed": "2026-07-11T07:03:44.185481+00:00",
+      "completed": "2026-07-12T18:52:10.737091+00:00",
       "inputs": {
         "layers/integration/kasrkin/artwork/icons/kasrkin-icon-token.jpg": "c4b664397f2e392f88454a7bafc979fbbe31593c432ca353b92d855730436d3b",
         "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
@@ -222,315 +222,325 @@
         "cards/datacards/kasrkin-combat-medic-back.jpg": {
           "path": "output/kasrkin/cards/datacards/kasrkin-combat-medic-back.jpg",
           "hash": "b997ccff0241f21338394ccf7a8cca46693444d6489dc24408c15e15b814adcf",
-          "modified": "2026-07-11T07:04:09.001061+00:00"
+          "modified": "2026-07-12T19:16:42.963078+00:00"
         },
         "cards/datacards/kasrkin-combat-medic-front.jpg": {
           "path": "output/kasrkin/cards/datacards/kasrkin-combat-medic-front.jpg",
           "hash": "824da5e739fb4fee949827762d7d3949401c242c2e338eca56f8268db500881e",
-          "modified": "2026-07-11T07:04:09.007234+00:00"
+          "modified": "2026-07-12T19:16:42.967656+00:00"
         },
         "cards/datacards/kasrkin-demo-trooper-back.jpg": {
           "path": "output/kasrkin/cards/datacards/kasrkin-demo-trooper-back.jpg",
           "hash": "593a9cb536702cce01dc39a0d4175d9bf1e79b76a707f9de868bbfdcf440fee8",
-          "modified": "2026-07-11T07:04:09.011421+00:00"
+          "modified": "2026-07-12T19:16:42.971581+00:00"
         },
         "cards/datacards/kasrkin-demo-trooper-front.jpg": {
           "path": "output/kasrkin/cards/datacards/kasrkin-demo-trooper-front.jpg",
           "hash": "cb113bf6c79c7a0188aea182f8519e6348ecf02ec76211869d84c6028be76cf8",
-          "modified": "2026-07-11T07:04:09.017409+00:00"
+          "modified": "2026-07-12T19:16:42.974896+00:00"
         },
         "cards/datacards/kasrkin-gunner-back.jpg": {
           "path": "output/kasrkin/cards/datacards/kasrkin-gunner-back.jpg",
           "hash": "8a55333a032c89888c241ca6726c637fdfc74c774cb2adae02a3c592938511c3",
-          "modified": "2026-07-11T07:04:09.026732+00:00"
+          "modified": "2026-07-12T19:16:42.982633+00:00"
         },
         "cards/datacards/kasrkin-gunner-front.jpg": {
           "path": "output/kasrkin/cards/datacards/kasrkin-gunner-front.jpg",
           "hash": "f5e5b60bbc534a2da899aa9f8138de6fc84baf40078d176c2ec1b1a6bc67df77",
-          "modified": "2026-07-11T07:04:09.034712+00:00"
+          "modified": "2026-07-12T19:16:42.986369+00:00"
         },
         "cards/datacards/kasrkin-recon-trooper-back.jpg": {
           "path": "output/kasrkin/cards/datacards/kasrkin-recon-trooper-back.jpg",
           "hash": "8a55333a032c89888c241ca6726c637fdfc74c774cb2adae02a3c592938511c3",
-          "modified": "2026-07-11T07:04:09.046686+00:00"
+          "modified": "2026-07-12T19:16:42.993895+00:00"
         },
         "cards/datacards/kasrkin-recon-trooper-front.jpg": {
           "path": "output/kasrkin/cards/datacards/kasrkin-recon-trooper-front.jpg",
           "hash": "bfcc0ed165547473546e783bbe04761f4e5fb40dfc0e78526831478f2bc58ab0",
-          "modified": "2026-07-11T07:04:09.059411+00:00"
+          "modified": "2026-07-12T19:16:42.998381+00:00"
         },
         "cards/datacards/kasrkin-sergeant-back.jpg": {
           "path": "output/kasrkin/cards/datacards/kasrkin-sergeant-back.jpg",
           "hash": "42ed495bfac749514a019dbe4cce9da30d351827fea4667b084c70980004d00c",
-          "modified": "2026-07-11T07:04:09.070445+00:00"
+          "modified": "2026-07-12T19:16:43.000702+00:00"
         },
         "cards/datacards/kasrkin-sergeant-front.jpg": {
           "path": "output/kasrkin/cards/datacards/kasrkin-sergeant-front.jpg",
           "hash": "1bd56ead592794ff12fae3461865241f024bb7d010455dd6670d72e9fb31bc67",
-          "modified": "2026-07-11T07:04:09.074964+00:00"
+          "modified": "2026-07-12T19:16:43.002617+00:00"
         },
         "cards/datacards/kasrkin-sharpshooter-back.jpg": {
           "path": "output/kasrkin/cards/datacards/kasrkin-sharpshooter-back.jpg",
           "hash": "8a55333a032c89888c241ca6726c637fdfc74c774cb2adae02a3c592938511c3",
-          "modified": "2026-07-11T07:04:09.087135+00:00"
+          "modified": "2026-07-12T19:16:43.009429+00:00"
         },
         "cards/datacards/kasrkin-sharpshooter-front.jpg": {
           "path": "output/kasrkin/cards/datacards/kasrkin-sharpshooter-front.jpg",
           "hash": "dc2b27ca388594f778d11c5bfce4dec95e532f391a58b8008de5df7e99e40cf0",
-          "modified": "2026-07-11T07:04:09.103480+00:00"
+          "modified": "2026-07-12T19:16:43.013368+00:00"
         },
         "cards/datacards/kasrkin-trooper-back.jpg": {
           "path": "output/kasrkin/cards/datacards/kasrkin-trooper-back.jpg",
           "hash": "8a55333a032c89888c241ca6726c637fdfc74c774cb2adae02a3c592938511c3",
-          "modified": "2026-07-11T07:04:09.119697+00:00"
+          "modified": "2026-07-12T19:16:43.020472+00:00"
         },
         "cards/datacards/kasrkin-trooper-front.jpg": {
           "path": "output/kasrkin/cards/datacards/kasrkin-trooper-front.jpg",
           "hash": "74f1828d02785a05b9ee4054c448128674764d84297d06c131df4ce53301157a",
-          "modified": "2026-07-11T07:04:09.130000+00:00"
+          "modified": "2026-07-12T19:16:43.023653+00:00"
         },
         "cards/datacards/kasrkin-vox-trooper-back.jpg": {
           "path": "output/kasrkin/cards/datacards/kasrkin-vox-trooper-back.jpg",
           "hash": "8a55333a032c89888c241ca6726c637fdfc74c774cb2adae02a3c592938511c3",
-          "modified": "2026-07-11T07:04:09.139735+00:00"
+          "modified": "2026-07-12T19:16:43.030112+00:00"
         },
         "cards/datacards/kasrkin-vox-trooper-front.jpg": {
           "path": "output/kasrkin/cards/datacards/kasrkin-vox-trooper-front.jpg",
           "hash": "6117064778b9ea6c4ea7c128294b302a395361974638293257b79275464c7968",
-          "modified": "2026-07-11T07:04:09.157438+00:00"
+          "modified": "2026-07-12T19:16:43.033556+00:00"
         },
         "cards/equipment/kasrkin-combat-daggers-back.jpg": {
           "path": "output/kasrkin/cards/equipment/kasrkin-combat-daggers-back.jpg",
           "hash": "91f3e4cd5c94d818301288669a039d0eb65ec0cd6c4ce1aca3d71856a6dd6687",
-          "modified": "2026-07-11T07:04:09.171036+00:00"
+          "modified": "2026-07-12T19:16:43.041176+00:00"
         },
         "cards/equipment/kasrkin-combat-daggers-front.jpg": {
           "path": "output/kasrkin/cards/equipment/kasrkin-combat-daggers-front.jpg",
           "hash": "4c6912c05c3f90693a11b865ce393e4654d18cf0a588d1e934726602c586cce6",
-          "modified": "2026-07-11T07:04:09.184963+00:00"
+          "modified": "2026-07-12T19:16:43.043629+00:00"
         },
         "cards/equipment/kasrkin-foregrip-back.jpg": {
           "path": "output/kasrkin/cards/equipment/kasrkin-foregrip-back.jpg",
           "hash": "91f3e4cd5c94d818301288669a039d0eb65ec0cd6c4ce1aca3d71856a6dd6687",
-          "modified": "2026-07-11T07:04:09.197878+00:00"
+          "modified": "2026-07-12T19:16:43.051058+00:00"
         },
         "cards/equipment/kasrkin-foregrip-front.jpg": {
           "path": "output/kasrkin/cards/equipment/kasrkin-foregrip-front.jpg",
           "hash": "d0d671df638ade6199632e88e6101395e07f1fa535c7e98b3e10ae36aebfab63",
-          "modified": "2026-07-11T07:04:09.204965+00:00"
+          "modified": "2026-07-12T19:16:43.060184+00:00"
         },
         "cards/equipment/kasrkin-long-range-scope-back.jpg": {
           "path": "output/kasrkin/cards/equipment/kasrkin-long-range-scope-back.jpg",
           "hash": "91f3e4cd5c94d818301288669a039d0eb65ec0cd6c4ce1aca3d71856a6dd6687",
-          "modified": "2026-07-11T07:04:09.218698+00:00"
+          "modified": "2026-07-12T19:16:43.070550+00:00"
         },
         "cards/equipment/kasrkin-long-range-scope-front.jpg": {
           "path": "output/kasrkin/cards/equipment/kasrkin-long-range-scope-front.jpg",
           "hash": "d34fc8a6c0f909c2dbb498fb536e43e4d83c6d9b663e688d6a9eade000ef881d",
-          "modified": "2026-07-11T07:04:09.229675+00:00"
+          "modified": "2026-07-12T19:16:43.078598+00:00"
         },
         "cards/equipment/kasrkin-relics-of-cadia-back.jpg": {
           "path": "output/kasrkin/cards/equipment/kasrkin-relics-of-cadia-back.jpg",
           "hash": "91f3e4cd5c94d818301288669a039d0eb65ec0cd6c4ce1aca3d71856a6dd6687",
-          "modified": "2026-07-11T07:04:09.247632+00:00"
+          "modified": "2026-07-12T19:16:43.087202+00:00"
         },
         "cards/equipment/kasrkin-relics-of-cadia-front.jpg": {
           "path": "output/kasrkin/cards/equipment/kasrkin-relics-of-cadia-front.jpg",
           "hash": "2cd61e9d4b97708e5451010e9a6e5740add5811f44d617c9a0e4035b03404899",
-          "modified": "2026-07-11T07:04:09.263889+00:00"
+          "modified": "2026-07-12T19:16:43.095382+00:00"
         },
         "cards/faction_rules/kasrkin-rapid-fire-back.jpg": {
           "path": "output/kasrkin/cards/faction_rules/kasrkin-rapid-fire-back.jpg",
           "hash": "91f3e4cd5c94d818301288669a039d0eb65ec0cd6c4ce1aca3d71856a6dd6687",
-          "modified": "2026-07-11T07:04:09.285996+00:00"
+          "modified": "2026-07-12T19:16:43.105890+00:00"
         },
         "cards/faction_rules/kasrkin-rapid-fire-front.jpg": {
           "path": "output/kasrkin/cards/faction_rules/kasrkin-rapid-fire-front.jpg",
           "hash": "03537c0928393b13947fea9afb73fc3737ec8d26bc817e6869c072a68a941690",
-          "modified": "2026-07-11T07:04:09.297574+00:00"
+          "modified": "2026-07-12T19:16:43.109698+00:00"
         },
         "cards/faction_rules/kasrkin-skill-at-arms-card1-back.jpg": {
           "path": "output/kasrkin/cards/faction_rules/kasrkin-skill-at-arms-card1-back.jpg",
           "hash": "91f3e4cd5c94d818301288669a039d0eb65ec0cd6c4ce1aca3d71856a6dd6687",
-          "modified": "2026-07-11T07:04:09.315010+00:00"
+          "modified": "2026-07-12T19:16:43.117192+00:00"
         },
         "cards/faction_rules/kasrkin-skill-at-arms-card1-front.jpg": {
           "path": "output/kasrkin/cards/faction_rules/kasrkin-skill-at-arms-card1-front.jpg",
           "hash": "0ecfb84c721d7cb7c148041f3abc1194cb4e3210820b80694074bb68d5001cc9",
-          "modified": "2026-07-11T07:04:09.327641+00:00"
+          "modified": "2026-07-12T19:16:43.123640+00:00"
         },
         "cards/faction_rules/kasrkin-skill-at-arms-card2-back.jpg": {
           "path": "output/kasrkin/cards/faction_rules/kasrkin-skill-at-arms-card2-back.jpg",
           "hash": "91f3e4cd5c94d818301288669a039d0eb65ec0cd6c4ce1aca3d71856a6dd6687",
-          "modified": "2026-07-11T07:04:09.342154+00:00"
+          "modified": "2026-07-12T19:16:43.133216+00:00"
         },
         "cards/faction_rules/kasrkin-skill-at-arms-card2-front.jpg": {
           "path": "output/kasrkin/cards/faction_rules/kasrkin-skill-at-arms-card2-front.jpg",
           "hash": "ff8b506ddcd093719df6d4003f3ad7f3e0dd757e223853b6b37fd522a930f817",
-          "modified": "2026-07-11T07:04:09.355356+00:00"
+          "modified": "2026-07-12T19:16:43.136668+00:00"
         },
         "cards/faction_rules/kasrkin-skill-at-arms-card3-back.jpg": {
           "path": "output/kasrkin/cards/faction_rules/kasrkin-skill-at-arms-card3-back.jpg",
           "hash": "91f3e4cd5c94d818301288669a039d0eb65ec0cd6c4ce1aca3d71856a6dd6687",
-          "modified": "2026-07-11T07:04:09.368081+00:00"
+          "modified": "2026-07-12T19:16:43.145766+00:00"
         },
         "cards/faction_rules/kasrkin-skill-at-arms-card3-front.jpg": {
           "path": "output/kasrkin/cards/faction_rules/kasrkin-skill-at-arms-card3-front.jpg",
           "hash": "c747c4c058edc76344536b76c61f24195551f2b5a8f241dbd10a540e16247edf",
-          "modified": "2026-07-11T07:04:09.372809+00:00"
+          "modified": "2026-07-12T19:16:43.149565+00:00"
         },
         "cards/faction_rules/kasrkin-skill-at-arms-card4-back.jpg": {
           "path": "output/kasrkin/cards/faction_rules/kasrkin-skill-at-arms-card4-back.jpg",
           "hash": "91f3e4cd5c94d818301288669a039d0eb65ec0cd6c4ce1aca3d71856a6dd6687",
-          "modified": "2026-07-11T07:04:09.389674+00:00"
+          "modified": "2026-07-12T19:16:43.160187+00:00"
         },
         "cards/faction_rules/kasrkin-skill-at-arms-card4-front.jpg": {
           "path": "output/kasrkin/cards/faction_rules/kasrkin-skill-at-arms-card4-front.jpg",
           "hash": "99cfb5e477836c5ee0b30b2a59e736ae4521204e714e546f41e9585e09b076e9",
-          "modified": "2026-07-11T07:04:09.403929+00:00"
+          "modified": "2026-07-12T19:16:43.171159+00:00"
         },
         "cards/faction_rules/kasrkin-skill-at-arms-card5-back.jpg": {
           "path": "output/kasrkin/cards/faction_rules/kasrkin-skill-at-arms-card5-back.jpg",
           "hash": "91f3e4cd5c94d818301288669a039d0eb65ec0cd6c4ce1aca3d71856a6dd6687",
-          "modified": "2026-07-11T07:04:09.422620+00:00"
+          "modified": "2026-07-12T19:16:43.182879+00:00"
         },
         "cards/faction_rules/kasrkin-skill-at-arms-card5-front.jpg": {
           "path": "output/kasrkin/cards/faction_rules/kasrkin-skill-at-arms-card5-front.jpg",
           "hash": "a923a5ff302310dafab224a726f8cf6886a1c4e3e31a4077922a9e13a4aa2cf7",
-          "modified": "2026-07-11T07:04:09.436885+00:00"
+          "modified": "2026-07-12T19:16:43.199713+00:00"
         },
         "cards/firefight_ploys/kasrkin-cover-retreat-back.jpg": {
           "path": "output/kasrkin/cards/firefight_ploys/kasrkin-cover-retreat-back.jpg",
           "hash": "91f3e4cd5c94d818301288669a039d0eb65ec0cd6c4ce1aca3d71856a6dd6687",
-          "modified": "2026-07-11T07:04:09.458460+00:00"
+          "modified": "2026-07-12T19:16:43.227261+00:00"
         },
         "cards/firefight_ploys/kasrkin-cover-retreat-front.jpg": {
           "path": "output/kasrkin/cards/firefight_ploys/kasrkin-cover-retreat-front.jpg",
           "hash": "2d2da5e0ea6a01e44af0b87ca628cd8a72fa33c19ef977a59cd4e51509a04e66",
-          "modified": "2026-07-11T07:04:09.532859+00:00"
+          "modified": "2026-07-12T19:16:43.242124+00:00"
         },
         "cards/firefight_ploys/kasrkin-give-no-ground-back.jpg": {
           "path": "output/kasrkin/cards/firefight_ploys/kasrkin-give-no-ground-back.jpg",
           "hash": "91f3e4cd5c94d818301288669a039d0eb65ec0cd6c4ce1aca3d71856a6dd6687",
-          "modified": "2026-07-11T07:04:09.633556+00:00"
+          "modified": "2026-07-12T19:16:43.259738+00:00"
         },
         "cards/firefight_ploys/kasrkin-give-no-ground-front.jpg": {
           "path": "output/kasrkin/cards/firefight_ploys/kasrkin-give-no-ground-front.jpg",
           "hash": "52069fe4b42ef1fcf5a36bd6fc3ff33d866dbbec7afd626e59ea5567d3ff2f52",
-          "modified": "2026-07-11T07:04:09.771935+00:00"
+          "modified": "2026-07-12T19:16:43.277896+00:00"
         },
         "cards/firefight_ploys/kasrkin-neutralise-target-back.jpg": {
           "path": "output/kasrkin/cards/firefight_ploys/kasrkin-neutralise-target-back.jpg",
           "hash": "91f3e4cd5c94d818301288669a039d0eb65ec0cd6c4ce1aca3d71856a6dd6687",
-          "modified": "2026-07-11T07:04:09.977591+00:00"
+          "modified": "2026-07-12T19:16:43.291814+00:00"
         },
         "cards/firefight_ploys/kasrkin-neutralise-target-front.jpg": {
           "path": "output/kasrkin/cards/firefight_ploys/kasrkin-neutralise-target-front.jpg",
           "hash": "b6655d196f68c58441189b3435f52db41941a50b07b751b2bbc57ac84261ab13",
-          "modified": "2026-07-11T07:04:10.267411+00:00"
+          "modified": "2026-07-12T19:16:43.300062+00:00"
         },
         "cards/firefight_ploys/kasrkin-seize-the-initiative-back.jpg": {
           "path": "output/kasrkin/cards/firefight_ploys/kasrkin-seize-the-initiative-back.jpg",
           "hash": "91f3e4cd5c94d818301288669a039d0eb65ec0cd6c4ce1aca3d71856a6dd6687",
-          "modified": "2026-07-11T07:04:10.353964+00:00"
+          "modified": "2026-07-12T19:16:43.313677+00:00"
         },
         "cards/firefight_ploys/kasrkin-seize-the-initiative-front.jpg": {
           "path": "output/kasrkin/cards/firefight_ploys/kasrkin-seize-the-initiative-front.jpg",
           "hash": "fe65a27aee9f3fe728f65c27b5f6a99c558ba200fabc77cdf3c59cfa7a771068",
-          "modified": "2026-07-11T07:04:10.529057+00:00"
+          "modified": "2026-07-12T19:16:43.330001+00:00"
         },
         "cards/operatives_selection/kasrkin-operative-selection-back.jpg": {
           "path": "output/kasrkin/cards/operatives_selection/kasrkin-operative-selection-back.jpg",
           "hash": "e81c6855ce51bc73a47b5075c48f436a2c0eb1226531b3c6cbee8aa1ad0c6f5e",
-          "modified": "2026-07-11T07:04:10.604504+00:00"
+          "modified": "2026-07-12T19:16:43.345086+00:00"
         },
         "cards/operatives_selection/kasrkin-operative-selection-front.jpg": {
           "path": "output/kasrkin/cards/operatives_selection/kasrkin-operative-selection-front.jpg",
           "hash": "29239df6eeb9cc96756026c3aa466730066106f75d39259bae972d78bc2a77f3",
-          "modified": "2026-07-11T07:04:10.621189+00:00"
+          "modified": "2026-07-12T19:16:43.361149+00:00"
         },
         "cards/strategy_ploys/kasrkin-clearance-sweep-back.jpg": {
           "path": "output/kasrkin/cards/strategy_ploys/kasrkin-clearance-sweep-back.jpg",
           "hash": "91f3e4cd5c94d818301288669a039d0eb65ec0cd6c4ce1aca3d71856a6dd6687",
-          "modified": "2026-07-11T07:04:10.638701+00:00"
+          "modified": "2026-07-12T19:16:43.376436+00:00"
         },
         "cards/strategy_ploys/kasrkin-clearance-sweep-front.jpg": {
           "path": "output/kasrkin/cards/strategy_ploys/kasrkin-clearance-sweep-front.jpg",
           "hash": "17dd27e5e283b1eb24da7c9986f1d79746c46f339850819c8d7428f15a9384e2",
-          "modified": "2026-07-11T07:04:10.658006+00:00"
+          "modified": "2026-07-12T19:16:43.379897+00:00"
         },
         "cards/strategy_ploys/kasrkin-elimination-pattern-back.jpg": {
           "path": "output/kasrkin/cards/strategy_ploys/kasrkin-elimination-pattern-back.jpg",
           "hash": "91f3e4cd5c94d818301288669a039d0eb65ec0cd6c4ce1aca3d71856a6dd6687",
-          "modified": "2026-07-11T07:04:10.675098+00:00"
+          "modified": "2026-07-12T19:16:43.395663+00:00"
         },
         "cards/strategy_ploys/kasrkin-elimination-pattern-front.jpg": {
           "path": "output/kasrkin/cards/strategy_ploys/kasrkin-elimination-pattern-front.jpg",
           "hash": "f4c4ba2732d81120d9d59d87cca9197ec0c7990803da3ad8c0cd63aac73fdd67",
-          "modified": "2026-07-11T07:04:10.683809+00:00"
+          "modified": "2026-07-12T19:16:43.399527+00:00"
         },
         "cards/strategy_ploys/kasrkin-engage-from-cover-back.jpg": {
           "path": "output/kasrkin/cards/strategy_ploys/kasrkin-engage-from-cover-back.jpg",
           "hash": "91f3e4cd5c94d818301288669a039d0eb65ec0cd6c4ce1aca3d71856a6dd6687",
-          "modified": "2026-07-11T07:04:10.742316+00:00"
+          "modified": "2026-07-12T19:16:43.411588+00:00"
         },
         "cards/strategy_ploys/kasrkin-engage-from-cover-front.jpg": {
           "path": "output/kasrkin/cards/strategy_ploys/kasrkin-engage-from-cover-front.jpg",
           "hash": "e2d2585536a630d34c03a675ac0cc5aeec7f04ee55466e9f7320b36c9a16e80d",
-          "modified": "2026-07-11T07:04:10.871092+00:00"
+          "modified": "2026-07-12T19:16:43.414002+00:00"
         },
         "cards/strategy_ploys/kasrkin-relocate-back.jpg": {
           "path": "output/kasrkin/cards/strategy_ploys/kasrkin-relocate-back.jpg",
           "hash": "91f3e4cd5c94d818301288669a039d0eb65ec0cd6c4ce1aca3d71856a6dd6687",
-          "modified": "2026-07-11T07:04:10.974882+00:00"
+          "modified": "2026-07-12T19:16:43.426743+00:00"
         },
         "cards/strategy_ploys/kasrkin-relocate-front.jpg": {
           "path": "output/kasrkin/cards/strategy_ploys/kasrkin-relocate-front.jpg",
           "hash": "9593f5df978b14142e21c0a11f313c2e6bf5007669de40b2e97bc290e0e480a2",
-          "modified": "2026-07-11T07:04:11.159355+00:00"
+          "modified": "2026-07-12T19:16:43.428306+00:00"
         },
         "cards/token_guide/kasrkin-token-guide-back.jpg": {
           "path": "output/kasrkin/cards/token_guide/kasrkin-token-guide-back.jpg",
           "hash": "91f3e4cd5c94d818301288669a039d0eb65ec0cd6c4ce1aca3d71856a6dd6687",
-          "modified": "2026-07-11T07:04:11.176554+00:00"
+          "modified": "2026-07-12T19:16:43.437903+00:00"
         },
         "cards/token_guide/kasrkin-token-guide-front.jpg": {
           "path": "output/kasrkin/cards/token_guide/kasrkin-token-guide-front.jpg",
           "hash": "ee029b0ffcb659e357c19ebaa3d9ee2ce808f621a00e0dcc720e2291a81c5bfa",
-          "modified": "2026-07-11T07:04:11.181319+00:00"
+          "modified": "2026-07-12T19:16:43.448391+00:00"
+        },
+        "cards/faction_rules/kasrkin-skill-at-arms-card6-back.jpg": {
+          "path": "output/kasrkin/cards/faction_rules/kasrkin-skill-at-arms-card6-back.jpg",
+          "hash": "91f3e4cd5c94d818301288669a039d0eb65ec0cd6c4ce1aca3d71856a6dd6687",
+          "modified": "2026-07-12T19:16:43.205134+00:00"
+        },
+        "cards/faction_rules/kasrkin-skill-at-arms-card6-front.jpg": {
+          "path": "output/kasrkin/cards/faction_rules/kasrkin-skill-at-arms-card6-front.jpg",
+          "hash": "ec63d34dfb33fc015d44d6139c74b08d75cd2af371ff5dd838820d1ef4676234",
+          "modified": "2026-07-12T19:16:43.207458+00:00"
         }
       },
-      "completed": "2026-07-11T07:05:07.498837+00:00",
+      "completed": "2026-07-12T19:17:48.599429+00:00",
       "inputs": {
         "layers/integration/kasrkin/manifest.json": "73cdfe2daa03dbd56faff04ffbd413453db19857324473ada9de88a13727f6cf",
-        "layers/integration/kasrkin/kasrkin-datacard-kasrkin-combat-medic.pdf": "ea79e42159834ab70422b02a9aedb3fc5dec01a0c4bbb69c1e0eb1fb28b5534d",
-        "layers/integration/kasrkin/kasrkin-datacard-kasrkin-demo-trooper.pdf": "b0bc65e9c5e0fe2671376ac850e80d1b9d33ce64969e2d012c324877f923d2eb",
-        "layers/integration/kasrkin/kasrkin-datacard-kasrkin-gunner.pdf": "2bb4edcc5a7e007794be1467fb86beebd97020de40c41f0aaeb54cb46f221002",
-        "layers/integration/kasrkin/kasrkin-datacard-kasrkin-recon-trooper.pdf": "5197fbe6ff235186530d46e45809a24fd9e8c0d1cbce2db1be3e10c744d54f1e",
-        "layers/integration/kasrkin/kasrkin-datacard-kasrkin-sergeant.pdf": "69403695db3212ff764c33a134007afc8dafb6998b26f319a8b784bd5e38d887",
-        "layers/integration/kasrkin/kasrkin-datacard-kasrkin-sharpshooter.pdf": "edc617f876aa912898c92c65347c23cfb4ddf1dc2faedef69cc96d4ea5c3ddf1",
-        "layers/integration/kasrkin/kasrkin-datacard-kasrkin-trooper.pdf": "dbfa8662feb1306a95e536aa94d8f8d7df8937da1f1bc04a71e28fcd105fbd97",
-        "layers/integration/kasrkin/kasrkin-datacard-kasrkin-vox-trooper.pdf": "89e1c1b63232afcd9e1f3b90ef01d9548e932ed9d60ede8ad9b1b357f3e0a5ad",
-        "layers/integration/kasrkin/kasrkin-equipment-combat-daggers.pdf": "d7b2f073c4e9ceb156801b6f8b361f201ce0caa2d344b155e9e0a80154c52c0e",
-        "layers/integration/kasrkin/kasrkin-equipment-foregrip.pdf": "980310b89189279837d0831891303d1439a81ce46733608624427c4824dd44d6",
-        "layers/integration/kasrkin/kasrkin-equipment-long-range-scope.pdf": "63c31c90a01281cebab0e0bb737fafb5f37c7e16d2bf18190f301bb3715151cc",
-        "layers/integration/kasrkin/kasrkin-equipment-relics-of-cadia.pdf": "a47e92c2e0c2dd81393e88009194dab3a85111a2cf3f1dc981083ab3bf1bf80d",
-        "layers/integration/kasrkin/kasrkin-faction-rule-rapid-fire.pdf": "1d26cf580179db1faf643a65532e7a0c6aed8e93f900e97a6ee12e4f297abba2",
-        "layers/integration/kasrkin/kasrkin-faction-rule-skill-at-arms-1.pdf": "d506a6ce19c0d90f7792132d8fc1adba7417ead5d96f674e83a1d99c5fb3aaf8",
-        "layers/integration/kasrkin/kasrkin-faction-rule-skill-at-arms-2.pdf": "a758f80ad10f8adc1ed7b3b654e1204f463282be2705f2818f1301ef8695b6ad",
-        "layers/integration/kasrkin/kasrkin-faction-rule-skill-at-arms-3.pdf": "c7093b45f4b7e99950ffb163f62a39c5b7c4b498ca5ab8ad6b153e7a9fc90435",
-        "layers/integration/kasrkin/kasrkin-faction-rule-skill-at-arms-4.pdf": "45f26f96033d74cae160638b2fdff9b992239e737d907056d79f28756a80d8cc",
-        "layers/integration/kasrkin/kasrkin-faction-rule-skill-at-arms-5.pdf": "960e97a396e58a9249099facaac3c4859388e046b32355cbf3914aacb93a6839",
-        "layers/integration/kasrkin/kasrkin-firefight-ploy-cover-retreat.pdf": "849dd5d53226acc562927f3eccd14fdd7c3efbec2c024edac45feaf07063d726",
-        "layers/integration/kasrkin/kasrkin-firefight-ploy-give-no-ground.pdf": "9b45b7bc4497387ae730e00d94d121b98decd44c90ec78b45a0c83c0f670f6a8",
-        "layers/integration/kasrkin/kasrkin-firefight-ploy-neutralise-target.pdf": "670bcf7907a3eb205a49d95c2f9de76dcfd7a298482f23b3d5a9eca267f71285",
-        "layers/integration/kasrkin/kasrkin-firefight-ploy-seize-the-initiative.pdf": "4d232afd4b91cb2726ef387046d75df121a9f0c8190fb0b5a47abe3df68ab8be",
-        "layers/integration/kasrkin/kasrkin-operatives-selection-operative-selection.pdf": "498406c4feb57e8d3cfc833fd442677cf215a9a318cd8fda4ac835043b8c86e7",
-        "layers/integration/kasrkin/kasrkin-strategy-ploy-clearance-sweep.pdf": "ba4df5ab0c37313fb624e215ce1fc9168562a29e79df80ad48f65f72e7210c89",
-        "layers/integration/kasrkin/kasrkin-strategy-ploy-elimination-pattern.pdf": "921da3548194bd49225c7d7c5aee9b5739f5291267d9a8d9d3570bcbdacb72f9",
-        "layers/integration/kasrkin/kasrkin-strategy-ploy-engage-from-cover.pdf": "31529c9e7b42090b420148b297c2238fc460a86350a500b614d39eb872bd9d97",
-        "layers/integration/kasrkin/kasrkin-strategy-ploy-relocate.pdf": "2d6d76ff9f89ee380666f4df31570f231df9d61364b444e1001bec742595f594",
-        "layers/integration/kasrkin/kasrkin-token-guide-token-guide.pdf": "a39d83e301b2107198558ca7997a78b6860732f615814f243c34f8f6f6614014",
+        "layers/integration/kasrkin/kasrkin-datacard-kasrkin-combat-medic.pdf": "da6ba48958789dc9860dc569cf814b7f64e29e008a8914492f4d0582432227b2",
+        "layers/integration/kasrkin/kasrkin-datacard-kasrkin-demo-trooper.pdf": "cd676aac6530ed40be08c7c2c3f6ebe00017e2a7f355f3b751c64bf6aefc712f",
+        "layers/integration/kasrkin/kasrkin-datacard-kasrkin-gunner.pdf": "14f59fa253836a971942c0d6451aa5261842fdf59a5ba658da8bca09c2a1fd03",
+        "layers/integration/kasrkin/kasrkin-datacard-kasrkin-recon-trooper.pdf": "407de41e7f3e16c1ac3d827e061301d308362e1c069d9ee217196e8ef97942b2",
+        "layers/integration/kasrkin/kasrkin-datacard-kasrkin-sergeant.pdf": "c6c4b44baaa0c496b600cd7be8681f255406b91c9d7f1e930d620ce710d7816d",
+        "layers/integration/kasrkin/kasrkin-datacard-kasrkin-sharpshooter.pdf": "63fee54047db8d43847ef006012d923a691e7db19d099679cd929c81778e3665",
+        "layers/integration/kasrkin/kasrkin-datacard-kasrkin-trooper.pdf": "a5dadac9ad1813831ccd42abe59aea1a1d5822b25c1ec5547e596d48ed65e399",
+        "layers/integration/kasrkin/kasrkin-datacard-kasrkin-vox-trooper.pdf": "e750a818a0619e14b20c86fb7cc9291a06f35bb675a74502e15ab17148873373",
+        "layers/integration/kasrkin/kasrkin-equipment-combat-daggers.pdf": "feaf84d06623d4b64466ee1b5d0269e1828680c0877a598caa962c61427ea2cf",
+        "layers/integration/kasrkin/kasrkin-equipment-foregrip.pdf": "6e03c78505572010164121f44388d28cea424474ddbc52df8ab0c66d6adc9758",
+        "layers/integration/kasrkin/kasrkin-equipment-long-range-scope.pdf": "5c38c15f4c7bae9071ffe5805a550fd53da8fb2d4cff6e3e1279a26c9a1582e4",
+        "layers/integration/kasrkin/kasrkin-equipment-relics-of-cadia.pdf": "d544cb83f087bc9964fa0365e1e3af0f122350adfe0e0f3e00d6271949503f0d",
+        "layers/integration/kasrkin/kasrkin-faction-rule-rapid-fire.pdf": "683114f2adf44ea3a321f86674d0bf9942ec4c147625e91683233ee1c39e4ac9",
+        "layers/integration/kasrkin/kasrkin-faction-rule-skill-at-arms-1.pdf": "68b78980908d043ba58935b2943a5efd5e04b9e7d1ad22fd2f9e7ca8b95c8050",
+        "layers/integration/kasrkin/kasrkin-faction-rule-skill-at-arms-2.pdf": "f8ec0b645b2056dafbf3c40daabd3dca544ec039ffd064e3e8f5565f8425cbed",
+        "layers/integration/kasrkin/kasrkin-faction-rule-skill-at-arms-3.pdf": "c81600e2156af0b146ebf94fa8bc3b1dc8ac1af358fa97b19a0c55b2fd3f2ceb",
+        "layers/integration/kasrkin/kasrkin-faction-rule-skill-at-arms-4.pdf": "85e9c0c67149eaf01b7828b0e156219a895330e76a09805145a1fa9ca11e9b01",
+        "layers/integration/kasrkin/kasrkin-faction-rule-skill-at-arms-5.pdf": "f22225d39288848654463b4dc98d6c7d8df26345b41f8f4b8d6b8d8a9fa98098",
+        "layers/integration/kasrkin/kasrkin-firefight-ploy-cover-retreat.pdf": "e37f053c18ed0d36ea8771df88f0dcfaf23f76df44fd2bbb5ad3dae2ee8b8155",
+        "layers/integration/kasrkin/kasrkin-firefight-ploy-give-no-ground.pdf": "3d60beae399244646f2988b22a97556e80631706f9d2a9001a0dfedc693062e7",
+        "layers/integration/kasrkin/kasrkin-firefight-ploy-neutralise-target.pdf": "16b3da37faeeb6e5923efe26405800a0323f1e1d25029bf883ad597c6c749e31",
+        "layers/integration/kasrkin/kasrkin-firefight-ploy-seize-the-initiative.pdf": "98647385dc252e7cf0994dab7dcc331f6a7c868089dfaa612dcf1d539ed2bf61",
+        "layers/integration/kasrkin/kasrkin-operatives-selection-operative-selection.pdf": "181d7be947118095b9914bf902f32abf22d2b43718b1e062ff0934f3af134237",
+        "layers/integration/kasrkin/kasrkin-strategy-ploy-clearance-sweep.pdf": "e583f43a9adc338ace53fdfb53aed150909b15ae6836c77cad2822164874817a",
+        "layers/integration/kasrkin/kasrkin-strategy-ploy-elimination-pattern.pdf": "05d88af583a59985a8f3a79024b6b6e7454a2e2df2b5847423ca0437ab4d1dea",
+        "layers/integration/kasrkin/kasrkin-strategy-ploy-engage-from-cover.pdf": "3dac918536a56b158de229fe40459adb1152c3160d166218bfc0bbd88eb13bde",
+        "layers/integration/kasrkin/kasrkin-strategy-ploy-relocate.pdf": "a6f2d820899e9141a0fd42553c017859bfdda212bc2d53f9a4678b6397030485",
+        "layers/integration/kasrkin/kasrkin-token-guide-token-guide.pdf": "c533b027e0bb7e12d14dd183943f781ab304f40bdfe9739da06831e15a200ae9",
         "layers/integration/kasrkin/card-backside/kasrkin-backside-portrait.jpg": "91f3e4cd5c94d818301288669a039d0eb65ec0cd6c4ce1aca3d71856a6dd6687",
         "config/defaults/card-backside/default-backside-portrait.jpg": "f00ff15fa70005b9f804de08519e2e83485d7eaf78dfacea65dcef0eb1a29c22",
         "layers/integration/kasrkin/card-backside/kasrkin-backside-landscape.jpg": "8a55333a032c89888c241ca6726c637fdfc74c774cb2adae02a3c592938511c3",
@@ -542,10 +552,10 @@
         "team-data.json": {
           "path": "output/kasrkin/data/kasrkin-team-data.json",
           "hash": "a886ae74067f34b2bbe592b25e0005b27d1fd1c39ba48c0f52ba465f5b5a7a26",
-          "modified": "2026-07-11T07:05:13.008128+00:00"
+          "modified": "2026-07-12T18:53:04.550452+00:00"
         }
       },
-      "completed": "2026-07-11T07:05:13.010409+00:00",
+      "completed": "2026-07-12T18:53:04.703027+00:00",
       "inputs": {
         "layers/integration/kasrkin/content/kasrkin-content.json": "a886ae74067f34b2bbe592b25e0005b27d1fd1c39ba48c0f52ba465f5b5a7a26"
       }
@@ -554,16 +564,16 @@
       "outputs": {
         "tts_objects/Kasrkin Box.json": {
           "path": "output/kasrkin/tts_objects/Kasrkin Box.json",
-          "hash": "515b0b610bd5b03d665e247ed12f8c29f8b2eefa835445005697e03cc01c2c5f",
-          "modified": "2026-07-12T18:32:27.048703+00:00"
+          "hash": "e7526e5083645a7eb475bafa6ee922c70cf8730c9f0431ac9711588fd7846177",
+          "modified": "2026-07-12T19:25:34.109413+00:00"
         },
         "tts_objects/Kasrkin.json": {
           "path": "output/kasrkin/tts_objects/Kasrkin.json",
-          "hash": "934c4c3f618ac8120250db74fe2ecead0fa025861367220055d656b3675f9c09",
-          "modified": "2026-07-12T18:32:27.059620+00:00"
+          "hash": "ed563b2d1f4c8460006a93f84bd85818c46d2d77d1c759fb8e75e804c1cb527d",
+          "modified": "2026-07-12T19:25:34.121278+00:00"
         }
       },
-      "completed": "2026-07-12T18:32:27.101254+00:00",
+      "completed": "2026-07-12T19:25:34.166304+00:00",
       "inputs": {
         "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
         "config/team-guids.json": "1dea0eaf2c7d1c37c86aba088cdf876f0638d2dcaca162888fea8422c2d5c9db",
@@ -671,147 +681,147 @@
         "manifest.json": {
           "path": "layers/integration/kasrkin/manifest.json",
           "hash": "73cdfe2daa03dbd56faff04ffbd413453db19857324473ada9de88a13727f6cf",
-          "modified": "2026-07-11T07:01:27.360177+00:00"
+          "modified": "2026-07-12T19:14:12.526450+00:00"
         },
         "kasrkin-datacard-kasrkin-sergeant.pdf": {
           "path": "layers/integration/kasrkin/kasrkin-datacard-kasrkin-sergeant.pdf",
-          "hash": "69403695db3212ff764c33a134007afc8dafb6998b26f319a8b784bd5e38d887",
-          "modified": "2026-07-11T07:01:39.422275+00:00"
+          "hash": "c6c4b44baaa0c496b600cd7be8681f255406b91c9d7f1e930d620ce710d7816d",
+          "modified": "2026-07-12T19:14:12.554689+00:00"
         },
         "kasrkin-datacard-kasrkin-combat-medic.pdf": {
           "path": "layers/integration/kasrkin/kasrkin-datacard-kasrkin-combat-medic.pdf",
-          "hash": "ea79e42159834ab70422b02a9aedb3fc5dec01a0c4bbb69c1e0eb1fb28b5534d",
-          "modified": "2026-07-11T07:01:40.611483+00:00"
+          "hash": "da6ba48958789dc9860dc569cf814b7f64e29e008a8914492f4d0582432227b2",
+          "modified": "2026-07-12T19:14:12.581558+00:00"
         },
         "kasrkin-datacard-kasrkin-demo-trooper.pdf": {
           "path": "layers/integration/kasrkin/kasrkin-datacard-kasrkin-demo-trooper.pdf",
-          "hash": "b0bc65e9c5e0fe2671376ac850e80d1b9d33ce64969e2d012c324877f923d2eb",
-          "modified": "2026-07-11T07:01:43.133866+00:00"
+          "hash": "cd676aac6530ed40be08c7c2c3f6ebe00017e2a7f355f3b751c64bf6aefc712f",
+          "modified": "2026-07-12T19:14:12.608749+00:00"
         },
         "kasrkin-datacard-kasrkin-gunner.pdf": {
           "path": "layers/integration/kasrkin/kasrkin-datacard-kasrkin-gunner.pdf",
-          "hash": "2bb4edcc5a7e007794be1467fb86beebd97020de40c41f0aaeb54cb46f221002",
-          "modified": "2026-07-11T07:01:43.549381+00:00"
+          "hash": "14f59fa253836a971942c0d6451aa5261842fdf59a5ba658da8bca09c2a1fd03",
+          "modified": "2026-07-12T19:14:12.637025+00:00"
         },
         "kasrkin-datacard-kasrkin-recon-trooper.pdf": {
           "path": "layers/integration/kasrkin/kasrkin-datacard-kasrkin-recon-trooper.pdf",
-          "hash": "5197fbe6ff235186530d46e45809a24fd9e8c0d1cbce2db1be3e10c744d54f1e",
-          "modified": "2026-07-11T07:01:43.967695+00:00"
+          "hash": "407de41e7f3e16c1ac3d827e061301d308362e1c069d9ee217196e8ef97942b2",
+          "modified": "2026-07-12T19:14:12.669568+00:00"
         },
         "kasrkin-datacard-kasrkin-sharpshooter.pdf": {
           "path": "layers/integration/kasrkin/kasrkin-datacard-kasrkin-sharpshooter.pdf",
-          "hash": "edc617f876aa912898c92c65347c23cfb4ddf1dc2faedef69cc96d4ea5c3ddf1",
-          "modified": "2026-07-11T07:01:44.385732+00:00"
+          "hash": "63fee54047db8d43847ef006012d923a691e7db19d099679cd929c81778e3665",
+          "modified": "2026-07-12T19:14:12.719373+00:00"
         },
         "kasrkin-datacard-kasrkin-trooper.pdf": {
           "path": "layers/integration/kasrkin/kasrkin-datacard-kasrkin-trooper.pdf",
-          "hash": "dbfa8662feb1306a95e536aa94d8f8d7df8937da1f1bc04a71e28fcd105fbd97",
-          "modified": "2026-07-11T07:01:44.805399+00:00"
+          "hash": "a5dadac9ad1813831ccd42abe59aea1a1d5822b25c1ec5547e596d48ed65e399",
+          "modified": "2026-07-12T19:14:12.765424+00:00"
         },
         "kasrkin-datacard-kasrkin-vox-trooper.pdf": {
           "path": "layers/integration/kasrkin/kasrkin-datacard-kasrkin-vox-trooper.pdf",
-          "hash": "89e1c1b63232afcd9e1f3b90ef01d9548e932ed9d60ede8ad9b1b357f3e0a5ad",
-          "modified": "2026-07-11T07:01:44.900349+00:00"
+          "hash": "e750a818a0619e14b20c86fb7cc9291a06f35bb675a74502e15ab17148873373",
+          "modified": "2026-07-12T19:14:12.836578+00:00"
         },
         "kasrkin-equipment-foregrip.pdf": {
           "path": "layers/integration/kasrkin/kasrkin-equipment-foregrip.pdf",
-          "hash": "980310b89189279837d0831891303d1439a81ce46733608624427c4824dd44d6",
-          "modified": "2026-07-11T07:01:44.922302+00:00"
+          "hash": "6e03c78505572010164121f44388d28cea424474ddbc52df8ab0c66d6adc9758",
+          "modified": "2026-07-12T19:14:12.877478+00:00"
         },
         "kasrkin-equipment-long-range-scope.pdf": {
           "path": "layers/integration/kasrkin/kasrkin-equipment-long-range-scope.pdf",
-          "hash": "63c31c90a01281cebab0e0bb737fafb5f37c7e16d2bf18190f301bb3715151cc",
-          "modified": "2026-07-11T07:01:44.953219+00:00"
+          "hash": "5c38c15f4c7bae9071ffe5805a550fd53da8fb2d4cff6e3e1279a26c9a1582e4",
+          "modified": "2026-07-12T19:14:14.546144+00:00"
         },
         "kasrkin-equipment-relics-of-cadia.pdf": {
           "path": "layers/integration/kasrkin/kasrkin-equipment-relics-of-cadia.pdf",
-          "hash": "a47e92c2e0c2dd81393e88009194dab3a85111a2cf3f1dc981083ab3bf1bf80d",
-          "modified": "2026-07-11T07:01:44.965669+00:00"
+          "hash": "d544cb83f087bc9964fa0365e1e3af0f122350adfe0e0f3e00d6271949503f0d",
+          "modified": "2026-07-12T19:14:22.426080+00:00"
         },
         "kasrkin-equipment-combat-daggers.pdf": {
           "path": "layers/integration/kasrkin/kasrkin-equipment-combat-daggers.pdf",
-          "hash": "d7b2f073c4e9ceb156801b6f8b361f201ce0caa2d344b155e9e0a80154c52c0e",
-          "modified": "2026-07-11T07:01:44.993087+00:00"
+          "hash": "feaf84d06623d4b64466ee1b5d0269e1828680c0877a598caa962c61427ea2cf",
+          "modified": "2026-07-12T19:14:22.467038+00:00"
         },
         "kasrkin-faction-rule-skill-at-arms-1.pdf": {
           "path": "layers/integration/kasrkin/kasrkin-faction-rule-skill-at-arms-1.pdf",
-          "hash": "d506a6ce19c0d90f7792132d8fc1adba7417ead5d96f674e83a1d99c5fb3aaf8",
-          "modified": "2026-07-11T07:01:45.018231+00:00"
+          "hash": "68b78980908d043ba58935b2943a5efd5e04b9e7d1ad22fd2f9e7ca8b95c8050",
+          "modified": "2026-07-12T19:14:22.490830+00:00"
         },
         "kasrkin-faction-rule-skill-at-arms-2.pdf": {
           "path": "layers/integration/kasrkin/kasrkin-faction-rule-skill-at-arms-2.pdf",
-          "hash": "a758f80ad10f8adc1ed7b3b654e1204f463282be2705f2818f1301ef8695b6ad",
-          "modified": "2026-07-11T07:01:45.050613+00:00"
+          "hash": "f8ec0b645b2056dafbf3c40daabd3dca544ec039ffd064e3e8f5565f8425cbed",
+          "modified": "2026-07-12T19:14:22.518258+00:00"
         },
         "kasrkin-faction-rule-skill-at-arms-3.pdf": {
           "path": "layers/integration/kasrkin/kasrkin-faction-rule-skill-at-arms-3.pdf",
-          "hash": "c7093b45f4b7e99950ffb163f62a39c5b7c4b498ca5ab8ad6b153e7a9fc90435",
-          "modified": "2026-07-11T07:01:45.412854+00:00"
+          "hash": "c81600e2156af0b146ebf94fa8bc3b1dc8ac1af358fa97b19a0c55b2fd3f2ceb",
+          "modified": "2026-07-12T19:14:22.536712+00:00"
         },
         "kasrkin-faction-rule-skill-at-arms-4.pdf": {
           "path": "layers/integration/kasrkin/kasrkin-faction-rule-skill-at-arms-4.pdf",
-          "hash": "45f26f96033d74cae160638b2fdff9b992239e737d907056d79f28756a80d8cc",
-          "modified": "2026-07-11T07:01:45.503217+00:00"
+          "hash": "85e9c0c67149eaf01b7828b0e156219a895330e76a09805145a1fa9ca11e9b01",
+          "modified": "2026-07-12T19:14:22.557922+00:00"
         },
         "kasrkin-faction-rule-skill-at-arms-5.pdf": {
           "path": "layers/integration/kasrkin/kasrkin-faction-rule-skill-at-arms-5.pdf",
-          "hash": "960e97a396e58a9249099facaac3c4859388e046b32355cbf3914aacb93a6839",
-          "modified": "2026-07-11T07:01:45.527217+00:00"
+          "hash": "f22225d39288848654463b4dc98d6c7d8df26345b41f8f4b8d6b8d8a9fa98098",
+          "modified": "2026-07-12T19:14:22.572834+00:00"
         },
         "kasrkin-faction-rule-rapid-fire.pdf": {
           "path": "layers/integration/kasrkin/kasrkin-faction-rule-rapid-fire.pdf",
-          "hash": "1d26cf580179db1faf643a65532e7a0c6aed8e93f900e97a6ee12e4f297abba2",
-          "modified": "2026-07-11T07:01:45.547792+00:00"
+          "hash": "683114f2adf44ea3a321f86674d0bf9942ec4c147625e91683233ee1c39e4ac9",
+          "modified": "2026-07-12T19:14:22.600619+00:00"
         },
         "kasrkin-token-guide-token-guide.pdf": {
           "path": "layers/integration/kasrkin/kasrkin-token-guide-token-guide.pdf",
-          "hash": "a39d83e301b2107198558ca7997a78b6860732f615814f243c34f8f6f6614014",
-          "modified": "2026-07-11T07:01:45.582732+00:00"
+          "hash": "c533b027e0bb7e12d14dd183943f781ab304f40bdfe9739da06831e15a200ae9",
+          "modified": "2026-07-12T19:14:22.621269+00:00"
         },
         "kasrkin-firefight-ploy-seize-the-initiative.pdf": {
           "path": "layers/integration/kasrkin/kasrkin-firefight-ploy-seize-the-initiative.pdf",
-          "hash": "4d232afd4b91cb2726ef387046d75df121a9f0c8190fb0b5a47abe3df68ab8be",
-          "modified": "2026-07-11T07:01:45.597428+00:00"
+          "hash": "98647385dc252e7cf0994dab7dcc331f6a7c868089dfaa612dcf1d539ed2bf61",
+          "modified": "2026-07-12T19:14:22.636960+00:00"
         },
         "kasrkin-firefight-ploy-cover-retreat.pdf": {
           "path": "layers/integration/kasrkin/kasrkin-firefight-ploy-cover-retreat.pdf",
-          "hash": "849dd5d53226acc562927f3eccd14fdd7c3efbec2c024edac45feaf07063d726",
-          "modified": "2026-07-11T07:01:45.614110+00:00"
+          "hash": "e37f053c18ed0d36ea8771df88f0dcfaf23f76df44fd2bbb5ad3dae2ee8b8155",
+          "modified": "2026-07-12T19:14:22.649276+00:00"
         },
         "kasrkin-firefight-ploy-neutralise-target.pdf": {
           "path": "layers/integration/kasrkin/kasrkin-firefight-ploy-neutralise-target.pdf",
-          "hash": "670bcf7907a3eb205a49d95c2f9de76dcfd7a298482f23b3d5a9eca267f71285",
-          "modified": "2026-07-11T07:01:45.634103+00:00"
+          "hash": "16b3da37faeeb6e5923efe26405800a0323f1e1d25029bf883ad597c6c749e31",
+          "modified": "2026-07-12T19:14:22.673135+00:00"
         },
         "kasrkin-firefight-ploy-give-no-ground.pdf": {
           "path": "layers/integration/kasrkin/kasrkin-firefight-ploy-give-no-ground.pdf",
-          "hash": "9b45b7bc4497387ae730e00d94d121b98decd44c90ec78b45a0c83c0f670f6a8",
-          "modified": "2026-07-11T07:01:45.646128+00:00"
+          "hash": "3d60beae399244646f2988b22a97556e80631706f9d2a9001a0dfedc693062e7",
+          "modified": "2026-07-12T19:14:22.701114+00:00"
         },
         "kasrkin-operatives-selection-operative-selection.pdf": {
           "path": "layers/integration/kasrkin/kasrkin-operatives-selection-operative-selection.pdf",
-          "hash": "498406c4feb57e8d3cfc833fd442677cf215a9a318cd8fda4ac835043b8c86e7",
-          "modified": "2026-07-11T07:01:45.673567+00:00"
+          "hash": "181d7be947118095b9914bf902f32abf22d2b43718b1e062ff0934f3af134237",
+          "modified": "2026-07-12T19:14:22.720942+00:00"
         },
         "kasrkin-strategy-ploy-elimination-pattern.pdf": {
           "path": "layers/integration/kasrkin/kasrkin-strategy-ploy-elimination-pattern.pdf",
-          "hash": "921da3548194bd49225c7d7c5aee9b5739f5291267d9a8d9d3570bcbdacb72f9",
-          "modified": "2026-07-11T07:01:45.701763+00:00"
+          "hash": "05d88af583a59985a8f3a79024b6b6e7454a2e2df2b5847423ca0437ab4d1dea",
+          "modified": "2026-07-12T19:14:23.382347+00:00"
         },
         "kasrkin-strategy-ploy-engage-from-cover.pdf": {
           "path": "layers/integration/kasrkin/kasrkin-strategy-ploy-engage-from-cover.pdf",
-          "hash": "31529c9e7b42090b420148b297c2238fc460a86350a500b614d39eb872bd9d97",
-          "modified": "2026-07-11T07:01:45.751625+00:00"
+          "hash": "3dac918536a56b158de229fe40459adb1152c3160d166218bfc0bbd88eb13bde",
+          "modified": "2026-07-12T19:14:23.392021+00:00"
         },
         "kasrkin-strategy-ploy-clearance-sweep.pdf": {
           "path": "layers/integration/kasrkin/kasrkin-strategy-ploy-clearance-sweep.pdf",
-          "hash": "ba4df5ab0c37313fb624e215ce1fc9168562a29e79df80ad48f65f72e7210c89",
-          "modified": "2026-07-11T07:01:46.217889+00:00"
+          "hash": "e583f43a9adc338ace53fdfb53aed150909b15ae6836c77cad2822164874817a",
+          "modified": "2026-07-12T19:14:23.406779+00:00"
         },
         "kasrkin-strategy-ploy-relocate.pdf": {
           "path": "layers/integration/kasrkin/kasrkin-strategy-ploy-relocate.pdf",
-          "hash": "2d6d76ff9f89ee380666f4df31570f231df9d61364b444e1001bec742595f594",
-          "modified": "2026-07-11T07:01:46.241184+00:00"
+          "hash": "a6f2d820899e9141a0fd42553c017859bfdda212bc2d53f9a4678b6397030485",
+          "modified": "2026-07-12T19:14:23.421198+00:00"
         }
       },
       "inputs": {
@@ -849,7 +859,7 @@
         "layers/warcom/extracted/kasrkin/cards/kasrkin_page06_card4_portrait.pdf": "297796ed6d00367851485c8371498244a0c04eb352abc3b37bd08d50e14dd5bc",
         "layers/warcom/extracted/kasrkin/cards/kasrkin_page07_card1_portrait.pdf": "42bd77801fac2ef80554816e6da3ae65362ff11f7a72559b6d22f8a26d9a5d54"
       },
-      "completed": "2026-07-11T07:01:56.428079+00:00"
+      "completed": "2026-07-12T19:14:39.140035+00:00"
     },
     "front_end": {
       "outputs": {},
@@ -972,7 +982,7 @@
         "structure": {
           "path": "layers/warcom/structure/kasrkin-structure.json",
           "hash": "73cdfe2daa03dbd56faff04ffbd413453db19857324473ada9de88a13727f6cf",
-          "modified": "2026-07-10T20:29:47.989986+00:00"
+          "modified": "2026-07-12T18:49:20.677902+00:00"
         }
       },
       "inputs": {
@@ -1013,7 +1023,7 @@
         "layers/warcom/extracted/kasrkin/cards/kasrkin_page09_card3_portrait.pdf": "61183ff66fcea00b14c535842eb409c9f2de28fd0c7045eb9b9c3d718e16b60a",
         "layers/warcom/extracted/kasrkin/cards/kasrkin_page09_card4_portrait.pdf": "e6086239562a584b99bbb4a65856b81d4630d5a0c0fb733246347d7f19e7b32e"
       },
-      "completed": "2026-07-10T20:29:54.776082+00:00"
+      "completed": "2026-07-12T18:50:13.923422+00:00"
     },
     "extract_artwork": {
       "outputs": {},

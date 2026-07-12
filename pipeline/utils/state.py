@@ -26,6 +26,48 @@ from . import paths
 # never race on os.replace of the same destination (Windows raises WinError 5).
 _INDEX_LOCK = threading.Lock()
 
+# Timestamp keys that change every run but carry no gating meaning. Two state
+# files that differ only in these are treated as unchanged so the tracked state
+# file (and its git diff) stays quiet across re-runs.
+_VOLATILE_STATE_KEYS = ("last_updated", "completed", "modified", "last_run")
+
+
+def _strip_volatile(obj):
+    """Deep-copy ``obj`` with volatile timestamp keys removed (for comparison)."""
+    if isinstance(obj, dict):
+        return {k: _strip_volatile(v) for k, v in obj.items() if k not in _VOLATILE_STATE_KEYS}
+    if isinstance(obj, list):
+        return [_strip_volatile(v) for v in obj]
+    return obj
+
+
+def _stable_write_json(path: Path, data) -> None:
+    """Atomic write that preserves the prior file's bytes + mtime when the new
+    content differs only in volatile timestamp keys — keeping the tracked state
+    file byte-identical across re-runs that changed nothing substantive."""
+    prior_bytes = None
+    prior_mtime = None
+    if path.exists():
+        try:
+            prior_bytes = path.read_bytes()
+            prior_mtime = path.stat().st_mtime
+        except OSError:
+            prior_bytes = None
+    _atomic_write_json(path, data)
+    if prior_bytes is None:
+        return
+    try:
+        prior = json.loads(prior_bytes)
+    except (ValueError, OSError):
+        return
+    if _strip_volatile(prior) == _strip_volatile(data):
+        try:
+            path.write_bytes(prior_bytes)
+            if prior_mtime is not None:
+                os.utime(path, (prior_mtime, prior_mtime))
+        except OSError:
+            pass
+
 
 def _atomic_write_json(path: Path, data, retries: int = 8) -> None:
     """Write JSON to ``path`` atomically (temp file + os.replace).
@@ -188,7 +230,7 @@ class StateManager:
     def save(self):
         """Write the per-team state file (atomically)."""
         self.state["last_updated"] = datetime.now(timezone.utc).isoformat()
-        _atomic_write_json(self.state_file, self.state)
+        _stable_write_json(self.state_file, self.state)
 
 
 class StateIndex:
@@ -226,4 +268,4 @@ class StateIndex:
             "teams": teams,
         }
         with _INDEX_LOCK:
-            _atomic_write_json(self.index_file, index)
+            _stable_write_json(self.index_file, index)

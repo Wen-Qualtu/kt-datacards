@@ -27,6 +27,7 @@ from typing import Dict, List, Optional
 import fitz  # PyMuPDF
 
 from ..utils import naming, paths
+from ..utils.stable_io import stable_write
 from ..utils.state import StateIndex, StateManager
 
 logger = logging.getLogger(__name__)
@@ -44,13 +45,21 @@ TYPE_KEYS = [
 
 
 def _merge_card(front: Path, back: Optional[Path], out_path: Path) -> None:
-    """Write a classified PDF: front page first, optional back page second."""
+    """Write a classified PDF: front page first, optional back page second.
+
+    The save is made deterministic (metadata cleared, no fresh random /ID) so a
+    re-merge of unchanged source pages is byte-identical; combined with
+    ``stable_write`` the file's mtime is preserved too, keeping re-runs free of
+    spurious churn in this tracked layer.
+    """
     doc = fitz.open(front)
     if back is not None:
         with fitz.open(back) as back_doc:
             doc.insert_pdf(back_doc)
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    doc.save(out_path)
+    doc.set_metadata({})
+    with stable_write(out_path):
+        doc.save(out_path, garbage=4, deflate=True, no_new_id=True)
     doc.close()
 
 
