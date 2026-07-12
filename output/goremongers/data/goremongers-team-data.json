@@ -1,6 +1,6 @@
 {
   "team": "goremongers",
-  "generated_at": "2026-05-05T17:42:58.705006+00:00",
+  "generated_at": "2026-07-10T20:35:21.680841+00:00",
   "datacards": [
     {
       "name": "GOREMONGER BLOOD HERALD",
@@ -8,6 +8,7 @@
       "movement": "7″",
       "save": "5+",
       "wounds": 11,
+      "base_size": 32,
       "weapons": [
         {
           "name": "Icon of Khorne",
@@ -48,6 +49,7 @@
       "movement": "7″",
       "save": "5+",
       "wounds": 10,
+      "base_size": 32,
       "weapons": [
         {
           "name": "Autopistol",
@@ -83,6 +85,7 @@
       "movement": "7″",
       "save": "5+",
       "wounds": 10,
+      "base_size": 32,
       "weapons": [
         {
           "name": "Autopistol",
@@ -108,7 +111,7 @@
       "unique_actions": [
         {
           "name": "TRANSFUSION RITUAL (1AP)",
-          "description": "• Decrease this operative’s GORE TANK. Instead of using a SANGUAVITAE rule, you can increase the GORE TANK of one other friendly GOREMONGER operative within 8\" of this operative.\n• This operative cannot perform this action while within control range of an enemy operative, or if its GORE TANK is empty."
+          "description": "Decrease this operative’s GORE TANK. Instead of using a SANGUAVITAE rule, you can increase the GORE TANK of one other friendly GOREMONGER operative within 8\" of this operative. This operative cannot perform this action while within control range of an enemy operative, or if its GORE TANK is empty."
         }
       ],
       "keywords": [
@@ -123,6 +126,7 @@
       "movement": "7″",
       "save": "5+",
       "wounds": 10,
+      "base_size": 32,
       "weapons": [
         {
           "name": "Autopistol",
@@ -168,6 +172,7 @@
       "movement": "7″",
       "save": "5+",
       "wounds": 10,
+      "base_size": 32,
       "weapons": [
         {
           "name": "Dual autopistols (focused)",
@@ -193,7 +198,7 @@
       "unique_actions": [
         {
           "name": "DASH AND SPRAY (1AP)",
-          "description": "• Perform a free Dash action and a free Shoot action with this operative in any order. You can only select dual autopistols (focused) for that Shoot action.\n• This operative cannot perform this action while it has a Conceal order, or while within control range of an enemy operative."
+          "description": "Perform a free Dash action and a free Shoot action with this operative in any order. You can only select dual autopistols (focused) for that Shoot action. This operative cannot perform this action while it has a Conceal order, or while within control range of an enemy operative."
         }
       ],
       "keywords": [
@@ -208,6 +213,7 @@
       "movement": "7″",
       "save": "5+",
       "wounds": 10,
+      "base_size": 32,
       "weapons": [
         {
           "name": "Autopistol",
@@ -247,6 +253,7 @@
       "movement": "7″",
       "save": "5+",
       "wounds": 10,
+      "base_size": 32,
       "weapons": [
         {
           "name": "Autopistol",
@@ -270,7 +277,7 @@
         },
         {
           "name": "Rooftop Stalker",
-          "description": "Whenever this operative is fighting during an activation in which it dropped from Vantage terrain at least 2\" higher than the killzone floor, or whenever this operative is fighting against an enemy operative that’s on Vantage terrain at least 2\" higher than the killzone floor, this operative’s melee weapons have the Relentless weapon rule."
+          "description": "Whenever this operative is fighting during an activation in which it dropped from Vantage terrain, or whenever this operative is fighting against an enemy operative that’s on Vantage terrain, this operative’s melee weapons have the Relentless weapon rule."
         }
       ],
       "unique_actions": [],
@@ -283,29 +290,29 @@
   ],
   "equipment": [
     {
-      "name": "GORY TOTEM",
+      "name": "gory-totem",
       "text": "GOREMONGER\nFACTION EQUIPMENT\nGORY TOTEM\nGore and peeled skulls mark the limits of the \nGoremongers’ territory.\nBefore the battle, you can set up one of your Gory \nTotem markers wholly within your territory and \nmore than 2\" from other markers (excluding your \nBloody Cadaver marker). Whenever an enemy \noperative within 3\" of your Gory Totem marker is \nshooting, fighting or retaliating, your opponent \ncannot re-roll their attack dice."
     },
     {
-      "name": "BLOODY CADAVER",
+      "name": "bloody-cadaver",
       "text": "GOREMONGER\nFACTION EQUIPMENT\nBLOODY CADAVER\nGoremongers will often stash corpses for later \nconsumption and refuelling. \nBefore the battle, you can set up one of your \nBloody Cadaver markers wholly within your \nterritory and more than 2\" from other markers \n(excluding your Gory Totem marker). Friendly \nGOREMONGER operatives can perform the Pick \nUp Marker action on that marker. In the Ready \nstep of each Strategy phase, you can increase \nthe GORE TANK of one friendly GOREMONGER \noperative that controls that marker, unless that \nfriendly operative is within control range of an \nenemy operative."
     },
     {
-      "name": "CHAOS SIGIL",
+      "name": "chaos-sigil",
       "text": "GOREMONGER\nFACTION EQUIPMENT\nCHAOS SIGIL\nThe runes of the Ruinous Powers are carved into flesh \nand borne upon armour and clothing, providing their \nbearers with malefic might.\nOnce per turning point, when an operative is \nshooting a friendly GOREMONGER operative, \nat the start of the Roll Defence Dice step, you \ncan use this rule. If you do, worsen the x of the \nPiercing weapon rule by 1 (if any) until the end \nof that sequence. Note that Piercing 1 would \ntherefore be ignored."
     },
     {
-      "name": "WRIST CHAINS",
+      "name": "wrist-chains",
       "text": "GOREMONGER\nFACTION EQUIPMENT\nWRIST CHAINS\nThe Goremongers secure their weapons with lengths of \nchain, enabling them to be hurled towards an opponent.\nOnce per turning point, when a friendly \nGOREMONGER operative performs the Shoot \naction and you’re selecting a ranged weapon, you \ncan use this rule. If you do, until the end of that \naction, the following melee weapons are treated \nas ranged weapons with the Range 2\" weapon \nrule: chainblade, chainglaive, great chainaxe \n(ignore its Brutal weapon rule), pickrippers."
     }
   ],
   "faction_rules": [
     {
-      "name": "RUNES OF KHORNE",
+      "name": "runes-of-khorne",
       "text": "GOREMONGER\nFACTION RULE\nRUNES OF KHORNE\nKhornate runes carved into the flesh of Goremongers \ngive them an infernal resistance to ranged attacks.\nEach friendly GOREMONGER operative cannot \nlose more than 8 wounds per Shoot action."
     },
     {
-      "name": "GORE TANKS",
+      "name": "gore-tanks",
       "text": "GOREMONGER\nFACTION RULE\nGORE TANKS\nGoremongers’ tanks contain a concoction of stimms, \nrecombinant proteins and alchemical fuel. This cocktail \nenergises the carrier, but the tanks require a constant \nsupply of blood and gore for the infernal alchemy to \nfunction at peak efficiency.\nEach friendly GOREMONGER operative has a \nGORE TANK that has three levels: full, half and \nempty. They start the battle at half. Whenever \na GORE TANK increases, it goes up one level; \nwhenever it decreases, it goes down one level. \nA GORE TANK cannot increase when it’s already \nfull, or decrease when it’s already empty (see \ndiagram on other side).\nCONTINUES ON OTHER SIDE",
       "options": [
         {
@@ -315,100 +322,76 @@
       ]
     },
     {
-      "name": "SANGUAVITAE",
+      "name": "sanguavitae",
       "text": "GOREMONGER\nFACTION RULE\nSANGUAVITAE\nThe blood-infused concoction within the Goremongers’ \ntanks is known as sanguavitae. Empowered by this fluid, \nthey can undertake gore-drenched deeds far beyond the \ncapabilities of most Humans. Through these acts they \nemulate Bloodletters and venerate Khorne.\nEach SANGUAVITAE rule specifies when it can \nbe used, and you must decrease the operative’s \nGORE TANK to do so. You cannot use the same \nSANGUAVITAE rule more than once per activation \nor counteraction, and you cannot use more \nthan two SANGUAVITAE rules per activation or \ncounteraction. You cannot use Mania and Fury \nduring the same activation.\nSANGUAVITAE",
       "options": [
         {
           "name": "WHEN:",
-          "text": "• During a friendly GOREMONGER operative’s activation or counteraction, before or after it performs an action."
-        },
-        {
-          "name": "EFFECT:",
-          "text": "• That operative regains up to D3+1 lost wounds."
+          "text": "During a friendly GOREMONGER operative’s activation or counteraction, before or after it performs an action. EFFECT: That operative regains D3+1 lost wounds."
         },
         {
           "name": "WHEN:",
-          "text": "• During a friendly GOREMONGER operative’s activation, before or after it performs an action."
-        },
-        {
-          "name": "EFFECT:",
-          "text": "• Until the start of that operative’s next activation, add 1 to its APL stat."
+          "text": "During a friendly GOREMONGER operative’s activation, before or after it performs an action. EFFECT: Until the start of that operative’s next activation, add 1 to its APL stat."
         },
         {
           "name": "WHEN:",
-          "text": "• During a friendly GOREMONGER operative’s activation, before or after it performs an action."
-        },
-        {
-          "name": "EFFECT:",
-          "text": "• That operative can perform two Fight actions during that activation, and the second one is free."
+          "text": "During a friendly GOREMONGER operative’s activation, before or after it performs an action. EFFECT: That operative can perform two Fight actions during that activation, and the second one is free."
         },
         {
           "name": "WHEN:",
-          "text": "• When a friendly GOREMONGER operative performs the Charge action during its activation."
-        },
-        {
-          "name": "EFFECT:",
-          "text": "• When that operative finishes moving during that action, you can inflict D3 damage on one enemy operative within its control range."
+          "text": "When a friendly GOREMONGER operative performs the Charge action during its activation. EFFECT: When that operative finishes moving during that action, you can inflict D3 damage on one enemy operative within its control range."
         },
         {
           "name": "WHEN:",
-          "text": "• When a friendly GOREMONGER operative performs the Charge or Reposition action."
-        },
-        {
-          "name": "EFFECT:",
-          "text": "• Until the end of that action, add 1\" to that operative’s Move stat."
+          "text": "When a friendly GOREMONGER operative performs the Charge or Reposition action. EFFECT: Until the end of that action, add 1\" to that operative’s Move stat."
         },
         {
           "name": "WHEN:",
-          "text": "• When a friendly GOREMONGER operative performs the Fight action."
-        },
-        {
-          "name": "EFFECT:",
-          "text": "• Until the end of that action, add 1 to the Atk stat of that operative’s melee weapons."
+          "text": "When a friendly GOREMONGER operative performs the Fight action. EFFECT: Until the end of that action, add 1 to the Atk stat of that operative’s melee weapons."
         }
       ]
     }
   ],
   "firefight_ploys": [
     {
-      "name": "UNBRIDLED AGGRESSION",
+      "name": "unbridled-aggression",
       "text": "GOREMONGER\nFIREFIGHT PLOY\nUNBRIDLED AGGRESSION\nWhen they close with the enemy, Goremongers fight \nwith all the savage fury and martial prowess of the \nBloodletters they so idolise.\nUse this firefight ploy when a friendly \nGOREMONGER operative is fighting during \nan activation in which it performed the Charge \naction, at the end of the Roll Attack Dice step. \nUntil the end of that sequence, that operative’s \nmelee weapons have the Severe weapon rule."
     },
     {
-      "name": "GORETHIRST",
-      "text": "GOREMONGER\nFIREFIGHT PLOY\nGORETHIRST\nGoremongers are drawn to violence like insects \nto blazing lumen, unable to control their thirst to \nspill viscera.\nUse this firefight ploy when you would counteract. \nYou can do so with one friendly GOREMONGER \noperative that has a Conceal order, but before it \ncounteracts, you must change its order to Engage \nand it cannot perform any actions other than \nCharge, Shoot or Fight during that counteraction."
+      "name": "gorethirst",
+      "text": "GOREMONGER\nFIREFIGHT PLOY\nGORETHIRST\nGoremongers are drawn to violence like insects \nto blazing lumen, unable to control their thirst to \nspill viscera.\nUse this firefight ploy when you would counteract. \nYou can do so with one friendly GOREMONGER \noperative that has a Conceal order, but you must \nchange its order to Engage and it cannot perform \nany actions other than Charge, Shoot or Fight \nduring that counteraction."
     },
     {
-      "name": "DESTRUCTIVE DEMISE",
+      "name": "destructive-demise",
       "text": "GOREMONGER\nFIREFIGHT PLOY\nDESTRUCTIVE DEMISE\nEmpowered by the blood of their foes, mortally wounded \nGoremongers expend the last of their might in a \nvengeful frenzy.\nUse this firefight ploy when a friendly \nGOREMONGER operative is incapacitated, \nbefore it’s removed from the killzone. Inflict \ndamage determined by that friendly operative’s \nGORE TANK on one enemy operative within that \nfriendly operative’s control range. Inflict:\n• D3 if empty.\n• D3+1 if half.\n• D3+2 if full."
     },
     {
-      "name": "LACERATE FLESH",
+      "name": "lacerate-flesh",
       "text": "GOREMONGER\nFIREFIGHT PLOY\nLACERATE FLESH\nGoremongers may resort to topping up their blood tanks \nwith their own crimson fluid. Doing so is a last resort, \nundertaken only in a desperate frenzy.\nUse this firefight ploy when a friendly \nGOREMONGER operative with an empty GORE \nTANK is activated or counteracts. Increase \nthat operative’s GORE TANK. At the end of that \nactivation/counteraction, decrease its GORE \nTANK (you cannot use this decrease to use a \nSANGUAVITAE rule); if you cannot decrease its \nGORE TANK, inflict D3 damage on it."
     }
   ],
   "operatives_selection": [
     {
-      "name": "OPERATIVE SELECTION GOREMONGERS",
-      "text": "GOREMONGERS KILL TEAM\nARCHETYPES: RECON, SEEK & DESTROY\nOPERATIVES\n\t\n↘\n• 1 GOREMONGER BLOOD HERALD operative\n\t\n↘\n• 7 GOREMONGER operatives selected from the \nfollowing list:\n• ASPIRANT\n• BLOODTAKER\n• IMPALER\n• INCITER\n• SKULLCLAIMER\n• STALKER\n \nOther than ASPIRANT operatives, your kill team \ncan only include each operative on this list once.",
+      "name": "OPERATIVE SELECTION",
+      "text": "GOREMONGERS KILL TEAM\nARCHETYPES: RECON, SEEK & DESTROY\nOPERATIVES\n \n↘ 1 GOREMONGER BLOOD HERALD operative\n \n↘ 7 GOREMONGER operatives selected from the \nfollowing list:\n• ASPIRANT\n• BLOODTAKER\n• IMPALER\n• INCITER\n• SKULLCLAIMER\n• STALKER\n \nOther than ASPIRANT operatives, your kill team \ncan only include each operative on this list once.",
       "selection": {}
     }
   ],
   "strategy_ploys": [
     {
-      "name": "ENHANCED VIOLENCE",
+      "name": "enhanced-violence",
       "text": "GOREMONGER\nSTRATEGY PLOY\nENHANCED VIOLENCE\nWhen powered by sanguavitae, Goremongers \nfight with far greater ferocity and skill than any \nunaugmented Human.\nWhenever a friendly GOREMONGER operative’s \nGORE TANK is:\n• Half, its melee weapons have the Balanced \nweapon rule.\n• Full, its melee weapons have the Relentless \nweapon rule."
     },
     {
-      "name": "AUGMENTED ENDURANCE",
+      "name": "augmented-endurance",
       "text": "GOREMONGER\nSTRATEGY PLOY\nAUGMENTED ENDURANCE\nAn infusion of sanguavitae serves to harden the \nsubject’s mind, body and soul, rendering them \nsupremely resilient.\nWhenever an operative is shooting a friendly \nGOREMONGER operative, if that friendly \noperative’s GORE TANK is:\n• Half, you can re-roll one of your defence dice.\n• Full, you can re-roll any of your defence dice."
     },
     {
-      "name": "GORY TENACITY",
+      "name": "gory-tenacity",
       "text": "GOREMONGER\nSTRATEGY PLOY\nGORY TENACITY\nThe prospect of carnage drives Goremongers into \na maniacal fury. Enraged thus, they are capable of \nshrugging off terrible wounds.\nWhenever a friendly GOREMONGER operative is \nfighting or retaliating, the first time your opponent \nstrikes it during that sequence, halve the damage \ninflicted (rounding up and to a minimum of 2)."
     },
     {
-      "name": "HUNT FOR BLOOD",
+      "name": "hunt-for-blood",
       "text": "GOREMONGER\nSTRATEGY PLOY\nHUNT FOR BLOOD\nAs blood is spilled, its copper scent fills the air, driving \nthe Goremongers into a thirsting frenzy.\nSelect one friendly GOREMONGER operative. If \nit has a Conceal order, change it to Engage. Then \nit can immediately perform a free Charge action, \nbut cannot move more than 3\" during that action."
     }
   ]

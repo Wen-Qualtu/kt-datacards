@@ -1,0 +1,1162 @@
+{
+  "team": "brood-brothers",
+  "pipeline_version": "2.0",
+  "last_updated": "2026-07-12T18:32:25.689233+00:00",
+  "steps": {
+    "content_analysis": {
+      "outputs": {
+        "content.json": {
+          "path": "layers/integration/brood-brothers/content/brood-brothers-content.json",
+          "hash": "9863c93f4d4df0188a85e7dde5ea733fb331f7c8ac8b40252fe32a40287709db",
+          "modified": "2026-07-11T06:54:19.671514+00:00"
+        }
+      },
+      "completed": "2026-07-11T06:54:38.229935+00:00",
+      "inputs": {
+        "layers/integration/brood-brothers/manifest.json": "8b31bdd5b9b44328fa2d59c112b5a2018dcd5770a155b84e928d252e75ab5895",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "layers/integration/brood-brothers/brood-brothers-datacard-brood-brother-agitator.pdf": "f421227b62b252eb45f53b7e8ec72daa32f062b945b612d261f8b2ed4814a0ab",
+        "layers/integration/brood-brothers/brood-brothers-datacard-brood-brother-commander.pdf": "f1a5c31c16b897a915261af843b10fdb34aa9dd7d6d679404426e2f37729e9d2",
+        "layers/integration/brood-brothers/brood-brothers-datacard-brood-brother-gunner.pdf": "2b4e533ed799e6dbdab6311b9f299586aa0f7076e5d70eff70d2bd71560e0ea6",
+        "layers/integration/brood-brothers/brood-brothers-datacard-brood-brother-iconward.pdf": "b9797d0c72609f9caca9624887bc0ffe956b9e673b120305a69b81efdcc6a0da",
+        "layers/integration/brood-brothers/brood-brothers-datacard-brood-brother-knife-fighter.pdf": "08b41a29b4fbf567fb3a060ea11ea938620b8cfaafb27ccc91cfbf7e7eaf0241",
+        "layers/integration/brood-brothers/brood-brothers-datacard-brood-brother-medic.pdf": "14f30e4aec8403e7629376fdaa2d482dee683a68bf223d3199751995af0f08a2",
+        "layers/integration/brood-brothers/brood-brothers-datacard-brood-brother-sapper.pdf": "87fc20c751c3d2bd05cee50fe89ee977228959eddca4fa59c15a816dc8bb2ae6",
+        "layers/integration/brood-brothers/brood-brothers-datacard-brood-brother-sniper.pdf": "aeb7f2d8f9b5ba2ecb943c636ced0ec4308c4eb5530cd299aaea7a24087eadfd",
+        "layers/integration/brood-brothers/brood-brothers-datacard-brood-brother-trooper.pdf": "3699a2ce9742112ec5574f4c1819d945265d3a5d3bb044167e4e9211201f72ea",
+        "layers/integration/brood-brothers/brood-brothers-datacard-brood-brother-veteran.pdf": "27422589a94ecc2d2ca6a7a135d7a9bca7b1d5861f05441eabb8cffc52e54bbe",
+        "layers/integration/brood-brothers/brood-brothers-datacard-brood-brother-vox-operator.pdf": "ab96b52ce7dc12decbd0ad92575ecd32bba8c7219a819e8ec42f1f20687d2fc8",
+        "layers/integration/brood-brothers/brood-brothers-datacard-magus.pdf": "f7688226914250ea4fc1bee9b41a16d479efe16a8a3022fa8c7996b522343ec3",
+        "layers/integration/brood-brothers/brood-brothers-datacard-patriarch.pdf": "a147cb748f10db27f2044e6af8a0bbfb187baa63a9891fc527a5b808db516159",
+        "layers/integration/brood-brothers/brood-brothers-datacard-primus.pdf": "dbf229395b9bd34e271667c920a74452e27640adf4ed48ebb4be4194d30d9c07",
+        "layers/integration/brood-brothers/brood-brothers-datacard-psychic-familiar.pdf": "db416a46d7c55dd0b709003be2f9461df858a1db4482e40782c7af83c8894b02",
+        "layers/integration/brood-brothers/brood-brothers-equipment-covert-guises.pdf": "8821e5fe9b082c998c23c76f2de045bd890c9a84d1b304dbf4fb8553d736ff4a",
+        "layers/integration/brood-brothers/brood-brothers-equipment-cult-knives.pdf": "6866b678b0b3669bd7d379db2b23e7c495c3c0b7eda5768bb9adf4421ccf9536",
+        "layers/integration/brood-brothers/brood-brothers-equipment-cult-talisman.pdf": "0ebf1dadbf5f0b801b187bd8557faa7ec18821884eca0b3a67c2280018d83a7c",
+        "layers/integration/brood-brothers/brood-brothers-equipment-lookout.pdf": "f992000b03032f62a7d282d7e3d6efba4838fdd248a2068c056983d70e8223e8",
+        "layers/integration/brood-brothers/brood-brothers-faction-rule-crossfire.pdf": "065095c793b943e054485319626c21907fe721478f4d22b6d9d9facaf94c370f",
+        "layers/integration/brood-brothers/brood-brothers-firefight-ploy-idolisation.pdf": "6cc22b2d78805ad3381abbd4dd52cf1811b9040c6ca86e55ec0b554af30aad8c",
+        "layers/integration/brood-brothers/brood-brothers-firefight-ploy-insidious.pdf": "dc6cf363a7e5a21e06698e624d2a47498606213646a85565afd76378c4cf407c",
+        "layers/integration/brood-brothers/brood-brothers-firefight-ploy-ruthless-coordination.pdf": "1e44576608095e81bc5300500cef896760efc817ac5692233da08a506ba2f328",
+        "layers/integration/brood-brothers/brood-brothers-firefight-ploy-unquestioning-loyalty.pdf": "1753990d3a850744be230f24adc7c42cea232bce0463e37d777752aac08c7fff",
+        "layers/integration/brood-brothers/brood-brothers-operatives-selection-operative-selection.pdf": "be62a7449891a11f0580fa030e3940b09b7669a4390cfce7e1ba64926edcd601",
+        "layers/integration/brood-brothers/brood-brothers-strategy-ploy-cult-devotion.pdf": "f94c3539b6b28e247d5ab63e95f16c7e4958a919f99c4c14404cc1d7e3cc95d8",
+        "layers/integration/brood-brothers/brood-brothers-strategy-ploy-embedded.pdf": "89b0a20843edebb19a100619080964ee6e8c8349f351b93315b51fd6b3e52bf0",
+        "layers/integration/brood-brothers/brood-brothers-strategy-ploy-pervasive.pdf": "02028560ca68c0019bad4e6455228417306531e9ec31a413892ea8bf88cc4df1",
+        "layers/integration/brood-brothers/brood-brothers-strategy-ploy-uprising.pdf": "af90a1c4ff4779f904851dd4023394f537a62bc6c5cb3c8c67c32e19608a9185",
+        "layers/integration/brood-brothers/brood-brothers-token-guide-token-guide.pdf": "98392d61582807646af15fb0bf7df037d340c464a66cc0076fc8c14b793b2d0a"
+      }
+    },
+    "extract_backsides": {
+      "outputs": {
+        "backside-landscape.jpg": {
+          "path": "layers/integration/brood-brothers/card-backside/brood-brothers-backside-landscape.jpg",
+          "hash": "b7dd3eef86e9d44da418d5400bd66562b3d3cfb50a7155fafbce286b0485a9dc",
+          "modified": "2026-07-11T06:54:38.428893+00:00"
+        },
+        "backside-portrait.jpg": {
+          "path": "layers/integration/brood-brothers/card-backside/brood-brothers-backside-portrait.jpg",
+          "hash": "ca4bd61efd9fd26186de97fb5078df74547c4994af1c8dd808da344055d59515",
+          "modified": "2026-07-11T06:54:38.432372+00:00"
+        }
+      },
+      "completed": "2026-07-11T06:54:38.440689+00:00",
+      "inputs": {
+        "layers/integration/brood-brothers/artwork/icons/brood-brothers-icon-token.jpg": "7ea18693b806ed4605e217a08a954ee62ef951fcbe79a3a64d93884648ae29b7",
+        "config/defaults/box/card-box-background.jpeg": "2dd1442a7c52ca1d66899333f678d60f48981ce20561ead77c1161d548176036"
+      }
+    },
+    "extract_tokens": {
+      "outputs": {
+        "tokens/brood-brothers-broodmind-devotion.png": {
+          "path": "output/brood-brothers/tokens/brood-brothers-broodmind-devotion.png",
+          "hash": "2319a2777af9738696ae3ee78d7a28fdcdb873f7bd2e7e6b41df416f534d91b2",
+          "modified": "2026-07-11T06:54:45.071226+00:00"
+        },
+        "tokens/brood-brothers-crossfire.png": {
+          "path": "output/brood-brothers/tokens/brood-brothers-crossfire.png",
+          "hash": "6419c4021c9a731cce58b2bc8db5681c52e7455cb2186147ebc1705d9a84f388",
+          "modified": "2026-07-11T06:54:45.081619+00:00"
+        },
+        "tokens/brood-brothers-cult-talisman.png": {
+          "path": "output/brood-brothers/tokens/brood-brothers-cult-talisman.png",
+          "hash": "4a56a241e472c37514762f1117894e6ff3a2d274f8789af3daa466b7dcbe805b",
+          "modified": "2026-07-11T06:54:45.085804+00:00"
+        },
+        "tokens/brood-brothers-demolition-charge.png": {
+          "path": "output/brood-brothers/tokens/brood-brothers-demolition-charge.png",
+          "hash": "525ae35f3dd2e159a9a6ec44658dafde9109ef8c9734b6376d80d59ef5803a07",
+          "modified": "2026-07-11T06:54:45.090241+00:00"
+        },
+        "tokens/brood-brothers-devoted.png": {
+          "path": "output/brood-brothers/tokens/brood-brothers-devoted.png",
+          "hash": "7f3faefada43bcb847b77320f0d158e54548dfa25b4d9f64b7ba043899e249f3",
+          "modified": "2026-07-11T06:54:45.095825+00:00"
+        },
+        "tokens/brood-brothers-explosives.png": {
+          "path": "output/brood-brothers/tokens/brood-brothers-explosives.png",
+          "hash": "b27f9d70705cac33998d592e38e5514b66c74e82cd6f548fea883491674d74e7",
+          "modified": "2026-07-11T06:54:45.102507+00:00"
+        },
+        "tokens/brood-brothers-gene-needler.png": {
+          "path": "output/brood-brothers/tokens/brood-brothers-gene-needler.png",
+          "hash": "b56144d89439f5ceed1fa2035c1a6e6893a32c193d2d22c93e492d0c0741770d",
+          "modified": "2026-07-11T06:54:45.109011+00:00"
+        },
+        "tokens/brood-brothers-jam.png": {
+          "path": "output/brood-brothers/tokens/brood-brothers-jam.png",
+          "hash": "961d11eef42bbc303a7c4b9851fac6fbf6b1aa5b9da3a499aa4c8e4e8ad74f7a",
+          "modified": "2026-07-11T06:54:45.118095+00:00"
+        },
+        "tokens/brood-brothers-medic.png": {
+          "path": "output/brood-brothers/tokens/brood-brothers-medic.png",
+          "hash": "2f1d37bb4fc908504398b5e50e0b4889f18cb1d7ceb2b3bae7f617fdef4ac757",
+          "modified": "2026-07-11T06:54:45.124533+00:00"
+        },
+        "tokens/brood-brothers-mind-control.png": {
+          "path": "output/brood-brothers/tokens/brood-brothers-mind-control.png",
+          "hash": "56bf6554937b2a9ca79943a85ba2fcc992d48c169611b1f88d745899b1557342",
+          "modified": "2026-07-11T06:54:45.129132+00:00"
+        },
+        "tokens/brood-brothers-broodmind-devotion.obj": {
+          "path": "output/brood-brothers/tokens/brood-brothers-broodmind-devotion.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-11T06:54:45.132895+00:00"
+        },
+        "tokens/brood-brothers-crossfire.obj": {
+          "path": "output/brood-brothers/tokens/brood-brothers-crossfire.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-11T06:54:45.134690+00:00"
+        },
+        "tokens/brood-brothers-cult-talisman.obj": {
+          "path": "output/brood-brothers/tokens/brood-brothers-cult-talisman.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-11T06:54:45.136589+00:00"
+        },
+        "tokens/brood-brothers-demolition-charge.obj": {
+          "path": "output/brood-brothers/tokens/brood-brothers-demolition-charge.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-11T06:54:45.138865+00:00"
+        },
+        "tokens/brood-brothers-devoted.obj": {
+          "path": "output/brood-brothers/tokens/brood-brothers-devoted.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-11T06:54:45.141298+00:00"
+        },
+        "tokens/brood-brothers-explosives.obj": {
+          "path": "output/brood-brothers/tokens/brood-brothers-explosives.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-11T06:54:45.143327+00:00"
+        },
+        "tokens/brood-brothers-gene-needler.obj": {
+          "path": "output/brood-brothers/tokens/brood-brothers-gene-needler.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-11T06:54:45.145232+00:00"
+        },
+        "tokens/brood-brothers-jam.obj": {
+          "path": "output/brood-brothers/tokens/brood-brothers-jam.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-11T06:54:45.147477+00:00"
+        },
+        "tokens/brood-brothers-medic.obj": {
+          "path": "output/brood-brothers/tokens/brood-brothers-medic.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-11T06:54:45.149873+00:00"
+        },
+        "tokens/brood-brothers-mind-control.obj": {
+          "path": "output/brood-brothers/tokens/brood-brothers-mind-control.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-11T06:54:45.152133+00:00"
+        },
+        "tokens/tokenbag/brood-brothers-token-bag-icon.png": {
+          "path": "output/brood-brothers/tokens/tokenbag/brood-brothers-token-bag-icon.png",
+          "hash": "7ea18693b806ed4605e217a08a954ee62ef951fcbe79a3a64d93884648ae29b7",
+          "modified": "2026-07-11T06:54:45.164614+00:00"
+        },
+        "tokens/tokenbag/brood-brothers-token-bag.obj": {
+          "path": "output/brood-brothers/tokens/tokenbag/brood-brothers-token-bag.obj",
+          "hash": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+          "modified": "2026-07-11T06:54:45.168925+00:00"
+        }
+      },
+      "completed": "2026-07-11T06:55:23.508605+00:00",
+      "inputs": {
+        "layers/integration/brood-brothers/manifest.json": "8b31bdd5b9b44328fa2d59c112b5a2018dcd5770a155b84e928d252e75ab5895",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "layers/integration/brood-brothers/artwork/icons/brood-brothers-icon-token.jpg": "7ea18693b806ed4605e217a08a954ee62ef951fcbe79a3a64d93884648ae29b7",
+        "layers/integration/brood-brothers/brood-brothers-datacard-brood-brother-agitator.pdf": "f421227b62b252eb45f53b7e8ec72daa32f062b945b612d261f8b2ed4814a0ab",
+        "layers/integration/brood-brothers/brood-brothers-datacard-brood-brother-commander.pdf": "f1a5c31c16b897a915261af843b10fdb34aa9dd7d6d679404426e2f37729e9d2",
+        "layers/integration/brood-brothers/brood-brothers-datacard-brood-brother-gunner.pdf": "2b4e533ed799e6dbdab6311b9f299586aa0f7076e5d70eff70d2bd71560e0ea6",
+        "layers/integration/brood-brothers/brood-brothers-datacard-brood-brother-iconward.pdf": "b9797d0c72609f9caca9624887bc0ffe956b9e673b120305a69b81efdcc6a0da",
+        "layers/integration/brood-brothers/brood-brothers-datacard-brood-brother-knife-fighter.pdf": "08b41a29b4fbf567fb3a060ea11ea938620b8cfaafb27ccc91cfbf7e7eaf0241",
+        "layers/integration/brood-brothers/brood-brothers-datacard-brood-brother-medic.pdf": "14f30e4aec8403e7629376fdaa2d482dee683a68bf223d3199751995af0f08a2",
+        "layers/integration/brood-brothers/brood-brothers-datacard-brood-brother-sapper.pdf": "87fc20c751c3d2bd05cee50fe89ee977228959eddca4fa59c15a816dc8bb2ae6",
+        "layers/integration/brood-brothers/brood-brothers-datacard-brood-brother-sniper.pdf": "aeb7f2d8f9b5ba2ecb943c636ced0ec4308c4eb5530cd299aaea7a24087eadfd",
+        "layers/integration/brood-brothers/brood-brothers-datacard-brood-brother-trooper.pdf": "3699a2ce9742112ec5574f4c1819d945265d3a5d3bb044167e4e9211201f72ea",
+        "layers/integration/brood-brothers/brood-brothers-datacard-brood-brother-veteran.pdf": "27422589a94ecc2d2ca6a7a135d7a9bca7b1d5861f05441eabb8cffc52e54bbe",
+        "layers/integration/brood-brothers/brood-brothers-datacard-brood-brother-vox-operator.pdf": "ab96b52ce7dc12decbd0ad92575ecd32bba8c7219a819e8ec42f1f20687d2fc8",
+        "layers/integration/brood-brothers/brood-brothers-datacard-magus.pdf": "f7688226914250ea4fc1bee9b41a16d479efe16a8a3022fa8c7996b522343ec3",
+        "layers/integration/brood-brothers/brood-brothers-datacard-patriarch.pdf": "a147cb748f10db27f2044e6af8a0bbfb187baa63a9891fc527a5b808db516159",
+        "layers/integration/brood-brothers/brood-brothers-datacard-primus.pdf": "dbf229395b9bd34e271667c920a74452e27640adf4ed48ebb4be4194d30d9c07",
+        "layers/integration/brood-brothers/brood-brothers-datacard-psychic-familiar.pdf": "db416a46d7c55dd0b709003be2f9461df858a1db4482e40782c7af83c8894b02",
+        "layers/integration/brood-brothers/brood-brothers-equipment-covert-guises.pdf": "8821e5fe9b082c998c23c76f2de045bd890c9a84d1b304dbf4fb8553d736ff4a",
+        "layers/integration/brood-brothers/brood-brothers-equipment-cult-knives.pdf": "6866b678b0b3669bd7d379db2b23e7c495c3c0b7eda5768bb9adf4421ccf9536",
+        "layers/integration/brood-brothers/brood-brothers-equipment-cult-talisman.pdf": "0ebf1dadbf5f0b801b187bd8557faa7ec18821884eca0b3a67c2280018d83a7c",
+        "layers/integration/brood-brothers/brood-brothers-equipment-lookout.pdf": "f992000b03032f62a7d282d7e3d6efba4838fdd248a2068c056983d70e8223e8",
+        "layers/integration/brood-brothers/brood-brothers-faction-rule-crossfire.pdf": "065095c793b943e054485319626c21907fe721478f4d22b6d9d9facaf94c370f",
+        "layers/integration/brood-brothers/brood-brothers-firefight-ploy-idolisation.pdf": "6cc22b2d78805ad3381abbd4dd52cf1811b9040c6ca86e55ec0b554af30aad8c",
+        "layers/integration/brood-brothers/brood-brothers-firefight-ploy-insidious.pdf": "dc6cf363a7e5a21e06698e624d2a47498606213646a85565afd76378c4cf407c",
+        "layers/integration/brood-brothers/brood-brothers-firefight-ploy-ruthless-coordination.pdf": "1e44576608095e81bc5300500cef896760efc817ac5692233da08a506ba2f328",
+        "layers/integration/brood-brothers/brood-brothers-firefight-ploy-unquestioning-loyalty.pdf": "1753990d3a850744be230f24adc7c42cea232bce0463e37d777752aac08c7fff",
+        "layers/integration/brood-brothers/brood-brothers-operatives-selection-operative-selection.pdf": "be62a7449891a11f0580fa030e3940b09b7669a4390cfce7e1ba64926edcd601",
+        "layers/integration/brood-brothers/brood-brothers-strategy-ploy-cult-devotion.pdf": "f94c3539b6b28e247d5ab63e95f16c7e4958a919f99c4c14404cc1d7e3cc95d8",
+        "layers/integration/brood-brothers/brood-brothers-strategy-ploy-embedded.pdf": "89b0a20843edebb19a100619080964ee6e8c8349f351b93315b51fd6b3e52bf0",
+        "layers/integration/brood-brothers/brood-brothers-strategy-ploy-pervasive.pdf": "02028560ca68c0019bad4e6455228417306531e9ec31a413892ea8bf88cc4df1",
+        "layers/integration/brood-brothers/brood-brothers-strategy-ploy-uprising.pdf": "af90a1c4ff4779f904851dd4023394f537a62bc6c5cb3c8c67c32e19608a9185",
+        "layers/integration/brood-brothers/brood-brothers-token-guide-token-guide.pdf": "98392d61582807646af15fb0bf7df037d340c464a66cc0076fc8c14b793b2d0a",
+        "config/teams/brood-brothers/custom-tokens/brood-brothers-crossfire.png": "e2e9e0f55d7376cd7a6b61aa404aaa67585a465421356a7b1531b7bd42694ee0"
+      }
+    },
+    "generate_dice": {
+      "outputs": {
+        "dice-light.jpg": {
+          "path": "output/brood-brothers/dice/brood-brothers-dice-light.jpg",
+          "hash": "e2dde78050398a28f63ea397a5112ce4c58f0ac0c32789ea73b824bcccfb9b0f",
+          "modified": "2026-07-11T06:55:41.133306+00:00"
+        },
+        "dice-dark.jpg": {
+          "path": "output/brood-brothers/dice/brood-brothers-dice-dark.jpg",
+          "hash": "f9eb179bd782e0efe24e34d727c7831ba9bbd2181efd6bae746c0f0fbbe83c96",
+          "modified": "2026-07-11T06:55:44.777455+00:00"
+        },
+        "dice-team.jpg": {
+          "path": "output/brood-brothers/dice/brood-brothers-dice-team.jpg",
+          "hash": "686948d40e671f78fb9f921c0972083bcef387fecceb30a3c73cc844715017e7",
+          "modified": "2026-07-11T06:55:46.972612+00:00"
+        }
+      },
+      "completed": "2026-07-11T06:55:50.690837+00:00",
+      "inputs": {
+        "layers/integration/brood-brothers/artwork/icons/brood-brothers-icon-token-transparent.png": "5eed517382b3992516fae8e6b0e3bad3e440e33ce5aa293e4d9111485de3451a",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41"
+      }
+    },
+    "generate_box_texture": {
+      "outputs": {
+        "card-box-texture.jpg": {
+          "path": "output/brood-brothers/cardbox/brood-brothers-card-box-texture.jpg",
+          "hash": "6332f7a2eff672eb407d6bcfdabb3c88f3d73b145bdfbddfff0a8190380a4d71",
+          "modified": "2026-07-11T06:56:28.381427+00:00"
+        },
+        "card-box.obj": {
+          "path": "output/brood-brothers/cardbox/brood-brothers-card-box.obj",
+          "hash": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+          "modified": "2026-07-11T06:56:28.506227+00:00"
+        }
+      },
+      "completed": "2026-07-11T06:56:28.958634+00:00",
+      "inputs": {
+        "layers/integration/brood-brothers/artwork/icons/brood-brothers-icon-token.jpg": "7ea18693b806ed4605e217a08a954ee62ef951fcbe79a3a64d93884648ae29b7",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "config/defaults/box/card-box.obj": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+        "config/defaults/box/card-box-texture.jpg": "b2f310b01a0d28e8806e99ce0b972e8967e3014608eacefcb6ec51597695a313"
+      }
+    },
+    "generate_card_images": {
+      "outputs": {
+        "cards/datacards/brood-brother-agitator-back.jpg": {
+          "path": "output/brood-brothers/cards/datacards/brood-brother-agitator-back.jpg",
+          "hash": "b7dd3eef86e9d44da418d5400bd66562b3d3cfb50a7155fafbce286b0485a9dc",
+          "modified": "2026-07-11T06:57:36.566574+00:00"
+        },
+        "cards/datacards/brood-brother-agitator-front.jpg": {
+          "path": "output/brood-brothers/cards/datacards/brood-brother-agitator-front.jpg",
+          "hash": "959e78269f124cff5ff7591ee7ef65578291f50fc1d9ed126b762a457c33cff9",
+          "modified": "2026-07-11T06:57:36.574316+00:00"
+        },
+        "cards/datacards/brood-brother-commander-back.jpg": {
+          "path": "output/brood-brothers/cards/datacards/brood-brother-commander-back.jpg",
+          "hash": "b7dd3eef86e9d44da418d5400bd66562b3d3cfb50a7155fafbce286b0485a9dc",
+          "modified": "2026-07-11T06:57:36.581463+00:00"
+        },
+        "cards/datacards/brood-brother-commander-front.jpg": {
+          "path": "output/brood-brothers/cards/datacards/brood-brother-commander-front.jpg",
+          "hash": "81a7006f105e9b74d7e5d85ee437d4fc92979da8462f05413aebd3d46a51d4d6",
+          "modified": "2026-07-11T06:57:36.589326+00:00"
+        },
+        "cards/datacards/brood-brother-gunner-back.jpg": {
+          "path": "output/brood-brothers/cards/datacards/brood-brother-gunner-back.jpg",
+          "hash": "b7dd3eef86e9d44da418d5400bd66562b3d3cfb50a7155fafbce286b0485a9dc",
+          "modified": "2026-07-11T06:57:36.597581+00:00"
+        },
+        "cards/datacards/brood-brother-gunner-front.jpg": {
+          "path": "output/brood-brothers/cards/datacards/brood-brother-gunner-front.jpg",
+          "hash": "4f2ae03627fd0ff3018aa3a82efb70fc36bcae3b4bdc8f55bbd579ab994d6a52",
+          "modified": "2026-07-11T06:57:36.607048+00:00"
+        },
+        "cards/datacards/brood-brother-iconward-back.jpg": {
+          "path": "output/brood-brothers/cards/datacards/brood-brother-iconward-back.jpg",
+          "hash": "b7dd3eef86e9d44da418d5400bd66562b3d3cfb50a7155fafbce286b0485a9dc",
+          "modified": "2026-07-11T06:57:36.617182+00:00"
+        },
+        "cards/datacards/brood-brother-iconward-front.jpg": {
+          "path": "output/brood-brothers/cards/datacards/brood-brother-iconward-front.jpg",
+          "hash": "ccf13b2e3138dff629cc7d5bbd4389b0d29b71401906ca6be8169d4a7f9de246",
+          "modified": "2026-07-11T06:57:36.627108+00:00"
+        },
+        "cards/datacards/brood-brother-knife-fighter-back.jpg": {
+          "path": "output/brood-brothers/cards/datacards/brood-brother-knife-fighter-back.jpg",
+          "hash": "b7dd3eef86e9d44da418d5400bd66562b3d3cfb50a7155fafbce286b0485a9dc",
+          "modified": "2026-07-11T06:57:36.635059+00:00"
+        },
+        "cards/datacards/brood-brother-knife-fighter-front.jpg": {
+          "path": "output/brood-brothers/cards/datacards/brood-brother-knife-fighter-front.jpg",
+          "hash": "f5685c409057f286feee9e341f0acc7320dea44965616c20b5d4ea103afcdf69",
+          "modified": "2026-07-11T06:57:36.643482+00:00"
+        },
+        "cards/datacards/brood-brother-medic-back.jpg": {
+          "path": "output/brood-brothers/cards/datacards/brood-brother-medic-back.jpg",
+          "hash": "191d65f71a7c2ff56e865aeaf5b25f120ea17ccbcfc81ee3574a4e0f1556a998",
+          "modified": "2026-07-11T06:57:36.653999+00:00"
+        },
+        "cards/datacards/brood-brother-medic-front.jpg": {
+          "path": "output/brood-brothers/cards/datacards/brood-brother-medic-front.jpg",
+          "hash": "e44426be291841d40106b7fe1d5b9b3c01e0bf7f065e871768bb56f9c32884b0",
+          "modified": "2026-07-11T06:57:36.663132+00:00"
+        },
+        "cards/datacards/brood-brother-sapper-back.jpg": {
+          "path": "output/brood-brothers/cards/datacards/brood-brother-sapper-back.jpg",
+          "hash": "de96cb82d16d3c5a7e432680cb3665819d5e345f6b116cc43e37787b5b2dd8d5",
+          "modified": "2026-07-11T06:57:36.665509+00:00"
+        },
+        "cards/datacards/brood-brother-sapper-front.jpg": {
+          "path": "output/brood-brothers/cards/datacards/brood-brother-sapper-front.jpg",
+          "hash": "48e9b4cd253f58a7ac50c90fc540ed696d201560febf147391952a1e0e77572b",
+          "modified": "2026-07-11T06:57:36.667030+00:00"
+        },
+        "cards/datacards/brood-brother-sniper-back.jpg": {
+          "path": "output/brood-brothers/cards/datacards/brood-brother-sniper-back.jpg",
+          "hash": "b7dd3eef86e9d44da418d5400bd66562b3d3cfb50a7155fafbce286b0485a9dc",
+          "modified": "2026-07-11T06:57:36.673986+00:00"
+        },
+        "cards/datacards/brood-brother-sniper-front.jpg": {
+          "path": "output/brood-brothers/cards/datacards/brood-brother-sniper-front.jpg",
+          "hash": "dbc67fae3be7d63d37f7a42d718f7a13a8b3ee9f6f23cc64dc79bbb043fc7133",
+          "modified": "2026-07-11T06:57:36.675831+00:00"
+        },
+        "cards/datacards/brood-brother-trooper-back.jpg": {
+          "path": "output/brood-brothers/cards/datacards/brood-brother-trooper-back.jpg",
+          "hash": "b7dd3eef86e9d44da418d5400bd66562b3d3cfb50a7155fafbce286b0485a9dc",
+          "modified": "2026-07-11T06:57:36.684662+00:00"
+        },
+        "cards/datacards/brood-brother-trooper-front.jpg": {
+          "path": "output/brood-brothers/cards/datacards/brood-brother-trooper-front.jpg",
+          "hash": "476cce7da13e4af6bf8b8cb1335483fcac9331737a403e8cc3e30ab380316120",
+          "modified": "2026-07-11T06:57:36.686557+00:00"
+        },
+        "cards/datacards/brood-brother-veteran-back.jpg": {
+          "path": "output/brood-brothers/cards/datacards/brood-brother-veteran-back.jpg",
+          "hash": "b7dd3eef86e9d44da418d5400bd66562b3d3cfb50a7155fafbce286b0485a9dc",
+          "modified": "2026-07-11T06:57:36.693533+00:00"
+        },
+        "cards/datacards/brood-brother-veteran-front.jpg": {
+          "path": "output/brood-brothers/cards/datacards/brood-brother-veteran-front.jpg",
+          "hash": "e18a88a29b13d783e73bceabf8e1d71126103e73965ba7e59e826d3062620fda",
+          "modified": "2026-07-11T06:57:36.694808+00:00"
+        },
+        "cards/datacards/brood-brother-vox-operator-back.jpg": {
+          "path": "output/brood-brothers/cards/datacards/brood-brother-vox-operator-back.jpg",
+          "hash": "6bd4e1d2ed97bae12aa170751d1d24b979e1c432b4980b2ca17bc94eadd745de",
+          "modified": "2026-07-11T06:57:36.696412+00:00"
+        },
+        "cards/datacards/brood-brother-vox-operator-front.jpg": {
+          "path": "output/brood-brothers/cards/datacards/brood-brother-vox-operator-front.jpg",
+          "hash": "cfe7945fd750ffe2e4f6b80351221b627d061ac034ecee8bcad8524c068c02e4",
+          "modified": "2026-07-11T06:57:36.697815+00:00"
+        },
+        "cards/datacards/magus-back.jpg": {
+          "path": "output/brood-brothers/cards/datacards/magus-back.jpg",
+          "hash": "b87096bfcdcaa70d5a6a9ec042d5066ecb99b0b19399882d8cb15c4467bb172a",
+          "modified": "2026-07-11T06:57:36.699418+00:00"
+        },
+        "cards/datacards/magus-front.jpg": {
+          "path": "output/brood-brothers/cards/datacards/magus-front.jpg",
+          "hash": "68daec741dab5c2c380dcf48b59d6955210c5d3cea4264c22d781d5b04b39df4",
+          "modified": "2026-07-11T06:57:36.700889+00:00"
+        },
+        "cards/datacards/patriarch-back.jpg": {
+          "path": "output/brood-brothers/cards/datacards/patriarch-back.jpg",
+          "hash": "4fd9504bdeb78e64f8730d1cdfdcd4648da65f2f0ee80b9a028662f3d1dfe2e5",
+          "modified": "2026-07-11T06:57:36.705818+00:00"
+        },
+        "cards/datacards/patriarch-front.jpg": {
+          "path": "output/brood-brothers/cards/datacards/patriarch-front.jpg",
+          "hash": "c0d934d54c65e9aa212b30fbb0582903d253fc91568ae98200d50bec050a4cdb",
+          "modified": "2026-07-11T06:57:36.708297+00:00"
+        },
+        "cards/datacards/primus-back.jpg": {
+          "path": "output/brood-brothers/cards/datacards/primus-back.jpg",
+          "hash": "b7dd3eef86e9d44da418d5400bd66562b3d3cfb50a7155fafbce286b0485a9dc",
+          "modified": "2026-07-11T06:57:36.714189+00:00"
+        },
+        "cards/datacards/primus-front.jpg": {
+          "path": "output/brood-brothers/cards/datacards/primus-front.jpg",
+          "hash": "40be14c7ac1e989f6bc44fa640dea3008e849643220d3ef9a116128d7f9d49ef",
+          "modified": "2026-07-11T06:57:36.717146+00:00"
+        },
+        "cards/datacards/psychic-familiar-back.jpg": {
+          "path": "output/brood-brothers/cards/datacards/psychic-familiar-back.jpg",
+          "hash": "b7dd3eef86e9d44da418d5400bd66562b3d3cfb50a7155fafbce286b0485a9dc",
+          "modified": "2026-07-11T06:57:36.725235+00:00"
+        },
+        "cards/datacards/psychic-familiar-front.jpg": {
+          "path": "output/brood-brothers/cards/datacards/psychic-familiar-front.jpg",
+          "hash": "25c2f2208db4865bf9b4ce458677e5bb3b7192bf967d2f5381f0bf2c2d66c825",
+          "modified": "2026-07-11T06:57:36.727972+00:00"
+        },
+        "cards/equipment/brood-brothers-covert-guises-back.jpg": {
+          "path": "output/brood-brothers/cards/equipment/brood-brothers-covert-guises-back.jpg",
+          "hash": "ca4bd61efd9fd26186de97fb5078df74547c4994af1c8dd808da344055d59515",
+          "modified": "2026-07-11T06:57:36.736516+00:00"
+        },
+        "cards/equipment/brood-brothers-covert-guises-front.jpg": {
+          "path": "output/brood-brothers/cards/equipment/brood-brothers-covert-guises-front.jpg",
+          "hash": "c2a0a5067ca291fde2b2bd7bc8a3d317aec83954bb970b7da77e729d48200333",
+          "modified": "2026-07-11T06:57:36.739211+00:00"
+        },
+        "cards/equipment/brood-brothers-cult-knives-back.jpg": {
+          "path": "output/brood-brothers/cards/equipment/brood-brothers-cult-knives-back.jpg",
+          "hash": "ca4bd61efd9fd26186de97fb5078df74547c4994af1c8dd808da344055d59515",
+          "modified": "2026-07-11T06:57:36.747432+00:00"
+        },
+        "cards/equipment/brood-brothers-cult-knives-front.jpg": {
+          "path": "output/brood-brothers/cards/equipment/brood-brothers-cult-knives-front.jpg",
+          "hash": "84d8ec4402be64eb63c5864ffe579159abf7578cafd5ac956a1f0c9b8acd29b2",
+          "modified": "2026-07-11T06:57:36.749638+00:00"
+        },
+        "cards/equipment/brood-brothers-cult-talisman-back.jpg": {
+          "path": "output/brood-brothers/cards/equipment/brood-brothers-cult-talisman-back.jpg",
+          "hash": "ca4bd61efd9fd26186de97fb5078df74547c4994af1c8dd808da344055d59515",
+          "modified": "2026-07-11T06:57:36.758228+00:00"
+        },
+        "cards/equipment/brood-brothers-cult-talisman-front.jpg": {
+          "path": "output/brood-brothers/cards/equipment/brood-brothers-cult-talisman-front.jpg",
+          "hash": "079d35809d7093b96aab180ee874999f701ebd22ce988f014e1e0765ca84f2c5",
+          "modified": "2026-07-11T06:57:36.760651+00:00"
+        },
+        "cards/equipment/brood-brothers-lookout-back.jpg": {
+          "path": "output/brood-brothers/cards/equipment/brood-brothers-lookout-back.jpg",
+          "hash": "ca4bd61efd9fd26186de97fb5078df74547c4994af1c8dd808da344055d59515",
+          "modified": "2026-07-11T06:57:36.768413+00:00"
+        },
+        "cards/equipment/brood-brothers-lookout-front.jpg": {
+          "path": "output/brood-brothers/cards/equipment/brood-brothers-lookout-front.jpg",
+          "hash": "b66f4f105a3894ec4c5cb504b2a9a2edfcfd83ff41beb6b1207018af6f5d6f80",
+          "modified": "2026-07-11T06:57:36.769396+00:00"
+        },
+        "cards/faction_rules/brood-brothers-crossfire-back.jpg": {
+          "path": "output/brood-brothers/cards/faction_rules/brood-brothers-crossfire-back.jpg",
+          "hash": "ca4bd61efd9fd26186de97fb5078df74547c4994af1c8dd808da344055d59515",
+          "modified": "2026-07-11T06:57:36.777725+00:00"
+        },
+        "cards/faction_rules/brood-brothers-crossfire-front.jpg": {
+          "path": "output/brood-brothers/cards/faction_rules/brood-brothers-crossfire-front.jpg",
+          "hash": "d00db9d1bbb97c8e0db54b6e41c72261f46c76beea80df28a08a50947d0fcd28",
+          "modified": "2026-07-11T06:57:36.783484+00:00"
+        },
+        "cards/firefight_ploys/brood-brothers-idolisation-back.jpg": {
+          "path": "output/brood-brothers/cards/firefight_ploys/brood-brothers-idolisation-back.jpg",
+          "hash": "ca4bd61efd9fd26186de97fb5078df74547c4994af1c8dd808da344055d59515",
+          "modified": "2026-07-11T06:57:36.793707+00:00"
+        },
+        "cards/firefight_ploys/brood-brothers-idolisation-front.jpg": {
+          "path": "output/brood-brothers/cards/firefight_ploys/brood-brothers-idolisation-front.jpg",
+          "hash": "b81941254f7609ea199b6845a9ee1e0217fe59d8db7d939ac4b28d219810d6bb",
+          "modified": "2026-07-11T06:57:36.794837+00:00"
+        },
+        "cards/firefight_ploys/brood-brothers-insidious-back.jpg": {
+          "path": "output/brood-brothers/cards/firefight_ploys/brood-brothers-insidious-back.jpg",
+          "hash": "ca4bd61efd9fd26186de97fb5078df74547c4994af1c8dd808da344055d59515",
+          "modified": "2026-07-11T06:57:36.804612+00:00"
+        },
+        "cards/firefight_ploys/brood-brothers-insidious-front.jpg": {
+          "path": "output/brood-brothers/cards/firefight_ploys/brood-brothers-insidious-front.jpg",
+          "hash": "1f5f18be08c5b01913da3ae9007282d2e1f0e6f600e03f4c396d46250c1c36bc",
+          "modified": "2026-07-11T06:57:36.807273+00:00"
+        },
+        "cards/firefight_ploys/brood-brothers-ruthless-coordination-back.jpg": {
+          "path": "output/brood-brothers/cards/firefight_ploys/brood-brothers-ruthless-coordination-back.jpg",
+          "hash": "bf6c391aba060c9ac1d6aa4512aa7b5102c517502f27b824852c34da4e01df9e",
+          "modified": "2026-07-11T06:57:36.808724+00:00"
+        },
+        "cards/firefight_ploys/brood-brothers-ruthless-coordination-front.jpg": {
+          "path": "output/brood-brothers/cards/firefight_ploys/brood-brothers-ruthless-coordination-front.jpg",
+          "hash": "0a30957be2a0f1706091ee69a64bd373f56da61235a6e2a596a67bfcc3452d8a",
+          "modified": "2026-07-11T06:57:36.810556+00:00"
+        },
+        "cards/firefight_ploys/brood-brothers-unquestioning-loyalty-back.jpg": {
+          "path": "output/brood-brothers/cards/firefight_ploys/brood-brothers-unquestioning-loyalty-back.jpg",
+          "hash": "ca4bd61efd9fd26186de97fb5078df74547c4994af1c8dd808da344055d59515",
+          "modified": "2026-07-11T06:57:36.821648+00:00"
+        },
+        "cards/firefight_ploys/brood-brothers-unquestioning-loyalty-front.jpg": {
+          "path": "output/brood-brothers/cards/firefight_ploys/brood-brothers-unquestioning-loyalty-front.jpg",
+          "hash": "1be368e8c9f9cf54ddc506c9bc8e1c2bd001335086805e6e7541669b9b9e1af0",
+          "modified": "2026-07-11T06:57:36.824757+00:00"
+        },
+        "cards/operatives_selection/brood-brothers-operative-selection-back.jpg": {
+          "path": "output/brood-brothers/cards/operatives_selection/brood-brothers-operative-selection-back.jpg",
+          "hash": "400d891c98f72af0e01da63fbe7433ac105442db061c62a91717e0845b85626a",
+          "modified": "2026-07-11T06:57:36.827147+00:00"
+        },
+        "cards/operatives_selection/brood-brothers-operative-selection-front.jpg": {
+          "path": "output/brood-brothers/cards/operatives_selection/brood-brothers-operative-selection-front.jpg",
+          "hash": "68ee025eea63a7d0915dc4d70eb42c272e12db52c3e39de2738c6417b80cb221",
+          "modified": "2026-07-11T06:57:36.828346+00:00"
+        },
+        "cards/strategy_ploys/brood-brothers-cult-devotion-back.jpg": {
+          "path": "output/brood-brothers/cards/strategy_ploys/brood-brothers-cult-devotion-back.jpg",
+          "hash": "ca4bd61efd9fd26186de97fb5078df74547c4994af1c8dd808da344055d59515",
+          "modified": "2026-07-11T06:57:36.839393+00:00"
+        },
+        "cards/strategy_ploys/brood-brothers-cult-devotion-front.jpg": {
+          "path": "output/brood-brothers/cards/strategy_ploys/brood-brothers-cult-devotion-front.jpg",
+          "hash": "e629e989f512eab2412e23b6833f237ad0106edfe24e9335ef97fa9f5419b224",
+          "modified": "2026-07-11T06:57:36.842631+00:00"
+        },
+        "cards/strategy_ploys/brood-brothers-embedded-back.jpg": {
+          "path": "output/brood-brothers/cards/strategy_ploys/brood-brothers-embedded-back.jpg",
+          "hash": "ca4bd61efd9fd26186de97fb5078df74547c4994af1c8dd808da344055d59515",
+          "modified": "2026-07-11T06:57:36.850436+00:00"
+        },
+        "cards/strategy_ploys/brood-brothers-embedded-front.jpg": {
+          "path": "output/brood-brothers/cards/strategy_ploys/brood-brothers-embedded-front.jpg",
+          "hash": "d717cd7ad2f14aeab216204b949abb19433bb35968656fdce1e29be813de6ec2",
+          "modified": "2026-07-11T06:57:36.861795+00:00"
+        },
+        "cards/strategy_ploys/brood-brothers-pervasive-back.jpg": {
+          "path": "output/brood-brothers/cards/strategy_ploys/brood-brothers-pervasive-back.jpg",
+          "hash": "ca4bd61efd9fd26186de97fb5078df74547c4994af1c8dd808da344055d59515",
+          "modified": "2026-07-11T06:57:36.871801+00:00"
+        },
+        "cards/strategy_ploys/brood-brothers-pervasive-front.jpg": {
+          "path": "output/brood-brothers/cards/strategy_ploys/brood-brothers-pervasive-front.jpg",
+          "hash": "7d277c436b2dfba95551e72e6c6afe2ce401ca72908a9578ab2ffbafb35f8dee",
+          "modified": "2026-07-11T06:57:36.881652+00:00"
+        },
+        "cards/strategy_ploys/brood-brothers-uprising-back.jpg": {
+          "path": "output/brood-brothers/cards/strategy_ploys/brood-brothers-uprising-back.jpg",
+          "hash": "ca4bd61efd9fd26186de97fb5078df74547c4994af1c8dd808da344055d59515",
+          "modified": "2026-07-11T06:57:36.896353+00:00"
+        },
+        "cards/strategy_ploys/brood-brothers-uprising-front.jpg": {
+          "path": "output/brood-brothers/cards/strategy_ploys/brood-brothers-uprising-front.jpg",
+          "hash": "a57a0d9f176e90f8ce4747fc8b10bf354b5a197c8ea516ba6507957b5b3200ec",
+          "modified": "2026-07-11T06:57:36.914945+00:00"
+        },
+        "cards/token_guide/brood-brothers-token-guide-back.jpg": {
+          "path": "output/brood-brothers/cards/token_guide/brood-brothers-token-guide-back.jpg",
+          "hash": "ca4bd61efd9fd26186de97fb5078df74547c4994af1c8dd808da344055d59515",
+          "modified": "2026-07-11T06:57:36.929464+00:00"
+        },
+        "cards/token_guide/brood-brothers-token-guide-front.jpg": {
+          "path": "output/brood-brothers/cards/token_guide/brood-brothers-token-guide-front.jpg",
+          "hash": "6550b8726dbc228d67c466433c4200fa89a618d2a781887b031fe70f2f6777aa",
+          "modified": "2026-07-11T06:57:36.942047+00:00"
+        }
+      },
+      "completed": "2026-07-11T06:57:41.041074+00:00",
+      "inputs": {
+        "layers/integration/brood-brothers/manifest.json": "8b31bdd5b9b44328fa2d59c112b5a2018dcd5770a155b84e928d252e75ab5895",
+        "layers/integration/brood-brothers/brood-brothers-datacard-brood-brother-agitator.pdf": "f421227b62b252eb45f53b7e8ec72daa32f062b945b612d261f8b2ed4814a0ab",
+        "layers/integration/brood-brothers/brood-brothers-datacard-brood-brother-commander.pdf": "f1a5c31c16b897a915261af843b10fdb34aa9dd7d6d679404426e2f37729e9d2",
+        "layers/integration/brood-brothers/brood-brothers-datacard-brood-brother-gunner.pdf": "2b4e533ed799e6dbdab6311b9f299586aa0f7076e5d70eff70d2bd71560e0ea6",
+        "layers/integration/brood-brothers/brood-brothers-datacard-brood-brother-iconward.pdf": "b9797d0c72609f9caca9624887bc0ffe956b9e673b120305a69b81efdcc6a0da",
+        "layers/integration/brood-brothers/brood-brothers-datacard-brood-brother-knife-fighter.pdf": "08b41a29b4fbf567fb3a060ea11ea938620b8cfaafb27ccc91cfbf7e7eaf0241",
+        "layers/integration/brood-brothers/brood-brothers-datacard-brood-brother-medic.pdf": "14f30e4aec8403e7629376fdaa2d482dee683a68bf223d3199751995af0f08a2",
+        "layers/integration/brood-brothers/brood-brothers-datacard-brood-brother-sapper.pdf": "87fc20c751c3d2bd05cee50fe89ee977228959eddca4fa59c15a816dc8bb2ae6",
+        "layers/integration/brood-brothers/brood-brothers-datacard-brood-brother-sniper.pdf": "aeb7f2d8f9b5ba2ecb943c636ced0ec4308c4eb5530cd299aaea7a24087eadfd",
+        "layers/integration/brood-brothers/brood-brothers-datacard-brood-brother-trooper.pdf": "3699a2ce9742112ec5574f4c1819d945265d3a5d3bb044167e4e9211201f72ea",
+        "layers/integration/brood-brothers/brood-brothers-datacard-brood-brother-veteran.pdf": "27422589a94ecc2d2ca6a7a135d7a9bca7b1d5861f05441eabb8cffc52e54bbe",
+        "layers/integration/brood-brothers/brood-brothers-datacard-brood-brother-vox-operator.pdf": "ab96b52ce7dc12decbd0ad92575ecd32bba8c7219a819e8ec42f1f20687d2fc8",
+        "layers/integration/brood-brothers/brood-brothers-datacard-magus.pdf": "f7688226914250ea4fc1bee9b41a16d479efe16a8a3022fa8c7996b522343ec3",
+        "layers/integration/brood-brothers/brood-brothers-datacard-patriarch.pdf": "a147cb748f10db27f2044e6af8a0bbfb187baa63a9891fc527a5b808db516159",
+        "layers/integration/brood-brothers/brood-brothers-datacard-primus.pdf": "dbf229395b9bd34e271667c920a74452e27640adf4ed48ebb4be4194d30d9c07",
+        "layers/integration/brood-brothers/brood-brothers-datacard-psychic-familiar.pdf": "db416a46d7c55dd0b709003be2f9461df858a1db4482e40782c7af83c8894b02",
+        "layers/integration/brood-brothers/brood-brothers-equipment-covert-guises.pdf": "8821e5fe9b082c998c23c76f2de045bd890c9a84d1b304dbf4fb8553d736ff4a",
+        "layers/integration/brood-brothers/brood-brothers-equipment-cult-knives.pdf": "6866b678b0b3669bd7d379db2b23e7c495c3c0b7eda5768bb9adf4421ccf9536",
+        "layers/integration/brood-brothers/brood-brothers-equipment-cult-talisman.pdf": "0ebf1dadbf5f0b801b187bd8557faa7ec18821884eca0b3a67c2280018d83a7c",
+        "layers/integration/brood-brothers/brood-brothers-equipment-lookout.pdf": "f992000b03032f62a7d282d7e3d6efba4838fdd248a2068c056983d70e8223e8",
+        "layers/integration/brood-brothers/brood-brothers-faction-rule-crossfire.pdf": "065095c793b943e054485319626c21907fe721478f4d22b6d9d9facaf94c370f",
+        "layers/integration/brood-brothers/brood-brothers-firefight-ploy-idolisation.pdf": "6cc22b2d78805ad3381abbd4dd52cf1811b9040c6ca86e55ec0b554af30aad8c",
+        "layers/integration/brood-brothers/brood-brothers-firefight-ploy-insidious.pdf": "dc6cf363a7e5a21e06698e624d2a47498606213646a85565afd76378c4cf407c",
+        "layers/integration/brood-brothers/brood-brothers-firefight-ploy-ruthless-coordination.pdf": "1e44576608095e81bc5300500cef896760efc817ac5692233da08a506ba2f328",
+        "layers/integration/brood-brothers/brood-brothers-firefight-ploy-unquestioning-loyalty.pdf": "1753990d3a850744be230f24adc7c42cea232bce0463e37d777752aac08c7fff",
+        "layers/integration/brood-brothers/brood-brothers-operatives-selection-operative-selection.pdf": "be62a7449891a11f0580fa030e3940b09b7669a4390cfce7e1ba64926edcd601",
+        "layers/integration/brood-brothers/brood-brothers-strategy-ploy-cult-devotion.pdf": "f94c3539b6b28e247d5ab63e95f16c7e4958a919f99c4c14404cc1d7e3cc95d8",
+        "layers/integration/brood-brothers/brood-brothers-strategy-ploy-embedded.pdf": "89b0a20843edebb19a100619080964ee6e8c8349f351b93315b51fd6b3e52bf0",
+        "layers/integration/brood-brothers/brood-brothers-strategy-ploy-pervasive.pdf": "02028560ca68c0019bad4e6455228417306531e9ec31a413892ea8bf88cc4df1",
+        "layers/integration/brood-brothers/brood-brothers-strategy-ploy-uprising.pdf": "af90a1c4ff4779f904851dd4023394f537a62bc6c5cb3c8c67c32e19608a9185",
+        "layers/integration/brood-brothers/brood-brothers-token-guide-token-guide.pdf": "98392d61582807646af15fb0bf7df037d340c464a66cc0076fc8c14b793b2d0a",
+        "layers/integration/brood-brothers/card-backside/brood-brothers-backside-portrait.jpg": "ca4bd61efd9fd26186de97fb5078df74547c4994af1c8dd808da344055d59515",
+        "config/defaults/card-backside/default-backside-portrait.jpg": "f00ff15fa70005b9f804de08519e2e83485d7eaf78dfacea65dcef0eb1a29c22",
+        "layers/integration/brood-brothers/card-backside/brood-brothers-backside-landscape.jpg": "b7dd3eef86e9d44da418d5400bd66562b3d3cfb50a7155fafbce286b0485a9dc",
+        "config/defaults/card-backside/default-backside-landscape.jpg": "1cf5580a1dff0c10adb1a286edad4479c487f3d2d698b0b8be84fe653039fd7e"
+      }
+    },
+    "extract_stats": {
+      "outputs": {
+        "team-data.json": {
+          "path": "output/brood-brothers/data/brood-brothers-team-data.json",
+          "hash": "9863c93f4d4df0188a85e7dde5ea733fb331f7c8ac8b40252fe32a40287709db",
+          "modified": "2026-07-11T06:57:41.200318+00:00"
+        }
+      },
+      "completed": "2026-07-11T06:57:41.204944+00:00",
+      "inputs": {
+        "layers/integration/brood-brothers/content/brood-brothers-content.json": "9863c93f4d4df0188a85e7dde5ea733fb331f7c8ac8b40252fe32a40287709db"
+      }
+    },
+    "generate_tts": {
+      "outputs": {
+        "tts_objects/Brood Brothers Box.json": {
+          "path": "output/brood-brothers/tts_objects/Brood Brothers Box.json",
+          "hash": "66c9502fc711738096090fbf7061a0cd907cebf383fa19f321d5038ba0ce8c20",
+          "modified": "2026-07-12T18:32:25.627865+00:00"
+        },
+        "tts_objects/Brood Brothers.json": {
+          "path": "output/brood-brothers/tts_objects/Brood Brothers.json",
+          "hash": "f82367368714f2382e25b28b5224b35f620d11a28f832c6bf13d56da638ebf56",
+          "modified": "2026-07-12T18:32:25.640982+00:00"
+        }
+      },
+      "completed": "2026-07-12T18:32:25.689223+00:00",
+      "inputs": {
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "config/team-guids.json": "1dea0eaf2c7d1c37c86aba088cdf876f0638d2dcaca162888fea8422c2d5c9db",
+        "output/brood-brothers/cards/datacards/brood-brother-agitator-back.jpg": "b7dd3eef86e9d44da418d5400bd66562b3d3cfb50a7155fafbce286b0485a9dc",
+        "output/brood-brothers/cards/datacards/brood-brother-agitator-front.jpg": "959e78269f124cff5ff7591ee7ef65578291f50fc1d9ed126b762a457c33cff9",
+        "output/brood-brothers/cards/datacards/brood-brother-commander-back.jpg": "b7dd3eef86e9d44da418d5400bd66562b3d3cfb50a7155fafbce286b0485a9dc",
+        "output/brood-brothers/cards/datacards/brood-brother-commander-front.jpg": "81a7006f105e9b74d7e5d85ee437d4fc92979da8462f05413aebd3d46a51d4d6",
+        "output/brood-brothers/cards/datacards/brood-brother-gunner-back.jpg": "b7dd3eef86e9d44da418d5400bd66562b3d3cfb50a7155fafbce286b0485a9dc",
+        "output/brood-brothers/cards/datacards/brood-brother-gunner-front.jpg": "4f2ae03627fd0ff3018aa3a82efb70fc36bcae3b4bdc8f55bbd579ab994d6a52",
+        "output/brood-brothers/cards/datacards/brood-brother-iconward-back.jpg": "b7dd3eef86e9d44da418d5400bd66562b3d3cfb50a7155fafbce286b0485a9dc",
+        "output/brood-brothers/cards/datacards/brood-brother-iconward-front.jpg": "ccf13b2e3138dff629cc7d5bbd4389b0d29b71401906ca6be8169d4a7f9de246",
+        "output/brood-brothers/cards/datacards/brood-brother-knife-fighter-back.jpg": "b7dd3eef86e9d44da418d5400bd66562b3d3cfb50a7155fafbce286b0485a9dc",
+        "output/brood-brothers/cards/datacards/brood-brother-knife-fighter-front.jpg": "f5685c409057f286feee9e341f0acc7320dea44965616c20b5d4ea103afcdf69",
+        "output/brood-brothers/cards/datacards/brood-brother-medic-back.jpg": "191d65f71a7c2ff56e865aeaf5b25f120ea17ccbcfc81ee3574a4e0f1556a998",
+        "output/brood-brothers/cards/datacards/brood-brother-medic-front.jpg": "e44426be291841d40106b7fe1d5b9b3c01e0bf7f065e871768bb56f9c32884b0",
+        "output/brood-brothers/cards/datacards/brood-brother-sapper-back.jpg": "de96cb82d16d3c5a7e432680cb3665819d5e345f6b116cc43e37787b5b2dd8d5",
+        "output/brood-brothers/cards/datacards/brood-brother-sapper-front.jpg": "48e9b4cd253f58a7ac50c90fc540ed696d201560febf147391952a1e0e77572b",
+        "output/brood-brothers/cards/datacards/brood-brother-sniper-back.jpg": "b7dd3eef86e9d44da418d5400bd66562b3d3cfb50a7155fafbce286b0485a9dc",
+        "output/brood-brothers/cards/datacards/brood-brother-sniper-front.jpg": "dbc67fae3be7d63d37f7a42d718f7a13a8b3ee9f6f23cc64dc79bbb043fc7133",
+        "output/brood-brothers/cards/datacards/brood-brother-trooper-back.jpg": "b7dd3eef86e9d44da418d5400bd66562b3d3cfb50a7155fafbce286b0485a9dc",
+        "output/brood-brothers/cards/datacards/brood-brother-trooper-front.jpg": "476cce7da13e4af6bf8b8cb1335483fcac9331737a403e8cc3e30ab380316120",
+        "output/brood-brothers/cards/datacards/brood-brother-veteran-back.jpg": "b7dd3eef86e9d44da418d5400bd66562b3d3cfb50a7155fafbce286b0485a9dc",
+        "output/brood-brothers/cards/datacards/brood-brother-veteran-front.jpg": "e18a88a29b13d783e73bceabf8e1d71126103e73965ba7e59e826d3062620fda",
+        "output/brood-brothers/cards/datacards/brood-brother-vox-operator-back.jpg": "6bd4e1d2ed97bae12aa170751d1d24b979e1c432b4980b2ca17bc94eadd745de",
+        "output/brood-brothers/cards/datacards/brood-brother-vox-operator-front.jpg": "cfe7945fd750ffe2e4f6b80351221b627d061ac034ecee8bcad8524c068c02e4",
+        "output/brood-brothers/cards/datacards/magus-back.jpg": "b87096bfcdcaa70d5a6a9ec042d5066ecb99b0b19399882d8cb15c4467bb172a",
+        "output/brood-brothers/cards/datacards/magus-front.jpg": "68daec741dab5c2c380dcf48b59d6955210c5d3cea4264c22d781d5b04b39df4",
+        "output/brood-brothers/cards/datacards/patriarch-back.jpg": "4fd9504bdeb78e64f8730d1cdfdcd4648da65f2f0ee80b9a028662f3d1dfe2e5",
+        "output/brood-brothers/cards/datacards/patriarch-front.jpg": "c0d934d54c65e9aa212b30fbb0582903d253fc91568ae98200d50bec050a4cdb",
+        "output/brood-brothers/cards/datacards/primus-back.jpg": "b7dd3eef86e9d44da418d5400bd66562b3d3cfb50a7155fafbce286b0485a9dc",
+        "output/brood-brothers/cards/datacards/primus-front.jpg": "40be14c7ac1e989f6bc44fa640dea3008e849643220d3ef9a116128d7f9d49ef",
+        "output/brood-brothers/cards/datacards/psychic-familiar-back.jpg": "b7dd3eef86e9d44da418d5400bd66562b3d3cfb50a7155fafbce286b0485a9dc",
+        "output/brood-brothers/cards/datacards/psychic-familiar-front.jpg": "25c2f2208db4865bf9b4ce458677e5bb3b7192bf967d2f5381f0bf2c2d66c825",
+        "output/brood-brothers/cards/equipment/brood-brothers-covert-guises-back.jpg": "ca4bd61efd9fd26186de97fb5078df74547c4994af1c8dd808da344055d59515",
+        "output/brood-brothers/cards/equipment/brood-brothers-covert-guises-front.jpg": "c2a0a5067ca291fde2b2bd7bc8a3d317aec83954bb970b7da77e729d48200333",
+        "output/brood-brothers/cards/equipment/brood-brothers-cult-knives-back.jpg": "ca4bd61efd9fd26186de97fb5078df74547c4994af1c8dd808da344055d59515",
+        "output/brood-brothers/cards/equipment/brood-brothers-cult-knives-front.jpg": "84d8ec4402be64eb63c5864ffe579159abf7578cafd5ac956a1f0c9b8acd29b2",
+        "output/brood-brothers/cards/equipment/brood-brothers-cult-talisman-back.jpg": "ca4bd61efd9fd26186de97fb5078df74547c4994af1c8dd808da344055d59515",
+        "output/brood-brothers/cards/equipment/brood-brothers-cult-talisman-front.jpg": "079d35809d7093b96aab180ee874999f701ebd22ce988f014e1e0765ca84f2c5",
+        "output/brood-brothers/cards/equipment/brood-brothers-lookout-back.jpg": "ca4bd61efd9fd26186de97fb5078df74547c4994af1c8dd808da344055d59515",
+        "output/brood-brothers/cards/equipment/brood-brothers-lookout-front.jpg": "b66f4f105a3894ec4c5cb504b2a9a2edfcfd83ff41beb6b1207018af6f5d6f80",
+        "output/brood-brothers/cards/faction_rules/brood-brothers-crossfire-back.jpg": "ca4bd61efd9fd26186de97fb5078df74547c4994af1c8dd808da344055d59515",
+        "output/brood-brothers/cards/faction_rules/brood-brothers-crossfire-front.jpg": "d00db9d1bbb97c8e0db54b6e41c72261f46c76beea80df28a08a50947d0fcd28",
+        "output/brood-brothers/cards/firefight_ploys/brood-brothers-idolisation-back.jpg": "ca4bd61efd9fd26186de97fb5078df74547c4994af1c8dd808da344055d59515",
+        "output/brood-brothers/cards/firefight_ploys/brood-brothers-idolisation-front.jpg": "b81941254f7609ea199b6845a9ee1e0217fe59d8db7d939ac4b28d219810d6bb",
+        "output/brood-brothers/cards/firefight_ploys/brood-brothers-insidious-back.jpg": "ca4bd61efd9fd26186de97fb5078df74547c4994af1c8dd808da344055d59515",
+        "output/brood-brothers/cards/firefight_ploys/brood-brothers-insidious-front.jpg": "1f5f18be08c5b01913da3ae9007282d2e1f0e6f600e03f4c396d46250c1c36bc",
+        "output/brood-brothers/cards/firefight_ploys/brood-brothers-ruthless-coordination-back.jpg": "bf6c391aba060c9ac1d6aa4512aa7b5102c517502f27b824852c34da4e01df9e",
+        "output/brood-brothers/cards/firefight_ploys/brood-brothers-ruthless-coordination-front.jpg": "0a30957be2a0f1706091ee69a64bd373f56da61235a6e2a596a67bfcc3452d8a",
+        "output/brood-brothers/cards/firefight_ploys/brood-brothers-unquestioning-loyalty-back.jpg": "ca4bd61efd9fd26186de97fb5078df74547c4994af1c8dd808da344055d59515",
+        "output/brood-brothers/cards/firefight_ploys/brood-brothers-unquestioning-loyalty-front.jpg": "1be368e8c9f9cf54ddc506c9bc8e1c2bd001335086805e6e7541669b9b9e1af0",
+        "output/brood-brothers/cards/operatives_selection/brood-brothers-operative-selection-back.jpg": "400d891c98f72af0e01da63fbe7433ac105442db061c62a91717e0845b85626a",
+        "output/brood-brothers/cards/operatives_selection/brood-brothers-operative-selection-front.jpg": "68ee025eea63a7d0915dc4d70eb42c272e12db52c3e39de2738c6417b80cb221",
+        "output/brood-brothers/cards/strategy_ploys/brood-brothers-cult-devotion-back.jpg": "ca4bd61efd9fd26186de97fb5078df74547c4994af1c8dd808da344055d59515",
+        "output/brood-brothers/cards/strategy_ploys/brood-brothers-cult-devotion-front.jpg": "e629e989f512eab2412e23b6833f237ad0106edfe24e9335ef97fa9f5419b224",
+        "output/brood-brothers/cards/strategy_ploys/brood-brothers-embedded-back.jpg": "ca4bd61efd9fd26186de97fb5078df74547c4994af1c8dd808da344055d59515",
+        "output/brood-brothers/cards/strategy_ploys/brood-brothers-embedded-front.jpg": "d717cd7ad2f14aeab216204b949abb19433bb35968656fdce1e29be813de6ec2",
+        "output/brood-brothers/cards/strategy_ploys/brood-brothers-pervasive-back.jpg": "ca4bd61efd9fd26186de97fb5078df74547c4994af1c8dd808da344055d59515",
+        "output/brood-brothers/cards/strategy_ploys/brood-brothers-pervasive-front.jpg": "7d277c436b2dfba95551e72e6c6afe2ce401ca72908a9578ab2ffbafb35f8dee",
+        "output/brood-brothers/cards/strategy_ploys/brood-brothers-uprising-back.jpg": "ca4bd61efd9fd26186de97fb5078df74547c4994af1c8dd808da344055d59515",
+        "output/brood-brothers/cards/strategy_ploys/brood-brothers-uprising-front.jpg": "a57a0d9f176e90f8ce4747fc8b10bf354b5a197c8ea516ba6507957b5b3200ec",
+        "output/brood-brothers/cards/token_guide/brood-brothers-token-guide-back.jpg": "ca4bd61efd9fd26186de97fb5078df74547c4994af1c8dd808da344055d59515",
+        "output/brood-brothers/cards/token_guide/brood-brothers-token-guide-front.jpg": "6550b8726dbc228d67c466433c4200fa89a618d2a781887b031fe70f2f6777aa",
+        "output/brood-brothers/cardbox/brood-brothers-card-box-texture.jpg": "6332f7a2eff672eb407d6bcfdabb3c88f3d73b145bdfbddfff0a8190380a4d71",
+        "output/brood-brothers/cardbox/brood-brothers-card-box.obj": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+        "output/brood-brothers/tokens/brood-brothers-broodmind-devotion.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/brood-brothers/tokens/brood-brothers-broodmind-devotion.png": "2319a2777af9738696ae3ee78d7a28fdcdb873f7bd2e7e6b41df416f534d91b2",
+        "output/brood-brothers/tokens/brood-brothers-crossfire.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/brood-brothers/tokens/brood-brothers-crossfire.png": "6419c4021c9a731cce58b2bc8db5681c52e7455cb2186147ebc1705d9a84f388",
+        "output/brood-brothers/tokens/brood-brothers-cult-talisman.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/brood-brothers/tokens/brood-brothers-cult-talisman.png": "4a56a241e472c37514762f1117894e6ff3a2d274f8789af3daa466b7dcbe805b",
+        "output/brood-brothers/tokens/brood-brothers-demolition-charge.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/brood-brothers/tokens/brood-brothers-demolition-charge.png": "525ae35f3dd2e159a9a6ec44658dafde9109ef8c9734b6376d80d59ef5803a07",
+        "output/brood-brothers/tokens/brood-brothers-devoted.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/brood-brothers/tokens/brood-brothers-devoted.png": "7f3faefada43bcb847b77320f0d158e54548dfa25b4d9f64b7ba043899e249f3",
+        "output/brood-brothers/tokens/brood-brothers-explosives.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/brood-brothers/tokens/brood-brothers-explosives.png": "b27f9d70705cac33998d592e38e5514b66c74e82cd6f548fea883491674d74e7",
+        "output/brood-brothers/tokens/brood-brothers-gene-needler.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/brood-brothers/tokens/brood-brothers-gene-needler.png": "b56144d89439f5ceed1fa2035c1a6e6893a32c193d2d22c93e492d0c0741770d",
+        "output/brood-brothers/tokens/brood-brothers-jam.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/brood-brothers/tokens/brood-brothers-jam.png": "961d11eef42bbc303a7c4b9851fac6fbf6b1aa5b9da3a499aa4c8e4e8ad74f7a",
+        "output/brood-brothers/tokens/brood-brothers-medic.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/brood-brothers/tokens/brood-brothers-medic.png": "2f1d37bb4fc908504398b5e50e0b4889f18cb1d7ceb2b3bae7f617fdef4ac757",
+        "output/brood-brothers/tokens/brood-brothers-mind-control.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/brood-brothers/tokens/brood-brothers-mind-control.png": "56bf6554937b2a9ca79943a85ba2fcc992d48c169611b1f88d745899b1557342",
+        "output/brood-brothers/tokens/tokenbag/brood-brothers-token-bag-icon.png": "7ea18693b806ed4605e217a08a954ee62ef951fcbe79a3a64d93884648ae29b7",
+        "output/brood-brothers/tokens/tokenbag/brood-brothers-token-bag.obj": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+        "output/brood-brothers/dice/brood-brothers-dice-dark.jpg": "f9eb179bd782e0efe24e34d727c7831ba9bbd2181efd6bae746c0f0fbbe83c96",
+        "output/brood-brothers/dice/brood-brothers-dice-light.jpg": "e2dde78050398a28f63ea397a5112ce4c58f0ac0c32789ea73b824bcccfb9b0f",
+        "output/brood-brothers/dice/brood-brothers-dice-team.jpg": "686948d40e671f78fb9f921c0972083bcef387fecceb30a3c73cc844715017e7",
+        "output/brood-brothers/data/brood-brothers-team-data.json": "9863c93f4d4df0188a85e7dde5ea733fb331f7c8ac8b40252fe32a40287709db",
+        "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
+        "config/defaults/tts-script/datacard-load-stats.lua": "2d5f4088c2ff09f54988cf8722080f536b4e1b998cc2b4c1f1ea94e6b18eb92e",
+        "config/defaults/tts-script/display-table-manager-script.lua": "0dab4381078d90802f25e2cc825bc3658be35ee13ab3e98831c9d248c2526689",
+        "config/defaults/tts-script/faction-rule-chapter-tactics.lua": "c906742268076fb91f7cb4a92c6b588e1122ccddb692688f635c8dd4f7110ad0",
+        "config/defaults/tts-script/intermediate-updater.lua": "1a2d6dbc1a8c9c57ba6a3e7a3d4bc4b7a38a6c242a93f6ef3dae698123384d35",
+        "config/defaults/tts-script/single-object-updater.lua": "3613b85169e986a8e50ebe221482079e27c18037e3f48920aa0f7e138c0ccacc",
+        "config/defaults/tts-script/team-spawner-clean-script.lua": "12457bff3961eee2293c42d81cf4f4eb8b103177245a1ab8b46fd65da40672a2",
+        "config/defaults/tts-script/team-spawner-script.lua": "a51ff45c8622923db909fb465781801511f235412f099f83dff728d4027650db",
+        "config/defaults/tts-script/tts-update-rules-in-box-script.lua": "1eddd1803087ed63181a1149c856db77eef3196dc45d0d283693fada44a357dd",
+        "config/defaults/tts-image/default-icon.png": "892aff2628b9685c813e77be05c66afc1dc4247bc1dc9ce6fe54f006c2608271",
+        "config/defaults/tts-image/spawner-token.png": "61903b093f01d834f5e4c4c069b1353ecf7d29f012fef914b3027266816d8a6b",
+        "config/defaults/tts-token/square-bag-mesh.obj": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+        "config/defaults/tts-token/template-diamond-cutter.png": "719f57ba2b86494be454a6d3d25d8567dde974a915f3dde5ddc0e2d8dafaa1a5",
+        "config/defaults/tts-token/template-octagon-cutter.png": "944632aeacab978293ae57758b63086166c5fbaf3b845f48b3dd61db67d5c076",
+        "config/defaults/tts-token/template-operative-cutter.png": "0e698ddd403d7f0e84f200eb42af73f5249a9c5539d773298ff4c700ac9fe153",
+        "config/defaults/tts-token/template-round-cutter.png": "6564e1451c9a135a1c756fd94cde1c71e373e3fa677b51bba9d4bbe9e795d544",
+        "config/defaults/tts-token/token-bag-script.lua": "1659887e0fbfb9e3ebbc1aa5f3df8e1ffd89ee192be24d2dd1f02fcb0407e486",
+        "config/defaults/tts-token/token-bg-sample.png": "f9f90664c7f1c877c6f050f6e85babde6523cdc0aed9c77de8c09214f44ee109",
+        "config/defaults/tts-token/token-mesh.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc"
+      }
+    },
+    "front_end": {
+      "outputs": {},
+      "sources": {
+        "firefight-ploys": {
+          "hash": "ddc6bd23aec52039c2653d89b61239974cc26311b967e03e4b9ba88941e72fc9",
+          "outputs": [
+            "layers/kt-app/extracted/brood-brothers/cards/firefight-ploys/brood-brothers-firefight-ploys-page_0.pdf",
+            "layers/kt-app/extracted/brood-brothers/cards/firefight-ploys/brood-brothers-firefight-ploys-page_1.pdf",
+            "layers/kt-app/extracted/brood-brothers/cards/firefight-ploys/brood-brothers-firefight-ploys-page_2.pdf",
+            "layers/kt-app/extracted/brood-brothers/cards/firefight-ploys/brood-brothers-firefight-ploys-page_3.pdf",
+            "layers/kt-app/extracted/brood-brothers/cards/firefight-ploys/brood-brothers-firefight-ploys-page_4.pdf"
+          ],
+          "modified": "2026-07-06T15:59:09.032195+00:00"
+        },
+        "datacards": {
+          "hash": "9f877055785c98a99ee1a7e7e5850c4149bdf9c5cc1b5731de04a712109cc0ba",
+          "outputs": [
+            "layers/kt-app/extracted/brood-brothers/cards/datacards/brood-brothers-datacards-page_0.pdf",
+            "layers/kt-app/extracted/brood-brothers/cards/datacards/brood-brothers-datacards-page_1.pdf",
+            "layers/kt-app/extracted/brood-brothers/cards/datacards/brood-brothers-datacards-page_2.pdf",
+            "layers/kt-app/extracted/brood-brothers/cards/datacards/brood-brothers-datacards-page_3.pdf",
+            "layers/kt-app/extracted/brood-brothers/cards/datacards/brood-brothers-datacards-page_4.pdf",
+            "layers/kt-app/extracted/brood-brothers/cards/datacards/brood-brothers-datacards-page_5.pdf",
+            "layers/kt-app/extracted/brood-brothers/cards/datacards/brood-brothers-datacards-page_6.pdf",
+            "layers/kt-app/extracted/brood-brothers/cards/datacards/brood-brothers-datacards-page_7.pdf",
+            "layers/kt-app/extracted/brood-brothers/cards/datacards/brood-brothers-datacards-page_8.pdf",
+            "layers/kt-app/extracted/brood-brothers/cards/datacards/brood-brothers-datacards-page_9.pdf",
+            "layers/kt-app/extracted/brood-brothers/cards/datacards/brood-brothers-datacards-page_10.pdf",
+            "layers/kt-app/extracted/brood-brothers/cards/datacards/brood-brothers-datacards-page_11.pdf",
+            "layers/kt-app/extracted/brood-brothers/cards/datacards/brood-brothers-datacards-page_12.pdf",
+            "layers/kt-app/extracted/brood-brothers/cards/datacards/brood-brothers-datacards-page_13.pdf",
+            "layers/kt-app/extracted/brood-brothers/cards/datacards/brood-brothers-datacards-page_14.pdf",
+            "layers/kt-app/extracted/brood-brothers/cards/datacards/brood-brothers-datacards-page_15.pdf",
+            "layers/kt-app/extracted/brood-brothers/cards/datacards/brood-brothers-datacards-page_16.pdf",
+            "layers/kt-app/extracted/brood-brothers/cards/datacards/brood-brothers-datacards-page_17.pdf",
+            "layers/kt-app/extracted/brood-brothers/cards/datacards/brood-brothers-datacards-page_18.pdf",
+            "layers/kt-app/extracted/brood-brothers/cards/datacards/brood-brothers-datacards-page_19.pdf"
+          ],
+          "modified": "2026-07-06T16:06:03.141628+00:00"
+        },
+        "faction-rules": {
+          "hash": "392ef13dc43259497af033a85167de082c46ddfb1f592cca39948ddbfac260f5",
+          "outputs": [
+            "layers/kt-app/extracted/brood-brothers/cards/faction-rules/brood-brothers-faction-rules-page_0.pdf",
+            "layers/kt-app/extracted/brood-brothers/cards/faction-rules/brood-brothers-faction-rules-page_1.pdf"
+          ],
+          "modified": "2026-07-06T16:07:18.326605+00:00"
+        },
+        "strategy-ploys": {
+          "hash": "aa22edee48f2ea16953a3d83c2e66d1407c5ac53f058d3784cf1f63d20211718",
+          "outputs": [
+            "layers/kt-app/extracted/brood-brothers/cards/strategy-ploys/brood-brothers-strategy-ploys-page_0.pdf",
+            "layers/kt-app/extracted/brood-brothers/cards/strategy-ploys/brood-brothers-strategy-ploys-page_1.pdf",
+            "layers/kt-app/extracted/brood-brothers/cards/strategy-ploys/brood-brothers-strategy-ploys-page_2.pdf",
+            "layers/kt-app/extracted/brood-brothers/cards/strategy-ploys/brood-brothers-strategy-ploys-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:07:36.778075+00:00"
+        },
+        "operatives-selection": {
+          "hash": "613745f5348dc892da25ec058c49b82166d39a46869e206dbc2bb2e85d2ed735",
+          "outputs": [
+            "layers/kt-app/extracted/brood-brothers/cards/operatives-selection/brood-brothers-operatives-selection-page_0.pdf",
+            "layers/kt-app/extracted/brood-brothers/cards/operatives-selection/brood-brothers-operatives-selection-page_1.pdf"
+          ],
+          "modified": "2026-07-06T16:07:40.671074+00:00"
+        },
+        "equipment": {
+          "hash": "5ed96c654b9d6b6bd8d9113731239d757c4a6ae4c2c62e2a0b03d323f6223d31",
+          "outputs": [
+            "layers/kt-app/extracted/brood-brothers/cards/equipment/brood-brothers-equipment-page_0.pdf",
+            "layers/kt-app/extracted/brood-brothers/cards/equipment/brood-brothers-equipment-page_1.pdf",
+            "layers/kt-app/extracted/brood-brothers/cards/equipment/brood-brothers-equipment-page_2.pdf",
+            "layers/kt-app/extracted/brood-brothers/cards/equipment/brood-brothers-equipment-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:09:11.930206+00:00"
+        },
+        "cards": {
+          "hash": "7b6445b1b8a1587d4e237e2bc6f8d8100f9bdc01642f45cecddb823a944d471f",
+          "outputs": [
+            "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page01_card1_landscape.pdf",
+            "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page01_card2_landscape.pdf",
+            "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page01_card3_landscape.pdf",
+            "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page01_card4_landscape.pdf",
+            "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page02_card1_landscape.pdf",
+            "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page02_card2_landscape.pdf",
+            "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page02_card3_landscape.pdf",
+            "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page02_card4_landscape.pdf",
+            "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page03_card1_landscape.pdf",
+            "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page03_card2_landscape.pdf",
+            "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page03_card3_landscape.pdf",
+            "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page03_card4_landscape.pdf",
+            "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page04_card1_landscape.pdf",
+            "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page04_card2_landscape.pdf",
+            "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page04_card3_landscape.pdf",
+            "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page04_card4_landscape.pdf",
+            "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page05_card1_landscape.pdf",
+            "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page05_card2_landscape.pdf",
+            "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page05_card3_landscape.pdf",
+            "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page05_card4_landscape.pdf",
+            "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page06_card1_portrait.pdf",
+            "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page06_card2_portrait.pdf",
+            "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page06_card3_portrait.pdf",
+            "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page06_card4_portrait.pdf",
+            "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page07_card1_portrait.pdf",
+            "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page07_card2_portrait.pdf",
+            "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page07_card3_portrait.pdf",
+            "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page07_card4_portrait.pdf",
+            "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page08_card1_portrait.pdf",
+            "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page08_card2_portrait.pdf",
+            "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page08_card3_portrait.pdf",
+            "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page08_card4_portrait.pdf",
+            "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page09_card1_portrait.pdf",
+            "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page09_card2_portrait.pdf",
+            "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page09_card3_portrait.pdf",
+            "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page09_card4_portrait.pdf",
+            "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page10_card1_portrait.pdf",
+            "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page10_card2_portrait.pdf",
+            "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page10_card3_portrait.pdf",
+            "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page10_card4_portrait.pdf"
+          ],
+          "modified": "2026-07-08T18:59:34.935435+00:00"
+        }
+      },
+      "completed": "2026-07-08T18:59:34.935490+00:00"
+    },
+    "build_structure": {
+      "outputs": {
+        "structure": {
+          "path": "layers/warcom/structure/brood-brothers-structure.json",
+          "hash": "8b31bdd5b9b44328fa2d59c112b5a2018dcd5770a155b84e928d252e75ab5895",
+          "modified": "2026-07-10T20:29:32.287767+00:00"
+        }
+      },
+      "inputs": {
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page01_card1_landscape.pdf": "6ccc418a75c6fcd68ed4aca9cbe81654245b79c2d7f89389b529284455327a5e",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page01_card2_landscape.pdf": "17ebc6abd90602016ccd7a21bad1c6653ca9b04dd3208ddc5c51cf7d1b31bd2b",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page01_card3_landscape.pdf": "92d7034e34a327fb244f61d0e20f2b78e76d318ccadf9b123d071edb945848db",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page01_card4_landscape.pdf": "9d9a98ccee49692cd573669bfdde3835ef471be6cb5e4e50985255bc0e9270c6",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page02_card1_landscape.pdf": "a7a1a6ab451c500a8742a2fa32ddefc96dc9211a7323210764c8db5b7d6c79a2",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page02_card2_landscape.pdf": "5633af3ab4eecee0535c5d4caea52c5098ee038954b8ebefdc7c810cc587f712",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page02_card3_landscape.pdf": "58369ae1daf92fe8a22de7d9137b0740d353c0db01b21144ed05d82833047d52",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page02_card4_landscape.pdf": "79260e7d5000720a3e95c2e1c380ff49c9826d7eee51a6f5d3f70196a8becd43",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page03_card1_landscape.pdf": "d16a1905be060826b7484645fbfaf5aa0be5ca8407bddff26edfb4b02d600ea8",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page03_card2_landscape.pdf": "b928753d8f73a0fffcbb839380155ae3663c7eacb9e3ad835035fe7eaa368f34",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page03_card3_landscape.pdf": "3dc11772cd0d050ffa158ec264d7c03204610769e899b21118f91ae46ad445d4",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page03_card4_landscape.pdf": "9bd69315d0a6f98093a59344fd2fdd4a9e8bf9c3b7d6ed7b0d0fe055b816d110",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page04_card1_landscape.pdf": "99eed73f64a8de20f668b0c677dc3c82b4b21511e1ffaed19a50508e3cfc3df1",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page04_card2_landscape.pdf": "918b443c130fea2ddafc9c98b5e8fd31e63249def1714d2cdd41371104f3e657",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page04_card3_landscape.pdf": "76b6d95c4dac33ef50e481e6eba312067342e79ff051a05501675b875ec26efe",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page04_card4_landscape.pdf": "27e451c54a7fab8bdb03215f21aeca8327d1c699bd60d27cae417abd29c01a8e",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page05_card1_landscape.pdf": "954ccdcd7eac21e3da9ba371c74d1ff6f5c76bf0422bc5eb76b282349a3ed712",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page05_card2_landscape.pdf": "145e1bfe8344fca6a8c465e31df6857705b806bac272070b9265dc1fe916d2da",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page05_card3_landscape.pdf": "412f5967fce331e63e4035e190813d427115e8e896f288b6383a33c7fbabfefa",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page05_card4_landscape.pdf": "e9ea4d1f4dcf2949d181129aed6ba75b523b862688f6e75eb2ab9a020cc36aa0",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page06_card1_portrait.pdf": "6152c2b1741090b13b8672cb0f00d9b9390c63efb23e3272631a5864979214c2",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page06_card2_portrait.pdf": "8161b8a7cb3b84939432a01693dc23505ed6782a1f01855670656878736f69f3",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page06_card3_portrait.pdf": "ffb06b54447411d6985e116c1f54afe14afcb7bd57d2d5e1d8d98b285e04fcc1",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page06_card4_portrait.pdf": "0466834d6e4370f062e9c7e9b70b5613483a66f25b3c683288215cd8774435b3",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page07_card1_portrait.pdf": "5da48ca5fc65de8d195b50283c1df177c11258de801054ad62453e60efcb5088",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page07_card2_portrait.pdf": "ef4cb989efebf68705a62c9fe1c2ba0fee3e639174da15c1f7de0762f8008557",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page07_card3_portrait.pdf": "0f9159d2defbebbffb8804c49f553cb8361b9f32617c55cda8ebdbea89ab1a8c",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page07_card4_portrait.pdf": "c068c33fc4f6ee2717bd81f1521cfa33dd0e5da9fa19e9ad06ad521369190ddb",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page08_card1_portrait.pdf": "4954db53454a826fdee201f370b4289c17a4b717dc7cb2b3b328771e930297e7",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page08_card2_portrait.pdf": "c263c5894de834238dcc67b5c46c1d6b1c6b0ca7acf5ca30f52b0c463b997339",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page08_card3_portrait.pdf": "a01b0ef5948bbc1f8aa42c7119472652552fc8e0cd0b2cdf882056fc6cf54cc3",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page08_card4_portrait.pdf": "f48d4b163195f0bb662ac8281cb8fc9c6188422186244de6be42d9563c347853",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page09_card1_portrait.pdf": "5291f4c8c914008137d4ca1c61305b47a0a68bd8c536b149cbdfaa9e51a42f1d",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page09_card2_portrait.pdf": "f53eb8cc77878b56654195a4f2f597feaf79de67377758ecf706fde95d53c139",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page09_card3_portrait.pdf": "ef2d6298c0c1136fd843ad0152f3c440f90d6225ae090b523d54e0d3f436408d",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page09_card4_portrait.pdf": "d58b16e5f0bede022ac6e2491bbb78a64a552618ce72afd1b492700d44f64440",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page10_card1_portrait.pdf": "febaea93a85d9d4e3c3f322e130718d78bdc675330627eb5e80eadc90d9c4f21",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page10_card2_portrait.pdf": "3df829d3374fb96cbb3410b007afd5acdf0fcb1a9fbbd5b13569405dd012692a",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page10_card3_portrait.pdf": "c81cdd66d9eb62928cdecb331fe29a6c1e0bb02f9db1edd91a4cb86e9c58c17b",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page10_card4_portrait.pdf": "d2c2c70d7fa672b87b1a3b04d9a2330d6bfaa3d802ab9c62ff8a33a01f3fce08"
+      },
+      "completed": "2026-07-10T20:29:32.884661+00:00"
+    },
+    "integrate_classified": {
+      "outputs": {
+        "manifest.json": {
+          "path": "layers/integration/brood-brothers/manifest.json",
+          "hash": "8b31bdd5b9b44328fa2d59c112b5a2018dcd5770a155b84e928d252e75ab5895",
+          "modified": "2026-07-11T06:53:38.988761+00:00"
+        },
+        "brood-brothers-datacard-brood-brother-commander.pdf": {
+          "path": "layers/integration/brood-brothers/brood-brothers-datacard-brood-brother-commander.pdf",
+          "hash": "f1a5c31c16b897a915261af843b10fdb34aa9dd7d6d679404426e2f37729e9d2",
+          "modified": "2026-07-11T06:53:39.043172+00:00"
+        },
+        "brood-brothers-datacard-brood-brother-agitator.pdf": {
+          "path": "layers/integration/brood-brothers/brood-brothers-datacard-brood-brother-agitator.pdf",
+          "hash": "f421227b62b252eb45f53b7e8ec72daa32f062b945b612d261f8b2ed4814a0ab",
+          "modified": "2026-07-11T06:53:39.057007+00:00"
+        },
+        "brood-brothers-datacard-brood-brother-gunner.pdf": {
+          "path": "layers/integration/brood-brothers/brood-brothers-datacard-brood-brother-gunner.pdf",
+          "hash": "2b4e533ed799e6dbdab6311b9f299586aa0f7076e5d70eff70d2bd71560e0ea6",
+          "modified": "2026-07-11T06:53:39.071424+00:00"
+        },
+        "brood-brothers-datacard-brood-brother-iconward.pdf": {
+          "path": "layers/integration/brood-brothers/brood-brothers-datacard-brood-brother-iconward.pdf",
+          "hash": "b9797d0c72609f9caca9624887bc0ffe956b9e673b120305a69b81efdcc6a0da",
+          "modified": "2026-07-11T06:53:39.082886+00:00"
+        },
+        "brood-brothers-datacard-brood-brother-knife-fighter.pdf": {
+          "path": "layers/integration/brood-brothers/brood-brothers-datacard-brood-brother-knife-fighter.pdf",
+          "hash": "08b41a29b4fbf567fb3a060ea11ea938620b8cfaafb27ccc91cfbf7e7eaf0241",
+          "modified": "2026-07-11T06:53:39.097309+00:00"
+        },
+        "brood-brothers-datacard-brood-brother-medic.pdf": {
+          "path": "layers/integration/brood-brothers/brood-brothers-datacard-brood-brother-medic.pdf",
+          "hash": "14f30e4aec8403e7629376fdaa2d482dee683a68bf223d3199751995af0f08a2",
+          "modified": "2026-07-11T06:53:39.115510+00:00"
+        },
+        "brood-brothers-datacard-brood-brother-sapper.pdf": {
+          "path": "layers/integration/brood-brothers/brood-brothers-datacard-brood-brother-sapper.pdf",
+          "hash": "87fc20c751c3d2bd05cee50fe89ee977228959eddca4fa59c15a816dc8bb2ae6",
+          "modified": "2026-07-11T06:53:39.135207+00:00"
+        },
+        "brood-brothers-datacard-brood-brother-sniper.pdf": {
+          "path": "layers/integration/brood-brothers/brood-brothers-datacard-brood-brother-sniper.pdf",
+          "hash": "aeb7f2d8f9b5ba2ecb943c636ced0ec4308c4eb5530cd299aaea7a24087eadfd",
+          "modified": "2026-07-11T06:53:39.149479+00:00"
+        },
+        "brood-brothers-datacard-brood-brother-trooper.pdf": {
+          "path": "layers/integration/brood-brothers/brood-brothers-datacard-brood-brother-trooper.pdf",
+          "hash": "3699a2ce9742112ec5574f4c1819d945265d3a5d3bb044167e4e9211201f72ea",
+          "modified": "2026-07-11T06:53:39.166249+00:00"
+        },
+        "brood-brothers-datacard-brood-brother-veteran.pdf": {
+          "path": "layers/integration/brood-brothers/brood-brothers-datacard-brood-brother-veteran.pdf",
+          "hash": "27422589a94ecc2d2ca6a7a135d7a9bca7b1d5861f05441eabb8cffc52e54bbe",
+          "modified": "2026-07-11T06:53:39.181582+00:00"
+        },
+        "brood-brothers-datacard-brood-brother-vox-operator.pdf": {
+          "path": "layers/integration/brood-brothers/brood-brothers-datacard-brood-brother-vox-operator.pdf",
+          "hash": "ab96b52ce7dc12decbd0ad92575ecd32bba8c7219a819e8ec42f1f20687d2fc8",
+          "modified": "2026-07-11T06:53:39.197541+00:00"
+        },
+        "brood-brothers-datacard-magus.pdf": {
+          "path": "layers/integration/brood-brothers/brood-brothers-datacard-magus.pdf",
+          "hash": "f7688226914250ea4fc1bee9b41a16d479efe16a8a3022fa8c7996b522343ec3",
+          "modified": "2026-07-11T06:53:39.213557+00:00"
+        },
+        "brood-brothers-datacard-patriarch.pdf": {
+          "path": "layers/integration/brood-brothers/brood-brothers-datacard-patriarch.pdf",
+          "hash": "a147cb748f10db27f2044e6af8a0bbfb187baa63a9891fc527a5b808db516159",
+          "modified": "2026-07-11T06:53:39.231682+00:00"
+        },
+        "brood-brothers-datacard-psychic-familiar.pdf": {
+          "path": "layers/integration/brood-brothers/brood-brothers-datacard-psychic-familiar.pdf",
+          "hash": "db416a46d7c55dd0b709003be2f9461df858a1db4482e40782c7af83c8894b02",
+          "modified": "2026-07-11T06:53:39.245850+00:00"
+        },
+        "brood-brothers-datacard-primus.pdf": {
+          "path": "layers/integration/brood-brothers/brood-brothers-datacard-primus.pdf",
+          "hash": "dbf229395b9bd34e271667c920a74452e27640adf4ed48ebb4be4194d30d9c07",
+          "modified": "2026-07-11T06:53:39.260160+00:00"
+        },
+        "brood-brothers-equipment-cult-talisman.pdf": {
+          "path": "layers/integration/brood-brothers/brood-brothers-equipment-cult-talisman.pdf",
+          "hash": "0ebf1dadbf5f0b801b187bd8557faa7ec18821884eca0b3a67c2280018d83a7c",
+          "modified": "2026-07-11T06:53:39.271771+00:00"
+        },
+        "brood-brothers-equipment-covert-guises.pdf": {
+          "path": "layers/integration/brood-brothers/brood-brothers-equipment-covert-guises.pdf",
+          "hash": "8821e5fe9b082c998c23c76f2de045bd890c9a84d1b304dbf4fb8553d736ff4a",
+          "modified": "2026-07-11T06:53:39.284319+00:00"
+        },
+        "brood-brothers-equipment-cult-knives.pdf": {
+          "path": "layers/integration/brood-brothers/brood-brothers-equipment-cult-knives.pdf",
+          "hash": "6866b678b0b3669bd7d379db2b23e7c495c3c0b7eda5768bb9adf4421ccf9536",
+          "modified": "2026-07-11T06:53:39.295732+00:00"
+        },
+        "brood-brothers-equipment-lookout.pdf": {
+          "path": "layers/integration/brood-brothers/brood-brothers-equipment-lookout.pdf",
+          "hash": "f992000b03032f62a7d282d7e3d6efba4838fdd248a2068c056983d70e8223e8",
+          "modified": "2026-07-11T06:53:39.311635+00:00"
+        },
+        "brood-brothers-faction-rule-crossfire.pdf": {
+          "path": "layers/integration/brood-brothers/brood-brothers-faction-rule-crossfire.pdf",
+          "hash": "065095c793b943e054485319626c21907fe721478f4d22b6d9d9facaf94c370f",
+          "modified": "2026-07-11T06:53:39.326365+00:00"
+        },
+        "brood-brothers-token-guide-token-guide.pdf": {
+          "path": "layers/integration/brood-brothers/brood-brothers-token-guide-token-guide.pdf",
+          "hash": "98392d61582807646af15fb0bf7df037d340c464a66cc0076fc8c14b793b2d0a",
+          "modified": "2026-07-11T06:53:39.337833+00:00"
+        },
+        "brood-brothers-firefight-ploy-ruthless-coordination.pdf": {
+          "path": "layers/integration/brood-brothers/brood-brothers-firefight-ploy-ruthless-coordination.pdf",
+          "hash": "1e44576608095e81bc5300500cef896760efc817ac5692233da08a506ba2f328",
+          "modified": "2026-07-11T06:53:39.355792+00:00"
+        },
+        "brood-brothers-firefight-ploy-unquestioning-loyalty.pdf": {
+          "path": "layers/integration/brood-brothers/brood-brothers-firefight-ploy-unquestioning-loyalty.pdf",
+          "hash": "1753990d3a850744be230f24adc7c42cea232bce0463e37d777752aac08c7fff",
+          "modified": "2026-07-11T06:53:39.368282+00:00"
+        },
+        "brood-brothers-firefight-ploy-idolisation.pdf": {
+          "path": "layers/integration/brood-brothers/brood-brothers-firefight-ploy-idolisation.pdf",
+          "hash": "6cc22b2d78805ad3381abbd4dd52cf1811b9040c6ca86e55ec0b554af30aad8c",
+          "modified": "2026-07-11T06:53:39.385862+00:00"
+        },
+        "brood-brothers-firefight-ploy-insidious.pdf": {
+          "path": "layers/integration/brood-brothers/brood-brothers-firefight-ploy-insidious.pdf",
+          "hash": "dc6cf363a7e5a21e06698e624d2a47498606213646a85565afd76378c4cf407c",
+          "modified": "2026-07-11T06:53:39.406148+00:00"
+        },
+        "brood-brothers-operatives-selection-operative-selection.pdf": {
+          "path": "layers/integration/brood-brothers/brood-brothers-operatives-selection-operative-selection.pdf",
+          "hash": "be62a7449891a11f0580fa030e3940b09b7669a4390cfce7e1ba64926edcd601",
+          "modified": "2026-07-11T06:53:39.434128+00:00"
+        },
+        "brood-brothers-strategy-ploy-pervasive.pdf": {
+          "path": "layers/integration/brood-brothers/brood-brothers-strategy-ploy-pervasive.pdf",
+          "hash": "02028560ca68c0019bad4e6455228417306531e9ec31a413892ea8bf88cc4df1",
+          "modified": "2026-07-11T06:53:39.445863+00:00"
+        },
+        "brood-brothers-strategy-ploy-uprising.pdf": {
+          "path": "layers/integration/brood-brothers/brood-brothers-strategy-ploy-uprising.pdf",
+          "hash": "af90a1c4ff4779f904851dd4023394f537a62bc6c5cb3c8c67c32e19608a9185",
+          "modified": "2026-07-11T06:53:39.475036+00:00"
+        },
+        "brood-brothers-strategy-ploy-embedded.pdf": {
+          "path": "layers/integration/brood-brothers/brood-brothers-strategy-ploy-embedded.pdf",
+          "hash": "89b0a20843edebb19a100619080964ee6e8c8349f351b93315b51fd6b3e52bf0",
+          "modified": "2026-07-11T06:53:39.495140+00:00"
+        },
+        "brood-brothers-strategy-ploy-cult-devotion.pdf": {
+          "path": "layers/integration/brood-brothers/brood-brothers-strategy-ploy-cult-devotion.pdf",
+          "hash": "f94c3539b6b28e247d5ab63e95f16c7e4958a919f99c4c14404cc1d7e3cc95d8",
+          "modified": "2026-07-11T06:53:39.516126+00:00"
+        }
+      },
+      "inputs": {
+        "layers/warcom/structure/brood-brothers-structure.json": "8b31bdd5b9b44328fa2d59c112b5a2018dcd5770a155b84e928d252e75ab5895",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page01_card1_landscape.pdf": "6ccc418a75c6fcd68ed4aca9cbe81654245b79c2d7f89389b529284455327a5e",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page01_card2_landscape.pdf": "17ebc6abd90602016ccd7a21bad1c6653ca9b04dd3208ddc5c51cf7d1b31bd2b",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page01_card3_landscape.pdf": "92d7034e34a327fb244f61d0e20f2b78e76d318ccadf9b123d071edb945848db",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page01_card4_landscape.pdf": "9d9a98ccee49692cd573669bfdde3835ef471be6cb5e4e50985255bc0e9270c6",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page02_card1_landscape.pdf": "a7a1a6ab451c500a8742a2fa32ddefc96dc9211a7323210764c8db5b7d6c79a2",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page02_card2_landscape.pdf": "5633af3ab4eecee0535c5d4caea52c5098ee038954b8ebefdc7c810cc587f712",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page02_card3_landscape.pdf": "58369ae1daf92fe8a22de7d9137b0740d353c0db01b21144ed05d82833047d52",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page02_card4_landscape.pdf": "79260e7d5000720a3e95c2e1c380ff49c9826d7eee51a6f5d3f70196a8becd43",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page03_card1_landscape.pdf": "d16a1905be060826b7484645fbfaf5aa0be5ca8407bddff26edfb4b02d600ea8",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page03_card2_landscape.pdf": "b928753d8f73a0fffcbb839380155ae3663c7eacb9e3ad835035fe7eaa368f34",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page03_card3_landscape.pdf": "3dc11772cd0d050ffa158ec264d7c03204610769e899b21118f91ae46ad445d4",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page03_card4_landscape.pdf": "9bd69315d0a6f98093a59344fd2fdd4a9e8bf9c3b7d6ed7b0d0fe055b816d110",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page04_card1_landscape.pdf": "99eed73f64a8de20f668b0c677dc3c82b4b21511e1ffaed19a50508e3cfc3df1",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page04_card2_landscape.pdf": "918b443c130fea2ddafc9c98b5e8fd31e63249def1714d2cdd41371104f3e657",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page04_card3_landscape.pdf": "76b6d95c4dac33ef50e481e6eba312067342e79ff051a05501675b875ec26efe",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page04_card4_landscape.pdf": "27e451c54a7fab8bdb03215f21aeca8327d1c699bd60d27cae417abd29c01a8e",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page05_card1_landscape.pdf": "954ccdcd7eac21e3da9ba371c74d1ff6f5c76bf0422bc5eb76b282349a3ed712",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page05_card2_landscape.pdf": "145e1bfe8344fca6a8c465e31df6857705b806bac272070b9265dc1fe916d2da",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page05_card3_landscape.pdf": "412f5967fce331e63e4035e190813d427115e8e896f288b6383a33c7fbabfefa",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page05_card4_landscape.pdf": "e9ea4d1f4dcf2949d181129aed6ba75b523b862688f6e75eb2ab9a020cc36aa0",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page09_card2_portrait.pdf": "f53eb8cc77878b56654195a4f2f597feaf79de67377758ecf706fde95d53c139",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page09_card3_portrait.pdf": "ef2d6298c0c1136fd843ad0152f3c440f90d6225ae090b523d54e0d3f436408d",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page09_card4_portrait.pdf": "d58b16e5f0bede022ac6e2491bbb78a64a552618ce72afd1b492700d44f64440",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page10_card1_portrait.pdf": "febaea93a85d9d4e3c3f322e130718d78bdc675330627eb5e80eadc90d9c4f21",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page06_card3_portrait.pdf": "ffb06b54447411d6985e116c1f54afe14afcb7bd57d2d5e1d8d98b285e04fcc1",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page06_card4_portrait.pdf": "0466834d6e4370f062e9c7e9b70b5613483a66f25b3c683288215cd8774435b3",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page08_card1_portrait.pdf": "4954db53454a826fdee201f370b4289c17a4b717dc7cb2b3b328771e930297e7",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page08_card2_portrait.pdf": "c263c5894de834238dcc67b5c46c1d6b1c6b0ca7acf5ca30f52b0c463b997339",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page08_card3_portrait.pdf": "a01b0ef5948bbc1f8aa42c7119472652552fc8e0cd0b2cdf882056fc6cf54cc3",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page08_card4_portrait.pdf": "f48d4b163195f0bb662ac8281cb8fc9c6188422186244de6be42d9563c347853",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page09_card1_portrait.pdf": "5291f4c8c914008137d4ca1c61305b47a0a68bd8c536b149cbdfaa9e51a42f1d",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page06_card1_portrait.pdf": "6152c2b1741090b13b8672cb0f00d9b9390c63efb23e3272631a5864979214c2",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page06_card2_portrait.pdf": "8161b8a7cb3b84939432a01693dc23505ed6782a1f01855670656878736f69f3",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page07_card1_portrait.pdf": "5da48ca5fc65de8d195b50283c1df177c11258de801054ad62453e60efcb5088",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page07_card2_portrait.pdf": "ef4cb989efebf68705a62c9fe1c2ba0fee3e639174da15c1f7de0762f8008557",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page07_card3_portrait.pdf": "0f9159d2defbebbffb8804c49f553cb8361b9f32617c55cda8ebdbea89ab1a8c",
+        "layers/warcom/extracted/brood-brothers/cards/brood-brothers_page07_card4_portrait.pdf": "c068c33fc4f6ee2717bd81f1521cfa33dd0e5da9fa19e9ad06ad521369190ddb"
+      },
+      "completed": "2026-07-11T06:54:07.206325+00:00"
+    },
+    "extract_artwork": {
+      "outputs": {},
+      "sources": {
+        "artwork": {
+          "hash": "7b6445b1b8a1587d4e237e2bc6f8d8100f9bdc01642f45cecddb823a944d471f",
+          "outputs": [
+            "layers/integration/brood-brothers/artwork/brood-brothers-artwork-01.jpeg",
+            "layers/integration/brood-brothers/artwork/brood-brothers-artwork-02.jpeg",
+            "layers/integration/brood-brothers/artwork/brood-brothers-artwork-03.jpeg",
+            "layers/integration/brood-brothers/artwork/brood-brothers-artwork-04.jpeg",
+            "layers/integration/brood-brothers/artwork/brood-brothers-artwork-05.jpeg",
+            "layers/integration/brood-brothers/artwork/brood-brothers-artwork-06.png",
+            "layers/integration/brood-brothers/artwork/brood-brothers-artwork-07.jpeg",
+            "layers/integration/brood-brothers/artwork/brood-brothers-artwork-08.jpeg",
+            "layers/integration/brood-brothers/artwork/brood-brothers-artwork-09.jpeg",
+            "layers/integration/brood-brothers/artwork/brood-brothers-artwork-10.jpeg",
+            "layers/integration/brood-brothers/artwork/brood-brothers-artwork-11.jpeg",
+            "layers/integration/brood-brothers/artwork/brood-brothers-artwork-12.jpeg",
+            "layers/integration/brood-brothers/artwork/brood-brothers-artwork-13.jpeg",
+            "layers/integration/brood-brothers/artwork/brood-brothers-artwork-14.jpeg",
+            "layers/integration/brood-brothers/artwork/brood-brothers-artwork-15.jpeg",
+            "layers/integration/brood-brothers/artwork/brood-brothers-artwork-16.jpeg",
+            "layers/integration/brood-brothers/artwork/brood-brothers-artwork-17.jpeg",
+            "layers/integration/brood-brothers/artwork/brood-brothers-artwork-18.jpeg",
+            "layers/integration/brood-brothers/artwork/brood-brothers-artwork-19.jpeg",
+            "layers/integration/brood-brothers/artwork/brood-brothers-artwork-20.jpeg",
+            "layers/integration/brood-brothers/artwork/brood-brothers-artwork-21.jpeg",
+            "layers/integration/brood-brothers/artwork/brood-brothers-artwork-metadata.json",
+            "layers/integration/brood-brothers/artwork/icons/brood-brothers-icon-landscape.jpg",
+            "layers/integration/brood-brothers/artwork/icons/brood-brothers-icon-portrait.jpg",
+            "layers/integration/brood-brothers/artwork/icons/brood-brothers-icon-token-transparent.png",
+            "layers/integration/brood-brothers/artwork/icons/brood-brothers-icon-token.jpg"
+          ],
+          "modified": "2026-07-06T20:48:45.103348+00:00"
+        }
+      },
+      "completed": "2026-07-06T20:48:45.103364+00:00"
+    }
+  }
+}

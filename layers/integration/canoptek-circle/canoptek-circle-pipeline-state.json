@@ -1,0 +1,923 @@
+{
+  "team": "canoptek-circle",
+  "pipeline_version": "2.0",
+  "last_updated": "2026-07-12T18:32:25.753102+00:00",
+  "steps": {
+    "content_analysis": {
+      "outputs": {
+        "content.json": {
+          "path": "layers/integration/canoptek-circle/content/canoptek-circle-content.json",
+          "hash": "12c8177555896318dd1de0087ef2f31b4edaec7d3a3da8330c8aa738436a415f",
+          "modified": "2026-07-11T06:53:44.759907+00:00"
+        }
+      },
+      "completed": "2026-07-11T06:54:17.815038+00:00",
+      "inputs": {
+        "layers/integration/canoptek-circle/manifest.json": "7b66dcb11653656b18fe9cef77bb41e129557fc36623fc5d072cef804f64e1a5",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "layers/integration/canoptek-circle/canoptek-circle-datacard-canoptek-macrocyte-accelerator.pdf": "713eb635f5e03b2a3bd5e1e0d188bb2b9acf3226e0bf7f67c0c593d7216bd284",
+        "layers/integration/canoptek-circle/canoptek-circle-datacard-canoptek-macrocyte-reanimator.pdf": "70ab63ecc4ff5ddf82c5f43f8745692eb22bfe1c4bdef9b7deee23205a1a22c3",
+        "layers/integration/canoptek-circle/canoptek-circle-datacard-canoptek-macrocyte-warrior.pdf": "3ae52380f1316b2553d6d8ad4e067073a5f20186dbdc0079c3bc3a332aa88cc9",
+        "layers/integration/canoptek-circle/canoptek-circle-datacard-canoptek-tomb-crawler.pdf": "820599744ebd6017bb98787f2ddb202fd70db7a8812a6544612f51b0205086d7",
+        "layers/integration/canoptek-circle/canoptek-circle-datacard-geomancer-1.pdf": "1e32796d31dc41f890fe9dd0be201c7c319302f3cd2d9bfed0d29bfb41f00537",
+        "layers/integration/canoptek-circle/canoptek-circle-datacard-geomancer-2.pdf": "7b648164f686c5a3db9ef101e4066675f395dc9a856d5d9430b2121fc40f083c",
+        "layers/integration/canoptek-circle/canoptek-circle-datacard-geomancer-3.pdf": "91d83eb7401ada278303a363206854fbe8e46d22f648cbb3ccbd0cfa9ef18a64",
+        "layers/integration/canoptek-circle/canoptek-circle-equipment-awakened-obelisk-nodes.pdf": "40037e408efd7bc28f800fb3327c300f99cca7297a4ac2978e36c5713ca39e3f",
+        "layers/integration/canoptek-circle/canoptek-circle-equipment-matrix-manipulator.pdf": "409ec0657de30605dd4e1f8e49a74cc68e7923345dea5114178edd37c6937f9f",
+        "layers/integration/canoptek-circle/canoptek-circle-equipment-nanoscarab-caskets.pdf": "dd9b1ed7e3992395142e2aed65dea7b554cf89b5373a0e968ac09db77d47dda9",
+        "layers/integration/canoptek-circle/canoptek-circle-equipment-phase-shifter.pdf": "ac5896bcac872a03146489e231b29e3e9726c05b580a506e5d02fd46c07bc2b5",
+        "layers/integration/canoptek-circle/canoptek-circle-faction-rule-obelisk-node-matrix.pdf": "13ffe2870191b461e840b97e57e674d34608d02a42a540512d4828cfa1c2189f",
+        "layers/integration/canoptek-circle/canoptek-circle-firefight-ploy-animate-obelisk-nodes.pdf": "3c74307940433da4fa111e89ab73226b7f7dd2d31383fa0fcef3a8004193c623",
+        "layers/integration/canoptek-circle/canoptek-circle-firefight-ploy-nodal-response.pdf": "230928a8d9b060f37939a1720c6da48bfc99470322beec06736433870bb39b29",
+        "layers/integration/canoptek-circle/canoptek-circle-firefight-ploy-sacrificial-thrall.pdf": "729408835da74907ec3dba62c58ee076f858502d7350b6370a1934a1c09f3da2",
+        "layers/integration/canoptek-circle/canoptek-circle-firefight-ploy-shield-flare.pdf": "4b202603cee31ebf3daf1f6263eaf8259bcfd54fec0dd9227f5f2f9657ccdcd2",
+        "layers/integration/canoptek-circle/canoptek-circle-operatives-selection-operative-selection.pdf": "cab63f80018087e0c594ad08575a7e3e064b213f568d1c7eb362786dc3e35e03",
+        "layers/integration/canoptek-circle/canoptek-circle-strategy-ploy-cryptogravitic-repulsion.pdf": "156dce68d59c2e9ab70787f78b266e014c6077be498501b304dc29048088644e",
+        "layers/integration/canoptek-circle/canoptek-circle-strategy-ploy-hypershielding.pdf": "5542a455edb4b4688ddc54754f7c6e2a4e6cbfb5a0257db18625ae2f9bb0659d",
+        "layers/integration/canoptek-circle/canoptek-circle-strategy-ploy-souldrain.pdf": "e4eccf33ad99dcc2218f1c3f17d675fce79a43dd65fa26792c6d24b2d3d96b05",
+        "layers/integration/canoptek-circle/canoptek-circle-strategy-ploy-transdynamic-amplification.pdf": "51d8dc670d39362696ddfb20b83bb991d18b8258de31a2c2d0bc94006ddb0401",
+        "layers/integration/canoptek-circle/canoptek-circle-token-guide-token-guide.pdf": "3008ccb21bc3fd46e55fa25e1cda6445b5e32f4458af35d97836c126c8588618"
+      }
+    },
+    "extract_backsides": {
+      "outputs": {
+        "backside-landscape.jpg": {
+          "path": "layers/integration/canoptek-circle/card-backside/canoptek-circle-backside-landscape.jpg",
+          "hash": "949132d9cd9a2f45ed75dc8e4049c709ad8571734ea6c4f2bb46b2278ed9f3b5",
+          "modified": "2026-07-11T06:54:37.803747+00:00"
+        },
+        "backside-portrait.jpg": {
+          "path": "layers/integration/canoptek-circle/card-backside/canoptek-circle-backside-portrait.jpg",
+          "hash": "d4fe444ebacfe75eae5de9cfc3f5859a197de196bb0da814e1f46843826d4b6d",
+          "modified": "2026-07-11T06:54:37.807267+00:00"
+        }
+      },
+      "completed": "2026-07-11T06:54:37.814701+00:00",
+      "inputs": {
+        "layers/integration/canoptek-circle/artwork/icons/canoptek-circle-icon-token.jpg": "45a8e0939b1de270ec816aae986ec33a1f88a231cdeaf152296393283ffe7577",
+        "config/defaults/box/card-box-background.jpeg": "2dd1442a7c52ca1d66899333f678d60f48981ce20561ead77c1161d548176036"
+      }
+    },
+    "extract_tokens": {
+      "outputs": {
+        "tokens/canoptek-circle-awakened-obelisk-node.png": {
+          "path": "output/canoptek-circle/tokens/canoptek-circle-awakened-obelisk-node.png",
+          "hash": "264010a40c8a3315ea6d6553e3c432a5e427be152f9452c01c4eb6dccdf30c4b",
+          "modified": "2026-07-11T06:54:44.871206+00:00"
+        },
+        "tokens/canoptek-circle-matrix-manipulator.png": {
+          "path": "output/canoptek-circle/tokens/canoptek-circle-matrix-manipulator.png",
+          "hash": "3ad09d64a607daa77fa85deb9d20af48b8c370a72db4363cb2ea5b381d4db97c",
+          "modified": "2026-07-11T06:54:44.873737+00:00"
+        },
+        "tokens/canoptek-circle-molecular-breach.png": {
+          "path": "output/canoptek-circle/tokens/canoptek-circle-molecular-breach.png",
+          "hash": "cf70fe34c6d4602148ec5152c8c7c6347bbf8fd2e3223d769461f4f9e1816dda",
+          "modified": "2026-07-11T06:54:44.877723+00:00"
+        },
+        "tokens/canoptek-circle-obelisk-node.png": {
+          "path": "output/canoptek-circle/tokens/canoptek-circle-obelisk-node.png",
+          "hash": "e3e2e97d21f610f562a4912f42d32520a343364d0c60aec61dfd607aa3058b41",
+          "modified": "2026-07-11T06:54:44.880114+00:00"
+        },
+        "tokens/canoptek-circle-phase-shifter.png": {
+          "path": "output/canoptek-circle/tokens/canoptek-circle-phase-shifter.png",
+          "hash": "b33211f11885a2049dac2cc8b38134ae146e7fba7203f8a7e5a1ae6e6e8806bf",
+          "modified": "2026-07-11T06:54:44.882135+00:00"
+        },
+        "tokens/canoptek-circle-reanimate.png": {
+          "path": "output/canoptek-circle/tokens/canoptek-circle-reanimate.png",
+          "hash": "621dda932f0f025b1dacfd8537dfe2fc08d3234c3d5745e620b9825c0d7e5ab4",
+          "modified": "2026-07-11T06:54:44.885948+00:00"
+        },
+        "tokens/canoptek-circle-awakened-obelisk-node.obj": {
+          "path": "output/canoptek-circle/tokens/canoptek-circle-awakened-obelisk-node.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-11T06:54:44.888872+00:00"
+        },
+        "tokens/canoptek-circle-matrix-manipulator.obj": {
+          "path": "output/canoptek-circle/tokens/canoptek-circle-matrix-manipulator.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-11T06:54:44.890898+00:00"
+        },
+        "tokens/canoptek-circle-molecular-breach.obj": {
+          "path": "output/canoptek-circle/tokens/canoptek-circle-molecular-breach.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-11T06:54:44.893492+00:00"
+        },
+        "tokens/canoptek-circle-obelisk-node.obj": {
+          "path": "output/canoptek-circle/tokens/canoptek-circle-obelisk-node.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-11T06:54:44.896180+00:00"
+        },
+        "tokens/canoptek-circle-phase-shifter.obj": {
+          "path": "output/canoptek-circle/tokens/canoptek-circle-phase-shifter.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-11T06:54:44.898626+00:00"
+        },
+        "tokens/canoptek-circle-reanimate.obj": {
+          "path": "output/canoptek-circle/tokens/canoptek-circle-reanimate.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-11T06:54:44.900695+00:00"
+        },
+        "tokens/tokenbag/canoptek-circle-token-bag-icon.png": {
+          "path": "output/canoptek-circle/tokens/tokenbag/canoptek-circle-token-bag-icon.png",
+          "hash": "45a8e0939b1de270ec816aae986ec33a1f88a231cdeaf152296393283ffe7577",
+          "modified": "2026-07-11T06:54:44.909819+00:00"
+        },
+        "tokens/tokenbag/canoptek-circle-token-bag.obj": {
+          "path": "output/canoptek-circle/tokens/tokenbag/canoptek-circle-token-bag.obj",
+          "hash": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+          "modified": "2026-07-11T06:54:44.912602+00:00"
+        }
+      },
+      "completed": "2026-07-11T06:55:18.328716+00:00",
+      "inputs": {
+        "layers/integration/canoptek-circle/manifest.json": "7b66dcb11653656b18fe9cef77bb41e129557fc36623fc5d072cef804f64e1a5",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "layers/integration/canoptek-circle/artwork/icons/canoptek-circle-icon-token.jpg": "45a8e0939b1de270ec816aae986ec33a1f88a231cdeaf152296393283ffe7577",
+        "layers/integration/canoptek-circle/canoptek-circle-datacard-canoptek-macrocyte-accelerator.pdf": "713eb635f5e03b2a3bd5e1e0d188bb2b9acf3226e0bf7f67c0c593d7216bd284",
+        "layers/integration/canoptek-circle/canoptek-circle-datacard-canoptek-macrocyte-reanimator.pdf": "70ab63ecc4ff5ddf82c5f43f8745692eb22bfe1c4bdef9b7deee23205a1a22c3",
+        "layers/integration/canoptek-circle/canoptek-circle-datacard-canoptek-macrocyte-warrior.pdf": "3ae52380f1316b2553d6d8ad4e067073a5f20186dbdc0079c3bc3a332aa88cc9",
+        "layers/integration/canoptek-circle/canoptek-circle-datacard-canoptek-tomb-crawler.pdf": "820599744ebd6017bb98787f2ddb202fd70db7a8812a6544612f51b0205086d7",
+        "layers/integration/canoptek-circle/canoptek-circle-datacard-geomancer-1.pdf": "1e32796d31dc41f890fe9dd0be201c7c319302f3cd2d9bfed0d29bfb41f00537",
+        "layers/integration/canoptek-circle/canoptek-circle-datacard-geomancer-2.pdf": "7b648164f686c5a3db9ef101e4066675f395dc9a856d5d9430b2121fc40f083c",
+        "layers/integration/canoptek-circle/canoptek-circle-datacard-geomancer-3.pdf": "91d83eb7401ada278303a363206854fbe8e46d22f648cbb3ccbd0cfa9ef18a64",
+        "layers/integration/canoptek-circle/canoptek-circle-equipment-awakened-obelisk-nodes.pdf": "40037e408efd7bc28f800fb3327c300f99cca7297a4ac2978e36c5713ca39e3f",
+        "layers/integration/canoptek-circle/canoptek-circle-equipment-matrix-manipulator.pdf": "409ec0657de30605dd4e1f8e49a74cc68e7923345dea5114178edd37c6937f9f",
+        "layers/integration/canoptek-circle/canoptek-circle-equipment-nanoscarab-caskets.pdf": "dd9b1ed7e3992395142e2aed65dea7b554cf89b5373a0e968ac09db77d47dda9",
+        "layers/integration/canoptek-circle/canoptek-circle-equipment-phase-shifter.pdf": "ac5896bcac872a03146489e231b29e3e9726c05b580a506e5d02fd46c07bc2b5",
+        "layers/integration/canoptek-circle/canoptek-circle-faction-rule-obelisk-node-matrix.pdf": "13ffe2870191b461e840b97e57e674d34608d02a42a540512d4828cfa1c2189f",
+        "layers/integration/canoptek-circle/canoptek-circle-firefight-ploy-animate-obelisk-nodes.pdf": "3c74307940433da4fa111e89ab73226b7f7dd2d31383fa0fcef3a8004193c623",
+        "layers/integration/canoptek-circle/canoptek-circle-firefight-ploy-nodal-response.pdf": "230928a8d9b060f37939a1720c6da48bfc99470322beec06736433870bb39b29",
+        "layers/integration/canoptek-circle/canoptek-circle-firefight-ploy-sacrificial-thrall.pdf": "729408835da74907ec3dba62c58ee076f858502d7350b6370a1934a1c09f3da2",
+        "layers/integration/canoptek-circle/canoptek-circle-firefight-ploy-shield-flare.pdf": "4b202603cee31ebf3daf1f6263eaf8259bcfd54fec0dd9227f5f2f9657ccdcd2",
+        "layers/integration/canoptek-circle/canoptek-circle-operatives-selection-operative-selection.pdf": "cab63f80018087e0c594ad08575a7e3e064b213f568d1c7eb362786dc3e35e03",
+        "layers/integration/canoptek-circle/canoptek-circle-strategy-ploy-cryptogravitic-repulsion.pdf": "156dce68d59c2e9ab70787f78b266e014c6077be498501b304dc29048088644e",
+        "layers/integration/canoptek-circle/canoptek-circle-strategy-ploy-hypershielding.pdf": "5542a455edb4b4688ddc54754f7c6e2a4e6cbfb5a0257db18625ae2f9bb0659d",
+        "layers/integration/canoptek-circle/canoptek-circle-strategy-ploy-souldrain.pdf": "e4eccf33ad99dcc2218f1c3f17d675fce79a43dd65fa26792c6d24b2d3d96b05",
+        "layers/integration/canoptek-circle/canoptek-circle-strategy-ploy-transdynamic-amplification.pdf": "51d8dc670d39362696ddfb20b83bb991d18b8258de31a2c2d0bc94006ddb0401",
+        "layers/integration/canoptek-circle/canoptek-circle-token-guide-token-guide.pdf": "3008ccb21bc3fd46e55fa25e1cda6445b5e32f4458af35d97836c126c8588618"
+      }
+    },
+    "generate_dice": {
+      "outputs": {
+        "dice-light.jpg": {
+          "path": "output/canoptek-circle/dice/canoptek-circle-dice-light.jpg",
+          "hash": "31b0092d1d5075034bec6c07cefbd10fdfaddd999bdcba85eecf57882b7e7109",
+          "modified": "2026-07-11T06:55:30.446281+00:00"
+        },
+        "dice-dark.jpg": {
+          "path": "output/canoptek-circle/dice/canoptek-circle-dice-dark.jpg",
+          "hash": "523e3ba6f5a57cfe415e15f1f3eb121207fcc985801dbce2822696b812101bbb",
+          "modified": "2026-07-11T06:55:30.888451+00:00"
+        },
+        "dice-team.jpg": {
+          "path": "output/canoptek-circle/dice/canoptek-circle-dice-team.jpg",
+          "hash": "288428ff3f94f355331660efcdcb47dca2f2e7c3417908226ce77d320d271dfc",
+          "modified": "2026-07-11T06:55:31.288032+00:00"
+        }
+      },
+      "completed": "2026-07-11T06:55:31.725446+00:00",
+      "inputs": {
+        "layers/integration/canoptek-circle/artwork/icons/canoptek-circle-icon-token-transparent.png": "37c339ddaf0464675761ab26c97216d5d51bc039caf18a86db4934ae5caf6cfd",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41"
+      }
+    },
+    "generate_box_texture": {
+      "outputs": {
+        "card-box-texture.jpg": {
+          "path": "output/canoptek-circle/cardbox/canoptek-circle-card-box-texture.jpg",
+          "hash": "a36a4b5f778b1e535e095363beb77a19ce871584aaea3e79729c6eb71d4071a6",
+          "modified": "2026-07-11T06:55:37.293500+00:00"
+        },
+        "card-box.obj": {
+          "path": "output/canoptek-circle/cardbox/canoptek-circle-card-box.obj",
+          "hash": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+          "modified": "2026-07-11T06:55:37.673682+00:00"
+        }
+      },
+      "completed": "2026-07-11T06:55:38.206907+00:00",
+      "inputs": {
+        "layers/integration/canoptek-circle/artwork/icons/canoptek-circle-icon-token.jpg": "45a8e0939b1de270ec816aae986ec33a1f88a231cdeaf152296393283ffe7577",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "config/defaults/box/card-box.obj": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+        "config/defaults/box/card-box-texture.jpg": "b2f310b01a0d28e8806e99ce0b972e8967e3014608eacefcb6ec51597695a313"
+      }
+    },
+    "generate_card_images": {
+      "outputs": {
+        "cards/datacards/canoptek-macrocyte-accelerator-back.jpg": {
+          "path": "output/canoptek-circle/cards/datacards/canoptek-macrocyte-accelerator-back.jpg",
+          "hash": "f7e931e4a96d76f80f0ace5782a02b448c3c8569747e39cbb6e7c972317d62f5",
+          "modified": "2026-07-11T06:56:29.433819+00:00"
+        },
+        "cards/datacards/canoptek-macrocyte-accelerator-front.jpg": {
+          "path": "output/canoptek-circle/cards/datacards/canoptek-macrocyte-accelerator-front.jpg",
+          "hash": "4d9892fe5dcbebb0c191627f41bb1fe72e7a167ccbc6f722719b6859d1d4c693",
+          "modified": "2026-07-11T06:56:29.853978+00:00"
+        },
+        "cards/datacards/canoptek-macrocyte-reanimator-back.jpg": {
+          "path": "output/canoptek-circle/cards/datacards/canoptek-macrocyte-reanimator-back.jpg",
+          "hash": "b19b497c2920f241f5df433880d8781af9729d45e0f04b80fcfdc2f9895bd6a8",
+          "modified": "2026-07-11T06:56:30.696039+00:00"
+        },
+        "cards/datacards/canoptek-macrocyte-reanimator-front.jpg": {
+          "path": "output/canoptek-circle/cards/datacards/canoptek-macrocyte-reanimator-front.jpg",
+          "hash": "aafebf1c0865f286afaa3b251b04ebf5e92c546c8ff4434afe4b19f0308704a0",
+          "modified": "2026-07-11T06:56:31.154154+00:00"
+        },
+        "cards/datacards/canoptek-macrocyte-warrior-back.jpg": {
+          "path": "output/canoptek-circle/cards/datacards/canoptek-macrocyte-warrior-back.jpg",
+          "hash": "f089dcf702e873b9a5820e156b987a700c4cebd3333648f73b4e704d268f73d8",
+          "modified": "2026-07-11T06:56:31.685993+00:00"
+        },
+        "cards/datacards/canoptek-macrocyte-warrior-front.jpg": {
+          "path": "output/canoptek-circle/cards/datacards/canoptek-macrocyte-warrior-front.jpg",
+          "hash": "a713d0446a1cafd5abae019b8d2431f368fd1d10920c60e6e59acf764dd10b3d",
+          "modified": "2026-07-11T06:56:33.264195+00:00"
+        },
+        "cards/datacards/canoptek-tomb-crawler-back.jpg": {
+          "path": "output/canoptek-circle/cards/datacards/canoptek-tomb-crawler-back.jpg",
+          "hash": "84aac280246d98001a0b1ec581a8b7a4405f384fb21b97b4b4531c59d2e9bf1f",
+          "modified": "2026-07-11T06:56:34.531449+00:00"
+        },
+        "cards/datacards/canoptek-tomb-crawler-front.jpg": {
+          "path": "output/canoptek-circle/cards/datacards/canoptek-tomb-crawler-front.jpg",
+          "hash": "7ea64440565f52cd659dcb93350eaa7491aa1d663b1c5dbafed2d72693d82edb",
+          "modified": "2026-07-11T06:56:39.713282+00:00"
+        },
+        "cards/datacards/geomancer-card1-back.jpg": {
+          "path": "output/canoptek-circle/cards/datacards/geomancer-card1-back.jpg",
+          "hash": "949132d9cd9a2f45ed75dc8e4049c709ad8571734ea6c4f2bb46b2278ed9f3b5",
+          "modified": "2026-07-11T06:56:42.285885+00:00"
+        },
+        "cards/datacards/geomancer-card1-front.jpg": {
+          "path": "output/canoptek-circle/cards/datacards/geomancer-card1-front.jpg",
+          "hash": "d936522064f01497e1018398ccc65d0c01de76ad229fea6e0ddc51ebb4a6399d",
+          "modified": "2026-07-11T06:56:45.902539+00:00"
+        },
+        "cards/datacards/geomancer-card2-back.jpg": {
+          "path": "output/canoptek-circle/cards/datacards/geomancer-card2-back.jpg",
+          "hash": "949132d9cd9a2f45ed75dc8e4049c709ad8571734ea6c4f2bb46b2278ed9f3b5",
+          "modified": "2026-07-11T06:56:47.610277+00:00"
+        },
+        "cards/datacards/geomancer-card2-front.jpg": {
+          "path": "output/canoptek-circle/cards/datacards/geomancer-card2-front.jpg",
+          "hash": "a26138c38b540b51fe69276bd5fa9d9ec93476ae56b434e3d0ee1c42895eabd3",
+          "modified": "2026-07-11T06:56:53.617288+00:00"
+        },
+        "cards/datacards/geomancer-card3-back.jpg": {
+          "path": "output/canoptek-circle/cards/datacards/geomancer-card3-back.jpg",
+          "hash": "949132d9cd9a2f45ed75dc8e4049c709ad8571734ea6c4f2bb46b2278ed9f3b5",
+          "modified": "2026-07-11T06:56:56.577140+00:00"
+        },
+        "cards/datacards/geomancer-card3-front.jpg": {
+          "path": "output/canoptek-circle/cards/datacards/geomancer-card3-front.jpg",
+          "hash": "43be657871b4936b28834ed06171d21cbf0bf772c60044838fcf8a29c068d2f0",
+          "modified": "2026-07-11T06:57:00.214154+00:00"
+        },
+        "cards/equipment/canoptek-circle-awakened-obelisk-nodes-back.jpg": {
+          "path": "output/canoptek-circle/cards/equipment/canoptek-circle-awakened-obelisk-nodes-back.jpg",
+          "hash": "d4fe444ebacfe75eae5de9cfc3f5859a197de196bb0da814e1f46843826d4b6d",
+          "modified": "2026-07-11T06:57:01.896992+00:00"
+        },
+        "cards/equipment/canoptek-circle-awakened-obelisk-nodes-front.jpg": {
+          "path": "output/canoptek-circle/cards/equipment/canoptek-circle-awakened-obelisk-nodes-front.jpg",
+          "hash": "e5ae141bbeb82e45f0d93ff6a98ece0287d618890782493da1e26b9f99f41fec",
+          "modified": "2026-07-11T06:57:05.907020+00:00"
+        },
+        "cards/equipment/canoptek-circle-matrix-manipulator-back.jpg": {
+          "path": "output/canoptek-circle/cards/equipment/canoptek-circle-matrix-manipulator-back.jpg",
+          "hash": "d4fe444ebacfe75eae5de9cfc3f5859a197de196bb0da814e1f46843826d4b6d",
+          "modified": "2026-07-11T06:57:08.541372+00:00"
+        },
+        "cards/equipment/canoptek-circle-matrix-manipulator-front.jpg": {
+          "path": "output/canoptek-circle/cards/equipment/canoptek-circle-matrix-manipulator-front.jpg",
+          "hash": "0f9db808e68a65348f76cb1d85e8a7a38dd64c3f7fce065c31b7982e349959e8",
+          "modified": "2026-07-11T06:57:12.105932+00:00"
+        },
+        "cards/equipment/canoptek-circle-nanoscarab-caskets-back.jpg": {
+          "path": "output/canoptek-circle/cards/equipment/canoptek-circle-nanoscarab-caskets-back.jpg",
+          "hash": "d4fe444ebacfe75eae5de9cfc3f5859a197de196bb0da814e1f46843826d4b6d",
+          "modified": "2026-07-11T06:57:13.312135+00:00"
+        },
+        "cards/equipment/canoptek-circle-nanoscarab-caskets-front.jpg": {
+          "path": "output/canoptek-circle/cards/equipment/canoptek-circle-nanoscarab-caskets-front.jpg",
+          "hash": "c35e0e16973999a06750f3c9a07e1467ac95bc8da611e1a2d17f98f2de1533e7",
+          "modified": "2026-07-11T06:57:15.588960+00:00"
+        },
+        "cards/equipment/canoptek-circle-phase-shifter-back.jpg": {
+          "path": "output/canoptek-circle/cards/equipment/canoptek-circle-phase-shifter-back.jpg",
+          "hash": "d4fe444ebacfe75eae5de9cfc3f5859a197de196bb0da814e1f46843826d4b6d",
+          "modified": "2026-07-11T06:57:16.760719+00:00"
+        },
+        "cards/equipment/canoptek-circle-phase-shifter-front.jpg": {
+          "path": "output/canoptek-circle/cards/equipment/canoptek-circle-phase-shifter-front.jpg",
+          "hash": "bb93b752e7383f1b097ba6297739514716bd1d186e056db8d97bcfefebdfb031",
+          "modified": "2026-07-11T06:57:19.433732+00:00"
+        },
+        "cards/faction_rules/canoptek-circle-obelisk-node-matrix-back.jpg": {
+          "path": "output/canoptek-circle/cards/faction_rules/canoptek-circle-obelisk-node-matrix-back.jpg",
+          "hash": "99c7e4ab920c7a718ca6bc92aabfe76e509556af6dd28c2e0ffb9f7d89b0327f",
+          "modified": "2026-07-11T06:57:21.080361+00:00"
+        },
+        "cards/faction_rules/canoptek-circle-obelisk-node-matrix-front.jpg": {
+          "path": "output/canoptek-circle/cards/faction_rules/canoptek-circle-obelisk-node-matrix-front.jpg",
+          "hash": "87f58f9b10d0413034a7b0e3cd0812f5e744ad3799fc86eed2ee2898dff5eb9b",
+          "modified": "2026-07-11T06:57:23.554008+00:00"
+        },
+        "cards/firefight_ploys/canoptek-circle-animate-obelisk-nodes-back.jpg": {
+          "path": "output/canoptek-circle/cards/firefight_ploys/canoptek-circle-animate-obelisk-nodes-back.jpg",
+          "hash": "d4fe444ebacfe75eae5de9cfc3f5859a197de196bb0da814e1f46843826d4b6d",
+          "modified": "2026-07-11T06:57:25.834906+00:00"
+        },
+        "cards/firefight_ploys/canoptek-circle-animate-obelisk-nodes-front.jpg": {
+          "path": "output/canoptek-circle/cards/firefight_ploys/canoptek-circle-animate-obelisk-nodes-front.jpg",
+          "hash": "252080301e71d27325a812ece91ef095ca623ce186690b8c87b3cf370388298f",
+          "modified": "2026-07-11T06:57:27.913486+00:00"
+        },
+        "cards/firefight_ploys/canoptek-circle-nodal-response-back.jpg": {
+          "path": "output/canoptek-circle/cards/firefight_ploys/canoptek-circle-nodal-response-back.jpg",
+          "hash": "d4fe444ebacfe75eae5de9cfc3f5859a197de196bb0da814e1f46843826d4b6d",
+          "modified": "2026-07-11T06:57:29.463145+00:00"
+        },
+        "cards/firefight_ploys/canoptek-circle-nodal-response-front.jpg": {
+          "path": "output/canoptek-circle/cards/firefight_ploys/canoptek-circle-nodal-response-front.jpg",
+          "hash": "5ec8a9bcc5f0f6e45f262e67e420a386261cc51bbb25761c885cf8a77a782dec",
+          "modified": "2026-07-11T06:57:31.193677+00:00"
+        },
+        "cards/firefight_ploys/canoptek-circle-sacrificial-thrall-back.jpg": {
+          "path": "output/canoptek-circle/cards/firefight_ploys/canoptek-circle-sacrificial-thrall-back.jpg",
+          "hash": "d4fe444ebacfe75eae5de9cfc3f5859a197de196bb0da814e1f46843826d4b6d",
+          "modified": "2026-07-11T06:57:31.336359+00:00"
+        },
+        "cards/firefight_ploys/canoptek-circle-sacrificial-thrall-front.jpg": {
+          "path": "output/canoptek-circle/cards/firefight_ploys/canoptek-circle-sacrificial-thrall-front.jpg",
+          "hash": "c2ddcdb20ee2b56c5ca9ecd4d52b9ba41945452e32308499ace4765027dfd0a8",
+          "modified": "2026-07-11T06:57:33.321056+00:00"
+        },
+        "cards/firefight_ploys/canoptek-circle-shield-flare-back.jpg": {
+          "path": "output/canoptek-circle/cards/firefight_ploys/canoptek-circle-shield-flare-back.jpg",
+          "hash": "d4fe444ebacfe75eae5de9cfc3f5859a197de196bb0da814e1f46843826d4b6d",
+          "modified": "2026-07-11T06:57:33.768715+00:00"
+        },
+        "cards/firefight_ploys/canoptek-circle-shield-flare-front.jpg": {
+          "path": "output/canoptek-circle/cards/firefight_ploys/canoptek-circle-shield-flare-front.jpg",
+          "hash": "e7880ae79462c15c27724fea143d91a8b2ed56aef041b06eb61fbc9525e32682",
+          "modified": "2026-07-11T06:57:34.550520+00:00"
+        },
+        "cards/operatives_selection/canoptek-circle-operative-selection-back.jpg": {
+          "path": "output/canoptek-circle/cards/operatives_selection/canoptek-circle-operative-selection-back.jpg",
+          "hash": "d4fe444ebacfe75eae5de9cfc3f5859a197de196bb0da814e1f46843826d4b6d",
+          "modified": "2026-07-11T06:57:35.092735+00:00"
+        },
+        "cards/operatives_selection/canoptek-circle-operative-selection-front.jpg": {
+          "path": "output/canoptek-circle/cards/operatives_selection/canoptek-circle-operative-selection-front.jpg",
+          "hash": "b650389d7a59590bd99a61cc052c1563f44f4ff933719408e5bdb16b873d5b3d",
+          "modified": "2026-07-11T06:57:35.514553+00:00"
+        },
+        "cards/strategy_ploys/canoptek-circle-cryptogravitic-repulsion-back.jpg": {
+          "path": "output/canoptek-circle/cards/strategy_ploys/canoptek-circle-cryptogravitic-repulsion-back.jpg",
+          "hash": "d4fe444ebacfe75eae5de9cfc3f5859a197de196bb0da814e1f46843826d4b6d",
+          "modified": "2026-07-11T06:57:35.579047+00:00"
+        },
+        "cards/strategy_ploys/canoptek-circle-cryptogravitic-repulsion-front.jpg": {
+          "path": "output/canoptek-circle/cards/strategy_ploys/canoptek-circle-cryptogravitic-repulsion-front.jpg",
+          "hash": "326d995a67d96d16a8729537628288ff68f67b98b33d9fdbc93c98194509a654",
+          "modified": "2026-07-11T06:57:35.984283+00:00"
+        },
+        "cards/strategy_ploys/canoptek-circle-hypershielding-back.jpg": {
+          "path": "output/canoptek-circle/cards/strategy_ploys/canoptek-circle-hypershielding-back.jpg",
+          "hash": "d4fe444ebacfe75eae5de9cfc3f5859a197de196bb0da814e1f46843826d4b6d",
+          "modified": "2026-07-11T06:57:36.058653+00:00"
+        },
+        "cards/strategy_ploys/canoptek-circle-hypershielding-front.jpg": {
+          "path": "output/canoptek-circle/cards/strategy_ploys/canoptek-circle-hypershielding-front.jpg",
+          "hash": "42fd2c84639946caffefd06af117cb4b2659e34a1e3f74a614458095a22c8e4f",
+          "modified": "2026-07-11T06:57:36.478467+00:00"
+        },
+        "cards/strategy_ploys/canoptek-circle-souldrain-back.jpg": {
+          "path": "output/canoptek-circle/cards/strategy_ploys/canoptek-circle-souldrain-back.jpg",
+          "hash": "d4fe444ebacfe75eae5de9cfc3f5859a197de196bb0da814e1f46843826d4b6d",
+          "modified": "2026-07-11T06:57:36.545871+00:00"
+        },
+        "cards/strategy_ploys/canoptek-circle-souldrain-front.jpg": {
+          "path": "output/canoptek-circle/cards/strategy_ploys/canoptek-circle-souldrain-front.jpg",
+          "hash": "f4e0c25f55713998150afdd54d93157b116011b890c5606071652600d1277d55",
+          "modified": "2026-07-11T06:57:36.557705+00:00"
+        },
+        "cards/strategy_ploys/canoptek-circle-transdynamic-amplification-back.jpg": {
+          "path": "output/canoptek-circle/cards/strategy_ploys/canoptek-circle-transdynamic-amplification-back.jpg",
+          "hash": "d4fe444ebacfe75eae5de9cfc3f5859a197de196bb0da814e1f46843826d4b6d",
+          "modified": "2026-07-11T06:57:36.567425+00:00"
+        },
+        "cards/strategy_ploys/canoptek-circle-transdynamic-amplification-front.jpg": {
+          "path": "output/canoptek-circle/cards/strategy_ploys/canoptek-circle-transdynamic-amplification-front.jpg",
+          "hash": "32e2f431ca8857f49e343f9fe02231daa841f6c3472ad9d67edd2e55dd9bacb8",
+          "modified": "2026-07-11T06:57:36.577598+00:00"
+        },
+        "cards/token_guide/canoptek-circle-token-guide-back.jpg": {
+          "path": "output/canoptek-circle/cards/token_guide/canoptek-circle-token-guide-back.jpg",
+          "hash": "d4fe444ebacfe75eae5de9cfc3f5859a197de196bb0da814e1f46843826d4b6d",
+          "modified": "2026-07-11T06:57:36.586828+00:00"
+        },
+        "cards/token_guide/canoptek-circle-token-guide-front.jpg": {
+          "path": "output/canoptek-circle/cards/token_guide/canoptek-circle-token-guide-front.jpg",
+          "hash": "f61c5cebb31314d5b0d15b819341f42f45a9400f6e4a2e7b11dfd5da91f005c8",
+          "modified": "2026-07-11T06:57:36.594006+00:00"
+        }
+      },
+      "completed": "2026-07-11T06:57:37.980189+00:00",
+      "inputs": {
+        "layers/integration/canoptek-circle/manifest.json": "7b66dcb11653656b18fe9cef77bb41e129557fc36623fc5d072cef804f64e1a5",
+        "layers/integration/canoptek-circle/canoptek-circle-datacard-canoptek-macrocyte-accelerator.pdf": "713eb635f5e03b2a3bd5e1e0d188bb2b9acf3226e0bf7f67c0c593d7216bd284",
+        "layers/integration/canoptek-circle/canoptek-circle-datacard-canoptek-macrocyte-reanimator.pdf": "70ab63ecc4ff5ddf82c5f43f8745692eb22bfe1c4bdef9b7deee23205a1a22c3",
+        "layers/integration/canoptek-circle/canoptek-circle-datacard-canoptek-macrocyte-warrior.pdf": "3ae52380f1316b2553d6d8ad4e067073a5f20186dbdc0079c3bc3a332aa88cc9",
+        "layers/integration/canoptek-circle/canoptek-circle-datacard-canoptek-tomb-crawler.pdf": "820599744ebd6017bb98787f2ddb202fd70db7a8812a6544612f51b0205086d7",
+        "layers/integration/canoptek-circle/canoptek-circle-datacard-geomancer-1.pdf": "1e32796d31dc41f890fe9dd0be201c7c319302f3cd2d9bfed0d29bfb41f00537",
+        "layers/integration/canoptek-circle/canoptek-circle-datacard-geomancer-2.pdf": "7b648164f686c5a3db9ef101e4066675f395dc9a856d5d9430b2121fc40f083c",
+        "layers/integration/canoptek-circle/canoptek-circle-datacard-geomancer-3.pdf": "91d83eb7401ada278303a363206854fbe8e46d22f648cbb3ccbd0cfa9ef18a64",
+        "layers/integration/canoptek-circle/canoptek-circle-equipment-awakened-obelisk-nodes.pdf": "40037e408efd7bc28f800fb3327c300f99cca7297a4ac2978e36c5713ca39e3f",
+        "layers/integration/canoptek-circle/canoptek-circle-equipment-matrix-manipulator.pdf": "409ec0657de30605dd4e1f8e49a74cc68e7923345dea5114178edd37c6937f9f",
+        "layers/integration/canoptek-circle/canoptek-circle-equipment-nanoscarab-caskets.pdf": "dd9b1ed7e3992395142e2aed65dea7b554cf89b5373a0e968ac09db77d47dda9",
+        "layers/integration/canoptek-circle/canoptek-circle-equipment-phase-shifter.pdf": "ac5896bcac872a03146489e231b29e3e9726c05b580a506e5d02fd46c07bc2b5",
+        "layers/integration/canoptek-circle/canoptek-circle-faction-rule-obelisk-node-matrix.pdf": "13ffe2870191b461e840b97e57e674d34608d02a42a540512d4828cfa1c2189f",
+        "layers/integration/canoptek-circle/canoptek-circle-firefight-ploy-animate-obelisk-nodes.pdf": "3c74307940433da4fa111e89ab73226b7f7dd2d31383fa0fcef3a8004193c623",
+        "layers/integration/canoptek-circle/canoptek-circle-firefight-ploy-nodal-response.pdf": "230928a8d9b060f37939a1720c6da48bfc99470322beec06736433870bb39b29",
+        "layers/integration/canoptek-circle/canoptek-circle-firefight-ploy-sacrificial-thrall.pdf": "729408835da74907ec3dba62c58ee076f858502d7350b6370a1934a1c09f3da2",
+        "layers/integration/canoptek-circle/canoptek-circle-firefight-ploy-shield-flare.pdf": "4b202603cee31ebf3daf1f6263eaf8259bcfd54fec0dd9227f5f2f9657ccdcd2",
+        "layers/integration/canoptek-circle/canoptek-circle-operatives-selection-operative-selection.pdf": "cab63f80018087e0c594ad08575a7e3e064b213f568d1c7eb362786dc3e35e03",
+        "layers/integration/canoptek-circle/canoptek-circle-strategy-ploy-cryptogravitic-repulsion.pdf": "156dce68d59c2e9ab70787f78b266e014c6077be498501b304dc29048088644e",
+        "layers/integration/canoptek-circle/canoptek-circle-strategy-ploy-hypershielding.pdf": "5542a455edb4b4688ddc54754f7c6e2a4e6cbfb5a0257db18625ae2f9bb0659d",
+        "layers/integration/canoptek-circle/canoptek-circle-strategy-ploy-souldrain.pdf": "e4eccf33ad99dcc2218f1c3f17d675fce79a43dd65fa26792c6d24b2d3d96b05",
+        "layers/integration/canoptek-circle/canoptek-circle-strategy-ploy-transdynamic-amplification.pdf": "51d8dc670d39362696ddfb20b83bb991d18b8258de31a2c2d0bc94006ddb0401",
+        "layers/integration/canoptek-circle/canoptek-circle-token-guide-token-guide.pdf": "3008ccb21bc3fd46e55fa25e1cda6445b5e32f4458af35d97836c126c8588618",
+        "layers/integration/canoptek-circle/card-backside/canoptek-circle-backside-portrait.jpg": "d4fe444ebacfe75eae5de9cfc3f5859a197de196bb0da814e1f46843826d4b6d",
+        "config/defaults/card-backside/default-backside-portrait.jpg": "f00ff15fa70005b9f804de08519e2e83485d7eaf78dfacea65dcef0eb1a29c22",
+        "layers/integration/canoptek-circle/card-backside/canoptek-circle-backside-landscape.jpg": "949132d9cd9a2f45ed75dc8e4049c709ad8571734ea6c4f2bb46b2278ed9f3b5",
+        "config/defaults/card-backside/default-backside-landscape.jpg": "1cf5580a1dff0c10adb1a286edad4479c487f3d2d698b0b8be84fe653039fd7e"
+      }
+    },
+    "extract_stats": {
+      "outputs": {
+        "team-data.json": {
+          "path": "output/canoptek-circle/data/canoptek-circle-team-data.json",
+          "hash": "12c8177555896318dd1de0087ef2f31b4edaec7d3a3da8330c8aa738436a415f",
+          "modified": "2026-07-11T06:57:38.325047+00:00"
+        }
+      },
+      "completed": "2026-07-11T06:57:38.375754+00:00",
+      "inputs": {
+        "layers/integration/canoptek-circle/content/canoptek-circle-content.json": "12c8177555896318dd1de0087ef2f31b4edaec7d3a3da8330c8aa738436a415f"
+      }
+    },
+    "generate_tts": {
+      "outputs": {
+        "tts_objects/Canoptek Circle Box.json": {
+          "path": "output/canoptek-circle/tts_objects/Canoptek Circle Box.json",
+          "hash": "e822d3f99b681853cc1061a97673920f8531d43924165bfe239ad083d63bc541",
+          "modified": "2026-07-12T18:32:25.701861+00:00"
+        },
+        "tts_objects/Canoptek Circle.json": {
+          "path": "output/canoptek-circle/tts_objects/Canoptek Circle.json",
+          "hash": "93aa20cd33300774af45f598251a663011af30ebb27e6b7b55b531f0f53047d6",
+          "modified": "2026-07-12T18:32:25.713938+00:00"
+        }
+      },
+      "completed": "2026-07-12T18:32:25.753090+00:00",
+      "inputs": {
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "config/team-guids.json": "1dea0eaf2c7d1c37c86aba088cdf876f0638d2dcaca162888fea8422c2d5c9db",
+        "output/canoptek-circle/cards/datacards/canoptek-macrocyte-accelerator-back.jpg": "f7e931e4a96d76f80f0ace5782a02b448c3c8569747e39cbb6e7c972317d62f5",
+        "output/canoptek-circle/cards/datacards/canoptek-macrocyte-accelerator-front.jpg": "4d9892fe5dcbebb0c191627f41bb1fe72e7a167ccbc6f722719b6859d1d4c693",
+        "output/canoptek-circle/cards/datacards/canoptek-macrocyte-reanimator-back.jpg": "b19b497c2920f241f5df433880d8781af9729d45e0f04b80fcfdc2f9895bd6a8",
+        "output/canoptek-circle/cards/datacards/canoptek-macrocyte-reanimator-front.jpg": "aafebf1c0865f286afaa3b251b04ebf5e92c546c8ff4434afe4b19f0308704a0",
+        "output/canoptek-circle/cards/datacards/canoptek-macrocyte-warrior-back.jpg": "f089dcf702e873b9a5820e156b987a700c4cebd3333648f73b4e704d268f73d8",
+        "output/canoptek-circle/cards/datacards/canoptek-macrocyte-warrior-front.jpg": "a713d0446a1cafd5abae019b8d2431f368fd1d10920c60e6e59acf764dd10b3d",
+        "output/canoptek-circle/cards/datacards/canoptek-tomb-crawler-back.jpg": "84aac280246d98001a0b1ec581a8b7a4405f384fb21b97b4b4531c59d2e9bf1f",
+        "output/canoptek-circle/cards/datacards/canoptek-tomb-crawler-front.jpg": "7ea64440565f52cd659dcb93350eaa7491aa1d663b1c5dbafed2d72693d82edb",
+        "output/canoptek-circle/cards/datacards/geomancer-card1-back.jpg": "949132d9cd9a2f45ed75dc8e4049c709ad8571734ea6c4f2bb46b2278ed9f3b5",
+        "output/canoptek-circle/cards/datacards/geomancer-card1-front.jpg": "d936522064f01497e1018398ccc65d0c01de76ad229fea6e0ddc51ebb4a6399d",
+        "output/canoptek-circle/cards/datacards/geomancer-card2-back.jpg": "949132d9cd9a2f45ed75dc8e4049c709ad8571734ea6c4f2bb46b2278ed9f3b5",
+        "output/canoptek-circle/cards/datacards/geomancer-card2-front.jpg": "a26138c38b540b51fe69276bd5fa9d9ec93476ae56b434e3d0ee1c42895eabd3",
+        "output/canoptek-circle/cards/datacards/geomancer-card3-back.jpg": "949132d9cd9a2f45ed75dc8e4049c709ad8571734ea6c4f2bb46b2278ed9f3b5",
+        "output/canoptek-circle/cards/datacards/geomancer-card3-front.jpg": "43be657871b4936b28834ed06171d21cbf0bf772c60044838fcf8a29c068d2f0",
+        "output/canoptek-circle/cards/equipment/canoptek-circle-awakened-obelisk-nodes-back.jpg": "d4fe444ebacfe75eae5de9cfc3f5859a197de196bb0da814e1f46843826d4b6d",
+        "output/canoptek-circle/cards/equipment/canoptek-circle-awakened-obelisk-nodes-front.jpg": "e5ae141bbeb82e45f0d93ff6a98ece0287d618890782493da1e26b9f99f41fec",
+        "output/canoptek-circle/cards/equipment/canoptek-circle-matrix-manipulator-back.jpg": "d4fe444ebacfe75eae5de9cfc3f5859a197de196bb0da814e1f46843826d4b6d",
+        "output/canoptek-circle/cards/equipment/canoptek-circle-matrix-manipulator-front.jpg": "0f9db808e68a65348f76cb1d85e8a7a38dd64c3f7fce065c31b7982e349959e8",
+        "output/canoptek-circle/cards/equipment/canoptek-circle-nanoscarab-caskets-back.jpg": "d4fe444ebacfe75eae5de9cfc3f5859a197de196bb0da814e1f46843826d4b6d",
+        "output/canoptek-circle/cards/equipment/canoptek-circle-nanoscarab-caskets-front.jpg": "c35e0e16973999a06750f3c9a07e1467ac95bc8da611e1a2d17f98f2de1533e7",
+        "output/canoptek-circle/cards/equipment/canoptek-circle-phase-shifter-back.jpg": "d4fe444ebacfe75eae5de9cfc3f5859a197de196bb0da814e1f46843826d4b6d",
+        "output/canoptek-circle/cards/equipment/canoptek-circle-phase-shifter-front.jpg": "bb93b752e7383f1b097ba6297739514716bd1d186e056db8d97bcfefebdfb031",
+        "output/canoptek-circle/cards/faction_rules/canoptek-circle-obelisk-node-matrix-back.jpg": "99c7e4ab920c7a718ca6bc92aabfe76e509556af6dd28c2e0ffb9f7d89b0327f",
+        "output/canoptek-circle/cards/faction_rules/canoptek-circle-obelisk-node-matrix-front.jpg": "87f58f9b10d0413034a7b0e3cd0812f5e744ad3799fc86eed2ee2898dff5eb9b",
+        "output/canoptek-circle/cards/firefight_ploys/canoptek-circle-animate-obelisk-nodes-back.jpg": "d4fe444ebacfe75eae5de9cfc3f5859a197de196bb0da814e1f46843826d4b6d",
+        "output/canoptek-circle/cards/firefight_ploys/canoptek-circle-animate-obelisk-nodes-front.jpg": "252080301e71d27325a812ece91ef095ca623ce186690b8c87b3cf370388298f",
+        "output/canoptek-circle/cards/firefight_ploys/canoptek-circle-nodal-response-back.jpg": "d4fe444ebacfe75eae5de9cfc3f5859a197de196bb0da814e1f46843826d4b6d",
+        "output/canoptek-circle/cards/firefight_ploys/canoptek-circle-nodal-response-front.jpg": "5ec8a9bcc5f0f6e45f262e67e420a386261cc51bbb25761c885cf8a77a782dec",
+        "output/canoptek-circle/cards/firefight_ploys/canoptek-circle-sacrificial-thrall-back.jpg": "d4fe444ebacfe75eae5de9cfc3f5859a197de196bb0da814e1f46843826d4b6d",
+        "output/canoptek-circle/cards/firefight_ploys/canoptek-circle-sacrificial-thrall-front.jpg": "c2ddcdb20ee2b56c5ca9ecd4d52b9ba41945452e32308499ace4765027dfd0a8",
+        "output/canoptek-circle/cards/firefight_ploys/canoptek-circle-shield-flare-back.jpg": "d4fe444ebacfe75eae5de9cfc3f5859a197de196bb0da814e1f46843826d4b6d",
+        "output/canoptek-circle/cards/firefight_ploys/canoptek-circle-shield-flare-front.jpg": "e7880ae79462c15c27724fea143d91a8b2ed56aef041b06eb61fbc9525e32682",
+        "output/canoptek-circle/cards/operatives_selection/canoptek-circle-operative-selection-back.jpg": "d4fe444ebacfe75eae5de9cfc3f5859a197de196bb0da814e1f46843826d4b6d",
+        "output/canoptek-circle/cards/operatives_selection/canoptek-circle-operative-selection-front.jpg": "b650389d7a59590bd99a61cc052c1563f44f4ff933719408e5bdb16b873d5b3d",
+        "output/canoptek-circle/cards/strategy_ploys/canoptek-circle-cryptogravitic-repulsion-back.jpg": "d4fe444ebacfe75eae5de9cfc3f5859a197de196bb0da814e1f46843826d4b6d",
+        "output/canoptek-circle/cards/strategy_ploys/canoptek-circle-cryptogravitic-repulsion-front.jpg": "326d995a67d96d16a8729537628288ff68f67b98b33d9fdbc93c98194509a654",
+        "output/canoptek-circle/cards/strategy_ploys/canoptek-circle-hypershielding-back.jpg": "d4fe444ebacfe75eae5de9cfc3f5859a197de196bb0da814e1f46843826d4b6d",
+        "output/canoptek-circle/cards/strategy_ploys/canoptek-circle-hypershielding-front.jpg": "42fd2c84639946caffefd06af117cb4b2659e34a1e3f74a614458095a22c8e4f",
+        "output/canoptek-circle/cards/strategy_ploys/canoptek-circle-souldrain-back.jpg": "d4fe444ebacfe75eae5de9cfc3f5859a197de196bb0da814e1f46843826d4b6d",
+        "output/canoptek-circle/cards/strategy_ploys/canoptek-circle-souldrain-front.jpg": "f4e0c25f55713998150afdd54d93157b116011b890c5606071652600d1277d55",
+        "output/canoptek-circle/cards/strategy_ploys/canoptek-circle-transdynamic-amplification-back.jpg": "d4fe444ebacfe75eae5de9cfc3f5859a197de196bb0da814e1f46843826d4b6d",
+        "output/canoptek-circle/cards/strategy_ploys/canoptek-circle-transdynamic-amplification-front.jpg": "32e2f431ca8857f49e343f9fe02231daa841f6c3472ad9d67edd2e55dd9bacb8",
+        "output/canoptek-circle/cards/token_guide/canoptek-circle-token-guide-back.jpg": "d4fe444ebacfe75eae5de9cfc3f5859a197de196bb0da814e1f46843826d4b6d",
+        "output/canoptek-circle/cards/token_guide/canoptek-circle-token-guide-front.jpg": "f61c5cebb31314d5b0d15b819341f42f45a9400f6e4a2e7b11dfd5da91f005c8",
+        "output/canoptek-circle/cardbox/canoptek-circle-card-box-texture.jpg": "a36a4b5f778b1e535e095363beb77a19ce871584aaea3e79729c6eb71d4071a6",
+        "output/canoptek-circle/cardbox/canoptek-circle-card-box.obj": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+        "output/canoptek-circle/tokens/canoptek-circle-awakened-obelisk-node.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/canoptek-circle/tokens/canoptek-circle-awakened-obelisk-node.png": "264010a40c8a3315ea6d6553e3c432a5e427be152f9452c01c4eb6dccdf30c4b",
+        "output/canoptek-circle/tokens/canoptek-circle-matrix-manipulator.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/canoptek-circle/tokens/canoptek-circle-matrix-manipulator.png": "3ad09d64a607daa77fa85deb9d20af48b8c370a72db4363cb2ea5b381d4db97c",
+        "output/canoptek-circle/tokens/canoptek-circle-molecular-breach.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/canoptek-circle/tokens/canoptek-circle-molecular-breach.png": "cf70fe34c6d4602148ec5152c8c7c6347bbf8fd2e3223d769461f4f9e1816dda",
+        "output/canoptek-circle/tokens/canoptek-circle-obelisk-node.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/canoptek-circle/tokens/canoptek-circle-obelisk-node.png": "e3e2e97d21f610f562a4912f42d32520a343364d0c60aec61dfd607aa3058b41",
+        "output/canoptek-circle/tokens/canoptek-circle-phase-shifter.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/canoptek-circle/tokens/canoptek-circle-phase-shifter.png": "b33211f11885a2049dac2cc8b38134ae146e7fba7203f8a7e5a1ae6e6e8806bf",
+        "output/canoptek-circle/tokens/canoptek-circle-reanimate.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/canoptek-circle/tokens/canoptek-circle-reanimate.png": "621dda932f0f025b1dacfd8537dfe2fc08d3234c3d5745e620b9825c0d7e5ab4",
+        "output/canoptek-circle/tokens/tokenbag/canoptek-circle-token-bag-icon.png": "45a8e0939b1de270ec816aae986ec33a1f88a231cdeaf152296393283ffe7577",
+        "output/canoptek-circle/tokens/tokenbag/canoptek-circle-token-bag.obj": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+        "output/canoptek-circle/dice/canoptek-circle-dice-dark.jpg": "523e3ba6f5a57cfe415e15f1f3eb121207fcc985801dbce2822696b812101bbb",
+        "output/canoptek-circle/dice/canoptek-circle-dice-light.jpg": "31b0092d1d5075034bec6c07cefbd10fdfaddd999bdcba85eecf57882b7e7109",
+        "output/canoptek-circle/dice/canoptek-circle-dice-team.jpg": "288428ff3f94f355331660efcdcb47dca2f2e7c3417908226ce77d320d271dfc",
+        "output/canoptek-circle/data/canoptek-circle-team-data.json": "12c8177555896318dd1de0087ef2f31b4edaec7d3a3da8330c8aa738436a415f",
+        "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
+        "config/defaults/tts-script/datacard-load-stats.lua": "2d5f4088c2ff09f54988cf8722080f536b4e1b998cc2b4c1f1ea94e6b18eb92e",
+        "config/defaults/tts-script/display-table-manager-script.lua": "0dab4381078d90802f25e2cc825bc3658be35ee13ab3e98831c9d248c2526689",
+        "config/defaults/tts-script/faction-rule-chapter-tactics.lua": "c906742268076fb91f7cb4a92c6b588e1122ccddb692688f635c8dd4f7110ad0",
+        "config/defaults/tts-script/intermediate-updater.lua": "1a2d6dbc1a8c9c57ba6a3e7a3d4bc4b7a38a6c242a93f6ef3dae698123384d35",
+        "config/defaults/tts-script/single-object-updater.lua": "3613b85169e986a8e50ebe221482079e27c18037e3f48920aa0f7e138c0ccacc",
+        "config/defaults/tts-script/team-spawner-clean-script.lua": "12457bff3961eee2293c42d81cf4f4eb8b103177245a1ab8b46fd65da40672a2",
+        "config/defaults/tts-script/team-spawner-script.lua": "a51ff45c8622923db909fb465781801511f235412f099f83dff728d4027650db",
+        "config/defaults/tts-script/tts-update-rules-in-box-script.lua": "1eddd1803087ed63181a1149c856db77eef3196dc45d0d283693fada44a357dd",
+        "config/defaults/tts-image/default-icon.png": "892aff2628b9685c813e77be05c66afc1dc4247bc1dc9ce6fe54f006c2608271",
+        "config/defaults/tts-image/spawner-token.png": "61903b093f01d834f5e4c4c069b1353ecf7d29f012fef914b3027266816d8a6b",
+        "config/defaults/tts-token/square-bag-mesh.obj": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+        "config/defaults/tts-token/template-diamond-cutter.png": "719f57ba2b86494be454a6d3d25d8567dde974a915f3dde5ddc0e2d8dafaa1a5",
+        "config/defaults/tts-token/template-octagon-cutter.png": "944632aeacab978293ae57758b63086166c5fbaf3b845f48b3dd61db67d5c076",
+        "config/defaults/tts-token/template-operative-cutter.png": "0e698ddd403d7f0e84f200eb42af73f5249a9c5539d773298ff4c700ac9fe153",
+        "config/defaults/tts-token/template-round-cutter.png": "6564e1451c9a135a1c756fd94cde1c71e373e3fa677b51bba9d4bbe9e795d544",
+        "config/defaults/tts-token/token-bag-script.lua": "1659887e0fbfb9e3ebbc1aa5f3df8e1ffd89ee192be24d2dd1f02fcb0407e486",
+        "config/defaults/tts-token/token-bg-sample.png": "f9f90664c7f1c877c6f050f6e85babde6523cdc0aed9c77de8c09214f44ee109",
+        "config/defaults/tts-token/token-mesh.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc"
+      }
+    },
+    "front_end": {
+      "outputs": {},
+      "sources": {
+        "faction-rules": {
+          "hash": "239dce6ee0782a4030a35ca60203891b6d1160a8f7bc213c21424ebc1ef44406",
+          "outputs": [
+            "layers/kt-app/extracted/canoptek-circle/cards/faction-rules/canoptek-circle-faction-rules-page_0.pdf",
+            "layers/kt-app/extracted/canoptek-circle/cards/faction-rules/canoptek-circle-faction-rules-page_1.pdf",
+            "layers/kt-app/extracted/canoptek-circle/cards/faction-rules/canoptek-circle-faction-rules-page_2.pdf"
+          ],
+          "modified": "2026-07-06T16:02:53.927068+00:00"
+        },
+        "equipment": {
+          "hash": "5785cb150e11306c5a960797444ffdbfa64fd8a47809c30ae4bc5ae7dc38b39c",
+          "outputs": [
+            "layers/kt-app/extracted/canoptek-circle/cards/equipment/canoptek-circle-equipment-page_0.pdf",
+            "layers/kt-app/extracted/canoptek-circle/cards/equipment/canoptek-circle-equipment-page_1.pdf",
+            "layers/kt-app/extracted/canoptek-circle/cards/equipment/canoptek-circle-equipment-page_2.pdf",
+            "layers/kt-app/extracted/canoptek-circle/cards/equipment/canoptek-circle-equipment-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:03:18.163495+00:00"
+        },
+        "operatives-selection": {
+          "hash": "f7e67e8f30868732872478f19ada5eac3f5cce6c944196b9ae420dda2b135bee",
+          "outputs": [
+            "layers/kt-app/extracted/canoptek-circle/cards/operatives-selection/canoptek-circle-operatives-selection-page_0.pdf"
+          ],
+          "modified": "2026-07-06T16:05:22.745397+00:00"
+        },
+        "firefight-ploys": {
+          "hash": "f8414a7d2b1ac0dcb8f8caca853f116ed41cde86aa8c716b924f175775477c89",
+          "outputs": [
+            "layers/kt-app/extracted/canoptek-circle/cards/firefight-ploys/canoptek-circle-firefight-ploys-page_0.pdf",
+            "layers/kt-app/extracted/canoptek-circle/cards/firefight-ploys/canoptek-circle-firefight-ploys-page_1.pdf",
+            "layers/kt-app/extracted/canoptek-circle/cards/firefight-ploys/canoptek-circle-firefight-ploys-page_2.pdf",
+            "layers/kt-app/extracted/canoptek-circle/cards/firefight-ploys/canoptek-circle-firefight-ploys-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:06:07.999062+00:00"
+        },
+        "datacards": {
+          "hash": "f8166d8a05e1969bd6f343346ae11460354646e1c5405751e45628f772f95094",
+          "outputs": [
+            "layers/kt-app/extracted/canoptek-circle/cards/datacards/canoptek-circle-datacards-page_0.pdf",
+            "layers/kt-app/extracted/canoptek-circle/cards/datacards/canoptek-circle-datacards-page_1.pdf",
+            "layers/kt-app/extracted/canoptek-circle/cards/datacards/canoptek-circle-datacards-page_2.pdf",
+            "layers/kt-app/extracted/canoptek-circle/cards/datacards/canoptek-circle-datacards-page_3.pdf",
+            "layers/kt-app/extracted/canoptek-circle/cards/datacards/canoptek-circle-datacards-page_4.pdf",
+            "layers/kt-app/extracted/canoptek-circle/cards/datacards/canoptek-circle-datacards-page_5.pdf",
+            "layers/kt-app/extracted/canoptek-circle/cards/datacards/canoptek-circle-datacards-page_6.pdf",
+            "layers/kt-app/extracted/canoptek-circle/cards/datacards/canoptek-circle-datacards-page_7.pdf",
+            "layers/kt-app/extracted/canoptek-circle/cards/datacards/canoptek-circle-datacards-page_8.pdf",
+            "layers/kt-app/extracted/canoptek-circle/cards/datacards/canoptek-circle-datacards-page_9.pdf",
+            "layers/kt-app/extracted/canoptek-circle/cards/datacards/canoptek-circle-datacards-page_10.pdf"
+          ],
+          "modified": "2026-07-06T16:08:40.083929+00:00"
+        },
+        "strategy-ploys": {
+          "hash": "cbd4d177837e6e01bf422e3fb0cb1fc2d3862538156787151e8f42f8e7d17c8e",
+          "outputs": [
+            "layers/kt-app/extracted/canoptek-circle/cards/strategy-ploys/canoptek-circle-strategy-ploys-page_0.pdf",
+            "layers/kt-app/extracted/canoptek-circle/cards/strategy-ploys/canoptek-circle-strategy-ploys-page_1.pdf",
+            "layers/kt-app/extracted/canoptek-circle/cards/strategy-ploys/canoptek-circle-strategy-ploys-page_2.pdf",
+            "layers/kt-app/extracted/canoptek-circle/cards/strategy-ploys/canoptek-circle-strategy-ploys-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:09:34.008716+00:00"
+        },
+        "cards": {
+          "hash": "1b09de64a319ef49b0e7f41e5560782d7fe0999beb2e58ec87af29ada0267bc1",
+          "outputs": [
+            "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page01_card1_landscape.pdf",
+            "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page01_card2_landscape.pdf",
+            "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page01_card3_landscape.pdf",
+            "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page01_card4_landscape.pdf",
+            "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page02_card1_landscape.pdf",
+            "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page02_card2_landscape.pdf",
+            "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page02_card3_landscape.pdf",
+            "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page02_card4_landscape.pdf",
+            "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page03_card1_landscape.pdf",
+            "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page03_card2_landscape.pdf",
+            "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page03_card3_landscape.pdf",
+            "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page03_card4_landscape.pdf",
+            "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page04_card1_portrait.pdf",
+            "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page04_card2_portrait.pdf",
+            "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page04_card3_portrait.pdf",
+            "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page04_card4_portrait.pdf",
+            "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page05_card1_portrait.pdf",
+            "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page05_card2_portrait.pdf",
+            "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page05_card3_portrait.pdf",
+            "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page05_card4_portrait.pdf",
+            "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page06_card1_portrait.pdf",
+            "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page06_card2_portrait.pdf",
+            "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page06_card3_portrait.pdf",
+            "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page06_card4_portrait.pdf",
+            "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page07_card1_portrait.pdf",
+            "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page07_card2_portrait.pdf",
+            "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page07_card3_portrait.pdf",
+            "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page07_card4_portrait.pdf"
+          ],
+          "modified": "2026-07-08T19:04:30.409910+00:00"
+        }
+      },
+      "completed": "2026-07-08T19:04:30.409941+00:00"
+    },
+    "build_structure": {
+      "outputs": {
+        "structure": {
+          "path": "layers/warcom/structure/canoptek-circle-structure.json",
+          "hash": "7b66dcb11653656b18fe9cef77bb41e129557fc36623fc5d072cef804f64e1a5",
+          "modified": "2026-07-10T20:29:30.112148+00:00"
+        }
+      },
+      "inputs": {
+        "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page01_card1_landscape.pdf": "305038a9edbd828a6f5d6df35d1044c6062d97ad1076a36cdd60fa0eea1d41df",
+        "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page01_card2_landscape.pdf": "776610deb7fc65c6c7a2864c2e22da196fbabb6f7efa1e244e896430b421c2fa",
+        "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page01_card3_landscape.pdf": "371098723a7b99063ac34af13de37c19dfa554627d14226e1ce0ada0a2f737b6",
+        "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page01_card4_landscape.pdf": "49f903ef967f880eb06051ecaf6ba964150d5f4946cb3e9664ff15a3c5cd9f9e",
+        "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page02_card1_landscape.pdf": "452578b3bd89a2b099a885a3057da3b3e2ad56e3e79267414eefd56c5f0cea3b",
+        "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page02_card2_landscape.pdf": "c6c0375adddd956de79b01c6a725a9e45a1af01b8e920911c2a670caf3b5cd69",
+        "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page02_card3_landscape.pdf": "a85c9c274df925f1b9d06a16d01eef3ef4f344626d9f5447aa829b42798d9209",
+        "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page02_card4_landscape.pdf": "95867f86755d1557a8a8505b1dab5317d928a5f72cb944581e317abe97587ec3",
+        "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page03_card1_landscape.pdf": "c5c044b73bdee9352eed82646eb6ff7ab24f94e4330e991d1901f843ce68efdd",
+        "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page03_card2_landscape.pdf": "77bea1b78b3762a3aac9f8ce7cb26be0db2e07641f62c465e99440ccb159f228",
+        "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page03_card3_landscape.pdf": "b65fc28c81766b3b984b5e909bd07ac1927770b994945eaff32eb546c1746590",
+        "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page03_card4_landscape.pdf": "5d6e968c10f68cb19420e76c5e2e5aacd7bfe0ab59ef342ea15c70979dafc286",
+        "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page04_card1_portrait.pdf": "0d18469224bf90e56cd9e236c602c3b927e16555d4bc6ad693915f20be9f605d",
+        "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page04_card2_portrait.pdf": "6a70bedebd883e87de5e52073695abb414035f50cfaf96f3ff99df773700bf5b",
+        "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page04_card3_portrait.pdf": "3044da9ca92b3caaa2b4251c4d8c8989fa2abb5d0becaadb39c921b97f4a604d",
+        "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page04_card4_portrait.pdf": "c1900f00db767e8a38b78eb42646635bf244b3823c4280f7b402a28beb5ea897",
+        "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page05_card1_portrait.pdf": "907c37c9d2448149f57078ef652cfa428db615f4184b6ae78cbca475d4d16504",
+        "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page05_card2_portrait.pdf": "847ce9c70a3a3912a176329803cb34aa08f25589763ea6045157dbf231bed19e",
+        "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page05_card3_portrait.pdf": "7c8dc643b82b28a5941672db58d5295ce4c5af92c901827d1c67c71422c20176",
+        "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page05_card4_portrait.pdf": "a4fcd2b987e586337fc9b306d94fe6b233595c55e4805a07c768f2e8a69c611e",
+        "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page06_card1_portrait.pdf": "b47f4508cf0823b954f1c98000ed5bf7d2ff5678d40d108e834eff7ba3dc42df",
+        "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page06_card2_portrait.pdf": "9e09036368486e12f3657699833cb84a179f14b079a285b9ce6e1894ba195554",
+        "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page06_card3_portrait.pdf": "4ed5126af0ccf3840c801685d484622319a6608e9835e3b9b1e4a584dfa37bfb",
+        "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page06_card4_portrait.pdf": "707bca1659973a12ba2c4bbe59a38443e547d845569c6fb87a9c77cd5b271f14",
+        "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page07_card1_portrait.pdf": "7887684c762a9797299152fe5d7232da9fc86b2dd07581206920e4f70e80a1c7",
+        "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page07_card2_portrait.pdf": "3519ba0349bce1db60cb4c8f3b3a999c297018babb279302fff4930ebc048d9a",
+        "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page07_card3_portrait.pdf": "2074d457b9b52d0e7bc47d4e156809be927d8674076beb1a9639b67032922f81",
+        "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page07_card4_portrait.pdf": "4de43170efff520eeb16f73be5698aec8bb8b3aa325bbc1b76d51c025e6d310b"
+      },
+      "completed": "2026-07-10T20:29:32.794965+00:00"
+    },
+    "integrate_classified": {
+      "outputs": {
+        "manifest.json": {
+          "path": "layers/integration/canoptek-circle/manifest.json",
+          "hash": "7b66dcb11653656b18fe9cef77bb41e129557fc36623fc5d072cef804f64e1a5",
+          "modified": "2026-07-11T06:53:39.004350+00:00"
+        },
+        "canoptek-circle-datacard-geomancer-1.pdf": {
+          "path": "layers/integration/canoptek-circle/canoptek-circle-datacard-geomancer-1.pdf",
+          "hash": "1e32796d31dc41f890fe9dd0be201c7c319302f3cd2d9bfed0d29bfb41f00537",
+          "modified": "2026-07-11T06:53:39.044788+00:00"
+        },
+        "canoptek-circle-datacard-geomancer-2.pdf": {
+          "path": "layers/integration/canoptek-circle/canoptek-circle-datacard-geomancer-2.pdf",
+          "hash": "7b648164f686c5a3db9ef101e4066675f395dc9a856d5d9430b2121fc40f083c",
+          "modified": "2026-07-11T06:53:39.058523+00:00"
+        },
+        "canoptek-circle-datacard-geomancer-3.pdf": {
+          "path": "layers/integration/canoptek-circle/canoptek-circle-datacard-geomancer-3.pdf",
+          "hash": "91d83eb7401ada278303a363206854fbe8e46d22f648cbb3ccbd0cfa9ef18a64",
+          "modified": "2026-07-11T06:53:39.073140+00:00"
+        },
+        "canoptek-circle-datacard-canoptek-macrocyte-accelerator.pdf": {
+          "path": "layers/integration/canoptek-circle/canoptek-circle-datacard-canoptek-macrocyte-accelerator.pdf",
+          "hash": "713eb635f5e03b2a3bd5e1e0d188bb2b9acf3226e0bf7f67c0c593d7216bd284",
+          "modified": "2026-07-11T06:53:39.089440+00:00"
+        },
+        "canoptek-circle-datacard-canoptek-macrocyte-reanimator.pdf": {
+          "path": "layers/integration/canoptek-circle/canoptek-circle-datacard-canoptek-macrocyte-reanimator.pdf",
+          "hash": "70ab63ecc4ff5ddf82c5f43f8745692eb22bfe1c4bdef9b7deee23205a1a22c3",
+          "modified": "2026-07-11T06:53:39.104667+00:00"
+        },
+        "canoptek-circle-datacard-canoptek-macrocyte-warrior.pdf": {
+          "path": "layers/integration/canoptek-circle/canoptek-circle-datacard-canoptek-macrocyte-warrior.pdf",
+          "hash": "3ae52380f1316b2553d6d8ad4e067073a5f20186dbdc0079c3bc3a332aa88cc9",
+          "modified": "2026-07-11T06:53:39.121958+00:00"
+        },
+        "canoptek-circle-datacard-canoptek-tomb-crawler.pdf": {
+          "path": "layers/integration/canoptek-circle/canoptek-circle-datacard-canoptek-tomb-crawler.pdf",
+          "hash": "820599744ebd6017bb98787f2ddb202fd70db7a8812a6544612f51b0205086d7",
+          "modified": "2026-07-11T06:53:39.139830+00:00"
+        },
+        "canoptek-circle-equipment-matrix-manipulator.pdf": {
+          "path": "layers/integration/canoptek-circle/canoptek-circle-equipment-matrix-manipulator.pdf",
+          "hash": "409ec0657de30605dd4e1f8e49a74cc68e7923345dea5114178edd37c6937f9f",
+          "modified": "2026-07-11T06:53:39.150977+00:00"
+        },
+        "canoptek-circle-equipment-awakened-obelisk-nodes.pdf": {
+          "path": "layers/integration/canoptek-circle/canoptek-circle-equipment-awakened-obelisk-nodes.pdf",
+          "hash": "40037e408efd7bc28f800fb3327c300f99cca7297a4ac2978e36c5713ca39e3f",
+          "modified": "2026-07-11T06:53:39.160661+00:00"
+        },
+        "canoptek-circle-equipment-nanoscarab-caskets.pdf": {
+          "path": "layers/integration/canoptek-circle/canoptek-circle-equipment-nanoscarab-caskets.pdf",
+          "hash": "dd9b1ed7e3992395142e2aed65dea7b554cf89b5373a0e968ac09db77d47dda9",
+          "modified": "2026-07-11T06:53:39.174199+00:00"
+        },
+        "canoptek-circle-equipment-phase-shifter.pdf": {
+          "path": "layers/integration/canoptek-circle/canoptek-circle-equipment-phase-shifter.pdf",
+          "hash": "ac5896bcac872a03146489e231b29e3e9726c05b580a506e5d02fd46c07bc2b5",
+          "modified": "2026-07-11T06:53:39.187771+00:00"
+        },
+        "canoptek-circle-faction-rule-obelisk-node-matrix.pdf": {
+          "path": "layers/integration/canoptek-circle/canoptek-circle-faction-rule-obelisk-node-matrix.pdf",
+          "hash": "13ffe2870191b461e840b97e57e674d34608d02a42a540512d4828cfa1c2189f",
+          "modified": "2026-07-11T06:53:39.206548+00:00"
+        },
+        "canoptek-circle-token-guide-token-guide.pdf": {
+          "path": "layers/integration/canoptek-circle/canoptek-circle-token-guide-token-guide.pdf",
+          "hash": "3008ccb21bc3fd46e55fa25e1cda6445b5e32f4458af35d97836c126c8588618",
+          "modified": "2026-07-11T06:53:39.218181+00:00"
+        },
+        "canoptek-circle-firefight-ploy-shield-flare.pdf": {
+          "path": "layers/integration/canoptek-circle/canoptek-circle-firefight-ploy-shield-flare.pdf",
+          "hash": "4b202603cee31ebf3daf1f6263eaf8259bcfd54fec0dd9227f5f2f9657ccdcd2",
+          "modified": "2026-07-11T06:53:39.230675+00:00"
+        },
+        "canoptek-circle-firefight-ploy-animate-obelisk-nodes.pdf": {
+          "path": "layers/integration/canoptek-circle/canoptek-circle-firefight-ploy-animate-obelisk-nodes.pdf",
+          "hash": "3c74307940433da4fa111e89ab73226b7f7dd2d31383fa0fcef3a8004193c623",
+          "modified": "2026-07-11T06:53:39.241947+00:00"
+        },
+        "canoptek-circle-firefight-ploy-nodal-response.pdf": {
+          "path": "layers/integration/canoptek-circle/canoptek-circle-firefight-ploy-nodal-response.pdf",
+          "hash": "230928a8d9b060f37939a1720c6da48bfc99470322beec06736433870bb39b29",
+          "modified": "2026-07-11T06:53:39.255407+00:00"
+        },
+        "canoptek-circle-firefight-ploy-sacrificial-thrall.pdf": {
+          "path": "layers/integration/canoptek-circle/canoptek-circle-firefight-ploy-sacrificial-thrall.pdf",
+          "hash": "729408835da74907ec3dba62c58ee076f858502d7350b6370a1934a1c09f3da2",
+          "modified": "2026-07-11T06:53:39.269670+00:00"
+        },
+        "canoptek-circle-operatives-selection-operative-selection.pdf": {
+          "path": "layers/integration/canoptek-circle/canoptek-circle-operatives-selection-operative-selection.pdf",
+          "hash": "cab63f80018087e0c594ad08575a7e3e064b213f568d1c7eb362786dc3e35e03",
+          "modified": "2026-07-11T06:53:39.286524+00:00"
+        },
+        "canoptek-circle-strategy-ploy-hypershielding.pdf": {
+          "path": "layers/integration/canoptek-circle/canoptek-circle-strategy-ploy-hypershielding.pdf",
+          "hash": "5542a455edb4b4688ddc54754f7c6e2a4e6cbfb5a0257db18625ae2f9bb0659d",
+          "modified": "2026-07-11T06:53:39.301036+00:00"
+        },
+        "canoptek-circle-strategy-ploy-transdynamic-amplification.pdf": {
+          "path": "layers/integration/canoptek-circle/canoptek-circle-strategy-ploy-transdynamic-amplification.pdf",
+          "hash": "51d8dc670d39362696ddfb20b83bb991d18b8258de31a2c2d0bc94006ddb0401",
+          "modified": "2026-07-11T06:53:39.317605+00:00"
+        },
+        "canoptek-circle-strategy-ploy-cryptogravitic-repulsion.pdf": {
+          "path": "layers/integration/canoptek-circle/canoptek-circle-strategy-ploy-cryptogravitic-repulsion.pdf",
+          "hash": "156dce68d59c2e9ab70787f78b266e014c6077be498501b304dc29048088644e",
+          "modified": "2026-07-11T06:53:39.330366+00:00"
+        },
+        "canoptek-circle-strategy-ploy-souldrain.pdf": {
+          "path": "layers/integration/canoptek-circle/canoptek-circle-strategy-ploy-souldrain.pdf",
+          "hash": "e4eccf33ad99dcc2218f1c3f17d675fce79a43dd65fa26792c6d24b2d3d96b05",
+          "modified": "2026-07-11T06:53:39.343441+00:00"
+        }
+      },
+      "inputs": {
+        "layers/warcom/structure/canoptek-circle-structure.json": "7b66dcb11653656b18fe9cef77bb41e129557fc36623fc5d072cef804f64e1a5",
+        "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page01_card1_landscape.pdf": "305038a9edbd828a6f5d6df35d1044c6062d97ad1076a36cdd60fa0eea1d41df",
+        "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page01_card2_landscape.pdf": "776610deb7fc65c6c7a2864c2e22da196fbabb6f7efa1e244e896430b421c2fa",
+        "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page01_card3_landscape.pdf": "371098723a7b99063ac34af13de37c19dfa554627d14226e1ce0ada0a2f737b6",
+        "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page01_card4_landscape.pdf": "49f903ef967f880eb06051ecaf6ba964150d5f4946cb3e9664ff15a3c5cd9f9e",
+        "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page02_card1_landscape.pdf": "452578b3bd89a2b099a885a3057da3b3e2ad56e3e79267414eefd56c5f0cea3b",
+        "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page02_card2_landscape.pdf": "c6c0375adddd956de79b01c6a725a9e45a1af01b8e920911c2a670caf3b5cd69",
+        "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page02_card3_landscape.pdf": "a85c9c274df925f1b9d06a16d01eef3ef4f344626d9f5447aa829b42798d9209",
+        "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page02_card4_landscape.pdf": "95867f86755d1557a8a8505b1dab5317d928a5f72cb944581e317abe97587ec3",
+        "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page03_card1_landscape.pdf": "c5c044b73bdee9352eed82646eb6ff7ab24f94e4330e991d1901f843ce68efdd",
+        "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page03_card2_landscape.pdf": "77bea1b78b3762a3aac9f8ce7cb26be0db2e07641f62c465e99440ccb159f228",
+        "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page03_card3_landscape.pdf": "b65fc28c81766b3b984b5e909bd07ac1927770b994945eaff32eb546c1746590",
+        "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page07_card1_portrait.pdf": "7887684c762a9797299152fe5d7232da9fc86b2dd07581206920e4f70e80a1c7",
+        "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page07_card2_portrait.pdf": "3519ba0349bce1db60cb4c8f3b3a999c297018babb279302fff4930ebc048d9a",
+        "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page07_card3_portrait.pdf": "2074d457b9b52d0e7bc47d4e156809be927d8674076beb1a9639b67032922f81",
+        "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page07_card4_portrait.pdf": "4de43170efff520eeb16f73be5698aec8bb8b3aa325bbc1b76d51c025e6d310b",
+        "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page04_card2_portrait.pdf": "6a70bedebd883e87de5e52073695abb414035f50cfaf96f3ff99df773700bf5b",
+        "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page04_card3_portrait.pdf": "3044da9ca92b3caaa2b4251c4d8c8989fa2abb5d0becaadb39c921b97f4a604d",
+        "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page04_card4_portrait.pdf": "c1900f00db767e8a38b78eb42646635bf244b3823c4280f7b402a28beb5ea897",
+        "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page06_card1_portrait.pdf": "b47f4508cf0823b954f1c98000ed5bf7d2ff5678d40d108e834eff7ba3dc42df",
+        "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page06_card2_portrait.pdf": "9e09036368486e12f3657699833cb84a179f14b079a285b9ce6e1894ba195554",
+        "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page06_card3_portrait.pdf": "4ed5126af0ccf3840c801685d484622319a6608e9835e3b9b1e4a584dfa37bfb",
+        "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page06_card4_portrait.pdf": "707bca1659973a12ba2c4bbe59a38443e547d845569c6fb87a9c77cd5b271f14",
+        "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page04_card1_portrait.pdf": "0d18469224bf90e56cd9e236c602c3b927e16555d4bc6ad693915f20be9f605d",
+        "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page05_card1_portrait.pdf": "907c37c9d2448149f57078ef652cfa428db615f4184b6ae78cbca475d4d16504",
+        "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page05_card2_portrait.pdf": "847ce9c70a3a3912a176329803cb34aa08f25589763ea6045157dbf231bed19e",
+        "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page05_card3_portrait.pdf": "7c8dc643b82b28a5941672db58d5295ce4c5af92c901827d1c67c71422c20176",
+        "layers/warcom/extracted/canoptek-circle/cards/canoptek-circle_page05_card4_portrait.pdf": "a4fcd2b987e586337fc9b306d94fe6b233595c55e4805a07c768f2e8a69c611e"
+      },
+      "completed": "2026-07-11T06:53:39.543506+00:00"
+    },
+    "extract_artwork": {
+      "outputs": {},
+      "sources": {
+        "artwork": {
+          "hash": "1b09de64a319ef49b0e7f41e5560782d7fe0999beb2e58ec87af29ada0267bc1",
+          "outputs": [
+            "layers/integration/canoptek-circle/artwork/canoptek-circle-artwork-01.jpeg",
+            "layers/integration/canoptek-circle/artwork/canoptek-circle-artwork-02.jpeg",
+            "layers/integration/canoptek-circle/artwork/canoptek-circle-artwork-03.jpeg",
+            "layers/integration/canoptek-circle/artwork/canoptek-circle-artwork-04.png",
+            "layers/integration/canoptek-circle/artwork/canoptek-circle-artwork-05.jpeg",
+            "layers/integration/canoptek-circle/artwork/canoptek-circle-artwork-06.jpeg",
+            "layers/integration/canoptek-circle/artwork/canoptek-circle-artwork-07.jpeg",
+            "layers/integration/canoptek-circle/artwork/canoptek-circle-artwork-08.jpeg",
+            "layers/integration/canoptek-circle/artwork/canoptek-circle-artwork-09.jpeg",
+            "layers/integration/canoptek-circle/artwork/canoptek-circle-artwork-10.jpeg",
+            "layers/integration/canoptek-circle/artwork/canoptek-circle-artwork-11.jpeg",
+            "layers/integration/canoptek-circle/artwork/canoptek-circle-artwork-12.jpeg",
+            "layers/integration/canoptek-circle/artwork/canoptek-circle-artwork-13.jpeg",
+            "layers/integration/canoptek-circle/artwork/canoptek-circle-artwork-14.jpeg",
+            "layers/integration/canoptek-circle/artwork/canoptek-circle-artwork-15.jpeg",
+            "layers/integration/canoptek-circle/artwork/canoptek-circle-artwork-16.jpeg",
+            "layers/integration/canoptek-circle/artwork/canoptek-circle-artwork-17.jpeg",
+            "layers/integration/canoptek-circle/artwork/canoptek-circle-artwork-18.jpeg",
+            "layers/integration/canoptek-circle/artwork/canoptek-circle-artwork-19.jpeg",
+            "layers/integration/canoptek-circle/artwork/canoptek-circle-artwork-20.jpeg",
+            "layers/integration/canoptek-circle/artwork/canoptek-circle-artwork-21.jpeg",
+            "layers/integration/canoptek-circle/artwork/canoptek-circle-artwork-22.jpeg",
+            "layers/integration/canoptek-circle/artwork/canoptek-circle-artwork-23.jpeg",
+            "layers/integration/canoptek-circle/artwork/canoptek-circle-artwork-24.jpeg",
+            "layers/integration/canoptek-circle/artwork/canoptek-circle-artwork-25.jpeg",
+            "layers/integration/canoptek-circle/artwork/canoptek-circle-artwork-26.jpeg",
+            "layers/integration/canoptek-circle/artwork/canoptek-circle-artwork-27.jpeg",
+            "layers/integration/canoptek-circle/artwork/canoptek-circle-artwork-28.jpeg",
+            "layers/integration/canoptek-circle/artwork/canoptek-circle-artwork-29.jpeg",
+            "layers/integration/canoptek-circle/artwork/canoptek-circle-artwork-30.jpeg",
+            "layers/integration/canoptek-circle/artwork/canoptek-circle-artwork-31.jpeg",
+            "layers/integration/canoptek-circle/artwork/canoptek-circle-artwork-32.jpeg",
+            "layers/integration/canoptek-circle/artwork/canoptek-circle-artwork-33.jpeg",
+            "layers/integration/canoptek-circle/artwork/canoptek-circle-artwork-34.jpeg",
+            "layers/integration/canoptek-circle/artwork/canoptek-circle-artwork-35.jpeg",
+            "layers/integration/canoptek-circle/artwork/canoptek-circle-artwork-metadata.json",
+            "layers/integration/canoptek-circle/artwork/icons/canoptek-circle-icon-landscape.jpg",
+            "layers/integration/canoptek-circle/artwork/icons/canoptek-circle-icon-portrait.jpg",
+            "layers/integration/canoptek-circle/artwork/icons/canoptek-circle-icon-token-transparent.png",
+            "layers/integration/canoptek-circle/artwork/icons/canoptek-circle-icon-token.jpg"
+          ],
+          "modified": "2026-07-06T20:52:18.852207+00:00"
+        }
+      },
+      "completed": "2026-07-06T20:52:18.852233+00:00"
+    }
+  }
+}

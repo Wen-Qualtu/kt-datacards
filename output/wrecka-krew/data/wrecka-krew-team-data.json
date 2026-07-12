@@ -1,6 +1,6 @@
 {
   "team": "wrecka-krew",
-  "generated_at": "2026-05-05T17:43:40.850642+00:00",
+  "generated_at": "2026-07-10T20:46:17.774896+00:00",
   "datacards": [
     {
       "name": "WRECKA BOSS NOB",
@@ -8,6 +8,7 @@
       "movement": "6″",
       "save": "4+",
       "wounds": 14,
+      "base_size": 40,
       "weapons": [
         {
           "name": "Rokkit pistol",
@@ -68,6 +69,7 @@
       "movement": "6″",
       "save": "5+",
       "wounds": 5,
+      "base_size": 25,
       "weapons": [
         {
           "name": "Explosives",
@@ -114,6 +116,7 @@
       "movement": "6″",
       "save": "4+",
       "wounds": 12,
+      "base_size": 32,
       "weapons": [
         {
           "name": "Tankhammer (bash)",
@@ -146,6 +149,7 @@
       "movement": "6″",
       "save": "4+",
       "wounds": 12,
+      "base_size": 32,
       "weapons": [
         {
           "name": "Smash hammer",
@@ -159,7 +163,7 @@
       "unique_actions": [
         {
           "name": "BREAK STUFF (1AP)",
-          "description": "• Select a terrain feature within this operative’s control range. If it’s an equipment terrain feature, remove it. Otherwise, place one of your Breach markers within this operative’s control range as close as possible to that terrain feature. Whenever an operative is within 1\" of that marker, it treats parts of that terrain feature that are no more than 1\" thick as Accessible terrain.\n• This operative cannot perform this action while within control range of an enemy operative, or if a terrain feature isn’t within its control range."
+          "description": "Select a terrain feature within this operative’s control range. If it’s an equipment terrain feature, remove it. Otherwise, place one of your Breach markers within this operative’s control range as close as possible to that terrain feature. Whenever an operative is within 1\" of that marker, it treats parts of that terrain feature that are no more than 1\" thick as Accessible terrain. This operative cannot perform this action while within control range of an enemy operative, or if a terrain feature isn’t within its control range."
         }
       ],
       "keywords": [
@@ -175,6 +179,7 @@
       "movement": "6″",
       "save": "4+",
       "wounds": 12,
+      "base_size": 32,
       "weapons": [
         {
           "name": "Knucklebustas",
@@ -208,6 +213,7 @@
       "movement": "6″",
       "save": "4+",
       "wounds": 12,
+      "base_size": 32,
       "weapons": [
         {
           "name": "’Eavy rokkit launcha",
@@ -250,6 +256,7 @@
       "movement": "6″",
       "save": "4+",
       "wounds": 12,
+      "base_size": 32,
       "weapons": [
         {
           "name": "Rokkit launcha",
@@ -279,7 +286,7 @@
         },
         {
           "name": "Shokkwave",
-          "description": "Whenever an operative is within x\" of your Pulsa marker (see left), worsen the Hit stat of its weapons by 1 and subtract 2\" from its Move stat. This is cumulative with being injured. X is that marker’s Pulsa points. In the Ready step of each Strategy phase, subtract 1 from your Pulsa marker’s points. If a Pulsa marker ever has 0 points, remove it."
+          "description": "Whenever an operative is within x\" of your Pulsa marker (see left), subtract 2\" from its Move stat and worsen the Hit stat of its weapons by 1. This is cumulative with being injured. X is that marker’s Pulsa points. In the Ready step of each Strategy phase, subtract 1 from your Pulsa marker’s points. If a Pulsa marker ever has 0 points, remove it."
         }
       ],
       "unique_actions": [],
@@ -293,58 +300,58 @@
   ],
   "equipment": [
     {
-      "name": "DRILL ROKKITS",
+      "name": "drill-rokkits",
       "text": "WRECKA KREW\nFACTION EQUIPMENT\nDRILL ROKKITS\nMek ingenuity knows few bounds. Drill rokkits are \ndesigned to strike a target and bore through thick \narmour before exploding.\nOnce per turning point, when a friendly WRECKA \nKREW operative is performing the Shoot action \nand you select a rokkit launcha or ’eavy rokkit \nlauncha, you can use this rule. If you do, until the \nend of that action, that weapon loses the Blast \nweapon rule but has the Piercing 1 weapon rule."
     },
     {
-      "name": "EXTRA ARMOUR",
+      "name": "extra-armour",
       "text": "WRECKA KREW\nFACTION EQUIPMENT\nEXTRA ARMOUR\nScrap metal Ork armour may appear haphazard, but it is \nno less effective for its simple construction. \nSubtract 1\" from the Move stat of friendly \nWRECKA KREW operatives and improve their \nSave stat by 1. This excludes BOMB SQUIG \noperatives and isn’t cumulative with the \nProtective rule of a Portable Barricade from \nuniversal equipment."
     },
     {
-      "name": "ENGINE OIL",
+      "name": "engine-oil",
       "text": "WRECKA KREW\nFACTION EQUIPMENT\nENGINE OIL\nWrecka Krews are known to ingest the oils of vehicles \nthey have destroyed. The intoxicating fluid bolsters their \nnatural resilience.\nOnce per turning point, when a friendly WRECKA \nKREW operative (excluding BOMB SQUIG) is \nactivated, you can use this rule. If you do, until \nthe end of that activation, you can ignore any \nchanges to that operative’s stats from being \ninjured (including its weapons’ stats)."
     },
     {
-      "name": "GLYPHS",
+      "name": "glyphs",
       "text": "WRECKA KREW\nFACTION EQUIPMENT\nGLYPHS\nBack-banners, crude markings and glyph-scrawled \narmour proudly display the Wrecka Krew’s favoured \nmethod of destruction.\nWhen this item of equipment is selected, also \nselect the Waaagh! or Destruction strategy ploy. \nThe first time you would use that ploy during the \nbattle, it costs you 0CP; whenever you would \nuse it thereafter, it costs you 0CP if you have any \nWrecka points."
     }
   ],
   "faction_rules": [
     {
-      "name": "WRECKA RAMPAGE",
+      "name": "wrecka-rampage",
       "text": "WRECKA KREW\nFACTION RULE\nWRECKA RAMPAGE\nThe sound of explosions, the acrid stench of smoke and \nthe screams of battle drive Wrecka Krews forwards to \never more destructive acts.\nWhenever a friendly WRECKA KREW operative \nis shooting, fighting or retaliating, in the Roll \nAttack Dice step:\n• For each attack dice result of 6 you retain, you \ngain one Wrecka point.\n• You can spend up to 2 of your Wrecka points \n(unless it’s a BOMB SQUIG, then you cannot \nspend any). For each point you spend this way, \nretain one of your fails as a normal success \ninstead of discarding it.\nYou cannot have more than 6 Wrecka points at \nonce. You can gain and spend Wrecka points \nduring the same action and can do so in an order \nof your choice, unless you started the action with \n6, in which case you can only spend them."
     },
     {
-      "name": "TANKED UP",
+      "name": "tanked-up",
       "text": "WRECKA KREW\nFACTION RULE\nTANKED UP\nWrecka Krews are empowered by the thrill of explosive \ncombat, lending them fresh impetus as they undertake \ntheir murderous rampages.\nThe first time a friendly WRECKA KREW \noperative (excluding BOMB SQUIG) that has an \nEngage order performs either the Charge, Shoot \nor Fight action (excluding Guard) during each of \nits activations/counteractions, add 1 to its APL \nstat until the start of its next activation."
     }
   ],
   "firefight_ploys": [
     {
-      "name": "JUST A SCRATCH",
+      "name": "just-a-scratch",
       "text": "WRECKA KREW\nFIREFIGHT PLOY\nJUST A SCRATCH\nOrks have a remarkable ability to shrug off grievous \ndamage that would incapacitate most other creatures.\nUse this firefight ploy when an attack dice inflicts \nNormal Dmg on a friendly WRECKA KREW \noperative (excluding BOMB SQUIG). Ignore that \ninflicted damage."
     },
     {
-      "name": "DEMOLITION JOB",
+      "name": "demolition-job",
       "text": "WRECKA KREW\nFIREFIGHT PLOY\nDEMOLITION JOB\nShould a prime target present itself, the Wrecka \nKrew will unleash their combined destructive might, \ndemolishing anything in the vicinity.\nUse this firefight ploy after a friendly WRECKA \nKREW operative performs the Shoot or Fight \naction, just before incapacitated operatives are \nremoved (if any). Place one of your Demolition \nmarkers within the target’s control range (if \nit’s using a Blast weapon, the primary target). \nWhenever a friendly WRECKA KREW operative \n(excluding BOMB SQUIG) is shooting against, \nfighting against or retaliating against an operative \nthat’s within 3\" of that marker, you can spend \na Wrecka point for free (even if you have none). \nIn the Ready step of the next Strategy phase, \nremove that marker."
     },
     {
-      "name": "PROPPA SCRAP",
+      "name": "proppa-scrap",
       "text": "WRECKA KREW\nFIREFIGHT PLOY\nPROPPA SCRAP\nOrks like nothing better than a good scrap. With fist or \nhammer, they seek to demonstrate that might is right.\nUse this firefight ploy during a friendly WRECKA \nKREW BREAKA BOY or WRECKA KREW BOSS \nNOB operative’s activation. During that activation, \nthat operative can perform two Fight actions."
     },
     {
-      "name": "KABOOM!",
+      "name": "kaboom",
       "text": "WRECKA KREW\nFIREFIGHT PLOY\nKABOOM!\nThe more intense the dakka and the louder the boom of \nexplosions, the more satisfying the carnage!\nUse this firefight ploy when a friendly WRECKA \nKREW operative performs the Shoot action and \na weapon with the Blast weapon rule is selected. \nUntil the end of that action, add 1\" to that \nweapon’s Blast and it has the Severe weapon rule \nwhen shooting the primary target. You cannot use \nthis ploy and the Drill Rokkits rule (see faction \nequipment) during the same action. Note that \nSevere doesn’t generate a Wrecka point (as it’s \nnot a 6)."
     }
   ],
   "operatives_selection": [
     {
-      "name": "OPERATIVE SELECTION WRECKA KREW",
-      "text": "WRECKA KREW KILL TEAM\nARCHETYPES: SECURITY, SEEK & DESTROY\nOPERATIVES\n\t\n↘\n• 1 WRECKA KREW BOSS NOB operative with \none of the following options:\n• Rokkit pistol; smash hammer\n• Two rokkit pistols; choppa \n\t\n↘\n• 2 WRECKA KREW BOMB SQUIG operatives \n\t\n↘\n• 5 WRECKA KREW operatives selected from \nthe following list:\n• BREAKA BOY DEMOLISHA\n• BREAKA BOY FIGHTER\n• BREAKA BOY KRUSHA\n• TANKBUSTA GUNNER with one of the \nfollowing options:\n\t\n○’Eavy rokkit launcha; fists\n\t\n○Rokkit launcha; fists\n• TANKBUSTA ROKKITEER with one of the \nfollowing options:\n\t\n○Rokkit launcha; pulsa rokkit; fists\n\t\n○Rokkit launcha; rokkit rack; fists\n \nOther than BOMB SQUIG, BREAKA BOY FIGHTER \nand TANKBUSTA GUNNER operatives, your kill \nteam can only include each operative on this \nlist once.",
+      "name": "OPERATIVE SELECTION",
+      "text": "WRECKA KREW KILL TEAM\nARCHETYPES: SECURITY, SEEK & DESTROY\nOPERATIVES\n \n↘ 1 WRECKA KREW BOSS NOB operative with \none of the following options:\n• Rokkit pistol; smash hammer\n• Two rokkit pistols; choppa \n \n↘ 2 WRECKA KREW BOMB SQUIG operatives \n \n↘ 5 WRECKA KREW operatives selected from \nthe following list:\n• BREAKA BOY DEMOLISHA\n• BREAKA BOY FIGHTER\n• BREAKA BOY KRUSHA\n• TANKBUSTA GUNNER with one of the \nfollowing options:\n \n○’Eavy rokkit launcha; fists\n \n○Rokkit launcha; fists\n• TANKBUSTA ROKKITEER with one of the \nfollowing options:\n \n○Rokkit launcha; pulsa rokkit; fists\n \n○Rokkit launcha; rokkit rack; fists\n \nOther than BOMB SQUIG, BREAKA BOY FIGHTER \nand TANKBUSTA GUNNER operatives, your kill \nteam can only include each operative on this \nlist once.",
       "selection": {
-        "1 WRECKA KREW BOSS NOB OPERATIVE": [
+        "↘ 1 WRECKA KREW BOSS NOB OPERATIVE": [
           [
-            "Rokkit pistol; smash hammer Two rokkit pistols; choppa 2 WRECKA KREW BOMB SQUIG operatives the following list: BREAKA BOY DEMOLISHA BREAKA BOY FIGHTER BREAKA BOY KRUSHA"
+            "Rokkit pistol; smash hammer Two rokkit pistols; choppa the following list: BREAKA BOY DEMOLISHA BREAKA BOY FIGHTER BREAKA BOY KRUSHA"
           ]
         ]
       }
@@ -352,19 +359,19 @@
   ],
   "strategy_ploys": [
     {
-      "name": "WAAAGH!",
+      "name": "waaagh",
       "text": "WRECKA KREW\nSTRATEGY PLOY\nWAAAGH!\nWhen the Wrecka Krew’s violent rampage reaches its \ncrescendo, a rage overcomes them. They bellow the \ninfamous Ork battle cry as they set upon their enemies \nwith hammer and fist.\nFriendly WRECKA KREW operatives’ melee \nweapons have the Balanced weapon rule."
     },
     {
-      "name": "TUFF GITZ",
+      "name": "tuff-gitz",
       "text": "WRECKA KREW\nSTRATEGY PLOY\nTUFF GITZ\nWrecka Krews don’t have time for mukkin’ about. They’ll \ngladly take a hit if it means they get to land a few of \ntheir own.\nWhenever an operative is shooting a friendly \nWRECKA KREW operative that has an Engage \norder, you can re-roll one of your defence dice."
     },
     {
-      "name": "DESTRUCTION",
+      "name": "destruction",
       "text": "WRECKA KREW\nSTRATEGY PLOY\nDESTRUCTION\nIf an enemy takes cover, this just provides Wrecka \nKrews with the opportunity to blow more stuff up.\nFriendly WRECKA KREW operatives’ ranged \nweapons have the Saturate weapon rule."
     },
     {
-      "name": "AMPED UP",
+      "name": "amped-up",
       "text": "WRECKA KREW\nSTRATEGY PLOY\nAMPED UP\nOrks thrive in the chaos and cacophony of battle. The \ngreater the explosions and destruction around them, the \nmore their adrenaline kicks in. When whipped up into \nsuch a fury, they can fight on through injuries that would \nordinarily lay them low.\nEach friendly WRECKA KREW operative that has \nan Engage order can immediately regain up to \nD3+1 lost wounds (roll separately for each)."
     }
   ]

@@ -1,0 +1,972 @@
+{
+  "team": "scout-squad",
+  "pipeline_version": "2.0",
+  "last_updated": "2026-07-12T18:32:27.975490+00:00",
+  "steps": {
+    "content_analysis": {
+      "outputs": {
+        "content.json": {
+          "path": "layers/integration/scout-squad/content/scout-squad-content.json",
+          "hash": "15f628abba47fbca874b62f14cd3c25e10cbd4e7c221b6b66bf20655436854e2",
+          "modified": "2026-07-11T07:06:41.603883+00:00"
+        }
+      },
+      "completed": "2026-07-11T07:06:44.920550+00:00",
+      "inputs": {
+        "layers/integration/scout-squad/manifest.json": "0236faf4e1fe66562c1d45f927602988272a4505a563b4980116403043e9b742",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "layers/integration/scout-squad/scout-squad-datacard-scout-heavy-gunner.pdf": "c0addf945a54b7bfb2cf6214255a20c90db246afa4a5f1cdeba0b33c19d63019",
+        "layers/integration/scout-squad/scout-squad-datacard-scout-hunter.pdf": "dfaee087014db42e52a9431bbab076f2376ed3f1ea75ec4e6bcaba4a0a133b1a",
+        "layers/integration/scout-squad/scout-squad-datacard-scout-sergeant.pdf": "5137d778d5834601352fc770c7baa8a716cac27756d33acccdb2d1a5f1edbdb4",
+        "layers/integration/scout-squad/scout-squad-datacard-scout-sniper.pdf": "55c53fb1ed2ea33e240891c93a114418887453e41c9a8f54805f91aa854aa960",
+        "layers/integration/scout-squad/scout-squad-datacard-scout-tracker.pdf": "e7a3f86172f8260049e4fa2cfe56d8f25e02af7441652d4e836eba528f67bb51",
+        "layers/integration/scout-squad/scout-squad-datacard-scout-warrior.pdf": "dd6d4a2688c7de2f29cf4d3c3e5c0d764a907371dec9c8e5dbe79cb860b57478",
+        "layers/integration/scout-squad/scout-squad-equipment-camo-cloak.pdf": "a52908a9db775298da6615115fae78bab8bc1ee843e806dd3d39b3cbc9c1544d",
+        "layers/integration/scout-squad/scout-squad-equipment-combat-blades.pdf": "2d4dfa66baea591fac230c124b7d9a63668cd69ba20c196a7c524afb5504d566",
+        "layers/integration/scout-squad/scout-squad-equipment-tactical-vox-link.pdf": "cf52b867af432e56cde8eaf4d0a41a4f5c5a87edc32e738eade2aa71e1183786",
+        "layers/integration/scout-squad/scout-squad-equipment-targeting-oculars.pdf": "fdc8cb7412fe093826869359aa8ad58d5233523c44ed895bf76c4a5c5f17a948",
+        "layers/integration/scout-squad/scout-squad-faction-rule-forward-scouting-1.pdf": "d3fb13d2ac6b11ff469e390087b1b5613038360def50138dc25ed1a22dd31332",
+        "layers/integration/scout-squad/scout-squad-faction-rule-forward-scouting-2.pdf": "26f094717e5ec9e9df379ae12cf29071ea07c0d08db4188d85c892eda48f0720",
+        "layers/integration/scout-squad/scout-squad-faction-rule-forward-scouting-3.pdf": "113ae045bd66a9972f25b06727f59dea69b6d46ce72ce5bd7cdb7c0fd6f2ada8",
+        "layers/integration/scout-squad/scout-squad-faction-rule-forward-scouting-4.pdf": "b7e0f0a360847af96c1c225a7b5f2d3d4ead3f4a82d2fb4537ef38f8052fba72",
+        "layers/integration/scout-squad/scout-squad-firefight-ploy-astartes-training.pdf": "fe8e1ce95c9b622efd9844f5751798bda9893f85c6bcddf1331d198bc18265a0",
+        "layers/integration/scout-squad/scout-squad-firefight-ploy-covert-position.pdf": "c3de938c0d8a3d16af922636f0cee13abc9c132adf0c6d4a5cef9b0c6670df7b",
+        "layers/integration/scout-squad/scout-squad-firefight-ploy-emboldened-aspirant.pdf": "59be3f6e4596484ff22dd8f2bc6ba99f47c3172002a2e44df7c4bcef624c279a",
+        "layers/integration/scout-squad/scout-squad-firefight-ploy-raw-physiology.pdf": "985ea40a25bc5b98cfc6acd7297a3029fb933a3fe2e23b3aea80c8e36806807a",
+        "layers/integration/scout-squad/scout-squad-operatives-selection-operative-selection.pdf": "fc4a659535a232550ca9418a25d4a4966eec2d694640ed62110fa585a2682ef9",
+        "layers/integration/scout-squad/scout-squad-strategy-ploy-adaptable-training.pdf": "f9e0ce087e102e29a6ce98e3f2b9d30ae279621acd8fb7900f318686cfe31256",
+        "layers/integration/scout-squad/scout-squad-strategy-ploy-ambush.pdf": "2466d39cfca73c34d77ab54462ead9e3be0cf38ad30447dbc120110c990e6d5f",
+        "layers/integration/scout-squad/scout-squad-strategy-ploy-guerrilla-engagement.pdf": "2ed7a986d1c91c01be9c00276eb1f082dc14d8b540bd5c4b8c3ab03853918420",
+        "layers/integration/scout-squad/scout-squad-strategy-ploy-stealth-relocation.pdf": "84de93e619992edc801cb833715c1ba0f5981622333bf681adbad71948c797b0",
+        "layers/integration/scout-squad/scout-squad-token-guide-token-guide.pdf": "bc1d61d884679860a3b6f41693ace281dc0625552457b1ae0b742df750343f2d"
+      }
+    },
+    "extract_backsides": {
+      "outputs": {
+        "backside-landscape.jpg": {
+          "path": "layers/integration/scout-squad/card-backside/scout-squad-backside-landscape.jpg",
+          "hash": "11ba1400c07b705eb3bc75ff84bc6e0c0c2eee9c975817d7c30c90e8436ec4e5",
+          "modified": "2026-07-11T07:06:45.848791+00:00"
+        },
+        "backside-portrait.jpg": {
+          "path": "layers/integration/scout-squad/card-backside/scout-squad-backside-portrait.jpg",
+          "hash": "45c91cf30eddb005f12cc434748eebede9025b58542ef94db1063afc1336bc27",
+          "modified": "2026-07-11T07:06:45.852856+00:00"
+        }
+      },
+      "completed": "2026-07-11T07:06:45.860643+00:00",
+      "inputs": {
+        "layers/integration/scout-squad/artwork/icons/scout-squad-icon-token.jpg": "2dc7d1286a69fbac58ed85e7024e01ce3a781233de6d860d460e0c530a609e67",
+        "config/defaults/box/card-box-background.jpeg": "2dd1442a7c52ca1d66899333f678d60f48981ce20561ead77c1161d548176036"
+      }
+    },
+    "extract_tokens": {
+      "outputs": {
+        "tokens/scout-squad-auspex-scan.png": {
+          "path": "output/scout-squad/tokens/scout-squad-auspex-scan.png",
+          "hash": "931f0c8d16721a86d0a420124fd802c9347a3af2c5e571e01e923e0c083a3242",
+          "modified": "2026-07-11T07:06:59.546438+00:00"
+        },
+        "tokens/scout-squad-booby-trap.png": {
+          "path": "output/scout-squad/tokens/scout-squad-booby-trap.png",
+          "hash": "70d19cf3e144f6ef2c746db8ff27db1de8a412ec163186b287e5f3d53fa68985",
+          "modified": "2026-07-11T07:06:59.549272+00:00"
+        },
+        "tokens/scout-squad-designate-target.png": {
+          "path": "output/scout-squad/tokens/scout-squad-designate-target.png",
+          "hash": "76647e747835a722d2afc61335efac4281445a93a84bd7ad2a841d04e7865626",
+          "modified": "2026-07-11T07:06:59.551320+00:00"
+        },
+        "tokens/scout-squad-optics.png": {
+          "path": "output/scout-squad/tokens/scout-squad-optics.png",
+          "hash": "e89127bcc8985807e3812281efaa17cd49f9091eda1cd9bf176fe3f225ee7cd5",
+          "modified": "2026-07-11T07:06:59.553025+00:00"
+        },
+        "tokens/scout-squad-smoke-grenade.png": {
+          "path": "output/scout-squad/tokens/scout-squad-smoke-grenade.png",
+          "hash": "f1aa9d91846e1240efb7ff70407d3cae95de224d508d3985d32eaf1ad5bde86f",
+          "modified": "2026-07-11T07:06:59.556600+00:00"
+        },
+        "tokens/scout-squad-stun-grenade.png": {
+          "path": "output/scout-squad/tokens/scout-squad-stun-grenade.png",
+          "hash": "350195a6a7e7f71d064d05fa7be71a7828c79931fa97c253088e15aa057d33f3",
+          "modified": "2026-07-11T07:06:59.904929+00:00"
+        },
+        "tokens/scout-squad-track-enemy.png": {
+          "path": "output/scout-squad/tokens/scout-squad-track-enemy.png",
+          "hash": "33fc5558c1da3b6717ab863f064b848e19aa0f5d42c41616650e91f486169090",
+          "modified": "2026-07-11T07:06:59.908910+00:00"
+        },
+        "tokens/scout-squad-trip-alarm.png": {
+          "path": "output/scout-squad/tokens/scout-squad-trip-alarm.png",
+          "hash": "99d5762657fb323049fb8ee6250d37121803c682be4f10bf86d42d7c28172afa",
+          "modified": "2026-07-11T07:06:59.911212+00:00"
+        },
+        "tokens/scout-squad-auspex-scan.obj": {
+          "path": "output/scout-squad/tokens/scout-squad-auspex-scan.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-11T07:06:59.965087+00:00"
+        },
+        "tokens/scout-squad-booby-trap.obj": {
+          "path": "output/scout-squad/tokens/scout-squad-booby-trap.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-11T07:06:59.967745+00:00"
+        },
+        "tokens/scout-squad-designate-target.obj": {
+          "path": "output/scout-squad/tokens/scout-squad-designate-target.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-11T07:06:59.970178+00:00"
+        },
+        "tokens/scout-squad-optics.obj": {
+          "path": "output/scout-squad/tokens/scout-squad-optics.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-11T07:06:59.973525+00:00"
+        },
+        "tokens/scout-squad-smoke-grenade.obj": {
+          "path": "output/scout-squad/tokens/scout-squad-smoke-grenade.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-11T07:06:59.976909+00:00"
+        },
+        "tokens/scout-squad-stun-grenade.obj": {
+          "path": "output/scout-squad/tokens/scout-squad-stun-grenade.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-11T07:07:00.343250+00:00"
+        },
+        "tokens/scout-squad-track-enemy.obj": {
+          "path": "output/scout-squad/tokens/scout-squad-track-enemy.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-11T07:07:00.346226+00:00"
+        },
+        "tokens/scout-squad-trip-alarm.obj": {
+          "path": "output/scout-squad/tokens/scout-squad-trip-alarm.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-11T07:07:00.348352+00:00"
+        },
+        "tokens/tokenbag/scout-squad-token-bag-icon.png": {
+          "path": "output/scout-squad/tokens/tokenbag/scout-squad-token-bag-icon.png",
+          "hash": "2dc7d1286a69fbac58ed85e7024e01ce3a781233de6d860d460e0c530a609e67",
+          "modified": "2026-07-11T07:07:00.418317+00:00"
+        },
+        "tokens/tokenbag/scout-squad-token-bag.obj": {
+          "path": "output/scout-squad/tokens/tokenbag/scout-squad-token-bag.obj",
+          "hash": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+          "modified": "2026-07-11T07:07:00.422238+00:00"
+        }
+      },
+      "completed": "2026-07-11T07:07:06.177880+00:00",
+      "inputs": {
+        "layers/integration/scout-squad/manifest.json": "0236faf4e1fe66562c1d45f927602988272a4505a563b4980116403043e9b742",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "layers/integration/scout-squad/artwork/icons/scout-squad-icon-token.jpg": "2dc7d1286a69fbac58ed85e7024e01ce3a781233de6d860d460e0c530a609e67",
+        "layers/integration/scout-squad/scout-squad-datacard-scout-heavy-gunner.pdf": "c0addf945a54b7bfb2cf6214255a20c90db246afa4a5f1cdeba0b33c19d63019",
+        "layers/integration/scout-squad/scout-squad-datacard-scout-hunter.pdf": "dfaee087014db42e52a9431bbab076f2376ed3f1ea75ec4e6bcaba4a0a133b1a",
+        "layers/integration/scout-squad/scout-squad-datacard-scout-sergeant.pdf": "5137d778d5834601352fc770c7baa8a716cac27756d33acccdb2d1a5f1edbdb4",
+        "layers/integration/scout-squad/scout-squad-datacard-scout-sniper.pdf": "55c53fb1ed2ea33e240891c93a114418887453e41c9a8f54805f91aa854aa960",
+        "layers/integration/scout-squad/scout-squad-datacard-scout-tracker.pdf": "e7a3f86172f8260049e4fa2cfe56d8f25e02af7441652d4e836eba528f67bb51",
+        "layers/integration/scout-squad/scout-squad-datacard-scout-warrior.pdf": "dd6d4a2688c7de2f29cf4d3c3e5c0d764a907371dec9c8e5dbe79cb860b57478",
+        "layers/integration/scout-squad/scout-squad-equipment-camo-cloak.pdf": "a52908a9db775298da6615115fae78bab8bc1ee843e806dd3d39b3cbc9c1544d",
+        "layers/integration/scout-squad/scout-squad-equipment-combat-blades.pdf": "2d4dfa66baea591fac230c124b7d9a63668cd69ba20c196a7c524afb5504d566",
+        "layers/integration/scout-squad/scout-squad-equipment-tactical-vox-link.pdf": "cf52b867af432e56cde8eaf4d0a41a4f5c5a87edc32e738eade2aa71e1183786",
+        "layers/integration/scout-squad/scout-squad-equipment-targeting-oculars.pdf": "fdc8cb7412fe093826869359aa8ad58d5233523c44ed895bf76c4a5c5f17a948",
+        "layers/integration/scout-squad/scout-squad-faction-rule-forward-scouting-1.pdf": "d3fb13d2ac6b11ff469e390087b1b5613038360def50138dc25ed1a22dd31332",
+        "layers/integration/scout-squad/scout-squad-faction-rule-forward-scouting-2.pdf": "26f094717e5ec9e9df379ae12cf29071ea07c0d08db4188d85c892eda48f0720",
+        "layers/integration/scout-squad/scout-squad-faction-rule-forward-scouting-3.pdf": "113ae045bd66a9972f25b06727f59dea69b6d46ce72ce5bd7cdb7c0fd6f2ada8",
+        "layers/integration/scout-squad/scout-squad-faction-rule-forward-scouting-4.pdf": "b7e0f0a360847af96c1c225a7b5f2d3d4ead3f4a82d2fb4537ef38f8052fba72",
+        "layers/integration/scout-squad/scout-squad-firefight-ploy-astartes-training.pdf": "fe8e1ce95c9b622efd9844f5751798bda9893f85c6bcddf1331d198bc18265a0",
+        "layers/integration/scout-squad/scout-squad-firefight-ploy-covert-position.pdf": "c3de938c0d8a3d16af922636f0cee13abc9c132adf0c6d4a5cef9b0c6670df7b",
+        "layers/integration/scout-squad/scout-squad-firefight-ploy-emboldened-aspirant.pdf": "59be3f6e4596484ff22dd8f2bc6ba99f47c3172002a2e44df7c4bcef624c279a",
+        "layers/integration/scout-squad/scout-squad-firefight-ploy-raw-physiology.pdf": "985ea40a25bc5b98cfc6acd7297a3029fb933a3fe2e23b3aea80c8e36806807a",
+        "layers/integration/scout-squad/scout-squad-operatives-selection-operative-selection.pdf": "fc4a659535a232550ca9418a25d4a4966eec2d694640ed62110fa585a2682ef9",
+        "layers/integration/scout-squad/scout-squad-strategy-ploy-adaptable-training.pdf": "f9e0ce087e102e29a6ce98e3f2b9d30ae279621acd8fb7900f318686cfe31256",
+        "layers/integration/scout-squad/scout-squad-strategy-ploy-ambush.pdf": "2466d39cfca73c34d77ab54462ead9e3be0cf38ad30447dbc120110c990e6d5f",
+        "layers/integration/scout-squad/scout-squad-strategy-ploy-guerrilla-engagement.pdf": "2ed7a986d1c91c01be9c00276eb1f082dc14d8b540bd5c4b8c3ab03853918420",
+        "layers/integration/scout-squad/scout-squad-strategy-ploy-stealth-relocation.pdf": "84de93e619992edc801cb833715c1ba0f5981622333bf681adbad71948c797b0",
+        "layers/integration/scout-squad/scout-squad-token-guide-token-guide.pdf": "bc1d61d884679860a3b6f41693ace281dc0625552457b1ae0b742df750343f2d"
+      }
+    },
+    "generate_dice": {
+      "outputs": {
+        "dice-light.jpg": {
+          "path": "output/scout-squad/dice/scout-squad-dice-light.jpg",
+          "hash": "2dff73ed68dd606e9158bf73610c90188c0d671f790ae580fb684e4a51678452",
+          "modified": "2026-07-11T07:07:23.105941+00:00"
+        },
+        "dice-dark.jpg": {
+          "path": "output/scout-squad/dice/scout-squad-dice-dark.jpg",
+          "hash": "46246495cbb886b585a1bb791211a80dd9b107ba9b4a291b5580d224317b77ee",
+          "modified": "2026-07-11T07:07:25.678146+00:00"
+        },
+        "dice-team.jpg": {
+          "path": "output/scout-squad/dice/scout-squad-dice-team.jpg",
+          "hash": "1a0f617358b486de9a304782b38896db8894c57f57c47b00c7ba20ed62cc36d4",
+          "modified": "2026-07-11T07:07:27.110871+00:00"
+        }
+      },
+      "completed": "2026-07-11T07:07:27.962612+00:00",
+      "inputs": {
+        "layers/integration/scout-squad/artwork/icons/scout-squad-icon-token-transparent.png": "4a4a4f0cdc23b0c539d22ec79d93500ec8077d3a5f000e1fce471719ef855dae",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41"
+      }
+    },
+    "generate_box_texture": {
+      "outputs": {
+        "card-box-texture.jpg": {
+          "path": "output/scout-squad/cardbox/scout-squad-card-box-texture.jpg",
+          "hash": "461dec9463e4dc9754ce9dadb791fc17fccbdd4fdcab800ce2469549d26646e3",
+          "modified": "2026-07-11T07:07:46.886977+00:00"
+        },
+        "card-box.obj": {
+          "path": "output/scout-squad/cardbox/scout-squad-card-box.obj",
+          "hash": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+          "modified": "2026-07-11T07:07:47.400978+00:00"
+        }
+      },
+      "completed": "2026-07-11T07:07:48.699346+00:00",
+      "inputs": {
+        "layers/integration/scout-squad/artwork/icons/scout-squad-icon-token.jpg": "2dc7d1286a69fbac58ed85e7024e01ce3a781233de6d860d460e0c530a609e67",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "config/defaults/box/card-box.obj": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+        "config/defaults/box/card-box-texture.jpg": "b2f310b01a0d28e8806e99ce0b972e8967e3014608eacefcb6ec51597695a313"
+      }
+    },
+    "generate_card_images": {
+      "outputs": {
+        "cards/datacards/scout-heavy-gunner-back.jpg": {
+          "path": "output/scout-squad/cards/datacards/scout-heavy-gunner-back.jpg",
+          "hash": "11ba1400c07b705eb3bc75ff84bc6e0c0c2eee9c975817d7c30c90e8436ec4e5",
+          "modified": "2026-07-11T07:08:22.988088+00:00"
+        },
+        "cards/datacards/scout-heavy-gunner-front.jpg": {
+          "path": "output/scout-squad/cards/datacards/scout-heavy-gunner-front.jpg",
+          "hash": "8ff5bbca8048f5d327b831211a43419ef62b7f0c9d08d157f37d2c0fece633d8",
+          "modified": "2026-07-11T07:08:22.992519+00:00"
+        },
+        "cards/datacards/scout-hunter-back.jpg": {
+          "path": "output/scout-squad/cards/datacards/scout-hunter-back.jpg",
+          "hash": "11ba1400c07b705eb3bc75ff84bc6e0c0c2eee9c975817d7c30c90e8436ec4e5",
+          "modified": "2026-07-11T07:08:23.001972+00:00"
+        },
+        "cards/datacards/scout-hunter-front.jpg": {
+          "path": "output/scout-squad/cards/datacards/scout-hunter-front.jpg",
+          "hash": "741aea03c84123869646338fc29d2416d17fedd5124ec155e13fe4a9f9f7b43b",
+          "modified": "2026-07-11T07:08:23.005827+00:00"
+        },
+        "cards/datacards/scout-sergeant-back.jpg": {
+          "path": "output/scout-squad/cards/datacards/scout-sergeant-back.jpg",
+          "hash": "11ba1400c07b705eb3bc75ff84bc6e0c0c2eee9c975817d7c30c90e8436ec4e5",
+          "modified": "2026-07-11T07:08:23.015518+00:00"
+        },
+        "cards/datacards/scout-sergeant-front.jpg": {
+          "path": "output/scout-squad/cards/datacards/scout-sergeant-front.jpg",
+          "hash": "e878da7ef89a0d38448dd3ff4080e12ff11d78d29d40026faafb999039bb135e",
+          "modified": "2026-07-11T07:08:23.022246+00:00"
+        },
+        "cards/datacards/scout-sniper-back.jpg": {
+          "path": "output/scout-squad/cards/datacards/scout-sniper-back.jpg",
+          "hash": "11ba1400c07b705eb3bc75ff84bc6e0c0c2eee9c975817d7c30c90e8436ec4e5",
+          "modified": "2026-07-11T07:08:23.031638+00:00"
+        },
+        "cards/datacards/scout-sniper-front.jpg": {
+          "path": "output/scout-squad/cards/datacards/scout-sniper-front.jpg",
+          "hash": "f42ce0f817e66d9b97328f579d9a584de923abef71100dca8d1982935edf124e",
+          "modified": "2026-07-11T07:08:23.038180+00:00"
+        },
+        "cards/datacards/scout-tracker-back.jpg": {
+          "path": "output/scout-squad/cards/datacards/scout-tracker-back.jpg",
+          "hash": "759b6c864bacd78e42813c0c4cda6e0fdcaa5756d609021edc2f3cddfebfe429",
+          "modified": "2026-07-11T07:08:23.041128+00:00"
+        },
+        "cards/datacards/scout-tracker-front.jpg": {
+          "path": "output/scout-squad/cards/datacards/scout-tracker-front.jpg",
+          "hash": "e08fa6606c121168023b87d7ad78767afbf1c1cff864cc15a5c88f4ac70a9e00",
+          "modified": "2026-07-11T07:08:23.043477+00:00"
+        },
+        "cards/datacards/scout-warrior-back.jpg": {
+          "path": "output/scout-squad/cards/datacards/scout-warrior-back.jpg",
+          "hash": "11ba1400c07b705eb3bc75ff84bc6e0c0c2eee9c975817d7c30c90e8436ec4e5",
+          "modified": "2026-07-11T07:08:23.052716+00:00"
+        },
+        "cards/datacards/scout-warrior-front.jpg": {
+          "path": "output/scout-squad/cards/datacards/scout-warrior-front.jpg",
+          "hash": "cdc2bdff19de39961fd619fa7680b6a2e6a7a3c12530448f3c9a1ff13adef0c0",
+          "modified": "2026-07-11T07:08:23.056305+00:00"
+        },
+        "cards/equipment/scout-squad-camo-cloak-back.jpg": {
+          "path": "output/scout-squad/cards/equipment/scout-squad-camo-cloak-back.jpg",
+          "hash": "45c91cf30eddb005f12cc434748eebede9025b58542ef94db1063afc1336bc27",
+          "modified": "2026-07-11T07:08:23.064057+00:00"
+        },
+        "cards/equipment/scout-squad-camo-cloak-front.jpg": {
+          "path": "output/scout-squad/cards/equipment/scout-squad-camo-cloak-front.jpg",
+          "hash": "6c19db509ae19c9e6d3c7fa98101badb2a774ead5c612660a762307147871b05",
+          "modified": "2026-07-11T07:08:23.068454+00:00"
+        },
+        "cards/equipment/scout-squad-combat-blades-back.jpg": {
+          "path": "output/scout-squad/cards/equipment/scout-squad-combat-blades-back.jpg",
+          "hash": "45c91cf30eddb005f12cc434748eebede9025b58542ef94db1063afc1336bc27",
+          "modified": "2026-07-11T07:08:23.076366+00:00"
+        },
+        "cards/equipment/scout-squad-combat-blades-front.jpg": {
+          "path": "output/scout-squad/cards/equipment/scout-squad-combat-blades-front.jpg",
+          "hash": "d51e0ad4d1c0f07e3e4a084ec6b3a6b4a3d97d570f2d0c7386809d01691c841d",
+          "modified": "2026-07-11T07:08:23.079131+00:00"
+        },
+        "cards/equipment/scout-squad-tactical-vox-link-back.jpg": {
+          "path": "output/scout-squad/cards/equipment/scout-squad-tactical-vox-link-back.jpg",
+          "hash": "45c91cf30eddb005f12cc434748eebede9025b58542ef94db1063afc1336bc27",
+          "modified": "2026-07-11T07:08:23.087670+00:00"
+        },
+        "cards/equipment/scout-squad-tactical-vox-link-front.jpg": {
+          "path": "output/scout-squad/cards/equipment/scout-squad-tactical-vox-link-front.jpg",
+          "hash": "067b6afd876156e64c0c4b605fa5cd4316565dadbd92b9bf518e57c14427f2a6",
+          "modified": "2026-07-11T07:08:23.090271+00:00"
+        },
+        "cards/equipment/scout-squad-targeting-oculars-back.jpg": {
+          "path": "output/scout-squad/cards/equipment/scout-squad-targeting-oculars-back.jpg",
+          "hash": "45c91cf30eddb005f12cc434748eebede9025b58542ef94db1063afc1336bc27",
+          "modified": "2026-07-11T07:08:23.098549+00:00"
+        },
+        "cards/equipment/scout-squad-targeting-oculars-front.jpg": {
+          "path": "output/scout-squad/cards/equipment/scout-squad-targeting-oculars-front.jpg",
+          "hash": "cf718c9c45445a47dd79a2bc183f1a656f6b09ad52f370b8a755a7a98e61e1f5",
+          "modified": "2026-07-11T07:08:23.104762+00:00"
+        },
+        "cards/faction_rules/scout-squad-forward-scouting-card1-back.jpg": {
+          "path": "output/scout-squad/cards/faction_rules/scout-squad-forward-scouting-card1-back.jpg",
+          "hash": "45c91cf30eddb005f12cc434748eebede9025b58542ef94db1063afc1336bc27",
+          "modified": "2026-07-11T07:08:23.120541+00:00"
+        },
+        "cards/faction_rules/scout-squad-forward-scouting-card1-front.jpg": {
+          "path": "output/scout-squad/cards/faction_rules/scout-squad-forward-scouting-card1-front.jpg",
+          "hash": "6b0faaba4cfc22d1ce5d757c3d6d251d6b7b8b647f83eef71e195af51ca70431",
+          "modified": "2026-07-11T07:08:23.138306+00:00"
+        },
+        "cards/faction_rules/scout-squad-forward-scouting-card2-back.jpg": {
+          "path": "output/scout-squad/cards/faction_rules/scout-squad-forward-scouting-card2-back.jpg",
+          "hash": "45c91cf30eddb005f12cc434748eebede9025b58542ef94db1063afc1336bc27",
+          "modified": "2026-07-11T07:08:23.153040+00:00"
+        },
+        "cards/faction_rules/scout-squad-forward-scouting-card2-front.jpg": {
+          "path": "output/scout-squad/cards/faction_rules/scout-squad-forward-scouting-card2-front.jpg",
+          "hash": "aa1a227e011a87e92f0734ee98a8d9aa4b5fa2be2f8e9f3bacdee22afd9f506a",
+          "modified": "2026-07-11T07:08:23.171503+00:00"
+        },
+        "cards/faction_rules/scout-squad-forward-scouting-card3-back.jpg": {
+          "path": "output/scout-squad/cards/faction_rules/scout-squad-forward-scouting-card3-back.jpg",
+          "hash": "45c91cf30eddb005f12cc434748eebede9025b58542ef94db1063afc1336bc27",
+          "modified": "2026-07-11T07:08:23.185487+00:00"
+        },
+        "cards/faction_rules/scout-squad-forward-scouting-card3-front.jpg": {
+          "path": "output/scout-squad/cards/faction_rules/scout-squad-forward-scouting-card3-front.jpg",
+          "hash": "1a28d3d352d334156fef9a1a0e01725062ac26764ab0eecbc4e84fd6f550e66c",
+          "modified": "2026-07-11T07:08:23.204837+00:00"
+        },
+        "cards/faction_rules/scout-squad-forward-scouting-card4-back.jpg": {
+          "path": "output/scout-squad/cards/faction_rules/scout-squad-forward-scouting-card4-back.jpg",
+          "hash": "45c91cf30eddb005f12cc434748eebede9025b58542ef94db1063afc1336bc27",
+          "modified": "2026-07-11T07:08:23.223174+00:00"
+        },
+        "cards/faction_rules/scout-squad-forward-scouting-card4-front.jpg": {
+          "path": "output/scout-squad/cards/faction_rules/scout-squad-forward-scouting-card4-front.jpg",
+          "hash": "d75421c2cd3b2471fc2dfae1d69eb6984ec98a4ef113185c3c2dc6f202745c4d",
+          "modified": "2026-07-11T07:08:23.240925+00:00"
+        },
+        "cards/firefight_ploys/scout-squad-astartes-training-back.jpg": {
+          "path": "output/scout-squad/cards/firefight_ploys/scout-squad-astartes-training-back.jpg",
+          "hash": "45c91cf30eddb005f12cc434748eebede9025b58542ef94db1063afc1336bc27",
+          "modified": "2026-07-11T07:08:23.250567+00:00"
+        },
+        "cards/firefight_ploys/scout-squad-astartes-training-front.jpg": {
+          "path": "output/scout-squad/cards/firefight_ploys/scout-squad-astartes-training-front.jpg",
+          "hash": "e89b867958c4d7e6922254b850812c56c2160574b1613472ce838726cc471820",
+          "modified": "2026-07-11T07:08:23.253269+00:00"
+        },
+        "cards/firefight_ploys/scout-squad-covert-position-back.jpg": {
+          "path": "output/scout-squad/cards/firefight_ploys/scout-squad-covert-position-back.jpg",
+          "hash": "45c91cf30eddb005f12cc434748eebede9025b58542ef94db1063afc1336bc27",
+          "modified": "2026-07-11T07:08:23.263368+00:00"
+        },
+        "cards/firefight_ploys/scout-squad-covert-position-front.jpg": {
+          "path": "output/scout-squad/cards/firefight_ploys/scout-squad-covert-position-front.jpg",
+          "hash": "7dd07a149d0cf0837c23c3ac9fe0884decbffd76681bcb4c988b5b975426a8a5",
+          "modified": "2026-07-11T07:08:23.265212+00:00"
+        },
+        "cards/firefight_ploys/scout-squad-emboldened-aspirant-back.jpg": {
+          "path": "output/scout-squad/cards/firefight_ploys/scout-squad-emboldened-aspirant-back.jpg",
+          "hash": "45c91cf30eddb005f12cc434748eebede9025b58542ef94db1063afc1336bc27",
+          "modified": "2026-07-11T07:08:23.274598+00:00"
+        },
+        "cards/firefight_ploys/scout-squad-emboldened-aspirant-front.jpg": {
+          "path": "output/scout-squad/cards/firefight_ploys/scout-squad-emboldened-aspirant-front.jpg",
+          "hash": "48f15fdf4452ce7a8c1ce31224860a8887f1c17df1f12b36b34f387b60904938",
+          "modified": "2026-07-11T07:08:23.278452+00:00"
+        },
+        "cards/firefight_ploys/scout-squad-raw-physiology-back.jpg": {
+          "path": "output/scout-squad/cards/firefight_ploys/scout-squad-raw-physiology-back.jpg",
+          "hash": "45c91cf30eddb005f12cc434748eebede9025b58542ef94db1063afc1336bc27",
+          "modified": "2026-07-11T07:08:23.288855+00:00"
+        },
+        "cards/firefight_ploys/scout-squad-raw-physiology-front.jpg": {
+          "path": "output/scout-squad/cards/firefight_ploys/scout-squad-raw-physiology-front.jpg",
+          "hash": "c882fe53af2a884a3bb77ca249646d3af6c843f84178c7e1b1b32d663a03804b",
+          "modified": "2026-07-11T07:08:23.291509+00:00"
+        },
+        "cards/operatives_selection/scout-squad-operative-selection-back.jpg": {
+          "path": "output/scout-squad/cards/operatives_selection/scout-squad-operative-selection-back.jpg",
+          "hash": "45c91cf30eddb005f12cc434748eebede9025b58542ef94db1063afc1336bc27",
+          "modified": "2026-07-11T07:08:23.300697+00:00"
+        },
+        "cards/operatives_selection/scout-squad-operative-selection-front.jpg": {
+          "path": "output/scout-squad/cards/operatives_selection/scout-squad-operative-selection-front.jpg",
+          "hash": "3417975c03dbd68993167245d9cdc2374003d2fb2a23fef2a8d31db08f03f635",
+          "modified": "2026-07-11T07:08:23.303342+00:00"
+        },
+        "cards/strategy_ploys/scout-squad-adaptable-training-back.jpg": {
+          "path": "output/scout-squad/cards/strategy_ploys/scout-squad-adaptable-training-back.jpg",
+          "hash": "45c91cf30eddb005f12cc434748eebede9025b58542ef94db1063afc1336bc27",
+          "modified": "2026-07-11T07:08:23.313908+00:00"
+        },
+        "cards/strategy_ploys/scout-squad-adaptable-training-front.jpg": {
+          "path": "output/scout-squad/cards/strategy_ploys/scout-squad-adaptable-training-front.jpg",
+          "hash": "96fedd100d1ebc83243c5ab7e4bc40f6f6cb1e8770c955b933ceb54bed6c8e94",
+          "modified": "2026-07-11T07:08:23.316217+00:00"
+        },
+        "cards/strategy_ploys/scout-squad-ambush-back.jpg": {
+          "path": "output/scout-squad/cards/strategy_ploys/scout-squad-ambush-back.jpg",
+          "hash": "45c91cf30eddb005f12cc434748eebede9025b58542ef94db1063afc1336bc27",
+          "modified": "2026-07-11T07:08:23.325371+00:00"
+        },
+        "cards/strategy_ploys/scout-squad-ambush-front.jpg": {
+          "path": "output/scout-squad/cards/strategy_ploys/scout-squad-ambush-front.jpg",
+          "hash": "e86a1200bc075e17d66af841cea72f36bac32622b09f0b6090af1e995ad75211",
+          "modified": "2026-07-11T07:08:23.327612+00:00"
+        },
+        "cards/strategy_ploys/scout-squad-guerrilla-engagement-back.jpg": {
+          "path": "output/scout-squad/cards/strategy_ploys/scout-squad-guerrilla-engagement-back.jpg",
+          "hash": "45c91cf30eddb005f12cc434748eebede9025b58542ef94db1063afc1336bc27",
+          "modified": "2026-07-11T07:08:23.336945+00:00"
+        },
+        "cards/strategy_ploys/scout-squad-guerrilla-engagement-front.jpg": {
+          "path": "output/scout-squad/cards/strategy_ploys/scout-squad-guerrilla-engagement-front.jpg",
+          "hash": "3a1069959de2a489859307c07ef399638e23124d9b1319a1b199f1576e0b43ae",
+          "modified": "2026-07-11T07:08:23.340359+00:00"
+        },
+        "cards/strategy_ploys/scout-squad-stealth-relocation-back.jpg": {
+          "path": "output/scout-squad/cards/strategy_ploys/scout-squad-stealth-relocation-back.jpg",
+          "hash": "45c91cf30eddb005f12cc434748eebede9025b58542ef94db1063afc1336bc27",
+          "modified": "2026-07-11T07:08:23.354169+00:00"
+        },
+        "cards/strategy_ploys/scout-squad-stealth-relocation-front.jpg": {
+          "path": "output/scout-squad/cards/strategy_ploys/scout-squad-stealth-relocation-front.jpg",
+          "hash": "8a59d78a65a7e568da815463742aba98a4e968ab2698a810de52191a68a2ec5b",
+          "modified": "2026-07-11T07:08:23.363005+00:00"
+        },
+        "cards/token_guide/scout-squad-token-guide-back.jpg": {
+          "path": "output/scout-squad/cards/token_guide/scout-squad-token-guide-back.jpg",
+          "hash": "45c91cf30eddb005f12cc434748eebede9025b58542ef94db1063afc1336bc27",
+          "modified": "2026-07-11T07:08:23.374656+00:00"
+        },
+        "cards/token_guide/scout-squad-token-guide-front.jpg": {
+          "path": "output/scout-squad/cards/token_guide/scout-squad-token-guide-front.jpg",
+          "hash": "4da584d0f69af660d7f8251c6d88f1080dc59ab4c904bd039558205628a3b4f8",
+          "modified": "2026-07-11T07:08:23.388254+00:00"
+        }
+      },
+      "completed": "2026-07-11T07:08:36.089101+00:00",
+      "inputs": {
+        "layers/integration/scout-squad/manifest.json": "0236faf4e1fe66562c1d45f927602988272a4505a563b4980116403043e9b742",
+        "layers/integration/scout-squad/scout-squad-datacard-scout-heavy-gunner.pdf": "c0addf945a54b7bfb2cf6214255a20c90db246afa4a5f1cdeba0b33c19d63019",
+        "layers/integration/scout-squad/scout-squad-datacard-scout-hunter.pdf": "dfaee087014db42e52a9431bbab076f2376ed3f1ea75ec4e6bcaba4a0a133b1a",
+        "layers/integration/scout-squad/scout-squad-datacard-scout-sergeant.pdf": "5137d778d5834601352fc770c7baa8a716cac27756d33acccdb2d1a5f1edbdb4",
+        "layers/integration/scout-squad/scout-squad-datacard-scout-sniper.pdf": "55c53fb1ed2ea33e240891c93a114418887453e41c9a8f54805f91aa854aa960",
+        "layers/integration/scout-squad/scout-squad-datacard-scout-tracker.pdf": "e7a3f86172f8260049e4fa2cfe56d8f25e02af7441652d4e836eba528f67bb51",
+        "layers/integration/scout-squad/scout-squad-datacard-scout-warrior.pdf": "dd6d4a2688c7de2f29cf4d3c3e5c0d764a907371dec9c8e5dbe79cb860b57478",
+        "layers/integration/scout-squad/scout-squad-equipment-camo-cloak.pdf": "a52908a9db775298da6615115fae78bab8bc1ee843e806dd3d39b3cbc9c1544d",
+        "layers/integration/scout-squad/scout-squad-equipment-combat-blades.pdf": "2d4dfa66baea591fac230c124b7d9a63668cd69ba20c196a7c524afb5504d566",
+        "layers/integration/scout-squad/scout-squad-equipment-tactical-vox-link.pdf": "cf52b867af432e56cde8eaf4d0a41a4f5c5a87edc32e738eade2aa71e1183786",
+        "layers/integration/scout-squad/scout-squad-equipment-targeting-oculars.pdf": "fdc8cb7412fe093826869359aa8ad58d5233523c44ed895bf76c4a5c5f17a948",
+        "layers/integration/scout-squad/scout-squad-faction-rule-forward-scouting-1.pdf": "d3fb13d2ac6b11ff469e390087b1b5613038360def50138dc25ed1a22dd31332",
+        "layers/integration/scout-squad/scout-squad-faction-rule-forward-scouting-2.pdf": "26f094717e5ec9e9df379ae12cf29071ea07c0d08db4188d85c892eda48f0720",
+        "layers/integration/scout-squad/scout-squad-faction-rule-forward-scouting-3.pdf": "113ae045bd66a9972f25b06727f59dea69b6d46ce72ce5bd7cdb7c0fd6f2ada8",
+        "layers/integration/scout-squad/scout-squad-faction-rule-forward-scouting-4.pdf": "b7e0f0a360847af96c1c225a7b5f2d3d4ead3f4a82d2fb4537ef38f8052fba72",
+        "layers/integration/scout-squad/scout-squad-firefight-ploy-astartes-training.pdf": "fe8e1ce95c9b622efd9844f5751798bda9893f85c6bcddf1331d198bc18265a0",
+        "layers/integration/scout-squad/scout-squad-firefight-ploy-covert-position.pdf": "c3de938c0d8a3d16af922636f0cee13abc9c132adf0c6d4a5cef9b0c6670df7b",
+        "layers/integration/scout-squad/scout-squad-firefight-ploy-emboldened-aspirant.pdf": "59be3f6e4596484ff22dd8f2bc6ba99f47c3172002a2e44df7c4bcef624c279a",
+        "layers/integration/scout-squad/scout-squad-firefight-ploy-raw-physiology.pdf": "985ea40a25bc5b98cfc6acd7297a3029fb933a3fe2e23b3aea80c8e36806807a",
+        "layers/integration/scout-squad/scout-squad-operatives-selection-operative-selection.pdf": "fc4a659535a232550ca9418a25d4a4966eec2d694640ed62110fa585a2682ef9",
+        "layers/integration/scout-squad/scout-squad-strategy-ploy-adaptable-training.pdf": "f9e0ce087e102e29a6ce98e3f2b9d30ae279621acd8fb7900f318686cfe31256",
+        "layers/integration/scout-squad/scout-squad-strategy-ploy-ambush.pdf": "2466d39cfca73c34d77ab54462ead9e3be0cf38ad30447dbc120110c990e6d5f",
+        "layers/integration/scout-squad/scout-squad-strategy-ploy-guerrilla-engagement.pdf": "2ed7a986d1c91c01be9c00276eb1f082dc14d8b540bd5c4b8c3ab03853918420",
+        "layers/integration/scout-squad/scout-squad-strategy-ploy-stealth-relocation.pdf": "84de93e619992edc801cb833715c1ba0f5981622333bf681adbad71948c797b0",
+        "layers/integration/scout-squad/scout-squad-token-guide-token-guide.pdf": "bc1d61d884679860a3b6f41693ace281dc0625552457b1ae0b742df750343f2d",
+        "layers/integration/scout-squad/card-backside/scout-squad-backside-portrait.jpg": "45c91cf30eddb005f12cc434748eebede9025b58542ef94db1063afc1336bc27",
+        "config/defaults/card-backside/default-backside-portrait.jpg": "f00ff15fa70005b9f804de08519e2e83485d7eaf78dfacea65dcef0eb1a29c22",
+        "layers/integration/scout-squad/card-backside/scout-squad-backside-landscape.jpg": "11ba1400c07b705eb3bc75ff84bc6e0c0c2eee9c975817d7c30c90e8436ec4e5",
+        "config/defaults/card-backside/default-backside-landscape.jpg": "1cf5580a1dff0c10adb1a286edad4479c487f3d2d698b0b8be84fe653039fd7e"
+      }
+    },
+    "extract_stats": {
+      "outputs": {
+        "team-data.json": {
+          "path": "output/scout-squad/data/scout-squad-team-data.json",
+          "hash": "15f628abba47fbca874b62f14cd3c25e10cbd4e7c221b6b66bf20655436854e2",
+          "modified": "2026-07-11T07:08:43.929194+00:00"
+        }
+      },
+      "completed": "2026-07-11T07:08:44.579323+00:00",
+      "inputs": {
+        "layers/integration/scout-squad/content/scout-squad-content.json": "15f628abba47fbca874b62f14cd3c25e10cbd4e7c221b6b66bf20655436854e2"
+      }
+    },
+    "generate_tts": {
+      "outputs": {
+        "tts_objects/Scout Squad Box.json": {
+          "path": "output/scout-squad/tts_objects/Scout Squad Box.json",
+          "hash": "ac4ec76960e73c10e8ffa4852bed16a43d8a81a6f8dd5706d9ee41588df080c3",
+          "modified": "2026-07-12T18:32:27.922441+00:00"
+        },
+        "tts_objects/Scout Squad.json": {
+          "path": "output/scout-squad/tts_objects/Scout Squad.json",
+          "hash": "f42417b4cc952dbd1abe033926180b8a81947328c734146b5fdb262d09fcf2f0",
+          "modified": "2026-07-12T18:32:27.933053+00:00"
+        }
+      },
+      "completed": "2026-07-12T18:32:27.975480+00:00",
+      "inputs": {
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "config/team-guids.json": "1dea0eaf2c7d1c37c86aba088cdf876f0638d2dcaca162888fea8422c2d5c9db",
+        "output/scout-squad/cards/datacards/scout-heavy-gunner-back.jpg": "11ba1400c07b705eb3bc75ff84bc6e0c0c2eee9c975817d7c30c90e8436ec4e5",
+        "output/scout-squad/cards/datacards/scout-heavy-gunner-front.jpg": "8ff5bbca8048f5d327b831211a43419ef62b7f0c9d08d157f37d2c0fece633d8",
+        "output/scout-squad/cards/datacards/scout-hunter-back.jpg": "11ba1400c07b705eb3bc75ff84bc6e0c0c2eee9c975817d7c30c90e8436ec4e5",
+        "output/scout-squad/cards/datacards/scout-hunter-front.jpg": "741aea03c84123869646338fc29d2416d17fedd5124ec155e13fe4a9f9f7b43b",
+        "output/scout-squad/cards/datacards/scout-sergeant-back.jpg": "11ba1400c07b705eb3bc75ff84bc6e0c0c2eee9c975817d7c30c90e8436ec4e5",
+        "output/scout-squad/cards/datacards/scout-sergeant-front.jpg": "e878da7ef89a0d38448dd3ff4080e12ff11d78d29d40026faafb999039bb135e",
+        "output/scout-squad/cards/datacards/scout-sniper-back.jpg": "11ba1400c07b705eb3bc75ff84bc6e0c0c2eee9c975817d7c30c90e8436ec4e5",
+        "output/scout-squad/cards/datacards/scout-sniper-front.jpg": "f42ce0f817e66d9b97328f579d9a584de923abef71100dca8d1982935edf124e",
+        "output/scout-squad/cards/datacards/scout-tracker-back.jpg": "759b6c864bacd78e42813c0c4cda6e0fdcaa5756d609021edc2f3cddfebfe429",
+        "output/scout-squad/cards/datacards/scout-tracker-front.jpg": "e08fa6606c121168023b87d7ad78767afbf1c1cff864cc15a5c88f4ac70a9e00",
+        "output/scout-squad/cards/datacards/scout-warrior-back.jpg": "11ba1400c07b705eb3bc75ff84bc6e0c0c2eee9c975817d7c30c90e8436ec4e5",
+        "output/scout-squad/cards/datacards/scout-warrior-front.jpg": "cdc2bdff19de39961fd619fa7680b6a2e6a7a3c12530448f3c9a1ff13adef0c0",
+        "output/scout-squad/cards/equipment/scout-squad-camo-cloak-back.jpg": "45c91cf30eddb005f12cc434748eebede9025b58542ef94db1063afc1336bc27",
+        "output/scout-squad/cards/equipment/scout-squad-camo-cloak-front.jpg": "6c19db509ae19c9e6d3c7fa98101badb2a774ead5c612660a762307147871b05",
+        "output/scout-squad/cards/equipment/scout-squad-combat-blades-back.jpg": "45c91cf30eddb005f12cc434748eebede9025b58542ef94db1063afc1336bc27",
+        "output/scout-squad/cards/equipment/scout-squad-combat-blades-front.jpg": "d51e0ad4d1c0f07e3e4a084ec6b3a6b4a3d97d570f2d0c7386809d01691c841d",
+        "output/scout-squad/cards/equipment/scout-squad-tactical-vox-link-back.jpg": "45c91cf30eddb005f12cc434748eebede9025b58542ef94db1063afc1336bc27",
+        "output/scout-squad/cards/equipment/scout-squad-tactical-vox-link-front.jpg": "067b6afd876156e64c0c4b605fa5cd4316565dadbd92b9bf518e57c14427f2a6",
+        "output/scout-squad/cards/equipment/scout-squad-targeting-oculars-back.jpg": "45c91cf30eddb005f12cc434748eebede9025b58542ef94db1063afc1336bc27",
+        "output/scout-squad/cards/equipment/scout-squad-targeting-oculars-front.jpg": "cf718c9c45445a47dd79a2bc183f1a656f6b09ad52f370b8a755a7a98e61e1f5",
+        "output/scout-squad/cards/faction_rules/scout-squad-forward-scouting-card1-back.jpg": "45c91cf30eddb005f12cc434748eebede9025b58542ef94db1063afc1336bc27",
+        "output/scout-squad/cards/faction_rules/scout-squad-forward-scouting-card1-front.jpg": "6b0faaba4cfc22d1ce5d757c3d6d251d6b7b8b647f83eef71e195af51ca70431",
+        "output/scout-squad/cards/faction_rules/scout-squad-forward-scouting-card2-back.jpg": "45c91cf30eddb005f12cc434748eebede9025b58542ef94db1063afc1336bc27",
+        "output/scout-squad/cards/faction_rules/scout-squad-forward-scouting-card2-front.jpg": "aa1a227e011a87e92f0734ee98a8d9aa4b5fa2be2f8e9f3bacdee22afd9f506a",
+        "output/scout-squad/cards/faction_rules/scout-squad-forward-scouting-card3-back.jpg": "45c91cf30eddb005f12cc434748eebede9025b58542ef94db1063afc1336bc27",
+        "output/scout-squad/cards/faction_rules/scout-squad-forward-scouting-card3-front.jpg": "1a28d3d352d334156fef9a1a0e01725062ac26764ab0eecbc4e84fd6f550e66c",
+        "output/scout-squad/cards/faction_rules/scout-squad-forward-scouting-card4-back.jpg": "45c91cf30eddb005f12cc434748eebede9025b58542ef94db1063afc1336bc27",
+        "output/scout-squad/cards/faction_rules/scout-squad-forward-scouting-card4-front.jpg": "d75421c2cd3b2471fc2dfae1d69eb6984ec98a4ef113185c3c2dc6f202745c4d",
+        "output/scout-squad/cards/faction_rules/scout-squad-forward-scouting-options-are-presented-card1-back.jpg": "45c91cf30eddb005f12cc434748eebede9025b58542ef94db1063afc1336bc27",
+        "output/scout-squad/cards/faction_rules/scout-squad-forward-scouting-options-are-presented-card1-front.jpg": "46cf424b18cc37c4d9055292694ee53173674f7899ed951d483770f0827995b3",
+        "output/scout-squad/cards/faction_rules/scout-squad-forward-scouting-options-are-presented-card2-back.jpg": "45c91cf30eddb005f12cc434748eebede9025b58542ef94db1063afc1336bc27",
+        "output/scout-squad/cards/faction_rules/scout-squad-forward-scouting-options-are-presented-card2-front.jpg": "cb38f8b09050ae2ec902fe474786fd22516061a922c18b801d9840cc97888e61",
+        "output/scout-squad/cards/faction_rules/scout-squad-forward-scouting-options-are-presented-card3-back.jpg": "45c91cf30eddb005f12cc434748eebede9025b58542ef94db1063afc1336bc27",
+        "output/scout-squad/cards/faction_rules/scout-squad-forward-scouting-options-are-presented-card3-front.jpg": "fe2f7bc0dacd645751358dd975d5a3f13ccbf8283aafb32255846ff2e4197718",
+        "output/scout-squad/cards/faction_rules/scout-squad-forward-scouting-options-are-presented-card4-back.jpg": "45c91cf30eddb005f12cc434748eebede9025b58542ef94db1063afc1336bc27",
+        "output/scout-squad/cards/faction_rules/scout-squad-forward-scouting-options-are-presented-card4-front.jpg": "d8e3ea13ed326cecaef1485dbdbc1c48552bc5d1d4ce27b790e5e047704a0a25",
+        "output/scout-squad/cards/firefight_ploys/scout-squad-astartes-training-back.jpg": "45c91cf30eddb005f12cc434748eebede9025b58542ef94db1063afc1336bc27",
+        "output/scout-squad/cards/firefight_ploys/scout-squad-astartes-training-front.jpg": "e89b867958c4d7e6922254b850812c56c2160574b1613472ce838726cc471820",
+        "output/scout-squad/cards/firefight_ploys/scout-squad-covert-position-back.jpg": "45c91cf30eddb005f12cc434748eebede9025b58542ef94db1063afc1336bc27",
+        "output/scout-squad/cards/firefight_ploys/scout-squad-covert-position-front.jpg": "7dd07a149d0cf0837c23c3ac9fe0884decbffd76681bcb4c988b5b975426a8a5",
+        "output/scout-squad/cards/firefight_ploys/scout-squad-emboldened-aspirant-back.jpg": "45c91cf30eddb005f12cc434748eebede9025b58542ef94db1063afc1336bc27",
+        "output/scout-squad/cards/firefight_ploys/scout-squad-emboldened-aspirant-front.jpg": "48f15fdf4452ce7a8c1ce31224860a8887f1c17df1f12b36b34f387b60904938",
+        "output/scout-squad/cards/firefight_ploys/scout-squad-raw-physiology-back.jpg": "45c91cf30eddb005f12cc434748eebede9025b58542ef94db1063afc1336bc27",
+        "output/scout-squad/cards/firefight_ploys/scout-squad-raw-physiology-front.jpg": "c882fe53af2a884a3bb77ca249646d3af6c843f84178c7e1b1b32d663a03804b",
+        "output/scout-squad/cards/operatives_selection/scout-squad-operative-selection-back.jpg": "45c91cf30eddb005f12cc434748eebede9025b58542ef94db1063afc1336bc27",
+        "output/scout-squad/cards/operatives_selection/scout-squad-operative-selection-front.jpg": "3417975c03dbd68993167245d9cdc2374003d2fb2a23fef2a8d31db08f03f635",
+        "output/scout-squad/cards/strategy_ploys/scout-squad-adaptable-training-back.jpg": "45c91cf30eddb005f12cc434748eebede9025b58542ef94db1063afc1336bc27",
+        "output/scout-squad/cards/strategy_ploys/scout-squad-adaptable-training-front.jpg": "96fedd100d1ebc83243c5ab7e4bc40f6f6cb1e8770c955b933ceb54bed6c8e94",
+        "output/scout-squad/cards/strategy_ploys/scout-squad-ambush-back.jpg": "45c91cf30eddb005f12cc434748eebede9025b58542ef94db1063afc1336bc27",
+        "output/scout-squad/cards/strategy_ploys/scout-squad-ambush-front.jpg": "e86a1200bc075e17d66af841cea72f36bac32622b09f0b6090af1e995ad75211",
+        "output/scout-squad/cards/strategy_ploys/scout-squad-guerrilla-engagement-back.jpg": "45c91cf30eddb005f12cc434748eebede9025b58542ef94db1063afc1336bc27",
+        "output/scout-squad/cards/strategy_ploys/scout-squad-guerrilla-engagement-front.jpg": "3a1069959de2a489859307c07ef399638e23124d9b1319a1b199f1576e0b43ae",
+        "output/scout-squad/cards/strategy_ploys/scout-squad-stealth-relocation-back.jpg": "45c91cf30eddb005f12cc434748eebede9025b58542ef94db1063afc1336bc27",
+        "output/scout-squad/cards/strategy_ploys/scout-squad-stealth-relocation-front.jpg": "8a59d78a65a7e568da815463742aba98a4e968ab2698a810de52191a68a2ec5b",
+        "output/scout-squad/cards/token_guide/scout-squad-token-guide-back.jpg": "45c91cf30eddb005f12cc434748eebede9025b58542ef94db1063afc1336bc27",
+        "output/scout-squad/cards/token_guide/scout-squad-token-guide-front.jpg": "4da584d0f69af660d7f8251c6d88f1080dc59ab4c904bd039558205628a3b4f8",
+        "output/scout-squad/cardbox/scout-squad-card-box-texture.jpg": "461dec9463e4dc9754ce9dadb791fc17fccbdd4fdcab800ce2469549d26646e3",
+        "output/scout-squad/cardbox/scout-squad-card-box.obj": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+        "output/scout-squad/tokens/scout-squad-auspex-scan.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/scout-squad/tokens/scout-squad-auspex-scan.png": "931f0c8d16721a86d0a420124fd802c9347a3af2c5e571e01e923e0c083a3242",
+        "output/scout-squad/tokens/scout-squad-booby-trap.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/scout-squad/tokens/scout-squad-booby-trap.png": "70d19cf3e144f6ef2c746db8ff27db1de8a412ec163186b287e5f3d53fa68985",
+        "output/scout-squad/tokens/scout-squad-designate-target.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/scout-squad/tokens/scout-squad-designate-target.png": "76647e747835a722d2afc61335efac4281445a93a84bd7ad2a841d04e7865626",
+        "output/scout-squad/tokens/scout-squad-optics.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/scout-squad/tokens/scout-squad-optics.png": "e89127bcc8985807e3812281efaa17cd49f9091eda1cd9bf176fe3f225ee7cd5",
+        "output/scout-squad/tokens/scout-squad-smoke-grenade.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/scout-squad/tokens/scout-squad-smoke-grenade.png": "f1aa9d91846e1240efb7ff70407d3cae95de224d508d3985d32eaf1ad5bde86f",
+        "output/scout-squad/tokens/scout-squad-stun-grenade.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/scout-squad/tokens/scout-squad-stun-grenade.png": "350195a6a7e7f71d064d05fa7be71a7828c79931fa97c253088e15aa057d33f3",
+        "output/scout-squad/tokens/scout-squad-track-enemy.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/scout-squad/tokens/scout-squad-track-enemy.png": "33fc5558c1da3b6717ab863f064b848e19aa0f5d42c41616650e91f486169090",
+        "output/scout-squad/tokens/scout-squad-trip-alarm.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/scout-squad/tokens/scout-squad-trip-alarm.png": "99d5762657fb323049fb8ee6250d37121803c682be4f10bf86d42d7c28172afa",
+        "output/scout-squad/tokens/tokenbag/scout-squad-token-bag-icon.png": "2dc7d1286a69fbac58ed85e7024e01ce3a781233de6d860d460e0c530a609e67",
+        "output/scout-squad/tokens/tokenbag/scout-squad-token-bag.obj": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+        "output/scout-squad/dice/scout-squad-dice-dark.jpg": "46246495cbb886b585a1bb791211a80dd9b107ba9b4a291b5580d224317b77ee",
+        "output/scout-squad/dice/scout-squad-dice-light.jpg": "2dff73ed68dd606e9158bf73610c90188c0d671f790ae580fb684e4a51678452",
+        "output/scout-squad/dice/scout-squad-dice-team.jpg": "1a0f617358b486de9a304782b38896db8894c57f57c47b00c7ba20ed62cc36d4",
+        "output/scout-squad/data/scout-squad-team-data.json": "15f628abba47fbca874b62f14cd3c25e10cbd4e7c221b6b66bf20655436854e2",
+        "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
+        "config/defaults/tts-script/datacard-load-stats.lua": "2d5f4088c2ff09f54988cf8722080f536b4e1b998cc2b4c1f1ea94e6b18eb92e",
+        "config/defaults/tts-script/display-table-manager-script.lua": "0dab4381078d90802f25e2cc825bc3658be35ee13ab3e98831c9d248c2526689",
+        "config/defaults/tts-script/faction-rule-chapter-tactics.lua": "c906742268076fb91f7cb4a92c6b588e1122ccddb692688f635c8dd4f7110ad0",
+        "config/defaults/tts-script/intermediate-updater.lua": "1a2d6dbc1a8c9c57ba6a3e7a3d4bc4b7a38a6c242a93f6ef3dae698123384d35",
+        "config/defaults/tts-script/single-object-updater.lua": "3613b85169e986a8e50ebe221482079e27c18037e3f48920aa0f7e138c0ccacc",
+        "config/defaults/tts-script/team-spawner-clean-script.lua": "12457bff3961eee2293c42d81cf4f4eb8b103177245a1ab8b46fd65da40672a2",
+        "config/defaults/tts-script/team-spawner-script.lua": "a51ff45c8622923db909fb465781801511f235412f099f83dff728d4027650db",
+        "config/defaults/tts-script/tts-update-rules-in-box-script.lua": "1eddd1803087ed63181a1149c856db77eef3196dc45d0d283693fada44a357dd",
+        "config/defaults/tts-image/default-icon.png": "892aff2628b9685c813e77be05c66afc1dc4247bc1dc9ce6fe54f006c2608271",
+        "config/defaults/tts-image/spawner-token.png": "61903b093f01d834f5e4c4c069b1353ecf7d29f012fef914b3027266816d8a6b",
+        "config/defaults/tts-token/square-bag-mesh.obj": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+        "config/defaults/tts-token/template-diamond-cutter.png": "719f57ba2b86494be454a6d3d25d8567dde974a915f3dde5ddc0e2d8dafaa1a5",
+        "config/defaults/tts-token/template-octagon-cutter.png": "944632aeacab978293ae57758b63086166c5fbaf3b845f48b3dd61db67d5c076",
+        "config/defaults/tts-token/template-operative-cutter.png": "0e698ddd403d7f0e84f200eb42af73f5249a9c5539d773298ff4c700ac9fe153",
+        "config/defaults/tts-token/template-round-cutter.png": "6564e1451c9a135a1c756fd94cde1c71e373e3fa677b51bba9d4bbe9e795d544",
+        "config/defaults/tts-token/token-bag-script.lua": "1659887e0fbfb9e3ebbc1aa5f3df8e1ffd89ee192be24d2dd1f02fcb0407e486",
+        "config/defaults/tts-token/token-bg-sample.png": "f9f90664c7f1c877c6f050f6e85babde6523cdc0aed9c77de8c09214f44ee109",
+        "config/defaults/tts-token/token-mesh.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc"
+      }
+    },
+    "front_end": {
+      "outputs": {},
+      "sources": {
+        "strategy-ploys": {
+          "hash": "5a7ff617296a3e113e88844a0f818b8c79379bd08f123f952dc84353defd4665",
+          "outputs": [
+            "layers/kt-app/extracted/scout-squad/cards/strategy-ploys/scout-squad-strategy-ploys-page_0.pdf",
+            "layers/kt-app/extracted/scout-squad/cards/strategy-ploys/scout-squad-strategy-ploys-page_1.pdf",
+            "layers/kt-app/extracted/scout-squad/cards/strategy-ploys/scout-squad-strategy-ploys-page_2.pdf",
+            "layers/kt-app/extracted/scout-squad/cards/strategy-ploys/scout-squad-strategy-ploys-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:02:44.995710+00:00"
+        },
+        "faction-rules": {
+          "hash": "2c7e3f761e843d926d042e48f26850931c95290799cd0378f7131eb2930289e5",
+          "outputs": [
+            "layers/kt-app/extracted/scout-squad/cards/faction-rules/scout-squad-faction-rules-page_0.pdf",
+            "layers/kt-app/extracted/scout-squad/cards/faction-rules/scout-squad-faction-rules-page_1.pdf",
+            "layers/kt-app/extracted/scout-squad/cards/faction-rules/scout-squad-faction-rules-page_2.pdf",
+            "layers/kt-app/extracted/scout-squad/cards/faction-rules/scout-squad-faction-rules-page_3.pdf",
+            "layers/kt-app/extracted/scout-squad/cards/faction-rules/scout-squad-faction-rules-page_4.pdf"
+          ],
+          "modified": "2026-07-06T16:07:15.873727+00:00"
+        },
+        "operatives-selection": {
+          "hash": "f85639d52a0ee52912e7bd895e0c3d786d4fc3c6520cc24da61b6fc15fda24bc",
+          "outputs": [
+            "layers/kt-app/extracted/scout-squad/cards/operatives-selection/scout-squad-operatives-selection-page_0.pdf"
+          ],
+          "modified": "2026-07-06T16:10:30.220295+00:00"
+        },
+        "firefight-ploys": {
+          "hash": "27e32d506c7b24c3b2d279e21137508b04fbbce7166231f36eba38d85ca2ead0",
+          "outputs": [
+            "layers/kt-app/extracted/scout-squad/cards/firefight-ploys/scout-squad-firefight-ploys-page_0.pdf",
+            "layers/kt-app/extracted/scout-squad/cards/firefight-ploys/scout-squad-firefight-ploys-page_1.pdf",
+            "layers/kt-app/extracted/scout-squad/cards/firefight-ploys/scout-squad-firefight-ploys-page_2.pdf",
+            "layers/kt-app/extracted/scout-squad/cards/firefight-ploys/scout-squad-firefight-ploys-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:10:38.662683+00:00"
+        },
+        "datacards": {
+          "hash": "541bedc2d0cb1daad41886f895decd218789d5d0c781743783825745479f085c",
+          "outputs": [
+            "layers/kt-app/extracted/scout-squad/cards/datacards/scout-squad-datacards-page_0.pdf",
+            "layers/kt-app/extracted/scout-squad/cards/datacards/scout-squad-datacards-page_1.pdf",
+            "layers/kt-app/extracted/scout-squad/cards/datacards/scout-squad-datacards-page_2.pdf",
+            "layers/kt-app/extracted/scout-squad/cards/datacards/scout-squad-datacards-page_3.pdf",
+            "layers/kt-app/extracted/scout-squad/cards/datacards/scout-squad-datacards-page_4.pdf",
+            "layers/kt-app/extracted/scout-squad/cards/datacards/scout-squad-datacards-page_5.pdf",
+            "layers/kt-app/extracted/scout-squad/cards/datacards/scout-squad-datacards-page_6.pdf"
+          ],
+          "modified": "2026-07-06T16:12:54.112678+00:00"
+        },
+        "equipment": {
+          "hash": "b9c4bdc1209c05099d1f31e8f9c5721696f6b352302a70e6fac43a7d45b6b98f",
+          "outputs": [
+            "layers/kt-app/extracted/scout-squad/cards/equipment/scout-squad-equipment-page_0.pdf",
+            "layers/kt-app/extracted/scout-squad/cards/equipment/scout-squad-equipment-page_1.pdf",
+            "layers/kt-app/extracted/scout-squad/cards/equipment/scout-squad-equipment-page_2.pdf",
+            "layers/kt-app/extracted/scout-squad/cards/equipment/scout-squad-equipment-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:12:57.159966+00:00"
+        },
+        "cards": {
+          "hash": "82054fa904561ff3e6875b93664c9a87f93e9a554578323e3a6489a3e3e9a825",
+          "outputs": [
+            "layers/warcom/extracted/scout-squad/cards/scout-squad_page01_card1_landscape.pdf",
+            "layers/warcom/extracted/scout-squad/cards/scout-squad_page01_card2_landscape.pdf",
+            "layers/warcom/extracted/scout-squad/cards/scout-squad_page01_card3_landscape.pdf",
+            "layers/warcom/extracted/scout-squad/cards/scout-squad_page01_card4_landscape.pdf",
+            "layers/warcom/extracted/scout-squad/cards/scout-squad_page02_card1_landscape.pdf",
+            "layers/warcom/extracted/scout-squad/cards/scout-squad_page02_card2_landscape.pdf",
+            "layers/warcom/extracted/scout-squad/cards/scout-squad_page02_card3_landscape.pdf",
+            "layers/warcom/extracted/scout-squad/cards/scout-squad_page02_card4_landscape.pdf",
+            "layers/warcom/extracted/scout-squad/cards/scout-squad_page03_card1_portrait.pdf",
+            "layers/warcom/extracted/scout-squad/cards/scout-squad_page03_card2_portrait.pdf",
+            "layers/warcom/extracted/scout-squad/cards/scout-squad_page03_card3_portrait.pdf",
+            "layers/warcom/extracted/scout-squad/cards/scout-squad_page03_card4_portrait.pdf",
+            "layers/warcom/extracted/scout-squad/cards/scout-squad_page04_card1_portrait.pdf",
+            "layers/warcom/extracted/scout-squad/cards/scout-squad_page04_card2_portrait.pdf",
+            "layers/warcom/extracted/scout-squad/cards/scout-squad_page04_card3_portrait.pdf",
+            "layers/warcom/extracted/scout-squad/cards/scout-squad_page04_card4_portrait.pdf",
+            "layers/warcom/extracted/scout-squad/cards/scout-squad_page05_card1_portrait.pdf",
+            "layers/warcom/extracted/scout-squad/cards/scout-squad_page05_card2_portrait.pdf",
+            "layers/warcom/extracted/scout-squad/cards/scout-squad_page05_card3_portrait.pdf",
+            "layers/warcom/extracted/scout-squad/cards/scout-squad_page05_card4_portrait.pdf",
+            "layers/warcom/extracted/scout-squad/cards/scout-squad_page06_card1_portrait.pdf",
+            "layers/warcom/extracted/scout-squad/cards/scout-squad_page06_card2_portrait.pdf",
+            "layers/warcom/extracted/scout-squad/cards/scout-squad_page06_card3_portrait.pdf",
+            "layers/warcom/extracted/scout-squad/cards/scout-squad_page06_card4_portrait.pdf",
+            "layers/warcom/extracted/scout-squad/cards/scout-squad_page07_card1_portrait.pdf",
+            "layers/warcom/extracted/scout-squad/cards/scout-squad_page07_card2_portrait.pdf",
+            "layers/warcom/extracted/scout-squad/cards/scout-squad_page07_card3_portrait.pdf",
+            "layers/warcom/extracted/scout-squad/cards/scout-squad_page07_card4_portrait.pdf"
+          ],
+          "modified": "2026-07-08T19:06:21.208973+00:00"
+        }
+      },
+      "completed": "2026-07-08T19:06:21.209015+00:00"
+    },
+    "build_structure": {
+      "outputs": {
+        "structure": {
+          "path": "layers/warcom/structure/scout-squad-structure.json",
+          "hash": "0236faf4e1fe66562c1d45f927602988272a4505a563b4980116403043e9b742",
+          "modified": "2026-07-10T20:29:59.265973+00:00"
+        }
+      },
+      "inputs": {
+        "layers/warcom/extracted/scout-squad/cards/scout-squad_page01_card1_landscape.pdf": "c08ada90f7f43970445946ef9b67eb9b11c971941b5a37d3a0a724c500974923",
+        "layers/warcom/extracted/scout-squad/cards/scout-squad_page01_card2_landscape.pdf": "4d75489b2337aa3c7ed05c112d4688c5ca0e802ee35a90a49130768e8c5e3cd3",
+        "layers/warcom/extracted/scout-squad/cards/scout-squad_page01_card3_landscape.pdf": "d3ef995224a3a5bd493e8f8b9c582a16268b27b545c15eaffceb98836ac49757",
+        "layers/warcom/extracted/scout-squad/cards/scout-squad_page01_card4_landscape.pdf": "6628dff3c2496b1a0921d083bea6bf6d87ec0c76e41e3738ff2d1a2d2f0033cd",
+        "layers/warcom/extracted/scout-squad/cards/scout-squad_page02_card1_landscape.pdf": "d391c150557b3842f8ad5cc252a97cc4e5b650c4f318a8512062beca64071e89",
+        "layers/warcom/extracted/scout-squad/cards/scout-squad_page02_card2_landscape.pdf": "d8dfb417b6522198e741dbb371cf7011cbb63a552fbab79eae84e019f1bf0947",
+        "layers/warcom/extracted/scout-squad/cards/scout-squad_page02_card3_landscape.pdf": "82079cfd917edc21a2df5fcfae6d480c127f9949105a695633de41b2441c23d0",
+        "layers/warcom/extracted/scout-squad/cards/scout-squad_page02_card4_landscape.pdf": "3153155341b36cfd1a41488aee08e2117411e793070149b6a5d0f37c0be47720",
+        "layers/warcom/extracted/scout-squad/cards/scout-squad_page03_card1_portrait.pdf": "434037dd95350d748229faf3895db39d761cc894a0bbd4664ccca28292362ae6",
+        "layers/warcom/extracted/scout-squad/cards/scout-squad_page03_card2_portrait.pdf": "0d2b024e314a40a2ceef581c1ecc7cb737a8fecc02b1dd53e895ff67d89c9b1d",
+        "layers/warcom/extracted/scout-squad/cards/scout-squad_page03_card3_portrait.pdf": "00ff03865dc16776101b254acb7ae902c8b326182d82089e12cd2866375683cb",
+        "layers/warcom/extracted/scout-squad/cards/scout-squad_page03_card4_portrait.pdf": "86a659c7095ea5f885b7a6328aa15f67f5c5a80ccb8b24b3ffc5fb80c95ce07d",
+        "layers/warcom/extracted/scout-squad/cards/scout-squad_page04_card1_portrait.pdf": "cf862c648fd1de1d9f2ae8227dbc77b813151d9a82aa0aa881309973d4283d07",
+        "layers/warcom/extracted/scout-squad/cards/scout-squad_page04_card2_portrait.pdf": "e529989face9c96562780477fc0fae927e86f11bb5e04299a39c5560879b48c5",
+        "layers/warcom/extracted/scout-squad/cards/scout-squad_page04_card3_portrait.pdf": "0817b34dd334735dd5d0193caaf6058832e4c7d23b832651085e4debf50e91e9",
+        "layers/warcom/extracted/scout-squad/cards/scout-squad_page04_card4_portrait.pdf": "d2adad463d34b740519dda62a4f08dc9e560a0b3fb7103508f6af6f52090130d",
+        "layers/warcom/extracted/scout-squad/cards/scout-squad_page05_card1_portrait.pdf": "b73f5f035dde14c0e5cf9ec31f20bac2602926ef39a6d5696c489d9e0863b01d",
+        "layers/warcom/extracted/scout-squad/cards/scout-squad_page05_card2_portrait.pdf": "f6dd9cd78f315925230ea1ec7914f2560a0332f899085ea9201d7e2bdfd03785",
+        "layers/warcom/extracted/scout-squad/cards/scout-squad_page05_card3_portrait.pdf": "9c66d02a64188f9cfdb07f25dac32dbd15cd15e493cfacf948851047de1c76c7",
+        "layers/warcom/extracted/scout-squad/cards/scout-squad_page05_card4_portrait.pdf": "a0adc4de5fd1700c188fd356813238901eeea285d30e42ebd5f0dcd4faf15af3",
+        "layers/warcom/extracted/scout-squad/cards/scout-squad_page06_card1_portrait.pdf": "f13443bd6bcb289020a4f4a5be2a4c1af89bb69afa0fb42a88bc12c14c0562c4",
+        "layers/warcom/extracted/scout-squad/cards/scout-squad_page06_card2_portrait.pdf": "4da0a53e585b7f0d2df11b174c5454add183c500455e4a18f5b45d6880cee7df",
+        "layers/warcom/extracted/scout-squad/cards/scout-squad_page06_card3_portrait.pdf": "ffb5edd4f4f051b72a2d0c00277a45698e2c2b70fdf65befd9211452db6bd6c8",
+        "layers/warcom/extracted/scout-squad/cards/scout-squad_page06_card4_portrait.pdf": "f1ffa7f0a26c1003921eebdd9c11bd9cb74e150a333e4c88a4d0e9a239aa10c1",
+        "layers/warcom/extracted/scout-squad/cards/scout-squad_page07_card1_portrait.pdf": "1c63a9ecec377de7a93e096f0bcc28a99a627b4ce8216be7670f109774913c7b",
+        "layers/warcom/extracted/scout-squad/cards/scout-squad_page07_card2_portrait.pdf": "fbc1a1a6566aa3938d03b9fa954a7c1de3c6f8ffbb1c79ba18e153a8f7a16b36",
+        "layers/warcom/extracted/scout-squad/cards/scout-squad_page07_card3_portrait.pdf": "ed5a2fd05322efe325b371fcd70239c44e0f30386789ddfae90db8d38ad9a094",
+        "layers/warcom/extracted/scout-squad/cards/scout-squad_page07_card4_portrait.pdf": "727a9d28ae7e24c1f926144d801aa7dadd39cdb2db3e8039be424ca89abb33f6"
+      },
+      "completed": "2026-07-10T20:30:02.920045+00:00"
+    },
+    "integrate_classified": {
+      "outputs": {
+        "manifest.json": {
+          "path": "layers/integration/scout-squad/manifest.json",
+          "hash": "0236faf4e1fe66562c1d45f927602988272a4505a563b4980116403043e9b742",
+          "modified": "2026-07-11T07:05:46.533073+00:00"
+        },
+        "scout-squad-datacard-scout-sergeant.pdf": {
+          "path": "layers/integration/scout-squad/scout-squad-datacard-scout-sergeant.pdf",
+          "hash": "5137d778d5834601352fc770c7baa8a716cac27756d33acccdb2d1a5f1edbdb4",
+          "modified": "2026-07-11T07:05:46.561929+00:00"
+        },
+        "scout-squad-datacard-scout-heavy-gunner.pdf": {
+          "path": "layers/integration/scout-squad/scout-squad-datacard-scout-heavy-gunner.pdf",
+          "hash": "c0addf945a54b7bfb2cf6214255a20c90db246afa4a5f1cdeba0b33c19d63019",
+          "modified": "2026-07-11T07:05:54.384744+00:00"
+        },
+        "scout-squad-datacard-scout-hunter.pdf": {
+          "path": "layers/integration/scout-squad/scout-squad-datacard-scout-hunter.pdf",
+          "hash": "dfaee087014db42e52a9431bbab076f2376ed3f1ea75ec4e6bcaba4a0a133b1a",
+          "modified": "2026-07-11T07:05:55.587386+00:00"
+        },
+        "scout-squad-datacard-scout-sniper.pdf": {
+          "path": "layers/integration/scout-squad/scout-squad-datacard-scout-sniper.pdf",
+          "hash": "55c53fb1ed2ea33e240891c93a114418887453e41c9a8f54805f91aa854aa960",
+          "modified": "2026-07-11T07:05:55.625797+00:00"
+        },
+        "scout-squad-datacard-scout-tracker.pdf": {
+          "path": "layers/integration/scout-squad/scout-squad-datacard-scout-tracker.pdf",
+          "hash": "e7a3f86172f8260049e4fa2cfe56d8f25e02af7441652d4e836eba528f67bb51",
+          "modified": "2026-07-11T07:06:06.362338+00:00"
+        },
+        "scout-squad-datacard-scout-warrior.pdf": {
+          "path": "layers/integration/scout-squad/scout-squad-datacard-scout-warrior.pdf",
+          "hash": "dd6d4a2688c7de2f29cf4d3c3e5c0d764a907371dec9c8e5dbe79cb860b57478",
+          "modified": "2026-07-11T07:06:06.422566+00:00"
+        },
+        "scout-squad-equipment-camo-cloak.pdf": {
+          "path": "layers/integration/scout-squad/scout-squad-equipment-camo-cloak.pdf",
+          "hash": "a52908a9db775298da6615115fae78bab8bc1ee843e806dd3d39b3cbc9c1544d",
+          "modified": "2026-07-11T07:06:06.900616+00:00"
+        },
+        "scout-squad-equipment-targeting-oculars.pdf": {
+          "path": "layers/integration/scout-squad/scout-squad-equipment-targeting-oculars.pdf",
+          "hash": "fdc8cb7412fe093826869359aa8ad58d5233523c44ed895bf76c4a5c5f17a948",
+          "modified": "2026-07-11T07:06:06.933360+00:00"
+        },
+        "scout-squad-equipment-combat-blades.pdf": {
+          "path": "layers/integration/scout-squad/scout-squad-equipment-combat-blades.pdf",
+          "hash": "2d4dfa66baea591fac230c124b7d9a63668cd69ba20c196a7c524afb5504d566",
+          "modified": "2026-07-11T07:06:07.004597+00:00"
+        },
+        "scout-squad-equipment-tactical-vox-link.pdf": {
+          "path": "layers/integration/scout-squad/scout-squad-equipment-tactical-vox-link.pdf",
+          "hash": "cf52b867af432e56cde8eaf4d0a41a4f5c5a87edc32e738eade2aa71e1183786",
+          "modified": "2026-07-11T07:06:07.140995+00:00"
+        },
+        "scout-squad-faction-rule-forward-scouting-1.pdf": {
+          "path": "layers/integration/scout-squad/scout-squad-faction-rule-forward-scouting-1.pdf",
+          "hash": "d3fb13d2ac6b11ff469e390087b1b5613038360def50138dc25ed1a22dd31332",
+          "modified": "2026-07-11T07:06:07.190174+00:00"
+        },
+        "scout-squad-faction-rule-forward-scouting-2.pdf": {
+          "path": "layers/integration/scout-squad/scout-squad-faction-rule-forward-scouting-2.pdf",
+          "hash": "26f094717e5ec9e9df379ae12cf29071ea07c0d08db4188d85c892eda48f0720",
+          "modified": "2026-07-11T07:06:07.665218+00:00"
+        },
+        "scout-squad-faction-rule-forward-scouting-3.pdf": {
+          "path": "layers/integration/scout-squad/scout-squad-faction-rule-forward-scouting-3.pdf",
+          "hash": "113ae045bd66a9972f25b06727f59dea69b6d46ce72ce5bd7cdb7c0fd6f2ada8",
+          "modified": "2026-07-11T07:06:07.899302+00:00"
+        },
+        "scout-squad-faction-rule-forward-scouting-4.pdf": {
+          "path": "layers/integration/scout-squad/scout-squad-faction-rule-forward-scouting-4.pdf",
+          "hash": "b7e0f0a360847af96c1c225a7b5f2d3d4ead3f4a82d2fb4537ef38f8052fba72",
+          "modified": "2026-07-11T07:06:07.924086+00:00"
+        },
+        "scout-squad-token-guide-token-guide.pdf": {
+          "path": "layers/integration/scout-squad/scout-squad-token-guide-token-guide.pdf",
+          "hash": "bc1d61d884679860a3b6f41693ace281dc0625552457b1ae0b742df750343f2d",
+          "modified": "2026-07-11T07:06:07.955315+00:00"
+        },
+        "scout-squad-firefight-ploy-astartes-training.pdf": {
+          "path": "layers/integration/scout-squad/scout-squad-firefight-ploy-astartes-training.pdf",
+          "hash": "fe8e1ce95c9b622efd9844f5751798bda9893f85c6bcddf1331d198bc18265a0",
+          "modified": "2026-07-11T07:06:07.980128+00:00"
+        },
+        "scout-squad-firefight-ploy-raw-physiology.pdf": {
+          "path": "layers/integration/scout-squad/scout-squad-firefight-ploy-raw-physiology.pdf",
+          "hash": "985ea40a25bc5b98cfc6acd7297a3029fb933a3fe2e23b3aea80c8e36806807a",
+          "modified": "2026-07-11T07:06:17.602960+00:00"
+        },
+        "scout-squad-firefight-ploy-emboldened-aspirant.pdf": {
+          "path": "layers/integration/scout-squad/scout-squad-firefight-ploy-emboldened-aspirant.pdf",
+          "hash": "59be3f6e4596484ff22dd8f2bc6ba99f47c3172002a2e44df7c4bcef624c279a",
+          "modified": "2026-07-11T07:06:17.623366+00:00"
+        },
+        "scout-squad-firefight-ploy-covert-position.pdf": {
+          "path": "layers/integration/scout-squad/scout-squad-firefight-ploy-covert-position.pdf",
+          "hash": "c3de938c0d8a3d16af922636f0cee13abc9c132adf0c6d4a5cef9b0c6670df7b",
+          "modified": "2026-07-11T07:06:17.650312+00:00"
+        },
+        "scout-squad-operatives-selection-operative-selection.pdf": {
+          "path": "layers/integration/scout-squad/scout-squad-operatives-selection-operative-selection.pdf",
+          "hash": "fc4a659535a232550ca9418a25d4a4966eec2d694640ed62110fa585a2682ef9",
+          "modified": "2026-07-11T07:06:17.673073+00:00"
+        },
+        "scout-squad-strategy-ploy-guerrilla-engagement.pdf": {
+          "path": "layers/integration/scout-squad/scout-squad-strategy-ploy-guerrilla-engagement.pdf",
+          "hash": "2ed7a986d1c91c01be9c00276eb1f082dc14d8b540bd5c4b8c3ab03853918420",
+          "modified": "2026-07-11T07:06:17.714359+00:00"
+        },
+        "scout-squad-strategy-ploy-ambush.pdf": {
+          "path": "layers/integration/scout-squad/scout-squad-strategy-ploy-ambush.pdf",
+          "hash": "2466d39cfca73c34d77ab54462ead9e3be0cf38ad30447dbc120110c990e6d5f",
+          "modified": "2026-07-11T07:06:17.747469+00:00"
+        },
+        "scout-squad-strategy-ploy-adaptable-training.pdf": {
+          "path": "layers/integration/scout-squad/scout-squad-strategy-ploy-adaptable-training.pdf",
+          "hash": "f9e0ce087e102e29a6ce98e3f2b9d30ae279621acd8fb7900f318686cfe31256",
+          "modified": "2026-07-11T07:06:17.778440+00:00"
+        },
+        "scout-squad-strategy-ploy-stealth-relocation.pdf": {
+          "path": "layers/integration/scout-squad/scout-squad-strategy-ploy-stealth-relocation.pdf",
+          "hash": "84de93e619992edc801cb833715c1ba0f5981622333bf681adbad71948c797b0",
+          "modified": "2026-07-11T07:06:17.812025+00:00"
+        }
+      },
+      "inputs": {
+        "layers/warcom/structure/scout-squad-structure.json": "0236faf4e1fe66562c1d45f927602988272a4505a563b4980116403043e9b742",
+        "layers/warcom/extracted/scout-squad/cards/scout-squad_page01_card1_landscape.pdf": "c08ada90f7f43970445946ef9b67eb9b11c971941b5a37d3a0a724c500974923",
+        "layers/warcom/extracted/scout-squad/cards/scout-squad_page01_card2_landscape.pdf": "4d75489b2337aa3c7ed05c112d4688c5ca0e802ee35a90a49130768e8c5e3cd3",
+        "layers/warcom/extracted/scout-squad/cards/scout-squad_page01_card3_landscape.pdf": "d3ef995224a3a5bd493e8f8b9c582a16268b27b545c15eaffceb98836ac49757",
+        "layers/warcom/extracted/scout-squad/cards/scout-squad_page01_card4_landscape.pdf": "6628dff3c2496b1a0921d083bea6bf6d87ec0c76e41e3738ff2d1a2d2f0033cd",
+        "layers/warcom/extracted/scout-squad/cards/scout-squad_page02_card1_landscape.pdf": "d391c150557b3842f8ad5cc252a97cc4e5b650c4f318a8512062beca64071e89",
+        "layers/warcom/extracted/scout-squad/cards/scout-squad_page02_card2_landscape.pdf": "d8dfb417b6522198e741dbb371cf7011cbb63a552fbab79eae84e019f1bf0947",
+        "layers/warcom/extracted/scout-squad/cards/scout-squad_page02_card3_landscape.pdf": "82079cfd917edc21a2df5fcfae6d480c127f9949105a695633de41b2441c23d0",
+        "layers/warcom/extracted/scout-squad/cards/scout-squad_page06_card3_portrait.pdf": "ffb5edd4f4f051b72a2d0c00277a45698e2c2b70fdf65befd9211452db6bd6c8",
+        "layers/warcom/extracted/scout-squad/cards/scout-squad_page06_card4_portrait.pdf": "f1ffa7f0a26c1003921eebdd9c11bd9cb74e150a333e4c88a4d0e9a239aa10c1",
+        "layers/warcom/extracted/scout-squad/cards/scout-squad_page07_card1_portrait.pdf": "1c63a9ecec377de7a93e096f0bcc28a99a627b4ce8216be7670f109774913c7b",
+        "layers/warcom/extracted/scout-squad/cards/scout-squad_page07_card2_portrait.pdf": "fbc1a1a6566aa3938d03b9fa954a7c1de3c6f8ffbb1c79ba18e153a8f7a16b36",
+        "layers/warcom/extracted/scout-squad/cards/scout-squad_page03_card2_portrait.pdf": "0d2b024e314a40a2ceef581c1ecc7cb737a8fecc02b1dd53e895ff67d89c9b1d",
+        "layers/warcom/extracted/scout-squad/cards/scout-squad_page03_card3_portrait.pdf": "00ff03865dc16776101b254acb7ae902c8b326182d82089e12cd2866375683cb",
+        "layers/warcom/extracted/scout-squad/cards/scout-squad_page03_card4_portrait.pdf": "86a659c7095ea5f885b7a6328aa15f67f5c5a80ccb8b24b3ffc5fb80c95ce07d",
+        "layers/warcom/extracted/scout-squad/cards/scout-squad_page04_card1_portrait.pdf": "cf862c648fd1de1d9f2ae8227dbc77b813151d9a82aa0aa881309973d4283d07",
+        "layers/warcom/extracted/scout-squad/cards/scout-squad_page04_card2_portrait.pdf": "e529989face9c96562780477fc0fae927e86f11bb5e04299a39c5560879b48c5",
+        "layers/warcom/extracted/scout-squad/cards/scout-squad_page05_card3_portrait.pdf": "9c66d02a64188f9cfdb07f25dac32dbd15cd15e493cfacf948851047de1c76c7",
+        "layers/warcom/extracted/scout-squad/cards/scout-squad_page05_card4_portrait.pdf": "a0adc4de5fd1700c188fd356813238901eeea285d30e42ebd5f0dcd4faf15af3",
+        "layers/warcom/extracted/scout-squad/cards/scout-squad_page06_card1_portrait.pdf": "f13443bd6bcb289020a4f4a5be2a4c1af89bb69afa0fb42a88bc12c14c0562c4",
+        "layers/warcom/extracted/scout-squad/cards/scout-squad_page06_card2_portrait.pdf": "4da0a53e585b7f0d2df11b174c5454add183c500455e4a18f5b45d6880cee7df",
+        "layers/warcom/extracted/scout-squad/cards/scout-squad_page03_card1_portrait.pdf": "434037dd95350d748229faf3895db39d761cc894a0bbd4664ccca28292362ae6",
+        "layers/warcom/extracted/scout-squad/cards/scout-squad_page04_card3_portrait.pdf": "0817b34dd334735dd5d0193caaf6058832e4c7d23b832651085e4debf50e91e9",
+        "layers/warcom/extracted/scout-squad/cards/scout-squad_page04_card4_portrait.pdf": "d2adad463d34b740519dda62a4f08dc9e560a0b3fb7103508f6af6f52090130d",
+        "layers/warcom/extracted/scout-squad/cards/scout-squad_page05_card1_portrait.pdf": "b73f5f035dde14c0e5cf9ec31f20bac2602926ef39a6d5696c489d9e0863b01d",
+        "layers/warcom/extracted/scout-squad/cards/scout-squad_page05_card2_portrait.pdf": "f6dd9cd78f315925230ea1ec7914f2560a0332f899085ea9201d7e2bdfd03785"
+      },
+      "completed": "2026-07-11T07:06:36.948559+00:00"
+    },
+    "extract_artwork": {
+      "outputs": {},
+      "sources": {
+        "artwork": {
+          "hash": "82054fa904561ff3e6875b93664c9a87f93e9a554578323e3a6489a3e3e9a825",
+          "outputs": [
+            "layers/integration/scout-squad/artwork/scout-squad-artwork-01.jpeg",
+            "layers/integration/scout-squad/artwork/scout-squad-artwork-02.jpeg",
+            "layers/integration/scout-squad/artwork/scout-squad-artwork-03.png",
+            "layers/integration/scout-squad/artwork/scout-squad-artwork-04.jpeg",
+            "layers/integration/scout-squad/artwork/scout-squad-artwork-05.jpeg",
+            "layers/integration/scout-squad/artwork/scout-squad-artwork-06.png",
+            "layers/integration/scout-squad/artwork/scout-squad-artwork-07.jpeg",
+            "layers/integration/scout-squad/artwork/scout-squad-artwork-08.jpeg",
+            "layers/integration/scout-squad/artwork/scout-squad-artwork-09.jpeg",
+            "layers/integration/scout-squad/artwork/scout-squad-artwork-10.jpeg",
+            "layers/integration/scout-squad/artwork/scout-squad-artwork-11.jpeg",
+            "layers/integration/scout-squad/artwork/scout-squad-artwork-12.jpeg",
+            "layers/integration/scout-squad/artwork/scout-squad-artwork-13.jpeg",
+            "layers/integration/scout-squad/artwork/scout-squad-artwork-14.jpeg",
+            "layers/integration/scout-squad/artwork/scout-squad-artwork-15.jpeg",
+            "layers/integration/scout-squad/artwork/scout-squad-artwork-16.jpeg",
+            "layers/integration/scout-squad/artwork/scout-squad-artwork-metadata.json",
+            "layers/integration/scout-squad/artwork/icons/scout-squad-icon-landscape.jpg",
+            "layers/integration/scout-squad/artwork/icons/scout-squad-icon-portrait.jpg",
+            "layers/integration/scout-squad/artwork/icons/scout-squad-icon-token-transparent.png",
+            "layers/integration/scout-squad/artwork/icons/scout-squad-icon-token.jpg"
+          ],
+          "modified": "2026-07-06T20:55:36.536925+00:00"
+        }
+      },
+      "completed": "2026-07-06T20:55:36.536941+00:00"
+    }
+  }
+}

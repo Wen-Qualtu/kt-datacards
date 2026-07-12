@@ -1,0 +1,794 @@
+{
+  "team": "plague-marines",
+  "pipeline_version": "2.0",
+  "last_updated": "2026-07-12T18:32:27.714215+00:00",
+  "steps": {
+    "content_analysis": {
+      "outputs": {
+        "content.json": {
+          "path": "layers/integration/plague-marines/content/plague-marines-content.json",
+          "hash": "703198ec11ffa7e0982a68e91cdf703122f4d00c1ab8b2fa9c59e9f2c54d5241",
+          "modified": "2026-07-11T07:05:45.280041+00:00"
+        }
+      },
+      "completed": "2026-07-11T07:05:55.708145+00:00",
+      "inputs": {
+        "layers/integration/plague-marines/manifest.json": "65163daa5976840cc154696297864f1a39285178991095eab04fb8bef54867ac",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "layers/integration/plague-marines/plague-marines-datacard-malignant-plaguecaster.pdf": "e40b0f22a98513897d99fd416aa41abb23cd158f286ea56f8a6a82ad421af130",
+        "layers/integration/plague-marines/plague-marines-datacard-plague-marine-bombardier.pdf": "31ea8321251c304fa1daabecdf79552873a396d62bcc8048abf29e57eb71f634",
+        "layers/integration/plague-marines/plague-marines-datacard-plague-marine-champion.pdf": "882f404d2c9fa42bb528b37eb1ad3def470fcd00b9ab66eb93b18d5a93fb461d",
+        "layers/integration/plague-marines/plague-marines-datacard-plague-marine-fighter.pdf": "72dba25c093bac4754b74df8431557512122887b6b29006bf5e7810bec0ba9eb",
+        "layers/integration/plague-marines/plague-marines-datacard-plague-marine-heavy-gunner.pdf": "5952a2cf80a0724177dfb586aae7a6faf27d934e63f36348237fd094da04e07d",
+        "layers/integration/plague-marines/plague-marines-datacard-plague-marine-icon-bearer.pdf": "463cb4c4388050d8c50bffbe801d124187e41eed6834060b1428088713418a67",
+        "layers/integration/plague-marines/plague-marines-datacard-plague-marine-warrior.pdf": "1e50977d88d67991a231be72f06cffcdc334553d17ab88205063969a9a50181c",
+        "layers/integration/plague-marines/plague-marines-equipment-blight-grenades.pdf": "2fe305fa4af773585e8c9d5e7d02b5aece0b4f2685ec0997b989c9c90a85e81d",
+        "layers/integration/plague-marines/plague-marines-equipment-plague-bells.pdf": "0fa6dab71463ba49c7efc87d5eeafeba8a55cf3e797c0ce760001bdbaf5afa82",
+        "layers/integration/plague-marines/plague-marines-equipment-plague-rounds.pdf": "a7f13fe41899c9528168a44ea835c278587c645765d1e21aa2b8445e81c89456",
+        "layers/integration/plague-marines/plague-marines-equipment-poison-vents.pdf": "1258722758106156ac73caba5376442735f65e5ce3f21c719ac682118a7ac889",
+        "layers/integration/plague-marines/plague-marines-faction-rule-astartes.pdf": "97df37035970519e3d9be4d6b917d337d6633674dd29eaaab961d5df524a31a9",
+        "layers/integration/plague-marines/plague-marines-faction-rule-disgustingly-resilient.pdf": "86ad25abad7a30e964a90ab590247475513a4717fe9d9aa75ba6ba41cd085b67",
+        "layers/integration/plague-marines/plague-marines-faction-rule-poison.pdf": "55df992ba6d4eb79f4c134ab3c8adf1d8c54371585f5c66072a44018e3e2e60e",
+        "layers/integration/plague-marines/plague-marines-firefight-ploy-curse-of-rot.pdf": "35f2d57c328c5b5a869e848204a6efbc87de03ac9f5af213ab75dcd68e2e6d13",
+        "layers/integration/plague-marines/plague-marines-firefight-ploy-poisonous-demise.pdf": "1fcedf26d7088f9581af0a2c088f64faced9c1726137856d8a591116dff061b4",
+        "layers/integration/plague-marines/plague-marines-firefight-ploy-sickening-resilience.pdf": "774f871f823b6694124d35cc587e549c4cfaf6ed945bf866be36fdbefcdccff3",
+        "layers/integration/plague-marines/plague-marines-firefight-ploy-virulent-poison.pdf": "99ee3735a5701fd6ce0375a5702957564580bbb40446bfd63e6457d784aa9e75",
+        "layers/integration/plague-marines/plague-marines-operatives-selection-operative-selection.pdf": "acac0b32324aaa611279d640770c1e3f93a5fee89568a67ef1a3de68a22a1712",
+        "layers/integration/plague-marines/plague-marines-strategy-ploy-cloud-of-flies.pdf": "176285e602fb9fa455aa56be98853c71229464f178c1d7245341f4caf5e3f0f4",
+        "layers/integration/plague-marines/plague-marines-strategy-ploy-contagion.pdf": "8b2d354d2cf49db9e406331172372d1709993b08f390e8b143551cb21f261ba4",
+        "layers/integration/plague-marines/plague-marines-strategy-ploy-lumbering-death.pdf": "a89019634eda79b691c7f0e5c72051511e607aecdb77632e2b923c51dcf1fde3",
+        "layers/integration/plague-marines/plague-marines-strategy-ploy-nurglings.pdf": "c3b46925143ad5a51affb0b0c222ce85fec4403549a14a62c09e0988563096d0"
+      }
+    },
+    "extract_backsides": {
+      "outputs": {
+        "backside-landscape.jpg": {
+          "path": "layers/integration/plague-marines/card-backside/plague-marines-backside-landscape.jpg",
+          "hash": "c0348d22b36fecc87d98db14dd31d7abbb61f44af4d47b08b4d3f02ddc003d34",
+          "modified": "2026-07-11T07:06:06.932895+00:00"
+        },
+        "backside-portrait.jpg": {
+          "path": "layers/integration/plague-marines/card-backside/plague-marines-backside-portrait.jpg",
+          "hash": "839a090abdd05d8e3ce707dccb133fa5faf0dec2a4fab58a5b46ef3246d04de8",
+          "modified": "2026-07-11T07:06:06.936197+00:00"
+        }
+      },
+      "completed": "2026-07-11T07:06:06.940150+00:00",
+      "inputs": {
+        "layers/integration/plague-marines/artwork/icons/plague-marines-icon-token.jpg": "8b465185bb9001ae5a462d6ebdeb04ed7c45bde7badd5001518332d7c327aea2",
+        "config/defaults/box/card-box-background.jpeg": "2dd1442a7c52ca1d66899333f678d60f48981ce20561ead77c1161d548176036"
+      }
+    },
+    "generate_dice": {
+      "outputs": {
+        "dice-light.jpg": {
+          "path": "output/plague-marines/dice/plague-marines-dice-light.jpg",
+          "hash": "1786215fb85294949fd30cc8bffc67182a81617cbf49e22c9fc184179ee22a5c",
+          "modified": "2026-07-11T07:06:17.662094+00:00"
+        },
+        "dice-dark.jpg": {
+          "path": "output/plague-marines/dice/plague-marines-dice-dark.jpg",
+          "hash": "41b7d4152b76f6a225c011bb7a069db4d42de8bb2d79b06bce1dffa9c19ccb2a",
+          "modified": "2026-07-11T07:06:17.672405+00:00"
+        }
+      },
+      "completed": "2026-07-11T07:06:17.675614+00:00",
+      "inputs": {
+        "layers/integration/plague-marines/artwork/icons/plague-marines-icon-token-transparent.png": "3b79e031af965194433ba1fe5c5bb502b9522ce399cd67f65f76a2b0fcb92c6f",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41"
+      }
+    },
+    "generate_box_texture": {
+      "outputs": {
+        "card-box-texture.jpg": {
+          "path": "output/plague-marines/cardbox/plague-marines-card-box-texture.jpg",
+          "hash": "b3813e5a51ba9015ae5ca6da3995b7f429003d28224c480f3594fb06d4f9855b",
+          "modified": "2026-07-11T07:06:18.050733+00:00"
+        },
+        "card-box.obj": {
+          "path": "output/plague-marines/cardbox/plague-marines-card-box.obj",
+          "hash": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+          "modified": "2026-07-11T07:06:18.086461+00:00"
+        }
+      },
+      "completed": "2026-07-11T07:06:18.187650+00:00",
+      "inputs": {
+        "layers/integration/plague-marines/artwork/icons/plague-marines-icon-token.jpg": "8b465185bb9001ae5a462d6ebdeb04ed7c45bde7badd5001518332d7c327aea2",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "config/defaults/box/card-box.obj": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+        "config/defaults/box/card-box-texture.jpg": "b2f310b01a0d28e8806e99ce0b972e8967e3014608eacefcb6ec51597695a313"
+      }
+    },
+    "generate_card_images": {
+      "outputs": {
+        "cards/datacards/malignant-plaguecaster-back.jpg": {
+          "path": "output/plague-marines/cards/datacards/malignant-plaguecaster-back.jpg",
+          "hash": "5bd5ecbfe33075ed14c0bf9fd5e1de09c3fb8d34dac49e717a04d2091913864c",
+          "modified": "2026-07-11T07:06:36.975409+00:00"
+        },
+        "cards/datacards/malignant-plaguecaster-front.jpg": {
+          "path": "output/plague-marines/cards/datacards/malignant-plaguecaster-front.jpg",
+          "hash": "bd544f3210310ccfffc5f8df16e1d3eb3f53aebd7453f1c0ac4b065c4cf69638",
+          "modified": "2026-07-11T07:06:36.988554+00:00"
+        },
+        "cards/datacards/plague-marine-bombardier-back.jpg": {
+          "path": "output/plague-marines/cards/datacards/plague-marine-bombardier-back.jpg",
+          "hash": "c0348d22b36fecc87d98db14dd31d7abbb61f44af4d47b08b4d3f02ddc003d34",
+          "modified": "2026-07-11T07:06:36.998146+00:00"
+        },
+        "cards/datacards/plague-marine-bombardier-front.jpg": {
+          "path": "output/plague-marines/cards/datacards/plague-marine-bombardier-front.jpg",
+          "hash": "366d8314bda1d7660dda151becdb7c531311c6e62a3d0d5c03fbe4a0dfb45822",
+          "modified": "2026-07-11T07:06:37.000995+00:00"
+        },
+        "cards/datacards/plague-marine-champion-back.jpg": {
+          "path": "output/plague-marines/cards/datacards/plague-marine-champion-back.jpg",
+          "hash": "c0348d22b36fecc87d98db14dd31d7abbb61f44af4d47b08b4d3f02ddc003d34",
+          "modified": "2026-07-11T07:06:37.013900+00:00"
+        },
+        "cards/datacards/plague-marine-champion-front.jpg": {
+          "path": "output/plague-marines/cards/datacards/plague-marine-champion-front.jpg",
+          "hash": "9b252fc43e1f57455444978847d1573bc1f90b0a094ab5cca1753d4eeff19fc9",
+          "modified": "2026-07-11T07:06:37.031553+00:00"
+        },
+        "cards/datacards/plague-marine-fighter-back.jpg": {
+          "path": "output/plague-marines/cards/datacards/plague-marine-fighter-back.jpg",
+          "hash": "c0348d22b36fecc87d98db14dd31d7abbb61f44af4d47b08b4d3f02ddc003d34",
+          "modified": "2026-07-11T07:06:39.262102+00:00"
+        },
+        "cards/datacards/plague-marine-fighter-front.jpg": {
+          "path": "output/plague-marines/cards/datacards/plague-marine-fighter-front.jpg",
+          "hash": "9aea77ab149e17d968a8348492f92a10ae04aa879ca58683a1055a255b482e99",
+          "modified": "2026-07-11T07:06:41.570003+00:00"
+        },
+        "cards/datacards/plague-marine-heavy-gunner-back.jpg": {
+          "path": "output/plague-marines/cards/datacards/plague-marine-heavy-gunner-back.jpg",
+          "hash": "c0348d22b36fecc87d98db14dd31d7abbb61f44af4d47b08b4d3f02ddc003d34",
+          "modified": "2026-07-11T07:06:41.583669+00:00"
+        },
+        "cards/datacards/plague-marine-heavy-gunner-front.jpg": {
+          "path": "output/plague-marines/cards/datacards/plague-marine-heavy-gunner-front.jpg",
+          "hash": "b04473ea13b9932a8865b4377766c94893c72726b4dbb27e52193015d51b0929",
+          "modified": "2026-07-11T07:06:41.595613+00:00"
+        },
+        "cards/datacards/plague-marine-icon-bearer-back.jpg": {
+          "path": "output/plague-marines/cards/datacards/plague-marine-icon-bearer-back.jpg",
+          "hash": "c0348d22b36fecc87d98db14dd31d7abbb61f44af4d47b08b4d3f02ddc003d34",
+          "modified": "2026-07-11T07:06:41.607317+00:00"
+        },
+        "cards/datacards/plague-marine-icon-bearer-front.jpg": {
+          "path": "output/plague-marines/cards/datacards/plague-marine-icon-bearer-front.jpg",
+          "hash": "c31371d76eedb220d3e5a1284fb26d7832a6b523fda4a3d11702eedbcc9e1a48",
+          "modified": "2026-07-11T07:06:41.619747+00:00"
+        },
+        "cards/datacards/plague-marine-warrior-back.jpg": {
+          "path": "output/plague-marines/cards/datacards/plague-marine-warrior-back.jpg",
+          "hash": "c0348d22b36fecc87d98db14dd31d7abbb61f44af4d47b08b4d3f02ddc003d34",
+          "modified": "2026-07-11T07:06:41.632809+00:00"
+        },
+        "cards/datacards/plague-marine-warrior-front.jpg": {
+          "path": "output/plague-marines/cards/datacards/plague-marine-warrior-front.jpg",
+          "hash": "4b7f071f51538fba714cdd856b76add40afabc8ccbaa97d7119c47a9825ef047",
+          "modified": "2026-07-11T07:06:41.644613+00:00"
+        },
+        "cards/equipment/plague-marines-blight-grenades-back.jpg": {
+          "path": "output/plague-marines/cards/equipment/plague-marines-blight-grenades-back.jpg",
+          "hash": "839a090abdd05d8e3ce707dccb133fa5faf0dec2a4fab58a5b46ef3246d04de8",
+          "modified": "2026-07-11T07:06:41.656817+00:00"
+        },
+        "cards/equipment/plague-marines-blight-grenades-front.jpg": {
+          "path": "output/plague-marines/cards/equipment/plague-marines-blight-grenades-front.jpg",
+          "hash": "fc26065b658eff12079ec15dc48fe7587cdf764e85ba68c2a8bcb413ef83c1be",
+          "modified": "2026-07-11T07:06:41.742797+00:00"
+        },
+        "cards/equipment/plague-marines-plague-bells-back.jpg": {
+          "path": "output/plague-marines/cards/equipment/plague-marines-plague-bells-back.jpg",
+          "hash": "839a090abdd05d8e3ce707dccb133fa5faf0dec2a4fab58a5b46ef3246d04de8",
+          "modified": "2026-07-11T07:06:42.167924+00:00"
+        },
+        "cards/equipment/plague-marines-plague-bells-front.jpg": {
+          "path": "output/plague-marines/cards/equipment/plague-marines-plague-bells-front.jpg",
+          "hash": "f8261146cdd4be2b0519dd5eff4f48d3b57c9bff6b87e279e67cc5f7cd81e755",
+          "modified": "2026-07-11T07:06:42.172988+00:00"
+        },
+        "cards/equipment/plague-marines-plague-rounds-back.jpg": {
+          "path": "output/plague-marines/cards/equipment/plague-marines-plague-rounds-back.jpg",
+          "hash": "839a090abdd05d8e3ce707dccb133fa5faf0dec2a4fab58a5b46ef3246d04de8",
+          "modified": "2026-07-11T07:06:42.184380+00:00"
+        },
+        "cards/equipment/plague-marines-plague-rounds-front.jpg": {
+          "path": "output/plague-marines/cards/equipment/plague-marines-plague-rounds-front.jpg",
+          "hash": "c0eba14710da542914b6cd007ad93e8bc6c6b729dcb7ad769249e2ddf9cc1375",
+          "modified": "2026-07-11T07:06:42.189272+00:00"
+        },
+        "cards/equipment/plague-marines-poison-vents-back.jpg": {
+          "path": "output/plague-marines/cards/equipment/plague-marines-poison-vents-back.jpg",
+          "hash": "839a090abdd05d8e3ce707dccb133fa5faf0dec2a4fab58a5b46ef3246d04de8",
+          "modified": "2026-07-11T07:06:42.198322+00:00"
+        },
+        "cards/equipment/plague-marines-poison-vents-front.jpg": {
+          "path": "output/plague-marines/cards/equipment/plague-marines-poison-vents-front.jpg",
+          "hash": "0a42f54b6499c2d933e4c743f12aa024ed45d5c52b1ff1adc4d67f8f26f257d9",
+          "modified": "2026-07-11T07:06:42.205097+00:00"
+        },
+        "cards/faction_rules/plague-marines-astartes-back.jpg": {
+          "path": "output/plague-marines/cards/faction_rules/plague-marines-astartes-back.jpg",
+          "hash": "839a090abdd05d8e3ce707dccb133fa5faf0dec2a4fab58a5b46ef3246d04de8",
+          "modified": "2026-07-11T07:06:42.214630+00:00"
+        },
+        "cards/faction_rules/plague-marines-astartes-front.jpg": {
+          "path": "output/plague-marines/cards/faction_rules/plague-marines-astartes-front.jpg",
+          "hash": "5df297ad04dff62511b54600bc94dc4e464cd7c2792e12430aff0a17d6689a1b",
+          "modified": "2026-07-11T07:06:42.221390+00:00"
+        },
+        "cards/faction_rules/plague-marines-disgustingly-resilient-back.jpg": {
+          "path": "output/plague-marines/cards/faction_rules/plague-marines-disgustingly-resilient-back.jpg",
+          "hash": "839a090abdd05d8e3ce707dccb133fa5faf0dec2a4fab58a5b46ef3246d04de8",
+          "modified": "2026-07-11T07:06:42.232610+00:00"
+        },
+        "cards/faction_rules/plague-marines-disgustingly-resilient-front.jpg": {
+          "path": "output/plague-marines/cards/faction_rules/plague-marines-disgustingly-resilient-front.jpg",
+          "hash": "01633b7b7ffde676187d7e7f2826ff2a014db76642f7697ab28085b1d813bbff",
+          "modified": "2026-07-11T07:06:42.235170+00:00"
+        },
+        "cards/faction_rules/plague-marines-poison-back.jpg": {
+          "path": "output/plague-marines/cards/faction_rules/plague-marines-poison-back.jpg",
+          "hash": "839a090abdd05d8e3ce707dccb133fa5faf0dec2a4fab58a5b46ef3246d04de8",
+          "modified": "2026-07-11T07:06:42.246535+00:00"
+        },
+        "cards/faction_rules/plague-marines-poison-front.jpg": {
+          "path": "output/plague-marines/cards/faction_rules/plague-marines-poison-front.jpg",
+          "hash": "1167a0a3ff64ffa5bc44ae6ad7827e46f06ada898ce021bdc56c4d92f63e8066",
+          "modified": "2026-07-11T07:06:42.250191+00:00"
+        },
+        "cards/firefight_ploys/plague-marines-curse-of-rot-back.jpg": {
+          "path": "output/plague-marines/cards/firefight_ploys/plague-marines-curse-of-rot-back.jpg",
+          "hash": "839a090abdd05d8e3ce707dccb133fa5faf0dec2a4fab58a5b46ef3246d04de8",
+          "modified": "2026-07-11T07:06:42.260769+00:00"
+        },
+        "cards/firefight_ploys/plague-marines-curse-of-rot-front.jpg": {
+          "path": "output/plague-marines/cards/firefight_ploys/plague-marines-curse-of-rot-front.jpg",
+          "hash": "ddc5412b509a5f90aa6e026161da74555d4c69a9a8dee824fdd89f72f40ae581",
+          "modified": "2026-07-11T07:06:42.265041+00:00"
+        },
+        "cards/firefight_ploys/plague-marines-poisonous-demise-back.jpg": {
+          "path": "output/plague-marines/cards/firefight_ploys/plague-marines-poisonous-demise-back.jpg",
+          "hash": "839a090abdd05d8e3ce707dccb133fa5faf0dec2a4fab58a5b46ef3246d04de8",
+          "modified": "2026-07-11T07:06:42.276745+00:00"
+        },
+        "cards/firefight_ploys/plague-marines-poisonous-demise-front.jpg": {
+          "path": "output/plague-marines/cards/firefight_ploys/plague-marines-poisonous-demise-front.jpg",
+          "hash": "a2649303e87e0b3f4e947b3fd78e97322020c1c6bb25cda3343598702ed09fdc",
+          "modified": "2026-07-11T07:06:42.281685+00:00"
+        },
+        "cards/firefight_ploys/plague-marines-sickening-resilience-back.jpg": {
+          "path": "output/plague-marines/cards/firefight_ploys/plague-marines-sickening-resilience-back.jpg",
+          "hash": "839a090abdd05d8e3ce707dccb133fa5faf0dec2a4fab58a5b46ef3246d04de8",
+          "modified": "2026-07-11T07:06:42.291988+00:00"
+        },
+        "cards/firefight_ploys/plague-marines-sickening-resilience-front.jpg": {
+          "path": "output/plague-marines/cards/firefight_ploys/plague-marines-sickening-resilience-front.jpg",
+          "hash": "bd514e6db157dccf155cca27a2acbbac2aa5dde750e9312c5841b365056e27fb",
+          "modified": "2026-07-11T07:06:42.300243+00:00"
+        },
+        "cards/firefight_ploys/plague-marines-virulent-poison-back.jpg": {
+          "path": "output/plague-marines/cards/firefight_ploys/plague-marines-virulent-poison-back.jpg",
+          "hash": "839a090abdd05d8e3ce707dccb133fa5faf0dec2a4fab58a5b46ef3246d04de8",
+          "modified": "2026-07-11T07:06:42.309886+00:00"
+        },
+        "cards/firefight_ploys/plague-marines-virulent-poison-front.jpg": {
+          "path": "output/plague-marines/cards/firefight_ploys/plague-marines-virulent-poison-front.jpg",
+          "hash": "571474669c806c255698e65980fc3daa0ad5107fc494bcd53c9b3badfb74ca7b",
+          "modified": "2026-07-11T07:06:42.313571+00:00"
+        },
+        "cards/operatives_selection/plague-marines-operative-selection-back.jpg": {
+          "path": "output/plague-marines/cards/operatives_selection/plague-marines-operative-selection-back.jpg",
+          "hash": "839a090abdd05d8e3ce707dccb133fa5faf0dec2a4fab58a5b46ef3246d04de8",
+          "modified": "2026-07-11T07:06:42.324218+00:00"
+        },
+        "cards/operatives_selection/plague-marines-operative-selection-front.jpg": {
+          "path": "output/plague-marines/cards/operatives_selection/plague-marines-operative-selection-front.jpg",
+          "hash": "c455e936093bc96d89f1c82fa4a6b185f44b0546ed7292e9f83cc05f2670b6c9",
+          "modified": "2026-07-11T07:06:42.333862+00:00"
+        },
+        "cards/strategy_ploys/plague-marines-cloud-of-flies-back.jpg": {
+          "path": "output/plague-marines/cards/strategy_ploys/plague-marines-cloud-of-flies-back.jpg",
+          "hash": "839a090abdd05d8e3ce707dccb133fa5faf0dec2a4fab58a5b46ef3246d04de8",
+          "modified": "2026-07-11T07:06:42.346169+00:00"
+        },
+        "cards/strategy_ploys/plague-marines-cloud-of-flies-front.jpg": {
+          "path": "output/plague-marines/cards/strategy_ploys/plague-marines-cloud-of-flies-front.jpg",
+          "hash": "47c2e29ed788714c5816df4cda028dfe24cd237dab1daf06410ff1500e5c9d50",
+          "modified": "2026-07-11T07:06:42.355435+00:00"
+        },
+        "cards/strategy_ploys/plague-marines-contagion-back.jpg": {
+          "path": "output/plague-marines/cards/strategy_ploys/plague-marines-contagion-back.jpg",
+          "hash": "839a090abdd05d8e3ce707dccb133fa5faf0dec2a4fab58a5b46ef3246d04de8",
+          "modified": "2026-07-11T07:06:42.365969+00:00"
+        },
+        "cards/strategy_ploys/plague-marines-contagion-front.jpg": {
+          "path": "output/plague-marines/cards/strategy_ploys/plague-marines-contagion-front.jpg",
+          "hash": "0c9c2604e8a99ba6824acfee467cd5d5293446e6f78f4e3018c28e2536c27b16",
+          "modified": "2026-07-11T07:06:42.368895+00:00"
+        },
+        "cards/strategy_ploys/plague-marines-lumbering-death-back.jpg": {
+          "path": "output/plague-marines/cards/strategy_ploys/plague-marines-lumbering-death-back.jpg",
+          "hash": "839a090abdd05d8e3ce707dccb133fa5faf0dec2a4fab58a5b46ef3246d04de8",
+          "modified": "2026-07-11T07:06:42.382443+00:00"
+        },
+        "cards/strategy_ploys/plague-marines-lumbering-death-front.jpg": {
+          "path": "output/plague-marines/cards/strategy_ploys/plague-marines-lumbering-death-front.jpg",
+          "hash": "44a10d0535285a572e5b91176d0fe4049cc541ac2e838d1085deb73cca95a534",
+          "modified": "2026-07-11T07:06:42.394243+00:00"
+        },
+        "cards/strategy_ploys/plague-marines-nurglings-back.jpg": {
+          "path": "output/plague-marines/cards/strategy_ploys/plague-marines-nurglings-back.jpg",
+          "hash": "839a090abdd05d8e3ce707dccb133fa5faf0dec2a4fab58a5b46ef3246d04de8",
+          "modified": "2026-07-11T07:06:42.405351+00:00"
+        },
+        "cards/strategy_ploys/plague-marines-nurglings-front.jpg": {
+          "path": "output/plague-marines/cards/strategy_ploys/plague-marines-nurglings-front.jpg",
+          "hash": "62ed13160a38094c2e3088f8d8297f06ebbcc5733437334118f068272f507a53",
+          "modified": "2026-07-11T07:06:42.412555+00:00"
+        }
+      },
+      "completed": "2026-07-11T07:06:52.867199+00:00",
+      "inputs": {
+        "layers/integration/plague-marines/manifest.json": "65163daa5976840cc154696297864f1a39285178991095eab04fb8bef54867ac",
+        "layers/integration/plague-marines/plague-marines-datacard-malignant-plaguecaster.pdf": "e40b0f22a98513897d99fd416aa41abb23cd158f286ea56f8a6a82ad421af130",
+        "layers/integration/plague-marines/plague-marines-datacard-plague-marine-bombardier.pdf": "31ea8321251c304fa1daabecdf79552873a396d62bcc8048abf29e57eb71f634",
+        "layers/integration/plague-marines/plague-marines-datacard-plague-marine-champion.pdf": "882f404d2c9fa42bb528b37eb1ad3def470fcd00b9ab66eb93b18d5a93fb461d",
+        "layers/integration/plague-marines/plague-marines-datacard-plague-marine-fighter.pdf": "72dba25c093bac4754b74df8431557512122887b6b29006bf5e7810bec0ba9eb",
+        "layers/integration/plague-marines/plague-marines-datacard-plague-marine-heavy-gunner.pdf": "5952a2cf80a0724177dfb586aae7a6faf27d934e63f36348237fd094da04e07d",
+        "layers/integration/plague-marines/plague-marines-datacard-plague-marine-icon-bearer.pdf": "463cb4c4388050d8c50bffbe801d124187e41eed6834060b1428088713418a67",
+        "layers/integration/plague-marines/plague-marines-datacard-plague-marine-warrior.pdf": "1e50977d88d67991a231be72f06cffcdc334553d17ab88205063969a9a50181c",
+        "layers/integration/plague-marines/plague-marines-equipment-blight-grenades.pdf": "2fe305fa4af773585e8c9d5e7d02b5aece0b4f2685ec0997b989c9c90a85e81d",
+        "layers/integration/plague-marines/plague-marines-equipment-plague-bells.pdf": "0fa6dab71463ba49c7efc87d5eeafeba8a55cf3e797c0ce760001bdbaf5afa82",
+        "layers/integration/plague-marines/plague-marines-equipment-plague-rounds.pdf": "a7f13fe41899c9528168a44ea835c278587c645765d1e21aa2b8445e81c89456",
+        "layers/integration/plague-marines/plague-marines-equipment-poison-vents.pdf": "1258722758106156ac73caba5376442735f65e5ce3f21c719ac682118a7ac889",
+        "layers/integration/plague-marines/plague-marines-faction-rule-astartes.pdf": "97df37035970519e3d9be4d6b917d337d6633674dd29eaaab961d5df524a31a9",
+        "layers/integration/plague-marines/plague-marines-faction-rule-disgustingly-resilient.pdf": "86ad25abad7a30e964a90ab590247475513a4717fe9d9aa75ba6ba41cd085b67",
+        "layers/integration/plague-marines/plague-marines-faction-rule-poison.pdf": "55df992ba6d4eb79f4c134ab3c8adf1d8c54371585f5c66072a44018e3e2e60e",
+        "layers/integration/plague-marines/plague-marines-firefight-ploy-curse-of-rot.pdf": "35f2d57c328c5b5a869e848204a6efbc87de03ac9f5af213ab75dcd68e2e6d13",
+        "layers/integration/plague-marines/plague-marines-firefight-ploy-poisonous-demise.pdf": "1fcedf26d7088f9581af0a2c088f64faced9c1726137856d8a591116dff061b4",
+        "layers/integration/plague-marines/plague-marines-firefight-ploy-sickening-resilience.pdf": "774f871f823b6694124d35cc587e549c4cfaf6ed945bf866be36fdbefcdccff3",
+        "layers/integration/plague-marines/plague-marines-firefight-ploy-virulent-poison.pdf": "99ee3735a5701fd6ce0375a5702957564580bbb40446bfd63e6457d784aa9e75",
+        "layers/integration/plague-marines/plague-marines-operatives-selection-operative-selection.pdf": "acac0b32324aaa611279d640770c1e3f93a5fee89568a67ef1a3de68a22a1712",
+        "layers/integration/plague-marines/plague-marines-strategy-ploy-cloud-of-flies.pdf": "176285e602fb9fa455aa56be98853c71229464f178c1d7245341f4caf5e3f0f4",
+        "layers/integration/plague-marines/plague-marines-strategy-ploy-contagion.pdf": "8b2d354d2cf49db9e406331172372d1709993b08f390e8b143551cb21f261ba4",
+        "layers/integration/plague-marines/plague-marines-strategy-ploy-lumbering-death.pdf": "a89019634eda79b691c7f0e5c72051511e607aecdb77632e2b923c51dcf1fde3",
+        "layers/integration/plague-marines/plague-marines-strategy-ploy-nurglings.pdf": "c3b46925143ad5a51affb0b0c222ce85fec4403549a14a62c09e0988563096d0",
+        "layers/integration/plague-marines/card-backside/plague-marines-backside-portrait.jpg": "839a090abdd05d8e3ce707dccb133fa5faf0dec2a4fab58a5b46ef3246d04de8",
+        "config/defaults/card-backside/default-backside-portrait.jpg": "f00ff15fa70005b9f804de08519e2e83485d7eaf78dfacea65dcef0eb1a29c22",
+        "layers/integration/plague-marines/card-backside/plague-marines-backside-landscape.jpg": "c0348d22b36fecc87d98db14dd31d7abbb61f44af4d47b08b4d3f02ddc003d34",
+        "config/defaults/card-backside/default-backside-landscape.jpg": "1cf5580a1dff0c10adb1a286edad4479c487f3d2d698b0b8be84fe653039fd7e"
+      }
+    },
+    "extract_stats": {
+      "outputs": {
+        "team-data.json": {
+          "path": "output/plague-marines/data/plague-marines-team-data.json",
+          "hash": "703198ec11ffa7e0982a68e91cdf703122f4d00c1ab8b2fa9c59e9f2c54d5241",
+          "modified": "2026-07-11T07:06:55.677075+00:00"
+        }
+      },
+      "completed": "2026-07-11T07:06:55.678659+00:00",
+      "inputs": {
+        "layers/integration/plague-marines/content/plague-marines-content.json": "703198ec11ffa7e0982a68e91cdf703122f4d00c1ab8b2fa9c59e9f2c54d5241"
+      }
+    },
+    "generate_tts": {
+      "outputs": {
+        "tts_objects/Plague Marines Box.json": {
+          "path": "output/plague-marines/tts_objects/Plague Marines Box.json",
+          "hash": "b71954c4c61c29cb646816dc30ace3a2e99020c62c42edfa7a56ab6be0e7b124",
+          "modified": "2026-07-12T18:32:27.673265+00:00"
+        },
+        "tts_objects/Plague Marines.json": {
+          "path": "output/plague-marines/tts_objects/Plague Marines.json",
+          "hash": "6d099d8f53284282115e0a6b7a41a935d40b5dceae57adbdc4fc8a348f338d68",
+          "modified": "2026-07-12T18:32:27.682927+00:00"
+        }
+      },
+      "completed": "2026-07-12T18:32:27.714205+00:00",
+      "inputs": {
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "config/team-guids.json": "1dea0eaf2c7d1c37c86aba088cdf876f0638d2dcaca162888fea8422c2d5c9db",
+        "output/plague-marines/cards/datacards/malignant-plaguecaster-back.jpg": "5bd5ecbfe33075ed14c0bf9fd5e1de09c3fb8d34dac49e717a04d2091913864c",
+        "output/plague-marines/cards/datacards/malignant-plaguecaster-front.jpg": "bd544f3210310ccfffc5f8df16e1d3eb3f53aebd7453f1c0ac4b065c4cf69638",
+        "output/plague-marines/cards/datacards/plague-marine-bombardier-back.jpg": "c0348d22b36fecc87d98db14dd31d7abbb61f44af4d47b08b4d3f02ddc003d34",
+        "output/plague-marines/cards/datacards/plague-marine-bombardier-front.jpg": "366d8314bda1d7660dda151becdb7c531311c6e62a3d0d5c03fbe4a0dfb45822",
+        "output/plague-marines/cards/datacards/plague-marine-champion-back.jpg": "c0348d22b36fecc87d98db14dd31d7abbb61f44af4d47b08b4d3f02ddc003d34",
+        "output/plague-marines/cards/datacards/plague-marine-champion-front.jpg": "9b252fc43e1f57455444978847d1573bc1f90b0a094ab5cca1753d4eeff19fc9",
+        "output/plague-marines/cards/datacards/plague-marine-fighter-back.jpg": "c0348d22b36fecc87d98db14dd31d7abbb61f44af4d47b08b4d3f02ddc003d34",
+        "output/plague-marines/cards/datacards/plague-marine-fighter-front.jpg": "9aea77ab149e17d968a8348492f92a10ae04aa879ca58683a1055a255b482e99",
+        "output/plague-marines/cards/datacards/plague-marine-heavy-gunner-back.jpg": "c0348d22b36fecc87d98db14dd31d7abbb61f44af4d47b08b4d3f02ddc003d34",
+        "output/plague-marines/cards/datacards/plague-marine-heavy-gunner-front.jpg": "b04473ea13b9932a8865b4377766c94893c72726b4dbb27e52193015d51b0929",
+        "output/plague-marines/cards/datacards/plague-marine-icon-bearer-back.jpg": "c0348d22b36fecc87d98db14dd31d7abbb61f44af4d47b08b4d3f02ddc003d34",
+        "output/plague-marines/cards/datacards/plague-marine-icon-bearer-front.jpg": "c31371d76eedb220d3e5a1284fb26d7832a6b523fda4a3d11702eedbcc9e1a48",
+        "output/plague-marines/cards/datacards/plague-marine-warrior-back.jpg": "c0348d22b36fecc87d98db14dd31d7abbb61f44af4d47b08b4d3f02ddc003d34",
+        "output/plague-marines/cards/datacards/plague-marine-warrior-front.jpg": "4b7f071f51538fba714cdd856b76add40afabc8ccbaa97d7119c47a9825ef047",
+        "output/plague-marines/cards/equipment/plague-marines-blight-grenades-back.jpg": "839a090abdd05d8e3ce707dccb133fa5faf0dec2a4fab58a5b46ef3246d04de8",
+        "output/plague-marines/cards/equipment/plague-marines-blight-grenades-front.jpg": "fc26065b658eff12079ec15dc48fe7587cdf764e85ba68c2a8bcb413ef83c1be",
+        "output/plague-marines/cards/equipment/plague-marines-plague-bells-back.jpg": "839a090abdd05d8e3ce707dccb133fa5faf0dec2a4fab58a5b46ef3246d04de8",
+        "output/plague-marines/cards/equipment/plague-marines-plague-bells-front.jpg": "f8261146cdd4be2b0519dd5eff4f48d3b57c9bff6b87e279e67cc5f7cd81e755",
+        "output/plague-marines/cards/equipment/plague-marines-plague-rounds-back.jpg": "839a090abdd05d8e3ce707dccb133fa5faf0dec2a4fab58a5b46ef3246d04de8",
+        "output/plague-marines/cards/equipment/plague-marines-plague-rounds-front.jpg": "c0eba14710da542914b6cd007ad93e8bc6c6b729dcb7ad769249e2ddf9cc1375",
+        "output/plague-marines/cards/equipment/plague-marines-poison-vents-back.jpg": "839a090abdd05d8e3ce707dccb133fa5faf0dec2a4fab58a5b46ef3246d04de8",
+        "output/plague-marines/cards/equipment/plague-marines-poison-vents-front.jpg": "0a42f54b6499c2d933e4c743f12aa024ed45d5c52b1ff1adc4d67f8f26f257d9",
+        "output/plague-marines/cards/faction_rules/plague-marines-astartes-back.jpg": "839a090abdd05d8e3ce707dccb133fa5faf0dec2a4fab58a5b46ef3246d04de8",
+        "output/plague-marines/cards/faction_rules/plague-marines-astartes-front.jpg": "5df297ad04dff62511b54600bc94dc4e464cd7c2792e12430aff0a17d6689a1b",
+        "output/plague-marines/cards/faction_rules/plague-marines-disgustingly-resilient-back.jpg": "839a090abdd05d8e3ce707dccb133fa5faf0dec2a4fab58a5b46ef3246d04de8",
+        "output/plague-marines/cards/faction_rules/plague-marines-disgustingly-resilient-front.jpg": "01633b7b7ffde676187d7e7f2826ff2a014db76642f7697ab28085b1d813bbff",
+        "output/plague-marines/cards/faction_rules/plague-marines-poison-back.jpg": "839a090abdd05d8e3ce707dccb133fa5faf0dec2a4fab58a5b46ef3246d04de8",
+        "output/plague-marines/cards/faction_rules/plague-marines-poison-front.jpg": "1167a0a3ff64ffa5bc44ae6ad7827e46f06ada898ce021bdc56c4d92f63e8066",
+        "output/plague-marines/cards/firefight_ploys/plague-marines-curse-of-rot-back.jpg": "839a090abdd05d8e3ce707dccb133fa5faf0dec2a4fab58a5b46ef3246d04de8",
+        "output/plague-marines/cards/firefight_ploys/plague-marines-curse-of-rot-front.jpg": "ddc5412b509a5f90aa6e026161da74555d4c69a9a8dee824fdd89f72f40ae581",
+        "output/plague-marines/cards/firefight_ploys/plague-marines-poisonous-demise-back.jpg": "839a090abdd05d8e3ce707dccb133fa5faf0dec2a4fab58a5b46ef3246d04de8",
+        "output/plague-marines/cards/firefight_ploys/plague-marines-poisonous-demise-front.jpg": "a2649303e87e0b3f4e947b3fd78e97322020c1c6bb25cda3343598702ed09fdc",
+        "output/plague-marines/cards/firefight_ploys/plague-marines-sickening-resilience-back.jpg": "839a090abdd05d8e3ce707dccb133fa5faf0dec2a4fab58a5b46ef3246d04de8",
+        "output/plague-marines/cards/firefight_ploys/plague-marines-sickening-resilience-front.jpg": "bd514e6db157dccf155cca27a2acbbac2aa5dde750e9312c5841b365056e27fb",
+        "output/plague-marines/cards/firefight_ploys/plague-marines-virulent-poison-back.jpg": "839a090abdd05d8e3ce707dccb133fa5faf0dec2a4fab58a5b46ef3246d04de8",
+        "output/plague-marines/cards/firefight_ploys/plague-marines-virulent-poison-front.jpg": "571474669c806c255698e65980fc3daa0ad5107fc494bcd53c9b3badfb74ca7b",
+        "output/plague-marines/cards/operatives_selection/plague-marines-operative-selection-back.jpg": "839a090abdd05d8e3ce707dccb133fa5faf0dec2a4fab58a5b46ef3246d04de8",
+        "output/plague-marines/cards/operatives_selection/plague-marines-operative-selection-front.jpg": "c455e936093bc96d89f1c82fa4a6b185f44b0546ed7292e9f83cc05f2670b6c9",
+        "output/plague-marines/cards/strategy_ploys/plague-marines-cloud-of-flies-back.jpg": "839a090abdd05d8e3ce707dccb133fa5faf0dec2a4fab58a5b46ef3246d04de8",
+        "output/plague-marines/cards/strategy_ploys/plague-marines-cloud-of-flies-front.jpg": "47c2e29ed788714c5816df4cda028dfe24cd237dab1daf06410ff1500e5c9d50",
+        "output/plague-marines/cards/strategy_ploys/plague-marines-contagion-back.jpg": "839a090abdd05d8e3ce707dccb133fa5faf0dec2a4fab58a5b46ef3246d04de8",
+        "output/plague-marines/cards/strategy_ploys/plague-marines-contagion-front.jpg": "0c9c2604e8a99ba6824acfee467cd5d5293446e6f78f4e3018c28e2536c27b16",
+        "output/plague-marines/cards/strategy_ploys/plague-marines-lumbering-death-back.jpg": "839a090abdd05d8e3ce707dccb133fa5faf0dec2a4fab58a5b46ef3246d04de8",
+        "output/plague-marines/cards/strategy_ploys/plague-marines-lumbering-death-front.jpg": "44a10d0535285a572e5b91176d0fe4049cc541ac2e838d1085deb73cca95a534",
+        "output/plague-marines/cards/strategy_ploys/plague-marines-nurglings-back.jpg": "839a090abdd05d8e3ce707dccb133fa5faf0dec2a4fab58a5b46ef3246d04de8",
+        "output/plague-marines/cards/strategy_ploys/plague-marines-nurglings-front.jpg": "62ed13160a38094c2e3088f8d8297f06ebbcc5733437334118f068272f507a53",
+        "output/plague-marines/cardbox/plague-marines-card-box-texture.jpg": "b3813e5a51ba9015ae5ca6da3995b7f429003d28224c480f3594fb06d4f9855b",
+        "output/plague-marines/cardbox/plague-marines-card-box.obj": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+        "output/plague-marines/dice/plague-marines-dice-dark.jpg": "41b7d4152b76f6a225c011bb7a069db4d42de8bb2d79b06bce1dffa9c19ccb2a",
+        "output/plague-marines/dice/plague-marines-dice-light.jpg": "1786215fb85294949fd30cc8bffc67182a81617cbf49e22c9fc184179ee22a5c",
+        "output/plague-marines/data/plague-marines-team-data.json": "703198ec11ffa7e0982a68e91cdf703122f4d00c1ab8b2fa9c59e9f2c54d5241",
+        "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
+        "config/defaults/tts-script/datacard-load-stats.lua": "2d5f4088c2ff09f54988cf8722080f536b4e1b998cc2b4c1f1ea94e6b18eb92e",
+        "config/defaults/tts-script/display-table-manager-script.lua": "0dab4381078d90802f25e2cc825bc3658be35ee13ab3e98831c9d248c2526689",
+        "config/defaults/tts-script/faction-rule-chapter-tactics.lua": "c906742268076fb91f7cb4a92c6b588e1122ccddb692688f635c8dd4f7110ad0",
+        "config/defaults/tts-script/intermediate-updater.lua": "1a2d6dbc1a8c9c57ba6a3e7a3d4bc4b7a38a6c242a93f6ef3dae698123384d35",
+        "config/defaults/tts-script/single-object-updater.lua": "3613b85169e986a8e50ebe221482079e27c18037e3f48920aa0f7e138c0ccacc",
+        "config/defaults/tts-script/team-spawner-clean-script.lua": "12457bff3961eee2293c42d81cf4f4eb8b103177245a1ab8b46fd65da40672a2",
+        "config/defaults/tts-script/team-spawner-script.lua": "a51ff45c8622923db909fb465781801511f235412f099f83dff728d4027650db",
+        "config/defaults/tts-script/tts-update-rules-in-box-script.lua": "1eddd1803087ed63181a1149c856db77eef3196dc45d0d283693fada44a357dd",
+        "config/defaults/tts-image/default-icon.png": "892aff2628b9685c813e77be05c66afc1dc4247bc1dc9ce6fe54f006c2608271",
+        "config/defaults/tts-image/spawner-token.png": "61903b093f01d834f5e4c4c069b1353ecf7d29f012fef914b3027266816d8a6b",
+        "config/defaults/tts-token/square-bag-mesh.obj": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+        "config/defaults/tts-token/template-diamond-cutter.png": "719f57ba2b86494be454a6d3d25d8567dde974a915f3dde5ddc0e2d8dafaa1a5",
+        "config/defaults/tts-token/template-octagon-cutter.png": "944632aeacab978293ae57758b63086166c5fbaf3b845f48b3dd61db67d5c076",
+        "config/defaults/tts-token/template-operative-cutter.png": "0e698ddd403d7f0e84f200eb42af73f5249a9c5539d773298ff4c700ac9fe153",
+        "config/defaults/tts-token/template-round-cutter.png": "6564e1451c9a135a1c756fd94cde1c71e373e3fa677b51bba9d4bbe9e795d544",
+        "config/defaults/tts-token/token-bag-script.lua": "1659887e0fbfb9e3ebbc1aa5f3df8e1ffd89ee192be24d2dd1f02fcb0407e486",
+        "config/defaults/tts-token/token-bg-sample.png": "f9f90664c7f1c877c6f050f6e85babde6523cdc0aed9c77de8c09214f44ee109",
+        "config/defaults/tts-token/token-mesh.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc"
+      }
+    },
+    "front_end": {
+      "outputs": {},
+      "sources": {
+        "operatives-selection": {
+          "hash": "f7117f60cd6444a8bd8780f592504953365459793b97460c0d968f2d65b84cd2",
+          "outputs": [
+            "layers/kt-app/extracted/plague-marines/cards/operatives-selection/plague-marines-operatives-selection-page_0.pdf"
+          ],
+          "modified": "2026-07-06T16:01:21.886019+00:00"
+        },
+        "strategy-ploys": {
+          "hash": "3f9076ed45a76706a61c35af0bda15870055b18f9cc036a09d6dce351d0aa3d7",
+          "outputs": [
+            "layers/kt-app/extracted/plague-marines/cards/strategy-ploys/plague-marines-strategy-ploys-page_0.pdf",
+            "layers/kt-app/extracted/plague-marines/cards/strategy-ploys/plague-marines-strategy-ploys-page_1.pdf",
+            "layers/kt-app/extracted/plague-marines/cards/strategy-ploys/plague-marines-strategy-ploys-page_2.pdf",
+            "layers/kt-app/extracted/plague-marines/cards/strategy-ploys/plague-marines-strategy-ploys-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:01:44.463908+00:00"
+        },
+        "firefight-ploys": {
+          "hash": "1e2672967735db9b73b1c8099bc65304d79ac70c78eb42b14a062c1f2abf722b",
+          "outputs": [
+            "layers/kt-app/extracted/plague-marines/cards/firefight-ploys/plague-marines-firefight-ploys-page_0.pdf",
+            "layers/kt-app/extracted/plague-marines/cards/firefight-ploys/plague-marines-firefight-ploys-page_1.pdf",
+            "layers/kt-app/extracted/plague-marines/cards/firefight-ploys/plague-marines-firefight-ploys-page_2.pdf",
+            "layers/kt-app/extracted/plague-marines/cards/firefight-ploys/plague-marines-firefight-ploys-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:02:35.623222+00:00"
+        },
+        "faction-rules": {
+          "hash": "a733944200b771b5728f0bb51a0ec2853e5ebe63c0d0ce98a3b238e81f50b765",
+          "outputs": [
+            "layers/kt-app/extracted/plague-marines/cards/faction-rules/plague-marines-faction-rules-page_0.pdf",
+            "layers/kt-app/extracted/plague-marines/cards/faction-rules/plague-marines-faction-rules-page_1.pdf",
+            "layers/kt-app/extracted/plague-marines/cards/faction-rules/plague-marines-faction-rules-page_2.pdf"
+          ],
+          "modified": "2026-07-06T16:10:56.026381+00:00"
+        },
+        "datacards": {
+          "hash": "ca5caf2ce3f1fb60aa4947e408a5f4577603a602130e3c92f25dcc15f4a2d806",
+          "outputs": [
+            "layers/kt-app/extracted/plague-marines/cards/datacards/plague-marines-datacards-page_0.pdf",
+            "layers/kt-app/extracted/plague-marines/cards/datacards/plague-marines-datacards-page_1.pdf",
+            "layers/kt-app/extracted/plague-marines/cards/datacards/plague-marines-datacards-page_2.pdf",
+            "layers/kt-app/extracted/plague-marines/cards/datacards/plague-marines-datacards-page_3.pdf",
+            "layers/kt-app/extracted/plague-marines/cards/datacards/plague-marines-datacards-page_4.pdf",
+            "layers/kt-app/extracted/plague-marines/cards/datacards/plague-marines-datacards-page_5.pdf",
+            "layers/kt-app/extracted/plague-marines/cards/datacards/plague-marines-datacards-page_6.pdf",
+            "layers/kt-app/extracted/plague-marines/cards/datacards/plague-marines-datacards-page_7.pdf"
+          ],
+          "modified": "2026-07-06T16:12:36.326528+00:00"
+        },
+        "equipment": {
+          "hash": "23412754839c5e52c9726ea6da895231961a00f54c51480cb18344286d55e9e9",
+          "outputs": [
+            "layers/kt-app/extracted/plague-marines/cards/equipment/plague-marines-equipment-page_0.pdf",
+            "layers/kt-app/extracted/plague-marines/cards/equipment/plague-marines-equipment-page_1.pdf",
+            "layers/kt-app/extracted/plague-marines/cards/equipment/plague-marines-equipment-page_2.pdf",
+            "layers/kt-app/extracted/plague-marines/cards/equipment/plague-marines-equipment-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:12:37.041159+00:00"
+        },
+        "cards": {
+          "hash": "5494d6512eb4eb2474103a89010ed7da6a9d4e929d3f040f117b27cf238fae78",
+          "outputs": [
+            "layers/warcom/extracted/plague-marines/cards/plague-marines_page01_card1_landscape.pdf",
+            "layers/warcom/extracted/plague-marines/cards/plague-marines_page01_card2_landscape.pdf",
+            "layers/warcom/extracted/plague-marines/cards/plague-marines_page01_card3_landscape.pdf",
+            "layers/warcom/extracted/plague-marines/cards/plague-marines_page01_card4_landscape.pdf",
+            "layers/warcom/extracted/plague-marines/cards/plague-marines_page02_card1_landscape.pdf",
+            "layers/warcom/extracted/plague-marines/cards/plague-marines_page02_card2_landscape.pdf",
+            "layers/warcom/extracted/plague-marines/cards/plague-marines_page02_card3_landscape.pdf",
+            "layers/warcom/extracted/plague-marines/cards/plague-marines_page02_card4_landscape.pdf",
+            "layers/warcom/extracted/plague-marines/cards/plague-marines_page03_card1_portrait.pdf",
+            "layers/warcom/extracted/plague-marines/cards/plague-marines_page03_card2_portrait.pdf",
+            "layers/warcom/extracted/plague-marines/cards/plague-marines_page03_card3_portrait.pdf",
+            "layers/warcom/extracted/plague-marines/cards/plague-marines_page03_card4_portrait.pdf",
+            "layers/warcom/extracted/plague-marines/cards/plague-marines_page04_card1_portrait.pdf",
+            "layers/warcom/extracted/plague-marines/cards/plague-marines_page04_card2_portrait.pdf",
+            "layers/warcom/extracted/plague-marines/cards/plague-marines_page04_card3_portrait.pdf",
+            "layers/warcom/extracted/plague-marines/cards/plague-marines_page04_card4_portrait.pdf",
+            "layers/warcom/extracted/plague-marines/cards/plague-marines_page05_card1_portrait.pdf",
+            "layers/warcom/extracted/plague-marines/cards/plague-marines_page05_card2_portrait.pdf",
+            "layers/warcom/extracted/plague-marines/cards/plague-marines_page05_card3_portrait.pdf",
+            "layers/warcom/extracted/plague-marines/cards/plague-marines_page05_card4_portrait.pdf",
+            "layers/warcom/extracted/plague-marines/cards/plague-marines_page06_card1_portrait.pdf",
+            "layers/warcom/extracted/plague-marines/cards/plague-marines_page06_card2_portrait.pdf",
+            "layers/warcom/extracted/plague-marines/cards/plague-marines_page06_card3_portrait.pdf",
+            "layers/warcom/extracted/plague-marines/cards/plague-marines_page06_card4_portrait.pdf"
+          ],
+          "modified": "2026-07-08T19:05:37.605960+00:00"
+        }
+      },
+      "completed": "2026-07-08T19:05:37.606035+00:00"
+    },
+    "build_structure": {
+      "outputs": {
+        "structure": {
+          "path": "layers/warcom/structure/plague-marines-structure.json",
+          "hash": "65163daa5976840cc154696297864f1a39285178991095eab04fb8bef54867ac",
+          "modified": "2026-07-10T20:29:56.342833+00:00"
+        }
+      },
+      "inputs": {
+        "layers/warcom/extracted/plague-marines/cards/plague-marines_page01_card1_landscape.pdf": "c66b7c4cb7b1f7b38a048b20224d69d9d6ef895e2d69e5c3f77e2d736791b1e8",
+        "layers/warcom/extracted/plague-marines/cards/plague-marines_page01_card2_landscape.pdf": "f1ea4469434d9e870bf20a94b6a1ee8d9492821ae4fab677f0e2ffb6cbb25c4a",
+        "layers/warcom/extracted/plague-marines/cards/plague-marines_page01_card3_landscape.pdf": "335ecf1d0a32023721941aec3cea550364885235cd26bd5fb5998ae32ec37b51",
+        "layers/warcom/extracted/plague-marines/cards/plague-marines_page01_card4_landscape.pdf": "75bb760713ec3e0f66c786d8faa7b5735cca95c92751dbcfb8f2f5d55f9d4725",
+        "layers/warcom/extracted/plague-marines/cards/plague-marines_page02_card1_landscape.pdf": "de03e5768924bd0e3b7bf9502f228830b66246a249e6a4e130e6ceb28fe1ec8d",
+        "layers/warcom/extracted/plague-marines/cards/plague-marines_page02_card2_landscape.pdf": "5e420346cb985de2fc60c3d48893096ceb4ae4141dd5f25da457ea386e0c241b",
+        "layers/warcom/extracted/plague-marines/cards/plague-marines_page02_card3_landscape.pdf": "0c0ab7c446dc0a9663a925661148c211046bede10335d44f2c781ddc4fee6db4",
+        "layers/warcom/extracted/plague-marines/cards/plague-marines_page02_card4_landscape.pdf": "06ccdd9c3f5139c873a2ccfb9e3db4db8ba20177cdb54cba1bbf287b3ec459bc",
+        "layers/warcom/extracted/plague-marines/cards/plague-marines_page03_card1_portrait.pdf": "9caba4fa111c8f637bb9056e6b05162293e3bb93fff014e01f7a0f8c6800b028",
+        "layers/warcom/extracted/plague-marines/cards/plague-marines_page03_card2_portrait.pdf": "b27805082c2a4ffe557a691f08dd98d6a05f8bf1401a73ef8a8e9f955d347bfe",
+        "layers/warcom/extracted/plague-marines/cards/plague-marines_page03_card3_portrait.pdf": "cb930c0cb5e2cdfd39f0dd86474bab11a7d0e5b656dd86e4a82ae7ee998b326b",
+        "layers/warcom/extracted/plague-marines/cards/plague-marines_page03_card4_portrait.pdf": "481af0a77a681884c02f67bc11433f25da37cadd215248192c02ca4fc1b691c2",
+        "layers/warcom/extracted/plague-marines/cards/plague-marines_page04_card1_portrait.pdf": "57597e8212f5b79fe407eba39cd128148549b562d2849aef5431d3526c7e0219",
+        "layers/warcom/extracted/plague-marines/cards/plague-marines_page04_card2_portrait.pdf": "f6891bb7d634ea34e0ece7260599122ead6c8ac587bf002e72bf1e48567dc961",
+        "layers/warcom/extracted/plague-marines/cards/plague-marines_page04_card3_portrait.pdf": "565eb4b7d4be424150af7ee80c102b4f910a3201b52f811e4678f762cbab4644",
+        "layers/warcom/extracted/plague-marines/cards/plague-marines_page04_card4_portrait.pdf": "36b31cc9077fa51c060d7800c17b1f64e288ceaad34ef9910bf925511ad5a646",
+        "layers/warcom/extracted/plague-marines/cards/plague-marines_page05_card1_portrait.pdf": "ff904ec6e656f5b294aeb02161fab1699eabdb22bffff8cbbcc9cf39e0add184",
+        "layers/warcom/extracted/plague-marines/cards/plague-marines_page05_card2_portrait.pdf": "1ef85c0850b8bbe698a602e06ae3d7c5e564ad66b944d9eaf5a20fad61214d5b",
+        "layers/warcom/extracted/plague-marines/cards/plague-marines_page05_card3_portrait.pdf": "dc9d3004a19b5cd9240a9cc34db25a7af9466481a87d9497389b3e845c605eb3",
+        "layers/warcom/extracted/plague-marines/cards/plague-marines_page05_card4_portrait.pdf": "8c887dec81e73ae2405272188861f5afa656508e3667eaf71751dd588a3305a6",
+        "layers/warcom/extracted/plague-marines/cards/plague-marines_page06_card1_portrait.pdf": "b7fb4df004e92b4ca94fd6d570f42f590cfafd3de5ff7d4cb03a1bdb7d9394be",
+        "layers/warcom/extracted/plague-marines/cards/plague-marines_page06_card2_portrait.pdf": "41a5afe5cad5a2547082defe282a6faf366a5d3c9cc3716243535803f1b86d09",
+        "layers/warcom/extracted/plague-marines/cards/plague-marines_page06_card3_portrait.pdf": "abfa1475251b435dd72430e50c2198815523b70c4a14aa636713b9bae07987f0",
+        "layers/warcom/extracted/plague-marines/cards/plague-marines_page06_card4_portrait.pdf": "d31f959f575a4a962f2055822caa9c2d38153c757c32ec77fea87f2f1b0bb46c"
+      },
+      "completed": "2026-07-10T20:30:01.276706+00:00"
+    },
+    "integrate_classified": {
+      "outputs": {
+        "manifest.json": {
+          "path": "layers/integration/plague-marines/manifest.json",
+          "hash": "65163daa5976840cc154696297864f1a39285178991095eab04fb8bef54867ac",
+          "modified": "2026-07-11T07:04:33.871999+00:00"
+        },
+        "plague-marines-datacard-plague-marine-champion.pdf": {
+          "path": "layers/integration/plague-marines/plague-marines-datacard-plague-marine-champion.pdf",
+          "hash": "882f404d2c9fa42bb528b37eb1ad3def470fcd00b9ab66eb93b18d5a93fb461d",
+          "modified": "2026-07-11T07:04:35.930226+00:00"
+        },
+        "plague-marines-datacard-plague-marine-bombardier.pdf": {
+          "path": "layers/integration/plague-marines/plague-marines-datacard-plague-marine-bombardier.pdf",
+          "hash": "31ea8321251c304fa1daabecdf79552873a396d62bcc8048abf29e57eb71f634",
+          "modified": "2026-07-11T07:04:41.178578+00:00"
+        },
+        "plague-marines-datacard-plague-marine-fighter.pdf": {
+          "path": "layers/integration/plague-marines/plague-marines-datacard-plague-marine-fighter.pdf",
+          "hash": "72dba25c093bac4754b74df8431557512122887b6b29006bf5e7810bec0ba9eb",
+          "modified": "2026-07-11T07:04:44.481813+00:00"
+        },
+        "plague-marines-datacard-plague-marine-heavy-gunner.pdf": {
+          "path": "layers/integration/plague-marines/plague-marines-datacard-plague-marine-heavy-gunner.pdf",
+          "hash": "5952a2cf80a0724177dfb586aae7a6faf27d934e63f36348237fd094da04e07d",
+          "modified": "2026-07-11T07:04:52.187916+00:00"
+        },
+        "plague-marines-datacard-plague-marine-icon-bearer.pdf": {
+          "path": "layers/integration/plague-marines/plague-marines-datacard-plague-marine-icon-bearer.pdf",
+          "hash": "463cb4c4388050d8c50bffbe801d124187e41eed6834060b1428088713418a67",
+          "modified": "2026-07-11T07:04:56.736556+00:00"
+        },
+        "plague-marines-datacard-malignant-plaguecaster.pdf": {
+          "path": "layers/integration/plague-marines/plague-marines-datacard-malignant-plaguecaster.pdf",
+          "hash": "e40b0f22a98513897d99fd416aa41abb23cd158f286ea56f8a6a82ad421af130",
+          "modified": "2026-07-11T07:04:59.974940+00:00"
+        },
+        "plague-marines-datacard-plague-marine-warrior.pdf": {
+          "path": "layers/integration/plague-marines/plague-marines-datacard-plague-marine-warrior.pdf",
+          "hash": "1e50977d88d67991a231be72f06cffcdc334553d17ab88205063969a9a50181c",
+          "modified": "2026-07-11T07:05:01.217095+00:00"
+        },
+        "plague-marines-equipment-plague-bells.pdf": {
+          "path": "layers/integration/plague-marines/plague-marines-equipment-plague-bells.pdf",
+          "hash": "0fa6dab71463ba49c7efc87d5eeafeba8a55cf3e797c0ce760001bdbaf5afa82",
+          "modified": "2026-07-11T07:05:02.030371+00:00"
+        },
+        "plague-marines-equipment-blight-grenades.pdf": {
+          "path": "layers/integration/plague-marines/plague-marines-equipment-blight-grenades.pdf",
+          "hash": "2fe305fa4af773585e8c9d5e7d02b5aece0b4f2685ec0997b989c9c90a85e81d",
+          "modified": "2026-07-11T07:05:02.870075+00:00"
+        },
+        "plague-marines-equipment-plague-rounds.pdf": {
+          "path": "layers/integration/plague-marines/plague-marines-equipment-plague-rounds.pdf",
+          "hash": "a7f13fe41899c9528168a44ea835c278587c645765d1e21aa2b8445e81c89456",
+          "modified": "2026-07-11T07:05:04.513028+00:00"
+        },
+        "plague-marines-equipment-poison-vents.pdf": {
+          "path": "layers/integration/plague-marines/plague-marines-equipment-poison-vents.pdf",
+          "hash": "1258722758106156ac73caba5376442735f65e5ce3f21c719ac682118a7ac889",
+          "modified": "2026-07-11T07:05:07.058567+00:00"
+        },
+        "plague-marines-faction-rule-astartes.pdf": {
+          "path": "layers/integration/plague-marines/plague-marines-faction-rule-astartes.pdf",
+          "hash": "97df37035970519e3d9be4d6b917d337d6633674dd29eaaab961d5df524a31a9",
+          "modified": "2026-07-11T07:05:07.922491+00:00"
+        },
+        "plague-marines-faction-rule-poison.pdf": {
+          "path": "layers/integration/plague-marines/plague-marines-faction-rule-poison.pdf",
+          "hash": "55df992ba6d4eb79f4c134ab3c8adf1d8c54371585f5c66072a44018e3e2e60e",
+          "modified": "2026-07-11T07:05:11.139735+00:00"
+        },
+        "plague-marines-faction-rule-disgustingly-resilient.pdf": {
+          "path": "layers/integration/plague-marines/plague-marines-faction-rule-disgustingly-resilient.pdf",
+          "hash": "86ad25abad7a30e964a90ab590247475513a4717fe9d9aa75ba6ba41cd085b67",
+          "modified": "2026-07-11T07:05:12.307766+00:00"
+        },
+        "plague-marines-firefight-ploy-virulent-poison.pdf": {
+          "path": "layers/integration/plague-marines/plague-marines-firefight-ploy-virulent-poison.pdf",
+          "hash": "99ee3735a5701fd6ce0375a5702957564580bbb40446bfd63e6457d784aa9e75",
+          "modified": "2026-07-11T07:05:13.620720+00:00"
+        },
+        "plague-marines-firefight-ploy-poisonous-demise.pdf": {
+          "path": "layers/integration/plague-marines/plague-marines-firefight-ploy-poisonous-demise.pdf",
+          "hash": "1fcedf26d7088f9581af0a2c088f64faced9c1726137856d8a591116dff061b4",
+          "modified": "2026-07-11T07:05:14.395784+00:00"
+        },
+        "plague-marines-firefight-ploy-sickening-resilience.pdf": {
+          "path": "layers/integration/plague-marines/plague-marines-firefight-ploy-sickening-resilience.pdf",
+          "hash": "774f871f823b6694124d35cc587e549c4cfaf6ed945bf866be36fdbefcdccff3",
+          "modified": "2026-07-11T07:05:15.797341+00:00"
+        },
+        "plague-marines-firefight-ploy-curse-of-rot.pdf": {
+          "path": "layers/integration/plague-marines/plague-marines-firefight-ploy-curse-of-rot.pdf",
+          "hash": "35f2d57c328c5b5a869e848204a6efbc87de03ac9f5af213ab75dcd68e2e6d13",
+          "modified": "2026-07-11T07:05:15.867870+00:00"
+        },
+        "plague-marines-operatives-selection-operative-selection.pdf": {
+          "path": "layers/integration/plague-marines/plague-marines-operatives-selection-operative-selection.pdf",
+          "hash": "acac0b32324aaa611279d640770c1e3f93a5fee89568a67ef1a3de68a22a1712",
+          "modified": "2026-07-11T07:05:19.794278+00:00"
+        },
+        "plague-marines-strategy-ploy-contagion.pdf": {
+          "path": "layers/integration/plague-marines/plague-marines-strategy-ploy-contagion.pdf",
+          "hash": "8b2d354d2cf49db9e406331172372d1709993b08f390e8b143551cb21f261ba4",
+          "modified": "2026-07-11T07:05:20.414251+00:00"
+        },
+        "plague-marines-strategy-ploy-lumbering-death.pdf": {
+          "path": "layers/integration/plague-marines/plague-marines-strategy-ploy-lumbering-death.pdf",
+          "hash": "a89019634eda79b691c7f0e5c72051511e607aecdb77632e2b923c51dcf1fde3",
+          "modified": "2026-07-11T07:05:20.954219+00:00"
+        },
+        "plague-marines-strategy-ploy-cloud-of-flies.pdf": {
+          "path": "layers/integration/plague-marines/plague-marines-strategy-ploy-cloud-of-flies.pdf",
+          "hash": "176285e602fb9fa455aa56be98853c71229464f178c1d7245341f4caf5e3f0f4",
+          "modified": "2026-07-11T07:05:21.637144+00:00"
+        },
+        "plague-marines-strategy-ploy-nurglings.pdf": {
+          "path": "layers/integration/plague-marines/plague-marines-strategy-ploy-nurglings.pdf",
+          "hash": "c3b46925143ad5a51affb0b0c222ce85fec4403549a14a62c09e0988563096d0",
+          "modified": "2026-07-11T07:05:22.626747+00:00"
+        }
+      },
+      "inputs": {
+        "layers/warcom/structure/plague-marines-structure.json": "65163daa5976840cc154696297864f1a39285178991095eab04fb8bef54867ac",
+        "layers/warcom/extracted/plague-marines/cards/plague-marines_page01_card1_landscape.pdf": "c66b7c4cb7b1f7b38a048b20224d69d9d6ef895e2d69e5c3f77e2d736791b1e8",
+        "layers/warcom/extracted/plague-marines/cards/plague-marines_page01_card2_landscape.pdf": "f1ea4469434d9e870bf20a94b6a1ee8d9492821ae4fab677f0e2ffb6cbb25c4a",
+        "layers/warcom/extracted/plague-marines/cards/plague-marines_page01_card3_landscape.pdf": "335ecf1d0a32023721941aec3cea550364885235cd26bd5fb5998ae32ec37b51",
+        "layers/warcom/extracted/plague-marines/cards/plague-marines_page01_card4_landscape.pdf": "75bb760713ec3e0f66c786d8faa7b5735cca95c92751dbcfb8f2f5d55f9d4725",
+        "layers/warcom/extracted/plague-marines/cards/plague-marines_page02_card1_landscape.pdf": "de03e5768924bd0e3b7bf9502f228830b66246a249e6a4e130e6ceb28fe1ec8d",
+        "layers/warcom/extracted/plague-marines/cards/plague-marines_page02_card2_landscape.pdf": "5e420346cb985de2fc60c3d48893096ceb4ae4141dd5f25da457ea386e0c241b",
+        "layers/warcom/extracted/plague-marines/cards/plague-marines_page02_card3_landscape.pdf": "0c0ab7c446dc0a9663a925661148c211046bede10335d44f2c781ddc4fee6db4",
+        "layers/warcom/extracted/plague-marines/cards/plague-marines_page02_card4_landscape.pdf": "06ccdd9c3f5139c873a2ccfb9e3db4db8ba20177cdb54cba1bbf287b3ec459bc",
+        "layers/warcom/extracted/plague-marines/cards/plague-marines_page06_card1_portrait.pdf": "b7fb4df004e92b4ca94fd6d570f42f590cfafd3de5ff7d4cb03a1bdb7d9394be",
+        "layers/warcom/extracted/plague-marines/cards/plague-marines_page06_card2_portrait.pdf": "41a5afe5cad5a2547082defe282a6faf366a5d3c9cc3716243535803f1b86d09",
+        "layers/warcom/extracted/plague-marines/cards/plague-marines_page06_card3_portrait.pdf": "abfa1475251b435dd72430e50c2198815523b70c4a14aa636713b9bae07987f0",
+        "layers/warcom/extracted/plague-marines/cards/plague-marines_page06_card4_portrait.pdf": "d31f959f575a4a962f2055822caa9c2d38153c757c32ec77fea87f2f1b0bb46c",
+        "layers/warcom/extracted/plague-marines/cards/plague-marines_page03_card2_portrait.pdf": "b27805082c2a4ffe557a691f08dd98d6a05f8bf1401a73ef8a8e9f955d347bfe",
+        "layers/warcom/extracted/plague-marines/cards/plague-marines_page03_card3_portrait.pdf": "cb930c0cb5e2cdfd39f0dd86474bab11a7d0e5b656dd86e4a82ae7ee998b326b",
+        "layers/warcom/extracted/plague-marines/cards/plague-marines_page03_card4_portrait.pdf": "481af0a77a681884c02f67bc11433f25da37cadd215248192c02ca4fc1b691c2",
+        "layers/warcom/extracted/plague-marines/cards/plague-marines_page05_card1_portrait.pdf": "ff904ec6e656f5b294aeb02161fab1699eabdb22bffff8cbbcc9cf39e0add184",
+        "layers/warcom/extracted/plague-marines/cards/plague-marines_page05_card2_portrait.pdf": "1ef85c0850b8bbe698a602e06ae3d7c5e564ad66b944d9eaf5a20fad61214d5b",
+        "layers/warcom/extracted/plague-marines/cards/plague-marines_page05_card3_portrait.pdf": "dc9d3004a19b5cd9240a9cc34db25a7af9466481a87d9497389b3e845c605eb3",
+        "layers/warcom/extracted/plague-marines/cards/plague-marines_page05_card4_portrait.pdf": "8c887dec81e73ae2405272188861f5afa656508e3667eaf71751dd588a3305a6",
+        "layers/warcom/extracted/plague-marines/cards/plague-marines_page03_card1_portrait.pdf": "9caba4fa111c8f637bb9056e6b05162293e3bb93fff014e01f7a0f8c6800b028",
+        "layers/warcom/extracted/plague-marines/cards/plague-marines_page04_card1_portrait.pdf": "57597e8212f5b79fe407eba39cd128148549b562d2849aef5431d3526c7e0219",
+        "layers/warcom/extracted/plague-marines/cards/plague-marines_page04_card2_portrait.pdf": "f6891bb7d634ea34e0ece7260599122ead6c8ac587bf002e72bf1e48567dc961",
+        "layers/warcom/extracted/plague-marines/cards/plague-marines_page04_card3_portrait.pdf": "565eb4b7d4be424150af7ee80c102b4f910a3201b52f811e4678f762cbab4644",
+        "layers/warcom/extracted/plague-marines/cards/plague-marines_page04_card4_portrait.pdf": "36b31cc9077fa51c060d7800c17b1f64e288ceaad34ef9910bf925511ad5a646"
+      },
+      "completed": "2026-07-11T07:05:42.897213+00:00"
+    },
+    "extract_artwork": {
+      "outputs": {},
+      "sources": {
+        "artwork": {
+          "hash": "5494d6512eb4eb2474103a89010ed7da6a9d4e929d3f040f117b27cf238fae78",
+          "outputs": [
+            "layers/integration/plague-marines/artwork/plague-marines-artwork-01.jpeg",
+            "layers/integration/plague-marines/artwork/plague-marines-artwork-02.jpeg",
+            "layers/integration/plague-marines/artwork/plague-marines-artwork-03.jpeg",
+            "layers/integration/plague-marines/artwork/plague-marines-artwork-04.jpeg",
+            "layers/integration/plague-marines/artwork/plague-marines-artwork-05.jpeg",
+            "layers/integration/plague-marines/artwork/plague-marines-artwork-06.jpeg",
+            "layers/integration/plague-marines/artwork/plague-marines-artwork-07.png",
+            "layers/integration/plague-marines/artwork/plague-marines-artwork-08.jpeg",
+            "layers/integration/plague-marines/artwork/plague-marines-artwork-09.jpeg",
+            "layers/integration/plague-marines/artwork/plague-marines-artwork-10.jpeg",
+            "layers/integration/plague-marines/artwork/plague-marines-artwork-11.jpeg",
+            "layers/integration/plague-marines/artwork/plague-marines-artwork-12.jpeg",
+            "layers/integration/plague-marines/artwork/plague-marines-artwork-13.jpeg",
+            "layers/integration/plague-marines/artwork/plague-marines-artwork-14.jpeg",
+            "layers/integration/plague-marines/artwork/plague-marines-artwork-15.jpeg",
+            "layers/integration/plague-marines/artwork/plague-marines-artwork-16.jpeg",
+            "layers/integration/plague-marines/artwork/plague-marines-artwork-17.jpeg",
+            "layers/integration/plague-marines/artwork/plague-marines-artwork-18.jpeg",
+            "layers/integration/plague-marines/artwork/plague-marines-artwork-19.jpeg",
+            "layers/integration/plague-marines/artwork/plague-marines-artwork-20.jpeg",
+            "layers/integration/plague-marines/artwork/plague-marines-artwork-21.jpeg",
+            "layers/integration/plague-marines/artwork/plague-marines-artwork-22.jpeg",
+            "layers/integration/plague-marines/artwork/plague-marines-artwork-23.jpeg",
+            "layers/integration/plague-marines/artwork/plague-marines-artwork-metadata.json",
+            "layers/integration/plague-marines/artwork/icons/plague-marines-icon-landscape.jpg",
+            "layers/integration/plague-marines/artwork/icons/plague-marines-icon-portrait.jpg",
+            "layers/integration/plague-marines/artwork/icons/plague-marines-icon-token-transparent.png",
+            "layers/integration/plague-marines/artwork/icons/plague-marines-icon-token.jpg"
+          ],
+          "modified": "2026-07-06T20:54:49.653265+00:00"
+        }
+      },
+      "completed": "2026-07-06T20:54:49.653278+00:00"
+    }
+  }
+}

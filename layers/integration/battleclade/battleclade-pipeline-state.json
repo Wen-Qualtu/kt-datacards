@@ -1,0 +1,924 @@
+{
+  "team": "battleclade",
+  "pipeline_version": "2.0",
+  "last_updated": "2026-07-12T18:32:25.445972+00:00",
+  "steps": {
+    "content_analysis": {
+      "outputs": {
+        "content.json": {
+          "path": "layers/integration/battleclade/content/battleclade-content.json",
+          "hash": "b68c18563a8ea16e47b48eda6c13efd1fa8eb491024020542283af0f24e64f06",
+          "modified": "2026-07-11T06:53:44.760749+00:00"
+        }
+      },
+      "completed": "2026-07-11T06:54:07.226591+00:00",
+      "inputs": {
+        "layers/integration/battleclade/manifest.json": "d97fab15e09e0d40d687af288192c32a4e3b4372143438b296212122b35a489e",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "layers/integration/battleclade/battleclade-datacard-battleclade-auto-proxy-servitor.pdf": "da4fe90977e34b1c6fe68d48862325ca60be3066069bd6b2cf5d0c9a66186103",
+        "layers/integration/battleclade/battleclade-datacard-battleclade-breacher-servitor.pdf": "f64d192ae5024915e751fcf8d442433b02ca031dbb7c8e2d1d304bf98d59adbf",
+        "layers/integration/battleclade/battleclade-datacard-battleclade-combat-servitor.pdf": "d28972355555702aeef9789f55b3d4b0a20edabebcd101d6e6fcd2b43a61319b",
+        "layers/integration/battleclade/battleclade-datacard-battleclade-gun-servitor.pdf": "f2d726ada03ede1850e5783fada9d46c24b448eb9909122654df76fd2c57d591",
+        "layers/integration/battleclade/battleclade-datacard-battleclade-servitor-underseer.pdf": "a79abba84904f50b1a32b954569aee1f94fe16315c24298e5d3bf5ff4f34bd45",
+        "layers/integration/battleclade/battleclade-datacard-battleclade-technoarcheologist.pdf": "e4aa945063e39efa0a4ac48331ff3509ed8e9ba17177ac86dd081399c3dbbd1a",
+        "layers/integration/battleclade/battleclade-datacard-battleclade-technomedic-servitor.pdf": "f1050aedec7be8171219b193649c687389501d2bee4fdf16eb06a9b92fdba531",
+        "layers/integration/battleclade/battleclade-equipment-concealed-apparatus.pdf": "f6a3ad5a83186b15bfe4715e31b28c4435c1c02612fd4f1afc0dd815b8117f0a",
+        "layers/integration/battleclade/battleclade-equipment-covert-guises.pdf": "b74c1402673c8b939154c00b8e5f0ceba66fcb490cff29d5d11006be26ad35c9",
+        "layers/integration/battleclade/battleclade-equipment-electromantic-capacitors.pdf": "e8c858ecb78197a55ee52f7bb2b40c31c6de4a8181eec1fd10921f61d43d771e",
+        "layers/integration/battleclade/battleclade-equipment-neurocyclic-reserve-cells.pdf": "f24e166639fc2f2cda65a6c07a1aac4b7401933198bdbbf2f8d796db909c0b4e",
+        "layers/integration/battleclade/battleclade-faction-rule-noospheric-network.pdf": "4da5fd02ec9f3aa3da2973dc73ed835cc380631ca926f8d55a2aa3787da7e1c1",
+        "layers/integration/battleclade/battleclade-firefight-ploy-auto-ferric-supplication.pdf": "5fae84f3e8f9b48d3e9fab0a094a3da9f1f4e9f37585cd96870d22e2ec28aac1",
+        "layers/integration/battleclade/battleclade-firefight-ploy-remote-access.pdf": "e89dbfadc8352042f10975186c3925e476037776d6137c8118e6c9aaa66b4347",
+        "layers/integration/battleclade/battleclade-firefight-ploy-servile-surrogacy.pdf": "e083e6fbb1568c5cf985e8b73698b5f5feb59e748fdfef56cbec502885f6c134",
+        "layers/integration/battleclade/battleclade-firefight-ploy-system-exorcism.pdf": "e0fc158f8d9800bb8c11ac1b5924b1ea8fd5931faaa4b54ceb160b1d93eff810",
+        "layers/integration/battleclade/battleclade-operatives-selection-operative-selection.pdf": "f206d15cba1e622b6a78a8232a8a11176bee3f4f896376d4b34138a2c429b5d9",
+        "layers/integration/battleclade/battleclade-strategy-ploy-duty-of-reclamation.pdf": "17805696740e5fa5dfd5469b14d6179af35c0ee4d12338745bcaac86cb26442e",
+        "layers/integration/battleclade/battleclade-strategy-ploy-incantation-of-the-iron-soul.pdf": "33e052227969c4dab703d352f0681fb3e5aa924abdceadac3d64db648cba508f",
+        "layers/integration/battleclade/battleclade-strategy-ploy-noospheric-possession.pdf": "dfa5762475457b217b4925dc02f0ead8ac6d26c0c2d227196a8f248de01e5cc6",
+        "layers/integration/battleclade/battleclade-strategy-ploy-prioritised-acquisition.pdf": "8f9399495ff649a79ddb02f71fffe5d5bd818b2ace7f030a994323c2bdda48df",
+        "layers/integration/battleclade/battleclade-token-guide-token-guide.pdf": "a51b4be418f261f3f69525ad809b2c839938884bd746fa56673da58fed00aab4"
+      }
+    },
+    "extract_backsides": {
+      "outputs": {
+        "backside-landscape.jpg": {
+          "path": "layers/integration/battleclade/card-backside/battleclade-backside-landscape.jpg",
+          "hash": "f7c3ef35b32e09b799649516ddb0765ecb1b60bd6f91d72ae123bed500fe890e",
+          "modified": "2026-07-11T06:54:37.803189+00:00"
+        },
+        "backside-portrait.jpg": {
+          "path": "layers/integration/battleclade/card-backside/battleclade-backside-portrait.jpg",
+          "hash": "8787376d7b2d13285837142f5dbc8d3a482b8e58b2d5feca733ecf65cdaa48a1",
+          "modified": "2026-07-11T06:54:37.807093+00:00"
+        }
+      },
+      "completed": "2026-07-11T06:54:37.816339+00:00",
+      "inputs": {
+        "layers/integration/battleclade/artwork/icons/battleclade-icon-token.jpg": "340b4c569a52bc5ee375197d4e18d6591028f40a24fce27e819d71a5b122ade2",
+        "config/defaults/box/card-box-background.jpeg": "2dd1442a7c52ca1d66899333f678d60f48981ce20561ead77c1161d548176036"
+      }
+    },
+    "extract_tokens": {
+      "outputs": {
+        "tokens/battleclade-breach.png": {
+          "path": "output/battleclade/tokens/battleclade-breach.png",
+          "hash": "697d27c2e2dd3213197537b1ef0002767ab323f2d685ed2d2ffa0a03ae50f350",
+          "modified": "2026-07-11T06:54:44.876949+00:00"
+        },
+        "tokens/battleclade-gaze-of-the-omnissiah.png": {
+          "path": "output/battleclade/tokens/battleclade-gaze-of-the-omnissiah.png",
+          "hash": "43310753afeaed67c318d42486b126a1ec4c8b65b94f9f3ed1b223ab56f1bb4d",
+          "modified": "2026-07-11T06:54:44.879899+00:00"
+        },
+        "tokens/battleclade-mechanosuture-array.png": {
+          "path": "output/battleclade/tokens/battleclade-mechanosuture-array.png",
+          "hash": "31ca7b42ed6e1579e54be44c9b00d5b55d01cadb43b04f873c4df190e5f42a56",
+          "modified": "2026-07-11T06:54:44.883309+00:00"
+        },
+        "tokens/battleclade-network-counteract.png": {
+          "path": "output/battleclade/tokens/battleclade-network-counteract.png",
+          "hash": "a2a00072594aaed2a2376ed5767f009cb4e009d4fd9d8cc162ad39e7f41cc01b",
+          "modified": "2026-07-11T06:54:44.885802+00:00"
+        },
+        "tokens/battleclade-omniscanner.png": {
+          "path": "output/battleclade/tokens/battleclade-omniscanner.png",
+          "hash": "2fd93f09d3029d0dac2df8f405e551c7539e3b7e169bdecfb1749ffd83a31b35",
+          "modified": "2026-07-11T06:54:44.887855+00:00"
+        },
+        "tokens/battleclade-prioritised-acquisition.png": {
+          "path": "output/battleclade/tokens/battleclade-prioritised-acquisition.png",
+          "hash": "3a362ea5d64e44f8073fa88d9d31071abced739eaeb8a09a0a64d0aa4f2ce936",
+          "modified": "2026-07-11T06:54:44.889880+00:00"
+        },
+        "tokens/battleclade-breach.obj": {
+          "path": "output/battleclade/tokens/battleclade-breach.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-11T06:54:44.892994+00:00"
+        },
+        "tokens/battleclade-gaze-of-the-omnissiah.obj": {
+          "path": "output/battleclade/tokens/battleclade-gaze-of-the-omnissiah.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-11T06:54:44.895595+00:00"
+        },
+        "tokens/battleclade-mechanosuture-array.obj": {
+          "path": "output/battleclade/tokens/battleclade-mechanosuture-array.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-11T06:54:44.897863+00:00"
+        },
+        "tokens/battleclade-network-counteract.obj": {
+          "path": "output/battleclade/tokens/battleclade-network-counteract.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-11T06:54:44.899525+00:00"
+        },
+        "tokens/battleclade-omniscanner.obj": {
+          "path": "output/battleclade/tokens/battleclade-omniscanner.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-11T06:54:44.901848+00:00"
+        },
+        "tokens/battleclade-prioritised-acquisition.obj": {
+          "path": "output/battleclade/tokens/battleclade-prioritised-acquisition.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-11T06:54:44.903801+00:00"
+        },
+        "tokens/tokenbag/battleclade-token-bag-icon.png": {
+          "path": "output/battleclade/tokens/tokenbag/battleclade-token-bag-icon.png",
+          "hash": "340b4c569a52bc5ee375197d4e18d6591028f40a24fce27e819d71a5b122ade2",
+          "modified": "2026-07-11T06:54:44.912188+00:00"
+        },
+        "tokens/tokenbag/battleclade-token-bag.obj": {
+          "path": "output/battleclade/tokens/tokenbag/battleclade-token-bag.obj",
+          "hash": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+          "modified": "2026-07-11T06:54:44.914085+00:00"
+        }
+      },
+      "completed": "2026-07-11T06:55:18.261716+00:00",
+      "inputs": {
+        "layers/integration/battleclade/manifest.json": "d97fab15e09e0d40d687af288192c32a4e3b4372143438b296212122b35a489e",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "layers/integration/battleclade/artwork/icons/battleclade-icon-token.jpg": "340b4c569a52bc5ee375197d4e18d6591028f40a24fce27e819d71a5b122ade2",
+        "layers/integration/battleclade/battleclade-datacard-battleclade-auto-proxy-servitor.pdf": "da4fe90977e34b1c6fe68d48862325ca60be3066069bd6b2cf5d0c9a66186103",
+        "layers/integration/battleclade/battleclade-datacard-battleclade-breacher-servitor.pdf": "f64d192ae5024915e751fcf8d442433b02ca031dbb7c8e2d1d304bf98d59adbf",
+        "layers/integration/battleclade/battleclade-datacard-battleclade-combat-servitor.pdf": "d28972355555702aeef9789f55b3d4b0a20edabebcd101d6e6fcd2b43a61319b",
+        "layers/integration/battleclade/battleclade-datacard-battleclade-gun-servitor.pdf": "f2d726ada03ede1850e5783fada9d46c24b448eb9909122654df76fd2c57d591",
+        "layers/integration/battleclade/battleclade-datacard-battleclade-servitor-underseer.pdf": "a79abba84904f50b1a32b954569aee1f94fe16315c24298e5d3bf5ff4f34bd45",
+        "layers/integration/battleclade/battleclade-datacard-battleclade-technoarcheologist.pdf": "e4aa945063e39efa0a4ac48331ff3509ed8e9ba17177ac86dd081399c3dbbd1a",
+        "layers/integration/battleclade/battleclade-datacard-battleclade-technomedic-servitor.pdf": "f1050aedec7be8171219b193649c687389501d2bee4fdf16eb06a9b92fdba531",
+        "layers/integration/battleclade/battleclade-equipment-concealed-apparatus.pdf": "f6a3ad5a83186b15bfe4715e31b28c4435c1c02612fd4f1afc0dd815b8117f0a",
+        "layers/integration/battleclade/battleclade-equipment-covert-guises.pdf": "b74c1402673c8b939154c00b8e5f0ceba66fcb490cff29d5d11006be26ad35c9",
+        "layers/integration/battleclade/battleclade-equipment-electromantic-capacitors.pdf": "e8c858ecb78197a55ee52f7bb2b40c31c6de4a8181eec1fd10921f61d43d771e",
+        "layers/integration/battleclade/battleclade-equipment-neurocyclic-reserve-cells.pdf": "f24e166639fc2f2cda65a6c07a1aac4b7401933198bdbbf2f8d796db909c0b4e",
+        "layers/integration/battleclade/battleclade-faction-rule-noospheric-network.pdf": "4da5fd02ec9f3aa3da2973dc73ed835cc380631ca926f8d55a2aa3787da7e1c1",
+        "layers/integration/battleclade/battleclade-firefight-ploy-auto-ferric-supplication.pdf": "5fae84f3e8f9b48d3e9fab0a094a3da9f1f4e9f37585cd96870d22e2ec28aac1",
+        "layers/integration/battleclade/battleclade-firefight-ploy-remote-access.pdf": "e89dbfadc8352042f10975186c3925e476037776d6137c8118e6c9aaa66b4347",
+        "layers/integration/battleclade/battleclade-firefight-ploy-servile-surrogacy.pdf": "e083e6fbb1568c5cf985e8b73698b5f5feb59e748fdfef56cbec502885f6c134",
+        "layers/integration/battleclade/battleclade-firefight-ploy-system-exorcism.pdf": "e0fc158f8d9800bb8c11ac1b5924b1ea8fd5931faaa4b54ceb160b1d93eff810",
+        "layers/integration/battleclade/battleclade-operatives-selection-operative-selection.pdf": "f206d15cba1e622b6a78a8232a8a11176bee3f4f896376d4b34138a2c429b5d9",
+        "layers/integration/battleclade/battleclade-strategy-ploy-duty-of-reclamation.pdf": "17805696740e5fa5dfd5469b14d6179af35c0ee4d12338745bcaac86cb26442e",
+        "layers/integration/battleclade/battleclade-strategy-ploy-incantation-of-the-iron-soul.pdf": "33e052227969c4dab703d352f0681fb3e5aa924abdceadac3d64db648cba508f",
+        "layers/integration/battleclade/battleclade-strategy-ploy-noospheric-possession.pdf": "dfa5762475457b217b4925dc02f0ead8ac6d26c0c2d227196a8f248de01e5cc6",
+        "layers/integration/battleclade/battleclade-strategy-ploy-prioritised-acquisition.pdf": "8f9399495ff649a79ddb02f71fffe5d5bd818b2ace7f030a994323c2bdda48df",
+        "layers/integration/battleclade/battleclade-token-guide-token-guide.pdf": "a51b4be418f261f3f69525ad809b2c839938884bd746fa56673da58fed00aab4"
+      }
+    },
+    "generate_dice": {
+      "outputs": {
+        "dice-light.jpg": {
+          "path": "output/battleclade/dice/battleclade-dice-light.jpg",
+          "hash": "c298570bf57b0ec2e4580f9fd142ace0255f7770fbefb6b76839c1295b44ef91",
+          "modified": "2026-07-11T06:55:29.131545+00:00"
+        },
+        "dice-dark.jpg": {
+          "path": "output/battleclade/dice/battleclade-dice-dark.jpg",
+          "hash": "1f797a13ab5859f0478240f198a615bff21975bc1c469ea250a99d2ef7b4237c",
+          "modified": "2026-07-11T06:55:29.563033+00:00"
+        },
+        "dice-team.jpg": {
+          "path": "output/battleclade/dice/battleclade-dice-team.jpg",
+          "hash": "4508446c3c0e490a38f36e146df6441112edbd3aa195431184303f036150e483",
+          "modified": "2026-07-11T06:55:29.991012+00:00"
+        }
+      },
+      "completed": "2026-07-11T06:55:30.003975+00:00",
+      "inputs": {
+        "layers/integration/battleclade/artwork/icons/battleclade-icon-token-transparent.png": "27660b975af0ec1850636c6c7f3b374adb09a2e8064533c4b7974ef338a9c933",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41"
+      }
+    },
+    "generate_box_texture": {
+      "outputs": {
+        "card-box-texture.jpg": {
+          "path": "output/battleclade/cardbox/battleclade-card-box-texture.jpg",
+          "hash": "c184a4d583f2ea29b07081878fd046560b8ad13cc532cc0067581efcd996a04e",
+          "modified": "2026-07-11T06:55:35.852639+00:00"
+        },
+        "card-box.obj": {
+          "path": "output/battleclade/cardbox/battleclade-card-box.obj",
+          "hash": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+          "modified": "2026-07-11T06:55:35.856620+00:00"
+        }
+      },
+      "completed": "2026-07-11T06:55:36.261576+00:00",
+      "inputs": {
+        "layers/integration/battleclade/artwork/icons/battleclade-icon-token.jpg": "340b4c569a52bc5ee375197d4e18d6591028f40a24fce27e819d71a5b122ade2",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "config/defaults/box/card-box.obj": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+        "config/defaults/box/card-box-texture.jpg": "b2f310b01a0d28e8806e99ce0b972e8967e3014608eacefcb6ec51597695a313"
+      }
+    },
+    "generate_card_images": {
+      "outputs": {
+        "cards/datacards/battleclade-auto-proxy-servitor-back.jpg": {
+          "path": "output/battleclade/cards/datacards/battleclade-auto-proxy-servitor-back.jpg",
+          "hash": "f7c3ef35b32e09b799649516ddb0765ecb1b60bd6f91d72ae123bed500fe890e",
+          "modified": "2026-07-11T06:56:23.570970+00:00"
+        },
+        "cards/datacards/battleclade-auto-proxy-servitor-front.jpg": {
+          "path": "output/battleclade/cards/datacards/battleclade-auto-proxy-servitor-front.jpg",
+          "hash": "63b7238a29fdcb5ab2fd9d6e21615f8827e1b2aae8d6f2d51f08d8c67126d6de",
+          "modified": "2026-07-11T06:56:25.708994+00:00"
+        },
+        "cards/datacards/battleclade-breacher-servitor-back.jpg": {
+          "path": "output/battleclade/cards/datacards/battleclade-breacher-servitor-back.jpg",
+          "hash": "f7c3ef35b32e09b799649516ddb0765ecb1b60bd6f91d72ae123bed500fe890e",
+          "modified": "2026-07-11T06:56:26.818967+00:00"
+        },
+        "cards/datacards/battleclade-breacher-servitor-front.jpg": {
+          "path": "output/battleclade/cards/datacards/battleclade-breacher-servitor-front.jpg",
+          "hash": "fc6f6edfd0c23a7197ae80892f769a5920fd286c608d4d982bde7f962d9cf388",
+          "modified": "2026-07-11T06:56:28.506692+00:00"
+        },
+        "cards/datacards/battleclade-combat-servitor-back.jpg": {
+          "path": "output/battleclade/cards/datacards/battleclade-combat-servitor-back.jpg",
+          "hash": "f7c3ef35b32e09b799649516ddb0765ecb1b60bd6f91d72ae123bed500fe890e",
+          "modified": "2026-07-11T06:56:28.950799+00:00"
+        },
+        "cards/datacards/battleclade-combat-servitor-front.jpg": {
+          "path": "output/battleclade/cards/datacards/battleclade-combat-servitor-front.jpg",
+          "hash": "637c939daba26264eae21552b65a6b089b2c517c882c83078318857f45e6badd",
+          "modified": "2026-07-11T06:56:29.355837+00:00"
+        },
+        "cards/datacards/battleclade-gun-servitor-back.jpg": {
+          "path": "output/battleclade/cards/datacards/battleclade-gun-servitor-back.jpg",
+          "hash": "f7c3ef35b32e09b799649516ddb0765ecb1b60bd6f91d72ae123bed500fe890e",
+          "modified": "2026-07-11T06:56:29.425655+00:00"
+        },
+        "cards/datacards/battleclade-gun-servitor-front.jpg": {
+          "path": "output/battleclade/cards/datacards/battleclade-gun-servitor-front.jpg",
+          "hash": "93fba5b1399ffa34ba0ab65ed0e05c747e956004bf1a2a8ce42d1441efae64d8",
+          "modified": "2026-07-11T06:56:29.849954+00:00"
+        },
+        "cards/datacards/battleclade-servitor-underseer-back.jpg": {
+          "path": "output/battleclade/cards/datacards/battleclade-servitor-underseer-back.jpg",
+          "hash": "8bae9ff84858d130d760e0b124e9c17766345204ac45366274f22ebc729e8817",
+          "modified": "2026-07-11T06:56:30.299295+00:00"
+        },
+        "cards/datacards/battleclade-servitor-underseer-front.jpg": {
+          "path": "output/battleclade/cards/datacards/battleclade-servitor-underseer-front.jpg",
+          "hash": "80a676f7d944591c3eb89ed7d9b44b9d9c77f40721612d7a7ddb02272e99b757",
+          "modified": "2026-07-11T06:56:30.769188+00:00"
+        },
+        "cards/datacards/battleclade-technoarcheologist-back.jpg": {
+          "path": "output/battleclade/cards/datacards/battleclade-technoarcheologist-back.jpg",
+          "hash": "f7c3ef35b32e09b799649516ddb0765ecb1b60bd6f91d72ae123bed500fe890e",
+          "modified": "2026-07-11T06:56:31.220275+00:00"
+        },
+        "cards/datacards/battleclade-technoarcheologist-front.jpg": {
+          "path": "output/battleclade/cards/datacards/battleclade-technoarcheologist-front.jpg",
+          "hash": "3aee1a22c52bad422de6a7263f5c3381e5c2636358585b2949151c12c8c088c8",
+          "modified": "2026-07-11T06:56:32.216549+00:00"
+        },
+        "cards/datacards/battleclade-technomedic-servitor-back.jpg": {
+          "path": "output/battleclade/cards/datacards/battleclade-technomedic-servitor-back.jpg",
+          "hash": "b9554bf5b904d38d9594c3a3b7dd6249e614ad33f5de86372f757c71d4cd03a5",
+          "modified": "2026-07-11T06:56:34.158642+00:00"
+        },
+        "cards/datacards/battleclade-technomedic-servitor-front.jpg": {
+          "path": "output/battleclade/cards/datacards/battleclade-technomedic-servitor-front.jpg",
+          "hash": "c2199eb84795854114d5cfb747582b9853090180143fa59d03f81bd0253568ad",
+          "modified": "2026-07-11T06:56:37.570529+00:00"
+        },
+        "cards/equipment/battleclade-concealed-apparatus-back.jpg": {
+          "path": "output/battleclade/cards/equipment/battleclade-concealed-apparatus-back.jpg",
+          "hash": "8787376d7b2d13285837142f5dbc8d3a482b8e58b2d5feca733ecf65cdaa48a1",
+          "modified": "2026-07-11T06:56:39.769283+00:00"
+        },
+        "cards/equipment/battleclade-concealed-apparatus-front.jpg": {
+          "path": "output/battleclade/cards/equipment/battleclade-concealed-apparatus-front.jpg",
+          "hash": "642b8c3314a6f82e70b6ca67e38087be668c311f4885e02796e37c1a13fbcb73",
+          "modified": "2026-07-11T06:56:45.382916+00:00"
+        },
+        "cards/equipment/battleclade-covert-guises-back.jpg": {
+          "path": "output/battleclade/cards/equipment/battleclade-covert-guises-back.jpg",
+          "hash": "8787376d7b2d13285837142f5dbc8d3a482b8e58b2d5feca733ecf65cdaa48a1",
+          "modified": "2026-07-11T06:56:47.422215+00:00"
+        },
+        "cards/equipment/battleclade-covert-guises-front.jpg": {
+          "path": "output/battleclade/cards/equipment/battleclade-covert-guises-front.jpg",
+          "hash": "23abbc2daa782570662d6f6c8f36609629ee9a41524a72ce891d4e7305d025c7",
+          "modified": "2026-07-11T06:56:52.257563+00:00"
+        },
+        "cards/equipment/battleclade-electromantic-capacitors-back.jpg": {
+          "path": "output/battleclade/cards/equipment/battleclade-electromantic-capacitors-back.jpg",
+          "hash": "8787376d7b2d13285837142f5dbc8d3a482b8e58b2d5feca733ecf65cdaa48a1",
+          "modified": "2026-07-11T06:56:55.190018+00:00"
+        },
+        "cards/equipment/battleclade-electromantic-capacitors-front.jpg": {
+          "path": "output/battleclade/cards/equipment/battleclade-electromantic-capacitors-front.jpg",
+          "hash": "7b24196a1ca4d386941d712ee980205382a0ebfef2406d0835dca57e9c9699e6",
+          "modified": "2026-07-11T06:56:57.551879+00:00"
+        },
+        "cards/equipment/battleclade-neurocyclic-reserve-cells-back.jpg": {
+          "path": "output/battleclade/cards/equipment/battleclade-neurocyclic-reserve-cells-back.jpg",
+          "hash": "8787376d7b2d13285837142f5dbc8d3a482b8e58b2d5feca733ecf65cdaa48a1",
+          "modified": "2026-07-11T06:56:59.681694+00:00"
+        },
+        "cards/equipment/battleclade-neurocyclic-reserve-cells-front.jpg": {
+          "path": "output/battleclade/cards/equipment/battleclade-neurocyclic-reserve-cells-front.jpg",
+          "hash": "5be99d23912d5d7270699e08a78f40fd9948103d56732058b4a30c5d0c0ddeed",
+          "modified": "2026-07-11T06:57:03.049920+00:00"
+        },
+        "cards/faction_rules/battleclade-noospheric-network-back.jpg": {
+          "path": "output/battleclade/cards/faction_rules/battleclade-noospheric-network-back.jpg",
+          "hash": "9c3223e52a52c4e2a233a4a35c523595d830eeba1925b9c7ee828eb92b73bb94",
+          "modified": "2026-07-11T06:57:08.122682+00:00"
+        },
+        "cards/faction_rules/battleclade-noospheric-network-front.jpg": {
+          "path": "output/battleclade/cards/faction_rules/battleclade-noospheric-network-front.jpg",
+          "hash": "50ad219ee807d054d326cbb84d9c28a1385179329251fdfc3f520fa8577ffbae",
+          "modified": "2026-07-11T06:57:12.773297+00:00"
+        },
+        "cards/firefight_ploys/battleclade-auto-ferric-supplication-back.jpg": {
+          "path": "output/battleclade/cards/firefight_ploys/battleclade-auto-ferric-supplication-back.jpg",
+          "hash": "8787376d7b2d13285837142f5dbc8d3a482b8e58b2d5feca733ecf65cdaa48a1",
+          "modified": "2026-07-11T06:57:13.310403+00:00"
+        },
+        "cards/firefight_ploys/battleclade-auto-ferric-supplication-front.jpg": {
+          "path": "output/battleclade/cards/firefight_ploys/battleclade-auto-ferric-supplication-front.jpg",
+          "hash": "1b51363af14b20924b1eaf6f1a5b80aa8573d3fc13bc961a50fc33745e7e16af",
+          "modified": "2026-07-11T06:57:16.299686+00:00"
+        },
+        "cards/firefight_ploys/battleclade-remote-access-back.jpg": {
+          "path": "output/battleclade/cards/firefight_ploys/battleclade-remote-access-back.jpg",
+          "hash": "8787376d7b2d13285837142f5dbc8d3a482b8e58b2d5feca733ecf65cdaa48a1",
+          "modified": "2026-07-11T06:57:17.174426+00:00"
+        },
+        "cards/firefight_ploys/battleclade-remote-access-front.jpg": {
+          "path": "output/battleclade/cards/firefight_ploys/battleclade-remote-access-front.jpg",
+          "hash": "c710b52be4f69abf0d2765ec0a5abfc1b1ad86e118a2456c95f5dcd2fe8681e1",
+          "modified": "2026-07-11T06:57:19.862303+00:00"
+        },
+        "cards/firefight_ploys/battleclade-servile-surrogacy-back.jpg": {
+          "path": "output/battleclade/cards/firefight_ploys/battleclade-servile-surrogacy-back.jpg",
+          "hash": "8787376d7b2d13285837142f5dbc8d3a482b8e58b2d5feca733ecf65cdaa48a1",
+          "modified": "2026-07-11T06:57:20.306996+00:00"
+        },
+        "cards/firefight_ploys/battleclade-servile-surrogacy-front.jpg": {
+          "path": "output/battleclade/cards/firefight_ploys/battleclade-servile-surrogacy-front.jpg",
+          "hash": "ed8c450e688bc610704f0a141d794db940e75f8d70678dbb9d54c96e6a9bb2b5",
+          "modified": "2026-07-11T06:57:23.494655+00:00"
+        },
+        "cards/firefight_ploys/battleclade-system-exorcism-back.jpg": {
+          "path": "output/battleclade/cards/firefight_ploys/battleclade-system-exorcism-back.jpg",
+          "hash": "8787376d7b2d13285837142f5dbc8d3a482b8e58b2d5feca733ecf65cdaa48a1",
+          "modified": "2026-07-11T06:57:24.754199+00:00"
+        },
+        "cards/firefight_ploys/battleclade-system-exorcism-front.jpg": {
+          "path": "output/battleclade/cards/firefight_ploys/battleclade-system-exorcism-front.jpg",
+          "hash": "2489454bfd515a6d1464cf414d40edb8c9a43c914af4f200d2be0e1cec39cb67",
+          "modified": "2026-07-11T06:57:27.043882+00:00"
+        },
+        "cards/operatives_selection/battleclade-operative-selection-back.jpg": {
+          "path": "output/battleclade/cards/operatives_selection/battleclade-operative-selection-back.jpg",
+          "hash": "59b346b57f93c3cb427294ef72deb49d7cf167ad428deb0685579e5620c64636",
+          "modified": "2026-07-11T06:57:27.968869+00:00"
+        },
+        "cards/operatives_selection/battleclade-operative-selection-front.jpg": {
+          "path": "output/battleclade/cards/operatives_selection/battleclade-operative-selection-front.jpg",
+          "hash": "4070a196b6a23fa9f22478ff787602dc851ca9e299c3d58679e46cc72ea5fd0c",
+          "modified": "2026-07-11T06:57:31.193051+00:00"
+        },
+        "cards/strategy_ploys/battleclade-duty-of-reclamation-back.jpg": {
+          "path": "output/battleclade/cards/strategy_ploys/battleclade-duty-of-reclamation-back.jpg",
+          "hash": "8787376d7b2d13285837142f5dbc8d3a482b8e58b2d5feca733ecf65cdaa48a1",
+          "modified": "2026-07-11T06:57:31.334941+00:00"
+        },
+        "cards/strategy_ploys/battleclade-duty-of-reclamation-front.jpg": {
+          "path": "output/battleclade/cards/strategy_ploys/battleclade-duty-of-reclamation-front.jpg",
+          "hash": "2bebfcdcb52ea96a22e30459d7be06297324c13b6fd2d917dc9ad7571eccd398",
+          "modified": "2026-07-11T06:57:32.556573+00:00"
+        },
+        "cards/strategy_ploys/battleclade-incantation-of-the-iron-soul-back.jpg": {
+          "path": "output/battleclade/cards/strategy_ploys/battleclade-incantation-of-the-iron-soul-back.jpg",
+          "hash": "8787376d7b2d13285837142f5dbc8d3a482b8e58b2d5feca733ecf65cdaa48a1",
+          "modified": "2026-07-11T06:57:33.830833+00:00"
+        },
+        "cards/strategy_ploys/battleclade-incantation-of-the-iron-soul-front.jpg": {
+          "path": "output/battleclade/cards/strategy_ploys/battleclade-incantation-of-the-iron-soul-front.jpg",
+          "hash": "9da634927387d7ad91ef2d27b6839d222a9e81df9b6e35cfc754ca0d726bf5b0",
+          "modified": "2026-07-11T06:57:34.550252+00:00"
+        },
+        "cards/strategy_ploys/battleclade-noospheric-possession-back.jpg": {
+          "path": "output/battleclade/cards/strategy_ploys/battleclade-noospheric-possession-back.jpg",
+          "hash": "8787376d7b2d13285837142f5dbc8d3a482b8e58b2d5feca733ecf65cdaa48a1",
+          "modified": "2026-07-11T06:57:35.093099+00:00"
+        },
+        "cards/strategy_ploys/battleclade-noospheric-possession-front.jpg": {
+          "path": "output/battleclade/cards/strategy_ploys/battleclade-noospheric-possession-front.jpg",
+          "hash": "7f6631baa94a98dc5bac157b4dd8eccc8d938ce0693d9c4a33611fd00c00dcac",
+          "modified": "2026-07-11T06:57:35.514726+00:00"
+        },
+        "cards/strategy_ploys/battleclade-prioritised-acquisition-back.jpg": {
+          "path": "output/battleclade/cards/strategy_ploys/battleclade-prioritised-acquisition-back.jpg",
+          "hash": "8787376d7b2d13285837142f5dbc8d3a482b8e58b2d5feca733ecf65cdaa48a1",
+          "modified": "2026-07-11T06:57:35.578825+00:00"
+        },
+        "cards/strategy_ploys/battleclade-prioritised-acquisition-front.jpg": {
+          "path": "output/battleclade/cards/strategy_ploys/battleclade-prioritised-acquisition-front.jpg",
+          "hash": "f30a46ebd68194c6d8568ab4f0b6672b514d112d87247ae46b32a1981616ab92",
+          "modified": "2026-07-11T06:57:35.986902+00:00"
+        },
+        "cards/token_guide/battleclade-token-guide-back.jpg": {
+          "path": "output/battleclade/cards/token_guide/battleclade-token-guide-back.jpg",
+          "hash": "8787376d7b2d13285837142f5dbc8d3a482b8e58b2d5feca733ecf65cdaa48a1",
+          "modified": "2026-07-11T06:57:36.057477+00:00"
+        },
+        "cards/token_guide/battleclade-token-guide-front.jpg": {
+          "path": "output/battleclade/cards/token_guide/battleclade-token-guide-front.jpg",
+          "hash": "2b878621307a31cadb7bf6dee9c1f9c76f33ad5d3d47adb81d32f75a33915927",
+          "modified": "2026-07-11T06:57:36.477196+00:00"
+        }
+      },
+      "completed": "2026-07-11T06:57:37.870417+00:00",
+      "inputs": {
+        "layers/integration/battleclade/manifest.json": "d97fab15e09e0d40d687af288192c32a4e3b4372143438b296212122b35a489e",
+        "layers/integration/battleclade/battleclade-datacard-battleclade-auto-proxy-servitor.pdf": "da4fe90977e34b1c6fe68d48862325ca60be3066069bd6b2cf5d0c9a66186103",
+        "layers/integration/battleclade/battleclade-datacard-battleclade-breacher-servitor.pdf": "f64d192ae5024915e751fcf8d442433b02ca031dbb7c8e2d1d304bf98d59adbf",
+        "layers/integration/battleclade/battleclade-datacard-battleclade-combat-servitor.pdf": "d28972355555702aeef9789f55b3d4b0a20edabebcd101d6e6fcd2b43a61319b",
+        "layers/integration/battleclade/battleclade-datacard-battleclade-gun-servitor.pdf": "f2d726ada03ede1850e5783fada9d46c24b448eb9909122654df76fd2c57d591",
+        "layers/integration/battleclade/battleclade-datacard-battleclade-servitor-underseer.pdf": "a79abba84904f50b1a32b954569aee1f94fe16315c24298e5d3bf5ff4f34bd45",
+        "layers/integration/battleclade/battleclade-datacard-battleclade-technoarcheologist.pdf": "e4aa945063e39efa0a4ac48331ff3509ed8e9ba17177ac86dd081399c3dbbd1a",
+        "layers/integration/battleclade/battleclade-datacard-battleclade-technomedic-servitor.pdf": "f1050aedec7be8171219b193649c687389501d2bee4fdf16eb06a9b92fdba531",
+        "layers/integration/battleclade/battleclade-equipment-concealed-apparatus.pdf": "f6a3ad5a83186b15bfe4715e31b28c4435c1c02612fd4f1afc0dd815b8117f0a",
+        "layers/integration/battleclade/battleclade-equipment-covert-guises.pdf": "b74c1402673c8b939154c00b8e5f0ceba66fcb490cff29d5d11006be26ad35c9",
+        "layers/integration/battleclade/battleclade-equipment-electromantic-capacitors.pdf": "e8c858ecb78197a55ee52f7bb2b40c31c6de4a8181eec1fd10921f61d43d771e",
+        "layers/integration/battleclade/battleclade-equipment-neurocyclic-reserve-cells.pdf": "f24e166639fc2f2cda65a6c07a1aac4b7401933198bdbbf2f8d796db909c0b4e",
+        "layers/integration/battleclade/battleclade-faction-rule-noospheric-network.pdf": "4da5fd02ec9f3aa3da2973dc73ed835cc380631ca926f8d55a2aa3787da7e1c1",
+        "layers/integration/battleclade/battleclade-firefight-ploy-auto-ferric-supplication.pdf": "5fae84f3e8f9b48d3e9fab0a094a3da9f1f4e9f37585cd96870d22e2ec28aac1",
+        "layers/integration/battleclade/battleclade-firefight-ploy-remote-access.pdf": "e89dbfadc8352042f10975186c3925e476037776d6137c8118e6c9aaa66b4347",
+        "layers/integration/battleclade/battleclade-firefight-ploy-servile-surrogacy.pdf": "e083e6fbb1568c5cf985e8b73698b5f5feb59e748fdfef56cbec502885f6c134",
+        "layers/integration/battleclade/battleclade-firefight-ploy-system-exorcism.pdf": "e0fc158f8d9800bb8c11ac1b5924b1ea8fd5931faaa4b54ceb160b1d93eff810",
+        "layers/integration/battleclade/battleclade-operatives-selection-operative-selection.pdf": "f206d15cba1e622b6a78a8232a8a11176bee3f4f896376d4b34138a2c429b5d9",
+        "layers/integration/battleclade/battleclade-strategy-ploy-duty-of-reclamation.pdf": "17805696740e5fa5dfd5469b14d6179af35c0ee4d12338745bcaac86cb26442e",
+        "layers/integration/battleclade/battleclade-strategy-ploy-incantation-of-the-iron-soul.pdf": "33e052227969c4dab703d352f0681fb3e5aa924abdceadac3d64db648cba508f",
+        "layers/integration/battleclade/battleclade-strategy-ploy-noospheric-possession.pdf": "dfa5762475457b217b4925dc02f0ead8ac6d26c0c2d227196a8f248de01e5cc6",
+        "layers/integration/battleclade/battleclade-strategy-ploy-prioritised-acquisition.pdf": "8f9399495ff649a79ddb02f71fffe5d5bd818b2ace7f030a994323c2bdda48df",
+        "layers/integration/battleclade/battleclade-token-guide-token-guide.pdf": "a51b4be418f261f3f69525ad809b2c839938884bd746fa56673da58fed00aab4",
+        "layers/integration/battleclade/card-backside/battleclade-backside-portrait.jpg": "8787376d7b2d13285837142f5dbc8d3a482b8e58b2d5feca733ecf65cdaa48a1",
+        "config/defaults/card-backside/default-backside-portrait.jpg": "f00ff15fa70005b9f804de08519e2e83485d7eaf78dfacea65dcef0eb1a29c22",
+        "layers/integration/battleclade/card-backside/battleclade-backside-landscape.jpg": "f7c3ef35b32e09b799649516ddb0765ecb1b60bd6f91d72ae123bed500fe890e",
+        "config/defaults/card-backside/default-backside-landscape.jpg": "1cf5580a1dff0c10adb1a286edad4479c487f3d2d698b0b8be84fe653039fd7e"
+      }
+    },
+    "extract_stats": {
+      "outputs": {
+        "team-data.json": {
+          "path": "output/battleclade/data/battleclade-team-data.json",
+          "hash": "b68c18563a8ea16e47b48eda6c13efd1fa8eb491024020542283af0f24e64f06",
+          "modified": "2026-07-11T06:57:37.978921+00:00"
+        }
+      },
+      "completed": "2026-07-11T06:57:37.979851+00:00",
+      "inputs": {
+        "layers/integration/battleclade/content/battleclade-content.json": "b68c18563a8ea16e47b48eda6c13efd1fa8eb491024020542283af0f24e64f06"
+      }
+    },
+    "generate_tts": {
+      "outputs": {
+        "tts_objects/Battleclade Box.json": {
+          "path": "output/battleclade/tts_objects/Battleclade Box.json",
+          "hash": "2a0c520544bcca197abd1ec99b4794e83107cb023b061dc9f4c92faca0b52e18",
+          "modified": "2026-07-12T18:32:25.393750+00:00"
+        },
+        "tts_objects/Battleclade.json": {
+          "path": "output/battleclade/tts_objects/Battleclade.json",
+          "hash": "3013e810d0658747fb9094f578f35864b250e50204d4f0c358ba5a3cf4057c26",
+          "modified": "2026-07-12T18:32:25.405588+00:00"
+        }
+      },
+      "completed": "2026-07-12T18:32:25.445960+00:00",
+      "inputs": {
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "config/team-guids.json": "1dea0eaf2c7d1c37c86aba088cdf876f0638d2dcaca162888fea8422c2d5c9db",
+        "output/battleclade/cards/datacards/battleclade-auto-proxy-servitor-back.jpg": "f7c3ef35b32e09b799649516ddb0765ecb1b60bd6f91d72ae123bed500fe890e",
+        "output/battleclade/cards/datacards/battleclade-auto-proxy-servitor-front.jpg": "63b7238a29fdcb5ab2fd9d6e21615f8827e1b2aae8d6f2d51f08d8c67126d6de",
+        "output/battleclade/cards/datacards/battleclade-breacher-servitor-back.jpg": "f7c3ef35b32e09b799649516ddb0765ecb1b60bd6f91d72ae123bed500fe890e",
+        "output/battleclade/cards/datacards/battleclade-breacher-servitor-front.jpg": "fc6f6edfd0c23a7197ae80892f769a5920fd286c608d4d982bde7f962d9cf388",
+        "output/battleclade/cards/datacards/battleclade-combat-servitor-back.jpg": "f7c3ef35b32e09b799649516ddb0765ecb1b60bd6f91d72ae123bed500fe890e",
+        "output/battleclade/cards/datacards/battleclade-combat-servitor-front.jpg": "637c939daba26264eae21552b65a6b089b2c517c882c83078318857f45e6badd",
+        "output/battleclade/cards/datacards/battleclade-gun-servitor-back.jpg": "f7c3ef35b32e09b799649516ddb0765ecb1b60bd6f91d72ae123bed500fe890e",
+        "output/battleclade/cards/datacards/battleclade-gun-servitor-front.jpg": "93fba5b1399ffa34ba0ab65ed0e05c747e956004bf1a2a8ce42d1441efae64d8",
+        "output/battleclade/cards/datacards/battleclade-servitor-underseer-back.jpg": "8bae9ff84858d130d760e0b124e9c17766345204ac45366274f22ebc729e8817",
+        "output/battleclade/cards/datacards/battleclade-servitor-underseer-front.jpg": "80a676f7d944591c3eb89ed7d9b44b9d9c77f40721612d7a7ddb02272e99b757",
+        "output/battleclade/cards/datacards/battleclade-technoarcheologist-back.jpg": "f7c3ef35b32e09b799649516ddb0765ecb1b60bd6f91d72ae123bed500fe890e",
+        "output/battleclade/cards/datacards/battleclade-technoarcheologist-front.jpg": "3aee1a22c52bad422de6a7263f5c3381e5c2636358585b2949151c12c8c088c8",
+        "output/battleclade/cards/datacards/battleclade-technomedic-servitor-back.jpg": "b9554bf5b904d38d9594c3a3b7dd6249e614ad33f5de86372f757c71d4cd03a5",
+        "output/battleclade/cards/datacards/battleclade-technomedic-servitor-front.jpg": "c2199eb84795854114d5cfb747582b9853090180143fa59d03f81bd0253568ad",
+        "output/battleclade/cards/equipment/battleclade-concealed-apparatus-back.jpg": "8787376d7b2d13285837142f5dbc8d3a482b8e58b2d5feca733ecf65cdaa48a1",
+        "output/battleclade/cards/equipment/battleclade-concealed-apparatus-front.jpg": "642b8c3314a6f82e70b6ca67e38087be668c311f4885e02796e37c1a13fbcb73",
+        "output/battleclade/cards/equipment/battleclade-covert-guises-back.jpg": "8787376d7b2d13285837142f5dbc8d3a482b8e58b2d5feca733ecf65cdaa48a1",
+        "output/battleclade/cards/equipment/battleclade-covert-guises-front.jpg": "23abbc2daa782570662d6f6c8f36609629ee9a41524a72ce891d4e7305d025c7",
+        "output/battleclade/cards/equipment/battleclade-electromantic-capacitors-back.jpg": "8787376d7b2d13285837142f5dbc8d3a482b8e58b2d5feca733ecf65cdaa48a1",
+        "output/battleclade/cards/equipment/battleclade-electromantic-capacitors-front.jpg": "7b24196a1ca4d386941d712ee980205382a0ebfef2406d0835dca57e9c9699e6",
+        "output/battleclade/cards/equipment/battleclade-neurocyclic-reserve-cells-back.jpg": "8787376d7b2d13285837142f5dbc8d3a482b8e58b2d5feca733ecf65cdaa48a1",
+        "output/battleclade/cards/equipment/battleclade-neurocyclic-reserve-cells-front.jpg": "5be99d23912d5d7270699e08a78f40fd9948103d56732058b4a30c5d0c0ddeed",
+        "output/battleclade/cards/faction_rules/battleclade-noospheric-network-back.jpg": "9c3223e52a52c4e2a233a4a35c523595d830eeba1925b9c7ee828eb92b73bb94",
+        "output/battleclade/cards/faction_rules/battleclade-noospheric-network-front.jpg": "50ad219ee807d054d326cbb84d9c28a1385179329251fdfc3f520fa8577ffbae",
+        "output/battleclade/cards/firefight_ploys/battleclade-auto-ferric-supplication-back.jpg": "8787376d7b2d13285837142f5dbc8d3a482b8e58b2d5feca733ecf65cdaa48a1",
+        "output/battleclade/cards/firefight_ploys/battleclade-auto-ferric-supplication-front.jpg": "1b51363af14b20924b1eaf6f1a5b80aa8573d3fc13bc961a50fc33745e7e16af",
+        "output/battleclade/cards/firefight_ploys/battleclade-remote-access-back.jpg": "8787376d7b2d13285837142f5dbc8d3a482b8e58b2d5feca733ecf65cdaa48a1",
+        "output/battleclade/cards/firefight_ploys/battleclade-remote-access-front.jpg": "c710b52be4f69abf0d2765ec0a5abfc1b1ad86e118a2456c95f5dcd2fe8681e1",
+        "output/battleclade/cards/firefight_ploys/battleclade-servile-surrogacy-back.jpg": "8787376d7b2d13285837142f5dbc8d3a482b8e58b2d5feca733ecf65cdaa48a1",
+        "output/battleclade/cards/firefight_ploys/battleclade-servile-surrogacy-front.jpg": "ed8c450e688bc610704f0a141d794db940e75f8d70678dbb9d54c96e6a9bb2b5",
+        "output/battleclade/cards/firefight_ploys/battleclade-system-exorcism-back.jpg": "8787376d7b2d13285837142f5dbc8d3a482b8e58b2d5feca733ecf65cdaa48a1",
+        "output/battleclade/cards/firefight_ploys/battleclade-system-exorcism-front.jpg": "2489454bfd515a6d1464cf414d40edb8c9a43c914af4f200d2be0e1cec39cb67",
+        "output/battleclade/cards/operatives_selection/battleclade-operative-selection-back.jpg": "59b346b57f93c3cb427294ef72deb49d7cf167ad428deb0685579e5620c64636",
+        "output/battleclade/cards/operatives_selection/battleclade-operative-selection-front.jpg": "4070a196b6a23fa9f22478ff787602dc851ca9e299c3d58679e46cc72ea5fd0c",
+        "output/battleclade/cards/strategy_ploys/battleclade-duty-of-reclamation-back.jpg": "8787376d7b2d13285837142f5dbc8d3a482b8e58b2d5feca733ecf65cdaa48a1",
+        "output/battleclade/cards/strategy_ploys/battleclade-duty-of-reclamation-front.jpg": "2bebfcdcb52ea96a22e30459d7be06297324c13b6fd2d917dc9ad7571eccd398",
+        "output/battleclade/cards/strategy_ploys/battleclade-incantation-of-the-iron-soul-back.jpg": "8787376d7b2d13285837142f5dbc8d3a482b8e58b2d5feca733ecf65cdaa48a1",
+        "output/battleclade/cards/strategy_ploys/battleclade-incantation-of-the-iron-soul-front.jpg": "9da634927387d7ad91ef2d27b6839d222a9e81df9b6e35cfc754ca0d726bf5b0",
+        "output/battleclade/cards/strategy_ploys/battleclade-noospheric-possession-back.jpg": "8787376d7b2d13285837142f5dbc8d3a482b8e58b2d5feca733ecf65cdaa48a1",
+        "output/battleclade/cards/strategy_ploys/battleclade-noospheric-possession-front.jpg": "7f6631baa94a98dc5bac157b4dd8eccc8d938ce0693d9c4a33611fd00c00dcac",
+        "output/battleclade/cards/strategy_ploys/battleclade-prioritised-acquisition-back.jpg": "8787376d7b2d13285837142f5dbc8d3a482b8e58b2d5feca733ecf65cdaa48a1",
+        "output/battleclade/cards/strategy_ploys/battleclade-prioritised-acquisition-front.jpg": "f30a46ebd68194c6d8568ab4f0b6672b514d112d87247ae46b32a1981616ab92",
+        "output/battleclade/cards/token_guide/battleclade-token-guide-back.jpg": "8787376d7b2d13285837142f5dbc8d3a482b8e58b2d5feca733ecf65cdaa48a1",
+        "output/battleclade/cards/token_guide/battleclade-token-guide-front.jpg": "2b878621307a31cadb7bf6dee9c1f9c76f33ad5d3d47adb81d32f75a33915927",
+        "output/battleclade/cardbox/battleclade-card-box-texture.jpg": "c184a4d583f2ea29b07081878fd046560b8ad13cc532cc0067581efcd996a04e",
+        "output/battleclade/cardbox/battleclade-card-box.obj": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+        "output/battleclade/tokens/battleclade-breach.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/battleclade/tokens/battleclade-breach.png": "697d27c2e2dd3213197537b1ef0002767ab323f2d685ed2d2ffa0a03ae50f350",
+        "output/battleclade/tokens/battleclade-gaze-of-the-omnissiah.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/battleclade/tokens/battleclade-gaze-of-the-omnissiah.png": "43310753afeaed67c318d42486b126a1ec4c8b65b94f9f3ed1b223ab56f1bb4d",
+        "output/battleclade/tokens/battleclade-mechanosuture-array.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/battleclade/tokens/battleclade-mechanosuture-array.png": "31ca7b42ed6e1579e54be44c9b00d5b55d01cadb43b04f873c4df190e5f42a56",
+        "output/battleclade/tokens/battleclade-network-counteract.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/battleclade/tokens/battleclade-network-counteract.png": "a2a00072594aaed2a2376ed5767f009cb4e009d4fd9d8cc162ad39e7f41cc01b",
+        "output/battleclade/tokens/battleclade-omniscanner.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/battleclade/tokens/battleclade-omniscanner.png": "2fd93f09d3029d0dac2df8f405e551c7539e3b7e169bdecfb1749ffd83a31b35",
+        "output/battleclade/tokens/battleclade-prioritised-acquisition.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/battleclade/tokens/battleclade-prioritised-acquisition.png": "3a362ea5d64e44f8073fa88d9d31071abced739eaeb8a09a0a64d0aa4f2ce936",
+        "output/battleclade/tokens/tokenbag/battleclade-token-bag-icon.png": "340b4c569a52bc5ee375197d4e18d6591028f40a24fce27e819d71a5b122ade2",
+        "output/battleclade/tokens/tokenbag/battleclade-token-bag.obj": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+        "output/battleclade/dice/battleclade-dice-dark.jpg": "1f797a13ab5859f0478240f198a615bff21975bc1c469ea250a99d2ef7b4237c",
+        "output/battleclade/dice/battleclade-dice-light.jpg": "c298570bf57b0ec2e4580f9fd142ace0255f7770fbefb6b76839c1295b44ef91",
+        "output/battleclade/dice/battleclade-dice-team.jpg": "4508446c3c0e490a38f36e146df6441112edbd3aa195431184303f036150e483",
+        "output/battleclade/data/battleclade-team-data.json": "b68c18563a8ea16e47b48eda6c13efd1fa8eb491024020542283af0f24e64f06",
+        "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
+        "config/defaults/tts-script/datacard-load-stats.lua": "2d5f4088c2ff09f54988cf8722080f536b4e1b998cc2b4c1f1ea94e6b18eb92e",
+        "config/defaults/tts-script/display-table-manager-script.lua": "0dab4381078d90802f25e2cc825bc3658be35ee13ab3e98831c9d248c2526689",
+        "config/defaults/tts-script/faction-rule-chapter-tactics.lua": "c906742268076fb91f7cb4a92c6b588e1122ccddb692688f635c8dd4f7110ad0",
+        "config/defaults/tts-script/intermediate-updater.lua": "1a2d6dbc1a8c9c57ba6a3e7a3d4bc4b7a38a6c242a93f6ef3dae698123384d35",
+        "config/defaults/tts-script/single-object-updater.lua": "3613b85169e986a8e50ebe221482079e27c18037e3f48920aa0f7e138c0ccacc",
+        "config/defaults/tts-script/team-spawner-clean-script.lua": "12457bff3961eee2293c42d81cf4f4eb8b103177245a1ab8b46fd65da40672a2",
+        "config/defaults/tts-script/team-spawner-script.lua": "a51ff45c8622923db909fb465781801511f235412f099f83dff728d4027650db",
+        "config/defaults/tts-script/tts-update-rules-in-box-script.lua": "1eddd1803087ed63181a1149c856db77eef3196dc45d0d283693fada44a357dd",
+        "config/defaults/tts-image/default-icon.png": "892aff2628b9685c813e77be05c66afc1dc4247bc1dc9ce6fe54f006c2608271",
+        "config/defaults/tts-image/spawner-token.png": "61903b093f01d834f5e4c4c069b1353ecf7d29f012fef914b3027266816d8a6b",
+        "config/defaults/tts-token/square-bag-mesh.obj": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+        "config/defaults/tts-token/template-diamond-cutter.png": "719f57ba2b86494be454a6d3d25d8567dde974a915f3dde5ddc0e2d8dafaa1a5",
+        "config/defaults/tts-token/template-octagon-cutter.png": "944632aeacab978293ae57758b63086166c5fbaf3b845f48b3dd61db67d5c076",
+        "config/defaults/tts-token/template-operative-cutter.png": "0e698ddd403d7f0e84f200eb42af73f5249a9c5539d773298ff4c700ac9fe153",
+        "config/defaults/tts-token/template-round-cutter.png": "6564e1451c9a135a1c756fd94cde1c71e373e3fa677b51bba9d4bbe9e795d544",
+        "config/defaults/tts-token/token-bag-script.lua": "1659887e0fbfb9e3ebbc1aa5f3df8e1ffd89ee192be24d2dd1f02fcb0407e486",
+        "config/defaults/tts-token/token-bg-sample.png": "f9f90664c7f1c877c6f050f6e85babde6523cdc0aed9c77de8c09214f44ee109",
+        "config/defaults/tts-token/token-mesh.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc"
+      }
+    },
+    "front_end": {
+      "outputs": {},
+      "sources": {
+        "operatives-selection": {
+          "hash": "8af1bbad1b50631c0280f870a96b0aa3564d604489f171b9feaa1bbd2fa5709e",
+          "outputs": [
+            "layers/kt-app/extracted/battleclade/cards/operatives-selection/battleclade-operatives-selection-page_0.pdf",
+            "layers/kt-app/extracted/battleclade/cards/operatives-selection/battleclade-operatives-selection-page_1.pdf"
+          ],
+          "modified": "2026-07-06T16:01:51.582946+00:00"
+        },
+        "firefight-ploys": {
+          "hash": "651462cbbb4df4e55437e78f6ef9c5fa93456662a68088cc6e95fa2502a32548",
+          "outputs": [
+            "layers/kt-app/extracted/battleclade/cards/firefight-ploys/battleclade-firefight-ploys-page_0.pdf",
+            "layers/kt-app/extracted/battleclade/cards/firefight-ploys/battleclade-firefight-ploys-page_1.pdf",
+            "layers/kt-app/extracted/battleclade/cards/firefight-ploys/battleclade-firefight-ploys-page_2.pdf",
+            "layers/kt-app/extracted/battleclade/cards/firefight-ploys/battleclade-firefight-ploys-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:02:35.796788+00:00"
+        },
+        "datacards": {
+          "hash": "762adc313c4a69f6e253bf6e0149e0a5228fa75e3ca1ea75d3f1ad0ba42e756d",
+          "outputs": [
+            "layers/kt-app/extracted/battleclade/cards/datacards/battleclade-datacards-page_0.pdf",
+            "layers/kt-app/extracted/battleclade/cards/datacards/battleclade-datacards-page_1.pdf",
+            "layers/kt-app/extracted/battleclade/cards/datacards/battleclade-datacards-page_2.pdf",
+            "layers/kt-app/extracted/battleclade/cards/datacards/battleclade-datacards-page_3.pdf",
+            "layers/kt-app/extracted/battleclade/cards/datacards/battleclade-datacards-page_4.pdf",
+            "layers/kt-app/extracted/battleclade/cards/datacards/battleclade-datacards-page_5.pdf",
+            "layers/kt-app/extracted/battleclade/cards/datacards/battleclade-datacards-page_6.pdf",
+            "layers/kt-app/extracted/battleclade/cards/datacards/battleclade-datacards-page_7.pdf",
+            "layers/kt-app/extracted/battleclade/cards/datacards/battleclade-datacards-page_8.pdf"
+          ],
+          "modified": "2026-07-06T16:08:02.715404+00:00"
+        },
+        "equipment": {
+          "hash": "ede7071e0360e9dcf1895a1733c29561ae21e0c6e0b3774f725ab5b057dcc4d8",
+          "outputs": [
+            "layers/kt-app/extracted/battleclade/cards/equipment/battleclade-equipment-page_0.pdf",
+            "layers/kt-app/extracted/battleclade/cards/equipment/battleclade-equipment-page_1.pdf",
+            "layers/kt-app/extracted/battleclade/cards/equipment/battleclade-equipment-page_2.pdf",
+            "layers/kt-app/extracted/battleclade/cards/equipment/battleclade-equipment-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:08:02.908045+00:00"
+        },
+        "faction-rules": {
+          "hash": "3ec00d1ae4fc5dd931ac7b36357f7bb81ad727b538120ebae5080b45f44af353",
+          "outputs": [
+            "layers/kt-app/extracted/battleclade/cards/faction-rules/battleclade-faction-rules-page_0.pdf",
+            "layers/kt-app/extracted/battleclade/cards/faction-rules/battleclade-faction-rules-page_1.pdf",
+            "layers/kt-app/extracted/battleclade/cards/faction-rules/battleclade-faction-rules-page_2.pdf"
+          ],
+          "modified": "2026-07-06T16:08:03.263749+00:00"
+        },
+        "strategy-ploys": {
+          "hash": "e1ad9aaa662b6aeb84e5ee02014bac34b7e3e5ff22f5bd6b2936799d2c165f49",
+          "outputs": [
+            "layers/kt-app/extracted/battleclade/cards/strategy-ploys/battleclade-strategy-ploys-page_0.pdf",
+            "layers/kt-app/extracted/battleclade/cards/strategy-ploys/battleclade-strategy-ploys-page_1.pdf",
+            "layers/kt-app/extracted/battleclade/cards/strategy-ploys/battleclade-strategy-ploys-page_2.pdf",
+            "layers/kt-app/extracted/battleclade/cards/strategy-ploys/battleclade-strategy-ploys-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:08:03.447983+00:00"
+        },
+        "cards": {
+          "hash": "f6542400c0431cadab9bb788ee203eb24c903734f516d91f5d64871b1a8c811c",
+          "outputs": [
+            "layers/warcom/extracted/battleclade/cards/battleclade_page01_card1_landscape.pdf",
+            "layers/warcom/extracted/battleclade/cards/battleclade_page01_card2_landscape.pdf",
+            "layers/warcom/extracted/battleclade/cards/battleclade_page01_card3_landscape.pdf",
+            "layers/warcom/extracted/battleclade/cards/battleclade_page01_card4_landscape.pdf",
+            "layers/warcom/extracted/battleclade/cards/battleclade_page02_card1_landscape.pdf",
+            "layers/warcom/extracted/battleclade/cards/battleclade_page02_card2_landscape.pdf",
+            "layers/warcom/extracted/battleclade/cards/battleclade_page02_card3_landscape.pdf",
+            "layers/warcom/extracted/battleclade/cards/battleclade_page02_card4_landscape.pdf",
+            "layers/warcom/extracted/battleclade/cards/battleclade_page03_card1_landscape.pdf",
+            "layers/warcom/extracted/battleclade/cards/battleclade_page03_card2_landscape.pdf",
+            "layers/warcom/extracted/battleclade/cards/battleclade_page03_card3_landscape.pdf",
+            "layers/warcom/extracted/battleclade/cards/battleclade_page03_card4_landscape.pdf",
+            "layers/warcom/extracted/battleclade/cards/battleclade_page04_card1_portrait.pdf",
+            "layers/warcom/extracted/battleclade/cards/battleclade_page04_card2_portrait.pdf",
+            "layers/warcom/extracted/battleclade/cards/battleclade_page04_card3_portrait.pdf",
+            "layers/warcom/extracted/battleclade/cards/battleclade_page04_card4_portrait.pdf",
+            "layers/warcom/extracted/battleclade/cards/battleclade_page05_card1_portrait.pdf",
+            "layers/warcom/extracted/battleclade/cards/battleclade_page05_card2_portrait.pdf",
+            "layers/warcom/extracted/battleclade/cards/battleclade_page05_card3_portrait.pdf",
+            "layers/warcom/extracted/battleclade/cards/battleclade_page05_card4_portrait.pdf",
+            "layers/warcom/extracted/battleclade/cards/battleclade_page06_card1_portrait.pdf",
+            "layers/warcom/extracted/battleclade/cards/battleclade_page06_card2_portrait.pdf",
+            "layers/warcom/extracted/battleclade/cards/battleclade_page06_card3_portrait.pdf",
+            "layers/warcom/extracted/battleclade/cards/battleclade_page06_card4_portrait.pdf",
+            "layers/warcom/extracted/battleclade/cards/battleclade_page07_card1_portrait.pdf",
+            "layers/warcom/extracted/battleclade/cards/battleclade_page07_card2_portrait.pdf",
+            "layers/warcom/extracted/battleclade/cards/battleclade_page07_card3_portrait.pdf",
+            "layers/warcom/extracted/battleclade/cards/battleclade_page07_card4_portrait.pdf",
+            "layers/warcom/extracted/battleclade/cards/battleclade_page08_card1_portrait.pdf",
+            "layers/warcom/extracted/battleclade/cards/battleclade_page08_card2_portrait.pdf",
+            "layers/warcom/extracted/battleclade/cards/battleclade_page08_card3_portrait.pdf",
+            "layers/warcom/extracted/battleclade/cards/battleclade_page08_card4_portrait.pdf"
+          ],
+          "modified": "2026-07-08T19:01:56.081678+00:00"
+        }
+      },
+      "completed": "2026-07-08T19:01:56.081734+00:00"
+    },
+    "build_structure": {
+      "outputs": {
+        "structure": {
+          "path": "layers/warcom/structure/battleclade-structure.json",
+          "hash": "d97fab15e09e0d40d687af288192c32a4e3b4372143438b296212122b35a489e",
+          "modified": "2026-07-10T20:29:31.822134+00:00"
+        }
+      },
+      "inputs": {
+        "layers/warcom/extracted/battleclade/cards/battleclade_page01_card1_landscape.pdf": "fdd54d8c64690f6cbe8ca88c0735e3f4263b4da8459644129970514e82368029",
+        "layers/warcom/extracted/battleclade/cards/battleclade_page01_card2_landscape.pdf": "827bd0d5cf2e0461d4e648629cbf3af8c5e0e81c60a1967ad866f15dd1f6c13f",
+        "layers/warcom/extracted/battleclade/cards/battleclade_page01_card3_landscape.pdf": "75262366a6019ea691fcad98dd46eac700e3fa57d0d1875240f71db36d3b2739",
+        "layers/warcom/extracted/battleclade/cards/battleclade_page01_card4_landscape.pdf": "5a0032e7ec9077e09f1d865bd1816ca22c965e6d28ae0d08c9f16da88751e9fd",
+        "layers/warcom/extracted/battleclade/cards/battleclade_page02_card1_landscape.pdf": "532205edab53b7de8d61dad6179795d5a41a08fad0bf036b698d698ef35e3f5d",
+        "layers/warcom/extracted/battleclade/cards/battleclade_page02_card2_landscape.pdf": "f7bee3a458aaab7e43b7618449e57e72db4d3d111e81af4b25856f9ef93e2ab3",
+        "layers/warcom/extracted/battleclade/cards/battleclade_page02_card3_landscape.pdf": "457381222ad34d06dbcf1e7cad51f54568fe180613824534ce1e9c36af4dd887",
+        "layers/warcom/extracted/battleclade/cards/battleclade_page02_card4_landscape.pdf": "89f01560999eeb2a05d84f8eb0cea06deafe5eb6c65f2457768335839aacdf3d",
+        "layers/warcom/extracted/battleclade/cards/battleclade_page03_card1_landscape.pdf": "4cbf0a00c40d90b1e74da2caea94614cf950b431ba9d87838c2a06bba720055e",
+        "layers/warcom/extracted/battleclade/cards/battleclade_page03_card2_landscape.pdf": "5173f401196ed126bcd9d98f721b08c5e5d5bcf3aca2f276aa44fc7266f7d818",
+        "layers/warcom/extracted/battleclade/cards/battleclade_page03_card3_landscape.pdf": "83fc1088489c9b70382d2755d4e9122caba49611b732818507deb3a711a0ae30",
+        "layers/warcom/extracted/battleclade/cards/battleclade_page03_card4_landscape.pdf": "76216a4deb595ab96c033d6960f5149a647dfd6b99201c24c897c447311be5c4",
+        "layers/warcom/extracted/battleclade/cards/battleclade_page04_card1_portrait.pdf": "cd2ea1b577b86ed231f089d4d3c0515d0543a9a554f838fcb48220fa6cabfd0e",
+        "layers/warcom/extracted/battleclade/cards/battleclade_page04_card2_portrait.pdf": "245bcc5ff4ea0e9ab4e320b8b0092df030093f4894a28083fd3e4f8d0b67f268",
+        "layers/warcom/extracted/battleclade/cards/battleclade_page04_card3_portrait.pdf": "eaacc2b78dff5a89f99598153cfa6512cf107edc462e2d324527ff8fbacc8df2",
+        "layers/warcom/extracted/battleclade/cards/battleclade_page04_card4_portrait.pdf": "bc823a6f9205a6dcf701c9993a3c95c681bde7a104c69e3f919259422fb45d7a",
+        "layers/warcom/extracted/battleclade/cards/battleclade_page05_card1_portrait.pdf": "c56c498d46912554177c46f978ce0436188fc7e8cd9d50321c4ab70c68f563d4",
+        "layers/warcom/extracted/battleclade/cards/battleclade_page05_card2_portrait.pdf": "2c03de1714e634c821c8215ffe5cbbdaaacea36c3e0c971dcff462239b037faf",
+        "layers/warcom/extracted/battleclade/cards/battleclade_page05_card3_portrait.pdf": "17e3b2f5201026f27b669a45eb0ecb3a64c765552875721b38ee27a981c9ff76",
+        "layers/warcom/extracted/battleclade/cards/battleclade_page05_card4_portrait.pdf": "eccb4ea92a5c226de935e77e7b8b9bb424cabc1047c8b32d5dacd1c2ede4e4fe",
+        "layers/warcom/extracted/battleclade/cards/battleclade_page06_card1_portrait.pdf": "00ce4dfd5cd45acdbcdf074dfd33069833082104a6e403c0190d487729393b8a",
+        "layers/warcom/extracted/battleclade/cards/battleclade_page06_card2_portrait.pdf": "9934500088419d1e1c44cd5708f2f43a441210b90ca9a307cf22bad9e96a52f2",
+        "layers/warcom/extracted/battleclade/cards/battleclade_page06_card3_portrait.pdf": "70f8cc59cab6b6f09f6d9cf0053e58c016f7df43cb49c001d15a16c43d1d475d",
+        "layers/warcom/extracted/battleclade/cards/battleclade_page06_card4_portrait.pdf": "8ebbd01dee74fe16a4b5b46b4df5d2a511e8c99136da7f3b6cc601230cf1ac81",
+        "layers/warcom/extracted/battleclade/cards/battleclade_page07_card1_portrait.pdf": "5b942538e51d4587642e0d231fa2d6db69fad99074f024395dbcbb8925d0dbc9",
+        "layers/warcom/extracted/battleclade/cards/battleclade_page07_card2_portrait.pdf": "f60adf7e63a76fbabddaf8f7834a834ccdc18ec64592668c2c981ee9c67ef8b0",
+        "layers/warcom/extracted/battleclade/cards/battleclade_page07_card3_portrait.pdf": "de190a39ce18b014b741766b4396b61b6ba1a18c9320a6074f515eb4957cd1fb",
+        "layers/warcom/extracted/battleclade/cards/battleclade_page07_card4_portrait.pdf": "07c32245bb0fb1e4d60ca102021ee92fafa5d3c1900c2359a45941c1874d7eff",
+        "layers/warcom/extracted/battleclade/cards/battleclade_page08_card1_portrait.pdf": "f1792302aeddaf8c0011eaccde65631a5a4540a21b1bfd58c8313a827659be42",
+        "layers/warcom/extracted/battleclade/cards/battleclade_page08_card2_portrait.pdf": "c36001e85c7c27d6373aa7ee80bc8936c819f80da61aa2b048f76e6de12d8c0f",
+        "layers/warcom/extracted/battleclade/cards/battleclade_page08_card3_portrait.pdf": "8c5e6a5fca486720dbb155cc7b5a5aa189ec1a9064483971dd404f40553aa605",
+        "layers/warcom/extracted/battleclade/cards/battleclade_page08_card4_portrait.pdf": "7b4f8619c0acd33107a41f8082adb9b5e4a25c3cd54b72846909fd06e8637491"
+      },
+      "completed": "2026-07-10T20:29:32.868494+00:00"
+    },
+    "integrate_classified": {
+      "outputs": {
+        "manifest.json": {
+          "path": "layers/integration/battleclade/manifest.json",
+          "hash": "d97fab15e09e0d40d687af288192c32a4e3b4372143438b296212122b35a489e",
+          "modified": "2026-07-11T06:53:38.950220+00:00"
+        },
+        "battleclade-datacard-battleclade-technoarcheologist.pdf": {
+          "path": "layers/integration/battleclade/battleclade-datacard-battleclade-technoarcheologist.pdf",
+          "hash": "e4aa945063e39efa0a4ac48331ff3509ed8e9ba17177ac86dd081399c3dbbd1a",
+          "modified": "2026-07-11T06:53:39.043253+00:00"
+        },
+        "battleclade-datacard-battleclade-auto-proxy-servitor.pdf": {
+          "path": "layers/integration/battleclade/battleclade-datacard-battleclade-auto-proxy-servitor.pdf",
+          "hash": "da4fe90977e34b1c6fe68d48862325ca60be3066069bd6b2cf5d0c9a66186103",
+          "modified": "2026-07-11T06:53:39.059003+00:00"
+        },
+        "battleclade-datacard-battleclade-breacher-servitor.pdf": {
+          "path": "layers/integration/battleclade/battleclade-datacard-battleclade-breacher-servitor.pdf",
+          "hash": "f64d192ae5024915e751fcf8d442433b02ca031dbb7c8e2d1d304bf98d59adbf",
+          "modified": "2026-07-11T06:53:39.074053+00:00"
+        },
+        "battleclade-datacard-battleclade-combat-servitor.pdf": {
+          "path": "layers/integration/battleclade/battleclade-datacard-battleclade-combat-servitor.pdf",
+          "hash": "d28972355555702aeef9789f55b3d4b0a20edabebcd101d6e6fcd2b43a61319b",
+          "modified": "2026-07-11T06:53:39.086961+00:00"
+        },
+        "battleclade-datacard-battleclade-gun-servitor.pdf": {
+          "path": "layers/integration/battleclade/battleclade-datacard-battleclade-gun-servitor.pdf",
+          "hash": "f2d726ada03ede1850e5783fada9d46c24b448eb9909122654df76fd2c57d591",
+          "modified": "2026-07-11T06:53:39.099483+00:00"
+        },
+        "battleclade-datacard-battleclade-servitor-underseer.pdf": {
+          "path": "layers/integration/battleclade/battleclade-datacard-battleclade-servitor-underseer.pdf",
+          "hash": "a79abba84904f50b1a32b954569aee1f94fe16315c24298e5d3bf5ff4f34bd45",
+          "modified": "2026-07-11T06:53:39.117143+00:00"
+        },
+        "battleclade-datacard-battleclade-technomedic-servitor.pdf": {
+          "path": "layers/integration/battleclade/battleclade-datacard-battleclade-technomedic-servitor.pdf",
+          "hash": "f1050aedec7be8171219b193649c687389501d2bee4fdf16eb06a9b92fdba531",
+          "modified": "2026-07-11T06:53:39.131882+00:00"
+        },
+        "battleclade-equipment-covert-guises.pdf": {
+          "path": "layers/integration/battleclade/battleclade-equipment-covert-guises.pdf",
+          "hash": "b74c1402673c8b939154c00b8e5f0ceba66fcb490cff29d5d11006be26ad35c9",
+          "modified": "2026-07-11T06:53:39.145271+00:00"
+        },
+        "battleclade-equipment-electromantic-capacitors.pdf": {
+          "path": "layers/integration/battleclade/battleclade-equipment-electromantic-capacitors.pdf",
+          "hash": "e8c858ecb78197a55ee52f7bb2b40c31c6de4a8181eec1fd10921f61d43d771e",
+          "modified": "2026-07-11T06:53:39.158757+00:00"
+        },
+        "battleclade-equipment-concealed-apparatus.pdf": {
+          "path": "layers/integration/battleclade/battleclade-equipment-concealed-apparatus.pdf",
+          "hash": "f6a3ad5a83186b15bfe4715e31b28c4435c1c02612fd4f1afc0dd815b8117f0a",
+          "modified": "2026-07-11T06:53:39.170829+00:00"
+        },
+        "battleclade-equipment-neurocyclic-reserve-cells.pdf": {
+          "path": "layers/integration/battleclade/battleclade-equipment-neurocyclic-reserve-cells.pdf",
+          "hash": "f24e166639fc2f2cda65a6c07a1aac4b7401933198bdbbf2f8d796db909c0b4e",
+          "modified": "2026-07-11T06:53:39.185659+00:00"
+        },
+        "battleclade-faction-rule-noospheric-network.pdf": {
+          "path": "layers/integration/battleclade/battleclade-faction-rule-noospheric-network.pdf",
+          "hash": "4da5fd02ec9f3aa3da2973dc73ed835cc380631ca926f8d55a2aa3787da7e1c1",
+          "modified": "2026-07-11T06:53:39.203323+00:00"
+        },
+        "battleclade-token-guide-token-guide.pdf": {
+          "path": "layers/integration/battleclade/battleclade-token-guide-token-guide.pdf",
+          "hash": "a51b4be418f261f3f69525ad809b2c839938884bd746fa56673da58fed00aab4",
+          "modified": "2026-07-11T06:53:39.215932+00:00"
+        },
+        "battleclade-firefight-ploy-system-exorcism.pdf": {
+          "path": "layers/integration/battleclade/battleclade-firefight-ploy-system-exorcism.pdf",
+          "hash": "e0fc158f8d9800bb8c11ac1b5924b1ea8fd5931faaa4b54ceb160b1d93eff810",
+          "modified": "2026-07-11T06:53:39.229677+00:00"
+        },
+        "battleclade-firefight-ploy-remote-access.pdf": {
+          "path": "layers/integration/battleclade/battleclade-firefight-ploy-remote-access.pdf",
+          "hash": "e89dbfadc8352042f10975186c3925e476037776d6137c8118e6c9aaa66b4347",
+          "modified": "2026-07-11T06:53:39.243293+00:00"
+        },
+        "battleclade-firefight-ploy-auto-ferric-supplication.pdf": {
+          "path": "layers/integration/battleclade/battleclade-firefight-ploy-auto-ferric-supplication.pdf",
+          "hash": "5fae84f3e8f9b48d3e9fab0a094a3da9f1f4e9f37585cd96870d22e2ec28aac1",
+          "modified": "2026-07-11T06:53:39.257225+00:00"
+        },
+        "battleclade-firefight-ploy-servile-surrogacy.pdf": {
+          "path": "layers/integration/battleclade/battleclade-firefight-ploy-servile-surrogacy.pdf",
+          "hash": "e083e6fbb1568c5cf985e8b73698b5f5feb59e748fdfef56cbec502885f6c134",
+          "modified": "2026-07-11T06:53:39.271684+00:00"
+        },
+        "battleclade-operatives-selection-operative-selection.pdf": {
+          "path": "layers/integration/battleclade/battleclade-operatives-selection-operative-selection.pdf",
+          "hash": "f206d15cba1e622b6a78a8232a8a11176bee3f4f896376d4b34138a2c429b5d9",
+          "modified": "2026-07-11T06:53:39.292124+00:00"
+        },
+        "battleclade-strategy-ploy-noospheric-possession.pdf": {
+          "path": "layers/integration/battleclade/battleclade-strategy-ploy-noospheric-possession.pdf",
+          "hash": "dfa5762475457b217b4925dc02f0ead8ac6d26c0c2d227196a8f248de01e5cc6",
+          "modified": "2026-07-11T06:53:39.305523+00:00"
+        },
+        "battleclade-strategy-ploy-duty-of-reclamation.pdf": {
+          "path": "layers/integration/battleclade/battleclade-strategy-ploy-duty-of-reclamation.pdf",
+          "hash": "17805696740e5fa5dfd5469b14d6179af35c0ee4d12338745bcaac86cb26442e",
+          "modified": "2026-07-11T06:53:39.320396+00:00"
+        },
+        "battleclade-strategy-ploy-incantation-of-the-iron-soul.pdf": {
+          "path": "layers/integration/battleclade/battleclade-strategy-ploy-incantation-of-the-iron-soul.pdf",
+          "hash": "33e052227969c4dab703d352f0681fb3e5aa924abdceadac3d64db648cba508f",
+          "modified": "2026-07-11T06:53:39.334103+00:00"
+        },
+        "battleclade-strategy-ploy-prioritised-acquisition.pdf": {
+          "path": "layers/integration/battleclade/battleclade-strategy-ploy-prioritised-acquisition.pdf",
+          "hash": "8f9399495ff649a79ddb02f71fffe5d5bd818b2ace7f030a994323c2bdda48df",
+          "modified": "2026-07-11T06:53:39.348857+00:00"
+        }
+      },
+      "inputs": {
+        "layers/warcom/structure/battleclade-structure.json": "d97fab15e09e0d40d687af288192c32a4e3b4372143438b296212122b35a489e",
+        "layers/warcom/extracted/battleclade/cards/battleclade_page01_card1_landscape.pdf": "fdd54d8c64690f6cbe8ca88c0735e3f4263b4da8459644129970514e82368029",
+        "layers/warcom/extracted/battleclade/cards/battleclade_page01_card2_landscape.pdf": "827bd0d5cf2e0461d4e648629cbf3af8c5e0e81c60a1967ad866f15dd1f6c13f",
+        "layers/warcom/extracted/battleclade/cards/battleclade_page01_card3_landscape.pdf": "75262366a6019ea691fcad98dd46eac700e3fa57d0d1875240f71db36d3b2739",
+        "layers/warcom/extracted/battleclade/cards/battleclade_page01_card4_landscape.pdf": "5a0032e7ec9077e09f1d865bd1816ca22c965e6d28ae0d08c9f16da88751e9fd",
+        "layers/warcom/extracted/battleclade/cards/battleclade_page02_card1_landscape.pdf": "532205edab53b7de8d61dad6179795d5a41a08fad0bf036b698d698ef35e3f5d",
+        "layers/warcom/extracted/battleclade/cards/battleclade_page02_card2_landscape.pdf": "f7bee3a458aaab7e43b7618449e57e72db4d3d111e81af4b25856f9ef93e2ab3",
+        "layers/warcom/extracted/battleclade/cards/battleclade_page02_card3_landscape.pdf": "457381222ad34d06dbcf1e7cad51f54568fe180613824534ce1e9c36af4dd887",
+        "layers/warcom/extracted/battleclade/cards/battleclade_page02_card4_landscape.pdf": "89f01560999eeb2a05d84f8eb0cea06deafe5eb6c65f2457768335839aacdf3d",
+        "layers/warcom/extracted/battleclade/cards/battleclade_page03_card1_landscape.pdf": "4cbf0a00c40d90b1e74da2caea94614cf950b431ba9d87838c2a06bba720055e",
+        "layers/warcom/extracted/battleclade/cards/battleclade_page07_card2_portrait.pdf": "f60adf7e63a76fbabddaf8f7834a834ccdc18ec64592668c2c981ee9c67ef8b0",
+        "layers/warcom/extracted/battleclade/cards/battleclade_page07_card3_portrait.pdf": "de190a39ce18b014b741766b4396b61b6ba1a18c9320a6074f515eb4957cd1fb",
+        "layers/warcom/extracted/battleclade/cards/battleclade_page07_card4_portrait.pdf": "07c32245bb0fb1e4d60ca102021ee92fafa5d3c1900c2359a45941c1874d7eff",
+        "layers/warcom/extracted/battleclade/cards/battleclade_page08_card1_portrait.pdf": "f1792302aeddaf8c0011eaccde65631a5a4540a21b1bfd58c8313a827659be42",
+        "layers/warcom/extracted/battleclade/cards/battleclade_page04_card3_portrait.pdf": "eaacc2b78dff5a89f99598153cfa6512cf107edc462e2d324527ff8fbacc8df2",
+        "layers/warcom/extracted/battleclade/cards/battleclade_page04_card4_portrait.pdf": "bc823a6f9205a6dcf701c9993a3c95c681bde7a104c69e3f919259422fb45d7a",
+        "layers/warcom/extracted/battleclade/cards/battleclade_page05_card1_portrait.pdf": "c56c498d46912554177c46f978ce0436188fc7e8cd9d50321c4ab70c68f563d4",
+        "layers/warcom/extracted/battleclade/cards/battleclade_page06_card2_portrait.pdf": "9934500088419d1e1c44cd5708f2f43a441210b90ca9a307cf22bad9e96a52f2",
+        "layers/warcom/extracted/battleclade/cards/battleclade_page06_card3_portrait.pdf": "70f8cc59cab6b6f09f6d9cf0053e58c016f7df43cb49c001d15a16c43d1d475d",
+        "layers/warcom/extracted/battleclade/cards/battleclade_page06_card4_portrait.pdf": "8ebbd01dee74fe16a4b5b46b4df5d2a511e8c99136da7f3b6cc601230cf1ac81",
+        "layers/warcom/extracted/battleclade/cards/battleclade_page07_card1_portrait.pdf": "5b942538e51d4587642e0d231fa2d6db69fad99074f024395dbcbb8925d0dbc9",
+        "layers/warcom/extracted/battleclade/cards/battleclade_page04_card1_portrait.pdf": "cd2ea1b577b86ed231f089d4d3c0515d0543a9a554f838fcb48220fa6cabfd0e",
+        "layers/warcom/extracted/battleclade/cards/battleclade_page04_card2_portrait.pdf": "245bcc5ff4ea0e9ab4e320b8b0092df030093f4894a28083fd3e4f8d0b67f268",
+        "layers/warcom/extracted/battleclade/cards/battleclade_page05_card2_portrait.pdf": "2c03de1714e634c821c8215ffe5cbbdaaacea36c3e0c971dcff462239b037faf",
+        "layers/warcom/extracted/battleclade/cards/battleclade_page05_card3_portrait.pdf": "17e3b2f5201026f27b669a45eb0ecb3a64c765552875721b38ee27a981c9ff76",
+        "layers/warcom/extracted/battleclade/cards/battleclade_page05_card4_portrait.pdf": "eccb4ea92a5c226de935e77e7b8b9bb424cabc1047c8b32d5dacd1c2ede4e4fe",
+        "layers/warcom/extracted/battleclade/cards/battleclade_page06_card1_portrait.pdf": "00ce4dfd5cd45acdbcdf074dfd33069833082104a6e403c0190d487729393b8a"
+      },
+      "completed": "2026-07-11T06:53:39.526392+00:00"
+    },
+    "extract_artwork": {
+      "outputs": {},
+      "sources": {
+        "artwork": {
+          "hash": "f6542400c0431cadab9bb788ee203eb24c903734f516d91f5d64871b1a8c811c",
+          "outputs": [
+            "layers/integration/battleclade/artwork/battleclade-artwork-01.jpeg",
+            "layers/integration/battleclade/artwork/battleclade-artwork-02.jpeg",
+            "layers/integration/battleclade/artwork/battleclade-artwork-03.png",
+            "layers/integration/battleclade/artwork/battleclade-artwork-04.jpeg",
+            "layers/integration/battleclade/artwork/battleclade-artwork-05.jpeg",
+            "layers/integration/battleclade/artwork/battleclade-artwork-06.jpeg",
+            "layers/integration/battleclade/artwork/battleclade-artwork-07.png",
+            "layers/integration/battleclade/artwork/battleclade-artwork-08.jpeg",
+            "layers/integration/battleclade/artwork/battleclade-artwork-09.jpeg",
+            "layers/integration/battleclade/artwork/battleclade-artwork-10.jpeg",
+            "layers/integration/battleclade/artwork/battleclade-artwork-11.jpeg",
+            "layers/integration/battleclade/artwork/battleclade-artwork-12.jpeg",
+            "layers/integration/battleclade/artwork/battleclade-artwork-13.jpeg",
+            "layers/integration/battleclade/artwork/battleclade-artwork-14.jpeg",
+            "layers/integration/battleclade/artwork/battleclade-artwork-15.jpeg",
+            "layers/integration/battleclade/artwork/battleclade-artwork-16.jpeg",
+            "layers/integration/battleclade/artwork/battleclade-artwork-17.jpeg",
+            "layers/integration/battleclade/artwork/battleclade-artwork-18.jpeg",
+            "layers/integration/battleclade/artwork/battleclade-artwork-19.jpeg",
+            "layers/integration/battleclade/artwork/battleclade-artwork-20.jpeg",
+            "layers/integration/battleclade/artwork/battleclade-artwork-21.jpeg",
+            "layers/integration/battleclade/artwork/battleclade-artwork-22.jpeg",
+            "layers/integration/battleclade/artwork/battleclade-artwork-23.jpeg",
+            "layers/integration/battleclade/artwork/battleclade-artwork-24.jpeg",
+            "layers/integration/battleclade/artwork/battleclade-artwork-25.jpeg",
+            "layers/integration/battleclade/artwork/battleclade-artwork-26.jpeg",
+            "layers/integration/battleclade/artwork/battleclade-artwork-27.jpeg",
+            "layers/integration/battleclade/artwork/battleclade-artwork-28.jpeg",
+            "layers/integration/battleclade/artwork/battleclade-artwork-29.jpeg",
+            "layers/integration/battleclade/artwork/battleclade-artwork-30.jpeg",
+            "layers/integration/battleclade/artwork/battleclade-artwork-metadata.json",
+            "layers/integration/battleclade/artwork/icons/battleclade-icon-landscape.jpg",
+            "layers/integration/battleclade/artwork/icons/battleclade-icon-portrait.jpg",
+            "layers/integration/battleclade/artwork/icons/battleclade-icon-token-transparent.png",
+            "layers/integration/battleclade/artwork/icons/battleclade-icon-token.jpg"
+          ],
+          "modified": "2026-07-06T20:51:39.991936+00:00"
+        }
+      },
+      "completed": "2026-07-06T20:51:39.991953+00:00"
+    }
+  }
+}

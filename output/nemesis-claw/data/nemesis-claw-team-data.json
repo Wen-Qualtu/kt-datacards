@@ -1,6 +1,6 @@
 {
   "team": "nemesis-claw",
-  "generated_at": "2026-06-17T11:43:29.647611+00:00",
+  "generated_at": "2026-07-10T20:39:19.272233+00:00",
   "datacards": [
     {
       "name": "NIGHT LORD VISIONARY",
@@ -8,6 +8,7 @@
       "movement": "6″",
       "save": "3+",
       "wounds": 15,
+      "base_size": 32,
       "weapons": [
         {
           "name": "Bolt pistol",
@@ -73,18 +74,18 @@
           "description": "PSYCHIC. In the Ready step of each Strategy phase, you gain D3 Prescience points. At the end of each turning point, discard your Prescience points. You can spend your Prescience points in the Firefight phase as follows (you cannot use each of the following rules more than once per turning point):"
         },
         {
-          "name": "\t \u0007Foreboding",
+          "name": "Foreboding",
           "description": "PSYCHIC. Whenever it’s your turn to activate a friendly operative, you can spend 1 of your Prescience points to skip that activation."
         },
         {
-          "name": "\t \u0007Portent",
+          "name": "Portent",
           "description": "PSYCHIC. Whenever an attack dice inflicts Normal Dmg on this operative, you can spend 1 of your Prescience points to ignore that inflicted damage. You cannot gain or spend your Prescience points if this operative is incapacitated."
         }
       ],
       "unique_actions": [
         {
-          "name": "PREMONITION\b (1AP)",
-          "description": "• PSYCHIC. Spend 1 of your Prescience points to gain 1CP. NIGHT LORD VISIONARY"
+          "name": "PREMONITION (1AP)",
+          "description": "PSYCHIC. Spend 1 of your Prescience points to gain 1CP. NIGHT LORD VISIONARY"
         }
       ]
     },
@@ -94,14 +95,8 @@
       "movement": "6″",
       "save": "3+",
       "wounds": 14,
+      "base_size": 32,
       "weapons": [
-        {
-          "name": "Scoped bolt pistol (short range)",
-          "attacks": "4",
-          "hit": "3+",
-          "damage": "3/4",
-          "special_rules": "Range 8\", Lethal 5+"
-        },
         {
           "name": "Scoped bolt pistol (long range)",
           "attacks": "4",
@@ -135,8 +130,8 @@
       ],
       "unique_actions": [
         {
-          "name": "POISON OBJECTIVE\b (1AP)",
-          "description": "• Select one objective marker this operative controls to gain one of your Terrorchem tokens. It cannot be an objective marker within control range of an enemy operative, or one that already has one of your Terrorchem tokens. The first time an enemy operative that doesn’t have one of your Terrorchem tokens contests that objective marker, that operative gains that Terrorchem token, then inflict 2D3 damage on it (if it’s during an action, at the end of that action).\n• This operative cannot perform this action while within control range of an enemy operative. NIGHT LORD FEARMONGER"
+          "name": "POISON OBJECTIVE (1AP)",
+          "description": "Select one objective marker this operative controls to gain one of your Terrorchem tokens. It cannot be an objective marker within control range of an enemy operative, or one that already has one of your Terrorchem tokens. The first time an enemy operative that doesn’t have one of your Terrorchem tokens contests that objective marker, that operative gains that Terrorchem token, then inflict 2D3 damage on it (if it’s during an action, at the end of that action). This operative cannot perform this action while within control range of an enemy operative. NIGHT LORD FEARMONGER"
         }
       ],
       "keywords": [
@@ -152,6 +147,7 @@
       "movement": "6″",
       "save": "3+",
       "wounds": 14,
+      "base_size": 32,
       "weapons": [
         {
           "name": "Bolt pistol",
@@ -208,6 +204,7 @@
       "movement": "6″",
       "save": "3+",
       "wounds": 14,
+      "base_size": 32,
       "weapons": [
         {
           "name": "Bolt pistol",
@@ -264,6 +261,7 @@
       "movement": "6″",
       "save": "3+",
       "wounds": 14,
+      "base_size": 32,
       "weapons": [
         {
           "name": "Lightning claws",
@@ -297,6 +295,7 @@
       "movement": "6″",
       "save": "3+",
       "wounds": 14,
+      "base_size": 32,
       "weapons": [
         {
           "name": "Bolt pistol",
@@ -337,6 +336,7 @@
       "movement": "6″",
       "save": "3+",
       "wounds": 14,
+      "base_size": 32,
       "weapons": [
         {
           "name": "Bolt pistol",
@@ -360,8 +360,8 @@
       ],
       "unique_actions": [
         {
-          "name": "DISCONCERTING MIMICRY\b (1AP)",
-          "description": "• PSYCHIC. Select one enemy operative within 6\" of this operative, then select one of the following for that enemy operative (you can only select each option once per battle):\n• Until the end of its next activation, subtract 1 from its APL stat.\n• Change its order.\n• Perform a free Dash action with it (specify the location for your opponent to move it to)."
+          "name": "DISCONCERTING MIMICRY (1AP)",
+          "description": "PSYCHIC. Select one enemy operative within 6\" of this operative, then select one of the following for that enemy operative (you can only select each option once per battle):\n• Until the end of its next activation, subtract 1 from its APL stat.\n• Change its order.\n• Perform a free Dash action with it (specify the location for your opponent to move it to)."
         }
       ],
       "keywords": [
@@ -378,6 +378,7 @@
       "movement": "6″",
       "save": "3+",
       "wounds": 14,
+      "base_size": 32,
       "weapons": [
         {
           "name": "Bolt pistol",
@@ -422,97 +423,80 @@
   ],
   "equipment": [
     {
-      "name": "FLAYED SKIN",
+      "name": "flayed-skin",
       "text": "NEMESIS CLAW\nFACTION EQUIPMENT\nFLAYED SKIN\nBedecked with the bloody hides of butchered victims, \nthe Night Lords inspire abject terror and revulsion in \ntheir enemies.\nWhenever an enemy operative is shooting \nagainst, fighting against or retaliating against a \nfriendly NEMESIS CLAW operative within 2\" of \nit, your opponent cannot re-roll their attack dice \nresults of 1."
     },
     {
-      "name": "CHAIN SNARE",
+      "name": "chain-snare",
       "text": "NEMESIS CLAW\nFACTION EQUIPMENT\nCHAIN SNARE\nComposed of hooked blades attached to a length of \nchain, this weapon bites into the flesh or armour of the \nwielder’s target, preventing them from fleeing.\nWhenever an enemy operative would perform \nthe Fall Back action while within control range \nof a friendly NEMESIS CLAW operative, if no \nother enemy operatives are within that friendly \noperative’s control range, you can use this rule. \nIf you do, roll two D6, or one D6 if that enemy \noperative has a higher Wounds stat than that \nfriendly operative. If any result is a 4+, that enemy \noperative cannot perform that action during that \nactivation/counteraction (no AP are spent on it), \nand you cannot use this rule again during this \nturning point."
     },
     {
-      "name": "GRISLY TROPHY",
+      "name": "grisly-trophy",
       "text": "NEMESIS CLAW\nFACTION EQUIPMENT\nGRISLY TROPHY\nSevered hands and limbs, eyeballs plucked from the \nskulls of screaming victims – these macabre trophies \nand more cause the Night Lords’ foes to waver.\nOnce per battle, when a friendly NEMESIS CLAW \noperative incapacitates an enemy operative \nwithin 2\" of it, you can use this rule. If you do, that \nfriendly operative gains one of your Grisly Trophy \ntokens (if it doesn’t already have one). Whenever \na friendly NEMESIS CLAW operative that has \none of your Grisly Trophy tokens is visible to and \nwithin 2\" of an enemy operative, subtract 1 from \nthe Atk stat of that enemy operative’s weapons."
     },
     {
-      "name": "COMMS JAMMERS",
+      "name": "comms-jammers",
       "text": "NEMESIS CLAW\nFACTION EQUIPMENT\nCOMMS JAMMERS\nThe Night Lords use jamming devices to sow chaos \nand confusion by preventing their panicked foes \nfrom communicating.\nWhenever an enemy operative is within 3\" of a \nfriendly NEMESIS CLAW operative, that enemy \noperative’s APL stat cannot be added to. Note \nthat this doesn’t affect APL stats that have \nalready been changed."
     }
   ],
   "faction_rules": [
     {
-      "name": "ASTARTES",
+      "name": "astartes",
       "text": "NEMESIS CLAW\nFACTION RULE\nASTARTES\nThese genetically modified superhumans are made for \none purpose: war.\nDuring each friendly NEMESIS CLAW operative’s \nactivation, it can perform either two Shoot \nactions or two Fight actions. If it’s two Shoot \nactions, a bolt pistol, boltgun or scoped bolt pistol \nmust be selected for at least one of them.\nEach friendly NEMESIS CLAW operative can \ncounteract regardless of its order."
     },
     {
-      "name": "IN MIDNIGHT CLAD",
+      "name": "in-midnight-clad",
       "text": "NEMESIS CLAW\nFACTION RULE\nIN MIDNIGHT CLAD\nNight Lords are one with the darkness, employing it as \nan ally and a weapon.\nWhenever an enemy operative is shooting a \nfriendly NEMESIS CLAW operative, that friendly \noperative is obscured if both of the following \nare true:\n• It’s more than 8\" from enemy operatives it’s \nvisible to.\n• It’s within 1\" of Heavy terrain that’s not lower \nthan it, or any part of its base is underneath \nVantage terrain."
     }
   ],
   "firefight_ploys": [
     {
-      "name": "VOX SCREAM",
+      "name": "vox-scream",
       "text": "NEMESIS CLAW\nFIREFIGHT PLOY\nVOX SCREAM\nBy modulating the frequency of their helm-mounted \nvox-units, Night Lord operatives can unleash a terrifying \nscream with the ability to stun an opponent.\nUse this firefight ploy when your opponent would \nactivate an enemy operative that’s visible to a \nfriendly NEMESIS CLAW operative. Roll one D6; \nif the result is higher than that enemy operative’s \nAPL stat, your opponent cannot activate it during \nthis activation; if the result is less than or equal \nto that enemy operative’s APL stat, this ploy isn’t \nused, the CP spent on it is refunded and you \ncannot use this ploy again during this turning \npoint. If there are no other enemy operatives \neligible to be activated, this ploy has no effect."
     },
     {
-      "name": "DEATH TO THE FALSE EMPEROR",
+      "name": "death-to-the-false-emperor",
       "text": "NEMESIS CLAW\nFIREFIGHT PLOY\nDEATH TO THE FALSE EMPEROR\nThe Night Lords, like all Heretic Astartes, bear a \nparticular hatred for the corpse-worshipping soldiers of \nthe Imperium.\nUse this firefight ploy after rolling your attack \ndice for a friendly NEMESIS CLAW operative, \nif it’s shooting against, fighting against or \nretaliating against an enemy operative that has \nthe IMPERIUM keyword. That friendly operative’s \nweapons have the Ceaseless weapon rule \nuntil the end of that sequence; if that enemy \noperative also has the ADEPTUS ASTARTES \nkeyword, that friendly operative’s weapons have \nthe Relentless weapon rule until the end of that \nsequence instead."
     },
     {
-      "name": "PROCLIVITY FOR MURDER",
+      "name": "proclivity-for-murder",
       "text": "NEMESIS CLAW\nFIREFIGHT PLOY\nPROCLIVITY FOR MURDER\nEach brutal kill a Night Lord performs serves to feed \ntheir bloodlust and drives them to further acts of \nterrible violence.\nUse this firefight ploy after a friendly NEMESIS \nCLAW operative incapacitates an enemy \noperative within its control range. That friendly \noperative can immediately perform a free Charge \nor Dash action (for the former, it cannot move \nmore than 3\"), even if it’s performed an action \nthat prevents it from performing those actions."
     },
     {
-      "name": "DIRTY FIGHTER",
+      "name": "dirty-fighter",
       "text": "NEMESIS CLAW\nFIREFIGHT PLOY\nDIRTY FIGHTER\nThe Night Lords have no respect for the concept of \nhonour and will use whatever underhanded tactics they \ndeem necessary.\nUse this firefight ploy when a friendly NEMESIS \nCLAW operative is retaliating, at the start of the \nResolve Attack Dice step. You can resolve one of \nyour successes before the normal order. If you do, \nyou cannot resolve any other successes during \nthat sequence."
     }
   ],
   "operatives_selection": [
     {
-      "name": "OPERATIVE SELECTION NEMESIS CLAW",
-      "text": "NEMESIS CLAW \nKILL TEAM\nARCHETYPES: INFILTRATION, SEEK & DESTROY\nOPERATIVES\n\t\n↘\n• 1 NEMESIS CLAW VISIONARY operative with \none of the following options:\n• Bolt pistol; power fist\n• Bolt pistol; power maul\n• Bolt pistol; power weapon\n• Plasma pistol; Nostraman chainblade \n\t\n↘\n• 5 NEMESIS CLAW operatives selected from \nthe following list:\n• FEARMONGER\n• GUNNER with one of the following options:\n\t\n○\n• Bolt pistol; flamer; fists\n\t\n○\n• Bolt pistol; meltagun; fists\n\t\n○\n• Bolt pistol; plasma gun; fists\n• HEAVY GUNNER with one of the \nfollowing options:\n\t\n○\n• Bolt pistol; heavy bolter; fists\n\t\n○\n• Bolt pistol; missile launcher; fists\nCONTINUES ON OTHER SIDE\n\n---\n\n• SCREECHER\n• SKINTHIEF\n• VENTRILOKAR\n• WARRIOR with one of the following options:\n\t\n○\n• Bolt pistol; chainsword\n\t\n○\n• Boltgun; fists \nOther than WARRIOR operatives, your kill team \ncan only include each operative on this list once.",
+      "name": "OPERATIVE SELECTION",
+      "text": "NEMESIS CLAW \nKILL TEAM\nARCHETYPES: INFILTRATION, SEEK & DESTROY\nOPERATIVES\n \n↘ 1 NEMESIS CLAW VISIONARY operative with \none of the following options:\n• Bolt pistol; power fist\n• Bolt pistol; power maul\n• Bolt pistol; power weapon\n• Plasma pistol; Nostraman chainblade \n \n↘ 5 NEMESIS CLAW operatives selected from \nthe following list:\n• FEARMONGER\n• GUNNER with one of the following options:\n \n○ Bolt pistol; flamer; fists\n \n○ Bolt pistol; meltagun; fists\n \n○ Bolt pistol; plasma gun; fists\n• HEAVY GUNNER with one of the \nfollowing options:\n \n○ Bolt pistol; heavy bolter; fists\n \n○ Bolt pistol; missile launcher; fists\nCONTINUES ON OTHER SIDE\n\n---\n\n• SCREECHER\n• SKINTHIEF\n• VENTRILOKAR\n• WARRIOR with one of the following options:\n \n○ Bolt pistol; chainsword\n \n○ Boltgun; fists \nOther than WARRIOR operatives, your kill team \ncan only include each operative on this list once.",
       "selection": {
-        "1 NEMESIS CLAW VISIONARY OPERATIVE": [
+        "↘ 1 NEMESIS CLAW VISIONARY OPERATIVE": [
           [
             "Bolt pistol; power fist Bolt pistol; power maul Bolt pistol; power weapon Plasma pistol; Nostraman chainblade the following list: FEARMONGER"
           ]
         ],
-        "GUNNER": [
-          [
-            "Bolt pistol; flamer; fists"
-          ],
-          [
-            "Bolt pistol; meltagun; fists"
-          ],
-          [
-            "Bolt pistol; plasma gun; fists"
-          ]
-        ],
-        "WARRIOR": [
-          [
-            "Bolt pistol; chainsword"
-          ],
-          [
-            "Boltgun; fists can only include each operative on this list once."
-          ]
-        ]
+        "GUNNER": [],
+        "WARRIOR": []
       }
     }
   ],
   "strategy_ploys": [
     {
-      "name": "WE HAVE COME FOR YOU",
+      "name": "we-have-come-for-you",
       "text": "NEMESIS CLAW\nSTRATEGY PLOY\nWE HAVE COME FOR YOU\nThe Night Lords strike their foes swiftly, utilising shock, \nawe and terror to brutalise the enemy before they can \nlift a blade in response.\nWhenever a friendly NEMESIS CLAW operative \nis activated, if the first action it performs during \nthat activation is the Charge action, when it \nends its move during that action, you can inflict \nD3 damage on one enemy operative within its \ncontrol range."
     },
     {
-      "name": "THE BLACK HUNT",
+      "name": "the-black-hunt",
       "text": "NEMESIS CLAW\nSTRATEGY PLOY\nTHE BLACK HUNT\nA terrible malice burns within the twin hearts of each \nNight Lord, and they enjoy nothing more than toying \nwith their wounded prey.\nWhenever a friendly NEMESIS CLAW operative \nis shooting against, fighting against or retaliating \nagainst a wounded enemy operative, you can \nre-roll one of your attack dice."
     },
     {
-      "name": "PREYSIGHT",
+      "name": "preysight",
       "text": "NEMESIS CLAW\nSTRATEGY PLOY\nPREYSIGHT\nThe Night Lords seem able to sense the fear of cowering \nprey, hunting down the craven with unerring precision.\nWhenever a friendly NEMESIS CLAW operative \nperforms the Shoot action, you can use this rule. \nIf you do, until the end of that action, that friendly \noperative’s ranged weapons have the Range 6\" \nand Seek Light weapon rules."
     },
     {
-      "name": "RETURN TO DARKNESS",
+      "name": "return-to-darkness",
       "text": "NEMESIS CLAW\nSTRATEGY PLOY\nRETURN TO DARKNESS\nThe Night Lords move from shadow to shadow with an \nagility and speed belied by their transhuman bulk.\nOne friendly NEMESIS CLAW operative \ncan immediately perform a free Fall Back or \nReposition action, but it must end that move \nwith Heavy terrain within its control range, or \nany part of its base underneath Vantage terrain. \nIn addition, it cannot move more than 4\" during \nthat action and it cannot end that move closer \nto enemy operatives (in a killzone that uses the \nclose quarters rules, e.g. Killzone: Tomb World, \nignore Wall terrain when determining this)."
     }
   ]

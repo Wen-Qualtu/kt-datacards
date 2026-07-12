@@ -1,6 +1,6 @@
 {
   "team": "exaction-squad",
-  "generated_at": "2026-05-05T17:42:51.113647+00:00",
+  "generated_at": "2026-07-10T20:34:35.322807+00:00",
   "datacards": [
     {
       "name": "ARBITES PROCTOR-EXACTANT",
@@ -8,6 +8,7 @@
       "movement": "6″",
       "save": "4+",
       "wounds": 9,
+      "base_size": 28,
       "weapons": [
         {
           "name": "Combat shotgun (close range)",
@@ -30,13 +31,6 @@
           "special_rules": "Range 8\""
         },
         {
-          "name": "Dominator maul & assault shield",
-          "attacks": "4",
-          "hit": "3+",
-          "damage": "4/4",
-          "special_rules": "Lethal 5+, Shock, Repress*"
-        },
-        {
           "name": "Repression baton",
           "attacks": "3",
           "hit": "3+",
@@ -53,8 +47,8 @@
           "description": "• Whenever an enemy operative is within 3\" of your Nuncio-aquila marker (or this operative if your Nuncio-aquila marker isn’t in the killzone), your opponent must spend 1 additional AP for that enemy operative to perform the Pick Up Marker and mission actions.\n• Whenever determining control of a marker, treat the total APL stat of enemy operatives that contest it as 1 lower if at least one of those enemy operatives is within 3\" of your Nuncio-aquila marker (or this operative if your Nuncio-aquila marker isn’t in the killzone). Note this isn’t a change to the APL stat, so any changes are cumulative with this."
         },
         {
-          "name": "DEPLOY NUNCIO-AQUILA\b",
-          "description": "• If your Nuncio-aquila marker isn’t in the killzone, place it within 6\" horizontally of this operative; otherwise, move your Nuncio-aquila marker up to 6\" horizontally. If this operative is removed from the killzone, remove your Nuncio-aquila marker from the killzone.\n• This operative cannot perform this action while within control range of an enemy operative. ARBITES PROCTOR-EXACTANT"
+          "name": "DEPLOY NUNCIO-AQUILA",
+          "description": "If your Nuncio-aquila marker isn’t in the killzone, place it within 6\" horizontally of this operative; otherwise, move your Nuncio-aquila marker up to 6\" horizontally. If this operative is removed from the killzone, remove your Nuncio-aquila marker from the killzone. This operative cannot perform this action while within control range of an enemy operative. ARBITES PROCTOR-EXACTANT"
         }
       ],
       "unique_actions": [],
@@ -72,6 +66,7 @@
       "movement": "6″",
       "save": "4+",
       "wounds": 8,
+      "base_size": 28,
       "weapons": [
         {
           "name": "Combat shotgun (close range)",
@@ -101,8 +96,8 @@
       ],
       "unique_actions": [
         {
-          "name": "MEDIKIT\b (1AP)",
-          "description": "• Select one friendly EXACTION SQUAD operative within this operative’s control range to regain up to 2D3 lost wounds. It cannot be an operative that the Medic! rule was used on during this turning point.\n• This operative cannot perform this action while within control range of an enemy operative. ARBITES CHIRURGANT"
+          "name": "MEDIKIT (1AP)",
+          "description": "Select one friendly EXACTION SQUAD operative within this operative’s control range to regain up to 2D3 lost wounds. It cannot be an operative that the Medic! rule was used on during this turning point. This operative cannot perform this action while within control range of an enemy operative. ARBITES CHIRURGANT"
         }
       ],
       "keywords": [
@@ -119,6 +114,7 @@
       "movement": "6″",
       "save": "4+",
       "wounds": 8,
+      "base_size": 28,
       "weapons": [
         {
           "name": "Combat shotgun (close range)",
@@ -161,20 +157,20 @@
           "description": ""
         },
         {
-          "name": "\t \u0007Aggressive",
+          "name": "Aggressive",
           "description": "Its melee weapons have the Relentless weapon rule."
         },
         {
-          "name": "\t \u0007Swift",
+          "name": "Swift",
           "description": "Add 2\" to its Move stat."
         },
         {
-          "name": "\t \u0007Defensive",
+          "name": "Defensive",
           "description": "Improve its Save stat by 1."
         },
         {
-          "name": "R-VR COMMAND\b",
-          "description": "• Select one friendly EXACTION SQUAD R-VR CYBER-MASTIFF operative and change one of its attack patterns. ARBITES LEASHMASTER"
+          "name": "R-VR COMMAND",
+          "description": "Select one friendly EXACTION SQUAD R-VR CYBER-MASTIFF operative and change one of its attack patterns. ARBITES LEASHMASTER"
         }
       ],
       "unique_actions": [],
@@ -191,6 +187,7 @@
       "movement": "6″",
       "save": "4+",
       "wounds": 8,
+      "base_size": 25,
       "weapons": [
         {
           "name": "Mechanical bite",
@@ -206,8 +203,8 @@
           "description": "This operative cannot perform any actions other than Apprehend, Charge, Dash, Fall Back, Fight, Guard, Reposition, Pick Up Marker and Place Marker. It cannot use any weapons that aren’t on its datacard."
         },
         {
-          "name": "APPREHEND\b",
-          "description": "• Select one enemy operative within this operative’s control range. Until that enemy operative is no longer within this operative’s control range, or until this operative performs this action again (whichever comes first), worsen the Hit stat of that enemy operative’s weapons by 1 (this isn’t cumulative with being injured); in addition, that enemy operative cannot perform the Fall Back action.\n• This operative cannot perform this action unless an enemy operative is within its control range."
+          "name": "APPREHEND",
+          "description": "Select one enemy operative within this operative’s control range. Until that enemy operative is no longer within this operative’s control range, or until this operative performs this action again (whichever comes first), worsen the Hit stat of that enemy operative’s weapons by 1 (this isn’t cumulative with being injured); in addition, that enemy operative cannot perform the Fall Back action. This operative cannot perform this action unless an enemy operative is within its control range."
         }
       ],
       "unique_actions": [],
@@ -224,6 +221,7 @@
       "movement": "6″",
       "save": "4+",
       "wounds": 8,
+      "base_size": 28,
       "weapons": [
         {
           "name": "Combat shotgun (close range)",
@@ -274,6 +272,7 @@
       "movement": "6″",
       "save": "4+",
       "wounds": 8,
+      "base_size": 28,
       "weapons": [
         {
           "name": "Grenade launcher",
@@ -294,7 +293,7 @@
           "attacks": "4",
           "hit": "4+",
           "damage": "4/5",
-          "special_rules": "Heavy (Dash Only), Torrent 1\""
+          "special_rules": "Heavy (Dash Only),  Torrent 1\""
         },
         {
           "name": "Webber",
@@ -323,6 +322,7 @@
       "movement": "6″",
       "save": "4+",
       "wounds": 8,
+      "base_size": 28,
       "weapons": [
         {
           "name": "Combat shotgun (close range)",
@@ -352,8 +352,8 @@
       ],
       "unique_actions": [
         {
-          "name": "VERISCANT\b (1AP)",
-          "description": "• Select one enemy operative visible to this operative. Until the start of this operative’s next activation, until it’s incapacitated or until it performs this action again (whichever comes first), whenever a friendly EXACTION SQUAD operative is shooting against, fighting against or retaliating against that enemy operative, that friendly operative’s weapons have the Lethal 5+ and Severe weapon rules."
+          "name": "VERISCANT (1AP)",
+          "description": "Select one enemy operative visible to this operative. Until the start of this operative’s next activation, until it’s incapacitated or until it performs this action again (whichever comes first), whenever a friendly EXACTION SQUAD operative is shooting against, fighting against or retaliating against that enemy operative, that friendly operative’s weapons have the Lethal 5+ and Severe weapon rules."
         }
       ],
       "keywords": [
@@ -369,26 +369,13 @@
       "movement": "6″",
       "save": "4+",
       "wounds": 8,
+      "base_size": 28,
       "weapons": [
-        {
-          "name": "Executioner shotgun (concealed)",
-          "attacks": "4",
-          "hit": "2+",
-          "damage": "4/0",
-          "special_rules": "Devastating 4, Heavy, Silent, Concealed Position*"
-        },
         {
           "name": "Executioner shotgun (mobile)",
           "attacks": "4",
           "hit": "3+",
           "damage": "4/4"
-        },
-        {
-          "name": "Executioner shotgun (stationary)",
-          "attacks": "4",
-          "hit": "2+",
-          "damage": "4/0",
-          "special_rules": "Devastating 4, Heavy"
         },
         {
           "name": "Repression baton",
@@ -405,8 +392,8 @@
       ],
       "unique_actions": [
         {
-          "name": "OPTICS\b (1AP)",
-          "description": "• Until the start of this operative’s next activation:\n• The concealed and stationary profiles of its executioner shotgun have the Lethal 5+ weapon rule.\n• Whenever it’s shooting with its executioner shotgun, enemy operatives cannot be obscured."
+          "name": "OPTICS (1AP)",
+          "description": "Until the start of this operative’s next activation:\n• The concealed and stationary profiles of its executioner shotgun have the Lethal 5+ weapon rule.\n• Whenever it’s shooting with its executioner shotgun, enemy operatives cannot be obscured."
         }
       ],
       "keywords": [
@@ -422,14 +409,8 @@
       "movement": "6″",
       "save": "4+",
       "wounds": 8,
+      "base_size": 28,
       "weapons": [
-        {
-          "name": "Scoped shotpistol (short range)",
-          "attacks": "4",
-          "hit": "3+",
-          "damage": "3/3",
-          "special_rules": "Range 8\", Lethal 5+"
-        },
         {
           "name": "Scoped shotpistol (long range)",
           "attacks": "4",
@@ -451,8 +432,8 @@
       ],
       "unique_actions": [
         {
-          "name": "SPOT\b (1AP)",
-          "description": "• Select one enemy operative visible to and within 8\" of this operative. Until the end of the turning point, whenever a friendly EXACTION SQUAD operative is shooting that enemy operative, you can use this effect. If you do:\n• That friendly operative’s ranged weapons have the Seek Light weapon rule.\n• That enemy operative cannot be obscured."
+          "name": "SPOT (1AP)",
+          "description": "Select one enemy operative visible to and within 8\" of this operative. Until the end of the turning point, whenever a friendly EXACTION SQUAD operative is shooting that enemy operative, you can use this effect. If you do:\n• That friendly operative’s ranged weapons have the Seek Light weapon rule.\n• That enemy operative cannot be obscured."
         }
       ],
       "keywords": [
@@ -468,6 +449,7 @@
       "movement": "6″",
       "save": "3+",
       "wounds": 8,
+      "base_size": 28,
       "weapons": [
         {
           "name": "Shotpistol",
@@ -504,6 +486,7 @@
       "movement": "6″",
       "save": "4+",
       "wounds": 8,
+      "base_size": 28,
       "weapons": [
         {
           "name": "Combat shotgun (close range)",
@@ -545,6 +528,7 @@
       "movement": "6″",
       "save": "4+",
       "wounds": 8,
+      "base_size": 28,
       "weapons": [
         {
           "name": "Combat shotgun (close range)",
@@ -569,8 +553,8 @@
       "passive_abilities": [],
       "unique_actions": [
         {
-          "name": "SIGNAL\b (1AP)",
-          "description": "• SUPPORT. Select one other friendly EXACTION SQUAD operative visible to this operative. Until the end of that operative’s next activation, add 1 to its APL stat.\n• This operative cannot perform this action while within control range of an enemy operative."
+          "name": "SIGNAL (1AP)",
+          "description": "SUPPORT. Select one other friendly EXACTION SQUAD operative visible to this operative. Until the end of that operative’s next activation, add 1 to its APL stat. This operative cannot perform this action while within control range of an enemy operative."
         }
       ],
       "keywords": [
@@ -583,93 +567,83 @@
   ],
   "equipment": [
     {
-      "name": "REINFORCED MIRROR-VISOR",
+      "name": "reinforced-mirror-visor",
       "text": "EXACTION SQUAD\nFACTION EQUIPMENT\nREINFORCED MIRROR-VISOR\nThis armoured visor is designed to shield the wearer \nfrom blinding and disorientating weapons or devices.\nYou can ignore any changes to the APL stat of \nfriendly EXACTION SQUAD operatives, and \nthey aren’t affected by enemy operatives’ Shock \nweapon rule."
     },
     {
-      "name": "MANACLES",
+      "name": "manacles",
       "text": "EXACTION SQUAD\nFACTION EQUIPMENT\nMANACLES\nThese adamantine manacles prevent captive subjects \nfrom escaping custody.\nWhenever an enemy operative would perform \nthe Fall Back action while within control range \nof a friendly EXACTION SQUAD operative, if no \nother enemy operatives are within that friendly \noperative’s control range, you can use this rule. \nIf you do, roll two D6, or one D6 if that enemy \noperative has a higher Wounds stat than that \nfriendly operative. If any result is a 4+, that enemy \noperative cannot perform that action during that \nactivation/counteraction (no AP are spent on it), \nand you cannot use this rule again during this \nturning point."
     },
     {
-      "name": "STROBING PHOSPHOR-LUMEN",
+      "name": "strobing-phosphor-lumen",
       "text": "EXACTION SQUAD\nFACTION EQUIPMENT\nSTROBING PHOSPHOR-LUMEN\nThe brilliant white, flickering light of this rotating lumen \ndevice has the effect of disorientating foes caught in \nits beam.\nWhenever an enemy operative is shooting \nagainst, fighting against or retaliating against a \nfriendly EXACTION SQUAD operative within 2\" of \nit, your opponent cannot re-roll their attack dice \nresults of 1."
     },
     {
-      "name": "SPECIAL ISSUE SHELLS",
+      "name": "special-issue-shells",
       "text": "EXACTION SQUAD\nFACTION EQUIPMENT\nSPECIAL ISSUE SHELLS\nArbites shotguns can be loaded with a wide range of \nspecialist ammunition, including but not limited to \nincendiary rounds and armour-piercing slugs.\nUp to twice per turning point, when a friendly \nEXACTION SQUAD operative is performing the \nShoot action and you select a combat shotgun, \nexecutioner shotgun, scoped shotpistol or \nshotpistol, you can use this rule. If you do, select \none of the following weapon rules for that weapon \nto have until the end of that action:\n• Saturate.\n• Piercing 1, but only if the target has a Save stat \nof 3+ or better.\n• Torrent 1\", but you cannot select more than \none secondary target."
     }
   ],
   "faction_rules": [
     {
-      "name": "RUTHLESS EFFICIENCY",
+      "name": "ruthless-efficiency",
       "text": "EXACTION SQUAD\nFACTION RULE\nRUTHLESS EFFICIENCY\nA target, whether marked to be apprehended or \neliminated, stands little chance of escaping the \nattention of an Adeptus Arbites Exaction Squad.\nWhenever a friendly EXACTION SQUAD \noperative is shooting (excluding with frag or krak \ngrenades) and you’re selecting a valid target, you \ncan use this rule. If you do, having other friendly \nEXACTION SQUAD operatives within an enemy \noperative’s control range doesn’t prevent that \nenemy operative from being selected."
     },
     {
-      "name": "MARKED FOR JUSTICE",
+      "name": "marked-for-justice",
       "text": "EXACTION SQUAD\nFACTION RULE\nMARKED FOR JUSTICE\nExaction Squads prioritise their targets, focusing their \nire on those marked for immediate punishment before \nmoving on to the next transgressor.\nSTRATEGIC GAMBIT. Select one enemy operative \nto be your mark for the turning point. Whenever a \nfriendly EXACTION SQUAD operative is shooting \nagainst, fighting against or retaliating against \nyour mark, that friendly operative's weapons \nhave the Punishing weapon rule. Whenever your \nmark is incapacitated, you can select a new \nenemy operative to be your mark for the turning \npoint (and can continue to do so during this \nturning point)."
     },
     {
-      "name": "REPRESS",
+      "name": "repress",
       "text": "EXACTION SQUAD\nFACTION RULE\nREPRESS\nExperienced in suppressing riots, rebellions and various \nother kinds of unrest, the Adeptus Arbites are resilient \nin the face of any oncoming foe, no matter their origin.\nSome weapons in this team’s rules have the \nRepress weapon rule below.\n*Repress: Whenever this operative is using \nthis weapon:\n• Each of your blocks can be allocated to block \ntwo unresolved successes (instead of one).\n• If this operative is retaliating, you resolve \nthe first attack dice (i.e. defender instead \nof attacker)."
     }
   ],
   "firefight_ploys": [
     {
-      "name": "LONG ARM OF THE EMPEROR'S LAW",
+      "name": "long-arm-of-the-emperors-law",
       "text": "EXACTION SQUAD\nFIREFIGHT PLOY\nLONG ARM OF THE EMPEROR'S LAW\nNo one escapes the merciless judgement of the \nAdeptus Arbites.\nUse this firefight ploy when a friendly EXACTION \nSQUAD operative is performing the Shoot \naction and you select a weapon with the Range \nx weapon rule (excluding frag or krak grenade). \nUntil the end of that action, add 3\" to x."
     },
     {
-      "name": "EXACT PUNISHMENT",
+      "name": "exact-punishment",
       "text": "EXACTION SQUAD\nFIREFIGHT PLOY\nEXACT PUNISHMENT\nTo strike against an Arbitrator is an offence punishable \nby immediate termination.\nUse this firefight ploy after an enemy operative \nshoots against or fights against a friendly \nEXACTION SQUAD operative within 6\" of it, and \nthat friendly operative isn’t incapacitated as a \nresult. That friendly operative can immediately \nperform either a free Shoot or a free Fight action, \nbut you cannot select any other enemy operative \nas a valid target or to fight against during that \naction (note that secondary targets from the Blast \nweapon rule can still be targeted)."
     },
     {
-      "name": "BRUTAL BACKUP",
+      "name": "brutal-backup",
       "text": "EXACTION SQUAD\nFIREFIGHT PLOY\nBRUTAL BACKUP\nWhen combating the most belligerent of foes, \nArbitrators may combine their considerable might to \nbludgeon the guilty with baton and maul.\nUse this firefight ploy during a friendly EXACTION \nSQUAD operative’s activation, before or after it \nperforms an action. Select one enemy operative \nwithin its control range. One other friendly \nEXACTION SQUAD operative can immediately \nperform a free Fight action, but you cannot select \nany other enemy operative to fight against during \nthat action."
     },
     {
-      "name": "EXECUTION ORDER",
+      "name": "execution-order",
       "text": "EXACTION SQUAD\nFIREFIGHT PLOY\nEXECUTION ORDER\nThose who have earned the ire of the Imperium are \nmarked by the Adeptus Arbites for execution, their \ntermination prioritised.\nUse this firefight ploy when an enemy operative \nperforms a mission action (excluding Operate \nHatch). Alternatively, use it at the end of the \nFirefight phase and select one enemy operative \nthat controls an objective marker. \nIn either case, the next time your opponent would \nactivate that enemy operative, you can interrupt \nthat activation and activate a ready friendly \nEXACTION SQUAD operative. If you do, during \nthat activation, that friendly operative must shoot \nagainst or fight against that enemy operative, and \ncannot do so against any other enemy operatives \nuntil it does (if this isn’t possible, that friendly \noperative’s activation is cancelled). \nAfter completing that friendly operative’s \nactivation, continue that enemy operative’s \nactivation (if possible). You cannot use this ploy \nagain until that enemy operative is activated \nor incapacitated."
     }
   ],
   "operatives_selection": [
     {
-      "name": "OPERATIVE SELECTION EXACTION SQUAD",
-      "text": "EXACTION SQUAD \nKILL TEAM\nARCHETYPES: SECURITY, SEEK & DESTROY\nOPERATIVES\n\t\n↘\n• 1 EXACTION SQUAD PROCTOR-EXACTANT \noperative with one of the following options:\n• Combat shotgun; repression baton\n• Shotpistol; dominator maul & assault shield \n\t\n↘\n• 10 EXACTION SQUAD operatives selected \nfrom the following list:\n• CASTIGATOR\n• CHIRURGANT\n• LEASHMASTER\n• R-VR \nCYBER-MASTIFF\n• MALOCATOR\n• MARKSMAN\n• REVELATUM\n• SUBDUCTOR\n• VIGILANT\n• VOX-SIGNIFIER\n• GUNNER with one of the following options:\n\t\n○\n• Grenade launcher; repression baton\n\t\n○\n• Heavy stubber; repression baton\n\t\n○\n• Webber; repression baton\nCONTINUES ON OTHER SIDE\n\n---\n\nOther than GUNNER, SUBDUCTOR and VIGILANT \noperatives, your kill team can only include each \noperative on this list once. Your kill team can \nonly include up to two GUNNER operatives (each \nmust have a different option) and up to four \nSUBDUCTOR operatives.",
+      "name": "OPERATIVE SELECTION",
+      "text": "EXACTION SQUAD \nKILL TEAM\nARCHETYPES: SECURITY, SEEK & DESTROY\nOPERATIVES\n \n↘ 1 EXACTION SQUAD PROCTOR-EXACTANT \noperative with one of the following options:\n• Combat shotgun; repression baton\n• Shotpistol; dominator maul & assault shield \n \n↘ 10 EXACTION SQUAD operatives selected \nfrom the following list:\n• CASTIGATOR\n• CHIRURGANT\n• LEASHMASTER\n• R-VR \nCYBER-MASTIFF\n• MALOCATOR\n• MARKSMAN\n• REVELATUM\n• SUBDUCTOR\n• VIGILANT\n• VOX-SIGNIFIER\n• GUNNER with one of the following options:\n \n○ Grenade launcher; repression baton\n \n○ Heavy stubber; repression baton\n \n○ Webber; repression baton\nCONTINUES ON OTHER SIDE\n\n---\n\nOther than GUNNER, SUBDUCTOR and VIGILANT \noperatives, your kill team can only include each \noperative on this list once. Your kill team can \nonly include up to two GUNNER operatives (each \nmust have a different option) and up to four \nSUBDUCTOR operatives.",
       "selection": {
         "OPERATIVE": [
           [
-            "Combat shotgun; repression baton Shotpistol; dominator maul & assault shield 10 EXACTION SQUAD operatives selected from the following list: CASTIGATOR CHIRURGANT LEASHMASTER R-VR MALOCATOR MARKSMAN REVELATUM SUBDUCTOR VIGILANT VOX-SIGNIFIER"
+            "Combat shotgun; repression baton Shotpistol; dominator maul & assault shield from the following list: CASTIGATOR CHIRURGANT LEASHMASTER R-VR MALOCATOR MARKSMAN REVELATUM SUBDUCTOR VIGILANT VOX-SIGNIFIER"
           ]
         ],
-        "GUNNER": [
-          [
-            "Grenade launcher; repression baton"
-          ],
-          [
-            "Heavy stubber; repression baton"
-          ],
-          [
-            "Webber; repression baton operatives, your kill team can only include each operative on this list once. Your kill team can only include up to two GUNNER operatives (each must have a different option) and up to four"
-          ]
-        ]
+        "GUNNER": []
       }
     }
   ],
   "strategy_ploys": [
     {
-      "name": "GUILT REVEALS ITSELF",
+      "name": "guilt-reveals-itself",
       "text": "EXACTION SQUAD\nSTRATEGY PLOY\nGUILT REVEALS ITSELF\nExaction Squads are relentless in their pursuit of the \ncondemned. Few escape their clutches.\nWhenever you’re selecting a valid target for a \nfriendly EXACTION SQUAD operative, enemy \noperatives within 4\" of it cannot be in cover \n(instead of 2\"). While this can allow such \noperatives to be targeted (assuming they’re \nvisible), it doesn’t remove their cover save (if \nany), unless the friendly EXACTION SQUAD \noperative is within 2\" as normal."
     },
     {
-      "name": "INVIOLATE JURISDICTION",
+      "name": "inviolate-jurisdiction",
       "text": "EXACTION SQUAD\nSTRATEGY PLOY\nINVIOLATE JURISDICTION\nEmboldened by the authority they hold, Exaction \nSquads will fight with zealous determination to hold key \npositions against the foe.\nWhenever an operative is shooting a friendly \nEXACTION SQUAD operative that’s within 2\" of \nan objective marker or an enemy operative, you \ncan re-roll one of your defence dice."
     },
     {
-      "name": "DISPENSE JUSTICE",
+      "name": "dispense-justice",
       "text": "EXACTION SQUAD\nSTRATEGY PLOY\nDISPENSE JUSTICE\nIn pursuit of the guilty, Arbitrators are focused, \ndisciplined and utterly determined.\nWhenever a friendly EXACTION SQUAD \noperative is fighting or retaliating, if it hasn’t \nmoved more than its Move stat during the \nactivation, or if it's a counteraction, its melee \nweapons have the Ceaseless weapon rule."
     },
     {
-      "name": "TERMINAL DECREE",
+      "name": "terminal-decree",
       "text": "EXACTION SQUAD\nSTRATEGY PLOY\nTERMINAL DECREE\nA dangerous quarry has been judged guilty of heinous \ncrimes against the Imperium and must be terminated \nwith extreme prejudice.\nWhenever a friendly EXACTION SQUAD \noperative is shooting an enemy operative within \n6\" of it, or whenever a friendly EXACTION \nSQUAD GUNNER operative is shooting, that \nfriendly operative’s ranged weapons have the \nBalanced weapon rule."
     }
   ]

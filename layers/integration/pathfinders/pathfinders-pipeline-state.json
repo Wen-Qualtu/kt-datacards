@@ -1,0 +1,1235 @@
+{
+  "team": "pathfinders",
+  "pipeline_version": "2.0",
+  "last_updated": "2026-07-12T18:32:27.589929+00:00",
+  "steps": {
+    "content_analysis": {
+      "outputs": {
+        "content.json": {
+          "path": "layers/integration/pathfinders/content/pathfinders-content.json",
+          "hash": "ff2141efbe19e7b7c2d5bbbb489065928c2e0045332dfd3f672c4d48db3f5b30",
+          "modified": "2026-07-11T07:06:06.361461+00:00"
+        }
+      },
+      "completed": "2026-07-11T07:06:20.855949+00:00",
+      "inputs": {
+        "layers/integration/pathfinders/manifest.json": "3b8fac775960be18f1fc68ca993a161ffad3233c1cb16cb0245528908db57bf7",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "layers/integration/pathfinders/pathfinders-datacard-assault-grenadier-pathfinder.pdf": "2674f60aef7a7bc1f8a4c5a7b221eca4136a9c87cb48d3830a189936e9970337",
+        "layers/integration/pathfinders/pathfinders-datacard-blooded-pathfinder.pdf": "9ac311087760f05a8cf2113e978141f490f41d2692e284b860b3826aeeb7860a",
+        "layers/integration/pathfinders/pathfinders-datacard-comms-specialist-pathfinder.pdf": "0a47dd59c21a90180365510020dfbc286c67af9c87e5afd924d01f13736d7d1d",
+        "layers/integration/pathfinders/pathfinders-datacard-drone-controller-pathfinder.pdf": "219115e7e81b620865cb63032124f4ebcc4404fcd56d07c0c954918f15aa394b",
+        "layers/integration/pathfinders/pathfinders-datacard-marksman-pathfinder.pdf": "ec0dce83a1ba452639e92ca2b71582645b2abf2f7f2c0966336d05b1d8df0158",
+        "layers/integration/pathfinders/pathfinders-datacard-mb3-recon-drone.pdf": "922a8eb8112b429e970d12da03e0ad7339a593f2c24dc45adffd3d6fc39143f0",
+        "layers/integration/pathfinders/pathfinders-datacard-medical-technician-pathfinder.pdf": "b9fc08902896a5b13aa713575b4a0f039b3d95d851e053e13a1bac6c083c9e46",
+        "layers/integration/pathfinders/pathfinders-datacard-mv1-gun-drone.pdf": "a30b104a5afa173c8578fac78d4b8fbe89bcf6b41b70f1f6adfd90f94da4383c",
+        "layers/integration/pathfinders/pathfinders-datacard-mv31-pulse-accelerator-drone.pdf": "28dfa84457bb9f8541df66beb0759bbe83be89e027d4a6d2c9e77401a9541899",
+        "layers/integration/pathfinders/pathfinders-datacard-mv33-grav-inhibitor-drone.pdf": "544902f11aed708c0c30aaaa3f0046cbda6c11fa825da2ea2504ac69e120f48a",
+        "layers/integration/pathfinders/pathfinders-datacard-mv4-shield-drone.pdf": "340ffa0e6a71a06a5a0b4cb30debf7366a2b053a2a9641bb955b5d834a3ba1b9",
+        "layers/integration/pathfinders/pathfinders-datacard-mv7-marker-drone.pdf": "4d20bdafc51e2ca49be6b5924e4525b4d54008c6f55c723b34704d63f495260a",
+        "layers/integration/pathfinders/pathfinders-datacard-shasla-pathfinder.pdf": "4c458b54a64586324349a264634c1da2a869eb605ba7d9c1702811fb6e4a2bab",
+        "layers/integration/pathfinders/pathfinders-datacard-shasui-pathfinder.pdf": "ec182a01642e376bf728cb09a0307fceed939d2f79ba6104b7c1ced0301422ac",
+        "layers/integration/pathfinders/pathfinders-datacard-transpectral-interference-pathfinder.pdf": "da502a1ab6547f4bbbe2f877eb8639e502ec3c6e9163676c53e6f5b122bf7401",
+        "layers/integration/pathfinders/pathfinders-datacard-weapons-expert-pathfinder.pdf": "b5c495db5d23c992bc7e4658ce60f799345b4fdb75a9763373fdf7f49bddf591",
+        "layers/integration/pathfinders/pathfinders-equipment-high-intensity-markerlight.pdf": "dfcf54b321dcc9f7afe694aef39f00c369649a249557d81424937526154f8704",
+        "layers/integration/pathfinders/pathfinders-equipment-orbital-survey-uplink.pdf": "43a8df27a2d17112afa0765d1fda7c25898f4add06d60c64e82bac2b6620a8a9",
+        "layers/integration/pathfinders/pathfinders-equipment-photon-grenade.pdf": "033d3d05da46dc9dc12023382877624e212e8bcd85a15bafd7aa1b335e129e8e",
+        "layers/integration/pathfinders/pathfinders-equipment-target-analysis-optic.pdf": "7867f035a0849c3eb84e8a42c40776d82b749271fc5d4dc3698348605aeb8351",
+        "layers/integration/pathfinders/pathfinders-faction-rule-markerlights-2.pdf": "866c05dfe24a627a395cd78051a4ff409cef973c7fecb1c58026a40117836112",
+        "layers/integration/pathfinders/pathfinders-faction-rule-markerlights.pdf": "dac1ea5d97c45ddf34b839ab9a5fe27f2dc96ebff7971db3849c7f9e47f78054",
+        "layers/integration/pathfinders/pathfinders-firefight-ploy-a-worthy-cause.pdf": "3fb00e889c6fd6cf062c6da5725534c05b7ad6c256d58b1c2e7411612f3e43a4",
+        "layers/integration/pathfinders/pathfinders-firefight-ploy-point-blank-fusillade.pdf": "5da58581b09154b314984a77f83624680e6d00f8381fbe1f851de4f7f4d61c43",
+        "layers/integration/pathfinders/pathfinders-firefight-ploy-saviour-protocols.pdf": "dce29abb9afc6327b9789ad99fc71475670925db985caa7dbd4712062f829d19",
+        "layers/integration/pathfinders/pathfinders-firefight-ploy-supporting-fire.pdf": "307b89df7501b9920c123ea372d84e71641c6fc91aa260675106814ab1c68cf5",
+        "layers/integration/pathfinders/pathfinders-operatives-selection-operative-selection.pdf": "daa5493eda04bce7b2889844d81e3e09000ec33d4a3bcaad799f1429ce2b628b",
+        "layers/integration/pathfinders/pathfinders-strategy-ploy-bonded.pdf": "b10bb608383411beff04c208fa395aea1993cd2a499dab2f82371fa0faf0bfc3",
+        "layers/integration/pathfinders/pathfinders-strategy-ploy-recon-sweep.pdf": "982d71b100fb3e43e8083513698871c66da360d6e4dcf0fea715315d73c17f96",
+        "layers/integration/pathfinders/pathfinders-strategy-ploy-suppressing-fire.pdf": "c552e664d4d33845637462b742f91fab9a8bb3f743f5276a288e49e70df02d05",
+        "layers/integration/pathfinders/pathfinders-strategy-ploy-take-cover.pdf": "1d2d17b02efa109766add1d51789361b5cd194d29cc286654478a24f2f939f94",
+        "layers/integration/pathfinders/pathfinders-token-guide-token-guide.pdf": "6f65bd7c4c3a13c37129f5ef70f63855dc5ff2fca7c7713a7beb863784c76ae4"
+      }
+    },
+    "extract_backsides": {
+      "outputs": {
+        "backside-landscape.jpg": {
+          "path": "layers/integration/pathfinders/card-backside/pathfinders-backside-landscape.jpg",
+          "hash": "b59431f5530d8d8adac9224e872dfbbdf37141b217a35122ae7dff2354ef37a9",
+          "modified": "2026-07-11T07:06:26.606673+00:00"
+        },
+        "backside-portrait.jpg": {
+          "path": "layers/integration/pathfinders/card-backside/pathfinders-backside-portrait.jpg",
+          "hash": "a478f8291757ed4b03beaea7ba2c9340ec81196b5637c070da69f9837f46c426",
+          "modified": "2026-07-11T07:06:26.611932+00:00"
+        }
+      },
+      "completed": "2026-07-11T07:06:26.679372+00:00",
+      "inputs": {
+        "layers/integration/pathfinders/artwork/icons/pathfinders-icon-token.jpg": "2a5e8b9dd659a61ac4083e8d5a274b1999bb6624197e2f0c330b3f5e0bd57ce2",
+        "config/defaults/box/card-box-background.jpeg": "2dd1442a7c52ca1d66899333f678d60f48981ce20561ead77c1161d548176036"
+      }
+    },
+    "extract_tokens": {
+      "outputs": {
+        "tokens/pathfinders-fusion-grenade.png": {
+          "path": "output/pathfinders/tokens/pathfinders-fusion-grenade.png",
+          "hash": "aa0549329463714c8d329eecf0228d1d6102525ec83852d90b3a8c92570faf97",
+          "modified": "2026-07-11T07:06:44.899557+00:00"
+        },
+        "tokens/pathfinders-high-intensity-markerlight.png": {
+          "path": "output/pathfinders/tokens/pathfinders-high-intensity-markerlight.png",
+          "hash": "199ae047cd70dfb3537cd00587d2f9730efb12219445dac2c338f2454560914c",
+          "modified": "2026-07-11T07:06:44.902168+00:00"
+        },
+        "tokens/pathfinders-kauyon.png": {
+          "path": "output/pathfinders/tokens/pathfinders-kauyon.png",
+          "hash": "977840384fc6fc08ba2656147ff0ddf88a7a8c1376ded2a3e641c0fc86d92de4",
+          "modified": "2026-07-11T07:06:44.911876+00:00"
+        },
+        "tokens/pathfinders-markerlight.png": {
+          "path": "output/pathfinders/tokens/pathfinders-markerlight.png",
+          "hash": "bd7db7b39fff614f460a274829e035635db0bc913af70d27518d853e389b4beb",
+          "modified": "2026-07-11T07:06:44.919269+00:00"
+        },
+        "tokens/pathfinders-medic.png": {
+          "path": "output/pathfinders/tokens/pathfinders-medic.png",
+          "hash": "8faf3dfcfd4158709c1cc7a2b1a6bd8d0c6b5949e3c6811d750f4b9b372dd844",
+          "modified": "2026-07-11T07:06:44.928939+00:00"
+        },
+        "tokens/pathfinders-montka.png": {
+          "path": "output/pathfinders/tokens/pathfinders-montka.png",
+          "hash": "dae48ebc3236edc482ce79503e833c758ec7ba3ba75f26dacea9f2cfc5f94a0f",
+          "modified": "2026-07-11T07:06:44.936751+00:00"
+        },
+        "tokens/pathfinders-multi-dimensional.png": {
+          "path": "output/pathfinders/tokens/pathfinders-multi-dimensional.png",
+          "hash": "087dcca097af88c9730a05892875e1398fcea47d61d12551fbfecd33046e5c42",
+          "modified": "2026-07-11T07:06:44.945403+00:00"
+        },
+        "tokens/pathfinders-orbital-survey-uplink.png": {
+          "path": "output/pathfinders/tokens/pathfinders-orbital-survey-uplink.png",
+          "hash": "8817f89098a9fbd52514dfdd827243a511b1e49d21c7447df33d694cb9716601",
+          "modified": "2026-07-11T07:06:44.951368+00:00"
+        },
+        "tokens/pathfinders-photon-grenade.png": {
+          "path": "output/pathfinders/tokens/pathfinders-photon-grenade.png",
+          "hash": "85df8b98d6b96ad788cc94febd71eccd7682dd008d002c06d1434a2ef5c3058b",
+          "modified": "2026-07-11T07:06:44.961023+00:00"
+        },
+        "tokens/pathfinders-pulse-accelerator.png": {
+          "path": "output/pathfinders/tokens/pathfinders-pulse-accelerator.png",
+          "hash": "b66c5c67abd15448839cc4eb3aec3983d9baf1789c401f2944893198fdd15190",
+          "modified": "2026-07-11T07:06:44.968162+00:00"
+        },
+        "tokens/pathfinders-target-analysis-optic.png": {
+          "path": "output/pathfinders/tokens/pathfinders-target-analysis-optic.png",
+          "hash": "48a7f7c778910bb39d0d8e75267571f31ef89d1a9f35b2873796f5f50034b71d",
+          "modified": "2026-07-11T07:06:44.972067+00:00"
+        },
+        "tokens/pathfinders-fusion-grenade.obj": {
+          "path": "output/pathfinders/tokens/pathfinders-fusion-grenade.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-11T07:06:44.979481+00:00"
+        },
+        "tokens/pathfinders-high-intensity-markerlight.obj": {
+          "path": "output/pathfinders/tokens/pathfinders-high-intensity-markerlight.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-11T07:06:44.984419+00:00"
+        },
+        "tokens/pathfinders-kauyon.obj": {
+          "path": "output/pathfinders/tokens/pathfinders-kauyon.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-11T07:06:44.987007+00:00"
+        },
+        "tokens/pathfinders-markerlight.obj": {
+          "path": "output/pathfinders/tokens/pathfinders-markerlight.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-11T07:06:44.991043+00:00"
+        },
+        "tokens/pathfinders-medic.obj": {
+          "path": "output/pathfinders/tokens/pathfinders-medic.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-11T07:06:44.994345+00:00"
+        },
+        "tokens/pathfinders-montka.obj": {
+          "path": "output/pathfinders/tokens/pathfinders-montka.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-11T07:06:44.998420+00:00"
+        },
+        "tokens/pathfinders-multi-dimensional.obj": {
+          "path": "output/pathfinders/tokens/pathfinders-multi-dimensional.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-11T07:06:45.001708+00:00"
+        },
+        "tokens/pathfinders-orbital-survey-uplink.obj": {
+          "path": "output/pathfinders/tokens/pathfinders-orbital-survey-uplink.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-11T07:06:45.005222+00:00"
+        },
+        "tokens/pathfinders-photon-grenade.obj": {
+          "path": "output/pathfinders/tokens/pathfinders-photon-grenade.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-11T07:06:45.009455+00:00"
+        },
+        "tokens/pathfinders-pulse-accelerator.obj": {
+          "path": "output/pathfinders/tokens/pathfinders-pulse-accelerator.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-11T07:06:45.012723+00:00"
+        },
+        "tokens/pathfinders-target-analysis-optic.obj": {
+          "path": "output/pathfinders/tokens/pathfinders-target-analysis-optic.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-11T07:06:45.083721+00:00"
+        },
+        "tokens/tokenbag/pathfinders-token-bag-icon.png": {
+          "path": "output/pathfinders/tokens/tokenbag/pathfinders-token-bag-icon.png",
+          "hash": "2a5e8b9dd659a61ac4083e8d5a274b1999bb6624197e2f0c330b3f5e0bd57ce2",
+          "modified": "2026-07-11T07:06:45.752328+00:00"
+        },
+        "tokens/tokenbag/pathfinders-token-bag.obj": {
+          "path": "output/pathfinders/tokens/tokenbag/pathfinders-token-bag.obj",
+          "hash": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+          "modified": "2026-07-11T07:06:45.756797+00:00"
+        }
+      },
+      "completed": "2026-07-11T07:07:04.057343+00:00",
+      "inputs": {
+        "layers/integration/pathfinders/manifest.json": "3b8fac775960be18f1fc68ca993a161ffad3233c1cb16cb0245528908db57bf7",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "layers/integration/pathfinders/artwork/icons/pathfinders-icon-token.jpg": "2a5e8b9dd659a61ac4083e8d5a274b1999bb6624197e2f0c330b3f5e0bd57ce2",
+        "layers/integration/pathfinders/pathfinders-datacard-assault-grenadier-pathfinder.pdf": "2674f60aef7a7bc1f8a4c5a7b221eca4136a9c87cb48d3830a189936e9970337",
+        "layers/integration/pathfinders/pathfinders-datacard-blooded-pathfinder.pdf": "9ac311087760f05a8cf2113e978141f490f41d2692e284b860b3826aeeb7860a",
+        "layers/integration/pathfinders/pathfinders-datacard-comms-specialist-pathfinder.pdf": "0a47dd59c21a90180365510020dfbc286c67af9c87e5afd924d01f13736d7d1d",
+        "layers/integration/pathfinders/pathfinders-datacard-drone-controller-pathfinder.pdf": "219115e7e81b620865cb63032124f4ebcc4404fcd56d07c0c954918f15aa394b",
+        "layers/integration/pathfinders/pathfinders-datacard-marksman-pathfinder.pdf": "ec0dce83a1ba452639e92ca2b71582645b2abf2f7f2c0966336d05b1d8df0158",
+        "layers/integration/pathfinders/pathfinders-datacard-mb3-recon-drone.pdf": "922a8eb8112b429e970d12da03e0ad7339a593f2c24dc45adffd3d6fc39143f0",
+        "layers/integration/pathfinders/pathfinders-datacard-medical-technician-pathfinder.pdf": "b9fc08902896a5b13aa713575b4a0f039b3d95d851e053e13a1bac6c083c9e46",
+        "layers/integration/pathfinders/pathfinders-datacard-mv1-gun-drone.pdf": "a30b104a5afa173c8578fac78d4b8fbe89bcf6b41b70f1f6adfd90f94da4383c",
+        "layers/integration/pathfinders/pathfinders-datacard-mv31-pulse-accelerator-drone.pdf": "28dfa84457bb9f8541df66beb0759bbe83be89e027d4a6d2c9e77401a9541899",
+        "layers/integration/pathfinders/pathfinders-datacard-mv33-grav-inhibitor-drone.pdf": "544902f11aed708c0c30aaaa3f0046cbda6c11fa825da2ea2504ac69e120f48a",
+        "layers/integration/pathfinders/pathfinders-datacard-mv4-shield-drone.pdf": "340ffa0e6a71a06a5a0b4cb30debf7366a2b053a2a9641bb955b5d834a3ba1b9",
+        "layers/integration/pathfinders/pathfinders-datacard-mv7-marker-drone.pdf": "4d20bdafc51e2ca49be6b5924e4525b4d54008c6f55c723b34704d63f495260a",
+        "layers/integration/pathfinders/pathfinders-datacard-shasla-pathfinder.pdf": "4c458b54a64586324349a264634c1da2a869eb605ba7d9c1702811fb6e4a2bab",
+        "layers/integration/pathfinders/pathfinders-datacard-shasui-pathfinder.pdf": "ec182a01642e376bf728cb09a0307fceed939d2f79ba6104b7c1ced0301422ac",
+        "layers/integration/pathfinders/pathfinders-datacard-transpectral-interference-pathfinder.pdf": "da502a1ab6547f4bbbe2f877eb8639e502ec3c6e9163676c53e6f5b122bf7401",
+        "layers/integration/pathfinders/pathfinders-datacard-weapons-expert-pathfinder.pdf": "b5c495db5d23c992bc7e4658ce60f799345b4fdb75a9763373fdf7f49bddf591",
+        "layers/integration/pathfinders/pathfinders-equipment-high-intensity-markerlight.pdf": "dfcf54b321dcc9f7afe694aef39f00c369649a249557d81424937526154f8704",
+        "layers/integration/pathfinders/pathfinders-equipment-orbital-survey-uplink.pdf": "43a8df27a2d17112afa0765d1fda7c25898f4add06d60c64e82bac2b6620a8a9",
+        "layers/integration/pathfinders/pathfinders-equipment-photon-grenade.pdf": "033d3d05da46dc9dc12023382877624e212e8bcd85a15bafd7aa1b335e129e8e",
+        "layers/integration/pathfinders/pathfinders-equipment-target-analysis-optic.pdf": "7867f035a0849c3eb84e8a42c40776d82b749271fc5d4dc3698348605aeb8351",
+        "layers/integration/pathfinders/pathfinders-faction-rule-markerlights-2.pdf": "866c05dfe24a627a395cd78051a4ff409cef973c7fecb1c58026a40117836112",
+        "layers/integration/pathfinders/pathfinders-faction-rule-markerlights.pdf": "dac1ea5d97c45ddf34b839ab9a5fe27f2dc96ebff7971db3849c7f9e47f78054",
+        "layers/integration/pathfinders/pathfinders-firefight-ploy-a-worthy-cause.pdf": "3fb00e889c6fd6cf062c6da5725534c05b7ad6c256d58b1c2e7411612f3e43a4",
+        "layers/integration/pathfinders/pathfinders-firefight-ploy-point-blank-fusillade.pdf": "5da58581b09154b314984a77f83624680e6d00f8381fbe1f851de4f7f4d61c43",
+        "layers/integration/pathfinders/pathfinders-firefight-ploy-saviour-protocols.pdf": "dce29abb9afc6327b9789ad99fc71475670925db985caa7dbd4712062f829d19",
+        "layers/integration/pathfinders/pathfinders-firefight-ploy-supporting-fire.pdf": "307b89df7501b9920c123ea372d84e71641c6fc91aa260675106814ab1c68cf5",
+        "layers/integration/pathfinders/pathfinders-operatives-selection-operative-selection.pdf": "daa5493eda04bce7b2889844d81e3e09000ec33d4a3bcaad799f1429ce2b628b",
+        "layers/integration/pathfinders/pathfinders-strategy-ploy-bonded.pdf": "b10bb608383411beff04c208fa395aea1993cd2a499dab2f82371fa0faf0bfc3",
+        "layers/integration/pathfinders/pathfinders-strategy-ploy-recon-sweep.pdf": "982d71b100fb3e43e8083513698871c66da360d6e4dcf0fea715315d73c17f96",
+        "layers/integration/pathfinders/pathfinders-strategy-ploy-suppressing-fire.pdf": "c552e664d4d33845637462b742f91fab9a8bb3f743f5276a288e49e70df02d05",
+        "layers/integration/pathfinders/pathfinders-strategy-ploy-take-cover.pdf": "1d2d17b02efa109766add1d51789361b5cd194d29cc286654478a24f2f939f94",
+        "layers/integration/pathfinders/pathfinders-token-guide-token-guide.pdf": "6f65bd7c4c3a13c37129f5ef70f63855dc5ff2fca7c7713a7beb863784c76ae4",
+        "config/teams/pathfinders/custom-tokens/pathfinders-markerlight.png": "8a7f3dee0e3aa54ce83edb5854e9ad12ac36e594c6507768d76b9d1a8069f373"
+      }
+    },
+    "generate_dice": {
+      "outputs": {
+        "dice-light.jpg": {
+          "path": "output/pathfinders/dice/pathfinders-dice-light.jpg",
+          "hash": "ac93e21afbf80016682a286dbd9adaa36163e1eb42fe0d5921ac06499ae0afe6",
+          "modified": "2026-07-11T07:07:12.764839+00:00"
+        },
+        "dice-dark.jpg": {
+          "path": "output/pathfinders/dice/pathfinders-dice-dark.jpg",
+          "hash": "653fb947215e041ed2be20751a873bcd710cb955c2071d09ba8d62b926b57b7e",
+          "modified": "2026-07-11T07:07:12.828829+00:00"
+        },
+        "dice-team.jpg": {
+          "path": "output/pathfinders/dice/pathfinders-dice-team.jpg",
+          "hash": "c69692f174d1377d4140840f2bedffa4fb20f677799d017ffcdfc58201e18f44",
+          "modified": "2026-07-11T07:07:12.830150+00:00"
+        }
+      },
+      "completed": "2026-07-11T07:07:12.836220+00:00",
+      "inputs": {
+        "layers/integration/pathfinders/artwork/icons/pathfinders-icon-token-transparent.png": "b00f1ed97effa1d35c52ea592f1a27d5ca794c2a186cd7b3d135df02d15ed79d",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41"
+      }
+    },
+    "generate_box_texture": {
+      "outputs": {
+        "card-box-texture.jpg": {
+          "path": "output/pathfinders/cardbox/pathfinders-card-box-texture.jpg",
+          "hash": "ecd7794c3b3132b0061732d665c613382535c02cf8e8b2d9eeeefb3e0b4d53e8",
+          "modified": "2026-07-11T07:07:17.961959+00:00"
+        },
+        "card-box.obj": {
+          "path": "output/pathfinders/cardbox/pathfinders-card-box.obj",
+          "hash": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+          "modified": "2026-07-11T07:07:17.965433+00:00"
+        }
+      },
+      "completed": "2026-07-11T07:07:19.234278+00:00",
+      "inputs": {
+        "layers/integration/pathfinders/artwork/icons/pathfinders-icon-token.jpg": "2a5e8b9dd659a61ac4083e8d5a274b1999bb6624197e2f0c330b3f5e0bd57ce2",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "config/defaults/box/card-box.obj": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+        "config/defaults/box/card-box-texture.jpg": "b2f310b01a0d28e8806e99ce0b972e8967e3014608eacefcb6ec51597695a313"
+      }
+    },
+    "generate_card_images": {
+      "outputs": {
+        "cards/datacards/assault-grenadier-pathfinder-back.jpg": {
+          "path": "output/pathfinders/cards/datacards/assault-grenadier-pathfinder-back.jpg",
+          "hash": "b59431f5530d8d8adac9224e872dfbbdf37141b217a35122ae7dff2354ef37a9",
+          "modified": "2026-07-11T07:08:14.642470+00:00"
+        },
+        "cards/datacards/assault-grenadier-pathfinder-front.jpg": {
+          "path": "output/pathfinders/cards/datacards/assault-grenadier-pathfinder-front.jpg",
+          "hash": "b92c88d8b9b91e6749e43ef330ae548fe930eb87e0588789f8b1e7cd2e2325c2",
+          "modified": "2026-07-11T07:08:14.644530+00:00"
+        },
+        "cards/datacards/blooded-pathfinder-back.jpg": {
+          "path": "output/pathfinders/cards/datacards/blooded-pathfinder-back.jpg",
+          "hash": "b59431f5530d8d8adac9224e872dfbbdf37141b217a35122ae7dff2354ef37a9",
+          "modified": "2026-07-11T07:08:14.712350+00:00"
+        },
+        "cards/datacards/blooded-pathfinder-front.jpg": {
+          "path": "output/pathfinders/cards/datacards/blooded-pathfinder-front.jpg",
+          "hash": "b94d8b8d06944a14f1826bbc6923e71ccbd3ad0d82214473709251c752e297f2",
+          "modified": "2026-07-11T07:08:15.787779+00:00"
+        },
+        "cards/datacards/comms-specialist-pathfinder-back.jpg": {
+          "path": "output/pathfinders/cards/datacards/comms-specialist-pathfinder-back.jpg",
+          "hash": "b59431f5530d8d8adac9224e872dfbbdf37141b217a35122ae7dff2354ef37a9",
+          "modified": "2026-07-11T07:08:16.877513+00:00"
+        },
+        "cards/datacards/comms-specialist-pathfinder-front.jpg": {
+          "path": "output/pathfinders/cards/datacards/comms-specialist-pathfinder-front.jpg",
+          "hash": "a007ab86055febb7a2b2683148a6455f2def82ce3996c5e11a4270104d74aacd",
+          "modified": "2026-07-11T07:08:17.935363+00:00"
+        },
+        "cards/datacards/drone-controller-pathfinder-back.jpg": {
+          "path": "output/pathfinders/cards/datacards/drone-controller-pathfinder-back.jpg",
+          "hash": "11643ecd5fff7af9042294b473af447353925b5066e3cf449762186f3d97c46b",
+          "modified": "2026-07-11T07:08:18.009939+00:00"
+        },
+        "cards/datacards/drone-controller-pathfinder-front.jpg": {
+          "path": "output/pathfinders/cards/datacards/drone-controller-pathfinder-front.jpg",
+          "hash": "65f6b699025a47c6c32f9f090e5198ba83e3d27f4e053531054c7b447344642f",
+          "modified": "2026-07-11T07:08:18.431974+00:00"
+        },
+        "cards/datacards/marksman-pathfinder-back.jpg": {
+          "path": "output/pathfinders/cards/datacards/marksman-pathfinder-back.jpg",
+          "hash": "b59431f5530d8d8adac9224e872dfbbdf37141b217a35122ae7dff2354ef37a9",
+          "modified": "2026-07-11T07:08:18.811151+00:00"
+        },
+        "cards/datacards/marksman-pathfinder-front.jpg": {
+          "path": "output/pathfinders/cards/datacards/marksman-pathfinder-front.jpg",
+          "hash": "2e76944b76f5de0bccf421c855f8d442e91dcc963949bc46f441d7620a5973fa",
+          "modified": "2026-07-11T07:08:18.886681+00:00"
+        },
+        "cards/datacards/mb3-recon-drone-back.jpg": {
+          "path": "output/pathfinders/cards/datacards/mb3-recon-drone-back.jpg",
+          "hash": "b59431f5530d8d8adac9224e872dfbbdf37141b217a35122ae7dff2354ef37a9",
+          "modified": "2026-07-11T07:08:19.269374+00:00"
+        },
+        "cards/datacards/mb3-recon-drone-front.jpg": {
+          "path": "output/pathfinders/cards/datacards/mb3-recon-drone-front.jpg",
+          "hash": "2e3c2c3f0506122d26c17eb49cba8b525414071344f820fda7331013755dee93",
+          "modified": "2026-07-11T07:08:19.274147+00:00"
+        },
+        "cards/datacards/medical-technician-pathfinder-back.jpg": {
+          "path": "output/pathfinders/cards/datacards/medical-technician-pathfinder-back.jpg",
+          "hash": "02a498f196a49a104dad783a8455cb31fabe7d01cee083db4f856dc2c61cac6e",
+          "modified": "2026-07-11T07:08:19.275476+00:00"
+        },
+        "cards/datacards/medical-technician-pathfinder-front.jpg": {
+          "path": "output/pathfinders/cards/datacards/medical-technician-pathfinder-front.jpg",
+          "hash": "c6f7668054a6e4dafb94453be8dc962e1b7ff21a277e9867ad35641e7372506d",
+          "modified": "2026-07-11T07:08:19.277792+00:00"
+        },
+        "cards/datacards/mv1-gun-drone-back.jpg": {
+          "path": "output/pathfinders/cards/datacards/mv1-gun-drone-back.jpg",
+          "hash": "b59431f5530d8d8adac9224e872dfbbdf37141b217a35122ae7dff2354ef37a9",
+          "modified": "2026-07-11T07:08:19.366179+00:00"
+        },
+        "cards/datacards/mv1-gun-drone-front.jpg": {
+          "path": "output/pathfinders/cards/datacards/mv1-gun-drone-front.jpg",
+          "hash": "57fa505da34b4821a021dab96db88fb0ada9c28199c00d3ec4b1c9862e32b64e",
+          "modified": "2026-07-11T07:08:20.384073+00:00"
+        },
+        "cards/datacards/mv31-pulse-accelerator-drone-back.jpg": {
+          "path": "output/pathfinders/cards/datacards/mv31-pulse-accelerator-drone-back.jpg",
+          "hash": "b59431f5530d8d8adac9224e872dfbbdf37141b217a35122ae7dff2354ef37a9",
+          "modified": "2026-07-11T07:08:20.530967+00:00"
+        },
+        "cards/datacards/mv31-pulse-accelerator-drone-front.jpg": {
+          "path": "output/pathfinders/cards/datacards/mv31-pulse-accelerator-drone-front.jpg",
+          "hash": "1d24938cc823ff87b6d250ff65fc55053be836c542f19384166a3da3bd2132a6",
+          "modified": "2026-07-11T07:08:21.584381+00:00"
+        },
+        "cards/datacards/mv33-grav-inhibitor-drone-back.jpg": {
+          "path": "output/pathfinders/cards/datacards/mv33-grav-inhibitor-drone-back.jpg",
+          "hash": "b59431f5530d8d8adac9224e872dfbbdf37141b217a35122ae7dff2354ef37a9",
+          "modified": "2026-07-11T07:08:21.663075+00:00"
+        },
+        "cards/datacards/mv33-grav-inhibitor-drone-front.jpg": {
+          "path": "output/pathfinders/cards/datacards/mv33-grav-inhibitor-drone-front.jpg",
+          "hash": "2e29418116b119b946c4182cc477d987c0157aef32158e9cd4e7c2086df95a8d",
+          "modified": "2026-07-11T07:08:21.670951+00:00"
+        },
+        "cards/datacards/mv4-shield-drone-back.jpg": {
+          "path": "output/pathfinders/cards/datacards/mv4-shield-drone-back.jpg",
+          "hash": "b59431f5530d8d8adac9224e872dfbbdf37141b217a35122ae7dff2354ef37a9",
+          "modified": "2026-07-11T07:08:22.025434+00:00"
+        },
+        "cards/datacards/mv4-shield-drone-front.jpg": {
+          "path": "output/pathfinders/cards/datacards/mv4-shield-drone-front.jpg",
+          "hash": "7060fca067552e2e483d7a8b5cd5c849a2faa8f9cd8d4f43480886cb75926be9",
+          "modified": "2026-07-11T07:08:22.030809+00:00"
+        },
+        "cards/datacards/mv7-marker-drone-back.jpg": {
+          "path": "output/pathfinders/cards/datacards/mv7-marker-drone-back.jpg",
+          "hash": "b59431f5530d8d8adac9224e872dfbbdf37141b217a35122ae7dff2354ef37a9",
+          "modified": "2026-07-11T07:08:22.088975+00:00"
+        },
+        "cards/datacards/mv7-marker-drone-front.jpg": {
+          "path": "output/pathfinders/cards/datacards/mv7-marker-drone-front.jpg",
+          "hash": "8180fcceaac59d31a4a44c42c1d4df2deb9fab607494e7e0a01d48509c8ef2dd",
+          "modified": "2026-07-11T07:08:22.094613+00:00"
+        },
+        "cards/datacards/shas’la-pathfinder-back.jpg": {
+          "path": "output/pathfinders/cards/datacards/shas’la-pathfinder-back.jpg",
+          "hash": "b59431f5530d8d8adac9224e872dfbbdf37141b217a35122ae7dff2354ef37a9",
+          "modified": "2026-07-11T07:08:22.893986+00:00"
+        },
+        "cards/datacards/shas’la-pathfinder-front.jpg": {
+          "path": "output/pathfinders/cards/datacards/shas’la-pathfinder-front.jpg",
+          "hash": "3b5cc5479509c82d4c23901d6c0de7f0140133127060b39360ed98280f765f59",
+          "modified": "2026-07-11T07:08:22.899756+00:00"
+        },
+        "cards/datacards/shas’ui-pathfinder-back.jpg": {
+          "path": "output/pathfinders/cards/datacards/shas’ui-pathfinder-back.jpg",
+          "hash": "b59431f5530d8d8adac9224e872dfbbdf37141b217a35122ae7dff2354ef37a9",
+          "modified": "2026-07-11T07:08:22.963639+00:00"
+        },
+        "cards/datacards/shas’ui-pathfinder-front.jpg": {
+          "path": "output/pathfinders/cards/datacards/shas’ui-pathfinder-front.jpg",
+          "hash": "e84dea12b38ec6c6b1c948d3f198fb0b4cf3047e9de670006244d25811b6ef0b",
+          "modified": "2026-07-11T07:08:22.967047+00:00"
+        },
+        "cards/datacards/transpectral-interference-pathfinder-back.jpg": {
+          "path": "output/pathfinders/cards/datacards/transpectral-interference-pathfinder-back.jpg",
+          "hash": "b59431f5530d8d8adac9224e872dfbbdf37141b217a35122ae7dff2354ef37a9",
+          "modified": "2026-07-11T07:08:22.976611+00:00"
+        },
+        "cards/datacards/transpectral-interference-pathfinder-front.jpg": {
+          "path": "output/pathfinders/cards/datacards/transpectral-interference-pathfinder-front.jpg",
+          "hash": "75a12211451df5b7554afd4269fa49edada64c96b340beb50799d8a6ffa89fe0",
+          "modified": "2026-07-11T07:08:22.982904+00:00"
+        },
+        "cards/datacards/weapons-expert-pathfinder-back.jpg": {
+          "path": "output/pathfinders/cards/datacards/weapons-expert-pathfinder-back.jpg",
+          "hash": "b59431f5530d8d8adac9224e872dfbbdf37141b217a35122ae7dff2354ef37a9",
+          "modified": "2026-07-11T07:08:22.990482+00:00"
+        },
+        "cards/datacards/weapons-expert-pathfinder-front.jpg": {
+          "path": "output/pathfinders/cards/datacards/weapons-expert-pathfinder-front.jpg",
+          "hash": "df339ae5336fe45dc389063e114eafd24dee9fa528067b815e958e96a2e8f5e7",
+          "modified": "2026-07-11T07:08:22.995499+00:00"
+        },
+        "cards/equipment/pathfinders-high-intensity-markerlight-back.jpg": {
+          "path": "output/pathfinders/cards/equipment/pathfinders-high-intensity-markerlight-back.jpg",
+          "hash": "a478f8291757ed4b03beaea7ba2c9340ec81196b5637c070da69f9837f46c426",
+          "modified": "2026-07-11T07:08:23.003270+00:00"
+        },
+        "cards/equipment/pathfinders-high-intensity-markerlight-front.jpg": {
+          "path": "output/pathfinders/cards/equipment/pathfinders-high-intensity-markerlight-front.jpg",
+          "hash": "7fbcf2a647d40a0581624f8f48f622b49d86ccedcfa58cc95f48ae7fd478d58f",
+          "modified": "2026-07-11T07:08:23.007569+00:00"
+        },
+        "cards/equipment/pathfinders-orbital-survey-uplink-back.jpg": {
+          "path": "output/pathfinders/cards/equipment/pathfinders-orbital-survey-uplink-back.jpg",
+          "hash": "a478f8291757ed4b03beaea7ba2c9340ec81196b5637c070da69f9837f46c426",
+          "modified": "2026-07-11T07:08:23.015893+00:00"
+        },
+        "cards/equipment/pathfinders-orbital-survey-uplink-front.jpg": {
+          "path": "output/pathfinders/cards/equipment/pathfinders-orbital-survey-uplink-front.jpg",
+          "hash": "ab1c0d4baaaa9066878adacbcf47e7a63aefabb64f60bcd1dba36cb627bbb7c2",
+          "modified": "2026-07-11T07:08:23.021294+00:00"
+        },
+        "cards/equipment/pathfinders-photon-grenade-back.jpg": {
+          "path": "output/pathfinders/cards/equipment/pathfinders-photon-grenade-back.jpg",
+          "hash": "a478f8291757ed4b03beaea7ba2c9340ec81196b5637c070da69f9837f46c426",
+          "modified": "2026-07-11T07:08:23.030791+00:00"
+        },
+        "cards/equipment/pathfinders-photon-grenade-front.jpg": {
+          "path": "output/pathfinders/cards/equipment/pathfinders-photon-grenade-front.jpg",
+          "hash": "a240a20ed128ea2393d069cefb74c9713d2e4d789dcb6aff0336d6abf6725e81",
+          "modified": "2026-07-11T07:08:23.037356+00:00"
+        },
+        "cards/equipment/pathfinders-target-analysis-optic-back.jpg": {
+          "path": "output/pathfinders/cards/equipment/pathfinders-target-analysis-optic-back.jpg",
+          "hash": "a478f8291757ed4b03beaea7ba2c9340ec81196b5637c070da69f9837f46c426",
+          "modified": "2026-07-11T07:08:23.046542+00:00"
+        },
+        "cards/equipment/pathfinders-target-analysis-optic-front.jpg": {
+          "path": "output/pathfinders/cards/equipment/pathfinders-target-analysis-optic-front.jpg",
+          "hash": "d3814e66f93e21f3c4cb484c0a27cac18362aa44c159bd0ffffa35109cb8a201",
+          "modified": "2026-07-11T07:08:23.050704+00:00"
+        },
+        "cards/faction_rules/pathfinders-markerlights-2-back.jpg": {
+          "path": "output/pathfinders/cards/faction_rules/pathfinders-markerlights-2-back.jpg",
+          "hash": "e5833643b853c8ad0ce433fd29102e161baec32806b8ffa1b3ec6a80b7c7df2b",
+          "modified": "2026-07-11T07:08:23.053957+00:00"
+        },
+        "cards/faction_rules/pathfinders-markerlights-2-front.jpg": {
+          "path": "output/pathfinders/cards/faction_rules/pathfinders-markerlights-2-front.jpg",
+          "hash": "63a5eb746f2ecf09dc01ce34bba4cefc74dfa1de9d196f733c78acb187e70748",
+          "modified": "2026-07-11T07:08:23.057762+00:00"
+        },
+        "cards/faction_rules/pathfinders-markerlights-back.jpg": {
+          "path": "output/pathfinders/cards/faction_rules/pathfinders-markerlights-back.jpg",
+          "hash": "191591aa21cd8cd672e5ab03247a879e0c8434bd30ebf45121afec5e7886128c",
+          "modified": "2026-07-11T07:08:23.061811+00:00"
+        },
+        "cards/faction_rules/pathfinders-markerlights-front.jpg": {
+          "path": "output/pathfinders/cards/faction_rules/pathfinders-markerlights-front.jpg",
+          "hash": "63a5eb746f2ecf09dc01ce34bba4cefc74dfa1de9d196f733c78acb187e70748",
+          "modified": "2026-07-11T07:08:23.068023+00:00"
+        },
+        "cards/firefight_ploys/pathfinders-a-worthy-cause-back.jpg": {
+          "path": "output/pathfinders/cards/firefight_ploys/pathfinders-a-worthy-cause-back.jpg",
+          "hash": "a478f8291757ed4b03beaea7ba2c9340ec81196b5637c070da69f9837f46c426",
+          "modified": "2026-07-11T07:08:23.075451+00:00"
+        },
+        "cards/firefight_ploys/pathfinders-a-worthy-cause-front.jpg": {
+          "path": "output/pathfinders/cards/firefight_ploys/pathfinders-a-worthy-cause-front.jpg",
+          "hash": "f742637eb9e47f949d53dd178d728f607bf1f273072f04451caf20a54e158f53",
+          "modified": "2026-07-11T07:08:23.078174+00:00"
+        },
+        "cards/firefight_ploys/pathfinders-point-blank-fusillade-back.jpg": {
+          "path": "output/pathfinders/cards/firefight_ploys/pathfinders-point-blank-fusillade-back.jpg",
+          "hash": "a478f8291757ed4b03beaea7ba2c9340ec81196b5637c070da69f9837f46c426",
+          "modified": "2026-07-11T07:08:23.086643+00:00"
+        },
+        "cards/firefight_ploys/pathfinders-point-blank-fusillade-front.jpg": {
+          "path": "output/pathfinders/cards/firefight_ploys/pathfinders-point-blank-fusillade-front.jpg",
+          "hash": "f6b880b0b4743fe4c2a0e2a8176ee3ccce4b9907bfc08aa6bd3d34b31428b5bc",
+          "modified": "2026-07-11T07:08:23.090536+00:00"
+        },
+        "cards/firefight_ploys/pathfinders-saviour-protocols-back.jpg": {
+          "path": "output/pathfinders/cards/firefight_ploys/pathfinders-saviour-protocols-back.jpg",
+          "hash": "a478f8291757ed4b03beaea7ba2c9340ec81196b5637c070da69f9837f46c426",
+          "modified": "2026-07-11T07:08:23.105166+00:00"
+        },
+        "cards/firefight_ploys/pathfinders-saviour-protocols-front.jpg": {
+          "path": "output/pathfinders/cards/firefight_ploys/pathfinders-saviour-protocols-front.jpg",
+          "hash": "b6bac61784ffd9382f6cc607dcbac7fe43c10705381fe4c26e15d60a084fc7cc",
+          "modified": "2026-07-11T07:08:23.120162+00:00"
+        },
+        "cards/firefight_ploys/pathfinders-supporting-fire-back.jpg": {
+          "path": "output/pathfinders/cards/firefight_ploys/pathfinders-supporting-fire-back.jpg",
+          "hash": "a478f8291757ed4b03beaea7ba2c9340ec81196b5637c070da69f9837f46c426",
+          "modified": "2026-07-11T07:08:23.131592+00:00"
+        },
+        "cards/firefight_ploys/pathfinders-supporting-fire-front.jpg": {
+          "path": "output/pathfinders/cards/firefight_ploys/pathfinders-supporting-fire-front.jpg",
+          "hash": "7b8343625733d18abe87d826133ac524b5830923deb6f07bd4194af13822919d",
+          "modified": "2026-07-11T07:08:23.144363+00:00"
+        },
+        "cards/operatives_selection/pathfinders-operative-selection-back.jpg": {
+          "path": "output/pathfinders/cards/operatives_selection/pathfinders-operative-selection-back.jpg",
+          "hash": "a869f1a570b64706a103df0bd613d04c0f62eee6280dfe0ab94873cf0790b444",
+          "modified": "2026-07-11T07:08:23.155598+00:00"
+        },
+        "cards/operatives_selection/pathfinders-operative-selection-front.jpg": {
+          "path": "output/pathfinders/cards/operatives_selection/pathfinders-operative-selection-front.jpg",
+          "hash": "2144b8388b31143c6d7f510eaa44a03fd2e559851e93db220372853f50840831",
+          "modified": "2026-07-11T07:08:23.172797+00:00"
+        },
+        "cards/strategy_ploys/pathfinders-bonded-back.jpg": {
+          "path": "output/pathfinders/cards/strategy_ploys/pathfinders-bonded-back.jpg",
+          "hash": "a478f8291757ed4b03beaea7ba2c9340ec81196b5637c070da69f9837f46c426",
+          "modified": "2026-07-11T07:08:23.186212+00:00"
+        },
+        "cards/strategy_ploys/pathfinders-bonded-front.jpg": {
+          "path": "output/pathfinders/cards/strategy_ploys/pathfinders-bonded-front.jpg",
+          "hash": "37c5174231be92992f57540fa2d170d936cd70012e52e94de237aa10dedc3533",
+          "modified": "2026-07-11T07:08:23.207071+00:00"
+        },
+        "cards/strategy_ploys/pathfinders-recon-sweep-back.jpg": {
+          "path": "output/pathfinders/cards/strategy_ploys/pathfinders-recon-sweep-back.jpg",
+          "hash": "a478f8291757ed4b03beaea7ba2c9340ec81196b5637c070da69f9837f46c426",
+          "modified": "2026-07-11T07:08:23.222211+00:00"
+        },
+        "cards/strategy_ploys/pathfinders-recon-sweep-front.jpg": {
+          "path": "output/pathfinders/cards/strategy_ploys/pathfinders-recon-sweep-front.jpg",
+          "hash": "9d9f54d6c511b359e1c0149b874871c70d99fb9ed06a1285a62ab3433cd054e7",
+          "modified": "2026-07-11T07:08:23.236420+00:00"
+        },
+        "cards/strategy_ploys/pathfinders-suppressing-fire-back.jpg": {
+          "path": "output/pathfinders/cards/strategy_ploys/pathfinders-suppressing-fire-back.jpg",
+          "hash": "a478f8291757ed4b03beaea7ba2c9340ec81196b5637c070da69f9837f46c426",
+          "modified": "2026-07-11T07:08:23.247904+00:00"
+        },
+        "cards/strategy_ploys/pathfinders-suppressing-fire-front.jpg": {
+          "path": "output/pathfinders/cards/strategy_ploys/pathfinders-suppressing-fire-front.jpg",
+          "hash": "5002d07a4ffa8ba2cb657b9d31a46c023e9da578a74d4c0399f204daaf96c791",
+          "modified": "2026-07-11T07:08:23.249660+00:00"
+        },
+        "cards/strategy_ploys/pathfinders-take-cover-back.jpg": {
+          "path": "output/pathfinders/cards/strategy_ploys/pathfinders-take-cover-back.jpg",
+          "hash": "a478f8291757ed4b03beaea7ba2c9340ec81196b5637c070da69f9837f46c426",
+          "modified": "2026-07-11T07:08:23.257955+00:00"
+        },
+        "cards/strategy_ploys/pathfinders-take-cover-front.jpg": {
+          "path": "output/pathfinders/cards/strategy_ploys/pathfinders-take-cover-front.jpg",
+          "hash": "17bac5f272c59abff7c055046660cfb006b26cd1c7f091837b68320bdbb60af5",
+          "modified": "2026-07-11T07:08:23.261635+00:00"
+        },
+        "cards/token_guide/pathfinders-token-guide-back.jpg": {
+          "path": "output/pathfinders/cards/token_guide/pathfinders-token-guide-back.jpg",
+          "hash": "a478f8291757ed4b03beaea7ba2c9340ec81196b5637c070da69f9837f46c426",
+          "modified": "2026-07-11T07:08:23.271901+00:00"
+        },
+        "cards/token_guide/pathfinders-token-guide-front.jpg": {
+          "path": "output/pathfinders/cards/token_guide/pathfinders-token-guide-front.jpg",
+          "hash": "1d9dc7e58ef2757975792ed26df51543508894b376c4d0249b920b2f9eb64028",
+          "modified": "2026-07-11T07:08:23.274874+00:00"
+        },
+        "cards/datacards/shasla-pathfinder-back.jpg": {
+          "path": "output/pathfinders/cards/datacards/shasla-pathfinder-back.jpg",
+          "hash": "b59431f5530d8d8adac9224e872dfbbdf37141b217a35122ae7dff2354ef37a9",
+          "modified": "2026-07-11T07:08:22.097635+00:00"
+        },
+        "cards/datacards/shasla-pathfinder-front.jpg": {
+          "path": "output/pathfinders/cards/datacards/shasla-pathfinder-front.jpg",
+          "hash": "3b5cc5479509c82d4c23901d6c0de7f0140133127060b39360ed98280f765f59",
+          "modified": "2026-07-11T07:08:22.453164+00:00"
+        },
+        "cards/datacards/shasui-pathfinder-back.jpg": {
+          "path": "output/pathfinders/cards/datacards/shasui-pathfinder-back.jpg",
+          "hash": "b59431f5530d8d8adac9224e872dfbbdf37141b217a35122ae7dff2354ef37a9",
+          "modified": "2026-07-11T07:08:22.455572+00:00"
+        },
+        "cards/datacards/shasui-pathfinder-front.jpg": {
+          "path": "output/pathfinders/cards/datacards/shasui-pathfinder-front.jpg",
+          "hash": "e84dea12b38ec6c6b1c948d3f198fb0b4cf3047e9de670006244d25811b6ef0b",
+          "modified": "2026-07-11T07:08:22.517247+00:00"
+        }
+      },
+      "completed": "2026-07-11T07:09:03.994104+00:00",
+      "inputs": {
+        "layers/integration/pathfinders/manifest.json": "3b8fac775960be18f1fc68ca993a161ffad3233c1cb16cb0245528908db57bf7",
+        "layers/integration/pathfinders/pathfinders-datacard-assault-grenadier-pathfinder.pdf": "2674f60aef7a7bc1f8a4c5a7b221eca4136a9c87cb48d3830a189936e9970337",
+        "layers/integration/pathfinders/pathfinders-datacard-blooded-pathfinder.pdf": "9ac311087760f05a8cf2113e978141f490f41d2692e284b860b3826aeeb7860a",
+        "layers/integration/pathfinders/pathfinders-datacard-comms-specialist-pathfinder.pdf": "0a47dd59c21a90180365510020dfbc286c67af9c87e5afd924d01f13736d7d1d",
+        "layers/integration/pathfinders/pathfinders-datacard-drone-controller-pathfinder.pdf": "219115e7e81b620865cb63032124f4ebcc4404fcd56d07c0c954918f15aa394b",
+        "layers/integration/pathfinders/pathfinders-datacard-marksman-pathfinder.pdf": "ec0dce83a1ba452639e92ca2b71582645b2abf2f7f2c0966336d05b1d8df0158",
+        "layers/integration/pathfinders/pathfinders-datacard-mb3-recon-drone.pdf": "922a8eb8112b429e970d12da03e0ad7339a593f2c24dc45adffd3d6fc39143f0",
+        "layers/integration/pathfinders/pathfinders-datacard-medical-technician-pathfinder.pdf": "b9fc08902896a5b13aa713575b4a0f039b3d95d851e053e13a1bac6c083c9e46",
+        "layers/integration/pathfinders/pathfinders-datacard-mv1-gun-drone.pdf": "a30b104a5afa173c8578fac78d4b8fbe89bcf6b41b70f1f6adfd90f94da4383c",
+        "layers/integration/pathfinders/pathfinders-datacard-mv31-pulse-accelerator-drone.pdf": "28dfa84457bb9f8541df66beb0759bbe83be89e027d4a6d2c9e77401a9541899",
+        "layers/integration/pathfinders/pathfinders-datacard-mv33-grav-inhibitor-drone.pdf": "544902f11aed708c0c30aaaa3f0046cbda6c11fa825da2ea2504ac69e120f48a",
+        "layers/integration/pathfinders/pathfinders-datacard-mv4-shield-drone.pdf": "340ffa0e6a71a06a5a0b4cb30debf7366a2b053a2a9641bb955b5d834a3ba1b9",
+        "layers/integration/pathfinders/pathfinders-datacard-mv7-marker-drone.pdf": "4d20bdafc51e2ca49be6b5924e4525b4d54008c6f55c723b34704d63f495260a",
+        "layers/integration/pathfinders/pathfinders-datacard-shasla-pathfinder.pdf": "4c458b54a64586324349a264634c1da2a869eb605ba7d9c1702811fb6e4a2bab",
+        "layers/integration/pathfinders/pathfinders-datacard-shasui-pathfinder.pdf": "ec182a01642e376bf728cb09a0307fceed939d2f79ba6104b7c1ced0301422ac",
+        "layers/integration/pathfinders/pathfinders-datacard-transpectral-interference-pathfinder.pdf": "da502a1ab6547f4bbbe2f877eb8639e502ec3c6e9163676c53e6f5b122bf7401",
+        "layers/integration/pathfinders/pathfinders-datacard-weapons-expert-pathfinder.pdf": "b5c495db5d23c992bc7e4658ce60f799345b4fdb75a9763373fdf7f49bddf591",
+        "layers/integration/pathfinders/pathfinders-equipment-high-intensity-markerlight.pdf": "dfcf54b321dcc9f7afe694aef39f00c369649a249557d81424937526154f8704",
+        "layers/integration/pathfinders/pathfinders-equipment-orbital-survey-uplink.pdf": "43a8df27a2d17112afa0765d1fda7c25898f4add06d60c64e82bac2b6620a8a9",
+        "layers/integration/pathfinders/pathfinders-equipment-photon-grenade.pdf": "033d3d05da46dc9dc12023382877624e212e8bcd85a15bafd7aa1b335e129e8e",
+        "layers/integration/pathfinders/pathfinders-equipment-target-analysis-optic.pdf": "7867f035a0849c3eb84e8a42c40776d82b749271fc5d4dc3698348605aeb8351",
+        "layers/integration/pathfinders/pathfinders-faction-rule-markerlights-2.pdf": "866c05dfe24a627a395cd78051a4ff409cef973c7fecb1c58026a40117836112",
+        "layers/integration/pathfinders/pathfinders-faction-rule-markerlights.pdf": "dac1ea5d97c45ddf34b839ab9a5fe27f2dc96ebff7971db3849c7f9e47f78054",
+        "layers/integration/pathfinders/pathfinders-firefight-ploy-a-worthy-cause.pdf": "3fb00e889c6fd6cf062c6da5725534c05b7ad6c256d58b1c2e7411612f3e43a4",
+        "layers/integration/pathfinders/pathfinders-firefight-ploy-point-blank-fusillade.pdf": "5da58581b09154b314984a77f83624680e6d00f8381fbe1f851de4f7f4d61c43",
+        "layers/integration/pathfinders/pathfinders-firefight-ploy-saviour-protocols.pdf": "dce29abb9afc6327b9789ad99fc71475670925db985caa7dbd4712062f829d19",
+        "layers/integration/pathfinders/pathfinders-firefight-ploy-supporting-fire.pdf": "307b89df7501b9920c123ea372d84e71641c6fc91aa260675106814ab1c68cf5",
+        "layers/integration/pathfinders/pathfinders-operatives-selection-operative-selection.pdf": "daa5493eda04bce7b2889844d81e3e09000ec33d4a3bcaad799f1429ce2b628b",
+        "layers/integration/pathfinders/pathfinders-strategy-ploy-bonded.pdf": "b10bb608383411beff04c208fa395aea1993cd2a499dab2f82371fa0faf0bfc3",
+        "layers/integration/pathfinders/pathfinders-strategy-ploy-recon-sweep.pdf": "982d71b100fb3e43e8083513698871c66da360d6e4dcf0fea715315d73c17f96",
+        "layers/integration/pathfinders/pathfinders-strategy-ploy-suppressing-fire.pdf": "c552e664d4d33845637462b742f91fab9a8bb3f743f5276a288e49e70df02d05",
+        "layers/integration/pathfinders/pathfinders-strategy-ploy-take-cover.pdf": "1d2d17b02efa109766add1d51789361b5cd194d29cc286654478a24f2f939f94",
+        "layers/integration/pathfinders/pathfinders-token-guide-token-guide.pdf": "6f65bd7c4c3a13c37129f5ef70f63855dc5ff2fca7c7713a7beb863784c76ae4",
+        "layers/integration/pathfinders/card-backside/pathfinders-backside-portrait.jpg": "a478f8291757ed4b03beaea7ba2c9340ec81196b5637c070da69f9837f46c426",
+        "config/defaults/card-backside/default-backside-portrait.jpg": "f00ff15fa70005b9f804de08519e2e83485d7eaf78dfacea65dcef0eb1a29c22",
+        "layers/integration/pathfinders/card-backside/pathfinders-backside-landscape.jpg": "b59431f5530d8d8adac9224e872dfbbdf37141b217a35122ae7dff2354ef37a9",
+        "config/defaults/card-backside/default-backside-landscape.jpg": "1cf5580a1dff0c10adb1a286edad4479c487f3d2d698b0b8be84fe653039fd7e"
+      }
+    },
+    "extract_stats": {
+      "outputs": {
+        "team-data.json": {
+          "path": "output/pathfinders/data/pathfinders-team-data.json",
+          "hash": "ff2141efbe19e7b7c2d5bbbb489065928c2e0045332dfd3f672c4d48db3f5b30",
+          "modified": "2026-07-11T07:09:16.773952+00:00"
+        }
+      },
+      "completed": "2026-07-11T07:09:16.937699+00:00",
+      "inputs": {
+        "layers/integration/pathfinders/content/pathfinders-content.json": "ff2141efbe19e7b7c2d5bbbb489065928c2e0045332dfd3f672c4d48db3f5b30"
+      }
+    },
+    "generate_tts": {
+      "outputs": {
+        "tts_objects/Pathfinders Box.json": {
+          "path": "output/pathfinders/tts_objects/Pathfinders Box.json",
+          "hash": "1f456d1dc3f90b9628d5e978de2d2ff18d6cf8facabd01ccf7222dcf9bbb4227",
+          "modified": "2026-07-12T18:32:27.521941+00:00"
+        },
+        "tts_objects/Pathfinders.json": {
+          "path": "output/pathfinders/tts_objects/Pathfinders.json",
+          "hash": "d5c24c9cf1e21cda163102f141a5e156921eb8cbd946a5f1e404dd029642353f",
+          "modified": "2026-07-12T18:32:27.533604+00:00"
+        }
+      },
+      "completed": "2026-07-12T18:32:27.589919+00:00",
+      "inputs": {
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "config/team-guids.json": "1dea0eaf2c7d1c37c86aba088cdf876f0638d2dcaca162888fea8422c2d5c9db",
+        "output/pathfinders/cards/datacards/assault-grenadier-pathfinder-back.jpg": "b59431f5530d8d8adac9224e872dfbbdf37141b217a35122ae7dff2354ef37a9",
+        "output/pathfinders/cards/datacards/assault-grenadier-pathfinder-front.jpg": "b92c88d8b9b91e6749e43ef330ae548fe930eb87e0588789f8b1e7cd2e2325c2",
+        "output/pathfinders/cards/datacards/blooded-pathfinder-back.jpg": "b59431f5530d8d8adac9224e872dfbbdf37141b217a35122ae7dff2354ef37a9",
+        "output/pathfinders/cards/datacards/blooded-pathfinder-front.jpg": "b94d8b8d06944a14f1826bbc6923e71ccbd3ad0d82214473709251c752e297f2",
+        "output/pathfinders/cards/datacards/comms-specialist-pathfinder-back.jpg": "b59431f5530d8d8adac9224e872dfbbdf37141b217a35122ae7dff2354ef37a9",
+        "output/pathfinders/cards/datacards/comms-specialist-pathfinder-front.jpg": "a007ab86055febb7a2b2683148a6455f2def82ce3996c5e11a4270104d74aacd",
+        "output/pathfinders/cards/datacards/drone-controller-pathfinder-back.jpg": "11643ecd5fff7af9042294b473af447353925b5066e3cf449762186f3d97c46b",
+        "output/pathfinders/cards/datacards/drone-controller-pathfinder-front.jpg": "65f6b699025a47c6c32f9f090e5198ba83e3d27f4e053531054c7b447344642f",
+        "output/pathfinders/cards/datacards/marksman-pathfinder-back.jpg": "b59431f5530d8d8adac9224e872dfbbdf37141b217a35122ae7dff2354ef37a9",
+        "output/pathfinders/cards/datacards/marksman-pathfinder-front.jpg": "2e76944b76f5de0bccf421c855f8d442e91dcc963949bc46f441d7620a5973fa",
+        "output/pathfinders/cards/datacards/mb3-recon-drone-back.jpg": "b59431f5530d8d8adac9224e872dfbbdf37141b217a35122ae7dff2354ef37a9",
+        "output/pathfinders/cards/datacards/mb3-recon-drone-front.jpg": "2e3c2c3f0506122d26c17eb49cba8b525414071344f820fda7331013755dee93",
+        "output/pathfinders/cards/datacards/medical-technician-pathfinder-back.jpg": "02a498f196a49a104dad783a8455cb31fabe7d01cee083db4f856dc2c61cac6e",
+        "output/pathfinders/cards/datacards/medical-technician-pathfinder-front.jpg": "c6f7668054a6e4dafb94453be8dc962e1b7ff21a277e9867ad35641e7372506d",
+        "output/pathfinders/cards/datacards/mv1-gun-drone-back.jpg": "b59431f5530d8d8adac9224e872dfbbdf37141b217a35122ae7dff2354ef37a9",
+        "output/pathfinders/cards/datacards/mv1-gun-drone-front.jpg": "57fa505da34b4821a021dab96db88fb0ada9c28199c00d3ec4b1c9862e32b64e",
+        "output/pathfinders/cards/datacards/mv31-pulse-accelerator-drone-back.jpg": "b59431f5530d8d8adac9224e872dfbbdf37141b217a35122ae7dff2354ef37a9",
+        "output/pathfinders/cards/datacards/mv31-pulse-accelerator-drone-front.jpg": "1d24938cc823ff87b6d250ff65fc55053be836c542f19384166a3da3bd2132a6",
+        "output/pathfinders/cards/datacards/mv33-grav-inhibitor-drone-back.jpg": "b59431f5530d8d8adac9224e872dfbbdf37141b217a35122ae7dff2354ef37a9",
+        "output/pathfinders/cards/datacards/mv33-grav-inhibitor-drone-front.jpg": "2e29418116b119b946c4182cc477d987c0157aef32158e9cd4e7c2086df95a8d",
+        "output/pathfinders/cards/datacards/mv4-shield-drone-back.jpg": "b59431f5530d8d8adac9224e872dfbbdf37141b217a35122ae7dff2354ef37a9",
+        "output/pathfinders/cards/datacards/mv4-shield-drone-front.jpg": "7060fca067552e2e483d7a8b5cd5c849a2faa8f9cd8d4f43480886cb75926be9",
+        "output/pathfinders/cards/datacards/mv7-marker-drone-back.jpg": "b59431f5530d8d8adac9224e872dfbbdf37141b217a35122ae7dff2354ef37a9",
+        "output/pathfinders/cards/datacards/mv7-marker-drone-front.jpg": "8180fcceaac59d31a4a44c42c1d4df2deb9fab607494e7e0a01d48509c8ef2dd",
+        "output/pathfinders/cards/datacards/shasla-pathfinder-back.jpg": "b59431f5530d8d8adac9224e872dfbbdf37141b217a35122ae7dff2354ef37a9",
+        "output/pathfinders/cards/datacards/shasla-pathfinder-front.jpg": "3b5cc5479509c82d4c23901d6c0de7f0140133127060b39360ed98280f765f59",
+        "output/pathfinders/cards/datacards/shasui-pathfinder-back.jpg": "b59431f5530d8d8adac9224e872dfbbdf37141b217a35122ae7dff2354ef37a9",
+        "output/pathfinders/cards/datacards/shasui-pathfinder-front.jpg": "e84dea12b38ec6c6b1c948d3f198fb0b4cf3047e9de670006244d25811b6ef0b",
+        "output/pathfinders/cards/datacards/shas’la-pathfinder-back.jpg": "b59431f5530d8d8adac9224e872dfbbdf37141b217a35122ae7dff2354ef37a9",
+        "output/pathfinders/cards/datacards/shas’la-pathfinder-front.jpg": "3b5cc5479509c82d4c23901d6c0de7f0140133127060b39360ed98280f765f59",
+        "output/pathfinders/cards/datacards/shas’ui-pathfinder-back.jpg": "b59431f5530d8d8adac9224e872dfbbdf37141b217a35122ae7dff2354ef37a9",
+        "output/pathfinders/cards/datacards/shas’ui-pathfinder-front.jpg": "e84dea12b38ec6c6b1c948d3f198fb0b4cf3047e9de670006244d25811b6ef0b",
+        "output/pathfinders/cards/datacards/transpectral-interference-pathfinder-back.jpg": "b59431f5530d8d8adac9224e872dfbbdf37141b217a35122ae7dff2354ef37a9",
+        "output/pathfinders/cards/datacards/transpectral-interference-pathfinder-front.jpg": "75a12211451df5b7554afd4269fa49edada64c96b340beb50799d8a6ffa89fe0",
+        "output/pathfinders/cards/datacards/weapons-expert-pathfinder-back.jpg": "b59431f5530d8d8adac9224e872dfbbdf37141b217a35122ae7dff2354ef37a9",
+        "output/pathfinders/cards/datacards/weapons-expert-pathfinder-front.jpg": "df339ae5336fe45dc389063e114eafd24dee9fa528067b815e958e96a2e8f5e7",
+        "output/pathfinders/cards/equipment/pathfinders-high-intensity-markerlight-back.jpg": "a478f8291757ed4b03beaea7ba2c9340ec81196b5637c070da69f9837f46c426",
+        "output/pathfinders/cards/equipment/pathfinders-high-intensity-markerlight-front.jpg": "7fbcf2a647d40a0581624f8f48f622b49d86ccedcfa58cc95f48ae7fd478d58f",
+        "output/pathfinders/cards/equipment/pathfinders-orbital-survey-uplink-back.jpg": "a478f8291757ed4b03beaea7ba2c9340ec81196b5637c070da69f9837f46c426",
+        "output/pathfinders/cards/equipment/pathfinders-orbital-survey-uplink-front.jpg": "ab1c0d4baaaa9066878adacbcf47e7a63aefabb64f60bcd1dba36cb627bbb7c2",
+        "output/pathfinders/cards/equipment/pathfinders-photon-grenade-back.jpg": "a478f8291757ed4b03beaea7ba2c9340ec81196b5637c070da69f9837f46c426",
+        "output/pathfinders/cards/equipment/pathfinders-photon-grenade-front.jpg": "a240a20ed128ea2393d069cefb74c9713d2e4d789dcb6aff0336d6abf6725e81",
+        "output/pathfinders/cards/equipment/pathfinders-target-analysis-optic-2-back.jpg": "0b9f8fdf16f25bb96b55cf2376cc9596f81ffe527480db78775f7a5046365b2a",
+        "output/pathfinders/cards/equipment/pathfinders-target-analysis-optic-2-front.jpg": "49184130d7163147084b94194f629ea416bab7d51fed13c3a731c419c873abb6",
+        "output/pathfinders/cards/equipment/pathfinders-target-analysis-optic-back.jpg": "a478f8291757ed4b03beaea7ba2c9340ec81196b5637c070da69f9837f46c426",
+        "output/pathfinders/cards/equipment/pathfinders-target-analysis-optic-front.jpg": "d3814e66f93e21f3c4cb484c0a27cac18362aa44c159bd0ffffa35109cb8a201",
+        "output/pathfinders/cards/faction_rules/pathfinders-markerlights-2-back.jpg": "e5833643b853c8ad0ce433fd29102e161baec32806b8ffa1b3ec6a80b7c7df2b",
+        "output/pathfinders/cards/faction_rules/pathfinders-markerlights-2-front.jpg": "63a5eb746f2ecf09dc01ce34bba4cefc74dfa1de9d196f733c78acb187e70748",
+        "output/pathfinders/cards/faction_rules/pathfinders-markerlights-back.jpg": "191591aa21cd8cd672e5ab03247a879e0c8434bd30ebf45121afec5e7886128c",
+        "output/pathfinders/cards/faction_rules/pathfinders-markerlights-front.jpg": "63a5eb746f2ecf09dc01ce34bba4cefc74dfa1de9d196f733c78acb187e70748",
+        "output/pathfinders/cards/firefight_ploys/pathfinders-a-worthy-cause-back.jpg": "a478f8291757ed4b03beaea7ba2c9340ec81196b5637c070da69f9837f46c426",
+        "output/pathfinders/cards/firefight_ploys/pathfinders-a-worthy-cause-front.jpg": "f742637eb9e47f949d53dd178d728f607bf1f273072f04451caf20a54e158f53",
+        "output/pathfinders/cards/firefight_ploys/pathfinders-point-blank-fusillade-back.jpg": "a478f8291757ed4b03beaea7ba2c9340ec81196b5637c070da69f9837f46c426",
+        "output/pathfinders/cards/firefight_ploys/pathfinders-point-blank-fusillade-front.jpg": "f6b880b0b4743fe4c2a0e2a8176ee3ccce4b9907bfc08aa6bd3d34b31428b5bc",
+        "output/pathfinders/cards/firefight_ploys/pathfinders-saviour-protocols-back.jpg": "a478f8291757ed4b03beaea7ba2c9340ec81196b5637c070da69f9837f46c426",
+        "output/pathfinders/cards/firefight_ploys/pathfinders-saviour-protocols-front.jpg": "b6bac61784ffd9382f6cc607dcbac7fe43c10705381fe4c26e15d60a084fc7cc",
+        "output/pathfinders/cards/firefight_ploys/pathfinders-supporting-fire-back.jpg": "a478f8291757ed4b03beaea7ba2c9340ec81196b5637c070da69f9837f46c426",
+        "output/pathfinders/cards/firefight_ploys/pathfinders-supporting-fire-front.jpg": "7b8343625733d18abe87d826133ac524b5830923deb6f07bd4194af13822919d",
+        "output/pathfinders/cards/operatives_selection/pathfinders-operative-selection-back.jpg": "a869f1a570b64706a103df0bd613d04c0f62eee6280dfe0ab94873cf0790b444",
+        "output/pathfinders/cards/operatives_selection/pathfinders-operative-selection-front.jpg": "2144b8388b31143c6d7f510eaa44a03fd2e559851e93db220372853f50840831",
+        "output/pathfinders/cards/strategy_ploys/pathfinders-bonded-back.jpg": "a478f8291757ed4b03beaea7ba2c9340ec81196b5637c070da69f9837f46c426",
+        "output/pathfinders/cards/strategy_ploys/pathfinders-bonded-front.jpg": "37c5174231be92992f57540fa2d170d936cd70012e52e94de237aa10dedc3533",
+        "output/pathfinders/cards/strategy_ploys/pathfinders-recon-sweep-back.jpg": "a478f8291757ed4b03beaea7ba2c9340ec81196b5637c070da69f9837f46c426",
+        "output/pathfinders/cards/strategy_ploys/pathfinders-recon-sweep-front.jpg": "9d9f54d6c511b359e1c0149b874871c70d99fb9ed06a1285a62ab3433cd054e7",
+        "output/pathfinders/cards/strategy_ploys/pathfinders-suppressing-fire-back.jpg": "a478f8291757ed4b03beaea7ba2c9340ec81196b5637c070da69f9837f46c426",
+        "output/pathfinders/cards/strategy_ploys/pathfinders-suppressing-fire-front.jpg": "5002d07a4ffa8ba2cb657b9d31a46c023e9da578a74d4c0399f204daaf96c791",
+        "output/pathfinders/cards/strategy_ploys/pathfinders-take-cover-back.jpg": "a478f8291757ed4b03beaea7ba2c9340ec81196b5637c070da69f9837f46c426",
+        "output/pathfinders/cards/strategy_ploys/pathfinders-take-cover-front.jpg": "17bac5f272c59abff7c055046660cfb006b26cd1c7f091837b68320bdbb60af5",
+        "output/pathfinders/cards/token_guide/pathfinders-token-guide-back.jpg": "a478f8291757ed4b03beaea7ba2c9340ec81196b5637c070da69f9837f46c426",
+        "output/pathfinders/cards/token_guide/pathfinders-token-guide-front.jpg": "1d9dc7e58ef2757975792ed26df51543508894b376c4d0249b920b2f9eb64028",
+        "output/pathfinders/cardbox/pathfinders-card-box-texture.jpg": "ecd7794c3b3132b0061732d665c613382535c02cf8e8b2d9eeeefb3e0b4d53e8",
+        "output/pathfinders/cardbox/pathfinders-card-box.obj": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+        "output/pathfinders/tokens/pathfinders-fusion-grenade.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/pathfinders/tokens/pathfinders-fusion-grenade.png": "aa0549329463714c8d329eecf0228d1d6102525ec83852d90b3a8c92570faf97",
+        "output/pathfinders/tokens/pathfinders-high-intensity-markerlight.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/pathfinders/tokens/pathfinders-high-intensity-markerlight.png": "199ae047cd70dfb3537cd00587d2f9730efb12219445dac2c338f2454560914c",
+        "output/pathfinders/tokens/pathfinders-kauyon.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/pathfinders/tokens/pathfinders-kauyon.png": "977840384fc6fc08ba2656147ff0ddf88a7a8c1376ded2a3e641c0fc86d92de4",
+        "output/pathfinders/tokens/pathfinders-markerlight.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/pathfinders/tokens/pathfinders-markerlight.png": "bd7db7b39fff614f460a274829e035635db0bc913af70d27518d853e389b4beb",
+        "output/pathfinders/tokens/pathfinders-medic.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/pathfinders/tokens/pathfinders-medic.png": "8faf3dfcfd4158709c1cc7a2b1a6bd8d0c6b5949e3c6811d750f4b9b372dd844",
+        "output/pathfinders/tokens/pathfinders-montka.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/pathfinders/tokens/pathfinders-montka.png": "dae48ebc3236edc482ce79503e833c758ec7ba3ba75f26dacea9f2cfc5f94a0f",
+        "output/pathfinders/tokens/pathfinders-multi-dimensional.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/pathfinders/tokens/pathfinders-multi-dimensional.png": "087dcca097af88c9730a05892875e1398fcea47d61d12551fbfecd33046e5c42",
+        "output/pathfinders/tokens/pathfinders-orbital-survey-uplink.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/pathfinders/tokens/pathfinders-orbital-survey-uplink.png": "8817f89098a9fbd52514dfdd827243a511b1e49d21c7447df33d694cb9716601",
+        "output/pathfinders/tokens/pathfinders-photon-grenade.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/pathfinders/tokens/pathfinders-photon-grenade.png": "85df8b98d6b96ad788cc94febd71eccd7682dd008d002c06d1434a2ef5c3058b",
+        "output/pathfinders/tokens/pathfinders-pulse-accelerator.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/pathfinders/tokens/pathfinders-pulse-accelerator.png": "b66c5c67abd15448839cc4eb3aec3983d9baf1789c401f2944893198fdd15190",
+        "output/pathfinders/tokens/pathfinders-target-analysis-optic.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/pathfinders/tokens/pathfinders-target-analysis-optic.png": "48a7f7c778910bb39d0d8e75267571f31ef89d1a9f35b2873796f5f50034b71d",
+        "output/pathfinders/tokens/tokenbag/pathfinders-token-bag-icon.png": "2a5e8b9dd659a61ac4083e8d5a274b1999bb6624197e2f0c330b3f5e0bd57ce2",
+        "output/pathfinders/tokens/tokenbag/pathfinders-token-bag.obj": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+        "output/pathfinders/dice/pathfinders-dice-dark.jpg": "653fb947215e041ed2be20751a873bcd710cb955c2071d09ba8d62b926b57b7e",
+        "output/pathfinders/dice/pathfinders-dice-light.jpg": "ac93e21afbf80016682a286dbd9adaa36163e1eb42fe0d5921ac06499ae0afe6",
+        "output/pathfinders/dice/pathfinders-dice-team.jpg": "c69692f174d1377d4140840f2bedffa4fb20f677799d017ffcdfc58201e18f44",
+        "output/pathfinders/data/pathfinders-team-data.json": "ff2141efbe19e7b7c2d5bbbb489065928c2e0045332dfd3f672c4d48db3f5b30",
+        "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
+        "config/defaults/tts-script/datacard-load-stats.lua": "2d5f4088c2ff09f54988cf8722080f536b4e1b998cc2b4c1f1ea94e6b18eb92e",
+        "config/defaults/tts-script/display-table-manager-script.lua": "0dab4381078d90802f25e2cc825bc3658be35ee13ab3e98831c9d248c2526689",
+        "config/defaults/tts-script/faction-rule-chapter-tactics.lua": "c906742268076fb91f7cb4a92c6b588e1122ccddb692688f635c8dd4f7110ad0",
+        "config/defaults/tts-script/intermediate-updater.lua": "1a2d6dbc1a8c9c57ba6a3e7a3d4bc4b7a38a6c242a93f6ef3dae698123384d35",
+        "config/defaults/tts-script/single-object-updater.lua": "3613b85169e986a8e50ebe221482079e27c18037e3f48920aa0f7e138c0ccacc",
+        "config/defaults/tts-script/team-spawner-clean-script.lua": "12457bff3961eee2293c42d81cf4f4eb8b103177245a1ab8b46fd65da40672a2",
+        "config/defaults/tts-script/team-spawner-script.lua": "a51ff45c8622923db909fb465781801511f235412f099f83dff728d4027650db",
+        "config/defaults/tts-script/tts-update-rules-in-box-script.lua": "1eddd1803087ed63181a1149c856db77eef3196dc45d0d283693fada44a357dd",
+        "config/defaults/tts-image/default-icon.png": "892aff2628b9685c813e77be05c66afc1dc4247bc1dc9ce6fe54f006c2608271",
+        "config/defaults/tts-image/spawner-token.png": "61903b093f01d834f5e4c4c069b1353ecf7d29f012fef914b3027266816d8a6b",
+        "config/defaults/tts-token/square-bag-mesh.obj": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+        "config/defaults/tts-token/template-diamond-cutter.png": "719f57ba2b86494be454a6d3d25d8567dde974a915f3dde5ddc0e2d8dafaa1a5",
+        "config/defaults/tts-token/template-octagon-cutter.png": "944632aeacab978293ae57758b63086166c5fbaf3b845f48b3dd61db67d5c076",
+        "config/defaults/tts-token/template-operative-cutter.png": "0e698ddd403d7f0e84f200eb42af73f5249a9c5539d773298ff4c700ac9fe153",
+        "config/defaults/tts-token/template-round-cutter.png": "6564e1451c9a135a1c756fd94cde1c71e373e3fa677b51bba9d4bbe9e795d544",
+        "config/defaults/tts-token/token-bag-script.lua": "1659887e0fbfb9e3ebbc1aa5f3df8e1ffd89ee192be24d2dd1f02fcb0407e486",
+        "config/defaults/tts-token/token-bg-sample.png": "f9f90664c7f1c877c6f050f6e85babde6523cdc0aed9c77de8c09214f44ee109",
+        "config/defaults/tts-token/token-mesh.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc"
+      }
+    },
+    "front_end": {
+      "outputs": {},
+      "sources": {
+        "datacards": {
+          "hash": "3f2744cb5528b0513e9024bedc0a1ae7e809cfbaa0e1ba7de2c0b5b6b2363fd7",
+          "outputs": [
+            "layers/kt-app/extracted/pathfinders/cards/datacards/pathfinders-datacards-page_0.pdf",
+            "layers/kt-app/extracted/pathfinders/cards/datacards/pathfinders-datacards-page_1.pdf",
+            "layers/kt-app/extracted/pathfinders/cards/datacards/pathfinders-datacards-page_2.pdf",
+            "layers/kt-app/extracted/pathfinders/cards/datacards/pathfinders-datacards-page_3.pdf",
+            "layers/kt-app/extracted/pathfinders/cards/datacards/pathfinders-datacards-page_4.pdf",
+            "layers/kt-app/extracted/pathfinders/cards/datacards/pathfinders-datacards-page_5.pdf",
+            "layers/kt-app/extracted/pathfinders/cards/datacards/pathfinders-datacards-page_6.pdf",
+            "layers/kt-app/extracted/pathfinders/cards/datacards/pathfinders-datacards-page_7.pdf",
+            "layers/kt-app/extracted/pathfinders/cards/datacards/pathfinders-datacards-page_8.pdf",
+            "layers/kt-app/extracted/pathfinders/cards/datacards/pathfinders-datacards-page_9.pdf",
+            "layers/kt-app/extracted/pathfinders/cards/datacards/pathfinders-datacards-page_10.pdf",
+            "layers/kt-app/extracted/pathfinders/cards/datacards/pathfinders-datacards-page_11.pdf",
+            "layers/kt-app/extracted/pathfinders/cards/datacards/pathfinders-datacards-page_12.pdf",
+            "layers/kt-app/extracted/pathfinders/cards/datacards/pathfinders-datacards-page_13.pdf",
+            "layers/kt-app/extracted/pathfinders/cards/datacards/pathfinders-datacards-page_14.pdf",
+            "layers/kt-app/extracted/pathfinders/cards/datacards/pathfinders-datacards-page_15.pdf",
+            "layers/kt-app/extracted/pathfinders/cards/datacards/pathfinders-datacards-page_16.pdf",
+            "layers/kt-app/extracted/pathfinders/cards/datacards/pathfinders-datacards-page_17.pdf"
+          ],
+          "modified": "2026-07-06T15:59:35.906680+00:00"
+        },
+        "faction-rules": {
+          "hash": "2b5ba68ef434361b030879c88669c805687b3a5240b87de55b2a97ba222dfc01",
+          "outputs": [
+            "layers/kt-app/extracted/pathfinders/cards/faction-rules/pathfinders-faction-rules-page_0.pdf",
+            "layers/kt-app/extracted/pathfinders/cards/faction-rules/pathfinders-faction-rules-page_1.pdf",
+            "layers/kt-app/extracted/pathfinders/cards/faction-rules/pathfinders-faction-rules-page_2.pdf",
+            "layers/kt-app/extracted/pathfinders/cards/faction-rules/pathfinders-faction-rules-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:02:37.318096+00:00"
+        },
+        "operatives-selection": {
+          "hash": "ff7cd01037916d0f381595ce0f46a89993a72edea5376e5bddbd4e272aa15dfe",
+          "outputs": [
+            "layers/kt-app/extracted/pathfinders/cards/operatives-selection/pathfinders-operatives-selection-page_0.pdf",
+            "layers/kt-app/extracted/pathfinders/cards/operatives-selection/pathfinders-operatives-selection-page_1.pdf"
+          ],
+          "modified": "2026-07-06T16:06:21.646067+00:00"
+        },
+        "equipment": {
+          "hash": "82bbb2928b0be5372bf812857ef09de709052951638a4aff93292002b0ef0251",
+          "outputs": [
+            "layers/kt-app/extracted/pathfinders/cards/equipment/pathfinders-equipment-page_0.pdf",
+            "layers/kt-app/extracted/pathfinders/cards/equipment/pathfinders-equipment-page_1.pdf",
+            "layers/kt-app/extracted/pathfinders/cards/equipment/pathfinders-equipment-page_2.pdf",
+            "layers/kt-app/extracted/pathfinders/cards/equipment/pathfinders-equipment-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:06:34.128087+00:00"
+        },
+        "strategy-ploys": {
+          "hash": "f2ffad5528a28a5e6cdc08c106053efdab561f17487ac638ab50fcc69a378a5f",
+          "outputs": [
+            "layers/kt-app/extracted/pathfinders/cards/strategy-ploys/pathfinders-strategy-ploys-page_0.pdf",
+            "layers/kt-app/extracted/pathfinders/cards/strategy-ploys/pathfinders-strategy-ploys-page_1.pdf",
+            "layers/kt-app/extracted/pathfinders/cards/strategy-ploys/pathfinders-strategy-ploys-page_2.pdf",
+            "layers/kt-app/extracted/pathfinders/cards/strategy-ploys/pathfinders-strategy-ploys-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:10:14.467839+00:00"
+        },
+        "firefight-ploys": {
+          "hash": "25996d8195476fd93ecadcd249e8ac6b61c39c08424f611b83da06dc88f5f6fc",
+          "outputs": [
+            "layers/kt-app/extracted/pathfinders/cards/firefight-ploys/pathfinders-firefight-ploys-page_0.pdf",
+            "layers/kt-app/extracted/pathfinders/cards/firefight-ploys/pathfinders-firefight-ploys-page_1.pdf",
+            "layers/kt-app/extracted/pathfinders/cards/firefight-ploys/pathfinders-firefight-ploys-page_2.pdf",
+            "layers/kt-app/extracted/pathfinders/cards/firefight-ploys/pathfinders-firefight-ploys-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:11:09.165508+00:00"
+        },
+        "cards": {
+          "hash": "7dfd7d668078a4e9ef4447494e39e215030d1fbe74d5a4687ef35d17e4a74f8b",
+          "outputs": [
+            "layers/warcom/extracted/pathfinders/cards/pathfinders_page01_card1_landscape.pdf",
+            "layers/warcom/extracted/pathfinders/cards/pathfinders_page01_card2_landscape.pdf",
+            "layers/warcom/extracted/pathfinders/cards/pathfinders_page01_card3_landscape.pdf",
+            "layers/warcom/extracted/pathfinders/cards/pathfinders_page01_card4_landscape.pdf",
+            "layers/warcom/extracted/pathfinders/cards/pathfinders_page02_card1_landscape.pdf",
+            "layers/warcom/extracted/pathfinders/cards/pathfinders_page02_card2_landscape.pdf",
+            "layers/warcom/extracted/pathfinders/cards/pathfinders_page02_card3_landscape.pdf",
+            "layers/warcom/extracted/pathfinders/cards/pathfinders_page02_card4_landscape.pdf",
+            "layers/warcom/extracted/pathfinders/cards/pathfinders_page03_card1_landscape.pdf",
+            "layers/warcom/extracted/pathfinders/cards/pathfinders_page03_card2_landscape.pdf",
+            "layers/warcom/extracted/pathfinders/cards/pathfinders_page03_card3_landscape.pdf",
+            "layers/warcom/extracted/pathfinders/cards/pathfinders_page03_card4_landscape.pdf",
+            "layers/warcom/extracted/pathfinders/cards/pathfinders_page04_card1_landscape.pdf",
+            "layers/warcom/extracted/pathfinders/cards/pathfinders_page04_card2_landscape.pdf",
+            "layers/warcom/extracted/pathfinders/cards/pathfinders_page04_card3_landscape.pdf",
+            "layers/warcom/extracted/pathfinders/cards/pathfinders_page04_card4_landscape.pdf",
+            "layers/warcom/extracted/pathfinders/cards/pathfinders_page05_card1_landscape.pdf",
+            "layers/warcom/extracted/pathfinders/cards/pathfinders_page05_card2_landscape.pdf",
+            "layers/warcom/extracted/pathfinders/cards/pathfinders_page05_card3_landscape.pdf",
+            "layers/warcom/extracted/pathfinders/cards/pathfinders_page05_card4_landscape.pdf",
+            "layers/warcom/extracted/pathfinders/cards/pathfinders_page06_card1_portrait.pdf",
+            "layers/warcom/extracted/pathfinders/cards/pathfinders_page06_card2_portrait.pdf",
+            "layers/warcom/extracted/pathfinders/cards/pathfinders_page06_card3_portrait.pdf",
+            "layers/warcom/extracted/pathfinders/cards/pathfinders_page06_card4_portrait.pdf",
+            "layers/warcom/extracted/pathfinders/cards/pathfinders_page07_card1_portrait.pdf",
+            "layers/warcom/extracted/pathfinders/cards/pathfinders_page07_card2_portrait.pdf",
+            "layers/warcom/extracted/pathfinders/cards/pathfinders_page07_card3_portrait.pdf",
+            "layers/warcom/extracted/pathfinders/cards/pathfinders_page07_card4_portrait.pdf",
+            "layers/warcom/extracted/pathfinders/cards/pathfinders_page08_card1_portrait.pdf",
+            "layers/warcom/extracted/pathfinders/cards/pathfinders_page08_card2_portrait.pdf",
+            "layers/warcom/extracted/pathfinders/cards/pathfinders_page08_card3_portrait.pdf",
+            "layers/warcom/extracted/pathfinders/cards/pathfinders_page08_card4_portrait.pdf",
+            "layers/warcom/extracted/pathfinders/cards/pathfinders_page09_card1_portrait.pdf",
+            "layers/warcom/extracted/pathfinders/cards/pathfinders_page09_card2_portrait.pdf",
+            "layers/warcom/extracted/pathfinders/cards/pathfinders_page09_card3_portrait.pdf",
+            "layers/warcom/extracted/pathfinders/cards/pathfinders_page09_card4_portrait.pdf",
+            "layers/warcom/extracted/pathfinders/cards/pathfinders_page10_card1_portrait.pdf",
+            "layers/warcom/extracted/pathfinders/cards/pathfinders_page10_card2_portrait.pdf",
+            "layers/warcom/extracted/pathfinders/cards/pathfinders_page10_card3_portrait.pdf",
+            "layers/warcom/extracted/pathfinders/cards/pathfinders_page10_card4_portrait.pdf"
+          ],
+          "modified": "2026-07-08T19:04:03.286666+00:00"
+        }
+      },
+      "completed": "2026-07-08T19:04:03.286886+00:00"
+    },
+    "build_structure": {
+      "outputs": {
+        "structure": {
+          "path": "layers/warcom/structure/pathfinders-structure.json",
+          "hash": "3b8fac775960be18f1fc68ca993a161ffad3233c1cb16cb0245528908db57bf7",
+          "modified": "2026-07-10T20:29:53.899256+00:00"
+        }
+      },
+      "inputs": {
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page01_card1_landscape.pdf": "8ae45cfbba22753c19ce744f38558e410fdf7c7b78332ace0bd17be116cda72c",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page01_card2_landscape.pdf": "a466ff48115c6819d8daf9bc2026feaeeb19419f1645eaa885342f4da08425ea",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page01_card3_landscape.pdf": "84b340c204d4fd4fcbacac8220558d7b8c43705f575597d9169280ff0f252ebc",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page01_card4_landscape.pdf": "49220109d81a3ec0496b03882b5ae949040bf5d828fa3d6354a65ef8ea8ff0d3",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page02_card1_landscape.pdf": "44893148c93220020d643472d4ec1e88f659c7cbcdf6062d0aef032c1403ad19",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page02_card2_landscape.pdf": "e5bdce9e4ba5615adfea8165cf1a80a551bce6a50ccb84d62c710cf024b17bd8",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page02_card3_landscape.pdf": "0aa347829c7a8d45783fbb320302713ee71b1111a6123b2a95922f5fb56d5fac",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page02_card4_landscape.pdf": "cff61bae456a4746a0a4d62ae41a40c9f370d8f9634e16db9e16c85ee9f8b0a3",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page03_card1_landscape.pdf": "6ed8033adfd40c1f36497c6b23d94b7c9bee52449caea8b63335be76b3022407",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page03_card2_landscape.pdf": "511f2dfe1f328c869efad5317248e99d5e9bf2f2fb4cf6f20b77e3e6b2335018",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page03_card3_landscape.pdf": "f7bd305da954fbcf0cb7cc540b5c1321b38cbaec0bd3e6fd639a9e44faea2b4a",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page03_card4_landscape.pdf": "049174651f577762d958540f546cb4fb2d98a29e0e552307f070b8d8394e9a2a",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page04_card1_landscape.pdf": "109f2f347673116cf2cb3b4bd9295c2027cadb24b43e0912dcb24780e367d58a",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page04_card2_landscape.pdf": "7283154469119471be1e177514d0e8fc55275208fe9f93a9394a1b3fccc16584",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page04_card3_landscape.pdf": "ebbe42cf9b35c8b2a4e0a065441820f2fd3cfd455d44855efd5a3ff026fc6422",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page04_card4_landscape.pdf": "d80de27b2fe88c2d71ff8ed11ea5a03407fb099d166e05377a644b2e55246bf6",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page05_card1_landscape.pdf": "37d688c00062c5e6d8bc77ade03373ac26be5e02d758d67c01572f7bb60269ee",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page05_card2_landscape.pdf": "d35b2c045f1cc29ce0ad68ddba621532205d94037ef8dacf5b72ee9c6c90a17e",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page05_card3_landscape.pdf": "11fc1e94e6fc145f214394a9888b064b471c0732608a87f3440edd9815656c4a",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page05_card4_landscape.pdf": "13dd8bc50c0031bfc3d9c86c87b8908e6eeafe36ddefbcdec983efea911f4906",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page06_card1_portrait.pdf": "030c05d26b233dcd6abf15b6e97ad296eed8190aa5d7d259875b71f03ff56471",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page06_card2_portrait.pdf": "4face707284001fd4fdafa82dec4dd55f27ca6f1d885609f779527a36e009932",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page06_card3_portrait.pdf": "9a3426217d30fc08fec50471c59875f06435cda84bcb7a8d73f9a554633e597e",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page06_card4_portrait.pdf": "0df48f5bf6b7f060874dc9160718da2c337f33d9976493939cc090649aa0e892",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page07_card1_portrait.pdf": "7d24ed868beded604172d3c30b05f0688721fe56fe706ee6b7a2133540cdf142",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page07_card2_portrait.pdf": "43768d27ac2f017b44c3a2e6cc4de62ae8780586be8f9f91f99115c0806d5df3",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page07_card3_portrait.pdf": "ba222e40668deb5471ecf549976e8b42cd4ec58b2de17f3cc3651193742faf03",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page07_card4_portrait.pdf": "4b6e5c80c316baa043164a12157b47fc30ba4bbb65364e1bffaa55c35544c6a3",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page08_card1_portrait.pdf": "df38972e6cdebb8cae5487a1dd23d29ec9d312729ceb22a0bb94d4258dc236f1",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page08_card2_portrait.pdf": "72dd220f88834a3584043eb2fe76c55fe5f66781461897e99f494f8fbc6ae85b",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page08_card3_portrait.pdf": "1a5736604c58759cd756fdcbea03b855aaf10eb72a717856e2a434894f4b06c5",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page08_card4_portrait.pdf": "33397115c60abba7a9da255ad8394d942080f6a7c8a001ed97a9390a9e5d1955",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page09_card1_portrait.pdf": "ddcc2f28388583e2c27803d27947bbcd69d5ca1f0251b0abdf2eaef7bb71c21a",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page09_card2_portrait.pdf": "d1ed45cd5423cf19dfd212abe301b8987b60ca2b0306c22825791b62b270e482",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page09_card3_portrait.pdf": "67cbcaf423cc0cef55008ebe7ac28a5b26ecf698ab03c41e41d16c7f4dc6fbac",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page09_card4_portrait.pdf": "c6cf2cfb22729a698a10b80febce768e212838bf82a95f89058d62e035934104",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page10_card1_portrait.pdf": "90d0a165409922e9f765b57e367bfad1391f33ed3c978875ca6403a338f4bb6a",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page10_card2_portrait.pdf": "962071da8598387fe7dfd3e7c281a217c7c25e8d4106e6ca36e6958f01f7d5ce",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page10_card3_portrait.pdf": "b8ed14b87d40b19bed585bbe6d7bbd32c4cff384b6e2f461b65cbe6f58e26ee7",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page10_card4_portrait.pdf": "33a557cdc876eb7ca1fd6d8971e38cdec26aedcfbc6d546aeacbe30c12acb163"
+      },
+      "completed": "2026-07-10T20:30:05.430707+00:00"
+    },
+    "integrate_classified": {
+      "outputs": {
+        "manifest.json": {
+          "path": "layers/integration/pathfinders/manifest.json",
+          "hash": "3b8fac775960be18f1fc68ca993a161ffad3233c1cb16cb0245528908db57bf7",
+          "modified": "2026-07-11T07:04:10.612014+00:00"
+        },
+        "pathfinders-datacard-shasui-pathfinder.pdf": {
+          "path": "layers/integration/pathfinders/pathfinders-datacard-shasui-pathfinder.pdf",
+          "hash": "ec182a01642e376bf728cb09a0307fceed939d2f79ba6104b7c1ced0301422ac",
+          "modified": "2026-07-11T07:04:10.675406+00:00"
+        },
+        "pathfinders-datacard-assault-grenadier-pathfinder.pdf": {
+          "path": "layers/integration/pathfinders/pathfinders-datacard-assault-grenadier-pathfinder.pdf",
+          "hash": "2674f60aef7a7bc1f8a4c5a7b221eca4136a9c87cb48d3830a189936e9970337",
+          "modified": "2026-07-11T07:04:11.122409+00:00"
+        },
+        "pathfinders-datacard-blooded-pathfinder.pdf": {
+          "path": "layers/integration/pathfinders/pathfinders-datacard-blooded-pathfinder.pdf",
+          "hash": "9ac311087760f05a8cf2113e978141f490f41d2692e284b860b3826aeeb7860a",
+          "modified": "2026-07-11T07:04:11.184763+00:00"
+        },
+        "pathfinders-datacard-comms-specialist-pathfinder.pdf": {
+          "path": "layers/integration/pathfinders/pathfinders-datacard-comms-specialist-pathfinder.pdf",
+          "hash": "0a47dd59c21a90180365510020dfbc286c67af9c87e5afd924d01f13736d7d1d",
+          "modified": "2026-07-11T07:04:11.224921+00:00"
+        },
+        "pathfinders-datacard-drone-controller-pathfinder.pdf": {
+          "path": "layers/integration/pathfinders/pathfinders-datacard-drone-controller-pathfinder.pdf",
+          "hash": "219115e7e81b620865cb63032124f4ebcc4404fcd56d07c0c954918f15aa394b",
+          "modified": "2026-07-11T07:04:11.332203+00:00"
+        },
+        "pathfinders-datacard-marksman-pathfinder.pdf": {
+          "path": "layers/integration/pathfinders/pathfinders-datacard-marksman-pathfinder.pdf",
+          "hash": "ec0dce83a1ba452639e92ca2b71582645b2abf2f7f2c0966336d05b1d8df0158",
+          "modified": "2026-07-11T07:04:11.801650+00:00"
+        },
+        "pathfinders-datacard-medical-technician-pathfinder.pdf": {
+          "path": "layers/integration/pathfinders/pathfinders-datacard-medical-technician-pathfinder.pdf",
+          "hash": "b9fc08902896a5b13aa713575b4a0f039b3d95d851e053e13a1bac6c083c9e46",
+          "modified": "2026-07-11T07:04:13.636239+00:00"
+        },
+        "pathfinders-datacard-shasla-pathfinder.pdf": {
+          "path": "layers/integration/pathfinders/pathfinders-datacard-shasla-pathfinder.pdf",
+          "hash": "4c458b54a64586324349a264634c1da2a869eb605ba7d9c1702811fb6e4a2bab",
+          "modified": "2026-07-11T07:04:14.633785+00:00"
+        },
+        "pathfinders-datacard-transpectral-interference-pathfinder.pdf": {
+          "path": "layers/integration/pathfinders/pathfinders-datacard-transpectral-interference-pathfinder.pdf",
+          "hash": "da502a1ab6547f4bbbe2f877eb8639e502ec3c6e9163676c53e6f5b122bf7401",
+          "modified": "2026-07-11T07:04:17.920777+00:00"
+        },
+        "pathfinders-datacard-weapons-expert-pathfinder.pdf": {
+          "path": "layers/integration/pathfinders/pathfinders-datacard-weapons-expert-pathfinder.pdf",
+          "hash": "b5c495db5d23c992bc7e4658ce60f799345b4fdb75a9763373fdf7f49bddf591",
+          "modified": "2026-07-11T07:04:20.485873+00:00"
+        },
+        "pathfinders-datacard-mb3-recon-drone.pdf": {
+          "path": "layers/integration/pathfinders/pathfinders-datacard-mb3-recon-drone.pdf",
+          "hash": "922a8eb8112b429e970d12da03e0ad7339a593f2c24dc45adffd3d6fc39143f0",
+          "modified": "2026-07-11T07:04:33.871846+00:00"
+        },
+        "pathfinders-datacard-mv1-gun-drone.pdf": {
+          "path": "layers/integration/pathfinders/pathfinders-datacard-mv1-gun-drone.pdf",
+          "hash": "a30b104a5afa173c8578fac78d4b8fbe89bcf6b41b70f1f6adfd90f94da4383c",
+          "modified": "2026-07-11T07:04:41.191026+00:00"
+        },
+        "pathfinders-datacard-mv4-shield-drone.pdf": {
+          "path": "layers/integration/pathfinders/pathfinders-datacard-mv4-shield-drone.pdf",
+          "hash": "340ffa0e6a71a06a5a0b4cb30debf7366a2b053a2a9641bb955b5d834a3ba1b9",
+          "modified": "2026-07-11T07:04:51.403484+00:00"
+        },
+        "pathfinders-datacard-mv7-marker-drone.pdf": {
+          "path": "layers/integration/pathfinders/pathfinders-datacard-mv7-marker-drone.pdf",
+          "hash": "4d20bdafc51e2ca49be6b5924e4525b4d54008c6f55c723b34704d63f495260a",
+          "modified": "2026-07-11T07:04:56.745137+00:00"
+        },
+        "pathfinders-datacard-mv31-pulse-accelerator-drone.pdf": {
+          "path": "layers/integration/pathfinders/pathfinders-datacard-mv31-pulse-accelerator-drone.pdf",
+          "hash": "28dfa84457bb9f8541df66beb0759bbe83be89e027d4a6d2c9e77401a9541899",
+          "modified": "2026-07-11T07:04:59.904750+00:00"
+        },
+        "pathfinders-datacard-mv33-grav-inhibitor-drone.pdf": {
+          "path": "layers/integration/pathfinders/pathfinders-datacard-mv33-grav-inhibitor-drone.pdf",
+          "hash": "544902f11aed708c0c30aaaa3f0046cbda6c11fa825da2ea2504ac69e120f48a",
+          "modified": "2026-07-11T07:05:02.028239+00:00"
+        },
+        "pathfinders-equipment-target-analysis-optic.pdf": {
+          "path": "layers/integration/pathfinders/pathfinders-equipment-target-analysis-optic.pdf",
+          "hash": "7867f035a0849c3eb84e8a42c40776d82b749271fc5d4dc3698348605aeb8351",
+          "modified": "2026-07-11T07:05:02.870264+00:00"
+        },
+        "pathfinders-equipment-high-intensity-markerlight.pdf": {
+          "path": "layers/integration/pathfinders/pathfinders-equipment-high-intensity-markerlight.pdf",
+          "hash": "dfcf54b321dcc9f7afe694aef39f00c369649a249557d81424937526154f8704",
+          "modified": "2026-07-11T07:05:04.508995+00:00"
+        },
+        "pathfinders-equipment-photon-grenade.pdf": {
+          "path": "layers/integration/pathfinders/pathfinders-equipment-photon-grenade.pdf",
+          "hash": "033d3d05da46dc9dc12023382877624e212e8bcd85a15bafd7aa1b335e129e8e",
+          "modified": "2026-07-11T07:05:07.501367+00:00"
+        },
+        "pathfinders-equipment-orbital-survey-uplink.pdf": {
+          "path": "layers/integration/pathfinders/pathfinders-equipment-orbital-survey-uplink.pdf",
+          "hash": "43a8df27a2d17112afa0765d1fda7c25898f4add06d60c64e82bac2b6620a8a9",
+          "modified": "2026-07-11T07:05:11.511045+00:00"
+        },
+        "pathfinders-faction-rule-markerlights.pdf": {
+          "path": "layers/integration/pathfinders/pathfinders-faction-rule-markerlights.pdf",
+          "hash": "dac1ea5d97c45ddf34b839ab9a5fe27f2dc96ebff7971db3849c7f9e47f78054",
+          "modified": "2026-07-11T07:05:13.013698+00:00"
+        },
+        "pathfinders-faction-rule-markerlights-2.pdf": {
+          "path": "layers/integration/pathfinders/pathfinders-faction-rule-markerlights-2.pdf",
+          "hash": "866c05dfe24a627a395cd78051a4ff409cef973c7fecb1c58026a40117836112",
+          "modified": "2026-07-11T07:05:14.399792+00:00"
+        },
+        "pathfinders-token-guide-token-guide.pdf": {
+          "path": "layers/integration/pathfinders/pathfinders-token-guide-token-guide.pdf",
+          "hash": "6f65bd7c4c3a13c37129f5ef70f63855dc5ff2fca7c7713a7beb863784c76ae4",
+          "modified": "2026-07-11T07:05:15.864863+00:00"
+        },
+        "pathfinders-firefight-ploy-a-worthy-cause.pdf": {
+          "path": "layers/integration/pathfinders/pathfinders-firefight-ploy-a-worthy-cause.pdf",
+          "hash": "3fb00e889c6fd6cf062c6da5725534c05b7ad6c256d58b1c2e7411612f3e43a4",
+          "modified": "2026-07-11T07:05:19.795675+00:00"
+        },
+        "pathfinders-firefight-ploy-supporting-fire.pdf": {
+          "path": "layers/integration/pathfinders/pathfinders-firefight-ploy-supporting-fire.pdf",
+          "hash": "307b89df7501b9920c123ea372d84e71641c6fc91aa260675106814ab1c68cf5",
+          "modified": "2026-07-11T07:05:20.358636+00:00"
+        },
+        "pathfinders-firefight-ploy-saviour-protocols.pdf": {
+          "path": "layers/integration/pathfinders/pathfinders-firefight-ploy-saviour-protocols.pdf",
+          "hash": "dce29abb9afc6327b9789ad99fc71475670925db985caa7dbd4712062f829d19",
+          "modified": "2026-07-11T07:05:20.954007+00:00"
+        },
+        "pathfinders-firefight-ploy-point-blank-fusillade.pdf": {
+          "path": "layers/integration/pathfinders/pathfinders-firefight-ploy-point-blank-fusillade.pdf",
+          "hash": "5da58581b09154b314984a77f83624680e6d00f8381fbe1f851de4f7f4d61c43",
+          "modified": "2026-07-11T07:05:21.635045+00:00"
+        },
+        "pathfinders-operatives-selection-operative-selection.pdf": {
+          "path": "layers/integration/pathfinders/pathfinders-operatives-selection-operative-selection.pdf",
+          "hash": "daa5493eda04bce7b2889844d81e3e09000ec33d4a3bcaad799f1429ce2b628b",
+          "modified": "2026-07-11T07:05:22.691961+00:00"
+        },
+        "pathfinders-strategy-ploy-recon-sweep.pdf": {
+          "path": "layers/integration/pathfinders/pathfinders-strategy-ploy-recon-sweep.pdf",
+          "hash": "982d71b100fb3e43e8083513698871c66da360d6e4dcf0fea715315d73c17f96",
+          "modified": "2026-07-11T07:05:23.496227+00:00"
+        },
+        "pathfinders-strategy-ploy-suppressing-fire.pdf": {
+          "path": "layers/integration/pathfinders/pathfinders-strategy-ploy-suppressing-fire.pdf",
+          "hash": "c552e664d4d33845637462b742f91fab9a8bb3f743f5276a288e49e70df02d05",
+          "modified": "2026-07-11T07:05:24.214567+00:00"
+        },
+        "pathfinders-strategy-ploy-bonded.pdf": {
+          "path": "layers/integration/pathfinders/pathfinders-strategy-ploy-bonded.pdf",
+          "hash": "b10bb608383411beff04c208fa395aea1993cd2a499dab2f82371fa0faf0bfc3",
+          "modified": "2026-07-11T07:05:25.064839+00:00"
+        },
+        "pathfinders-strategy-ploy-take-cover.pdf": {
+          "path": "layers/integration/pathfinders/pathfinders-strategy-ploy-take-cover.pdf",
+          "hash": "1d2d17b02efa109766add1d51789361b5cd194d29cc286654478a24f2f939f94",
+          "modified": "2026-07-11T07:05:25.739156+00:00"
+        }
+      },
+      "inputs": {
+        "layers/warcom/structure/pathfinders-structure.json": "3b8fac775960be18f1fc68ca993a161ffad3233c1cb16cb0245528908db57bf7",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page01_card1_landscape.pdf": "8ae45cfbba22753c19ce744f38558e410fdf7c7b78332ace0bd17be116cda72c",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page01_card2_landscape.pdf": "a466ff48115c6819d8daf9bc2026feaeeb19419f1645eaa885342f4da08425ea",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page01_card3_landscape.pdf": "84b340c204d4fd4fcbacac8220558d7b8c43705f575597d9169280ff0f252ebc",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page01_card4_landscape.pdf": "49220109d81a3ec0496b03882b5ae949040bf5d828fa3d6354a65ef8ea8ff0d3",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page02_card1_landscape.pdf": "44893148c93220020d643472d4ec1e88f659c7cbcdf6062d0aef032c1403ad19",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page02_card2_landscape.pdf": "e5bdce9e4ba5615adfea8165cf1a80a551bce6a50ccb84d62c710cf024b17bd8",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page02_card3_landscape.pdf": "0aa347829c7a8d45783fbb320302713ee71b1111a6123b2a95922f5fb56d5fac",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page02_card4_landscape.pdf": "cff61bae456a4746a0a4d62ae41a40c9f370d8f9634e16db9e16c85ee9f8b0a3",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page03_card1_landscape.pdf": "6ed8033adfd40c1f36497c6b23d94b7c9bee52449caea8b63335be76b3022407",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page03_card2_landscape.pdf": "511f2dfe1f328c869efad5317248e99d5e9bf2f2fb4cf6f20b77e3e6b2335018",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page03_card3_landscape.pdf": "f7bd305da954fbcf0cb7cc540b5c1321b38cbaec0bd3e6fd639a9e44faea2b4a",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page03_card4_landscape.pdf": "049174651f577762d958540f546cb4fb2d98a29e0e552307f070b8d8394e9a2a",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page04_card1_landscape.pdf": "109f2f347673116cf2cb3b4bd9295c2027cadb24b43e0912dcb24780e367d58a",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page04_card2_landscape.pdf": "7283154469119471be1e177514d0e8fc55275208fe9f93a9394a1b3fccc16584",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page04_card3_landscape.pdf": "ebbe42cf9b35c8b2a4e0a065441820f2fd3cfd455d44855efd5a3ff026fc6422",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page04_card4_landscape.pdf": "d80de27b2fe88c2d71ff8ed11ea5a03407fb099d166e05377a644b2e55246bf6",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page05_card1_landscape.pdf": "37d688c00062c5e6d8bc77ade03373ac26be5e02d758d67c01572f7bb60269ee",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page05_card2_landscape.pdf": "d35b2c045f1cc29ce0ad68ddba621532205d94037ef8dacf5b72ee9c6c90a17e",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page09_card3_portrait.pdf": "67cbcaf423cc0cef55008ebe7ac28a5b26ecf698ab03c41e41d16c7f4dc6fbac",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page09_card4_portrait.pdf": "c6cf2cfb22729a698a10b80febce768e212838bf82a95f89058d62e035934104",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page10_card1_portrait.pdf": "90d0a165409922e9f765b57e367bfad1391f33ed3c978875ca6403a338f4bb6a",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page10_card2_portrait.pdf": "962071da8598387fe7dfd3e7c281a217c7c25e8d4106e6ca36e6958f01f7d5ce",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page06_card3_portrait.pdf": "9a3426217d30fc08fec50471c59875f06435cda84bcb7a8d73f9a554633e597e",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page06_card4_portrait.pdf": "0df48f5bf6b7f060874dc9160718da2c337f33d9976493939cc090649aa0e892",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page07_card1_portrait.pdf": "7d24ed868beded604172d3c30b05f0688721fe56fe706ee6b7a2133540cdf142",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page07_card2_portrait.pdf": "43768d27ac2f017b44c3a2e6cc4de62ae8780586be8f9f91f99115c0806d5df3",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page08_card3_portrait.pdf": "1a5736604c58759cd756fdcbea03b855aaf10eb72a717856e2a434894f4b06c5",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page08_card4_portrait.pdf": "33397115c60abba7a9da255ad8394d942080f6a7c8a001ed97a9390a9e5d1955",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page09_card1_portrait.pdf": "ddcc2f28388583e2c27803d27947bbcd69d5ca1f0251b0abdf2eaef7bb71c21a",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page09_card2_portrait.pdf": "d1ed45cd5423cf19dfd212abe301b8987b60ca2b0306c22825791b62b270e482",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page06_card1_portrait.pdf": "030c05d26b233dcd6abf15b6e97ad296eed8190aa5d7d259875b71f03ff56471",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page06_card2_portrait.pdf": "4face707284001fd4fdafa82dec4dd55f27ca6f1d885609f779527a36e009932",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page07_card3_portrait.pdf": "ba222e40668deb5471ecf549976e8b42cd4ec58b2de17f3cc3651193742faf03",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page07_card4_portrait.pdf": "4b6e5c80c316baa043164a12157b47fc30ba4bbb65364e1bffaa55c35544c6a3",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page08_card1_portrait.pdf": "df38972e6cdebb8cae5487a1dd23d29ec9d312729ceb22a0bb94d4258dc236f1",
+        "layers/warcom/extracted/pathfinders/cards/pathfinders_page08_card2_portrait.pdf": "72dd220f88834a3584043eb2fe76c55fe5f66781461897e99f494f8fbc6ae85b"
+      },
+      "completed": "2026-07-11T07:05:55.643343+00:00"
+    },
+    "extract_artwork": {
+      "outputs": {},
+      "sources": {
+        "artwork": {
+          "hash": "7dfd7d668078a4e9ef4447494e39e215030d1fbe74d5a4687ef35d17e4a74f8b",
+          "outputs": [
+            "layers/integration/pathfinders/artwork/pathfinders-artwork-01.jpeg",
+            "layers/integration/pathfinders/artwork/pathfinders-artwork-02.jpeg",
+            "layers/integration/pathfinders/artwork/pathfinders-artwork-03.png",
+            "layers/integration/pathfinders/artwork/pathfinders-artwork-04.jpeg",
+            "layers/integration/pathfinders/artwork/pathfinders-artwork-05.jpeg",
+            "layers/integration/pathfinders/artwork/pathfinders-artwork-06.jpeg",
+            "layers/integration/pathfinders/artwork/pathfinders-artwork-07.jpeg",
+            "layers/integration/pathfinders/artwork/pathfinders-artwork-08.png",
+            "layers/integration/pathfinders/artwork/pathfinders-artwork-09.jpeg",
+            "layers/integration/pathfinders/artwork/pathfinders-artwork-10.jpeg",
+            "layers/integration/pathfinders/artwork/pathfinders-artwork-11.jpeg",
+            "layers/integration/pathfinders/artwork/pathfinders-artwork-12.jpeg",
+            "layers/integration/pathfinders/artwork/pathfinders-artwork-13.jpeg",
+            "layers/integration/pathfinders/artwork/pathfinders-artwork-14.jpeg",
+            "layers/integration/pathfinders/artwork/pathfinders-artwork-15.jpeg",
+            "layers/integration/pathfinders/artwork/pathfinders-artwork-16.jpeg",
+            "layers/integration/pathfinders/artwork/pathfinders-artwork-17.jpeg",
+            "layers/integration/pathfinders/artwork/pathfinders-artwork-18.jpeg",
+            "layers/integration/pathfinders/artwork/pathfinders-artwork-metadata.json",
+            "layers/integration/pathfinders/artwork/icons/pathfinders-icon-landscape.jpg",
+            "layers/integration/pathfinders/artwork/icons/pathfinders-icon-portrait.jpg",
+            "layers/integration/pathfinders/artwork/icons/pathfinders-icon-token-transparent.png",
+            "layers/integration/pathfinders/artwork/icons/pathfinders-icon-token.jpg"
+          ],
+          "modified": "2026-07-06T20:51:24.250449+00:00"
+        }
+      },
+      "completed": "2026-07-06T20:51:24.250484+00:00"
+    }
+  }
+}

@@ -1,0 +1,870 @@
+{
+  "team": "wyrmblade",
+  "pipeline_version": "2.0",
+  "last_updated": "2026-07-12T18:32:28.473916+00:00",
+  "steps": {
+    "content_analysis": {
+      "outputs": {
+        "content.json": {
+          "path": "layers/integration/wyrmblade/content/wyrmblade-content.json",
+          "hash": "fd3f546df2fbd8e7e312467d48877a758f722cb6520f1b0a2ab0e080749d3ff6",
+          "modified": "2026-07-11T07:10:25.183755+00:00"
+        }
+      },
+      "completed": "2026-07-11T07:10:25.621452+00:00",
+      "inputs": {
+        "layers/integration/wyrmblade/manifest.json": "286664f7919963b73fa7a0ba14aa7c4925b20ac808c25cf013f3b3097503335f",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "layers/integration/wyrmblade/wyrmblade-datacard-kelermorph.pdf": "7265c173be11fe45374055678451f850a3082943c7f374ebdfe6e1e23279343b",
+        "layers/integration/wyrmblade/wyrmblade-datacard-locus.pdf": "67b7771cf07c57f1c55d3f01f1645018d2b7b93557fb1398b6f33bedcdd1108e",
+        "layers/integration/wyrmblade/wyrmblade-datacard-neophyte-gunner.pdf": "2c2edbaa95c2518bb06aa063ba53072e0cd6a16d2e2de8459b6a879d056c6560",
+        "layers/integration/wyrmblade/wyrmblade-datacard-neophyte-heavy-gunner.pdf": "a5e0c96b0bd40c2feb6e1bb222c0cdb5a9b6f1064f1a9f7673993edd04600f78",
+        "layers/integration/wyrmblade/wyrmblade-datacard-neophyte-icon-bearer.pdf": "a149a351bfc0ce0917cc1ded3dfe229c80cbba2602630611a8d8eb4a7232e83f",
+        "layers/integration/wyrmblade/wyrmblade-datacard-neophyte-leader.pdf": "c9bdefe44e14272386e8253e9865992f8180144d936c0e389af454423663f70b",
+        "layers/integration/wyrmblade/wyrmblade-datacard-neophyte-warrior.pdf": "5442b01bdff143b6a7e612ab8e280bc4511b4adac10f91b5118ac996ba92ad03",
+        "layers/integration/wyrmblade/wyrmblade-datacard-sanctus-sniper.pdf": "85f5828fcf7d31beea5d04ddc70378b7768f8cf49764f7bb2774323a73fbbc08",
+        "layers/integration/wyrmblade/wyrmblade-datacard-sanctus-talon.pdf": "a1f9ccee497a972b742b3374bde90a7087d20ebfd76c2430a494296321da7436",
+        "layers/integration/wyrmblade/wyrmblade-equipment-blasting-charges.pdf": "643b54ee8a3102a69164b0c30afd37c5a84d757ea6bd21bbdfadea720fac42c9",
+        "layers/integration/wyrmblade/wyrmblade-equipment-cult-knives.pdf": "84f57fc3356b58ba4e78808e6090123ecd009b66ff51bba4d25a077e412c000d",
+        "layers/integration/wyrmblade/wyrmblade-equipment-explosive-traps.pdf": "4db60ca7b7df21053ede5ac8c8bdbe96f28cc1777563b149cb03aa77ffbc909a",
+        "layers/integration/wyrmblade/wyrmblade-equipment-spotlights.pdf": "0abc86236fb2f7aa71be704096cdc45ad81aacf4d33b110e0a2218cac98f0be0",
+        "layers/integration/wyrmblade/wyrmblade-faction-rule-cult-agent.pdf": "c17204f8b659d44efb38b0393a418795a0d747af70892daeee2a32d695cc63bd",
+        "layers/integration/wyrmblade/wyrmblade-faction-rule-cult-ambush.pdf": "760bbd9fbd8ae704a311f337dc5c1fd39a5455398fe033765c42cb9b5a435d9a",
+        "layers/integration/wyrmblade/wyrmblade-faction-rule-familiar-territory.pdf": "877c6b827f83540cb3bdf710f20db5f7fd432254de0e593600fbb8c03ed65670",
+        "layers/integration/wyrmblade/wyrmblade-firefight-ploy-a-plan-generations-in.pdf": "68552efde7d919ed24ccae17ccb7ad5b4564826a305d0116a8dd5ecd34938b80",
+        "layers/integration/wyrmblade/wyrmblade-firefight-ploy-coiled-serpent.pdf": "c46a6201d1363283a24d008a346cec74d2515b0556d2c911bc64858d348252ff",
+        "layers/integration/wyrmblade/wyrmblade-firefight-ploy-slink-into-darkness.pdf": "96ee61d7a74cdb68d5c0ecb814f2fc53579fd14f50f143c58d6f223c2e1bb911",
+        "layers/integration/wyrmblade/wyrmblade-firefight-ploy-unquestioning-loyalty.pdf": "14dc351cf34cd067f3615a2d0ac3ff2f9fee9e21bd98a10b5e174723e16edcf5",
+        "layers/integration/wyrmblade/wyrmblade-operatives-selection-operative-selection.pdf": "ef6458fc938f31992ff9d99d7fbaa3b8752c201b2e1977be01d5cd079052e75f",
+        "layers/integration/wyrmblade/wyrmblade-strategy-ploy-crossfire.pdf": "4bc2fe6aeb58762a82740f460f304615842b6346e1b6f2357b2faaa7a999d2da",
+        "layers/integration/wyrmblade/wyrmblade-strategy-ploy-divert-and-disappear.pdf": "58635a7c1444532cac47e6cfdd61098f43a798b371e6bef032ab98a667c19d9f",
+        "layers/integration/wyrmblade/wyrmblade-strategy-ploy-one-with-the-shadows.pdf": "4566f0a5a21d4bd4f98ca62ccf742d966c02a1179b764d9d734ee534b711edef",
+        "layers/integration/wyrmblade/wyrmblade-strategy-ploy-the-day-is-at-hand.pdf": "baba558ddc837ed062deb872ea8fad0d97b0b53208667cc646ac20e930927ac3"
+      }
+    },
+    "extract_backsides": {
+      "outputs": {
+        "backside-landscape.jpg": {
+          "path": "layers/integration/wyrmblade/card-backside/wyrmblade-backside-landscape.jpg",
+          "hash": "e96c9149d5504bed1f2b3358b6e50e3d40160013e32c8f8e8bda06df2d837b54",
+          "modified": "2026-07-11T07:10:26.563414+00:00"
+        },
+        "backside-portrait.jpg": {
+          "path": "layers/integration/wyrmblade/card-backside/wyrmblade-backside-portrait.jpg",
+          "hash": "68b86c8d8038e176d7b3ca7116776e81a023ddcf7c3143c669a16867d44a6175",
+          "modified": "2026-07-11T07:10:26.566828+00:00"
+        }
+      },
+      "completed": "2026-07-11T07:10:26.574390+00:00",
+      "inputs": {
+        "layers/integration/wyrmblade/artwork/icons/wyrmblade-icon-token.jpg": "0546fb513a10534f332b8e9057fccef36eb402b99e10be654641d4dd1c5cb3d0",
+        "config/defaults/box/card-box-background.jpeg": "2dd1442a7c52ca1d66899333f678d60f48981ce20561ead77c1161d548176036"
+      }
+    },
+    "generate_dice": {
+      "outputs": {
+        "dice-light.jpg": {
+          "path": "output/wyrmblade/dice/wyrmblade-dice-light.jpg",
+          "hash": "c547500ae0e6b9e1a2bcdf01b08f121fe503be7b29a6eb6904523b1abf7074fe",
+          "modified": "2026-07-11T07:10:30.937134+00:00"
+        },
+        "dice-dark.jpg": {
+          "path": "output/wyrmblade/dice/wyrmblade-dice-dark.jpg",
+          "hash": "7ac4fc4af96288ec5782b84f3544529f74794aa1d561f6469562318c2e4a2b90",
+          "modified": "2026-07-11T07:10:31.635308+00:00"
+        }
+      },
+      "completed": "2026-07-11T07:10:31.639665+00:00",
+      "inputs": {
+        "layers/integration/wyrmblade/artwork/icons/wyrmblade-icon-token-transparent.png": "e93594c9ec2ea64c1814ebfc1128328539c925a460c03c6aa0648327cfbb9c5c",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41"
+      }
+    },
+    "generate_box_texture": {
+      "outputs": {
+        "card-box-texture.jpg": {
+          "path": "output/wyrmblade/cardbox/wyrmblade-card-box-texture.jpg",
+          "hash": "15307815f467057eb4ec95f67d3e73abf84e934becbd3f40bfafc986a3e060d3",
+          "modified": "2026-07-11T07:10:35.879709+00:00"
+        },
+        "card-box.obj": {
+          "path": "output/wyrmblade/cardbox/wyrmblade-card-box.obj",
+          "hash": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+          "modified": "2026-07-11T07:10:35.882638+00:00"
+        }
+      },
+      "completed": "2026-07-11T07:10:35.887480+00:00",
+      "inputs": {
+        "layers/integration/wyrmblade/artwork/icons/wyrmblade-icon-token.jpg": "0546fb513a10534f332b8e9057fccef36eb402b99e10be654641d4dd1c5cb3d0",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "config/defaults/box/card-box.obj": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+        "config/defaults/box/card-box-texture.jpg": "b2f310b01a0d28e8806e99ce0b972e8967e3014608eacefcb6ec51597695a313"
+      }
+    },
+    "generate_card_images": {
+      "outputs": {
+        "cards/datacards/kelermorph-back.jpg": {
+          "path": "output/wyrmblade/cards/datacards/kelermorph-back.jpg",
+          "hash": "e96c9149d5504bed1f2b3358b6e50e3d40160013e32c8f8e8bda06df2d837b54",
+          "modified": "2026-07-11T07:11:21.029631+00:00"
+        },
+        "cards/datacards/kelermorph-front.jpg": {
+          "path": "output/wyrmblade/cards/datacards/kelermorph-front.jpg",
+          "hash": "ab473af71368c4e332bfd1df872ca30a6aa498f89eb8edecee478c7706bfd92c",
+          "modified": "2026-07-11T07:11:22.087321+00:00"
+        },
+        "cards/datacards/locus-back.jpg": {
+          "path": "output/wyrmblade/cards/datacards/locus-back.jpg",
+          "hash": "8c34e4474542ee360bfca97636c10f53e002a43191e2bf4730510785ef0fd806",
+          "modified": "2026-07-11T07:11:22.752374+00:00"
+        },
+        "cards/datacards/locus-front.jpg": {
+          "path": "output/wyrmblade/cards/datacards/locus-front.jpg",
+          "hash": "a69caf4076040c1547a4087d3c931cb3a8749396e3d1c2ecfa6857a3a7407920",
+          "modified": "2026-07-11T07:11:22.756138+00:00"
+        },
+        "cards/datacards/neophyte-gunner-back.jpg": {
+          "path": "output/wyrmblade/cards/datacards/neophyte-gunner-back.jpg",
+          "hash": "e96c9149d5504bed1f2b3358b6e50e3d40160013e32c8f8e8bda06df2d837b54",
+          "modified": "2026-07-11T07:11:22.824170+00:00"
+        },
+        "cards/datacards/neophyte-gunner-front.jpg": {
+          "path": "output/wyrmblade/cards/datacards/neophyte-gunner-front.jpg",
+          "hash": "c5ce9dd37d7e95e47d39f596b65c792851acc4a3986353b15069fa2ae90d031d",
+          "modified": "2026-07-11T07:11:23.196033+00:00"
+        },
+        "cards/datacards/neophyte-heavy-gunner-back.jpg": {
+          "path": "output/wyrmblade/cards/datacards/neophyte-heavy-gunner-back.jpg",
+          "hash": "d1ec70aeeac8929620c158b549fa311d49ea0693501087d200878bdeadfcbaed",
+          "modified": "2026-07-11T07:11:24.496013+00:00"
+        },
+        "cards/datacards/neophyte-heavy-gunner-front.jpg": {
+          "path": "output/wyrmblade/cards/datacards/neophyte-heavy-gunner-front.jpg",
+          "hash": "3aff517a17bcf8aa7ea6453e758e56e9b31b3b05b1be993c50d435bfcbad4376",
+          "modified": "2026-07-11T07:11:25.571647+00:00"
+        },
+        "cards/datacards/neophyte-icon-bearer-back.jpg": {
+          "path": "output/wyrmblade/cards/datacards/neophyte-icon-bearer-back.jpg",
+          "hash": "e96c9149d5504bed1f2b3358b6e50e3d40160013e32c8f8e8bda06df2d837b54",
+          "modified": "2026-07-11T07:11:26.349254+00:00"
+        },
+        "cards/datacards/neophyte-icon-bearer-front.jpg": {
+          "path": "output/wyrmblade/cards/datacards/neophyte-icon-bearer-front.jpg",
+          "hash": "35a0d51e99e39eabd9124e9a14e9fe0b1c173d31da0df6e09ed4554ecd3cc1d9",
+          "modified": "2026-07-11T07:11:27.368052+00:00"
+        },
+        "cards/datacards/neophyte-leader-back.jpg": {
+          "path": "output/wyrmblade/cards/datacards/neophyte-leader-back.jpg",
+          "hash": "df4d80e76439a30717852d5f1170a4edcf67aa298321f64fc9caa088a31f16cd",
+          "modified": "2026-07-11T07:11:28.660914+00:00"
+        },
+        "cards/datacards/neophyte-leader-front.jpg": {
+          "path": "output/wyrmblade/cards/datacards/neophyte-leader-front.jpg",
+          "hash": "ef296270e3c32a6e9baec308fec06380ac747ad9e0bc32c28413d01c0ba1741a",
+          "modified": "2026-07-11T07:11:29.232198+00:00"
+        },
+        "cards/datacards/neophyte-warrior-back.jpg": {
+          "path": "output/wyrmblade/cards/datacards/neophyte-warrior-back.jpg",
+          "hash": "e96c9149d5504bed1f2b3358b6e50e3d40160013e32c8f8e8bda06df2d837b54",
+          "modified": "2026-07-11T07:11:30.527704+00:00"
+        },
+        "cards/datacards/neophyte-warrior-front.jpg": {
+          "path": "output/wyrmblade/cards/datacards/neophyte-warrior-front.jpg",
+          "hash": "66ce969950b41b809b41174fcf8177fd399eff5d3501a51abc03886e9d898b6e",
+          "modified": "2026-07-11T07:11:31.624085+00:00"
+        },
+        "cards/datacards/sanctus-sniper-back.jpg": {
+          "path": "output/wyrmblade/cards/datacards/sanctus-sniper-back.jpg",
+          "hash": "adf357fe35d3d27f3e8fd17acd2c4d8110c942a431a7669927e1bee7d311c408",
+          "modified": "2026-07-11T07:11:32.665334+00:00"
+        },
+        "cards/datacards/sanctus-sniper-front.jpg": {
+          "path": "output/wyrmblade/cards/datacards/sanctus-sniper-front.jpg",
+          "hash": "82f6c6203a16d8b8a381a144138be60058c6172ddd821105bff9d70d06f56eba",
+          "modified": "2026-07-11T07:11:32.666769+00:00"
+        },
+        "cards/datacards/sanctus-talon-back.jpg": {
+          "path": "output/wyrmblade/cards/datacards/sanctus-talon-back.jpg",
+          "hash": "da89e6d70887b16d7dc52b44b28a33e6e0cd74a37a836ba052a82ad4dd52e124",
+          "modified": "2026-07-11T07:11:32.667987+00:00"
+        },
+        "cards/datacards/sanctus-talon-front.jpg": {
+          "path": "output/wyrmblade/cards/datacards/sanctus-talon-front.jpg",
+          "hash": "a23fc6274bfcacbe30ad27470b0c7df8665e43102e43ba8f845418c49d6ed3d9",
+          "modified": "2026-07-11T07:11:32.668689+00:00"
+        },
+        "cards/equipment/wyrmblade-blasting-charges-back.jpg": {
+          "path": "output/wyrmblade/cards/equipment/wyrmblade-blasting-charges-back.jpg",
+          "hash": "68b86c8d8038e176d7b3ca7116776e81a023ddcf7c3143c669a16867d44a6175",
+          "modified": "2026-07-11T07:11:32.792207+00:00"
+        },
+        "cards/equipment/wyrmblade-blasting-charges-front.jpg": {
+          "path": "output/wyrmblade/cards/equipment/wyrmblade-blasting-charges-front.jpg",
+          "hash": "05d8f3ac23e3c035c4bca3807de8c1c7eae6401db83e15184c59b2f0171f7f5d",
+          "modified": "2026-07-11T07:11:33.414132+00:00"
+        },
+        "cards/equipment/wyrmblade-cult-knives-back.jpg": {
+          "path": "output/wyrmblade/cards/equipment/wyrmblade-cult-knives-back.jpg",
+          "hash": "68b86c8d8038e176d7b3ca7116776e81a023ddcf7c3143c669a16867d44a6175",
+          "modified": "2026-07-11T07:11:34.674342+00:00"
+        },
+        "cards/equipment/wyrmblade-cult-knives-front.jpg": {
+          "path": "output/wyrmblade/cards/equipment/wyrmblade-cult-knives-front.jpg",
+          "hash": "3f46fb7786529bb271176ebe22da58989222694204e40df13c703769fd2e6481",
+          "modified": "2026-07-11T07:11:36.571813+00:00"
+        },
+        "cards/equipment/wyrmblade-explosive-traps-back.jpg": {
+          "path": "output/wyrmblade/cards/equipment/wyrmblade-explosive-traps-back.jpg",
+          "hash": "68b86c8d8038e176d7b3ca7116776e81a023ddcf7c3143c669a16867d44a6175",
+          "modified": "2026-07-11T07:11:37.662436+00:00"
+        },
+        "cards/equipment/wyrmblade-explosive-traps-front.jpg": {
+          "path": "output/wyrmblade/cards/equipment/wyrmblade-explosive-traps-front.jpg",
+          "hash": "51fe1375db356ea577b07320b2c1047755bc45e2ad73e12eb26567132128d0b5",
+          "modified": "2026-07-11T07:11:38.989166+00:00"
+        },
+        "cards/equipment/wyrmblade-spotlights-back.jpg": {
+          "path": "output/wyrmblade/cards/equipment/wyrmblade-spotlights-back.jpg",
+          "hash": "68b86c8d8038e176d7b3ca7116776e81a023ddcf7c3143c669a16867d44a6175",
+          "modified": "2026-07-11T07:11:39.488814+00:00"
+        },
+        "cards/equipment/wyrmblade-spotlights-front.jpg": {
+          "path": "output/wyrmblade/cards/equipment/wyrmblade-spotlights-front.jpg",
+          "hash": "36922442d2ac18eee2d7d23105b8377e7b8ffee66b710c16d1a17d4b26dc1ca6",
+          "modified": "2026-07-11T07:11:41.380040+00:00"
+        },
+        "cards/faction_rules/wyrmblade-cult-agent-back.jpg": {
+          "path": "output/wyrmblade/cards/faction_rules/wyrmblade-cult-agent-back.jpg",
+          "hash": "68b86c8d8038e176d7b3ca7116776e81a023ddcf7c3143c669a16867d44a6175",
+          "modified": "2026-07-11T07:11:42.987248+00:00"
+        },
+        "cards/faction_rules/wyrmblade-cult-agent-front.jpg": {
+          "path": "output/wyrmblade/cards/faction_rules/wyrmblade-cult-agent-front.jpg",
+          "hash": "128d33c3ded6ae7dddd62dc736c758bc3b6ef8b194271a33c60c0e884da21954",
+          "modified": "2026-07-11T07:11:44.862018+00:00"
+        },
+        "cards/faction_rules/wyrmblade-cult-ambush-back.jpg": {
+          "path": "output/wyrmblade/cards/faction_rules/wyrmblade-cult-ambush-back.jpg",
+          "hash": "68b86c8d8038e176d7b3ca7116776e81a023ddcf7c3143c669a16867d44a6175",
+          "modified": "2026-07-11T07:11:45.507728+00:00"
+        },
+        "cards/faction_rules/wyrmblade-cult-ambush-front.jpg": {
+          "path": "output/wyrmblade/cards/faction_rules/wyrmblade-cult-ambush-front.jpg",
+          "hash": "84d6ecc736b62241983003132c756163e21475b5af7ccaa8527e03ef3cd8834a",
+          "modified": "2026-07-11T07:11:46.223628+00:00"
+        },
+        "cards/faction_rules/wyrmblade-familiar-territory-back.jpg": {
+          "path": "output/wyrmblade/cards/faction_rules/wyrmblade-familiar-territory-back.jpg",
+          "hash": "90e5ae04335a9629ee71ec571e7e53126352fced85f84fee573e0834ba5e2440",
+          "modified": "2026-07-11T07:11:47.844306+00:00"
+        },
+        "cards/faction_rules/wyrmblade-familiar-territory-front.jpg": {
+          "path": "output/wyrmblade/cards/faction_rules/wyrmblade-familiar-territory-front.jpg",
+          "hash": "70d13c86e5d757a76b5646144bf3d0530c4718126dec090591f496f4c07a5e39",
+          "modified": "2026-07-11T07:11:48.332123+00:00"
+        },
+        "cards/firefight_ploys/wyrmblade-a-plan-generations-in-back.jpg": {
+          "path": "output/wyrmblade/cards/firefight_ploys/wyrmblade-a-plan-generations-in-back.jpg",
+          "hash": "68b86c8d8038e176d7b3ca7116776e81a023ddcf7c3143c669a16867d44a6175",
+          "modified": "2026-07-11T07:11:49.571402+00:00"
+        },
+        "cards/firefight_ploys/wyrmblade-a-plan-generations-in-front.jpg": {
+          "path": "output/wyrmblade/cards/firefight_ploys/wyrmblade-a-plan-generations-in-front.jpg",
+          "hash": "2ef4798cf8774ea7273ccdf3d9b09c54729731e27f69a958bad1525980d9943e",
+          "modified": "2026-07-11T07:11:49.572666+00:00"
+        },
+        "cards/firefight_ploys/wyrmblade-coiled-serpent-back.jpg": {
+          "path": "output/wyrmblade/cards/firefight_ploys/wyrmblade-coiled-serpent-back.jpg",
+          "hash": "68b86c8d8038e176d7b3ca7116776e81a023ddcf7c3143c669a16867d44a6175",
+          "modified": "2026-07-11T07:11:50.071786+00:00"
+        },
+        "cards/firefight_ploys/wyrmblade-coiled-serpent-front.jpg": {
+          "path": "output/wyrmblade/cards/firefight_ploys/wyrmblade-coiled-serpent-front.jpg",
+          "hash": "14d7d859a7791eef5c4e56f61b1956e72ba8d1014684d7f21c761243ddbe330f",
+          "modified": "2026-07-11T07:11:50.073388+00:00"
+        },
+        "cards/firefight_ploys/wyrmblade-slink-into-darkness-back.jpg": {
+          "path": "output/wyrmblade/cards/firefight_ploys/wyrmblade-slink-into-darkness-back.jpg",
+          "hash": "68b86c8d8038e176d7b3ca7116776e81a023ddcf7c3143c669a16867d44a6175",
+          "modified": "2026-07-11T07:11:50.134750+00:00"
+        },
+        "cards/firefight_ploys/wyrmblade-slink-into-darkness-front.jpg": {
+          "path": "output/wyrmblade/cards/firefight_ploys/wyrmblade-slink-into-darkness-front.jpg",
+          "hash": "0edfadf444ae38bed10ee48b07b3c8685fe4f7004e01a802c519cae6a71ba7db",
+          "modified": "2026-07-11T07:11:50.767361+00:00"
+        },
+        "cards/firefight_ploys/wyrmblade-unquestioning-loyalty-back.jpg": {
+          "path": "output/wyrmblade/cards/firefight_ploys/wyrmblade-unquestioning-loyalty-back.jpg",
+          "hash": "68b86c8d8038e176d7b3ca7116776e81a023ddcf7c3143c669a16867d44a6175",
+          "modified": "2026-07-11T07:11:51.246403+00:00"
+        },
+        "cards/firefight_ploys/wyrmblade-unquestioning-loyalty-front.jpg": {
+          "path": "output/wyrmblade/cards/firefight_ploys/wyrmblade-unquestioning-loyalty-front.jpg",
+          "hash": "0053d0d6601b6c144c0e98f476310071f590f5fe855dd7dfbe835542f9aefd82",
+          "modified": "2026-07-11T07:11:51.889253+00:00"
+        },
+        "cards/operatives_selection/wyrmblade-operative-selection-back.jpg": {
+          "path": "output/wyrmblade/cards/operatives_selection/wyrmblade-operative-selection-back.jpg",
+          "hash": "26792c2eefb0ab8c06e062974c0930b47403c4f2817402f89aa9fcc377cd275b",
+          "modified": "2026-07-11T07:11:51.891513+00:00"
+        },
+        "cards/operatives_selection/wyrmblade-operative-selection-front.jpg": {
+          "path": "output/wyrmblade/cards/operatives_selection/wyrmblade-operative-selection-front.jpg",
+          "hash": "20e4acc240a574cccaf32f92d2de99c1b8ea1b1272582601de099384baa01fd6",
+          "modified": "2026-07-11T07:11:51.893319+00:00"
+        },
+        "cards/strategy_ploys/wyrmblade-crossfire-back.jpg": {
+          "path": "output/wyrmblade/cards/strategy_ploys/wyrmblade-crossfire-back.jpg",
+          "hash": "68b86c8d8038e176d7b3ca7116776e81a023ddcf7c3143c669a16867d44a6175",
+          "modified": "2026-07-11T07:11:51.962223+00:00"
+        },
+        "cards/strategy_ploys/wyrmblade-crossfire-front.jpg": {
+          "path": "output/wyrmblade/cards/strategy_ploys/wyrmblade-crossfire-front.jpg",
+          "hash": "b0182a07205f1f0b49d00fa076d323b27811fb6ed2e93d11d64ab8b983a1a47e",
+          "modified": "2026-07-11T07:11:51.964098+00:00"
+        },
+        "cards/strategy_ploys/wyrmblade-divert-and-disappear-back.jpg": {
+          "path": "output/wyrmblade/cards/strategy_ploys/wyrmblade-divert-and-disappear-back.jpg",
+          "hash": "68b86c8d8038e176d7b3ca7116776e81a023ddcf7c3143c669a16867d44a6175",
+          "modified": "2026-07-11T07:11:51.971026+00:00"
+        },
+        "cards/strategy_ploys/wyrmblade-divert-and-disappear-front.jpg": {
+          "path": "output/wyrmblade/cards/strategy_ploys/wyrmblade-divert-and-disappear-front.jpg",
+          "hash": "74b7a543d1f33a95b448a1a6d083c1d2f15c1c57c4c2713deec639377808ff6d",
+          "modified": "2026-07-11T07:11:52.562209+00:00"
+        },
+        "cards/strategy_ploys/wyrmblade-one-with-the-shadows-back.jpg": {
+          "path": "output/wyrmblade/cards/strategy_ploys/wyrmblade-one-with-the-shadows-back.jpg",
+          "hash": "68b86c8d8038e176d7b3ca7116776e81a023ddcf7c3143c669a16867d44a6175",
+          "modified": "2026-07-11T07:11:52.570186+00:00"
+        },
+        "cards/strategy_ploys/wyrmblade-one-with-the-shadows-front.jpg": {
+          "path": "output/wyrmblade/cards/strategy_ploys/wyrmblade-one-with-the-shadows-front.jpg",
+          "hash": "669f0c41c4f6393d42fcbadb37ab0fa28b307746cf94a96255baf2ab45efc430",
+          "modified": "2026-07-11T07:11:52.631233+00:00"
+        },
+        "cards/strategy_ploys/wyrmblade-the-day-is-at-hand-back.jpg": {
+          "path": "output/wyrmblade/cards/strategy_ploys/wyrmblade-the-day-is-at-hand-back.jpg",
+          "hash": "68b86c8d8038e176d7b3ca7116776e81a023ddcf7c3143c669a16867d44a6175",
+          "modified": "2026-07-11T07:11:52.640311+00:00"
+        },
+        "cards/strategy_ploys/wyrmblade-the-day-is-at-hand-front.jpg": {
+          "path": "output/wyrmblade/cards/strategy_ploys/wyrmblade-the-day-is-at-hand-front.jpg",
+          "hash": "01ec98eadd95425aa00e4c9a978241148a3d6f63e31043c3b24281733035a6e0",
+          "modified": "2026-07-11T07:11:53.231626+00:00"
+        }
+      },
+      "completed": "2026-07-11T07:11:58.638796+00:00",
+      "inputs": {
+        "layers/integration/wyrmblade/manifest.json": "286664f7919963b73fa7a0ba14aa7c4925b20ac808c25cf013f3b3097503335f",
+        "layers/integration/wyrmblade/wyrmblade-datacard-kelermorph.pdf": "7265c173be11fe45374055678451f850a3082943c7f374ebdfe6e1e23279343b",
+        "layers/integration/wyrmblade/wyrmblade-datacard-locus.pdf": "67b7771cf07c57f1c55d3f01f1645018d2b7b93557fb1398b6f33bedcdd1108e",
+        "layers/integration/wyrmblade/wyrmblade-datacard-neophyte-gunner.pdf": "2c2edbaa95c2518bb06aa063ba53072e0cd6a16d2e2de8459b6a879d056c6560",
+        "layers/integration/wyrmblade/wyrmblade-datacard-neophyte-heavy-gunner.pdf": "a5e0c96b0bd40c2feb6e1bb222c0cdb5a9b6f1064f1a9f7673993edd04600f78",
+        "layers/integration/wyrmblade/wyrmblade-datacard-neophyte-icon-bearer.pdf": "a149a351bfc0ce0917cc1ded3dfe229c80cbba2602630611a8d8eb4a7232e83f",
+        "layers/integration/wyrmblade/wyrmblade-datacard-neophyte-leader.pdf": "c9bdefe44e14272386e8253e9865992f8180144d936c0e389af454423663f70b",
+        "layers/integration/wyrmblade/wyrmblade-datacard-neophyte-warrior.pdf": "5442b01bdff143b6a7e612ab8e280bc4511b4adac10f91b5118ac996ba92ad03",
+        "layers/integration/wyrmblade/wyrmblade-datacard-sanctus-sniper.pdf": "85f5828fcf7d31beea5d04ddc70378b7768f8cf49764f7bb2774323a73fbbc08",
+        "layers/integration/wyrmblade/wyrmblade-datacard-sanctus-talon.pdf": "a1f9ccee497a972b742b3374bde90a7087d20ebfd76c2430a494296321da7436",
+        "layers/integration/wyrmblade/wyrmblade-equipment-blasting-charges.pdf": "643b54ee8a3102a69164b0c30afd37c5a84d757ea6bd21bbdfadea720fac42c9",
+        "layers/integration/wyrmblade/wyrmblade-equipment-cult-knives.pdf": "84f57fc3356b58ba4e78808e6090123ecd009b66ff51bba4d25a077e412c000d",
+        "layers/integration/wyrmblade/wyrmblade-equipment-explosive-traps.pdf": "4db60ca7b7df21053ede5ac8c8bdbe96f28cc1777563b149cb03aa77ffbc909a",
+        "layers/integration/wyrmblade/wyrmblade-equipment-spotlights.pdf": "0abc86236fb2f7aa71be704096cdc45ad81aacf4d33b110e0a2218cac98f0be0",
+        "layers/integration/wyrmblade/wyrmblade-faction-rule-cult-agent.pdf": "c17204f8b659d44efb38b0393a418795a0d747af70892daeee2a32d695cc63bd",
+        "layers/integration/wyrmblade/wyrmblade-faction-rule-cult-ambush.pdf": "760bbd9fbd8ae704a311f337dc5c1fd39a5455398fe033765c42cb9b5a435d9a",
+        "layers/integration/wyrmblade/wyrmblade-faction-rule-familiar-territory.pdf": "877c6b827f83540cb3bdf710f20db5f7fd432254de0e593600fbb8c03ed65670",
+        "layers/integration/wyrmblade/wyrmblade-firefight-ploy-a-plan-generations-in.pdf": "68552efde7d919ed24ccae17ccb7ad5b4564826a305d0116a8dd5ecd34938b80",
+        "layers/integration/wyrmblade/wyrmblade-firefight-ploy-coiled-serpent.pdf": "c46a6201d1363283a24d008a346cec74d2515b0556d2c911bc64858d348252ff",
+        "layers/integration/wyrmblade/wyrmblade-firefight-ploy-slink-into-darkness.pdf": "96ee61d7a74cdb68d5c0ecb814f2fc53579fd14f50f143c58d6f223c2e1bb911",
+        "layers/integration/wyrmblade/wyrmblade-firefight-ploy-unquestioning-loyalty.pdf": "14dc351cf34cd067f3615a2d0ac3ff2f9fee9e21bd98a10b5e174723e16edcf5",
+        "layers/integration/wyrmblade/wyrmblade-operatives-selection-operative-selection.pdf": "ef6458fc938f31992ff9d99d7fbaa3b8752c201b2e1977be01d5cd079052e75f",
+        "layers/integration/wyrmblade/wyrmblade-strategy-ploy-crossfire.pdf": "4bc2fe6aeb58762a82740f460f304615842b6346e1b6f2357b2faaa7a999d2da",
+        "layers/integration/wyrmblade/wyrmblade-strategy-ploy-divert-and-disappear.pdf": "58635a7c1444532cac47e6cfdd61098f43a798b371e6bef032ab98a667c19d9f",
+        "layers/integration/wyrmblade/wyrmblade-strategy-ploy-one-with-the-shadows.pdf": "4566f0a5a21d4bd4f98ca62ccf742d966c02a1179b764d9d734ee534b711edef",
+        "layers/integration/wyrmblade/wyrmblade-strategy-ploy-the-day-is-at-hand.pdf": "baba558ddc837ed062deb872ea8fad0d97b0b53208667cc646ac20e930927ac3",
+        "layers/integration/wyrmblade/card-backside/wyrmblade-backside-portrait.jpg": "68b86c8d8038e176d7b3ca7116776e81a023ddcf7c3143c669a16867d44a6175",
+        "config/defaults/card-backside/default-backside-portrait.jpg": "f00ff15fa70005b9f804de08519e2e83485d7eaf78dfacea65dcef0eb1a29c22",
+        "layers/integration/wyrmblade/card-backside/wyrmblade-backside-landscape.jpg": "e96c9149d5504bed1f2b3358b6e50e3d40160013e32c8f8e8bda06df2d837b54",
+        "config/defaults/card-backside/default-backside-landscape.jpg": "1cf5580a1dff0c10adb1a286edad4479c487f3d2d698b0b8be84fe653039fd7e"
+      }
+    },
+    "extract_stats": {
+      "outputs": {
+        "team-data.json": {
+          "path": "output/wyrmblade/data/wyrmblade-team-data.json",
+          "hash": "fd3f546df2fbd8e7e312467d48877a758f722cb6520f1b0a2ab0e080749d3ff6",
+          "modified": "2026-07-11T07:12:00.113944+00:00"
+        }
+      },
+      "completed": "2026-07-11T07:12:00.114615+00:00",
+      "inputs": {
+        "layers/integration/wyrmblade/content/wyrmblade-content.json": "fd3f546df2fbd8e7e312467d48877a758f722cb6520f1b0a2ab0e080749d3ff6"
+      }
+    },
+    "generate_tts": {
+      "outputs": {
+        "tts_objects/Wyrmblade Box.json": {
+          "path": "output/wyrmblade/tts_objects/Wyrmblade Box.json",
+          "hash": "8e45e44d0c44171b439fd53c4280dfd6005aceefb73660a3adf6b42834fa3e60",
+          "modified": "2026-07-12T18:32:28.428791+00:00"
+        },
+        "tts_objects/Wyrmblade.json": {
+          "path": "output/wyrmblade/tts_objects/Wyrmblade.json",
+          "hash": "02ba97ec78839e96eea0f703116a26d6ad848c81d46d1cff875159391b88324a",
+          "modified": "2026-07-12T18:32:28.438814+00:00"
+        }
+      },
+      "completed": "2026-07-12T18:32:28.473905+00:00",
+      "inputs": {
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "config/team-guids.json": "1dea0eaf2c7d1c37c86aba088cdf876f0638d2dcaca162888fea8422c2d5c9db",
+        "output/wyrmblade/cards/datacards/kelermorph-back.jpg": "e96c9149d5504bed1f2b3358b6e50e3d40160013e32c8f8e8bda06df2d837b54",
+        "output/wyrmblade/cards/datacards/kelermorph-front.jpg": "ab473af71368c4e332bfd1df872ca30a6aa498f89eb8edecee478c7706bfd92c",
+        "output/wyrmblade/cards/datacards/locus-back.jpg": "8c34e4474542ee360bfca97636c10f53e002a43191e2bf4730510785ef0fd806",
+        "output/wyrmblade/cards/datacards/locus-front.jpg": "a69caf4076040c1547a4087d3c931cb3a8749396e3d1c2ecfa6857a3a7407920",
+        "output/wyrmblade/cards/datacards/neophyte-gunner-back.jpg": "e96c9149d5504bed1f2b3358b6e50e3d40160013e32c8f8e8bda06df2d837b54",
+        "output/wyrmblade/cards/datacards/neophyte-gunner-front.jpg": "c5ce9dd37d7e95e47d39f596b65c792851acc4a3986353b15069fa2ae90d031d",
+        "output/wyrmblade/cards/datacards/neophyte-heavy-gunner-back.jpg": "d1ec70aeeac8929620c158b549fa311d49ea0693501087d200878bdeadfcbaed",
+        "output/wyrmblade/cards/datacards/neophyte-heavy-gunner-front.jpg": "3aff517a17bcf8aa7ea6453e758e56e9b31b3b05b1be993c50d435bfcbad4376",
+        "output/wyrmblade/cards/datacards/neophyte-icon-bearer-back.jpg": "e96c9149d5504bed1f2b3358b6e50e3d40160013e32c8f8e8bda06df2d837b54",
+        "output/wyrmblade/cards/datacards/neophyte-icon-bearer-front.jpg": "35a0d51e99e39eabd9124e9a14e9fe0b1c173d31da0df6e09ed4554ecd3cc1d9",
+        "output/wyrmblade/cards/datacards/neophyte-leader-back.jpg": "df4d80e76439a30717852d5f1170a4edcf67aa298321f64fc9caa088a31f16cd",
+        "output/wyrmblade/cards/datacards/neophyte-leader-front.jpg": "ef296270e3c32a6e9baec308fec06380ac747ad9e0bc32c28413d01c0ba1741a",
+        "output/wyrmblade/cards/datacards/neophyte-warrior-back.jpg": "e96c9149d5504bed1f2b3358b6e50e3d40160013e32c8f8e8bda06df2d837b54",
+        "output/wyrmblade/cards/datacards/neophyte-warrior-front.jpg": "66ce969950b41b809b41174fcf8177fd399eff5d3501a51abc03886e9d898b6e",
+        "output/wyrmblade/cards/datacards/sanctus-sniper-back.jpg": "adf357fe35d3d27f3e8fd17acd2c4d8110c942a431a7669927e1bee7d311c408",
+        "output/wyrmblade/cards/datacards/sanctus-sniper-front.jpg": "82f6c6203a16d8b8a381a144138be60058c6172ddd821105bff9d70d06f56eba",
+        "output/wyrmblade/cards/datacards/sanctus-talon-back.jpg": "da89e6d70887b16d7dc52b44b28a33e6e0cd74a37a836ba052a82ad4dd52e124",
+        "output/wyrmblade/cards/datacards/sanctus-talon-front.jpg": "a23fc6274bfcacbe30ad27470b0c7df8665e43102e43ba8f845418c49d6ed3d9",
+        "output/wyrmblade/cards/equipment/wyrmblade-blasting-charges-back.jpg": "68b86c8d8038e176d7b3ca7116776e81a023ddcf7c3143c669a16867d44a6175",
+        "output/wyrmblade/cards/equipment/wyrmblade-blasting-charges-front.jpg": "05d8f3ac23e3c035c4bca3807de8c1c7eae6401db83e15184c59b2f0171f7f5d",
+        "output/wyrmblade/cards/equipment/wyrmblade-cult-knives-back.jpg": "68b86c8d8038e176d7b3ca7116776e81a023ddcf7c3143c669a16867d44a6175",
+        "output/wyrmblade/cards/equipment/wyrmblade-cult-knives-front.jpg": "3f46fb7786529bb271176ebe22da58989222694204e40df13c703769fd2e6481",
+        "output/wyrmblade/cards/equipment/wyrmblade-explosive-traps-back.jpg": "68b86c8d8038e176d7b3ca7116776e81a023ddcf7c3143c669a16867d44a6175",
+        "output/wyrmblade/cards/equipment/wyrmblade-explosive-traps-front.jpg": "51fe1375db356ea577b07320b2c1047755bc45e2ad73e12eb26567132128d0b5",
+        "output/wyrmblade/cards/equipment/wyrmblade-spotlights-back.jpg": "68b86c8d8038e176d7b3ca7116776e81a023ddcf7c3143c669a16867d44a6175",
+        "output/wyrmblade/cards/equipment/wyrmblade-spotlights-front.jpg": "36922442d2ac18eee2d7d23105b8377e7b8ffee66b710c16d1a17d4b26dc1ca6",
+        "output/wyrmblade/cards/faction_rules/wyrmblade-cult-agent-back.jpg": "68b86c8d8038e176d7b3ca7116776e81a023ddcf7c3143c669a16867d44a6175",
+        "output/wyrmblade/cards/faction_rules/wyrmblade-cult-agent-front.jpg": "128d33c3ded6ae7dddd62dc736c758bc3b6ef8b194271a33c60c0e884da21954",
+        "output/wyrmblade/cards/faction_rules/wyrmblade-cult-ambush-back.jpg": "68b86c8d8038e176d7b3ca7116776e81a023ddcf7c3143c669a16867d44a6175",
+        "output/wyrmblade/cards/faction_rules/wyrmblade-cult-ambush-front.jpg": "84d6ecc736b62241983003132c756163e21475b5af7ccaa8527e03ef3cd8834a",
+        "output/wyrmblade/cards/faction_rules/wyrmblade-familiar-territory-back.jpg": "90e5ae04335a9629ee71ec571e7e53126352fced85f84fee573e0834ba5e2440",
+        "output/wyrmblade/cards/faction_rules/wyrmblade-familiar-territory-front.jpg": "70d13c86e5d757a76b5646144bf3d0530c4718126dec090591f496f4c07a5e39",
+        "output/wyrmblade/cards/firefight_ploys/wyrmblade-a-plan-generations-in-back.jpg": "68b86c8d8038e176d7b3ca7116776e81a023ddcf7c3143c669a16867d44a6175",
+        "output/wyrmblade/cards/firefight_ploys/wyrmblade-a-plan-generations-in-front.jpg": "2ef4798cf8774ea7273ccdf3d9b09c54729731e27f69a958bad1525980d9943e",
+        "output/wyrmblade/cards/firefight_ploys/wyrmblade-coiled-serpent-back.jpg": "68b86c8d8038e176d7b3ca7116776e81a023ddcf7c3143c669a16867d44a6175",
+        "output/wyrmblade/cards/firefight_ploys/wyrmblade-coiled-serpent-front.jpg": "14d7d859a7791eef5c4e56f61b1956e72ba8d1014684d7f21c761243ddbe330f",
+        "output/wyrmblade/cards/firefight_ploys/wyrmblade-slink-into-darkness-back.jpg": "68b86c8d8038e176d7b3ca7116776e81a023ddcf7c3143c669a16867d44a6175",
+        "output/wyrmblade/cards/firefight_ploys/wyrmblade-slink-into-darkness-front.jpg": "0edfadf444ae38bed10ee48b07b3c8685fe4f7004e01a802c519cae6a71ba7db",
+        "output/wyrmblade/cards/firefight_ploys/wyrmblade-unquestioning-loyalty-back.jpg": "68b86c8d8038e176d7b3ca7116776e81a023ddcf7c3143c669a16867d44a6175",
+        "output/wyrmblade/cards/firefight_ploys/wyrmblade-unquestioning-loyalty-front.jpg": "0053d0d6601b6c144c0e98f476310071f590f5fe855dd7dfbe835542f9aefd82",
+        "output/wyrmblade/cards/operatives_selection/wyrmblade-operative-selection-back.jpg": "26792c2eefb0ab8c06e062974c0930b47403c4f2817402f89aa9fcc377cd275b",
+        "output/wyrmblade/cards/operatives_selection/wyrmblade-operative-selection-front.jpg": "20e4acc240a574cccaf32f92d2de99c1b8ea1b1272582601de099384baa01fd6",
+        "output/wyrmblade/cards/strategy_ploys/wyrmblade-crossfire-back.jpg": "68b86c8d8038e176d7b3ca7116776e81a023ddcf7c3143c669a16867d44a6175",
+        "output/wyrmblade/cards/strategy_ploys/wyrmblade-crossfire-front.jpg": "b0182a07205f1f0b49d00fa076d323b27811fb6ed2e93d11d64ab8b983a1a47e",
+        "output/wyrmblade/cards/strategy_ploys/wyrmblade-divert-and-disappear-back.jpg": "68b86c8d8038e176d7b3ca7116776e81a023ddcf7c3143c669a16867d44a6175",
+        "output/wyrmblade/cards/strategy_ploys/wyrmblade-divert-and-disappear-front.jpg": "74b7a543d1f33a95b448a1a6d083c1d2f15c1c57c4c2713deec639377808ff6d",
+        "output/wyrmblade/cards/strategy_ploys/wyrmblade-one-with-the-shadows-back.jpg": "68b86c8d8038e176d7b3ca7116776e81a023ddcf7c3143c669a16867d44a6175",
+        "output/wyrmblade/cards/strategy_ploys/wyrmblade-one-with-the-shadows-front.jpg": "669f0c41c4f6393d42fcbadb37ab0fa28b307746cf94a96255baf2ab45efc430",
+        "output/wyrmblade/cards/strategy_ploys/wyrmblade-the-day-is-at-hand-back.jpg": "68b86c8d8038e176d7b3ca7116776e81a023ddcf7c3143c669a16867d44a6175",
+        "output/wyrmblade/cards/strategy_ploys/wyrmblade-the-day-is-at-hand-front.jpg": "01ec98eadd95425aa00e4c9a978241148a3d6f63e31043c3b24281733035a6e0",
+        "output/wyrmblade/cardbox/wyrmblade-card-box-texture.jpg": "15307815f467057eb4ec95f67d3e73abf84e934becbd3f40bfafc986a3e060d3",
+        "output/wyrmblade/cardbox/wyrmblade-card-box.obj": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+        "output/wyrmblade/dice/wyrmblade-dice-dark.jpg": "7ac4fc4af96288ec5782b84f3544529f74794aa1d561f6469562318c2e4a2b90",
+        "output/wyrmblade/dice/wyrmblade-dice-light.jpg": "c547500ae0e6b9e1a2bcdf01b08f121fe503be7b29a6eb6904523b1abf7074fe",
+        "output/wyrmblade/data/wyrmblade-team-data.json": "fd3f546df2fbd8e7e312467d48877a758f722cb6520f1b0a2ab0e080749d3ff6",
+        "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
+        "config/defaults/tts-script/datacard-load-stats.lua": "2d5f4088c2ff09f54988cf8722080f536b4e1b998cc2b4c1f1ea94e6b18eb92e",
+        "config/defaults/tts-script/display-table-manager-script.lua": "0dab4381078d90802f25e2cc825bc3658be35ee13ab3e98831c9d248c2526689",
+        "config/defaults/tts-script/faction-rule-chapter-tactics.lua": "c906742268076fb91f7cb4a92c6b588e1122ccddb692688f635c8dd4f7110ad0",
+        "config/defaults/tts-script/intermediate-updater.lua": "1a2d6dbc1a8c9c57ba6a3e7a3d4bc4b7a38a6c242a93f6ef3dae698123384d35",
+        "config/defaults/tts-script/single-object-updater.lua": "3613b85169e986a8e50ebe221482079e27c18037e3f48920aa0f7e138c0ccacc",
+        "config/defaults/tts-script/team-spawner-clean-script.lua": "12457bff3961eee2293c42d81cf4f4eb8b103177245a1ab8b46fd65da40672a2",
+        "config/defaults/tts-script/team-spawner-script.lua": "a51ff45c8622923db909fb465781801511f235412f099f83dff728d4027650db",
+        "config/defaults/tts-script/tts-update-rules-in-box-script.lua": "1eddd1803087ed63181a1149c856db77eef3196dc45d0d283693fada44a357dd",
+        "config/defaults/tts-image/default-icon.png": "892aff2628b9685c813e77be05c66afc1dc4247bc1dc9ce6fe54f006c2608271",
+        "config/defaults/tts-image/spawner-token.png": "61903b093f01d834f5e4c4c069b1353ecf7d29f012fef914b3027266816d8a6b",
+        "config/defaults/tts-token/square-bag-mesh.obj": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+        "config/defaults/tts-token/template-diamond-cutter.png": "719f57ba2b86494be454a6d3d25d8567dde974a915f3dde5ddc0e2d8dafaa1a5",
+        "config/defaults/tts-token/template-octagon-cutter.png": "944632aeacab978293ae57758b63086166c5fbaf3b845f48b3dd61db67d5c076",
+        "config/defaults/tts-token/template-operative-cutter.png": "0e698ddd403d7f0e84f200eb42af73f5249a9c5539d773298ff4c700ac9fe153",
+        "config/defaults/tts-token/template-round-cutter.png": "6564e1451c9a135a1c756fd94cde1c71e373e3fa677b51bba9d4bbe9e795d544",
+        "config/defaults/tts-token/token-bag-script.lua": "1659887e0fbfb9e3ebbc1aa5f3df8e1ffd89ee192be24d2dd1f02fcb0407e486",
+        "config/defaults/tts-token/token-bg-sample.png": "f9f90664c7f1c877c6f050f6e85babde6523cdc0aed9c77de8c09214f44ee109",
+        "config/defaults/tts-token/token-mesh.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc"
+      }
+    },
+    "front_end": {
+      "outputs": {},
+      "sources": {
+        "faction-rules": {
+          "hash": "ee215684f294a8b4eb89079cc1fdbcb19317d52212793c0ab39b162a71b43fa4",
+          "outputs": [
+            "layers/kt-app/extracted/wyrmblade/cards/faction-rules/wyrmblade-faction-rules-page_0.pdf",
+            "layers/kt-app/extracted/wyrmblade/cards/faction-rules/wyrmblade-faction-rules-page_1.pdf",
+            "layers/kt-app/extracted/wyrmblade/cards/faction-rules/wyrmblade-faction-rules-page_2.pdf",
+            "layers/kt-app/extracted/wyrmblade/cards/faction-rules/wyrmblade-faction-rules-page_3.pdf"
+          ],
+          "modified": "2026-07-06T15:59:40.168491+00:00"
+        },
+        "strategy-ploys": {
+          "hash": "68623f50ecf27b0cdd09c4b68063874f41d7b9c98da6fe2cd9c8632db6c0762e",
+          "outputs": [
+            "layers/kt-app/extracted/wyrmblade/cards/strategy-ploys/wyrmblade-strategy-ploys-page_0.pdf",
+            "layers/kt-app/extracted/wyrmblade/cards/strategy-ploys/wyrmblade-strategy-ploys-page_1.pdf",
+            "layers/kt-app/extracted/wyrmblade/cards/strategy-ploys/wyrmblade-strategy-ploys-page_2.pdf",
+            "layers/kt-app/extracted/wyrmblade/cards/strategy-ploys/wyrmblade-strategy-ploys-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:01:36.893848+00:00"
+        },
+        "operatives-selection": {
+          "hash": "387351c9c7988c1b64c96a0a9b9d9fdc5b071c476a0b71d1450a087e98b54464",
+          "outputs": [
+            "layers/kt-app/extracted/wyrmblade/cards/operatives-selection/wyrmblade-operatives-selection-page_0.pdf",
+            "layers/kt-app/extracted/wyrmblade/cards/operatives-selection/wyrmblade-operatives-selection-page_1.pdf"
+          ],
+          "modified": "2026-07-06T16:02:51.048653+00:00"
+        },
+        "datacards": {
+          "hash": "f091c985a2b29cb15bab4a63b6724daf6137fb46dbaa77673b1dc7a05a905270",
+          "outputs": [
+            "layers/kt-app/extracted/wyrmblade/cards/datacards/wyrmblade-datacards-page_0.pdf",
+            "layers/kt-app/extracted/wyrmblade/cards/datacards/wyrmblade-datacards-page_1.pdf",
+            "layers/kt-app/extracted/wyrmblade/cards/datacards/wyrmblade-datacards-page_2.pdf",
+            "layers/kt-app/extracted/wyrmblade/cards/datacards/wyrmblade-datacards-page_3.pdf",
+            "layers/kt-app/extracted/wyrmblade/cards/datacards/wyrmblade-datacards-page_4.pdf",
+            "layers/kt-app/extracted/wyrmblade/cards/datacards/wyrmblade-datacards-page_5.pdf",
+            "layers/kt-app/extracted/wyrmblade/cards/datacards/wyrmblade-datacards-page_6.pdf",
+            "layers/kt-app/extracted/wyrmblade/cards/datacards/wyrmblade-datacards-page_7.pdf",
+            "layers/kt-app/extracted/wyrmblade/cards/datacards/wyrmblade-datacards-page_8.pdf",
+            "layers/kt-app/extracted/wyrmblade/cards/datacards/wyrmblade-datacards-page_9.pdf",
+            "layers/kt-app/extracted/wyrmblade/cards/datacards/wyrmblade-datacards-page_10.pdf",
+            "layers/kt-app/extracted/wyrmblade/cards/datacards/wyrmblade-datacards-page_11.pdf",
+            "layers/kt-app/extracted/wyrmblade/cards/datacards/wyrmblade-datacards-page_12.pdf",
+            "layers/kt-app/extracted/wyrmblade/cards/datacards/wyrmblade-datacards-page_13.pdf"
+          ],
+          "modified": "2026-07-06T16:06:19.608622+00:00"
+        },
+        "firefight-ploys": {
+          "hash": "58dc68c2d07362e2d137dd9f2c3134abb6bd0dd0f8f34d97a2ac6fdec8704325",
+          "outputs": [
+            "layers/kt-app/extracted/wyrmblade/cards/firefight-ploys/wyrmblade-firefight-ploys-page_0.pdf",
+            "layers/kt-app/extracted/wyrmblade/cards/firefight-ploys/wyrmblade-firefight-ploys-page_1.pdf",
+            "layers/kt-app/extracted/wyrmblade/cards/firefight-ploys/wyrmblade-firefight-ploys-page_2.pdf",
+            "layers/kt-app/extracted/wyrmblade/cards/firefight-ploys/wyrmblade-firefight-ploys-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:08:33.891146+00:00"
+        },
+        "equipment": {
+          "hash": "bbbf6ab3b252163401fe1342e9a8a802add3df2a14b28181ad4a566e833dcdbe",
+          "outputs": [
+            "layers/kt-app/extracted/wyrmblade/cards/equipment/wyrmblade-equipment-page_0.pdf",
+            "layers/kt-app/extracted/wyrmblade/cards/equipment/wyrmblade-equipment-page_1.pdf",
+            "layers/kt-app/extracted/wyrmblade/cards/equipment/wyrmblade-equipment-page_2.pdf",
+            "layers/kt-app/extracted/wyrmblade/cards/equipment/wyrmblade-equipment-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:10:07.625846+00:00"
+        },
+        "cards": {
+          "hash": "42fd6036b851aae1c469dc9b172e602140f045a3bbac37576e1e9f2c97958e11",
+          "outputs": [
+            "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page01_card1_landscape.pdf",
+            "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page01_card2_landscape.pdf",
+            "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page01_card3_landscape.pdf",
+            "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page01_card4_landscape.pdf",
+            "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page02_card1_landscape.pdf",
+            "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page02_card2_landscape.pdf",
+            "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page02_card3_landscape.pdf",
+            "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page02_card4_landscape.pdf",
+            "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page03_card1_landscape.pdf",
+            "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page03_card2_landscape.pdf",
+            "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page03_card3_landscape.pdf",
+            "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page03_card4_landscape.pdf",
+            "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page04_card1_landscape.pdf",
+            "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page04_card2_landscape.pdf",
+            "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page04_card3_landscape.pdf",
+            "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page04_card4_landscape.pdf",
+            "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page05_card1_portrait.pdf",
+            "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page05_card2_portrait.pdf",
+            "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page05_card3_portrait.pdf",
+            "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page05_card4_portrait.pdf",
+            "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page06_card1_portrait.pdf",
+            "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page06_card2_portrait.pdf",
+            "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page06_card3_portrait.pdf",
+            "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page06_card4_portrait.pdf",
+            "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page07_card1_portrait.pdf",
+            "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page07_card2_portrait.pdf",
+            "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page07_card3_portrait.pdf",
+            "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page07_card4_portrait.pdf",
+            "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page08_card1_portrait.pdf",
+            "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page08_card2_portrait.pdf",
+            "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page08_card3_portrait.pdf",
+            "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page08_card4_portrait.pdf",
+            "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page09_card1_portrait.pdf",
+            "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page09_card2_portrait.pdf",
+            "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page09_card3_portrait.pdf",
+            "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page09_card4_portrait.pdf"
+          ],
+          "modified": "2026-07-08T18:59:03.393511+00:00"
+        }
+      },
+      "completed": "2026-07-08T18:59:03.393593+00:00"
+    },
+    "build_structure": {
+      "outputs": {
+        "structure": {
+          "path": "layers/warcom/structure/wyrmblade-structure.json",
+          "hash": "286664f7919963b73fa7a0ba14aa7c4925b20ac808c25cf013f3b3097503335f",
+          "modified": "2026-07-10T20:30:06.982162+00:00"
+        }
+      },
+      "inputs": {
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page01_card1_landscape.pdf": "56c99b5eb18223a116e24c962aaed57bcdac785b134f122d588bc8a6323843ea",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page01_card2_landscape.pdf": "5183004202dccee2ebbf88a1b9227c487223bba923b47b43a8cf4ccbce20ad12",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page01_card3_landscape.pdf": "cf8fe763666712a2f30dece41a1f0e3003434c43382791e8d3c123268deaee44",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page01_card4_landscape.pdf": "e27e902144e2ea70ea3140dba9239c3f56fc6af66496806d05b9e4cae90b0e68",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page02_card1_landscape.pdf": "455627ce0c7a50fb5ef7e51267a56b2457eac6215c1c0ed3d059ee724060b79c",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page02_card2_landscape.pdf": "647e2a15f3dc63aa68171fdb2e1619d8e4f4c6fdf54b923dfca3fa707218a0b9",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page02_card3_landscape.pdf": "a04c9fafd3b020b1ee7b700d9003895d219d0baf0251445b47df89403fcf2324",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page02_card4_landscape.pdf": "c8af83002a57d328f9a0ed203b5ecb83494090720773e8c197ad6b7147d309d5",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page03_card1_landscape.pdf": "bf6c0484f2118a0b11d02eb1d41b85a9ee853b436fac975c2f759dec09dff531",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page03_card2_landscape.pdf": "55b886d8ae111c2d263e2d9d36ceed67f22f8e55b8dbd8621c5981f18aff6919",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page03_card3_landscape.pdf": "0db7609451169ecbee82ac4c06760f0aa32f99964cd15c33b633fcb123649fcc",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page03_card4_landscape.pdf": "9e57857dee1a25a300ad11caea93a46e0aa35da0e3606a9a7409578975b32e34",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page04_card1_landscape.pdf": "3f4a01e32419937a1bcadfe706698f351e1e3bfb76640f667e9544e99e2928e4",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page04_card2_landscape.pdf": "21df04cae6237754cc109a0a8d238331d353fe786ee2988c483db5ce4d3afd72",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page04_card3_landscape.pdf": "9b8be7e561c7cc3185197da809ae935423b1c9c9aa3317c5cbb2d8ef28f8331b",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page04_card4_landscape.pdf": "9464d7f81726a89b66d60022d12fcb9a71d6fdb1caeb43220e19b512ec7069a6",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page05_card1_portrait.pdf": "5d7a570017a72ba4ad8df6246ce4ec2d71a1536a5be0c4cf83a0e9da5b934ea3",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page05_card2_portrait.pdf": "5a3f415bb187978e5bf230451785d00ff1abf8816fef12bde5f026a0255df0b8",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page05_card3_portrait.pdf": "d0fe1c29274f06b7dcbc624d5f32c6b0f2b298c00d30920f7852db355f7d1676",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page05_card4_portrait.pdf": "4b06b83eb30d74f384257a4c356326390ac321855b132a45a7060150ff583f71",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page06_card1_portrait.pdf": "5fd22f811756ebfa950b1ea5039c84e838f2003a7a2fe6b39d35330cbdf813db",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page06_card2_portrait.pdf": "f31c330112cdb264721480e19958146a7bd8576e1c351d1ac80d7ed1d5d964e0",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page06_card3_portrait.pdf": "c660bfba7e2807d1a748f870ab17b72e52b88a0d5ff704fa6aa97d418e76101b",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page06_card4_portrait.pdf": "af86f7e9d971918a661d1f72da2cf56a8a217e2cefd02c59fe3949395d57e898",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page07_card1_portrait.pdf": "7e953d6291b8c05a580b56312cadbf5b0a1d969377324129a44f8f2c2e5c48df",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page07_card2_portrait.pdf": "b78a9354e544431fed10d9b9ca992a6ed1c7b13817545765a18f28e22180f9f9",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page07_card3_portrait.pdf": "68d010978322f2cc6175d15fb4c48190309447921ddf7e387343175f39b745b6",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page07_card4_portrait.pdf": "6f42ef60382da5796d23209acbeb3363474881ac1ecb0ed8ef4ea3e088861169",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page08_card1_portrait.pdf": "9d2306d05bbb98e8db8cc527403642c859ce55ac840bcfe1d4ee42375423d56d",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page08_card2_portrait.pdf": "1181193cbbb228899ccad324990f96efcd1d2dd3248e21acc3adca98aecd508d",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page08_card3_portrait.pdf": "4025a12c3c3305945f954132276b3c57b8ddfb70955ece585459324591876215",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page08_card4_portrait.pdf": "c3b01044aa67e193b2c78a64cfc0bb46226a692f99ec7034788515c817e3a022",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page09_card1_portrait.pdf": "7f887b049b86985587e94c58ae5aa602d9af8a05c130513a24d29a24cd488a35",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page09_card2_portrait.pdf": "c88bb7eae249f5cee24cfda39145f57479b0e10a19bafdabe90f1d9a53af25f3",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page09_card3_portrait.pdf": "8ac302b578d1aeaf74c8715bea0ffa1f88bdb3e0744f759ed52fd54a9a9facc8",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page09_card4_portrait.pdf": "6ede5b2a70791c845d286fb825b4768a8578c02b386cd3bea5dc9749038f884e"
+      },
+      "completed": "2026-07-10T20:30:07.488099+00:00"
+    },
+    "integrate_classified": {
+      "outputs": {
+        "manifest.json": {
+          "path": "layers/integration/wyrmblade/manifest.json",
+          "hash": "286664f7919963b73fa7a0ba14aa7c4925b20ac808c25cf013f3b3097503335f",
+          "modified": "2026-07-11T07:09:03.990985+00:00"
+        },
+        "wyrmblade-datacard-neophyte-leader.pdf": {
+          "path": "layers/integration/wyrmblade/wyrmblade-datacard-neophyte-leader.pdf",
+          "hash": "c9bdefe44e14272386e8253e9865992f8180144d936c0e389af454423663f70b",
+          "modified": "2026-07-11T07:09:13.975617+00:00"
+        },
+        "wyrmblade-datacard-kelermorph.pdf": {
+          "path": "layers/integration/wyrmblade/wyrmblade-datacard-kelermorph.pdf",
+          "hash": "7265c173be11fe45374055678451f850a3082943c7f374ebdfe6e1e23279343b",
+          "modified": "2026-07-11T07:09:21.073054+00:00"
+        },
+        "wyrmblade-datacard-locus.pdf": {
+          "path": "layers/integration/wyrmblade/wyrmblade-datacard-locus.pdf",
+          "hash": "67b7771cf07c57f1c55d3f01f1645018d2b7b93557fb1398b6f33bedcdd1108e",
+          "modified": "2026-07-11T07:09:28.930743+00:00"
+        },
+        "wyrmblade-datacard-neophyte-gunner.pdf": {
+          "path": "layers/integration/wyrmblade/wyrmblade-datacard-neophyte-gunner.pdf",
+          "hash": "2c2edbaa95c2518bb06aa063ba53072e0cd6a16d2e2de8459b6a879d056c6560",
+          "modified": "2026-07-11T07:09:31.212033+00:00"
+        },
+        "wyrmblade-datacard-neophyte-heavy-gunner.pdf": {
+          "path": "layers/integration/wyrmblade/wyrmblade-datacard-neophyte-heavy-gunner.pdf",
+          "hash": "a5e0c96b0bd40c2feb6e1bb222c0cdb5a9b6f1064f1a9f7673993edd04600f78",
+          "modified": "2026-07-11T07:09:31.938862+00:00"
+        },
+        "wyrmblade-datacard-neophyte-icon-bearer.pdf": {
+          "path": "layers/integration/wyrmblade/wyrmblade-datacard-neophyte-icon-bearer.pdf",
+          "hash": "a149a351bfc0ce0917cc1ded3dfe229c80cbba2602630611a8d8eb4a7232e83f",
+          "modified": "2026-07-11T07:09:33.271307+00:00"
+        },
+        "wyrmblade-datacard-sanctus-sniper.pdf": {
+          "path": "layers/integration/wyrmblade/wyrmblade-datacard-sanctus-sniper.pdf",
+          "hash": "85f5828fcf7d31beea5d04ddc70378b7768f8cf49764f7bb2774323a73fbbc08",
+          "modified": "2026-07-11T07:09:33.986075+00:00"
+        },
+        "wyrmblade-datacard-sanctus-talon.pdf": {
+          "path": "layers/integration/wyrmblade/wyrmblade-datacard-sanctus-talon.pdf",
+          "hash": "a1f9ccee497a972b742b3374bde90a7087d20ebfd76c2430a494296321da7436",
+          "modified": "2026-07-11T07:09:34.778488+00:00"
+        },
+        "wyrmblade-datacard-neophyte-warrior.pdf": {
+          "path": "layers/integration/wyrmblade/wyrmblade-datacard-neophyte-warrior.pdf",
+          "hash": "5442b01bdff143b6a7e612ab8e280bc4511b4adac10f91b5118ac996ba92ad03",
+          "modified": "2026-07-11T07:09:36.174888+00:00"
+        },
+        "wyrmblade-equipment-blasting-charges.pdf": {
+          "path": "layers/integration/wyrmblade/wyrmblade-equipment-blasting-charges.pdf",
+          "hash": "643b54ee8a3102a69164b0c30afd37c5a84d757ea6bd21bbdfadea720fac42c9",
+          "modified": "2026-07-11T07:09:36.248666+00:00"
+        },
+        "wyrmblade-equipment-cult-knives.pdf": {
+          "path": "layers/integration/wyrmblade/wyrmblade-equipment-cult-knives.pdf",
+          "hash": "84f57fc3356b58ba4e78808e6090123ecd009b66ff51bba4d25a077e412c000d",
+          "modified": "2026-07-11T07:09:36.287290+00:00"
+        },
+        "wyrmblade-equipment-explosive-traps.pdf": {
+          "path": "layers/integration/wyrmblade/wyrmblade-equipment-explosive-traps.pdf",
+          "hash": "4db60ca7b7df21053ede5ac8c8bdbe96f28cc1777563b149cb03aa77ffbc909a",
+          "modified": "2026-07-11T07:09:36.317678+00:00"
+        },
+        "wyrmblade-equipment-spotlights.pdf": {
+          "path": "layers/integration/wyrmblade/wyrmblade-equipment-spotlights.pdf",
+          "hash": "0abc86236fb2f7aa71be704096cdc45ad81aacf4d33b110e0a2218cac98f0be0",
+          "modified": "2026-07-11T07:09:36.343116+00:00"
+        },
+        "wyrmblade-faction-rule-familiar-territory.pdf": {
+          "path": "layers/integration/wyrmblade/wyrmblade-faction-rule-familiar-territory.pdf",
+          "hash": "877c6b827f83540cb3bdf710f20db5f7fd432254de0e593600fbb8c03ed65670",
+          "modified": "2026-07-11T07:09:36.379846+00:00"
+        },
+        "wyrmblade-faction-rule-cult-agent.pdf": {
+          "path": "layers/integration/wyrmblade/wyrmblade-faction-rule-cult-agent.pdf",
+          "hash": "c17204f8b659d44efb38b0393a418795a0d747af70892daeee2a32d695cc63bd",
+          "modified": "2026-07-11T07:09:36.396794+00:00"
+        },
+        "wyrmblade-faction-rule-cult-ambush.pdf": {
+          "path": "layers/integration/wyrmblade/wyrmblade-faction-rule-cult-ambush.pdf",
+          "hash": "760bbd9fbd8ae704a311f337dc5c1fd39a5455398fe033765c42cb9b5a435d9a",
+          "modified": "2026-07-11T07:09:36.417062+00:00"
+        },
+        "wyrmblade-firefight-ploy-slink-into-darkness.pdf": {
+          "path": "layers/integration/wyrmblade/wyrmblade-firefight-ploy-slink-into-darkness.pdf",
+          "hash": "96ee61d7a74cdb68d5c0ecb814f2fc53579fd14f50f143c58d6f223c2e1bb911",
+          "modified": "2026-07-11T07:09:36.449131+00:00"
+        },
+        "wyrmblade-firefight-ploy-coiled-serpent.pdf": {
+          "path": "layers/integration/wyrmblade/wyrmblade-firefight-ploy-coiled-serpent.pdf",
+          "hash": "c46a6201d1363283a24d008a346cec74d2515b0556d2c911bc64858d348252ff",
+          "modified": "2026-07-11T07:09:36.481118+00:00"
+        },
+        "wyrmblade-firefight-ploy-unquestioning-loyalty.pdf": {
+          "path": "layers/integration/wyrmblade/wyrmblade-firefight-ploy-unquestioning-loyalty.pdf",
+          "hash": "14dc351cf34cd067f3615a2d0ac3ff2f9fee9e21bd98a10b5e174723e16edcf5",
+          "modified": "2026-07-11T07:09:36.617187+00:00"
+        },
+        "wyrmblade-firefight-ploy-a-plan-generations-in.pdf": {
+          "path": "layers/integration/wyrmblade/wyrmblade-firefight-ploy-a-plan-generations-in.pdf",
+          "hash": "68552efde7d919ed24ccae17ccb7ad5b4564826a305d0116a8dd5ecd34938b80",
+          "modified": "2026-07-11T07:09:39.579105+00:00"
+        },
+        "wyrmblade-operatives-selection-operative-selection.pdf": {
+          "path": "layers/integration/wyrmblade/wyrmblade-operatives-selection-operative-selection.pdf",
+          "hash": "ef6458fc938f31992ff9d99d7fbaa3b8752c201b2e1977be01d5cd079052e75f",
+          "modified": "2026-07-11T07:09:41.739624+00:00"
+        },
+        "wyrmblade-strategy-ploy-the-day-is-at-hand.pdf": {
+          "path": "layers/integration/wyrmblade/wyrmblade-strategy-ploy-the-day-is-at-hand.pdf",
+          "hash": "baba558ddc837ed062deb872ea8fad0d97b0b53208667cc646ac20e930927ac3",
+          "modified": "2026-07-11T07:09:41.761263+00:00"
+        },
+        "wyrmblade-strategy-ploy-crossfire.pdf": {
+          "path": "layers/integration/wyrmblade/wyrmblade-strategy-ploy-crossfire.pdf",
+          "hash": "4bc2fe6aeb58762a82740f460f304615842b6346e1b6f2357b2faaa7a999d2da",
+          "modified": "2026-07-11T07:09:43.771704+00:00"
+        },
+        "wyrmblade-strategy-ploy-one-with-the-shadows.pdf": {
+          "path": "layers/integration/wyrmblade/wyrmblade-strategy-ploy-one-with-the-shadows.pdf",
+          "hash": "4566f0a5a21d4bd4f98ca62ccf742d966c02a1179b764d9d734ee534b711edef",
+          "modified": "2026-07-11T07:09:43.875107+00:00"
+        },
+        "wyrmblade-strategy-ploy-divert-and-disappear.pdf": {
+          "path": "layers/integration/wyrmblade/wyrmblade-strategy-ploy-divert-and-disappear.pdf",
+          "hash": "58635a7c1444532cac47e6cfdd61098f43a798b371e6bef032ab98a667c19d9f",
+          "modified": "2026-07-11T07:09:43.904727+00:00"
+        }
+      },
+      "inputs": {
+        "layers/warcom/structure/wyrmblade-structure.json": "286664f7919963b73fa7a0ba14aa7c4925b20ac808c25cf013f3b3097503335f",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page01_card1_landscape.pdf": "56c99b5eb18223a116e24c962aaed57bcdac785b134f122d588bc8a6323843ea",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page01_card2_landscape.pdf": "5183004202dccee2ebbf88a1b9227c487223bba923b47b43a8cf4ccbce20ad12",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page01_card3_landscape.pdf": "cf8fe763666712a2f30dece41a1f0e3003434c43382791e8d3c123268deaee44",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page01_card4_landscape.pdf": "e27e902144e2ea70ea3140dba9239c3f56fc6af66496806d05b9e4cae90b0e68",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page02_card1_landscape.pdf": "455627ce0c7a50fb5ef7e51267a56b2457eac6215c1c0ed3d059ee724060b79c",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page02_card2_landscape.pdf": "647e2a15f3dc63aa68171fdb2e1619d8e4f4c6fdf54b923dfca3fa707218a0b9",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page02_card3_landscape.pdf": "a04c9fafd3b020b1ee7b700d9003895d219d0baf0251445b47df89403fcf2324",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page02_card4_landscape.pdf": "c8af83002a57d328f9a0ed203b5ecb83494090720773e8c197ad6b7147d309d5",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page03_card1_landscape.pdf": "bf6c0484f2118a0b11d02eb1d41b85a9ee853b436fac975c2f759dec09dff531",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page03_card2_landscape.pdf": "55b886d8ae111c2d263e2d9d36ceed67f22f8e55b8dbd8621c5981f18aff6919",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page03_card3_landscape.pdf": "0db7609451169ecbee82ac4c06760f0aa32f99964cd15c33b633fcb123649fcc",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page03_card4_landscape.pdf": "9e57857dee1a25a300ad11caea93a46e0aa35da0e3606a9a7409578975b32e34",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page04_card1_landscape.pdf": "3f4a01e32419937a1bcadfe706698f351e1e3bfb76640f667e9544e99e2928e4",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page04_card2_landscape.pdf": "21df04cae6237754cc109a0a8d238331d353fe786ee2988c483db5ce4d3afd72",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page08_card3_portrait.pdf": "4025a12c3c3305945f954132276b3c57b8ddfb70955ece585459324591876215",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page08_card4_portrait.pdf": "c3b01044aa67e193b2c78a64cfc0bb46226a692f99ec7034788515c817e3a022",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page09_card1_portrait.pdf": "7f887b049b86985587e94c58ae5aa602d9af8a05c130513a24d29a24cd488a35",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page09_card2_portrait.pdf": "c88bb7eae249f5cee24cfda39145f57479b0e10a19bafdabe90f1d9a53af25f3",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page05_card3_portrait.pdf": "d0fe1c29274f06b7dcbc624d5f32c6b0f2b298c00d30920f7852db355f7d1676",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page05_card4_portrait.pdf": "4b06b83eb30d74f384257a4c356326390ac321855b132a45a7060150ff583f71",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page06_card1_portrait.pdf": "5fd22f811756ebfa950b1ea5039c84e838f2003a7a2fe6b39d35330cbdf813db",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page06_card2_portrait.pdf": "f31c330112cdb264721480e19958146a7bd8576e1c351d1ac80d7ed1d5d964e0",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page07_card3_portrait.pdf": "68d010978322f2cc6175d15fb4c48190309447921ddf7e387343175f39b745b6",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page07_card4_portrait.pdf": "6f42ef60382da5796d23209acbeb3363474881ac1ecb0ed8ef4ea3e088861169",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page08_card1_portrait.pdf": "9d2306d05bbb98e8db8cc527403642c859ce55ac840bcfe1d4ee42375423d56d",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page08_card2_portrait.pdf": "1181193cbbb228899ccad324990f96efcd1d2dd3248e21acc3adca98aecd508d",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page05_card1_portrait.pdf": "5d7a570017a72ba4ad8df6246ce4ec2d71a1536a5be0c4cf83a0e9da5b934ea3",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page05_card2_portrait.pdf": "5a3f415bb187978e5bf230451785d00ff1abf8816fef12bde5f026a0255df0b8",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page06_card3_portrait.pdf": "c660bfba7e2807d1a748f870ab17b72e52b88a0d5ff704fa6aa97d418e76101b",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page06_card4_portrait.pdf": "af86f7e9d971918a661d1f72da2cf56a8a217e2cefd02c59fe3949395d57e898",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page07_card1_portrait.pdf": "7e953d6291b8c05a580b56312cadbf5b0a1d969377324129a44f8f2c2e5c48df",
+        "layers/warcom/extracted/wyrmblade/cards/wyrmblade_page07_card2_portrait.pdf": "b78a9354e544431fed10d9b9ca992a6ed1c7b13817545765a18f28e22180f9f9"
+      },
+      "completed": "2026-07-11T07:10:20.303868+00:00"
+    },
+    "extract_artwork": {
+      "outputs": {},
+      "sources": {
+        "artwork": {
+          "hash": "42fd6036b851aae1c469dc9b172e602140f045a3bbac37576e1e9f2c97958e11",
+          "outputs": [
+            "layers/integration/wyrmblade/artwork/wyrmblade-artwork-01.jpeg",
+            "layers/integration/wyrmblade/artwork/wyrmblade-artwork-02.jpeg",
+            "layers/integration/wyrmblade/artwork/wyrmblade-artwork-03.png",
+            "layers/integration/wyrmblade/artwork/wyrmblade-artwork-04.jpeg",
+            "layers/integration/wyrmblade/artwork/wyrmblade-artwork-05.jpeg",
+            "layers/integration/wyrmblade/artwork/wyrmblade-artwork-06.jpeg",
+            "layers/integration/wyrmblade/artwork/wyrmblade-artwork-07.png",
+            "layers/integration/wyrmblade/artwork/wyrmblade-artwork-08.jpeg",
+            "layers/integration/wyrmblade/artwork/wyrmblade-artwork-09.jpeg",
+            "layers/integration/wyrmblade/artwork/wyrmblade-artwork-10.jpeg",
+            "layers/integration/wyrmblade/artwork/wyrmblade-artwork-11.jpeg",
+            "layers/integration/wyrmblade/artwork/wyrmblade-artwork-12.jpeg",
+            "layers/integration/wyrmblade/artwork/wyrmblade-artwork-13.jpeg",
+            "layers/integration/wyrmblade/artwork/wyrmblade-artwork-14.jpeg",
+            "layers/integration/wyrmblade/artwork/wyrmblade-artwork-15.jpeg",
+            "layers/integration/wyrmblade/artwork/wyrmblade-artwork-16.jpeg",
+            "layers/integration/wyrmblade/artwork/wyrmblade-artwork-17.jpeg",
+            "layers/integration/wyrmblade/artwork/wyrmblade-artwork-18.jpeg",
+            "layers/integration/wyrmblade/artwork/wyrmblade-artwork-19.jpeg",
+            "layers/integration/wyrmblade/artwork/wyrmblade-artwork-20.jpeg",
+            "layers/integration/wyrmblade/artwork/wyrmblade-artwork-21.jpeg",
+            "layers/integration/wyrmblade/artwork/wyrmblade-artwork-metadata.json",
+            "layers/integration/wyrmblade/artwork/icons/wyrmblade-icon-landscape.jpg",
+            "layers/integration/wyrmblade/artwork/icons/wyrmblade-icon-portrait.jpg",
+            "layers/integration/wyrmblade/artwork/icons/wyrmblade-icon-token-transparent.png",
+            "layers/integration/wyrmblade/artwork/icons/wyrmblade-icon-token.jpg"
+          ],
+          "modified": "2026-07-06T20:47:11.470911+00:00"
+        }
+      },
+      "completed": "2026-07-06T20:47:11.470926+00:00"
+    }
+  }
+}

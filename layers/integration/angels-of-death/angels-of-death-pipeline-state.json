@@ -1,0 +1,862 @@
+{
+  "team": "angels-of-death",
+  "pipeline_version": "2.0",
+  "last_updated": "2026-07-12T18:32:25.380550+00:00",
+  "steps": {
+    "content_analysis": {
+      "outputs": {
+        "content.json": {
+          "path": "layers/integration/angels-of-death/content/angels-of-death-content.json",
+          "hash": "20f6a8987369c1599ce9043e6cdaa7a64f90406ffa1a2a9b24e7fe1f4eb8cde0",
+          "modified": "2026-07-11T06:54:06.993302+00:00"
+        }
+      },
+      "completed": "2026-07-11T06:54:37.945230+00:00",
+      "inputs": {
+        "layers/integration/angels-of-death/manifest.json": "646f6877cc04e6c18afe3d41f34374227985fbdf75d8711a2487b9eda76dcc68",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "layers/integration/angels-of-death/angels-of-death-datacard-assault-intercessor-grenadier.pdf": "1e753de7903d6ec9f1aae9c42759bd5ebd9ec7e426c2f178226e51008e3e183f",
+        "layers/integration/angels-of-death/angels-of-death-datacard-assault-intercessor-sergeant.pdf": "a5de3ef086f9364d6b60dfccc2b3d3f9f4d49767da1c8582a323c9dfb083028f",
+        "layers/integration/angels-of-death/angels-of-death-datacard-assault-intercessor-warrior.pdf": "cb7c5cfc599d280251907a815e9156603a75e5e2af68bded0aca0bef0b85a942",
+        "layers/integration/angels-of-death/angels-of-death-datacard-eliminator-sniper.pdf": "423f0543b9d8edc6171bf99050cd2729ba743a1af02e6f64eb1f6605233efdb3",
+        "layers/integration/angels-of-death/angels-of-death-datacard-heavy-intercessor-gunner.pdf": "9cb73c2f62de446aca4bdb05369a72eb0e040e300f950d3812b99a6a30659d16",
+        "layers/integration/angels-of-death/angels-of-death-datacard-intercessor-gunner.pdf": "0941349502cd9b1d66f6fb1129be64d40b88f5cb3c24661067f2b55a27618a37",
+        "layers/integration/angels-of-death/angels-of-death-datacard-intercessor-sergeant.pdf": "839d12de8994c7738be4dc097dc7983cd3f583344bff0f091709b747b6cdb165",
+        "layers/integration/angels-of-death/angels-of-death-datacard-intercessor-warrior.pdf": "71323b87f6dd9020cfd10c4d92a1eabe7667b63b6845f107b1e8917e38aa6023",
+        "layers/integration/angels-of-death/angels-of-death-datacard-space-marine-captain.pdf": "10d9c0d2e3d88195a48c6deede345458448adad409d79bfc443558ec7fd26f94",
+        "layers/integration/angels-of-death/angels-of-death-equipment-auspex.pdf": "c5c03b96cfcd5ab5b80b5e5ae64234774851a39af7f501ea0d46c5e60453ef83",
+        "layers/integration/angels-of-death/angels-of-death-equipment-chapter-reliquaries.pdf": "c95c07d5e813105084ae71473dd169d1bed278e81a015f770b82969b1cd7cf29",
+        "layers/integration/angels-of-death/angels-of-death-equipment-purity-seals.pdf": "7eef560dd220d4e91c54f95a5d45b8138a8627c3f2707a307a2f540204eefb2f",
+        "layers/integration/angels-of-death/angels-of-death-equipment-tilting-shields.pdf": "4ef64920cabc4e8e7628498c0af990d4f0eb0be64c3679d672b5320080433861",
+        "layers/integration/angels-of-death/angels-of-death-faction-rule-astartes.pdf": "058b5bec6fa5e1543a79d1ede358ecbb78254ccf4b29bb4995bd5af3e68052d8",
+        "layers/integration/angels-of-death/angels-of-death-faction-rule-chapter-tactics-1.pdf": "9cf3179233105a1c545ea545811e8924c79b55751059730edc76a7b792f171f9",
+        "layers/integration/angels-of-death/angels-of-death-faction-rule-chapter-tactics-2.pdf": "62f61344de15d1af58298267cf15c7d825c68192c714afd382c70ea2e6d27907",
+        "layers/integration/angels-of-death/angels-of-death-firefight-ploy-adjust-doctrine.pdf": "a710f88f003f07b5c6606995d4cc702424145c8b358e19012084cade242125af",
+        "layers/integration/angels-of-death/angels-of-death-firefight-ploy-shock-assault.pdf": "84263f16f5ab2f7ef0fda083fe60748cf055f54f1c1072d3d0114eaf57398386",
+        "layers/integration/angels-of-death/angels-of-death-firefight-ploy-transhuman-physiology.pdf": "47f9d6ce8289788866c3933a1299af743f04d2406e1b9b76dcc96219081cd562",
+        "layers/integration/angels-of-death/angels-of-death-firefight-ploy-wrath-of-vengeance.pdf": "a8347325d0877423dd47c649b521b785c0a830b18032ee24ba36eb9fe59914b8",
+        "layers/integration/angels-of-death/angels-of-death-operatives-selection-operative-selection.pdf": "f0d34f781d6ee53b81be42f634508baeba67eb5257b2c015e220e9cb81a49846",
+        "layers/integration/angels-of-death/angels-of-death-strategy-ploy-adaptive-tactics.pdf": "beac0e7feb6d92101e4d8ddae407df33242460f85c33400ff3a24530560b5952",
+        "layers/integration/angels-of-death/angels-of-death-strategy-ploy-and-they-shall-know-no-fear.pdf": "ab07cf5466db54c9eb1a5d364ade66324693e5f00872913d66c6c95006ed0fee",
+        "layers/integration/angels-of-death/angels-of-death-strategy-ploy-combat-doctrine.pdf": "86ef04ad5a8c7857b84a1be7554f763874b23ad1901fc30f9c71c3b2fb1da10e",
+        "layers/integration/angels-of-death/angels-of-death-strategy-ploy-indomitus.pdf": "6aa467a0db65b65f7f10eb264c19c6cf2b8dc2f22dd6c4123d0f745fec0b2511"
+      }
+    },
+    "extract_backsides": {
+      "outputs": {
+        "backside-landscape.jpg": {
+          "path": "layers/integration/angels-of-death/card-backside/angels-of-death-backside-landscape.jpg",
+          "hash": "1c945470582c34cf1f93b38f46447c825c7df228c4bcfc13a8b19347d1b5b52c",
+          "modified": "2026-07-11T06:54:38.156917+00:00"
+        },
+        "backside-portrait.jpg": {
+          "path": "layers/integration/angels-of-death/card-backside/angels-of-death-backside-portrait.jpg",
+          "hash": "675d536b9f057a6df260610d2581067cb073e798e70327402086e1e835b63715",
+          "modified": "2026-07-11T06:54:38.162787+00:00"
+        }
+      },
+      "completed": "2026-07-11T06:54:38.169034+00:00",
+      "inputs": {
+        "layers/integration/angels-of-death/artwork/icons/angels-of-death-icon-token.jpg": "49f2237722383767155e7d61d8741f1439bb6efcf76360f42fcf27faed797fa4",
+        "config/defaults/box/card-box-background.jpeg": "2dd1442a7c52ca1d66899333f678d60f48981ce20561ead77c1161d548176036"
+      }
+    },
+    "generate_dice": {
+      "outputs": {
+        "dice-light.jpg": {
+          "path": "output/angels-of-death/dice/angels-of-death-dice-light.jpg",
+          "hash": "06f6aca1b74a5fd1efa1105022b8b080ad73d862bc416936bb68a660bb833d45",
+          "modified": "2026-07-11T06:54:44.933326+00:00"
+        },
+        "dice-dark.jpg": {
+          "path": "output/angels-of-death/dice/angels-of-death-dice-dark.jpg",
+          "hash": "e5817825390b412fe683be6631f4363d791ca9fe193671a57c6850f5ac7108fb",
+          "modified": "2026-07-11T06:54:44.941433+00:00"
+        }
+      },
+      "completed": "2026-07-11T06:54:44.944507+00:00",
+      "inputs": {
+        "layers/integration/angels-of-death/artwork/icons/angels-of-death-icon-token-transparent.png": "a0effa6066b7d28cb3ea29a4e6a1b28c1ee25b309f21041b22cd7279f7529c11",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41"
+      }
+    },
+    "generate_box_texture": {
+      "outputs": {
+        "card-box-texture.jpg": {
+          "path": "output/angels-of-death/cardbox/angels-of-death-card-box-texture.jpg",
+          "hash": "9ed9d7d375acb7872b9f44264795ebae8bb9b006c4af80d53427db0daa51bd12",
+          "modified": "2026-07-11T06:54:45.184642+00:00"
+        },
+        "card-box.obj": {
+          "path": "output/angels-of-death/cardbox/angels-of-death-card-box.obj",
+          "hash": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+          "modified": "2026-07-11T06:54:45.187470+00:00"
+        }
+      },
+      "completed": "2026-07-11T06:54:45.199444+00:00",
+      "inputs": {
+        "layers/integration/angels-of-death/artwork/icons/angels-of-death-icon-token.jpg": "49f2237722383767155e7d61d8741f1439bb6efcf76360f42fcf27faed797fa4",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "config/defaults/box/card-box.obj": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+        "config/defaults/box/card-box-texture.jpg": "b2f310b01a0d28e8806e99ce0b972e8967e3014608eacefcb6ec51597695a313"
+      }
+    },
+    "generate_card_images": {
+      "outputs": {
+        "cards/datacards/assault-intercessor-grenadier-back.jpg": {
+          "path": "output/angels-of-death/cards/datacards/assault-intercessor-grenadier-back.jpg",
+          "hash": "1c945470582c34cf1f93b38f46447c825c7df228c4bcfc13a8b19347d1b5b52c",
+          "modified": "2026-07-11T06:55:18.263895+00:00"
+        },
+        "cards/datacards/assault-intercessor-grenadier-front.jpg": {
+          "path": "output/angels-of-death/cards/datacards/assault-intercessor-grenadier-front.jpg",
+          "hash": "7f2c36b3922344740fa5177ce717b2514277591ca5cdb59abdae20d239cfc68f",
+          "modified": "2026-07-11T06:55:18.274727+00:00"
+        },
+        "cards/datacards/assault-intercessor-sergeant-back.jpg": {
+          "path": "output/angels-of-death/cards/datacards/assault-intercessor-sergeant-back.jpg",
+          "hash": "fc5579e8be922c4098725b2e0437e64e7b2c446ee2a3b9fe36338ab4f2b6a6eb",
+          "modified": "2026-07-11T06:55:18.286692+00:00"
+        },
+        "cards/datacards/assault-intercessor-sergeant-front.jpg": {
+          "path": "output/angels-of-death/cards/datacards/assault-intercessor-sergeant-front.jpg",
+          "hash": "d77dc37b01fe55b3504d19843c59cc80e97a4d6da4b92da79b60b2fd43bba29e",
+          "modified": "2026-07-11T06:55:18.300784+00:00"
+        },
+        "cards/datacards/assault-intercessor-warrior-back.jpg": {
+          "path": "output/angels-of-death/cards/datacards/assault-intercessor-warrior-back.jpg",
+          "hash": "1c945470582c34cf1f93b38f46447c825c7df228c4bcfc13a8b19347d1b5b52c",
+          "modified": "2026-07-11T06:55:18.313736+00:00"
+        },
+        "cards/datacards/assault-intercessor-warrior-front.jpg": {
+          "path": "output/angels-of-death/cards/datacards/assault-intercessor-warrior-front.jpg",
+          "hash": "4926992088e27325591567a681c20da72556d97a0699a6da90e9032905281cfe",
+          "modified": "2026-07-11T06:55:18.322079+00:00"
+        },
+        "cards/datacards/eliminator-sniper-back.jpg": {
+          "path": "output/angels-of-death/cards/datacards/eliminator-sniper-back.jpg",
+          "hash": "2433148cc5eaccc27cf587aefee4ff90ef400c9ba6b035acb129c50ef1a55a50",
+          "modified": "2026-07-11T06:55:18.330764+00:00"
+        },
+        "cards/datacards/eliminator-sniper-front.jpg": {
+          "path": "output/angels-of-death/cards/datacards/eliminator-sniper-front.jpg",
+          "hash": "ad2e61fd14901609abab77f09db38cbc5565664f43261512d41b9286561aea5b",
+          "modified": "2026-07-11T06:55:18.346391+00:00"
+        },
+        "cards/datacards/heavy-intercessor-gunner-back.jpg": {
+          "path": "output/angels-of-death/cards/datacards/heavy-intercessor-gunner-back.jpg",
+          "hash": "1c945470582c34cf1f93b38f46447c825c7df228c4bcfc13a8b19347d1b5b52c",
+          "modified": "2026-07-11T06:55:18.357164+00:00"
+        },
+        "cards/datacards/heavy-intercessor-gunner-front.jpg": {
+          "path": "output/angels-of-death/cards/datacards/heavy-intercessor-gunner-front.jpg",
+          "hash": "d7e976be14740b0b460eb9e107db8316817f6c9bf2e5f92142b38b1e1fb3d4d9",
+          "modified": "2026-07-11T06:55:18.368043+00:00"
+        },
+        "cards/datacards/intercessor-gunner-back.jpg": {
+          "path": "output/angels-of-death/cards/datacards/intercessor-gunner-back.jpg",
+          "hash": "1c945470582c34cf1f93b38f46447c825c7df228c4bcfc13a8b19347d1b5b52c",
+          "modified": "2026-07-11T06:55:18.382307+00:00"
+        },
+        "cards/datacards/intercessor-gunner-front.jpg": {
+          "path": "output/angels-of-death/cards/datacards/intercessor-gunner-front.jpg",
+          "hash": "322d057c76726ea6a5fe7c988401876c80ac66680ecd9ae347a1d75221567597",
+          "modified": "2026-07-11T06:55:18.396101+00:00"
+        },
+        "cards/datacards/intercessor-sergeant-back.jpg": {
+          "path": "output/angels-of-death/cards/datacards/intercessor-sergeant-back.jpg",
+          "hash": "8080670844c0a1ce120ad5932a05d4f2e4f6aaa139471f04d7a30465f869fea2",
+          "modified": "2026-07-11T06:55:18.405449+00:00"
+        },
+        "cards/datacards/intercessor-sergeant-front.jpg": {
+          "path": "output/angels-of-death/cards/datacards/intercessor-sergeant-front.jpg",
+          "hash": "25afa35b2b28258efb245bc833a137ffc1eb3d409bb933eea004a291a52520c9",
+          "modified": "2026-07-11T06:55:18.418506+00:00"
+        },
+        "cards/datacards/intercessor-warrior-back.jpg": {
+          "path": "output/angels-of-death/cards/datacards/intercessor-warrior-back.jpg",
+          "hash": "1c945470582c34cf1f93b38f46447c825c7df228c4bcfc13a8b19347d1b5b52c",
+          "modified": "2026-07-11T06:55:18.433050+00:00"
+        },
+        "cards/datacards/intercessor-warrior-front.jpg": {
+          "path": "output/angels-of-death/cards/datacards/intercessor-warrior-front.jpg",
+          "hash": "0fb81686e1e1df3c364f3c4234fe0ee37effb1f2cbe41f687fa36d56ad0418a3",
+          "modified": "2026-07-11T06:55:18.438623+00:00"
+        },
+        "cards/datacards/space-marine-captain-back.jpg": {
+          "path": "output/angels-of-death/cards/datacards/space-marine-captain-back.jpg",
+          "hash": "1c945470582c34cf1f93b38f46447c825c7df228c4bcfc13a8b19347d1b5b52c",
+          "modified": "2026-07-11T06:55:18.450127+00:00"
+        },
+        "cards/datacards/space-marine-captain-front.jpg": {
+          "path": "output/angels-of-death/cards/datacards/space-marine-captain-front.jpg",
+          "hash": "ffdf5e386896f1fa1bf126ff4c3e4d001f99437090721e79cc3b8e61baa75076",
+          "modified": "2026-07-11T06:55:18.466692+00:00"
+        },
+        "cards/equipment/angels-of-death-auspex-back.jpg": {
+          "path": "output/angels-of-death/cards/equipment/angels-of-death-auspex-back.jpg",
+          "hash": "675d536b9f057a6df260610d2581067cb073e798e70327402086e1e835b63715",
+          "modified": "2026-07-11T06:55:18.478935+00:00"
+        },
+        "cards/equipment/angels-of-death-auspex-front.jpg": {
+          "path": "output/angels-of-death/cards/equipment/angels-of-death-auspex-front.jpg",
+          "hash": "06f1ff2ca4a70f34407cf788ce25830a2ad5bdb6de93e94055ad241aa979b0b6",
+          "modified": "2026-07-11T06:55:18.489382+00:00"
+        },
+        "cards/equipment/angels-of-death-chapter-reliquaries-back.jpg": {
+          "path": "output/angels-of-death/cards/equipment/angels-of-death-chapter-reliquaries-back.jpg",
+          "hash": "675d536b9f057a6df260610d2581067cb073e798e70327402086e1e835b63715",
+          "modified": "2026-07-11T06:55:18.499900+00:00"
+        },
+        "cards/equipment/angels-of-death-chapter-reliquaries-front.jpg": {
+          "path": "output/angels-of-death/cards/equipment/angels-of-death-chapter-reliquaries-front.jpg",
+          "hash": "75ef8c85ceed72884cce8f7c64bb2b017c9d851f70fc453b73a6fec4730b08b8",
+          "modified": "2026-07-11T06:55:18.506779+00:00"
+        },
+        "cards/equipment/angels-of-death-purity-seals-back.jpg": {
+          "path": "output/angels-of-death/cards/equipment/angels-of-death-purity-seals-back.jpg",
+          "hash": "675d536b9f057a6df260610d2581067cb073e798e70327402086e1e835b63715",
+          "modified": "2026-07-11T06:55:18.950178+00:00"
+        },
+        "cards/equipment/angels-of-death-purity-seals-front.jpg": {
+          "path": "output/angels-of-death/cards/equipment/angels-of-death-purity-seals-front.jpg",
+          "hash": "8f1efd77fdb1559ea895971000dfd0a0f8fb74d5d170a23546663b7df4fdb887",
+          "modified": "2026-07-11T06:55:18.953785+00:00"
+        },
+        "cards/equipment/angels-of-death-tilting-shields-back.jpg": {
+          "path": "output/angels-of-death/cards/equipment/angels-of-death-tilting-shields-back.jpg",
+          "hash": "675d536b9f057a6df260610d2581067cb073e798e70327402086e1e835b63715",
+          "modified": "2026-07-11T06:55:19.385294+00:00"
+        },
+        "cards/equipment/angels-of-death-tilting-shields-front.jpg": {
+          "path": "output/angels-of-death/cards/equipment/angels-of-death-tilting-shields-front.jpg",
+          "hash": "2b7a7863b072aea543179f3270dbc7360535d8f24bcddece6a1564f9336a4514",
+          "modified": "2026-07-11T06:55:19.396718+00:00"
+        },
+        "cards/faction_rules/angels-of-death-astartes-back.jpg": {
+          "path": "output/angels-of-death/cards/faction_rules/angels-of-death-astartes-back.jpg",
+          "hash": "675d536b9f057a6df260610d2581067cb073e798e70327402086e1e835b63715",
+          "modified": "2026-07-11T06:55:19.873751+00:00"
+        },
+        "cards/faction_rules/angels-of-death-astartes-front.jpg": {
+          "path": "output/angels-of-death/cards/faction_rules/angels-of-death-astartes-front.jpg",
+          "hash": "98d694a4a1d5d865a5fe2f37d21a8b5b14a39d8b1381c3153c968f16b631e76b",
+          "modified": "2026-07-11T06:55:19.878545+00:00"
+        },
+        "cards/faction_rules/angels-of-death-chapter-tactics-card1-back.jpg": {
+          "path": "output/angels-of-death/cards/faction_rules/angels-of-death-chapter-tactics-card1-back.jpg",
+          "hash": "679e99f4af7cd30062694c6f342d7ca9c86759b9c48c1fce2abc0f497107a6a7",
+          "modified": "2026-07-11T06:55:19.879995+00:00"
+        },
+        "cards/faction_rules/angels-of-death-chapter-tactics-card1-front.jpg": {
+          "path": "output/angels-of-death/cards/faction_rules/angels-of-death-chapter-tactics-card1-front.jpg",
+          "hash": "4d994b0576d7a6420934707ddac06c92fbee77d4e111a1c789c1fed48ca759f1",
+          "modified": "2026-07-11T06:55:20.285779+00:00"
+        },
+        "cards/faction_rules/angels-of-death-chapter-tactics-card2-back.jpg": {
+          "path": "output/angels-of-death/cards/faction_rules/angels-of-death-chapter-tactics-card2-back.jpg",
+          "hash": "84759d3ec34c6ff5035c2e87354ff3858eac3d6a2f19c957f1303e5c15cac5dd",
+          "modified": "2026-07-11T06:55:20.355354+00:00"
+        },
+        "cards/faction_rules/angels-of-death-chapter-tactics-card2-front.jpg": {
+          "path": "output/angels-of-death/cards/faction_rules/angels-of-death-chapter-tactics-card2-front.jpg",
+          "hash": "882d29f44aff7470ff272dc4b6750ddd9ce5a36c0e2e2789280194f17ad89e92",
+          "modified": "2026-07-11T06:55:20.827334+00:00"
+        },
+        "cards/firefight_ploys/angels-of-death-adjust-doctrine-back.jpg": {
+          "path": "output/angels-of-death/cards/firefight_ploys/angels-of-death-adjust-doctrine-back.jpg",
+          "hash": "675d536b9f057a6df260610d2581067cb073e798e70327402086e1e835b63715",
+          "modified": "2026-07-11T06:55:21.215046+00:00"
+        },
+        "cards/firefight_ploys/angels-of-death-adjust-doctrine-front.jpg": {
+          "path": "output/angels-of-death/cards/firefight_ploys/angels-of-death-adjust-doctrine-front.jpg",
+          "hash": "a826376cbe24ad3bce958a72984a35e550e4760bab15f1345c7b643e1561c7d3",
+          "modified": "2026-07-11T06:55:21.670065+00:00"
+        },
+        "cards/firefight_ploys/angels-of-death-shock-assault-back.jpg": {
+          "path": "output/angels-of-death/cards/firefight_ploys/angels-of-death-shock-assault-back.jpg",
+          "hash": "675d536b9f057a6df260610d2581067cb073e798e70327402086e1e835b63715",
+          "modified": "2026-07-11T06:55:21.749215+00:00"
+        },
+        "cards/firefight_ploys/angels-of-death-shock-assault-front.jpg": {
+          "path": "output/angels-of-death/cards/firefight_ploys/angels-of-death-shock-assault-front.jpg",
+          "hash": "b5d3f1ca025ea91e73715198f8dd08294901fa19d4bad158a14a6654d68a3f43",
+          "modified": "2026-07-11T06:55:22.194248+00:00"
+        },
+        "cards/firefight_ploys/angels-of-death-transhuman-physiology-back.jpg": {
+          "path": "output/angels-of-death/cards/firefight_ploys/angels-of-death-transhuman-physiology-back.jpg",
+          "hash": "675d536b9f057a6df260610d2581067cb073e798e70327402086e1e835b63715",
+          "modified": "2026-07-11T06:55:22.617880+00:00"
+        },
+        "cards/firefight_ploys/angels-of-death-transhuman-physiology-front.jpg": {
+          "path": "output/angels-of-death/cards/firefight_ploys/angels-of-death-transhuman-physiology-front.jpg",
+          "hash": "e65ccc948ee985301af5612abc9929d966aa20468cc55939b093c86779f9871c",
+          "modified": "2026-07-11T06:55:22.624081+00:00"
+        },
+        "cards/firefight_ploys/angels-of-death-wrath-of-vengeance-back.jpg": {
+          "path": "output/angels-of-death/cards/firefight_ploys/angels-of-death-wrath-of-vengeance-back.jpg",
+          "hash": "675d536b9f057a6df260610d2581067cb073e798e70327402086e1e835b63715",
+          "modified": "2026-07-11T06:55:23.033927+00:00"
+        },
+        "cards/firefight_ploys/angels-of-death-wrath-of-vengeance-front.jpg": {
+          "path": "output/angels-of-death/cards/firefight_ploys/angels-of-death-wrath-of-vengeance-front.jpg",
+          "hash": "892e1b488f33f7650da7d8f5c32ee31d4e167391fb12628d68495c14ccbf69c4",
+          "modified": "2026-07-11T06:55:23.124589+00:00"
+        },
+        "cards/operatives_selection/angels-of-death-operative-selection-back.jpg": {
+          "path": "output/angels-of-death/cards/operatives_selection/angels-of-death-operative-selection-back.jpg",
+          "hash": "c78bffd51a2f9d870f9c404c18ad4caba440665a4ab0e767809044b32ccad756",
+          "modified": "2026-07-11T06:55:23.581343+00:00"
+        },
+        "cards/operatives_selection/angels-of-death-operative-selection-front.jpg": {
+          "path": "output/angels-of-death/cards/operatives_selection/angels-of-death-operative-selection-front.jpg",
+          "hash": "3fb94ce399c49ca7480e6b862550d2e1cc6c977237a5f9c7b5f8864097e94473",
+          "modified": "2026-07-11T06:55:24.036530+00:00"
+        },
+        "cards/strategy_ploys/angels-of-death-adaptive-tactics-back.jpg": {
+          "path": "output/angels-of-death/cards/strategy_ploys/angels-of-death-adaptive-tactics-back.jpg",
+          "hash": "675d536b9f057a6df260610d2581067cb073e798e70327402086e1e835b63715",
+          "modified": "2026-07-11T06:55:24.544756+00:00"
+        },
+        "cards/strategy_ploys/angels-of-death-adaptive-tactics-front.jpg": {
+          "path": "output/angels-of-death/cards/strategy_ploys/angels-of-death-adaptive-tactics-front.jpg",
+          "hash": "4cbc432b1da3a2968eebfa66a448bff94d62687e161b46ce74f16eab07667f51",
+          "modified": "2026-07-11T06:55:25.080180+00:00"
+        },
+        "cards/strategy_ploys/angels-of-death-and-they-shall-know-no-fear-back.jpg": {
+          "path": "output/angels-of-death/cards/strategy_ploys/angels-of-death-and-they-shall-know-no-fear-back.jpg",
+          "hash": "675d536b9f057a6df260610d2581067cb073e798e70327402086e1e835b63715",
+          "modified": "2026-07-11T06:55:25.516305+00:00"
+        },
+        "cards/strategy_ploys/angels-of-death-and-they-shall-know-no-fear-front.jpg": {
+          "path": "output/angels-of-death/cards/strategy_ploys/angels-of-death-and-they-shall-know-no-fear-front.jpg",
+          "hash": "caf07b127f0df4e61e0f7d6cec2129e7c985f98f75b56783b0cfae74c583d44c",
+          "modified": "2026-07-11T06:55:25.997961+00:00"
+        },
+        "cards/strategy_ploys/angels-of-death-combat-doctrine-back.jpg": {
+          "path": "output/angels-of-death/cards/strategy_ploys/angels-of-death-combat-doctrine-back.jpg",
+          "hash": "675d536b9f057a6df260610d2581067cb073e798e70327402086e1e835b63715",
+          "modified": "2026-07-11T06:55:26.436850+00:00"
+        },
+        "cards/strategy_ploys/angels-of-death-combat-doctrine-front.jpg": {
+          "path": "output/angels-of-death/cards/strategy_ploys/angels-of-death-combat-doctrine-front.jpg",
+          "hash": "5c460080085d6d0e8b4e7eeb25dc7439a24140a9f1f078d59d677c557c851f14",
+          "modified": "2026-07-11T06:55:26.879145+00:00"
+        },
+        "cards/strategy_ploys/angels-of-death-indomitus-back.jpg": {
+          "path": "output/angels-of-death/cards/strategy_ploys/angels-of-death-indomitus-back.jpg",
+          "hash": "675d536b9f057a6df260610d2581067cb073e798e70327402086e1e835b63715",
+          "modified": "2026-07-11T06:55:27.376959+00:00"
+        },
+        "cards/strategy_ploys/angels-of-death-indomitus-front.jpg": {
+          "path": "output/angels-of-death/cards/strategy_ploys/angels-of-death-indomitus-front.jpg",
+          "hash": "b3f61ec1f5ba18336f8d2e2c46e9c2c00a6fee9a9c93dbd315f9572d4c4461d9",
+          "modified": "2026-07-11T06:55:27.816781+00:00"
+        }
+      },
+      "completed": "2026-07-11T06:57:35.988284+00:00",
+      "inputs": {
+        "layers/integration/angels-of-death/manifest.json": "646f6877cc04e6c18afe3d41f34374227985fbdf75d8711a2487b9eda76dcc68",
+        "layers/integration/angels-of-death/angels-of-death-datacard-assault-intercessor-grenadier.pdf": "1e753de7903d6ec9f1aae9c42759bd5ebd9ec7e426c2f178226e51008e3e183f",
+        "layers/integration/angels-of-death/angels-of-death-datacard-assault-intercessor-sergeant.pdf": "a5de3ef086f9364d6b60dfccc2b3d3f9f4d49767da1c8582a323c9dfb083028f",
+        "layers/integration/angels-of-death/angels-of-death-datacard-assault-intercessor-warrior.pdf": "cb7c5cfc599d280251907a815e9156603a75e5e2af68bded0aca0bef0b85a942",
+        "layers/integration/angels-of-death/angels-of-death-datacard-eliminator-sniper.pdf": "423f0543b9d8edc6171bf99050cd2729ba743a1af02e6f64eb1f6605233efdb3",
+        "layers/integration/angels-of-death/angels-of-death-datacard-heavy-intercessor-gunner.pdf": "9cb73c2f62de446aca4bdb05369a72eb0e040e300f950d3812b99a6a30659d16",
+        "layers/integration/angels-of-death/angels-of-death-datacard-intercessor-gunner.pdf": "0941349502cd9b1d66f6fb1129be64d40b88f5cb3c24661067f2b55a27618a37",
+        "layers/integration/angels-of-death/angels-of-death-datacard-intercessor-sergeant.pdf": "839d12de8994c7738be4dc097dc7983cd3f583344bff0f091709b747b6cdb165",
+        "layers/integration/angels-of-death/angels-of-death-datacard-intercessor-warrior.pdf": "71323b87f6dd9020cfd10c4d92a1eabe7667b63b6845f107b1e8917e38aa6023",
+        "layers/integration/angels-of-death/angels-of-death-datacard-space-marine-captain.pdf": "10d9c0d2e3d88195a48c6deede345458448adad409d79bfc443558ec7fd26f94",
+        "layers/integration/angels-of-death/angels-of-death-equipment-auspex.pdf": "c5c03b96cfcd5ab5b80b5e5ae64234774851a39af7f501ea0d46c5e60453ef83",
+        "layers/integration/angels-of-death/angels-of-death-equipment-chapter-reliquaries.pdf": "c95c07d5e813105084ae71473dd169d1bed278e81a015f770b82969b1cd7cf29",
+        "layers/integration/angels-of-death/angels-of-death-equipment-purity-seals.pdf": "7eef560dd220d4e91c54f95a5d45b8138a8627c3f2707a307a2f540204eefb2f",
+        "layers/integration/angels-of-death/angels-of-death-equipment-tilting-shields.pdf": "4ef64920cabc4e8e7628498c0af990d4f0eb0be64c3679d672b5320080433861",
+        "layers/integration/angels-of-death/angels-of-death-faction-rule-astartes.pdf": "058b5bec6fa5e1543a79d1ede358ecbb78254ccf4b29bb4995bd5af3e68052d8",
+        "layers/integration/angels-of-death/angels-of-death-faction-rule-chapter-tactics-1.pdf": "9cf3179233105a1c545ea545811e8924c79b55751059730edc76a7b792f171f9",
+        "layers/integration/angels-of-death/angels-of-death-faction-rule-chapter-tactics-2.pdf": "62f61344de15d1af58298267cf15c7d825c68192c714afd382c70ea2e6d27907",
+        "layers/integration/angels-of-death/angels-of-death-firefight-ploy-adjust-doctrine.pdf": "a710f88f003f07b5c6606995d4cc702424145c8b358e19012084cade242125af",
+        "layers/integration/angels-of-death/angels-of-death-firefight-ploy-shock-assault.pdf": "84263f16f5ab2f7ef0fda083fe60748cf055f54f1c1072d3d0114eaf57398386",
+        "layers/integration/angels-of-death/angels-of-death-firefight-ploy-transhuman-physiology.pdf": "47f9d6ce8289788866c3933a1299af743f04d2406e1b9b76dcc96219081cd562",
+        "layers/integration/angels-of-death/angels-of-death-firefight-ploy-wrath-of-vengeance.pdf": "a8347325d0877423dd47c649b521b785c0a830b18032ee24ba36eb9fe59914b8",
+        "layers/integration/angels-of-death/angels-of-death-operatives-selection-operative-selection.pdf": "f0d34f781d6ee53b81be42f634508baeba67eb5257b2c015e220e9cb81a49846",
+        "layers/integration/angels-of-death/angels-of-death-strategy-ploy-adaptive-tactics.pdf": "beac0e7feb6d92101e4d8ddae407df33242460f85c33400ff3a24530560b5952",
+        "layers/integration/angels-of-death/angels-of-death-strategy-ploy-and-they-shall-know-no-fear.pdf": "ab07cf5466db54c9eb1a5d364ade66324693e5f00872913d66c6c95006ed0fee",
+        "layers/integration/angels-of-death/angels-of-death-strategy-ploy-combat-doctrine.pdf": "86ef04ad5a8c7857b84a1be7554f763874b23ad1901fc30f9c71c3b2fb1da10e",
+        "layers/integration/angels-of-death/angels-of-death-strategy-ploy-indomitus.pdf": "6aa467a0db65b65f7f10eb264c19c6cf2b8dc2f22dd6c4123d0f745fec0b2511",
+        "layers/integration/angels-of-death/card-backside/angels-of-death-backside-portrait.jpg": "675d536b9f057a6df260610d2581067cb073e798e70327402086e1e835b63715",
+        "config/defaults/card-backside/default-backside-portrait.jpg": "f00ff15fa70005b9f804de08519e2e83485d7eaf78dfacea65dcef0eb1a29c22",
+        "layers/integration/angels-of-death/card-backside/angels-of-death-backside-landscape.jpg": "1c945470582c34cf1f93b38f46447c825c7df228c4bcfc13a8b19347d1b5b52c",
+        "config/defaults/card-backside/default-backside-landscape.jpg": "1cf5580a1dff0c10adb1a286edad4479c487f3d2d698b0b8be84fe653039fd7e"
+      }
+    },
+    "extract_stats": {
+      "outputs": {
+        "team-data.json": {
+          "path": "output/angels-of-death/data/angels-of-death-team-data.json",
+          "hash": "20f6a8987369c1599ce9043e6cdaa7a64f90406ffa1a2a9b24e7fe1f4eb8cde0",
+          "modified": "2026-07-11T06:57:36.830805+00:00"
+        }
+      },
+      "completed": "2026-07-11T06:57:36.832641+00:00",
+      "inputs": {
+        "layers/integration/angels-of-death/content/angels-of-death-content.json": "20f6a8987369c1599ce9043e6cdaa7a64f90406ffa1a2a9b24e7fe1f4eb8cde0"
+      }
+    },
+    "generate_tts": {
+      "outputs": {
+        "tts_objects/Angels Of Death Box.json": {
+          "path": "output/angels-of-death/tts_objects/Angels Of Death Box.json",
+          "hash": "990849e301d460edf920d8f95189cc24bfce1326a519e2056bbfde927d690e8d",
+          "modified": "2026-07-12T18:32:25.333398+00:00"
+        },
+        "tts_objects/Angels Of Death.json": {
+          "path": "output/angels-of-death/tts_objects/Angels Of Death.json",
+          "hash": "fe549e15749e95a44b4ef74223cb24b5b2a1c2a1cc83ab95c3c66c82a8c61042",
+          "modified": "2026-07-12T18:32:25.344911+00:00"
+        }
+      },
+      "completed": "2026-07-12T18:32:25.380539+00:00",
+      "inputs": {
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "config/team-guids.json": "1dea0eaf2c7d1c37c86aba088cdf876f0638d2dcaca162888fea8422c2d5c9db",
+        "output/angels-of-death/cards/datacards/assault-intercessor-grenadier-back.jpg": "1c945470582c34cf1f93b38f46447c825c7df228c4bcfc13a8b19347d1b5b52c",
+        "output/angels-of-death/cards/datacards/assault-intercessor-grenadier-front.jpg": "7f2c36b3922344740fa5177ce717b2514277591ca5cdb59abdae20d239cfc68f",
+        "output/angels-of-death/cards/datacards/assault-intercessor-sergeant-back.jpg": "fc5579e8be922c4098725b2e0437e64e7b2c446ee2a3b9fe36338ab4f2b6a6eb",
+        "output/angels-of-death/cards/datacards/assault-intercessor-sergeant-front.jpg": "d77dc37b01fe55b3504d19843c59cc80e97a4d6da4b92da79b60b2fd43bba29e",
+        "output/angels-of-death/cards/datacards/assault-intercessor-warrior-back.jpg": "1c945470582c34cf1f93b38f46447c825c7df228c4bcfc13a8b19347d1b5b52c",
+        "output/angels-of-death/cards/datacards/assault-intercessor-warrior-front.jpg": "4926992088e27325591567a681c20da72556d97a0699a6da90e9032905281cfe",
+        "output/angels-of-death/cards/datacards/eliminator-sniper-back.jpg": "2433148cc5eaccc27cf587aefee4ff90ef400c9ba6b035acb129c50ef1a55a50",
+        "output/angels-of-death/cards/datacards/eliminator-sniper-front.jpg": "ad2e61fd14901609abab77f09db38cbc5565664f43261512d41b9286561aea5b",
+        "output/angels-of-death/cards/datacards/heavy-intercessor-gunner-back.jpg": "1c945470582c34cf1f93b38f46447c825c7df228c4bcfc13a8b19347d1b5b52c",
+        "output/angels-of-death/cards/datacards/heavy-intercessor-gunner-front.jpg": "d7e976be14740b0b460eb9e107db8316817f6c9bf2e5f92142b38b1e1fb3d4d9",
+        "output/angels-of-death/cards/datacards/intercessor-gunner-back.jpg": "1c945470582c34cf1f93b38f46447c825c7df228c4bcfc13a8b19347d1b5b52c",
+        "output/angels-of-death/cards/datacards/intercessor-gunner-front.jpg": "322d057c76726ea6a5fe7c988401876c80ac66680ecd9ae347a1d75221567597",
+        "output/angels-of-death/cards/datacards/intercessor-sergeant-back.jpg": "8080670844c0a1ce120ad5932a05d4f2e4f6aaa139471f04d7a30465f869fea2",
+        "output/angels-of-death/cards/datacards/intercessor-sergeant-front.jpg": "25afa35b2b28258efb245bc833a137ffc1eb3d409bb933eea004a291a52520c9",
+        "output/angels-of-death/cards/datacards/intercessor-warrior-back.jpg": "1c945470582c34cf1f93b38f46447c825c7df228c4bcfc13a8b19347d1b5b52c",
+        "output/angels-of-death/cards/datacards/intercessor-warrior-front.jpg": "0fb81686e1e1df3c364f3c4234fe0ee37effb1f2cbe41f687fa36d56ad0418a3",
+        "output/angels-of-death/cards/datacards/space-marine-captain-back.jpg": "1c945470582c34cf1f93b38f46447c825c7df228c4bcfc13a8b19347d1b5b52c",
+        "output/angels-of-death/cards/datacards/space-marine-captain-front.jpg": "ffdf5e386896f1fa1bf126ff4c3e4d001f99437090721e79cc3b8e61baa75076",
+        "output/angels-of-death/cards/equipment/angels-of-death-auspex-back.jpg": "675d536b9f057a6df260610d2581067cb073e798e70327402086e1e835b63715",
+        "output/angels-of-death/cards/equipment/angels-of-death-auspex-front.jpg": "06f1ff2ca4a70f34407cf788ce25830a2ad5bdb6de93e94055ad241aa979b0b6",
+        "output/angels-of-death/cards/equipment/angels-of-death-chapter-reliquaries-back.jpg": "675d536b9f057a6df260610d2581067cb073e798e70327402086e1e835b63715",
+        "output/angels-of-death/cards/equipment/angels-of-death-chapter-reliquaries-front.jpg": "75ef8c85ceed72884cce8f7c64bb2b017c9d851f70fc453b73a6fec4730b08b8",
+        "output/angels-of-death/cards/equipment/angels-of-death-purity-seals-back.jpg": "675d536b9f057a6df260610d2581067cb073e798e70327402086e1e835b63715",
+        "output/angels-of-death/cards/equipment/angels-of-death-purity-seals-front.jpg": "8f1efd77fdb1559ea895971000dfd0a0f8fb74d5d170a23546663b7df4fdb887",
+        "output/angels-of-death/cards/equipment/angels-of-death-tilting-shields-back.jpg": "675d536b9f057a6df260610d2581067cb073e798e70327402086e1e835b63715",
+        "output/angels-of-death/cards/equipment/angels-of-death-tilting-shields-front.jpg": "2b7a7863b072aea543179f3270dbc7360535d8f24bcddece6a1564f9336a4514",
+        "output/angels-of-death/cards/faction_rules/angels-of-death-astartes-back.jpg": "675d536b9f057a6df260610d2581067cb073e798e70327402086e1e835b63715",
+        "output/angels-of-death/cards/faction_rules/angels-of-death-astartes-front.jpg": "98d694a4a1d5d865a5fe2f37d21a8b5b14a39d8b1381c3153c968f16b631e76b",
+        "output/angels-of-death/cards/faction_rules/angels-of-death-chapter-tactics-card1-back.jpg": "679e99f4af7cd30062694c6f342d7ca9c86759b9c48c1fce2abc0f497107a6a7",
+        "output/angels-of-death/cards/faction_rules/angels-of-death-chapter-tactics-card1-front.jpg": "4d994b0576d7a6420934707ddac06c92fbee77d4e111a1c789c1fed48ca759f1",
+        "output/angels-of-death/cards/faction_rules/angels-of-death-chapter-tactics-card2-back.jpg": "84759d3ec34c6ff5035c2e87354ff3858eac3d6a2f19c957f1303e5c15cac5dd",
+        "output/angels-of-death/cards/faction_rules/angels-of-death-chapter-tactics-card2-front.jpg": "882d29f44aff7470ff272dc4b6750ddd9ce5a36c0e2e2789280194f17ad89e92",
+        "output/angels-of-death/cards/firefight_ploys/angels-of-death-adjust-doctrine-back.jpg": "675d536b9f057a6df260610d2581067cb073e798e70327402086e1e835b63715",
+        "output/angels-of-death/cards/firefight_ploys/angels-of-death-adjust-doctrine-front.jpg": "a826376cbe24ad3bce958a72984a35e550e4760bab15f1345c7b643e1561c7d3",
+        "output/angels-of-death/cards/firefight_ploys/angels-of-death-shock-assault-back.jpg": "675d536b9f057a6df260610d2581067cb073e798e70327402086e1e835b63715",
+        "output/angels-of-death/cards/firefight_ploys/angels-of-death-shock-assault-front.jpg": "b5d3f1ca025ea91e73715198f8dd08294901fa19d4bad158a14a6654d68a3f43",
+        "output/angels-of-death/cards/firefight_ploys/angels-of-death-transhuman-physiology-back.jpg": "675d536b9f057a6df260610d2581067cb073e798e70327402086e1e835b63715",
+        "output/angels-of-death/cards/firefight_ploys/angels-of-death-transhuman-physiology-front.jpg": "e65ccc948ee985301af5612abc9929d966aa20468cc55939b093c86779f9871c",
+        "output/angels-of-death/cards/firefight_ploys/angels-of-death-wrath-of-vengeance-back.jpg": "675d536b9f057a6df260610d2581067cb073e798e70327402086e1e835b63715",
+        "output/angels-of-death/cards/firefight_ploys/angels-of-death-wrath-of-vengeance-front.jpg": "892e1b488f33f7650da7d8f5c32ee31d4e167391fb12628d68495c14ccbf69c4",
+        "output/angels-of-death/cards/operatives_selection/angels-of-death-operative-selection-back.jpg": "c78bffd51a2f9d870f9c404c18ad4caba440665a4ab0e767809044b32ccad756",
+        "output/angels-of-death/cards/operatives_selection/angels-of-death-operative-selection-front.jpg": "3fb94ce399c49ca7480e6b862550d2e1cc6c977237a5f9c7b5f8864097e94473",
+        "output/angels-of-death/cards/strategy_ploys/angels-of-death-adaptive-tactics-back.jpg": "675d536b9f057a6df260610d2581067cb073e798e70327402086e1e835b63715",
+        "output/angels-of-death/cards/strategy_ploys/angels-of-death-adaptive-tactics-front.jpg": "4cbc432b1da3a2968eebfa66a448bff94d62687e161b46ce74f16eab07667f51",
+        "output/angels-of-death/cards/strategy_ploys/angels-of-death-and-they-shall-know-no-fear-back.jpg": "675d536b9f057a6df260610d2581067cb073e798e70327402086e1e835b63715",
+        "output/angels-of-death/cards/strategy_ploys/angels-of-death-and-they-shall-know-no-fear-front.jpg": "caf07b127f0df4e61e0f7d6cec2129e7c985f98f75b56783b0cfae74c583d44c",
+        "output/angels-of-death/cards/strategy_ploys/angels-of-death-combat-doctrine-back.jpg": "675d536b9f057a6df260610d2581067cb073e798e70327402086e1e835b63715",
+        "output/angels-of-death/cards/strategy_ploys/angels-of-death-combat-doctrine-front.jpg": "5c460080085d6d0e8b4e7eeb25dc7439a24140a9f1f078d59d677c557c851f14",
+        "output/angels-of-death/cards/strategy_ploys/angels-of-death-indomitus-back.jpg": "675d536b9f057a6df260610d2581067cb073e798e70327402086e1e835b63715",
+        "output/angels-of-death/cards/strategy_ploys/angels-of-death-indomitus-front.jpg": "b3f61ec1f5ba18336f8d2e2c46e9c2c00a6fee9a9c93dbd315f9572d4c4461d9",
+        "output/angels-of-death/cardbox/angels-of-death-card-box-texture.jpg": "9ed9d7d375acb7872b9f44264795ebae8bb9b006c4af80d53427db0daa51bd12",
+        "output/angels-of-death/cardbox/angels-of-death-card-box.obj": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+        "output/angels-of-death/dice/angels-of-death-dice-dark.jpg": "e5817825390b412fe683be6631f4363d791ca9fe193671a57c6850f5ac7108fb",
+        "output/angels-of-death/dice/angels-of-death-dice-light.jpg": "06f6aca1b74a5fd1efa1105022b8b080ad73d862bc416936bb68a660bb833d45",
+        "output/angels-of-death/data/angels-of-death-team-data.json": "20f6a8987369c1599ce9043e6cdaa7a64f90406ffa1a2a9b24e7fe1f4eb8cde0",
+        "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
+        "config/defaults/tts-script/datacard-load-stats.lua": "2d5f4088c2ff09f54988cf8722080f536b4e1b998cc2b4c1f1ea94e6b18eb92e",
+        "config/defaults/tts-script/display-table-manager-script.lua": "0dab4381078d90802f25e2cc825bc3658be35ee13ab3e98831c9d248c2526689",
+        "config/defaults/tts-script/faction-rule-chapter-tactics.lua": "c906742268076fb91f7cb4a92c6b588e1122ccddb692688f635c8dd4f7110ad0",
+        "config/defaults/tts-script/intermediate-updater.lua": "1a2d6dbc1a8c9c57ba6a3e7a3d4bc4b7a38a6c242a93f6ef3dae698123384d35",
+        "config/defaults/tts-script/single-object-updater.lua": "3613b85169e986a8e50ebe221482079e27c18037e3f48920aa0f7e138c0ccacc",
+        "config/defaults/tts-script/team-spawner-clean-script.lua": "12457bff3961eee2293c42d81cf4f4eb8b103177245a1ab8b46fd65da40672a2",
+        "config/defaults/tts-script/team-spawner-script.lua": "a51ff45c8622923db909fb465781801511f235412f099f83dff728d4027650db",
+        "config/defaults/tts-script/tts-update-rules-in-box-script.lua": "1eddd1803087ed63181a1149c856db77eef3196dc45d0d283693fada44a357dd",
+        "config/defaults/tts-image/default-icon.png": "892aff2628b9685c813e77be05c66afc1dc4247bc1dc9ce6fe54f006c2608271",
+        "config/defaults/tts-image/spawner-token.png": "61903b093f01d834f5e4c4c069b1353ecf7d29f012fef914b3027266816d8a6b",
+        "config/defaults/tts-token/square-bag-mesh.obj": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+        "config/defaults/tts-token/template-diamond-cutter.png": "719f57ba2b86494be454a6d3d25d8567dde974a915f3dde5ddc0e2d8dafaa1a5",
+        "config/defaults/tts-token/template-octagon-cutter.png": "944632aeacab978293ae57758b63086166c5fbaf3b845f48b3dd61db67d5c076",
+        "config/defaults/tts-token/template-operative-cutter.png": "0e698ddd403d7f0e84f200eb42af73f5249a9c5539d773298ff4c700ac9fe153",
+        "config/defaults/tts-token/template-round-cutter.png": "6564e1451c9a135a1c756fd94cde1c71e373e3fa677b51bba9d4bbe9e795d544",
+        "config/defaults/tts-token/token-bag-script.lua": "1659887e0fbfb9e3ebbc1aa5f3df8e1ffd89ee192be24d2dd1f02fcb0407e486",
+        "config/defaults/tts-token/token-bg-sample.png": "f9f90664c7f1c877c6f050f6e85babde6523cdc0aed9c77de8c09214f44ee109",
+        "config/defaults/tts-token/token-mesh.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc"
+      }
+    },
+    "front_end": {
+      "outputs": {},
+      "sources": {
+        "firefight-ploys": {
+          "hash": "9f4dd1d587f42704e18f1d1c2e77dddb37f04b4cd7594ac324347d12e63bd13a",
+          "outputs": [
+            "layers/kt-app/extracted/angels-of-death/cards/firefight-ploys/angels-of-death-firefight-ploys-page_0.pdf",
+            "layers/kt-app/extracted/angels-of-death/cards/firefight-ploys/angels-of-death-firefight-ploys-page_1.pdf",
+            "layers/kt-app/extracted/angels-of-death/cards/firefight-ploys/angels-of-death-firefight-ploys-page_2.pdf",
+            "layers/kt-app/extracted/angels-of-death/cards/firefight-ploys/angels-of-death-firefight-ploys-page_3.pdf"
+          ],
+          "modified": "2026-07-06T15:58:36.998860+00:00"
+        },
+        "datacards": {
+          "hash": "3df80f8e820ad382a7adfd435c521ccda42de684842581eb13b3a8dc02d42d04",
+          "outputs": [
+            "layers/kt-app/extracted/angels-of-death/cards/datacards/angels-of-death-datacards-page_0.pdf",
+            "layers/kt-app/extracted/angels-of-death/cards/datacards/angels-of-death-datacards-page_1.pdf",
+            "layers/kt-app/extracted/angels-of-death/cards/datacards/angels-of-death-datacards-page_2.pdf",
+            "layers/kt-app/extracted/angels-of-death/cards/datacards/angels-of-death-datacards-page_3.pdf",
+            "layers/kt-app/extracted/angels-of-death/cards/datacards/angels-of-death-datacards-page_4.pdf",
+            "layers/kt-app/extracted/angels-of-death/cards/datacards/angels-of-death-datacards-page_5.pdf",
+            "layers/kt-app/extracted/angels-of-death/cards/datacards/angels-of-death-datacards-page_6.pdf",
+            "layers/kt-app/extracted/angels-of-death/cards/datacards/angels-of-death-datacards-page_7.pdf",
+            "layers/kt-app/extracted/angels-of-death/cards/datacards/angels-of-death-datacards-page_8.pdf",
+            "layers/kt-app/extracted/angels-of-death/cards/datacards/angels-of-death-datacards-page_9.pdf",
+            "layers/kt-app/extracted/angels-of-death/cards/datacards/angels-of-death-datacards-page_10.pdf",
+            "layers/kt-app/extracted/angels-of-death/cards/datacards/angels-of-death-datacards-page_11.pdf"
+          ],
+          "modified": "2026-07-06T16:01:58.837993+00:00"
+        },
+        "equipment": {
+          "hash": "588ef5d246456854d67d9a9741b2bf5689f33dd3b4035096e467ba29cb0fb701",
+          "outputs": [
+            "layers/kt-app/extracted/angels-of-death/cards/equipment/angels-of-death-equipment-page_0.pdf",
+            "layers/kt-app/extracted/angels-of-death/cards/equipment/angels-of-death-equipment-page_1.pdf",
+            "layers/kt-app/extracted/angels-of-death/cards/equipment/angels-of-death-equipment-page_2.pdf",
+            "layers/kt-app/extracted/angels-of-death/cards/equipment/angels-of-death-equipment-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:03:17.418510+00:00"
+        },
+        "operatives-selection": {
+          "hash": "e39ba1e95728bae5da7beb65992168e27e1dc4366956bb26da1b2e6756568d58",
+          "outputs": [
+            "layers/kt-app/extracted/angels-of-death/cards/operatives-selection/angels-of-death-operatives-selection-page_0.pdf",
+            "layers/kt-app/extracted/angels-of-death/cards/operatives-selection/angels-of-death-operatives-selection-page_1.pdf"
+          ],
+          "modified": "2026-07-06T16:03:24.695883+00:00"
+        },
+        "strategy-ploys": {
+          "hash": "ce5aaceadb223005332f0738fe5847f59a752631f0e62b805a6b875c39fc26ad",
+          "outputs": [
+            "layers/kt-app/extracted/angels-of-death/cards/strategy-ploys/angels-of-death-strategy-ploys-page_0.pdf",
+            "layers/kt-app/extracted/angels-of-death/cards/strategy-ploys/angels-of-death-strategy-ploys-page_1.pdf",
+            "layers/kt-app/extracted/angels-of-death/cards/strategy-ploys/angels-of-death-strategy-ploys-page_2.pdf",
+            "layers/kt-app/extracted/angels-of-death/cards/strategy-ploys/angels-of-death-strategy-ploys-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:03:34.583488+00:00"
+        },
+        "faction-rules": {
+          "hash": "a425f9445d296000e1eb637c4241bfa153c27826394e01a3969b3dad27246bbb",
+          "outputs": [
+            "layers/kt-app/extracted/angels-of-death/cards/faction-rules/angels-of-death-faction-rules-page_0.pdf",
+            "layers/kt-app/extracted/angels-of-death/cards/faction-rules/angels-of-death-faction-rules-page_1.pdf",
+            "layers/kt-app/extracted/angels-of-death/cards/faction-rules/angels-of-death-faction-rules-page_2.pdf",
+            "layers/kt-app/extracted/angels-of-death/cards/faction-rules/angels-of-death-faction-rules-page_3.pdf",
+            "layers/kt-app/extracted/angels-of-death/cards/faction-rules/angels-of-death-faction-rules-page_4.pdf"
+          ],
+          "modified": "2026-07-06T16:06:27.624314+00:00"
+        },
+        "cards": {
+          "hash": "6fbd00df7e24e82fabc15f6129c8a24a27b69aa079f4a99d9574692b1804d30e",
+          "outputs": [
+            "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page01_card1_landscape.pdf",
+            "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page01_card2_landscape.pdf",
+            "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page01_card3_landscape.pdf",
+            "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page01_card4_landscape.pdf",
+            "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page02_card1_landscape.pdf",
+            "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page02_card2_landscape.pdf",
+            "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page02_card3_landscape.pdf",
+            "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page02_card4_landscape.pdf",
+            "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page03_card1_landscape.pdf",
+            "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page03_card2_landscape.pdf",
+            "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page03_card3_landscape.pdf",
+            "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page03_card4_landscape.pdf",
+            "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page04_card1_portrait.pdf",
+            "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page04_card2_portrait.pdf",
+            "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page04_card3_portrait.pdf",
+            "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page04_card4_portrait.pdf",
+            "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page05_card1_portrait.pdf",
+            "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page05_card2_portrait.pdf",
+            "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page05_card3_portrait.pdf",
+            "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page05_card4_portrait.pdf",
+            "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page06_card1_portrait.pdf",
+            "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page06_card2_portrait.pdf",
+            "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page06_card3_portrait.pdf",
+            "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page06_card4_portrait.pdf",
+            "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page07_card1_portrait.pdf",
+            "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page07_card2_portrait.pdf",
+            "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page07_card3_portrait.pdf",
+            "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page07_card4_portrait.pdf",
+            "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page08_card1_portrait.pdf",
+            "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page08_card2_portrait.pdf",
+            "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page08_card3_portrait.pdf",
+            "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page08_card4_portrait.pdf"
+          ],
+          "modified": "2026-07-08T19:00:58.929587+00:00"
+        }
+      },
+      "completed": "2026-07-08T19:00:58.929625+00:00"
+    },
+    "build_structure": {
+      "outputs": {
+        "structure": {
+          "path": "layers/warcom/structure/angels-of-death-structure.json",
+          "hash": "646f6877cc04e6c18afe3d41f34374227985fbdf75d8711a2487b9eda76dcc68",
+          "modified": "2026-07-10T20:29:31.947071+00:00"
+        }
+      },
+      "inputs": {
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page01_card1_landscape.pdf": "35822a435920b4fc088bab3a7da1db96cfdd32f2082b40d01bac6887958e270c",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page01_card2_landscape.pdf": "c550a32bd30fb0af7b294fba32083d5d5f28154f1b2f5b9bdd1edb60794e4227",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page01_card3_landscape.pdf": "80c0a86b96a305856b36e4b42412f9decb1cd5ec752e02469f0479bc0f7ad092",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page01_card4_landscape.pdf": "c5aec6d204bb6b6a3797058edd41c4936f90c72f57e9f7e582ca83afc0c6471d",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page02_card1_landscape.pdf": "03f34624262acdbc5a56c6beda74181af93603d968d01ccbaf4f9cc238622a85",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page02_card2_landscape.pdf": "14ba584e6cb77c9923bc8eaa4ae2f25c5d9744c3729ab68bab32869ebe9f7543",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page02_card3_landscape.pdf": "90f83ef0ba3cf2a7241b5bf67c46b6fec8ac2a14615be94dd9cfbc6337a52fe5",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page02_card4_landscape.pdf": "74b5af3cfbbf43ee3791366e95344e8b0e2ce73867a1ff4abd6db19bc0fe45eb",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page03_card1_landscape.pdf": "2e7a042551a9a17c9cb263789bec5ee9db4a484ea1a4a159c7a464e6ec11c0b0",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page03_card2_landscape.pdf": "660d3a29095cb75e2eac2fe9c05635ffb5cb8985c44b57d0ace6a1fb0c50bcc7",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page03_card3_landscape.pdf": "aded6c34ed2b9a4d20d25b428378659cbe248a907d39208be53ff0cd5efbaf75",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page03_card4_landscape.pdf": "8e9021f47a5cc5935cfd82d8ea450b9cf8163d769e1de14fd54f4590557aa02d",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page04_card1_portrait.pdf": "18378dcb31736536ac9820e7ab3ec89fe9d3d2b15c6cb538e041ad95a23d22a5",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page04_card2_portrait.pdf": "e8bc454e2655a561036c124fc2e9a9c0b29f40b0cf88d67e6cd5e8b9f2c2cdf7",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page04_card3_portrait.pdf": "b3d7664300a32cb29203185039cd90b3dd9c38ec2d9d427fe222f317f2feb5b9",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page04_card4_portrait.pdf": "9b81240bda9f880ca6f575fba6fb05e538931d563061712585de9a2a9ba32ea2",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page05_card1_portrait.pdf": "7b812f8e1786c1feb64dbe9d5223bcce1c826592507cb5ed7f49dd7cac70e792",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page05_card2_portrait.pdf": "15940f2b77bf8e0e48ee540bce47c52c2fb783dfd1ed3c8a52600e0270751a91",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page05_card3_portrait.pdf": "a9c1c19038efb8ba69e2b097be3af0685116477e6cf0eda088c43246ae0f73ad",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page05_card4_portrait.pdf": "87546e430e7df3faa1d13a1cf4f20c21cf3289383728745e7743a46444208ccd",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page06_card1_portrait.pdf": "83a9fbd5d7108281d7ebde7e4d344243844d033b5f834cc140b39921af73d910",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page06_card2_portrait.pdf": "7848ec82087dd683e620544e489356e4aeb61295ff955cd0fdf9ed83943382d6",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page06_card3_portrait.pdf": "c2f603db934eb0da650ff5d6c7579c7b1fb62839b94cd7df580cde7232d2d3c0",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page06_card4_portrait.pdf": "5d402de956b5260fd2462f6924d286a04df0656e631b561fea601de3a5e6759e",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page07_card1_portrait.pdf": "445bf21cb27e0324ee340db26425fb220da143810e6e4ade5efffb7ee150be2f",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page07_card2_portrait.pdf": "8f2b7ae0dc86661603dddd96c7aeccb1a264ccf8b9543ee0ff6af72661c2fd4c",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page07_card3_portrait.pdf": "39e606a8fd00a9d6aea06103c4a5345c5d0b2faaa47a1dc833584f666289b604",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page07_card4_portrait.pdf": "2c5d9695afb59c6b9b36dcd2333685b3fa15b434ae1f649f07b9c7c93d766a50",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page08_card1_portrait.pdf": "f0205f80718434e44eb87db8d6a4a47b0d6187ed622ce1c2db14e903edc13d97",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page08_card2_portrait.pdf": "0bf82979a15bab4487143511dde734f7b64402aeb23eb88659c73e9c56ae3a60",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page08_card3_portrait.pdf": "217af27ff73227c0547d54f4ff7d998eaf8048045be2a9311e20ca21f3bc0606",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page08_card4_portrait.pdf": "a9fb7b28671ba6a77ecb3cef7eb902edabf3fcb04e22bba076623e050e955def"
+      },
+      "completed": "2026-07-10T20:29:32.835311+00:00"
+    },
+    "integrate_classified": {
+      "outputs": {
+        "manifest.json": {
+          "path": "layers/integration/angels-of-death/manifest.json",
+          "hash": "646f6877cc04e6c18afe3d41f34374227985fbdf75d8711a2487b9eda76dcc68",
+          "modified": "2026-07-11T06:53:38.979140+00:00"
+        },
+        "angels-of-death-datacard-space-marine-captain.pdf": {
+          "path": "layers/integration/angels-of-death/angels-of-death-datacard-space-marine-captain.pdf",
+          "hash": "10d9c0d2e3d88195a48c6deede345458448adad409d79bfc443558ec7fd26f94",
+          "modified": "2026-07-11T06:53:39.044064+00:00"
+        },
+        "angels-of-death-datacard-assault-intercessor-sergeant.pdf": {
+          "path": "layers/integration/angels-of-death/angels-of-death-datacard-assault-intercessor-sergeant.pdf",
+          "hash": "a5de3ef086f9364d6b60dfccc2b3d3f9f4d49767da1c8582a323c9dfb083028f",
+          "modified": "2026-07-11T06:53:39.061954+00:00"
+        },
+        "angels-of-death-datacard-intercessor-sergeant.pdf": {
+          "path": "layers/integration/angels-of-death/angels-of-death-datacard-intercessor-sergeant.pdf",
+          "hash": "839d12de8994c7738be4dc097dc7983cd3f583344bff0f091709b747b6cdb165",
+          "modified": "2026-07-11T06:53:39.079012+00:00"
+        },
+        "angels-of-death-datacard-assault-intercessor-grenadier.pdf": {
+          "path": "layers/integration/angels-of-death/angels-of-death-datacard-assault-intercessor-grenadier.pdf",
+          "hash": "1e753de7903d6ec9f1aae9c42759bd5ebd9ec7e426c2f178226e51008e3e183f",
+          "modified": "2026-07-11T06:53:39.092527+00:00"
+        },
+        "angels-of-death-datacard-assault-intercessor-warrior.pdf": {
+          "path": "layers/integration/angels-of-death/angels-of-death-datacard-assault-intercessor-warrior.pdf",
+          "hash": "cb7c5cfc599d280251907a815e9156603a75e5e2af68bded0aca0bef0b85a942",
+          "modified": "2026-07-11T06:53:39.107015+00:00"
+        },
+        "angels-of-death-datacard-heavy-intercessor-gunner.pdf": {
+          "path": "layers/integration/angels-of-death/angels-of-death-datacard-heavy-intercessor-gunner.pdf",
+          "hash": "9cb73c2f62de446aca4bdb05369a72eb0e040e300f950d3812b99a6a30659d16",
+          "modified": "2026-07-11T06:53:39.120018+00:00"
+        },
+        "angels-of-death-datacard-intercessor-gunner.pdf": {
+          "path": "layers/integration/angels-of-death/angels-of-death-datacard-intercessor-gunner.pdf",
+          "hash": "0941349502cd9b1d66f6fb1129be64d40b88f5cb3c24661067f2b55a27618a37",
+          "modified": "2026-07-11T06:53:39.132378+00:00"
+        },
+        "angels-of-death-datacard-intercessor-warrior.pdf": {
+          "path": "layers/integration/angels-of-death/angels-of-death-datacard-intercessor-warrior.pdf",
+          "hash": "71323b87f6dd9020cfd10c4d92a1eabe7667b63b6845f107b1e8917e38aa6023",
+          "modified": "2026-07-11T06:53:39.147513+00:00"
+        },
+        "angels-of-death-datacard-eliminator-sniper.pdf": {
+          "path": "layers/integration/angels-of-death/angels-of-death-datacard-eliminator-sniper.pdf",
+          "hash": "423f0543b9d8edc6171bf99050cd2729ba743a1af02e6f64eb1f6605233efdb3",
+          "modified": "2026-07-11T06:53:39.167586+00:00"
+        },
+        "angels-of-death-equipment-purity-seals.pdf": {
+          "path": "layers/integration/angels-of-death/angels-of-death-equipment-purity-seals.pdf",
+          "hash": "7eef560dd220d4e91c54f95a5d45b8138a8627c3f2707a307a2f540204eefb2f",
+          "modified": "2026-07-11T06:53:39.182995+00:00"
+        },
+        "angels-of-death-equipment-chapter-reliquaries.pdf": {
+          "path": "layers/integration/angels-of-death/angels-of-death-equipment-chapter-reliquaries.pdf",
+          "hash": "c95c07d5e813105084ae71473dd169d1bed278e81a015f770b82969b1cd7cf29",
+          "modified": "2026-07-11T06:53:39.200093+00:00"
+        },
+        "angels-of-death-equipment-tilting-shields.pdf": {
+          "path": "layers/integration/angels-of-death/angels-of-death-equipment-tilting-shields.pdf",
+          "hash": "4ef64920cabc4e8e7628498c0af990d4f0eb0be64c3679d672b5320080433861",
+          "modified": "2026-07-11T06:53:39.214253+00:00"
+        },
+        "angels-of-death-equipment-auspex.pdf": {
+          "path": "layers/integration/angels-of-death/angels-of-death-equipment-auspex.pdf",
+          "hash": "c5c03b96cfcd5ab5b80b5e5ae64234774851a39af7f501ea0d46c5e60453ef83",
+          "modified": "2026-07-11T06:53:39.229895+00:00"
+        },
+        "angels-of-death-faction-rule-chapter-tactics-1.pdf": {
+          "path": "layers/integration/angels-of-death/angels-of-death-faction-rule-chapter-tactics-1.pdf",
+          "hash": "9cf3179233105a1c545ea545811e8924c79b55751059730edc76a7b792f171f9",
+          "modified": "2026-07-11T06:53:39.246998+00:00"
+        },
+        "angels-of-death-faction-rule-chapter-tactics-2.pdf": {
+          "path": "layers/integration/angels-of-death/angels-of-death-faction-rule-chapter-tactics-2.pdf",
+          "hash": "62f61344de15d1af58298267cf15c7d825c68192c714afd382c70ea2e6d27907",
+          "modified": "2026-07-11T06:53:39.261584+00:00"
+        },
+        "angels-of-death-faction-rule-astartes.pdf": {
+          "path": "layers/integration/angels-of-death/angels-of-death-faction-rule-astartes.pdf",
+          "hash": "058b5bec6fa5e1543a79d1ede358ecbb78254ccf4b29bb4995bd5af3e68052d8",
+          "modified": "2026-07-11T06:53:39.275312+00:00"
+        },
+        "angels-of-death-firefight-ploy-adjust-doctrine.pdf": {
+          "path": "layers/integration/angels-of-death/angels-of-death-firefight-ploy-adjust-doctrine.pdf",
+          "hash": "a710f88f003f07b5c6606995d4cc702424145c8b358e19012084cade242125af",
+          "modified": "2026-07-11T06:53:39.288788+00:00"
+        },
+        "angels-of-death-firefight-ploy-transhuman-physiology.pdf": {
+          "path": "layers/integration/angels-of-death/angels-of-death-firefight-ploy-transhuman-physiology.pdf",
+          "hash": "47f9d6ce8289788866c3933a1299af743f04d2406e1b9b76dcc96219081cd562",
+          "modified": "2026-07-11T06:53:39.303910+00:00"
+        },
+        "angels-of-death-firefight-ploy-shock-assault.pdf": {
+          "path": "layers/integration/angels-of-death/angels-of-death-firefight-ploy-shock-assault.pdf",
+          "hash": "84263f16f5ab2f7ef0fda083fe60748cf055f54f1c1072d3d0114eaf57398386",
+          "modified": "2026-07-11T06:53:39.315769+00:00"
+        },
+        "angels-of-death-firefight-ploy-wrath-of-vengeance.pdf": {
+          "path": "layers/integration/angels-of-death/angels-of-death-firefight-ploy-wrath-of-vengeance.pdf",
+          "hash": "a8347325d0877423dd47c649b521b785c0a830b18032ee24ba36eb9fe59914b8",
+          "modified": "2026-07-11T06:53:39.331799+00:00"
+        },
+        "angels-of-death-operatives-selection-operative-selection.pdf": {
+          "path": "layers/integration/angels-of-death/angels-of-death-operatives-selection-operative-selection.pdf",
+          "hash": "f0d34f781d6ee53b81be42f634508baeba67eb5257b2c015e220e9cb81a49846",
+          "modified": "2026-07-11T06:53:39.349073+00:00"
+        },
+        "angels-of-death-strategy-ploy-combat-doctrine.pdf": {
+          "path": "layers/integration/angels-of-death/angels-of-death-strategy-ploy-combat-doctrine.pdf",
+          "hash": "86ef04ad5a8c7857b84a1be7554f763874b23ad1901fc30f9c71c3b2fb1da10e",
+          "modified": "2026-07-11T06:53:39.363618+00:00"
+        },
+        "angels-of-death-strategy-ploy-and-they-shall-know-no-fear.pdf": {
+          "path": "layers/integration/angels-of-death/angels-of-death-strategy-ploy-and-they-shall-know-no-fear.pdf",
+          "hash": "ab07cf5466db54c9eb1a5d364ade66324693e5f00872913d66c6c95006ed0fee",
+          "modified": "2026-07-11T06:53:39.387532+00:00"
+        },
+        "angels-of-death-strategy-ploy-adaptive-tactics.pdf": {
+          "path": "layers/integration/angels-of-death/angels-of-death-strategy-ploy-adaptive-tactics.pdf",
+          "hash": "beac0e7feb6d92101e4d8ddae407df33242460f85c33400ff3a24530560b5952",
+          "modified": "2026-07-11T06:53:39.410131+00:00"
+        },
+        "angels-of-death-strategy-ploy-indomitus.pdf": {
+          "path": "layers/integration/angels-of-death/angels-of-death-strategy-ploy-indomitus.pdf",
+          "hash": "6aa467a0db65b65f7f10eb264c19c6cf2b8dc2f22dd6c4123d0f745fec0b2511",
+          "modified": "2026-07-11T06:53:39.429213+00:00"
+        }
+      },
+      "inputs": {
+        "layers/warcom/structure/angels-of-death-structure.json": "646f6877cc04e6c18afe3d41f34374227985fbdf75d8711a2487b9eda76dcc68",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page01_card1_landscape.pdf": "35822a435920b4fc088bab3a7da1db96cfdd32f2082b40d01bac6887958e270c",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page01_card2_landscape.pdf": "c550a32bd30fb0af7b294fba32083d5d5f28154f1b2f5b9bdd1edb60794e4227",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page01_card3_landscape.pdf": "80c0a86b96a305856b36e4b42412f9decb1cd5ec752e02469f0479bc0f7ad092",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page01_card4_landscape.pdf": "c5aec6d204bb6b6a3797058edd41c4936f90c72f57e9f7e582ca83afc0c6471d",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page02_card1_landscape.pdf": "03f34624262acdbc5a56c6beda74181af93603d968d01ccbaf4f9cc238622a85",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page02_card2_landscape.pdf": "14ba584e6cb77c9923bc8eaa4ae2f25c5d9744c3729ab68bab32869ebe9f7543",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page02_card3_landscape.pdf": "90f83ef0ba3cf2a7241b5bf67c46b6fec8ac2a14615be94dd9cfbc6337a52fe5",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page02_card4_landscape.pdf": "74b5af3cfbbf43ee3791366e95344e8b0e2ce73867a1ff4abd6db19bc0fe45eb",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page03_card1_landscape.pdf": "2e7a042551a9a17c9cb263789bec5ee9db4a484ea1a4a159c7a464e6ec11c0b0",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page03_card2_landscape.pdf": "660d3a29095cb75e2eac2fe9c05635ffb5cb8985c44b57d0ace6a1fb0c50bcc7",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page03_card3_landscape.pdf": "aded6c34ed2b9a4d20d25b428378659cbe248a907d39208be53ff0cd5efbaf75",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page03_card4_landscape.pdf": "8e9021f47a5cc5935cfd82d8ea450b9cf8163d769e1de14fd54f4590557aa02d",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page07_card4_portrait.pdf": "2c5d9695afb59c6b9b36dcd2333685b3fa15b434ae1f649f07b9c7c93d766a50",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page08_card1_portrait.pdf": "f0205f80718434e44eb87db8d6a4a47b0d6187ed622ce1c2db14e903edc13d97",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page08_card2_portrait.pdf": "0bf82979a15bab4487143511dde734f7b64402aeb23eb88659c73e9c56ae3a60",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page08_card3_portrait.pdf": "217af27ff73227c0547d54f4ff7d998eaf8048045be2a9311e20ca21f3bc0606",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page04_card3_portrait.pdf": "b3d7664300a32cb29203185039cd90b3dd9c38ec2d9d427fe222f317f2feb5b9",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page04_card4_portrait.pdf": "9b81240bda9f880ca6f575fba6fb05e538931d563061712585de9a2a9ba32ea2",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page05_card1_portrait.pdf": "7b812f8e1786c1feb64dbe9d5223bcce1c826592507cb5ed7f49dd7cac70e792",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page05_card2_portrait.pdf": "15940f2b77bf8e0e48ee540bce47c52c2fb783dfd1ed3c8a52600e0270751a91",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page05_card3_portrait.pdf": "a9c1c19038efb8ba69e2b097be3af0685116477e6cf0eda088c43246ae0f73ad",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page06_card4_portrait.pdf": "5d402de956b5260fd2462f6924d286a04df0656e631b561fea601de3a5e6759e",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page07_card1_portrait.pdf": "445bf21cb27e0324ee340db26425fb220da143810e6e4ade5efffb7ee150be2f",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page07_card2_portrait.pdf": "8f2b7ae0dc86661603dddd96c7aeccb1a264ccf8b9543ee0ff6af72661c2fd4c",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page07_card3_portrait.pdf": "39e606a8fd00a9d6aea06103c4a5345c5d0b2faaa47a1dc833584f666289b604",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page04_card1_portrait.pdf": "18378dcb31736536ac9820e7ab3ec89fe9d3d2b15c6cb538e041ad95a23d22a5",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page04_card2_portrait.pdf": "e8bc454e2655a561036c124fc2e9a9c0b29f40b0cf88d67e6cd5e8b9f2c2cdf7",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page05_card4_portrait.pdf": "87546e430e7df3faa1d13a1cf4f20c21cf3289383728745e7743a46444208ccd",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page06_card1_portrait.pdf": "83a9fbd5d7108281d7ebde7e4d344243844d033b5f834cc140b39921af73d910",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page06_card2_portrait.pdf": "7848ec82087dd683e620544e489356e4aeb61295ff955cd0fdf9ed83943382d6",
+        "layers/warcom/extracted/angels-of-death/cards/angels-of-death_page06_card3_portrait.pdf": "c2f603db934eb0da650ff5d6c7579c7b1fb62839b94cd7df580cde7232d2d3c0"
+      },
+      "completed": "2026-07-11T06:53:45.031696+00:00"
+    },
+    "extract_artwork": {
+      "outputs": {},
+      "sources": {
+        "artwork": {
+          "hash": "6fbd00df7e24e82fabc15f6129c8a24a27b69aa079f4a99d9574692b1804d30e",
+          "outputs": [
+            "layers/integration/angels-of-death/artwork/angels-of-death-artwork-01.jpeg",
+            "layers/integration/angels-of-death/artwork/angels-of-death-artwork-02.jpeg",
+            "layers/integration/angels-of-death/artwork/angels-of-death-artwork-03.jpeg",
+            "layers/integration/angels-of-death/artwork/angels-of-death-artwork-04.jpeg",
+            "layers/integration/angels-of-death/artwork/angels-of-death-artwork-05.jpeg",
+            "layers/integration/angels-of-death/artwork/angels-of-death-artwork-06.png",
+            "layers/integration/angels-of-death/artwork/angels-of-death-artwork-07.png",
+            "layers/integration/angels-of-death/artwork/angels-of-death-artwork-08.jpeg",
+            "layers/integration/angels-of-death/artwork/angels-of-death-artwork-09.jpeg",
+            "layers/integration/angels-of-death/artwork/angels-of-death-artwork-10.jpeg",
+            "layers/integration/angels-of-death/artwork/angels-of-death-artwork-11.jpeg",
+            "layers/integration/angels-of-death/artwork/angels-of-death-artwork-12.jpeg",
+            "layers/integration/angels-of-death/artwork/angels-of-death-artwork-13.jpeg",
+            "layers/integration/angels-of-death/artwork/angels-of-death-artwork-14.jpeg",
+            "layers/integration/angels-of-death/artwork/angels-of-death-artwork-15.jpeg",
+            "layers/integration/angels-of-death/artwork/angels-of-death-artwork-16.jpeg",
+            "layers/integration/angels-of-death/artwork/angels-of-death-artwork-17.jpeg",
+            "layers/integration/angels-of-death/artwork/angels-of-death-artwork-18.jpeg",
+            "layers/integration/angels-of-death/artwork/angels-of-death-artwork-19.jpeg",
+            "layers/integration/angels-of-death/artwork/angels-of-death-artwork-20.jpeg",
+            "layers/integration/angels-of-death/artwork/angels-of-death-artwork-21.jpeg",
+            "layers/integration/angels-of-death/artwork/angels-of-death-artwork-22.jpeg",
+            "layers/integration/angels-of-death/artwork/angels-of-death-artwork-23.jpeg",
+            "layers/integration/angels-of-death/artwork/angels-of-death-artwork-metadata.json",
+            "layers/integration/angels-of-death/artwork/icons/angels-of-death-icon-landscape.jpg",
+            "layers/integration/angels-of-death/artwork/icons/angels-of-death-icon-portrait.jpg",
+            "layers/integration/angels-of-death/artwork/icons/angels-of-death-icon-token-transparent.png",
+            "layers/integration/angels-of-death/artwork/icons/angels-of-death-icon-token.jpg"
+          ],
+          "modified": "2026-07-06T20:49:09.454896+00:00"
+        }
+      },
+      "completed": "2026-07-06T20:49:09.454915+00:00"
+    }
+  }
+}
