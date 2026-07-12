@@ -28,6 +28,7 @@ import numpy as np
 from PIL import Image
 
 from ..utils import paths, team_config
+from ..utils.stable_io import stable_write
 from ..utils.state import StateIndex, StateManager
 
 logger = logging.getLogger(__name__)
@@ -98,7 +99,8 @@ def _generate_dice_texture(bg_path: Path, dots_dir: Path, icon_path: Optional[Pa
         _paste_dots(bg, 5, dots_dir, dot_color)  # face 6 falls back to dots-5 pattern
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    bg.save(output_path, "JPEG", quality=95)
+    with stable_write(output_path):
+        bg.save(output_path, "JPEG", quality=95)
 
 
 def _extract_token_colors(tokens_dir: Path) -> Optional[Tuple[RGB, RGB]]:

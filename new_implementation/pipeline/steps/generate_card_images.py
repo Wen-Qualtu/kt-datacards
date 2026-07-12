@@ -22,6 +22,7 @@ from typing import Optional
 import fitz  # PyMuPDF
 
 from ..utils import naming, paths
+from ..utils.stable_io import stable_write
 from ..utils.state import StateIndex, StateManager
 
 logger = logging.getLogger(__name__)
@@ -90,7 +91,8 @@ def _render_page(doc: fitz.Document, page_idx: int, out_path: Path) -> bool:
     try:
         pix = doc[page_idx].get_pixmap(matrix=fitz.Matrix(ZOOM, ZOOM), alpha=False)
         out_path.parent.mkdir(parents=True, exist_ok=True)
-        pix.save(out_path, jpg_quality=JPEG_QUALITY)
+        with stable_write(out_path):
+            pix.save(out_path, jpg_quality=JPEG_QUALITY)
         return True
     except Exception as e:
         logger.error(f"  Failed to render {out_path.name}: {e}")

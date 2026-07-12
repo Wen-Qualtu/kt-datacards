@@ -22,6 +22,7 @@ import numpy as np
 from PIL import Image
 
 from ..utils import paths
+from ..utils.stable_io import stable_write
 from ..utils.state import StateIndex, StateManager
 
 logger = logging.getLogger(__name__)
@@ -89,7 +90,8 @@ def _generate_backsides(background_path: Path, icon_path: Path,
             if icon_rgba is not None:
                 _paste_icon_centred(canvas, icon_rgba, target_w, target_h)
             out_path.parent.mkdir(parents=True, exist_ok=True)
-            canvas.convert("RGB").save(str(out_path), "JPEG", quality=95)
+            with stable_write(out_path):
+                canvas.convert("RGB").save(str(out_path), "JPEG", quality=95)
             logger.info(f"  OK  {out_path.name}")
         return True
     except Exception as exc:

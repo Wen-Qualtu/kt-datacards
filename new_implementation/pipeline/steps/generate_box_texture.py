@@ -23,6 +23,7 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
 from ..utils import paths, team_config
+from ..utils.stable_io import stable_write
 from ..utils.state import StateIndex, StateManager
 
 logger = logging.getLogger(__name__)
@@ -155,7 +156,8 @@ def _generate_texture(canonical_name: str, background_path: Path,
         _draw_text_in_region(draw, display, rx, ry, rw, rh, font, TEXT_COLOR)
 
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        canvas.convert("RGB").save(str(output_path), "JPEG", quality=95)
+        with stable_write(output_path):
+            canvas.convert("RGB").save(str(output_path), "JPEG", quality=95)
         logger.info(f"  OK  {output_path.name}")
         return True
     except Exception as exc:

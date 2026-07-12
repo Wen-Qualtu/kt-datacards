@@ -26,6 +26,7 @@ import cv2
 import numpy as np
 
 from ..utils import paths, team_config
+from ..utils.stable_io import stable_write
 from ..utils.state import StateIndex, StateManager
 from ..utils.token_extractor import TokenExtractor
 
@@ -242,7 +243,9 @@ def _process_token(input_path: Path, output_path: Path, shape: str,
         rgba = cv2.resize(rgba, (target_w, target_h), interpolation=cv2.INTER_AREA)
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    return bool(cv2.imwrite(str(output_path), rgba))
+    with stable_write(output_path):
+        ok = bool(cv2.imwrite(str(output_path), rgba))
+    return ok
 
 
 def _process_tokens_phase2(team_slug: str, input_dir: Path, output_dir: Path,
