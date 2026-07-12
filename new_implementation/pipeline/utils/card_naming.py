@@ -103,10 +103,10 @@ def special_case_group_size(
         return 0
     text_upper = text.upper()
     for team, rule in _FOUR_CARD_SPECIAL:
-        if team_name == team and rule in text_upper and naming.slug(rule) == card_name:
+        if team_name == team and rule in text_upper and naming.slug(rule) == naming.slug(card_name):
             return 4
     for team, rule in _THREE_CARD_SPECIAL:
-        if team_name == team and rule in text_upper and naming.slug(rule) == card_name:
+        if team_name == team and rule in text_upper and naming.slug(rule) == naming.slug(card_name):
             return 3
     return 0
 
@@ -221,7 +221,7 @@ def extract_name(lines: List[str]) -> Optional[str]:
     if len(lines) >= 2:
         header = lines[1].upper()
         if "MARKER" in header and "TOKEN" in header:
-            return "token-guide"
+            return "TOKEN GUIDE"
 
     # "(CARD x/y)" multi-part rule (e.g. "ELITE FIELDCRAFT (CARD 1/3)").
     # Borrowed from kt-app: keep the slash-separated card index instead of
@@ -279,7 +279,7 @@ def extract_datacard_name(lines: List[str]) -> Optional[str]:
         if upper.replace('"', "").replace("'", "").replace("+", "").strip().isdigit():
             continue
         if len(line) > 3 and any(c.isalpha() for c in line):
-            name = naming.slug(line)
+            name = line.strip()
             if name and len(name) > 2:
                 return name
     return None
@@ -306,7 +306,7 @@ def classify(pdf_path: Path, orientation: str) -> Tuple[Optional[str], Optional[
     # Portrait: operative-selection has a distinctive "KILL TEAM … ARCHETYPES" head.
     upper = text.upper()
     if "KILL" in upper[:300] and "TEAM" in upper[:300] and "ARCHETYPE" in upper:
-        return ("operative-selection", "operative-selection")
+        return ("operative-selection", "OPERATIVE SELECTION")
 
     lines = read_lines(pdf_path)
     card_type = detect_type(lines)

@@ -807,13 +807,13 @@ def _classify_warcom_team(team: str, cards_dir: Path) -> Optional[Dict]:
                 p = run[k]
                 if card_naming.has_backside_continue(card_naming.read_text(p)) and k + 1 < len(run):
                     per_key[key].append({
-                        "name": "operative-selection", "kind": "both",
+                        "name": "OPERATIVE SELECTION", "kind": "both",
                         "front": _warcom_rel(p), "back": _warcom_rel(run[k + 1]),
                     })
                     k += 2
                 else:
                     per_key[key].append({
-                        "name": "operative-selection", "kind": "front",
+                        "name": "OPERATIVE SELECTION", "kind": "front",
                         "front": _warcom_rel(p), "back": None,
                     })
                     k += 1
