@@ -1,0 +1,474 @@
+{
+  "team": "nemesis-claw",
+  "generated": "2026-05-01T20:25:04.352798+00:00",
+  "selection": {
+    "NIGHT LORD VISIONARY": [
+      [
+        "Bolt pistol; power fist",
+        "Bolt pistol; power maul",
+        "Bolt pistol; power weapon",
+        "Plasma pistol; Nostraman chainblade"
+      ]
+    ],
+    "NIGHT LORD FEARMONGER": [],
+    "NIGHT LORD GUNNER": [
+      [
+        "Bolt pistol; flamer; fists",
+        "Bolt pistol; meltagun; fists",
+        "Bolt pistol; plasma gun; fists"
+      ]
+    ],
+    "NIGHT LORD HEAVY GUNNER": [
+      [
+        "Bolt pistol; heavy bolter; fists",
+        "Bolt pistol; missile launcher; fists"
+      ]
+    ],
+    "NIGHT LORD SCREECHER": [],
+    "NIGHT LORD SKINTHIEF": [],
+    "NIGHT LORD VENTRILOKAR": [],
+    "NIGHT LORD WARRIOR": [
+      [
+        "Bolt pistol; chainsword",
+        "Boltgun; fists"
+      ]
+    ]
+  },
+  "exclusive_sets": {},
+  "operative_count": 8,
+  "operatives": [
+    {
+      "name": "NIGHT LORD VISIONARY",
+      "source_file": "nemesis-claw-datacards.pdf",
+      "source_page": 0,
+      "apl": 3,
+      "movement": "6″",
+      "save": "3+",
+      "wounds": 15,
+      "weapons": [
+        {
+          "name": "Bolt pistol",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "3/4",
+          "special_rules": "Range 8\""
+        },
+        {
+          "name": "Plasma pistol (standard)",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "3/5",
+          "special_rules": "Range 8\", Piercing 1"
+        },
+        {
+          "name": "Plasma pistol (supercharge)",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "4/5",
+          "special_rules": "Range 8\", Hot, Lethal 5+, Piercing 1"
+        },
+        {
+          "name": "Nostraman chainblade",
+          "attacks": "5",
+          "hit": "3+",
+          "damage": "4/5",
+          "special_rules": "Rending"
+        },
+        {
+          "name": "Power fist",
+          "attacks": "5",
+          "hit": "4+",
+          "damage": "5/7",
+          "special_rules": "Brutal"
+        },
+        {
+          "name": "Power maul",
+          "attacks": "5",
+          "hit": "3+",
+          "damage": "4/6",
+          "special_rules": "Shock"
+        },
+        {
+          "name": "Power weapon",
+          "attacks": "5",
+          "hit": "3+",
+          "damage": "4/6",
+          "special_rules": "Lethal 5+"
+        }
+      ],
+      "keywords": [
+        "NEMESIS CLAW",
+        "CHAOS",
+        "HERETIC ASTARTES",
+        "PSYKER",
+        "LEADER",
+        "VISIONARY"
+      ],
+      "passive_abilities": [
+        {
+          "name": "Prescience",
+          "description": "PSYCHIC. In the Ready step of each Strategy phase, you gain D3 Prescience points. At the end of each turning point, discard your Prescience points. You can spend your Prescience points in the Firefight phase as follows (you cannot use each of the following rules more than once per turning point):"
+        },
+        {
+          "name": "\t \u0007Foreboding",
+          "description": "PSYCHIC. Whenever it’s your turn to activate a friendly operative, you can spend 1 of your Prescience points to skip that activation."
+        },
+        {
+          "name": "\t \u0007Portent",
+          "description": "PSYCHIC. Whenever an attack dice inflicts Normal Dmg on this operative, you can spend 1 of your Prescience points to ignore that inflicted damage. You cannot gain or spend your Prescience points if this operative is incapacitated."
+        }
+      ],
+      "unique_actions": [
+        {
+          "name": "PREMONITION\b (1AP)",
+          "description": "• PSYCHIC. Spend 1 of your Prescience points to gain 1CP.\n• This operative cannot perform this action while within control range of an enemy operative, or more than once per turning point. NIGHT LORD VISIONARY"
+        }
+      ]
+    },
+    {
+      "name": "NIGHT LORD FEARMONGER",
+      "source_file": "nemesis-claw-datacards.pdf",
+      "source_page": 2,
+      "apl": 3,
+      "movement": "6″",
+      "save": "3+",
+      "wounds": 14,
+      "weapons": [
+        {
+          "name": "Scoped bolt pistol (short range)",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "3/4",
+          "special_rules": "Range 8\", Lethal 5+"
+        },
+        {
+          "name": "Scoped bolt pistol (long range)",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "3/4"
+        },
+        {
+          "name": "Terrorchem vial",
+          "attacks": "5",
+          "hit": "3+",
+          "damage": "2/0",
+          "special_rules": "Range 6\", Blast 2\", Devastating 3, Limited 1, Saturate, Terrorchem*"
+        },
+        {
+          "name": "Tainted blade",
+          "attacks": "5",
+          "hit": "3+",
+          "damage": "3/5",
+          "special_rules": "Terrorchem*"
+        }
+      ],
+      "passive_abilities": [
+        {
+          "name": "*Terrorchem",
+          "description": "In the Resolve Attack Dice step, if you inflict damage with any critical successes (including as a result of the Devastating weapon rule), the operative this weapon is being used against gains one of your Terrorchem tokens (if it doesn’t already have one)."
+        },
+        {
+          "name": "Terrorchem Poison",
+          "description": "Whenever an operative that has one of your Terrorchem tokens is activated, inflict D3 damage on it."
+        }
+      ],
+      "unique_actions": [
+        {
+          "name": "POISON OBJECTIVE\b (1AP)",
+          "description": "• Select one objective marker this operative controls to gain one of your Terrorchem tokens. It cannot be an objective marker within control range of an enemy operative, or one that already has one of your Terrorchem tokens. The first time that objective marker is within control range of an enemy operative that doesn’t have one of your Terrorchem tokens, that operative gains that Terrorchem token, then inflict 2D3 damage on it (if it’s during an action, at the end of that action).\n• This operative cannot perform this action while within control range of an enemy operative. NIGHT LORD FEARMONGER"
+        }
+      ],
+      "keywords": [
+        "NEMESIS CLAW",
+        "CHAOS",
+        "HERETIC ASTARTES",
+        "FEARMONGER"
+      ]
+    },
+    {
+      "name": "NIGHT LORD GUNNER",
+      "source_file": "nemesis-claw-datacards.pdf",
+      "source_page": 4,
+      "apl": 3,
+      "movement": "6″",
+      "save": "3+",
+      "wounds": 14,
+      "weapons": [
+        {
+          "name": "Bolt pistol",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "3/4",
+          "special_rules": "Range 8\""
+        },
+        {
+          "name": "Flamer",
+          "attacks": "4",
+          "hit": "2+",
+          "damage": "3/3",
+          "special_rules": "Range 8\", Saturate, Torrent 2\""
+        },
+        {
+          "name": "Meltagun",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "6/3",
+          "special_rules": "Range 6\", Devastating 4, Piercing 2"
+        },
+        {
+          "name": "Plasma gun (standard)",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "4/6",
+          "special_rules": "Piercing 1"
+        },
+        {
+          "name": "Plasma gun (supercharge)",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "5/6",
+          "special_rules": "Hot, Lethal 5+, Piercing 1"
+        },
+        {
+          "name": "Fists",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "3/4"
+        }
+      ],
+      "keywords": [
+        "NEMESIS CLAW",
+        "CHAOS",
+        "HERETIC ASTARTES",
+        "GUNNER"
+      ]
+    },
+    {
+      "name": "NIGHT LORD HEAVY GUNNER",
+      "source_file": "nemesis-claw-datacards.pdf",
+      "source_page": 5,
+      "apl": 3,
+      "movement": "6″",
+      "save": "3+",
+      "wounds": 14,
+      "weapons": [
+        {
+          "name": "Bolt pistol",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "3/4",
+          "special_rules": "Range 8\""
+        },
+        {
+          "name": "Heavy bolter (focused)",
+          "attacks": "5",
+          "hit": "3+",
+          "damage": "4/5",
+          "special_rules": "Heavy (Reposition only), Piercing Crits 1"
+        },
+        {
+          "name": "Heavy bolter (sweeping)",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "4/5",
+          "special_rules": "Heavy (Reposition only), Piercing Crits 1, Torrent 1\""
+        },
+        {
+          "name": "Missile launcher (frag)",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "3/5",
+          "special_rules": "Blast 2\", Heavy (Reposition only)"
+        },
+        {
+          "name": "Missile launcher (krak)",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "5/7",
+          "special_rules": "Heavy (Reposition only), Piercing 1"
+        },
+        {
+          "name": "Fists",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "3/4"
+        }
+      ],
+      "keywords": [
+        "NEMESIS CLAW",
+        "CHAOS",
+        "HERETIC ASTARTES",
+        "HEAVY GUNNER"
+      ]
+    },
+    {
+      "name": "NIGHT LORD SCREECHER",
+      "source_file": "nemesis-claw-datacards.pdf",
+      "source_page": 6,
+      "apl": 3,
+      "movement": "6″",
+      "save": "3+",
+      "wounds": 14,
+      "weapons": [
+        {
+          "name": "Lightning claws",
+          "attacks": "5",
+          "hit": "3+",
+          "damage": "4/5",
+          "special_rules": "Ceaseless, Lethal 5+"
+        }
+      ],
+      "passive_abilities": [
+        {
+          "name": "Screecher",
+          "description": "Whenever an enemy operative within 3\" of this operative is shooting, fighting or retaliating, your opponent cannot re-roll their attack dice."
+        },
+        {
+          "name": "Appetite for Cruelty",
+          "description": "Whenever this operative is fighting against a wounded enemy operative, this operative’s lightning claws have the Lethal 4+ weapon rule."
+        }
+      ],
+      "unique_actions": [],
+      "keywords": [
+        "NEMESIS CLAW",
+        "CHAOS",
+        "HERETIC ASTARTES",
+        "SCREECHER"
+      ]
+    },
+    {
+      "name": "NIGHT LORD SKINTHIEF",
+      "source_file": "nemesis-claw-datacards.pdf",
+      "source_page": 7,
+      "apl": 3,
+      "movement": "6″",
+      "save": "3+",
+      "wounds": 14,
+      "weapons": [
+        {
+          "name": "Bolt pistol",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "3/4",
+          "special_rules": "Range 8\""
+        },
+        {
+          "name": "Nostraman chainglaive",
+          "attacks": "5",
+          "hit": "3+",
+          "damage": "4/6",
+          "special_rules": "Rending"
+        }
+      ],
+      "passive_abilities": [
+        {
+          "name": "Flay Them Alive",
+          "description": "Once per turning point, when this operative incapacitates an enemy operative within its control range, you can select one other enemy operative visible to and within 6\" of either this operative or the incapacitated enemy operative. Until the start of the next turning point, that other enemy operative cannot control markers or perform the Pick Up Marker or mission actions."
+        },
+        {
+          "name": "Tyrant of the Skinning Pits",
+          "description": "Whenever this operative is fighting or retaliating, Normal and Critical Dmg of 3 or more inflicts 1 less damage on it."
+        }
+      ],
+      "unique_actions": [],
+      "keywords": [
+        "NEMESIS CLAW",
+        "CHAOS",
+        "HERETIC ASTARTES",
+        "SKINTHIEF"
+      ]
+    },
+    {
+      "name": "NIGHT LORD VENTRILOKAR",
+      "source_file": "nemesis-claw-datacards.pdf",
+      "source_page": 8,
+      "apl": 3,
+      "movement": "6″",
+      "save": "3+",
+      "wounds": 14,
+      "weapons": [
+        {
+          "name": "Bolt pistol",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "3/4",
+          "special_rules": "Range 8\""
+        },
+        {
+          "name": "Chainsword",
+          "attacks": "5",
+          "hit": "3+",
+          "damage": "4/5"
+        }
+      ],
+      "passive_abilities": [
+        {
+          "name": "Icon Bearer",
+          "description": "Whenever determining control of a marker, treat this operative’s APL stat as 1 higher. Note this isn’t a change to its APL stat, so any changes are cumulative with this."
+        }
+      ],
+      "unique_actions": [
+        {
+          "name": "DISCONCERTING MIMICRY\b (1AP)",
+          "description": "• PSYCHIC. Select one enemy operative within 6\" of this operative, then select one of the following for that enemy operative (you can only select each option once per battle):\n• Until the end of its next activation, subtract 1 from its APL stat.\n• Change its order.\n• Perform a free Dash action with it (specify the location for your opponent to move it to).\n• This operative cannot perform this action while within control range of an enemy operative."
+        }
+      ],
+      "keywords": [
+        "NEMESIS CLAW",
+        "CHAOS",
+        "HERETIC ASTARTES",
+        "PSYKER",
+        "VENTRILOKAR"
+      ]
+    },
+    {
+      "name": "NIGHT LORD WARRIOR",
+      "source_file": "nemesis-claw-datacards.pdf",
+      "source_page": 9,
+      "apl": 3,
+      "movement": "6″",
+      "save": "3+",
+      "wounds": 14,
+      "weapons": [
+        {
+          "name": "Bolt pistol",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "3/4",
+          "special_rules": "Range 8\""
+        },
+        {
+          "name": "Boltgun",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "3/4"
+        },
+        {
+          "name": "Chainsword",
+          "attacks": "5",
+          "hit": "3+",
+          "damage": "4/5"
+        },
+        {
+          "name": "Fists",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "3/4"
+        }
+      ],
+      "passive_abilities": [
+        {
+          "name": "Cruel Tormenter",
+          "description": "Whenever this operative is shooting against, fighting against or retaliating against an injured enemy operative, or an enemy operative that has a Wounds stat of 7 or less, this operative’s weapons have the Lethal 5+ weapon rule."
+        }
+      ],
+      "unique_actions": [],
+      "keywords": [
+        "NEMESIS CLAW",
+        "CHAOS",
+        "HERETIC ASTARTES",
+        "WARRIOR"
+      ]
+    }
+  ]
+}
