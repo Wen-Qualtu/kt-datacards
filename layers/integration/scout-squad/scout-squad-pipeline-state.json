@@ -1,17 +1,17 @@
 {
   "team": "scout-squad",
   "pipeline_version": "2.0",
-  "last_updated": "2026-07-12T20:56:43.569042+00:00",
+  "last_updated": "2026-07-21T11:11:15.286192+00:00",
   "steps": {
     "content_analysis": {
       "outputs": {
         "content.json": {
           "path": "layers/integration/scout-squad/content/scout-squad-content.json",
-          "hash": "15f628abba47fbca874b62f14cd3c25e10cbd4e7c221b6b66bf20655436854e2",
-          "modified": "2026-07-12T19:19:14.254224+00:00"
+          "hash": "ec2bcff3e3bfb06b82098f47ebd99c4fc0848dfdcddd97d0bc816f46ce3df235",
+          "modified": "2026-07-21T11:00:33.696023+00:00"
         }
       },
-      "completed": "2026-07-12T19:19:17.754323+00:00",
+      "completed": "2026-07-21T11:00:35.756247+00:00",
       "inputs": {
         "layers/integration/scout-squad/manifest.json": "0236faf4e1fe66562c1d45f927602988272a4505a563b4980116403043e9b742",
         "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
@@ -549,29 +549,29 @@
       "outputs": {
         "team-data.json": {
           "path": "output/scout-squad/data/scout-squad-team-data.json",
-          "hash": "15f628abba47fbca874b62f14cd3c25e10cbd4e7c221b6b66bf20655436854e2",
-          "modified": "2026-07-12T18:57:46.555476+00:00"
+          "hash": "ec2bcff3e3bfb06b82098f47ebd99c4fc0848dfdcddd97d0bc816f46ce3df235",
+          "modified": "2026-07-21T11:00:44.676700+00:00"
         }
       },
-      "completed": "2026-07-12T18:57:46.560310+00:00",
+      "completed": "2026-07-21T11:00:44.683181+00:00",
       "inputs": {
-        "layers/integration/scout-squad/content/scout-squad-content.json": "15f628abba47fbca874b62f14cd3c25e10cbd4e7c221b6b66bf20655436854e2"
+        "layers/integration/scout-squad/content/scout-squad-content.json": "ec2bcff3e3bfb06b82098f47ebd99c4fc0848dfdcddd97d0bc816f46ce3df235"
       }
     },
     "generate_tts": {
       "outputs": {
         "tts_objects/Scout Squad Box.json": {
           "path": "output/scout-squad/tts_objects/Scout Squad Box.json",
-          "hash": "ef441ae55815ca5e1ddeda1f99969a1d7e75de63bcd19ff368231c61c8d9589b",
-          "modified": "2026-07-12T20:56:43.291999+00:00"
+          "hash": "c01f5d8434a036682ce6f8985635920f36b61647ce0d1803130f6dc24cae7d02",
+          "modified": "2026-07-21T11:11:15.178818+00:00"
         },
         "tts_objects/Scout Squad.json": {
           "path": "output/scout-squad/tts_objects/Scout Squad.json",
-          "hash": "74d73b720c8eba50123ce61107ea4c21e233c66973f3db7bb4abcfcdc4aa45db",
-          "modified": "2026-07-12T20:56:43.301277+00:00"
+          "hash": "6feb86139e17b23cc346e5a5f1879b21ceb864ac59b0d6cdbfc002cbe5661dd1",
+          "modified": "2026-07-21T11:11:15.193102+00:00"
         }
       },
-      "completed": "2026-07-12T20:56:43.569032+00:00",
+      "completed": "2026-07-21T11:11:15.286182+00:00",
       "inputs": {
         "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
         "config/team-guids.json": "1dea0eaf2c7d1c37c86aba088cdf876f0638d2dcaca162888fea8422c2d5c9db",
@@ -654,12 +654,13 @@
         "output/scout-squad/dice/scout-squad-dice-dark.jpg": "46246495cbb886b585a1bb791211a80dd9b107ba9b4a291b5580d224317b77ee",
         "output/scout-squad/dice/scout-squad-dice-light.jpg": "2dff73ed68dd606e9158bf73610c90188c0d671f790ae580fb684e4a51678452",
         "output/scout-squad/dice/scout-squad-dice-team.jpg": "1a0f617358b486de9a304782b38896db8894c57f57c47b00c7ba20ed62cc36d4",
-        "output/scout-squad/data/scout-squad-team-data.json": "15f628abba47fbca874b62f14cd3c25e10cbd4e7c221b6b66bf20655436854e2",
+        "output/scout-squad/data/scout-squad-team-data.json": "ec2bcff3e3bfb06b82098f47ebd99c4fc0848dfdcddd97d0bc816f46ce3df235",
         "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
-        "config/defaults/tts-script/datacard-load-stats.lua": "2d5f4088c2ff09f54988cf8722080f536b4e1b998cc2b4c1f1ea94e6b18eb92e",
+        "config/defaults/tts-script/datacard-load-stats.lua": "8c3702f37cbf4fa3556af81a2b375f846945a2ee2e9c7d4daf14cd6a3d1216c6",
         "config/defaults/tts-script/display-table-manager-script.lua": "0dab4381078d90802f25e2cc825bc3658be35ee13ab3e98831c9d248c2526689",
         "config/defaults/tts-script/faction-rule-chapter-tactics.lua": "c906742268076fb91f7cb4a92c6b588e1122ccddb692688f635c8dd4f7110ad0",
         "config/defaults/tts-script/intermediate-updater.lua": "1a2d6dbc1a8c9c57ba6a3e7a3d4bc4b7a38a6c242a93f6ef3dae698123384d35",
+        "config/defaults/tts-script/ktui-mini-modelscript.lua": "1b87f973d38437099d7275a2c06a82918d5b9beb32ae7038da3f7ba37707f6af",
         "config/defaults/tts-script/single-object-updater.lua": "3613b85169e986a8e50ebe221482079e27c18037e3f48920aa0f7e138c0ccacc",
         "config/defaults/tts-script/team-spawner-clean-script.lua": "12457bff3961eee2293c42d81cf4f4eb8b103177245a1ab8b46fd65da40672a2",
         "config/defaults/tts-script/team-spawner-script.lua": "a51ff45c8622923db909fb465781801511f235412f099f83dff728d4027650db",

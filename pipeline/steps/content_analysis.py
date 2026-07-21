@@ -97,6 +97,37 @@ def _split_embedded_actions(rules: list[dict]) -> list[dict]:
     return result
 
 
+def _strip_trailing_statline(text: str, operative_name: str | None) -> str:
+    """Remove trailing operative header/statline artifacts that leak from the
+    front card's header block into an ability or action description.
+
+    Two observed leak shapes (always at the very end of the description):
+      * name + statline header, e.g.
+        "...campaign or tournament. ASSAULT INTERCESSOR SERGEANT 3 APL WOUNDS SAVE MOVE 6\" 3+ 15"
+      * bare operative name, e.g.
+        "...within control range of an enemy operative. ELIMINATOR SNIPER"
+
+    The leaked segment is always ALL CAPS (name + header labels + numeric stats),
+    so the pre-header run is restricted to [A-Z0-9\\s] to avoid eating legitimate
+    mixed-case description text.
+    """
+    if not text:
+        return text
+    # Trailing statline header (APL WOUNDS SAVE MOVE), optionally preceded by the
+    # caps operative name and its APL digit, through end of string.
+    text = re.sub(
+        r"\s*[A-Z0-9][A-Z0-9\s]*?\bAPL\b\s+WOUNDS\s+SAVE\s+MOVE\b.*$",
+        "",
+        text,
+        flags=re.DOTALL,
+    ).strip()
+    # Trailing bare operative name.
+    if operative_name and operative_name.strip():
+        esc = re.escape(operative_name.strip())
+        text = re.sub(rf"\s*{esc}\s*$", "", text, flags=re.IGNORECASE).strip()
+    return text
+
+
 def _extract_stats_from_combined_text(text: str) -> tuple[str | None, dict]:
     """Extract name and stats from combined text like 'NAME26"5+9'.
     
@@ -917,6 +948,14 @@ class TeamDataExtractor:
                     operative["passive_abilities"] = operative.get("passive_abilities", []) + passive
                 if actions:
                     operative["unique_actions"] = operative.get("unique_actions", []) + actions
+
+        # Strip trailing operative header/statline artifacts that can leak into
+        # ability/action descriptions during extraction (e.g. a "Chapter Veteran"
+        # description ending with "... ASSAULT INTERCESSOR SERGEANT 3 APL WOUNDS SAVE MOVE 6\" 3+ 15").
+        op_name = operative.get("name")
+        for key in ("passive_abilities", "unique_actions"):
+            for rule in operative.get(key, []) or []:
+                rule["description"] = _strip_trailing_statline(rule.get("description", ""), op_name)
 
         # Remove source_file and source_page (internal metadata)
         operative.pop("source_file", None)

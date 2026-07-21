@@ -20,6 +20,19 @@ end
 
 -- helpers
 
+-- Object types we accept as a "model" that can receive stats. Any of these can
+-- be turned into a KTUI extender mini on the fly.
+local MODEL_TYPES = {
+    Custom_Model      = true,
+    Figurine_Custom   = true,
+    Custom_Assetbundle= true,
+    Figurine          = true,
+}
+
+function isModelLike(obj)
+    return obj ~= nil and MODEL_TYPES[obj.type] == true
+end
+
 function findModelOnCard()
     local pos = self.getPosition()
     local hits = Physics.cast({
@@ -35,7 +48,7 @@ function findModelOnCard()
     end
     for _, hit in ipairs(hits) do
         local obj = hit.hit_object
-        if obj and obj ~= self and obj.type == "Custom_Model" then return obj end
+        if obj and obj ~= self and isModelLike(obj) then return obj end
     end
     return nil
 end
@@ -342,6 +355,46 @@ end
 
 -- diff and apply
 
+-- Backfill the minimal state that the KTUI extender model script expects so a
+-- plain model becomes KTUI-compatible after loading stats. This only fills
+-- missing fields, so it never overwrites an existing extender mini's data.
+-- Only the bare basics needed by the extender (onLoad / refreshUI /
+-- refreshVectors) are set here -- not the full Command Node feature set.
+function ensureKtuiState(ms, data)
+    ms.stats = ms.stats or {}
+    ms.info  = ms.info or {}
+    ms.info.categories = ms.info.categories or {}
+    ms.info.weapons    = ms.info.weapons or {}
+    ms.info.special    = ms.info.special or {}
+    ms.info.psychic    = ms.info.psychic or {}
+    ms.info.abilities  = ms.info.abilities or {}
+    ms.info.actions    = ms.info.actions or {}
+    ms.info.upgrades   = ms.info.upgrades or {}
+    if ms.roles         == nil then ms.roles = {} end
+    if ms.hiddenRoles   == nil then ms.hiddenRoles = {} end
+    if ms.items         == nil then ms.items = {} end
+    if ms.attachments   == nil then ms.attachments = {} end
+    if ms.holding       == nil then ms.holding = false end
+    -- uiHeight/uiAngle are read unguarded by the real KT UI extender's refreshUI
+    -- (e.g. `"0 0 -"..tostring(state.uiHeight*100)`). A nil or non-number here is
+    -- the classic "attempt to concatenate a nil value at refreshUI" crash, so we
+    -- force them to valid numbers on every apply -- never leave them as-is.
+    if type(ms.uiHeight) ~= "number" or ms.uiHeight <= 0 then ms.uiHeight = 2 end
+    if type(ms.uiAngle)  ~= "number" then ms.uiAngle = 0 end
+    if ms.display_arrows == nil then ms.display_arrows = false end
+    if ms.base          == nil then
+        local size = tonumber(data.stats and data.stats.Base) or 25
+        ms.base = { x = size, z = size }
+    end
+    if ms.modelid == nil or ms.modelid == "" then
+        local slug = tostring(data.name or "operative"):lower():gsub("[^%w]+", "-")
+        slug = slug:gsub("^%-+", ""):gsub("%-+$", "")
+        if slug == "" then slug = "operative" end
+        ms.modelid = "ktui-" .. slug
+    end
+    -- owner intentionally left unset => the model is visible to all players.
+end
+
 function diffAndApply(model, data)
     local changes = {}
 
@@ -352,8 +405,21 @@ function diffAndApply(model, data)
         if ok and parsed then ms = parsed end
     end
 
+    -- What kind of model is this?
+    --  * isKtui    : already a KTUI mini of ANY kind (our bundled one OR the real
+    --                KT UI extender). If so we NEVER replace its script -- we just
+    --                update its state in place so a fancy extender keeps its UI.
+    --  * isManaged : specifically OUR bundled mini (we tag those "KTUIMiniDatacard").
+    --                Only our own mini is safe to hard-reload() as a fallback,
+    --                because its onLoad tolerates a missing owner.
+    -- A truly plain model (neither tag) gets our bundled script installed.
+    local isKtui    = model.hasTag("KTUIMini")
+    local isManaged = model.hasTag("KTUIMiniDatacard")
+
     ms.stats = ms.stats or {}
     ms.info  = ms.info or {}
+
+    ensureKtuiState(ms, data)
 
     -- 1. Core stats
     local oldMaxWounds = ms.stats["Wounds"]
@@ -372,9 +438,27 @@ function diffAndApply(model, data)
         end
     end
 
+    -- Base size: physical base diameter (mm) used for the extender's base ring.
+    -- Update it on every apply so swapping operatives resizes the ring.
+    if data.stats and data.stats.Base ~= nil then
+        local newBase = tonumber(data.stats.Base)
+        if newBase then
+            local oldBase = (type(ms.base) == "table") and tonumber(ms.base.x) or nil
+            if not valEq(oldBase, newBase) then
+                table.insert(changes, string.format("Base: %smm -> %smm", tostring(oldBase or "-"), tostring(newBase)))
+            end
+            ms.base = { x = newBase, z = newBase }
+            ms.stats.Base = newBase
+        end
+    end
+
     -- Always reset wounds to full when loading stats
     if data.stats.Wounds then
         ms.wounds = data.stats.Wounds
+        -- The real KT UI extender reads MAX wounds from the abbreviated key
+        -- `state.stats.W` (not `Wounds`). Keep it in sync so switching operatives
+        -- updates the fancy wound bar instead of showing the previous op's max.
+        ms.stats.W = data.stats.Wounds
     end
 
     -- 2. Name
@@ -458,9 +542,44 @@ function diffAndApply(model, data)
     end
 
     -- Write back
-    if #changes > 0 then
+    -- Only a truly plain model (no KTUI mini tag at all) gets our bundled script
+    -- installed. If the model is already a KTUI mini -- whether our bundled one or
+    -- the real KT UI extender the player upgraded it to -- we leave its script and
+    -- fancy UI intact and just refresh it in place.
+    local needsScript = (not isKtui) and KTUI_MODELSCRIPT ~= nil and KTUI_MODELSCRIPT ~= ""
+    if #changes > 0 or needsScript then
         model.script_state = JSON.encode(ms)
-        Wait.frames(function() model.reload() end, 5)
+        if needsScript then
+            -- Convert a plain model into our bundled KTUI mini: attach our model
+            -- script + tags, then reload to activate. Our onLoad tolerates a missing
+            -- owner, so this is safe.
+            model.setLuaScript(KTUI_MODELSCRIPT)
+            if not model.hasTag("KTUIMini") then model.addTag("KTUIMini") end
+            model.addTag("KTUIMiniDatacard")
+            table.insert(changes, "Prepared model for KTUI extender")
+            model.reload()
+        else
+            -- Already a KTUI mini (ours OR the real extender): refresh in place so
+            -- the existing script/UI is preserved. Redraw the base ring
+            -- (refreshVectors) AND the status UI (refreshUI). Each is guarded so one
+            -- failure can't halt the apply. Fall back to a full reload() ONLY for our
+            -- own bundled mini -- reloading a foreign extender could nil-crash its
+            -- ownership setup, and we must never wipe the player's fancy UI.
+            local ok = pcall(function()
+                model.call("loadState")
+                pcall(function() model.call("refreshVectors") end)
+                model.call("refreshUI")
+            end)
+            -- If an in-place refresh threw (e.g. a foreign extender hit an
+            -- unguarded field before our written state fully applied), fall back to
+            -- a full reload. reload() re-runs the extender's own onLoad -> loadState,
+            -- which re-reads the valid script_state we just wrote (uiHeight etc.
+            -- guaranteed present), rebuilding the fancy UI cleanly. Guarded so a
+            -- foreign onLoad that dislikes reload can't halt the apply.
+            if not ok then
+                pcall(function() model.reload() end)
+            end
+        end
     end
 
     return changes
@@ -483,7 +602,7 @@ function loadStatsToModelAll(playerColor)
 
     local model = findModelOnCard()
     if model == nil then
-        broadcastToColor("Place a KTUIMini model on this card first.", playerColor, Color.Orange)
+        broadcastToColor("Place a model on this card first.", playerColor, Color.Orange)
         return
     end
 
@@ -517,7 +636,7 @@ function loadStatsToModel(playerColor)
 
     local model = findModelOnCard()
     if model == nil then
-        broadcastToColor("Place a KTUIMini model on this card first.", playerColor, Color.Orange)
+        broadcastToColor("Place a model on this card first.", playerColor, Color.Orange)
         return
     end
 

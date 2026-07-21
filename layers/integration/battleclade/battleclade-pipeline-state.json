@@ -1,17 +1,17 @@
 {
   "team": "battleclade",
   "pipeline_version": "2.0",
-  "last_updated": "2026-07-12T20:56:31.911830+00:00",
+  "last_updated": "2026-07-21T11:11:10.641607+00:00",
   "steps": {
     "content_analysis": {
       "outputs": {
         "content.json": {
           "path": "layers/integration/battleclade/content/battleclade-content.json",
-          "hash": "b68c18563a8ea16e47b48eda6c13efd1fa8eb491024020542283af0f24e64f06",
-          "modified": "2026-07-12T19:06:46.525722+00:00"
+          "hash": "cb30c48fa1c168d3a23e76cd8fe65e16e97a69efa72407798196a6fa04af3083",
+          "modified": "2026-07-21T11:00:17.553221+00:00"
         }
       },
-      "completed": "2026-07-12T19:07:26.445083+00:00",
+      "completed": "2026-07-21T11:00:18.219059+00:00",
       "inputs": {
         "layers/integration/battleclade/manifest.json": "d97fab15e09e0d40d687af288192c32a4e3b4372143438b296212122b35a489e",
         "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
@@ -463,29 +463,29 @@
       "outputs": {
         "team-data.json": {
           "path": "output/battleclade/data/battleclade-team-data.json",
-          "hash": "b68c18563a8ea16e47b48eda6c13efd1fa8eb491024020542283af0f24e64f06",
-          "modified": "2026-07-12T18:46:03.603751+00:00"
+          "hash": "cb30c48fa1c168d3a23e76cd8fe65e16e97a69efa72407798196a6fa04af3083",
+          "modified": "2026-07-21T11:00:39.420308+00:00"
         }
       },
-      "completed": "2026-07-12T18:46:03.606334+00:00",
+      "completed": "2026-07-21T11:00:39.424286+00:00",
       "inputs": {
-        "layers/integration/battleclade/content/battleclade-content.json": "b68c18563a8ea16e47b48eda6c13efd1fa8eb491024020542283af0f24e64f06"
+        "layers/integration/battleclade/content/battleclade-content.json": "cb30c48fa1c168d3a23e76cd8fe65e16e97a69efa72407798196a6fa04af3083"
       }
     },
     "generate_tts": {
       "outputs": {
         "tts_objects/Battleclade Box.json": {
           "path": "output/battleclade/tts_objects/Battleclade Box.json",
-          "hash": "e784df544c0a30c325c2310ca65c1405641917226f15d825db0eef494fce09d3",
-          "modified": "2026-07-12T20:56:31.629844+00:00"
+          "hash": "38879f27f293d886838a6c7a150deef520320ed9c294a46e0da8d8daa6f64ec6",
+          "modified": "2026-07-21T11:11:10.548355+00:00"
         },
         "tts_objects/Battleclade.json": {
           "path": "output/battleclade/tts_objects/Battleclade.json",
-          "hash": "42e340a45ca777d1534bb3f92f82cf81b0eff376cd1acee28ae6a7e19224507e",
-          "modified": "2026-07-12T20:56:31.639304+00:00"
+          "hash": "6da91059ed4f6bb43536f1badaf36497b9fa5ac9135ef46f8a618decd3deaf6f",
+          "modified": "2026-07-21T11:11:10.561236+00:00"
         }
       },
-      "completed": "2026-07-12T20:56:31.911820+00:00",
+      "completed": "2026-07-21T11:11:10.641594+00:00",
       "inputs": {
         "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
         "config/team-guids.json": "1dea0eaf2c7d1c37c86aba088cdf876f0638d2dcaca162888fea8422c2d5c9db",
@@ -552,12 +552,13 @@
         "output/battleclade/dice/battleclade-dice-dark.jpg": "1f797a13ab5859f0478240f198a615bff21975bc1c469ea250a99d2ef7b4237c",
         "output/battleclade/dice/battleclade-dice-light.jpg": "c298570bf57b0ec2e4580f9fd142ace0255f7770fbefb6b76839c1295b44ef91",
         "output/battleclade/dice/battleclade-dice-team.jpg": "4508446c3c0e490a38f36e146df6441112edbd3aa195431184303f036150e483",
-        "output/battleclade/data/battleclade-team-data.json": "b68c18563a8ea16e47b48eda6c13efd1fa8eb491024020542283af0f24e64f06",
+        "output/battleclade/data/battleclade-team-data.json": "cb30c48fa1c168d3a23e76cd8fe65e16e97a69efa72407798196a6fa04af3083",
         "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
-        "config/defaults/tts-script/datacard-load-stats.lua": "2d5f4088c2ff09f54988cf8722080f536b4e1b998cc2b4c1f1ea94e6b18eb92e",
+        "config/defaults/tts-script/datacard-load-stats.lua": "8c3702f37cbf4fa3556af81a2b375f846945a2ee2e9c7d4daf14cd6a3d1216c6",
         "config/defaults/tts-script/display-table-manager-script.lua": "0dab4381078d90802f25e2cc825bc3658be35ee13ab3e98831c9d248c2526689",
         "config/defaults/tts-script/faction-rule-chapter-tactics.lua": "c906742268076fb91f7cb4a92c6b588e1122ccddb692688f635c8dd4f7110ad0",
         "config/defaults/tts-script/intermediate-updater.lua": "1a2d6dbc1a8c9c57ba6a3e7a3d4bc4b7a38a6c242a93f6ef3dae698123384d35",
+        "config/defaults/tts-script/ktui-mini-modelscript.lua": "1b87f973d38437099d7275a2c06a82918d5b9beb32ae7038da3f7ba37707f6af",
         "config/defaults/tts-script/single-object-updater.lua": "3613b85169e986a8e50ebe221482079e27c18037e3f48920aa0f7e138c0ccacc",
         "config/defaults/tts-script/team-spawner-clean-script.lua": "12457bff3961eee2293c42d81cf4f4eb8b103177245a1ab8b46fd65da40672a2",
         "config/defaults/tts-script/team-spawner-script.lua": "a51ff45c8622923db909fb465781801511f235412f099f83dff728d4027650db",

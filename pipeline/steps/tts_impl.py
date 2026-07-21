@@ -375,44 +375,67 @@ class OutputMetadataManager:
 
 
 def generate_urls_json_v3(repo_branch: str = URL_BRANCH):
-    """Generate flat list format for internal use (backwards compatibility)"""
+    """Generate flat list format for internal box building.
+
+    Card and cardbox URLs use the SAME content-stable cache-bust (?v=) policy as
+    generate_object_urls_json (reuse the previously-published ?v= when the file
+    content is unchanged). This keeps the URLs embedded in the box byte-identical
+    to those published in {team}-object-urls.json, so the per-object "Update"
+    context menu doesn't see a phantom ?v= mismatch (and trigger a needless
+    reload) right after a box update.
+    """
     output_dir = PROJECT_ROOT / 'output'
     base_url = URL_OUTPUT_BASE.format(branch=repo_branch)
-    
+
     all_entries = []
-    
+
     # Scan all team directories
     for team_dir in sorted(output_dir.iterdir()):
         if not team_dir.is_dir():
             continue
-        
+
         team = team_dir.name
         cards_dir = team_dir / 'cards'
         cardbox_dir = team_dir / 'cardbox'
-        
+
         if not cards_dir.exists():
             continue
-        
+
+        # Previous published metadata drives content-stable cache-busting. This
+        # is the exact same source generate_object_urls_json reads, so both
+        # produce identical ?v= values for unchanged content.
+        prev_data = _load_prev_team_urls(output_dir, team)
+        prev_objs_by_key = {
+            (o.get("type"), o.get("name")): o
+            for o in (prev_data.get("objects") or [])
+        }
+
         # Add cardbox assets (mesh and texture)
         if cardbox_dir.exists():
-            for asset_file in cardbox_dir.glob('*'):
-                if asset_file.suffix in ['.obj', '.jpg']:
-                    asset_mtime = int(asset_file.stat().st_mtime)
-                    asset_url = f"{base_url}/{team}/cardbox/{asset_file.name}?v={asset_mtime}"
-                    all_entries.append({
-                        'team': team,
-                        'type': 'tts',
-                        'name': asset_file.stem,
-                        'url': asset_url
-                    })
-        
+            for asset_file in sorted(cardbox_dir.glob('*')):
+                if asset_file.suffix == '.obj':
+                    obj_type = 'cardbox-mesh'
+                elif asset_file.suffix == '.jpg':
+                    obj_type = 'cardbox-texture'
+                else:
+                    continue
+                asset_base = f"{base_url}/{team}/cardbox/{asset_file.name}"
+                prev = prev_objs_by_key.get((obj_type, asset_file.stem))
+                stable = _reuse_or_new_single(prev, asset_file, asset_base, {})
+                all_entries.append({
+                    'team': team,
+                    'type': 'tts',
+                    'name': asset_file.stem,
+                    'url': stable['url'],
+                })
+
         # Scan card types
         for card_type_dir in sorted(cards_dir.iterdir()):
             if not card_type_dir.is_dir():
                 continue
-            
+
             card_type = card_type_dir.name
-            
+
             # Convert v3 naming (underscores) to v2 naming (dashes)
             type_mappings = {
                 'operatives_selection': 'operative-selection',
@@ -422,24 +445,47 @@ def generate_urls_json_v3(repo_branch: str = URL_BRANCH):
                 'token_guide': 'token-guide'
             }
             card_type_v2 = type_mappings.get(card_type, card_type.replace('_', '-'))
-            
-            # Regular card type
-            for card_file in sorted(card_type_dir.glob('*.jpg')):
-                # Convert filename format from "{team}-{card}-front.jpg" to "{team}-{card}_front"
-                name = card_file.stem
-                if name.endswith('-front') or name.endswith('-back'):
-                    name = name.rsplit('-', 1)
-                    name = f"{name[0]}_{name[1]}"
 
-                card_mtime = int(card_file.stat().st_mtime)
-                card_url = f"{base_url}/{team}/cards/{card_type}/{card_file.name}?v={card_mtime}"
+            # Group front/back pairs (matches generate_object_urls_json grouping
+            # so the combined-hash reuse decision is identical on both sides).
+            card_pairs = {}
+            for card_file in card_type_dir.glob('*.jpg'):
+                stem = card_file.stem
+                if stem.endswith('-front'):
+                    card_pairs.setdefault(stem[:-6], {})['front'] = card_file
+                elif stem.endswith('-back'):
+                    card_pairs.setdefault(stem[:-5], {})['back'] = card_file
+
+            for base_name, files in sorted(card_pairs.items()):
+                front_file = files.get('front')
+                back_file = files.get('back')
+                if not front_file:
+                    continue
+
+                front_url = f"{base_url}/{team}/cards/{card_type}/{front_file.name}"
+                back_url = (f"{base_url}/{team}/cards/{card_type}/{back_file.name}"
+                            if back_file else front_url)
+                effective_back = back_file if back_file else front_file
+                prev = prev_objs_by_key.get((card_type, base_name))
+                stable = _reuse_or_new_pair(
+                    prev, front_file, effective_back, front_url, back_url,
+                    "face_url", "back_url", {}
+                )
+
                 all_entries.append({
                     'team': team,
                     'type': card_type_v2,
-                    'name': name,
-                    'url': card_url
+                    'name': f"{base_name}_front",
+                    'url': stable["face_url"],
                 })
-    
+                if back_file:
+                    all_entries.append({
+                        'team': team,
+                        'type': card_type_v2,
+                        'name': f"{base_name}_back",
+                        'url': stable["back_url"],
+                    })
+
     return all_entries
 
 
@@ -490,6 +536,73 @@ def _git_unchanged_from_head(file_path: Path) -> bool | None:
         return None
 
 
+def _reuse_or_new_single(prev_entry, file_path, url, entry):
+    """Single-file entry: reuse prev url/modified if hash matches.
+
+    Shared by generate_object_urls_json (published metadata) and
+    generate_urls_json_v3 (box embedding) so both emit identical, content-stable
+    cache-bust (?v=) values for the same file.
+    """
+    new_hash = _sha256_of_files([file_path])
+    prev_hash = (prev_entry or {}).get("hash")
+    if prev_entry and prev_hash == new_hash:
+        entry["url"] = prev_entry.get("url", url)
+        entry["modified"] = prev_entry.get("modified")
+    elif prev_entry and prev_hash is None:
+        git_clean = _git_unchanged_from_head(file_path)
+        if git_clean is False:
+            mtime = file_path.stat().st_mtime
+            entry["url"] = f"{url}?v={int(mtime)}"
+            entry["modified"] = datetime.fromtimestamp(mtime, tz=timezone.utc).isoformat()
+        else:
+            entry["url"] = prev_entry.get("url", url)
+            entry["modified"] = prev_entry.get("modified")
+    else:
+        mtime = file_path.stat().st_mtime
+        entry["url"] = f"{url}?v={int(mtime)}"
+        entry["modified"] = datetime.fromtimestamp(mtime, tz=timezone.utc).isoformat()
+    entry["hash"] = new_hash
+    return entry
+
+
+def _reuse_or_new_pair(prev_entry, file_a, file_b, url_a, url_b, key_a, key_b, entry):
+    """Two-file entry (mesh/texture, front/back): reuse if combined hash matches.
+
+    Shared by generate_object_urls_json and generate_urls_json_v3 (see
+    _reuse_or_new_single) to keep box-embedded URLs and published URLs identical.
+    """
+    new_hash = _sha256_of_files([file_a, file_b])
+    prev_hash = (prev_entry or {}).get("hash")
+
+    def _emit_new():
+        mtime_a = file_a.stat().st_mtime
+        mtime_b = file_b.stat().st_mtime
+        entry[key_a] = f"{url_a}?v={int(mtime_a)}"
+        entry[key_b] = f"{url_b}?v={int(mtime_b)}"
+        entry["modified"] = datetime.fromtimestamp(
+            max(mtime_a, mtime_b), tz=timezone.utc
+        ).isoformat()
+
+    def _emit_prev():
+        entry[key_a] = prev_entry.get(key_a, url_a)
+        entry[key_b] = prev_entry.get(key_b, url_b)
+        entry["modified"] = prev_entry.get("modified")
+
+    if prev_entry and prev_hash == new_hash:
+        _emit_prev()
+    elif prev_entry and prev_hash is None:
+        clean_a = _git_unchanged_from_head(file_a)
+        clean_b = _git_unchanged_from_head(file_b)
+        if clean_a is False or clean_b is False:
+            _emit_new()
+        else:
+            _emit_prev()
+    else:
+        _emit_new()
+    entry["hash"] = new_hash
+    return entry
+
+
 def generate_object_urls_json(repo_branch: str = URL_BRANCH):
     """
     Generate team detail URL metadata for TTS update checks.
@@ -511,62 +624,6 @@ def generate_object_urls_json(repo_branch: str = URL_BRANCH):
     base_url = f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/{repo_branch}/output"
     
     teams_data = {}
-
-    def _reuse_or_new_single(prev_entry, file_path, url, entry):
-        """Single-file entry: reuse prev url/modified if hash matches."""
-        new_hash = _sha256_of_files([file_path])
-        prev_hash = (prev_entry or {}).get("hash")
-        if prev_entry and prev_hash == new_hash:
-            entry["url"] = prev_entry.get("url", url)
-            entry["modified"] = prev_entry.get("modified")
-        elif prev_entry and prev_hash is None:
-            git_clean = _git_unchanged_from_head(file_path)
-            if git_clean is False:
-                mtime = file_path.stat().st_mtime
-                entry["url"] = f"{url}?v={int(mtime)}"
-                entry["modified"] = datetime.fromtimestamp(mtime, tz=timezone.utc).isoformat()
-            else:
-                entry["url"] = prev_entry.get("url", url)
-                entry["modified"] = prev_entry.get("modified")
-        else:
-            mtime = file_path.stat().st_mtime
-            entry["url"] = f"{url}?v={int(mtime)}"
-            entry["modified"] = datetime.fromtimestamp(mtime, tz=timezone.utc).isoformat()
-        entry["hash"] = new_hash
-        return entry
-
-    def _reuse_or_new_pair(prev_entry, file_a, file_b, url_a, url_b, key_a, key_b, entry):
-        """Two-file entry (mesh/texture, front/back): reuse if combined hash matches."""
-        new_hash = _sha256_of_files([file_a, file_b])
-        prev_hash = (prev_entry or {}).get("hash")
-
-        def _emit_new():
-            mtime_a = file_a.stat().st_mtime
-            mtime_b = file_b.stat().st_mtime
-            entry[key_a] = f"{url_a}?v={int(mtime_a)}"
-            entry[key_b] = f"{url_b}?v={int(mtime_b)}"
-            entry["modified"] = datetime.fromtimestamp(
-                max(mtime_a, mtime_b), tz=timezone.utc
-            ).isoformat()
-
-        def _emit_prev():
-            entry[key_a] = prev_entry.get(key_a, url_a)
-            entry[key_b] = prev_entry.get(key_b, url_b)
-            entry["modified"] = prev_entry.get("modified")
-
-        if prev_entry and prev_hash == new_hash:
-            _emit_prev()
-        elif prev_entry and prev_hash is None:
-            clean_a = _git_unchanged_from_head(file_a)
-            clean_b = _git_unchanged_from_head(file_b)
-            if clean_a is False or clean_b is False:
-                _emit_new()
-            else:
-                _emit_prev()
-        else:
-            _emit_new()
-        entry["hash"] = new_hash
-        return entry
 
     # Scan all team directories
     for team_dir in sorted(output_dir.iterdir()):
@@ -1528,7 +1585,24 @@ def embed_datacard_stats(bag_obj: dict, team_name: str, output_dir: Path, config
     lua_script_path = config_dir / "defaults" / "tts-script" / "datacard-load-stats.lua"
     with open(lua_script_path, 'r', encoding='utf-8') as f:
         datacard_lua_script = f.read()
-    
+
+    # Load the KTUI extender model script and expose it to the datacard Lua as a
+    # KTUI_MODELSCRIPT string. This lets "Load stats to model" turn any plain
+    # model into a KTUI-compatible mini on the fly.
+    ktui_modelscript_prefix = ""
+    modelscript_path = config_dir / "defaults" / "tts-script" / "ktui-mini-modelscript.lua"
+    if modelscript_path.exists():
+        with open(modelscript_path, 'r', encoding='utf-8') as f:
+            modelscript_text = f.read()
+        # Wrap in a Lua long-bracket whose level cannot appear in the body.
+        level = 0
+        while ("]" + "=" * level + "]") in modelscript_text:
+            level += 1
+        eq = "=" * level
+        ktui_modelscript_prefix = f"KTUI_MODELSCRIPT = [{eq}[\n{modelscript_text}\n]{eq}]\n\n"
+    else:
+        logger.warning(f"  KTUI model script not found at {modelscript_path}; plain models won't be auto-scripted")
+
     # Find all datacard objects in the bag
     datacards = _find_datacards(bag_obj)
     if not datacards:
@@ -1561,7 +1635,7 @@ def embed_datacard_stats(bag_obj: dict, team_name: str, output_dir: Path, config
             
             # Get faction rule code if applicable
             faction_rule_code = _get_faction_rule_code(team_name, team_data, operative, team_config)
-            lua_script = datacard_lua_script + "\n\n" + faction_rule_code + "\n\n" + (single_object_updater_script or "")
+            lua_script = ktui_modelscript_prefix + datacard_lua_script + "\n\n" + faction_rule_code + "\n\n" + (single_object_updater_script or "")
             
             # Set GMNotes and Lua script
             card["GMNotes"] = gm_notes_json

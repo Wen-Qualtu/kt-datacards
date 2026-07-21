@@ -1,17 +1,17 @@
 {
   "team": "kommandos",
   "pipeline_version": "2.0",
-  "last_updated": "2026-07-12T20:56:39.788920+00:00",
+  "last_updated": "2026-07-21T11:11:13.788406+00:00",
   "steps": {
     "content_analysis": {
       "outputs": {
         "content.json": {
           "path": "layers/integration/kommandos/content/kommandos-content.json",
-          "hash": "36ce6f1fc70ab91896f9f4e6c577bf82e2cbecfedb9a16878e64ace03996d82b",
-          "modified": "2026-07-12T19:14:38.520005+00:00"
+          "hash": "39a9ae3b0af99b63be45b917c54448448f8918d7299483be6d6b7474714cbf84",
+          "modified": "2026-07-21T11:00:28.382064+00:00"
         }
       },
-      "completed": "2026-07-12T19:14:49.706331+00:00",
+      "completed": "2026-07-21T11:00:29.239874+00:00",
       "inputs": {
         "layers/integration/kommandos/manifest.json": "f77af415870af7f20057e79639cc4f2c1db8d2353444d3f6886b581106d43c3b",
         "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
@@ -565,29 +565,29 @@
       "outputs": {
         "team-data.json": {
           "path": "output/kommandos/data/kommandos-team-data.json",
-          "hash": "36ce6f1fc70ab91896f9f4e6c577bf82e2cbecfedb9a16878e64ace03996d82b",
-          "modified": "2026-07-12T18:52:54.983431+00:00"
+          "hash": "39a9ae3b0af99b63be45b917c54448448f8918d7299483be6d6b7474714cbf84",
+          "modified": "2026-07-21T11:00:40.849664+00:00"
         }
       },
-      "completed": "2026-07-12T18:52:55.322247+00:00",
+      "completed": "2026-07-21T11:00:40.863079+00:00",
       "inputs": {
-        "layers/integration/kommandos/content/kommandos-content.json": "36ce6f1fc70ab91896f9f4e6c577bf82e2cbecfedb9a16878e64ace03996d82b"
+        "layers/integration/kommandos/content/kommandos-content.json": "39a9ae3b0af99b63be45b917c54448448f8918d7299483be6d6b7474714cbf84"
       }
     },
     "generate_tts": {
       "outputs": {
         "tts_objects/Kommandos Box.json": {
           "path": "output/kommandos/tts_objects/Kommandos Box.json",
-          "hash": "3741245969075a8ecf060676998d7d60ba3ca74e97d1e0eeee457c8c4630126d",
-          "modified": "2026-07-12T20:56:39.507091+00:00"
+          "hash": "7abbcdf9ddb01daadc0cd35da02cad6433dec9795b2b53a7116633b2e1c642f0",
+          "modified": "2026-07-21T11:11:13.674529+00:00"
         },
         "tts_objects/Kommandos.json": {
           "path": "output/kommandos/tts_objects/Kommandos.json",
-          "hash": "51dca24e1fb35d2c8f1af71fbf8415646dedb9bba21f812a047a48abad97ce26",
-          "modified": "2026-07-12T20:56:39.516438+00:00"
+          "hash": "06b11420459fc93222cca1c001a37648e05c743b5d47f988f8584525b03ce9ef",
+          "modified": "2026-07-21T11:11:13.690876+00:00"
         }
       },
-      "completed": "2026-07-12T20:56:39.788910+00:00",
+      "completed": "2026-07-21T11:11:13.788392+00:00",
       "inputs": {
         "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
         "config/team-guids.json": "1dea0eaf2c7d1c37c86aba088cdf876f0638d2dcaca162888fea8422c2d5c9db",
@@ -672,12 +672,13 @@
         "output/kommandos/dice/kommandos-dice-dark.jpg": "60da105dbf4f616c19827552289d16934a673b5c516e7698e41821674913ddfb",
         "output/kommandos/dice/kommandos-dice-light.jpg": "a91678e0f78657fe1a7e1a7858798c499bf2662167ceb74d6b43bea12105cb56",
         "output/kommandos/dice/kommandos-dice-team.jpg": "557756c66d8a866ce5d24239f3829341bedd2b418f70677d796565d71972feba",
-        "output/kommandos/data/kommandos-team-data.json": "36ce6f1fc70ab91896f9f4e6c577bf82e2cbecfedb9a16878e64ace03996d82b",
+        "output/kommandos/data/kommandos-team-data.json": "39a9ae3b0af99b63be45b917c54448448f8918d7299483be6d6b7474714cbf84",
         "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
-        "config/defaults/tts-script/datacard-load-stats.lua": "2d5f4088c2ff09f54988cf8722080f536b4e1b998cc2b4c1f1ea94e6b18eb92e",
+        "config/defaults/tts-script/datacard-load-stats.lua": "8c3702f37cbf4fa3556af81a2b375f846945a2ee2e9c7d4daf14cd6a3d1216c6",
         "config/defaults/tts-script/display-table-manager-script.lua": "0dab4381078d90802f25e2cc825bc3658be35ee13ab3e98831c9d248c2526689",
         "config/defaults/tts-script/faction-rule-chapter-tactics.lua": "c906742268076fb91f7cb4a92c6b588e1122ccddb692688f635c8dd4f7110ad0",
         "config/defaults/tts-script/intermediate-updater.lua": "1a2d6dbc1a8c9c57ba6a3e7a3d4bc4b7a38a6c242a93f6ef3dae698123384d35",
+        "config/defaults/tts-script/ktui-mini-modelscript.lua": "1b87f973d38437099d7275a2c06a82918d5b9beb32ae7038da3f7ba37707f6af",
         "config/defaults/tts-script/single-object-updater.lua": "3613b85169e986a8e50ebe221482079e27c18037e3f48920aa0f7e138c0ccacc",
         "config/defaults/tts-script/team-spawner-clean-script.lua": "12457bff3961eee2293c42d81cf4f4eb8b103177245a1ab8b46fd65da40672a2",
         "config/defaults/tts-script/team-spawner-script.lua": "a51ff45c8622923db909fb465781801511f235412f099f83dff728d4027650db",

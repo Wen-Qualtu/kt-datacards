@@ -1,17 +1,17 @@
 {
   "team": "nemesis-claw",
   "pipeline_version": "2.0",
-  "last_updated": "2026-07-12T20:56:41.057792+00:00",
+  "last_updated": "2026-07-21T11:11:14.295564+00:00",
   "steps": {
     "content_analysis": {
       "outputs": {
         "content.json": {
           "path": "layers/integration/nemesis-claw/content/nemesis-claw-content.json",
-          "hash": "afa4651fa05e04b01b802e5d52019199da8ce7d0a824548a3d3aa0ed866becc4",
-          "modified": "2026-07-12T19:15:22.356895+00:00"
+          "hash": "35024e3f2d45050dbb471a487891c7084e75257cf9da56e7e2082ee88dd74088",
+          "modified": "2026-07-21T11:00:28.800399+00:00"
         }
       },
-      "completed": "2026-07-12T19:15:35.406026+00:00",
+      "completed": "2026-07-21T11:00:29.171242+00:00",
       "inputs": {
         "layers/integration/nemesis-claw/manifest.json": "065f0c1a206ab2cff4d51d99b42f4e40cffc7c9681759f04a713e90fa6fb38e5",
         "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
@@ -500,29 +500,29 @@
       "outputs": {
         "team-data.json": {
           "path": "output/nemesis-claw/data/nemesis-claw-team-data.json",
-          "hash": "afa4651fa05e04b01b802e5d52019199da8ce7d0a824548a3d3aa0ed866becc4",
-          "modified": "2026-07-12T18:54:10.687276+00:00"
+          "hash": "35024e3f2d45050dbb471a487891c7084e75257cf9da56e7e2082ee88dd74088",
+          "modified": "2026-07-21T11:00:41.161034+00:00"
         }
       },
-      "completed": "2026-07-12T18:54:10.741710+00:00",
+      "completed": "2026-07-21T11:00:41.170459+00:00",
       "inputs": {
-        "layers/integration/nemesis-claw/content/nemesis-claw-content.json": "afa4651fa05e04b01b802e5d52019199da8ce7d0a824548a3d3aa0ed866becc4"
+        "layers/integration/nemesis-claw/content/nemesis-claw-content.json": "35024e3f2d45050dbb471a487891c7084e75257cf9da56e7e2082ee88dd74088"
       }
     },
     "generate_tts": {
       "outputs": {
         "tts_objects/Nemesis Claw Box.json": {
           "path": "output/nemesis-claw/tts_objects/Nemesis Claw Box.json",
-          "hash": "1745809f66d46229dea48d3d1c050657121427d36d19027b20a5e7005f5336f2",
-          "modified": "2026-07-12T20:56:40.783484+00:00"
+          "hash": "826e3783763983778c312ec71a9de5dc9828c4d607dfac255ca8cf3da09c058f",
+          "modified": "2026-07-21T11:11:14.193919+00:00"
         },
         "tts_objects/Nemesis Claw.json": {
           "path": "output/nemesis-claw/tts_objects/Nemesis Claw.json",
-          "hash": "f563bbd4b672c4dd75b21613de8c419691c39a15b9a9e402ab72c109d0be5db9",
-          "modified": "2026-07-12T20:56:40.792724+00:00"
+          "hash": "f1f55d2d4a631c25c4b18eabc0316d58f209cab5a84440c02264af478e8e08a6",
+          "modified": "2026-07-21T11:11:14.208028+00:00"
         }
       },
-      "completed": "2026-07-12T20:56:41.057782+00:00",
+      "completed": "2026-07-21T11:11:14.295552+00:00",
       "inputs": {
         "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
         "config/team-guids.json": "1dea0eaf2c7d1c37c86aba088cdf876f0638d2dcaca162888fea8422c2d5c9db",
@@ -595,12 +595,13 @@
         "output/nemesis-claw/dice/nemesis-claw-dice-dark.jpg": "2e3cbe415ed9d59610b4c04206ee80026bee1380bce7041babdb0327a588e3b3",
         "output/nemesis-claw/dice/nemesis-claw-dice-light.jpg": "759a55b30981cf9fd3fc43be88b45263f0f870eedb1b5dbf0266e2642f002406",
         "output/nemesis-claw/dice/nemesis-claw-dice-team.jpg": "4b6e61d008fc19623836229ee53eccc74b4b6fae61b8bce4f274263d9b89fc29",
-        "output/nemesis-claw/data/nemesis-claw-team-data.json": "afa4651fa05e04b01b802e5d52019199da8ce7d0a824548a3d3aa0ed866becc4",
+        "output/nemesis-claw/data/nemesis-claw-team-data.json": "35024e3f2d45050dbb471a487891c7084e75257cf9da56e7e2082ee88dd74088",
         "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
-        "config/defaults/tts-script/datacard-load-stats.lua": "2d5f4088c2ff09f54988cf8722080f536b4e1b998cc2b4c1f1ea94e6b18eb92e",
+        "config/defaults/tts-script/datacard-load-stats.lua": "8c3702f37cbf4fa3556af81a2b375f846945a2ee2e9c7d4daf14cd6a3d1216c6",
         "config/defaults/tts-script/display-table-manager-script.lua": "0dab4381078d90802f25e2cc825bc3658be35ee13ab3e98831c9d248c2526689",
         "config/defaults/tts-script/faction-rule-chapter-tactics.lua": "c906742268076fb91f7cb4a92c6b588e1122ccddb692688f635c8dd4f7110ad0",
         "config/defaults/tts-script/intermediate-updater.lua": "1a2d6dbc1a8c9c57ba6a3e7a3d4bc4b7a38a6c242a93f6ef3dae698123384d35",
+        "config/defaults/tts-script/ktui-mini-modelscript.lua": "1b87f973d38437099d7275a2c06a82918d5b9beb32ae7038da3f7ba37707f6af",
         "config/defaults/tts-script/single-object-updater.lua": "3613b85169e986a8e50ebe221482079e27c18037e3f48920aa0f7e138c0ccacc",
         "config/defaults/tts-script/team-spawner-clean-script.lua": "12457bff3961eee2293c42d81cf4f4eb8b103177245a1ab8b46fd65da40672a2",
         "config/defaults/tts-script/team-spawner-script.lua": "a51ff45c8622923db909fb465781801511f235412f099f83dff728d4027650db",

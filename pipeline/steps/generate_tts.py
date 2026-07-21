@@ -14,8 +14,9 @@ PORT-NOTES (carry these over when implementing):
     alongside the existing marker/token/custom mappings (_build_token_tags_map).
   - GMNotes: when an operative has a `base_size` (now extracted by content_analysis),
     surface it as stats['Base'] in _build_gm_notes.
-  - EXCLUDED for now: KTUI enhanced stat-loading (ktui-mini-modelscript.lua embedding
-    via KTUI_MODELSCRIPT prefix) — port later.
+  - KTUI enhanced stat-loading: the ktui-mini-modelscript.lua extender is embedded
+    via a KTUI_MODELSCRIPT prefix on each datacard's Lua, so "Load stats to model"
+    can turn any plain model into a KTUI-compatible mini on the fly.
 
 IMPLEMENTATION NOTES:
   - The heavy lifting lives in pipeline/steps/tts_impl.py (the legacy step 7,
