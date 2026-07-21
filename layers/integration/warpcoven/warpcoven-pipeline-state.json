@@ -1,0 +1,897 @@
+{
+  "team": "warpcoven",
+  "pipeline_version": "2.0",
+  "last_updated": "2026-07-12T20:56:44.952134+00:00",
+  "steps": {
+    "content_analysis": {
+      "outputs": {
+        "content.json": {
+          "path": "layers/integration/warpcoven/content/warpcoven-content.json",
+          "hash": "14e73a07479f17afd1b6b46148bee8cbd150337b0e20dde15715bcaf0c820acb",
+          "modified": "2026-07-12T19:22:35.593420+00:00"
+        }
+      },
+      "completed": "2026-07-12T19:22:51.989556+00:00",
+      "inputs": {
+        "layers/integration/warpcoven/manifest.json": "950d2b7fbd918ad7373a59bafd530bfa2e2defcce11e5f2cd0eea9eef1b4fa19",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "layers/integration/warpcoven/warpcoven-datacard-rubric-marine-gunner.pdf": "e7408dc6282120623f9a27270782dca394cc1ad9081957ebce04fcf5b19dd73d",
+        "layers/integration/warpcoven/warpcoven-datacard-rubric-marine-icon-bearer.pdf": "1084a86689851c4dabdec735f43677019caa3945d9f8d8b5052f82dd7c95f5c9",
+        "layers/integration/warpcoven/warpcoven-datacard-rubric-marine-warrior.pdf": "b541efc62d1e7512f2524ed6b6c608572daad2b1a62ae5e6abfb15b7c21dae8d",
+        "layers/integration/warpcoven/warpcoven-datacard-sorcerer-of-destiny.pdf": "44b2b89d54a3d4da34ac90803463a35399a153be83b4a7e876e2f9ea7c03c347",
+        "layers/integration/warpcoven/warpcoven-datacard-sorcerer-of-tempyrion.pdf": "ef75ffc52a2dffe444beaa941f6779f8da31359cea8af73ea44a97a46166a15a",
+        "layers/integration/warpcoven/warpcoven-datacard-sorcerer-of-warpfire.pdf": "d4429ddcd29325632a8f2b6c1fe5f2df3cd0180d7092a3d14682c3b90a9b4cea",
+        "layers/integration/warpcoven/warpcoven-datacard-tzaangor-champion.pdf": "906f36afd4b3177ca6ca10835568c4c39dcea51df2952dc65dea5e6875f39a18",
+        "layers/integration/warpcoven/warpcoven-datacard-tzaangor-horn-bearer.pdf": "3d8234b8e735d6081f83e207a6f4811aa2e9d02c45397c229abd364d733fe2c5",
+        "layers/integration/warpcoven/warpcoven-datacard-tzaangor-icon-bearer.pdf": "59d0c91edc5cf538b85b6c8e5b2fa93b9c922f064c30cdd3994d8b79a46c52f0",
+        "layers/integration/warpcoven/warpcoven-datacard-tzaangor-warrior.pdf": "fde48c002c8c2f35d67388791cf2234b1e29a7d7c89df3dc7541b220ee082105",
+        "layers/integration/warpcoven/warpcoven-equipment-arcane-robes.pdf": "0da3b7d36fcc2da3dbd29deffddd4f51d537d528850ae0403ef590cde9808dc6",
+        "layers/integration/warpcoven/warpcoven-equipment-daemonmaw-weapons.pdf": "a901b311bb8d4ac6eb067f07c508636729b4752bfe48cf8ac48a7b93b59d1e43",
+        "layers/integration/warpcoven/warpcoven-equipment-ensorcelled-rounds.pdf": "54c4eaef464bc4ee21f10b9e3ba412453e7def59265ba1ccaab1623083b974f3",
+        "layers/integration/warpcoven/warpcoven-equipment-sorcerous-scrolls.pdf": "be26608a41486a916de82aaf5ee2db40be86ffef3c513efc9a79739a8d0337df",
+        "layers/integration/warpcoven/warpcoven-faction-rule-astartes.pdf": "777a5c4ed8b409ca437f0e868317c4d6568af89206a5d280aff3da3096d7b783",
+        "layers/integration/warpcoven/warpcoven-faction-rule-boons-of-tzeentch-1.pdf": "4f790e5bce5df7607585bf6d9ac02539eadd9a8d6395cd8a6e800c9709478d75",
+        "layers/integration/warpcoven/warpcoven-faction-rule-boons-of-tzeentch-2.pdf": "d1d657036428570008e57526f181f63bf9ef739a7cdea9888cd31b68059d593f",
+        "layers/integration/warpcoven/warpcoven-firefight-ploy-all-is-dust.pdf": "f30b123b4ed5ead1c8fc3141cb66dc10396240f622b89d645fcb0f6006b9e4b0",
+        "layers/integration/warpcoven/warpcoven-firefight-ploy-capricious-plan.pdf": "46b7845a56285d6f25b3c5d87c40a74cc0d426c44cba7f495950e12837c0914d",
+        "layers/integration/warpcoven/warpcoven-firefight-ploy-mutant-herd.pdf": "ed8fe57e72c6dce8d395b59436724ece0c357445dd817088b32c545a99a59f95",
+        "layers/integration/warpcoven/warpcoven-firefight-ploy-psychic-cabal.pdf": "ffa1d7f038518653d9c0dd588851e3cb13f69976ba5c13d4b03eff71ecbd2005",
+        "layers/integration/warpcoven/warpcoven-operatives-selection-operative-selection.pdf": "1082d895b225ea94411333366d5a8b563d0a7186517da865d2da8e0e8209338f",
+        "layers/integration/warpcoven/warpcoven-strategy-ploy-aetherial-warding.pdf": "0189aa8ebb775de83d9fd9092075bf3be904da12dedeb823dad290ffeaf0cf07",
+        "layers/integration/warpcoven/warpcoven-strategy-ploy-brotherhood-of-sorcerers.pdf": "a93edb3bec0eb916a446df3622cd3b182b1ab8b408a55c9ab49983bfc35057a0",
+        "layers/integration/warpcoven/warpcoven-strategy-ploy-fate-itself-is-my-weapon.pdf": "d171dc71157b01be253234276e7f79c269496809e368c5242f4a109a2420b1d3",
+        "layers/integration/warpcoven/warpcoven-strategy-ploy-savage-herd.pdf": "4ca481a68ca0bcdf390b277ad4c260aa050f5eaa2e583f34a6c1ff833779f7c1"
+      }
+    },
+    "extract_backsides": {
+      "outputs": {
+        "backside-landscape.jpg": {
+          "path": "layers/integration/warpcoven/card-backside/warpcoven-backside-landscape.jpg",
+          "hash": "03a7902acd3c54c22a4d7323eceb8b870e00e2db9fd586e86402da72f1b46376",
+          "modified": "2026-07-12T18:59:12.173280+00:00"
+        },
+        "backside-portrait.jpg": {
+          "path": "layers/integration/warpcoven/card-backside/warpcoven-backside-portrait.jpg",
+          "hash": "62e4d493ab6537df495a317bf4e91be4cf05d2240abecf6adf547632eca0b1ff",
+          "modified": "2026-07-12T18:59:14.548305+00:00"
+        }
+      },
+      "completed": "2026-07-12T18:59:14.788137+00:00",
+      "inputs": {
+        "layers/integration/warpcoven/artwork/icons/warpcoven-icon-token.jpg": "0feb3a85ed945a2b05c07f846bbef8d7ba2e2ec412986920017d054956e9f8bb",
+        "config/defaults/box/card-box-background.jpeg": "2dd1442a7c52ca1d66899333f678d60f48981ce20561ead77c1161d548176036"
+      }
+    },
+    "generate_dice": {
+      "outputs": {
+        "dice-light.jpg": {
+          "path": "output/warpcoven/dice/warpcoven-dice-light.jpg",
+          "hash": "04e973cdfb7df15230f53a4ba85293a186d4cbdbaf8e1abbac40d67c21958032",
+          "modified": "2026-07-12T18:59:15.304403+00:00"
+        },
+        "dice-dark.jpg": {
+          "path": "output/warpcoven/dice/warpcoven-dice-dark.jpg",
+          "hash": "453f59b2b7c306808dd37329ddae09bd662dea96e637ac9421520850f42f664a",
+          "modified": "2026-07-12T18:59:15.307054+00:00"
+        }
+      },
+      "completed": "2026-07-12T18:59:15.308440+00:00",
+      "inputs": {
+        "layers/integration/warpcoven/artwork/icons/warpcoven-icon-token-transparent.png": "610d46fc613320d2f192ea1ec981d7023efcc81c2e9f3339366315b437443462",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41"
+      }
+    },
+    "generate_box_texture": {
+      "outputs": {
+        "card-box-texture.jpg": {
+          "path": "output/warpcoven/cardbox/warpcoven-card-box-texture.jpg",
+          "hash": "b8e3890bd55f59a5a7a32e3121431e66796bf6ce8f350ee475047bf966928360",
+          "modified": "2026-07-12T18:59:16.118448+00:00"
+        },
+        "card-box.obj": {
+          "path": "output/warpcoven/cardbox/warpcoven-card-box.obj",
+          "hash": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+          "modified": "2026-07-12T18:59:16.121202+00:00"
+        }
+      },
+      "completed": "2026-07-12T18:59:16.134192+00:00",
+      "inputs": {
+        "layers/integration/warpcoven/artwork/icons/warpcoven-icon-token.jpg": "0feb3a85ed945a2b05c07f846bbef8d7ba2e2ec412986920017d054956e9f8bb",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "config/defaults/box/card-box.obj": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+        "config/defaults/box/card-box-texture.jpg": "b2f310b01a0d28e8806e99ce0b972e8967e3014608eacefcb6ec51597695a313"
+      }
+    },
+    "generate_card_images": {
+      "outputs": {
+        "cards/datacards/rubric-marine-gunner-back.jpg": {
+          "path": "output/warpcoven/cards/datacards/rubric-marine-gunner-back.jpg",
+          "hash": "03a7902acd3c54c22a4d7323eceb8b870e00e2db9fd586e86402da72f1b46376",
+          "modified": "2026-07-12T19:23:28.112345+00:00"
+        },
+        "cards/datacards/rubric-marine-gunner-front.jpg": {
+          "path": "output/warpcoven/cards/datacards/rubric-marine-gunner-front.jpg",
+          "hash": "667bfc7a3f217a79d51982d84268c8f352a684142eddd6a103d8a075b9cc7ffe",
+          "modified": "2026-07-12T19:23:28.177604+00:00"
+        },
+        "cards/datacards/rubric-marine-icon-bearer-back.jpg": {
+          "path": "output/warpcoven/cards/datacards/rubric-marine-icon-bearer-back.jpg",
+          "hash": "03a7902acd3c54c22a4d7323eceb8b870e00e2db9fd586e86402da72f1b46376",
+          "modified": "2026-07-12T19:23:29.073249+00:00"
+        },
+        "cards/datacards/rubric-marine-icon-bearer-front.jpg": {
+          "path": "output/warpcoven/cards/datacards/rubric-marine-icon-bearer-front.jpg",
+          "hash": "b36e4009bc6487455514e839019ad046dc7a03673b51023cc07285119c733585",
+          "modified": "2026-07-12T19:23:29.698958+00:00"
+        },
+        "cards/datacards/rubric-marine-warrior-back.jpg": {
+          "path": "output/warpcoven/cards/datacards/rubric-marine-warrior-back.jpg",
+          "hash": "03a7902acd3c54c22a4d7323eceb8b870e00e2db9fd586e86402da72f1b46376",
+          "modified": "2026-07-12T19:23:30.324224+00:00"
+        },
+        "cards/datacards/rubric-marine-warrior-front.jpg": {
+          "path": "output/warpcoven/cards/datacards/rubric-marine-warrior-front.jpg",
+          "hash": "0f5f28e83d06f3f1d0f194581536b449f6fcfc8569873408e20202b70e35f0bd",
+          "modified": "2026-07-12T19:23:30.968724+00:00"
+        },
+        "cards/datacards/sorcerer-of-destiny-back.jpg": {
+          "path": "output/warpcoven/cards/datacards/sorcerer-of-destiny-back.jpg",
+          "hash": "f0f247acffc18cadbe1bffb5857240702b6b9af6539b1245f7a5407a0bc8c87b",
+          "modified": "2026-07-12T19:23:30.991353+00:00"
+        },
+        "cards/datacards/sorcerer-of-destiny-front.jpg": {
+          "path": "output/warpcoven/cards/datacards/sorcerer-of-destiny-front.jpg",
+          "hash": "675d23527e2ef98aa01c5e13b20aaffb010c8ee20e7f6b72b7477ce7b8425554",
+          "modified": "2026-07-12T19:23:31.610106+00:00"
+        },
+        "cards/datacards/sorcerer-of-tempyrion-back.jpg": {
+          "path": "output/warpcoven/cards/datacards/sorcerer-of-tempyrion-back.jpg",
+          "hash": "1c5434e2b53af9d16a88b1ff0dfe9d08b30ce13f691cd55a9d8afdefd21adba9",
+          "modified": "2026-07-12T19:23:32.224137+00:00"
+        },
+        "cards/datacards/sorcerer-of-tempyrion-front.jpg": {
+          "path": "output/warpcoven/cards/datacards/sorcerer-of-tempyrion-front.jpg",
+          "hash": "013fa5a8dac1d69151530a024134b55575e7728b85d50079dd300395b1f8e0c0",
+          "modified": "2026-07-12T19:23:32.231681+00:00"
+        },
+        "cards/datacards/sorcerer-of-warpfire-back.jpg": {
+          "path": "output/warpcoven/cards/datacards/sorcerer-of-warpfire-back.jpg",
+          "hash": "9e1f4436000f3aed76d077c99c3c75bcdd55feb51b1eab24a1a9084cac887d5f",
+          "modified": "2026-07-12T19:23:32.852339+00:00"
+        },
+        "cards/datacards/sorcerer-of-warpfire-front.jpg": {
+          "path": "output/warpcoven/cards/datacards/sorcerer-of-warpfire-front.jpg",
+          "hash": "fd2695799589cb131771cca6362bad09af93e8338466efcd732ca188d6f4c14e",
+          "modified": "2026-07-12T19:23:32.855796+00:00"
+        },
+        "cards/datacards/tzaangor-champion-back.jpg": {
+          "path": "output/warpcoven/cards/datacards/tzaangor-champion-back.jpg",
+          "hash": "03a7902acd3c54c22a4d7323eceb8b870e00e2db9fd586e86402da72f1b46376",
+          "modified": "2026-07-12T19:23:33.428322+00:00"
+        },
+        "cards/datacards/tzaangor-champion-front.jpg": {
+          "path": "output/warpcoven/cards/datacards/tzaangor-champion-front.jpg",
+          "hash": "b4511d87510efd123a5b14e47d006a3749949e626f9535d2b96628fecc9f7ec2",
+          "modified": "2026-07-12T19:23:33.483352+00:00"
+        },
+        "cards/datacards/tzaangor-horn-bearer-back.jpg": {
+          "path": "output/warpcoven/cards/datacards/tzaangor-horn-bearer-back.jpg",
+          "hash": "03a7902acd3c54c22a4d7323eceb8b870e00e2db9fd586e86402da72f1b46376",
+          "modified": "2026-07-12T19:23:34.167421+00:00"
+        },
+        "cards/datacards/tzaangor-horn-bearer-front.jpg": {
+          "path": "output/warpcoven/cards/datacards/tzaangor-horn-bearer-front.jpg",
+          "hash": "687adc0a6dd13c436475cbb631d627a6013600ca53e3b29ecbc63906d12018aa",
+          "modified": "2026-07-12T19:23:35.485876+00:00"
+        },
+        "cards/datacards/tzaangor-icon-bearer-back.jpg": {
+          "path": "output/warpcoven/cards/datacards/tzaangor-icon-bearer-back.jpg",
+          "hash": "03a7902acd3c54c22a4d7323eceb8b870e00e2db9fd586e86402da72f1b46376",
+          "modified": "2026-07-12T19:23:36.050606+00:00"
+        },
+        "cards/datacards/tzaangor-icon-bearer-front.jpg": {
+          "path": "output/warpcoven/cards/datacards/tzaangor-icon-bearer-front.jpg",
+          "hash": "659cc395ffe2539e55ae33398478f1ae9e400af94aa04f087fe82e0bf649b253",
+          "modified": "2026-07-12T19:23:36.805127+00:00"
+        },
+        "cards/datacards/tzaangor-warrior-back.jpg": {
+          "path": "output/warpcoven/cards/datacards/tzaangor-warrior-back.jpg",
+          "hash": "03a7902acd3c54c22a4d7323eceb8b870e00e2db9fd586e86402da72f1b46376",
+          "modified": "2026-07-12T19:23:38.065671+00:00"
+        },
+        "cards/datacards/tzaangor-warrior-front.jpg": {
+          "path": "output/warpcoven/cards/datacards/tzaangor-warrior-front.jpg",
+          "hash": "54c5ae0094f10e922c9fe7a466aeb7261b83cc116e6efe8ed702cf8586664750",
+          "modified": "2026-07-12T19:23:38.067057+00:00"
+        },
+        "cards/equipment/warpcoven-arcane-robes-back.jpg": {
+          "path": "output/warpcoven/cards/equipment/warpcoven-arcane-robes-back.jpg",
+          "hash": "62e4d493ab6537df495a317bf4e91be4cf05d2240abecf6adf547632eca0b1ff",
+          "modified": "2026-07-12T19:23:39.243125+00:00"
+        },
+        "cards/equipment/warpcoven-arcane-robes-front.jpg": {
+          "path": "output/warpcoven/cards/equipment/warpcoven-arcane-robes-front.jpg",
+          "hash": "239673a3be27c1ee9ee9d6f5bf5b2a5bfd5e6307a9a2a06e23e642500dfbb6aa",
+          "modified": "2026-07-12T19:23:39.907540+00:00"
+        },
+        "cards/equipment/warpcoven-daemonmaw-weapons-back.jpg": {
+          "path": "output/warpcoven/cards/equipment/warpcoven-daemonmaw-weapons-back.jpg",
+          "hash": "62e4d493ab6537df495a317bf4e91be4cf05d2240abecf6adf547632eca0b1ff",
+          "modified": "2026-07-12T19:23:39.972187+00:00"
+        },
+        "cards/equipment/warpcoven-daemonmaw-weapons-front.jpg": {
+          "path": "output/warpcoven/cards/equipment/warpcoven-daemonmaw-weapons-front.jpg",
+          "hash": "544656da5ce150ebac402bc2714ba9962f0e1ed6fdf531d013db0e17d4bf5de4",
+          "modified": "2026-07-12T19:23:41.249109+00:00"
+        },
+        "cards/equipment/warpcoven-ensorcelled-rounds-back.jpg": {
+          "path": "output/warpcoven/cards/equipment/warpcoven-ensorcelled-rounds-back.jpg",
+          "hash": "62e4d493ab6537df495a317bf4e91be4cf05d2240abecf6adf547632eca0b1ff",
+          "modified": "2026-07-12T19:23:42.552466+00:00"
+        },
+        "cards/equipment/warpcoven-ensorcelled-rounds-front.jpg": {
+          "path": "output/warpcoven/cards/equipment/warpcoven-ensorcelled-rounds-front.jpg",
+          "hash": "b66030ed1ca002a1d0c9afffbdc5b42f1d2b8edaa9bf0b0ead5ff48247b3e30b",
+          "modified": "2026-07-12T19:23:43.211844+00:00"
+        },
+        "cards/equipment/warpcoven-sorcerous-scrolls-back.jpg": {
+          "path": "output/warpcoven/cards/equipment/warpcoven-sorcerous-scrolls-back.jpg",
+          "hash": "62e4d493ab6537df495a317bf4e91be4cf05d2240abecf6adf547632eca0b1ff",
+          "modified": "2026-07-12T19:23:43.898763+00:00"
+        },
+        "cards/equipment/warpcoven-sorcerous-scrolls-front.jpg": {
+          "path": "output/warpcoven/cards/equipment/warpcoven-sorcerous-scrolls-front.jpg",
+          "hash": "e8e913422572439b8170b2a42e389d6a2008eef5ca3bb9a6b411798a6a933ad4",
+          "modified": "2026-07-12T19:23:44.537821+00:00"
+        },
+        "cards/faction_rules/warpcoven-astartes-back.jpg": {
+          "path": "output/warpcoven/cards/faction_rules/warpcoven-astartes-back.jpg",
+          "hash": "62e4d493ab6537df495a317bf4e91be4cf05d2240abecf6adf547632eca0b1ff",
+          "modified": "2026-07-12T19:23:45.154263+00:00"
+        },
+        "cards/faction_rules/warpcoven-astartes-front.jpg": {
+          "path": "output/warpcoven/cards/faction_rules/warpcoven-astartes-front.jpg",
+          "hash": "9a8fd98e7c29e9310a4fa13144f3c405a2031f203a9980926840dd520e0f70a9",
+          "modified": "2026-07-12T19:23:45.213121+00:00"
+        },
+        "cards/faction_rules/warpcoven-boons-of-tzeentch-card1-back.jpg": {
+          "path": "output/warpcoven/cards/faction_rules/warpcoven-boons-of-tzeentch-card1-back.jpg",
+          "hash": "55fdee8011c023b866d1b5e13041aab1688018839cd33a0d175581a260b0164a",
+          "modified": "2026-07-12T19:23:45.218542+00:00"
+        },
+        "cards/faction_rules/warpcoven-boons-of-tzeentch-card1-front.jpg": {
+          "path": "output/warpcoven/cards/faction_rules/warpcoven-boons-of-tzeentch-card1-front.jpg",
+          "hash": "36be2e27bb545a602164c643bdb40cc2b0a2bb672668f0fe466aca72c5e5c62b",
+          "modified": "2026-07-12T19:23:46.359882+00:00"
+        },
+        "cards/faction_rules/warpcoven-boons-of-tzeentch-card2-back.jpg": {
+          "path": "output/warpcoven/cards/faction_rules/warpcoven-boons-of-tzeentch-card2-back.jpg",
+          "hash": "fbaee03b45eeb56d57a709506641dcc1d98a4c5a8ae02c5473217ae9f9b9de4c",
+          "modified": "2026-07-12T19:23:48.079545+00:00"
+        },
+        "cards/faction_rules/warpcoven-boons-of-tzeentch-card2-front.jpg": {
+          "path": "output/warpcoven/cards/faction_rules/warpcoven-boons-of-tzeentch-card2-front.jpg",
+          "hash": "786df55a64b20911fc5bce4ced42efa4e8072cd93823116b8dfd1731c9f6eb7f",
+          "modified": "2026-07-12T19:23:51.448221+00:00"
+        },
+        "cards/firefight_ploys/warpcoven-all-is-dust-back.jpg": {
+          "path": "output/warpcoven/cards/firefight_ploys/warpcoven-all-is-dust-back.jpg",
+          "hash": "62e4d493ab6537df495a317bf4e91be4cf05d2240abecf6adf547632eca0b1ff",
+          "modified": "2026-07-12T19:23:52.680655+00:00"
+        },
+        "cards/firefight_ploys/warpcoven-all-is-dust-front.jpg": {
+          "path": "output/warpcoven/cards/firefight_ploys/warpcoven-all-is-dust-front.jpg",
+          "hash": "572668a5b86ff32179dd6f1926b6df2faafa0d6f8eb2aa9c4a2ef3045bd96ba6",
+          "modified": "2026-07-12T19:23:54.388929+00:00"
+        },
+        "cards/firefight_ploys/warpcoven-capricious-plan-back.jpg": {
+          "path": "output/warpcoven/cards/firefight_ploys/warpcoven-capricious-plan-back.jpg",
+          "hash": "62e4d493ab6537df495a317bf4e91be4cf05d2240abecf6adf547632eca0b1ff",
+          "modified": "2026-07-12T19:23:56.065808+00:00"
+        },
+        "cards/firefight_ploys/warpcoven-capricious-plan-front.jpg": {
+          "path": "output/warpcoven/cards/firefight_ploys/warpcoven-capricious-plan-front.jpg",
+          "hash": "92366bc646d5212c3d7f22e364711af6032465a94c65bd587408065e0c3d009f",
+          "modified": "2026-07-12T19:23:57.153565+00:00"
+        },
+        "cards/firefight_ploys/warpcoven-mutant-herd-back.jpg": {
+          "path": "output/warpcoven/cards/firefight_ploys/warpcoven-mutant-herd-back.jpg",
+          "hash": "62e4d493ab6537df495a317bf4e91be4cf05d2240abecf6adf547632eca0b1ff",
+          "modified": "2026-07-12T19:23:58.848669+00:00"
+        },
+        "cards/firefight_ploys/warpcoven-mutant-herd-front.jpg": {
+          "path": "output/warpcoven/cards/firefight_ploys/warpcoven-mutant-herd-front.jpg",
+          "hash": "c30098f57ac142a44d2470db6cf9dacfd16924ae02750ea855a900bab0a30869",
+          "modified": "2026-07-12T19:24:00.460180+00:00"
+        },
+        "cards/firefight_ploys/warpcoven-psychic-cabal-back.jpg": {
+          "path": "output/warpcoven/cards/firefight_ploys/warpcoven-psychic-cabal-back.jpg",
+          "hash": "62e4d493ab6537df495a317bf4e91be4cf05d2240abecf6adf547632eca0b1ff",
+          "modified": "2026-07-12T19:24:01.688701+00:00"
+        },
+        "cards/firefight_ploys/warpcoven-psychic-cabal-front.jpg": {
+          "path": "output/warpcoven/cards/firefight_ploys/warpcoven-psychic-cabal-front.jpg",
+          "hash": "04af005f7207966c53e1907e60453af0a630726c8f960a25df8d2899ab95c05a",
+          "modified": "2026-07-12T19:24:04.482468+00:00"
+        },
+        "cards/operatives_selection/warpcoven-operative-selection-back.jpg": {
+          "path": "output/warpcoven/cards/operatives_selection/warpcoven-operative-selection-back.jpg",
+          "hash": "7f398117e994bb576eb41f83d2d607e9994ae7efe550a018c115fbf62b41dd84",
+          "modified": "2026-07-12T19:24:06.175166+00:00"
+        },
+        "cards/operatives_selection/warpcoven-operative-selection-front.jpg": {
+          "path": "output/warpcoven/cards/operatives_selection/warpcoven-operative-selection-front.jpg",
+          "hash": "93c86641a3e8bca0499a17d7403b5d9afd1a732ff0e356a5b77b0cab7ee6e337",
+          "modified": "2026-07-12T19:24:07.677793+00:00"
+        },
+        "cards/strategy_ploys/warpcoven-aetherial-warding-back.jpg": {
+          "path": "output/warpcoven/cards/strategy_ploys/warpcoven-aetherial-warding-back.jpg",
+          "hash": "62e4d493ab6537df495a317bf4e91be4cf05d2240abecf6adf547632eca0b1ff",
+          "modified": "2026-07-12T19:24:08.882561+00:00"
+        },
+        "cards/strategy_ploys/warpcoven-aetherial-warding-front.jpg": {
+          "path": "output/warpcoven/cards/strategy_ploys/warpcoven-aetherial-warding-front.jpg",
+          "hash": "f0027bc0a584d41be0ca2f274e2a2ca635dc194f1c8f54c5095c836cfe9d1406",
+          "modified": "2026-07-12T19:24:09.924083+00:00"
+        },
+        "cards/strategy_ploys/warpcoven-brotherhood-of-sorcerers-back.jpg": {
+          "path": "output/warpcoven/cards/strategy_ploys/warpcoven-brotherhood-of-sorcerers-back.jpg",
+          "hash": "62e4d493ab6537df495a317bf4e91be4cf05d2240abecf6adf547632eca0b1ff",
+          "modified": "2026-07-12T19:24:10.937524+00:00"
+        },
+        "cards/strategy_ploys/warpcoven-brotherhood-of-sorcerers-front.jpg": {
+          "path": "output/warpcoven/cards/strategy_ploys/warpcoven-brotherhood-of-sorcerers-front.jpg",
+          "hash": "6a331e81634384dafa0846926f29c116b6bacc89cd521d9a77a9b346889aa541",
+          "modified": "2026-07-12T19:24:12.624565+00:00"
+        },
+        "cards/strategy_ploys/warpcoven-fate-itself-is-my-weapon-back.jpg": {
+          "path": "output/warpcoven/cards/strategy_ploys/warpcoven-fate-itself-is-my-weapon-back.jpg",
+          "hash": "62e4d493ab6537df495a317bf4e91be4cf05d2240abecf6adf547632eca0b1ff",
+          "modified": "2026-07-12T19:24:13.274394+00:00"
+        },
+        "cards/strategy_ploys/warpcoven-fate-itself-is-my-weapon-front.jpg": {
+          "path": "output/warpcoven/cards/strategy_ploys/warpcoven-fate-itself-is-my-weapon-front.jpg",
+          "hash": "6f63482ac70fa6feabb0491b37adaf7b7f6bb845b58bd9854e53199fd92ee014",
+          "modified": "2026-07-12T19:24:13.743017+00:00"
+        },
+        "cards/strategy_ploys/warpcoven-savage-herd-back.jpg": {
+          "path": "output/warpcoven/cards/strategy_ploys/warpcoven-savage-herd-back.jpg",
+          "hash": "62e4d493ab6537df495a317bf4e91be4cf05d2240abecf6adf547632eca0b1ff",
+          "modified": "2026-07-12T19:24:14.772234+00:00"
+        },
+        "cards/strategy_ploys/warpcoven-savage-herd-front.jpg": {
+          "path": "output/warpcoven/cards/strategy_ploys/warpcoven-savage-herd-front.jpg",
+          "hash": "50d4f14927bab33e5b1a66c1b5979380c9c259d380d0ea94bebd4aa7a3210d1e",
+          "modified": "2026-07-12T19:24:14.775209+00:00"
+        }
+      },
+      "completed": "2026-07-12T19:24:23.597116+00:00",
+      "inputs": {
+        "layers/integration/warpcoven/manifest.json": "950d2b7fbd918ad7373a59bafd530bfa2e2defcce11e5f2cd0eea9eef1b4fa19",
+        "layers/integration/warpcoven/warpcoven-datacard-rubric-marine-gunner.pdf": "e7408dc6282120623f9a27270782dca394cc1ad9081957ebce04fcf5b19dd73d",
+        "layers/integration/warpcoven/warpcoven-datacard-rubric-marine-icon-bearer.pdf": "1084a86689851c4dabdec735f43677019caa3945d9f8d8b5052f82dd7c95f5c9",
+        "layers/integration/warpcoven/warpcoven-datacard-rubric-marine-warrior.pdf": "b541efc62d1e7512f2524ed6b6c608572daad2b1a62ae5e6abfb15b7c21dae8d",
+        "layers/integration/warpcoven/warpcoven-datacard-sorcerer-of-destiny.pdf": "44b2b89d54a3d4da34ac90803463a35399a153be83b4a7e876e2f9ea7c03c347",
+        "layers/integration/warpcoven/warpcoven-datacard-sorcerer-of-tempyrion.pdf": "ef75ffc52a2dffe444beaa941f6779f8da31359cea8af73ea44a97a46166a15a",
+        "layers/integration/warpcoven/warpcoven-datacard-sorcerer-of-warpfire.pdf": "d4429ddcd29325632a8f2b6c1fe5f2df3cd0180d7092a3d14682c3b90a9b4cea",
+        "layers/integration/warpcoven/warpcoven-datacard-tzaangor-champion.pdf": "906f36afd4b3177ca6ca10835568c4c39dcea51df2952dc65dea5e6875f39a18",
+        "layers/integration/warpcoven/warpcoven-datacard-tzaangor-horn-bearer.pdf": "3d8234b8e735d6081f83e207a6f4811aa2e9d02c45397c229abd364d733fe2c5",
+        "layers/integration/warpcoven/warpcoven-datacard-tzaangor-icon-bearer.pdf": "59d0c91edc5cf538b85b6c8e5b2fa93b9c922f064c30cdd3994d8b79a46c52f0",
+        "layers/integration/warpcoven/warpcoven-datacard-tzaangor-warrior.pdf": "fde48c002c8c2f35d67388791cf2234b1e29a7d7c89df3dc7541b220ee082105",
+        "layers/integration/warpcoven/warpcoven-equipment-arcane-robes.pdf": "0da3b7d36fcc2da3dbd29deffddd4f51d537d528850ae0403ef590cde9808dc6",
+        "layers/integration/warpcoven/warpcoven-equipment-daemonmaw-weapons.pdf": "a901b311bb8d4ac6eb067f07c508636729b4752bfe48cf8ac48a7b93b59d1e43",
+        "layers/integration/warpcoven/warpcoven-equipment-ensorcelled-rounds.pdf": "54c4eaef464bc4ee21f10b9e3ba412453e7def59265ba1ccaab1623083b974f3",
+        "layers/integration/warpcoven/warpcoven-equipment-sorcerous-scrolls.pdf": "be26608a41486a916de82aaf5ee2db40be86ffef3c513efc9a79739a8d0337df",
+        "layers/integration/warpcoven/warpcoven-faction-rule-astartes.pdf": "777a5c4ed8b409ca437f0e868317c4d6568af89206a5d280aff3da3096d7b783",
+        "layers/integration/warpcoven/warpcoven-faction-rule-boons-of-tzeentch-1.pdf": "4f790e5bce5df7607585bf6d9ac02539eadd9a8d6395cd8a6e800c9709478d75",
+        "layers/integration/warpcoven/warpcoven-faction-rule-boons-of-tzeentch-2.pdf": "d1d657036428570008e57526f181f63bf9ef739a7cdea9888cd31b68059d593f",
+        "layers/integration/warpcoven/warpcoven-firefight-ploy-all-is-dust.pdf": "f30b123b4ed5ead1c8fc3141cb66dc10396240f622b89d645fcb0f6006b9e4b0",
+        "layers/integration/warpcoven/warpcoven-firefight-ploy-capricious-plan.pdf": "46b7845a56285d6f25b3c5d87c40a74cc0d426c44cba7f495950e12837c0914d",
+        "layers/integration/warpcoven/warpcoven-firefight-ploy-mutant-herd.pdf": "ed8fe57e72c6dce8d395b59436724ece0c357445dd817088b32c545a99a59f95",
+        "layers/integration/warpcoven/warpcoven-firefight-ploy-psychic-cabal.pdf": "ffa1d7f038518653d9c0dd588851e3cb13f69976ba5c13d4b03eff71ecbd2005",
+        "layers/integration/warpcoven/warpcoven-operatives-selection-operative-selection.pdf": "1082d895b225ea94411333366d5a8b563d0a7186517da865d2da8e0e8209338f",
+        "layers/integration/warpcoven/warpcoven-strategy-ploy-aetherial-warding.pdf": "0189aa8ebb775de83d9fd9092075bf3be904da12dedeb823dad290ffeaf0cf07",
+        "layers/integration/warpcoven/warpcoven-strategy-ploy-brotherhood-of-sorcerers.pdf": "a93edb3bec0eb916a446df3622cd3b182b1ab8b408a55c9ab49983bfc35057a0",
+        "layers/integration/warpcoven/warpcoven-strategy-ploy-fate-itself-is-my-weapon.pdf": "d171dc71157b01be253234276e7f79c269496809e368c5242f4a109a2420b1d3",
+        "layers/integration/warpcoven/warpcoven-strategy-ploy-savage-herd.pdf": "4ca481a68ca0bcdf390b277ad4c260aa050f5eaa2e583f34a6c1ff833779f7c1",
+        "layers/integration/warpcoven/card-backside/warpcoven-backside-portrait.jpg": "62e4d493ab6537df495a317bf4e91be4cf05d2240abecf6adf547632eca0b1ff",
+        "config/defaults/card-backside/default-backside-portrait.jpg": "f00ff15fa70005b9f804de08519e2e83485d7eaf78dfacea65dcef0eb1a29c22",
+        "layers/integration/warpcoven/card-backside/warpcoven-backside-landscape.jpg": "03a7902acd3c54c22a4d7323eceb8b870e00e2db9fd586e86402da72f1b46376",
+        "config/defaults/card-backside/default-backside-landscape.jpg": "1cf5580a1dff0c10adb1a286edad4479c487f3d2d698b0b8be84fe653039fd7e"
+      }
+    },
+    "extract_stats": {
+      "outputs": {
+        "team-data.json": {
+          "path": "output/warpcoven/data/warpcoven-team-data.json",
+          "hash": "14e73a07479f17afd1b6b46148bee8cbd150337b0e20dde15715bcaf0c820acb",
+          "modified": "2026-07-12T19:00:26.216763+00:00"
+        }
+      },
+      "completed": "2026-07-12T19:00:26.217887+00:00",
+      "inputs": {
+        "layers/integration/warpcoven/content/warpcoven-content.json": "14e73a07479f17afd1b6b46148bee8cbd150337b0e20dde15715bcaf0c820acb"
+      }
+    },
+    "generate_tts": {
+      "outputs": {
+        "tts_objects/Warpcoven Box.json": {
+          "path": "output/warpcoven/tts_objects/Warpcoven Box.json",
+          "hash": "3c5adc4694e77e0fc414c3b518ac54ea6369397ade49839c1ee3ace81da0bb4b",
+          "modified": "2026-07-12T20:56:44.708002+00:00"
+        },
+        "tts_objects/Warpcoven.json": {
+          "path": "output/warpcoven/tts_objects/Warpcoven.json",
+          "hash": "96e5199c492814ca7240cfdedf9b8487e105c45e82203b9407298a4c0a45f3ea",
+          "modified": "2026-07-12T20:56:44.717025+00:00"
+        }
+      },
+      "completed": "2026-07-12T20:56:44.952123+00:00",
+      "inputs": {
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "config/team-guids.json": "1dea0eaf2c7d1c37c86aba088cdf876f0638d2dcaca162888fea8422c2d5c9db",
+        "output/warpcoven/cards/datacards/rubric-marine-gunner-back.jpg": "03a7902acd3c54c22a4d7323eceb8b870e00e2db9fd586e86402da72f1b46376",
+        "output/warpcoven/cards/datacards/rubric-marine-gunner-front.jpg": "667bfc7a3f217a79d51982d84268c8f352a684142eddd6a103d8a075b9cc7ffe",
+        "output/warpcoven/cards/datacards/rubric-marine-icon-bearer-back.jpg": "03a7902acd3c54c22a4d7323eceb8b870e00e2db9fd586e86402da72f1b46376",
+        "output/warpcoven/cards/datacards/rubric-marine-icon-bearer-front.jpg": "b36e4009bc6487455514e839019ad046dc7a03673b51023cc07285119c733585",
+        "output/warpcoven/cards/datacards/rubric-marine-warrior-back.jpg": "03a7902acd3c54c22a4d7323eceb8b870e00e2db9fd586e86402da72f1b46376",
+        "output/warpcoven/cards/datacards/rubric-marine-warrior-front.jpg": "0f5f28e83d06f3f1d0f194581536b449f6fcfc8569873408e20202b70e35f0bd",
+        "output/warpcoven/cards/datacards/sorcerer-of-destiny-back.jpg": "f0f247acffc18cadbe1bffb5857240702b6b9af6539b1245f7a5407a0bc8c87b",
+        "output/warpcoven/cards/datacards/sorcerer-of-destiny-front.jpg": "675d23527e2ef98aa01c5e13b20aaffb010c8ee20e7f6b72b7477ce7b8425554",
+        "output/warpcoven/cards/datacards/sorcerer-of-tempyrion-back.jpg": "1c5434e2b53af9d16a88b1ff0dfe9d08b30ce13f691cd55a9d8afdefd21adba9",
+        "output/warpcoven/cards/datacards/sorcerer-of-tempyrion-front.jpg": "013fa5a8dac1d69151530a024134b55575e7728b85d50079dd300395b1f8e0c0",
+        "output/warpcoven/cards/datacards/sorcerer-of-warpfire-back.jpg": "9e1f4436000f3aed76d077c99c3c75bcdd55feb51b1eab24a1a9084cac887d5f",
+        "output/warpcoven/cards/datacards/sorcerer-of-warpfire-front.jpg": "fd2695799589cb131771cca6362bad09af93e8338466efcd732ca188d6f4c14e",
+        "output/warpcoven/cards/datacards/tzaangor-champion-back.jpg": "03a7902acd3c54c22a4d7323eceb8b870e00e2db9fd586e86402da72f1b46376",
+        "output/warpcoven/cards/datacards/tzaangor-champion-front.jpg": "b4511d87510efd123a5b14e47d006a3749949e626f9535d2b96628fecc9f7ec2",
+        "output/warpcoven/cards/datacards/tzaangor-horn-bearer-back.jpg": "03a7902acd3c54c22a4d7323eceb8b870e00e2db9fd586e86402da72f1b46376",
+        "output/warpcoven/cards/datacards/tzaangor-horn-bearer-front.jpg": "687adc0a6dd13c436475cbb631d627a6013600ca53e3b29ecbc63906d12018aa",
+        "output/warpcoven/cards/datacards/tzaangor-icon-bearer-back.jpg": "03a7902acd3c54c22a4d7323eceb8b870e00e2db9fd586e86402da72f1b46376",
+        "output/warpcoven/cards/datacards/tzaangor-icon-bearer-front.jpg": "659cc395ffe2539e55ae33398478f1ae9e400af94aa04f087fe82e0bf649b253",
+        "output/warpcoven/cards/datacards/tzaangor-warrior-back.jpg": "03a7902acd3c54c22a4d7323eceb8b870e00e2db9fd586e86402da72f1b46376",
+        "output/warpcoven/cards/datacards/tzaangor-warrior-front.jpg": "54c5ae0094f10e922c9fe7a466aeb7261b83cc116e6efe8ed702cf8586664750",
+        "output/warpcoven/cards/equipment/warpcoven-arcane-robes-back.jpg": "62e4d493ab6537df495a317bf4e91be4cf05d2240abecf6adf547632eca0b1ff",
+        "output/warpcoven/cards/equipment/warpcoven-arcane-robes-front.jpg": "239673a3be27c1ee9ee9d6f5bf5b2a5bfd5e6307a9a2a06e23e642500dfbb6aa",
+        "output/warpcoven/cards/equipment/warpcoven-daemonmaw-weapons-back.jpg": "62e4d493ab6537df495a317bf4e91be4cf05d2240abecf6adf547632eca0b1ff",
+        "output/warpcoven/cards/equipment/warpcoven-daemonmaw-weapons-front.jpg": "544656da5ce150ebac402bc2714ba9962f0e1ed6fdf531d013db0e17d4bf5de4",
+        "output/warpcoven/cards/equipment/warpcoven-ensorcelled-rounds-back.jpg": "62e4d493ab6537df495a317bf4e91be4cf05d2240abecf6adf547632eca0b1ff",
+        "output/warpcoven/cards/equipment/warpcoven-ensorcelled-rounds-front.jpg": "b66030ed1ca002a1d0c9afffbdc5b42f1d2b8edaa9bf0b0ead5ff48247b3e30b",
+        "output/warpcoven/cards/equipment/warpcoven-sorcerous-scrolls-back.jpg": "62e4d493ab6537df495a317bf4e91be4cf05d2240abecf6adf547632eca0b1ff",
+        "output/warpcoven/cards/equipment/warpcoven-sorcerous-scrolls-front.jpg": "e8e913422572439b8170b2a42e389d6a2008eef5ca3bb9a6b411798a6a933ad4",
+        "output/warpcoven/cards/faction_rules/warpcoven-astartes-back.jpg": "62e4d493ab6537df495a317bf4e91be4cf05d2240abecf6adf547632eca0b1ff",
+        "output/warpcoven/cards/faction_rules/warpcoven-astartes-front.jpg": "9a8fd98e7c29e9310a4fa13144f3c405a2031f203a9980926840dd520e0f70a9",
+        "output/warpcoven/cards/faction_rules/warpcoven-boons-of-tzeentch-card1-back.jpg": "55fdee8011c023b866d1b5e13041aab1688018839cd33a0d175581a260b0164a",
+        "output/warpcoven/cards/faction_rules/warpcoven-boons-of-tzeentch-card1-front.jpg": "36be2e27bb545a602164c643bdb40cc2b0a2bb672668f0fe466aca72c5e5c62b",
+        "output/warpcoven/cards/faction_rules/warpcoven-boons-of-tzeentch-card2-back.jpg": "fbaee03b45eeb56d57a709506641dcc1d98a4c5a8ae02c5473217ae9f9b9de4c",
+        "output/warpcoven/cards/faction_rules/warpcoven-boons-of-tzeentch-card2-front.jpg": "786df55a64b20911fc5bce4ced42efa4e8072cd93823116b8dfd1731c9f6eb7f",
+        "output/warpcoven/cards/firefight_ploys/warpcoven-all-is-dust-back.jpg": "62e4d493ab6537df495a317bf4e91be4cf05d2240abecf6adf547632eca0b1ff",
+        "output/warpcoven/cards/firefight_ploys/warpcoven-all-is-dust-front.jpg": "572668a5b86ff32179dd6f1926b6df2faafa0d6f8eb2aa9c4a2ef3045bd96ba6",
+        "output/warpcoven/cards/firefight_ploys/warpcoven-capricious-plan-back.jpg": "62e4d493ab6537df495a317bf4e91be4cf05d2240abecf6adf547632eca0b1ff",
+        "output/warpcoven/cards/firefight_ploys/warpcoven-capricious-plan-front.jpg": "92366bc646d5212c3d7f22e364711af6032465a94c65bd587408065e0c3d009f",
+        "output/warpcoven/cards/firefight_ploys/warpcoven-mutant-herd-back.jpg": "62e4d493ab6537df495a317bf4e91be4cf05d2240abecf6adf547632eca0b1ff",
+        "output/warpcoven/cards/firefight_ploys/warpcoven-mutant-herd-front.jpg": "c30098f57ac142a44d2470db6cf9dacfd16924ae02750ea855a900bab0a30869",
+        "output/warpcoven/cards/firefight_ploys/warpcoven-psychic-cabal-back.jpg": "62e4d493ab6537df495a317bf4e91be4cf05d2240abecf6adf547632eca0b1ff",
+        "output/warpcoven/cards/firefight_ploys/warpcoven-psychic-cabal-front.jpg": "04af005f7207966c53e1907e60453af0a630726c8f960a25df8d2899ab95c05a",
+        "output/warpcoven/cards/operatives_selection/warpcoven-operative-selection-back.jpg": "7f398117e994bb576eb41f83d2d607e9994ae7efe550a018c115fbf62b41dd84",
+        "output/warpcoven/cards/operatives_selection/warpcoven-operative-selection-front.jpg": "93c86641a3e8bca0499a17d7403b5d9afd1a732ff0e356a5b77b0cab7ee6e337",
+        "output/warpcoven/cards/strategy_ploys/warpcoven-aetherial-warding-back.jpg": "62e4d493ab6537df495a317bf4e91be4cf05d2240abecf6adf547632eca0b1ff",
+        "output/warpcoven/cards/strategy_ploys/warpcoven-aetherial-warding-front.jpg": "f0027bc0a584d41be0ca2f274e2a2ca635dc194f1c8f54c5095c836cfe9d1406",
+        "output/warpcoven/cards/strategy_ploys/warpcoven-brotherhood-of-sorcerers-back.jpg": "62e4d493ab6537df495a317bf4e91be4cf05d2240abecf6adf547632eca0b1ff",
+        "output/warpcoven/cards/strategy_ploys/warpcoven-brotherhood-of-sorcerers-front.jpg": "6a331e81634384dafa0846926f29c116b6bacc89cd521d9a77a9b346889aa541",
+        "output/warpcoven/cards/strategy_ploys/warpcoven-fate-itself-is-my-weapon-back.jpg": "62e4d493ab6537df495a317bf4e91be4cf05d2240abecf6adf547632eca0b1ff",
+        "output/warpcoven/cards/strategy_ploys/warpcoven-fate-itself-is-my-weapon-front.jpg": "6f63482ac70fa6feabb0491b37adaf7b7f6bb845b58bd9854e53199fd92ee014",
+        "output/warpcoven/cards/strategy_ploys/warpcoven-savage-herd-back.jpg": "62e4d493ab6537df495a317bf4e91be4cf05d2240abecf6adf547632eca0b1ff",
+        "output/warpcoven/cards/strategy_ploys/warpcoven-savage-herd-front.jpg": "50d4f14927bab33e5b1a66c1b5979380c9c259d380d0ea94bebd4aa7a3210d1e",
+        "output/warpcoven/cardbox/warpcoven-card-box-texture.jpg": "b8e3890bd55f59a5a7a32e3121431e66796bf6ce8f350ee475047bf966928360",
+        "output/warpcoven/cardbox/warpcoven-card-box.obj": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+        "output/warpcoven/dice/warpcoven-dice-dark.jpg": "453f59b2b7c306808dd37329ddae09bd662dea96e637ac9421520850f42f664a",
+        "output/warpcoven/dice/warpcoven-dice-light.jpg": "04e973cdfb7df15230f53a4ba85293a186d4cbdbaf8e1abbac40d67c21958032",
+        "output/warpcoven/data/warpcoven-team-data.json": "14e73a07479f17afd1b6b46148bee8cbd150337b0e20dde15715bcaf0c820acb",
+        "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
+        "config/defaults/tts-script/datacard-load-stats.lua": "2d5f4088c2ff09f54988cf8722080f536b4e1b998cc2b4c1f1ea94e6b18eb92e",
+        "config/defaults/tts-script/display-table-manager-script.lua": "0dab4381078d90802f25e2cc825bc3658be35ee13ab3e98831c9d248c2526689",
+        "config/defaults/tts-script/faction-rule-chapter-tactics.lua": "c906742268076fb91f7cb4a92c6b588e1122ccddb692688f635c8dd4f7110ad0",
+        "config/defaults/tts-script/intermediate-updater.lua": "1a2d6dbc1a8c9c57ba6a3e7a3d4bc4b7a38a6c242a93f6ef3dae698123384d35",
+        "config/defaults/tts-script/single-object-updater.lua": "3613b85169e986a8e50ebe221482079e27c18037e3f48920aa0f7e138c0ccacc",
+        "config/defaults/tts-script/team-spawner-clean-script.lua": "12457bff3961eee2293c42d81cf4f4eb8b103177245a1ab8b46fd65da40672a2",
+        "config/defaults/tts-script/team-spawner-script.lua": "a51ff45c8622923db909fb465781801511f235412f099f83dff728d4027650db",
+        "config/defaults/tts-script/tts-update-rules-in-box-script.lua": "84f7f9b260f4e4968d208953b534bdbb7ab0b2f475e13264a2407f6c4d4d2b03",
+        "config/defaults/tts-image/default-icon.png": "892aff2628b9685c813e77be05c66afc1dc4247bc1dc9ce6fe54f006c2608271",
+        "config/defaults/tts-image/spawner-token.png": "61903b093f01d834f5e4c4c069b1353ecf7d29f012fef914b3027266816d8a6b",
+        "config/defaults/tts-token/square-bag-mesh.obj": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+        "config/defaults/tts-token/template-diamond-cutter.png": "719f57ba2b86494be454a6d3d25d8567dde974a915f3dde5ddc0e2d8dafaa1a5",
+        "config/defaults/tts-token/template-octagon-cutter.png": "944632aeacab978293ae57758b63086166c5fbaf3b845f48b3dd61db67d5c076",
+        "config/defaults/tts-token/template-operative-cutter.png": "0e698ddd403d7f0e84f200eb42af73f5249a9c5539d773298ff4c700ac9fe153",
+        "config/defaults/tts-token/template-round-cutter.png": "6564e1451c9a135a1c756fd94cde1c71e373e3fa677b51bba9d4bbe9e795d544",
+        "config/defaults/tts-token/token-bag-script.lua": "1659887e0fbfb9e3ebbc1aa5f3df8e1ffd89ee192be24d2dd1f02fcb0407e486",
+        "config/defaults/tts-token/token-bg-sample.png": "f9f90664c7f1c877c6f050f6e85babde6523cdc0aed9c77de8c09214f44ee109",
+        "config/defaults/tts-token/token-mesh.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc"
+      }
+    },
+    "front_end": {
+      "outputs": {},
+      "sources": {
+        "firefight-ploys": {
+          "hash": "a111e38200697b1e6e9acd8201e1a7026b6cfe0118b2b45207a18153f324afa4",
+          "outputs": [
+            "layers/kt-app/extracted/warpcoven/cards/firefight-ploys/warpcoven-firefight-ploys-page_0.pdf",
+            "layers/kt-app/extracted/warpcoven/cards/firefight-ploys/warpcoven-firefight-ploys-page_1.pdf",
+            "layers/kt-app/extracted/warpcoven/cards/firefight-ploys/warpcoven-firefight-ploys-page_2.pdf",
+            "layers/kt-app/extracted/warpcoven/cards/firefight-ploys/warpcoven-firefight-ploys-page_3.pdf"
+          ],
+          "modified": "2026-07-06T15:59:40.889323+00:00"
+        },
+        "equipment": {
+          "hash": "de774156130b0b4129d563a75edf6a630806712348b956c732f5433f6daa1258",
+          "outputs": [
+            "layers/kt-app/extracted/warpcoven/cards/equipment/warpcoven-equipment-page_0.pdf",
+            "layers/kt-app/extracted/warpcoven/cards/equipment/warpcoven-equipment-page_1.pdf",
+            "layers/kt-app/extracted/warpcoven/cards/equipment/warpcoven-equipment-page_2.pdf",
+            "layers/kt-app/extracted/warpcoven/cards/equipment/warpcoven-equipment-page_3.pdf"
+          ],
+          "modified": "2026-07-06T15:59:49.078664+00:00"
+        },
+        "strategy-ploys": {
+          "hash": "1ef1da105d9f8f1ae012f04481747bcf8aad9f536256afeeba2cf47379896b87",
+          "outputs": [
+            "layers/kt-app/extracted/warpcoven/cards/strategy-ploys/warpcoven-strategy-ploys-page_0.pdf",
+            "layers/kt-app/extracted/warpcoven/cards/strategy-ploys/warpcoven-strategy-ploys-page_1.pdf",
+            "layers/kt-app/extracted/warpcoven/cards/strategy-ploys/warpcoven-strategy-ploys-page_2.pdf",
+            "layers/kt-app/extracted/warpcoven/cards/strategy-ploys/warpcoven-strategy-ploys-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:03:52.213108+00:00"
+        },
+        "faction-rules": {
+          "hash": "3d444a44e76ac493c1b1f2b302ee40ba8f358c2848c8ef35f7bcffac44d9f41a",
+          "outputs": [
+            "layers/kt-app/extracted/warpcoven/cards/faction-rules/warpcoven-faction-rules-page_0.pdf",
+            "layers/kt-app/extracted/warpcoven/cards/faction-rules/warpcoven-faction-rules-page_1.pdf",
+            "layers/kt-app/extracted/warpcoven/cards/faction-rules/warpcoven-faction-rules-page_2.pdf",
+            "layers/kt-app/extracted/warpcoven/cards/faction-rules/warpcoven-faction-rules-page_3.pdf",
+            "layers/kt-app/extracted/warpcoven/cards/faction-rules/warpcoven-faction-rules-page_4.pdf"
+          ],
+          "modified": "2026-07-06T16:08:05.977211+00:00"
+        },
+        "operatives-selection": {
+          "hash": "cbba3d41df9a53d04934b10fbc9a47699e55bea29df4adfaa58c17bbfee9ce73",
+          "outputs": [
+            "layers/kt-app/extracted/warpcoven/cards/operatives-selection/warpcoven-operatives-selection-page_0.pdf",
+            "layers/kt-app/extracted/warpcoven/cards/operatives-selection/warpcoven-operatives-selection-page_1.pdf"
+          ],
+          "modified": "2026-07-06T16:09:47.680977+00:00"
+        },
+        "datacards": {
+          "hash": "f33cb114188f6ce977789664c4a1931f7870a6994e979db688177318a1bf0262",
+          "outputs": [
+            "layers/kt-app/extracted/warpcoven/cards/datacards/warpcoven-datacards-page_0.pdf",
+            "layers/kt-app/extracted/warpcoven/cards/datacards/warpcoven-datacards-page_1.pdf",
+            "layers/kt-app/extracted/warpcoven/cards/datacards/warpcoven-datacards-page_2.pdf",
+            "layers/kt-app/extracted/warpcoven/cards/datacards/warpcoven-datacards-page_3.pdf",
+            "layers/kt-app/extracted/warpcoven/cards/datacards/warpcoven-datacards-page_4.pdf",
+            "layers/kt-app/extracted/warpcoven/cards/datacards/warpcoven-datacards-page_5.pdf",
+            "layers/kt-app/extracted/warpcoven/cards/datacards/warpcoven-datacards-page_6.pdf",
+            "layers/kt-app/extracted/warpcoven/cards/datacards/warpcoven-datacards-page_7.pdf",
+            "layers/kt-app/extracted/warpcoven/cards/datacards/warpcoven-datacards-page_8.pdf",
+            "layers/kt-app/extracted/warpcoven/cards/datacards/warpcoven-datacards-page_9.pdf",
+            "layers/kt-app/extracted/warpcoven/cards/datacards/warpcoven-datacards-page_10.pdf",
+            "layers/kt-app/extracted/warpcoven/cards/datacards/warpcoven-datacards-page_11.pdf",
+            "layers/kt-app/extracted/warpcoven/cards/datacards/warpcoven-datacards-page_12.pdf"
+          ],
+          "modified": "2026-07-06T16:13:00.722730+00:00"
+        },
+        "cards": {
+          "hash": "468140fce74077922df86f83f634f9ca247a26b7ff375236d4d5d7fe68098ef6",
+          "outputs": [
+            "layers/warcom/extracted/warpcoven/cards/warpcoven_page01_card1_landscape.pdf",
+            "layers/warcom/extracted/warpcoven/cards/warpcoven_page01_card2_landscape.pdf",
+            "layers/warcom/extracted/warpcoven/cards/warpcoven_page01_card3_landscape.pdf",
+            "layers/warcom/extracted/warpcoven/cards/warpcoven_page01_card4_landscape.pdf",
+            "layers/warcom/extracted/warpcoven/cards/warpcoven_page02_card1_landscape.pdf",
+            "layers/warcom/extracted/warpcoven/cards/warpcoven_page02_card2_landscape.pdf",
+            "layers/warcom/extracted/warpcoven/cards/warpcoven_page02_card3_landscape.pdf",
+            "layers/warcom/extracted/warpcoven/cards/warpcoven_page02_card4_landscape.pdf",
+            "layers/warcom/extracted/warpcoven/cards/warpcoven_page03_card1_landscape.pdf",
+            "layers/warcom/extracted/warpcoven/cards/warpcoven_page03_card2_landscape.pdf",
+            "layers/warcom/extracted/warpcoven/cards/warpcoven_page03_card3_landscape.pdf",
+            "layers/warcom/extracted/warpcoven/cards/warpcoven_page03_card4_landscape.pdf",
+            "layers/warcom/extracted/warpcoven/cards/warpcoven_page04_card1_landscape.pdf",
+            "layers/warcom/extracted/warpcoven/cards/warpcoven_page04_card2_landscape.pdf",
+            "layers/warcom/extracted/warpcoven/cards/warpcoven_page04_card3_landscape.pdf",
+            "layers/warcom/extracted/warpcoven/cards/warpcoven_page04_card4_landscape.pdf",
+            "layers/warcom/extracted/warpcoven/cards/warpcoven_page05_card1_portrait.pdf",
+            "layers/warcom/extracted/warpcoven/cards/warpcoven_page05_card2_portrait.pdf",
+            "layers/warcom/extracted/warpcoven/cards/warpcoven_page05_card3_portrait.pdf",
+            "layers/warcom/extracted/warpcoven/cards/warpcoven_page05_card4_portrait.pdf",
+            "layers/warcom/extracted/warpcoven/cards/warpcoven_page06_card1_portrait.pdf",
+            "layers/warcom/extracted/warpcoven/cards/warpcoven_page06_card2_portrait.pdf",
+            "layers/warcom/extracted/warpcoven/cards/warpcoven_page06_card3_portrait.pdf",
+            "layers/warcom/extracted/warpcoven/cards/warpcoven_page06_card4_portrait.pdf",
+            "layers/warcom/extracted/warpcoven/cards/warpcoven_page07_card1_portrait.pdf",
+            "layers/warcom/extracted/warpcoven/cards/warpcoven_page07_card2_portrait.pdf",
+            "layers/warcom/extracted/warpcoven/cards/warpcoven_page07_card3_portrait.pdf",
+            "layers/warcom/extracted/warpcoven/cards/warpcoven_page07_card4_portrait.pdf",
+            "layers/warcom/extracted/warpcoven/cards/warpcoven_page08_card1_portrait.pdf",
+            "layers/warcom/extracted/warpcoven/cards/warpcoven_page08_card2_portrait.pdf",
+            "layers/warcom/extracted/warpcoven/cards/warpcoven_page08_card3_portrait.pdf",
+            "layers/warcom/extracted/warpcoven/cards/warpcoven_page08_card4_portrait.pdf",
+            "layers/warcom/extracted/warpcoven/cards/warpcoven_page09_card1_portrait.pdf",
+            "layers/warcom/extracted/warpcoven/cards/warpcoven_page09_card2_portrait.pdf",
+            "layers/warcom/extracted/warpcoven/cards/warpcoven_page09_card3_portrait.pdf",
+            "layers/warcom/extracted/warpcoven/cards/warpcoven_page09_card4_portrait.pdf"
+          ],
+          "modified": "2026-07-08T19:06:23.472671+00:00"
+        }
+      },
+      "completed": "2026-07-08T19:06:23.472714+00:00"
+    },
+    "build_structure": {
+      "outputs": {
+        "structure": {
+          "path": "layers/warcom/structure/warpcoven-structure.json",
+          "hash": "950d2b7fbd918ad7373a59bafd530bfa2e2defcce11e5f2cd0eea9eef1b4fa19",
+          "modified": "2026-07-12T18:57:17.345742+00:00"
+        }
+      },
+      "inputs": {
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page01_card1_landscape.pdf": "3e784a032d12f6deff84d3f5d9c774cc6ffaafe052076aa186b81936f887957d",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page01_card2_landscape.pdf": "10ca27fecc2fb7935fbec58fe2d10b3f4a57c54d32f1a119c2ba22940bf6695a",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page01_card3_landscape.pdf": "3b0dd854a975f243261c94e1a04bfd56aa4ad7e7133ccccbdb9f62fb113c4b89",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page01_card4_landscape.pdf": "6e9c7c4037ff7be0ededef9c8bd9d029edfea190f68727204f7eb3d1bc05aeea",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page02_card1_landscape.pdf": "c1bc4eaa59964f6baf82ff85c8d52c32c9abdf177595fb64f865c97dddd4c705",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page02_card2_landscape.pdf": "6a329fb1c078b1bdb083988370d36514659921ee68cf7483fe25b46b36a3d25b",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page02_card3_landscape.pdf": "1eaa7556bb6bd2e9c93e6f63e8beff7fc4bace1a15d11279f07c9749f60c1050",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page02_card4_landscape.pdf": "23f169035dae6c84c6b90718dcd4736c9a2b91d5ea02fc9d4dd00eea99d9d63b",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page03_card1_landscape.pdf": "971db338b087521e2334826fea2cd8a58cc783bc12157a9037cb3c2968627fc0",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page03_card2_landscape.pdf": "8273379115589ad43b2e280edf26bdf83de9ba6f6ea16572522d5eb2918ee091",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page03_card3_landscape.pdf": "e194162c72ee613b7bac271404800e73e5c3c3d4f82e34cb8bbfbe77cd11e739",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page03_card4_landscape.pdf": "c3c6b7992b7d8bad6498395deace9f866b031d39ae352252489c068607784f6d",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page04_card1_landscape.pdf": "970bcd89d3cce57390b2f863790fe5eb8847f9ac48b7ec6253bf43ab70f0d956",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page04_card2_landscape.pdf": "e5cb0ee0d19051c33164ca51bf1ff10990e5c1ac2e48efc7e7a1dcd8d91a2f77",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page04_card3_landscape.pdf": "db520429ca007d5d9a331f6fba275d0588ff0cc27094bb11bb363b57e51d15f8",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page04_card4_landscape.pdf": "925887b3be48341678ca29cc6801fbd570d7fc639bc39b63de53424fb151f6cb",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page05_card1_portrait.pdf": "be3fc37a424faeb0b51e041b4d3ff3f61b7102eb97d25ef968bd14d78ef51b4f",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page05_card2_portrait.pdf": "f27c5c6fc4fa7a187cb69b3b18705c4df4bf9d3bdbbd964c09b70975ea72a080",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page05_card3_portrait.pdf": "545da67956c4a7274bd28bd35ab87c458171b44759ea67ce4925187b0ef4677a",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page05_card4_portrait.pdf": "901446ccd9211493571bf56d8c02ecea42fa68a97e54fb1657f95daba489983f",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page06_card1_portrait.pdf": "cb8fdcb603d86109f500fe89da9a12c3f126ea9be95717125a8119a69caeaad4",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page06_card2_portrait.pdf": "f2fbe7a5b5c3eeb77957f7c80efbe9cb606ff5be7ac51826bb0a7772483ae767",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page06_card3_portrait.pdf": "da5314346d66b790a6ab3cf8e6802f22b43ebce3dd305e2ba0f586e318474560",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page06_card4_portrait.pdf": "e83d7eff41894e1f11147eeddd8b33a6db0490b9e9f26d4ef41c52189a4f6080",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page07_card1_portrait.pdf": "7b592de6f937224a50ccb57ec412ac3ef9ed3f40cc02c2e83cbd2ae15c59c165",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page07_card2_portrait.pdf": "0052aa2338a1a972d6fba4b9d7bb2754893e898c6441a53ca41e37408bf701ac",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page07_card3_portrait.pdf": "4884b790d0591fc8c8e7a386e726ef4abec7bed53386adb2c04454e4ad1ee2f1",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page07_card4_portrait.pdf": "14be55872b8c9d342d5a39a60721299c60653e48962c4101e4c9a5c8c059ebb8",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page08_card1_portrait.pdf": "4fed152274eb1f4b89a17f9cc12b89f8590935fccdda5b05497b96e3bf1c4441",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page08_card2_portrait.pdf": "c7a1c4d9dc203d6ae7a082e653196533f047489ae30dc4f386d57a16d7616ab9",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page08_card3_portrait.pdf": "feee2cff8e53536d904c6d35c310c5550697c05813cdc0d402fa5c95bb48fda4",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page08_card4_portrait.pdf": "a274f958685007a9e3b9b0fde502e9de20ad53e098ae6d453f1b7d2abd6a8fd9",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page09_card1_portrait.pdf": "d13f62ccba50896d74229bb6f10913d7796e009790c85b08001143f2f0d33022",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page09_card2_portrait.pdf": "38e8aa0b12bd0203ee5a4f9b3dcc040c5a248a44d9109f98355ce5dd1c335740",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page09_card3_portrait.pdf": "972a12988b839dd92d60bc22114dc9ca603d644ba8a549534667f16cf482fa91",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page09_card4_portrait.pdf": "5c8819cd0c9e3598788809a037ab52e85a964359d6fc59e99160da4f56633bc5"
+      },
+      "completed": "2026-07-12T18:58:04.245333+00:00"
+    },
+    "integrate_classified": {
+      "outputs": {
+        "manifest.json": {
+          "path": "layers/integration/warpcoven/manifest.json",
+          "hash": "950d2b7fbd918ad7373a59bafd530bfa2e2defcce11e5f2cd0eea9eef1b4fa19",
+          "modified": "2026-07-12T19:22:10.021687+00:00"
+        },
+        "warpcoven-datacard-sorcerer-of-destiny.pdf": {
+          "path": "layers/integration/warpcoven/warpcoven-datacard-sorcerer-of-destiny.pdf",
+          "hash": "44b2b89d54a3d4da34ac90803463a35399a153be83b4a7e876e2f9ea7c03c347",
+          "modified": "2026-07-12T19:22:10.032454+00:00"
+        },
+        "warpcoven-datacard-sorcerer-of-tempyrion.pdf": {
+          "path": "layers/integration/warpcoven/warpcoven-datacard-sorcerer-of-tempyrion.pdf",
+          "hash": "ef75ffc52a2dffe444beaa941f6779f8da31359cea8af73ea44a97a46166a15a",
+          "modified": "2026-07-12T19:22:10.044209+00:00"
+        },
+        "warpcoven-datacard-sorcerer-of-warpfire.pdf": {
+          "path": "layers/integration/warpcoven/warpcoven-datacard-sorcerer-of-warpfire.pdf",
+          "hash": "d4429ddcd29325632a8f2b6c1fe5f2df3cd0180d7092a3d14682c3b90a9b4cea",
+          "modified": "2026-07-12T19:22:10.053266+00:00"
+        },
+        "warpcoven-datacard-rubric-marine-gunner.pdf": {
+          "path": "layers/integration/warpcoven/warpcoven-datacard-rubric-marine-gunner.pdf",
+          "hash": "e7408dc6282120623f9a27270782dca394cc1ad9081957ebce04fcf5b19dd73d",
+          "modified": "2026-07-12T19:22:10.064202+00:00"
+        },
+        "warpcoven-datacard-rubric-marine-icon-bearer.pdf": {
+          "path": "layers/integration/warpcoven/warpcoven-datacard-rubric-marine-icon-bearer.pdf",
+          "hash": "1084a86689851c4dabdec735f43677019caa3945d9f8d8b5052f82dd7c95f5c9",
+          "modified": "2026-07-12T19:22:10.074489+00:00"
+        },
+        "warpcoven-datacard-rubric-marine-warrior.pdf": {
+          "path": "layers/integration/warpcoven/warpcoven-datacard-rubric-marine-warrior.pdf",
+          "hash": "b541efc62d1e7512f2524ed6b6c608572daad2b1a62ae5e6abfb15b7c21dae8d",
+          "modified": "2026-07-12T19:22:10.084634+00:00"
+        },
+        "warpcoven-datacard-tzaangor-champion.pdf": {
+          "path": "layers/integration/warpcoven/warpcoven-datacard-tzaangor-champion.pdf",
+          "hash": "906f36afd4b3177ca6ca10835568c4c39dcea51df2952dc65dea5e6875f39a18",
+          "modified": "2026-07-12T19:22:10.096685+00:00"
+        },
+        "warpcoven-datacard-tzaangor-horn-bearer.pdf": {
+          "path": "layers/integration/warpcoven/warpcoven-datacard-tzaangor-horn-bearer.pdf",
+          "hash": "3d8234b8e735d6081f83e207a6f4811aa2e9d02c45397c229abd364d733fe2c5",
+          "modified": "2026-07-12T19:22:10.119816+00:00"
+        },
+        "warpcoven-datacard-tzaangor-icon-bearer.pdf": {
+          "path": "layers/integration/warpcoven/warpcoven-datacard-tzaangor-icon-bearer.pdf",
+          "hash": "59d0c91edc5cf538b85b6c8e5b2fa93b9c922f064c30cdd3994d8b79a46c52f0",
+          "modified": "2026-07-12T19:22:10.141765+00:00"
+        },
+        "warpcoven-datacard-tzaangor-warrior.pdf": {
+          "path": "layers/integration/warpcoven/warpcoven-datacard-tzaangor-warrior.pdf",
+          "hash": "fde48c002c8c2f35d67388791cf2234b1e29a7d7c89df3dc7541b220ee082105",
+          "modified": "2026-07-12T19:22:10.152972+00:00"
+        },
+        "warpcoven-equipment-ensorcelled-rounds.pdf": {
+          "path": "layers/integration/warpcoven/warpcoven-equipment-ensorcelled-rounds.pdf",
+          "hash": "54c4eaef464bc4ee21f10b9e3ba412453e7def59265ba1ccaab1623083b974f3",
+          "modified": "2026-07-12T19:22:10.173973+00:00"
+        },
+        "warpcoven-equipment-daemonmaw-weapons.pdf": {
+          "path": "layers/integration/warpcoven/warpcoven-equipment-daemonmaw-weapons.pdf",
+          "hash": "a901b311bb8d4ac6eb067f07c508636729b4752bfe48cf8ac48a7b93b59d1e43",
+          "modified": "2026-07-12T19:22:10.197583+00:00"
+        },
+        "warpcoven-equipment-arcane-robes.pdf": {
+          "path": "layers/integration/warpcoven/warpcoven-equipment-arcane-robes.pdf",
+          "hash": "0da3b7d36fcc2da3dbd29deffddd4f51d537d528850ae0403ef590cde9808dc6",
+          "modified": "2026-07-12T19:22:10.214663+00:00"
+        },
+        "warpcoven-equipment-sorcerous-scrolls.pdf": {
+          "path": "layers/integration/warpcoven/warpcoven-equipment-sorcerous-scrolls.pdf",
+          "hash": "be26608a41486a916de82aaf5ee2db40be86ffef3c513efc9a79739a8d0337df",
+          "modified": "2026-07-12T19:22:10.231308+00:00"
+        },
+        "warpcoven-faction-rule-boons-of-tzeentch-1.pdf": {
+          "path": "layers/integration/warpcoven/warpcoven-faction-rule-boons-of-tzeentch-1.pdf",
+          "hash": "4f790e5bce5df7607585bf6d9ac02539eadd9a8d6395cd8a6e800c9709478d75",
+          "modified": "2026-07-12T19:22:10.281420+00:00"
+        },
+        "warpcoven-faction-rule-boons-of-tzeentch-2.pdf": {
+          "path": "layers/integration/warpcoven/warpcoven-faction-rule-boons-of-tzeentch-2.pdf",
+          "hash": "d1d657036428570008e57526f181f63bf9ef739a7cdea9888cd31b68059d593f",
+          "modified": "2026-07-12T19:22:10.343276+00:00"
+        },
+        "warpcoven-faction-rule-astartes.pdf": {
+          "path": "layers/integration/warpcoven/warpcoven-faction-rule-astartes.pdf",
+          "hash": "777a5c4ed8b409ca437f0e868317c4d6568af89206a5d280aff3da3096d7b783",
+          "modified": "2026-07-12T19:22:10.358470+00:00"
+        },
+        "warpcoven-firefight-ploy-all-is-dust.pdf": {
+          "path": "layers/integration/warpcoven/warpcoven-firefight-ploy-all-is-dust.pdf",
+          "hash": "f30b123b4ed5ead1c8fc3141cb66dc10396240f622b89d645fcb0f6006b9e4b0",
+          "modified": "2026-07-12T19:22:10.369649+00:00"
+        },
+        "warpcoven-firefight-ploy-capricious-plan.pdf": {
+          "path": "layers/integration/warpcoven/warpcoven-firefight-ploy-capricious-plan.pdf",
+          "hash": "46b7845a56285d6f25b3c5d87c40a74cc0d426c44cba7f495950e12837c0914d",
+          "modified": "2026-07-12T19:22:10.405451+00:00"
+        },
+        "warpcoven-firefight-ploy-psychic-cabal.pdf": {
+          "path": "layers/integration/warpcoven/warpcoven-firefight-ploy-psychic-cabal.pdf",
+          "hash": "ffa1d7f038518653d9c0dd588851e3cb13f69976ba5c13d4b03eff71ecbd2005",
+          "modified": "2026-07-12T19:22:10.472476+00:00"
+        },
+        "warpcoven-firefight-ploy-mutant-herd.pdf": {
+          "path": "layers/integration/warpcoven/warpcoven-firefight-ploy-mutant-herd.pdf",
+          "hash": "ed8fe57e72c6dce8d395b59436724ece0c357445dd817088b32c545a99a59f95",
+          "modified": "2026-07-12T19:22:10.516734+00:00"
+        },
+        "warpcoven-operatives-selection-operative-selection.pdf": {
+          "path": "layers/integration/warpcoven/warpcoven-operatives-selection-operative-selection.pdf",
+          "hash": "1082d895b225ea94411333366d5a8b563d0a7186517da865d2da8e0e8209338f",
+          "modified": "2026-07-12T19:22:10.552077+00:00"
+        },
+        "warpcoven-strategy-ploy-aetherial-warding.pdf": {
+          "path": "layers/integration/warpcoven/warpcoven-strategy-ploy-aetherial-warding.pdf",
+          "hash": "0189aa8ebb775de83d9fd9092075bf3be904da12dedeb823dad290ffeaf0cf07",
+          "modified": "2026-07-12T19:22:10.601480+00:00"
+        },
+        "warpcoven-strategy-ploy-fate-itself-is-my-weapon.pdf": {
+          "path": "layers/integration/warpcoven/warpcoven-strategy-ploy-fate-itself-is-my-weapon.pdf",
+          "hash": "d171dc71157b01be253234276e7f79c269496809e368c5242f4a109a2420b1d3",
+          "modified": "2026-07-12T19:22:10.663687+00:00"
+        },
+        "warpcoven-strategy-ploy-brotherhood-of-sorcerers.pdf": {
+          "path": "layers/integration/warpcoven/warpcoven-strategy-ploy-brotherhood-of-sorcerers.pdf",
+          "hash": "a93edb3bec0eb916a446df3622cd3b182b1ab8b408a55c9ab49983bfc35057a0",
+          "modified": "2026-07-12T19:22:10.696007+00:00"
+        },
+        "warpcoven-strategy-ploy-savage-herd.pdf": {
+          "path": "layers/integration/warpcoven/warpcoven-strategy-ploy-savage-herd.pdf",
+          "hash": "4ca481a68ca0bcdf390b277ad4c260aa050f5eaa2e583f34a6c1ff833779f7c1",
+          "modified": "2026-07-12T19:22:10.707247+00:00"
+        }
+      },
+      "inputs": {
+        "layers/warcom/structure/warpcoven-structure.json": "950d2b7fbd918ad7373a59bafd530bfa2e2defcce11e5f2cd0eea9eef1b4fa19",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page01_card1_landscape.pdf": "3e784a032d12f6deff84d3f5d9c774cc6ffaafe052076aa186b81936f887957d",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page01_card2_landscape.pdf": "10ca27fecc2fb7935fbec58fe2d10b3f4a57c54d32f1a119c2ba22940bf6695a",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page01_card3_landscape.pdf": "3b0dd854a975f243261c94e1a04bfd56aa4ad7e7133ccccbdb9f62fb113c4b89",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page01_card4_landscape.pdf": "6e9c7c4037ff7be0ededef9c8bd9d029edfea190f68727204f7eb3d1bc05aeea",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page02_card1_landscape.pdf": "c1bc4eaa59964f6baf82ff85c8d52c32c9abdf177595fb64f865c97dddd4c705",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page02_card2_landscape.pdf": "6a329fb1c078b1bdb083988370d36514659921ee68cf7483fe25b46b36a3d25b",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page02_card3_landscape.pdf": "1eaa7556bb6bd2e9c93e6f63e8beff7fc4bace1a15d11279f07c9749f60c1050",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page02_card4_landscape.pdf": "23f169035dae6c84c6b90718dcd4736c9a2b91d5ea02fc9d4dd00eea99d9d63b",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page03_card1_landscape.pdf": "971db338b087521e2334826fea2cd8a58cc783bc12157a9037cb3c2968627fc0",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page03_card2_landscape.pdf": "8273379115589ad43b2e280edf26bdf83de9ba6f6ea16572522d5eb2918ee091",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page03_card3_landscape.pdf": "e194162c72ee613b7bac271404800e73e5c3c3d4f82e34cb8bbfbe77cd11e739",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page03_card4_landscape.pdf": "c3c6b7992b7d8bad6498395deace9f866b031d39ae352252489c068607784f6d",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page04_card1_landscape.pdf": "970bcd89d3cce57390b2f863790fe5eb8847f9ac48b7ec6253bf43ab70f0d956",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page08_card4_portrait.pdf": "a274f958685007a9e3b9b0fde502e9de20ad53e098ae6d453f1b7d2abd6a8fd9",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page09_card1_portrait.pdf": "d13f62ccba50896d74229bb6f10913d7796e009790c85b08001143f2f0d33022",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page09_card2_portrait.pdf": "38e8aa0b12bd0203ee5a4f9b3dcc040c5a248a44d9109f98355ce5dd1c335740",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page09_card3_portrait.pdf": "972a12988b839dd92d60bc22114dc9ca603d644ba8a549534667f16cf482fa91",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page05_card3_portrait.pdf": "545da67956c4a7274bd28bd35ab87c458171b44759ea67ce4925187b0ef4677a",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page05_card4_portrait.pdf": "901446ccd9211493571bf56d8c02ecea42fa68a97e54fb1657f95daba489983f",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page06_card1_portrait.pdf": "cb8fdcb603d86109f500fe89da9a12c3f126ea9be95717125a8119a69caeaad4",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page06_card2_portrait.pdf": "f2fbe7a5b5c3eeb77957f7c80efbe9cb606ff5be7ac51826bb0a7772483ae767",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page06_card3_portrait.pdf": "da5314346d66b790a6ab3cf8e6802f22b43ebce3dd305e2ba0f586e318474560",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page07_card4_portrait.pdf": "14be55872b8c9d342d5a39a60721299c60653e48962c4101e4c9a5c8c059ebb8",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page08_card1_portrait.pdf": "4fed152274eb1f4b89a17f9cc12b89f8590935fccdda5b05497b96e3bf1c4441",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page08_card2_portrait.pdf": "c7a1c4d9dc203d6ae7a082e653196533f047489ae30dc4f386d57a16d7616ab9",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page08_card3_portrait.pdf": "feee2cff8e53536d904c6d35c310c5550697c05813cdc0d402fa5c95bb48fda4",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page05_card1_portrait.pdf": "be3fc37a424faeb0b51e041b4d3ff3f61b7102eb97d25ef968bd14d78ef51b4f",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page05_card2_portrait.pdf": "f27c5c6fc4fa7a187cb69b3b18705c4df4bf9d3bdbbd964c09b70975ea72a080",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page06_card4_portrait.pdf": "e83d7eff41894e1f11147eeddd8b33a6db0490b9e9f26d4ef41c52189a4f6080",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page07_card1_portrait.pdf": "7b592de6f937224a50ccb57ec412ac3ef9ed3f40cc02c2e83cbd2ae15c59c165",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page07_card2_portrait.pdf": "0052aa2338a1a972d6fba4b9d7bb2754893e898c6441a53ca41e37408bf701ac",
+        "layers/warcom/extracted/warpcoven/cards/warpcoven_page07_card3_portrait.pdf": "4884b790d0591fc8c8e7a386e726ef4abec7bed53386adb2c04454e4ad1ee2f1"
+      },
+      "completed": "2026-07-12T19:22:27.116190+00:00"
+    },
+    "extract_artwork": {
+      "outputs": {},
+      "sources": {
+        "artwork": {
+          "hash": "468140fce74077922df86f83f634f9ca247a26b7ff375236d4d5d7fe68098ef6",
+          "outputs": [
+            "layers/integration/warpcoven/artwork/warpcoven-artwork-01.jpeg",
+            "layers/integration/warpcoven/artwork/warpcoven-artwork-02.jpeg",
+            "layers/integration/warpcoven/artwork/warpcoven-artwork-03.png",
+            "layers/integration/warpcoven/artwork/warpcoven-artwork-04.jpeg",
+            "layers/integration/warpcoven/artwork/warpcoven-artwork-05.jpeg",
+            "layers/integration/warpcoven/artwork/warpcoven-artwork-06.jpeg",
+            "layers/integration/warpcoven/artwork/warpcoven-artwork-07.png",
+            "layers/integration/warpcoven/artwork/warpcoven-artwork-08.jpeg",
+            "layers/integration/warpcoven/artwork/warpcoven-artwork-09.jpeg",
+            "layers/integration/warpcoven/artwork/warpcoven-artwork-10.jpeg",
+            "layers/integration/warpcoven/artwork/warpcoven-artwork-11.jpeg",
+            "layers/integration/warpcoven/artwork/warpcoven-artwork-12.jpeg",
+            "layers/integration/warpcoven/artwork/warpcoven-artwork-13.jpeg",
+            "layers/integration/warpcoven/artwork/warpcoven-artwork-14.jpeg",
+            "layers/integration/warpcoven/artwork/warpcoven-artwork-15.jpeg",
+            "layers/integration/warpcoven/artwork/warpcoven-artwork-16.jpeg",
+            "layers/integration/warpcoven/artwork/warpcoven-artwork-17.jpeg",
+            "layers/integration/warpcoven/artwork/warpcoven-artwork-18.jpeg",
+            "layers/integration/warpcoven/artwork/warpcoven-artwork-19.jpeg",
+            "layers/integration/warpcoven/artwork/warpcoven-artwork-20.jpeg",
+            "layers/integration/warpcoven/artwork/warpcoven-artwork-21.jpeg",
+            "layers/integration/warpcoven/artwork/warpcoven-artwork-22.jpeg",
+            "layers/integration/warpcoven/artwork/warpcoven-artwork-23.jpeg",
+            "layers/integration/warpcoven/artwork/warpcoven-artwork-24.jpeg",
+            "layers/integration/warpcoven/artwork/warpcoven-artwork-25.jpeg",
+            "layers/integration/warpcoven/artwork/warpcoven-artwork-26.jpeg",
+            "layers/integration/warpcoven/artwork/warpcoven-artwork-27.jpeg",
+            "layers/integration/warpcoven/artwork/warpcoven-artwork-28.jpeg",
+            "layers/integration/warpcoven/artwork/warpcoven-artwork-29.jpeg",
+            "layers/integration/warpcoven/artwork/warpcoven-artwork-metadata.json",
+            "layers/integration/warpcoven/artwork/icons/warpcoven-icon-landscape.jpg",
+            "layers/integration/warpcoven/artwork/icons/warpcoven-icon-portrait.jpg",
+            "layers/integration/warpcoven/artwork/icons/warpcoven-icon-token-transparent.png",
+            "layers/integration/warpcoven/artwork/icons/warpcoven-icon-token.jpg"
+          ],
+          "modified": "2026-07-06T20:55:56.491561+00:00"
+        }
+      },
+      "completed": "2026-07-06T20:55:56.491576+00:00"
+    }
+  }
+}

@@ -1,0 +1,1073 @@
+{
+  "team": "novitiates",
+  "pipeline_version": "2.0",
+  "last_updated": "2026-07-12T20:56:41.382391+00:00",
+  "steps": {
+    "content_analysis": {
+      "outputs": {
+        "content.json": {
+          "path": "layers/integration/novitiates/content/novitiates-content.json",
+          "hash": "80cc20ec1d085bc4ea9fe1f1aed11fff9ea48dd5a9ffc9cbc15730b38f636749",
+          "modified": "2026-07-12T19:18:23.254964+00:00"
+        }
+      },
+      "completed": "2026-07-12T19:18:33.806020+00:00",
+      "inputs": {
+        "layers/integration/novitiates/manifest.json": "4c37851e948626885a676111741e80a6fea24356f34a77897b78fecde123395f",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "layers/integration/novitiates/novitiates-datacard-novitiate-condemnor.pdf": "6415b6854a702e057288441d738cac8c613d6a9ba2997821eb840042f3f81c04",
+        "layers/integration/novitiates/novitiates-datacard-novitiate-dialogus.pdf": "c851396ecc3c67ca26fb9ca9850c222a2771eb8583bf430bc168a47f79a30d8b",
+        "layers/integration/novitiates/novitiates-datacard-novitiate-duellist.pdf": "ee0faf6a81e15ec0f962a9d629cdc71aeddd20ff7ec720f49d3c56e97da90783",
+        "layers/integration/novitiates/novitiates-datacard-novitiate-exactor.pdf": "a4b3fcdcd1dbc8433f0e3ed07fb888787f833e3c42857c409845a80c9c1ae353",
+        "layers/integration/novitiates/novitiates-datacard-novitiate-hospitaller.pdf": "1ed35f2d7f5c5152cc036f4b88730e465646cbd018f311423b60ed6266da1886",
+        "layers/integration/novitiates/novitiates-datacard-novitiate-militant.pdf": "868b18e7360527c8703a4b25defa886ed224f0aaaff003802142eefce823e053",
+        "layers/integration/novitiates/novitiates-datacard-novitiate-penitent.pdf": "2deef94b48a78963a65523f7932686de7569f2b83f8485d08ea52772fd1209e2",
+        "layers/integration/novitiates/novitiates-datacard-novitiate-preceptor.pdf": "b7e5bfad8363585b7b5a114c242091e26e7fefa92d1077b4baeb24126ca5d4be",
+        "layers/integration/novitiates/novitiates-datacard-novitiate-pronatus.pdf": "aa50e4071a611883ba6ad2947ca74df18d33eccac6ba9a97b3f6fd7c458f6a49",
+        "layers/integration/novitiates/novitiates-datacard-novitiate-purgatus.pdf": "f02d4fa658be3c99ef87974c3fd1c6a3115c332d4ab23ed4d55664fde4123709",
+        "layers/integration/novitiates/novitiates-datacard-novitiate-reliquarius.pdf": "eb379bc450a5fc6eacb3c366f9c511f91f37d492f9536e08e5ca42d2494e4254",
+        "layers/integration/novitiates/novitiates-datacard-novitiate-superior.pdf": "652be701b6c21fa17c96f2ee8bac4e96a33aadc4047f7a529d99a9894858587a",
+        "layers/integration/novitiates/novitiates-equipment-auto-chastisers.pdf": "453eff6dd1a411f78ab0d0e3852c9254e20c9fcfc486933c5cce3fd1145e83ae",
+        "layers/integration/novitiates/novitiates-equipment-holy-embrocations.pdf": "ce8ce56c2048b67032de2b99fc266b74809c8923ee6afa44ed69573f449b31b3",
+        "layers/integration/novitiates/novitiates-equipment-icon-of-faith.pdf": "f8207fd7ba6cd94e9e04a91431f7b37e36444d99d6bfe19eaab455e77c49dad1",
+        "layers/integration/novitiates/novitiates-equipment-sanctified-rounds.pdf": "3a073b4e1aa7450ee0ce9c6bfab8b111091eb33a615213d4a721aa0585af46b8",
+        "layers/integration/novitiates/novitiates-faction-rule-acts-of-faith.pdf": "7c22eff8bc39d78116e2f0ba52a0cfd23597fa405140ef5730f2043e09323b2c",
+        "layers/integration/novitiates/novitiates-firefight-ploy-blazing-inferno.pdf": "8d96ad26d42f01039879076c6bf7fa86a9c04ac17a5791d5576f91b8e409e4b9",
+        "layers/integration/novitiates/novitiates-firefight-ploy-blinding-aura.pdf": "bdca3aee0b2483374c1b3cbc15ee42657046b70805a6c0a4bf0ca165a0412d80",
+        "layers/integration/novitiates/novitiates-firefight-ploy-glorious-martyrdom.pdf": "2ff21fe0b7735941350966a8f071f2d57cbd68439f5954d14063ca27cd2b818c",
+        "layers/integration/novitiates/novitiates-firefight-ploy-guided-by-faith.pdf": "9605da12b9d81e0d89b992667e6f1269a390121b509541cd2decd5b8ec7ac767",
+        "layers/integration/novitiates/novitiates-operatives-selection-operative-selection.pdf": "9979efbc042fc9229fe57d87d1b2417002592f8a1a154b6bb8b39dd5e1f2f14d",
+        "layers/integration/novitiates/novitiates-strategy-ploy-ardent-vengeance.pdf": "ff0e36965b5c72471ff9533ad399addb369e7a90d63f820aa8577f25980c5fc8",
+        "layers/integration/novitiates/novitiates-strategy-ploy-blessed-rejuvenation.pdf": "5177764d621ce6bc132b241d44ef1c2541616c434a4c2dd1d74cb2a12fc2a0ef",
+        "layers/integration/novitiates/novitiates-strategy-ploy-defenders-of-the-faith.pdf": "75ddb6d50bb50cde9bb1df4246f9c3ec8b033c98acef9fba8f763c0990b28b5c",
+        "layers/integration/novitiates/novitiates-strategy-ploy-righteous-advance.pdf": "d081dcaa0db4b198d34d5bdbb68da0c509f5fb9a016147dee6fc862927a08ed4",
+        "layers/integration/novitiates/novitiates-token-guide-token-guide.pdf": "bbc0031f00deb8375289b4e0910522d68d79c562dfa16dcdd7b4c463e715642f"
+      }
+    },
+    "extract_backsides": {
+      "outputs": {
+        "backside-landscape.jpg": {
+          "path": "layers/integration/novitiates/card-backside/novitiates-backside-landscape.jpg",
+          "hash": "24aebb02a5ca4f607f926dfaa96c91d410902db0a51f3ab8104c238084dce507",
+          "modified": "2026-07-12T18:54:51.943209+00:00"
+        },
+        "backside-portrait.jpg": {
+          "path": "layers/integration/novitiates/card-backside/novitiates-backside-portrait.jpg",
+          "hash": "61000c3f38fd25da21d654d496054d600670baa617760c45bd13282481ed9294",
+          "modified": "2026-07-12T18:54:51.945008+00:00"
+        }
+      },
+      "completed": "2026-07-12T18:54:51.952622+00:00",
+      "inputs": {
+        "layers/integration/novitiates/artwork/icons/novitiates-icon-token.jpg": "7166f3433bb2bfb5077d9de2a64e85ef3c4d63f2c8f5329594564084bb11d2d1",
+        "config/defaults/box/card-box-background.jpeg": "2dd1442a7c52ca1d66899333f678d60f48981ce20561ead77c1161d548176036"
+      }
+    },
+    "extract_tokens": {
+      "outputs": {
+        "tokens/novitiates-auto-broadcaster.png": {
+          "path": "output/novitiates/tokens/novitiates-auto-broadcaster.png",
+          "hash": "430baba468a1917e988b305332a7062813ae9ff8ce57e824eb1dcff70a2ab406",
+          "modified": "2026-07-12T19:19:04.581932+00:00"
+        },
+        "tokens/novitiates-auto-chastisers.png": {
+          "path": "output/novitiates/tokens/novitiates-auto-chastisers.png",
+          "hash": "771c7ea18aebfb53aa40db67aa75abe61c8268cf81313f06b9df5d6280552168",
+          "modified": "2026-07-12T19:19:04.586508+00:00"
+        },
+        "tokens/novitiates-blaze.png": {
+          "path": "output/novitiates/tokens/novitiates-blaze.png",
+          "hash": "36abb1da03e67f8c3b8b9d9ca6f3b0a60a8d43d7fbab904b929598301171c980",
+          "modified": "2026-07-12T19:19:04.592690+00:00"
+        },
+        "tokens/novitiates-divine-acquisition.png": {
+          "path": "output/novitiates/tokens/novitiates-divine-acquisition.png",
+          "hash": "79dc9ac3c9151de8a951db9a9e2bf4ec2a0171a4fb396f898541ced7b8667c02",
+          "modified": "2026-07-12T19:19:05.341032+00:00"
+        },
+        "tokens/novitiates-faith-points.png": {
+          "path": "output/novitiates/tokens/novitiates-faith-points.png",
+          "hash": "fd59023edfe6f76026be9075fff207b355cc45039c40f5c1fea6d262aced8e6b",
+          "modified": "2026-07-12T19:19:05.344978+00:00"
+        },
+        "tokens/novitiates-faith_2.png": {
+          "path": "output/novitiates/tokens/novitiates-faith_2.png",
+          "hash": "11465bdd30b8367138b594f25c7249cffdd8e4324d24028d8c3be12da8c788ba",
+          "modified": "2026-07-12T19:19:06.049749+00:00"
+        },
+        "tokens/novitiates-icon-of-faith.png": {
+          "path": "output/novitiates/tokens/novitiates-icon-of-faith.png",
+          "hash": "a09f5c606ec3b2aa40a6a5f4e31805d0481aaf5f8986cef8603d85f8e75de433",
+          "modified": "2026-07-12T19:19:06.683733+00:00"
+        },
+        "tokens/novitiates-medic.png": {
+          "path": "output/novitiates/tokens/novitiates-medic.png",
+          "hash": "c28125da9afbddf9b519e943f67f99e03049c0324f6c0ed98dea8fdcf480ffd1",
+          "modified": "2026-07-12T19:19:06.751434+00:00"
+        },
+        "tokens/novitiates-whip-into-frenzy.png": {
+          "path": "output/novitiates/tokens/novitiates-whip-into-frenzy.png",
+          "hash": "5f11cf74306472eeb14609a8fd64bc7ea0b36da4d1d64260fed11ed2de2481d7",
+          "modified": "2026-07-12T19:19:12.132572+00:00"
+        },
+        "tokens/novitiates-auto-broadcaster.obj": {
+          "path": "output/novitiates/tokens/novitiates-auto-broadcaster.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-12T19:19:12.901550+00:00"
+        },
+        "tokens/novitiates-auto-chastisers.obj": {
+          "path": "output/novitiates/tokens/novitiates-auto-chastisers.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-12T19:19:13.523077+00:00"
+        },
+        "tokens/novitiates-blaze.obj": {
+          "path": "output/novitiates/tokens/novitiates-blaze.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-12T19:19:13.593402+00:00"
+        },
+        "tokens/novitiates-divine-acquisition.obj": {
+          "path": "output/novitiates/tokens/novitiates-divine-acquisition.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-12T19:19:13.597755+00:00"
+        },
+        "tokens/novitiates-faith-points.obj": {
+          "path": "output/novitiates/tokens/novitiates-faith-points.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-12T19:19:14.256682+00:00"
+        },
+        "tokens/novitiates-faith_2.obj": {
+          "path": "output/novitiates/tokens/novitiates-faith_2.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-12T19:19:14.261630+00:00"
+        },
+        "tokens/novitiates-icon-of-faith.obj": {
+          "path": "output/novitiates/tokens/novitiates-icon-of-faith.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-12T19:19:14.263637+00:00"
+        },
+        "tokens/novitiates-medic.obj": {
+          "path": "output/novitiates/tokens/novitiates-medic.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-12T19:19:14.886237+00:00"
+        },
+        "tokens/novitiates-whip-into-frenzy.obj": {
+          "path": "output/novitiates/tokens/novitiates-whip-into-frenzy.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-12T19:19:14.950097+00:00"
+        },
+        "tokens/tokenbag/novitiates-token-bag-icon.png": {
+          "path": "output/novitiates/tokens/tokenbag/novitiates-token-bag-icon.png",
+          "hash": "7166f3433bb2bfb5077d9de2a64e85ef3c4d63f2c8f5329594564084bb11d2d1",
+          "modified": "2026-07-12T19:19:15.032274+00:00"
+        },
+        "tokens/tokenbag/novitiates-token-bag.obj": {
+          "path": "output/novitiates/tokens/tokenbag/novitiates-token-bag.obj",
+          "hash": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+          "modified": "2026-07-12T19:19:15.034708+00:00"
+        },
+        "tokens/novitiates-faith_1.png": {
+          "path": "output/novitiates/tokens/novitiates-faith_1.png",
+          "hash": "775e149b29f943e3a4da97ac62df7fe9f5efe4813cd57e9f11ad45d9ff6b3e2f",
+          "modified": "2026-07-12T19:19:05.978442+00:00"
+        },
+        "tokens/novitiates-faith_1.obj": {
+          "path": "output/novitiates/tokens/novitiates-faith_1.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-12T19:19:14.259641+00:00"
+        }
+      },
+      "completed": "2026-07-12T19:19:18.307578+00:00",
+      "inputs": {
+        "layers/integration/novitiates/manifest.json": "4c37851e948626885a676111741e80a6fea24356f34a77897b78fecde123395f",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "layers/integration/novitiates/artwork/icons/novitiates-icon-token.jpg": "7166f3433bb2bfb5077d9de2a64e85ef3c4d63f2c8f5329594564084bb11d2d1",
+        "layers/integration/novitiates/novitiates-datacard-novitiate-condemnor.pdf": "6415b6854a702e057288441d738cac8c613d6a9ba2997821eb840042f3f81c04",
+        "layers/integration/novitiates/novitiates-datacard-novitiate-dialogus.pdf": "c851396ecc3c67ca26fb9ca9850c222a2771eb8583bf430bc168a47f79a30d8b",
+        "layers/integration/novitiates/novitiates-datacard-novitiate-duellist.pdf": "ee0faf6a81e15ec0f962a9d629cdc71aeddd20ff7ec720f49d3c56e97da90783",
+        "layers/integration/novitiates/novitiates-datacard-novitiate-exactor.pdf": "a4b3fcdcd1dbc8433f0e3ed07fb888787f833e3c42857c409845a80c9c1ae353",
+        "layers/integration/novitiates/novitiates-datacard-novitiate-hospitaller.pdf": "1ed35f2d7f5c5152cc036f4b88730e465646cbd018f311423b60ed6266da1886",
+        "layers/integration/novitiates/novitiates-datacard-novitiate-militant.pdf": "868b18e7360527c8703a4b25defa886ed224f0aaaff003802142eefce823e053",
+        "layers/integration/novitiates/novitiates-datacard-novitiate-penitent.pdf": "2deef94b48a78963a65523f7932686de7569f2b83f8485d08ea52772fd1209e2",
+        "layers/integration/novitiates/novitiates-datacard-novitiate-preceptor.pdf": "b7e5bfad8363585b7b5a114c242091e26e7fefa92d1077b4baeb24126ca5d4be",
+        "layers/integration/novitiates/novitiates-datacard-novitiate-pronatus.pdf": "aa50e4071a611883ba6ad2947ca74df18d33eccac6ba9a97b3f6fd7c458f6a49",
+        "layers/integration/novitiates/novitiates-datacard-novitiate-purgatus.pdf": "f02d4fa658be3c99ef87974c3fd1c6a3115c332d4ab23ed4d55664fde4123709",
+        "layers/integration/novitiates/novitiates-datacard-novitiate-reliquarius.pdf": "eb379bc450a5fc6eacb3c366f9c511f91f37d492f9536e08e5ca42d2494e4254",
+        "layers/integration/novitiates/novitiates-datacard-novitiate-superior.pdf": "652be701b6c21fa17c96f2ee8bac4e96a33aadc4047f7a529d99a9894858587a",
+        "layers/integration/novitiates/novitiates-equipment-auto-chastisers.pdf": "453eff6dd1a411f78ab0d0e3852c9254e20c9fcfc486933c5cce3fd1145e83ae",
+        "layers/integration/novitiates/novitiates-equipment-holy-embrocations.pdf": "ce8ce56c2048b67032de2b99fc266b74809c8923ee6afa44ed69573f449b31b3",
+        "layers/integration/novitiates/novitiates-equipment-icon-of-faith.pdf": "f8207fd7ba6cd94e9e04a91431f7b37e36444d99d6bfe19eaab455e77c49dad1",
+        "layers/integration/novitiates/novitiates-equipment-sanctified-rounds.pdf": "3a073b4e1aa7450ee0ce9c6bfab8b111091eb33a615213d4a721aa0585af46b8",
+        "layers/integration/novitiates/novitiates-faction-rule-acts-of-faith.pdf": "7c22eff8bc39d78116e2f0ba52a0cfd23597fa405140ef5730f2043e09323b2c",
+        "layers/integration/novitiates/novitiates-firefight-ploy-blazing-inferno.pdf": "8d96ad26d42f01039879076c6bf7fa86a9c04ac17a5791d5576f91b8e409e4b9",
+        "layers/integration/novitiates/novitiates-firefight-ploy-blinding-aura.pdf": "bdca3aee0b2483374c1b3cbc15ee42657046b70805a6c0a4bf0ca165a0412d80",
+        "layers/integration/novitiates/novitiates-firefight-ploy-glorious-martyrdom.pdf": "2ff21fe0b7735941350966a8f071f2d57cbd68439f5954d14063ca27cd2b818c",
+        "layers/integration/novitiates/novitiates-firefight-ploy-guided-by-faith.pdf": "9605da12b9d81e0d89b992667e6f1269a390121b509541cd2decd5b8ec7ac767",
+        "layers/integration/novitiates/novitiates-operatives-selection-operative-selection.pdf": "9979efbc042fc9229fe57d87d1b2417002592f8a1a154b6bb8b39dd5e1f2f14d",
+        "layers/integration/novitiates/novitiates-strategy-ploy-ardent-vengeance.pdf": "ff0e36965b5c72471ff9533ad399addb369e7a90d63f820aa8577f25980c5fc8",
+        "layers/integration/novitiates/novitiates-strategy-ploy-blessed-rejuvenation.pdf": "5177764d621ce6bc132b241d44ef1c2541616c434a4c2dd1d74cb2a12fc2a0ef",
+        "layers/integration/novitiates/novitiates-strategy-ploy-defenders-of-the-faith.pdf": "75ddb6d50bb50cde9bb1df4246f9c3ec8b033c98acef9fba8f763c0990b28b5c",
+        "layers/integration/novitiates/novitiates-strategy-ploy-righteous-advance.pdf": "d081dcaa0db4b198d34d5bdbb68da0c509f5fb9a016147dee6fc862927a08ed4",
+        "layers/integration/novitiates/novitiates-token-guide-token-guide.pdf": "bbc0031f00deb8375289b4e0910522d68d79c562dfa16dcdd7b4c463e715642f",
+        "config/teams/novitiates/custom-tokens/novitiates-faith-points.png": "3fa959c2d231e37c4d5345902ab4a515b32322b9dda8d0e52f0a86af6f1c6eae"
+      }
+    },
+    "generate_dice": {
+      "outputs": {
+        "dice-light.jpg": {
+          "path": "output/novitiates/dice/novitiates-dice-light.jpg",
+          "hash": "c60bb21554b04d3ffb9e25b774ec80f9d60aacef9bdfe0d7fb1e120110e545c1",
+          "modified": "2026-07-12T18:55:40.981389+00:00"
+        },
+        "dice-dark.jpg": {
+          "path": "output/novitiates/dice/novitiates-dice-dark.jpg",
+          "hash": "2090355229895178956bdeddeb3bd5ac0562b5c67ac9bf8d85f92d8a53662b76",
+          "modified": "2026-07-12T18:55:41.002746+00:00"
+        },
+        "dice-team.jpg": {
+          "path": "output/novitiates/dice/novitiates-dice-team.jpg",
+          "hash": "4e5548e1605d905b5cf08ad76dab6770dfe2b43bdd33b07fc148844161241c83",
+          "modified": "2026-07-12T18:55:41.010706+00:00"
+        }
+      },
+      "completed": "2026-07-12T18:55:41.019308+00:00",
+      "inputs": {
+        "layers/integration/novitiates/artwork/icons/novitiates-icon-token-transparent.png": "6b63749abe9e6fd87468d5cd35947ed66b19c2898ddb039a1450c66ca6e09a6b",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41"
+      }
+    },
+    "generate_box_texture": {
+      "outputs": {
+        "card-box-texture.jpg": {
+          "path": "output/novitiates/cardbox/novitiates-card-box-texture.jpg",
+          "hash": "e7b4b49d06e0603a348561bdddc689a9e7e0844e198b8d5ebdf618191e420811",
+          "modified": "2026-07-12T18:55:41.623438+00:00"
+        },
+        "card-box.obj": {
+          "path": "output/novitiates/cardbox/novitiates-card-box.obj",
+          "hash": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+          "modified": "2026-07-12T18:55:41.625528+00:00"
+        }
+      },
+      "completed": "2026-07-12T18:55:41.637989+00:00",
+      "inputs": {
+        "layers/integration/novitiates/artwork/icons/novitiates-icon-token.jpg": "7166f3433bb2bfb5077d9de2a64e85ef3c4d63f2c8f5329594564084bb11d2d1",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "config/defaults/box/card-box.obj": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+        "config/defaults/box/card-box-texture.jpg": "b2f310b01a0d28e8806e99ce0b972e8967e3014608eacefcb6ec51597695a313"
+      }
+    },
+    "generate_card_images": {
+      "outputs": {
+        "cards/datacards/novitiate-condemnor-back.jpg": {
+          "path": "output/novitiates/cards/datacards/novitiate-condemnor-back.jpg",
+          "hash": "24aebb02a5ca4f607f926dfaa96c91d410902db0a51f3ab8104c238084dce507",
+          "modified": "2026-07-12T19:19:41.658234+00:00"
+        },
+        "cards/datacards/novitiate-condemnor-front.jpg": {
+          "path": "output/novitiates/cards/datacards/novitiate-condemnor-front.jpg",
+          "hash": "6f58a00f48807bf029404b3ac955ae3fe5db0d25dd1fc4e1d6d330b2e2b8fc55",
+          "modified": "2026-07-12T19:19:41.667987+00:00"
+        },
+        "cards/datacards/novitiate-dialogus-back.jpg": {
+          "path": "output/novitiates/cards/datacards/novitiate-dialogus-back.jpg",
+          "hash": "041b12e8995e43cfd7545beec3eb0cc29a43e7b3588bbbf2ce9199dac8b3ba74",
+          "modified": "2026-07-12T19:19:41.678280+00:00"
+        },
+        "cards/datacards/novitiate-dialogus-front.jpg": {
+          "path": "output/novitiates/cards/datacards/novitiate-dialogus-front.jpg",
+          "hash": "81809425f09725d70a5a6db2e20d08e367c3bbde158c0d5797886a14b86a84ad",
+          "modified": "2026-07-12T19:19:41.690505+00:00"
+        },
+        "cards/datacards/novitiate-duellist-back.jpg": {
+          "path": "output/novitiates/cards/datacards/novitiate-duellist-back.jpg",
+          "hash": "24aebb02a5ca4f607f926dfaa96c91d410902db0a51f3ab8104c238084dce507",
+          "modified": "2026-07-12T19:19:41.700914+00:00"
+        },
+        "cards/datacards/novitiate-duellist-front.jpg": {
+          "path": "output/novitiates/cards/datacards/novitiate-duellist-front.jpg",
+          "hash": "aa26629c1813df13b6256d412108ea06532ad650e32595ed2571da8a9bdbc140",
+          "modified": "2026-07-12T19:19:41.712439+00:00"
+        },
+        "cards/datacards/novitiate-exactor-back.jpg": {
+          "path": "output/novitiates/cards/datacards/novitiate-exactor-back.jpg",
+          "hash": "24aebb02a5ca4f607f926dfaa96c91d410902db0a51f3ab8104c238084dce507",
+          "modified": "2026-07-12T19:19:41.725481+00:00"
+        },
+        "cards/datacards/novitiate-exactor-front.jpg": {
+          "path": "output/novitiates/cards/datacards/novitiate-exactor-front.jpg",
+          "hash": "54e1659302be042c89086d7c5e52e331aa0049435872b9deb3812b517c8423c7",
+          "modified": "2026-07-12T19:19:41.744393+00:00"
+        },
+        "cards/datacards/novitiate-hospitaller-back.jpg": {
+          "path": "output/novitiates/cards/datacards/novitiate-hospitaller-back.jpg",
+          "hash": "18e1e9d678016c8c452ad3b2edb58bb308a3019ba151475278e40d698eb0bec9",
+          "modified": "2026-07-12T19:19:41.758350+00:00"
+        },
+        "cards/datacards/novitiate-hospitaller-front.jpg": {
+          "path": "output/novitiates/cards/datacards/novitiate-hospitaller-front.jpg",
+          "hash": "3857cf09f3ade1590c396bc8617dd5c52358103820474b810d6c1c9b18412a52",
+          "modified": "2026-07-12T19:19:41.772434+00:00"
+        },
+        "cards/datacards/novitiate-militant-back.jpg": {
+          "path": "output/novitiates/cards/datacards/novitiate-militant-back.jpg",
+          "hash": "24aebb02a5ca4f607f926dfaa96c91d410902db0a51f3ab8104c238084dce507",
+          "modified": "2026-07-12T19:19:41.782274+00:00"
+        },
+        "cards/datacards/novitiate-militant-front.jpg": {
+          "path": "output/novitiates/cards/datacards/novitiate-militant-front.jpg",
+          "hash": "7e1f0a4b05a7950dc586309804d733ca8ab590caafce9e285c033d36498e03a5",
+          "modified": "2026-07-12T19:19:41.788183+00:00"
+        },
+        "cards/datacards/novitiate-penitent-back.jpg": {
+          "path": "output/novitiates/cards/datacards/novitiate-penitent-back.jpg",
+          "hash": "24aebb02a5ca4f607f926dfaa96c91d410902db0a51f3ab8104c238084dce507",
+          "modified": "2026-07-12T19:19:41.795096+00:00"
+        },
+        "cards/datacards/novitiate-penitent-front.jpg": {
+          "path": "output/novitiates/cards/datacards/novitiate-penitent-front.jpg",
+          "hash": "5066a8f40191268b7b9dc49b9a2f204bfb7e2d2c82db8a19db7568757f8c9c01",
+          "modified": "2026-07-12T19:19:41.798594+00:00"
+        },
+        "cards/datacards/novitiate-preceptor-back.jpg": {
+          "path": "output/novitiates/cards/datacards/novitiate-preceptor-back.jpg",
+          "hash": "24aebb02a5ca4f607f926dfaa96c91d410902db0a51f3ab8104c238084dce507",
+          "modified": "2026-07-12T19:19:41.808114+00:00"
+        },
+        "cards/datacards/novitiate-preceptor-front.jpg": {
+          "path": "output/novitiates/cards/datacards/novitiate-preceptor-front.jpg",
+          "hash": "bb278e13645284c0965183cd320853a85698b7c63dd1a39109f3eef329101e44",
+          "modified": "2026-07-12T19:19:41.814968+00:00"
+        },
+        "cards/datacards/novitiate-pronatus-back.jpg": {
+          "path": "output/novitiates/cards/datacards/novitiate-pronatus-back.jpg",
+          "hash": "24aebb02a5ca4f607f926dfaa96c91d410902db0a51f3ab8104c238084dce507",
+          "modified": "2026-07-12T19:19:41.828802+00:00"
+        },
+        "cards/datacards/novitiate-pronatus-front.jpg": {
+          "path": "output/novitiates/cards/datacards/novitiate-pronatus-front.jpg",
+          "hash": "87f4cf77aa2b6ef6ae87b4d7d3a4fe99b35fcd2aed701be97445cddda902d1d0",
+          "modified": "2026-07-12T19:19:41.844171+00:00"
+        },
+        "cards/datacards/novitiate-purgatus-back.jpg": {
+          "path": "output/novitiates/cards/datacards/novitiate-purgatus-back.jpg",
+          "hash": "24aebb02a5ca4f607f926dfaa96c91d410902db0a51f3ab8104c238084dce507",
+          "modified": "2026-07-12T19:19:41.856872+00:00"
+        },
+        "cards/datacards/novitiate-purgatus-front.jpg": {
+          "path": "output/novitiates/cards/datacards/novitiate-purgatus-front.jpg",
+          "hash": "3bac83ef15893138b2b4dc49435f68e9516a88f516689947ea5d1a445a04ccd7",
+          "modified": "2026-07-12T19:19:41.873576+00:00"
+        },
+        "cards/datacards/novitiate-reliquarius-back.jpg": {
+          "path": "output/novitiates/cards/datacards/novitiate-reliquarius-back.jpg",
+          "hash": "24aebb02a5ca4f607f926dfaa96c91d410902db0a51f3ab8104c238084dce507",
+          "modified": "2026-07-12T19:19:41.892537+00:00"
+        },
+        "cards/datacards/novitiate-reliquarius-front.jpg": {
+          "path": "output/novitiates/cards/datacards/novitiate-reliquarius-front.jpg",
+          "hash": "959d02639ea56a7821a59c19f5cf6c0b6b8558cc1d9bda23841b04a94c1e1e82",
+          "modified": "2026-07-12T19:19:41.906787+00:00"
+        },
+        "cards/datacards/novitiate-superior-back.jpg": {
+          "path": "output/novitiates/cards/datacards/novitiate-superior-back.jpg",
+          "hash": "24aebb02a5ca4f607f926dfaa96c91d410902db0a51f3ab8104c238084dce507",
+          "modified": "2026-07-12T19:19:41.918217+00:00"
+        },
+        "cards/datacards/novitiate-superior-front.jpg": {
+          "path": "output/novitiates/cards/datacards/novitiate-superior-front.jpg",
+          "hash": "1e1957e920f6b4a41160ce4133f2f41cb5fb83d60b63f9c9d16c6fc8e0d9f4de",
+          "modified": "2026-07-12T19:19:41.930730+00:00"
+        },
+        "cards/equipment/novitiates-auto-chastisers-back.jpg": {
+          "path": "output/novitiates/cards/equipment/novitiates-auto-chastisers-back.jpg",
+          "hash": "61000c3f38fd25da21d654d496054d600670baa617760c45bd13282481ed9294",
+          "modified": "2026-07-12T19:19:41.947823+00:00"
+        },
+        "cards/equipment/novitiates-auto-chastisers-front.jpg": {
+          "path": "output/novitiates/cards/equipment/novitiates-auto-chastisers-front.jpg",
+          "hash": "0df7703d149d31417235f6b82a5541a6e4642abd897c5b9027d6d372516681b2",
+          "modified": "2026-07-12T19:19:41.956455+00:00"
+        },
+        "cards/equipment/novitiates-holy-embrocations-back.jpg": {
+          "path": "output/novitiates/cards/equipment/novitiates-holy-embrocations-back.jpg",
+          "hash": "61000c3f38fd25da21d654d496054d600670baa617760c45bd13282481ed9294",
+          "modified": "2026-07-12T19:19:41.969231+00:00"
+        },
+        "cards/equipment/novitiates-holy-embrocations-front.jpg": {
+          "path": "output/novitiates/cards/equipment/novitiates-holy-embrocations-front.jpg",
+          "hash": "c397ab8f997a2b9a22346ae4c7623d9d68c6b2d96306db05701ccee4abd0a72d",
+          "modified": "2026-07-12T19:19:41.981467+00:00"
+        },
+        "cards/equipment/novitiates-icon-of-faith-back.jpg": {
+          "path": "output/novitiates/cards/equipment/novitiates-icon-of-faith-back.jpg",
+          "hash": "61000c3f38fd25da21d654d496054d600670baa617760c45bd13282481ed9294",
+          "modified": "2026-07-12T19:19:42.005694+00:00"
+        },
+        "cards/equipment/novitiates-icon-of-faith-front.jpg": {
+          "path": "output/novitiates/cards/equipment/novitiates-icon-of-faith-front.jpg",
+          "hash": "b38fcbc1ad0bd4423b23a6903fabcb097f05bd55c799139c140e2f11a47394f1",
+          "modified": "2026-07-12T19:19:42.712397+00:00"
+        },
+        "cards/equipment/novitiates-sanctified-rounds-back.jpg": {
+          "path": "output/novitiates/cards/equipment/novitiates-sanctified-rounds-back.jpg",
+          "hash": "61000c3f38fd25da21d654d496054d600670baa617760c45bd13282481ed9294",
+          "modified": "2026-07-12T19:19:42.737093+00:00"
+        },
+        "cards/equipment/novitiates-sanctified-rounds-front.jpg": {
+          "path": "output/novitiates/cards/equipment/novitiates-sanctified-rounds-front.jpg",
+          "hash": "f3712059252327c1ac103ce53e31a7425017b639b035f570d9a14c7f0ec9bc47",
+          "modified": "2026-07-12T19:19:42.747118+00:00"
+        },
+        "cards/faction_rules/novitiates-acts-of-faith-back.jpg": {
+          "path": "output/novitiates/cards/faction_rules/novitiates-acts-of-faith-back.jpg",
+          "hash": "d71a102bdd73f47766eb0af1268908f78094e6703d50c2ea635de557dedc3b87",
+          "modified": "2026-07-12T19:19:42.755713+00:00"
+        },
+        "cards/faction_rules/novitiates-acts-of-faith-front.jpg": {
+          "path": "output/novitiates/cards/faction_rules/novitiates-acts-of-faith-front.jpg",
+          "hash": "067516c02fd6803ee013b66302a0906782a20638275d43ec2b1015602db9bce5",
+          "modified": "2026-07-12T19:19:43.181786+00:00"
+        },
+        "cards/firefight_ploys/novitiates-blazing-inferno-back.jpg": {
+          "path": "output/novitiates/cards/firefight_ploys/novitiates-blazing-inferno-back.jpg",
+          "hash": "61000c3f38fd25da21d654d496054d600670baa617760c45bd13282481ed9294",
+          "modified": "2026-07-12T19:19:43.571811+00:00"
+        },
+        "cards/firefight_ploys/novitiates-blazing-inferno-front.jpg": {
+          "path": "output/novitiates/cards/firefight_ploys/novitiates-blazing-inferno-front.jpg",
+          "hash": "38cc04339415a74ebb5aa1d5f6b0737ed0b97d2be99b0de17f1b58661002846f",
+          "modified": "2026-07-12T19:19:43.637914+00:00"
+        },
+        "cards/firefight_ploys/novitiates-blinding-aura-back.jpg": {
+          "path": "output/novitiates/cards/firefight_ploys/novitiates-blinding-aura-back.jpg",
+          "hash": "61000c3f38fd25da21d654d496054d600670baa617760c45bd13282481ed9294",
+          "modified": "2026-07-12T19:19:44.081120+00:00"
+        },
+        "cards/firefight_ploys/novitiates-blinding-aura-front.jpg": {
+          "path": "output/novitiates/cards/firefight_ploys/novitiates-blinding-aura-front.jpg",
+          "hash": "55df779f1bf170d1d7fce9789fb2b4fb235df758212b26e7fcedb0e7a3fe4949",
+          "modified": "2026-07-12T19:19:44.522658+00:00"
+        },
+        "cards/firefight_ploys/novitiates-glorious-martyrdom-back.jpg": {
+          "path": "output/novitiates/cards/firefight_ploys/novitiates-glorious-martyrdom-back.jpg",
+          "hash": "61000c3f38fd25da21d654d496054d600670baa617760c45bd13282481ed9294",
+          "modified": "2026-07-12T19:19:44.948502+00:00"
+        },
+        "cards/firefight_ploys/novitiates-glorious-martyrdom-front.jpg": {
+          "path": "output/novitiates/cards/firefight_ploys/novitiates-glorious-martyrdom-front.jpg",
+          "hash": "3557a713b4255c549f4761d2e8f1fe8a14f3be4f4797ec49a6b2224b08e52fe5",
+          "modified": "2026-07-12T19:19:44.953571+00:00"
+        },
+        "cards/firefight_ploys/novitiates-guided-by-faith-back.jpg": {
+          "path": "output/novitiates/cards/firefight_ploys/novitiates-guided-by-faith-back.jpg",
+          "hash": "61000c3f38fd25da21d654d496054d600670baa617760c45bd13282481ed9294",
+          "modified": "2026-07-12T19:19:45.389346+00:00"
+        },
+        "cards/firefight_ploys/novitiates-guided-by-faith-front.jpg": {
+          "path": "output/novitiates/cards/firefight_ploys/novitiates-guided-by-faith-front.jpg",
+          "hash": "d9a96233c69a4b317f7460213ef509178ae4326ba23b49e83be40ed54dea49fc",
+          "modified": "2026-07-12T19:19:45.813978+00:00"
+        },
+        "cards/operatives_selection/novitiates-operative-selection-back.jpg": {
+          "path": "output/novitiates/cards/operatives_selection/novitiates-operative-selection-back.jpg",
+          "hash": "61000c3f38fd25da21d654d496054d600670baa617760c45bd13282481ed9294",
+          "modified": "2026-07-12T19:19:46.617173+00:00"
+        },
+        "cards/operatives_selection/novitiates-operative-selection-front.jpg": {
+          "path": "output/novitiates/cards/operatives_selection/novitiates-operative-selection-front.jpg",
+          "hash": "def3bc31a29052d346a0abd6d4700b6931286779083dd357694af6c5a32dab0c",
+          "modified": "2026-07-12T19:19:47.546866+00:00"
+        },
+        "cards/strategy_ploys/novitiates-ardent-vengeance-back.jpg": {
+          "path": "output/novitiates/cards/strategy_ploys/novitiates-ardent-vengeance-back.jpg",
+          "hash": "61000c3f38fd25da21d654d496054d600670baa617760c45bd13282481ed9294",
+          "modified": "2026-07-12T19:19:47.986564+00:00"
+        },
+        "cards/strategy_ploys/novitiates-ardent-vengeance-front.jpg": {
+          "path": "output/novitiates/cards/strategy_ploys/novitiates-ardent-vengeance-front.jpg",
+          "hash": "d3997502d2419066fbc0b7a99c8cbe478ed2f8505898643dbae525a2d67ed34c",
+          "modified": "2026-07-12T19:19:48.423949+00:00"
+        },
+        "cards/strategy_ploys/novitiates-blessed-rejuvenation-back.jpg": {
+          "path": "output/novitiates/cards/strategy_ploys/novitiates-blessed-rejuvenation-back.jpg",
+          "hash": "61000c3f38fd25da21d654d496054d600670baa617760c45bd13282481ed9294",
+          "modified": "2026-07-12T19:19:48.847545+00:00"
+        },
+        "cards/strategy_ploys/novitiates-blessed-rejuvenation-front.jpg": {
+          "path": "output/novitiates/cards/strategy_ploys/novitiates-blessed-rejuvenation-front.jpg",
+          "hash": "798b6deb96993b07d1929344fe08b26b631277a49b47f79bd27da00674400211",
+          "modified": "2026-07-12T19:19:49.294844+00:00"
+        },
+        "cards/strategy_ploys/novitiates-defenders-of-the-faith-back.jpg": {
+          "path": "output/novitiates/cards/strategy_ploys/novitiates-defenders-of-the-faith-back.jpg",
+          "hash": "61000c3f38fd25da21d654d496054d600670baa617760c45bd13282481ed9294",
+          "modified": "2026-07-12T19:19:49.728189+00:00"
+        },
+        "cards/strategy_ploys/novitiates-defenders-of-the-faith-front.jpg": {
+          "path": "output/novitiates/cards/strategy_ploys/novitiates-defenders-of-the-faith-front.jpg",
+          "hash": "3c5b5659e8dfe3a80653e3cca96b1c0174d314af0304296f6e69150a24d47fd2",
+          "modified": "2026-07-12T19:19:50.150486+00:00"
+        },
+        "cards/strategy_ploys/novitiates-righteous-advance-back.jpg": {
+          "path": "output/novitiates/cards/strategy_ploys/novitiates-righteous-advance-back.jpg",
+          "hash": "61000c3f38fd25da21d654d496054d600670baa617760c45bd13282481ed9294",
+          "modified": "2026-07-12T19:19:50.581769+00:00"
+        },
+        "cards/strategy_ploys/novitiates-righteous-advance-front.jpg": {
+          "path": "output/novitiates/cards/strategy_ploys/novitiates-righteous-advance-front.jpg",
+          "hash": "58554337c0510df5e5f451a9986e380e6652fb36ee6df83aef8fe4b3490cf930",
+          "modified": "2026-07-12T19:19:50.590398+00:00"
+        },
+        "cards/token_guide/novitiates-token-guide-back.jpg": {
+          "path": "output/novitiates/cards/token_guide/novitiates-token-guide-back.jpg",
+          "hash": "61000c3f38fd25da21d654d496054d600670baa617760c45bd13282481ed9294",
+          "modified": "2026-07-12T19:19:51.017068+00:00"
+        },
+        "cards/token_guide/novitiates-token-guide-front.jpg": {
+          "path": "output/novitiates/cards/token_guide/novitiates-token-guide-front.jpg",
+          "hash": "48cd50edc780db7ee9a90fe390204264af99b12ab1efbeecd30815200e6f8392",
+          "modified": "2026-07-12T19:19:51.023494+00:00"
+        }
+      },
+      "completed": "2026-07-12T19:20:23.650269+00:00",
+      "inputs": {
+        "layers/integration/novitiates/manifest.json": "4c37851e948626885a676111741e80a6fea24356f34a77897b78fecde123395f",
+        "layers/integration/novitiates/novitiates-datacard-novitiate-condemnor.pdf": "6415b6854a702e057288441d738cac8c613d6a9ba2997821eb840042f3f81c04",
+        "layers/integration/novitiates/novitiates-datacard-novitiate-dialogus.pdf": "c851396ecc3c67ca26fb9ca9850c222a2771eb8583bf430bc168a47f79a30d8b",
+        "layers/integration/novitiates/novitiates-datacard-novitiate-duellist.pdf": "ee0faf6a81e15ec0f962a9d629cdc71aeddd20ff7ec720f49d3c56e97da90783",
+        "layers/integration/novitiates/novitiates-datacard-novitiate-exactor.pdf": "a4b3fcdcd1dbc8433f0e3ed07fb888787f833e3c42857c409845a80c9c1ae353",
+        "layers/integration/novitiates/novitiates-datacard-novitiate-hospitaller.pdf": "1ed35f2d7f5c5152cc036f4b88730e465646cbd018f311423b60ed6266da1886",
+        "layers/integration/novitiates/novitiates-datacard-novitiate-militant.pdf": "868b18e7360527c8703a4b25defa886ed224f0aaaff003802142eefce823e053",
+        "layers/integration/novitiates/novitiates-datacard-novitiate-penitent.pdf": "2deef94b48a78963a65523f7932686de7569f2b83f8485d08ea52772fd1209e2",
+        "layers/integration/novitiates/novitiates-datacard-novitiate-preceptor.pdf": "b7e5bfad8363585b7b5a114c242091e26e7fefa92d1077b4baeb24126ca5d4be",
+        "layers/integration/novitiates/novitiates-datacard-novitiate-pronatus.pdf": "aa50e4071a611883ba6ad2947ca74df18d33eccac6ba9a97b3f6fd7c458f6a49",
+        "layers/integration/novitiates/novitiates-datacard-novitiate-purgatus.pdf": "f02d4fa658be3c99ef87974c3fd1c6a3115c332d4ab23ed4d55664fde4123709",
+        "layers/integration/novitiates/novitiates-datacard-novitiate-reliquarius.pdf": "eb379bc450a5fc6eacb3c366f9c511f91f37d492f9536e08e5ca42d2494e4254",
+        "layers/integration/novitiates/novitiates-datacard-novitiate-superior.pdf": "652be701b6c21fa17c96f2ee8bac4e96a33aadc4047f7a529d99a9894858587a",
+        "layers/integration/novitiates/novitiates-equipment-auto-chastisers.pdf": "453eff6dd1a411f78ab0d0e3852c9254e20c9fcfc486933c5cce3fd1145e83ae",
+        "layers/integration/novitiates/novitiates-equipment-holy-embrocations.pdf": "ce8ce56c2048b67032de2b99fc266b74809c8923ee6afa44ed69573f449b31b3",
+        "layers/integration/novitiates/novitiates-equipment-icon-of-faith.pdf": "f8207fd7ba6cd94e9e04a91431f7b37e36444d99d6bfe19eaab455e77c49dad1",
+        "layers/integration/novitiates/novitiates-equipment-sanctified-rounds.pdf": "3a073b4e1aa7450ee0ce9c6bfab8b111091eb33a615213d4a721aa0585af46b8",
+        "layers/integration/novitiates/novitiates-faction-rule-acts-of-faith.pdf": "7c22eff8bc39d78116e2f0ba52a0cfd23597fa405140ef5730f2043e09323b2c",
+        "layers/integration/novitiates/novitiates-firefight-ploy-blazing-inferno.pdf": "8d96ad26d42f01039879076c6bf7fa86a9c04ac17a5791d5576f91b8e409e4b9",
+        "layers/integration/novitiates/novitiates-firefight-ploy-blinding-aura.pdf": "bdca3aee0b2483374c1b3cbc15ee42657046b70805a6c0a4bf0ca165a0412d80",
+        "layers/integration/novitiates/novitiates-firefight-ploy-glorious-martyrdom.pdf": "2ff21fe0b7735941350966a8f071f2d57cbd68439f5954d14063ca27cd2b818c",
+        "layers/integration/novitiates/novitiates-firefight-ploy-guided-by-faith.pdf": "9605da12b9d81e0d89b992667e6f1269a390121b509541cd2decd5b8ec7ac767",
+        "layers/integration/novitiates/novitiates-operatives-selection-operative-selection.pdf": "9979efbc042fc9229fe57d87d1b2417002592f8a1a154b6bb8b39dd5e1f2f14d",
+        "layers/integration/novitiates/novitiates-strategy-ploy-ardent-vengeance.pdf": "ff0e36965b5c72471ff9533ad399addb369e7a90d63f820aa8577f25980c5fc8",
+        "layers/integration/novitiates/novitiates-strategy-ploy-blessed-rejuvenation.pdf": "5177764d621ce6bc132b241d44ef1c2541616c434a4c2dd1d74cb2a12fc2a0ef",
+        "layers/integration/novitiates/novitiates-strategy-ploy-defenders-of-the-faith.pdf": "75ddb6d50bb50cde9bb1df4246f9c3ec8b033c98acef9fba8f763c0990b28b5c",
+        "layers/integration/novitiates/novitiates-strategy-ploy-righteous-advance.pdf": "d081dcaa0db4b198d34d5bdbb68da0c509f5fb9a016147dee6fc862927a08ed4",
+        "layers/integration/novitiates/novitiates-token-guide-token-guide.pdf": "bbc0031f00deb8375289b4e0910522d68d79c562dfa16dcdd7b4c463e715642f",
+        "layers/integration/novitiates/card-backside/novitiates-backside-portrait.jpg": "61000c3f38fd25da21d654d496054d600670baa617760c45bd13282481ed9294",
+        "config/defaults/card-backside/default-backside-portrait.jpg": "f00ff15fa70005b9f804de08519e2e83485d7eaf78dfacea65dcef0eb1a29c22",
+        "layers/integration/novitiates/card-backside/novitiates-backside-landscape.jpg": "24aebb02a5ca4f607f926dfaa96c91d410902db0a51f3ab8104c238084dce507",
+        "config/defaults/card-backside/default-backside-landscape.jpg": "1cf5580a1dff0c10adb1a286edad4479c487f3d2d698b0b8be84fe653039fd7e"
+      }
+    },
+    "extract_stats": {
+      "outputs": {
+        "team-data.json": {
+          "path": "output/novitiates/data/novitiates-team-data.json",
+          "hash": "80cc20ec1d085bc4ea9fe1f1aed11fff9ea48dd5a9ffc9cbc15730b38f636749",
+          "modified": "2026-07-12T18:56:48.768489+00:00"
+        }
+      },
+      "completed": "2026-07-12T18:56:48.826176+00:00",
+      "inputs": {
+        "layers/integration/novitiates/content/novitiates-content.json": "80cc20ec1d085bc4ea9fe1f1aed11fff9ea48dd5a9ffc9cbc15730b38f636749"
+      }
+    },
+    "generate_tts": {
+      "outputs": {
+        "tts_objects/Novitiates Box.json": {
+          "path": "output/novitiates/tts_objects/Novitiates Box.json",
+          "hash": "7f99d0793e71a768b517df067767adbdae0ea72cfeb1499e8d6fd9bee3b9a9bc",
+          "modified": "2026-07-12T20:56:41.070486+00:00"
+        },
+        "tts_objects/Novitiates.json": {
+          "path": "output/novitiates/tts_objects/Novitiates.json",
+          "hash": "41d319c35de4cbbe9b1fe84f4a28f63dd043c8adea5b07dc36e81a9fb3b59e71",
+          "modified": "2026-07-12T20:56:41.079441+00:00"
+        }
+      },
+      "completed": "2026-07-12T20:56:41.382379+00:00",
+      "inputs": {
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "config/team-guids.json": "1dea0eaf2c7d1c37c86aba088cdf876f0638d2dcaca162888fea8422c2d5c9db",
+        "output/novitiates/cards/datacards/novitiate-condemnor-back.jpg": "24aebb02a5ca4f607f926dfaa96c91d410902db0a51f3ab8104c238084dce507",
+        "output/novitiates/cards/datacards/novitiate-condemnor-front.jpg": "6f58a00f48807bf029404b3ac955ae3fe5db0d25dd1fc4e1d6d330b2e2b8fc55",
+        "output/novitiates/cards/datacards/novitiate-dialogus-back.jpg": "041b12e8995e43cfd7545beec3eb0cc29a43e7b3588bbbf2ce9199dac8b3ba74",
+        "output/novitiates/cards/datacards/novitiate-dialogus-front.jpg": "81809425f09725d70a5a6db2e20d08e367c3bbde158c0d5797886a14b86a84ad",
+        "output/novitiates/cards/datacards/novitiate-duellist-back.jpg": "24aebb02a5ca4f607f926dfaa96c91d410902db0a51f3ab8104c238084dce507",
+        "output/novitiates/cards/datacards/novitiate-duellist-front.jpg": "aa26629c1813df13b6256d412108ea06532ad650e32595ed2571da8a9bdbc140",
+        "output/novitiates/cards/datacards/novitiate-exactor-back.jpg": "24aebb02a5ca4f607f926dfaa96c91d410902db0a51f3ab8104c238084dce507",
+        "output/novitiates/cards/datacards/novitiate-exactor-front.jpg": "54e1659302be042c89086d7c5e52e331aa0049435872b9deb3812b517c8423c7",
+        "output/novitiates/cards/datacards/novitiate-hospitaller-back.jpg": "18e1e9d678016c8c452ad3b2edb58bb308a3019ba151475278e40d698eb0bec9",
+        "output/novitiates/cards/datacards/novitiate-hospitaller-front.jpg": "3857cf09f3ade1590c396bc8617dd5c52358103820474b810d6c1c9b18412a52",
+        "output/novitiates/cards/datacards/novitiate-militant-back.jpg": "24aebb02a5ca4f607f926dfaa96c91d410902db0a51f3ab8104c238084dce507",
+        "output/novitiates/cards/datacards/novitiate-militant-front.jpg": "7e1f0a4b05a7950dc586309804d733ca8ab590caafce9e285c033d36498e03a5",
+        "output/novitiates/cards/datacards/novitiate-penitent-back.jpg": "24aebb02a5ca4f607f926dfaa96c91d410902db0a51f3ab8104c238084dce507",
+        "output/novitiates/cards/datacards/novitiate-penitent-front.jpg": "5066a8f40191268b7b9dc49b9a2f204bfb7e2d2c82db8a19db7568757f8c9c01",
+        "output/novitiates/cards/datacards/novitiate-preceptor-back.jpg": "24aebb02a5ca4f607f926dfaa96c91d410902db0a51f3ab8104c238084dce507",
+        "output/novitiates/cards/datacards/novitiate-preceptor-front.jpg": "bb278e13645284c0965183cd320853a85698b7c63dd1a39109f3eef329101e44",
+        "output/novitiates/cards/datacards/novitiate-pronatus-back.jpg": "24aebb02a5ca4f607f926dfaa96c91d410902db0a51f3ab8104c238084dce507",
+        "output/novitiates/cards/datacards/novitiate-pronatus-front.jpg": "87f4cf77aa2b6ef6ae87b4d7d3a4fe99b35fcd2aed701be97445cddda902d1d0",
+        "output/novitiates/cards/datacards/novitiate-purgatus-back.jpg": "24aebb02a5ca4f607f926dfaa96c91d410902db0a51f3ab8104c238084dce507",
+        "output/novitiates/cards/datacards/novitiate-purgatus-front.jpg": "3bac83ef15893138b2b4dc49435f68e9516a88f516689947ea5d1a445a04ccd7",
+        "output/novitiates/cards/datacards/novitiate-reliquarius-back.jpg": "24aebb02a5ca4f607f926dfaa96c91d410902db0a51f3ab8104c238084dce507",
+        "output/novitiates/cards/datacards/novitiate-reliquarius-front.jpg": "959d02639ea56a7821a59c19f5cf6c0b6b8558cc1d9bda23841b04a94c1e1e82",
+        "output/novitiates/cards/datacards/novitiate-superior-back.jpg": "24aebb02a5ca4f607f926dfaa96c91d410902db0a51f3ab8104c238084dce507",
+        "output/novitiates/cards/datacards/novitiate-superior-front.jpg": "1e1957e920f6b4a41160ce4133f2f41cb5fb83d60b63f9c9d16c6fc8e0d9f4de",
+        "output/novitiates/cards/equipment/novitiates-auto-chastisers-back.jpg": "61000c3f38fd25da21d654d496054d600670baa617760c45bd13282481ed9294",
+        "output/novitiates/cards/equipment/novitiates-auto-chastisers-front.jpg": "0df7703d149d31417235f6b82a5541a6e4642abd897c5b9027d6d372516681b2",
+        "output/novitiates/cards/equipment/novitiates-holy-embrocations-back.jpg": "61000c3f38fd25da21d654d496054d600670baa617760c45bd13282481ed9294",
+        "output/novitiates/cards/equipment/novitiates-holy-embrocations-front.jpg": "c397ab8f997a2b9a22346ae4c7623d9d68c6b2d96306db05701ccee4abd0a72d",
+        "output/novitiates/cards/equipment/novitiates-icon-of-faith-back.jpg": "61000c3f38fd25da21d654d496054d600670baa617760c45bd13282481ed9294",
+        "output/novitiates/cards/equipment/novitiates-icon-of-faith-front.jpg": "b38fcbc1ad0bd4423b23a6903fabcb097f05bd55c799139c140e2f11a47394f1",
+        "output/novitiates/cards/equipment/novitiates-sanctified-rounds-back.jpg": "61000c3f38fd25da21d654d496054d600670baa617760c45bd13282481ed9294",
+        "output/novitiates/cards/equipment/novitiates-sanctified-rounds-front.jpg": "f3712059252327c1ac103ce53e31a7425017b639b035f570d9a14c7f0ec9bc47",
+        "output/novitiates/cards/faction_rules/novitiates-acts-of-faith-back.jpg": "d71a102bdd73f47766eb0af1268908f78094e6703d50c2ea635de557dedc3b87",
+        "output/novitiates/cards/faction_rules/novitiates-acts-of-faith-front.jpg": "067516c02fd6803ee013b66302a0906782a20638275d43ec2b1015602db9bce5",
+        "output/novitiates/cards/firefight_ploys/novitiates-blazing-inferno-back.jpg": "61000c3f38fd25da21d654d496054d600670baa617760c45bd13282481ed9294",
+        "output/novitiates/cards/firefight_ploys/novitiates-blazing-inferno-front.jpg": "38cc04339415a74ebb5aa1d5f6b0737ed0b97d2be99b0de17f1b58661002846f",
+        "output/novitiates/cards/firefight_ploys/novitiates-blinding-aura-back.jpg": "61000c3f38fd25da21d654d496054d600670baa617760c45bd13282481ed9294",
+        "output/novitiates/cards/firefight_ploys/novitiates-blinding-aura-front.jpg": "55df779f1bf170d1d7fce9789fb2b4fb235df758212b26e7fcedb0e7a3fe4949",
+        "output/novitiates/cards/firefight_ploys/novitiates-glorious-martyrdom-back.jpg": "61000c3f38fd25da21d654d496054d600670baa617760c45bd13282481ed9294",
+        "output/novitiates/cards/firefight_ploys/novitiates-glorious-martyrdom-front.jpg": "3557a713b4255c549f4761d2e8f1fe8a14f3be4f4797ec49a6b2224b08e52fe5",
+        "output/novitiates/cards/firefight_ploys/novitiates-guided-by-faith-back.jpg": "61000c3f38fd25da21d654d496054d600670baa617760c45bd13282481ed9294",
+        "output/novitiates/cards/firefight_ploys/novitiates-guided-by-faith-front.jpg": "d9a96233c69a4b317f7460213ef509178ae4326ba23b49e83be40ed54dea49fc",
+        "output/novitiates/cards/operatives_selection/novitiates-operative-selection-back.jpg": "61000c3f38fd25da21d654d496054d600670baa617760c45bd13282481ed9294",
+        "output/novitiates/cards/operatives_selection/novitiates-operative-selection-front.jpg": "def3bc31a29052d346a0abd6d4700b6931286779083dd357694af6c5a32dab0c",
+        "output/novitiates/cards/strategy_ploys/novitiates-ardent-vengeance-back.jpg": "61000c3f38fd25da21d654d496054d600670baa617760c45bd13282481ed9294",
+        "output/novitiates/cards/strategy_ploys/novitiates-ardent-vengeance-front.jpg": "d3997502d2419066fbc0b7a99c8cbe478ed2f8505898643dbae525a2d67ed34c",
+        "output/novitiates/cards/strategy_ploys/novitiates-blessed-rejuvenation-back.jpg": "61000c3f38fd25da21d654d496054d600670baa617760c45bd13282481ed9294",
+        "output/novitiates/cards/strategy_ploys/novitiates-blessed-rejuvenation-front.jpg": "798b6deb96993b07d1929344fe08b26b631277a49b47f79bd27da00674400211",
+        "output/novitiates/cards/strategy_ploys/novitiates-defenders-of-the-faith-back.jpg": "61000c3f38fd25da21d654d496054d600670baa617760c45bd13282481ed9294",
+        "output/novitiates/cards/strategy_ploys/novitiates-defenders-of-the-faith-front.jpg": "3c5b5659e8dfe3a80653e3cca96b1c0174d314af0304296f6e69150a24d47fd2",
+        "output/novitiates/cards/strategy_ploys/novitiates-righteous-advance-back.jpg": "61000c3f38fd25da21d654d496054d600670baa617760c45bd13282481ed9294",
+        "output/novitiates/cards/strategy_ploys/novitiates-righteous-advance-front.jpg": "58554337c0510df5e5f451a9986e380e6652fb36ee6df83aef8fe4b3490cf930",
+        "output/novitiates/cards/token_guide/novitiates-token-guide-back.jpg": "61000c3f38fd25da21d654d496054d600670baa617760c45bd13282481ed9294",
+        "output/novitiates/cards/token_guide/novitiates-token-guide-front.jpg": "48cd50edc780db7ee9a90fe390204264af99b12ab1efbeecd30815200e6f8392",
+        "output/novitiates/cardbox/novitiates-card-box-texture.jpg": "e7b4b49d06e0603a348561bdddc689a9e7e0844e198b8d5ebdf618191e420811",
+        "output/novitiates/cardbox/novitiates-card-box.obj": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+        "output/novitiates/tokens/novitiates-auto-broadcaster.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/novitiates/tokens/novitiates-auto-broadcaster.png": "430baba468a1917e988b305332a7062813ae9ff8ce57e824eb1dcff70a2ab406",
+        "output/novitiates/tokens/novitiates-auto-chastisers.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/novitiates/tokens/novitiates-auto-chastisers.png": "771c7ea18aebfb53aa40db67aa75abe61c8268cf81313f06b9df5d6280552168",
+        "output/novitiates/tokens/novitiates-blaze.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/novitiates/tokens/novitiates-blaze.png": "36abb1da03e67f8c3b8b9d9ca6f3b0a60a8d43d7fbab904b929598301171c980",
+        "output/novitiates/tokens/novitiates-divine-acquisition.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/novitiates/tokens/novitiates-divine-acquisition.png": "79dc9ac3c9151de8a951db9a9e2bf4ec2a0171a4fb396f898541ced7b8667c02",
+        "output/novitiates/tokens/novitiates-faith-points.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/novitiates/tokens/novitiates-faith-points.png": "fd59023edfe6f76026be9075fff207b355cc45039c40f5c1fea6d262aced8e6b",
+        "output/novitiates/tokens/novitiates-faith_1.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/novitiates/tokens/novitiates-faith_1.png": "775e149b29f943e3a4da97ac62df7fe9f5efe4813cd57e9f11ad45d9ff6b3e2f",
+        "output/novitiates/tokens/novitiates-faith_2.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/novitiates/tokens/novitiates-faith_2.png": "11465bdd30b8367138b594f25c7249cffdd8e4324d24028d8c3be12da8c788ba",
+        "output/novitiates/tokens/novitiates-icon-of-faith.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/novitiates/tokens/novitiates-icon-of-faith.png": "a09f5c606ec3b2aa40a6a5f4e31805d0481aaf5f8986cef8603d85f8e75de433",
+        "output/novitiates/tokens/novitiates-medic.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/novitiates/tokens/novitiates-medic.png": "c28125da9afbddf9b519e943f67f99e03049c0324f6c0ed98dea8fdcf480ffd1",
+        "output/novitiates/tokens/novitiates-whip-into-frenzy.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/novitiates/tokens/novitiates-whip-into-frenzy.png": "5f11cf74306472eeb14609a8fd64bc7ea0b36da4d1d64260fed11ed2de2481d7",
+        "output/novitiates/tokens/tokenbag/novitiates-token-bag-icon.png": "7166f3433bb2bfb5077d9de2a64e85ef3c4d63f2c8f5329594564084bb11d2d1",
+        "output/novitiates/tokens/tokenbag/novitiates-token-bag.obj": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+        "output/novitiates/dice/novitiates-dice-dark.jpg": "2090355229895178956bdeddeb3bd5ac0562b5c67ac9bf8d85f92d8a53662b76",
+        "output/novitiates/dice/novitiates-dice-light.jpg": "c60bb21554b04d3ffb9e25b774ec80f9d60aacef9bdfe0d7fb1e120110e545c1",
+        "output/novitiates/dice/novitiates-dice-team.jpg": "4e5548e1605d905b5cf08ad76dab6770dfe2b43bdd33b07fc148844161241c83",
+        "output/novitiates/data/novitiates-team-data.json": "80cc20ec1d085bc4ea9fe1f1aed11fff9ea48dd5a9ffc9cbc15730b38f636749",
+        "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
+        "config/defaults/tts-script/datacard-load-stats.lua": "2d5f4088c2ff09f54988cf8722080f536b4e1b998cc2b4c1f1ea94e6b18eb92e",
+        "config/defaults/tts-script/display-table-manager-script.lua": "0dab4381078d90802f25e2cc825bc3658be35ee13ab3e98831c9d248c2526689",
+        "config/defaults/tts-script/faction-rule-chapter-tactics.lua": "c906742268076fb91f7cb4a92c6b588e1122ccddb692688f635c8dd4f7110ad0",
+        "config/defaults/tts-script/intermediate-updater.lua": "1a2d6dbc1a8c9c57ba6a3e7a3d4bc4b7a38a6c242a93f6ef3dae698123384d35",
+        "config/defaults/tts-script/single-object-updater.lua": "3613b85169e986a8e50ebe221482079e27c18037e3f48920aa0f7e138c0ccacc",
+        "config/defaults/tts-script/team-spawner-clean-script.lua": "12457bff3961eee2293c42d81cf4f4eb8b103177245a1ab8b46fd65da40672a2",
+        "config/defaults/tts-script/team-spawner-script.lua": "a51ff45c8622923db909fb465781801511f235412f099f83dff728d4027650db",
+        "config/defaults/tts-script/tts-update-rules-in-box-script.lua": "84f7f9b260f4e4968d208953b534bdbb7ab0b2f475e13264a2407f6c4d4d2b03",
+        "config/defaults/tts-image/default-icon.png": "892aff2628b9685c813e77be05c66afc1dc4247bc1dc9ce6fe54f006c2608271",
+        "config/defaults/tts-image/spawner-token.png": "61903b093f01d834f5e4c4c069b1353ecf7d29f012fef914b3027266816d8a6b",
+        "config/defaults/tts-token/square-bag-mesh.obj": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+        "config/defaults/tts-token/template-diamond-cutter.png": "719f57ba2b86494be454a6d3d25d8567dde974a915f3dde5ddc0e2d8dafaa1a5",
+        "config/defaults/tts-token/template-octagon-cutter.png": "944632aeacab978293ae57758b63086166c5fbaf3b845f48b3dd61db67d5c076",
+        "config/defaults/tts-token/template-operative-cutter.png": "0e698ddd403d7f0e84f200eb42af73f5249a9c5539d773298ff4c700ac9fe153",
+        "config/defaults/tts-token/template-round-cutter.png": "6564e1451c9a135a1c756fd94cde1c71e373e3fa677b51bba9d4bbe9e795d544",
+        "config/defaults/tts-token/token-bag-script.lua": "1659887e0fbfb9e3ebbc1aa5f3df8e1ffd89ee192be24d2dd1f02fcb0407e486",
+        "config/defaults/tts-token/token-bg-sample.png": "f9f90664c7f1c877c6f050f6e85babde6523cdc0aed9c77de8c09214f44ee109",
+        "config/defaults/tts-token/token-mesh.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc"
+      }
+    },
+    "front_end": {
+      "outputs": {},
+      "sources": {
+        "equipment": {
+          "hash": "635b924a913c801a55a3a277775b84fd15bf5d54190d41bd637d270c270bb578",
+          "outputs": [
+            "layers/kt-app/extracted/novitiates/cards/equipment/novitiates-equipment-page_0.pdf",
+            "layers/kt-app/extracted/novitiates/cards/equipment/novitiates-equipment-page_1.pdf",
+            "layers/kt-app/extracted/novitiates/cards/equipment/novitiates-equipment-page_2.pdf",
+            "layers/kt-app/extracted/novitiates/cards/equipment/novitiates-equipment-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:03:41.229015+00:00"
+        },
+        "datacards": {
+          "hash": "597dea0893c740903a3213205c9232e16eb6b1dd4052bd4de696ca8e0c033595",
+          "outputs": [
+            "layers/kt-app/extracted/novitiates/cards/datacards/novitiates-datacards-page_0.pdf",
+            "layers/kt-app/extracted/novitiates/cards/datacards/novitiates-datacards-page_1.pdf",
+            "layers/kt-app/extracted/novitiates/cards/datacards/novitiates-datacards-page_2.pdf",
+            "layers/kt-app/extracted/novitiates/cards/datacards/novitiates-datacards-page_3.pdf",
+            "layers/kt-app/extracted/novitiates/cards/datacards/novitiates-datacards-page_4.pdf",
+            "layers/kt-app/extracted/novitiates/cards/datacards/novitiates-datacards-page_5.pdf",
+            "layers/kt-app/extracted/novitiates/cards/datacards/novitiates-datacards-page_6.pdf",
+            "layers/kt-app/extracted/novitiates/cards/datacards/novitiates-datacards-page_7.pdf",
+            "layers/kt-app/extracted/novitiates/cards/datacards/novitiates-datacards-page_8.pdf",
+            "layers/kt-app/extracted/novitiates/cards/datacards/novitiates-datacards-page_9.pdf",
+            "layers/kt-app/extracted/novitiates/cards/datacards/novitiates-datacards-page_10.pdf",
+            "layers/kt-app/extracted/novitiates/cards/datacards/novitiates-datacards-page_11.pdf",
+            "layers/kt-app/extracted/novitiates/cards/datacards/novitiates-datacards-page_12.pdf",
+            "layers/kt-app/extracted/novitiates/cards/datacards/novitiates-datacards-page_13.pdf"
+          ],
+          "modified": "2026-07-06T16:04:03.441786+00:00"
+        },
+        "operatives-selection": {
+          "hash": "9aaac4ba8923db5b9244fab746eba8e133b08341ace588b3c16822007106a128",
+          "outputs": [
+            "layers/kt-app/extracted/novitiates/cards/operatives-selection/novitiates-operatives-selection-page_0.pdf"
+          ],
+          "modified": "2026-07-06T16:04:51.141049+00:00"
+        },
+        "faction-rules": {
+          "hash": "86626ee5784665f94b901942f5e17a67bd41d4ecdcd9bf2c5d28b079396f9f37",
+          "outputs": [
+            "layers/kt-app/extracted/novitiates/cards/faction-rules/novitiates-faction-rules-page_0.pdf",
+            "layers/kt-app/extracted/novitiates/cards/faction-rules/novitiates-faction-rules-page_1.pdf",
+            "layers/kt-app/extracted/novitiates/cards/faction-rules/novitiates-faction-rules-page_2.pdf"
+          ],
+          "modified": "2026-07-06T16:07:33.142859+00:00"
+        },
+        "firefight-ploys": {
+          "hash": "edff828278a2d1ed3615dc984f414509a8d5234fa73e356a47975ddf1b62273c",
+          "outputs": [
+            "layers/kt-app/extracted/novitiates/cards/firefight-ploys/novitiates-firefight-ploys-page_0.pdf",
+            "layers/kt-app/extracted/novitiates/cards/firefight-ploys/novitiates-firefight-ploys-page_1.pdf",
+            "layers/kt-app/extracted/novitiates/cards/firefight-ploys/novitiates-firefight-ploys-page_2.pdf",
+            "layers/kt-app/extracted/novitiates/cards/firefight-ploys/novitiates-firefight-ploys-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:08:45.315598+00:00"
+        },
+        "strategy-ploys": {
+          "hash": "12b99cad4a2ee959af2b846d0bcfd60781e211bcd284d2626cd53647ec393395",
+          "outputs": [
+            "layers/kt-app/extracted/novitiates/cards/strategy-ploys/novitiates-strategy-ploys-page_0.pdf",
+            "layers/kt-app/extracted/novitiates/cards/strategy-ploys/novitiates-strategy-ploys-page_1.pdf",
+            "layers/kt-app/extracted/novitiates/cards/strategy-ploys/novitiates-strategy-ploys-page_2.pdf",
+            "layers/kt-app/extracted/novitiates/cards/strategy-ploys/novitiates-strategy-ploys-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:12:33.975781+00:00"
+        },
+        "cards": {
+          "hash": "8844293e12ff07d87c339dcedb090c6c1396f9a65762d27d1919a9c5c44e13ad",
+          "outputs": [
+            "layers/warcom/extracted/novitiates/cards/novitiates_page01_card1_landscape.pdf",
+            "layers/warcom/extracted/novitiates/cards/novitiates_page01_card2_landscape.pdf",
+            "layers/warcom/extracted/novitiates/cards/novitiates_page01_card3_landscape.pdf",
+            "layers/warcom/extracted/novitiates/cards/novitiates_page01_card4_landscape.pdf",
+            "layers/warcom/extracted/novitiates/cards/novitiates_page02_card1_landscape.pdf",
+            "layers/warcom/extracted/novitiates/cards/novitiates_page02_card2_landscape.pdf",
+            "layers/warcom/extracted/novitiates/cards/novitiates_page02_card3_landscape.pdf",
+            "layers/warcom/extracted/novitiates/cards/novitiates_page02_card4_landscape.pdf",
+            "layers/warcom/extracted/novitiates/cards/novitiates_page03_card1_landscape.pdf",
+            "layers/warcom/extracted/novitiates/cards/novitiates_page03_card2_landscape.pdf",
+            "layers/warcom/extracted/novitiates/cards/novitiates_page03_card3_landscape.pdf",
+            "layers/warcom/extracted/novitiates/cards/novitiates_page03_card4_landscape.pdf",
+            "layers/warcom/extracted/novitiates/cards/novitiates_page04_card1_landscape.pdf",
+            "layers/warcom/extracted/novitiates/cards/novitiates_page04_card2_landscape.pdf",
+            "layers/warcom/extracted/novitiates/cards/novitiates_page04_card3_landscape.pdf",
+            "layers/warcom/extracted/novitiates/cards/novitiates_page04_card4_landscape.pdf",
+            "layers/warcom/extracted/novitiates/cards/novitiates_page05_card1_portrait.pdf",
+            "layers/warcom/extracted/novitiates/cards/novitiates_page05_card2_portrait.pdf",
+            "layers/warcom/extracted/novitiates/cards/novitiates_page05_card3_portrait.pdf",
+            "layers/warcom/extracted/novitiates/cards/novitiates_page05_card4_portrait.pdf",
+            "layers/warcom/extracted/novitiates/cards/novitiates_page06_card1_portrait.pdf",
+            "layers/warcom/extracted/novitiates/cards/novitiates_page06_card2_portrait.pdf",
+            "layers/warcom/extracted/novitiates/cards/novitiates_page06_card3_portrait.pdf",
+            "layers/warcom/extracted/novitiates/cards/novitiates_page06_card4_portrait.pdf",
+            "layers/warcom/extracted/novitiates/cards/novitiates_page07_card1_portrait.pdf",
+            "layers/warcom/extracted/novitiates/cards/novitiates_page07_card2_portrait.pdf",
+            "layers/warcom/extracted/novitiates/cards/novitiates_page07_card3_portrait.pdf",
+            "layers/warcom/extracted/novitiates/cards/novitiates_page07_card4_portrait.pdf",
+            "layers/warcom/extracted/novitiates/cards/novitiates_page08_card1_portrait.pdf",
+            "layers/warcom/extracted/novitiates/cards/novitiates_page08_card2_portrait.pdf",
+            "layers/warcom/extracted/novitiates/cards/novitiates_page08_card3_portrait.pdf",
+            "layers/warcom/extracted/novitiates/cards/novitiates_page08_card4_portrait.pdf"
+          ],
+          "modified": "2026-07-08T19:04:34.734923+00:00"
+        }
+      },
+      "completed": "2026-07-08T19:04:34.734962+00:00"
+    },
+    "build_structure": {
+      "outputs": {
+        "structure": {
+          "path": "layers/warcom/structure/novitiates-structure.json",
+          "hash": "4c37851e948626885a676111741e80a6fea24356f34a77897b78fecde123395f",
+          "modified": "2026-07-12T18:52:56.400628+00:00"
+        }
+      },
+      "inputs": {
+        "layers/warcom/extracted/novitiates/cards/novitiates_page01_card1_landscape.pdf": "194296544b0081b9076f9da74edaae1b5a28371179dca2a79c52a16749a27523",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page01_card2_landscape.pdf": "ba68d598d3d4cf566603d88028740fcc2841255e719bae9f03701adef3fe2afc",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page01_card3_landscape.pdf": "ac184b31c09ff9b462899c6fce56a1d59009aee8a86d9b698d386c2a7b487a6e",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page01_card4_landscape.pdf": "099f483ac18349f0b2727c53ecdd78a264699147c013d025af6734c3ad81c70e",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page02_card1_landscape.pdf": "2971863cd3efb8cd3fd1e3014271f55ed9ad91dd86e86f34f66b5b3bf6ccb6b1",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page02_card2_landscape.pdf": "ddf30bddf1d1c182ce06887df367ac293cad6f735bd1b4a01e755198ea09574e",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page02_card3_landscape.pdf": "196adb138a31f11167b84b26e493152a7f00336f39470e406ee952c1cd5fda48",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page02_card4_landscape.pdf": "b4e141108f49c193fd775e20a95d5163e9168cd9cd26a375a5f86cc4d4ac561b",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page03_card1_landscape.pdf": "150c88f64d090456173fd1f1d1e01170a4372f1aac33fc4592d7daf4e901a05b",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page03_card2_landscape.pdf": "479299fa2a834bad90057383a965345638da32103d3594095a7a33d750d67c5b",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page03_card3_landscape.pdf": "2c7f26cda510e923458dfb33717e6bbe3c7d8ea1a9acb18ca635a07506db5c3d",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page03_card4_landscape.pdf": "0823a507e7619a0b3115650755feeb56b1dfd8f494a29fb8f612e65b140e0669",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page04_card1_landscape.pdf": "0288af7e2e9127ed0cdb513d60d9ef8fb577ec98539ecd2133a046b5b56eb72f",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page04_card2_landscape.pdf": "dbcebd347beae6e53fcf9ca394443db920da7ef440a7d5c4863ca0ff6fba01f1",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page04_card3_landscape.pdf": "a529cb28ed74405f6e7795cb1a8a01eb84dd41e9e7b34c9a39c1c7a9be06c79e",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page04_card4_landscape.pdf": "b7f523d1a70bb33f39a5bb239832717c11ce99811c87adb3233e9154c4e9d602",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page05_card1_portrait.pdf": "79f7bcee70f009c45fa945d862f356c0c10a5ac00c37a602b07b54750fdbebaf",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page05_card2_portrait.pdf": "fe807c6b323b865911834c195bbdbdcf26469f2fd907d5f35956a8ab4625ee87",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page05_card3_portrait.pdf": "276e04bdc21819dea8e82e9ad4b46426e441a1a7a3ea60ea8ca43d615a9a437b",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page05_card4_portrait.pdf": "18cbdf67859cdd26c400cdef6af06f4b07e669d9d5d1d9b61ff7904cdb7f46bd",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page06_card1_portrait.pdf": "e70703687dd202318090fa1ed5285f16926968ccfc77c1d09d9b16680aa1655d",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page06_card2_portrait.pdf": "d095b5b09acdc2a0566f0bbbb6fecbe0b95ed7553768288a97d4b403f8893eb4",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page06_card3_portrait.pdf": "2a97e330a018e8142dc4c90881171d44503f21659610eff8be4d1e1701a674fd",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page06_card4_portrait.pdf": "e7579e58e2401ab905f7c0ce6f42d7c6b392a3933bfb1fd90338328403db748e",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page07_card1_portrait.pdf": "9fa8c6cc251f479948a13c579f778b1a10b4439733c8364d38dec9751a23e3dc",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page07_card2_portrait.pdf": "680759c3a6a59a6cf02be6b93e62f5f84b4abfb1c1ae185d22469882dddae668",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page07_card3_portrait.pdf": "64f50fc40af3eb9fa54c1b30b1c39911ca4ca483348700ce2c7a792034992b6b",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page07_card4_portrait.pdf": "9899556f6cc850ef4ea0d49eb05e0520a37ab0b3d08731ae2bd58ca52d125758",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page08_card1_portrait.pdf": "045f4d09ec0d700410a342fdf1d003e2a54841e5fff136039cb36918e90e1559",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page08_card2_portrait.pdf": "bcd78b6cc1b18729e135288f4be1dcfa123d7159323cdc42517e98e4a12bb445",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page08_card3_portrait.pdf": "b6062188e44418f5b3b406e03b54964e66519a827b0480807b64ed5193cd82f4",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page08_card4_portrait.pdf": "15001292197931a1952bcc2b6e3ac03a38dadbd5a78796a1ee22c9be1b5ef087"
+      },
+      "completed": "2026-07-12T18:53:50.569789+00:00"
+    },
+    "integrate_classified": {
+      "outputs": {
+        "manifest.json": {
+          "path": "layers/integration/novitiates/manifest.json",
+          "hash": "4c37851e948626885a676111741e80a6fea24356f34a77897b78fecde123395f",
+          "modified": "2026-07-12T19:18:07.478632+00:00"
+        },
+        "novitiates-datacard-novitiate-superior.pdf": {
+          "path": "layers/integration/novitiates/novitiates-datacard-novitiate-superior.pdf",
+          "hash": "652be701b6c21fa17c96f2ee8bac4e96a33aadc4047f7a529d99a9894858587a",
+          "modified": "2026-07-12T19:18:07.505768+00:00"
+        },
+        "novitiates-datacard-novitiate-condemnor.pdf": {
+          "path": "layers/integration/novitiates/novitiates-datacard-novitiate-condemnor.pdf",
+          "hash": "6415b6854a702e057288441d738cac8c613d6a9ba2997821eb840042f3f81c04",
+          "modified": "2026-07-12T19:18:07.535168+00:00"
+        },
+        "novitiates-datacard-novitiate-dialogus.pdf": {
+          "path": "layers/integration/novitiates/novitiates-datacard-novitiate-dialogus.pdf",
+          "hash": "c851396ecc3c67ca26fb9ca9850c222a2771eb8583bf430bc168a47f79a30d8b",
+          "modified": "2026-07-12T19:18:07.575575+00:00"
+        },
+        "novitiates-datacard-novitiate-duellist.pdf": {
+          "path": "layers/integration/novitiates/novitiates-datacard-novitiate-duellist.pdf",
+          "hash": "ee0faf6a81e15ec0f962a9d629cdc71aeddd20ff7ec720f49d3c56e97da90783",
+          "modified": "2026-07-12T19:18:07.609353+00:00"
+        },
+        "novitiates-datacard-novitiate-exactor.pdf": {
+          "path": "layers/integration/novitiates/novitiates-datacard-novitiate-exactor.pdf",
+          "hash": "a4b3fcdcd1dbc8433f0e3ed07fb888787f833e3c42857c409845a80c9c1ae353",
+          "modified": "2026-07-12T19:18:07.639211+00:00"
+        },
+        "novitiates-datacard-novitiate-hospitaller.pdf": {
+          "path": "layers/integration/novitiates/novitiates-datacard-novitiate-hospitaller.pdf",
+          "hash": "1ed35f2d7f5c5152cc036f4b88730e465646cbd018f311423b60ed6266da1886",
+          "modified": "2026-07-12T19:18:07.694029+00:00"
+        },
+        "novitiates-datacard-novitiate-militant.pdf": {
+          "path": "layers/integration/novitiates/novitiates-datacard-novitiate-militant.pdf",
+          "hash": "868b18e7360527c8703a4b25defa886ed224f0aaaff003802142eefce823e053",
+          "modified": "2026-07-12T19:18:07.763623+00:00"
+        },
+        "novitiates-datacard-novitiate-penitent.pdf": {
+          "path": "layers/integration/novitiates/novitiates-datacard-novitiate-penitent.pdf",
+          "hash": "2deef94b48a78963a65523f7932686de7569f2b83f8485d08ea52772fd1209e2",
+          "modified": "2026-07-12T19:18:07.849568+00:00"
+        },
+        "novitiates-datacard-novitiate-preceptor.pdf": {
+          "path": "layers/integration/novitiates/novitiates-datacard-novitiate-preceptor.pdf",
+          "hash": "b7e5bfad8363585b7b5a114c242091e26e7fefa92d1077b4baeb24126ca5d4be",
+          "modified": "2026-07-12T19:18:07.937882+00:00"
+        },
+        "novitiates-datacard-novitiate-pronatus.pdf": {
+          "path": "layers/integration/novitiates/novitiates-datacard-novitiate-pronatus.pdf",
+          "hash": "aa50e4071a611883ba6ad2947ca74df18d33eccac6ba9a97b3f6fd7c458f6a49",
+          "modified": "2026-07-12T19:18:08.026450+00:00"
+        },
+        "novitiates-datacard-novitiate-purgatus.pdf": {
+          "path": "layers/integration/novitiates/novitiates-datacard-novitiate-purgatus.pdf",
+          "hash": "f02d4fa658be3c99ef87974c3fd1c6a3115c332d4ab23ed4d55664fde4123709",
+          "modified": "2026-07-12T19:18:08.142735+00:00"
+        },
+        "novitiates-datacard-novitiate-reliquarius.pdf": {
+          "path": "layers/integration/novitiates/novitiates-datacard-novitiate-reliquarius.pdf",
+          "hash": "eb379bc450a5fc6eacb3c366f9c511f91f37d492f9536e08e5ca42d2494e4254",
+          "modified": "2026-07-12T19:18:09.005131+00:00"
+        },
+        "novitiates-equipment-icon-of-faith.pdf": {
+          "path": "layers/integration/novitiates/novitiates-equipment-icon-of-faith.pdf",
+          "hash": "f8207fd7ba6cd94e9e04a91431f7b37e36444d99d6bfe19eaab455e77c49dad1",
+          "modified": "2026-07-12T19:18:09.035840+00:00"
+        },
+        "novitiates-equipment-sanctified-rounds.pdf": {
+          "path": "layers/integration/novitiates/novitiates-equipment-sanctified-rounds.pdf",
+          "hash": "3a073b4e1aa7450ee0ce9c6bfab8b111091eb33a615213d4a721aa0585af46b8",
+          "modified": "2026-07-12T19:18:09.075952+00:00"
+        },
+        "novitiates-equipment-auto-chastisers.pdf": {
+          "path": "layers/integration/novitiates/novitiates-equipment-auto-chastisers.pdf",
+          "hash": "453eff6dd1a411f78ab0d0e3852c9254e20c9fcfc486933c5cce3fd1145e83ae",
+          "modified": "2026-07-12T19:18:09.110160+00:00"
+        },
+        "novitiates-equipment-holy-embrocations.pdf": {
+          "path": "layers/integration/novitiates/novitiates-equipment-holy-embrocations.pdf",
+          "hash": "ce8ce56c2048b67032de2b99fc266b74809c8923ee6afa44ed69573f449b31b3",
+          "modified": "2026-07-12T19:18:09.129895+00:00"
+        },
+        "novitiates-faction-rule-acts-of-faith.pdf": {
+          "path": "layers/integration/novitiates/novitiates-faction-rule-acts-of-faith.pdf",
+          "hash": "7c22eff8bc39d78116e2f0ba52a0cfd23597fa405140ef5730f2043e09323b2c",
+          "modified": "2026-07-12T19:18:09.164998+00:00"
+        },
+        "novitiates-token-guide-token-guide.pdf": {
+          "path": "layers/integration/novitiates/novitiates-token-guide-token-guide.pdf",
+          "hash": "bbc0031f00deb8375289b4e0910522d68d79c562dfa16dcdd7b4c463e715642f",
+          "modified": "2026-07-12T19:18:09.203736+00:00"
+        },
+        "novitiates-firefight-ploy-glorious-martyrdom.pdf": {
+          "path": "layers/integration/novitiates/novitiates-firefight-ploy-glorious-martyrdom.pdf",
+          "hash": "2ff21fe0b7735941350966a8f071f2d57cbd68439f5954d14063ca27cd2b818c",
+          "modified": "2026-07-12T19:18:09.217456+00:00"
+        },
+        "novitiates-firefight-ploy-blazing-inferno.pdf": {
+          "path": "layers/integration/novitiates/novitiates-firefight-ploy-blazing-inferno.pdf",
+          "hash": "8d96ad26d42f01039879076c6bf7fa86a9c04ac17a5791d5576f91b8e409e4b9",
+          "modified": "2026-07-12T19:18:09.849523+00:00"
+        },
+        "novitiates-firefight-ploy-blinding-aura.pdf": {
+          "path": "layers/integration/novitiates/novitiates-firefight-ploy-blinding-aura.pdf",
+          "hash": "bdca3aee0b2483374c1b3cbc15ee42657046b70805a6c0a4bf0ca165a0412d80",
+          "modified": "2026-07-12T19:18:10.843437+00:00"
+        },
+        "novitiates-firefight-ploy-guided-by-faith.pdf": {
+          "path": "layers/integration/novitiates/novitiates-firefight-ploy-guided-by-faith.pdf",
+          "hash": "9605da12b9d81e0d89b992667e6f1269a390121b509541cd2decd5b8ec7ac767",
+          "modified": "2026-07-12T19:18:10.854507+00:00"
+        },
+        "novitiates-operatives-selection-operative-selection.pdf": {
+          "path": "layers/integration/novitiates/novitiates-operatives-selection-operative-selection.pdf",
+          "hash": "9979efbc042fc9229fe57d87d1b2417002592f8a1a154b6bb8b39dd5e1f2f14d",
+          "modified": "2026-07-12T19:18:10.876230+00:00"
+        },
+        "novitiates-strategy-ploy-ardent-vengeance.pdf": {
+          "path": "layers/integration/novitiates/novitiates-strategy-ploy-ardent-vengeance.pdf",
+          "hash": "ff0e36965b5c72471ff9533ad399addb369e7a90d63f820aa8577f25980c5fc8",
+          "modified": "2026-07-12T19:18:10.888751+00:00"
+        },
+        "novitiates-strategy-ploy-defenders-of-the-faith.pdf": {
+          "path": "layers/integration/novitiates/novitiates-strategy-ploy-defenders-of-the-faith.pdf",
+          "hash": "75ddb6d50bb50cde9bb1df4246f9c3ec8b033c98acef9fba8f763c0990b28b5c",
+          "modified": "2026-07-12T19:18:10.900325+00:00"
+        },
+        "novitiates-strategy-ploy-blessed-rejuvenation.pdf": {
+          "path": "layers/integration/novitiates/novitiates-strategy-ploy-blessed-rejuvenation.pdf",
+          "hash": "5177764d621ce6bc132b241d44ef1c2541616c434a4c2dd1d74cb2a12fc2a0ef",
+          "modified": "2026-07-12T19:18:10.918605+00:00"
+        },
+        "novitiates-strategy-ploy-righteous-advance.pdf": {
+          "path": "layers/integration/novitiates/novitiates-strategy-ploy-righteous-advance.pdf",
+          "hash": "d081dcaa0db4b198d34d5bdbb68da0c509f5fb9a016147dee6fc862927a08ed4",
+          "modified": "2026-07-12T19:18:10.931787+00:00"
+        }
+      },
+      "inputs": {
+        "layers/warcom/structure/novitiates-structure.json": "4c37851e948626885a676111741e80a6fea24356f34a77897b78fecde123395f",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page01_card1_landscape.pdf": "194296544b0081b9076f9da74edaae1b5a28371179dca2a79c52a16749a27523",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page01_card2_landscape.pdf": "ba68d598d3d4cf566603d88028740fcc2841255e719bae9f03701adef3fe2afc",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page01_card3_landscape.pdf": "ac184b31c09ff9b462899c6fce56a1d59009aee8a86d9b698d386c2a7b487a6e",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page01_card4_landscape.pdf": "099f483ac18349f0b2727c53ecdd78a264699147c013d025af6734c3ad81c70e",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page02_card1_landscape.pdf": "2971863cd3efb8cd3fd1e3014271f55ed9ad91dd86e86f34f66b5b3bf6ccb6b1",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page02_card2_landscape.pdf": "ddf30bddf1d1c182ce06887df367ac293cad6f735bd1b4a01e755198ea09574e",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page02_card3_landscape.pdf": "196adb138a31f11167b84b26e493152a7f00336f39470e406ee952c1cd5fda48",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page02_card4_landscape.pdf": "b4e141108f49c193fd775e20a95d5163e9168cd9cd26a375a5f86cc4d4ac561b",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page03_card1_landscape.pdf": "150c88f64d090456173fd1f1d1e01170a4372f1aac33fc4592d7daf4e901a05b",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page03_card2_landscape.pdf": "479299fa2a834bad90057383a965345638da32103d3594095a7a33d750d67c5b",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page03_card3_landscape.pdf": "2c7f26cda510e923458dfb33717e6bbe3c7d8ea1a9acb18ca635a07506db5c3d",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page03_card4_landscape.pdf": "0823a507e7619a0b3115650755feeb56b1dfd8f494a29fb8f612e65b140e0669",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page04_card1_landscape.pdf": "0288af7e2e9127ed0cdb513d60d9ef8fb577ec98539ecd2133a046b5b56eb72f",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page04_card2_landscape.pdf": "dbcebd347beae6e53fcf9ca394443db920da7ef440a7d5c4863ca0ff6fba01f1",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page08_card1_portrait.pdf": "045f4d09ec0d700410a342fdf1d003e2a54841e5fff136039cb36918e90e1559",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page08_card2_portrait.pdf": "bcd78b6cc1b18729e135288f4be1dcfa123d7159323cdc42517e98e4a12bb445",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page08_card3_portrait.pdf": "b6062188e44418f5b3b406e03b54964e66519a827b0480807b64ed5193cd82f4",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page08_card4_portrait.pdf": "15001292197931a1952bcc2b6e3ac03a38dadbd5a78796a1ee22c9be1b5ef087",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page05_card2_portrait.pdf": "fe807c6b323b865911834c195bbdbdcf26469f2fd907d5f35956a8ab4625ee87",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page05_card3_portrait.pdf": "276e04bdc21819dea8e82e9ad4b46426e441a1a7a3ea60ea8ca43d615a9a437b",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page05_card4_portrait.pdf": "18cbdf67859cdd26c400cdef6af06f4b07e669d9d5d1d9b61ff7904cdb7f46bd",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page07_card1_portrait.pdf": "9fa8c6cc251f479948a13c579f778b1a10b4439733c8364d38dec9751a23e3dc",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page07_card2_portrait.pdf": "680759c3a6a59a6cf02be6b93e62f5f84b4abfb1c1ae185d22469882dddae668",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page07_card3_portrait.pdf": "64f50fc40af3eb9fa54c1b30b1c39911ca4ca483348700ce2c7a792034992b6b",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page07_card4_portrait.pdf": "9899556f6cc850ef4ea0d49eb05e0520a37ab0b3d08731ae2bd58ca52d125758",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page05_card1_portrait.pdf": "79f7bcee70f009c45fa945d862f356c0c10a5ac00c37a602b07b54750fdbebaf",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page06_card1_portrait.pdf": "e70703687dd202318090fa1ed5285f16926968ccfc77c1d09d9b16680aa1655d",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page06_card2_portrait.pdf": "d095b5b09acdc2a0566f0bbbb6fecbe0b95ed7553768288a97d4b403f8893eb4",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page06_card3_portrait.pdf": "2a97e330a018e8142dc4c90881171d44503f21659610eff8be4d1e1701a674fd",
+        "layers/warcom/extracted/novitiates/cards/novitiates_page06_card4_portrait.pdf": "e7579e58e2401ab905f7c0ce6f42d7c6b392a3933bfb1fd90338328403db748e"
+      },
+      "completed": "2026-07-12T19:18:15.026052+00:00"
+    },
+    "extract_artwork": {
+      "outputs": {},
+      "sources": {
+        "artwork": {
+          "hash": "8844293e12ff07d87c339dcedb090c6c1396f9a65762d27d1919a9c5c44e13ad",
+          "outputs": [
+            "layers/integration/novitiates/artwork/novitiates-artwork-01.jpeg",
+            "layers/integration/novitiates/artwork/novitiates-artwork-02.jpeg",
+            "layers/integration/novitiates/artwork/novitiates-artwork-03.png",
+            "layers/integration/novitiates/artwork/novitiates-artwork-04.jpeg",
+            "layers/integration/novitiates/artwork/novitiates-artwork-05.jpeg",
+            "layers/integration/novitiates/artwork/novitiates-artwork-06.jpeg",
+            "layers/integration/novitiates/artwork/novitiates-artwork-07.jpeg",
+            "layers/integration/novitiates/artwork/novitiates-artwork-08.jpeg",
+            "layers/integration/novitiates/artwork/novitiates-artwork-09.jpeg",
+            "layers/integration/novitiates/artwork/novitiates-artwork-10.jpeg",
+            "layers/integration/novitiates/artwork/novitiates-artwork-11.jpeg",
+            "layers/integration/novitiates/artwork/novitiates-artwork-12.jpeg",
+            "layers/integration/novitiates/artwork/novitiates-artwork-13.jpeg",
+            "layers/integration/novitiates/artwork/novitiates-artwork-14.jpeg",
+            "layers/integration/novitiates/artwork/novitiates-artwork-15.jpeg",
+            "layers/integration/novitiates/artwork/novitiates-artwork-16.jpeg",
+            "layers/integration/novitiates/artwork/novitiates-artwork-17.jpeg",
+            "layers/integration/novitiates/artwork/novitiates-artwork-18.jpeg",
+            "layers/integration/novitiates/artwork/novitiates-artwork-19.jpeg",
+            "layers/integration/novitiates/artwork/novitiates-artwork-20.jpeg",
+            "layers/integration/novitiates/artwork/novitiates-artwork-21.jpeg",
+            "layers/integration/novitiates/artwork/novitiates-artwork-22.jpeg",
+            "layers/integration/novitiates/artwork/novitiates-artwork-metadata.json",
+            "layers/integration/novitiates/artwork/icons/novitiates-icon-landscape.jpg",
+            "layers/integration/novitiates/artwork/icons/novitiates-icon-portrait.jpg",
+            "layers/integration/novitiates/artwork/icons/novitiates-icon-token-transparent.png",
+            "layers/integration/novitiates/artwork/icons/novitiates-icon-token.jpg"
+          ],
+          "modified": "2026-07-06T20:54:36.197414+00:00"
+        }
+      },
+      "completed": "2026-07-06T20:54:36.197430+00:00"
+    }
+  }
+}

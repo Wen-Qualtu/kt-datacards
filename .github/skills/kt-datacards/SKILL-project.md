@@ -38,6 +38,14 @@ ALL pipeline scripts MUST use Python's `logging` module exclusively.
 - ✅ `output_dir = workspace_root / "output"`
 - ❌ Hardcoded strings like `"c:/project/output"`
 
+### 3a. Never Persist Absolute Paths
+**Work spans multiple machines with different paths — absolute paths break.**
+Any path written into an artifact (JSON, metadata, manifest, output file) MUST be
+workspace-relative POSIX (relative to project root, forward slashes) or a URL.
+- ✅ `str(path.resolve().relative_to(ROOT)).replace("\\", "/")` → `"layers/shared/content/foo.json"`
+- ✅ URLs for remote references
+- ❌ `str(path)` → `"C:\\git\\kt-datacards\\..."` (machine-specific, breaks on other PCs)
+
 ### 4. Data Quality Over Speed
 Accuracy is paramount for stats extraction. Warn/error rather than produce wrong data.
 

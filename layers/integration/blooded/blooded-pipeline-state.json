@@ -1,0 +1,1103 @@
+{
+  "team": "blooded",
+  "pipeline_version": "2.0",
+  "last_updated": "2026-07-12T20:56:32.654291+00:00",
+  "steps": {
+    "content_analysis": {
+      "outputs": {
+        "content.json": {
+          "path": "layers/integration/blooded/content/blooded-content.json",
+          "hash": "f6b1333b4ef6c1bdc29497a2866b0694aa8ddfed69e061d7557d81a2ceb7a65e",
+          "modified": "2026-07-12T19:07:07.290391+00:00"
+        }
+      },
+      "completed": "2026-07-12T19:07:31.343861+00:00",
+      "inputs": {
+        "layers/integration/blooded/manifest.json": "f81600f38f332fb1158eb88c0c781480547f1500989ce4b525ec2522febd035f",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "layers/integration/blooded/blooded-datacard-traitor-brimstone-grenadier.pdf": "67dfd43ae04f676dad3d6e7eafe99c90cc5e234263d61e692949b9779efb2d29",
+        "layers/integration/blooded/blooded-datacard-traitor-butcher.pdf": "2b6683140ae92bad59a31159bb5bb15fe7472895d88a237192070a6522edc40a",
+        "layers/integration/blooded/blooded-datacard-traitor-chieftain.pdf": "3e6027ddeaff26ceb4198b262a99d790659c4a97c84a8eacdb84fb3fc0d22c6c",
+        "layers/integration/blooded/blooded-datacard-traitor-commsman.pdf": "6e72ec51c005ded8d287b51f474f1cc7bee3258a419f7736a1632fc2ff2240ad",
+        "layers/integration/blooded/blooded-datacard-traitor-corpseman.pdf": "cecc8813f40c4009074ea7391e636818e3188d97a46b8ce9cf9b4ec81f8c4980",
+        "layers/integration/blooded/blooded-datacard-traitor-enforcer.pdf": "871b7b7f31d440a7579bb83f7d6b99fb38d65a487bb7a0241c7b4e609f4607c4",
+        "layers/integration/blooded/blooded-datacard-traitor-flenser.pdf": "fc56684da52e0cefc9cdf6397fcfffd81d4c2a28f533e61ce092e2f0872b0404",
+        "layers/integration/blooded/blooded-datacard-traitor-gunner.pdf": "69eb12e9f8079c4635926c074afd2dd1afbc8ba905e52e48ec94e5f539b9a78a",
+        "layers/integration/blooded/blooded-datacard-traitor-ogryn.pdf": "87ad7cdeb116b37373b0ecba1c42d1d94444d7e01031f430671a93ca82e4d8d7",
+        "layers/integration/blooded/blooded-datacard-traitor-sharpshooter.pdf": "52a65fc2b504b446991c6a2f63b770149c6a5efc299216528f34d455dafba92e",
+        "layers/integration/blooded/blooded-datacard-traitor-thug.pdf": "b7de91fe039a2e45fc8455b41f1677b62a0d1ed6ecbf7b470d80cdba38bcc54c",
+        "layers/integration/blooded/blooded-datacard-traitor-trench-sweeper.pdf": "dac728102d9e3285cfe8dd1c2e942f0827b17d5587ba8fbb5702dd01498a1ea6",
+        "layers/integration/blooded/blooded-datacard-traitor-trooper.pdf": "24d6759d7f85fb058c97c9512580e032fe0924197455a51cd9d8173f86e5e420",
+        "layers/integration/blooded/blooded-equipment-chaos-sigil.pdf": "fcfbf7c008cca3f3c30fff0433d3769300903360c7b7e644d49a553241f7249d",
+        "layers/integration/blooded/blooded-equipment-sinister-trophies.pdf": "886a672f121351aa43fa68a9e58421f6b9f42a011f48bcdcb73bc6051fba7413",
+        "layers/integration/blooded/blooded-equipment-symbols-of-bloody-worship.pdf": "1af38a4b8fe534d0adbd2655459377aa5ed5309ba8add699788ca9796b9b715b",
+        "layers/integration/blooded/blooded-equipment-wicked-blades.pdf": "22de68c6041f0d599b52152c746b078fab45b5ddc3f32850dbf14c8cf4b76aee",
+        "layers/integration/blooded/blooded-faction-rule-blooded.pdf": "7964b3db124fea4d68974c1b20656053e0dd0acb413e54406ff9e3b635e016c7",
+        "layers/integration/blooded/blooded-firefight-ploy-callous-disregard.pdf": "f36a4af6661ce114f08368b06f66340d0c6d32b70fffe38fbf139e3a1378782c",
+        "layers/integration/blooded/blooded-firefight-ploy-dark-favour.pdf": "57496f4ad5031c9dd5f9f4aaf7a0784e6de2f59cb8ff2f1e4988165a56b2d61e",
+        "layers/integration/blooded/blooded-firefight-ploy-moment-of-repute.pdf": "ac5ae58659f177fa7ba78c6d4d7b4a81fa934240468a5b45a9d06735fcfdfea7",
+        "layers/integration/blooded/blooded-firefight-ploy-reward-earned.pdf": "67e40896097a5cf830f3bbc0b413233bbbc1ec46230ad40c6fff416779a87770",
+        "layers/integration/blooded/blooded-operatives-selection-operative-selection.pdf": "25e4f19e5b9af1bbc23fd2028994f90a0063e7fd294fe80632f51d80c589b071",
+        "layers/integration/blooded/blooded-strategy-ploy-bitter-demise.pdf": "fe12f6cf157f2a15c00faac68a2fde587b388befed7c7576eeca8b956075ed20",
+        "layers/integration/blooded/blooded-strategy-ploy-glory-kill.pdf": "93fc8a3bb002d648a5978f7324cfd846e770d4c41616242d4ab77493deee5b79",
+        "layers/integration/blooded/blooded-strategy-ploy-malevolent-grit.pdf": "6ba841ef475000f227f07b90642d5d1877d8c2a19576f5734be393304f41ccb7",
+        "layers/integration/blooded/blooded-strategy-ploy-reckless-aspirant.pdf": "422321346d35416cf9f40fa386336ad894f4eb5d33e04d145b926f6568e6a466",
+        "layers/integration/blooded/blooded-token-guide-token-guide.pdf": "c641e2bf4e7e8524b3ec2024a5af7349e4bcf6b7ed4a4bbf8ff8239803f36f9f"
+      }
+    },
+    "extract_backsides": {
+      "outputs": {
+        "backside-landscape.jpg": {
+          "path": "layers/integration/blooded/card-backside/blooded-backside-landscape.jpg",
+          "hash": "1d323badfde6ad79f22d54a3242d7063cd08fb2b90f9cba52b2b0e3ba6cad311",
+          "modified": "2026-07-12T18:43:01.895916+00:00"
+        },
+        "backside-portrait.jpg": {
+          "path": "layers/integration/blooded/card-backside/blooded-backside-portrait.jpg",
+          "hash": "7d2d43f09d3791be1ddfb050326ce06bdec321a5e6513cba5bfd08add983c370",
+          "modified": "2026-07-12T18:43:01.896990+00:00"
+        }
+      },
+      "completed": "2026-07-12T18:43:01.904809+00:00",
+      "inputs": {
+        "layers/integration/blooded/artwork/icons/blooded-icon-token.jpg": "a3f4e05e040fecbb17315ca1bfe34edeb3f9e0100ff770d9f646690776cfbecd",
+        "config/defaults/box/card-box-background.jpeg": "2dd1442a7c52ca1d66899333f678d60f48981ce20561ead77c1161d548176036"
+      }
+    },
+    "extract_tokens": {
+      "outputs": {
+        "tokens/blooded-a-name-whispered-in-blood.png": {
+          "path": "output/blooded/tokens/blooded-a-name-whispered-in-blood.png",
+          "hash": "212a3b86a3ff20b3702d6e9e14146ddd6d7605b8cdac3776c5eff031ac359bcd",
+          "modified": "2026-07-12T19:07:37.943065+00:00"
+        },
+        "tokens/blooded-blooded-icon.png": {
+          "path": "output/blooded/tokens/blooded-blooded-icon.png",
+          "hash": "d5a8408c3a0804a47a202099ac2e901a6d8996a59895bc903f235609ff5f7e3b",
+          "modified": "2026-07-12T19:07:37.945000+00:00"
+        },
+        "tokens/blooded-blooded.png": {
+          "path": "output/blooded/tokens/blooded-blooded.png",
+          "hash": "670f93132d042d771ea43c103ae52ef84c2e96a47afd514b62fb19255d66799e",
+          "modified": "2026-07-12T19:07:37.945560+00:00"
+        },
+        "tokens/blooded-diabolyk-bomb.png": {
+          "path": "output/blooded/tokens/blooded-diabolyk-bomb.png",
+          "hash": "24fcad168b2eb72d8416147eda5c8232b9d6705ecd61c3ee2ae408e6db9e9163",
+          "modified": "2026-07-12T19:07:37.946498+00:00"
+        },
+        "tokens/blooded-enraged-stimm.png": {
+          "path": "output/blooded/tokens/blooded-enraged-stimm.png",
+          "hash": "5d93f652129d86929939452b0ea499f53f4884a308d39ce59ffa44f7e45ea58f",
+          "modified": "2026-07-12T19:07:37.947271+00:00"
+        },
+        "tokens/blooded-fortified-stimm.png": {
+          "path": "output/blooded/tokens/blooded-fortified-stimm.png",
+          "hash": "0a8308dd8fdcc1f4604fc8bd2ff6f10256db9227024657bcbce53e33808e1a4a",
+          "modified": "2026-07-12T19:07:37.948260+00:00"
+        },
+        "tokens/blooded-glory-kill.png": {
+          "path": "output/blooded/tokens/blooded-glory-kill.png",
+          "hash": "6171f6c98b43c162eaaadaa8fc9eb9d22c3fd7ff5e2869101204956c0f905353",
+          "modified": "2026-07-12T19:07:37.948771+00:00"
+        },
+        "tokens/blooded-shielding.png": {
+          "path": "output/blooded/tokens/blooded-shielding.png",
+          "hash": "f63ac2a797fe9b7b20da6792310b582b5bb88711d33492f5069b4f24a15f2f24",
+          "modified": "2026-07-12T19:07:37.950257+00:00"
+        },
+        "tokens/blooded-under-the-gaze-of-the-gods.png": {
+          "path": "output/blooded/tokens/blooded-under-the-gaze-of-the-gods.png",
+          "hash": "2ee17c0bc4433acf602365780483cbcda149ba8982c89beb15ed1e122589b7aa",
+          "modified": "2026-07-12T19:07:37.960864+00:00"
+        },
+        "tokens/blooded-a-name-whispered-in-blood.obj": {
+          "path": "output/blooded/tokens/blooded-a-name-whispered-in-blood.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-12T19:07:37.963275+00:00"
+        },
+        "tokens/blooded-blooded-icon.obj": {
+          "path": "output/blooded/tokens/blooded-blooded-icon.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-12T19:07:37.964564+00:00"
+        },
+        "tokens/blooded-blooded.obj": {
+          "path": "output/blooded/tokens/blooded-blooded.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-12T19:07:37.965772+00:00"
+        },
+        "tokens/blooded-diabolyk-bomb.obj": {
+          "path": "output/blooded/tokens/blooded-diabolyk-bomb.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-12T19:07:37.968363+00:00"
+        },
+        "tokens/blooded-enraged-stimm.obj": {
+          "path": "output/blooded/tokens/blooded-enraged-stimm.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-12T19:07:37.972540+00:00"
+        },
+        "tokens/blooded-fortified-stimm.obj": {
+          "path": "output/blooded/tokens/blooded-fortified-stimm.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-12T19:07:37.978003+00:00"
+        },
+        "tokens/blooded-glory-kill.obj": {
+          "path": "output/blooded/tokens/blooded-glory-kill.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-12T19:07:37.982421+00:00"
+        },
+        "tokens/blooded-shielding.obj": {
+          "path": "output/blooded/tokens/blooded-shielding.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-12T19:07:37.992510+00:00"
+        },
+        "tokens/blooded-under-the-gaze-of-the-gods.obj": {
+          "path": "output/blooded/tokens/blooded-under-the-gaze-of-the-gods.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-12T19:07:37.997998+00:00"
+        },
+        "tokens/tokenbag/blooded-token-bag-icon.png": {
+          "path": "output/blooded/tokens/tokenbag/blooded-token-bag-icon.png",
+          "hash": "a3f4e05e040fecbb17315ca1bfe34edeb3f9e0100ff770d9f646690776cfbecd",
+          "modified": "2026-07-12T19:07:38.010892+00:00"
+        },
+        "tokens/tokenbag/blooded-token-bag.obj": {
+          "path": "output/blooded/tokens/tokenbag/blooded-token-bag.obj",
+          "hash": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+          "modified": "2026-07-12T19:07:38.015539+00:00"
+        },
+        "tokens/blooded-icon.png": {
+          "path": "output/blooded/tokens/blooded-icon.png",
+          "hash": "724fe3372a2ade74f32bf496437074f24883008c37dcf81cf5aa034ba488f72e",
+          "modified": "2026-07-12T19:07:37.949337+00:00"
+        },
+        "tokens/blooded-icon.obj": {
+          "path": "output/blooded/tokens/blooded-icon.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-12T19:07:37.987926+00:00"
+        }
+      },
+      "completed": "2026-07-12T19:08:10.144961+00:00",
+      "inputs": {
+        "layers/integration/blooded/manifest.json": "f81600f38f332fb1158eb88c0c781480547f1500989ce4b525ec2522febd035f",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "layers/integration/blooded/artwork/icons/blooded-icon-token.jpg": "a3f4e05e040fecbb17315ca1bfe34edeb3f9e0100ff770d9f646690776cfbecd",
+        "layers/integration/blooded/blooded-datacard-traitor-brimstone-grenadier.pdf": "67dfd43ae04f676dad3d6e7eafe99c90cc5e234263d61e692949b9779efb2d29",
+        "layers/integration/blooded/blooded-datacard-traitor-butcher.pdf": "2b6683140ae92bad59a31159bb5bb15fe7472895d88a237192070a6522edc40a",
+        "layers/integration/blooded/blooded-datacard-traitor-chieftain.pdf": "3e6027ddeaff26ceb4198b262a99d790659c4a97c84a8eacdb84fb3fc0d22c6c",
+        "layers/integration/blooded/blooded-datacard-traitor-commsman.pdf": "6e72ec51c005ded8d287b51f474f1cc7bee3258a419f7736a1632fc2ff2240ad",
+        "layers/integration/blooded/blooded-datacard-traitor-corpseman.pdf": "cecc8813f40c4009074ea7391e636818e3188d97a46b8ce9cf9b4ec81f8c4980",
+        "layers/integration/blooded/blooded-datacard-traitor-enforcer.pdf": "871b7b7f31d440a7579bb83f7d6b99fb38d65a487bb7a0241c7b4e609f4607c4",
+        "layers/integration/blooded/blooded-datacard-traitor-flenser.pdf": "fc56684da52e0cefc9cdf6397fcfffd81d4c2a28f533e61ce092e2f0872b0404",
+        "layers/integration/blooded/blooded-datacard-traitor-gunner.pdf": "69eb12e9f8079c4635926c074afd2dd1afbc8ba905e52e48ec94e5f539b9a78a",
+        "layers/integration/blooded/blooded-datacard-traitor-ogryn.pdf": "87ad7cdeb116b37373b0ecba1c42d1d94444d7e01031f430671a93ca82e4d8d7",
+        "layers/integration/blooded/blooded-datacard-traitor-sharpshooter.pdf": "52a65fc2b504b446991c6a2f63b770149c6a5efc299216528f34d455dafba92e",
+        "layers/integration/blooded/blooded-datacard-traitor-thug.pdf": "b7de91fe039a2e45fc8455b41f1677b62a0d1ed6ecbf7b470d80cdba38bcc54c",
+        "layers/integration/blooded/blooded-datacard-traitor-trench-sweeper.pdf": "dac728102d9e3285cfe8dd1c2e942f0827b17d5587ba8fbb5702dd01498a1ea6",
+        "layers/integration/blooded/blooded-datacard-traitor-trooper.pdf": "24d6759d7f85fb058c97c9512580e032fe0924197455a51cd9d8173f86e5e420",
+        "layers/integration/blooded/blooded-equipment-chaos-sigil.pdf": "fcfbf7c008cca3f3c30fff0433d3769300903360c7b7e644d49a553241f7249d",
+        "layers/integration/blooded/blooded-equipment-sinister-trophies.pdf": "886a672f121351aa43fa68a9e58421f6b9f42a011f48bcdcb73bc6051fba7413",
+        "layers/integration/blooded/blooded-equipment-symbols-of-bloody-worship.pdf": "1af38a4b8fe534d0adbd2655459377aa5ed5309ba8add699788ca9796b9b715b",
+        "layers/integration/blooded/blooded-equipment-wicked-blades.pdf": "22de68c6041f0d599b52152c746b078fab45b5ddc3f32850dbf14c8cf4b76aee",
+        "layers/integration/blooded/blooded-faction-rule-blooded.pdf": "7964b3db124fea4d68974c1b20656053e0dd0acb413e54406ff9e3b635e016c7",
+        "layers/integration/blooded/blooded-firefight-ploy-callous-disregard.pdf": "f36a4af6661ce114f08368b06f66340d0c6d32b70fffe38fbf139e3a1378782c",
+        "layers/integration/blooded/blooded-firefight-ploy-dark-favour.pdf": "57496f4ad5031c9dd5f9f4aaf7a0784e6de2f59cb8ff2f1e4988165a56b2d61e",
+        "layers/integration/blooded/blooded-firefight-ploy-moment-of-repute.pdf": "ac5ae58659f177fa7ba78c6d4d7b4a81fa934240468a5b45a9d06735fcfdfea7",
+        "layers/integration/blooded/blooded-firefight-ploy-reward-earned.pdf": "67e40896097a5cf830f3bbc0b413233bbbc1ec46230ad40c6fff416779a87770",
+        "layers/integration/blooded/blooded-operatives-selection-operative-selection.pdf": "25e4f19e5b9af1bbc23fd2028994f90a0063e7fd294fe80632f51d80c589b071",
+        "layers/integration/blooded/blooded-strategy-ploy-bitter-demise.pdf": "fe12f6cf157f2a15c00faac68a2fde587b388befed7c7576eeca8b956075ed20",
+        "layers/integration/blooded/blooded-strategy-ploy-glory-kill.pdf": "93fc8a3bb002d648a5978f7324cfd846e770d4c41616242d4ab77493deee5b79",
+        "layers/integration/blooded/blooded-strategy-ploy-malevolent-grit.pdf": "6ba841ef475000f227f07b90642d5d1877d8c2a19576f5734be393304f41ccb7",
+        "layers/integration/blooded/blooded-strategy-ploy-reckless-aspirant.pdf": "422321346d35416cf9f40fa386336ad894f4eb5d33e04d145b926f6568e6a466",
+        "layers/integration/blooded/blooded-token-guide-token-guide.pdf": "c641e2bf4e7e8524b3ec2024a5af7349e4bcf6b7ed4a4bbf8ff8239803f36f9f"
+      }
+    },
+    "generate_dice": {
+      "outputs": {
+        "dice-light.jpg": {
+          "path": "output/blooded/dice/blooded-dice-light.jpg",
+          "hash": "a52b4bee66829a06b81f78f1fb3e3ab752b14e4876388253e6a4b146d66566de",
+          "modified": "2026-07-12T18:43:59.705532+00:00"
+        },
+        "dice-dark.jpg": {
+          "path": "output/blooded/dice/blooded-dice-dark.jpg",
+          "hash": "e0001fc5e6866680638185552b22174f0d79a50f04023ddff79c787f35427b44",
+          "modified": "2026-07-12T18:43:59.729921+00:00"
+        },
+        "dice-team.jpg": {
+          "path": "output/blooded/dice/blooded-dice-team.jpg",
+          "hash": "0a3380708e01663db6769ede93f9f04a7213470680d75f10b328319d62e62f48",
+          "modified": "2026-07-12T18:43:59.748456+00:00"
+        }
+      },
+      "completed": "2026-07-12T18:43:59.769399+00:00",
+      "inputs": {
+        "layers/integration/blooded/artwork/icons/blooded-icon-token-transparent.png": "86407d66a077fbea07475c52922f981632f0944d50676422c2b3ccd02ce012a1",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41"
+      }
+    },
+    "generate_box_texture": {
+      "outputs": {
+        "card-box-texture.jpg": {
+          "path": "output/blooded/cardbox/blooded-card-box-texture.jpg",
+          "hash": "85b9be4b869cb49bff3454f7e8221c2261f0cb11b58e068d51ffe847bb4914d5",
+          "modified": "2026-07-12T18:44:25.366175+00:00"
+        },
+        "card-box.obj": {
+          "path": "output/blooded/cardbox/blooded-card-box.obj",
+          "hash": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+          "modified": "2026-07-12T18:44:26.108787+00:00"
+        }
+      },
+      "completed": "2026-07-12T18:44:33.374372+00:00",
+      "inputs": {
+        "layers/integration/blooded/artwork/icons/blooded-icon-token.jpg": "a3f4e05e040fecbb17315ca1bfe34edeb3f9e0100ff770d9f646690776cfbecd",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "config/defaults/box/card-box.obj": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+        "config/defaults/box/card-box-texture.jpg": "b2f310b01a0d28e8806e99ce0b972e8967e3014608eacefcb6ec51597695a313"
+      }
+    },
+    "generate_card_images": {
+      "outputs": {
+        "cards/datacards/traitor-brimstone-grenadier-back.jpg": {
+          "path": "output/blooded/cards/datacards/traitor-brimstone-grenadier-back.jpg",
+          "hash": "1d323badfde6ad79f22d54a3242d7063cd08fb2b90f9cba52b2b0e3ba6cad311",
+          "modified": "2026-07-12T19:09:59.657573+00:00"
+        },
+        "cards/datacards/traitor-brimstone-grenadier-front.jpg": {
+          "path": "output/blooded/cards/datacards/traitor-brimstone-grenadier-front.jpg",
+          "hash": "4566ccf96e5de13853f78f0ab8eb73ad45c445965001f5fd90ddea15a693ac67",
+          "modified": "2026-07-12T19:10:03.225317+00:00"
+        },
+        "cards/datacards/traitor-butcher-back.jpg": {
+          "path": "output/blooded/cards/datacards/traitor-butcher-back.jpg",
+          "hash": "1d323badfde6ad79f22d54a3242d7063cd08fb2b90f9cba52b2b0e3ba6cad311",
+          "modified": "2026-07-12T19:10:04.682505+00:00"
+        },
+        "cards/datacards/traitor-butcher-front.jpg": {
+          "path": "output/blooded/cards/datacards/traitor-butcher-front.jpg",
+          "hash": "a7f1e6e3f93659ab51a69b7b7f3f834efea54121dcfe971942fd567c2924e468",
+          "modified": "2026-07-12T19:10:06.208776+00:00"
+        },
+        "cards/datacards/traitor-chieftain-back.jpg": {
+          "path": "output/blooded/cards/datacards/traitor-chieftain-back.jpg",
+          "hash": "d9665daee875520bd0373e7b7c338a8ade0f40487221e8a68178c81e21ab20a2",
+          "modified": "2026-07-12T19:10:07.682973+00:00"
+        },
+        "cards/datacards/traitor-chieftain-front.jpg": {
+          "path": "output/blooded/cards/datacards/traitor-chieftain-front.jpg",
+          "hash": "0b5dbd27f3c13b91204c94ee55ae6f0527f39c7ac3418aaaeb0bb2e7740951af",
+          "modified": "2026-07-12T19:10:10.463176+00:00"
+        },
+        "cards/datacards/traitor-commsman-back.jpg": {
+          "path": "output/blooded/cards/datacards/traitor-commsman-back.jpg",
+          "hash": "1d323badfde6ad79f22d54a3242d7063cd08fb2b90f9cba52b2b0e3ba6cad311",
+          "modified": "2026-07-12T19:10:11.399595+00:00"
+        },
+        "cards/datacards/traitor-commsman-front.jpg": {
+          "path": "output/blooded/cards/datacards/traitor-commsman-front.jpg",
+          "hash": "7037f4ba6365b534192fa36214f80458b3d0eeb50220224aad32dd7c1db5336e",
+          "modified": "2026-07-12T19:10:12.152801+00:00"
+        },
+        "cards/datacards/traitor-corpseman-back.jpg": {
+          "path": "output/blooded/cards/datacards/traitor-corpseman-back.jpg",
+          "hash": "8830deb7b51f2ca3dcf9c3e11c1cc8bdb20a7b82697a0ea7455d8c6e8baca4cc",
+          "modified": "2026-07-12T19:10:12.154935+00:00"
+        },
+        "cards/datacards/traitor-corpseman-front.jpg": {
+          "path": "output/blooded/cards/datacards/traitor-corpseman-front.jpg",
+          "hash": "3b2f3a07c1229d3acaf13e2185645ed357bd52773b98cee796f2fbdddd349393",
+          "modified": "2026-07-12T19:10:12.825535+00:00"
+        },
+        "cards/datacards/traitor-enforcer-back.jpg": {
+          "path": "output/blooded/cards/datacards/traitor-enforcer-back.jpg",
+          "hash": "1d323badfde6ad79f22d54a3242d7063cd08fb2b90f9cba52b2b0e3ba6cad311",
+          "modified": "2026-07-12T19:10:13.498974+00:00"
+        },
+        "cards/datacards/traitor-enforcer-front.jpg": {
+          "path": "output/blooded/cards/datacards/traitor-enforcer-front.jpg",
+          "hash": "91ed697ec91f6f26496d9ab629504a57b9cf362a86d44bbcba1dea158b18f540",
+          "modified": "2026-07-12T19:10:13.504289+00:00"
+        },
+        "cards/datacards/traitor-flenser-back.jpg": {
+          "path": "output/blooded/cards/datacards/traitor-flenser-back.jpg",
+          "hash": "1d323badfde6ad79f22d54a3242d7063cd08fb2b90f9cba52b2b0e3ba6cad311",
+          "modified": "2026-07-12T19:10:14.183629+00:00"
+        },
+        "cards/datacards/traitor-flenser-front.jpg": {
+          "path": "output/blooded/cards/datacards/traitor-flenser-front.jpg",
+          "hash": "9412684aa5205ea4b32dec5dc41c195aa67d7e153facf3b54dbf37388f509208",
+          "modified": "2026-07-12T19:10:14.187972+00:00"
+        },
+        "cards/datacards/traitor-gunner-back.jpg": {
+          "path": "output/blooded/cards/datacards/traitor-gunner-back.jpg",
+          "hash": "1d323badfde6ad79f22d54a3242d7063cd08fb2b90f9cba52b2b0e3ba6cad311",
+          "modified": "2026-07-12T19:10:14.874649+00:00"
+        },
+        "cards/datacards/traitor-gunner-front.jpg": {
+          "path": "output/blooded/cards/datacards/traitor-gunner-front.jpg",
+          "hash": "faa678a635547e885aeee03658fce6785ca20e9d6ea4bbd05a92062571749096",
+          "modified": "2026-07-12T19:10:14.878493+00:00"
+        },
+        "cards/datacards/traitor-ogryn-back.jpg": {
+          "path": "output/blooded/cards/datacards/traitor-ogryn-back.jpg",
+          "hash": "1d323badfde6ad79f22d54a3242d7063cd08fb2b90f9cba52b2b0e3ba6cad311",
+          "modified": "2026-07-12T19:10:15.548859+00:00"
+        },
+        "cards/datacards/traitor-ogryn-front.jpg": {
+          "path": "output/blooded/cards/datacards/traitor-ogryn-front.jpg",
+          "hash": "4813eb1d51dc91c6e16dadb3c9cb10727adb83a97ca6d44bf10793bf2e8d5725",
+          "modified": "2026-07-12T19:10:15.555331+00:00"
+        },
+        "cards/datacards/traitor-sharpshooter-back.jpg": {
+          "path": "output/blooded/cards/datacards/traitor-sharpshooter-back.jpg",
+          "hash": "1d323badfde6ad79f22d54a3242d7063cd08fb2b90f9cba52b2b0e3ba6cad311",
+          "modified": "2026-07-12T19:10:16.150893+00:00"
+        },
+        "cards/datacards/traitor-sharpshooter-front.jpg": {
+          "path": "output/blooded/cards/datacards/traitor-sharpshooter-front.jpg",
+          "hash": "e0d9f5e1843a531cffbcd7a6920f7221fffae9ba9d30ce35e631c7f82aaea5a9",
+          "modified": "2026-07-12T19:10:16.211366+00:00"
+        },
+        "cards/datacards/traitor-thug-back.jpg": {
+          "path": "output/blooded/cards/datacards/traitor-thug-back.jpg",
+          "hash": "1d323badfde6ad79f22d54a3242d7063cd08fb2b90f9cba52b2b0e3ba6cad311",
+          "modified": "2026-07-12T19:10:16.867844+00:00"
+        },
+        "cards/datacards/traitor-thug-front.jpg": {
+          "path": "output/blooded/cards/datacards/traitor-thug-front.jpg",
+          "hash": "8005e0f712cab90d8fbdd973112221f7c099c1dc38c19b911de48c91faf2b2f8",
+          "modified": "2026-07-12T19:10:16.872647+00:00"
+        },
+        "cards/datacards/traitor-trench-sweeper-back.jpg": {
+          "path": "output/blooded/cards/datacards/traitor-trench-sweeper-back.jpg",
+          "hash": "1d323badfde6ad79f22d54a3242d7063cd08fb2b90f9cba52b2b0e3ba6cad311",
+          "modified": "2026-07-12T19:10:17.566822+00:00"
+        },
+        "cards/datacards/traitor-trench-sweeper-front.jpg": {
+          "path": "output/blooded/cards/datacards/traitor-trench-sweeper-front.jpg",
+          "hash": "dab5974edc650cb28edc1f5a51fb99a7617a1cbfbebbc2ab9697888f1db357b4",
+          "modified": "2026-07-12T19:10:17.571468+00:00"
+        },
+        "cards/datacards/traitor-trooper-back.jpg": {
+          "path": "output/blooded/cards/datacards/traitor-trooper-back.jpg",
+          "hash": "1d323badfde6ad79f22d54a3242d7063cd08fb2b90f9cba52b2b0e3ba6cad311",
+          "modified": "2026-07-12T19:10:18.275496+00:00"
+        },
+        "cards/datacards/traitor-trooper-front.jpg": {
+          "path": "output/blooded/cards/datacards/traitor-trooper-front.jpg",
+          "hash": "e1ab7e72f2dee790163f9a81a6ee4117e5ba4f76ad5e002d88fee1b8b700c2f2",
+          "modified": "2026-07-12T19:10:18.282083+00:00"
+        },
+        "cards/equipment/blooded-chaos-sigil-back.jpg": {
+          "path": "output/blooded/cards/equipment/blooded-chaos-sigil-back.jpg",
+          "hash": "7d2d43f09d3791be1ddfb050326ce06bdec321a5e6513cba5bfd08add983c370",
+          "modified": "2026-07-12T19:10:18.292512+00:00"
+        },
+        "cards/equipment/blooded-chaos-sigil-front.jpg": {
+          "path": "output/blooded/cards/equipment/blooded-chaos-sigil-front.jpg",
+          "hash": "4d18b0bbde0ffed2c88c47b2f5719ed28240e0dca3f89a31bf488cc967b04989",
+          "modified": "2026-07-12T19:10:18.299574+00:00"
+        },
+        "cards/equipment/blooded-sinister-trophies-back.jpg": {
+          "path": "output/blooded/cards/equipment/blooded-sinister-trophies-back.jpg",
+          "hash": "7d2d43f09d3791be1ddfb050326ce06bdec321a5e6513cba5bfd08add983c370",
+          "modified": "2026-07-12T19:10:18.307868+00:00"
+        },
+        "cards/equipment/blooded-sinister-trophies-front.jpg": {
+          "path": "output/blooded/cards/equipment/blooded-sinister-trophies-front.jpg",
+          "hash": "32b8ddd692cb2b1297db085b19ea8dcd0406719b47a85a7deab9bda9d272aebe",
+          "modified": "2026-07-12T19:10:18.318756+00:00"
+        },
+        "cards/equipment/blooded-symbols-of-bloody-worship-back.jpg": {
+          "path": "output/blooded/cards/equipment/blooded-symbols-of-bloody-worship-back.jpg",
+          "hash": "7d2d43f09d3791be1ddfb050326ce06bdec321a5e6513cba5bfd08add983c370",
+          "modified": "2026-07-12T19:10:18.330158+00:00"
+        },
+        "cards/equipment/blooded-symbols-of-bloody-worship-front.jpg": {
+          "path": "output/blooded/cards/equipment/blooded-symbols-of-bloody-worship-front.jpg",
+          "hash": "1a3ee219bf5130fbaada53527980a39e3eb27e5c953f1a62432eda340a920157",
+          "modified": "2026-07-12T19:10:18.343535+00:00"
+        },
+        "cards/equipment/blooded-wicked-blades-back.jpg": {
+          "path": "output/blooded/cards/equipment/blooded-wicked-blades-back.jpg",
+          "hash": "7d2d43f09d3791be1ddfb050326ce06bdec321a5e6513cba5bfd08add983c370",
+          "modified": "2026-07-12T19:10:18.356640+00:00"
+        },
+        "cards/equipment/blooded-wicked-blades-front.jpg": {
+          "path": "output/blooded/cards/equipment/blooded-wicked-blades-front.jpg",
+          "hash": "582bd95807e6ae801b344041301bc4fe899a970486e6fcbd21dbde09628dd25a",
+          "modified": "2026-07-12T19:10:18.365515+00:00"
+        },
+        "cards/faction_rules/blooded-blooded-back.jpg": {
+          "path": "output/blooded/cards/faction_rules/blooded-blooded-back.jpg",
+          "hash": "29222cbc6bda334153fb433024b86935f13f29dbdbba8cf09a0cabc4d4fda9ab",
+          "modified": "2026-07-12T19:10:18.372818+00:00"
+        },
+        "cards/faction_rules/blooded-blooded-front.jpg": {
+          "path": "output/blooded/cards/faction_rules/blooded-blooded-front.jpg",
+          "hash": "fc5bedde246838a7825cef45b070cf6c26505f8ca3bb5da6a6bc2de09bf5d610",
+          "modified": "2026-07-12T19:10:18.380870+00:00"
+        },
+        "cards/firefight_ploys/blooded-callous-disregard-back.jpg": {
+          "path": "output/blooded/cards/firefight_ploys/blooded-callous-disregard-back.jpg",
+          "hash": "7d2d43f09d3791be1ddfb050326ce06bdec321a5e6513cba5bfd08add983c370",
+          "modified": "2026-07-12T19:10:18.388269+00:00"
+        },
+        "cards/firefight_ploys/blooded-callous-disregard-front.jpg": {
+          "path": "output/blooded/cards/firefight_ploys/blooded-callous-disregard-front.jpg",
+          "hash": "6d1b9932757432285759546b97ccb97a2669665c3ebcc2866a8b2e696bae2d2c",
+          "modified": "2026-07-12T19:10:18.396402+00:00"
+        },
+        "cards/firefight_ploys/blooded-dark-favour-back.jpg": {
+          "path": "output/blooded/cards/firefight_ploys/blooded-dark-favour-back.jpg",
+          "hash": "7d2d43f09d3791be1ddfb050326ce06bdec321a5e6513cba5bfd08add983c370",
+          "modified": "2026-07-12T19:10:18.404544+00:00"
+        },
+        "cards/firefight_ploys/blooded-dark-favour-front.jpg": {
+          "path": "output/blooded/cards/firefight_ploys/blooded-dark-favour-front.jpg",
+          "hash": "0c84851edf49d67063c87492b6359696bd39a0ab73aeead0a515aafb99de1097",
+          "modified": "2026-07-12T19:10:18.408825+00:00"
+        },
+        "cards/firefight_ploys/blooded-moment-of-repute-back.jpg": {
+          "path": "output/blooded/cards/firefight_ploys/blooded-moment-of-repute-back.jpg",
+          "hash": "7d2d43f09d3791be1ddfb050326ce06bdec321a5e6513cba5bfd08add983c370",
+          "modified": "2026-07-12T19:10:18.419585+00:00"
+        },
+        "cards/firefight_ploys/blooded-moment-of-repute-front.jpg": {
+          "path": "output/blooded/cards/firefight_ploys/blooded-moment-of-repute-front.jpg",
+          "hash": "a471f888366c8180e795656c9e91d3445f6c9d0e72dfc4782864569431288f59",
+          "modified": "2026-07-12T19:10:18.432691+00:00"
+        },
+        "cards/firefight_ploys/blooded-reward-earned-back.jpg": {
+          "path": "output/blooded/cards/firefight_ploys/blooded-reward-earned-back.jpg",
+          "hash": "7d2d43f09d3791be1ddfb050326ce06bdec321a5e6513cba5bfd08add983c370",
+          "modified": "2026-07-12T19:10:18.444394+00:00"
+        },
+        "cards/firefight_ploys/blooded-reward-earned-front.jpg": {
+          "path": "output/blooded/cards/firefight_ploys/blooded-reward-earned-front.jpg",
+          "hash": "5a5913422a2919ed04616b0ea2532a118ec2efa303be7cae33330b31e490d6cf",
+          "modified": "2026-07-12T19:10:18.455839+00:00"
+        },
+        "cards/operatives_selection/blooded-operative-selection-back.jpg": {
+          "path": "output/blooded/cards/operatives_selection/blooded-operative-selection-back.jpg",
+          "hash": "6495cd5ee7a79f54a21631976637bf62e33f818f899241f31c12bd9a012bc887",
+          "modified": "2026-07-12T19:10:18.465810+00:00"
+        },
+        "cards/operatives_selection/blooded-operative-selection-front.jpg": {
+          "path": "output/blooded/cards/operatives_selection/blooded-operative-selection-front.jpg",
+          "hash": "91c9a7564522d7c825fd02d75ffbfffa01264c1133a09547558d23f353661154",
+          "modified": "2026-07-12T19:10:18.474112+00:00"
+        },
+        "cards/strategy_ploys/blooded-bitter-demise-back.jpg": {
+          "path": "output/blooded/cards/strategy_ploys/blooded-bitter-demise-back.jpg",
+          "hash": "7d2d43f09d3791be1ddfb050326ce06bdec321a5e6513cba5bfd08add983c370",
+          "modified": "2026-07-12T19:10:18.594285+00:00"
+        },
+        "cards/strategy_ploys/blooded-bitter-demise-front.jpg": {
+          "path": "output/blooded/cards/strategy_ploys/blooded-bitter-demise-front.jpg",
+          "hash": "dbce574c702bed7a159208de4ddb36d05503c577a19e5d1f6bf22eefd62f52a1",
+          "modified": "2026-07-12T19:10:18.933744+00:00"
+        },
+        "cards/strategy_ploys/blooded-glory-kill-back.jpg": {
+          "path": "output/blooded/cards/strategy_ploys/blooded-glory-kill-back.jpg",
+          "hash": "7d2d43f09d3791be1ddfb050326ce06bdec321a5e6513cba5bfd08add983c370",
+          "modified": "2026-07-12T19:10:19.205141+00:00"
+        },
+        "cards/strategy_ploys/blooded-glory-kill-front.jpg": {
+          "path": "output/blooded/cards/strategy_ploys/blooded-glory-kill-front.jpg",
+          "hash": "2943abe8d7849a6f06769c9086c65dfb66049ad1da633b7e38bece806614e683",
+          "modified": "2026-07-12T19:10:19.895086+00:00"
+        },
+        "cards/strategy_ploys/blooded-malevolent-grit-back.jpg": {
+          "path": "output/blooded/cards/strategy_ploys/blooded-malevolent-grit-back.jpg",
+          "hash": "7d2d43f09d3791be1ddfb050326ce06bdec321a5e6513cba5bfd08add983c370",
+          "modified": "2026-07-12T19:10:20.204538+00:00"
+        },
+        "cards/strategy_ploys/blooded-malevolent-grit-front.jpg": {
+          "path": "output/blooded/cards/strategy_ploys/blooded-malevolent-grit-front.jpg",
+          "hash": "5909b0cfa76cef421cc59bbae507e4ec8f27b4c6530a790c61cc9e518eafe138",
+          "modified": "2026-07-12T19:10:20.366324+00:00"
+        },
+        "cards/strategy_ploys/blooded-reckless-aspirant-back.jpg": {
+          "path": "output/blooded/cards/strategy_ploys/blooded-reckless-aspirant-back.jpg",
+          "hash": "7d2d43f09d3791be1ddfb050326ce06bdec321a5e6513cba5bfd08add983c370",
+          "modified": "2026-07-12T19:10:20.375372+00:00"
+        },
+        "cards/strategy_ploys/blooded-reckless-aspirant-front.jpg": {
+          "path": "output/blooded/cards/strategy_ploys/blooded-reckless-aspirant-front.jpg",
+          "hash": "4a24b7a96007739e5606594ec8e36e5d99387bdeb53c1fec01bdfbd7c643adc8",
+          "modified": "2026-07-12T19:10:20.379703+00:00"
+        },
+        "cards/token_guide/blooded-token-guide-back.jpg": {
+          "path": "output/blooded/cards/token_guide/blooded-token-guide-back.jpg",
+          "hash": "7d2d43f09d3791be1ddfb050326ce06bdec321a5e6513cba5bfd08add983c370",
+          "modified": "2026-07-12T19:10:20.389348+00:00"
+        },
+        "cards/token_guide/blooded-token-guide-front.jpg": {
+          "path": "output/blooded/cards/token_guide/blooded-token-guide-front.jpg",
+          "hash": "9474a5b0d6f40604529724b3eb0384d376201f5b5c3fc5c1c8e417111a390334",
+          "modified": "2026-07-12T19:10:20.392656+00:00"
+        }
+      },
+      "completed": "2026-07-12T19:10:23.533046+00:00",
+      "inputs": {
+        "layers/integration/blooded/manifest.json": "f81600f38f332fb1158eb88c0c781480547f1500989ce4b525ec2522febd035f",
+        "layers/integration/blooded/blooded-datacard-traitor-brimstone-grenadier.pdf": "67dfd43ae04f676dad3d6e7eafe99c90cc5e234263d61e692949b9779efb2d29",
+        "layers/integration/blooded/blooded-datacard-traitor-butcher.pdf": "2b6683140ae92bad59a31159bb5bb15fe7472895d88a237192070a6522edc40a",
+        "layers/integration/blooded/blooded-datacard-traitor-chieftain.pdf": "3e6027ddeaff26ceb4198b262a99d790659c4a97c84a8eacdb84fb3fc0d22c6c",
+        "layers/integration/blooded/blooded-datacard-traitor-commsman.pdf": "6e72ec51c005ded8d287b51f474f1cc7bee3258a419f7736a1632fc2ff2240ad",
+        "layers/integration/blooded/blooded-datacard-traitor-corpseman.pdf": "cecc8813f40c4009074ea7391e636818e3188d97a46b8ce9cf9b4ec81f8c4980",
+        "layers/integration/blooded/blooded-datacard-traitor-enforcer.pdf": "871b7b7f31d440a7579bb83f7d6b99fb38d65a487bb7a0241c7b4e609f4607c4",
+        "layers/integration/blooded/blooded-datacard-traitor-flenser.pdf": "fc56684da52e0cefc9cdf6397fcfffd81d4c2a28f533e61ce092e2f0872b0404",
+        "layers/integration/blooded/blooded-datacard-traitor-gunner.pdf": "69eb12e9f8079c4635926c074afd2dd1afbc8ba905e52e48ec94e5f539b9a78a",
+        "layers/integration/blooded/blooded-datacard-traitor-ogryn.pdf": "87ad7cdeb116b37373b0ecba1c42d1d94444d7e01031f430671a93ca82e4d8d7",
+        "layers/integration/blooded/blooded-datacard-traitor-sharpshooter.pdf": "52a65fc2b504b446991c6a2f63b770149c6a5efc299216528f34d455dafba92e",
+        "layers/integration/blooded/blooded-datacard-traitor-thug.pdf": "b7de91fe039a2e45fc8455b41f1677b62a0d1ed6ecbf7b470d80cdba38bcc54c",
+        "layers/integration/blooded/blooded-datacard-traitor-trench-sweeper.pdf": "dac728102d9e3285cfe8dd1c2e942f0827b17d5587ba8fbb5702dd01498a1ea6",
+        "layers/integration/blooded/blooded-datacard-traitor-trooper.pdf": "24d6759d7f85fb058c97c9512580e032fe0924197455a51cd9d8173f86e5e420",
+        "layers/integration/blooded/blooded-equipment-chaos-sigil.pdf": "fcfbf7c008cca3f3c30fff0433d3769300903360c7b7e644d49a553241f7249d",
+        "layers/integration/blooded/blooded-equipment-sinister-trophies.pdf": "886a672f121351aa43fa68a9e58421f6b9f42a011f48bcdcb73bc6051fba7413",
+        "layers/integration/blooded/blooded-equipment-symbols-of-bloody-worship.pdf": "1af38a4b8fe534d0adbd2655459377aa5ed5309ba8add699788ca9796b9b715b",
+        "layers/integration/blooded/blooded-equipment-wicked-blades.pdf": "22de68c6041f0d599b52152c746b078fab45b5ddc3f32850dbf14c8cf4b76aee",
+        "layers/integration/blooded/blooded-faction-rule-blooded.pdf": "7964b3db124fea4d68974c1b20656053e0dd0acb413e54406ff9e3b635e016c7",
+        "layers/integration/blooded/blooded-firefight-ploy-callous-disregard.pdf": "f36a4af6661ce114f08368b06f66340d0c6d32b70fffe38fbf139e3a1378782c",
+        "layers/integration/blooded/blooded-firefight-ploy-dark-favour.pdf": "57496f4ad5031c9dd5f9f4aaf7a0784e6de2f59cb8ff2f1e4988165a56b2d61e",
+        "layers/integration/blooded/blooded-firefight-ploy-moment-of-repute.pdf": "ac5ae58659f177fa7ba78c6d4d7b4a81fa934240468a5b45a9d06735fcfdfea7",
+        "layers/integration/blooded/blooded-firefight-ploy-reward-earned.pdf": "67e40896097a5cf830f3bbc0b413233bbbc1ec46230ad40c6fff416779a87770",
+        "layers/integration/blooded/blooded-operatives-selection-operative-selection.pdf": "25e4f19e5b9af1bbc23fd2028994f90a0063e7fd294fe80632f51d80c589b071",
+        "layers/integration/blooded/blooded-strategy-ploy-bitter-demise.pdf": "fe12f6cf157f2a15c00faac68a2fde587b388befed7c7576eeca8b956075ed20",
+        "layers/integration/blooded/blooded-strategy-ploy-glory-kill.pdf": "93fc8a3bb002d648a5978f7324cfd846e770d4c41616242d4ab77493deee5b79",
+        "layers/integration/blooded/blooded-strategy-ploy-malevolent-grit.pdf": "6ba841ef475000f227f07b90642d5d1877d8c2a19576f5734be393304f41ccb7",
+        "layers/integration/blooded/blooded-strategy-ploy-reckless-aspirant.pdf": "422321346d35416cf9f40fa386336ad894f4eb5d33e04d145b926f6568e6a466",
+        "layers/integration/blooded/blooded-token-guide-token-guide.pdf": "c641e2bf4e7e8524b3ec2024a5af7349e4bcf6b7ed4a4bbf8ff8239803f36f9f",
+        "layers/integration/blooded/card-backside/blooded-backside-portrait.jpg": "7d2d43f09d3791be1ddfb050326ce06bdec321a5e6513cba5bfd08add983c370",
+        "config/defaults/card-backside/default-backside-portrait.jpg": "f00ff15fa70005b9f804de08519e2e83485d7eaf78dfacea65dcef0eb1a29c22",
+        "layers/integration/blooded/card-backside/blooded-backside-landscape.jpg": "1d323badfde6ad79f22d54a3242d7063cd08fb2b90f9cba52b2b0e3ba6cad311",
+        "config/defaults/card-backside/default-backside-landscape.jpg": "1cf5580a1dff0c10adb1a286edad4479c487f3d2d698b0b8be84fe653039fd7e"
+      }
+    },
+    "extract_stats": {
+      "outputs": {
+        "team-data.json": {
+          "path": "output/blooded/data/blooded-team-data.json",
+          "hash": "f6b1333b4ef6c1bdc29497a2866b0694aa8ddfed69e061d7557d81a2ceb7a65e",
+          "modified": "2026-07-12T18:46:08.215395+00:00"
+        }
+      },
+      "completed": "2026-07-12T18:46:08.219812+00:00",
+      "inputs": {
+        "layers/integration/blooded/content/blooded-content.json": "f6b1333b4ef6c1bdc29497a2866b0694aa8ddfed69e061d7557d81a2ceb7a65e"
+      }
+    },
+    "generate_tts": {
+      "outputs": {
+        "tts_objects/Blooded Box.json": {
+          "path": "output/blooded/tts_objects/Blooded Box.json",
+          "hash": "a48bdf90ad4f050000b110f5cf386a00cada1c89572d5d756f62a6cc32041637",
+          "modified": "2026-07-12T20:56:32.318920+00:00"
+        },
+        "tts_objects/Blooded.json": {
+          "path": "output/blooded/tts_objects/Blooded.json",
+          "hash": "a40b7d9cdf0345a9be033aa6162c5b76d3843700be72c4729b48a5eb51c30e8c",
+          "modified": "2026-07-12T20:56:32.328541+00:00"
+        }
+      },
+      "completed": "2026-07-12T20:56:32.654281+00:00",
+      "inputs": {
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "config/team-guids.json": "1dea0eaf2c7d1c37c86aba088cdf876f0638d2dcaca162888fea8422c2d5c9db",
+        "output/blooded/cards/datacards/traitor-brimstone-grenadier-back.jpg": "1d323badfde6ad79f22d54a3242d7063cd08fb2b90f9cba52b2b0e3ba6cad311",
+        "output/blooded/cards/datacards/traitor-brimstone-grenadier-front.jpg": "4566ccf96e5de13853f78f0ab8eb73ad45c445965001f5fd90ddea15a693ac67",
+        "output/blooded/cards/datacards/traitor-butcher-back.jpg": "1d323badfde6ad79f22d54a3242d7063cd08fb2b90f9cba52b2b0e3ba6cad311",
+        "output/blooded/cards/datacards/traitor-butcher-front.jpg": "a7f1e6e3f93659ab51a69b7b7f3f834efea54121dcfe971942fd567c2924e468",
+        "output/blooded/cards/datacards/traitor-chieftain-back.jpg": "d9665daee875520bd0373e7b7c338a8ade0f40487221e8a68178c81e21ab20a2",
+        "output/blooded/cards/datacards/traitor-chieftain-front.jpg": "0b5dbd27f3c13b91204c94ee55ae6f0527f39c7ac3418aaaeb0bb2e7740951af",
+        "output/blooded/cards/datacards/traitor-commsman-back.jpg": "1d323badfde6ad79f22d54a3242d7063cd08fb2b90f9cba52b2b0e3ba6cad311",
+        "output/blooded/cards/datacards/traitor-commsman-front.jpg": "7037f4ba6365b534192fa36214f80458b3d0eeb50220224aad32dd7c1db5336e",
+        "output/blooded/cards/datacards/traitor-corpseman-back.jpg": "8830deb7b51f2ca3dcf9c3e11c1cc8bdb20a7b82697a0ea7455d8c6e8baca4cc",
+        "output/blooded/cards/datacards/traitor-corpseman-front.jpg": "3b2f3a07c1229d3acaf13e2185645ed357bd52773b98cee796f2fbdddd349393",
+        "output/blooded/cards/datacards/traitor-enforcer-back.jpg": "1d323badfde6ad79f22d54a3242d7063cd08fb2b90f9cba52b2b0e3ba6cad311",
+        "output/blooded/cards/datacards/traitor-enforcer-front.jpg": "91ed697ec91f6f26496d9ab629504a57b9cf362a86d44bbcba1dea158b18f540",
+        "output/blooded/cards/datacards/traitor-flenser-back.jpg": "1d323badfde6ad79f22d54a3242d7063cd08fb2b90f9cba52b2b0e3ba6cad311",
+        "output/blooded/cards/datacards/traitor-flenser-front.jpg": "9412684aa5205ea4b32dec5dc41c195aa67d7e153facf3b54dbf37388f509208",
+        "output/blooded/cards/datacards/traitor-gunner-back.jpg": "1d323badfde6ad79f22d54a3242d7063cd08fb2b90f9cba52b2b0e3ba6cad311",
+        "output/blooded/cards/datacards/traitor-gunner-front.jpg": "faa678a635547e885aeee03658fce6785ca20e9d6ea4bbd05a92062571749096",
+        "output/blooded/cards/datacards/traitor-ogryn-back.jpg": "1d323badfde6ad79f22d54a3242d7063cd08fb2b90f9cba52b2b0e3ba6cad311",
+        "output/blooded/cards/datacards/traitor-ogryn-front.jpg": "4813eb1d51dc91c6e16dadb3c9cb10727adb83a97ca6d44bf10793bf2e8d5725",
+        "output/blooded/cards/datacards/traitor-sharpshooter-back.jpg": "1d323badfde6ad79f22d54a3242d7063cd08fb2b90f9cba52b2b0e3ba6cad311",
+        "output/blooded/cards/datacards/traitor-sharpshooter-front.jpg": "e0d9f5e1843a531cffbcd7a6920f7221fffae9ba9d30ce35e631c7f82aaea5a9",
+        "output/blooded/cards/datacards/traitor-thug-back.jpg": "1d323badfde6ad79f22d54a3242d7063cd08fb2b90f9cba52b2b0e3ba6cad311",
+        "output/blooded/cards/datacards/traitor-thug-front.jpg": "8005e0f712cab90d8fbdd973112221f7c099c1dc38c19b911de48c91faf2b2f8",
+        "output/blooded/cards/datacards/traitor-trench-sweeper-back.jpg": "1d323badfde6ad79f22d54a3242d7063cd08fb2b90f9cba52b2b0e3ba6cad311",
+        "output/blooded/cards/datacards/traitor-trench-sweeper-front.jpg": "dab5974edc650cb28edc1f5a51fb99a7617a1cbfbebbc2ab9697888f1db357b4",
+        "output/blooded/cards/datacards/traitor-trooper-back.jpg": "1d323badfde6ad79f22d54a3242d7063cd08fb2b90f9cba52b2b0e3ba6cad311",
+        "output/blooded/cards/datacards/traitor-trooper-front.jpg": "e1ab7e72f2dee790163f9a81a6ee4117e5ba4f76ad5e002d88fee1b8b700c2f2",
+        "output/blooded/cards/equipment/blooded-chaos-sigil-back.jpg": "7d2d43f09d3791be1ddfb050326ce06bdec321a5e6513cba5bfd08add983c370",
+        "output/blooded/cards/equipment/blooded-chaos-sigil-front.jpg": "4d18b0bbde0ffed2c88c47b2f5719ed28240e0dca3f89a31bf488cc967b04989",
+        "output/blooded/cards/equipment/blooded-sinister-trophies-back.jpg": "7d2d43f09d3791be1ddfb050326ce06bdec321a5e6513cba5bfd08add983c370",
+        "output/blooded/cards/equipment/blooded-sinister-trophies-front.jpg": "32b8ddd692cb2b1297db085b19ea8dcd0406719b47a85a7deab9bda9d272aebe",
+        "output/blooded/cards/equipment/blooded-symbols-of-bloody-worship-back.jpg": "7d2d43f09d3791be1ddfb050326ce06bdec321a5e6513cba5bfd08add983c370",
+        "output/blooded/cards/equipment/blooded-symbols-of-bloody-worship-front.jpg": "1a3ee219bf5130fbaada53527980a39e3eb27e5c953f1a62432eda340a920157",
+        "output/blooded/cards/equipment/blooded-wicked-blades-back.jpg": "7d2d43f09d3791be1ddfb050326ce06bdec321a5e6513cba5bfd08add983c370",
+        "output/blooded/cards/equipment/blooded-wicked-blades-front.jpg": "582bd95807e6ae801b344041301bc4fe899a970486e6fcbd21dbde09628dd25a",
+        "output/blooded/cards/faction_rules/blooded-blooded-back.jpg": "29222cbc6bda334153fb433024b86935f13f29dbdbba8cf09a0cabc4d4fda9ab",
+        "output/blooded/cards/faction_rules/blooded-blooded-front.jpg": "fc5bedde246838a7825cef45b070cf6c26505f8ca3bb5da6a6bc2de09bf5d610",
+        "output/blooded/cards/firefight_ploys/blooded-callous-disregard-back.jpg": "7d2d43f09d3791be1ddfb050326ce06bdec321a5e6513cba5bfd08add983c370",
+        "output/blooded/cards/firefight_ploys/blooded-callous-disregard-front.jpg": "6d1b9932757432285759546b97ccb97a2669665c3ebcc2866a8b2e696bae2d2c",
+        "output/blooded/cards/firefight_ploys/blooded-dark-favour-back.jpg": "7d2d43f09d3791be1ddfb050326ce06bdec321a5e6513cba5bfd08add983c370",
+        "output/blooded/cards/firefight_ploys/blooded-dark-favour-front.jpg": "0c84851edf49d67063c87492b6359696bd39a0ab73aeead0a515aafb99de1097",
+        "output/blooded/cards/firefight_ploys/blooded-moment-of-repute-back.jpg": "7d2d43f09d3791be1ddfb050326ce06bdec321a5e6513cba5bfd08add983c370",
+        "output/blooded/cards/firefight_ploys/blooded-moment-of-repute-front.jpg": "a471f888366c8180e795656c9e91d3445f6c9d0e72dfc4782864569431288f59",
+        "output/blooded/cards/firefight_ploys/blooded-reward-earned-back.jpg": "7d2d43f09d3791be1ddfb050326ce06bdec321a5e6513cba5bfd08add983c370",
+        "output/blooded/cards/firefight_ploys/blooded-reward-earned-front.jpg": "5a5913422a2919ed04616b0ea2532a118ec2efa303be7cae33330b31e490d6cf",
+        "output/blooded/cards/operatives_selection/blooded-operative-selection-back.jpg": "6495cd5ee7a79f54a21631976637bf62e33f818f899241f31c12bd9a012bc887",
+        "output/blooded/cards/operatives_selection/blooded-operative-selection-front.jpg": "91c9a7564522d7c825fd02d75ffbfffa01264c1133a09547558d23f353661154",
+        "output/blooded/cards/strategy_ploys/blooded-bitter-demise-back.jpg": "7d2d43f09d3791be1ddfb050326ce06bdec321a5e6513cba5bfd08add983c370",
+        "output/blooded/cards/strategy_ploys/blooded-bitter-demise-front.jpg": "dbce574c702bed7a159208de4ddb36d05503c577a19e5d1f6bf22eefd62f52a1",
+        "output/blooded/cards/strategy_ploys/blooded-glory-kill-back.jpg": "7d2d43f09d3791be1ddfb050326ce06bdec321a5e6513cba5bfd08add983c370",
+        "output/blooded/cards/strategy_ploys/blooded-glory-kill-front.jpg": "2943abe8d7849a6f06769c9086c65dfb66049ad1da633b7e38bece806614e683",
+        "output/blooded/cards/strategy_ploys/blooded-malevolent-grit-back.jpg": "7d2d43f09d3791be1ddfb050326ce06bdec321a5e6513cba5bfd08add983c370",
+        "output/blooded/cards/strategy_ploys/blooded-malevolent-grit-front.jpg": "5909b0cfa76cef421cc59bbae507e4ec8f27b4c6530a790c61cc9e518eafe138",
+        "output/blooded/cards/strategy_ploys/blooded-reckless-aspirant-back.jpg": "7d2d43f09d3791be1ddfb050326ce06bdec321a5e6513cba5bfd08add983c370",
+        "output/blooded/cards/strategy_ploys/blooded-reckless-aspirant-front.jpg": "4a24b7a96007739e5606594ec8e36e5d99387bdeb53c1fec01bdfbd7c643adc8",
+        "output/blooded/cards/token_guide/blooded-token-guide-back.jpg": "7d2d43f09d3791be1ddfb050326ce06bdec321a5e6513cba5bfd08add983c370",
+        "output/blooded/cards/token_guide/blooded-token-guide-front.jpg": "9474a5b0d6f40604529724b3eb0384d376201f5b5c3fc5c1c8e417111a390334",
+        "output/blooded/cardbox/blooded-card-box-texture.jpg": "85b9be4b869cb49bff3454f7e8221c2261f0cb11b58e068d51ffe847bb4914d5",
+        "output/blooded/cardbox/blooded-card-box.obj": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+        "output/blooded/tokens/blooded-a-name-whispered-in-blood.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/blooded/tokens/blooded-a-name-whispered-in-blood.png": "212a3b86a3ff20b3702d6e9e14146ddd6d7605b8cdac3776c5eff031ac359bcd",
+        "output/blooded/tokens/blooded-blooded-icon.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/blooded/tokens/blooded-blooded-icon.png": "d5a8408c3a0804a47a202099ac2e901a6d8996a59895bc903f235609ff5f7e3b",
+        "output/blooded/tokens/blooded-blooded.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/blooded/tokens/blooded-blooded.png": "670f93132d042d771ea43c103ae52ef84c2e96a47afd514b62fb19255d66799e",
+        "output/blooded/tokens/blooded-diabolyk-bomb.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/blooded/tokens/blooded-diabolyk-bomb.png": "24fcad168b2eb72d8416147eda5c8232b9d6705ecd61c3ee2ae408e6db9e9163",
+        "output/blooded/tokens/blooded-enraged-stimm.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/blooded/tokens/blooded-enraged-stimm.png": "5d93f652129d86929939452b0ea499f53f4884a308d39ce59ffa44f7e45ea58f",
+        "output/blooded/tokens/blooded-fortified-stimm.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/blooded/tokens/blooded-fortified-stimm.png": "0a8308dd8fdcc1f4604fc8bd2ff6f10256db9227024657bcbce53e33808e1a4a",
+        "output/blooded/tokens/blooded-glory-kill.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/blooded/tokens/blooded-glory-kill.png": "6171f6c98b43c162eaaadaa8fc9eb9d22c3fd7ff5e2869101204956c0f905353",
+        "output/blooded/tokens/blooded-icon.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/blooded/tokens/blooded-icon.png": "724fe3372a2ade74f32bf496437074f24883008c37dcf81cf5aa034ba488f72e",
+        "output/blooded/tokens/blooded-shielding.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/blooded/tokens/blooded-shielding.png": "f63ac2a797fe9b7b20da6792310b582b5bb88711d33492f5069b4f24a15f2f24",
+        "output/blooded/tokens/blooded-under-the-gaze-of-the-gods.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/blooded/tokens/blooded-under-the-gaze-of-the-gods.png": "2ee17c0bc4433acf602365780483cbcda149ba8982c89beb15ed1e122589b7aa",
+        "output/blooded/tokens/tokenbag/blooded-token-bag-icon.png": "a3f4e05e040fecbb17315ca1bfe34edeb3f9e0100ff770d9f646690776cfbecd",
+        "output/blooded/tokens/tokenbag/blooded-token-bag.obj": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+        "output/blooded/dice/blooded-dice-dark.jpg": "e0001fc5e6866680638185552b22174f0d79a50f04023ddff79c787f35427b44",
+        "output/blooded/dice/blooded-dice-light.jpg": "a52b4bee66829a06b81f78f1fb3e3ab752b14e4876388253e6a4b146d66566de",
+        "output/blooded/dice/blooded-dice-team.jpg": "0a3380708e01663db6769ede93f9f04a7213470680d75f10b328319d62e62f48",
+        "output/blooded/data/blooded-team-data.json": "f6b1333b4ef6c1bdc29497a2866b0694aa8ddfed69e061d7557d81a2ceb7a65e",
+        "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
+        "config/defaults/tts-script/datacard-load-stats.lua": "2d5f4088c2ff09f54988cf8722080f536b4e1b998cc2b4c1f1ea94e6b18eb92e",
+        "config/defaults/tts-script/display-table-manager-script.lua": "0dab4381078d90802f25e2cc825bc3658be35ee13ab3e98831c9d248c2526689",
+        "config/defaults/tts-script/faction-rule-chapter-tactics.lua": "c906742268076fb91f7cb4a92c6b588e1122ccddb692688f635c8dd4f7110ad0",
+        "config/defaults/tts-script/intermediate-updater.lua": "1a2d6dbc1a8c9c57ba6a3e7a3d4bc4b7a38a6c242a93f6ef3dae698123384d35",
+        "config/defaults/tts-script/single-object-updater.lua": "3613b85169e986a8e50ebe221482079e27c18037e3f48920aa0f7e138c0ccacc",
+        "config/defaults/tts-script/team-spawner-clean-script.lua": "12457bff3961eee2293c42d81cf4f4eb8b103177245a1ab8b46fd65da40672a2",
+        "config/defaults/tts-script/team-spawner-script.lua": "a51ff45c8622923db909fb465781801511f235412f099f83dff728d4027650db",
+        "config/defaults/tts-script/tts-update-rules-in-box-script.lua": "84f7f9b260f4e4968d208953b534bdbb7ab0b2f475e13264a2407f6c4d4d2b03",
+        "config/defaults/tts-image/default-icon.png": "892aff2628b9685c813e77be05c66afc1dc4247bc1dc9ce6fe54f006c2608271",
+        "config/defaults/tts-image/spawner-token.png": "61903b093f01d834f5e4c4c069b1353ecf7d29f012fef914b3027266816d8a6b",
+        "config/defaults/tts-token/square-bag-mesh.obj": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+        "config/defaults/tts-token/template-diamond-cutter.png": "719f57ba2b86494be454a6d3d25d8567dde974a915f3dde5ddc0e2d8dafaa1a5",
+        "config/defaults/tts-token/template-octagon-cutter.png": "944632aeacab978293ae57758b63086166c5fbaf3b845f48b3dd61db67d5c076",
+        "config/defaults/tts-token/template-operative-cutter.png": "0e698ddd403d7f0e84f200eb42af73f5249a9c5539d773298ff4c700ac9fe153",
+        "config/defaults/tts-token/template-round-cutter.png": "6564e1451c9a135a1c756fd94cde1c71e373e3fa677b51bba9d4bbe9e795d544",
+        "config/defaults/tts-token/token-bag-script.lua": "1659887e0fbfb9e3ebbc1aa5f3df8e1ffd89ee192be24d2dd1f02fcb0407e486",
+        "config/defaults/tts-token/token-bg-sample.png": "f9f90664c7f1c877c6f050f6e85babde6523cdc0aed9c77de8c09214f44ee109",
+        "config/defaults/tts-token/token-mesh.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc"
+      }
+    },
+    "front_end": {
+      "outputs": {},
+      "sources": {
+        "faction-rules": {
+          "hash": "7f48fc692df0c04e890112d55053a5730ba52224f1cdea23f651f45ab82bffce",
+          "outputs": [
+            "layers/kt-app/extracted/blooded/cards/faction-rules/blooded-faction-rules-page_0.pdf",
+            "layers/kt-app/extracted/blooded/cards/faction-rules/blooded-faction-rules-page_1.pdf",
+            "layers/kt-app/extracted/blooded/cards/faction-rules/blooded-faction-rules-page_2.pdf"
+          ],
+          "modified": "2026-07-06T16:00:31.500314+00:00"
+        },
+        "datacards": {
+          "hash": "5331a710fa35ffd7f4bd5a4bd300d09d4b8c28e2b3aa6990d677a7f04c783cb8",
+          "outputs": [
+            "layers/kt-app/extracted/blooded/cards/datacards/blooded-datacards-page_0.pdf",
+            "layers/kt-app/extracted/blooded/cards/datacards/blooded-datacards-page_1.pdf",
+            "layers/kt-app/extracted/blooded/cards/datacards/blooded-datacards-page_2.pdf",
+            "layers/kt-app/extracted/blooded/cards/datacards/blooded-datacards-page_3.pdf",
+            "layers/kt-app/extracted/blooded/cards/datacards/blooded-datacards-page_4.pdf",
+            "layers/kt-app/extracted/blooded/cards/datacards/blooded-datacards-page_5.pdf",
+            "layers/kt-app/extracted/blooded/cards/datacards/blooded-datacards-page_6.pdf",
+            "layers/kt-app/extracted/blooded/cards/datacards/blooded-datacards-page_7.pdf",
+            "layers/kt-app/extracted/blooded/cards/datacards/blooded-datacards-page_8.pdf",
+            "layers/kt-app/extracted/blooded/cards/datacards/blooded-datacards-page_9.pdf",
+            "layers/kt-app/extracted/blooded/cards/datacards/blooded-datacards-page_10.pdf",
+            "layers/kt-app/extracted/blooded/cards/datacards/blooded-datacards-page_11.pdf",
+            "layers/kt-app/extracted/blooded/cards/datacards/blooded-datacards-page_12.pdf",
+            "layers/kt-app/extracted/blooded/cards/datacards/blooded-datacards-page_13.pdf",
+            "layers/kt-app/extracted/blooded/cards/datacards/blooded-datacards-page_14.pdf"
+          ],
+          "modified": "2026-07-06T16:02:18.376839+00:00"
+        },
+        "equipment": {
+          "hash": "8934172547843c829b8596e3a61b5c24a4b84d811fd06231661503a0d8ddfe9d",
+          "outputs": [
+            "layers/kt-app/extracted/blooded/cards/equipment/blooded-equipment-page_0.pdf",
+            "layers/kt-app/extracted/blooded/cards/equipment/blooded-equipment-page_1.pdf",
+            "layers/kt-app/extracted/blooded/cards/equipment/blooded-equipment-page_2.pdf",
+            "layers/kt-app/extracted/blooded/cards/equipment/blooded-equipment-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:04:14.706562+00:00"
+        },
+        "operatives-selection": {
+          "hash": "4b6873473a5999abe987165054a5c38634ca679f3f5a5f4a6f45720c16bd08cd",
+          "outputs": [
+            "layers/kt-app/extracted/blooded/cards/operatives-selection/blooded-operatives-selection-page_0.pdf",
+            "layers/kt-app/extracted/blooded/cards/operatives-selection/blooded-operatives-selection-page_1.pdf"
+          ],
+          "modified": "2026-07-06T16:06:43.240780+00:00"
+        },
+        "strategy-ploys": {
+          "hash": "dcc8192c85f77cf5be72cffe33430ffdce8e6ac426fc4910637e7499a962bcc2",
+          "outputs": [
+            "layers/kt-app/extracted/blooded/cards/strategy-ploys/blooded-strategy-ploys-page_0.pdf",
+            "layers/kt-app/extracted/blooded/cards/strategy-ploys/blooded-strategy-ploys-page_1.pdf",
+            "layers/kt-app/extracted/blooded/cards/strategy-ploys/blooded-strategy-ploys-page_2.pdf",
+            "layers/kt-app/extracted/blooded/cards/strategy-ploys/blooded-strategy-ploys-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:08:23.900624+00:00"
+        },
+        "firefight-ploys": {
+          "hash": "a68729e90e0f72f5898d43d6cd59e0059581fb21e3f5e85ebe226e4e55d76e11",
+          "outputs": [
+            "layers/kt-app/extracted/blooded/cards/firefight-ploys/blooded-firefight-ploys-page_0.pdf",
+            "layers/kt-app/extracted/blooded/cards/firefight-ploys/blooded-firefight-ploys-page_1.pdf",
+            "layers/kt-app/extracted/blooded/cards/firefight-ploys/blooded-firefight-ploys-page_2.pdf",
+            "layers/kt-app/extracted/blooded/cards/firefight-ploys/blooded-firefight-ploys-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:10:10.966295+00:00"
+        },
+        "cards": {
+          "hash": "0bf0ae64b0879aa17d1b516f2336e11ca199a4f6c426e552b3c3fae35a95ad6a",
+          "outputs": [
+            "layers/warcom/extracted/blooded/cards/blooded_page01_card1_landscape.pdf",
+            "layers/warcom/extracted/blooded/cards/blooded_page01_card2_landscape.pdf",
+            "layers/warcom/extracted/blooded/cards/blooded_page01_card3_landscape.pdf",
+            "layers/warcom/extracted/blooded/cards/blooded_page01_card4_landscape.pdf",
+            "layers/warcom/extracted/blooded/cards/blooded_page02_card1_landscape.pdf",
+            "layers/warcom/extracted/blooded/cards/blooded_page02_card2_landscape.pdf",
+            "layers/warcom/extracted/blooded/cards/blooded_page02_card3_landscape.pdf",
+            "layers/warcom/extracted/blooded/cards/blooded_page02_card4_landscape.pdf",
+            "layers/warcom/extracted/blooded/cards/blooded_page03_card1_landscape.pdf",
+            "layers/warcom/extracted/blooded/cards/blooded_page03_card2_landscape.pdf",
+            "layers/warcom/extracted/blooded/cards/blooded_page03_card3_landscape.pdf",
+            "layers/warcom/extracted/blooded/cards/blooded_page03_card4_landscape.pdf",
+            "layers/warcom/extracted/blooded/cards/blooded_page04_card1_landscape.pdf",
+            "layers/warcom/extracted/blooded/cards/blooded_page04_card2_landscape.pdf",
+            "layers/warcom/extracted/blooded/cards/blooded_page04_card3_landscape.pdf",
+            "layers/warcom/extracted/blooded/cards/blooded_page04_card4_landscape.pdf",
+            "layers/warcom/extracted/blooded/cards/blooded_page05_card1_portrait.pdf",
+            "layers/warcom/extracted/blooded/cards/blooded_page05_card2_portrait.pdf",
+            "layers/warcom/extracted/blooded/cards/blooded_page05_card3_portrait.pdf",
+            "layers/warcom/extracted/blooded/cards/blooded_page05_card4_portrait.pdf",
+            "layers/warcom/extracted/blooded/cards/blooded_page06_card1_portrait.pdf",
+            "layers/warcom/extracted/blooded/cards/blooded_page06_card2_portrait.pdf",
+            "layers/warcom/extracted/blooded/cards/blooded_page06_card3_portrait.pdf",
+            "layers/warcom/extracted/blooded/cards/blooded_page06_card4_portrait.pdf",
+            "layers/warcom/extracted/blooded/cards/blooded_page07_card1_portrait.pdf",
+            "layers/warcom/extracted/blooded/cards/blooded_page07_card2_portrait.pdf",
+            "layers/warcom/extracted/blooded/cards/blooded_page07_card3_portrait.pdf",
+            "layers/warcom/extracted/blooded/cards/blooded_page07_card4_portrait.pdf",
+            "layers/warcom/extracted/blooded/cards/blooded_page08_card1_portrait.pdf",
+            "layers/warcom/extracted/blooded/cards/blooded_page08_card2_portrait.pdf",
+            "layers/warcom/extracted/blooded/cards/blooded_page08_card3_portrait.pdf",
+            "layers/warcom/extracted/blooded/cards/blooded_page08_card4_portrait.pdf",
+            "layers/warcom/extracted/blooded/cards/blooded_page09_card1_portrait.pdf",
+            "layers/warcom/extracted/blooded/cards/blooded_page09_card2_portrait.pdf",
+            "layers/warcom/extracted/blooded/cards/blooded_page09_card3_portrait.pdf",
+            "layers/warcom/extracted/blooded/cards/blooded_page09_card4_portrait.pdf"
+          ],
+          "modified": "2026-07-08T19:01:39.737156+00:00"
+        }
+      },
+      "completed": "2026-07-08T19:01:39.737213+00:00"
+    },
+    "build_structure": {
+      "outputs": {
+        "structure": {
+          "path": "layers/warcom/structure/blooded-structure.json",
+          "hash": "f81600f38f332fb1158eb88c0c781480547f1500989ce4b525ec2522febd035f",
+          "modified": "2026-07-12T18:42:00.660564+00:00"
+        }
+      },
+      "inputs": {
+        "layers/warcom/extracted/blooded/cards/blooded_page01_card1_landscape.pdf": "6543c41f0a74b57993e536837e9c07e7381c3cbc7044f200f020e636b32e7b37",
+        "layers/warcom/extracted/blooded/cards/blooded_page01_card2_landscape.pdf": "ff1c62d1449319d50317b4acfe011d43056a67d18d3622c710460748d2e97db8",
+        "layers/warcom/extracted/blooded/cards/blooded_page01_card3_landscape.pdf": "123434576e505ea25987e6df6f8053af6f7e9dbfee7f5dacb0848c566bfbfed9",
+        "layers/warcom/extracted/blooded/cards/blooded_page01_card4_landscape.pdf": "ef010d110e3c1229b42a0ed62de0d25e9b011734f02323f180dfe1794c310a11",
+        "layers/warcom/extracted/blooded/cards/blooded_page02_card1_landscape.pdf": "be3e45897a64d2a9f0f7a074d37b65af73c5c54f4c3695f7a7bc32b2590d7187",
+        "layers/warcom/extracted/blooded/cards/blooded_page02_card2_landscape.pdf": "58c529de612a183d453b68d8c0682dd08b2d86c4a05f524dfc3ac2c54dd9a780",
+        "layers/warcom/extracted/blooded/cards/blooded_page02_card3_landscape.pdf": "6bc0bbd988841c16dd0f6dc75056ca2f910ddf497253ad8d2498e5d970947f54",
+        "layers/warcom/extracted/blooded/cards/blooded_page02_card4_landscape.pdf": "b92ef95b08a2abf667607976b4f7a46256fa31df379a415fc490c40ac60eab94",
+        "layers/warcom/extracted/blooded/cards/blooded_page03_card1_landscape.pdf": "d06655f78cc64c19e30093527b632cbc135856310116c5f919e311c418ec7c08",
+        "layers/warcom/extracted/blooded/cards/blooded_page03_card2_landscape.pdf": "4cfcf3f42c0f9cf7154886e9164395b7f3d6fd0bda245f7319d3ca02c37aad46",
+        "layers/warcom/extracted/blooded/cards/blooded_page03_card3_landscape.pdf": "6c249f8583232c1820a58f98a1cb5e50daa8943ea2e73bcc9dbed297c63f16e0",
+        "layers/warcom/extracted/blooded/cards/blooded_page03_card4_landscape.pdf": "3eb25a4fea40de2b68e2fbecf23fa74ab3f793851e280168ae1ef5636da0e951",
+        "layers/warcom/extracted/blooded/cards/blooded_page04_card1_landscape.pdf": "b9b501b6392e5cc698fa470b453c4f09a606b4c38c23dc60ea572adc1b107fc3",
+        "layers/warcom/extracted/blooded/cards/blooded_page04_card2_landscape.pdf": "c252114ef890568fc7846480ca1686a40347690f6bff80caf1742d2cff66703f",
+        "layers/warcom/extracted/blooded/cards/blooded_page04_card3_landscape.pdf": "01206df0bb0b40c7dda104e3e9a68cd10d15e65f747c68cbf90d854efc4ee3ad",
+        "layers/warcom/extracted/blooded/cards/blooded_page04_card4_landscape.pdf": "014bc8bcfbd5ea531a93dea2e0a849f3acc8694ff31c9e73cba7a9d78641feaf",
+        "layers/warcom/extracted/blooded/cards/blooded_page05_card1_portrait.pdf": "7f5825f6caf02ae86046c3aae684e0e66f81920afa26762338889db3e2a4bef5",
+        "layers/warcom/extracted/blooded/cards/blooded_page05_card2_portrait.pdf": "069f4b017cc72424dc6125f053167265ba8350fd53b68512e4d72b34e03a141d",
+        "layers/warcom/extracted/blooded/cards/blooded_page05_card3_portrait.pdf": "f4252095fbada7fdf68643720e45c9d326f0b5ebaedfd246fa306dc63312a6d5",
+        "layers/warcom/extracted/blooded/cards/blooded_page05_card4_portrait.pdf": "d0713f02dfabe45774daf80c7596e6ee7311cd7b2f2975892cee1cba977b8181",
+        "layers/warcom/extracted/blooded/cards/blooded_page06_card1_portrait.pdf": "7df424fb78bff79a25f650a5ce6802f6f5a8295fdc3ee1695277f4cd73487163",
+        "layers/warcom/extracted/blooded/cards/blooded_page06_card2_portrait.pdf": "2e2ccc5388542e18c938db7532accb6df2df98847a2b6655ea58244063da709c",
+        "layers/warcom/extracted/blooded/cards/blooded_page06_card3_portrait.pdf": "d498f0dfe6bf8d8ded09a5d585b5363e9a3c121a8698ec67eaf666f7bb048fbe",
+        "layers/warcom/extracted/blooded/cards/blooded_page06_card4_portrait.pdf": "c840c1802db05ecae8aac56f0953a2ce25250f3a257b83e668eda385b3b3f202",
+        "layers/warcom/extracted/blooded/cards/blooded_page07_card1_portrait.pdf": "6da76af9228b1762a89dad44977e7eab4128d5d2910e8018e88236c3e63c0318",
+        "layers/warcom/extracted/blooded/cards/blooded_page07_card2_portrait.pdf": "8a17d2d7343a9af4970753a35ae772bbbfc0718081abadf396635bada728fdc4",
+        "layers/warcom/extracted/blooded/cards/blooded_page07_card3_portrait.pdf": "7defb1392414f5688dae9c26f94d992b94bb9d6cef6cbfd4b24f309e8587fc17",
+        "layers/warcom/extracted/blooded/cards/blooded_page07_card4_portrait.pdf": "092be61dc36afa078ab19d555ddf0b928152c6f27ecbf20988207a77e4fb00da",
+        "layers/warcom/extracted/blooded/cards/blooded_page08_card1_portrait.pdf": "3821edcfbbe137662692fabd356cea2b9765810831f7c312eb0f56f40c121285",
+        "layers/warcom/extracted/blooded/cards/blooded_page08_card2_portrait.pdf": "e08bf7dabc068563ceecc88bd9db85d139503c73fb7085d2f2ed30c767096df8",
+        "layers/warcom/extracted/blooded/cards/blooded_page08_card3_portrait.pdf": "d067a8b6c7f7cf304546365372bf4f8278b0873a10bae5b904eaa4b4b85748d2",
+        "layers/warcom/extracted/blooded/cards/blooded_page08_card4_portrait.pdf": "d9015607a3c0130b9c812e797ea0a570f683ef27d6bd8fbc9b7a28cda10850bf",
+        "layers/warcom/extracted/blooded/cards/blooded_page09_card1_portrait.pdf": "91fc22fd7dc47a4aade1460294e0d67140c077bd5b82295c21c2f33062091317",
+        "layers/warcom/extracted/blooded/cards/blooded_page09_card2_portrait.pdf": "21c386e4ee99ca8eb8f4c7fca8343d8302d762db9eaf6c15d3b538743c99d49c",
+        "layers/warcom/extracted/blooded/cards/blooded_page09_card3_portrait.pdf": "50d44b7921253a28178943bf8753dbb3eb5c5906660cc0bff57b23c3bd478def",
+        "layers/warcom/extracted/blooded/cards/blooded_page09_card4_portrait.pdf": "77fc2b9a32be28406db4b0f16c5a1d7bdc22d3d96f2ab72946e94e6fd708cb35"
+      },
+      "completed": "2026-07-12T18:42:02.111789+00:00"
+    },
+    "integrate_classified": {
+      "outputs": {
+        "manifest.json": {
+          "path": "layers/integration/blooded/manifest.json",
+          "hash": "f81600f38f332fb1158eb88c0c781480547f1500989ce4b525ec2522febd035f",
+          "modified": "2026-07-12T19:06:36.136657+00:00"
+        },
+        "blooded-datacard-traitor-chieftain.pdf": {
+          "path": "layers/integration/blooded/blooded-datacard-traitor-chieftain.pdf",
+          "hash": "3e6027ddeaff26ceb4198b262a99d790659c4a97c84a8eacdb84fb3fc0d22c6c",
+          "modified": "2026-07-12T19:06:36.175998+00:00"
+        },
+        "blooded-datacard-traitor-brimstone-grenadier.pdf": {
+          "path": "layers/integration/blooded/blooded-datacard-traitor-brimstone-grenadier.pdf",
+          "hash": "67dfd43ae04f676dad3d6e7eafe99c90cc5e234263d61e692949b9779efb2d29",
+          "modified": "2026-07-12T19:06:36.216905+00:00"
+        },
+        "blooded-datacard-traitor-butcher.pdf": {
+          "path": "layers/integration/blooded/blooded-datacard-traitor-butcher.pdf",
+          "hash": "2b6683140ae92bad59a31159bb5bb15fe7472895d88a237192070a6522edc40a",
+          "modified": "2026-07-12T19:06:36.245335+00:00"
+        },
+        "blooded-datacard-traitor-corpseman.pdf": {
+          "path": "layers/integration/blooded/blooded-datacard-traitor-corpseman.pdf",
+          "hash": "cecc8813f40c4009074ea7391e636818e3188d97a46b8ce9cf9b4ec81f8c4980",
+          "modified": "2026-07-12T19:06:36.288038+00:00"
+        },
+        "blooded-datacard-traitor-commsman.pdf": {
+          "path": "layers/integration/blooded/blooded-datacard-traitor-commsman.pdf",
+          "hash": "6e72ec51c005ded8d287b51f474f1cc7bee3258a419f7736a1632fc2ff2240ad",
+          "modified": "2026-07-12T19:06:36.339441+00:00"
+        },
+        "blooded-datacard-traitor-enforcer.pdf": {
+          "path": "layers/integration/blooded/blooded-datacard-traitor-enforcer.pdf",
+          "hash": "871b7b7f31d440a7579bb83f7d6b99fb38d65a487bb7a0241c7b4e609f4607c4",
+          "modified": "2026-07-12T19:06:36.378093+00:00"
+        },
+        "blooded-datacard-traitor-flenser.pdf": {
+          "path": "layers/integration/blooded/blooded-datacard-traitor-flenser.pdf",
+          "hash": "fc56684da52e0cefc9cdf6397fcfffd81d4c2a28f533e61ce092e2f0872b0404",
+          "modified": "2026-07-12T19:06:36.417282+00:00"
+        },
+        "blooded-datacard-traitor-gunner.pdf": {
+          "path": "layers/integration/blooded/blooded-datacard-traitor-gunner.pdf",
+          "hash": "69eb12e9f8079c4635926c074afd2dd1afbc8ba905e52e48ec94e5f539b9a78a",
+          "modified": "2026-07-12T19:06:36.433602+00:00"
+        },
+        "blooded-datacard-traitor-ogryn.pdf": {
+          "path": "layers/integration/blooded/blooded-datacard-traitor-ogryn.pdf",
+          "hash": "87ad7cdeb116b37373b0ecba1c42d1d94444d7e01031f430671a93ca82e4d8d7",
+          "modified": "2026-07-12T19:06:36.451426+00:00"
+        },
+        "blooded-datacard-traitor-sharpshooter.pdf": {
+          "path": "layers/integration/blooded/blooded-datacard-traitor-sharpshooter.pdf",
+          "hash": "52a65fc2b504b446991c6a2f63b770149c6a5efc299216528f34d455dafba92e",
+          "modified": "2026-07-12T19:06:36.463080+00:00"
+        },
+        "blooded-datacard-traitor-thug.pdf": {
+          "path": "layers/integration/blooded/blooded-datacard-traitor-thug.pdf",
+          "hash": "b7de91fe039a2e45fc8455b41f1677b62a0d1ed6ecbf7b470d80cdba38bcc54c",
+          "modified": "2026-07-12T19:06:36.482357+00:00"
+        },
+        "blooded-datacard-traitor-trench-sweeper.pdf": {
+          "path": "layers/integration/blooded/blooded-datacard-traitor-trench-sweeper.pdf",
+          "hash": "dac728102d9e3285cfe8dd1c2e942f0827b17d5587ba8fbb5702dd01498a1ea6",
+          "modified": "2026-07-12T19:06:36.501819+00:00"
+        },
+        "blooded-datacard-traitor-trooper.pdf": {
+          "path": "layers/integration/blooded/blooded-datacard-traitor-trooper.pdf",
+          "hash": "24d6759d7f85fb058c97c9512580e032fe0924197455a51cd9d8173f86e5e420",
+          "modified": "2026-07-12T19:06:36.520455+00:00"
+        },
+        "blooded-equipment-chaos-sigil.pdf": {
+          "path": "layers/integration/blooded/blooded-equipment-chaos-sigil.pdf",
+          "hash": "fcfbf7c008cca3f3c30fff0433d3769300903360c7b7e644d49a553241f7249d",
+          "modified": "2026-07-12T19:06:36.530634+00:00"
+        },
+        "blooded-equipment-sinister-trophies.pdf": {
+          "path": "layers/integration/blooded/blooded-equipment-sinister-trophies.pdf",
+          "hash": "886a672f121351aa43fa68a9e58421f6b9f42a011f48bcdcb73bc6051fba7413",
+          "modified": "2026-07-12T19:06:36.539970+00:00"
+        },
+        "blooded-equipment-symbols-of-bloody-worship.pdf": {
+          "path": "layers/integration/blooded/blooded-equipment-symbols-of-bloody-worship.pdf",
+          "hash": "1af38a4b8fe534d0adbd2655459377aa5ed5309ba8add699788ca9796b9b715b",
+          "modified": "2026-07-12T19:06:36.548377+00:00"
+        },
+        "blooded-equipment-wicked-blades.pdf": {
+          "path": "layers/integration/blooded/blooded-equipment-wicked-blades.pdf",
+          "hash": "22de68c6041f0d599b52152c746b078fab45b5ddc3f32850dbf14c8cf4b76aee",
+          "modified": "2026-07-12T19:06:36.565863+00:00"
+        },
+        "blooded-faction-rule-blooded.pdf": {
+          "path": "layers/integration/blooded/blooded-faction-rule-blooded.pdf",
+          "hash": "7964b3db124fea4d68974c1b20656053e0dd0acb413e54406ff9e3b635e016c7",
+          "modified": "2026-07-12T19:06:36.574881+00:00"
+        },
+        "blooded-token-guide-token-guide.pdf": {
+          "path": "layers/integration/blooded/blooded-token-guide-token-guide.pdf",
+          "hash": "c641e2bf4e7e8524b3ec2024a5af7349e4bcf6b7ed4a4bbf8ff8239803f36f9f",
+          "modified": "2026-07-12T19:06:36.584979+00:00"
+        },
+        "blooded-firefight-ploy-callous-disregard.pdf": {
+          "path": "layers/integration/blooded/blooded-firefight-ploy-callous-disregard.pdf",
+          "hash": "f36a4af6661ce114f08368b06f66340d0c6d32b70fffe38fbf139e3a1378782c",
+          "modified": "2026-07-12T19:06:36.594340+00:00"
+        },
+        "blooded-firefight-ploy-moment-of-repute.pdf": {
+          "path": "layers/integration/blooded/blooded-firefight-ploy-moment-of-repute.pdf",
+          "hash": "ac5ae58659f177fa7ba78c6d4d7b4a81fa934240468a5b45a9d06735fcfdfea7",
+          "modified": "2026-07-12T19:06:36.603249+00:00"
+        },
+        "blooded-firefight-ploy-reward-earned.pdf": {
+          "path": "layers/integration/blooded/blooded-firefight-ploy-reward-earned.pdf",
+          "hash": "67e40896097a5cf830f3bbc0b413233bbbc1ec46230ad40c6fff416779a87770",
+          "modified": "2026-07-12T19:06:36.614037+00:00"
+        },
+        "blooded-firefight-ploy-dark-favour.pdf": {
+          "path": "layers/integration/blooded/blooded-firefight-ploy-dark-favour.pdf",
+          "hash": "57496f4ad5031c9dd5f9f4aaf7a0784e6de2f59cb8ff2f1e4988165a56b2d61e",
+          "modified": "2026-07-12T19:06:36.623486+00:00"
+        },
+        "blooded-operatives-selection-operative-selection.pdf": {
+          "path": "layers/integration/blooded/blooded-operatives-selection-operative-selection.pdf",
+          "hash": "25e4f19e5b9af1bbc23fd2028994f90a0063e7fd294fe80632f51d80c589b071",
+          "modified": "2026-07-12T19:06:36.632855+00:00"
+        },
+        "blooded-strategy-ploy-glory-kill.pdf": {
+          "path": "layers/integration/blooded/blooded-strategy-ploy-glory-kill.pdf",
+          "hash": "93fc8a3bb002d648a5978f7324cfd846e770d4c41616242d4ab77493deee5b79",
+          "modified": "2026-07-12T19:06:36.643002+00:00"
+        },
+        "blooded-strategy-ploy-reckless-aspirant.pdf": {
+          "path": "layers/integration/blooded/blooded-strategy-ploy-reckless-aspirant.pdf",
+          "hash": "422321346d35416cf9f40fa386336ad894f4eb5d33e04d145b926f6568e6a466",
+          "modified": "2026-07-12T19:06:36.654247+00:00"
+        },
+        "blooded-strategy-ploy-malevolent-grit.pdf": {
+          "path": "layers/integration/blooded/blooded-strategy-ploy-malevolent-grit.pdf",
+          "hash": "6ba841ef475000f227f07b90642d5d1877d8c2a19576f5734be393304f41ccb7",
+          "modified": "2026-07-12T19:06:36.664858+00:00"
+        },
+        "blooded-strategy-ploy-bitter-demise.pdf": {
+          "path": "layers/integration/blooded/blooded-strategy-ploy-bitter-demise.pdf",
+          "hash": "fe12f6cf157f2a15c00faac68a2fde587b388befed7c7576eeca8b956075ed20",
+          "modified": "2026-07-12T19:06:36.675146+00:00"
+        }
+      },
+      "inputs": {
+        "layers/warcom/structure/blooded-structure.json": "f81600f38f332fb1158eb88c0c781480547f1500989ce4b525ec2522febd035f",
+        "layers/warcom/extracted/blooded/cards/blooded_page01_card1_landscape.pdf": "6543c41f0a74b57993e536837e9c07e7381c3cbc7044f200f020e636b32e7b37",
+        "layers/warcom/extracted/blooded/cards/blooded_page01_card2_landscape.pdf": "ff1c62d1449319d50317b4acfe011d43056a67d18d3622c710460748d2e97db8",
+        "layers/warcom/extracted/blooded/cards/blooded_page01_card3_landscape.pdf": "123434576e505ea25987e6df6f8053af6f7e9dbfee7f5dacb0848c566bfbfed9",
+        "layers/warcom/extracted/blooded/cards/blooded_page01_card4_landscape.pdf": "ef010d110e3c1229b42a0ed62de0d25e9b011734f02323f180dfe1794c310a11",
+        "layers/warcom/extracted/blooded/cards/blooded_page02_card1_landscape.pdf": "be3e45897a64d2a9f0f7a074d37b65af73c5c54f4c3695f7a7bc32b2590d7187",
+        "layers/warcom/extracted/blooded/cards/blooded_page02_card2_landscape.pdf": "58c529de612a183d453b68d8c0682dd08b2d86c4a05f524dfc3ac2c54dd9a780",
+        "layers/warcom/extracted/blooded/cards/blooded_page02_card3_landscape.pdf": "6bc0bbd988841c16dd0f6dc75056ca2f910ddf497253ad8d2498e5d970947f54",
+        "layers/warcom/extracted/blooded/cards/blooded_page02_card4_landscape.pdf": "b92ef95b08a2abf667607976b4f7a46256fa31df379a415fc490c40ac60eab94",
+        "layers/warcom/extracted/blooded/cards/blooded_page03_card1_landscape.pdf": "d06655f78cc64c19e30093527b632cbc135856310116c5f919e311c418ec7c08",
+        "layers/warcom/extracted/blooded/cards/blooded_page03_card2_landscape.pdf": "4cfcf3f42c0f9cf7154886e9164395b7f3d6fd0bda245f7319d3ca02c37aad46",
+        "layers/warcom/extracted/blooded/cards/blooded_page03_card3_landscape.pdf": "6c249f8583232c1820a58f98a1cb5e50daa8943ea2e73bcc9dbed297c63f16e0",
+        "layers/warcom/extracted/blooded/cards/blooded_page03_card4_landscape.pdf": "3eb25a4fea40de2b68e2fbecf23fa74ab3f793851e280168ae1ef5636da0e951",
+        "layers/warcom/extracted/blooded/cards/blooded_page04_card1_landscape.pdf": "b9b501b6392e5cc698fa470b453c4f09a606b4c38c23dc60ea572adc1b107fc3",
+        "layers/warcom/extracted/blooded/cards/blooded_page04_card2_landscape.pdf": "c252114ef890568fc7846480ca1686a40347690f6bff80caf1742d2cff66703f",
+        "layers/warcom/extracted/blooded/cards/blooded_page04_card3_landscape.pdf": "01206df0bb0b40c7dda104e3e9a68cd10d15e65f747c68cbf90d854efc4ee3ad",
+        "layers/warcom/extracted/blooded/cards/blooded_page08_card2_portrait.pdf": "e08bf7dabc068563ceecc88bd9db85d139503c73fb7085d2f2ed30c767096df8",
+        "layers/warcom/extracted/blooded/cards/blooded_page08_card3_portrait.pdf": "d067a8b6c7f7cf304546365372bf4f8278b0873a10bae5b904eaa4b4b85748d2",
+        "layers/warcom/extracted/blooded/cards/blooded_page08_card4_portrait.pdf": "d9015607a3c0130b9c812e797ea0a570f683ef27d6bd8fbc9b7a28cda10850bf",
+        "layers/warcom/extracted/blooded/cards/blooded_page09_card1_portrait.pdf": "91fc22fd7dc47a4aade1460294e0d67140c077bd5b82295c21c2f33062091317",
+        "layers/warcom/extracted/blooded/cards/blooded_page05_card3_portrait.pdf": "f4252095fbada7fdf68643720e45c9d326f0b5ebaedfd246fa306dc63312a6d5",
+        "layers/warcom/extracted/blooded/cards/blooded_page05_card4_portrait.pdf": "d0713f02dfabe45774daf80c7596e6ee7311cd7b2f2975892cee1cba977b8181",
+        "layers/warcom/extracted/blooded/cards/blooded_page06_card1_portrait.pdf": "7df424fb78bff79a25f650a5ce6802f6f5a8295fdc3ee1695277f4cd73487163",
+        "layers/warcom/extracted/blooded/cards/blooded_page07_card2_portrait.pdf": "8a17d2d7343a9af4970753a35ae772bbbfc0718081abadf396635bada728fdc4",
+        "layers/warcom/extracted/blooded/cards/blooded_page07_card3_portrait.pdf": "7defb1392414f5688dae9c26f94d992b94bb9d6cef6cbfd4b24f309e8587fc17",
+        "layers/warcom/extracted/blooded/cards/blooded_page07_card4_portrait.pdf": "092be61dc36afa078ab19d555ddf0b928152c6f27ecbf20988207a77e4fb00da",
+        "layers/warcom/extracted/blooded/cards/blooded_page08_card1_portrait.pdf": "3821edcfbbe137662692fabd356cea2b9765810831f7c312eb0f56f40c121285",
+        "layers/warcom/extracted/blooded/cards/blooded_page05_card1_portrait.pdf": "7f5825f6caf02ae86046c3aae684e0e66f81920afa26762338889db3e2a4bef5",
+        "layers/warcom/extracted/blooded/cards/blooded_page05_card2_portrait.pdf": "069f4b017cc72424dc6125f053167265ba8350fd53b68512e4d72b34e03a141d",
+        "layers/warcom/extracted/blooded/cards/blooded_page06_card2_portrait.pdf": "2e2ccc5388542e18c938db7532accb6df2df98847a2b6655ea58244063da709c",
+        "layers/warcom/extracted/blooded/cards/blooded_page06_card3_portrait.pdf": "d498f0dfe6bf8d8ded09a5d585b5363e9a3c121a8698ec67eaf666f7bb048fbe",
+        "layers/warcom/extracted/blooded/cards/blooded_page06_card4_portrait.pdf": "c840c1802db05ecae8aac56f0953a2ce25250f3a257b83e668eda385b3b3f202",
+        "layers/warcom/extracted/blooded/cards/blooded_page07_card1_portrait.pdf": "6da76af9228b1762a89dad44977e7eab4128d5d2910e8018e88236c3e63c0318"
+      },
+      "completed": "2026-07-12T19:06:55.633053+00:00"
+    },
+    "extract_artwork": {
+      "outputs": {},
+      "sources": {
+        "artwork": {
+          "hash": "0bf0ae64b0879aa17d1b516f2336e11ca199a4f6c426e552b3c3fae35a95ad6a",
+          "outputs": [
+            "layers/integration/blooded/artwork/blooded-artwork-01.jpeg",
+            "layers/integration/blooded/artwork/blooded-artwork-02.jpeg",
+            "layers/integration/blooded/artwork/blooded-artwork-03.png",
+            "layers/integration/blooded/artwork/blooded-artwork-04.jpeg",
+            "layers/integration/blooded/artwork/blooded-artwork-05.jpeg",
+            "layers/integration/blooded/artwork/blooded-artwork-06.jpeg",
+            "layers/integration/blooded/artwork/blooded-artwork-07.png",
+            "layers/integration/blooded/artwork/blooded-artwork-08.jpeg",
+            "layers/integration/blooded/artwork/blooded-artwork-09.jpeg",
+            "layers/integration/blooded/artwork/blooded-artwork-10.jpeg",
+            "layers/integration/blooded/artwork/blooded-artwork-11.jpeg",
+            "layers/integration/blooded/artwork/blooded-artwork-12.jpeg",
+            "layers/integration/blooded/artwork/blooded-artwork-13.jpeg",
+            "layers/integration/blooded/artwork/blooded-artwork-14.jpeg",
+            "layers/integration/blooded/artwork/blooded-artwork-15.jpeg",
+            "layers/integration/blooded/artwork/blooded-artwork-16.jpeg",
+            "layers/integration/blooded/artwork/blooded-artwork-17.jpeg",
+            "layers/integration/blooded/artwork/blooded-artwork-18.jpeg",
+            "layers/integration/blooded/artwork/blooded-artwork-19.jpeg",
+            "layers/integration/blooded/artwork/blooded-artwork-20.jpeg",
+            "layers/integration/blooded/artwork/blooded-artwork-21.jpeg",
+            "layers/integration/blooded/artwork/blooded-artwork-metadata.json",
+            "layers/integration/blooded/artwork/icons/blooded-icon-landscape.jpg",
+            "layers/integration/blooded/artwork/icons/blooded-icon-portrait.jpg",
+            "layers/integration/blooded/artwork/icons/blooded-icon-token-transparent.png",
+            "layers/integration/blooded/artwork/icons/blooded-icon-token.jpg"
+          ],
+          "modified": "2026-07-06T20:51:59.338808+00:00"
+        }
+      },
+      "completed": "2026-07-06T20:51:59.338823+00:00"
+    }
+  }
+}

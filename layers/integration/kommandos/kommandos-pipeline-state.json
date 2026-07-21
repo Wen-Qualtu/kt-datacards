@@ -1,0 +1,1049 @@
+{
+  "team": "kommandos",
+  "pipeline_version": "2.0",
+  "last_updated": "2026-07-12T20:56:39.788920+00:00",
+  "steps": {
+    "content_analysis": {
+      "outputs": {
+        "content.json": {
+          "path": "layers/integration/kommandos/content/kommandos-content.json",
+          "hash": "36ce6f1fc70ab91896f9f4e6c577bf82e2cbecfedb9a16878e64ace03996d82b",
+          "modified": "2026-07-12T19:14:38.520005+00:00"
+        }
+      },
+      "completed": "2026-07-12T19:14:49.706331+00:00",
+      "inputs": {
+        "layers/integration/kommandos/manifest.json": "f77af415870af7f20057e79639cc4f2c1db8d2353444d3f6886b581106d43c3b",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "layers/integration/kommandos/kommandos-datacard-kommando-bomb-squig.pdf": "9453ac7d764efa0877db03384ab34eec45bd999264228bf9bb9eec814effdab4",
+        "layers/integration/kommandos/kommandos-datacard-kommando-boss-nob.pdf": "5394a77ae69385f199806994dac3ba799b45ea595324c78423d33a4ad06668ae",
+        "layers/integration/kommandos/kommandos-datacard-kommando-boy.pdf": "557fb92fa04fa1e89440b1b862864c1b18eb33ebbe8e3f55ddb4ac04bcc0ad58",
+        "layers/integration/kommandos/kommandos-datacard-kommando-breacha-boy.pdf": "b58af9af42b1fcba9a72ced7dfbb1d00c07a52e77d76bef691bdd58ce537a781",
+        "layers/integration/kommandos/kommandos-datacard-kommando-burna-boy.pdf": "5934bf1c423000ba931d74669f45c968cdc26e7fe01fa50239b1b5d15371e1cd",
+        "layers/integration/kommandos/kommandos-datacard-kommando-comms-boy.pdf": "f91437bbb3cb83c477b74fa5c9064caf740dfb9e868a91d525f70e3a258f3de7",
+        "layers/integration/kommandos/kommandos-datacard-kommando-dakka-boy.pdf": "dc534126bfb90ca792559ddd4928d91d6fd197e3e49f2d69cb5f39bd0641a8e6",
+        "layers/integration/kommandos/kommandos-datacard-kommando-grot.pdf": "aef134947a450c6b4a8cdcfdbc4d393a598a0031abbdc2cc9dfaed6cce823a6f",
+        "layers/integration/kommandos/kommandos-datacard-kommando-rokkit-boy.pdf": "4474be2d166ae2c7d050c975f7a3caca693b26c33bf7bec24cb4a87fe9eb9b4a",
+        "layers/integration/kommandos/kommandos-datacard-kommando-slasha-boy.pdf": "7afec74401c75fe05a140e5050128f4246c65cb0847e35e63df0f8661b999cec",
+        "layers/integration/kommandos/kommandos-datacard-kommando-snipa-boy.pdf": "1f64e0cd0cd6d5b9a09a8c3680cdc76d35a07da0112f4f0cf703843adb71b22e",
+        "layers/integration/kommandos/kommandos-equipment-choppas.pdf": "db7d706b743294569e71e0e13be9abffe99bad2779a7f07d9887419bc102456a",
+        "layers/integration/kommandos/kommandos-equipment-collapsible-stocks.pdf": "6d6d965d7d9fcdb9b970c6ec4f1752cbf0999f5f32b88ca746e12dcf0af2d422",
+        "layers/integration/kommandos/kommandos-equipment-dynamite.pdf": "88af495e5c9dcda68b6170afdca481d7b8a1412806572ef3a90eded1908eaf9e",
+        "layers/integration/kommandos/kommandos-equipment-harpoon.pdf": "09e7b6b24dde90c7302fa9597f1f8d842b5447eaeec82eb28231f0285ae4af7d",
+        "layers/integration/kommandos/kommandos-faction-rule-throat-slittas.pdf": "5119f19e64719bfd6303f2bd1f4c0589b4a4e7da5997be3dd80359a885bcd2c1",
+        "layers/integration/kommandos/kommandos-firefight-ploy-just-a-scratch.pdf": "e56e15ad2c043bf08764f22aff1e8ff096a02826fd2c2895ac352db6a98082f4",
+        "layers/integration/kommandos/kommandos-firefight-ploy-krump-em.pdf": "c80fa436342f27b00c00f3f1ce5a0552d043e4eb5bfe713a1b3f21277c5db07c",
+        "layers/integration/kommandos/kommandos-firefight-ploy-kunnin-but-brutal.pdf": "4a361817d8c1bf3ffa32179fbc6c35f1bc0b5e20e53ece840bd47d03282b6c2a",
+        "layers/integration/kommandos/kommandos-firefight-ploy-shake-it-off.pdf": "6770cdee53a97221d81d7e8b0d1ecddde807a65fdee95e52cb47f920d4a874c0",
+        "layers/integration/kommandos/kommandos-operatives-selection-operative-selection.pdf": "6eee2b8c03959a154d6852e19a4c6e3e5aba961ace943a37a67e702afceb8ba5",
+        "layers/integration/kommandos/kommandos-strategy-ploy-dakka-dakka-dakka.pdf": "9d1ef9a8d9479d392c42f3bd19d6f46db6285bd664a51ff1b16469365200b5a4",
+        "layers/integration/kommandos/kommandos-strategy-ploy-skulk-about.pdf": "3fbe62bb793f658128f23d3ac8a699e6d6aeeb7617719aa0ef5fe49f49d875c6",
+        "layers/integration/kommandos/kommandos-strategy-ploy-sssshhhh.pdf": "726630455308eae1c27676e5763a636f8d377ab848449104af00bc4d1f4ffe93",
+        "layers/integration/kommandos/kommandos-strategy-ploy-waaagh.pdf": "8d8cd1de6206b8b29fa0e123800efedba220556e43f563550c0a5e36512da019",
+        "layers/integration/kommandos/kommandos-token-guide-token-guide.pdf": "c06eb27917724580b51a4dc77cb4bb64f97b9ccffbc6585dd0e6552511cac2a0"
+      }
+    },
+    "extract_backsides": {
+      "outputs": {
+        "backside-landscape.jpg": {
+          "path": "layers/integration/kommandos/card-backside/kommandos-backside-landscape.jpg",
+          "hash": "c8727bb48bc517e3af66a4ea1207dbff0286ab384fb400e03c38adcdc9f40a29",
+          "modified": "2026-07-12T18:51:03.243453+00:00"
+        },
+        "backside-portrait.jpg": {
+          "path": "layers/integration/kommandos/card-backside/kommandos-backside-portrait.jpg",
+          "hash": "bec5c260e3db2d11c34935382902584c90a911396f64f688efd3e3481fa762aa",
+          "modified": "2026-07-12T18:51:03.323856+00:00"
+        }
+      },
+      "completed": "2026-07-12T18:51:03.433050+00:00",
+      "inputs": {
+        "layers/integration/kommandos/artwork/icons/kommandos-icon-token.jpg": "65b642036038d406c8b7f7ecca4570af7e6cfd09e616d85efc6199ad6763c246",
+        "config/defaults/box/card-box-background.jpeg": "2dd1442a7c52ca1d66899333f678d60f48981ce20561ead77c1161d548176036"
+      }
+    },
+    "extract_tokens": {
+      "outputs": {
+        "tokens/kommandos-breach.png": {
+          "path": "output/kommandos/tokens/kommandos-breach.png",
+          "hash": "6c08b739db5064e144c2dd2cd7a8bf3a74d3aeaa9df1c1380943a0bdb7b93967",
+          "modified": "2026-07-12T19:15:13.601240+00:00"
+        },
+        "tokens/kommandos-dynamite.png": {
+          "path": "output/kommandos/tokens/kommandos-dynamite.png",
+          "hash": "fa3e4b64bab270fa02f996b6fa15ac904977101387cc24188510f053d28f74dc",
+          "modified": "2026-07-12T19:15:13.602738+00:00"
+        },
+        "tokens/kommandos-explosives.png": {
+          "path": "output/kommandos/tokens/kommandos-explosives.png",
+          "hash": "229420af19d9153fb6be72e2118713440744d53e27dbe0d5a4eb1ba3cc2c4aad",
+          "modified": "2026-07-12T19:15:13.604761+00:00"
+        },
+        "tokens/kommandos-harpoon.png": {
+          "path": "output/kommandos/tokens/kommandos-harpoon.png",
+          "hash": "6c539bfc0a72453be6781d34397948224ddb2a205b0c27947a74f5b9441dccbd",
+          "modified": "2026-07-12T19:15:13.606175+00:00"
+        },
+        "tokens/kommandos-smoke-grenade.png": {
+          "path": "output/kommandos/tokens/kommandos-smoke-grenade.png",
+          "hash": "91b659a2209dc0f95e4c65b5e1d29c3dbbcab7f57c80b00e72907f0cdb4ed233",
+          "modified": "2026-07-12T19:15:13.608543+00:00"
+        },
+        "tokens/kommandos-stun-grenade.png": {
+          "path": "output/kommandos/tokens/kommandos-stun-grenade.png",
+          "hash": "ff42dd9454d1fbde4423f20d410985aa8065469c04ee28b75a87e107c5ed648b",
+          "modified": "2026-07-12T19:15:13.612087+00:00"
+        },
+        "tokens/kommandos-breach.obj": {
+          "path": "output/kommandos/tokens/kommandos-breach.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-12T19:15:13.681296+00:00"
+        },
+        "tokens/kommandos-dynamite.obj": {
+          "path": "output/kommandos/tokens/kommandos-dynamite.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-12T19:15:13.683525+00:00"
+        },
+        "tokens/kommandos-explosives.obj": {
+          "path": "output/kommandos/tokens/kommandos-explosives.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-12T19:15:14.073714+00:00"
+        },
+        "tokens/kommandos-harpoon.obj": {
+          "path": "output/kommandos/tokens/kommandos-harpoon.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-12T19:15:14.077331+00:00"
+        },
+        "tokens/kommandos-smoke-grenade.obj": {
+          "path": "output/kommandos/tokens/kommandos-smoke-grenade.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-12T19:15:14.079100+00:00"
+        },
+        "tokens/kommandos-stun-grenade.obj": {
+          "path": "output/kommandos/tokens/kommandos-stun-grenade.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-12T19:15:14.080983+00:00"
+        },
+        "tokens/tokenbag/kommandos-token-bag-icon.png": {
+          "path": "output/kommandos/tokens/tokenbag/kommandos-token-bag-icon.png",
+          "hash": "65b642036038d406c8b7f7ecca4570af7e6cfd09e616d85efc6199ad6763c246",
+          "modified": "2026-07-12T19:15:14.088990+00:00"
+        },
+        "tokens/tokenbag/kommandos-token-bag.obj": {
+          "path": "output/kommandos/tokens/tokenbag/kommandos-token-bag.obj",
+          "hash": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+          "modified": "2026-07-12T19:15:14.091177+00:00"
+        }
+      },
+      "completed": "2026-07-12T19:15:22.348864+00:00",
+      "inputs": {
+        "layers/integration/kommandos/manifest.json": "f77af415870af7f20057e79639cc4f2c1db8d2353444d3f6886b581106d43c3b",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "layers/integration/kommandos/artwork/icons/kommandos-icon-token.jpg": "65b642036038d406c8b7f7ecca4570af7e6cfd09e616d85efc6199ad6763c246",
+        "layers/integration/kommandos/kommandos-datacard-kommando-bomb-squig.pdf": "9453ac7d764efa0877db03384ab34eec45bd999264228bf9bb9eec814effdab4",
+        "layers/integration/kommandos/kommandos-datacard-kommando-boss-nob.pdf": "5394a77ae69385f199806994dac3ba799b45ea595324c78423d33a4ad06668ae",
+        "layers/integration/kommandos/kommandos-datacard-kommando-boy.pdf": "557fb92fa04fa1e89440b1b862864c1b18eb33ebbe8e3f55ddb4ac04bcc0ad58",
+        "layers/integration/kommandos/kommandos-datacard-kommando-breacha-boy.pdf": "b58af9af42b1fcba9a72ced7dfbb1d00c07a52e77d76bef691bdd58ce537a781",
+        "layers/integration/kommandos/kommandos-datacard-kommando-burna-boy.pdf": "5934bf1c423000ba931d74669f45c968cdc26e7fe01fa50239b1b5d15371e1cd",
+        "layers/integration/kommandos/kommandos-datacard-kommando-comms-boy.pdf": "f91437bbb3cb83c477b74fa5c9064caf740dfb9e868a91d525f70e3a258f3de7",
+        "layers/integration/kommandos/kommandos-datacard-kommando-dakka-boy.pdf": "dc534126bfb90ca792559ddd4928d91d6fd197e3e49f2d69cb5f39bd0641a8e6",
+        "layers/integration/kommandos/kommandos-datacard-kommando-grot.pdf": "aef134947a450c6b4a8cdcfdbc4d393a598a0031abbdc2cc9dfaed6cce823a6f",
+        "layers/integration/kommandos/kommandos-datacard-kommando-rokkit-boy.pdf": "4474be2d166ae2c7d050c975f7a3caca693b26c33bf7bec24cb4a87fe9eb9b4a",
+        "layers/integration/kommandos/kommandos-datacard-kommando-slasha-boy.pdf": "7afec74401c75fe05a140e5050128f4246c65cb0847e35e63df0f8661b999cec",
+        "layers/integration/kommandos/kommandos-datacard-kommando-snipa-boy.pdf": "1f64e0cd0cd6d5b9a09a8c3680cdc76d35a07da0112f4f0cf703843adb71b22e",
+        "layers/integration/kommandos/kommandos-equipment-choppas.pdf": "db7d706b743294569e71e0e13be9abffe99bad2779a7f07d9887419bc102456a",
+        "layers/integration/kommandos/kommandos-equipment-collapsible-stocks.pdf": "6d6d965d7d9fcdb9b970c6ec4f1752cbf0999f5f32b88ca746e12dcf0af2d422",
+        "layers/integration/kommandos/kommandos-equipment-dynamite.pdf": "88af495e5c9dcda68b6170afdca481d7b8a1412806572ef3a90eded1908eaf9e",
+        "layers/integration/kommandos/kommandos-equipment-harpoon.pdf": "09e7b6b24dde90c7302fa9597f1f8d842b5447eaeec82eb28231f0285ae4af7d",
+        "layers/integration/kommandos/kommandos-faction-rule-throat-slittas.pdf": "5119f19e64719bfd6303f2bd1f4c0589b4a4e7da5997be3dd80359a885bcd2c1",
+        "layers/integration/kommandos/kommandos-firefight-ploy-just-a-scratch.pdf": "e56e15ad2c043bf08764f22aff1e8ff096a02826fd2c2895ac352db6a98082f4",
+        "layers/integration/kommandos/kommandos-firefight-ploy-krump-em.pdf": "c80fa436342f27b00c00f3f1ce5a0552d043e4eb5bfe713a1b3f21277c5db07c",
+        "layers/integration/kommandos/kommandos-firefight-ploy-kunnin-but-brutal.pdf": "4a361817d8c1bf3ffa32179fbc6c35f1bc0b5e20e53ece840bd47d03282b6c2a",
+        "layers/integration/kommandos/kommandos-firefight-ploy-shake-it-off.pdf": "6770cdee53a97221d81d7e8b0d1ecddde807a65fdee95e52cb47f920d4a874c0",
+        "layers/integration/kommandos/kommandos-operatives-selection-operative-selection.pdf": "6eee2b8c03959a154d6852e19a4c6e3e5aba961ace943a37a67e702afceb8ba5",
+        "layers/integration/kommandos/kommandos-strategy-ploy-dakka-dakka-dakka.pdf": "9d1ef9a8d9479d392c42f3bd19d6f46db6285bd664a51ff1b16469365200b5a4",
+        "layers/integration/kommandos/kommandos-strategy-ploy-skulk-about.pdf": "3fbe62bb793f658128f23d3ac8a699e6d6aeeb7617719aa0ef5fe49f49d875c6",
+        "layers/integration/kommandos/kommandos-strategy-ploy-sssshhhh.pdf": "726630455308eae1c27676e5763a636f8d377ab848449104af00bc4d1f4ffe93",
+        "layers/integration/kommandos/kommandos-strategy-ploy-waaagh.pdf": "8d8cd1de6206b8b29fa0e123800efedba220556e43f563550c0a5e36512da019",
+        "layers/integration/kommandos/kommandos-token-guide-token-guide.pdf": "c06eb27917724580b51a4dc77cb4bb64f97b9ccffbc6585dd0e6552511cac2a0"
+      }
+    },
+    "generate_dice": {
+      "outputs": {
+        "dice-light.jpg": {
+          "path": "output/kommandos/dice/kommandos-dice-light.jpg",
+          "hash": "a91678e0f78657fe1a7e1a7858798c499bf2662167ceb74d6b43bea12105cb56",
+          "modified": "2026-07-12T18:51:38.541826+00:00"
+        },
+        "dice-dark.jpg": {
+          "path": "output/kommandos/dice/kommandos-dice-dark.jpg",
+          "hash": "60da105dbf4f616c19827552289d16934a673b5c516e7698e41821674913ddfb",
+          "modified": "2026-07-12T18:51:41.613225+00:00"
+        },
+        "dice-team.jpg": {
+          "path": "output/kommandos/dice/kommandos-dice-team.jpg",
+          "hash": "557756c66d8a866ce5d24239f3829341bedd2b418f70677d796565d71972feba",
+          "modified": "2026-07-12T18:51:42.698788+00:00"
+        }
+      },
+      "completed": "2026-07-12T18:51:44.690591+00:00",
+      "inputs": {
+        "layers/integration/kommandos/artwork/icons/kommandos-icon-token-transparent.png": "fcfc1e173b002e4671c6151804500600d34a71fb8804255e6f1a594ca7c1bee7",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41"
+      }
+    },
+    "generate_box_texture": {
+      "outputs": {
+        "card-box-texture.jpg": {
+          "path": "output/kommandos/cardbox/kommandos-card-box-texture.jpg",
+          "hash": "82f60be4b44c9f00f8678ce4f500eb308ad65d10adeffedfee9f328ad24795e1",
+          "modified": "2026-07-12T18:52:04.890242+00:00"
+        },
+        "card-box.obj": {
+          "path": "output/kommandos/cardbox/kommandos-card-box.obj",
+          "hash": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+          "modified": "2026-07-12T18:52:04.903838+00:00"
+        }
+      },
+      "completed": "2026-07-12T18:52:07.001100+00:00",
+      "inputs": {
+        "layers/integration/kommandos/artwork/icons/kommandos-icon-token.jpg": "65b642036038d406c8b7f7ecca4570af7e6cfd09e616d85efc6199ad6763c246",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "config/defaults/box/card-box.obj": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+        "config/defaults/box/card-box-texture.jpg": "b2f310b01a0d28e8806e99ce0b972e8967e3014608eacefcb6ec51597695a313"
+      }
+    },
+    "generate_card_images": {
+      "outputs": {
+        "cards/datacards/kommando-bomb-squig-back.jpg": {
+          "path": "output/kommandos/cards/datacards/kommando-bomb-squig-back.jpg",
+          "hash": "6c1a10e5722341cb887218a404a2bce3f821a7d48084065271aa63398be2513d",
+          "modified": "2026-07-12T19:16:17.345920+00:00"
+        },
+        "cards/datacards/kommando-bomb-squig-front.jpg": {
+          "path": "output/kommandos/cards/datacards/kommando-bomb-squig-front.jpg",
+          "hash": "d3856f316bedd83492d0b350a0f545d275ef543efe34ae033172a8d03e9f69a8",
+          "modified": "2026-07-12T19:16:17.729515+00:00"
+        },
+        "cards/datacards/kommando-boss-nob-back.jpg": {
+          "path": "output/kommandos/cards/datacards/kommando-boss-nob-back.jpg",
+          "hash": "c8727bb48bc517e3af66a4ea1207dbff0286ab384fb400e03c38adcdc9f40a29",
+          "modified": "2026-07-12T19:16:17.808549+00:00"
+        },
+        "cards/datacards/kommando-boss-nob-front.jpg": {
+          "path": "output/kommandos/cards/datacards/kommando-boss-nob-front.jpg",
+          "hash": "8b43ee2bb3b12436047f8cd0f7c5c95e2848a8f2d81e7d199c9de8b362e064f4",
+          "modified": "2026-07-12T19:16:18.276117+00:00"
+        },
+        "cards/datacards/kommando-boy-back.jpg": {
+          "path": "output/kommandos/cards/datacards/kommando-boy-back.jpg",
+          "hash": "c8727bb48bc517e3af66a4ea1207dbff0286ab384fb400e03c38adcdc9f40a29",
+          "modified": "2026-07-12T19:16:18.697208+00:00"
+        },
+        "cards/datacards/kommando-boy-front.jpg": {
+          "path": "output/kommandos/cards/datacards/kommando-boy-front.jpg",
+          "hash": "d5e1aa2e760f9e01e5e68122c4edc6a5812585c1cfce9986337d33ce716ef0fe",
+          "modified": "2026-07-12T19:16:19.140397+00:00"
+        },
+        "cards/datacards/kommando-breacha-boy-back.jpg": {
+          "path": "output/kommandos/cards/datacards/kommando-breacha-boy-back.jpg",
+          "hash": "c8727bb48bc517e3af66a4ea1207dbff0286ab384fb400e03c38adcdc9f40a29",
+          "modified": "2026-07-12T19:16:19.609252+00:00"
+        },
+        "cards/datacards/kommando-breacha-boy-front.jpg": {
+          "path": "output/kommandos/cards/datacards/kommando-breacha-boy-front.jpg",
+          "hash": "62f6fd18cab806878ffd6b5d6f77d88e022fba8f97ffa5a3c1aebf90593f0f6a",
+          "modified": "2026-07-12T19:16:20.030113+00:00"
+        },
+        "cards/datacards/kommando-burna-boy-back.jpg": {
+          "path": "output/kommandos/cards/datacards/kommando-burna-boy-back.jpg",
+          "hash": "c8727bb48bc517e3af66a4ea1207dbff0286ab384fb400e03c38adcdc9f40a29",
+          "modified": "2026-07-12T19:16:20.471208+00:00"
+        },
+        "cards/datacards/kommando-burna-boy-front.jpg": {
+          "path": "output/kommandos/cards/datacards/kommando-burna-boy-front.jpg",
+          "hash": "3f0aef504f1ecc4fbc869ae21264be897ad212abb470b97e8ba1a1ecbce21ecf",
+          "modified": "2026-07-12T19:16:20.890509+00:00"
+        },
+        "cards/datacards/kommando-comms-boy-back.jpg": {
+          "path": "output/kommandos/cards/datacards/kommando-comms-boy-back.jpg",
+          "hash": "c8727bb48bc517e3af66a4ea1207dbff0286ab384fb400e03c38adcdc9f40a29",
+          "modified": "2026-07-12T19:16:21.683485+00:00"
+        },
+        "cards/datacards/kommando-comms-boy-front.jpg": {
+          "path": "output/kommandos/cards/datacards/kommando-comms-boy-front.jpg",
+          "hash": "d984fec1ba296b2d3fe4cb39f87dfa3f1432ec62fc14c1f38d09418af97fadc7",
+          "modified": "2026-07-12T19:16:23.756658+00:00"
+        },
+        "cards/datacards/kommando-dakka-boy-back.jpg": {
+          "path": "output/kommandos/cards/datacards/kommando-dakka-boy-back.jpg",
+          "hash": "c8727bb48bc517e3af66a4ea1207dbff0286ab384fb400e03c38adcdc9f40a29",
+          "modified": "2026-07-12T19:16:24.595599+00:00"
+        },
+        "cards/datacards/kommando-dakka-boy-front.jpg": {
+          "path": "output/kommandos/cards/datacards/kommando-dakka-boy-front.jpg",
+          "hash": "fd4c7b9dff4b54c590fad9de777dbf06ef71b22e27787b8c1f4af7bd9f1d4ced",
+          "modified": "2026-07-12T19:16:26.325659+00:00"
+        },
+        "cards/datacards/kommando-grot-back.jpg": {
+          "path": "output/kommandos/cards/datacards/kommando-grot-back.jpg",
+          "hash": "c8727bb48bc517e3af66a4ea1207dbff0286ab384fb400e03c38adcdc9f40a29",
+          "modified": "2026-07-12T19:16:26.818608+00:00"
+        },
+        "cards/datacards/kommando-grot-front.jpg": {
+          "path": "output/kommandos/cards/datacards/kommando-grot-front.jpg",
+          "hash": "04fef5179193d83e22d2ca88f40c1fdc373374917f13054fd13aee4faf75b872",
+          "modified": "2026-07-12T19:16:28.993124+00:00"
+        },
+        "cards/datacards/kommando-rokkit-boy-back.jpg": {
+          "path": "output/kommandos/cards/datacards/kommando-rokkit-boy-back.jpg",
+          "hash": "c8727bb48bc517e3af66a4ea1207dbff0286ab384fb400e03c38adcdc9f40a29",
+          "modified": "2026-07-12T19:16:30.301369+00:00"
+        },
+        "cards/datacards/kommando-rokkit-boy-front.jpg": {
+          "path": "output/kommandos/cards/datacards/kommando-rokkit-boy-front.jpg",
+          "hash": "91eed756734cbf71762d2cde8d7eb2ff844dda1fa15d7175a8e08b5fc2e24a2d",
+          "modified": "2026-07-12T19:16:32.013852+00:00"
+        },
+        "cards/datacards/kommando-slasha-boy-back.jpg": {
+          "path": "output/kommandos/cards/datacards/kommando-slasha-boy-back.jpg",
+          "hash": "c8727bb48bc517e3af66a4ea1207dbff0286ab384fb400e03c38adcdc9f40a29",
+          "modified": "2026-07-12T19:16:32.902733+00:00"
+        },
+        "cards/datacards/kommando-slasha-boy-front.jpg": {
+          "path": "output/kommandos/cards/datacards/kommando-slasha-boy-front.jpg",
+          "hash": "22c02efd4f7b043b62a8192ba198e1f9f248d83ab5c1bc8928d5d43582c07db1",
+          "modified": "2026-07-12T19:16:34.300325+00:00"
+        },
+        "cards/datacards/kommando-snipa-boy-back.jpg": {
+          "path": "output/kommandos/cards/datacards/kommando-snipa-boy-back.jpg",
+          "hash": "c8727bb48bc517e3af66a4ea1207dbff0286ab384fb400e03c38adcdc9f40a29",
+          "modified": "2026-07-12T19:16:34.749110+00:00"
+        },
+        "cards/datacards/kommando-snipa-boy-front.jpg": {
+          "path": "output/kommandos/cards/datacards/kommando-snipa-boy-front.jpg",
+          "hash": "ba1890e67bf4413a1e3153ff328e3e5e700a232a86b921136d8086c6b6713ba2",
+          "modified": "2026-07-12T19:16:35.700052+00:00"
+        },
+        "cards/equipment/kommandos-choppas-back.jpg": {
+          "path": "output/kommandos/cards/equipment/kommandos-choppas-back.jpg",
+          "hash": "bec5c260e3db2d11c34935382902584c90a911396f64f688efd3e3481fa762aa",
+          "modified": "2026-07-12T19:16:36.656598+00:00"
+        },
+        "cards/equipment/kommandos-choppas-front.jpg": {
+          "path": "output/kommandos/cards/equipment/kommandos-choppas-front.jpg",
+          "hash": "50064405f86cb0e0d713aebd7115f7d9ad19d8af4e6140bf5cdd863f07fbf280",
+          "modified": "2026-07-12T19:16:37.960840+00:00"
+        },
+        "cards/equipment/kommandos-collapsible-stocks-back.jpg": {
+          "path": "output/kommandos/cards/equipment/kommandos-collapsible-stocks-back.jpg",
+          "hash": "bec5c260e3db2d11c34935382902584c90a911396f64f688efd3e3481fa762aa",
+          "modified": "2026-07-12T19:16:38.425096+00:00"
+        },
+        "cards/equipment/kommandos-collapsible-stocks-front.jpg": {
+          "path": "output/kommandos/cards/equipment/kommandos-collapsible-stocks-front.jpg",
+          "hash": "3d84dfa116150259e0268a9d37d93db7cb5cff4c5b0c3c1c510b59865550a527",
+          "modified": "2026-07-12T19:16:38.838696+00:00"
+        },
+        "cards/equipment/kommandos-dynamite-back.jpg": {
+          "path": "output/kommandos/cards/equipment/kommandos-dynamite-back.jpg",
+          "hash": "bec5c260e3db2d11c34935382902584c90a911396f64f688efd3e3481fa762aa",
+          "modified": "2026-07-12T19:16:38.846797+00:00"
+        },
+        "cards/equipment/kommandos-dynamite-front.jpg": {
+          "path": "output/kommandos/cards/equipment/kommandos-dynamite-front.jpg",
+          "hash": "18578b6397ba1ca1100f75f6d0ef11dc80afe76872866e8979096f33929d5b92",
+          "modified": "2026-07-12T19:16:39.244207+00:00"
+        },
+        "cards/equipment/kommandos-harpoon-back.jpg": {
+          "path": "output/kommandos/cards/equipment/kommandos-harpoon-back.jpg",
+          "hash": "bec5c260e3db2d11c34935382902584c90a911396f64f688efd3e3481fa762aa",
+          "modified": "2026-07-12T19:16:39.648961+00:00"
+        },
+        "cards/equipment/kommandos-harpoon-front.jpg": {
+          "path": "output/kommandos/cards/equipment/kommandos-harpoon-front.jpg",
+          "hash": "66ca2b1c0decdece7992dc8f889b9f67888052273f220d2df62db2f3f96fa692",
+          "modified": "2026-07-12T19:16:40.059680+00:00"
+        },
+        "cards/faction_rules/kommandos-throat-slittas-back.jpg": {
+          "path": "output/kommandos/cards/faction_rules/kommandos-throat-slittas-back.jpg",
+          "hash": "bec5c260e3db2d11c34935382902584c90a911396f64f688efd3e3481fa762aa",
+          "modified": "2026-07-12T19:16:40.472134+00:00"
+        },
+        "cards/faction_rules/kommandos-throat-slittas-front.jpg": {
+          "path": "output/kommandos/cards/faction_rules/kommandos-throat-slittas-front.jpg",
+          "hash": "1404564a4418fa34c27b6051d327ef994238ee8bb89f2e0bf0e6225d4fdc3045",
+          "modified": "2026-07-12T19:16:40.883255+00:00"
+        },
+        "cards/firefight_ploys/kommandos-just-a-scratch-back.jpg": {
+          "path": "output/kommandos/cards/firefight_ploys/kommandos-just-a-scratch-back.jpg",
+          "hash": "bec5c260e3db2d11c34935382902584c90a911396f64f688efd3e3481fa762aa",
+          "modified": "2026-07-12T19:16:40.892726+00:00"
+        },
+        "cards/firefight_ploys/kommandos-just-a-scratch-front.jpg": {
+          "path": "output/kommandos/cards/firefight_ploys/kommandos-just-a-scratch-front.jpg",
+          "hash": "d7bb572be525f30aaa91ac1b94ca44b737678ad021befd0f9a5be1138c5a96d3",
+          "modified": "2026-07-12T19:16:41.298412+00:00"
+        },
+        "cards/firefight_ploys/kommandos-krump-em-back.jpg": {
+          "path": "output/kommandos/cards/firefight_ploys/kommandos-krump-em-back.jpg",
+          "hash": "bec5c260e3db2d11c34935382902584c90a911396f64f688efd3e3481fa762aa",
+          "modified": "2026-07-12T19:16:41.698790+00:00"
+        },
+        "cards/firefight_ploys/kommandos-krump-em-front.jpg": {
+          "path": "output/kommandos/cards/firefight_ploys/kommandos-krump-em-front.jpg",
+          "hash": "25920655f4de66cd9722c13b43f1ea940b6d048992a680190471d2b5bd9b3ef1",
+          "modified": "2026-07-12T19:16:41.705730+00:00"
+        },
+        "cards/firefight_ploys/kommandos-kunnin-but-brutal-back.jpg": {
+          "path": "output/kommandos/cards/firefight_ploys/kommandos-kunnin-but-brutal-back.jpg",
+          "hash": "bec5c260e3db2d11c34935382902584c90a911396f64f688efd3e3481fa762aa",
+          "modified": "2026-07-12T19:16:42.514504+00:00"
+        },
+        "cards/firefight_ploys/kommandos-kunnin-but-brutal-front.jpg": {
+          "path": "output/kommandos/cards/firefight_ploys/kommandos-kunnin-but-brutal-front.jpg",
+          "hash": "1698e3f0efea39dd11b7fede6118348f00fb736ea115ad2238d6dc494771f906",
+          "modified": "2026-07-12T19:16:42.519364+00:00"
+        },
+        "cards/firefight_ploys/kommandos-shake-it-off-back.jpg": {
+          "path": "output/kommandos/cards/firefight_ploys/kommandos-shake-it-off-back.jpg",
+          "hash": "bec5c260e3db2d11c34935382902584c90a911396f64f688efd3e3481fa762aa",
+          "modified": "2026-07-12T19:16:42.949115+00:00"
+        },
+        "cards/firefight_ploys/kommandos-shake-it-off-front.jpg": {
+          "path": "output/kommandos/cards/firefight_ploys/kommandos-shake-it-off-front.jpg",
+          "hash": "0e9202165b629b60355d2d446b1bcb203634a0518730bd19d3ba995c6084219b",
+          "modified": "2026-07-12T19:16:42.953016+00:00"
+        },
+        "cards/operatives_selection/kommandos-operative-selection-back.jpg": {
+          "path": "output/kommandos/cards/operatives_selection/kommandos-operative-selection-back.jpg",
+          "hash": "bec5c260e3db2d11c34935382902584c90a911396f64f688efd3e3481fa762aa",
+          "modified": "2026-07-12T19:16:42.961160+00:00"
+        },
+        "cards/operatives_selection/kommandos-operative-selection-front.jpg": {
+          "path": "output/kommandos/cards/operatives_selection/kommandos-operative-selection-front.jpg",
+          "hash": "27af19287421795a6265db0d60f546d97035d273698221117d18062d67751517",
+          "modified": "2026-07-12T19:16:42.965971+00:00"
+        },
+        "cards/strategy_ploys/kommandos-dakka-dakka-dakka-back.jpg": {
+          "path": "output/kommandos/cards/strategy_ploys/kommandos-dakka-dakka-dakka-back.jpg",
+          "hash": "bec5c260e3db2d11c34935382902584c90a911396f64f688efd3e3481fa762aa",
+          "modified": "2026-07-12T19:16:42.978974+00:00"
+        },
+        "cards/strategy_ploys/kommandos-dakka-dakka-dakka-front.jpg": {
+          "path": "output/kommandos/cards/strategy_ploys/kommandos-dakka-dakka-dakka-front.jpg",
+          "hash": "562aa1248cff9978bb2dd5fd014a2b330dfb693552f64fc55d654399281fadd6",
+          "modified": "2026-07-12T19:16:42.983101+00:00"
+        },
+        "cards/strategy_ploys/kommandos-skulk-about-back.jpg": {
+          "path": "output/kommandos/cards/strategy_ploys/kommandos-skulk-about-back.jpg",
+          "hash": "bec5c260e3db2d11c34935382902584c90a911396f64f688efd3e3481fa762aa",
+          "modified": "2026-07-12T19:16:42.989666+00:00"
+        },
+        "cards/strategy_ploys/kommandos-skulk-about-front.jpg": {
+          "path": "output/kommandos/cards/strategy_ploys/kommandos-skulk-about-front.jpg",
+          "hash": "a018d0c59e3a6e7f60c14585736d29b7da2db61a86a6c519b51df327ed63e2cc",
+          "modified": "2026-07-12T19:16:42.992893+00:00"
+        },
+        "cards/strategy_ploys/kommandos-sssshhhh-back.jpg": {
+          "path": "output/kommandos/cards/strategy_ploys/kommandos-sssshhhh-back.jpg",
+          "hash": "bec5c260e3db2d11c34935382902584c90a911396f64f688efd3e3481fa762aa",
+          "modified": "2026-07-12T19:16:43.006126+00:00"
+        },
+        "cards/strategy_ploys/kommandos-sssshhhh-front.jpg": {
+          "path": "output/kommandos/cards/strategy_ploys/kommandos-sssshhhh-front.jpg",
+          "hash": "b0a9516fcb751e0ad6f4dfc30d607e8b59ca88ade86a87beeeb627c52dc22b03",
+          "modified": "2026-07-12T19:16:43.009811+00:00"
+        },
+        "cards/strategy_ploys/kommandos-waaagh-back.jpg": {
+          "path": "output/kommandos/cards/strategy_ploys/kommandos-waaagh-back.jpg",
+          "hash": "bec5c260e3db2d11c34935382902584c90a911396f64f688efd3e3481fa762aa",
+          "modified": "2026-07-12T19:16:43.021581+00:00"
+        },
+        "cards/strategy_ploys/kommandos-waaagh-front.jpg": {
+          "path": "output/kommandos/cards/strategy_ploys/kommandos-waaagh-front.jpg",
+          "hash": "2005d7cae79e564617963a5abdc78875478d9de098783461f36baa2d51f7bc0c",
+          "modified": "2026-07-12T19:16:43.023874+00:00"
+        },
+        "cards/token_guide/kommandos-token-guide-back.jpg": {
+          "path": "output/kommandos/cards/token_guide/kommandos-token-guide-back.jpg",
+          "hash": "bec5c260e3db2d11c34935382902584c90a911396f64f688efd3e3481fa762aa",
+          "modified": "2026-07-12T19:16:43.030006+00:00"
+        },
+        "cards/token_guide/kommandos-token-guide-front.jpg": {
+          "path": "output/kommandos/cards/token_guide/kommandos-token-guide-front.jpg",
+          "hash": "52c22c6e1586d5e035278fe7b92055b6710a6a6134f10dc9cb6924f93245ab00",
+          "modified": "2026-07-12T19:16:43.033955+00:00"
+        },
+        "cards/firefight_ploys/kommandos-krump-’em!-back.jpg": {
+          "path": "output/kommandos/cards/firefight_ploys/kommandos-krump-’em!-back.jpg",
+          "hash": "bec5c260e3db2d11c34935382902584c90a911396f64f688efd3e3481fa762aa",
+          "modified": "2026-07-12T19:16:42.103689+00:00"
+        },
+        "cards/firefight_ploys/kommandos-krump-’em!-front.jpg": {
+          "path": "output/kommandos/cards/firefight_ploys/kommandos-krump-’em!-front.jpg",
+          "hash": "83747cd0eea3299cd1da06bcc64efecbcfbf316db888528cfdd7edfae7a231cc",
+          "modified": "2026-07-12T19:16:42.110601+00:00"
+        },
+        "cards/firefight_ploys/kommandos-kunnin’-but-brutal-back.jpg": {
+          "path": "output/kommandos/cards/firefight_ploys/kommandos-kunnin’-but-brutal-back.jpg",
+          "hash": "bec5c260e3db2d11c34935382902584c90a911396f64f688efd3e3481fa762aa",
+          "modified": "2026-07-12T19:16:42.521288+00:00"
+        },
+        "cards/firefight_ploys/kommandos-kunnin’-but-brutal-front.jpg": {
+          "path": "output/kommandos/cards/firefight_ploys/kommandos-kunnin’-but-brutal-front.jpg",
+          "hash": "6722e9441623feb471ec7e49b25e3634d794889e53a56572375d9aef6fa74537",
+          "modified": "2026-07-12T19:16:42.887571+00:00"
+        },
+        "cards/strategy_ploys/kommandos-dakka!-dakka!-dakka!-back.jpg": {
+          "path": "output/kommandos/cards/strategy_ploys/kommandos-dakka!-dakka!-dakka!-back.jpg",
+          "hash": "bec5c260e3db2d11c34935382902584c90a911396f64f688efd3e3481fa762aa",
+          "modified": "2026-07-12T19:16:42.968014+00:00"
+        },
+        "cards/strategy_ploys/kommandos-dakka!-dakka!-dakka!-front.jpg": {
+          "path": "output/kommandos/cards/strategy_ploys/kommandos-dakka!-dakka!-dakka!-front.jpg",
+          "hash": "a7acf2db88d8e018d671297c15d2f0379ca67773ffd841b9dba13c6d5050b446",
+          "modified": "2026-07-12T19:16:42.972021+00:00"
+        },
+        "cards/strategy_ploys/kommandos-sssshhhh!-back.jpg": {
+          "path": "output/kommandos/cards/strategy_ploys/kommandos-sssshhhh!-back.jpg",
+          "hash": "bec5c260e3db2d11c34935382902584c90a911396f64f688efd3e3481fa762aa",
+          "modified": "2026-07-12T19:16:42.995525+00:00"
+        },
+        "cards/strategy_ploys/kommandos-sssshhhh!-front.jpg": {
+          "path": "output/kommandos/cards/strategy_ploys/kommandos-sssshhhh!-front.jpg",
+          "hash": "98461a838f0eea8cd4e0d3e51ec1bb04577909202fe417bfba207f4c5b75ab59",
+          "modified": "2026-07-12T19:16:42.999167+00:00"
+        },
+        "cards/strategy_ploys/kommandos-waaagh!-back.jpg": {
+          "path": "output/kommandos/cards/strategy_ploys/kommandos-waaagh!-back.jpg",
+          "hash": "bec5c260e3db2d11c34935382902584c90a911396f64f688efd3e3481fa762aa",
+          "modified": "2026-07-12T19:16:43.011748+00:00"
+        },
+        "cards/strategy_ploys/kommandos-waaagh!-front.jpg": {
+          "path": "output/kommandos/cards/strategy_ploys/kommandos-waaagh!-front.jpg",
+          "hash": "3218d94f5af6e31c65789b126600a574e396ab6a9268bd9d55520ee34db11bc3",
+          "modified": "2026-07-12T19:16:43.014466+00:00"
+        }
+      },
+      "completed": "2026-07-12T19:16:43.462352+00:00",
+      "inputs": {
+        "layers/integration/kommandos/manifest.json": "f77af415870af7f20057e79639cc4f2c1db8d2353444d3f6886b581106d43c3b",
+        "layers/integration/kommandos/kommandos-datacard-kommando-bomb-squig.pdf": "9453ac7d764efa0877db03384ab34eec45bd999264228bf9bb9eec814effdab4",
+        "layers/integration/kommandos/kommandos-datacard-kommando-boss-nob.pdf": "5394a77ae69385f199806994dac3ba799b45ea595324c78423d33a4ad06668ae",
+        "layers/integration/kommandos/kommandos-datacard-kommando-boy.pdf": "557fb92fa04fa1e89440b1b862864c1b18eb33ebbe8e3f55ddb4ac04bcc0ad58",
+        "layers/integration/kommandos/kommandos-datacard-kommando-breacha-boy.pdf": "b58af9af42b1fcba9a72ced7dfbb1d00c07a52e77d76bef691bdd58ce537a781",
+        "layers/integration/kommandos/kommandos-datacard-kommando-burna-boy.pdf": "5934bf1c423000ba931d74669f45c968cdc26e7fe01fa50239b1b5d15371e1cd",
+        "layers/integration/kommandos/kommandos-datacard-kommando-comms-boy.pdf": "f91437bbb3cb83c477b74fa5c9064caf740dfb9e868a91d525f70e3a258f3de7",
+        "layers/integration/kommandos/kommandos-datacard-kommando-dakka-boy.pdf": "dc534126bfb90ca792559ddd4928d91d6fd197e3e49f2d69cb5f39bd0641a8e6",
+        "layers/integration/kommandos/kommandos-datacard-kommando-grot.pdf": "aef134947a450c6b4a8cdcfdbc4d393a598a0031abbdc2cc9dfaed6cce823a6f",
+        "layers/integration/kommandos/kommandos-datacard-kommando-rokkit-boy.pdf": "4474be2d166ae2c7d050c975f7a3caca693b26c33bf7bec24cb4a87fe9eb9b4a",
+        "layers/integration/kommandos/kommandos-datacard-kommando-slasha-boy.pdf": "7afec74401c75fe05a140e5050128f4246c65cb0847e35e63df0f8661b999cec",
+        "layers/integration/kommandos/kommandos-datacard-kommando-snipa-boy.pdf": "1f64e0cd0cd6d5b9a09a8c3680cdc76d35a07da0112f4f0cf703843adb71b22e",
+        "layers/integration/kommandos/kommandos-equipment-choppas.pdf": "db7d706b743294569e71e0e13be9abffe99bad2779a7f07d9887419bc102456a",
+        "layers/integration/kommandos/kommandos-equipment-collapsible-stocks.pdf": "6d6d965d7d9fcdb9b970c6ec4f1752cbf0999f5f32b88ca746e12dcf0af2d422",
+        "layers/integration/kommandos/kommandos-equipment-dynamite.pdf": "88af495e5c9dcda68b6170afdca481d7b8a1412806572ef3a90eded1908eaf9e",
+        "layers/integration/kommandos/kommandos-equipment-harpoon.pdf": "09e7b6b24dde90c7302fa9597f1f8d842b5447eaeec82eb28231f0285ae4af7d",
+        "layers/integration/kommandos/kommandos-faction-rule-throat-slittas.pdf": "5119f19e64719bfd6303f2bd1f4c0589b4a4e7da5997be3dd80359a885bcd2c1",
+        "layers/integration/kommandos/kommandos-firefight-ploy-just-a-scratch.pdf": "e56e15ad2c043bf08764f22aff1e8ff096a02826fd2c2895ac352db6a98082f4",
+        "layers/integration/kommandos/kommandos-firefight-ploy-krump-em.pdf": "c80fa436342f27b00c00f3f1ce5a0552d043e4eb5bfe713a1b3f21277c5db07c",
+        "layers/integration/kommandos/kommandos-firefight-ploy-kunnin-but-brutal.pdf": "4a361817d8c1bf3ffa32179fbc6c35f1bc0b5e20e53ece840bd47d03282b6c2a",
+        "layers/integration/kommandos/kommandos-firefight-ploy-shake-it-off.pdf": "6770cdee53a97221d81d7e8b0d1ecddde807a65fdee95e52cb47f920d4a874c0",
+        "layers/integration/kommandos/kommandos-operatives-selection-operative-selection.pdf": "6eee2b8c03959a154d6852e19a4c6e3e5aba961ace943a37a67e702afceb8ba5",
+        "layers/integration/kommandos/kommandos-strategy-ploy-dakka-dakka-dakka.pdf": "9d1ef9a8d9479d392c42f3bd19d6f46db6285bd664a51ff1b16469365200b5a4",
+        "layers/integration/kommandos/kommandos-strategy-ploy-skulk-about.pdf": "3fbe62bb793f658128f23d3ac8a699e6d6aeeb7617719aa0ef5fe49f49d875c6",
+        "layers/integration/kommandos/kommandos-strategy-ploy-sssshhhh.pdf": "726630455308eae1c27676e5763a636f8d377ab848449104af00bc4d1f4ffe93",
+        "layers/integration/kommandos/kommandos-strategy-ploy-waaagh.pdf": "8d8cd1de6206b8b29fa0e123800efedba220556e43f563550c0a5e36512da019",
+        "layers/integration/kommandos/kommandos-token-guide-token-guide.pdf": "c06eb27917724580b51a4dc77cb4bb64f97b9ccffbc6585dd0e6552511cac2a0",
+        "layers/integration/kommandos/card-backside/kommandos-backside-portrait.jpg": "bec5c260e3db2d11c34935382902584c90a911396f64f688efd3e3481fa762aa",
+        "config/defaults/card-backside/default-backside-portrait.jpg": "f00ff15fa70005b9f804de08519e2e83485d7eaf78dfacea65dcef0eb1a29c22",
+        "layers/integration/kommandos/card-backside/kommandos-backside-landscape.jpg": "c8727bb48bc517e3af66a4ea1207dbff0286ab384fb400e03c38adcdc9f40a29",
+        "config/defaults/card-backside/default-backside-landscape.jpg": "1cf5580a1dff0c10adb1a286edad4479c487f3d2d698b0b8be84fe653039fd7e"
+      }
+    },
+    "extract_stats": {
+      "outputs": {
+        "team-data.json": {
+          "path": "output/kommandos/data/kommandos-team-data.json",
+          "hash": "36ce6f1fc70ab91896f9f4e6c577bf82e2cbecfedb9a16878e64ace03996d82b",
+          "modified": "2026-07-12T18:52:54.983431+00:00"
+        }
+      },
+      "completed": "2026-07-12T18:52:55.322247+00:00",
+      "inputs": {
+        "layers/integration/kommandos/content/kommandos-content.json": "36ce6f1fc70ab91896f9f4e6c577bf82e2cbecfedb9a16878e64ace03996d82b"
+      }
+    },
+    "generate_tts": {
+      "outputs": {
+        "tts_objects/Kommandos Box.json": {
+          "path": "output/kommandos/tts_objects/Kommandos Box.json",
+          "hash": "3741245969075a8ecf060676998d7d60ba3ca74e97d1e0eeee457c8c4630126d",
+          "modified": "2026-07-12T20:56:39.507091+00:00"
+        },
+        "tts_objects/Kommandos.json": {
+          "path": "output/kommandos/tts_objects/Kommandos.json",
+          "hash": "51dca24e1fb35d2c8f1af71fbf8415646dedb9bba21f812a047a48abad97ce26",
+          "modified": "2026-07-12T20:56:39.516438+00:00"
+        }
+      },
+      "completed": "2026-07-12T20:56:39.788910+00:00",
+      "inputs": {
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "config/team-guids.json": "1dea0eaf2c7d1c37c86aba088cdf876f0638d2dcaca162888fea8422c2d5c9db",
+        "output/kommandos/cards/datacards/kommando-bomb-squig-back.jpg": "6c1a10e5722341cb887218a404a2bce3f821a7d48084065271aa63398be2513d",
+        "output/kommandos/cards/datacards/kommando-bomb-squig-front.jpg": "d3856f316bedd83492d0b350a0f545d275ef543efe34ae033172a8d03e9f69a8",
+        "output/kommandos/cards/datacards/kommando-boss-nob-back.jpg": "c8727bb48bc517e3af66a4ea1207dbff0286ab384fb400e03c38adcdc9f40a29",
+        "output/kommandos/cards/datacards/kommando-boss-nob-front.jpg": "8b43ee2bb3b12436047f8cd0f7c5c95e2848a8f2d81e7d199c9de8b362e064f4",
+        "output/kommandos/cards/datacards/kommando-boy-back.jpg": "c8727bb48bc517e3af66a4ea1207dbff0286ab384fb400e03c38adcdc9f40a29",
+        "output/kommandos/cards/datacards/kommando-boy-front.jpg": "d5e1aa2e760f9e01e5e68122c4edc6a5812585c1cfce9986337d33ce716ef0fe",
+        "output/kommandos/cards/datacards/kommando-breacha-boy-back.jpg": "c8727bb48bc517e3af66a4ea1207dbff0286ab384fb400e03c38adcdc9f40a29",
+        "output/kommandos/cards/datacards/kommando-breacha-boy-front.jpg": "62f6fd18cab806878ffd6b5d6f77d88e022fba8f97ffa5a3c1aebf90593f0f6a",
+        "output/kommandos/cards/datacards/kommando-burna-boy-back.jpg": "c8727bb48bc517e3af66a4ea1207dbff0286ab384fb400e03c38adcdc9f40a29",
+        "output/kommandos/cards/datacards/kommando-burna-boy-front.jpg": "3f0aef504f1ecc4fbc869ae21264be897ad212abb470b97e8ba1a1ecbce21ecf",
+        "output/kommandos/cards/datacards/kommando-comms-boy-back.jpg": "c8727bb48bc517e3af66a4ea1207dbff0286ab384fb400e03c38adcdc9f40a29",
+        "output/kommandos/cards/datacards/kommando-comms-boy-front.jpg": "d984fec1ba296b2d3fe4cb39f87dfa3f1432ec62fc14c1f38d09418af97fadc7",
+        "output/kommandos/cards/datacards/kommando-dakka-boy-back.jpg": "c8727bb48bc517e3af66a4ea1207dbff0286ab384fb400e03c38adcdc9f40a29",
+        "output/kommandos/cards/datacards/kommando-dakka-boy-front.jpg": "fd4c7b9dff4b54c590fad9de777dbf06ef71b22e27787b8c1f4af7bd9f1d4ced",
+        "output/kommandos/cards/datacards/kommando-grot-back.jpg": "c8727bb48bc517e3af66a4ea1207dbff0286ab384fb400e03c38adcdc9f40a29",
+        "output/kommandos/cards/datacards/kommando-grot-front.jpg": "04fef5179193d83e22d2ca88f40c1fdc373374917f13054fd13aee4faf75b872",
+        "output/kommandos/cards/datacards/kommando-rokkit-boy-back.jpg": "c8727bb48bc517e3af66a4ea1207dbff0286ab384fb400e03c38adcdc9f40a29",
+        "output/kommandos/cards/datacards/kommando-rokkit-boy-front.jpg": "91eed756734cbf71762d2cde8d7eb2ff844dda1fa15d7175a8e08b5fc2e24a2d",
+        "output/kommandos/cards/datacards/kommando-slasha-boy-back.jpg": "c8727bb48bc517e3af66a4ea1207dbff0286ab384fb400e03c38adcdc9f40a29",
+        "output/kommandos/cards/datacards/kommando-slasha-boy-front.jpg": "22c02efd4f7b043b62a8192ba198e1f9f248d83ab5c1bc8928d5d43582c07db1",
+        "output/kommandos/cards/datacards/kommando-snipa-boy-back.jpg": "c8727bb48bc517e3af66a4ea1207dbff0286ab384fb400e03c38adcdc9f40a29",
+        "output/kommandos/cards/datacards/kommando-snipa-boy-front.jpg": "ba1890e67bf4413a1e3153ff328e3e5e700a232a86b921136d8086c6b6713ba2",
+        "output/kommandos/cards/equipment/kommandos-choppas-back.jpg": "bec5c260e3db2d11c34935382902584c90a911396f64f688efd3e3481fa762aa",
+        "output/kommandos/cards/equipment/kommandos-choppas-front.jpg": "50064405f86cb0e0d713aebd7115f7d9ad19d8af4e6140bf5cdd863f07fbf280",
+        "output/kommandos/cards/equipment/kommandos-collapsible-stocks-back.jpg": "bec5c260e3db2d11c34935382902584c90a911396f64f688efd3e3481fa762aa",
+        "output/kommandos/cards/equipment/kommandos-collapsible-stocks-front.jpg": "3d84dfa116150259e0268a9d37d93db7cb5cff4c5b0c3c1c510b59865550a527",
+        "output/kommandos/cards/equipment/kommandos-dynamite-back.jpg": "bec5c260e3db2d11c34935382902584c90a911396f64f688efd3e3481fa762aa",
+        "output/kommandos/cards/equipment/kommandos-dynamite-front.jpg": "18578b6397ba1ca1100f75f6d0ef11dc80afe76872866e8979096f33929d5b92",
+        "output/kommandos/cards/equipment/kommandos-harpoon-back.jpg": "bec5c260e3db2d11c34935382902584c90a911396f64f688efd3e3481fa762aa",
+        "output/kommandos/cards/equipment/kommandos-harpoon-front.jpg": "66ca2b1c0decdece7992dc8f889b9f67888052273f220d2df62db2f3f96fa692",
+        "output/kommandos/cards/faction_rules/kommandos-throat-slittas-back.jpg": "bec5c260e3db2d11c34935382902584c90a911396f64f688efd3e3481fa762aa",
+        "output/kommandos/cards/faction_rules/kommandos-throat-slittas-front.jpg": "1404564a4418fa34c27b6051d327ef994238ee8bb89f2e0bf0e6225d4fdc3045",
+        "output/kommandos/cards/firefight_ploys/kommandos-just-a-scratch-back.jpg": "bec5c260e3db2d11c34935382902584c90a911396f64f688efd3e3481fa762aa",
+        "output/kommandos/cards/firefight_ploys/kommandos-just-a-scratch-front.jpg": "d7bb572be525f30aaa91ac1b94ca44b737678ad021befd0f9a5be1138c5a96d3",
+        "output/kommandos/cards/firefight_ploys/kommandos-krump-em-back.jpg": "bec5c260e3db2d11c34935382902584c90a911396f64f688efd3e3481fa762aa",
+        "output/kommandos/cards/firefight_ploys/kommandos-krump-em-front.jpg": "25920655f4de66cd9722c13b43f1ea940b6d048992a680190471d2b5bd9b3ef1",
+        "output/kommandos/cards/firefight_ploys/kommandos-krump-’em!-back.jpg": "bec5c260e3db2d11c34935382902584c90a911396f64f688efd3e3481fa762aa",
+        "output/kommandos/cards/firefight_ploys/kommandos-krump-’em!-front.jpg": "83747cd0eea3299cd1da06bcc64efecbcfbf316db888528cfdd7edfae7a231cc",
+        "output/kommandos/cards/firefight_ploys/kommandos-kunnin-but-brutal-back.jpg": "bec5c260e3db2d11c34935382902584c90a911396f64f688efd3e3481fa762aa",
+        "output/kommandos/cards/firefight_ploys/kommandos-kunnin-but-brutal-front.jpg": "1698e3f0efea39dd11b7fede6118348f00fb736ea115ad2238d6dc494771f906",
+        "output/kommandos/cards/firefight_ploys/kommandos-kunnin’-but-brutal-back.jpg": "bec5c260e3db2d11c34935382902584c90a911396f64f688efd3e3481fa762aa",
+        "output/kommandos/cards/firefight_ploys/kommandos-kunnin’-but-brutal-front.jpg": "6722e9441623feb471ec7e49b25e3634d794889e53a56572375d9aef6fa74537",
+        "output/kommandos/cards/firefight_ploys/kommandos-shake-it-off-back.jpg": "bec5c260e3db2d11c34935382902584c90a911396f64f688efd3e3481fa762aa",
+        "output/kommandos/cards/firefight_ploys/kommandos-shake-it-off-front.jpg": "0e9202165b629b60355d2d446b1bcb203634a0518730bd19d3ba995c6084219b",
+        "output/kommandos/cards/operatives_selection/kommandos-operative-selection-back.jpg": "bec5c260e3db2d11c34935382902584c90a911396f64f688efd3e3481fa762aa",
+        "output/kommandos/cards/operatives_selection/kommandos-operative-selection-front.jpg": "27af19287421795a6265db0d60f546d97035d273698221117d18062d67751517",
+        "output/kommandos/cards/strategy_ploys/kommandos-dakka!-dakka!-dakka!-back.jpg": "bec5c260e3db2d11c34935382902584c90a911396f64f688efd3e3481fa762aa",
+        "output/kommandos/cards/strategy_ploys/kommandos-dakka!-dakka!-dakka!-front.jpg": "a7acf2db88d8e018d671297c15d2f0379ca67773ffd841b9dba13c6d5050b446",
+        "output/kommandos/cards/strategy_ploys/kommandos-dakka-dakka-dakka-back.jpg": "bec5c260e3db2d11c34935382902584c90a911396f64f688efd3e3481fa762aa",
+        "output/kommandos/cards/strategy_ploys/kommandos-dakka-dakka-dakka-front.jpg": "562aa1248cff9978bb2dd5fd014a2b330dfb693552f64fc55d654399281fadd6",
+        "output/kommandos/cards/strategy_ploys/kommandos-skulk-about-back.jpg": "bec5c260e3db2d11c34935382902584c90a911396f64f688efd3e3481fa762aa",
+        "output/kommandos/cards/strategy_ploys/kommandos-skulk-about-front.jpg": "a018d0c59e3a6e7f60c14585736d29b7da2db61a86a6c519b51df327ed63e2cc",
+        "output/kommandos/cards/strategy_ploys/kommandos-sssshhhh!-back.jpg": "bec5c260e3db2d11c34935382902584c90a911396f64f688efd3e3481fa762aa",
+        "output/kommandos/cards/strategy_ploys/kommandos-sssshhhh!-front.jpg": "98461a838f0eea8cd4e0d3e51ec1bb04577909202fe417bfba207f4c5b75ab59",
+        "output/kommandos/cards/strategy_ploys/kommandos-sssshhhh-back.jpg": "bec5c260e3db2d11c34935382902584c90a911396f64f688efd3e3481fa762aa",
+        "output/kommandos/cards/strategy_ploys/kommandos-sssshhhh-front.jpg": "b0a9516fcb751e0ad6f4dfc30d607e8b59ca88ade86a87beeeb627c52dc22b03",
+        "output/kommandos/cards/strategy_ploys/kommandos-waaagh!-back.jpg": "bec5c260e3db2d11c34935382902584c90a911396f64f688efd3e3481fa762aa",
+        "output/kommandos/cards/strategy_ploys/kommandos-waaagh!-front.jpg": "3218d94f5af6e31c65789b126600a574e396ab6a9268bd9d55520ee34db11bc3",
+        "output/kommandos/cards/strategy_ploys/kommandos-waaagh-back.jpg": "bec5c260e3db2d11c34935382902584c90a911396f64f688efd3e3481fa762aa",
+        "output/kommandos/cards/strategy_ploys/kommandos-waaagh-front.jpg": "2005d7cae79e564617963a5abdc78875478d9de098783461f36baa2d51f7bc0c",
+        "output/kommandos/cards/token_guide/kommandos-token-guide-back.jpg": "bec5c260e3db2d11c34935382902584c90a911396f64f688efd3e3481fa762aa",
+        "output/kommandos/cards/token_guide/kommandos-token-guide-front.jpg": "52c22c6e1586d5e035278fe7b92055b6710a6a6134f10dc9cb6924f93245ab00",
+        "output/kommandos/cardbox/kommandos-card-box-texture.jpg": "82f60be4b44c9f00f8678ce4f500eb308ad65d10adeffedfee9f328ad24795e1",
+        "output/kommandos/cardbox/kommandos-card-box.obj": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+        "output/kommandos/tokens/kommandos-breach.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/kommandos/tokens/kommandos-breach.png": "6c08b739db5064e144c2dd2cd7a8bf3a74d3aeaa9df1c1380943a0bdb7b93967",
+        "output/kommandos/tokens/kommandos-dynamite.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/kommandos/tokens/kommandos-dynamite.png": "fa3e4b64bab270fa02f996b6fa15ac904977101387cc24188510f053d28f74dc",
+        "output/kommandos/tokens/kommandos-explosives.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/kommandos/tokens/kommandos-explosives.png": "229420af19d9153fb6be72e2118713440744d53e27dbe0d5a4eb1ba3cc2c4aad",
+        "output/kommandos/tokens/kommandos-harpoon.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/kommandos/tokens/kommandos-harpoon.png": "6c539bfc0a72453be6781d34397948224ddb2a205b0c27947a74f5b9441dccbd",
+        "output/kommandos/tokens/kommandos-smoke-grenade.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/kommandos/tokens/kommandos-smoke-grenade.png": "91b659a2209dc0f95e4c65b5e1d29c3dbbcab7f57c80b00e72907f0cdb4ed233",
+        "output/kommandos/tokens/kommandos-stun-grenade.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/kommandos/tokens/kommandos-stun-grenade.png": "ff42dd9454d1fbde4423f20d410985aa8065469c04ee28b75a87e107c5ed648b",
+        "output/kommandos/tokens/tokenbag/kommandos-token-bag-icon.png": "65b642036038d406c8b7f7ecca4570af7e6cfd09e616d85efc6199ad6763c246",
+        "output/kommandos/tokens/tokenbag/kommandos-token-bag.obj": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+        "output/kommandos/dice/kommandos-dice-dark.jpg": "60da105dbf4f616c19827552289d16934a673b5c516e7698e41821674913ddfb",
+        "output/kommandos/dice/kommandos-dice-light.jpg": "a91678e0f78657fe1a7e1a7858798c499bf2662167ceb74d6b43bea12105cb56",
+        "output/kommandos/dice/kommandos-dice-team.jpg": "557756c66d8a866ce5d24239f3829341bedd2b418f70677d796565d71972feba",
+        "output/kommandos/data/kommandos-team-data.json": "36ce6f1fc70ab91896f9f4e6c577bf82e2cbecfedb9a16878e64ace03996d82b",
+        "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
+        "config/defaults/tts-script/datacard-load-stats.lua": "2d5f4088c2ff09f54988cf8722080f536b4e1b998cc2b4c1f1ea94e6b18eb92e",
+        "config/defaults/tts-script/display-table-manager-script.lua": "0dab4381078d90802f25e2cc825bc3658be35ee13ab3e98831c9d248c2526689",
+        "config/defaults/tts-script/faction-rule-chapter-tactics.lua": "c906742268076fb91f7cb4a92c6b588e1122ccddb692688f635c8dd4f7110ad0",
+        "config/defaults/tts-script/intermediate-updater.lua": "1a2d6dbc1a8c9c57ba6a3e7a3d4bc4b7a38a6c242a93f6ef3dae698123384d35",
+        "config/defaults/tts-script/single-object-updater.lua": "3613b85169e986a8e50ebe221482079e27c18037e3f48920aa0f7e138c0ccacc",
+        "config/defaults/tts-script/team-spawner-clean-script.lua": "12457bff3961eee2293c42d81cf4f4eb8b103177245a1ab8b46fd65da40672a2",
+        "config/defaults/tts-script/team-spawner-script.lua": "a51ff45c8622923db909fb465781801511f235412f099f83dff728d4027650db",
+        "config/defaults/tts-script/tts-update-rules-in-box-script.lua": "84f7f9b260f4e4968d208953b534bdbb7ab0b2f475e13264a2407f6c4d4d2b03",
+        "config/defaults/tts-image/default-icon.png": "892aff2628b9685c813e77be05c66afc1dc4247bc1dc9ce6fe54f006c2608271",
+        "config/defaults/tts-image/spawner-token.png": "61903b093f01d834f5e4c4c069b1353ecf7d29f012fef914b3027266816d8a6b",
+        "config/defaults/tts-token/square-bag-mesh.obj": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+        "config/defaults/tts-token/template-diamond-cutter.png": "719f57ba2b86494be454a6d3d25d8567dde974a915f3dde5ddc0e2d8dafaa1a5",
+        "config/defaults/tts-token/template-octagon-cutter.png": "944632aeacab978293ae57758b63086166c5fbaf3b845f48b3dd61db67d5c076",
+        "config/defaults/tts-token/template-operative-cutter.png": "0e698ddd403d7f0e84f200eb42af73f5249a9c5539d773298ff4c700ac9fe153",
+        "config/defaults/tts-token/template-round-cutter.png": "6564e1451c9a135a1c756fd94cde1c71e373e3fa677b51bba9d4bbe9e795d544",
+        "config/defaults/tts-token/token-bag-script.lua": "1659887e0fbfb9e3ebbc1aa5f3df8e1ffd89ee192be24d2dd1f02fcb0407e486",
+        "config/defaults/tts-token/token-bg-sample.png": "f9f90664c7f1c877c6f050f6e85babde6523cdc0aed9c77de8c09214f44ee109",
+        "config/defaults/tts-token/token-mesh.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc"
+      }
+    },
+    "front_end": {
+      "outputs": {},
+      "sources": {
+        "faction-rules": {
+          "hash": "9f3a446780e9d608497e30efb0eb0a12de13ffdd40f4b2add252a0c4628b7cb4",
+          "outputs": [
+            "layers/kt-app/extracted/kommandos/cards/faction-rules/kommandos-faction-rules-page_0.pdf",
+            "layers/kt-app/extracted/kommandos/cards/faction-rules/kommandos-faction-rules-page_1.pdf"
+          ],
+          "modified": "2026-07-06T15:59:11.345934+00:00"
+        },
+        "firefight-ploys": {
+          "hash": "418a33952ef84a0e2baea58189ab59d02124bd34b70807dce3b8e711abd1bdbe",
+          "outputs": [
+            "layers/kt-app/extracted/kommandos/cards/firefight-ploys/kommandos-firefight-ploys-page_0.pdf",
+            "layers/kt-app/extracted/kommandos/cards/firefight-ploys/kommandos-firefight-ploys-page_1.pdf",
+            "layers/kt-app/extracted/kommandos/cards/firefight-ploys/kommandos-firefight-ploys-page_2.pdf",
+            "layers/kt-app/extracted/kommandos/cards/firefight-ploys/kommandos-firefight-ploys-page_3.pdf"
+          ],
+          "modified": "2026-07-06T15:59:44.261166+00:00"
+        },
+        "equipment": {
+          "hash": "00dcec07aa1a65611d1db7a011b49faf67f82e58b3b74f24a271fba547dbc4fa",
+          "outputs": [
+            "layers/kt-app/extracted/kommandos/cards/equipment/kommandos-equipment-page_0.pdf",
+            "layers/kt-app/extracted/kommandos/cards/equipment/kommandos-equipment-page_1.pdf",
+            "layers/kt-app/extracted/kommandos/cards/equipment/kommandos-equipment-page_2.pdf",
+            "layers/kt-app/extracted/kommandos/cards/equipment/kommandos-equipment-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:08:09.421567+00:00"
+        },
+        "operatives-selection": {
+          "hash": "282bcdc519e0cecbd8d1465e6a9f158b36cd90f06dbbda2e9cac5f10e529a021",
+          "outputs": [
+            "layers/kt-app/extracted/kommandos/cards/operatives-selection/kommandos-operatives-selection-page_0.pdf"
+          ],
+          "modified": "2026-07-06T16:08:31.684728+00:00"
+        },
+        "strategy-ploys": {
+          "hash": "322caa7dd098d2a8d75f44c2c2a0c19ecc1394e3a63be3933425d9d94b63932d",
+          "outputs": [
+            "layers/kt-app/extracted/kommandos/cards/strategy-ploys/kommandos-strategy-ploys-page_0.pdf",
+            "layers/kt-app/extracted/kommandos/cards/strategy-ploys/kommandos-strategy-ploys-page_1.pdf",
+            "layers/kt-app/extracted/kommandos/cards/strategy-ploys/kommandos-strategy-ploys-page_2.pdf",
+            "layers/kt-app/extracted/kommandos/cards/strategy-ploys/kommandos-strategy-ploys-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:10:41.858226+00:00"
+        },
+        "datacards": {
+          "hash": "c34d51516078222c6eee7db0df29e3a802e753f3c367e1852c395aa31ca50627",
+          "outputs": [
+            "layers/kt-app/extracted/kommandos/cards/datacards/kommandos-datacards-page_0.pdf",
+            "layers/kt-app/extracted/kommandos/cards/datacards/kommandos-datacards-page_1.pdf",
+            "layers/kt-app/extracted/kommandos/cards/datacards/kommandos-datacards-page_2.pdf",
+            "layers/kt-app/extracted/kommandos/cards/datacards/kommandos-datacards-page_3.pdf",
+            "layers/kt-app/extracted/kommandos/cards/datacards/kommandos-datacards-page_4.pdf",
+            "layers/kt-app/extracted/kommandos/cards/datacards/kommandos-datacards-page_5.pdf",
+            "layers/kt-app/extracted/kommandos/cards/datacards/kommandos-datacards-page_6.pdf",
+            "layers/kt-app/extracted/kommandos/cards/datacards/kommandos-datacards-page_7.pdf",
+            "layers/kt-app/extracted/kommandos/cards/datacards/kommandos-datacards-page_8.pdf",
+            "layers/kt-app/extracted/kommandos/cards/datacards/kommandos-datacards-page_9.pdf",
+            "layers/kt-app/extracted/kommandos/cards/datacards/kommandos-datacards-page_10.pdf",
+            "layers/kt-app/extracted/kommandos/cards/datacards/kommandos-datacards-page_11.pdf"
+          ],
+          "modified": "2026-07-06T16:12:15.572271+00:00"
+        },
+        "cards": {
+          "hash": "ca6631e25c4324a7a278305a0fabd9a50d847e29c68ff257e6405e3ac7aaab6c",
+          "outputs": [
+            "layers/warcom/extracted/kommandos/cards/kommandos_page01_card1_landscape.pdf",
+            "layers/warcom/extracted/kommandos/cards/kommandos_page01_card2_landscape.pdf",
+            "layers/warcom/extracted/kommandos/cards/kommandos_page01_card3_landscape.pdf",
+            "layers/warcom/extracted/kommandos/cards/kommandos_page01_card4_landscape.pdf",
+            "layers/warcom/extracted/kommandos/cards/kommandos_page02_card1_landscape.pdf",
+            "layers/warcom/extracted/kommandos/cards/kommandos_page02_card2_landscape.pdf",
+            "layers/warcom/extracted/kommandos/cards/kommandos_page02_card3_landscape.pdf",
+            "layers/warcom/extracted/kommandos/cards/kommandos_page02_card4_landscape.pdf",
+            "layers/warcom/extracted/kommandos/cards/kommandos_page03_card1_landscape.pdf",
+            "layers/warcom/extracted/kommandos/cards/kommandos_page03_card2_landscape.pdf",
+            "layers/warcom/extracted/kommandos/cards/kommandos_page03_card3_landscape.pdf",
+            "layers/warcom/extracted/kommandos/cards/kommandos_page03_card4_landscape.pdf",
+            "layers/warcom/extracted/kommandos/cards/kommandos_page04_card1_portrait.pdf",
+            "layers/warcom/extracted/kommandos/cards/kommandos_page04_card2_portrait.pdf",
+            "layers/warcom/extracted/kommandos/cards/kommandos_page04_card3_portrait.pdf",
+            "layers/warcom/extracted/kommandos/cards/kommandos_page04_card4_portrait.pdf",
+            "layers/warcom/extracted/kommandos/cards/kommandos_page05_card1_portrait.pdf",
+            "layers/warcom/extracted/kommandos/cards/kommandos_page05_card2_portrait.pdf",
+            "layers/warcom/extracted/kommandos/cards/kommandos_page05_card3_portrait.pdf",
+            "layers/warcom/extracted/kommandos/cards/kommandos_page05_card4_portrait.pdf",
+            "layers/warcom/extracted/kommandos/cards/kommandos_page06_card1_portrait.pdf",
+            "layers/warcom/extracted/kommandos/cards/kommandos_page06_card2_portrait.pdf",
+            "layers/warcom/extracted/kommandos/cards/kommandos_page06_card3_portrait.pdf",
+            "layers/warcom/extracted/kommandos/cards/kommandos_page06_card4_portrait.pdf",
+            "layers/warcom/extracted/kommandos/cards/kommandos_page07_card1_portrait.pdf",
+            "layers/warcom/extracted/kommandos/cards/kommandos_page07_card2_portrait.pdf",
+            "layers/warcom/extracted/kommandos/cards/kommandos_page07_card3_portrait.pdf",
+            "layers/warcom/extracted/kommandos/cards/kommandos_page07_card4_portrait.pdf"
+          ],
+          "modified": "2026-07-08T18:54:34.680093+00:00"
+        }
+      },
+      "completed": "2026-07-08T18:54:34.680141+00:00"
+    },
+    "build_structure": {
+      "outputs": {
+        "structure": {
+          "path": "layers/warcom/structure/kommandos-structure.json",
+          "hash": "f77af415870af7f20057e79639cc4f2c1db8d2353444d3f6886b581106d43c3b",
+          "modified": "2026-07-12T18:50:12.182203+00:00"
+        }
+      },
+      "inputs": {
+        "layers/warcom/extracted/kommandos/cards/kommandos_page01_card1_landscape.pdf": "a84493be5decbd1bba2706a045467b210b349f7afda96eb9c40f5161e8adff0a",
+        "layers/warcom/extracted/kommandos/cards/kommandos_page01_card2_landscape.pdf": "8ce49bec2e3ba90f3ca885827e2f238e5b9b5ce01929007017a2a97548544c77",
+        "layers/warcom/extracted/kommandos/cards/kommandos_page01_card3_landscape.pdf": "6b9a589eade70eaf121d41b896a4012287bedda323416e2693db2e2862507edb",
+        "layers/warcom/extracted/kommandos/cards/kommandos_page01_card4_landscape.pdf": "ea87c17dbb48608656f6fc51b77e767ae895947216b86aaac697115e2dc9fa26",
+        "layers/warcom/extracted/kommandos/cards/kommandos_page02_card1_landscape.pdf": "cd72148fbcf3f7d256f10a3c0f58001b90cad34350a7974a48c1a959d7d04c95",
+        "layers/warcom/extracted/kommandos/cards/kommandos_page02_card2_landscape.pdf": "17c45a338a59380180a39bc1d29d8100bb8463d68747da8a2ee4d9cf105aaf26",
+        "layers/warcom/extracted/kommandos/cards/kommandos_page02_card3_landscape.pdf": "e3b0c912e5cdcd4acd8a149596a3b07d047efe142f3cbe83197db187511ddcc2",
+        "layers/warcom/extracted/kommandos/cards/kommandos_page02_card4_landscape.pdf": "0d074fee1e671aa6c3095686da5b71026f33de219bee39d7fbee25ceeb3e608e",
+        "layers/warcom/extracted/kommandos/cards/kommandos_page03_card1_landscape.pdf": "b575d73b96d79d597b5d030a387e0e3dcfb93eacc98facbd7eae8f94efc2191c",
+        "layers/warcom/extracted/kommandos/cards/kommandos_page03_card2_landscape.pdf": "757050c37e683dfcc801ef68021182d91616467d27a096849f6432c098c34348",
+        "layers/warcom/extracted/kommandos/cards/kommandos_page03_card3_landscape.pdf": "5e173b8041271f88b202c44e47772629101c8a07c1eb53ca09edf0e43be7fcd5",
+        "layers/warcom/extracted/kommandos/cards/kommandos_page03_card4_landscape.pdf": "9e0afad39a09a2d1e379551a015b4f05e348695ba2f8db74a60d9ccf82369b1f",
+        "layers/warcom/extracted/kommandos/cards/kommandos_page04_card1_portrait.pdf": "137773e6dfe5734270315b3fece29b8bdfb4079e081c4f66673cd5117f2bf442",
+        "layers/warcom/extracted/kommandos/cards/kommandos_page04_card2_portrait.pdf": "fb231de89dde7f4859cd694b0b223ca67a009e336dc95bdd7eda1ae037c00809",
+        "layers/warcom/extracted/kommandos/cards/kommandos_page04_card3_portrait.pdf": "9bc92dcef9dcc0dddd5a65faa1962243f6a6ee341b87925098b3bf83126ed0d8",
+        "layers/warcom/extracted/kommandos/cards/kommandos_page04_card4_portrait.pdf": "98e4a08903320b9783ec59dc7f8857696a333204e15560bb275844cfa5b64fd0",
+        "layers/warcom/extracted/kommandos/cards/kommandos_page05_card1_portrait.pdf": "a6136e22a2dd5800341d5316f27f8a39abfb88a499843df1b0f5900cb81bdbfa",
+        "layers/warcom/extracted/kommandos/cards/kommandos_page05_card2_portrait.pdf": "0cea299603416096f108dfcdb6853623502e6f41968c974bc7702193d94e9c8f",
+        "layers/warcom/extracted/kommandos/cards/kommandos_page05_card3_portrait.pdf": "f0a60c12124eaeda88d67510c0f7c57021bf5c349c7c2ee05a8a5c1b42b8809e",
+        "layers/warcom/extracted/kommandos/cards/kommandos_page05_card4_portrait.pdf": "f2770af30cc877be4e99ceb941564a55771688eee7a16a17d91a92789ca5d335",
+        "layers/warcom/extracted/kommandos/cards/kommandos_page06_card1_portrait.pdf": "f2b69a567592ea1f52b64278eaee159edc050ead13a104935dfda958a0f0df0a",
+        "layers/warcom/extracted/kommandos/cards/kommandos_page06_card2_portrait.pdf": "a33786752aaa9c07dc07427241dd172ae347b20a8d47fc950c69109980d77641",
+        "layers/warcom/extracted/kommandos/cards/kommandos_page06_card3_portrait.pdf": "987dc702b85aebc2cc85c9d98a7e20f45e78c9ed793f6fe3b5c205e1cbad3c63",
+        "layers/warcom/extracted/kommandos/cards/kommandos_page06_card4_portrait.pdf": "53b2d1238eb251d884130b0a1c4edf4df372ea29d4d12fe3e91cdf42c44286b0",
+        "layers/warcom/extracted/kommandos/cards/kommandos_page07_card1_portrait.pdf": "aaeff063e49b17b260b29a06958884843325c8011257ed5edc7ce86de0b4db3d",
+        "layers/warcom/extracted/kommandos/cards/kommandos_page07_card2_portrait.pdf": "0bda583dc65dde7d05c7a8668e862cf98237f1dc3baf682518e8bbb630516933",
+        "layers/warcom/extracted/kommandos/cards/kommandos_page07_card3_portrait.pdf": "837aa51add9855c821790faeda61442985f5d60c27b1cf5ee91cf2fa374274ba",
+        "layers/warcom/extracted/kommandos/cards/kommandos_page07_card4_portrait.pdf": "f7194475c6a0f1502308de99da6c4dc906cdf0f74e8c6a6353b6a08dee3735ae"
+      },
+      "completed": "2026-07-12T18:50:14.293484+00:00"
+    },
+    "integrate_classified": {
+      "outputs": {
+        "manifest.json": {
+          "path": "layers/integration/kommandos/manifest.json",
+          "hash": "f77af415870af7f20057e79639cc4f2c1db8d2353444d3f6886b581106d43c3b",
+          "modified": "2026-07-12T19:14:11.728624+00:00"
+        },
+        "kommandos-datacard-kommando-boss-nob.pdf": {
+          "path": "layers/integration/kommandos/kommandos-datacard-kommando-boss-nob.pdf",
+          "hash": "5394a77ae69385f199806994dac3ba799b45ea595324c78423d33a4ad06668ae",
+          "modified": "2026-07-12T19:14:12.539042+00:00"
+        },
+        "kommandos-datacard-kommando-bomb-squig.pdf": {
+          "path": "layers/integration/kommandos/kommandos-datacard-kommando-bomb-squig.pdf",
+          "hash": "9453ac7d764efa0877db03384ab34eec45bd999264228bf9bb9eec814effdab4",
+          "modified": "2026-07-12T19:14:12.563354+00:00"
+        },
+        "kommandos-datacard-kommando-boy.pdf": {
+          "path": "layers/integration/kommandos/kommandos-datacard-kommando-boy.pdf",
+          "hash": "557fb92fa04fa1e89440b1b862864c1b18eb33ebbe8e3f55ddb4ac04bcc0ad58",
+          "modified": "2026-07-12T19:14:12.585676+00:00"
+        },
+        "kommandos-datacard-kommando-breacha-boy.pdf": {
+          "path": "layers/integration/kommandos/kommandos-datacard-kommando-breacha-boy.pdf",
+          "hash": "b58af9af42b1fcba9a72ced7dfbb1d00c07a52e77d76bef691bdd58ce537a781",
+          "modified": "2026-07-12T19:14:12.616962+00:00"
+        },
+        "kommandos-datacard-kommando-burna-boy.pdf": {
+          "path": "layers/integration/kommandos/kommandos-datacard-kommando-burna-boy.pdf",
+          "hash": "5934bf1c423000ba931d74669f45c968cdc26e7fe01fa50239b1b5d15371e1cd",
+          "modified": "2026-07-12T19:14:12.655159+00:00"
+        },
+        "kommandos-datacard-kommando-comms-boy.pdf": {
+          "path": "layers/integration/kommandos/kommandos-datacard-kommando-comms-boy.pdf",
+          "hash": "f91437bbb3cb83c477b74fa5c9064caf740dfb9e868a91d525f70e3a258f3de7",
+          "modified": "2026-07-12T19:14:12.678944+00:00"
+        },
+        "kommandos-datacard-kommando-dakka-boy.pdf": {
+          "path": "layers/integration/kommandos/kommandos-datacard-kommando-dakka-boy.pdf",
+          "hash": "dc534126bfb90ca792559ddd4928d91d6fd197e3e49f2d69cb5f39bd0641a8e6",
+          "modified": "2026-07-12T19:14:12.704103+00:00"
+        },
+        "kommandos-datacard-kommando-grot.pdf": {
+          "path": "layers/integration/kommandos/kommandos-datacard-kommando-grot.pdf",
+          "hash": "aef134947a450c6b4a8cdcfdbc4d393a598a0031abbdc2cc9dfaed6cce823a6f",
+          "modified": "2026-07-12T19:14:12.730947+00:00"
+        },
+        "kommandos-datacard-kommando-rokkit-boy.pdf": {
+          "path": "layers/integration/kommandos/kommandos-datacard-kommando-rokkit-boy.pdf",
+          "hash": "4474be2d166ae2c7d050c975f7a3caca693b26c33bf7bec24cb4a87fe9eb9b4a",
+          "modified": "2026-07-12T19:14:12.765543+00:00"
+        },
+        "kommandos-datacard-kommando-slasha-boy.pdf": {
+          "path": "layers/integration/kommandos/kommandos-datacard-kommando-slasha-boy.pdf",
+          "hash": "7afec74401c75fe05a140e5050128f4246c65cb0847e35e63df0f8661b999cec",
+          "modified": "2026-07-12T19:14:12.823401+00:00"
+        },
+        "kommandos-datacard-kommando-snipa-boy.pdf": {
+          "path": "layers/integration/kommandos/kommandos-datacard-kommando-snipa-boy.pdf",
+          "hash": "1f64e0cd0cd6d5b9a09a8c3680cdc76d35a07da0112f4f0cf703843adb71b22e",
+          "modified": "2026-07-12T19:14:12.847306+00:00"
+        },
+        "kommandos-equipment-choppas.pdf": {
+          "path": "layers/integration/kommandos/kommandos-equipment-choppas.pdf",
+          "hash": "db7d706b743294569e71e0e13be9abffe99bad2779a7f07d9887419bc102456a",
+          "modified": "2026-07-12T19:14:12.895751+00:00"
+        },
+        "kommandos-equipment-dynamite.pdf": {
+          "path": "layers/integration/kommandos/kommandos-equipment-dynamite.pdf",
+          "hash": "88af495e5c9dcda68b6170afdca481d7b8a1412806572ef3a90eded1908eaf9e",
+          "modified": "2026-07-12T19:14:22.250672+00:00"
+        },
+        "kommandos-equipment-harpoon.pdf": {
+          "path": "layers/integration/kommandos/kommandos-equipment-harpoon.pdf",
+          "hash": "09e7b6b24dde90c7302fa9597f1f8d842b5447eaeec82eb28231f0285ae4af7d",
+          "modified": "2026-07-12T19:14:22.439420+00:00"
+        },
+        "kommandos-equipment-collapsible-stocks.pdf": {
+          "path": "layers/integration/kommandos/kommandos-equipment-collapsible-stocks.pdf",
+          "hash": "6d6d965d7d9fcdb9b970c6ec4f1752cbf0999f5f32b88ca746e12dcf0af2d422",
+          "modified": "2026-07-12T19:14:22.467262+00:00"
+        },
+        "kommandos-faction-rule-throat-slittas.pdf": {
+          "path": "layers/integration/kommandos/kommandos-faction-rule-throat-slittas.pdf",
+          "hash": "5119f19e64719bfd6303f2bd1f4c0589b4a4e7da5997be3dd80359a885bcd2c1",
+          "modified": "2026-07-12T19:14:22.497171+00:00"
+        },
+        "kommandos-token-guide-token-guide.pdf": {
+          "path": "layers/integration/kommandos/kommandos-token-guide-token-guide.pdf",
+          "hash": "c06eb27917724580b51a4dc77cb4bb64f97b9ccffbc6585dd0e6552511cac2a0",
+          "modified": "2026-07-12T19:14:22.520508+00:00"
+        },
+        "kommandos-firefight-ploy-just-a-scratch.pdf": {
+          "path": "layers/integration/kommandos/kommandos-firefight-ploy-just-a-scratch.pdf",
+          "hash": "e56e15ad2c043bf08764f22aff1e8ff096a02826fd2c2895ac352db6a98082f4",
+          "modified": "2026-07-12T19:14:22.539459+00:00"
+        },
+        "kommandos-firefight-ploy-krump-em.pdf": {
+          "path": "layers/integration/kommandos/kommandos-firefight-ploy-krump-em.pdf",
+          "hash": "c80fa436342f27b00c00f3f1ce5a0552d043e4eb5bfe713a1b3f21277c5db07c",
+          "modified": "2026-07-12T19:14:22.562330+00:00"
+        },
+        "kommandos-firefight-ploy-kunnin-but-brutal.pdf": {
+          "path": "layers/integration/kommandos/kommandos-firefight-ploy-kunnin-but-brutal.pdf",
+          "hash": "4a361817d8c1bf3ffa32179fbc6c35f1bc0b5e20e53ece840bd47d03282b6c2a",
+          "modified": "2026-07-12T19:14:22.575709+00:00"
+        },
+        "kommandos-firefight-ploy-shake-it-off.pdf": {
+          "path": "layers/integration/kommandos/kommandos-firefight-ploy-shake-it-off.pdf",
+          "hash": "6770cdee53a97221d81d7e8b0d1ecddde807a65fdee95e52cb47f920d4a874c0",
+          "modified": "2026-07-12T19:14:22.604332+00:00"
+        },
+        "kommandos-operatives-selection-operative-selection.pdf": {
+          "path": "layers/integration/kommandos/kommandos-operatives-selection-operative-selection.pdf",
+          "hash": "6eee2b8c03959a154d6852e19a4c6e3e5aba961ace943a37a67e702afceb8ba5",
+          "modified": "2026-07-12T19:14:22.623223+00:00"
+        },
+        "kommandos-strategy-ploy-dakka-dakka-dakka.pdf": {
+          "path": "layers/integration/kommandos/kommandos-strategy-ploy-dakka-dakka-dakka.pdf",
+          "hash": "9d1ef9a8d9479d392c42f3bd19d6f46db6285bd664a51ff1b16469365200b5a4",
+          "modified": "2026-07-12T19:14:22.640554+00:00"
+        },
+        "kommandos-strategy-ploy-waaagh.pdf": {
+          "path": "layers/integration/kommandos/kommandos-strategy-ploy-waaagh.pdf",
+          "hash": "8d8cd1de6206b8b29fa0e123800efedba220556e43f563550c0a5e36512da019",
+          "modified": "2026-07-12T19:14:22.658133+00:00"
+        },
+        "kommandos-strategy-ploy-skulk-about.pdf": {
+          "path": "layers/integration/kommandos/kommandos-strategy-ploy-skulk-about.pdf",
+          "hash": "3fbe62bb793f658128f23d3ac8a699e6d6aeeb7617719aa0ef5fe49f49d875c6",
+          "modified": "2026-07-12T19:14:22.683075+00:00"
+        },
+        "kommandos-strategy-ploy-sssshhhh.pdf": {
+          "path": "layers/integration/kommandos/kommandos-strategy-ploy-sssshhhh.pdf",
+          "hash": "726630455308eae1c27676e5763a636f8d377ab848449104af00bc4d1f4ffe93",
+          "modified": "2026-07-12T19:14:22.712005+00:00"
+        }
+      },
+      "inputs": {
+        "layers/warcom/structure/kommandos-structure.json": "f77af415870af7f20057e79639cc4f2c1db8d2353444d3f6886b581106d43c3b",
+        "layers/warcom/extracted/kommandos/cards/kommandos_page01_card1_landscape.pdf": "a84493be5decbd1bba2706a045467b210b349f7afda96eb9c40f5161e8adff0a",
+        "layers/warcom/extracted/kommandos/cards/kommandos_page01_card2_landscape.pdf": "8ce49bec2e3ba90f3ca885827e2f238e5b9b5ce01929007017a2a97548544c77",
+        "layers/warcom/extracted/kommandos/cards/kommandos_page01_card3_landscape.pdf": "6b9a589eade70eaf121d41b896a4012287bedda323416e2693db2e2862507edb",
+        "layers/warcom/extracted/kommandos/cards/kommandos_page01_card4_landscape.pdf": "ea87c17dbb48608656f6fc51b77e767ae895947216b86aaac697115e2dc9fa26",
+        "layers/warcom/extracted/kommandos/cards/kommandos_page02_card1_landscape.pdf": "cd72148fbcf3f7d256f10a3c0f58001b90cad34350a7974a48c1a959d7d04c95",
+        "layers/warcom/extracted/kommandos/cards/kommandos_page02_card2_landscape.pdf": "17c45a338a59380180a39bc1d29d8100bb8463d68747da8a2ee4d9cf105aaf26",
+        "layers/warcom/extracted/kommandos/cards/kommandos_page02_card3_landscape.pdf": "e3b0c912e5cdcd4acd8a149596a3b07d047efe142f3cbe83197db187511ddcc2",
+        "layers/warcom/extracted/kommandos/cards/kommandos_page02_card4_landscape.pdf": "0d074fee1e671aa6c3095686da5b71026f33de219bee39d7fbee25ceeb3e608e",
+        "layers/warcom/extracted/kommandos/cards/kommandos_page03_card1_landscape.pdf": "b575d73b96d79d597b5d030a387e0e3dcfb93eacc98facbd7eae8f94efc2191c",
+        "layers/warcom/extracted/kommandos/cards/kommandos_page03_card2_landscape.pdf": "757050c37e683dfcc801ef68021182d91616467d27a096849f6432c098c34348",
+        "layers/warcom/extracted/kommandos/cards/kommandos_page03_card3_landscape.pdf": "5e173b8041271f88b202c44e47772629101c8a07c1eb53ca09edf0e43be7fcd5",
+        "layers/warcom/extracted/kommandos/cards/kommandos_page03_card4_landscape.pdf": "9e0afad39a09a2d1e379551a015b4f05e348695ba2f8db74a60d9ccf82369b1f",
+        "layers/warcom/extracted/kommandos/cards/kommandos_page06_card4_portrait.pdf": "53b2d1238eb251d884130b0a1c4edf4df372ea29d4d12fe3e91cdf42c44286b0",
+        "layers/warcom/extracted/kommandos/cards/kommandos_page07_card1_portrait.pdf": "aaeff063e49b17b260b29a06958884843325c8011257ed5edc7ce86de0b4db3d",
+        "layers/warcom/extracted/kommandos/cards/kommandos_page07_card2_portrait.pdf": "0bda583dc65dde7d05c7a8668e862cf98237f1dc3baf682518e8bbb630516933",
+        "layers/warcom/extracted/kommandos/cards/kommandos_page07_card3_portrait.pdf": "837aa51add9855c821790faeda61442985f5d60c27b1cf5ee91cf2fa374274ba",
+        "layers/warcom/extracted/kommandos/cards/kommandos_page04_card2_portrait.pdf": "fb231de89dde7f4859cd694b0b223ca67a009e336dc95bdd7eda1ae037c00809",
+        "layers/warcom/extracted/kommandos/cards/kommandos_page04_card3_portrait.pdf": "9bc92dcef9dcc0dddd5a65faa1962243f6a6ee341b87925098b3bf83126ed0d8",
+        "layers/warcom/extracted/kommandos/cards/kommandos_page05_card4_portrait.pdf": "f2770af30cc877be4e99ceb941564a55771688eee7a16a17d91a92789ca5d335",
+        "layers/warcom/extracted/kommandos/cards/kommandos_page06_card1_portrait.pdf": "f2b69a567592ea1f52b64278eaee159edc050ead13a104935dfda958a0f0df0a",
+        "layers/warcom/extracted/kommandos/cards/kommandos_page06_card2_portrait.pdf": "a33786752aaa9c07dc07427241dd172ae347b20a8d47fc950c69109980d77641",
+        "layers/warcom/extracted/kommandos/cards/kommandos_page06_card3_portrait.pdf": "987dc702b85aebc2cc85c9d98a7e20f45e78c9ed793f6fe3b5c205e1cbad3c63",
+        "layers/warcom/extracted/kommandos/cards/kommandos_page04_card1_portrait.pdf": "137773e6dfe5734270315b3fece29b8bdfb4079e081c4f66673cd5117f2bf442",
+        "layers/warcom/extracted/kommandos/cards/kommandos_page04_card4_portrait.pdf": "98e4a08903320b9783ec59dc7f8857696a333204e15560bb275844cfa5b64fd0",
+        "layers/warcom/extracted/kommandos/cards/kommandos_page05_card1_portrait.pdf": "a6136e22a2dd5800341d5316f27f8a39abfb88a499843df1b0f5900cb81bdbfa",
+        "layers/warcom/extracted/kommandos/cards/kommandos_page05_card2_portrait.pdf": "0cea299603416096f108dfcdb6853623502e6f41968c974bc7702193d94e9c8f",
+        "layers/warcom/extracted/kommandos/cards/kommandos_page05_card3_portrait.pdf": "f0a60c12124eaeda88d67510c0f7c57021bf5c349c7c2ee05a8a5c1b42b8809e"
+      },
+      "completed": "2026-07-12T19:14:23.763348+00:00"
+    },
+    "extract_artwork": {
+      "outputs": {},
+      "sources": {
+        "artwork": {
+          "hash": "ca6631e25c4324a7a278305a0fabd9a50d847e29c68ff257e6405e3ac7aaab6c",
+          "outputs": [
+            "layers/integration/kommandos/artwork/kommandos-artwork-01.jpeg",
+            "layers/integration/kommandos/artwork/kommandos-artwork-02.jpeg",
+            "layers/integration/kommandos/artwork/kommandos-artwork-03.jpeg",
+            "layers/integration/kommandos/artwork/kommandos-artwork-04.jpeg",
+            "layers/integration/kommandos/artwork/kommandos-artwork-05.jpeg",
+            "layers/integration/kommandos/artwork/kommandos-artwork-05.png",
+            "layers/integration/kommandos/artwork/kommandos-artwork-06.jpeg",
+            "layers/integration/kommandos/artwork/kommandos-artwork-07.jpeg",
+            "layers/integration/kommandos/artwork/kommandos-artwork-08.jpeg",
+            "layers/integration/kommandos/artwork/kommandos-artwork-09.jpeg",
+            "layers/integration/kommandos/artwork/kommandos-artwork-10.jpeg",
+            "layers/integration/kommandos/artwork/kommandos-artwork-11.jpeg",
+            "layers/integration/kommandos/artwork/kommandos-artwork-12.jpeg",
+            "layers/integration/kommandos/artwork/kommandos-artwork-13.jpeg",
+            "layers/integration/kommandos/artwork/kommandos-artwork-14.jpeg",
+            "layers/integration/kommandos/artwork/kommandos-artwork-15.jpeg",
+            "layers/integration/kommandos/artwork/kommandos-artwork-16.jpeg",
+            "layers/integration/kommandos/artwork/kommandos-artwork-17.jpeg",
+            "layers/integration/kommandos/artwork/kommandos-artwork-18.jpeg",
+            "layers/integration/kommandos/artwork/kommandos-artwork-19.jpeg",
+            "layers/integration/kommandos/artwork/kommandos-artwork-20.jpeg",
+            "layers/integration/kommandos/artwork/kommandos-artwork-metadata.json",
+            "layers/integration/kommandos/artwork/icons/kommandos-icon-landscape.jpg",
+            "layers/integration/kommandos/artwork/icons/kommandos-icon-portrait.jpg",
+            "layers/integration/kommandos/artwork/icons/kommandos-icon-token-transparent.png",
+            "layers/integration/kommandos/artwork/icons/kommandos-icon-token.jpg"
+          ],
+          "modified": "2026-07-06T20:43:17.310639+00:00"
+        }
+      },
+      "completed": "2026-07-06T20:43:17.310655+00:00"
+    }
+  }
+}

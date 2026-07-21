@@ -1,0 +1,1129 @@
+{
+  "team": "sanctifiers",
+  "pipeline_version": "2.0",
+  "last_updated": "2026-07-12T20:56:43.279524+00:00",
+  "steps": {
+    "content_analysis": {
+      "outputs": {
+        "content.json": {
+          "path": "layers/integration/sanctifiers/content/sanctifiers-content.json",
+          "hash": "b1ee0ac83ca9dc318603d3c947cf23d233e6b1fa09d77ad978dcb7deb7f46114",
+          "modified": "2026-07-12T19:19:25.702536+00:00"
+        }
+      },
+      "completed": "2026-07-12T19:19:41.652471+00:00",
+      "inputs": {
+        "layers/integration/sanctifiers/manifest.json": "ad1070606257beef819e646f59b35b3cf102ec3cdc131580040fe34de1e17b5c",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "layers/integration/sanctifiers/sanctifiers-datacard-sanctifier-cherub.pdf": "14b3203b5a26e6ccd84eba4b0c093c0ea890d099f6f9b699099752e401c7e8d5",
+        "layers/integration/sanctifiers/sanctifiers-datacard-sanctifier-confessor.pdf": "924274d7393218beb432c61a1e6fc889f356d84b52f8f003a699e3a6e7745931",
+        "layers/integration/sanctifiers/sanctifiers-datacard-sanctifier-conflagrator.pdf": "0f3ceb3b55fab59036790d4da9eea3af700e88a73c3c8fcafb871d09f3771388",
+        "layers/integration/sanctifiers/sanctifiers-datacard-sanctifier-death-cult-assassin.pdf": "f561f64116b4b976372583eff5707d21a4e42b9b64bb4de68705a15add3be931",
+        "layers/integration/sanctifiers/sanctifiers-datacard-sanctifier-drill-abbot.pdf": "4ba314a85ecc9ceb18630cdd66278769cbe6d93c7ca835e38db5122b4cd4b2eb",
+        "layers/integration/sanctifiers/sanctifiers-datacard-sanctifier-miraculist.pdf": "fd10308f64c95b8e5eafaa8a4e110d621123f367aeb9734ab0e5d0aea077fa74",
+        "layers/integration/sanctifiers/sanctifiers-datacard-sanctifier-missionary.pdf": "3bed719adac0ee50eeb80e2b8ab39f1709f6d56caa968dc2c56624350987f1ff",
+        "layers/integration/sanctifiers/sanctifiers-datacard-sanctifier-persecutor.pdf": "71a7ff3739accd81aa5372063b4c3938cc98dd7d40cf5eb2eac2da12552ef458",
+        "layers/integration/sanctifiers/sanctifiers-datacard-sanctifier-preacher.pdf": "629ea98829da38682c515de004832749a0f003ca2d9b99084cf443ae9e6801ff",
+        "layers/integration/sanctifiers/sanctifiers-datacard-sanctifier-reliquant.pdf": "12a5333d3e916e3e4151aa03fbd8f7ff3e83cfb462258f9510f2977d19967ee3",
+        "layers/integration/sanctifiers/sanctifiers-datacard-sanctifier-salvationist.pdf": "70c21a036550621e5f8dfc2e44761624fb7b33bc0c2885caa188294a78700d5e",
+        "layers/integration/sanctifiers/sanctifiers-equipment-ecclesiarchy-texts.pdf": "e6efd20a8cca78f1fa08baf2417cf751c6e4aa6e4dcd2cd85315bf007e2f8fd6",
+        "layers/integration/sanctifiers/sanctifiers-equipment-imperial-cult-symbols.pdf": "c02bbfc85fd129d0cdf6bfa70c93e1d3fe7fa5e7cb7f79edea10755b8f2d0a0d",
+        "layers/integration/sanctifiers/sanctifiers-equipment-purity-seals.pdf": "d02ac83032a9d27c17e5218a6897ba3a610674f6dd802d04bf9bf05a4e6309fd",
+        "layers/integration/sanctifiers/sanctifiers-equipment-sanctification-orbs.pdf": "8040d50cfbac972eaa5107777f6865e7215fbb7da8e7aa4a4bfa607d17442f40",
+        "layers/integration/sanctifiers/sanctifiers-faction-rule-blaze.pdf": "73158545397de8564ec367530acf22d26f252bdf6eb4c66ffd989c94c7c4ef58",
+        "layers/integration/sanctifiers/sanctifiers-faction-rule-ministorum-sermon.pdf": "2cfd01735de8e5120f1ee93399c8ef566cf790c00f4365ffd08d893c23178e31",
+        "layers/integration/sanctifiers/sanctifiers-firefight-ploy-ardent-eradication.pdf": "58e8cefbfdd653d08214802e7b71785e8ce9161574f3d35233a14d0a5051f9be",
+        "layers/integration/sanctifiers/sanctifiers-firefight-ploy-redeemed-through-fire.pdf": "72f258097f6459162dc33db8ac7909d23c40975e8f6b2a5f9576d16fef60662f",
+        "layers/integration/sanctifiers/sanctifiers-firefight-ploy-rosarius.pdf": "afc9d3ea28868b7d0c9c9384ad7260467ae2faf70f48530faf15a8cb81512973",
+        "layers/integration/sanctifiers/sanctifiers-firefight-ploy-unwavering-devotion.pdf": "1955519c3d29c768fef6129c8260db1093a9fb0bb4fbb36bb456d4842a2a6992",
+        "layers/integration/sanctifiers/sanctifiers-operatives-selection-operative-selection.pdf": "ea6af3095c1e0952c3261f712ff4dc05312d691c1927491860fd71ce4632b1f6",
+        "layers/integration/sanctifiers/sanctifiers-strategy-ploy-fervent-brawl.pdf": "ad72b6135d9f4d95aa958dda308ee9a6ad41c475a0744377647991546a23f309",
+        "layers/integration/sanctifiers/sanctifiers-strategy-ploy-rally-the-flock.pdf": "e84e79265ddf8e31780871f0559b0dd1bd6f1e9f27d6f8aa9b836f2d975b966c",
+        "layers/integration/sanctifiers/sanctifiers-strategy-ploy-the-emperor-protects.pdf": "f970a55d1fdf0b85be981fa8e64f69081580b8b9b0e829e8a2c1471472a7d0a9",
+        "layers/integration/sanctifiers/sanctifiers-strategy-ploy-zealous-persecution.pdf": "25981183ae483f040a3f0869354d91c1f4cca2027e9bbaabd55012bb3e58f701",
+        "layers/integration/sanctifiers/sanctifiers-token-guide-token-guide.pdf": "367051c79cb80e9c74263af94291e7ff86f90b34db63c4f41b8ffcfbb1f56a59"
+      }
+    },
+    "extract_backsides": {
+      "outputs": {
+        "backside-landscape.jpg": {
+          "path": "layers/integration/sanctifiers/card-backside/sanctifiers-backside-landscape.jpg",
+          "hash": "2e47bdbec5e0337016d378ef62f1dec0a972263f401a34e460a07fe238e12517",
+          "modified": "2026-07-12T18:55:58.340275+00:00"
+        },
+        "backside-portrait.jpg": {
+          "path": "layers/integration/sanctifiers/card-backside/sanctifiers-backside-portrait.jpg",
+          "hash": "e87afed8a9d549920264eeef621d9d39905b9eaca5a3f5869d4943e4d7959c7b",
+          "modified": "2026-07-12T18:55:58.345395+00:00"
+        }
+      },
+      "completed": "2026-07-12T18:55:58.356519+00:00",
+      "inputs": {
+        "layers/integration/sanctifiers/artwork/icons/sanctifiers-icon-token.jpg": "0bcc6386358908b7ca5d8be2ac10f856297ef003c906cfcb1c51182756b35ac8",
+        "config/defaults/box/card-box-background.jpeg": "2dd1442a7c52ca1d66899333f678d60f48981ce20561ead77c1161d548176036"
+      }
+    },
+    "extract_tokens": {
+      "outputs": {
+        "tokens/sanctifiers-blaze.png": {
+          "path": "output/sanctifiers/tokens/sanctifiers-blaze.png",
+          "hash": "10e67b7faabd3143c0cb22d8ee172e13e85f1bc7e44d4d90636f9e73d9478838",
+          "modified": "2026-07-12T19:19:58.227520+00:00"
+        },
+        "tokens/sanctifiers-burning-hands.png": {
+          "path": "output/sanctifiers/tokens/sanctifiers-burning-hands.png",
+          "hash": "c734a0f6344693942b9d88b2f6b98fa1cd256d6b73d9073e74b354c55498168c",
+          "modified": "2026-07-12T19:19:58.642108+00:00"
+        },
+        "tokens/sanctifiers-commanding-declamation.png": {
+          "path": "output/sanctifiers/tokens/sanctifiers-commanding-declamation.png",
+          "hash": "47721baa299fb08f1c2f14d40781a850e4f8238e1534a5d2ccdbf96fbddc69a9",
+          "modified": "2026-07-12T19:19:58.648396+00:00"
+        },
+        "tokens/sanctifiers-doused.png": {
+          "path": "output/sanctifiers/tokens/sanctifiers-doused.png",
+          "hash": "5e42fca8bf6259cdd15b72f01dcbe8a7f478053d3a9f6383c060a35049190e07",
+          "modified": "2026-07-12T19:19:59.049229+00:00"
+        },
+        "tokens/sanctifiers-holy-light.png": {
+          "path": "output/sanctifiers/tokens/sanctifiers-holy-light.png",
+          "hash": "ac2293cf9e56fec8e9ca2d0b43a915feb2c7c613cf72fb1333ecf9e10941b508",
+          "modified": "2026-07-12T19:19:59.476539+00:00"
+        },
+        "tokens/sanctifiers-imperial-cult-devotion.png": {
+          "path": "output/sanctifiers/tokens/sanctifiers-imperial-cult-devotion.png",
+          "hash": "387175cb077b4ef350d302f5ef56e619511dfe186778239e5aac499960508ae2",
+          "modified": "2026-07-12T19:19:59.883784+00:00"
+        },
+        "tokens/sanctifiers-imperial-cult-symbols.png": {
+          "path": "output/sanctifiers/tokens/sanctifiers-imperial-cult-symbols.png",
+          "hash": "43657fa0e91957b9cdf7956a95be930186942bab48350d39976d915d0be1dc87",
+          "modified": "2026-07-12T19:19:59.888985+00:00"
+        },
+        "tokens/sanctifiers-miracle.png": {
+          "path": "output/sanctifiers/tokens/sanctifiers-miracle.png",
+          "hash": "9a86e755f1da804c22a9614e803144ff7a36897abd560d3ef90db25a2c3470e8",
+          "modified": "2026-07-12T19:19:59.890900+00:00"
+        },
+        "tokens/sanctifiers-orator.png": {
+          "path": "output/sanctifiers/tokens/sanctifiers-orator.png",
+          "hash": "770b9381daf132137c4726648614b29acbcf506f1fafab05972751245b2d9802",
+          "modified": "2026-07-12T19:19:59.893908+00:00"
+        },
+        "tokens/sanctifiers-purity-seals.png": {
+          "path": "output/sanctifiers/tokens/sanctifiers-purity-seals.png",
+          "hash": "93cb57bc429e37e8c79f7ad97eafbab64139b7b37b1512f85fe033461080e896",
+          "modified": "2026-07-12T19:20:00.242871+00:00"
+        },
+        "tokens/sanctifiers-sanctification-orbs.png": {
+          "path": "output/sanctifiers/tokens/sanctifiers-sanctification-orbs.png",
+          "hash": "22da7a1fa4b0f22d394e35b234c8f03b2230eceb1d7c96d0b71dce13d5eeb83f",
+          "modified": "2026-07-12T19:20:00.309121+00:00"
+        },
+        "tokens/sanctifiers-wreathe-in-fire.png": {
+          "path": "output/sanctifiers/tokens/sanctifiers-wreathe-in-fire.png",
+          "hash": "c6ae469c6138b1b0196109f30ebf3e72ba5e587a2dc51e72bd9bbdcf3c621a8a",
+          "modified": "2026-07-12T19:20:01.028515+00:00"
+        },
+        "tokens/sanctifiers-blaze.obj": {
+          "path": "output/sanctifiers/tokens/sanctifiers-blaze.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-12T19:20:01.162392+00:00"
+        },
+        "tokens/sanctifiers-burning-hands.obj": {
+          "path": "output/sanctifiers/tokens/sanctifiers-burning-hands.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-12T19:20:01.985056+00:00"
+        },
+        "tokens/sanctifiers-commanding-declamation.obj": {
+          "path": "output/sanctifiers/tokens/sanctifiers-commanding-declamation.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-12T19:20:02.370979+00:00"
+        },
+        "tokens/sanctifiers-doused.obj": {
+          "path": "output/sanctifiers/tokens/sanctifiers-doused.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-12T19:20:02.856686+00:00"
+        },
+        "tokens/sanctifiers-holy-light.obj": {
+          "path": "output/sanctifiers/tokens/sanctifiers-holy-light.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-12T19:20:03.260125+00:00"
+        },
+        "tokens/sanctifiers-imperial-cult-devotion.obj": {
+          "path": "output/sanctifiers/tokens/sanctifiers-imperial-cult-devotion.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-12T19:20:04.031648+00:00"
+        },
+        "tokens/sanctifiers-imperial-cult-symbols.obj": {
+          "path": "output/sanctifiers/tokens/sanctifiers-imperial-cult-symbols.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-12T19:20:04.100013+00:00"
+        },
+        "tokens/sanctifiers-miracle.obj": {
+          "path": "output/sanctifiers/tokens/sanctifiers-miracle.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-12T19:20:04.460261+00:00"
+        },
+        "tokens/sanctifiers-orator.obj": {
+          "path": "output/sanctifiers/tokens/sanctifiers-orator.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-12T19:20:04.878820+00:00"
+        },
+        "tokens/sanctifiers-purity-seals.obj": {
+          "path": "output/sanctifiers/tokens/sanctifiers-purity-seals.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-12T19:20:04.939944+00:00"
+        },
+        "tokens/sanctifiers-sanctification-orbs.obj": {
+          "path": "output/sanctifiers/tokens/sanctifiers-sanctification-orbs.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-12T19:20:05.295496+00:00"
+        },
+        "tokens/sanctifiers-wreathe-in-fire.obj": {
+          "path": "output/sanctifiers/tokens/sanctifiers-wreathe-in-fire.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-12T19:20:05.764131+00:00"
+        },
+        "tokens/tokenbag/sanctifiers-token-bag-icon.png": {
+          "path": "output/sanctifiers/tokens/tokenbag/sanctifiers-token-bag-icon.png",
+          "hash": "0bcc6386358908b7ca5d8be2ac10f856297ef003c906cfcb1c51182756b35ac8",
+          "modified": "2026-07-12T19:20:06.997270+00:00"
+        },
+        "tokens/tokenbag/sanctifiers-token-bag.obj": {
+          "path": "output/sanctifiers/tokens/tokenbag/sanctifiers-token-bag.obj",
+          "hash": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+          "modified": "2026-07-12T19:20:07.408482+00:00"
+        }
+      },
+      "completed": "2026-07-12T19:21:16.287779+00:00",
+      "inputs": {
+        "layers/integration/sanctifiers/manifest.json": "ad1070606257beef819e646f59b35b3cf102ec3cdc131580040fe34de1e17b5c",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "layers/integration/sanctifiers/artwork/icons/sanctifiers-icon-token.jpg": "0bcc6386358908b7ca5d8be2ac10f856297ef003c906cfcb1c51182756b35ac8",
+        "layers/integration/sanctifiers/sanctifiers-datacard-sanctifier-cherub.pdf": "14b3203b5a26e6ccd84eba4b0c093c0ea890d099f6f9b699099752e401c7e8d5",
+        "layers/integration/sanctifiers/sanctifiers-datacard-sanctifier-confessor.pdf": "924274d7393218beb432c61a1e6fc889f356d84b52f8f003a699e3a6e7745931",
+        "layers/integration/sanctifiers/sanctifiers-datacard-sanctifier-conflagrator.pdf": "0f3ceb3b55fab59036790d4da9eea3af700e88a73c3c8fcafb871d09f3771388",
+        "layers/integration/sanctifiers/sanctifiers-datacard-sanctifier-death-cult-assassin.pdf": "f561f64116b4b976372583eff5707d21a4e42b9b64bb4de68705a15add3be931",
+        "layers/integration/sanctifiers/sanctifiers-datacard-sanctifier-drill-abbot.pdf": "4ba314a85ecc9ceb18630cdd66278769cbe6d93c7ca835e38db5122b4cd4b2eb",
+        "layers/integration/sanctifiers/sanctifiers-datacard-sanctifier-miraculist.pdf": "fd10308f64c95b8e5eafaa8a4e110d621123f367aeb9734ab0e5d0aea077fa74",
+        "layers/integration/sanctifiers/sanctifiers-datacard-sanctifier-missionary.pdf": "3bed719adac0ee50eeb80e2b8ab39f1709f6d56caa968dc2c56624350987f1ff",
+        "layers/integration/sanctifiers/sanctifiers-datacard-sanctifier-persecutor.pdf": "71a7ff3739accd81aa5372063b4c3938cc98dd7d40cf5eb2eac2da12552ef458",
+        "layers/integration/sanctifiers/sanctifiers-datacard-sanctifier-preacher.pdf": "629ea98829da38682c515de004832749a0f003ca2d9b99084cf443ae9e6801ff",
+        "layers/integration/sanctifiers/sanctifiers-datacard-sanctifier-reliquant.pdf": "12a5333d3e916e3e4151aa03fbd8f7ff3e83cfb462258f9510f2977d19967ee3",
+        "layers/integration/sanctifiers/sanctifiers-datacard-sanctifier-salvationist.pdf": "70c21a036550621e5f8dfc2e44761624fb7b33bc0c2885caa188294a78700d5e",
+        "layers/integration/sanctifiers/sanctifiers-equipment-ecclesiarchy-texts.pdf": "e6efd20a8cca78f1fa08baf2417cf751c6e4aa6e4dcd2cd85315bf007e2f8fd6",
+        "layers/integration/sanctifiers/sanctifiers-equipment-imperial-cult-symbols.pdf": "c02bbfc85fd129d0cdf6bfa70c93e1d3fe7fa5e7cb7f79edea10755b8f2d0a0d",
+        "layers/integration/sanctifiers/sanctifiers-equipment-purity-seals.pdf": "d02ac83032a9d27c17e5218a6897ba3a610674f6dd802d04bf9bf05a4e6309fd",
+        "layers/integration/sanctifiers/sanctifiers-equipment-sanctification-orbs.pdf": "8040d50cfbac972eaa5107777f6865e7215fbb7da8e7aa4a4bfa607d17442f40",
+        "layers/integration/sanctifiers/sanctifiers-faction-rule-blaze.pdf": "73158545397de8564ec367530acf22d26f252bdf6eb4c66ffd989c94c7c4ef58",
+        "layers/integration/sanctifiers/sanctifiers-faction-rule-ministorum-sermon.pdf": "2cfd01735de8e5120f1ee93399c8ef566cf790c00f4365ffd08d893c23178e31",
+        "layers/integration/sanctifiers/sanctifiers-firefight-ploy-ardent-eradication.pdf": "58e8cefbfdd653d08214802e7b71785e8ce9161574f3d35233a14d0a5051f9be",
+        "layers/integration/sanctifiers/sanctifiers-firefight-ploy-redeemed-through-fire.pdf": "72f258097f6459162dc33db8ac7909d23c40975e8f6b2a5f9576d16fef60662f",
+        "layers/integration/sanctifiers/sanctifiers-firefight-ploy-rosarius.pdf": "afc9d3ea28868b7d0c9c9384ad7260467ae2faf70f48530faf15a8cb81512973",
+        "layers/integration/sanctifiers/sanctifiers-firefight-ploy-unwavering-devotion.pdf": "1955519c3d29c768fef6129c8260db1093a9fb0bb4fbb36bb456d4842a2a6992",
+        "layers/integration/sanctifiers/sanctifiers-operatives-selection-operative-selection.pdf": "ea6af3095c1e0952c3261f712ff4dc05312d691c1927491860fd71ce4632b1f6",
+        "layers/integration/sanctifiers/sanctifiers-strategy-ploy-fervent-brawl.pdf": "ad72b6135d9f4d95aa958dda308ee9a6ad41c475a0744377647991546a23f309",
+        "layers/integration/sanctifiers/sanctifiers-strategy-ploy-rally-the-flock.pdf": "e84e79265ddf8e31780871f0559b0dd1bd6f1e9f27d6f8aa9b836f2d975b966c",
+        "layers/integration/sanctifiers/sanctifiers-strategy-ploy-the-emperor-protects.pdf": "f970a55d1fdf0b85be981fa8e64f69081580b8b9b0e829e8a2c1471472a7d0a9",
+        "layers/integration/sanctifiers/sanctifiers-strategy-ploy-zealous-persecution.pdf": "25981183ae483f040a3f0869354d91c1f4cca2027e9bbaabd55012bb3e58f701",
+        "layers/integration/sanctifiers/sanctifiers-token-guide-token-guide.pdf": "367051c79cb80e9c74263af94291e7ff86f90b34db63c4f41b8ffcfbb1f56a59"
+      }
+    },
+    "generate_dice": {
+      "outputs": {
+        "dice-light.jpg": {
+          "path": "output/sanctifiers/dice/sanctifiers-dice-light.jpg",
+          "hash": "8ae973cae5ce6febbc4f9ed846062d2bc855b504d138d69e9263f72b4245b940",
+          "modified": "2026-07-12T18:57:17.690104+00:00"
+        },
+        "dice-dark.jpg": {
+          "path": "output/sanctifiers/dice/sanctifiers-dice-dark.jpg",
+          "hash": "4b46e13d03076b1bb606f0c5074bbc135282e69aac6f2ef820b1e0febf468bbb",
+          "modified": "2026-07-12T18:57:17.716577+00:00"
+        },
+        "dice-team.jpg": {
+          "path": "output/sanctifiers/dice/sanctifiers-dice-team.jpg",
+          "hash": "ae377993651be919faf3c0bd1e243c7b20b2e1f302f3988cd369625fb88a7f96",
+          "modified": "2026-07-12T18:57:17.730593+00:00"
+        }
+      },
+      "completed": "2026-07-12T18:57:17.812093+00:00",
+      "inputs": {
+        "layers/integration/sanctifiers/artwork/icons/sanctifiers-icon-token-transparent.png": "5927e3885e9c52d00d7bd5cfe704748a6517221e380acd18811f7fdf08dcf23c",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41"
+      }
+    },
+    "generate_box_texture": {
+      "outputs": {
+        "card-box-texture.jpg": {
+          "path": "output/sanctifiers/cardbox/sanctifiers-card-box-texture.jpg",
+          "hash": "b8c4d4d4ac45970100668064ba407a075807644150819ae0b402f0aaf1ab2229",
+          "modified": "2026-07-12T18:57:21.619232+00:00"
+        },
+        "card-box.obj": {
+          "path": "output/sanctifiers/cardbox/sanctifiers-card-box.obj",
+          "hash": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+          "modified": "2026-07-12T18:57:22.366076+00:00"
+        }
+      },
+      "completed": "2026-07-12T18:57:25.004846+00:00",
+      "inputs": {
+        "layers/integration/sanctifiers/artwork/icons/sanctifiers-icon-token.jpg": "0bcc6386358908b7ca5d8be2ac10f856297ef003c906cfcb1c51182756b35ac8",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "config/defaults/box/card-box.obj": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+        "config/defaults/box/card-box-texture.jpg": "b2f310b01a0d28e8806e99ce0b972e8967e3014608eacefcb6ec51597695a313"
+      }
+    },
+    "generate_card_images": {
+      "outputs": {
+        "cards/datacards/sanctifier-cherub-back.jpg": {
+          "path": "output/sanctifiers/cards/datacards/sanctifier-cherub-back.jpg",
+          "hash": "e75bc7c62f5f404c52395ffd30908b08f76fb4f70b016b9dc9cfeb6608b536de",
+          "modified": "2026-07-12T19:22:07.428736+00:00"
+        },
+        "cards/datacards/sanctifier-cherub-front.jpg": {
+          "path": "output/sanctifiers/cards/datacards/sanctifier-cherub-front.jpg",
+          "hash": "f26b983bd70763da80705cfd218b607a6fa5fa29568c72482c855ad0ed190830",
+          "modified": "2026-07-12T19:22:07.892499+00:00"
+        },
+        "cards/datacards/sanctifier-confessor-back.jpg": {
+          "path": "output/sanctifiers/cards/datacards/sanctifier-confessor-back.jpg",
+          "hash": "fa2a08c65a81f2afb7d4545ad3dcebc2093304f0db0a10072eff8168c22e33b5",
+          "modified": "2026-07-12T19:22:07.992484+00:00"
+        },
+        "cards/datacards/sanctifier-confessor-front.jpg": {
+          "path": "output/sanctifiers/cards/datacards/sanctifier-confessor-front.jpg",
+          "hash": "31fa865deb9945f03d4a18e5815a1038f577ae01cbbd56ac635f63f7cdf72859",
+          "modified": "2026-07-12T19:22:07.996670+00:00"
+        },
+        "cards/datacards/sanctifier-conflagrator-back.jpg": {
+          "path": "output/sanctifiers/cards/datacards/sanctifier-conflagrator-back.jpg",
+          "hash": "2e47bdbec5e0337016d378ef62f1dec0a972263f401a34e460a07fe238e12517",
+          "modified": "2026-07-12T19:22:08.003561+00:00"
+        },
+        "cards/datacards/sanctifier-conflagrator-front.jpg": {
+          "path": "output/sanctifiers/cards/datacards/sanctifier-conflagrator-front.jpg",
+          "hash": "0a462c105472ea0c59d067b91fe3966623d7bf1f26e349db3daf9fd8797f5790",
+          "modified": "2026-07-12T19:22:08.006683+00:00"
+        },
+        "cards/datacards/sanctifier-death-cult-assassin-back.jpg": {
+          "path": "output/sanctifiers/cards/datacards/sanctifier-death-cult-assassin-back.jpg",
+          "hash": "2e47bdbec5e0337016d378ef62f1dec0a972263f401a34e460a07fe238e12517",
+          "modified": "2026-07-12T19:22:08.013592+00:00"
+        },
+        "cards/datacards/sanctifier-death-cult-assassin-front.jpg": {
+          "path": "output/sanctifiers/cards/datacards/sanctifier-death-cult-assassin-front.jpg",
+          "hash": "8617d2e5ab7f069486953abf3d642eded649d997eff1bb888e753255da3eb018",
+          "modified": "2026-07-12T19:22:08.018265+00:00"
+        },
+        "cards/datacards/sanctifier-drill-abbot-back.jpg": {
+          "path": "output/sanctifiers/cards/datacards/sanctifier-drill-abbot-back.jpg",
+          "hash": "2e47bdbec5e0337016d378ef62f1dec0a972263f401a34e460a07fe238e12517",
+          "modified": "2026-07-12T19:22:08.025475+00:00"
+        },
+        "cards/datacards/sanctifier-drill-abbot-front.jpg": {
+          "path": "output/sanctifiers/cards/datacards/sanctifier-drill-abbot-front.jpg",
+          "hash": "22eaef0007579a419361ae4be8b21d83cb26a7926f710d87c50b003a47d361a2",
+          "modified": "2026-07-12T19:22:08.030038+00:00"
+        },
+        "cards/datacards/sanctifier-miraculist-back.jpg": {
+          "path": "output/sanctifiers/cards/datacards/sanctifier-miraculist-back.jpg",
+          "hash": "92e297873b4cb091c3b9239ba52a9f4a240d5f92b4c292047bed8a638839bdab",
+          "modified": "2026-07-12T19:22:08.034623+00:00"
+        },
+        "cards/datacards/sanctifier-miraculist-front.jpg": {
+          "path": "output/sanctifiers/cards/datacards/sanctifier-miraculist-front.jpg",
+          "hash": "97ed5b323704f41d2a9b7b2fff7f9d7af5ae6973c022b1181ed29a2378d81a34",
+          "modified": "2026-07-12T19:22:08.037484+00:00"
+        },
+        "cards/datacards/sanctifier-missionary-back.jpg": {
+          "path": "output/sanctifiers/cards/datacards/sanctifier-missionary-back.jpg",
+          "hash": "d0807f15270e8b10fd366e3e0651a47da1dc7d16a5f59facc12a41754df6cd53",
+          "modified": "2026-07-12T19:22:08.041232+00:00"
+        },
+        "cards/datacards/sanctifier-missionary-front.jpg": {
+          "path": "output/sanctifiers/cards/datacards/sanctifier-missionary-front.jpg",
+          "hash": "9104f8842926668180ca631fca486535935326ccd2bda78509a5976d786ccb38",
+          "modified": "2026-07-12T19:22:08.045036+00:00"
+        },
+        "cards/datacards/sanctifier-persecutor-back.jpg": {
+          "path": "output/sanctifiers/cards/datacards/sanctifier-persecutor-back.jpg",
+          "hash": "2e47bdbec5e0337016d378ef62f1dec0a972263f401a34e460a07fe238e12517",
+          "modified": "2026-07-12T19:22:08.053828+00:00"
+        },
+        "cards/datacards/sanctifier-persecutor-front.jpg": {
+          "path": "output/sanctifiers/cards/datacards/sanctifier-persecutor-front.jpg",
+          "hash": "2917a1624f91d56f136d08d815f466f4768849ffa78ff62aa89fdb22ba45fb18",
+          "modified": "2026-07-12T19:22:08.065065+00:00"
+        },
+        "cards/datacards/sanctifier-preacher-back.jpg": {
+          "path": "output/sanctifiers/cards/datacards/sanctifier-preacher-back.jpg",
+          "hash": "2e47bdbec5e0337016d378ef62f1dec0a972263f401a34e460a07fe238e12517",
+          "modified": "2026-07-12T19:22:08.074907+00:00"
+        },
+        "cards/datacards/sanctifier-preacher-front.jpg": {
+          "path": "output/sanctifiers/cards/datacards/sanctifier-preacher-front.jpg",
+          "hash": "1a16f8227bf2286132de89c51d08d3ecf16c9249ee573adae14fe909932ca884",
+          "modified": "2026-07-12T19:22:08.082495+00:00"
+        },
+        "cards/datacards/sanctifier-reliquant-back.jpg": {
+          "path": "output/sanctifiers/cards/datacards/sanctifier-reliquant-back.jpg",
+          "hash": "2e47bdbec5e0337016d378ef62f1dec0a972263f401a34e460a07fe238e12517",
+          "modified": "2026-07-12T19:22:08.091349+00:00"
+        },
+        "cards/datacards/sanctifier-reliquant-front.jpg": {
+          "path": "output/sanctifiers/cards/datacards/sanctifier-reliquant-front.jpg",
+          "hash": "cfde076301f5dc2be82eb8ea269f8c977fdf80e792c0c3b7e89a58fe8a06457b",
+          "modified": "2026-07-12T19:22:08.095444+00:00"
+        },
+        "cards/datacards/sanctifier-salvationist-back.jpg": {
+          "path": "output/sanctifiers/cards/datacards/sanctifier-salvationist-back.jpg",
+          "hash": "2e47bdbec5e0337016d378ef62f1dec0a972263f401a34e460a07fe238e12517",
+          "modified": "2026-07-12T19:22:08.103709+00:00"
+        },
+        "cards/datacards/sanctifier-salvationist-front.jpg": {
+          "path": "output/sanctifiers/cards/datacards/sanctifier-salvationist-front.jpg",
+          "hash": "b2f4457a843eb0a0af55f9612b1f288ffda31b2257100b98f326d03eaf6e6c88",
+          "modified": "2026-07-12T19:22:08.106779+00:00"
+        },
+        "cards/equipment/sanctifiers-ecclesiarchy-texts-back.jpg": {
+          "path": "output/sanctifiers/cards/equipment/sanctifiers-ecclesiarchy-texts-back.jpg",
+          "hash": "e87afed8a9d549920264eeef621d9d39905b9eaca5a3f5869d4943e4d7959c7b",
+          "modified": "2026-07-12T19:22:08.115235+00:00"
+        },
+        "cards/equipment/sanctifiers-ecclesiarchy-texts-front.jpg": {
+          "path": "output/sanctifiers/cards/equipment/sanctifiers-ecclesiarchy-texts-front.jpg",
+          "hash": "895790910b30ba24ea2e42d1af5c8108e47f5b9f424fddc705ea198baa5eaaf5",
+          "modified": "2026-07-12T19:22:08.122651+00:00"
+        },
+        "cards/equipment/sanctifiers-imperial-cult-symbols-back.jpg": {
+          "path": "output/sanctifiers/cards/equipment/sanctifiers-imperial-cult-symbols-back.jpg",
+          "hash": "e87afed8a9d549920264eeef621d9d39905b9eaca5a3f5869d4943e4d7959c7b",
+          "modified": "2026-07-12T19:22:08.136714+00:00"
+        },
+        "cards/equipment/sanctifiers-imperial-cult-symbols-front.jpg": {
+          "path": "output/sanctifiers/cards/equipment/sanctifiers-imperial-cult-symbols-front.jpg",
+          "hash": "3b696d8f460f49f237b3e3635393d1c9bc65029d5c79c10e8aa8dcc2882ec260",
+          "modified": "2026-07-12T19:22:08.140947+00:00"
+        },
+        "cards/equipment/sanctifiers-purity-seals-back.jpg": {
+          "path": "output/sanctifiers/cards/equipment/sanctifiers-purity-seals-back.jpg",
+          "hash": "e87afed8a9d549920264eeef621d9d39905b9eaca5a3f5869d4943e4d7959c7b",
+          "modified": "2026-07-12T19:22:08.151580+00:00"
+        },
+        "cards/equipment/sanctifiers-purity-seals-front.jpg": {
+          "path": "output/sanctifiers/cards/equipment/sanctifiers-purity-seals-front.jpg",
+          "hash": "a64e91a3e6774d2212cff7a02d93b1c78d33c58dc52301dfe3118460dddb064b",
+          "modified": "2026-07-12T19:22:08.162815+00:00"
+        },
+        "cards/equipment/sanctifiers-sanctification-orbs-back.jpg": {
+          "path": "output/sanctifiers/cards/equipment/sanctifiers-sanctification-orbs-back.jpg",
+          "hash": "2e818f867928428b53a27fe6f21a463a2ea10e7bab04cd81356c218d193556e8",
+          "modified": "2026-07-12T19:22:08.167196+00:00"
+        },
+        "cards/equipment/sanctifiers-sanctification-orbs-front.jpg": {
+          "path": "output/sanctifiers/cards/equipment/sanctifiers-sanctification-orbs-front.jpg",
+          "hash": "67be33e7475c3db9c8c51d0e31881d2765ac73b216329b67b1e22b139598dc95",
+          "modified": "2026-07-12T19:22:08.175783+00:00"
+        },
+        "cards/faction_rules/sanctifiers-blaze-back.jpg": {
+          "path": "output/sanctifiers/cards/faction_rules/sanctifiers-blaze-back.jpg",
+          "hash": "e87afed8a9d549920264eeef621d9d39905b9eaca5a3f5869d4943e4d7959c7b",
+          "modified": "2026-07-12T19:22:08.186484+00:00"
+        },
+        "cards/faction_rules/sanctifiers-blaze-front.jpg": {
+          "path": "output/sanctifiers/cards/faction_rules/sanctifiers-blaze-front.jpg",
+          "hash": "d85d182c600a24e8cb92feddbd41804c4cf6b97a23491861ff35f454f6513bbe",
+          "modified": "2026-07-12T19:22:08.197282+00:00"
+        },
+        "cards/faction_rules/sanctifiers-ministorum-sermon-back.jpg": {
+          "path": "output/sanctifiers/cards/faction_rules/sanctifiers-ministorum-sermon-back.jpg",
+          "hash": "ccaf240d458c98d8ba700532ee6e024f2691e896d35b174350bc1c1474c31093",
+          "modified": "2026-07-12T19:22:08.216010+00:00"
+        },
+        "cards/faction_rules/sanctifiers-ministorum-sermon-front.jpg": {
+          "path": "output/sanctifiers/cards/faction_rules/sanctifiers-ministorum-sermon-front.jpg",
+          "hash": "d930f5641e465126d5096fc5f6aa3ee8ff39a03b983e6a6011366243f63a3b10",
+          "modified": "2026-07-12T19:22:08.230126+00:00"
+        },
+        "cards/firefight_ploys/sanctifiers-ardent-eradication-back.jpg": {
+          "path": "output/sanctifiers/cards/firefight_ploys/sanctifiers-ardent-eradication-back.jpg",
+          "hash": "e87afed8a9d549920264eeef621d9d39905b9eaca5a3f5869d4943e4d7959c7b",
+          "modified": "2026-07-12T19:22:08.247103+00:00"
+        },
+        "cards/firefight_ploys/sanctifiers-ardent-eradication-front.jpg": {
+          "path": "output/sanctifiers/cards/firefight_ploys/sanctifiers-ardent-eradication-front.jpg",
+          "hash": "5b1b5e6a08d4d5e381c71c872d5898b0fdd009e4e4e8af4c9ffd44c0d41e7002",
+          "modified": "2026-07-12T19:22:08.262462+00:00"
+        },
+        "cards/firefight_ploys/sanctifiers-redeemed-through-fire-back.jpg": {
+          "path": "output/sanctifiers/cards/firefight_ploys/sanctifiers-redeemed-through-fire-back.jpg",
+          "hash": "e87afed8a9d549920264eeef621d9d39905b9eaca5a3f5869d4943e4d7959c7b",
+          "modified": "2026-07-12T19:22:08.276549+00:00"
+        },
+        "cards/firefight_ploys/sanctifiers-redeemed-through-fire-front.jpg": {
+          "path": "output/sanctifiers/cards/firefight_ploys/sanctifiers-redeemed-through-fire-front.jpg",
+          "hash": "5d8bf9d869b6bde1ffcf166b559212646a40e9614c05caf1c49feca5c8838e4d",
+          "modified": "2026-07-12T19:22:08.289517+00:00"
+        },
+        "cards/firefight_ploys/sanctifiers-rosarius-back.jpg": {
+          "path": "output/sanctifiers/cards/firefight_ploys/sanctifiers-rosarius-back.jpg",
+          "hash": "e87afed8a9d549920264eeef621d9d39905b9eaca5a3f5869d4943e4d7959c7b",
+          "modified": "2026-07-12T19:22:08.302204+00:00"
+        },
+        "cards/firefight_ploys/sanctifiers-rosarius-front.jpg": {
+          "path": "output/sanctifiers/cards/firefight_ploys/sanctifiers-rosarius-front.jpg",
+          "hash": "d57d20af8fb67992d4bc0097a01716e01c874c33d6aba89036ecff7bdb2b9640",
+          "modified": "2026-07-12T19:22:08.329586+00:00"
+        },
+        "cards/firefight_ploys/sanctifiers-unwavering-devotion-back.jpg": {
+          "path": "output/sanctifiers/cards/firefight_ploys/sanctifiers-unwavering-devotion-back.jpg",
+          "hash": "e87afed8a9d549920264eeef621d9d39905b9eaca5a3f5869d4943e4d7959c7b",
+          "modified": "2026-07-12T19:22:08.346748+00:00"
+        },
+        "cards/firefight_ploys/sanctifiers-unwavering-devotion-front.jpg": {
+          "path": "output/sanctifiers/cards/firefight_ploys/sanctifiers-unwavering-devotion-front.jpg",
+          "hash": "e5f9af1d48e27b4e760a6b3ba9c14d68ae0624d19d6c62c14d1c89ac8f12b8cf",
+          "modified": "2026-07-12T19:22:08.377663+00:00"
+        },
+        "cards/operatives_selection/sanctifiers-operative-selection-back.jpg": {
+          "path": "output/sanctifiers/cards/operatives_selection/sanctifiers-operative-selection-back.jpg",
+          "hash": "cff1a099fdf9e94e61d2d4956c35c4b2e80c877b7f5a0d11f93ef3516b093f41",
+          "modified": "2026-07-12T19:22:08.396953+00:00"
+        },
+        "cards/operatives_selection/sanctifiers-operative-selection-front.jpg": {
+          "path": "output/sanctifiers/cards/operatives_selection/sanctifiers-operative-selection-front.jpg",
+          "hash": "90041ec0b951d920f6468639ba4402bafeb4070f621442a80db15c3c0fff5937",
+          "modified": "2026-07-12T19:22:08.416174+00:00"
+        },
+        "cards/strategy_ploys/sanctifiers-fervent-brawl-back.jpg": {
+          "path": "output/sanctifiers/cards/strategy_ploys/sanctifiers-fervent-brawl-back.jpg",
+          "hash": "e87afed8a9d549920264eeef621d9d39905b9eaca5a3f5869d4943e4d7959c7b",
+          "modified": "2026-07-12T19:22:08.427493+00:00"
+        },
+        "cards/strategy_ploys/sanctifiers-fervent-brawl-front.jpg": {
+          "path": "output/sanctifiers/cards/strategy_ploys/sanctifiers-fervent-brawl-front.jpg",
+          "hash": "ef2fcb31e1ef925ad4f359b9ea9d7b40245be6521fcd8b96ec1679de5465783a",
+          "modified": "2026-07-12T19:22:08.444788+00:00"
+        },
+        "cards/strategy_ploys/sanctifiers-rally-the-flock-back.jpg": {
+          "path": "output/sanctifiers/cards/strategy_ploys/sanctifiers-rally-the-flock-back.jpg",
+          "hash": "e87afed8a9d549920264eeef621d9d39905b9eaca5a3f5869d4943e4d7959c7b",
+          "modified": "2026-07-12T19:22:08.462990+00:00"
+        },
+        "cards/strategy_ploys/sanctifiers-rally-the-flock-front.jpg": {
+          "path": "output/sanctifiers/cards/strategy_ploys/sanctifiers-rally-the-flock-front.jpg",
+          "hash": "331ace205df92b31aada9d9c2fc48c173a0119adbfe9f234af6c8bb8ed75d23f",
+          "modified": "2026-07-12T19:22:08.492954+00:00"
+        },
+        "cards/strategy_ploys/sanctifiers-the-emperor-protects-back.jpg": {
+          "path": "output/sanctifiers/cards/strategy_ploys/sanctifiers-the-emperor-protects-back.jpg",
+          "hash": "e87afed8a9d549920264eeef621d9d39905b9eaca5a3f5869d4943e4d7959c7b",
+          "modified": "2026-07-12T19:22:08.520244+00:00"
+        },
+        "cards/strategy_ploys/sanctifiers-the-emperor-protects-front.jpg": {
+          "path": "output/sanctifiers/cards/strategy_ploys/sanctifiers-the-emperor-protects-front.jpg",
+          "hash": "df1240daa2ccffc3f6022a86f46fbbc553a116f1f5d0a3e71deb4390cef2831e",
+          "modified": "2026-07-12T19:22:08.552338+00:00"
+        },
+        "cards/strategy_ploys/sanctifiers-zealous-persecution-back.jpg": {
+          "path": "output/sanctifiers/cards/strategy_ploys/sanctifiers-zealous-persecution-back.jpg",
+          "hash": "e87afed8a9d549920264eeef621d9d39905b9eaca5a3f5869d4943e4d7959c7b",
+          "modified": "2026-07-12T19:22:08.576447+00:00"
+        },
+        "cards/strategy_ploys/sanctifiers-zealous-persecution-front.jpg": {
+          "path": "output/sanctifiers/cards/strategy_ploys/sanctifiers-zealous-persecution-front.jpg",
+          "hash": "e7beb47f84e17c779c05e189ab2c02a384e0491ee360f75d7b5ac791a4eb8275",
+          "modified": "2026-07-12T19:22:08.597300+00:00"
+        },
+        "cards/token_guide/sanctifiers-token-guide-back.jpg": {
+          "path": "output/sanctifiers/cards/token_guide/sanctifiers-token-guide-back.jpg",
+          "hash": "e87afed8a9d549920264eeef621d9d39905b9eaca5a3f5869d4943e4d7959c7b",
+          "modified": "2026-07-12T19:22:08.612313+00:00"
+        },
+        "cards/token_guide/sanctifiers-token-guide-front.jpg": {
+          "path": "output/sanctifiers/cards/token_guide/sanctifiers-token-guide-front.jpg",
+          "hash": "1d136d3d4826ef8c5b111aa4b6cc926b81c463760f539452171fe2f1665caffa",
+          "modified": "2026-07-12T19:22:08.639315+00:00"
+        }
+      },
+      "completed": "2026-07-12T19:22:10.735773+00:00",
+      "inputs": {
+        "layers/integration/sanctifiers/manifest.json": "ad1070606257beef819e646f59b35b3cf102ec3cdc131580040fe34de1e17b5c",
+        "layers/integration/sanctifiers/sanctifiers-datacard-sanctifier-cherub.pdf": "14b3203b5a26e6ccd84eba4b0c093c0ea890d099f6f9b699099752e401c7e8d5",
+        "layers/integration/sanctifiers/sanctifiers-datacard-sanctifier-confessor.pdf": "924274d7393218beb432c61a1e6fc889f356d84b52f8f003a699e3a6e7745931",
+        "layers/integration/sanctifiers/sanctifiers-datacard-sanctifier-conflagrator.pdf": "0f3ceb3b55fab59036790d4da9eea3af700e88a73c3c8fcafb871d09f3771388",
+        "layers/integration/sanctifiers/sanctifiers-datacard-sanctifier-death-cult-assassin.pdf": "f561f64116b4b976372583eff5707d21a4e42b9b64bb4de68705a15add3be931",
+        "layers/integration/sanctifiers/sanctifiers-datacard-sanctifier-drill-abbot.pdf": "4ba314a85ecc9ceb18630cdd66278769cbe6d93c7ca835e38db5122b4cd4b2eb",
+        "layers/integration/sanctifiers/sanctifiers-datacard-sanctifier-miraculist.pdf": "fd10308f64c95b8e5eafaa8a4e110d621123f367aeb9734ab0e5d0aea077fa74",
+        "layers/integration/sanctifiers/sanctifiers-datacard-sanctifier-missionary.pdf": "3bed719adac0ee50eeb80e2b8ab39f1709f6d56caa968dc2c56624350987f1ff",
+        "layers/integration/sanctifiers/sanctifiers-datacard-sanctifier-persecutor.pdf": "71a7ff3739accd81aa5372063b4c3938cc98dd7d40cf5eb2eac2da12552ef458",
+        "layers/integration/sanctifiers/sanctifiers-datacard-sanctifier-preacher.pdf": "629ea98829da38682c515de004832749a0f003ca2d9b99084cf443ae9e6801ff",
+        "layers/integration/sanctifiers/sanctifiers-datacard-sanctifier-reliquant.pdf": "12a5333d3e916e3e4151aa03fbd8f7ff3e83cfb462258f9510f2977d19967ee3",
+        "layers/integration/sanctifiers/sanctifiers-datacard-sanctifier-salvationist.pdf": "70c21a036550621e5f8dfc2e44761624fb7b33bc0c2885caa188294a78700d5e",
+        "layers/integration/sanctifiers/sanctifiers-equipment-ecclesiarchy-texts.pdf": "e6efd20a8cca78f1fa08baf2417cf751c6e4aa6e4dcd2cd85315bf007e2f8fd6",
+        "layers/integration/sanctifiers/sanctifiers-equipment-imperial-cult-symbols.pdf": "c02bbfc85fd129d0cdf6bfa70c93e1d3fe7fa5e7cb7f79edea10755b8f2d0a0d",
+        "layers/integration/sanctifiers/sanctifiers-equipment-purity-seals.pdf": "d02ac83032a9d27c17e5218a6897ba3a610674f6dd802d04bf9bf05a4e6309fd",
+        "layers/integration/sanctifiers/sanctifiers-equipment-sanctification-orbs.pdf": "8040d50cfbac972eaa5107777f6865e7215fbb7da8e7aa4a4bfa607d17442f40",
+        "layers/integration/sanctifiers/sanctifiers-faction-rule-blaze.pdf": "73158545397de8564ec367530acf22d26f252bdf6eb4c66ffd989c94c7c4ef58",
+        "layers/integration/sanctifiers/sanctifiers-faction-rule-ministorum-sermon.pdf": "2cfd01735de8e5120f1ee93399c8ef566cf790c00f4365ffd08d893c23178e31",
+        "layers/integration/sanctifiers/sanctifiers-firefight-ploy-ardent-eradication.pdf": "58e8cefbfdd653d08214802e7b71785e8ce9161574f3d35233a14d0a5051f9be",
+        "layers/integration/sanctifiers/sanctifiers-firefight-ploy-redeemed-through-fire.pdf": "72f258097f6459162dc33db8ac7909d23c40975e8f6b2a5f9576d16fef60662f",
+        "layers/integration/sanctifiers/sanctifiers-firefight-ploy-rosarius.pdf": "afc9d3ea28868b7d0c9c9384ad7260467ae2faf70f48530faf15a8cb81512973",
+        "layers/integration/sanctifiers/sanctifiers-firefight-ploy-unwavering-devotion.pdf": "1955519c3d29c768fef6129c8260db1093a9fb0bb4fbb36bb456d4842a2a6992",
+        "layers/integration/sanctifiers/sanctifiers-operatives-selection-operative-selection.pdf": "ea6af3095c1e0952c3261f712ff4dc05312d691c1927491860fd71ce4632b1f6",
+        "layers/integration/sanctifiers/sanctifiers-strategy-ploy-fervent-brawl.pdf": "ad72b6135d9f4d95aa958dda308ee9a6ad41c475a0744377647991546a23f309",
+        "layers/integration/sanctifiers/sanctifiers-strategy-ploy-rally-the-flock.pdf": "e84e79265ddf8e31780871f0559b0dd1bd6f1e9f27d6f8aa9b836f2d975b966c",
+        "layers/integration/sanctifiers/sanctifiers-strategy-ploy-the-emperor-protects.pdf": "f970a55d1fdf0b85be981fa8e64f69081580b8b9b0e829e8a2c1471472a7d0a9",
+        "layers/integration/sanctifiers/sanctifiers-strategy-ploy-zealous-persecution.pdf": "25981183ae483f040a3f0869354d91c1f4cca2027e9bbaabd55012bb3e58f701",
+        "layers/integration/sanctifiers/sanctifiers-token-guide-token-guide.pdf": "367051c79cb80e9c74263af94291e7ff86f90b34db63c4f41b8ffcfbb1f56a59",
+        "layers/integration/sanctifiers/card-backside/sanctifiers-backside-portrait.jpg": "e87afed8a9d549920264eeef621d9d39905b9eaca5a3f5869d4943e4d7959c7b",
+        "config/defaults/card-backside/default-backside-portrait.jpg": "f00ff15fa70005b9f804de08519e2e83485d7eaf78dfacea65dcef0eb1a29c22",
+        "layers/integration/sanctifiers/card-backside/sanctifiers-backside-landscape.jpg": "2e47bdbec5e0337016d378ef62f1dec0a972263f401a34e460a07fe238e12517",
+        "config/defaults/card-backside/default-backside-landscape.jpg": "1cf5580a1dff0c10adb1a286edad4479c487f3d2d698b0b8be84fe653039fd7e"
+      }
+    },
+    "extract_stats": {
+      "outputs": {
+        "team-data.json": {
+          "path": "output/sanctifiers/data/sanctifiers-team-data.json",
+          "hash": "b1ee0ac83ca9dc318603d3c947cf23d233e6b1fa09d77ad978dcb7deb7f46114",
+          "modified": "2026-07-12T18:58:30.166673+00:00"
+        }
+      },
+      "completed": "2026-07-12T18:58:30.232867+00:00",
+      "inputs": {
+        "layers/integration/sanctifiers/content/sanctifiers-content.json": "b1ee0ac83ca9dc318603d3c947cf23d233e6b1fa09d77ad978dcb7deb7f46114"
+      }
+    },
+    "generate_tts": {
+      "outputs": {
+        "tts_objects/Sanctifiers Box.json": {
+          "path": "output/sanctifiers/tts_objects/Sanctifiers Box.json",
+          "hash": "618b6b328397ad0fadad7c0c05f6f063d51323cf67760b7a0af2fd99dbbcd054",
+          "modified": "2026-07-12T20:56:42.933172+00:00"
+        },
+        "tts_objects/Sanctifiers.json": {
+          "path": "output/sanctifiers/tts_objects/Sanctifiers.json",
+          "hash": "0c5a69e55d9ddbd25d6255f2bfc0b92577fc3131a8f51cdbd000e2936ae18b3e",
+          "modified": "2026-07-12T20:56:42.942523+00:00"
+        }
+      },
+      "completed": "2026-07-12T20:56:43.279513+00:00",
+      "inputs": {
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "config/team-guids.json": "1dea0eaf2c7d1c37c86aba088cdf876f0638d2dcaca162888fea8422c2d5c9db",
+        "output/sanctifiers/cards/datacards/sanctifier-cherub-back.jpg": "e75bc7c62f5f404c52395ffd30908b08f76fb4f70b016b9dc9cfeb6608b536de",
+        "output/sanctifiers/cards/datacards/sanctifier-cherub-front.jpg": "f26b983bd70763da80705cfd218b607a6fa5fa29568c72482c855ad0ed190830",
+        "output/sanctifiers/cards/datacards/sanctifier-confessor-back.jpg": "fa2a08c65a81f2afb7d4545ad3dcebc2093304f0db0a10072eff8168c22e33b5",
+        "output/sanctifiers/cards/datacards/sanctifier-confessor-front.jpg": "31fa865deb9945f03d4a18e5815a1038f577ae01cbbd56ac635f63f7cdf72859",
+        "output/sanctifiers/cards/datacards/sanctifier-conflagrator-back.jpg": "2e47bdbec5e0337016d378ef62f1dec0a972263f401a34e460a07fe238e12517",
+        "output/sanctifiers/cards/datacards/sanctifier-conflagrator-front.jpg": "0a462c105472ea0c59d067b91fe3966623d7bf1f26e349db3daf9fd8797f5790",
+        "output/sanctifiers/cards/datacards/sanctifier-death-cult-assassin-back.jpg": "2e47bdbec5e0337016d378ef62f1dec0a972263f401a34e460a07fe238e12517",
+        "output/sanctifiers/cards/datacards/sanctifier-death-cult-assassin-front.jpg": "8617d2e5ab7f069486953abf3d642eded649d997eff1bb888e753255da3eb018",
+        "output/sanctifiers/cards/datacards/sanctifier-drill-abbot-back.jpg": "2e47bdbec5e0337016d378ef62f1dec0a972263f401a34e460a07fe238e12517",
+        "output/sanctifiers/cards/datacards/sanctifier-drill-abbot-front.jpg": "22eaef0007579a419361ae4be8b21d83cb26a7926f710d87c50b003a47d361a2",
+        "output/sanctifiers/cards/datacards/sanctifier-miraculist-back.jpg": "92e297873b4cb091c3b9239ba52a9f4a240d5f92b4c292047bed8a638839bdab",
+        "output/sanctifiers/cards/datacards/sanctifier-miraculist-front.jpg": "97ed5b323704f41d2a9b7b2fff7f9d7af5ae6973c022b1181ed29a2378d81a34",
+        "output/sanctifiers/cards/datacards/sanctifier-missionary-back.jpg": "d0807f15270e8b10fd366e3e0651a47da1dc7d16a5f59facc12a41754df6cd53",
+        "output/sanctifiers/cards/datacards/sanctifier-missionary-front.jpg": "9104f8842926668180ca631fca486535935326ccd2bda78509a5976d786ccb38",
+        "output/sanctifiers/cards/datacards/sanctifier-persecutor-back.jpg": "2e47bdbec5e0337016d378ef62f1dec0a972263f401a34e460a07fe238e12517",
+        "output/sanctifiers/cards/datacards/sanctifier-persecutor-front.jpg": "2917a1624f91d56f136d08d815f466f4768849ffa78ff62aa89fdb22ba45fb18",
+        "output/sanctifiers/cards/datacards/sanctifier-preacher-back.jpg": "2e47bdbec5e0337016d378ef62f1dec0a972263f401a34e460a07fe238e12517",
+        "output/sanctifiers/cards/datacards/sanctifier-preacher-front.jpg": "1a16f8227bf2286132de89c51d08d3ecf16c9249ee573adae14fe909932ca884",
+        "output/sanctifiers/cards/datacards/sanctifier-reliquant-back.jpg": "2e47bdbec5e0337016d378ef62f1dec0a972263f401a34e460a07fe238e12517",
+        "output/sanctifiers/cards/datacards/sanctifier-reliquant-front.jpg": "cfde076301f5dc2be82eb8ea269f8c977fdf80e792c0c3b7e89a58fe8a06457b",
+        "output/sanctifiers/cards/datacards/sanctifier-salvationist-back.jpg": "2e47bdbec5e0337016d378ef62f1dec0a972263f401a34e460a07fe238e12517",
+        "output/sanctifiers/cards/datacards/sanctifier-salvationist-front.jpg": "b2f4457a843eb0a0af55f9612b1f288ffda31b2257100b98f326d03eaf6e6c88",
+        "output/sanctifiers/cards/equipment/sanctifiers-ecclesiarchy-texts-back.jpg": "e87afed8a9d549920264eeef621d9d39905b9eaca5a3f5869d4943e4d7959c7b",
+        "output/sanctifiers/cards/equipment/sanctifiers-ecclesiarchy-texts-front.jpg": "895790910b30ba24ea2e42d1af5c8108e47f5b9f424fddc705ea198baa5eaaf5",
+        "output/sanctifiers/cards/equipment/sanctifiers-imperial-cult-symbols-back.jpg": "e87afed8a9d549920264eeef621d9d39905b9eaca5a3f5869d4943e4d7959c7b",
+        "output/sanctifiers/cards/equipment/sanctifiers-imperial-cult-symbols-front.jpg": "3b696d8f460f49f237b3e3635393d1c9bc65029d5c79c10e8aa8dcc2882ec260",
+        "output/sanctifiers/cards/equipment/sanctifiers-purity-seals-back.jpg": "e87afed8a9d549920264eeef621d9d39905b9eaca5a3f5869d4943e4d7959c7b",
+        "output/sanctifiers/cards/equipment/sanctifiers-purity-seals-front.jpg": "a64e91a3e6774d2212cff7a02d93b1c78d33c58dc52301dfe3118460dddb064b",
+        "output/sanctifiers/cards/equipment/sanctifiers-sanctification-orbs-back.jpg": "2e818f867928428b53a27fe6f21a463a2ea10e7bab04cd81356c218d193556e8",
+        "output/sanctifiers/cards/equipment/sanctifiers-sanctification-orbs-front.jpg": "67be33e7475c3db9c8c51d0e31881d2765ac73b216329b67b1e22b139598dc95",
+        "output/sanctifiers/cards/faction_rules/sanctifiers-blaze-back.jpg": "e87afed8a9d549920264eeef621d9d39905b9eaca5a3f5869d4943e4d7959c7b",
+        "output/sanctifiers/cards/faction_rules/sanctifiers-blaze-front.jpg": "d85d182c600a24e8cb92feddbd41804c4cf6b97a23491861ff35f454f6513bbe",
+        "output/sanctifiers/cards/faction_rules/sanctifiers-ministorum-sermon-back.jpg": "ccaf240d458c98d8ba700532ee6e024f2691e896d35b174350bc1c1474c31093",
+        "output/sanctifiers/cards/faction_rules/sanctifiers-ministorum-sermon-front.jpg": "d930f5641e465126d5096fc5f6aa3ee8ff39a03b983e6a6011366243f63a3b10",
+        "output/sanctifiers/cards/firefight_ploys/sanctifiers-ardent-eradication-back.jpg": "e87afed8a9d549920264eeef621d9d39905b9eaca5a3f5869d4943e4d7959c7b",
+        "output/sanctifiers/cards/firefight_ploys/sanctifiers-ardent-eradication-front.jpg": "5b1b5e6a08d4d5e381c71c872d5898b0fdd009e4e4e8af4c9ffd44c0d41e7002",
+        "output/sanctifiers/cards/firefight_ploys/sanctifiers-redeemed-through-fire-back.jpg": "e87afed8a9d549920264eeef621d9d39905b9eaca5a3f5869d4943e4d7959c7b",
+        "output/sanctifiers/cards/firefight_ploys/sanctifiers-redeemed-through-fire-front.jpg": "5d8bf9d869b6bde1ffcf166b559212646a40e9614c05caf1c49feca5c8838e4d",
+        "output/sanctifiers/cards/firefight_ploys/sanctifiers-rosarius-back.jpg": "e87afed8a9d549920264eeef621d9d39905b9eaca5a3f5869d4943e4d7959c7b",
+        "output/sanctifiers/cards/firefight_ploys/sanctifiers-rosarius-front.jpg": "d57d20af8fb67992d4bc0097a01716e01c874c33d6aba89036ecff7bdb2b9640",
+        "output/sanctifiers/cards/firefight_ploys/sanctifiers-unwavering-devotion-back.jpg": "e87afed8a9d549920264eeef621d9d39905b9eaca5a3f5869d4943e4d7959c7b",
+        "output/sanctifiers/cards/firefight_ploys/sanctifiers-unwavering-devotion-front.jpg": "e5f9af1d48e27b4e760a6b3ba9c14d68ae0624d19d6c62c14d1c89ac8f12b8cf",
+        "output/sanctifiers/cards/operatives_selection/sanctifiers-operative-selection-back.jpg": "cff1a099fdf9e94e61d2d4956c35c4b2e80c877b7f5a0d11f93ef3516b093f41",
+        "output/sanctifiers/cards/operatives_selection/sanctifiers-operative-selection-front.jpg": "90041ec0b951d920f6468639ba4402bafeb4070f621442a80db15c3c0fff5937",
+        "output/sanctifiers/cards/strategy_ploys/sanctifiers-fervent-brawl-back.jpg": "e87afed8a9d549920264eeef621d9d39905b9eaca5a3f5869d4943e4d7959c7b",
+        "output/sanctifiers/cards/strategy_ploys/sanctifiers-fervent-brawl-front.jpg": "ef2fcb31e1ef925ad4f359b9ea9d7b40245be6521fcd8b96ec1679de5465783a",
+        "output/sanctifiers/cards/strategy_ploys/sanctifiers-rally-the-flock-back.jpg": "e87afed8a9d549920264eeef621d9d39905b9eaca5a3f5869d4943e4d7959c7b",
+        "output/sanctifiers/cards/strategy_ploys/sanctifiers-rally-the-flock-front.jpg": "331ace205df92b31aada9d9c2fc48c173a0119adbfe9f234af6c8bb8ed75d23f",
+        "output/sanctifiers/cards/strategy_ploys/sanctifiers-the-emperor-protects-back.jpg": "e87afed8a9d549920264eeef621d9d39905b9eaca5a3f5869d4943e4d7959c7b",
+        "output/sanctifiers/cards/strategy_ploys/sanctifiers-the-emperor-protects-front.jpg": "df1240daa2ccffc3f6022a86f46fbbc553a116f1f5d0a3e71deb4390cef2831e",
+        "output/sanctifiers/cards/strategy_ploys/sanctifiers-zealous-persecution-back.jpg": "e87afed8a9d549920264eeef621d9d39905b9eaca5a3f5869d4943e4d7959c7b",
+        "output/sanctifiers/cards/strategy_ploys/sanctifiers-zealous-persecution-front.jpg": "e7beb47f84e17c779c05e189ab2c02a384e0491ee360f75d7b5ac791a4eb8275",
+        "output/sanctifiers/cards/token_guide/sanctifiers-token-guide-back.jpg": "e87afed8a9d549920264eeef621d9d39905b9eaca5a3f5869d4943e4d7959c7b",
+        "output/sanctifiers/cards/token_guide/sanctifiers-token-guide-front.jpg": "1d136d3d4826ef8c5b111aa4b6cc926b81c463760f539452171fe2f1665caffa",
+        "output/sanctifiers/cardbox/sanctifiers-card-box-texture.jpg": "b8c4d4d4ac45970100668064ba407a075807644150819ae0b402f0aaf1ab2229",
+        "output/sanctifiers/cardbox/sanctifiers-card-box.obj": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+        "output/sanctifiers/tokens/sanctifiers-blaze.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/sanctifiers/tokens/sanctifiers-blaze.png": "10e67b7faabd3143c0cb22d8ee172e13e85f1bc7e44d4d90636f9e73d9478838",
+        "output/sanctifiers/tokens/sanctifiers-burning-hands.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/sanctifiers/tokens/sanctifiers-burning-hands.png": "c734a0f6344693942b9d88b2f6b98fa1cd256d6b73d9073e74b354c55498168c",
+        "output/sanctifiers/tokens/sanctifiers-commanding-declamation.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/sanctifiers/tokens/sanctifiers-commanding-declamation.png": "47721baa299fb08f1c2f14d40781a850e4f8238e1534a5d2ccdbf96fbddc69a9",
+        "output/sanctifiers/tokens/sanctifiers-doused.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/sanctifiers/tokens/sanctifiers-doused.png": "5e42fca8bf6259cdd15b72f01dcbe8a7f478053d3a9f6383c060a35049190e07",
+        "output/sanctifiers/tokens/sanctifiers-holy-light.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/sanctifiers/tokens/sanctifiers-holy-light.png": "ac2293cf9e56fec8e9ca2d0b43a915feb2c7c613cf72fb1333ecf9e10941b508",
+        "output/sanctifiers/tokens/sanctifiers-imperial-cult-devotion.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/sanctifiers/tokens/sanctifiers-imperial-cult-devotion.png": "387175cb077b4ef350d302f5ef56e619511dfe186778239e5aac499960508ae2",
+        "output/sanctifiers/tokens/sanctifiers-imperial-cult-symbols.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/sanctifiers/tokens/sanctifiers-imperial-cult-symbols.png": "43657fa0e91957b9cdf7956a95be930186942bab48350d39976d915d0be1dc87",
+        "output/sanctifiers/tokens/sanctifiers-miracle.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/sanctifiers/tokens/sanctifiers-miracle.png": "9a86e755f1da804c22a9614e803144ff7a36897abd560d3ef90db25a2c3470e8",
+        "output/sanctifiers/tokens/sanctifiers-orator.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/sanctifiers/tokens/sanctifiers-orator.png": "770b9381daf132137c4726648614b29acbcf506f1fafab05972751245b2d9802",
+        "output/sanctifiers/tokens/sanctifiers-purity-seals.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/sanctifiers/tokens/sanctifiers-purity-seals.png": "93cb57bc429e37e8c79f7ad97eafbab64139b7b37b1512f85fe033461080e896",
+        "output/sanctifiers/tokens/sanctifiers-sanctification-orbs.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/sanctifiers/tokens/sanctifiers-sanctification-orbs.png": "22da7a1fa4b0f22d394e35b234c8f03b2230eceb1d7c96d0b71dce13d5eeb83f",
+        "output/sanctifiers/tokens/sanctifiers-wreathe-in-fire.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/sanctifiers/tokens/sanctifiers-wreathe-in-fire.png": "c6ae469c6138b1b0196109f30ebf3e72ba5e587a2dc51e72bd9bbdcf3c621a8a",
+        "output/sanctifiers/tokens/tokenbag/sanctifiers-token-bag-icon.png": "0bcc6386358908b7ca5d8be2ac10f856297ef003c906cfcb1c51182756b35ac8",
+        "output/sanctifiers/tokens/tokenbag/sanctifiers-token-bag.obj": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+        "output/sanctifiers/dice/sanctifiers-dice-dark.jpg": "4b46e13d03076b1bb606f0c5074bbc135282e69aac6f2ef820b1e0febf468bbb",
+        "output/sanctifiers/dice/sanctifiers-dice-light.jpg": "8ae973cae5ce6febbc4f9ed846062d2bc855b504d138d69e9263f72b4245b940",
+        "output/sanctifiers/dice/sanctifiers-dice-team.jpg": "ae377993651be919faf3c0bd1e243c7b20b2e1f302f3988cd369625fb88a7f96",
+        "output/sanctifiers/data/sanctifiers-team-data.json": "b1ee0ac83ca9dc318603d3c947cf23d233e6b1fa09d77ad978dcb7deb7f46114",
+        "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
+        "config/defaults/tts-script/datacard-load-stats.lua": "2d5f4088c2ff09f54988cf8722080f536b4e1b998cc2b4c1f1ea94e6b18eb92e",
+        "config/defaults/tts-script/display-table-manager-script.lua": "0dab4381078d90802f25e2cc825bc3658be35ee13ab3e98831c9d248c2526689",
+        "config/defaults/tts-script/faction-rule-chapter-tactics.lua": "c906742268076fb91f7cb4a92c6b588e1122ccddb692688f635c8dd4f7110ad0",
+        "config/defaults/tts-script/intermediate-updater.lua": "1a2d6dbc1a8c9c57ba6a3e7a3d4bc4b7a38a6c242a93f6ef3dae698123384d35",
+        "config/defaults/tts-script/single-object-updater.lua": "3613b85169e986a8e50ebe221482079e27c18037e3f48920aa0f7e138c0ccacc",
+        "config/defaults/tts-script/team-spawner-clean-script.lua": "12457bff3961eee2293c42d81cf4f4eb8b103177245a1ab8b46fd65da40672a2",
+        "config/defaults/tts-script/team-spawner-script.lua": "a51ff45c8622923db909fb465781801511f235412f099f83dff728d4027650db",
+        "config/defaults/tts-script/tts-update-rules-in-box-script.lua": "84f7f9b260f4e4968d208953b534bdbb7ab0b2f475e13264a2407f6c4d4d2b03",
+        "config/defaults/tts-image/default-icon.png": "892aff2628b9685c813e77be05c66afc1dc4247bc1dc9ce6fe54f006c2608271",
+        "config/defaults/tts-image/spawner-token.png": "61903b093f01d834f5e4c4c069b1353ecf7d29f012fef914b3027266816d8a6b",
+        "config/defaults/tts-token/square-bag-mesh.obj": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+        "config/defaults/tts-token/template-diamond-cutter.png": "719f57ba2b86494be454a6d3d25d8567dde974a915f3dde5ddc0e2d8dafaa1a5",
+        "config/defaults/tts-token/template-octagon-cutter.png": "944632aeacab978293ae57758b63086166c5fbaf3b845f48b3dd61db67d5c076",
+        "config/defaults/tts-token/template-operative-cutter.png": "0e698ddd403d7f0e84f200eb42af73f5249a9c5539d773298ff4c700ac9fe153",
+        "config/defaults/tts-token/template-round-cutter.png": "6564e1451c9a135a1c756fd94cde1c71e373e3fa677b51bba9d4bbe9e795d544",
+        "config/defaults/tts-token/token-bag-script.lua": "1659887e0fbfb9e3ebbc1aa5f3df8e1ffd89ee192be24d2dd1f02fcb0407e486",
+        "config/defaults/tts-token/token-bg-sample.png": "f9f90664c7f1c877c6f050f6e85babde6523cdc0aed9c77de8c09214f44ee109",
+        "config/defaults/tts-token/token-mesh.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc"
+      }
+    },
+    "front_end": {
+      "outputs": {},
+      "sources": {
+        "strategy-ploys": {
+          "hash": "b577e18af00659b5a0ab5579a1b4a4828bd1c95a2755526b54080a690f1f9241",
+          "outputs": [
+            "layers/kt-app/extracted/sanctifiers/cards/strategy-ploys/sanctifiers-strategy-ploys-page_0.pdf",
+            "layers/kt-app/extracted/sanctifiers/cards/strategy-ploys/sanctifiers-strategy-ploys-page_1.pdf",
+            "layers/kt-app/extracted/sanctifiers/cards/strategy-ploys/sanctifiers-strategy-ploys-page_2.pdf",
+            "layers/kt-app/extracted/sanctifiers/cards/strategy-ploys/sanctifiers-strategy-ploys-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:00:17.799476+00:00"
+        },
+        "faction-rules": {
+          "hash": "8d576ff361ac0f76ea6efe7be07e715965d72188aa2ce0e8112093b11ac8240d",
+          "outputs": [
+            "layers/kt-app/extracted/sanctifiers/cards/faction-rules/sanctifiers-faction-rules-page_0.pdf",
+            "layers/kt-app/extracted/sanctifiers/cards/faction-rules/sanctifiers-faction-rules-page_1.pdf",
+            "layers/kt-app/extracted/sanctifiers/cards/faction-rules/sanctifiers-faction-rules-page_2.pdf",
+            "layers/kt-app/extracted/sanctifiers/cards/faction-rules/sanctifiers-faction-rules-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:05:20.366463+00:00"
+        },
+        "operatives-selection": {
+          "hash": "1c844e9e3aff2ba640ff53db98eb6143fb4f19772fc2bc45ad89a0cc75f70b75",
+          "outputs": [
+            "layers/kt-app/extracted/sanctifiers/cards/operatives-selection/sanctifiers-operatives-selection-page_0.pdf",
+            "layers/kt-app/extracted/sanctifiers/cards/operatives-selection/sanctifiers-operatives-selection-page_1.pdf"
+          ],
+          "modified": "2026-07-06T16:09:02.110062+00:00"
+        },
+        "equipment": {
+          "hash": "3a658996b9603bacedd98a13e1e8aa194299c0111c9decd288b02783670eb501",
+          "outputs": [
+            "layers/kt-app/extracted/sanctifiers/cards/equipment/sanctifiers-equipment-page_0.pdf",
+            "layers/kt-app/extracted/sanctifiers/cards/equipment/sanctifiers-equipment-page_1.pdf",
+            "layers/kt-app/extracted/sanctifiers/cards/equipment/sanctifiers-equipment-page_2.pdf",
+            "layers/kt-app/extracted/sanctifiers/cards/equipment/sanctifiers-equipment-page_3.pdf",
+            "layers/kt-app/extracted/sanctifiers/cards/equipment/sanctifiers-equipment-page_4.pdf"
+          ],
+          "modified": "2026-07-06T16:09:23.588702+00:00"
+        },
+        "firefight-ploys": {
+          "hash": "579902b12fd48247635ee01365e970fce90e665f9d99985ad3ccb4ac1ebcc61f",
+          "outputs": [
+            "layers/kt-app/extracted/sanctifiers/cards/firefight-ploys/sanctifiers-firefight-ploys-page_0.pdf",
+            "layers/kt-app/extracted/sanctifiers/cards/firefight-ploys/sanctifiers-firefight-ploys-page_1.pdf",
+            "layers/kt-app/extracted/sanctifiers/cards/firefight-ploys/sanctifiers-firefight-ploys-page_2.pdf",
+            "layers/kt-app/extracted/sanctifiers/cards/firefight-ploys/sanctifiers-firefight-ploys-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:11:24.069397+00:00"
+        },
+        "datacards": {
+          "hash": "edf51e7f9bbddde878faf3abef103e397b8a18c659981afaa4334f1568fc168d",
+          "outputs": [
+            "layers/kt-app/extracted/sanctifiers/cards/datacards/sanctifiers-datacards-page_0.pdf",
+            "layers/kt-app/extracted/sanctifiers/cards/datacards/sanctifiers-datacards-page_1.pdf",
+            "layers/kt-app/extracted/sanctifiers/cards/datacards/sanctifiers-datacards-page_2.pdf",
+            "layers/kt-app/extracted/sanctifiers/cards/datacards/sanctifiers-datacards-page_3.pdf",
+            "layers/kt-app/extracted/sanctifiers/cards/datacards/sanctifiers-datacards-page_4.pdf",
+            "layers/kt-app/extracted/sanctifiers/cards/datacards/sanctifiers-datacards-page_5.pdf",
+            "layers/kt-app/extracted/sanctifiers/cards/datacards/sanctifiers-datacards-page_6.pdf",
+            "layers/kt-app/extracted/sanctifiers/cards/datacards/sanctifiers-datacards-page_7.pdf",
+            "layers/kt-app/extracted/sanctifiers/cards/datacards/sanctifiers-datacards-page_8.pdf",
+            "layers/kt-app/extracted/sanctifiers/cards/datacards/sanctifiers-datacards-page_9.pdf",
+            "layers/kt-app/extracted/sanctifiers/cards/datacards/sanctifiers-datacards-page_10.pdf",
+            "layers/kt-app/extracted/sanctifiers/cards/datacards/sanctifiers-datacards-page_11.pdf",
+            "layers/kt-app/extracted/sanctifiers/cards/datacards/sanctifiers-datacards-page_12.pdf",
+            "layers/kt-app/extracted/sanctifiers/cards/datacards/sanctifiers-datacards-page_13.pdf",
+            "layers/kt-app/extracted/sanctifiers/cards/datacards/sanctifiers-datacards-page_14.pdf"
+          ],
+          "modified": "2026-07-06T16:12:49.350833+00:00"
+        },
+        "cards": {
+          "hash": "b5e7192765e69557c017da678be50988e7c3eef3b852dcde8cfc1dc79107360c",
+          "outputs": [
+            "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page01_card1_landscape.pdf",
+            "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page01_card2_landscape.pdf",
+            "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page01_card3_landscape.pdf",
+            "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page01_card4_landscape.pdf",
+            "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page02_card1_landscape.pdf",
+            "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page02_card2_landscape.pdf",
+            "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page02_card3_landscape.pdf",
+            "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page02_card4_landscape.pdf",
+            "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page03_card1_landscape.pdf",
+            "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page03_card2_landscape.pdf",
+            "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page03_card3_landscape.pdf",
+            "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page03_card4_landscape.pdf",
+            "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page04_card1_landscape.pdf",
+            "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page04_card2_landscape.pdf",
+            "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page04_card3_landscape.pdf",
+            "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page04_card4_landscape.pdf",
+            "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page05_card1_portrait.pdf",
+            "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page05_card2_portrait.pdf",
+            "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page05_card3_portrait.pdf",
+            "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page05_card4_portrait.pdf",
+            "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page06_card1_portrait.pdf",
+            "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page06_card2_portrait.pdf",
+            "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page06_card3_portrait.pdf",
+            "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page06_card4_portrait.pdf",
+            "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page07_card1_portrait.pdf",
+            "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page07_card2_portrait.pdf",
+            "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page07_card3_portrait.pdf",
+            "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page07_card4_portrait.pdf",
+            "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page08_card1_portrait.pdf",
+            "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page08_card2_portrait.pdf",
+            "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page08_card3_portrait.pdf",
+            "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page08_card4_portrait.pdf",
+            "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page09_card1_portrait.pdf",
+            "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page09_card2_portrait.pdf",
+            "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page09_card3_portrait.pdf",
+            "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page09_card4_portrait.pdf"
+          ],
+          "modified": "2026-07-08T18:59:33.993101+00:00"
+        }
+      },
+      "completed": "2026-07-08T18:59:33.993152+00:00"
+    },
+    "build_structure": {
+      "outputs": {
+        "structure": {
+          "path": "layers/warcom/structure/sanctifiers-structure.json",
+          "hash": "ad1070606257beef819e646f59b35b3cf102ec3cdc131580040fe34de1e17b5c",
+          "modified": "2026-07-12T18:54:26.819131+00:00"
+        }
+      },
+      "inputs": {
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page01_card1_landscape.pdf": "a8750f57eebcc00664a8c26da2b261b9c068dcc0eaca4642fdff1bd790cb6366",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page01_card2_landscape.pdf": "46b0d4f413593672766d215af6c7987eb229772443c1371bb398f61e05737a39",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page01_card3_landscape.pdf": "a4a2d471d34c8532c45dd86c898d0b6c234ad9f6250754d69ec5b2ec764c89c5",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page01_card4_landscape.pdf": "9f2cdcd449a323978176d80446e9241cd88d9eabbf998a0a2904873030e635dd",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page02_card1_landscape.pdf": "e5cbd59f0cc66a28d274cbf75ac0e4fb2b59b1e38db9671588c6bbdd16a62dfa",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page02_card2_landscape.pdf": "de208998fc56f241ddf96cc1bb5a6b15ce5abdf383edb7286e645a29bc7cf5ae",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page02_card3_landscape.pdf": "e67c745ecbf3b5e64bccc0cb62875c628e00f0760f1f7c71bc9facf0ced0be28",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page02_card4_landscape.pdf": "4bc8260a447da2b58419c8e2c9e85892d6e9c4d1b1036b92ad49a79bf78a7174",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page03_card1_landscape.pdf": "5d4d92d40aae7160e6fa825131353251e57dbfbbf9d278c4efdf21bb1f484a99",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page03_card2_landscape.pdf": "93fe1c203158b8603aed6fcbf193cd6392dfa308891ca5151b30dd07823cca9c",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page03_card3_landscape.pdf": "d9065d58e36b852f64a84d1ed60f6c20f636812124686bf17494a8ff99160463",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page03_card4_landscape.pdf": "6a3eb1836024cff261c0412aa3503d6a3952994baedea46f6fbf8d73fbc21b06",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page04_card1_landscape.pdf": "6bee67dc4a5828d437ea18e146db6a4db6c523f80f2d98d32c6bedfd25da1193",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page04_card2_landscape.pdf": "13d6b0f81e24e29e968a93195eec625f5e0c24cf22a0aaab824e6efefc78e103",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page04_card3_landscape.pdf": "b5d890ff090a433788a4e3e475fe87c9a1c77adc1934c1fae5b6a0f42bb155f9",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page04_card4_landscape.pdf": "0f934ae2cc542e94e799f3e1f0365ea0333a51c9c528e1abd46d90dc9574c0e0",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page05_card1_portrait.pdf": "0f7cc87ac97af62a6a4f7faea79f16a608acdc6b0088714393eab35fec061c7b",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page05_card2_portrait.pdf": "872ad9e4c6d9bc032e2d26943cbccd632a6bae19f1ecbeeda7022cd7befe42a4",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page05_card3_portrait.pdf": "333c06ff2ccb7656d11e429862d718a3a3d967be454fa4ae49581dfe6d5a5faf",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page05_card4_portrait.pdf": "48cabed1b131ef8639705b8d4a308e2223b8979d9b5879a652db0e6f1e3e83b4",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page06_card1_portrait.pdf": "50ec28aa7ada0d0b7d7e6be484894cd59442f8c3eaf8d2ad0a91439c2a4930c4",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page06_card2_portrait.pdf": "a8204ca4e2a2d54298c19845857867c7270faf19c91510060e77e0b86462471f",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page06_card3_portrait.pdf": "4aa2e294de63b37bfc8bd08eeadc329a61fb75db69e3da14d4d2ebef26029da5",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page06_card4_portrait.pdf": "b4a541518670f4f5e027bbc962bea70a69910942b5170f454b31e5418cacfb04",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page07_card1_portrait.pdf": "e1183b0752766264c31342bb448063804be5dd30459d3f978585282c6154b1c8",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page07_card2_portrait.pdf": "529bdeed95786c57a379b6926d1235e54f1cbc2f8793875691306cc967744f6f",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page07_card3_portrait.pdf": "f9948602b81041417210c8353c74516015d0fa94dcd65ef22cec87ea188c18b7",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page07_card4_portrait.pdf": "f7a4e3cc7740f120edcb1bc66392791a000377e74ae9c0d720f005c1b36558f0",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page08_card1_portrait.pdf": "5e074be2724e310b6c11aa767af6375cade5f1de826ca9b22d08698a0c052be6",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page08_card2_portrait.pdf": "e4b4d6eb23c2a1bbe16e1323ba28ea66b9dbc3e1fb11fe183d6f4d972047407a",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page08_card3_portrait.pdf": "4829f32826a6e9b064bbb62755c07b4f3f3ae3857c919181629510e762d807f1",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page08_card4_portrait.pdf": "198fcebdf6695a484a5ef403e6a76b54aacb753556bcce370e82d81dc54c5d18",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page09_card1_portrait.pdf": "f5d77aad4a8c0e99a0f9d87da82d521f7413709011350e57832e5bad428e9e95",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page09_card2_portrait.pdf": "43ade07e652846c1c0b0419b0ce5df81e6f898a61ddd88eb408ef53de2d036ce",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page09_card3_portrait.pdf": "9b950ab530edeaa80acb56aed1115706e36767e0287bdc59e84174157c631ff1",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page09_card4_portrait.pdf": "d06e856ca9e50dd19d47c22b1b21d2e8d82ce46b0c5613f88c97a5ff2ca69467"
+      },
+      "completed": "2026-07-12T18:54:40.635877+00:00"
+    },
+    "integrate_classified": {
+      "outputs": {
+        "manifest.json": {
+          "path": "layers/integration/sanctifiers/manifest.json",
+          "hash": "ad1070606257beef819e646f59b35b3cf102ec3cdc131580040fe34de1e17b5c",
+          "modified": "2026-07-12T19:18:33.724799+00:00"
+        },
+        "sanctifiers-datacard-sanctifier-confessor.pdf": {
+          "path": "layers/integration/sanctifiers/sanctifiers-datacard-sanctifier-confessor.pdf",
+          "hash": "924274d7393218beb432c61a1e6fc889f356d84b52f8f003a699e3a6e7745931",
+          "modified": "2026-07-12T19:18:33.778775+00:00"
+        },
+        "sanctifiers-datacard-sanctifier-cherub.pdf": {
+          "path": "layers/integration/sanctifiers/sanctifiers-datacard-sanctifier-cherub.pdf",
+          "hash": "14b3203b5a26e6ccd84eba4b0c093c0ea890d099f6f9b699099752e401c7e8d5",
+          "modified": "2026-07-12T19:18:33.807428+00:00"
+        },
+        "sanctifiers-datacard-sanctifier-conflagrator.pdf": {
+          "path": "layers/integration/sanctifiers/sanctifiers-datacard-sanctifier-conflagrator.pdf",
+          "hash": "0f3ceb3b55fab59036790d4da9eea3af700e88a73c3c8fcafb871d09f3771388",
+          "modified": "2026-07-12T19:18:33.862392+00:00"
+        },
+        "sanctifiers-datacard-sanctifier-death-cult-assassin.pdf": {
+          "path": "layers/integration/sanctifiers/sanctifiers-datacard-sanctifier-death-cult-assassin.pdf",
+          "hash": "f561f64116b4b976372583eff5707d21a4e42b9b64bb4de68705a15add3be931",
+          "modified": "2026-07-12T19:18:33.909508+00:00"
+        },
+        "sanctifiers-datacard-sanctifier-drill-abbot.pdf": {
+          "path": "layers/integration/sanctifiers/sanctifiers-datacard-sanctifier-drill-abbot.pdf",
+          "hash": "4ba314a85ecc9ceb18630cdd66278769cbe6d93c7ca835e38db5122b4cd4b2eb",
+          "modified": "2026-07-12T19:18:33.965378+00:00"
+        },
+        "sanctifiers-datacard-sanctifier-persecutor.pdf": {
+          "path": "layers/integration/sanctifiers/sanctifiers-datacard-sanctifier-persecutor.pdf",
+          "hash": "71a7ff3739accd81aa5372063b4c3938cc98dd7d40cf5eb2eac2da12552ef458",
+          "modified": "2026-07-12T19:18:33.993322+00:00"
+        },
+        "sanctifiers-datacard-sanctifier-miraculist.pdf": {
+          "path": "layers/integration/sanctifiers/sanctifiers-datacard-sanctifier-miraculist.pdf",
+          "hash": "fd10308f64c95b8e5eafaa8a4e110d621123f367aeb9734ab0e5d0aea077fa74",
+          "modified": "2026-07-12T19:18:34.005089+00:00"
+        },
+        "sanctifiers-datacard-sanctifier-missionary.pdf": {
+          "path": "layers/integration/sanctifiers/sanctifiers-datacard-sanctifier-missionary.pdf",
+          "hash": "3bed719adac0ee50eeb80e2b8ab39f1709f6d56caa968dc2c56624350987f1ff",
+          "modified": "2026-07-12T19:18:42.455298+00:00"
+        },
+        "sanctifiers-datacard-sanctifier-preacher.pdf": {
+          "path": "layers/integration/sanctifiers/sanctifiers-datacard-sanctifier-preacher.pdf",
+          "hash": "629ea98829da38682c515de004832749a0f003ca2d9b99084cf443ae9e6801ff",
+          "modified": "2026-07-12T19:18:42.496536+00:00"
+        },
+        "sanctifiers-datacard-sanctifier-reliquant.pdf": {
+          "path": "layers/integration/sanctifiers/sanctifiers-datacard-sanctifier-reliquant.pdf",
+          "hash": "12a5333d3e916e3e4151aa03fbd8f7ff3e83cfb462258f9510f2977d19967ee3",
+          "modified": "2026-07-12T19:18:42.544811+00:00"
+        },
+        "sanctifiers-datacard-sanctifier-salvationist.pdf": {
+          "path": "layers/integration/sanctifiers/sanctifiers-datacard-sanctifier-salvationist.pdf",
+          "hash": "70c21a036550621e5f8dfc2e44761624fb7b33bc0c2885caa188294a78700d5e",
+          "modified": "2026-07-12T19:18:43.055290+00:00"
+        },
+        "sanctifiers-equipment-sanctification-orbs.pdf": {
+          "path": "layers/integration/sanctifiers/sanctifiers-equipment-sanctification-orbs.pdf",
+          "hash": "8040d50cfbac972eaa5107777f6865e7215fbb7da8e7aa4a4bfa607d17442f40",
+          "modified": "2026-07-12T19:18:43.089060+00:00"
+        },
+        "sanctifiers-equipment-purity-seals.pdf": {
+          "path": "layers/integration/sanctifiers/sanctifiers-equipment-purity-seals.pdf",
+          "hash": "d02ac83032a9d27c17e5218a6897ba3a610674f6dd802d04bf9bf05a4e6309fd",
+          "modified": "2026-07-12T19:18:53.364657+00:00"
+        },
+        "sanctifiers-equipment-ecclesiarchy-texts.pdf": {
+          "path": "layers/integration/sanctifiers/sanctifiers-equipment-ecclesiarchy-texts.pdf",
+          "hash": "e6efd20a8cca78f1fa08baf2417cf751c6e4aa6e4dcd2cd85315bf007e2f8fd6",
+          "modified": "2026-07-12T19:18:53.385781+00:00"
+        },
+        "sanctifiers-equipment-imperial-cult-symbols.pdf": {
+          "path": "layers/integration/sanctifiers/sanctifiers-equipment-imperial-cult-symbols.pdf",
+          "hash": "c02bbfc85fd129d0cdf6bfa70c93e1d3fe7fa5e7cb7f79edea10755b8f2d0a0d",
+          "modified": "2026-07-12T19:18:53.414712+00:00"
+        },
+        "sanctifiers-faction-rule-blaze.pdf": {
+          "path": "layers/integration/sanctifiers/sanctifiers-faction-rule-blaze.pdf",
+          "hash": "73158545397de8564ec367530acf22d26f252bdf6eb4c66ffd989c94c7c4ef58",
+          "modified": "2026-07-12T19:18:53.437879+00:00"
+        },
+        "sanctifiers-faction-rule-ministorum-sermon.pdf": {
+          "path": "layers/integration/sanctifiers/sanctifiers-faction-rule-ministorum-sermon.pdf",
+          "hash": "2cfd01735de8e5120f1ee93399c8ef566cf790c00f4365ffd08d893c23178e31",
+          "modified": "2026-07-12T19:18:53.462149+00:00"
+        },
+        "sanctifiers-token-guide-token-guide.pdf": {
+          "path": "layers/integration/sanctifiers/sanctifiers-token-guide-token-guide.pdf",
+          "hash": "367051c79cb80e9c74263af94291e7ff86f90b34db63c4f41b8ffcfbb1f56a59",
+          "modified": "2026-07-12T19:18:53.483492+00:00"
+        },
+        "sanctifiers-firefight-ploy-rosarius.pdf": {
+          "path": "layers/integration/sanctifiers/sanctifiers-firefight-ploy-rosarius.pdf",
+          "hash": "afc9d3ea28868b7d0c9c9384ad7260467ae2faf70f48530faf15a8cb81512973",
+          "modified": "2026-07-12T19:18:53.494081+00:00"
+        },
+        "sanctifiers-firefight-ploy-ardent-eradication.pdf": {
+          "path": "layers/integration/sanctifiers/sanctifiers-firefight-ploy-ardent-eradication.pdf",
+          "hash": "58e8cefbfdd653d08214802e7b71785e8ce9161574f3d35233a14d0a5051f9be",
+          "modified": "2026-07-12T19:18:54.218379+00:00"
+        },
+        "sanctifiers-firefight-ploy-redeemed-through-fire.pdf": {
+          "path": "layers/integration/sanctifiers/sanctifiers-firefight-ploy-redeemed-through-fire.pdf",
+          "hash": "72f258097f6459162dc33db8ac7909d23c40975e8f6b2a5f9576d16fef60662f",
+          "modified": "2026-07-12T19:18:54.896791+00:00"
+        },
+        "sanctifiers-firefight-ploy-unwavering-devotion.pdf": {
+          "path": "layers/integration/sanctifiers/sanctifiers-firefight-ploy-unwavering-devotion.pdf",
+          "hash": "1955519c3d29c768fef6129c8260db1093a9fb0bb4fbb36bb456d4842a2a6992",
+          "modified": "2026-07-12T19:18:56.275101+00:00"
+        },
+        "sanctifiers-operatives-selection-operative-selection.pdf": {
+          "path": "layers/integration/sanctifiers/sanctifiers-operatives-selection-operative-selection.pdf",
+          "hash": "ea6af3095c1e0952c3261f712ff4dc05312d691c1927491860fd71ce4632b1f6",
+          "modified": "2026-07-12T19:18:57.642255+00:00"
+        },
+        "sanctifiers-strategy-ploy-the-emperor-protects.pdf": {
+          "path": "layers/integration/sanctifiers/sanctifiers-strategy-ploy-the-emperor-protects.pdf",
+          "hash": "f970a55d1fdf0b85be981fa8e64f69081580b8b9b0e829e8a2c1471472a7d0a9",
+          "modified": "2026-07-12T19:18:59.096141+00:00"
+        },
+        "sanctifiers-strategy-ploy-fervent-brawl.pdf": {
+          "path": "layers/integration/sanctifiers/sanctifiers-strategy-ploy-fervent-brawl.pdf",
+          "hash": "ad72b6135d9f4d95aa958dda308ee9a6ad41c475a0744377647991546a23f309",
+          "modified": "2026-07-12T19:19:00.240972+00:00"
+        },
+        "sanctifiers-strategy-ploy-zealous-persecution.pdf": {
+          "path": "layers/integration/sanctifiers/sanctifiers-strategy-ploy-zealous-persecution.pdf",
+          "hash": "25981183ae483f040a3f0869354d91c1f4cca2027e9bbaabd55012bb3e58f701",
+          "modified": "2026-07-12T19:19:00.933527+00:00"
+        },
+        "sanctifiers-strategy-ploy-rally-the-flock.pdf": {
+          "path": "layers/integration/sanctifiers/sanctifiers-strategy-ploy-rally-the-flock.pdf",
+          "hash": "e84e79265ddf8e31780871f0559b0dd1bd6f1e9f27d6f8aa9b836f2d975b966c",
+          "modified": "2026-07-12T19:19:01.653589+00:00"
+        }
+      },
+      "inputs": {
+        "layers/warcom/structure/sanctifiers-structure.json": "ad1070606257beef819e646f59b35b3cf102ec3cdc131580040fe34de1e17b5c",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page01_card1_landscape.pdf": "a8750f57eebcc00664a8c26da2b261b9c068dcc0eaca4642fdff1bd790cb6366",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page01_card2_landscape.pdf": "46b0d4f413593672766d215af6c7987eb229772443c1371bb398f61e05737a39",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page01_card3_landscape.pdf": "a4a2d471d34c8532c45dd86c898d0b6c234ad9f6250754d69ec5b2ec764c89c5",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page01_card4_landscape.pdf": "9f2cdcd449a323978176d80446e9241cd88d9eabbf998a0a2904873030e635dd",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page02_card1_landscape.pdf": "e5cbd59f0cc66a28d274cbf75ac0e4fb2b59b1e38db9671588c6bbdd16a62dfa",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page02_card2_landscape.pdf": "de208998fc56f241ddf96cc1bb5a6b15ce5abdf383edb7286e645a29bc7cf5ae",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page02_card3_landscape.pdf": "e67c745ecbf3b5e64bccc0cb62875c628e00f0760f1f7c71bc9facf0ced0be28",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page02_card4_landscape.pdf": "4bc8260a447da2b58419c8e2c9e85892d6e9c4d1b1036b92ad49a79bf78a7174",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page03_card1_landscape.pdf": "5d4d92d40aae7160e6fa825131353251e57dbfbbf9d278c4efdf21bb1f484a99",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page03_card2_landscape.pdf": "93fe1c203158b8603aed6fcbf193cd6392dfa308891ca5151b30dd07823cca9c",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page03_card3_landscape.pdf": "d9065d58e36b852f64a84d1ed60f6c20f636812124686bf17494a8ff99160463",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page03_card4_landscape.pdf": "6a3eb1836024cff261c0412aa3503d6a3952994baedea46f6fbf8d73fbc21b06",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page04_card1_landscape.pdf": "6bee67dc4a5828d437ea18e146db6a4db6c523f80f2d98d32c6bedfd25da1193",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page04_card2_landscape.pdf": "13d6b0f81e24e29e968a93195eec625f5e0c24cf22a0aaab824e6efefc78e103",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page04_card3_landscape.pdf": "b5d890ff090a433788a4e3e475fe87c9a1c77adc1934c1fae5b6a0f42bb155f9",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page08_card3_portrait.pdf": "4829f32826a6e9b064bbb62755c07b4f3f3ae3857c919181629510e762d807f1",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page08_card4_portrait.pdf": "198fcebdf6695a484a5ef403e6a76b54aacb753556bcce370e82d81dc54c5d18",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page09_card1_portrait.pdf": "f5d77aad4a8c0e99a0f9d87da82d521f7413709011350e57832e5bad428e9e95",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page09_card2_portrait.pdf": "43ade07e652846c1c0b0419b0ce5df81e6f898a61ddd88eb408ef53de2d036ce",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page09_card3_portrait.pdf": "9b950ab530edeaa80acb56aed1115706e36767e0287bdc59e84174157c631ff1",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page05_card3_portrait.pdf": "333c06ff2ccb7656d11e429862d718a3a3d967be454fa4ae49581dfe6d5a5faf",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page05_card4_portrait.pdf": "48cabed1b131ef8639705b8d4a308e2223b8979d9b5879a652db0e6f1e3e83b4",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page06_card1_portrait.pdf": "50ec28aa7ada0d0b7d7e6be484894cd59442f8c3eaf8d2ad0a91439c2a4930c4",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page06_card2_portrait.pdf": "a8204ca4e2a2d54298c19845857867c7270faf19c91510060e77e0b86462471f",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page07_card3_portrait.pdf": "f9948602b81041417210c8353c74516015d0fa94dcd65ef22cec87ea188c18b7",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page07_card4_portrait.pdf": "f7a4e3cc7740f120edcb1bc66392791a000377e74ae9c0d720f005c1b36558f0",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page08_card1_portrait.pdf": "5e074be2724e310b6c11aa767af6375cade5f1de826ca9b22d08698a0c052be6",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page08_card2_portrait.pdf": "e4b4d6eb23c2a1bbe16e1323ba28ea66b9dbc3e1fb11fe183d6f4d972047407a",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page05_card1_portrait.pdf": "0f7cc87ac97af62a6a4f7faea79f16a608acdc6b0088714393eab35fec061c7b",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page05_card2_portrait.pdf": "872ad9e4c6d9bc032e2d26943cbccd632a6bae19f1ecbeeda7022cd7befe42a4",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page06_card3_portrait.pdf": "4aa2e294de63b37bfc8bd08eeadc329a61fb75db69e3da14d4d2ebef26029da5",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page06_card4_portrait.pdf": "b4a541518670f4f5e027bbc962bea70a69910942b5170f454b31e5418cacfb04",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page07_card1_portrait.pdf": "e1183b0752766264c31342bb448063804be5dd30459d3f978585282c6154b1c8",
+        "layers/warcom/extracted/sanctifiers/cards/sanctifiers_page07_card2_portrait.pdf": "529bdeed95786c57a379b6926d1235e54f1cbc2f8793875691306cc967744f6f"
+      },
+      "completed": "2026-07-12T19:19:21.965495+00:00"
+    },
+    "extract_artwork": {
+      "outputs": {},
+      "sources": {
+        "artwork": {
+          "hash": "b5e7192765e69557c017da678be50988e7c3eef3b852dcde8cfc1dc79107360c",
+          "outputs": [
+            "layers/integration/sanctifiers/artwork/sanctifiers-artwork-01.jpeg",
+            "layers/integration/sanctifiers/artwork/sanctifiers-artwork-02.jpeg",
+            "layers/integration/sanctifiers/artwork/sanctifiers-artwork-03.png",
+            "layers/integration/sanctifiers/artwork/sanctifiers-artwork-04.jpeg",
+            "layers/integration/sanctifiers/artwork/sanctifiers-artwork-05.jpeg",
+            "layers/integration/sanctifiers/artwork/sanctifiers-artwork-06.jpeg",
+            "layers/integration/sanctifiers/artwork/sanctifiers-artwork-07.png",
+            "layers/integration/sanctifiers/artwork/sanctifiers-artwork-08.jpeg",
+            "layers/integration/sanctifiers/artwork/sanctifiers-artwork-09.jpeg",
+            "layers/integration/sanctifiers/artwork/sanctifiers-artwork-10.jpeg",
+            "layers/integration/sanctifiers/artwork/sanctifiers-artwork-11.jpeg",
+            "layers/integration/sanctifiers/artwork/sanctifiers-artwork-12.jpeg",
+            "layers/integration/sanctifiers/artwork/sanctifiers-artwork-13.jpeg",
+            "layers/integration/sanctifiers/artwork/sanctifiers-artwork-14.jpeg",
+            "layers/integration/sanctifiers/artwork/sanctifiers-artwork-15.jpeg",
+            "layers/integration/sanctifiers/artwork/sanctifiers-artwork-16.jpeg",
+            "layers/integration/sanctifiers/artwork/sanctifiers-artwork-17.jpeg",
+            "layers/integration/sanctifiers/artwork/sanctifiers-artwork-18.jpeg",
+            "layers/integration/sanctifiers/artwork/sanctifiers-artwork-19.jpeg",
+            "layers/integration/sanctifiers/artwork/sanctifiers-artwork-20.jpeg",
+            "layers/integration/sanctifiers/artwork/sanctifiers-artwork-21.jpeg",
+            "layers/integration/sanctifiers/artwork/sanctifiers-artwork-22.jpeg",
+            "layers/integration/sanctifiers/artwork/sanctifiers-artwork-23.jpeg",
+            "layers/integration/sanctifiers/artwork/sanctifiers-artwork-24.jpeg",
+            "layers/integration/sanctifiers/artwork/sanctifiers-artwork-25.jpeg",
+            "layers/integration/sanctifiers/artwork/sanctifiers-artwork-26.jpeg",
+            "layers/integration/sanctifiers/artwork/sanctifiers-artwork-27.jpeg",
+            "layers/integration/sanctifiers/artwork/sanctifiers-artwork-28.jpeg",
+            "layers/integration/sanctifiers/artwork/sanctifiers-artwork-29.jpeg",
+            "layers/integration/sanctifiers/artwork/sanctifiers-artwork-30.jpeg",
+            "layers/integration/sanctifiers/artwork/sanctifiers-artwork-31.jpeg",
+            "layers/integration/sanctifiers/artwork/sanctifiers-artwork-32.jpeg",
+            "layers/integration/sanctifiers/artwork/sanctifiers-artwork-33.jpeg",
+            "layers/integration/sanctifiers/artwork/sanctifiers-artwork-34.jpeg",
+            "layers/integration/sanctifiers/artwork/sanctifiers-artwork-35.jpeg",
+            "layers/integration/sanctifiers/artwork/sanctifiers-artwork-36.jpeg",
+            "layers/integration/sanctifiers/artwork/sanctifiers-artwork-37.jpeg",
+            "layers/integration/sanctifiers/artwork/sanctifiers-artwork-38.jpeg",
+            "layers/integration/sanctifiers/artwork/sanctifiers-artwork-39.jpeg",
+            "layers/integration/sanctifiers/artwork/sanctifiers-artwork-metadata.json",
+            "layers/integration/sanctifiers/artwork/icons/sanctifiers-icon-landscape.jpg",
+            "layers/integration/sanctifiers/artwork/icons/sanctifiers-icon-portrait.jpg",
+            "layers/integration/sanctifiers/artwork/icons/sanctifiers-icon-token-transparent.png",
+            "layers/integration/sanctifiers/artwork/icons/sanctifiers-icon-token.jpg"
+          ],
+          "modified": "2026-07-06T20:48:51.182869+00:00"
+        }
+      },
+      "completed": "2026-07-06T20:48:51.182891+00:00"
+    }
+  }
+}

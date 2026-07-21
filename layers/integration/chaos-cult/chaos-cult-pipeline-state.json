@@ -1,0 +1,928 @@
+{
+  "team": "chaos-cult",
+  "pipeline_version": "2.0",
+  "last_updated": "2026-07-12T20:56:33.922082+00:00",
+  "steps": {
+    "content_analysis": {
+      "outputs": {
+        "content.json": {
+          "path": "layers/integration/chaos-cult/content/chaos-cult-content.json",
+          "hash": "abd0ace7e15d5447eaf3616b53ab8f46c3e7a4a33081e2c1c0420fc04a220a86",
+          "modified": "2026-07-12T19:06:44.821160+00:00"
+        }
+      },
+      "completed": "2026-07-12T19:07:26.457061+00:00",
+      "inputs": {
+        "layers/integration/chaos-cult/manifest.json": "28f3c6d174a3e5ac708b68d86376841f67e79e914b0b8e39758ed28834ccd07d",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "layers/integration/chaos-cult/chaos-cult-datacard-blessed-blade.pdf": "dfdf5a989ba17af1e503d515ba8a318e22b22680b9575e8bcc2692ec51e21c36",
+        "layers/integration/chaos-cult/chaos-cult-datacard-chaos-devotee.pdf": "a045bb32d7dea7bc8ceea13ca96726718595367ce980b0eb663c708092a095c4",
+        "layers/integration/chaos-cult/chaos-cult-datacard-chaos-mutant.pdf": "9742813c4013373d0f345a7ea0b1f7c245d2687034624307fe1409084c000f4f",
+        "layers/integration/chaos-cult/chaos-cult-datacard-chaos-torment.pdf": "4401bfb07be077b0922f4aafc01d6eb5fc583d73237f7d856cc6081b3ae46c02",
+        "layers/integration/chaos-cult/chaos-cult-datacard-cult-demagogue.pdf": "9c492876b062f576fe0966d024fc00bd4947dd085809397764c99fef15c61995",
+        "layers/integration/chaos-cult/chaos-cult-datacard-iconarch.pdf": "7a9faabecea9690a7718998d1f74668dea118de3cd4d6de1ffc9a2facb3704f8",
+        "layers/integration/chaos-cult/chaos-cult-datacard-mindwitch.pdf": "9c4df91542cc3aef5d35e8a312861806cea4a5eedfb1498468ffdd0170a46430",
+        "layers/integration/chaos-cult/chaos-cult-equipment-baleful-script.pdf": "74af357ecd1bc2fba299a8f325b6b155943f95592b074c188e33dd4d257ea298",
+        "layers/integration/chaos-cult/chaos-cult-equipment-covert-guises.pdf": "507f3fd3d31c8587d78eecebcf9aa0b5b450cc56dd94db66a132197707751f8d",
+        "layers/integration/chaos-cult/chaos-cult-equipment-unholy-talisman.pdf": "81d1be4aa466982701b598d5fdba2a50c1ae310b6f61a53cebc4462abffbae9e",
+        "layers/integration/chaos-cult/chaos-cult-equipment-vile-blessing.pdf": "151c8769dcc085ea927a32486c89eac6186f3a5dc3d076a11c59fdd5282063f0",
+        "layers/integration/chaos-cult/chaos-cult-faction-rule-accursed-gifts-1.pdf": "200e366e09d9db4ac62cfe8409799d6c399424cc97df9fcc26d8a380e2d8718c",
+        "layers/integration/chaos-cult/chaos-cult-faction-rule-accursed-gifts-2.pdf": "eba6473786f609fa9400cafe5a8c1487771ae6ad94e58a9359a5a4944f7812dd",
+        "layers/integration/chaos-cult/chaos-cult-faction-rule-accursed-gifts-3.pdf": "1881b79407b5733b7317f1e047e9af9851904062b59c5d157d54729b574868d0",
+        "layers/integration/chaos-cult/chaos-cult-faction-rule-accursed-gifts-4.pdf": "ffde1b07e8889e027c1b2b82bb8267ea62f587ed95f36619591dc220e93123a3",
+        "layers/integration/chaos-cult/chaos-cult-faction-rule-accursed-gifts-5.pdf": "aee35c105673177f888fa1ce55f2258956be42759fb63d671a04e53e2aff1e79",
+        "layers/integration/chaos-cult/chaos-cult-faction-rule-accursed-gifts-6.pdf": "f013ae43e3abaa1f5a8164c46566d882e7f31b388e0206f3a92b0e90c4b7cda1",
+        "layers/integration/chaos-cult/chaos-cult-faction-rule-accursed-gifts-7.pdf": "e8e90dce7778fded30b2f9fff759c13376b1ac0819b61198af7f5a3babd7d1bf",
+        "layers/integration/chaos-cult/chaos-cult-faction-rule-mutation.pdf": "6d46639e2a6cf6b8a73a5831d4e28fd9ca43d84bb819445a055b5875cf5f1b62",
+        "layers/integration/chaos-cult/chaos-cult-firefight-ploy-abhorrent-mutation.pdf": "01daa0f6526888988d4898aa528781e33858e31e0d9662baa687646831eb41cd",
+        "layers/integration/chaos-cult/chaos-cult-firefight-ploy-faithful-follower.pdf": "2dcf5a0038c1dadaae703d400a0a7bfa31d6cdd2c6ae1316d2f8315fd718fb80",
+        "layers/integration/chaos-cult/chaos-cult-firefight-ploy-frenzied-demise.pdf": "885810475e838e7c42b5ddf5f5ace183c1373dfd5f08594e0ca86739ae19ba5f",
+        "layers/integration/chaos-cult/chaos-cult-firefight-ploy-unleash-the-daemon.pdf": "649b34032e6d08bffe6a1c83bd0c1614989c6d5c68bc401adf824073e61b0219",
+        "layers/integration/chaos-cult/chaos-cult-operatives-selection-operative-selection.pdf": "efc83077e44f499978b8d5304ad28601659908a2ff7534bd5a6fe6894ce90765",
+        "layers/integration/chaos-cult/chaos-cult-strategy-ploy-creatures-of-nightmare.pdf": "37c6dce07cb556ac328e2f278de6468e633acae826a3a2ad390fb2a9d22f4990",
+        "layers/integration/chaos-cult/chaos-cult-strategy-ploy-exaltation-in-pain.pdf": "edb96ef46cf42280971731ee14d9fffcd0bcf5bef629e9a9b4b0c09fb6495d14",
+        "layers/integration/chaos-cult/chaos-cult-strategy-ploy-fervent-onslaught.pdf": "24f9372ad149b7c14c716155bd3d92cbee98067f794c6aabca620da1edb09600",
+        "layers/integration/chaos-cult/chaos-cult-strategy-ploy-sickening-aura.pdf": "f64bd570d3884bb4b097f78673da9da5d77866379c7e9d002f18beaffefafdb4"
+      }
+    },
+    "extract_backsides": {
+      "outputs": {
+        "backside-landscape.jpg": {
+          "path": "layers/integration/chaos-cult/card-backside/chaos-cult-backside-landscape.jpg",
+          "hash": "4706bf0697b7842b0005dca726b930b42abd8094899150f1cf326039970f6484",
+          "modified": "2026-07-12T18:43:01.904126+00:00"
+        },
+        "backside-portrait.jpg": {
+          "path": "layers/integration/chaos-cult/card-backside/chaos-cult-backside-portrait.jpg",
+          "hash": "560496b3b1fb66664ed1559dccf1acdee8636a9f5950080176c7c52d039bb93d",
+          "modified": "2026-07-12T18:43:01.907038+00:00"
+        }
+      },
+      "completed": "2026-07-12T18:43:01.914855+00:00",
+      "inputs": {
+        "layers/integration/chaos-cult/artwork/icons/chaos-cult-icon-token.jpg": "dd9ea67d635d0f6361fe85c7f3b3615033cf1f9cbc2962476aa78924d690bda2",
+        "config/defaults/box/card-box-background.jpeg": "2dd1442a7c52ca1d66899333f678d60f48981ce20561ead77c1161d548176036"
+      }
+    },
+    "generate_dice": {
+      "outputs": {
+        "dice-light.jpg": {
+          "path": "output/chaos-cult/dice/chaos-cult-dice-light.jpg",
+          "hash": "e4675d8c4b80fb9cb796e60b75573eb843aecb663e87a6a81ac0fb4b08d75cae",
+          "modified": "2026-07-12T18:43:09.639511+00:00"
+        },
+        "dice-dark.jpg": {
+          "path": "output/chaos-cult/dice/chaos-cult-dice-dark.jpg",
+          "hash": "4261a69c3ef16c141ae6b6bec2c9758c5d6ed14eadbe51fd4f06f0e53b5c33cd",
+          "modified": "2026-07-12T18:43:09.647960+00:00"
+        }
+      },
+      "completed": "2026-07-12T18:43:09.651493+00:00",
+      "inputs": {
+        "layers/integration/chaos-cult/artwork/icons/chaos-cult-icon-token-transparent.png": "ae4baa07f39e39f77c1c2039c249799a94472bbdd682a1b1d1e86f621f8c7edd",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41"
+      }
+    },
+    "generate_box_texture": {
+      "outputs": {
+        "card-box-texture.jpg": {
+          "path": "output/chaos-cult/cardbox/chaos-cult-card-box-texture.jpg",
+          "hash": "e5b3a33b373bf5736843cc6df560353f56534b3070c4e3ccd834fca3e9e8c06a",
+          "modified": "2026-07-12T18:43:09.812474+00:00"
+        },
+        "card-box.obj": {
+          "path": "output/chaos-cult/cardbox/chaos-cult-card-box.obj",
+          "hash": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+          "modified": "2026-07-12T18:43:09.820971+00:00"
+        }
+      },
+      "completed": "2026-07-12T18:43:09.834381+00:00",
+      "inputs": {
+        "layers/integration/chaos-cult/artwork/icons/chaos-cult-icon-token.jpg": "dd9ea67d635d0f6361fe85c7f3b3615033cf1f9cbc2962476aa78924d690bda2",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "config/defaults/box/card-box.obj": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+        "config/defaults/box/card-box-texture.jpg": "b2f310b01a0d28e8806e99ce0b972e8967e3014608eacefcb6ec51597695a313"
+      }
+    },
+    "generate_card_images": {
+      "outputs": {
+        "cards/datacards/blessed-blade-back.jpg": {
+          "path": "output/chaos-cult/cards/datacards/blessed-blade-back.jpg",
+          "hash": "4706bf0697b7842b0005dca726b930b42abd8094899150f1cf326039970f6484",
+          "modified": "2026-07-12T19:08:10.099813+00:00"
+        },
+        "cards/datacards/blessed-blade-front.jpg": {
+          "path": "output/chaos-cult/cards/datacards/blessed-blade-front.jpg",
+          "hash": "0c4e87da45557f7624ab4554812538259637e0c391a3feebea33841d7d66b07b",
+          "modified": "2026-07-12T19:08:10.112403+00:00"
+        },
+        "cards/datacards/chaos-devotee-back.jpg": {
+          "path": "output/chaos-cult/cards/datacards/chaos-devotee-back.jpg",
+          "hash": "4706bf0697b7842b0005dca726b930b42abd8094899150f1cf326039970f6484",
+          "modified": "2026-07-12T19:08:10.123391+00:00"
+        },
+        "cards/datacards/chaos-devotee-front.jpg": {
+          "path": "output/chaos-cult/cards/datacards/chaos-devotee-front.jpg",
+          "hash": "edb1053202183deba3e5f8f77752e4002141b961fc80452b6f12be9718a68756",
+          "modified": "2026-07-12T19:08:10.129034+00:00"
+        },
+        "cards/datacards/chaos-mutant-back.jpg": {
+          "path": "output/chaos-cult/cards/datacards/chaos-mutant-back.jpg",
+          "hash": "4706bf0697b7842b0005dca726b930b42abd8094899150f1cf326039970f6484",
+          "modified": "2026-07-12T19:08:10.139467+00:00"
+        },
+        "cards/datacards/chaos-mutant-front.jpg": {
+          "path": "output/chaos-cult/cards/datacards/chaos-mutant-front.jpg",
+          "hash": "67d79490aa43529828362118a8864dc8c989d7810e1147f7741b186055aaffbf",
+          "modified": "2026-07-12T19:08:10.142906+00:00"
+        },
+        "cards/datacards/chaos-torment-back.jpg": {
+          "path": "output/chaos-cult/cards/datacards/chaos-torment-back.jpg",
+          "hash": "4706bf0697b7842b0005dca726b930b42abd8094899150f1cf326039970f6484",
+          "modified": "2026-07-12T19:08:10.155097+00:00"
+        },
+        "cards/datacards/chaos-torment-front.jpg": {
+          "path": "output/chaos-cult/cards/datacards/chaos-torment-front.jpg",
+          "hash": "57eb905e6899215c475e38171a791924e8406dcb067cf993506dbfcb863eb58d",
+          "modified": "2026-07-12T19:08:10.167916+00:00"
+        },
+        "cards/datacards/cult-demagogue-back.jpg": {
+          "path": "output/chaos-cult/cards/datacards/cult-demagogue-back.jpg",
+          "hash": "4706bf0697b7842b0005dca726b930b42abd8094899150f1cf326039970f6484",
+          "modified": "2026-07-12T19:08:10.176562+00:00"
+        },
+        "cards/datacards/cult-demagogue-front.jpg": {
+          "path": "output/chaos-cult/cards/datacards/cult-demagogue-front.jpg",
+          "hash": "e4f5bde4e40a35a266ecc439231012acde12a4e0cc3ffd7454334ef1582c5bf1",
+          "modified": "2026-07-12T19:08:10.178076+00:00"
+        },
+        "cards/datacards/iconarch-back.jpg": {
+          "path": "output/chaos-cult/cards/datacards/iconarch-back.jpg",
+          "hash": "2c90c8ca769374bde37d95d23af328c8ff7b5d06a7d2da75260233b329f355bc",
+          "modified": "2026-07-12T19:08:10.181173+00:00"
+        },
+        "cards/datacards/iconarch-front.jpg": {
+          "path": "output/chaos-cult/cards/datacards/iconarch-front.jpg",
+          "hash": "efe63fe012353866e02a291ade953880c9a636896cde23c6a3f6da1bb8753a6b",
+          "modified": "2026-07-12T19:08:10.194513+00:00"
+        },
+        "cards/datacards/mindwitch-back.jpg": {
+          "path": "output/chaos-cult/cards/datacards/mindwitch-back.jpg",
+          "hash": "4706bf0697b7842b0005dca726b930b42abd8094899150f1cf326039970f6484",
+          "modified": "2026-07-12T19:08:10.210227+00:00"
+        },
+        "cards/datacards/mindwitch-front.jpg": {
+          "path": "output/chaos-cult/cards/datacards/mindwitch-front.jpg",
+          "hash": "8978e19195dab721d5d4bc1f5a5bfe4f057785ed7a5b17ff9a7dd07a97a049c7",
+          "modified": "2026-07-12T19:08:10.226319+00:00"
+        },
+        "cards/equipment/chaos-cult-baleful-script-back.jpg": {
+          "path": "output/chaos-cult/cards/equipment/chaos-cult-baleful-script-back.jpg",
+          "hash": "560496b3b1fb66664ed1559dccf1acdee8636a9f5950080176c7c52d039bb93d",
+          "modified": "2026-07-12T19:08:10.239206+00:00"
+        },
+        "cards/equipment/chaos-cult-baleful-script-front.jpg": {
+          "path": "output/chaos-cult/cards/equipment/chaos-cult-baleful-script-front.jpg",
+          "hash": "a9699f664fa1b6de91542b8ad05f4d13beb7639f24eaa7b5613aee4544b42725",
+          "modified": "2026-07-12T19:08:10.245432+00:00"
+        },
+        "cards/equipment/chaos-cult-covert-guises-back.jpg": {
+          "path": "output/chaos-cult/cards/equipment/chaos-cult-covert-guises-back.jpg",
+          "hash": "560496b3b1fb66664ed1559dccf1acdee8636a9f5950080176c7c52d039bb93d",
+          "modified": "2026-07-12T19:08:10.254475+00:00"
+        },
+        "cards/equipment/chaos-cult-covert-guises-front.jpg": {
+          "path": "output/chaos-cult/cards/equipment/chaos-cult-covert-guises-front.jpg",
+          "hash": "010616f98760dfa1178b36ebeed48616224215a1f9e8b03b70e80d2647ba74ef",
+          "modified": "2026-07-12T19:08:10.268320+00:00"
+        },
+        "cards/equipment/chaos-cult-unholy-talisman-back.jpg": {
+          "path": "output/chaos-cult/cards/equipment/chaos-cult-unholy-talisman-back.jpg",
+          "hash": "560496b3b1fb66664ed1559dccf1acdee8636a9f5950080176c7c52d039bb93d",
+          "modified": "2026-07-12T19:08:10.673398+00:00"
+        },
+        "cards/equipment/chaos-cult-unholy-talisman-front.jpg": {
+          "path": "output/chaos-cult/cards/equipment/chaos-cult-unholy-talisman-front.jpg",
+          "hash": "0f4adf86982f1f1f8f677fa049000bbdff4a80e63096c90acd41859c7a52cd1a",
+          "modified": "2026-07-12T19:08:11.088866+00:00"
+        },
+        "cards/equipment/chaos-cult-vile-blessing-back.jpg": {
+          "path": "output/chaos-cult/cards/equipment/chaos-cult-vile-blessing-back.jpg",
+          "hash": "560496b3b1fb66664ed1559dccf1acdee8636a9f5950080176c7c52d039bb93d",
+          "modified": "2026-07-12T19:08:11.533370+00:00"
+        },
+        "cards/equipment/chaos-cult-vile-blessing-front.jpg": {
+          "path": "output/chaos-cult/cards/equipment/chaos-cult-vile-blessing-front.jpg",
+          "hash": "80d2c7e25ea5414ac538a6639575269418856755022c0d30dfcc4bcb97b2b7d1",
+          "modified": "2026-07-12T19:08:11.969626+00:00"
+        },
+        "cards/faction_rules/chaos-cult-accursed-gifts-card1-back.jpg": {
+          "path": "output/chaos-cult/cards/faction_rules/chaos-cult-accursed-gifts-card1-back.jpg",
+          "hash": "560496b3b1fb66664ed1559dccf1acdee8636a9f5950080176c7c52d039bb93d",
+          "modified": "2026-07-12T19:08:12.010761+00:00"
+        },
+        "cards/faction_rules/chaos-cult-accursed-gifts-card1-front.jpg": {
+          "path": "output/chaos-cult/cards/faction_rules/chaos-cult-accursed-gifts-card1-front.jpg",
+          "hash": "2da4bdcd0c7ee62d39bbf5bea708b8efef887353c26444c905089adb7ebff8f7",
+          "modified": "2026-07-12T19:08:12.823275+00:00"
+        },
+        "cards/faction_rules/chaos-cult-accursed-gifts-card2-back.jpg": {
+          "path": "output/chaos-cult/cards/faction_rules/chaos-cult-accursed-gifts-card2-back.jpg",
+          "hash": "560496b3b1fb66664ed1559dccf1acdee8636a9f5950080176c7c52d039bb93d",
+          "modified": "2026-07-12T19:08:13.230412+00:00"
+        },
+        "cards/faction_rules/chaos-cult-accursed-gifts-card2-front.jpg": {
+          "path": "output/chaos-cult/cards/faction_rules/chaos-cult-accursed-gifts-card2-front.jpg",
+          "hash": "ac9f970dffdd6042b32ad4555ae05805f18438cd1243a7268dd4ae30f70189c8",
+          "modified": "2026-07-12T19:08:13.636320+00:00"
+        },
+        "cards/faction_rules/chaos-cult-accursed-gifts-card3-back.jpg": {
+          "path": "output/chaos-cult/cards/faction_rules/chaos-cult-accursed-gifts-card3-back.jpg",
+          "hash": "560496b3b1fb66664ed1559dccf1acdee8636a9f5950080176c7c52d039bb93d",
+          "modified": "2026-07-12T19:08:13.953500+00:00"
+        },
+        "cards/faction_rules/chaos-cult-accursed-gifts-card3-front.jpg": {
+          "path": "output/chaos-cult/cards/faction_rules/chaos-cult-accursed-gifts-card3-front.jpg",
+          "hash": "c66825c78ef97286fb943c7912d54ee8a3614899ad7dc4f5f8280ec964b9d796",
+          "modified": "2026-07-12T19:08:14.373136+00:00"
+        },
+        "cards/faction_rules/chaos-cult-accursed-gifts-card4-back.jpg": {
+          "path": "output/chaos-cult/cards/faction_rules/chaos-cult-accursed-gifts-card4-back.jpg",
+          "hash": "560496b3b1fb66664ed1559dccf1acdee8636a9f5950080176c7c52d039bb93d",
+          "modified": "2026-07-12T19:08:14.798165+00:00"
+        },
+        "cards/faction_rules/chaos-cult-accursed-gifts-card4-front.jpg": {
+          "path": "output/chaos-cult/cards/faction_rules/chaos-cult-accursed-gifts-card4-front.jpg",
+          "hash": "7f121da6b026c60b6102427c85a732a351910eb53d6e50419fdb5e796da80b70",
+          "modified": "2026-07-12T19:08:14.863878+00:00"
+        },
+        "cards/faction_rules/chaos-cult-accursed-gifts-card5-back.jpg": {
+          "path": "output/chaos-cult/cards/faction_rules/chaos-cult-accursed-gifts-card5-back.jpg",
+          "hash": "560496b3b1fb66664ed1559dccf1acdee8636a9f5950080176c7c52d039bb93d",
+          "modified": "2026-07-12T19:08:15.207619+00:00"
+        },
+        "cards/faction_rules/chaos-cult-accursed-gifts-card5-front.jpg": {
+          "path": "output/chaos-cult/cards/faction_rules/chaos-cult-accursed-gifts-card5-front.jpg",
+          "hash": "0abf2bb02308ca17e13e1975fa41498f2dcfbb6b08631b183779a726ce43f86c",
+          "modified": "2026-07-12T19:08:15.281372+00:00"
+        },
+        "cards/faction_rules/chaos-cult-accursed-gifts-card6-back.jpg": {
+          "path": "output/chaos-cult/cards/faction_rules/chaos-cult-accursed-gifts-card6-back.jpg",
+          "hash": "560496b3b1fb66664ed1559dccf1acdee8636a9f5950080176c7c52d039bb93d",
+          "modified": "2026-07-12T19:08:15.698824+00:00"
+        },
+        "cards/faction_rules/chaos-cult-accursed-gifts-card6-front.jpg": {
+          "path": "output/chaos-cult/cards/faction_rules/chaos-cult-accursed-gifts-card6-front.jpg",
+          "hash": "9ba7384a7d2401cfb55d602beb54127c8becdba811c53e1d448fbe02fd5dec81",
+          "modified": "2026-07-12T19:08:16.145987+00:00"
+        },
+        "cards/faction_rules/chaos-cult-accursed-gifts-card7-back.jpg": {
+          "path": "output/chaos-cult/cards/faction_rules/chaos-cult-accursed-gifts-card7-back.jpg",
+          "hash": "560496b3b1fb66664ed1559dccf1acdee8636a9f5950080176c7c52d039bb93d",
+          "modified": "2026-07-12T19:08:16.578096+00:00"
+        },
+        "cards/faction_rules/chaos-cult-accursed-gifts-card7-front.jpg": {
+          "path": "output/chaos-cult/cards/faction_rules/chaos-cult-accursed-gifts-card7-front.jpg",
+          "hash": "d69b0781ee8469daffd60744265eb3f3a800a47a15b01e116b14a920998da8ee",
+          "modified": "2026-07-12T19:08:17.039834+00:00"
+        },
+        "cards/faction_rules/chaos-cult-mutation-back.jpg": {
+          "path": "output/chaos-cult/cards/faction_rules/chaos-cult-mutation-back.jpg",
+          "hash": "1c2c4e8b61c60b268dd04b26c5740c336fa679c3aa6d0d27cd7eb29496bbfb62",
+          "modified": "2026-07-12T19:08:18.526768+00:00"
+        },
+        "cards/faction_rules/chaos-cult-mutation-front.jpg": {
+          "path": "output/chaos-cult/cards/faction_rules/chaos-cult-mutation-front.jpg",
+          "hash": "e43419793ac9a3c211bb503de0e763fb326fd51860896627aa217c81bf779296",
+          "modified": "2026-07-12T19:08:19.000706+00:00"
+        },
+        "cards/firefight_ploys/chaos-cult-abhorrent-mutation-back.jpg": {
+          "path": "output/chaos-cult/cards/firefight_ploys/chaos-cult-abhorrent-mutation-back.jpg",
+          "hash": "560496b3b1fb66664ed1559dccf1acdee8636a9f5950080176c7c52d039bb93d",
+          "modified": "2026-07-12T19:08:19.372450+00:00"
+        },
+        "cards/firefight_ploys/chaos-cult-abhorrent-mutation-front.jpg": {
+          "path": "output/chaos-cult/cards/firefight_ploys/chaos-cult-abhorrent-mutation-front.jpg",
+          "hash": "b32b4654aed76c51ff154abc43a5b8800a9805900bd9031b0b073d2790a5564d",
+          "modified": "2026-07-12T19:08:19.826325+00:00"
+        },
+        "cards/firefight_ploys/chaos-cult-faithful-follower-back.jpg": {
+          "path": "output/chaos-cult/cards/firefight_ploys/chaos-cult-faithful-follower-back.jpg",
+          "hash": "560496b3b1fb66664ed1559dccf1acdee8636a9f5950080176c7c52d039bb93d",
+          "modified": "2026-07-12T19:08:19.895330+00:00"
+        },
+        "cards/firefight_ploys/chaos-cult-faithful-follower-front.jpg": {
+          "path": "output/chaos-cult/cards/firefight_ploys/chaos-cult-faithful-follower-front.jpg",
+          "hash": "643cf0dea3e01a46aa2594f7a6d303def9693b4965555122f88a5629b360af00",
+          "modified": "2026-07-12T19:08:20.321062+00:00"
+        },
+        "cards/firefight_ploys/chaos-cult-frenzied-demise-back.jpg": {
+          "path": "output/chaos-cult/cards/firefight_ploys/chaos-cult-frenzied-demise-back.jpg",
+          "hash": "560496b3b1fb66664ed1559dccf1acdee8636a9f5950080176c7c52d039bb93d",
+          "modified": "2026-07-12T19:08:21.067436+00:00"
+        },
+        "cards/firefight_ploys/chaos-cult-frenzied-demise-front.jpg": {
+          "path": "output/chaos-cult/cards/firefight_ploys/chaos-cult-frenzied-demise-front.jpg",
+          "hash": "053ff309b6ed07dfab49012d5531ba87f00f835da1557cd2b90ef185e96013b5",
+          "modified": "2026-07-12T19:08:22.286787+00:00"
+        },
+        "cards/firefight_ploys/chaos-cult-unleash-the-daemon-back.jpg": {
+          "path": "output/chaos-cult/cards/firefight_ploys/chaos-cult-unleash-the-daemon-back.jpg",
+          "hash": "560496b3b1fb66664ed1559dccf1acdee8636a9f5950080176c7c52d039bb93d",
+          "modified": "2026-07-12T19:08:23.090154+00:00"
+        },
+        "cards/firefight_ploys/chaos-cult-unleash-the-daemon-front.jpg": {
+          "path": "output/chaos-cult/cards/firefight_ploys/chaos-cult-unleash-the-daemon-front.jpg",
+          "hash": "2ccf8d71d0bb69025469287ebae1edecdef9093d1aea584424d063e30ce3817d",
+          "modified": "2026-07-12T19:08:25.850846+00:00"
+        },
+        "cards/operatives_selection/chaos-cult-operative-selection-back.jpg": {
+          "path": "output/chaos-cult/cards/operatives_selection/chaos-cult-operative-selection-back.jpg",
+          "hash": "560496b3b1fb66664ed1559dccf1acdee8636a9f5950080176c7c52d039bb93d",
+          "modified": "2026-07-12T19:08:27.050127+00:00"
+        },
+        "cards/operatives_selection/chaos-cult-operative-selection-front.jpg": {
+          "path": "output/chaos-cult/cards/operatives_selection/chaos-cult-operative-selection-front.jpg",
+          "hash": "4136a5d05e30a0bca578845c45b9285046db11387c782efee0e9a4a2e871bad2",
+          "modified": "2026-07-12T19:08:31.033418+00:00"
+        },
+        "cards/strategy_ploys/chaos-cult-creatures-of-nightmare-back.jpg": {
+          "path": "output/chaos-cult/cards/strategy_ploys/chaos-cult-creatures-of-nightmare-back.jpg",
+          "hash": "560496b3b1fb66664ed1559dccf1acdee8636a9f5950080176c7c52d039bb93d",
+          "modified": "2026-07-12T19:08:31.454677+00:00"
+        },
+        "cards/strategy_ploys/chaos-cult-creatures-of-nightmare-front.jpg": {
+          "path": "output/chaos-cult/cards/strategy_ploys/chaos-cult-creatures-of-nightmare-front.jpg",
+          "hash": "8a5a1c8b363300d33cb9f249d75368fc8acedac03598aa9546541975bfbd719b",
+          "modified": "2026-07-12T19:08:33.219284+00:00"
+        },
+        "cards/strategy_ploys/chaos-cult-exaltation-in-pain-back.jpg": {
+          "path": "output/chaos-cult/cards/strategy_ploys/chaos-cult-exaltation-in-pain-back.jpg",
+          "hash": "560496b3b1fb66664ed1559dccf1acdee8636a9f5950080176c7c52d039bb93d",
+          "modified": "2026-07-12T19:08:35.327635+00:00"
+        },
+        "cards/strategy_ploys/chaos-cult-exaltation-in-pain-front.jpg": {
+          "path": "output/chaos-cult/cards/strategy_ploys/chaos-cult-exaltation-in-pain-front.jpg",
+          "hash": "114384001e09bee73934a5c72d5cbe6ca4aec1346bfb3aa988b046a4f159760c",
+          "modified": "2026-07-12T19:08:38.731680+00:00"
+        },
+        "cards/strategy_ploys/chaos-cult-fervent-onslaught-back.jpg": {
+          "path": "output/chaos-cult/cards/strategy_ploys/chaos-cult-fervent-onslaught-back.jpg",
+          "hash": "560496b3b1fb66664ed1559dccf1acdee8636a9f5950080176c7c52d039bb93d",
+          "modified": "2026-07-12T19:08:41.463882+00:00"
+        },
+        "cards/strategy_ploys/chaos-cult-fervent-onslaught-front.jpg": {
+          "path": "output/chaos-cult/cards/strategy_ploys/chaos-cult-fervent-onslaught-front.jpg",
+          "hash": "bfc34d07d3cd95df096c11fc5887b6f293a186c0360cb80c8c65ba5947053e81",
+          "modified": "2026-07-12T19:08:45.731575+00:00"
+        },
+        "cards/strategy_ploys/chaos-cult-sickening-aura-back.jpg": {
+          "path": "output/chaos-cult/cards/strategy_ploys/chaos-cult-sickening-aura-back.jpg",
+          "hash": "560496b3b1fb66664ed1559dccf1acdee8636a9f5950080176c7c52d039bb93d",
+          "modified": "2026-07-12T19:08:48.944196+00:00"
+        },
+        "cards/strategy_ploys/chaos-cult-sickening-aura-front.jpg": {
+          "path": "output/chaos-cult/cards/strategy_ploys/chaos-cult-sickening-aura-front.jpg",
+          "hash": "e85aeacc8dde77de4381a69acba93359d239c699936ea1fe169e01000b5af76f",
+          "modified": "2026-07-12T19:08:50.718368+00:00"
+        },
+        "cards/faction_rules/chaos-cult-accursed-gifts-card8-back.jpg": {
+          "path": "output/chaos-cult/cards/faction_rules/chaos-cult-accursed-gifts-card8-back.jpg",
+          "hash": "7975fcdedfd89ca17ee7142ba2ba4a441b38820a39571a3032e252a7caa5bc02",
+          "modified": "2026-07-12T19:08:17.051639+00:00"
+        },
+        "cards/faction_rules/chaos-cult-accursed-gifts-card8-front.jpg": {
+          "path": "output/chaos-cult/cards/faction_rules/chaos-cult-accursed-gifts-card8-front.jpg",
+          "hash": "b130f3ec3ccb7eedf23eba13d220d2ece2db81a4736684a16e929bf628a7cd0a",
+          "modified": "2026-07-12T19:08:17.928310+00:00"
+        }
+      },
+      "completed": "2026-07-12T19:10:18.287610+00:00",
+      "inputs": {
+        "layers/integration/chaos-cult/manifest.json": "28f3c6d174a3e5ac708b68d86376841f67e79e914b0b8e39758ed28834ccd07d",
+        "layers/integration/chaos-cult/chaos-cult-datacard-blessed-blade.pdf": "dfdf5a989ba17af1e503d515ba8a318e22b22680b9575e8bcc2692ec51e21c36",
+        "layers/integration/chaos-cult/chaos-cult-datacard-chaos-devotee.pdf": "a045bb32d7dea7bc8ceea13ca96726718595367ce980b0eb663c708092a095c4",
+        "layers/integration/chaos-cult/chaos-cult-datacard-chaos-mutant.pdf": "9742813c4013373d0f345a7ea0b1f7c245d2687034624307fe1409084c000f4f",
+        "layers/integration/chaos-cult/chaos-cult-datacard-chaos-torment.pdf": "4401bfb07be077b0922f4aafc01d6eb5fc583d73237f7d856cc6081b3ae46c02",
+        "layers/integration/chaos-cult/chaos-cult-datacard-cult-demagogue.pdf": "9c492876b062f576fe0966d024fc00bd4947dd085809397764c99fef15c61995",
+        "layers/integration/chaos-cult/chaos-cult-datacard-iconarch.pdf": "7a9faabecea9690a7718998d1f74668dea118de3cd4d6de1ffc9a2facb3704f8",
+        "layers/integration/chaos-cult/chaos-cult-datacard-mindwitch.pdf": "9c4df91542cc3aef5d35e8a312861806cea4a5eedfb1498468ffdd0170a46430",
+        "layers/integration/chaos-cult/chaos-cult-equipment-baleful-script.pdf": "74af357ecd1bc2fba299a8f325b6b155943f95592b074c188e33dd4d257ea298",
+        "layers/integration/chaos-cult/chaos-cult-equipment-covert-guises.pdf": "507f3fd3d31c8587d78eecebcf9aa0b5b450cc56dd94db66a132197707751f8d",
+        "layers/integration/chaos-cult/chaos-cult-equipment-unholy-talisman.pdf": "81d1be4aa466982701b598d5fdba2a50c1ae310b6f61a53cebc4462abffbae9e",
+        "layers/integration/chaos-cult/chaos-cult-equipment-vile-blessing.pdf": "151c8769dcc085ea927a32486c89eac6186f3a5dc3d076a11c59fdd5282063f0",
+        "layers/integration/chaos-cult/chaos-cult-faction-rule-accursed-gifts-1.pdf": "200e366e09d9db4ac62cfe8409799d6c399424cc97df9fcc26d8a380e2d8718c",
+        "layers/integration/chaos-cult/chaos-cult-faction-rule-accursed-gifts-2.pdf": "eba6473786f609fa9400cafe5a8c1487771ae6ad94e58a9359a5a4944f7812dd",
+        "layers/integration/chaos-cult/chaos-cult-faction-rule-accursed-gifts-3.pdf": "1881b79407b5733b7317f1e047e9af9851904062b59c5d157d54729b574868d0",
+        "layers/integration/chaos-cult/chaos-cult-faction-rule-accursed-gifts-4.pdf": "ffde1b07e8889e027c1b2b82bb8267ea62f587ed95f36619591dc220e93123a3",
+        "layers/integration/chaos-cult/chaos-cult-faction-rule-accursed-gifts-5.pdf": "aee35c105673177f888fa1ce55f2258956be42759fb63d671a04e53e2aff1e79",
+        "layers/integration/chaos-cult/chaos-cult-faction-rule-accursed-gifts-6.pdf": "f013ae43e3abaa1f5a8164c46566d882e7f31b388e0206f3a92b0e90c4b7cda1",
+        "layers/integration/chaos-cult/chaos-cult-faction-rule-accursed-gifts-7.pdf": "e8e90dce7778fded30b2f9fff759c13376b1ac0819b61198af7f5a3babd7d1bf",
+        "layers/integration/chaos-cult/chaos-cult-faction-rule-mutation.pdf": "6d46639e2a6cf6b8a73a5831d4e28fd9ca43d84bb819445a055b5875cf5f1b62",
+        "layers/integration/chaos-cult/chaos-cult-firefight-ploy-abhorrent-mutation.pdf": "01daa0f6526888988d4898aa528781e33858e31e0d9662baa687646831eb41cd",
+        "layers/integration/chaos-cult/chaos-cult-firefight-ploy-faithful-follower.pdf": "2dcf5a0038c1dadaae703d400a0a7bfa31d6cdd2c6ae1316d2f8315fd718fb80",
+        "layers/integration/chaos-cult/chaos-cult-firefight-ploy-frenzied-demise.pdf": "885810475e838e7c42b5ddf5f5ace183c1373dfd5f08594e0ca86739ae19ba5f",
+        "layers/integration/chaos-cult/chaos-cult-firefight-ploy-unleash-the-daemon.pdf": "649b34032e6d08bffe6a1c83bd0c1614989c6d5c68bc401adf824073e61b0219",
+        "layers/integration/chaos-cult/chaos-cult-operatives-selection-operative-selection.pdf": "efc83077e44f499978b8d5304ad28601659908a2ff7534bd5a6fe6894ce90765",
+        "layers/integration/chaos-cult/chaos-cult-strategy-ploy-creatures-of-nightmare.pdf": "37c6dce07cb556ac328e2f278de6468e633acae826a3a2ad390fb2a9d22f4990",
+        "layers/integration/chaos-cult/chaos-cult-strategy-ploy-exaltation-in-pain.pdf": "edb96ef46cf42280971731ee14d9fffcd0bcf5bef629e9a9b4b0c09fb6495d14",
+        "layers/integration/chaos-cult/chaos-cult-strategy-ploy-fervent-onslaught.pdf": "24f9372ad149b7c14c716155bd3d92cbee98067f794c6aabca620da1edb09600",
+        "layers/integration/chaos-cult/chaos-cult-strategy-ploy-sickening-aura.pdf": "f64bd570d3884bb4b097f78673da9da5d77866379c7e9d002f18beaffefafdb4",
+        "layers/integration/chaos-cult/card-backside/chaos-cult-backside-portrait.jpg": "560496b3b1fb66664ed1559dccf1acdee8636a9f5950080176c7c52d039bb93d",
+        "config/defaults/card-backside/default-backside-portrait.jpg": "f00ff15fa70005b9f804de08519e2e83485d7eaf78dfacea65dcef0eb1a29c22",
+        "layers/integration/chaos-cult/card-backside/chaos-cult-backside-landscape.jpg": "4706bf0697b7842b0005dca726b930b42abd8094899150f1cf326039970f6484",
+        "config/defaults/card-backside/default-backside-landscape.jpg": "1cf5580a1dff0c10adb1a286edad4479c487f3d2d698b0b8be84fe653039fd7e"
+      }
+    },
+    "extract_stats": {
+      "outputs": {
+        "team-data.json": {
+          "path": "output/chaos-cult/data/chaos-cult-team-data.json",
+          "hash": "abd0ace7e15d5447eaf3616b53ab8f46c3e7a4a33081e2c1c0420fc04a220a86",
+          "modified": "2026-07-12T18:45:51.416740+00:00"
+        }
+      },
+      "completed": "2026-07-12T18:45:52.103858+00:00",
+      "inputs": {
+        "layers/integration/chaos-cult/content/chaos-cult-content.json": "abd0ace7e15d5447eaf3616b53ab8f46c3e7a4a33081e2c1c0420fc04a220a86"
+      }
+    },
+    "generate_tts": {
+      "outputs": {
+        "tts_objects/Chaos Cult Box.json": {
+          "path": "output/chaos-cult/tts_objects/Chaos Cult Box.json",
+          "hash": "c0d9ba6b8db075ed68eb56993b0ddf3501c42b047a6e7298482ae3f69d190809",
+          "modified": "2026-07-12T20:56:33.674423+00:00"
+        },
+        "tts_objects/Chaos Cult.json": {
+          "path": "output/chaos-cult/tts_objects/Chaos Cult.json",
+          "hash": "638f94de86184efdee2abca847614dc14cb2295cd11b5001885eceba2aff0617",
+          "modified": "2026-07-12T20:56:33.683690+00:00"
+        }
+      },
+      "completed": "2026-07-12T20:56:33.922072+00:00",
+      "inputs": {
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "config/team-guids.json": "1dea0eaf2c7d1c37c86aba088cdf876f0638d2dcaca162888fea8422c2d5c9db",
+        "output/chaos-cult/cards/datacards/blessed-blade-back.jpg": "4706bf0697b7842b0005dca726b930b42abd8094899150f1cf326039970f6484",
+        "output/chaos-cult/cards/datacards/blessed-blade-front.jpg": "0c4e87da45557f7624ab4554812538259637e0c391a3feebea33841d7d66b07b",
+        "output/chaos-cult/cards/datacards/chaos-devotee-back.jpg": "4706bf0697b7842b0005dca726b930b42abd8094899150f1cf326039970f6484",
+        "output/chaos-cult/cards/datacards/chaos-devotee-front.jpg": "edb1053202183deba3e5f8f77752e4002141b961fc80452b6f12be9718a68756",
+        "output/chaos-cult/cards/datacards/chaos-mutant-back.jpg": "4706bf0697b7842b0005dca726b930b42abd8094899150f1cf326039970f6484",
+        "output/chaos-cult/cards/datacards/chaos-mutant-front.jpg": "67d79490aa43529828362118a8864dc8c989d7810e1147f7741b186055aaffbf",
+        "output/chaos-cult/cards/datacards/chaos-torment-back.jpg": "4706bf0697b7842b0005dca726b930b42abd8094899150f1cf326039970f6484",
+        "output/chaos-cult/cards/datacards/chaos-torment-front.jpg": "57eb905e6899215c475e38171a791924e8406dcb067cf993506dbfcb863eb58d",
+        "output/chaos-cult/cards/datacards/cult-demagogue-back.jpg": "4706bf0697b7842b0005dca726b930b42abd8094899150f1cf326039970f6484",
+        "output/chaos-cult/cards/datacards/cult-demagogue-front.jpg": "e4f5bde4e40a35a266ecc439231012acde12a4e0cc3ffd7454334ef1582c5bf1",
+        "output/chaos-cult/cards/datacards/iconarch-back.jpg": "2c90c8ca769374bde37d95d23af328c8ff7b5d06a7d2da75260233b329f355bc",
+        "output/chaos-cult/cards/datacards/iconarch-front.jpg": "efe63fe012353866e02a291ade953880c9a636896cde23c6a3f6da1bb8753a6b",
+        "output/chaos-cult/cards/datacards/mindwitch-back.jpg": "4706bf0697b7842b0005dca726b930b42abd8094899150f1cf326039970f6484",
+        "output/chaos-cult/cards/datacards/mindwitch-front.jpg": "8978e19195dab721d5d4bc1f5a5bfe4f057785ed7a5b17ff9a7dd07a97a049c7",
+        "output/chaos-cult/cards/equipment/chaos-cult-baleful-script-back.jpg": "560496b3b1fb66664ed1559dccf1acdee8636a9f5950080176c7c52d039bb93d",
+        "output/chaos-cult/cards/equipment/chaos-cult-baleful-script-front.jpg": "a9699f664fa1b6de91542b8ad05f4d13beb7639f24eaa7b5613aee4544b42725",
+        "output/chaos-cult/cards/equipment/chaos-cult-covert-guises-back.jpg": "560496b3b1fb66664ed1559dccf1acdee8636a9f5950080176c7c52d039bb93d",
+        "output/chaos-cult/cards/equipment/chaos-cult-covert-guises-front.jpg": "010616f98760dfa1178b36ebeed48616224215a1f9e8b03b70e80d2647ba74ef",
+        "output/chaos-cult/cards/equipment/chaos-cult-unholy-talisman-back.jpg": "560496b3b1fb66664ed1559dccf1acdee8636a9f5950080176c7c52d039bb93d",
+        "output/chaos-cult/cards/equipment/chaos-cult-unholy-talisman-front.jpg": "0f4adf86982f1f1f8f677fa049000bbdff4a80e63096c90acd41859c7a52cd1a",
+        "output/chaos-cult/cards/equipment/chaos-cult-vile-blessing-back.jpg": "560496b3b1fb66664ed1559dccf1acdee8636a9f5950080176c7c52d039bb93d",
+        "output/chaos-cult/cards/equipment/chaos-cult-vile-blessing-front.jpg": "80d2c7e25ea5414ac538a6639575269418856755022c0d30dfcc4bcb97b2b7d1",
+        "output/chaos-cult/cards/faction_rules/chaos-cult-accursed-gifts-card1-back.jpg": "560496b3b1fb66664ed1559dccf1acdee8636a9f5950080176c7c52d039bb93d",
+        "output/chaos-cult/cards/faction_rules/chaos-cult-accursed-gifts-card1-front.jpg": "2da4bdcd0c7ee62d39bbf5bea708b8efef887353c26444c905089adb7ebff8f7",
+        "output/chaos-cult/cards/faction_rules/chaos-cult-accursed-gifts-card2-back.jpg": "560496b3b1fb66664ed1559dccf1acdee8636a9f5950080176c7c52d039bb93d",
+        "output/chaos-cult/cards/faction_rules/chaos-cult-accursed-gifts-card2-front.jpg": "ac9f970dffdd6042b32ad4555ae05805f18438cd1243a7268dd4ae30f70189c8",
+        "output/chaos-cult/cards/faction_rules/chaos-cult-accursed-gifts-card3-back.jpg": "560496b3b1fb66664ed1559dccf1acdee8636a9f5950080176c7c52d039bb93d",
+        "output/chaos-cult/cards/faction_rules/chaos-cult-accursed-gifts-card3-front.jpg": "c66825c78ef97286fb943c7912d54ee8a3614899ad7dc4f5f8280ec964b9d796",
+        "output/chaos-cult/cards/faction_rules/chaos-cult-accursed-gifts-card4-back.jpg": "560496b3b1fb66664ed1559dccf1acdee8636a9f5950080176c7c52d039bb93d",
+        "output/chaos-cult/cards/faction_rules/chaos-cult-accursed-gifts-card4-front.jpg": "7f121da6b026c60b6102427c85a732a351910eb53d6e50419fdb5e796da80b70",
+        "output/chaos-cult/cards/faction_rules/chaos-cult-accursed-gifts-card5-back.jpg": "560496b3b1fb66664ed1559dccf1acdee8636a9f5950080176c7c52d039bb93d",
+        "output/chaos-cult/cards/faction_rules/chaos-cult-accursed-gifts-card5-front.jpg": "0abf2bb02308ca17e13e1975fa41498f2dcfbb6b08631b183779a726ce43f86c",
+        "output/chaos-cult/cards/faction_rules/chaos-cult-accursed-gifts-card6-back.jpg": "560496b3b1fb66664ed1559dccf1acdee8636a9f5950080176c7c52d039bb93d",
+        "output/chaos-cult/cards/faction_rules/chaos-cult-accursed-gifts-card6-front.jpg": "9ba7384a7d2401cfb55d602beb54127c8becdba811c53e1d448fbe02fd5dec81",
+        "output/chaos-cult/cards/faction_rules/chaos-cult-accursed-gifts-card7-back.jpg": "560496b3b1fb66664ed1559dccf1acdee8636a9f5950080176c7c52d039bb93d",
+        "output/chaos-cult/cards/faction_rules/chaos-cult-accursed-gifts-card7-front.jpg": "d69b0781ee8469daffd60744265eb3f3a800a47a15b01e116b14a920998da8ee",
+        "output/chaos-cult/cards/faction_rules/chaos-cult-accursed-gifts-card8-back.jpg": "7975fcdedfd89ca17ee7142ba2ba4a441b38820a39571a3032e252a7caa5bc02",
+        "output/chaos-cult/cards/faction_rules/chaos-cult-accursed-gifts-card8-front.jpg": "b130f3ec3ccb7eedf23eba13d220d2ece2db81a4736684a16e929bf628a7cd0a",
+        "output/chaos-cult/cards/faction_rules/chaos-cult-mutation-back.jpg": "1c2c4e8b61c60b268dd04b26c5740c336fa679c3aa6d0d27cd7eb29496bbfb62",
+        "output/chaos-cult/cards/faction_rules/chaos-cult-mutation-front.jpg": "e43419793ac9a3c211bb503de0e763fb326fd51860896627aa217c81bf779296",
+        "output/chaos-cult/cards/firefight_ploys/chaos-cult-abhorrent-mutation-back.jpg": "560496b3b1fb66664ed1559dccf1acdee8636a9f5950080176c7c52d039bb93d",
+        "output/chaos-cult/cards/firefight_ploys/chaos-cult-abhorrent-mutation-front.jpg": "b32b4654aed76c51ff154abc43a5b8800a9805900bd9031b0b073d2790a5564d",
+        "output/chaos-cult/cards/firefight_ploys/chaos-cult-faithful-follower-back.jpg": "560496b3b1fb66664ed1559dccf1acdee8636a9f5950080176c7c52d039bb93d",
+        "output/chaos-cult/cards/firefight_ploys/chaos-cult-faithful-follower-front.jpg": "643cf0dea3e01a46aa2594f7a6d303def9693b4965555122f88a5629b360af00",
+        "output/chaos-cult/cards/firefight_ploys/chaos-cult-frenzied-demise-back.jpg": "560496b3b1fb66664ed1559dccf1acdee8636a9f5950080176c7c52d039bb93d",
+        "output/chaos-cult/cards/firefight_ploys/chaos-cult-frenzied-demise-front.jpg": "053ff309b6ed07dfab49012d5531ba87f00f835da1557cd2b90ef185e96013b5",
+        "output/chaos-cult/cards/firefight_ploys/chaos-cult-unleash-the-daemon-back.jpg": "560496b3b1fb66664ed1559dccf1acdee8636a9f5950080176c7c52d039bb93d",
+        "output/chaos-cult/cards/firefight_ploys/chaos-cult-unleash-the-daemon-front.jpg": "2ccf8d71d0bb69025469287ebae1edecdef9093d1aea584424d063e30ce3817d",
+        "output/chaos-cult/cards/operatives_selection/chaos-cult-operative-selection-back.jpg": "560496b3b1fb66664ed1559dccf1acdee8636a9f5950080176c7c52d039bb93d",
+        "output/chaos-cult/cards/operatives_selection/chaos-cult-operative-selection-front.jpg": "4136a5d05e30a0bca578845c45b9285046db11387c782efee0e9a4a2e871bad2",
+        "output/chaos-cult/cards/strategy_ploys/chaos-cult-creatures-of-nightmare-back.jpg": "560496b3b1fb66664ed1559dccf1acdee8636a9f5950080176c7c52d039bb93d",
+        "output/chaos-cult/cards/strategy_ploys/chaos-cult-creatures-of-nightmare-front.jpg": "8a5a1c8b363300d33cb9f249d75368fc8acedac03598aa9546541975bfbd719b",
+        "output/chaos-cult/cards/strategy_ploys/chaos-cult-exaltation-in-pain-back.jpg": "560496b3b1fb66664ed1559dccf1acdee8636a9f5950080176c7c52d039bb93d",
+        "output/chaos-cult/cards/strategy_ploys/chaos-cult-exaltation-in-pain-front.jpg": "114384001e09bee73934a5c72d5cbe6ca4aec1346bfb3aa988b046a4f159760c",
+        "output/chaos-cult/cards/strategy_ploys/chaos-cult-fervent-onslaught-back.jpg": "560496b3b1fb66664ed1559dccf1acdee8636a9f5950080176c7c52d039bb93d",
+        "output/chaos-cult/cards/strategy_ploys/chaos-cult-fervent-onslaught-front.jpg": "bfc34d07d3cd95df096c11fc5887b6f293a186c0360cb80c8c65ba5947053e81",
+        "output/chaos-cult/cards/strategy_ploys/chaos-cult-sickening-aura-back.jpg": "560496b3b1fb66664ed1559dccf1acdee8636a9f5950080176c7c52d039bb93d",
+        "output/chaos-cult/cards/strategy_ploys/chaos-cult-sickening-aura-front.jpg": "e85aeacc8dde77de4381a69acba93359d239c699936ea1fe169e01000b5af76f",
+        "output/chaos-cult/cardbox/chaos-cult-card-box-texture.jpg": "e5b3a33b373bf5736843cc6df560353f56534b3070c4e3ccd834fca3e9e8c06a",
+        "output/chaos-cult/cardbox/chaos-cult-card-box.obj": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+        "output/chaos-cult/dice/chaos-cult-dice-dark.jpg": "4261a69c3ef16c141ae6b6bec2c9758c5d6ed14eadbe51fd4f06f0e53b5c33cd",
+        "output/chaos-cult/dice/chaos-cult-dice-light.jpg": "e4675d8c4b80fb9cb796e60b75573eb843aecb663e87a6a81ac0fb4b08d75cae",
+        "output/chaos-cult/data/chaos-cult-team-data.json": "abd0ace7e15d5447eaf3616b53ab8f46c3e7a4a33081e2c1c0420fc04a220a86",
+        "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
+        "config/defaults/tts-script/datacard-load-stats.lua": "2d5f4088c2ff09f54988cf8722080f536b4e1b998cc2b4c1f1ea94e6b18eb92e",
+        "config/defaults/tts-script/display-table-manager-script.lua": "0dab4381078d90802f25e2cc825bc3658be35ee13ab3e98831c9d248c2526689",
+        "config/defaults/tts-script/faction-rule-chapter-tactics.lua": "c906742268076fb91f7cb4a92c6b588e1122ccddb692688f635c8dd4f7110ad0",
+        "config/defaults/tts-script/intermediate-updater.lua": "1a2d6dbc1a8c9c57ba6a3e7a3d4bc4b7a38a6c242a93f6ef3dae698123384d35",
+        "config/defaults/tts-script/single-object-updater.lua": "3613b85169e986a8e50ebe221482079e27c18037e3f48920aa0f7e138c0ccacc",
+        "config/defaults/tts-script/team-spawner-clean-script.lua": "12457bff3961eee2293c42d81cf4f4eb8b103177245a1ab8b46fd65da40672a2",
+        "config/defaults/tts-script/team-spawner-script.lua": "a51ff45c8622923db909fb465781801511f235412f099f83dff728d4027650db",
+        "config/defaults/tts-script/tts-update-rules-in-box-script.lua": "84f7f9b260f4e4968d208953b534bdbb7ab0b2f475e13264a2407f6c4d4d2b03",
+        "config/defaults/tts-image/default-icon.png": "892aff2628b9685c813e77be05c66afc1dc4247bc1dc9ce6fe54f006c2608271",
+        "config/defaults/tts-image/spawner-token.png": "61903b093f01d834f5e4c4c069b1353ecf7d29f012fef914b3027266816d8a6b",
+        "config/defaults/tts-token/square-bag-mesh.obj": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+        "config/defaults/tts-token/template-diamond-cutter.png": "719f57ba2b86494be454a6d3d25d8567dde974a915f3dde5ddc0e2d8dafaa1a5",
+        "config/defaults/tts-token/template-octagon-cutter.png": "944632aeacab978293ae57758b63086166c5fbaf3b845f48b3dd61db67d5c076",
+        "config/defaults/tts-token/template-operative-cutter.png": "0e698ddd403d7f0e84f200eb42af73f5249a9c5539d773298ff4c700ac9fe153",
+        "config/defaults/tts-token/template-round-cutter.png": "6564e1451c9a135a1c756fd94cde1c71e373e3fa677b51bba9d4bbe9e795d544",
+        "config/defaults/tts-token/token-bag-script.lua": "1659887e0fbfb9e3ebbc1aa5f3df8e1ffd89ee192be24d2dd1f02fcb0407e486",
+        "config/defaults/tts-token/token-bg-sample.png": "f9f90664c7f1c877c6f050f6e85babde6523cdc0aed9c77de8c09214f44ee109",
+        "config/defaults/tts-token/token-mesh.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc"
+      }
+    },
+    "front_end": {
+      "outputs": {},
+      "sources": {
+        "firefight-ploys": {
+          "hash": "237918b17c1b3a79818d148d79404ab4303ab128787d8e79abdf342f2986284b",
+          "outputs": [
+            "layers/kt-app/extracted/chaos-cult/cards/firefight-ploys/chaos-cult-firefight-ploys-page_0.pdf",
+            "layers/kt-app/extracted/chaos-cult/cards/firefight-ploys/chaos-cult-firefight-ploys-page_1.pdf",
+            "layers/kt-app/extracted/chaos-cult/cards/firefight-ploys/chaos-cult-firefight-ploys-page_2.pdf",
+            "layers/kt-app/extracted/chaos-cult/cards/firefight-ploys/chaos-cult-firefight-ploys-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:02:22.355405+00:00"
+        },
+        "equipment": {
+          "hash": "cb6ea4fb83989a3001ac26dd6178a1ef9c6b23b6f6ab5c05791102b7292d7751",
+          "outputs": [
+            "layers/kt-app/extracted/chaos-cult/cards/equipment/chaos-cult-equipment-page_0.pdf",
+            "layers/kt-app/extracted/chaos-cult/cards/equipment/chaos-cult-equipment-page_1.pdf",
+            "layers/kt-app/extracted/chaos-cult/cards/equipment/chaos-cult-equipment-page_2.pdf",
+            "layers/kt-app/extracted/chaos-cult/cards/equipment/chaos-cult-equipment-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:02:34.160002+00:00"
+        },
+        "faction-rules": {
+          "hash": "a8f35911e92639fbccea419196be12624f085aedf4fce90e8ceba99ad4996a79",
+          "outputs": [
+            "layers/kt-app/extracted/chaos-cult/cards/faction-rules/chaos-cult-faction-rules-page_0.pdf",
+            "layers/kt-app/extracted/chaos-cult/cards/faction-rules/chaos-cult-faction-rules-page_1.pdf",
+            "layers/kt-app/extracted/chaos-cult/cards/faction-rules/chaos-cult-faction-rules-page_2.pdf",
+            "layers/kt-app/extracted/chaos-cult/cards/faction-rules/chaos-cult-faction-rules-page_3.pdf",
+            "layers/kt-app/extracted/chaos-cult/cards/faction-rules/chaos-cult-faction-rules-page_4.pdf",
+            "layers/kt-app/extracted/chaos-cult/cards/faction-rules/chaos-cult-faction-rules-page_5.pdf",
+            "layers/kt-app/extracted/chaos-cult/cards/faction-rules/chaos-cult-faction-rules-page_6.pdf",
+            "layers/kt-app/extracted/chaos-cult/cards/faction-rules/chaos-cult-faction-rules-page_7.pdf",
+            "layers/kt-app/extracted/chaos-cult/cards/faction-rules/chaos-cult-faction-rules-page_8.pdf"
+          ],
+          "modified": "2026-07-06T16:05:13.215987+00:00"
+        },
+        "strategy-ploys": {
+          "hash": "9a7a7e425e9e167393de2c8864fd6ae3f736d66775256c515073c371f67dbb4e",
+          "outputs": [
+            "layers/kt-app/extracted/chaos-cult/cards/strategy-ploys/chaos-cult-strategy-ploys-page_0.pdf",
+            "layers/kt-app/extracted/chaos-cult/cards/strategy-ploys/chaos-cult-strategy-ploys-page_1.pdf",
+            "layers/kt-app/extracted/chaos-cult/cards/strategy-ploys/chaos-cult-strategy-ploys-page_2.pdf",
+            "layers/kt-app/extracted/chaos-cult/cards/strategy-ploys/chaos-cult-strategy-ploys-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:05:16.598696+00:00"
+        },
+        "datacards": {
+          "hash": "e6377e3cc90f5863e87d986524b02fe870b8808fc5c8de58dbc556c84bc28e24",
+          "outputs": [
+            "layers/kt-app/extracted/chaos-cult/cards/datacards/chaos-cult-datacards-page_0.pdf",
+            "layers/kt-app/extracted/chaos-cult/cards/datacards/chaos-cult-datacards-page_1.pdf",
+            "layers/kt-app/extracted/chaos-cult/cards/datacards/chaos-cult-datacards-page_2.pdf",
+            "layers/kt-app/extracted/chaos-cult/cards/datacards/chaos-cult-datacards-page_3.pdf",
+            "layers/kt-app/extracted/chaos-cult/cards/datacards/chaos-cult-datacards-page_4.pdf",
+            "layers/kt-app/extracted/chaos-cult/cards/datacards/chaos-cult-datacards-page_5.pdf",
+            "layers/kt-app/extracted/chaos-cult/cards/datacards/chaos-cult-datacards-page_6.pdf",
+            "layers/kt-app/extracted/chaos-cult/cards/datacards/chaos-cult-datacards-page_7.pdf"
+          ],
+          "modified": "2026-07-06T16:09:08.463871+00:00"
+        },
+        "operatives-selection": {
+          "hash": "57130bcc9e55724ecda9364ca8bf8517ffb9d171232324f622bd562eea240fb2",
+          "outputs": [
+            "layers/kt-app/extracted/chaos-cult/cards/operatives-selection/chaos-cult-operatives-selection-page_0.pdf"
+          ],
+          "modified": "2026-07-06T16:10:33.128388+00:00"
+        },
+        "cards": {
+          "hash": "b49e5052284432c3d7b4fff28e69a9d26e61c1241770b8493f0f8fdf1be2f6e6",
+          "outputs": [
+            "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page01_card1_landscape.pdf",
+            "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page01_card2_landscape.pdf",
+            "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page01_card3_landscape.pdf",
+            "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page01_card4_landscape.pdf",
+            "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page02_card1_landscape.pdf",
+            "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page02_card2_landscape.pdf",
+            "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page02_card3_landscape.pdf",
+            "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page02_card4_landscape.pdf",
+            "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page03_card1_portrait.pdf",
+            "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page03_card2_portrait.pdf",
+            "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page03_card3_portrait.pdf",
+            "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page03_card4_portrait.pdf",
+            "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page04_card1_portrait.pdf",
+            "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page04_card2_portrait.pdf",
+            "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page04_card3_portrait.pdf",
+            "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page04_card4_portrait.pdf",
+            "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page05_card1_portrait.pdf",
+            "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page05_card2_portrait.pdf",
+            "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page05_card3_portrait.pdf",
+            "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page05_card4_portrait.pdf",
+            "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page06_card1_portrait.pdf",
+            "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page06_card2_portrait.pdf",
+            "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page06_card3_portrait.pdf",
+            "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page06_card4_portrait.pdf",
+            "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page07_card1_portrait.pdf",
+            "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page07_card2_portrait.pdf",
+            "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page07_card3_portrait.pdf",
+            "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page07_card4_portrait.pdf",
+            "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page08_card1_portrait.pdf",
+            "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page08_card2_portrait.pdf",
+            "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page08_card3_portrait.pdf",
+            "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page08_card4_portrait.pdf"
+          ],
+          "modified": "2026-07-08T18:57:45.061315+00:00"
+        }
+      },
+      "completed": "2026-07-08T18:57:45.061373+00:00"
+    },
+    "build_structure": {
+      "outputs": {
+        "structure": {
+          "path": "layers/warcom/structure/chaos-cult-structure.json",
+          "hash": "28f3c6d174a3e5ac708b68d86376841f67e79e914b0b8e39758ed28834ccd07d",
+          "modified": "2026-07-12T18:42:01.610161+00:00"
+        }
+      },
+      "inputs": {
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page01_card1_landscape.pdf": "979c3ae21c46d7603b2faf545e1b1c1866510a9277521b03a287ba4c92bb81ad",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page01_card2_landscape.pdf": "4f95e725807074695dcff9be530a6640f7d78111b10acccb6314fc663f9553a5",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page01_card3_landscape.pdf": "8cd911c2dc0410ac3ef3fff7fe0cd5f7320620a95e7d0f17410c00baa16ba3c6",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page01_card4_landscape.pdf": "64f499ed636a5aeca11fe3bc8b14b9523873639b129f224eb861301a51ea52b4",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page02_card1_landscape.pdf": "958597326506e45b9e5afccb4569f2604cdcca6b4109e2c6016d9e872c506bca",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page02_card2_landscape.pdf": "f55939b6266ed0e7a47401fd02e4a6ee24a106b47e2bfceb675e2bf017a42bfc",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page02_card3_landscape.pdf": "0beca402f9929a0ae823f284b3510812918ddc0c9363b5b188cc5f42a90f8a04",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page02_card4_landscape.pdf": "e964abe9e15dae39afe046e4c0fcd29bce598b8fa6f1481d956e6863c7f2bd8a",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page03_card1_portrait.pdf": "11fcaa714e9bf4334bedda21f2b7f9a25cd63f9659019d5d8a38dc4b12907f06",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page03_card2_portrait.pdf": "46ce3af97d83e771d339295527581f024cd35d95dfc59794cfbf9fda404597e6",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page03_card3_portrait.pdf": "5ab3846d68c01b493353b049080a2aad81b9fc5ec70ae670c9bd75f222e88e6e",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page03_card4_portrait.pdf": "91793af05ee73901c735a265350e09c54aeed4b282c66169fec04df49c61057d",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page04_card1_portrait.pdf": "1a39a6f165a2f82feaf5e6c511055981b1a78675a8aca6f6c9646a2bfec13629",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page04_card2_portrait.pdf": "e2235e59c4c3595e7bbdbc66cf910a071cddd8fceabbc592197d16efb0f8696d",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page04_card3_portrait.pdf": "c185adc10b03f586f58b746ba6a80b72b1ff20fe43178964eaa1fd982eeb20b6",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page04_card4_portrait.pdf": "b840f7214645aa27f2fde7d01d5a427e5b07e2c265d6db0c81e5ceb2944a791d",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page05_card1_portrait.pdf": "dc426e65a29d4b528c8e5199091dfa2dc2ed0e2a1bbce05a8af08689aabed7b8",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page05_card2_portrait.pdf": "100a03cfccdf7a56f46e963acb3e38f18fcf0e5e5cea4deb34a5cd920dc3f4be",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page05_card3_portrait.pdf": "5c82e4ba43b8d64f86ef83fff5851fa66067f6ea6b4bcd5538d58e19351b6716",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page05_card4_portrait.pdf": "065f5b1c1fbe506f278613a46545578f4653265829a916f9388d26ab47204172",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page06_card1_portrait.pdf": "db414ae31f3161ca46c3c42bd98c35e22d8f07bd70c268ade7d0e7d331af0218",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page06_card2_portrait.pdf": "a519049edced77fe6991d122378e10e39b4370323c3b710a3e7471cc69326a19",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page06_card3_portrait.pdf": "fca27d4913cf1537fb23da8486c3c343cf9b7936c08e6c15686ae8895b254575",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page06_card4_portrait.pdf": "bcc714e856fc0a8c47c67fc935171b5e11e38fed26f016ba4d5ff7f85b5dbe63",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page07_card1_portrait.pdf": "02a9f15b639bde1cf3fb6ee27ef4b1faa4b03a7c71b838065049b91964df06bf",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page07_card2_portrait.pdf": "56cb04b6f7ac73e5be2c2b787b4a8d597316e8db6288eca4c53f3ff7e3c6bd59",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page07_card3_portrait.pdf": "9d0268e4f4aa484a7e5b3f3af20d3aa9c3346a50533006e41bec58e3d272c87e",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page07_card4_portrait.pdf": "a14374c73233622b1f79b00a8dd526cbb16bd1c6949b2f575878af6cb75d60f4",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page08_card1_portrait.pdf": "5e83a0c30ffd5b44dc2c8e7bb41fcbda7629df9a456cf269167aa473f92c6a0f",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page08_card2_portrait.pdf": "dc09d80963599c69697c7a39fc9fa119a49dcd9d5fca3a7c2ab077f459673c68",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page08_card3_portrait.pdf": "492c6f8c5057363891082ce93da56a6065e5411c1848fba629d7172ce13d43fc",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page08_card4_portrait.pdf": "f85a563655d44eb26d0ac599dba2552f21ba064e9b4ef5d7115278c393669a41"
+      },
+      "completed": "2026-07-12T18:42:01.957457+00:00"
+    },
+    "integrate_classified": {
+      "outputs": {
+        "manifest.json": {
+          "path": "layers/integration/chaos-cult/manifest.json",
+          "hash": "28f3c6d174a3e5ac708b68d86376841f67e79e914b0b8e39758ed28834ccd07d",
+          "modified": "2026-07-12T19:06:35.552838+00:00"
+        },
+        "chaos-cult-datacard-cult-demagogue.pdf": {
+          "path": "layers/integration/chaos-cult/chaos-cult-datacard-cult-demagogue.pdf",
+          "hash": "9c492876b062f576fe0966d024fc00bd4947dd085809397764c99fef15c61995",
+          "modified": "2026-07-12T19:06:35.705257+00:00"
+        },
+        "chaos-cult-datacard-blessed-blade.pdf": {
+          "path": "layers/integration/chaos-cult/chaos-cult-datacard-blessed-blade.pdf",
+          "hash": "dfdf5a989ba17af1e503d515ba8a318e22b22680b9575e8bcc2692ec51e21c36",
+          "modified": "2026-07-12T19:06:35.901522+00:00"
+        },
+        "chaos-cult-datacard-iconarch.pdf": {
+          "path": "layers/integration/chaos-cult/chaos-cult-datacard-iconarch.pdf",
+          "hash": "7a9faabecea9690a7718998d1f74668dea118de3cd4d6de1ffc9a2facb3704f8",
+          "modified": "2026-07-12T19:06:36.077897+00:00"
+        },
+        "chaos-cult-datacard-mindwitch.pdf": {
+          "path": "layers/integration/chaos-cult/chaos-cult-datacard-mindwitch.pdf",
+          "hash": "9c4df91542cc3aef5d35e8a312861806cea4a5eedfb1498468ffdd0170a46430",
+          "modified": "2026-07-12T19:06:36.142806+00:00"
+        },
+        "chaos-cult-datacard-chaos-devotee.pdf": {
+          "path": "layers/integration/chaos-cult/chaos-cult-datacard-chaos-devotee.pdf",
+          "hash": "a045bb32d7dea7bc8ceea13ca96726718595367ce980b0eb663c708092a095c4",
+          "modified": "2026-07-12T19:06:36.188610+00:00"
+        },
+        "chaos-cult-datacard-chaos-mutant.pdf": {
+          "path": "layers/integration/chaos-cult/chaos-cult-datacard-chaos-mutant.pdf",
+          "hash": "9742813c4013373d0f345a7ea0b1f7c245d2687034624307fe1409084c000f4f",
+          "modified": "2026-07-12T19:06:36.224408+00:00"
+        },
+        "chaos-cult-datacard-chaos-torment.pdf": {
+          "path": "layers/integration/chaos-cult/chaos-cult-datacard-chaos-torment.pdf",
+          "hash": "4401bfb07be077b0922f4aafc01d6eb5fc583d73237f7d856cc6081b3ae46c02",
+          "modified": "2026-07-12T19:06:36.251951+00:00"
+        },
+        "chaos-cult-equipment-baleful-script.pdf": {
+          "path": "layers/integration/chaos-cult/chaos-cult-equipment-baleful-script.pdf",
+          "hash": "74af357ecd1bc2fba299a8f325b6b155943f95592b074c188e33dd4d257ea298",
+          "modified": "2026-07-12T19:06:36.289132+00:00"
+        },
+        "chaos-cult-equipment-covert-guises.pdf": {
+          "path": "layers/integration/chaos-cult/chaos-cult-equipment-covert-guises.pdf",
+          "hash": "507f3fd3d31c8587d78eecebcf9aa0b5b450cc56dd94db66a132197707751f8d",
+          "modified": "2026-07-12T19:06:36.328084+00:00"
+        },
+        "chaos-cult-equipment-unholy-talisman.pdf": {
+          "path": "layers/integration/chaos-cult/chaos-cult-equipment-unholy-talisman.pdf",
+          "hash": "81d1be4aa466982701b598d5fdba2a50c1ae310b6f61a53cebc4462abffbae9e",
+          "modified": "2026-07-12T19:06:36.391283+00:00"
+        },
+        "chaos-cult-equipment-vile-blessing.pdf": {
+          "path": "layers/integration/chaos-cult/chaos-cult-equipment-vile-blessing.pdf",
+          "hash": "151c8769dcc085ea927a32486c89eac6186f3a5dc3d076a11c59fdd5282063f0",
+          "modified": "2026-07-12T19:06:36.433503+00:00"
+        },
+        "chaos-cult-faction-rule-accursed-gifts-1.pdf": {
+          "path": "layers/integration/chaos-cult/chaos-cult-faction-rule-accursed-gifts-1.pdf",
+          "hash": "200e366e09d9db4ac62cfe8409799d6c399424cc97df9fcc26d8a380e2d8718c",
+          "modified": "2026-07-12T19:06:36.451102+00:00"
+        },
+        "chaos-cult-faction-rule-accursed-gifts-2.pdf": {
+          "path": "layers/integration/chaos-cult/chaos-cult-faction-rule-accursed-gifts-2.pdf",
+          "hash": "eba6473786f609fa9400cafe5a8c1487771ae6ad94e58a9359a5a4944f7812dd",
+          "modified": "2026-07-12T19:06:36.462953+00:00"
+        },
+        "chaos-cult-faction-rule-accursed-gifts-3.pdf": {
+          "path": "layers/integration/chaos-cult/chaos-cult-faction-rule-accursed-gifts-3.pdf",
+          "hash": "1881b79407b5733b7317f1e047e9af9851904062b59c5d157d54729b574868d0",
+          "modified": "2026-07-12T19:06:36.472287+00:00"
+        },
+        "chaos-cult-faction-rule-accursed-gifts-4.pdf": {
+          "path": "layers/integration/chaos-cult/chaos-cult-faction-rule-accursed-gifts-4.pdf",
+          "hash": "ffde1b07e8889e027c1b2b82bb8267ea62f587ed95f36619591dc220e93123a3",
+          "modified": "2026-07-12T19:06:36.481156+00:00"
+        },
+        "chaos-cult-faction-rule-accursed-gifts-5.pdf": {
+          "path": "layers/integration/chaos-cult/chaos-cult-faction-rule-accursed-gifts-5.pdf",
+          "hash": "aee35c105673177f888fa1ce55f2258956be42759fb63d671a04e53e2aff1e79",
+          "modified": "2026-07-12T19:06:36.490391+00:00"
+        },
+        "chaos-cult-faction-rule-accursed-gifts-6.pdf": {
+          "path": "layers/integration/chaos-cult/chaos-cult-faction-rule-accursed-gifts-6.pdf",
+          "hash": "f013ae43e3abaa1f5a8164c46566d882e7f31b388e0206f3a92b0e90c4b7cda1",
+          "modified": "2026-07-12T19:06:36.499242+00:00"
+        },
+        "chaos-cult-faction-rule-accursed-gifts-7.pdf": {
+          "path": "layers/integration/chaos-cult/chaos-cult-faction-rule-accursed-gifts-7.pdf",
+          "hash": "e8e90dce7778fded30b2f9fff759c13376b1ac0819b61198af7f5a3babd7d1bf",
+          "modified": "2026-07-12T19:06:36.508140+00:00"
+        },
+        "chaos-cult-faction-rule-mutation.pdf": {
+          "path": "layers/integration/chaos-cult/chaos-cult-faction-rule-mutation.pdf",
+          "hash": "6d46639e2a6cf6b8a73a5831d4e28fd9ca43d84bb819445a055b5875cf5f1b62",
+          "modified": "2026-07-12T19:06:36.517824+00:00"
+        },
+        "chaos-cult-firefight-ploy-faithful-follower.pdf": {
+          "path": "layers/integration/chaos-cult/chaos-cult-firefight-ploy-faithful-follower.pdf",
+          "hash": "2dcf5a0038c1dadaae703d400a0a7bfa31d6cdd2c6ae1316d2f8315fd718fb80",
+          "modified": "2026-07-12T19:06:36.527051+00:00"
+        },
+        "chaos-cult-firefight-ploy-abhorrent-mutation.pdf": {
+          "path": "layers/integration/chaos-cult/chaos-cult-firefight-ploy-abhorrent-mutation.pdf",
+          "hash": "01daa0f6526888988d4898aa528781e33858e31e0d9662baa687646831eb41cd",
+          "modified": "2026-07-12T19:06:36.535775+00:00"
+        },
+        "chaos-cult-firefight-ploy-frenzied-demise.pdf": {
+          "path": "layers/integration/chaos-cult/chaos-cult-firefight-ploy-frenzied-demise.pdf",
+          "hash": "885810475e838e7c42b5ddf5f5ace183c1373dfd5f08594e0ca86739ae19ba5f",
+          "modified": "2026-07-12T19:06:36.545043+00:00"
+        },
+        "chaos-cult-firefight-ploy-unleash-the-daemon.pdf": {
+          "path": "layers/integration/chaos-cult/chaos-cult-firefight-ploy-unleash-the-daemon.pdf",
+          "hash": "649b34032e6d08bffe6a1c83bd0c1614989c6d5c68bc401adf824073e61b0219",
+          "modified": "2026-07-12T19:06:36.554255+00:00"
+        },
+        "chaos-cult-operatives-selection-operative-selection.pdf": {
+          "path": "layers/integration/chaos-cult/chaos-cult-operatives-selection-operative-selection.pdf",
+          "hash": "efc83077e44f499978b8d5304ad28601659908a2ff7534bd5a6fe6894ce90765",
+          "modified": "2026-07-12T19:06:36.563738+00:00"
+        },
+        "chaos-cult-strategy-ploy-exaltation-in-pain.pdf": {
+          "path": "layers/integration/chaos-cult/chaos-cult-strategy-ploy-exaltation-in-pain.pdf",
+          "hash": "edb96ef46cf42280971731ee14d9fffcd0bcf5bef629e9a9b4b0c09fb6495d14",
+          "modified": "2026-07-12T19:06:36.573188+00:00"
+        },
+        "chaos-cult-strategy-ploy-fervent-onslaught.pdf": {
+          "path": "layers/integration/chaos-cult/chaos-cult-strategy-ploy-fervent-onslaught.pdf",
+          "hash": "24f9372ad149b7c14c716155bd3d92cbee98067f794c6aabca620da1edb09600",
+          "modified": "2026-07-12T19:06:36.582986+00:00"
+        },
+        "chaos-cult-strategy-ploy-creatures-of-nightmare.pdf": {
+          "path": "layers/integration/chaos-cult/chaos-cult-strategy-ploy-creatures-of-nightmare.pdf",
+          "hash": "37c6dce07cb556ac328e2f278de6468e633acae826a3a2ad390fb2a9d22f4990",
+          "modified": "2026-07-12T19:06:36.592362+00:00"
+        },
+        "chaos-cult-strategy-ploy-sickening-aura.pdf": {
+          "path": "layers/integration/chaos-cult/chaos-cult-strategy-ploy-sickening-aura.pdf",
+          "hash": "f64bd570d3884bb4b097f78673da9da5d77866379c7e9d002f18beaffefafdb4",
+          "modified": "2026-07-12T19:06:36.601077+00:00"
+        }
+      },
+      "inputs": {
+        "layers/warcom/structure/chaos-cult-structure.json": "28f3c6d174a3e5ac708b68d86376841f67e79e914b0b8e39758ed28834ccd07d",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page01_card1_landscape.pdf": "979c3ae21c46d7603b2faf545e1b1c1866510a9277521b03a287ba4c92bb81ad",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page01_card2_landscape.pdf": "4f95e725807074695dcff9be530a6640f7d78111b10acccb6314fc663f9553a5",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page01_card3_landscape.pdf": "8cd911c2dc0410ac3ef3fff7fe0cd5f7320620a95e7d0f17410c00baa16ba3c6",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page01_card4_landscape.pdf": "64f499ed636a5aeca11fe3bc8b14b9523873639b129f224eb861301a51ea52b4",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page02_card1_landscape.pdf": "958597326506e45b9e5afccb4569f2604cdcca6b4109e2c6016d9e872c506bca",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page02_card2_landscape.pdf": "f55939b6266ed0e7a47401fd02e4a6ee24a106b47e2bfceb675e2bf017a42bfc",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page02_card3_landscape.pdf": "0beca402f9929a0ae823f284b3510812918ddc0c9363b5b188cc5f42a90f8a04",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page02_card4_landscape.pdf": "e964abe9e15dae39afe046e4c0fcd29bce598b8fa6f1481d956e6863c7f2bd8a",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page07_card3_portrait.pdf": "9d0268e4f4aa484a7e5b3f3af20d3aa9c3346a50533006e41bec58e3d272c87e",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page07_card4_portrait.pdf": "a14374c73233622b1f79b00a8dd526cbb16bd1c6949b2f575878af6cb75d60f4",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page08_card1_portrait.pdf": "5e83a0c30ffd5b44dc2c8e7bb41fcbda7629df9a456cf269167aa473f92c6a0f",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page08_card2_portrait.pdf": "dc09d80963599c69697c7a39fc9fa119a49dcd9d5fca3a7c2ab077f459673c68",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page03_card2_portrait.pdf": "46ce3af97d83e771d339295527581f024cd35d95dfc59794cfbf9fda404597e6",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page03_card3_portrait.pdf": "5ab3846d68c01b493353b049080a2aad81b9fc5ec70ae670c9bd75f222e88e6e",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page03_card4_portrait.pdf": "91793af05ee73901c735a265350e09c54aeed4b282c66169fec04df49c61057d",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page04_card1_portrait.pdf": "1a39a6f165a2f82feaf5e6c511055981b1a78675a8aca6f6c9646a2bfec13629",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page04_card2_portrait.pdf": "e2235e59c4c3595e7bbdbc66cf910a071cddd8fceabbc592197d16efb0f8696d",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page04_card3_portrait.pdf": "c185adc10b03f586f58b746ba6a80b72b1ff20fe43178964eaa1fd982eeb20b6",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page04_card4_portrait.pdf": "b840f7214645aa27f2fde7d01d5a427e5b07e2c265d6db0c81e5ceb2944a791d",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page05_card1_portrait.pdf": "dc426e65a29d4b528c8e5199091dfa2dc2ed0e2a1bbce05a8af08689aabed7b8",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page05_card2_portrait.pdf": "100a03cfccdf7a56f46e963acb3e38f18fcf0e5e5cea4deb34a5cd920dc3f4be",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page06_card3_portrait.pdf": "fca27d4913cf1537fb23da8486c3c343cf9b7936c08e6c15686ae8895b254575",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page06_card4_portrait.pdf": "bcc714e856fc0a8c47c67fc935171b5e11e38fed26f016ba4d5ff7f85b5dbe63",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page07_card1_portrait.pdf": "02a9f15b639bde1cf3fb6ee27ef4b1faa4b03a7c71b838065049b91964df06bf",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page07_card2_portrait.pdf": "56cb04b6f7ac73e5be2c2b787b4a8d597316e8db6288eca4c53f3ff7e3c6bd59",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page03_card1_portrait.pdf": "11fcaa714e9bf4334bedda21f2b7f9a25cd63f9659019d5d8a38dc4b12907f06",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page05_card3_portrait.pdf": "5c82e4ba43b8d64f86ef83fff5851fa66067f6ea6b4bcd5538d58e19351b6716",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page05_card4_portrait.pdf": "065f5b1c1fbe506f278613a46545578f4653265829a916f9388d26ab47204172",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page06_card1_portrait.pdf": "db414ae31f3161ca46c3c42bd98c35e22d8f07bd70c268ade7d0e7d331af0218",
+        "layers/warcom/extracted/chaos-cult/cards/chaos-cult_page06_card2_portrait.pdf": "a519049edced77fe6991d122378e10e39b4370323c3b710a3e7471cc69326a19"
+      },
+      "completed": "2026-07-12T19:06:36.932679+00:00"
+    },
+    "extract_artwork": {
+      "outputs": {},
+      "sources": {
+        "artwork": {
+          "hash": "b49e5052284432c3d7b4fff28e69a9d26e61c1241770b8493f0f8fdf1be2f6e6",
+          "outputs": [
+            "layers/integration/chaos-cult/artwork/chaos-cult-artwork-01.jpeg",
+            "layers/integration/chaos-cult/artwork/chaos-cult-artwork-02.jpeg",
+            "layers/integration/chaos-cult/artwork/chaos-cult-artwork-03.jpeg",
+            "layers/integration/chaos-cult/artwork/chaos-cult-artwork-04.jpeg",
+            "layers/integration/chaos-cult/artwork/chaos-cult-artwork-05.jpeg",
+            "layers/integration/chaos-cult/artwork/chaos-cult-artwork-06.png",
+            "layers/integration/chaos-cult/artwork/chaos-cult-artwork-07.jpeg",
+            "layers/integration/chaos-cult/artwork/chaos-cult-artwork-08.jpeg",
+            "layers/integration/chaos-cult/artwork/chaos-cult-artwork-09.jpeg",
+            "layers/integration/chaos-cult/artwork/chaos-cult-artwork-10.jpeg",
+            "layers/integration/chaos-cult/artwork/chaos-cult-artwork-11.jpeg",
+            "layers/integration/chaos-cult/artwork/chaos-cult-artwork-12.jpeg",
+            "layers/integration/chaos-cult/artwork/chaos-cult-artwork-13.jpeg",
+            "layers/integration/chaos-cult/artwork/chaos-cult-artwork-14.jpeg",
+            "layers/integration/chaos-cult/artwork/chaos-cult-artwork-15.jpeg",
+            "layers/integration/chaos-cult/artwork/chaos-cult-artwork-16.jpeg",
+            "layers/integration/chaos-cult/artwork/chaos-cult-artwork-17.jpeg",
+            "layers/integration/chaos-cult/artwork/chaos-cult-artwork-18.jpeg",
+            "layers/integration/chaos-cult/artwork/chaos-cult-artwork-19.jpeg",
+            "layers/integration/chaos-cult/artwork/chaos-cult-artwork-20.jpeg",
+            "layers/integration/chaos-cult/artwork/chaos-cult-artwork-21.jpeg",
+            "layers/integration/chaos-cult/artwork/chaos-cult-artwork-22.jpeg",
+            "layers/integration/chaos-cult/artwork/chaos-cult-artwork-metadata.json",
+            "layers/integration/chaos-cult/artwork/icons/chaos-cult-icon-landscape.jpg",
+            "layers/integration/chaos-cult/artwork/icons/chaos-cult-icon-portrait.jpg",
+            "layers/integration/chaos-cult/artwork/icons/chaos-cult-icon-token-transparent.png",
+            "layers/integration/chaos-cult/artwork/icons/chaos-cult-icon-token.jpg"
+          ],
+          "modified": "2026-07-06T20:45:52.979497+00:00"
+        }
+      },
+      "completed": "2026-07-06T20:45:52.979513+00:00"
+    }
+  }
+}

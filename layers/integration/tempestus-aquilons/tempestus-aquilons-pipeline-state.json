@@ -1,0 +1,980 @@
+{
+  "team": "tempestus-aquilons",
+  "pipeline_version": "2.0",
+  "last_updated": "2026-07-12T20:56:44.211580+00:00",
+  "steps": {
+    "content_analysis": {
+      "outputs": {
+        "content.json": {
+          "path": "layers/integration/tempestus-aquilons/content/tempestus-aquilons-content.json",
+          "hash": "3a845df462efad4a0c8fead8f705eb11f306fd9e27cd402929aa9b497275bbff",
+          "modified": "2026-07-12T19:19:21.352808+00:00"
+        }
+      },
+      "completed": "2026-07-12T19:19:27.427709+00:00",
+      "inputs": {
+        "layers/integration/tempestus-aquilons/manifest.json": "cfa789c4919c750d17d60dabd3e86dbd454178de0e3c19ecac584c70d5643c78",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-datacard-aquilon-grenadier.pdf": "89a33389a81031bdec2fad9d9166fbc3936fbc21358ae070734c3cc91971665b",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-datacard-aquilon-gunfighter.pdf": "49585f7684f55763c3519c6587c24f0e4e6ebe8a8aa58b9d41bb36e94e29f8db",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-datacard-aquilon-gunner.pdf": "86beb1087d01e87fdfe1519394fdf6d52c16f40c958f80dd271d56ab878be16d",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-datacard-aquilon-marksman.pdf": "272491c31ba55ebb9c136ddedc06101f8c04fc8ff2f4f4d31b266d4bac5f28e0",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-datacard-aquilon-precursor.pdf": "143b1b100a3356259e0b858023e11dd1b88aed7c246f3b67e101435c612cc5f4",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-datacard-aquilon-servosentry.pdf": "ee6630c49ddd09007e5e1ce3d7bbf7033983cf4716c6ad632d91bf6823834950",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-datacard-aquilon-tempestor.pdf": "1cfc01242362368d087e09361caf836bc7e451ec746ba6f8221586e47f869453",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-datacard-aquilon-trooper.pdf": "ca7a37589f0eadc5b9dd8db94794a171ab5c23253420ead76648c00364ecb2bb",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-equipment-combat-stimms.pdf": "7de256b48827480f194accdeea3f3161d2661b09943bd947f0988ca38668d5fa",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-equipment-drop-augury.pdf": "f16a2a3c0db54b58ff91654c47576a3766a6163b75b98c0ebed328181df80a8d",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-equipment-remote-overseer.pdf": "072c1b20c1513ba0b3aa1372b609997eb51f27a6485494e5a75beb160c529c42",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-equipment-tempestus-daggers.pdf": "c939443c37b65b9396dd36c23997ed98151340ba4b7296b24b5f4ce1b6e24f36",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-faction-rule-drop-insertion.pdf": "f437d369d7c7bd0f23aa6bc24d4410f2e7dcf4ad2fc6c4f7f2648fbf17e76b09",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-faction-rule-gravchute.pdf": "4aadbe80ac4131b23d3a0a4497bbc07e628656d7e53432946eecf11e56ea3e8f",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-firefight-ploy-adjust-coordinates.pdf": "858b7408c7526c4d28dabd0c8e27983e4c7db5c6b9355e4b1c713f5278be7572",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-firefight-ploy-hot-drop.pdf": "1a6619cd2d1cd64d0e8bd24c61141a2f05a54b7bd776815e973772390cded8ba",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-firefight-ploy-progena.pdf": "41d6bea3a4cd44004f4202674d7a40b6e65abf2f95932ec3c15e342c4e2c8a71",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-firefight-ploy-tempestus-exemplars.pdf": "5f90c2043dd9346c06947979189c34541122cde8916c868cb55453f6d5b6c8dc",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-operatives-selection-operative-selection.pdf": "c2d00ac18d2d948592266dd941808fd0d6ad29b631bf7d31e1278ab8cf5336fc",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-strategy-ploy-drop-and-secure.pdf": "27e1e5f342d737149417f6d058d9a0b64c2be899f25024df921eba0500ae8cf5",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-strategy-ploy-eye-above.pdf": "addd153be4148c5a5301a4654cb2a05df33d6f3cad7dc998db6b58e9767e2412",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-strategy-ploy-maintain-momentum.pdf": "b04beb2b02adb21213c6e0bcee77f7ee2a5889f6fc1d9786b9f5aa4a355dfb8c",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-strategy-ploy-sudden-offensive.pdf": "cd0224ffb2b525ee5b3885365425543958039e531c88b4956fc608ca537ec078",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-token-guide-token-guide.pdf": "273775a7f129c48ab5933f5a486a8bac0f48aa4c13eb9154117b9e1eec57236f"
+      }
+    },
+    "extract_backsides": {
+      "outputs": {
+        "backside-landscape.jpg": {
+          "path": "layers/integration/tempestus-aquilons/card-backside/tempestus-aquilons-backside-landscape.jpg",
+          "hash": "44c76e91323fa326e7519560bcfcb7d86d604f1aa0cc68f820887f1630335e52",
+          "modified": "2026-07-12T18:56:13.297941+00:00"
+        },
+        "backside-portrait.jpg": {
+          "path": "layers/integration/tempestus-aquilons/card-backside/tempestus-aquilons-backside-portrait.jpg",
+          "hash": "6f57b5f9809ae1c92759f0ec0f31f8b6950add902d158db9a1be885acfcd0e09",
+          "modified": "2026-07-12T18:56:13.302304+00:00"
+        }
+      },
+      "completed": "2026-07-12T18:56:13.315897+00:00",
+      "inputs": {
+        "layers/integration/tempestus-aquilons/artwork/icons/tempestus-aquilons-icon-token.jpg": "6b9fcc7648194e16b2482e5d7bca0ba9855a46ece8a7aedb9a4f0f215a614d41",
+        "config/defaults/box/card-box-background.jpeg": "2dd1442a7c52ca1d66899333f678d60f48981ce20561ead77c1161d548176036"
+      }
+    },
+    "extract_tokens": {
+      "outputs": {
+        "tokens/tempestus-aquilons-detected.png": {
+          "path": "output/tempestus-aquilons/tokens/tempestus-aquilons-detected.png",
+          "hash": "35d7c68b99f0f2d9de675de15636e88ca0b1b6960ea291966956343e46185a14",
+          "modified": "2026-07-12T19:19:41.674062+00:00"
+        },
+        "tokens/tempestus-aquilons-drop-and-secure.png": {
+          "path": "output/tempestus-aquilons/tokens/tempestus-aquilons-drop-and-secure.png",
+          "hash": "403bdf65b3f94c7327271ce906ead2abb267265b3c09993b862296c7f1d3a40a",
+          "modified": "2026-07-12T19:19:41.678405+00:00"
+        },
+        "tokens/tempestus-aquilons-drop.png": {
+          "path": "output/tempestus-aquilons/tokens/tempestus-aquilons-drop.png",
+          "hash": "facdd607cdec4abfb0e4195357a73b7b36e22f82eb9de159f3e84c66af0b1101",
+          "modified": "2026-07-12T19:19:41.684765+00:00"
+        },
+        "tokens/tempestus-aquilons-melta-bomb.png": {
+          "path": "output/tempestus-aquilons/tokens/tempestus-aquilons-melta-bomb.png",
+          "hash": "5becc706e8e3feb39d225b2876980905c250fec6663c969146fc763d59af7e58",
+          "modified": "2026-07-12T19:19:41.691267+00:00"
+        },
+        "tokens/tempestus-aquilons-detected.obj": {
+          "path": "output/tempestus-aquilons/tokens/tempestus-aquilons-detected.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-12T19:19:41.696674+00:00"
+        },
+        "tokens/tempestus-aquilons-drop-and-secure.obj": {
+          "path": "output/tempestus-aquilons/tokens/tempestus-aquilons-drop-and-secure.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-12T19:19:41.699051+00:00"
+        },
+        "tokens/tempestus-aquilons-drop.obj": {
+          "path": "output/tempestus-aquilons/tokens/tempestus-aquilons-drop.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-12T19:19:41.700844+00:00"
+        },
+        "tokens/tempestus-aquilons-melta-bomb.obj": {
+          "path": "output/tempestus-aquilons/tokens/tempestus-aquilons-melta-bomb.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-12T19:19:41.704875+00:00"
+        },
+        "tokens/tokenbag/tempestus-aquilons-token-bag-icon.png": {
+          "path": "output/tempestus-aquilons/tokens/tokenbag/tempestus-aquilons-token-bag-icon.png",
+          "hash": "6b9fcc7648194e16b2482e5d7bca0ba9855a46ece8a7aedb9a4f0f215a614d41",
+          "modified": "2026-07-12T19:19:41.716443+00:00"
+        },
+        "tokens/tokenbag/tempestus-aquilons-token-bag.obj": {
+          "path": "output/tempestus-aquilons/tokens/tokenbag/tempestus-aquilons-token-bag.obj",
+          "hash": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+          "modified": "2026-07-12T19:19:41.719243+00:00"
+        }
+      },
+      "completed": "2026-07-12T19:19:56.354408+00:00",
+      "inputs": {
+        "layers/integration/tempestus-aquilons/manifest.json": "cfa789c4919c750d17d60dabd3e86dbd454178de0e3c19ecac584c70d5643c78",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "layers/integration/tempestus-aquilons/artwork/icons/tempestus-aquilons-icon-token.jpg": "6b9fcc7648194e16b2482e5d7bca0ba9855a46ece8a7aedb9a4f0f215a614d41",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-datacard-aquilon-grenadier.pdf": "89a33389a81031bdec2fad9d9166fbc3936fbc21358ae070734c3cc91971665b",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-datacard-aquilon-gunfighter.pdf": "49585f7684f55763c3519c6587c24f0e4e6ebe8a8aa58b9d41bb36e94e29f8db",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-datacard-aquilon-gunner.pdf": "86beb1087d01e87fdfe1519394fdf6d52c16f40c958f80dd271d56ab878be16d",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-datacard-aquilon-marksman.pdf": "272491c31ba55ebb9c136ddedc06101f8c04fc8ff2f4f4d31b266d4bac5f28e0",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-datacard-aquilon-precursor.pdf": "143b1b100a3356259e0b858023e11dd1b88aed7c246f3b67e101435c612cc5f4",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-datacard-aquilon-servosentry.pdf": "ee6630c49ddd09007e5e1ce3d7bbf7033983cf4716c6ad632d91bf6823834950",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-datacard-aquilon-tempestor.pdf": "1cfc01242362368d087e09361caf836bc7e451ec746ba6f8221586e47f869453",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-datacard-aquilon-trooper.pdf": "ca7a37589f0eadc5b9dd8db94794a171ab5c23253420ead76648c00364ecb2bb",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-equipment-combat-stimms.pdf": "7de256b48827480f194accdeea3f3161d2661b09943bd947f0988ca38668d5fa",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-equipment-drop-augury.pdf": "f16a2a3c0db54b58ff91654c47576a3766a6163b75b98c0ebed328181df80a8d",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-equipment-remote-overseer.pdf": "072c1b20c1513ba0b3aa1372b609997eb51f27a6485494e5a75beb160c529c42",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-equipment-tempestus-daggers.pdf": "c939443c37b65b9396dd36c23997ed98151340ba4b7296b24b5f4ce1b6e24f36",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-faction-rule-drop-insertion.pdf": "f437d369d7c7bd0f23aa6bc24d4410f2e7dcf4ad2fc6c4f7f2648fbf17e76b09",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-faction-rule-gravchute.pdf": "4aadbe80ac4131b23d3a0a4497bbc07e628656d7e53432946eecf11e56ea3e8f",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-firefight-ploy-adjust-coordinates.pdf": "858b7408c7526c4d28dabd0c8e27983e4c7db5c6b9355e4b1c713f5278be7572",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-firefight-ploy-hot-drop.pdf": "1a6619cd2d1cd64d0e8bd24c61141a2f05a54b7bd776815e973772390cded8ba",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-firefight-ploy-progena.pdf": "41d6bea3a4cd44004f4202674d7a40b6e65abf2f95932ec3c15e342c4e2c8a71",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-firefight-ploy-tempestus-exemplars.pdf": "5f90c2043dd9346c06947979189c34541122cde8916c868cb55453f6d5b6c8dc",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-operatives-selection-operative-selection.pdf": "c2d00ac18d2d948592266dd941808fd0d6ad29b631bf7d31e1278ab8cf5336fc",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-strategy-ploy-drop-and-secure.pdf": "27e1e5f342d737149417f6d058d9a0b64c2be899f25024df921eba0500ae8cf5",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-strategy-ploy-eye-above.pdf": "addd153be4148c5a5301a4654cb2a05df33d6f3cad7dc998db6b58e9767e2412",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-strategy-ploy-maintain-momentum.pdf": "b04beb2b02adb21213c6e0bcee77f7ee2a5889f6fc1d9786b9f5aa4a355dfb8c",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-strategy-ploy-sudden-offensive.pdf": "cd0224ffb2b525ee5b3885365425543958039e531c88b4956fc608ca537ec078",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-token-guide-token-guide.pdf": "273775a7f129c48ab5933f5a486a8bac0f48aa4c13eb9154117b9e1eec57236f"
+      }
+    },
+    "generate_dice": {
+      "outputs": {
+        "dice-light.jpg": {
+          "path": "output/tempestus-aquilons/dice/tempestus-aquilons-dice-light.jpg",
+          "hash": "e70dee16c46a683c3176aceb17a5a4c8dbbd30210a199d8b56f3c06ddc85ce4b",
+          "modified": "2026-07-12T18:57:17.504218+00:00"
+        },
+        "dice-dark.jpg": {
+          "path": "output/tempestus-aquilons/dice/tempestus-aquilons-dice-dark.jpg",
+          "hash": "162664d1c79cafd2e15b077f3d84e34dafbbb89aa8e61260f030e8c4e6ec8c33",
+          "modified": "2026-07-12T18:57:17.522593+00:00"
+        },
+        "dice-team.jpg": {
+          "path": "output/tempestus-aquilons/dice/tempestus-aquilons-dice-team.jpg",
+          "hash": "4c077f413f9ddf0d7b4e48e0c606d7f45bc3f6fafe26f38f575607eb34563e40",
+          "modified": "2026-07-12T18:57:17.525129+00:00"
+        }
+      },
+      "completed": "2026-07-12T18:57:17.530226+00:00",
+      "inputs": {
+        "layers/integration/tempestus-aquilons/artwork/icons/tempestus-aquilons-icon-token-transparent.png": "526360ce11b497b53c1b185aee34616fa6ea5a7a1e79e886c4da8f836c780adc",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41"
+      }
+    },
+    "generate_box_texture": {
+      "outputs": {
+        "card-box-texture.jpg": {
+          "path": "output/tempestus-aquilons/cardbox/tempestus-aquilons-card-box-texture.jpg",
+          "hash": "c74bf0c4ff262e5489530d774510e7d9f50b1f7e25efdded20b3448d4533d7b5",
+          "modified": "2026-07-12T18:57:17.732839+00:00"
+        },
+        "card-box.obj": {
+          "path": "output/tempestus-aquilons/cardbox/tempestus-aquilons-card-box.obj",
+          "hash": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+          "modified": "2026-07-12T18:57:17.738347+00:00"
+        }
+      },
+      "completed": "2026-07-12T18:57:18.216439+00:00",
+      "inputs": {
+        "layers/integration/tempestus-aquilons/artwork/icons/tempestus-aquilons-icon-token.jpg": "6b9fcc7648194e16b2482e5d7bca0ba9855a46ece8a7aedb9a4f0f215a614d41",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "config/defaults/box/card-box.obj": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+        "config/defaults/box/card-box-texture.jpg": "b2f310b01a0d28e8806e99ce0b972e8967e3014608eacefcb6ec51597695a313"
+      }
+    },
+    "generate_card_images": {
+      "outputs": {
+        "cards/datacards/aquilon-grenadier-back.jpg": {
+          "path": "output/tempestus-aquilons/cards/datacards/aquilon-grenadier-back.jpg",
+          "hash": "44c76e91323fa326e7519560bcfcb7d86d604f1aa0cc68f820887f1630335e52",
+          "modified": "2026-07-12T19:21:13.831383+00:00"
+        },
+        "cards/datacards/aquilon-grenadier-front.jpg": {
+          "path": "output/tempestus-aquilons/cards/datacards/aquilon-grenadier-front.jpg",
+          "hash": "005701c68facb6977d28abdf72029ebf64409c608cee5225739d3b507e586679",
+          "modified": "2026-07-12T19:21:13.833681+00:00"
+        },
+        "cards/datacards/aquilon-gunfighter-back.jpg": {
+          "path": "output/tempestus-aquilons/cards/datacards/aquilon-gunfighter-back.jpg",
+          "hash": "44c76e91323fa326e7519560bcfcb7d86d604f1aa0cc68f820887f1630335e52",
+          "modified": "2026-07-12T19:21:13.841960+00:00"
+        },
+        "cards/datacards/aquilon-gunfighter-front.jpg": {
+          "path": "output/tempestus-aquilons/cards/datacards/aquilon-gunfighter-front.jpg",
+          "hash": "0b217750380b253782508ecec87fc7c384c8b06fc436ee748fada8f44f4bb096",
+          "modified": "2026-07-12T19:21:13.847266+00:00"
+        },
+        "cards/datacards/aquilon-gunner-back.jpg": {
+          "path": "output/tempestus-aquilons/cards/datacards/aquilon-gunner-back.jpg",
+          "hash": "44c76e91323fa326e7519560bcfcb7d86d604f1aa0cc68f820887f1630335e52",
+          "modified": "2026-07-12T19:21:13.854997+00:00"
+        },
+        "cards/datacards/aquilon-gunner-front.jpg": {
+          "path": "output/tempestus-aquilons/cards/datacards/aquilon-gunner-front.jpg",
+          "hash": "e5bb7993d9fb0f5f25da353241e491167457bb69c845d6d07fd3eb7623f23d76",
+          "modified": "2026-07-12T19:21:13.860441+00:00"
+        },
+        "cards/datacards/aquilon-marksman-back.jpg": {
+          "path": "output/tempestus-aquilons/cards/datacards/aquilon-marksman-back.jpg",
+          "hash": "44c76e91323fa326e7519560bcfcb7d86d604f1aa0cc68f820887f1630335e52",
+          "modified": "2026-07-12T19:21:13.870382+00:00"
+        },
+        "cards/datacards/aquilon-marksman-front.jpg": {
+          "path": "output/tempestus-aquilons/cards/datacards/aquilon-marksman-front.jpg",
+          "hash": "6c3f79d345c18b5b16dbc4fc7c285f53f20c6d24b80cea635a514a416542c36b",
+          "modified": "2026-07-12T19:21:13.879819+00:00"
+        },
+        "cards/datacards/aquilon-precursor-back.jpg": {
+          "path": "output/tempestus-aquilons/cards/datacards/aquilon-precursor-back.jpg",
+          "hash": "44c76e91323fa326e7519560bcfcb7d86d604f1aa0cc68f820887f1630335e52",
+          "modified": "2026-07-12T19:21:13.889503+00:00"
+        },
+        "cards/datacards/aquilon-precursor-front.jpg": {
+          "path": "output/tempestus-aquilons/cards/datacards/aquilon-precursor-front.jpg",
+          "hash": "6561e9373ac26b47718e9812adb8785359ed99848542845fff237bd8cca66b27",
+          "modified": "2026-07-12T19:21:13.898361+00:00"
+        },
+        "cards/datacards/aquilon-servo‑sentry-back.jpg": {
+          "path": "output/tempestus-aquilons/cards/datacards/aquilon-servo‑sentry-back.jpg",
+          "hash": "44c76e91323fa326e7519560bcfcb7d86d604f1aa0cc68f820887f1630335e52",
+          "modified": "2026-07-12T19:21:13.914919+00:00"
+        },
+        "cards/datacards/aquilon-servo‑sentry-front.jpg": {
+          "path": "output/tempestus-aquilons/cards/datacards/aquilon-servo‑sentry-front.jpg",
+          "hash": "763c9514300e562cba5d10c965ea034222c720e06c85d80869a27cb376f82757",
+          "modified": "2026-07-12T19:21:13.921299+00:00"
+        },
+        "cards/datacards/aquilon-tempestor-back.jpg": {
+          "path": "output/tempestus-aquilons/cards/datacards/aquilon-tempestor-back.jpg",
+          "hash": "8c1e58853cc9431538babb45cd143ce5b992b1d87e8ccd345faba01b6a37a96c",
+          "modified": "2026-07-12T19:21:13.922937+00:00"
+        },
+        "cards/datacards/aquilon-tempestor-front.jpg": {
+          "path": "output/tempestus-aquilons/cards/datacards/aquilon-tempestor-front.jpg",
+          "hash": "4b5aa6b67a6815b48ac259ef7f4ae28e7e431c5efff6f41dd026e6a3aeeb5d0d",
+          "modified": "2026-07-12T19:21:13.924495+00:00"
+        },
+        "cards/datacards/aquilon-trooper-back.jpg": {
+          "path": "output/tempestus-aquilons/cards/datacards/aquilon-trooper-back.jpg",
+          "hash": "44c76e91323fa326e7519560bcfcb7d86d604f1aa0cc68f820887f1630335e52",
+          "modified": "2026-07-12T19:21:13.934009+00:00"
+        },
+        "cards/datacards/aquilon-trooper-front.jpg": {
+          "path": "output/tempestus-aquilons/cards/datacards/aquilon-trooper-front.jpg",
+          "hash": "807d425327986b5660c500fef02ec5611f3da3e89731fadd4a0ead65f52ed9d2",
+          "modified": "2026-07-12T19:21:16.038618+00:00"
+        },
+        "cards/equipment/tempestus-aquilons-combat-stimms-back.jpg": {
+          "path": "output/tempestus-aquilons/cards/equipment/tempestus-aquilons-combat-stimms-back.jpg",
+          "hash": "6f57b5f9809ae1c92759f0ec0f31f8b6950add902d158db9a1be885acfcd0e09",
+          "modified": "2026-07-12T19:21:16.207685+00:00"
+        },
+        "cards/equipment/tempestus-aquilons-combat-stimms-front.jpg": {
+          "path": "output/tempestus-aquilons/cards/equipment/tempestus-aquilons-combat-stimms-front.jpg",
+          "hash": "46861e1d7f38c6b4a8733219033361192bd8342cb4ae1f204f923b084acb3aeb",
+          "modified": "2026-07-12T19:21:16.286531+00:00"
+        },
+        "cards/equipment/tempestus-aquilons-drop-augury-back.jpg": {
+          "path": "output/tempestus-aquilons/cards/equipment/tempestus-aquilons-drop-augury-back.jpg",
+          "hash": "6f57b5f9809ae1c92759f0ec0f31f8b6950add902d158db9a1be885acfcd0e09",
+          "modified": "2026-07-12T19:21:16.298979+00:00"
+        },
+        "cards/equipment/tempestus-aquilons-drop-augury-front.jpg": {
+          "path": "output/tempestus-aquilons/cards/equipment/tempestus-aquilons-drop-augury-front.jpg",
+          "hash": "3f2ebed17005597baee5a6feda07ce88afbd4fcf81598b24a1fe09da2e8f39e9",
+          "modified": "2026-07-12T19:21:16.311068+00:00"
+        },
+        "cards/equipment/tempestus-aquilons-remote-overseer-back.jpg": {
+          "path": "output/tempestus-aquilons/cards/equipment/tempestus-aquilons-remote-overseer-back.jpg",
+          "hash": "6f57b5f9809ae1c92759f0ec0f31f8b6950add902d158db9a1be885acfcd0e09",
+          "modified": "2026-07-12T19:21:16.321236+00:00"
+        },
+        "cards/equipment/tempestus-aquilons-remote-overseer-front.jpg": {
+          "path": "output/tempestus-aquilons/cards/equipment/tempestus-aquilons-remote-overseer-front.jpg",
+          "hash": "08ca2a2c21f53a9d68a1d3c2c4e3756d4157447663d742c78f96f972a5808bb2",
+          "modified": "2026-07-12T19:21:16.330822+00:00"
+        },
+        "cards/equipment/tempestus-aquilons-tempestus-daggers-back.jpg": {
+          "path": "output/tempestus-aquilons/cards/equipment/tempestus-aquilons-tempestus-daggers-back.jpg",
+          "hash": "6f57b5f9809ae1c92759f0ec0f31f8b6950add902d158db9a1be885acfcd0e09",
+          "modified": "2026-07-12T19:21:16.342392+00:00"
+        },
+        "cards/equipment/tempestus-aquilons-tempestus-daggers-front.jpg": {
+          "path": "output/tempestus-aquilons/cards/equipment/tempestus-aquilons-tempestus-daggers-front.jpg",
+          "hash": "b4a5d1cab9eec00e0c0ad8eb6e830b05ba9ced69cd88f902c589f3059cb5b80c",
+          "modified": "2026-07-12T19:21:16.345985+00:00"
+        },
+        "cards/faction_rules/tempestus-aquilons-drop-insertion-back.jpg": {
+          "path": "output/tempestus-aquilons/cards/faction_rules/tempestus-aquilons-drop-insertion-back.jpg",
+          "hash": "9350fe0f58972f9220a938a6b3d2907538750c4a4b5e582569e7325767f27bc3",
+          "modified": "2026-07-12T19:21:16.359175+00:00"
+        },
+        "cards/faction_rules/tempestus-aquilons-drop-insertion-front.jpg": {
+          "path": "output/tempestus-aquilons/cards/faction_rules/tempestus-aquilons-drop-insertion-front.jpg",
+          "hash": "c836e9e097e1f252a6f06abfdc7d1527d6d42feeec7f187a3446f364751552df",
+          "modified": "2026-07-12T19:21:16.369184+00:00"
+        },
+        "cards/faction_rules/tempestus-aquilons-gravchute-back.jpg": {
+          "path": "output/tempestus-aquilons/cards/faction_rules/tempestus-aquilons-gravchute-back.jpg",
+          "hash": "6f57b5f9809ae1c92759f0ec0f31f8b6950add902d158db9a1be885acfcd0e09",
+          "modified": "2026-07-12T19:21:16.379863+00:00"
+        },
+        "cards/faction_rules/tempestus-aquilons-gravchute-front.jpg": {
+          "path": "output/tempestus-aquilons/cards/faction_rules/tempestus-aquilons-gravchute-front.jpg",
+          "hash": "4bc5a63b05cc30ad706813807addd82c3c6c5fe0c06f7b4aa09d04441d3a5ac0",
+          "modified": "2026-07-12T19:21:16.389506+00:00"
+        },
+        "cards/firefight_ploys/tempestus-aquilons-adjust-coordinates-back.jpg": {
+          "path": "output/tempestus-aquilons/cards/firefight_ploys/tempestus-aquilons-adjust-coordinates-back.jpg",
+          "hash": "6f57b5f9809ae1c92759f0ec0f31f8b6950add902d158db9a1be885acfcd0e09",
+          "modified": "2026-07-12T19:21:16.411713+00:00"
+        },
+        "cards/firefight_ploys/tempestus-aquilons-adjust-coordinates-front.jpg": {
+          "path": "output/tempestus-aquilons/cards/firefight_ploys/tempestus-aquilons-adjust-coordinates-front.jpg",
+          "hash": "b05ca03e7e298ccf0d4aa005a05feea53009f15b63df4522a0bae5a3c0ec255f",
+          "modified": "2026-07-12T19:21:16.422079+00:00"
+        },
+        "cards/firefight_ploys/tempestus-aquilons-hot-drop-back.jpg": {
+          "path": "output/tempestus-aquilons/cards/firefight_ploys/tempestus-aquilons-hot-drop-back.jpg",
+          "hash": "6f57b5f9809ae1c92759f0ec0f31f8b6950add902d158db9a1be885acfcd0e09",
+          "modified": "2026-07-12T19:21:16.430103+00:00"
+        },
+        "cards/firefight_ploys/tempestus-aquilons-hot-drop-front.jpg": {
+          "path": "output/tempestus-aquilons/cards/firefight_ploys/tempestus-aquilons-hot-drop-front.jpg",
+          "hash": "1edbaeaac187b715660cfddbb2a0c14987e8ceba686c63a73db87540fb7819e2",
+          "modified": "2026-07-12T19:21:16.432680+00:00"
+        },
+        "cards/firefight_ploys/tempestus-aquilons-progena-back.jpg": {
+          "path": "output/tempestus-aquilons/cards/firefight_ploys/tempestus-aquilons-progena-back.jpg",
+          "hash": "6f57b5f9809ae1c92759f0ec0f31f8b6950add902d158db9a1be885acfcd0e09",
+          "modified": "2026-07-12T19:21:16.442998+00:00"
+        },
+        "cards/firefight_ploys/tempestus-aquilons-progena-front.jpg": {
+          "path": "output/tempestus-aquilons/cards/firefight_ploys/tempestus-aquilons-progena-front.jpg",
+          "hash": "46b77a1e7a323f7e40a7df8a974b2d7c29265e9bf7d05d06c8a5a5d8091616ab",
+          "modified": "2026-07-12T19:21:16.449305+00:00"
+        },
+        "cards/firefight_ploys/tempestus-aquilons-tempestus-exemplars-back.jpg": {
+          "path": "output/tempestus-aquilons/cards/firefight_ploys/tempestus-aquilons-tempestus-exemplars-back.jpg",
+          "hash": "6f57b5f9809ae1c92759f0ec0f31f8b6950add902d158db9a1be885acfcd0e09",
+          "modified": "2026-07-12T19:21:16.459440+00:00"
+        },
+        "cards/firefight_ploys/tempestus-aquilons-tempestus-exemplars-front.jpg": {
+          "path": "output/tempestus-aquilons/cards/firefight_ploys/tempestus-aquilons-tempestus-exemplars-front.jpg",
+          "hash": "99375fdd7529f7fa354c205e2d3768561bdc5214bb6d0133e2c77ae64350e984",
+          "modified": "2026-07-12T19:21:16.471129+00:00"
+        },
+        "cards/operatives_selection/tempestus-aquilons-operative-selection-back.jpg": {
+          "path": "output/tempestus-aquilons/cards/operatives_selection/tempestus-aquilons-operative-selection-back.jpg",
+          "hash": "1b04b95110de879fbe3fc5aa04b50f2b28f8e474898d2f4a5c0377fef49ab6ea",
+          "modified": "2026-07-12T19:21:16.478332+00:00"
+        },
+        "cards/operatives_selection/tempestus-aquilons-operative-selection-front.jpg": {
+          "path": "output/tempestus-aquilons/cards/operatives_selection/tempestus-aquilons-operative-selection-front.jpg",
+          "hash": "90e3473e43e08c06fc6eff2251fc2e8f4c188f00d2cc7b5b4204393ada3198e6",
+          "modified": "2026-07-12T19:21:16.499093+00:00"
+        },
+        "cards/strategy_ploys/tempestus-aquilons-drop-and-secure-back.jpg": {
+          "path": "output/tempestus-aquilons/cards/strategy_ploys/tempestus-aquilons-drop-and-secure-back.jpg",
+          "hash": "6f57b5f9809ae1c92759f0ec0f31f8b6950add902d158db9a1be885acfcd0e09",
+          "modified": "2026-07-12T19:21:16.513671+00:00"
+        },
+        "cards/strategy_ploys/tempestus-aquilons-drop-and-secure-front.jpg": {
+          "path": "output/tempestus-aquilons/cards/strategy_ploys/tempestus-aquilons-drop-and-secure-front.jpg",
+          "hash": "8499211f84b71e73528f40de3e3f9ec49318baf81ffe1578fae2b921a214fa5a",
+          "modified": "2026-07-12T19:21:16.533973+00:00"
+        },
+        "cards/strategy_ploys/tempestus-aquilons-eye-above-back.jpg": {
+          "path": "output/tempestus-aquilons/cards/strategy_ploys/tempestus-aquilons-eye-above-back.jpg",
+          "hash": "6f57b5f9809ae1c92759f0ec0f31f8b6950add902d158db9a1be885acfcd0e09",
+          "modified": "2026-07-12T19:21:16.548702+00:00"
+        },
+        "cards/strategy_ploys/tempestus-aquilons-eye-above-front.jpg": {
+          "path": "output/tempestus-aquilons/cards/strategy_ploys/tempestus-aquilons-eye-above-front.jpg",
+          "hash": "4e0f8e3f4c9744f82a2150e7c9f48603e4b81113918a36ff3ed2fcf99334401f",
+          "modified": "2026-07-12T19:21:16.551003+00:00"
+        },
+        "cards/strategy_ploys/tempestus-aquilons-maintain-momentum-back.jpg": {
+          "path": "output/tempestus-aquilons/cards/strategy_ploys/tempestus-aquilons-maintain-momentum-back.jpg",
+          "hash": "6f57b5f9809ae1c92759f0ec0f31f8b6950add902d158db9a1be885acfcd0e09",
+          "modified": "2026-07-12T19:21:16.562681+00:00"
+        },
+        "cards/strategy_ploys/tempestus-aquilons-maintain-momentum-front.jpg": {
+          "path": "output/tempestus-aquilons/cards/strategy_ploys/tempestus-aquilons-maintain-momentum-front.jpg",
+          "hash": "b8a0060f467b36d47cb1407237cfec3d7ad6c7bf2608bd11daee4a7cf58009ff",
+          "modified": "2026-07-12T19:21:16.566576+00:00"
+        },
+        "cards/strategy_ploys/tempestus-aquilons-sudden-offensive-back.jpg": {
+          "path": "output/tempestus-aquilons/cards/strategy_ploys/tempestus-aquilons-sudden-offensive-back.jpg",
+          "hash": "6f57b5f9809ae1c92759f0ec0f31f8b6950add902d158db9a1be885acfcd0e09",
+          "modified": "2026-07-12T19:21:16.578706+00:00"
+        },
+        "cards/strategy_ploys/tempestus-aquilons-sudden-offensive-front.jpg": {
+          "path": "output/tempestus-aquilons/cards/strategy_ploys/tempestus-aquilons-sudden-offensive-front.jpg",
+          "hash": "9456f0c78b79266e07772e8e18a4824454ae0cb5a8b6a6a47aa84099f0d5cc2a",
+          "modified": "2026-07-12T19:21:16.587069+00:00"
+        },
+        "cards/token_guide/tempestus-aquilons-token-guide-back.jpg": {
+          "path": "output/tempestus-aquilons/cards/token_guide/tempestus-aquilons-token-guide-back.jpg",
+          "hash": "6f57b5f9809ae1c92759f0ec0f31f8b6950add902d158db9a1be885acfcd0e09",
+          "modified": "2026-07-12T19:21:16.603732+00:00"
+        },
+        "cards/token_guide/tempestus-aquilons-token-guide-front.jpg": {
+          "path": "output/tempestus-aquilons/cards/token_guide/tempestus-aquilons-token-guide-front.jpg",
+          "hash": "b4c44229ba0216144998277b5e03155aa81448a8b3e0479ed16bfca374b9026c",
+          "modified": "2026-07-12T19:21:16.620341+00:00"
+        },
+        "cards/datacards/aquilon-servosentry-back.jpg": {
+          "path": "output/tempestus-aquilons/cards/datacards/aquilon-servosentry-back.jpg",
+          "hash": "44c76e91323fa326e7519560bcfcb7d86d604f1aa0cc68f820887f1630335e52",
+          "modified": "2026-07-12T19:21:13.902894+00:00"
+        },
+        "cards/datacards/aquilon-servosentry-front.jpg": {
+          "path": "output/tempestus-aquilons/cards/datacards/aquilon-servosentry-front.jpg",
+          "hash": "763c9514300e562cba5d10c965ea034222c720e06c85d80869a27cb376f82757",
+          "modified": "2026-07-12T19:21:13.907114+00:00"
+        },
+        "cards/faction_rules/tempestus-aquilons-grav‑chute-back.jpg": {
+          "path": "output/tempestus-aquilons/cards/faction_rules/tempestus-aquilons-grav‑chute-back.jpg",
+          "hash": "6f57b5f9809ae1c92759f0ec0f31f8b6950add902d158db9a1be885acfcd0e09",
+          "modified": "2026-07-12T19:21:16.396540+00:00"
+        },
+        "cards/faction_rules/tempestus-aquilons-grav‑chute-front.jpg": {
+          "path": "output/tempestus-aquilons/cards/faction_rules/tempestus-aquilons-grav‑chute-front.jpg",
+          "hash": "4cca5b9a04e2b9829b03a0ef4fcf73e918b309ab857cf8b470e8cdc15d3fb84f",
+          "modified": "2026-07-12T19:21:16.404488+00:00"
+        }
+      },
+      "completed": "2026-07-12T19:21:58.967115+00:00",
+      "inputs": {
+        "layers/integration/tempestus-aquilons/manifest.json": "cfa789c4919c750d17d60dabd3e86dbd454178de0e3c19ecac584c70d5643c78",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-datacard-aquilon-grenadier.pdf": "89a33389a81031bdec2fad9d9166fbc3936fbc21358ae070734c3cc91971665b",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-datacard-aquilon-gunfighter.pdf": "49585f7684f55763c3519c6587c24f0e4e6ebe8a8aa58b9d41bb36e94e29f8db",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-datacard-aquilon-gunner.pdf": "86beb1087d01e87fdfe1519394fdf6d52c16f40c958f80dd271d56ab878be16d",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-datacard-aquilon-marksman.pdf": "272491c31ba55ebb9c136ddedc06101f8c04fc8ff2f4f4d31b266d4bac5f28e0",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-datacard-aquilon-precursor.pdf": "143b1b100a3356259e0b858023e11dd1b88aed7c246f3b67e101435c612cc5f4",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-datacard-aquilon-servosentry.pdf": "ee6630c49ddd09007e5e1ce3d7bbf7033983cf4716c6ad632d91bf6823834950",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-datacard-aquilon-tempestor.pdf": "1cfc01242362368d087e09361caf836bc7e451ec746ba6f8221586e47f869453",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-datacard-aquilon-trooper.pdf": "ca7a37589f0eadc5b9dd8db94794a171ab5c23253420ead76648c00364ecb2bb",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-equipment-combat-stimms.pdf": "7de256b48827480f194accdeea3f3161d2661b09943bd947f0988ca38668d5fa",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-equipment-drop-augury.pdf": "f16a2a3c0db54b58ff91654c47576a3766a6163b75b98c0ebed328181df80a8d",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-equipment-remote-overseer.pdf": "072c1b20c1513ba0b3aa1372b609997eb51f27a6485494e5a75beb160c529c42",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-equipment-tempestus-daggers.pdf": "c939443c37b65b9396dd36c23997ed98151340ba4b7296b24b5f4ce1b6e24f36",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-faction-rule-drop-insertion.pdf": "f437d369d7c7bd0f23aa6bc24d4410f2e7dcf4ad2fc6c4f7f2648fbf17e76b09",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-faction-rule-gravchute.pdf": "4aadbe80ac4131b23d3a0a4497bbc07e628656d7e53432946eecf11e56ea3e8f",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-firefight-ploy-adjust-coordinates.pdf": "858b7408c7526c4d28dabd0c8e27983e4c7db5c6b9355e4b1c713f5278be7572",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-firefight-ploy-hot-drop.pdf": "1a6619cd2d1cd64d0e8bd24c61141a2f05a54b7bd776815e973772390cded8ba",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-firefight-ploy-progena.pdf": "41d6bea3a4cd44004f4202674d7a40b6e65abf2f95932ec3c15e342c4e2c8a71",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-firefight-ploy-tempestus-exemplars.pdf": "5f90c2043dd9346c06947979189c34541122cde8916c868cb55453f6d5b6c8dc",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-operatives-selection-operative-selection.pdf": "c2d00ac18d2d948592266dd941808fd0d6ad29b631bf7d31e1278ab8cf5336fc",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-strategy-ploy-drop-and-secure.pdf": "27e1e5f342d737149417f6d058d9a0b64c2be899f25024df921eba0500ae8cf5",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-strategy-ploy-eye-above.pdf": "addd153be4148c5a5301a4654cb2a05df33d6f3cad7dc998db6b58e9767e2412",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-strategy-ploy-maintain-momentum.pdf": "b04beb2b02adb21213c6e0bcee77f7ee2a5889f6fc1d9786b9f5aa4a355dfb8c",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-strategy-ploy-sudden-offensive.pdf": "cd0224ffb2b525ee5b3885365425543958039e531c88b4956fc608ca537ec078",
+        "layers/integration/tempestus-aquilons/tempestus-aquilons-token-guide-token-guide.pdf": "273775a7f129c48ab5933f5a486a8bac0f48aa4c13eb9154117b9e1eec57236f",
+        "layers/integration/tempestus-aquilons/card-backside/tempestus-aquilons-backside-portrait.jpg": "6f57b5f9809ae1c92759f0ec0f31f8b6950add902d158db9a1be885acfcd0e09",
+        "config/defaults/card-backside/default-backside-portrait.jpg": "f00ff15fa70005b9f804de08519e2e83485d7eaf78dfacea65dcef0eb1a29c22",
+        "layers/integration/tempestus-aquilons/card-backside/tempestus-aquilons-backside-landscape.jpg": "44c76e91323fa326e7519560bcfcb7d86d604f1aa0cc68f820887f1630335e52",
+        "config/defaults/card-backside/default-backside-landscape.jpg": "1cf5580a1dff0c10adb1a286edad4479c487f3d2d698b0b8be84fe653039fd7e"
+      }
+    },
+    "extract_stats": {
+      "outputs": {
+        "team-data.json": {
+          "path": "output/tempestus-aquilons/data/tempestus-aquilons-team-data.json",
+          "hash": "3a845df462efad4a0c8fead8f705eb11f306fd9e27cd402929aa9b497275bbff",
+          "modified": "2026-07-12T18:58:26.869544+00:00"
+        }
+      },
+      "completed": "2026-07-12T18:58:26.874281+00:00",
+      "inputs": {
+        "layers/integration/tempestus-aquilons/content/tempestus-aquilons-content.json": "3a845df462efad4a0c8fead8f705eb11f306fd9e27cd402929aa9b497275bbff"
+      }
+    },
+    "generate_tts": {
+      "outputs": {
+        "tts_objects/Tempestus Aquilons Box.json": {
+          "path": "output/tempestus-aquilons/tts_objects/Tempestus Aquilons Box.json",
+          "hash": "a7941fd6457eede5a84d0950616c3125463190bbf1d6505ee7aec6b532dd6033",
+          "modified": "2026-07-12T20:56:43.941208+00:00"
+        },
+        "tts_objects/Tempestus Aquilons.json": {
+          "path": "output/tempestus-aquilons/tts_objects/Tempestus Aquilons.json",
+          "hash": "158ec18351aa116db4d696980752cd73000fa6e9a2b1bbf95d3d18e804322bf2",
+          "modified": "2026-07-12T20:56:43.950389+00:00"
+        }
+      },
+      "completed": "2026-07-12T20:56:44.211570+00:00",
+      "inputs": {
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "config/team-guids.json": "1dea0eaf2c7d1c37c86aba088cdf876f0638d2dcaca162888fea8422c2d5c9db",
+        "output/tempestus-aquilons/cards/datacards/aquilon-grenadier-back.jpg": "44c76e91323fa326e7519560bcfcb7d86d604f1aa0cc68f820887f1630335e52",
+        "output/tempestus-aquilons/cards/datacards/aquilon-grenadier-front.jpg": "005701c68facb6977d28abdf72029ebf64409c608cee5225739d3b507e586679",
+        "output/tempestus-aquilons/cards/datacards/aquilon-gunfighter-back.jpg": "44c76e91323fa326e7519560bcfcb7d86d604f1aa0cc68f820887f1630335e52",
+        "output/tempestus-aquilons/cards/datacards/aquilon-gunfighter-front.jpg": "0b217750380b253782508ecec87fc7c384c8b06fc436ee748fada8f44f4bb096",
+        "output/tempestus-aquilons/cards/datacards/aquilon-gunner-back.jpg": "44c76e91323fa326e7519560bcfcb7d86d604f1aa0cc68f820887f1630335e52",
+        "output/tempestus-aquilons/cards/datacards/aquilon-gunner-front.jpg": "e5bb7993d9fb0f5f25da353241e491167457bb69c845d6d07fd3eb7623f23d76",
+        "output/tempestus-aquilons/cards/datacards/aquilon-marksman-back.jpg": "44c76e91323fa326e7519560bcfcb7d86d604f1aa0cc68f820887f1630335e52",
+        "output/tempestus-aquilons/cards/datacards/aquilon-marksman-front.jpg": "6c3f79d345c18b5b16dbc4fc7c285f53f20c6d24b80cea635a514a416542c36b",
+        "output/tempestus-aquilons/cards/datacards/aquilon-precursor-back.jpg": "44c76e91323fa326e7519560bcfcb7d86d604f1aa0cc68f820887f1630335e52",
+        "output/tempestus-aquilons/cards/datacards/aquilon-precursor-front.jpg": "6561e9373ac26b47718e9812adb8785359ed99848542845fff237bd8cca66b27",
+        "output/tempestus-aquilons/cards/datacards/aquilon-servosentry-back.jpg": "44c76e91323fa326e7519560bcfcb7d86d604f1aa0cc68f820887f1630335e52",
+        "output/tempestus-aquilons/cards/datacards/aquilon-servosentry-front.jpg": "763c9514300e562cba5d10c965ea034222c720e06c85d80869a27cb376f82757",
+        "output/tempestus-aquilons/cards/datacards/aquilon-servo‑sentry-back.jpg": "44c76e91323fa326e7519560bcfcb7d86d604f1aa0cc68f820887f1630335e52",
+        "output/tempestus-aquilons/cards/datacards/aquilon-servo‑sentry-front.jpg": "763c9514300e562cba5d10c965ea034222c720e06c85d80869a27cb376f82757",
+        "output/tempestus-aquilons/cards/datacards/aquilon-tempestor-back.jpg": "8c1e58853cc9431538babb45cd143ce5b992b1d87e8ccd345faba01b6a37a96c",
+        "output/tempestus-aquilons/cards/datacards/aquilon-tempestor-front.jpg": "4b5aa6b67a6815b48ac259ef7f4ae28e7e431c5efff6f41dd026e6a3aeeb5d0d",
+        "output/tempestus-aquilons/cards/datacards/aquilon-trooper-back.jpg": "44c76e91323fa326e7519560bcfcb7d86d604f1aa0cc68f820887f1630335e52",
+        "output/tempestus-aquilons/cards/datacards/aquilon-trooper-front.jpg": "807d425327986b5660c500fef02ec5611f3da3e89731fadd4a0ead65f52ed9d2",
+        "output/tempestus-aquilons/cards/equipment/tempestus-aquilons-combat-stimms-back.jpg": "6f57b5f9809ae1c92759f0ec0f31f8b6950add902d158db9a1be885acfcd0e09",
+        "output/tempestus-aquilons/cards/equipment/tempestus-aquilons-combat-stimms-front.jpg": "46861e1d7f38c6b4a8733219033361192bd8342cb4ae1f204f923b084acb3aeb",
+        "output/tempestus-aquilons/cards/equipment/tempestus-aquilons-drop-augury-back.jpg": "6f57b5f9809ae1c92759f0ec0f31f8b6950add902d158db9a1be885acfcd0e09",
+        "output/tempestus-aquilons/cards/equipment/tempestus-aquilons-drop-augury-front.jpg": "3f2ebed17005597baee5a6feda07ce88afbd4fcf81598b24a1fe09da2e8f39e9",
+        "output/tempestus-aquilons/cards/equipment/tempestus-aquilons-remote-overseer-back.jpg": "6f57b5f9809ae1c92759f0ec0f31f8b6950add902d158db9a1be885acfcd0e09",
+        "output/tempestus-aquilons/cards/equipment/tempestus-aquilons-remote-overseer-front.jpg": "08ca2a2c21f53a9d68a1d3c2c4e3756d4157447663d742c78f96f972a5808bb2",
+        "output/tempestus-aquilons/cards/equipment/tempestus-aquilons-tempestus-daggers-back.jpg": "6f57b5f9809ae1c92759f0ec0f31f8b6950add902d158db9a1be885acfcd0e09",
+        "output/tempestus-aquilons/cards/equipment/tempestus-aquilons-tempestus-daggers-front.jpg": "b4a5d1cab9eec00e0c0ad8eb6e830b05ba9ced69cd88f902c589f3059cb5b80c",
+        "output/tempestus-aquilons/cards/faction_rules/tempestus-aquilons-drop-insertion-back.jpg": "9350fe0f58972f9220a938a6b3d2907538750c4a4b5e582569e7325767f27bc3",
+        "output/tempestus-aquilons/cards/faction_rules/tempestus-aquilons-drop-insertion-front.jpg": "c836e9e097e1f252a6f06abfdc7d1527d6d42feeec7f187a3446f364751552df",
+        "output/tempestus-aquilons/cards/faction_rules/tempestus-aquilons-gravchute-back.jpg": "6f57b5f9809ae1c92759f0ec0f31f8b6950add902d158db9a1be885acfcd0e09",
+        "output/tempestus-aquilons/cards/faction_rules/tempestus-aquilons-gravchute-front.jpg": "4bc5a63b05cc30ad706813807addd82c3c6c5fe0c06f7b4aa09d04441d3a5ac0",
+        "output/tempestus-aquilons/cards/faction_rules/tempestus-aquilons-grav‑chute-back.jpg": "6f57b5f9809ae1c92759f0ec0f31f8b6950add902d158db9a1be885acfcd0e09",
+        "output/tempestus-aquilons/cards/faction_rules/tempestus-aquilons-grav‑chute-front.jpg": "4cca5b9a04e2b9829b03a0ef4fcf73e918b309ab857cf8b470e8cdc15d3fb84f",
+        "output/tempestus-aquilons/cards/firefight_ploys/tempestus-aquilons-adjust-coordinates-back.jpg": "6f57b5f9809ae1c92759f0ec0f31f8b6950add902d158db9a1be885acfcd0e09",
+        "output/tempestus-aquilons/cards/firefight_ploys/tempestus-aquilons-adjust-coordinates-front.jpg": "b05ca03e7e298ccf0d4aa005a05feea53009f15b63df4522a0bae5a3c0ec255f",
+        "output/tempestus-aquilons/cards/firefight_ploys/tempestus-aquilons-hot-drop-back.jpg": "6f57b5f9809ae1c92759f0ec0f31f8b6950add902d158db9a1be885acfcd0e09",
+        "output/tempestus-aquilons/cards/firefight_ploys/tempestus-aquilons-hot-drop-front.jpg": "1edbaeaac187b715660cfddbb2a0c14987e8ceba686c63a73db87540fb7819e2",
+        "output/tempestus-aquilons/cards/firefight_ploys/tempestus-aquilons-progena-back.jpg": "6f57b5f9809ae1c92759f0ec0f31f8b6950add902d158db9a1be885acfcd0e09",
+        "output/tempestus-aquilons/cards/firefight_ploys/tempestus-aquilons-progena-front.jpg": "46b77a1e7a323f7e40a7df8a974b2d7c29265e9bf7d05d06c8a5a5d8091616ab",
+        "output/tempestus-aquilons/cards/firefight_ploys/tempestus-aquilons-tempestus-exemplars-back.jpg": "6f57b5f9809ae1c92759f0ec0f31f8b6950add902d158db9a1be885acfcd0e09",
+        "output/tempestus-aquilons/cards/firefight_ploys/tempestus-aquilons-tempestus-exemplars-front.jpg": "99375fdd7529f7fa354c205e2d3768561bdc5214bb6d0133e2c77ae64350e984",
+        "output/tempestus-aquilons/cards/operatives_selection/tempestus-aquilons-operative-selection-back.jpg": "1b04b95110de879fbe3fc5aa04b50f2b28f8e474898d2f4a5c0377fef49ab6ea",
+        "output/tempestus-aquilons/cards/operatives_selection/tempestus-aquilons-operative-selection-front.jpg": "90e3473e43e08c06fc6eff2251fc2e8f4c188f00d2cc7b5b4204393ada3198e6",
+        "output/tempestus-aquilons/cards/strategy_ploys/tempestus-aquilons-drop-and-secure-back.jpg": "6f57b5f9809ae1c92759f0ec0f31f8b6950add902d158db9a1be885acfcd0e09",
+        "output/tempestus-aquilons/cards/strategy_ploys/tempestus-aquilons-drop-and-secure-front.jpg": "8499211f84b71e73528f40de3e3f9ec49318baf81ffe1578fae2b921a214fa5a",
+        "output/tempestus-aquilons/cards/strategy_ploys/tempestus-aquilons-eye-above-back.jpg": "6f57b5f9809ae1c92759f0ec0f31f8b6950add902d158db9a1be885acfcd0e09",
+        "output/tempestus-aquilons/cards/strategy_ploys/tempestus-aquilons-eye-above-front.jpg": "4e0f8e3f4c9744f82a2150e7c9f48603e4b81113918a36ff3ed2fcf99334401f",
+        "output/tempestus-aquilons/cards/strategy_ploys/tempestus-aquilons-maintain-momentum-back.jpg": "6f57b5f9809ae1c92759f0ec0f31f8b6950add902d158db9a1be885acfcd0e09",
+        "output/tempestus-aquilons/cards/strategy_ploys/tempestus-aquilons-maintain-momentum-front.jpg": "b8a0060f467b36d47cb1407237cfec3d7ad6c7bf2608bd11daee4a7cf58009ff",
+        "output/tempestus-aquilons/cards/strategy_ploys/tempestus-aquilons-sudden-offensive-back.jpg": "6f57b5f9809ae1c92759f0ec0f31f8b6950add902d158db9a1be885acfcd0e09",
+        "output/tempestus-aquilons/cards/strategy_ploys/tempestus-aquilons-sudden-offensive-front.jpg": "9456f0c78b79266e07772e8e18a4824454ae0cb5a8b6a6a47aa84099f0d5cc2a",
+        "output/tempestus-aquilons/cards/token_guide/tempestus-aquilons-token-guide-back.jpg": "6f57b5f9809ae1c92759f0ec0f31f8b6950add902d158db9a1be885acfcd0e09",
+        "output/tempestus-aquilons/cards/token_guide/tempestus-aquilons-token-guide-front.jpg": "b4c44229ba0216144998277b5e03155aa81448a8b3e0479ed16bfca374b9026c",
+        "output/tempestus-aquilons/cardbox/tempestus-aquilons-card-box-texture.jpg": "c74bf0c4ff262e5489530d774510e7d9f50b1f7e25efdded20b3448d4533d7b5",
+        "output/tempestus-aquilons/cardbox/tempestus-aquilons-card-box.obj": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+        "output/tempestus-aquilons/tokens/tempestus-aquilons-detected.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/tempestus-aquilons/tokens/tempestus-aquilons-detected.png": "35d7c68b99f0f2d9de675de15636e88ca0b1b6960ea291966956343e46185a14",
+        "output/tempestus-aquilons/tokens/tempestus-aquilons-drop-and-secure.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/tempestus-aquilons/tokens/tempestus-aquilons-drop-and-secure.png": "403bdf65b3f94c7327271ce906ead2abb267265b3c09993b862296c7f1d3a40a",
+        "output/tempestus-aquilons/tokens/tempestus-aquilons-drop.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/tempestus-aquilons/tokens/tempestus-aquilons-drop.png": "facdd607cdec4abfb0e4195357a73b7b36e22f82eb9de159f3e84c66af0b1101",
+        "output/tempestus-aquilons/tokens/tempestus-aquilons-melta-bomb.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/tempestus-aquilons/tokens/tempestus-aquilons-melta-bomb.png": "5becc706e8e3feb39d225b2876980905c250fec6663c969146fc763d59af7e58",
+        "output/tempestus-aquilons/tokens/tokenbag/tempestus-aquilons-token-bag-icon.png": "6b9fcc7648194e16b2482e5d7bca0ba9855a46ece8a7aedb9a4f0f215a614d41",
+        "output/tempestus-aquilons/tokens/tokenbag/tempestus-aquilons-token-bag.obj": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+        "output/tempestus-aquilons/dice/tempestus-aquilons-dice-dark.jpg": "162664d1c79cafd2e15b077f3d84e34dafbbb89aa8e61260f030e8c4e6ec8c33",
+        "output/tempestus-aquilons/dice/tempestus-aquilons-dice-light.jpg": "e70dee16c46a683c3176aceb17a5a4c8dbbd30210a199d8b56f3c06ddc85ce4b",
+        "output/tempestus-aquilons/dice/tempestus-aquilons-dice-team.jpg": "4c077f413f9ddf0d7b4e48e0c606d7f45bc3f6fafe26f38f575607eb34563e40",
+        "output/tempestus-aquilons/data/tempestus-aquilons-team-data.json": "3a845df462efad4a0c8fead8f705eb11f306fd9e27cd402929aa9b497275bbff",
+        "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
+        "config/defaults/tts-script/datacard-load-stats.lua": "2d5f4088c2ff09f54988cf8722080f536b4e1b998cc2b4c1f1ea94e6b18eb92e",
+        "config/defaults/tts-script/display-table-manager-script.lua": "0dab4381078d90802f25e2cc825bc3658be35ee13ab3e98831c9d248c2526689",
+        "config/defaults/tts-script/faction-rule-chapter-tactics.lua": "c906742268076fb91f7cb4a92c6b588e1122ccddb692688f635c8dd4f7110ad0",
+        "config/defaults/tts-script/intermediate-updater.lua": "1a2d6dbc1a8c9c57ba6a3e7a3d4bc4b7a38a6c242a93f6ef3dae698123384d35",
+        "config/defaults/tts-script/single-object-updater.lua": "3613b85169e986a8e50ebe221482079e27c18037e3f48920aa0f7e138c0ccacc",
+        "config/defaults/tts-script/team-spawner-clean-script.lua": "12457bff3961eee2293c42d81cf4f4eb8b103177245a1ab8b46fd65da40672a2",
+        "config/defaults/tts-script/team-spawner-script.lua": "a51ff45c8622923db909fb465781801511f235412f099f83dff728d4027650db",
+        "config/defaults/tts-script/tts-update-rules-in-box-script.lua": "84f7f9b260f4e4968d208953b534bdbb7ab0b2f475e13264a2407f6c4d4d2b03",
+        "config/defaults/tts-image/default-icon.png": "892aff2628b9685c813e77be05c66afc1dc4247bc1dc9ce6fe54f006c2608271",
+        "config/defaults/tts-image/spawner-token.png": "61903b093f01d834f5e4c4c069b1353ecf7d29f012fef914b3027266816d8a6b",
+        "config/defaults/tts-token/square-bag-mesh.obj": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+        "config/defaults/tts-token/template-diamond-cutter.png": "719f57ba2b86494be454a6d3d25d8567dde974a915f3dde5ddc0e2d8dafaa1a5",
+        "config/defaults/tts-token/template-octagon-cutter.png": "944632aeacab978293ae57758b63086166c5fbaf3b845f48b3dd61db67d5c076",
+        "config/defaults/tts-token/template-operative-cutter.png": "0e698ddd403d7f0e84f200eb42af73f5249a9c5539d773298ff4c700ac9fe153",
+        "config/defaults/tts-token/template-round-cutter.png": "6564e1451c9a135a1c756fd94cde1c71e373e3fa677b51bba9d4bbe9e795d544",
+        "config/defaults/tts-token/token-bag-script.lua": "1659887e0fbfb9e3ebbc1aa5f3df8e1ffd89ee192be24d2dd1f02fcb0407e486",
+        "config/defaults/tts-token/token-bg-sample.png": "f9f90664c7f1c877c6f050f6e85babde6523cdc0aed9c77de8c09214f44ee109",
+        "config/defaults/tts-token/token-mesh.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc"
+      }
+    },
+    "front_end": {
+      "outputs": {},
+      "sources": {
+        "strategy-ploys": {
+          "hash": "9512ca44a0e47f6c3f74dca0de3f5d4bed0da1032f5ebfb37fe133cb66c85c5e",
+          "outputs": [
+            "layers/kt-app/extracted/tempestus-aquilons/cards/strategy-ploys/tempestus-aquilons-strategy-ploys-page_0.pdf",
+            "layers/kt-app/extracted/tempestus-aquilons/cards/strategy-ploys/tempestus-aquilons-strategy-ploys-page_1.pdf",
+            "layers/kt-app/extracted/tempestus-aquilons/cards/strategy-ploys/tempestus-aquilons-strategy-ploys-page_2.pdf",
+            "layers/kt-app/extracted/tempestus-aquilons/cards/strategy-ploys/tempestus-aquilons-strategy-ploys-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:00:28.216098+00:00"
+        },
+        "equipment": {
+          "hash": "1836ac3d11b68fe34e5b8feb677de4fee2ba47d68091e9f8a96446bb285bb5e9",
+          "outputs": [
+            "layers/kt-app/extracted/tempestus-aquilons/cards/equipment/tempestus-aquilons-equipment-page_0.pdf",
+            "layers/kt-app/extracted/tempestus-aquilons/cards/equipment/tempestus-aquilons-equipment-page_1.pdf",
+            "layers/kt-app/extracted/tempestus-aquilons/cards/equipment/tempestus-aquilons-equipment-page_2.pdf",
+            "layers/kt-app/extracted/tempestus-aquilons/cards/equipment/tempestus-aquilons-equipment-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:02:19.073980+00:00"
+        },
+        "datacards": {
+          "hash": "2a7dd1e25619209c8b2e3bdedcb973e4d707a9b4e343fd029867f2a7a71af5e0",
+          "outputs": [
+            "layers/kt-app/extracted/tempestus-aquilons/cards/datacards/tempestus-aquilons-datacards-page_0.pdf",
+            "layers/kt-app/extracted/tempestus-aquilons/cards/datacards/tempestus-aquilons-datacards-page_1.pdf",
+            "layers/kt-app/extracted/tempestus-aquilons/cards/datacards/tempestus-aquilons-datacards-page_2.pdf",
+            "layers/kt-app/extracted/tempestus-aquilons/cards/datacards/tempestus-aquilons-datacards-page_3.pdf",
+            "layers/kt-app/extracted/tempestus-aquilons/cards/datacards/tempestus-aquilons-datacards-page_4.pdf",
+            "layers/kt-app/extracted/tempestus-aquilons/cards/datacards/tempestus-aquilons-datacards-page_5.pdf",
+            "layers/kt-app/extracted/tempestus-aquilons/cards/datacards/tempestus-aquilons-datacards-page_6.pdf",
+            "layers/kt-app/extracted/tempestus-aquilons/cards/datacards/tempestus-aquilons-datacards-page_7.pdf",
+            "layers/kt-app/extracted/tempestus-aquilons/cards/datacards/tempestus-aquilons-datacards-page_8.pdf"
+          ],
+          "modified": "2026-07-06T16:03:48.518396+00:00"
+        },
+        "firefight-ploys": {
+          "hash": "95d2ea193db6da78c23abd92e1284d2119912de5fec5f82fc3d9dba1bf39e7ab",
+          "outputs": [
+            "layers/kt-app/extracted/tempestus-aquilons/cards/firefight-ploys/tempestus-aquilons-firefight-ploys-page_0.pdf",
+            "layers/kt-app/extracted/tempestus-aquilons/cards/firefight-ploys/tempestus-aquilons-firefight-ploys-page_1.pdf",
+            "layers/kt-app/extracted/tempestus-aquilons/cards/firefight-ploys/tempestus-aquilons-firefight-ploys-page_2.pdf",
+            "layers/kt-app/extracted/tempestus-aquilons/cards/firefight-ploys/tempestus-aquilons-firefight-ploys-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:07:07.014908+00:00"
+        },
+        "faction-rules": {
+          "hash": "b0a2245112dafc6661ed54326213a510fb092209b6890cae14d8a5dde36d8c87",
+          "outputs": [
+            "layers/kt-app/extracted/tempestus-aquilons/cards/faction-rules/tempestus-aquilons-faction-rules-page_0.pdf",
+            "layers/kt-app/extracted/tempestus-aquilons/cards/faction-rules/tempestus-aquilons-faction-rules-page_1.pdf",
+            "layers/kt-app/extracted/tempestus-aquilons/cards/faction-rules/tempestus-aquilons-faction-rules-page_2.pdf",
+            "layers/kt-app/extracted/tempestus-aquilons/cards/faction-rules/tempestus-aquilons-faction-rules-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:08:04.254716+00:00"
+        },
+        "operatives-selection": {
+          "hash": "c658ecba2b749c86da3489a871b727cd5be9e7615aac96311e47ec1c92d53e36",
+          "outputs": [
+            "layers/kt-app/extracted/tempestus-aquilons/cards/operatives-selection/tempestus-aquilons-operatives-selection-page_0.pdf",
+            "layers/kt-app/extracted/tempestus-aquilons/cards/operatives-selection/tempestus-aquilons-operatives-selection-page_1.pdf"
+          ],
+          "modified": "2026-07-06T16:11:11.150588+00:00"
+        },
+        "cards": {
+          "hash": "d727075ea4146e275dc511784ac5520b1c3c23750378f2332e8c328cb7d7acb4",
+          "outputs": [
+            "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page01_card1_landscape.pdf",
+            "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page01_card2_landscape.pdf",
+            "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page01_card3_landscape.pdf",
+            "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page01_card4_landscape.pdf",
+            "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page02_card1_landscape.pdf",
+            "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page02_card2_landscape.pdf",
+            "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page02_card3_landscape.pdf",
+            "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page02_card4_landscape.pdf",
+            "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page03_card1_landscape.pdf",
+            "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page03_card2_landscape.pdf",
+            "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page03_card3_landscape.pdf",
+            "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page03_card4_landscape.pdf",
+            "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page04_card1_portrait.pdf",
+            "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page04_card2_portrait.pdf",
+            "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page04_card3_portrait.pdf",
+            "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page04_card4_portrait.pdf",
+            "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page05_card1_portrait.pdf",
+            "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page05_card2_portrait.pdf",
+            "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page05_card3_portrait.pdf",
+            "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page05_card4_portrait.pdf",
+            "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page06_card1_portrait.pdf",
+            "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page06_card2_portrait.pdf",
+            "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page06_card3_portrait.pdf",
+            "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page06_card4_portrait.pdf",
+            "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page07_card1_portrait.pdf",
+            "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page07_card2_portrait.pdf",
+            "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page07_card3_portrait.pdf",
+            "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page07_card4_portrait.pdf",
+            "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page08_card1_portrait.pdf",
+            "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page08_card2_portrait.pdf",
+            "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page08_card3_portrait.pdf",
+            "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page08_card4_portrait.pdf"
+          ],
+          "modified": "2026-07-08T18:56:04.958534+00:00"
+        }
+      },
+      "completed": "2026-07-08T18:56:04.958635+00:00"
+    },
+    "build_structure": {
+      "outputs": {
+        "structure": {
+          "path": "layers/warcom/structure/tempestus-aquilons-structure.json",
+          "hash": "cfa789c4919c750d17d60dabd3e86dbd454178de0e3c19ecac584c70d5643c78",
+          "modified": "2026-07-12T18:54:51.951741+00:00"
+        }
+      },
+      "inputs": {
+        "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page01_card1_landscape.pdf": "51a3c4134a1ba3b9fd8c62f33f50b142eab94fa35688cf92fe58629b8524e047",
+        "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page01_card2_landscape.pdf": "9b28416acd58908e78a606a69dd119f0a6b2b9cc31cb40ff9e16586db82166c6",
+        "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page01_card3_landscape.pdf": "e19188ee566e5c269ddb302313406728342798469a7357a0a64c1e59c8605c5d",
+        "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page01_card4_landscape.pdf": "5390fd381dc61091ab8e9a8d8ad69ca95f551696fc1c87f9add9403d6852f83b",
+        "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page02_card1_landscape.pdf": "7fe3d9e0e262b8da148a8361ddbf03d06aca8c725edcf2d6035caa88b1d8e0d2",
+        "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page02_card2_landscape.pdf": "2cf5002e09f10c736eaf50a3057779ca0761f56325c635f30e5cca615485772d",
+        "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page02_card3_landscape.pdf": "729f4c24dc040de576b20f56d94098de0c3a17a1cc2ac9f52cfd8c5dde350ede",
+        "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page02_card4_landscape.pdf": "6c06407996478054f06c2b5a85d6106c0ead0a7d7e8f1f3359ce4ecf77e76200",
+        "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page03_card1_landscape.pdf": "b4c9308f0ea4e25420e320233a2113f402253361df7db61d62af9e7fbd9851d4",
+        "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page03_card2_landscape.pdf": "fe12b97a55dcbc47e14b00ebfe56da4a43162181d7716bbebfaaf8ebad338dd1",
+        "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page03_card3_landscape.pdf": "453a34cc130ffe21ad561d9e1bd64e8b78e47f0f5fd24d9dc91664d81f407447",
+        "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page03_card4_landscape.pdf": "2e3b0c2db050c16d7adb179c6f82be173e9726cc3ac763cb9429db58938d9aba",
+        "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page04_card1_portrait.pdf": "5214f79727a269db1dbeb05fb7d3181fc92df5d47f6407e3838ada301618fca3",
+        "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page04_card2_portrait.pdf": "29d56689f2d68310bb8d2ee82c44a23c9380efa92dbde9f2a0a3594037021b09",
+        "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page04_card3_portrait.pdf": "5d4197933d213a85725cac01bcb2de8cd07d7459c8656135715cfe91110093a3",
+        "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page04_card4_portrait.pdf": "b796fe1ca04ede76dbfca922874ae0a7eccd9ef511a2fdad95e039b02da575c6",
+        "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page05_card1_portrait.pdf": "7a7cb7ed247732a60a90c80f10a9967e145974066587aa829ae09ffad3317ff9",
+        "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page05_card2_portrait.pdf": "130d3dbaad348eec0ca320df48a53b1caff5c533ca284e5bd527d9068fe45c18",
+        "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page05_card3_portrait.pdf": "41b42132bd7a26a7137da21a0c9c77b13bcbad3ad072f846181b20f01a867bf9",
+        "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page05_card4_portrait.pdf": "185ec462a677143492e9e7b2349a0dfdbdd112dfc08b6ccd54c2f9aedee0dc96",
+        "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page06_card1_portrait.pdf": "378c60b43a29cc339fb970b5aa14535e5cf8f577eb023c4963945ca2c8c52f97",
+        "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page06_card2_portrait.pdf": "0c4ef26d70bae400972a30151e604bfaddd02ab7ac0f0fb50ba33b008b1a0d56",
+        "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page06_card3_portrait.pdf": "f377a4da6a6473b627f41dde13554aa033e9aabac0ebdbdd4510f2668cf68ac2",
+        "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page06_card4_portrait.pdf": "c307320a08b15c420d55153dacb4f61e9b6cdaec2f04120ec44a7038f4188291",
+        "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page07_card1_portrait.pdf": "0a39387f16912b530586d3c700f7816af54b01b9247ab8cf08b77b98fd4a8fa8",
+        "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page07_card2_portrait.pdf": "e218da7e76e28c0e837d4caec1b44a285f64477400a7501f31034b7f86d98089",
+        "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page07_card3_portrait.pdf": "974beeb5db3fddba92a5293866c3e6611bc7cd5dc75216e32a11defdc3ca3616",
+        "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page07_card4_portrait.pdf": "45c20b7994c9d312efb3a006d2aefb3a74a9937e1cffdd402facdf57bf13511d",
+        "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page08_card1_portrait.pdf": "6901775513cd180c0f4eb27cd7464bb432df4b0e38ce754cf657f195e09ed97d",
+        "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page08_card2_portrait.pdf": "dcbd805557fe0e83b6607cb113262bb088d3a17d412728b23d85bd40cc9f2723",
+        "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page08_card3_portrait.pdf": "02f37dae404b01b66334d9bb8a1fd8f5da2d981468cb6d84976b28765272b0e1",
+        "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page08_card4_portrait.pdf": "e699e89e6a37dc0f1215d51e85714b5965db84e6c72e7295b498b851dbb77107"
+      },
+      "completed": "2026-07-12T18:55:28.504581+00:00"
+    },
+    "integrate_classified": {
+      "outputs": {
+        "manifest.json": {
+          "path": "layers/integration/tempestus-aquilons/manifest.json",
+          "hash": "cfa789c4919c750d17d60dabd3e86dbd454178de0e3c19ecac584c70d5643c78",
+          "modified": "2026-07-12T19:18:43.051313+00:00"
+        },
+        "tempestus-aquilons-datacard-aquilon-tempestor.pdf": {
+          "path": "layers/integration/tempestus-aquilons/tempestus-aquilons-datacard-aquilon-tempestor.pdf",
+          "hash": "1cfc01242362368d087e09361caf836bc7e451ec746ba6f8221586e47f869453",
+          "modified": "2026-07-12T19:18:43.086487+00:00"
+        },
+        "tempestus-aquilons-datacard-aquilon-grenadier.pdf": {
+          "path": "layers/integration/tempestus-aquilons/tempestus-aquilons-datacard-aquilon-grenadier.pdf",
+          "hash": "89a33389a81031bdec2fad9d9166fbc3936fbc21358ae070734c3cc91971665b",
+          "modified": "2026-07-12T19:18:53.224872+00:00"
+        },
+        "tempestus-aquilons-datacard-aquilon-gunfighter.pdf": {
+          "path": "layers/integration/tempestus-aquilons/tempestus-aquilons-datacard-aquilon-gunfighter.pdf",
+          "hash": "49585f7684f55763c3519c6587c24f0e4e6ebe8a8aa58b9d41bb36e94e29f8db",
+          "modified": "2026-07-12T19:18:53.369968+00:00"
+        },
+        "tempestus-aquilons-datacard-aquilon-gunner.pdf": {
+          "path": "layers/integration/tempestus-aquilons/tempestus-aquilons-datacard-aquilon-gunner.pdf",
+          "hash": "86beb1087d01e87fdfe1519394fdf6d52c16f40c958f80dd271d56ab878be16d",
+          "modified": "2026-07-12T19:18:53.384028+00:00"
+        },
+        "tempestus-aquilons-datacard-aquilon-marksman.pdf": {
+          "path": "layers/integration/tempestus-aquilons/tempestus-aquilons-datacard-aquilon-marksman.pdf",
+          "hash": "272491c31ba55ebb9c136ddedc06101f8c04fc8ff2f4f4d31b266d4bac5f28e0",
+          "modified": "2026-07-12T19:18:53.399862+00:00"
+        },
+        "tempestus-aquilons-datacard-aquilon-precursor.pdf": {
+          "path": "layers/integration/tempestus-aquilons/tempestus-aquilons-datacard-aquilon-precursor.pdf",
+          "hash": "143b1b100a3356259e0b858023e11dd1b88aed7c246f3b67e101435c612cc5f4",
+          "modified": "2026-07-12T19:18:53.421964+00:00"
+        },
+        "tempestus-aquilons-datacard-aquilon-servosentry.pdf": {
+          "path": "layers/integration/tempestus-aquilons/tempestus-aquilons-datacard-aquilon-servosentry.pdf",
+          "hash": "ee6630c49ddd09007e5e1ce3d7bbf7033983cf4716c6ad632d91bf6823834950",
+          "modified": "2026-07-12T19:18:53.457163+00:00"
+        },
+        "tempestus-aquilons-datacard-aquilon-trooper.pdf": {
+          "path": "layers/integration/tempestus-aquilons/tempestus-aquilons-datacard-aquilon-trooper.pdf",
+          "hash": "ca7a37589f0eadc5b9dd8db94794a171ab5c23253420ead76648c00364ecb2bb",
+          "modified": "2026-07-12T19:18:53.463894+00:00"
+        },
+        "tempestus-aquilons-equipment-tempestus-daggers.pdf": {
+          "path": "layers/integration/tempestus-aquilons/tempestus-aquilons-equipment-tempestus-daggers.pdf",
+          "hash": "c939443c37b65b9396dd36c23997ed98151340ba4b7296b24b5f4ce1b6e24f36",
+          "modified": "2026-07-12T19:18:53.486744+00:00"
+        },
+        "tempestus-aquilons-equipment-combat-stimms.pdf": {
+          "path": "layers/integration/tempestus-aquilons/tempestus-aquilons-equipment-combat-stimms.pdf",
+          "hash": "7de256b48827480f194accdeea3f3161d2661b09943bd947f0988ca38668d5fa",
+          "modified": "2026-07-12T19:18:53.495867+00:00"
+        },
+        "tempestus-aquilons-equipment-drop-augury.pdf": {
+          "path": "layers/integration/tempestus-aquilons/tempestus-aquilons-equipment-drop-augury.pdf",
+          "hash": "f16a2a3c0db54b58ff91654c47576a3766a6163b75b98c0ebed328181df80a8d",
+          "modified": "2026-07-12T19:18:54.221369+00:00"
+        },
+        "tempestus-aquilons-equipment-remote-overseer.pdf": {
+          "path": "layers/integration/tempestus-aquilons/tempestus-aquilons-equipment-remote-overseer.pdf",
+          "hash": "072c1b20c1513ba0b3aa1372b609997eb51f27a6485494e5a75beb160c529c42",
+          "modified": "2026-07-12T19:18:54.893440+00:00"
+        },
+        "tempestus-aquilons-faction-rule-drop-insertion.pdf": {
+          "path": "layers/integration/tempestus-aquilons/tempestus-aquilons-faction-rule-drop-insertion.pdf",
+          "hash": "f437d369d7c7bd0f23aa6bc24d4410f2e7dcf4ad2fc6c4f7f2648fbf17e76b09",
+          "modified": "2026-07-12T19:18:56.273041+00:00"
+        },
+        "tempestus-aquilons-faction-rule-gravchute.pdf": {
+          "path": "layers/integration/tempestus-aquilons/tempestus-aquilons-faction-rule-gravchute.pdf",
+          "hash": "4aadbe80ac4131b23d3a0a4497bbc07e628656d7e53432946eecf11e56ea3e8f",
+          "modified": "2026-07-12T19:18:56.967740+00:00"
+        },
+        "tempestus-aquilons-token-guide-token-guide.pdf": {
+          "path": "layers/integration/tempestus-aquilons/tempestus-aquilons-token-guide-token-guide.pdf",
+          "hash": "273775a7f129c48ab5933f5a486a8bac0f48aa4c13eb9154117b9e1eec57236f",
+          "modified": "2026-07-12T19:18:59.030679+00:00"
+        },
+        "tempestus-aquilons-firefight-ploy-hot-drop.pdf": {
+          "path": "layers/integration/tempestus-aquilons/tempestus-aquilons-firefight-ploy-hot-drop.pdf",
+          "hash": "1a6619cd2d1cd64d0e8bd24c61141a2f05a54b7bd776815e973772390cded8ba",
+          "modified": "2026-07-12T19:18:59.529062+00:00"
+        },
+        "tempestus-aquilons-firefight-ploy-adjust-coordinates.pdf": {
+          "path": "layers/integration/tempestus-aquilons/tempestus-aquilons-firefight-ploy-adjust-coordinates.pdf",
+          "hash": "858b7408c7526c4d28dabd0c8e27983e4c7db5c6b9355e4b1c713f5278be7572",
+          "modified": "2026-07-12T19:19:00.241465+00:00"
+        },
+        "tempestus-aquilons-firefight-ploy-tempestus-exemplars.pdf": {
+          "path": "layers/integration/tempestus-aquilons/tempestus-aquilons-firefight-ploy-tempestus-exemplars.pdf",
+          "hash": "5f90c2043dd9346c06947979189c34541122cde8916c868cb55453f6d5b6c8dc",
+          "modified": "2026-07-12T19:19:00.933634+00:00"
+        },
+        "tempestus-aquilons-firefight-ploy-progena.pdf": {
+          "path": "layers/integration/tempestus-aquilons/tempestus-aquilons-firefight-ploy-progena.pdf",
+          "hash": "41d6bea3a4cd44004f4202674d7a40b6e65abf2f95932ec3c15e342c4e2c8a71",
+          "modified": "2026-07-12T19:19:01.651163+00:00"
+        },
+        "tempestus-aquilons-operatives-selection-operative-selection.pdf": {
+          "path": "layers/integration/tempestus-aquilons/tempestus-aquilons-operatives-selection-operative-selection.pdf",
+          "hash": "c2d00ac18d2d948592266dd941808fd0d6ad29b631bf7d31e1278ab8cf5336fc",
+          "modified": "2026-07-12T19:19:02.404144+00:00"
+        },
+        "tempestus-aquilons-strategy-ploy-sudden-offensive.pdf": {
+          "path": "layers/integration/tempestus-aquilons/tempestus-aquilons-strategy-ploy-sudden-offensive.pdf",
+          "hash": "cd0224ffb2b525ee5b3885365425543958039e531c88b4956fc608ca537ec078",
+          "modified": "2026-07-12T19:19:04.587702+00:00"
+        },
+        "tempestus-aquilons-strategy-ploy-maintain-momentum.pdf": {
+          "path": "layers/integration/tempestus-aquilons/tempestus-aquilons-strategy-ploy-maintain-momentum.pdf",
+          "hash": "b04beb2b02adb21213c6e0bcee77f7ee2a5889f6fc1d9786b9f5aa4a355dfb8c",
+          "modified": "2026-07-12T19:19:06.684497+00:00"
+        },
+        "tempestus-aquilons-strategy-ploy-eye-above.pdf": {
+          "path": "layers/integration/tempestus-aquilons/tempestus-aquilons-strategy-ploy-eye-above.pdf",
+          "hash": "addd153be4148c5a5301a4654cb2a05df33d6f3cad7dc998db6b58e9767e2412",
+          "modified": "2026-07-12T19:19:14.258226+00:00"
+        },
+        "tempestus-aquilons-strategy-ploy-drop-and-secure.pdf": {
+          "path": "layers/integration/tempestus-aquilons/tempestus-aquilons-strategy-ploy-drop-and-secure.pdf",
+          "hash": "27e1e5f342d737149417f6d058d9a0b64c2be899f25024df921eba0500ae8cf5",
+          "modified": "2026-07-12T19:19:14.952051+00:00"
+        }
+      },
+      "inputs": {
+        "layers/warcom/structure/tempestus-aquilons-structure.json": "cfa789c4919c750d17d60dabd3e86dbd454178de0e3c19ecac584c70d5643c78",
+        "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page01_card1_landscape.pdf": "51a3c4134a1ba3b9fd8c62f33f50b142eab94fa35688cf92fe58629b8524e047",
+        "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page01_card2_landscape.pdf": "9b28416acd58908e78a606a69dd119f0a6b2b9cc31cb40ff9e16586db82166c6",
+        "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page01_card3_landscape.pdf": "e19188ee566e5c269ddb302313406728342798469a7357a0a64c1e59c8605c5d",
+        "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page01_card4_landscape.pdf": "5390fd381dc61091ab8e9a8d8ad69ca95f551696fc1c87f9add9403d6852f83b",
+        "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page02_card1_landscape.pdf": "7fe3d9e0e262b8da148a8361ddbf03d06aca8c725edcf2d6035caa88b1d8e0d2",
+        "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page02_card2_landscape.pdf": "2cf5002e09f10c736eaf50a3057779ca0761f56325c635f30e5cca615485772d",
+        "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page02_card3_landscape.pdf": "729f4c24dc040de576b20f56d94098de0c3a17a1cc2ac9f52cfd8c5dde350ede",
+        "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page02_card4_landscape.pdf": "6c06407996478054f06c2b5a85d6106c0ead0a7d7e8f1f3359ce4ecf77e76200",
+        "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page03_card1_landscape.pdf": "b4c9308f0ea4e25420e320233a2113f402253361df7db61d62af9e7fbd9851d4",
+        "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page07_card3_portrait.pdf": "974beeb5db3fddba92a5293866c3e6611bc7cd5dc75216e32a11defdc3ca3616",
+        "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page07_card4_portrait.pdf": "45c20b7994c9d312efb3a006d2aefb3a74a9937e1cffdd402facdf57bf13511d",
+        "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page08_card1_portrait.pdf": "6901775513cd180c0f4eb27cd7464bb432df4b0e38ce754cf657f195e09ed97d",
+        "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page08_card2_portrait.pdf": "dcbd805557fe0e83b6607cb113262bb088d3a17d412728b23d85bd40cc9f2723",
+        "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page04_card3_portrait.pdf": "5d4197933d213a85725cac01bcb2de8cd07d7459c8656135715cfe91110093a3",
+        "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page04_card4_portrait.pdf": "b796fe1ca04ede76dbfca922874ae0a7eccd9ef511a2fdad95e039b02da575c6",
+        "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page05_card1_portrait.pdf": "7a7cb7ed247732a60a90c80f10a9967e145974066587aa829ae09ffad3317ff9",
+        "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page05_card2_portrait.pdf": "130d3dbaad348eec0ca320df48a53b1caff5c533ca284e5bd527d9068fe45c18",
+        "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page06_card3_portrait.pdf": "f377a4da6a6473b627f41dde13554aa033e9aabac0ebdbdd4510f2668cf68ac2",
+        "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page06_card4_portrait.pdf": "c307320a08b15c420d55153dacb4f61e9b6cdaec2f04120ec44a7038f4188291",
+        "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page07_card1_portrait.pdf": "0a39387f16912b530586d3c700f7816af54b01b9247ab8cf08b77b98fd4a8fa8",
+        "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page07_card2_portrait.pdf": "e218da7e76e28c0e837d4caec1b44a285f64477400a7501f31034b7f86d98089",
+        "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page04_card1_portrait.pdf": "5214f79727a269db1dbeb05fb7d3181fc92df5d47f6407e3838ada301618fca3",
+        "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page04_card2_portrait.pdf": "29d56689f2d68310bb8d2ee82c44a23c9380efa92dbde9f2a0a3594037021b09",
+        "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page05_card3_portrait.pdf": "41b42132bd7a26a7137da21a0c9c77b13bcbad3ad072f846181b20f01a867bf9",
+        "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page05_card4_portrait.pdf": "185ec462a677143492e9e7b2349a0dfdbdd112dfc08b6ccd54c2f9aedee0dc96",
+        "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page06_card1_portrait.pdf": "378c60b43a29cc339fb970b5aa14535e5cf8f577eb023c4963945ca2c8c52f97",
+        "layers/warcom/extracted/tempestus-aquilons/cards/tempestus-aquilons_page06_card2_portrait.pdf": "0c4ef26d70bae400972a30151e604bfaddd02ab7ac0f0fb50ba33b008b1a0d56"
+      },
+      "completed": "2026-07-12T19:19:18.352622+00:00"
+    },
+    "extract_artwork": {
+      "outputs": {},
+      "sources": {
+        "artwork": {
+          "hash": "d727075ea4146e275dc511784ac5520b1c3c23750378f2332e8c328cb7d7acb4",
+          "outputs": [
+            "layers/integration/tempestus-aquilons/artwork/tempestus-aquilons-artwork-01.jpeg",
+            "layers/integration/tempestus-aquilons/artwork/tempestus-aquilons-artwork-02.jpeg",
+            "layers/integration/tempestus-aquilons/artwork/tempestus-aquilons-artwork-03.jpeg",
+            "layers/integration/tempestus-aquilons/artwork/tempestus-aquilons-artwork-03.png",
+            "layers/integration/tempestus-aquilons/artwork/tempestus-aquilons-artwork-04.jpeg",
+            "layers/integration/tempestus-aquilons/artwork/tempestus-aquilons-artwork-05.jpeg",
+            "layers/integration/tempestus-aquilons/artwork/tempestus-aquilons-artwork-06.jpeg",
+            "layers/integration/tempestus-aquilons/artwork/tempestus-aquilons-artwork-07.jpeg",
+            "layers/integration/tempestus-aquilons/artwork/tempestus-aquilons-artwork-07.png",
+            "layers/integration/tempestus-aquilons/artwork/tempestus-aquilons-artwork-08.jpeg",
+            "layers/integration/tempestus-aquilons/artwork/tempestus-aquilons-artwork-09.jpeg",
+            "layers/integration/tempestus-aquilons/artwork/tempestus-aquilons-artwork-10.jpeg",
+            "layers/integration/tempestus-aquilons/artwork/tempestus-aquilons-artwork-11.jpeg",
+            "layers/integration/tempestus-aquilons/artwork/tempestus-aquilons-artwork-12.jpeg",
+            "layers/integration/tempestus-aquilons/artwork/tempestus-aquilons-artwork-13.jpeg",
+            "layers/integration/tempestus-aquilons/artwork/tempestus-aquilons-artwork-14.jpeg",
+            "layers/integration/tempestus-aquilons/artwork/tempestus-aquilons-artwork-15.jpeg",
+            "layers/integration/tempestus-aquilons/artwork/tempestus-aquilons-artwork-16.jpeg",
+            "layers/integration/tempestus-aquilons/artwork/tempestus-aquilons-artwork-17.jpeg",
+            "layers/integration/tempestus-aquilons/artwork/tempestus-aquilons-artwork-18.jpeg",
+            "layers/integration/tempestus-aquilons/artwork/tempestus-aquilons-artwork-19.jpeg",
+            "layers/integration/tempestus-aquilons/artwork/tempestus-aquilons-artwork-20.jpeg",
+            "layers/integration/tempestus-aquilons/artwork/tempestus-aquilons-artwork-21.jpeg",
+            "layers/integration/tempestus-aquilons/artwork/tempestus-aquilons-artwork-22.jpeg",
+            "layers/integration/tempestus-aquilons/artwork/tempestus-aquilons-artwork-23.jpeg",
+            "layers/integration/tempestus-aquilons/artwork/tempestus-aquilons-artwork-24.jpeg",
+            "layers/integration/tempestus-aquilons/artwork/tempestus-aquilons-artwork-25.jpeg",
+            "layers/integration/tempestus-aquilons/artwork/tempestus-aquilons-artwork-26.jpeg",
+            "layers/integration/tempestus-aquilons/artwork/tempestus-aquilons-artwork-27.jpeg",
+            "layers/integration/tempestus-aquilons/artwork/tempestus-aquilons-artwork-28.jpeg",
+            "layers/integration/tempestus-aquilons/artwork/tempestus-aquilons-artwork-29.jpeg",
+            "layers/integration/tempestus-aquilons/artwork/tempestus-aquilons-artwork-30.jpeg",
+            "layers/integration/tempestus-aquilons/artwork/tempestus-aquilons-artwork-31.jpeg",
+            "layers/integration/tempestus-aquilons/artwork/tempestus-aquilons-artwork-32.jpeg",
+            "layers/integration/tempestus-aquilons/artwork/tempestus-aquilons-artwork-33.jpeg",
+            "layers/integration/tempestus-aquilons/artwork/tempestus-aquilons-artwork-34.jpeg",
+            "layers/integration/tempestus-aquilons/artwork/tempestus-aquilons-artwork-35.jpeg",
+            "layers/integration/tempestus-aquilons/artwork/tempestus-aquilons-artwork-36.jpeg",
+            "layers/integration/tempestus-aquilons/artwork/tempestus-aquilons-artwork-37.jpeg",
+            "layers/integration/tempestus-aquilons/artwork/tempestus-aquilons-artwork-38.jpeg",
+            "layers/integration/tempestus-aquilons/artwork/tempestus-aquilons-artwork-39.jpeg",
+            "layers/integration/tempestus-aquilons/artwork/tempestus-aquilons-artwork-40.jpeg",
+            "layers/integration/tempestus-aquilons/artwork/tempestus-aquilons-artwork-41.jpeg",
+            "layers/integration/tempestus-aquilons/artwork/tempestus-aquilons-artwork-42.jpeg",
+            "layers/integration/tempestus-aquilons/artwork/tempestus-aquilons-artwork-metadata.json",
+            "layers/integration/tempestus-aquilons/artwork/icons/tempestus-aquilons-icon-landscape.jpg",
+            "layers/integration/tempestus-aquilons/artwork/icons/tempestus-aquilons-icon-portrait.jpg",
+            "layers/integration/tempestus-aquilons/artwork/icons/tempestus-aquilons-icon-token-transparent.png",
+            "layers/integration/tempestus-aquilons/artwork/icons/tempestus-aquilons-icon-token.jpg"
+          ],
+          "modified": "2026-07-06T20:44:19.477641+00:00"
+        }
+      },
+      "completed": "2026-07-06T20:44:19.477661+00:00"
+    }
+  }
+}

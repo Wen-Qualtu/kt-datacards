@@ -1,0 +1,812 @@
+{
+  "team": "elucidian-starstriders",
+  "pipeline_version": "2.0",
+  "last_updated": "2026-07-12T20:56:35.107673+00:00",
+  "steps": {
+    "content_analysis": {
+      "outputs": {
+        "content.json": {
+          "path": "layers/integration/elucidian-starstriders/content/elucidian-starstriders-content.json",
+          "hash": "1610b2790f874c577487041503d5e74edc99d757dc8ac8559042136facfd4135",
+          "modified": "2026-07-12T19:10:37.906432+00:00"
+        }
+      },
+      "completed": "2026-07-12T19:11:04.394555+00:00",
+      "inputs": {
+        "layers/integration/elucidian-starstriders/manifest.json": "67e19d4ef2bc3dbed002541e7af9b13b7c7b681144f6441b6bae7570beafea95",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "layers/integration/elucidian-starstriders/elucidian-starstriders-datacard-canid.pdf": "c7d08c91b4a958b703a56976a4f61f275e44e97affb9088838e921144bdaf18e",
+        "layers/integration/elucidian-starstriders/elucidian-starstriders-datacard-death-cult-executioner.pdf": "9114d79efa2a65e46c84b04985a87d10a7355f82fbe6408cb1f62734dea4b5c6",
+        "layers/integration/elucidian-starstriders/elucidian-starstriders-datacard-elucia-vhane.pdf": "9f0e830b003e965ad00b422cd758a8b90192595266859921ab317b717aec1b07",
+        "layers/integration/elucidian-starstriders/elucidian-starstriders-datacard-lectro-maester.pdf": "8cf6a57517ba5c57c2cee1921b2fd53d982db545a0bb39562c69575911e68829",
+        "layers/integration/elucidian-starstriders/elucidian-starstriders-datacard-rejuvenat-adept.pdf": "80adffa8680f56133377e704a6bb9845e4de1ef01e0851eb99889454a411590a",
+        "layers/integration/elucidian-starstriders/elucidian-starstriders-datacard-voidmaster.pdf": "1885b054dbb92293fd0a525bf8eeece1436b977e1474150567ce7a5c91f966fc",
+        "layers/integration/elucidian-starstriders/elucidian-starstriders-datacard-voidsman.pdf": "a1ba40504a17fca5ad690612b745f069957e8496b88397a5fb63cffb31fe2ab4",
+        "layers/integration/elucidian-starstriders/elucidian-starstriders-equipment-armoured-undersuit.pdf": "dac663b758d0c3248398c9ba3110d6a829c001ddd3e8dc75e55e7aa21f65b302",
+        "layers/integration/elucidian-starstriders/elucidian-starstriders-equipment-hot-shot-capacitor-packs.pdf": "a97dae8a62175a99f7b52c8444f5b44cfa8815481ae51cde4d7f104c8e74e5bc",
+        "layers/integration/elucidian-starstriders/elucidian-starstriders-equipment-improved-coordinates-uplink.pdf": "9c463054c50e6e9006959d678e1e5924d5886efec9bd00059eb4ac9fba99dd60",
+        "layers/integration/elucidian-starstriders/elucidian-starstriders-equipment-rapid-gunnery.pdf": "cb0fc9e991402c5a0beb529c9516c14db0062a7791aa4b7cd46da6818dfd5c13",
+        "layers/integration/elucidian-starstriders/elucidian-starstriders-faction-rule-privateer-support-assets.pdf": "e48d39c2593b9d6a1e8f21f7749e71546290c933fdff0be39a0f603b225e5fe6",
+        "layers/integration/elucidian-starstriders/elucidian-starstriders-faction-rule-warrant-of-trade-2.pdf": "4f7eb34caa940612af8c0445d00510dd3569ba37ce67c88a43199c619317df8b",
+        "layers/integration/elucidian-starstriders/elucidian-starstriders-faction-rule-warrant-of-trade.pdf": "f9e97422f74871a23e0308e8467d9ed949ffbdb973523275e6fc568448cf359e",
+        "layers/integration/elucidian-starstriders/elucidian-starstriders-firefight-ploy-combined-arms.pdf": "64aed1c14ef8de9b2a5357ddd4aad8d14aa593866706641f78095c3297d55a70",
+        "layers/integration/elucidian-starstriders/elucidian-starstriders-firefight-ploy-great-endurance.pdf": "0db42348d6745b491eb84cc0ec6903539c3b845a6803f8f8cf6f435fa4ad4d0d",
+        "layers/integration/elucidian-starstriders/elucidian-starstriders-firefight-ploy-survivalist.pdf": "91483bf0a24a25a040610ba51808b0e4310c155570d5881c82a5a22402e5be5f",
+        "layers/integration/elucidian-starstriders/elucidian-starstriders-firefight-ploy-well-drilled.pdf": "afec3f5f4a7aee62cc035c75049b90a82c2c9bc983f82abf81f8b2cf70042f55",
+        "layers/integration/elucidian-starstriders/elucidian-starstriders-operatives-selection-operative-selection.pdf": "b15b2f066c16fd05685cf8f57c555b345dec54b733a23162bae4026f30f2ffcb",
+        "layers/integration/elucidian-starstriders/elucidian-starstriders-strategy-ploy-lethal-proximity.pdf": "c0e1361c35f6f7652c5d66adbad8823e17de644dc2103471961680ece3fefdd6",
+        "layers/integration/elucidian-starstriders/elucidian-starstriders-strategy-ploy-quick-march.pdf": "fc42fcdfa4a16b2b6dd77231eafbf8829f4fa82928bff60d42e28b39f6079c4a",
+        "layers/integration/elucidian-starstriders/elucidian-starstriders-strategy-ploy-stake-claim.pdf": "8c4ef9e63d90a35e424f421caa645724789bb10059942829b9d576ed7f570b61",
+        "layers/integration/elucidian-starstriders/elucidian-starstriders-strategy-ploy-undaunted-explorers.pdf": "5ce52242aa0fde51945144faf1fc6bc8eff507825ab411bda79a27e1aef014f9"
+      }
+    },
+    "extract_backsides": {
+      "outputs": {
+        "backside-landscape.jpg": {
+          "path": "layers/integration/elucidian-starstriders/card-backside/elucidian-starstriders-backside-landscape.jpg",
+          "hash": "b2babe775013f7aedcda4d3c7c115526250d698d35d14599c29932e5d0b6f1f2",
+          "modified": "2026-07-12T18:46:50.077356+00:00"
+        },
+        "backside-portrait.jpg": {
+          "path": "layers/integration/elucidian-starstriders/card-backside/elucidian-starstriders-backside-portrait.jpg",
+          "hash": "09c85d2b9303a62e6c2582554241980fe6a8a0ae4b8800a6abe33fe6aacdb6e2",
+          "modified": "2026-07-12T18:46:50.639600+00:00"
+        }
+      },
+      "completed": "2026-07-12T18:46:54.741965+00:00",
+      "inputs": {
+        "layers/integration/elucidian-starstriders/artwork/icons/elucidian-starstriders-icon-token.jpg": "7ca3a2f0ca4c19fc193e5d0b36a37e0bd995c6960c2785e37789f43725437e1c",
+        "config/defaults/box/card-box-background.jpeg": "2dd1442a7c52ca1d66899333f678d60f48981ce20561ead77c1161d548176036"
+      }
+    },
+    "generate_dice": {
+      "outputs": {
+        "dice-light.jpg": {
+          "path": "output/elucidian-starstriders/dice/elucidian-starstriders-dice-light.jpg",
+          "hash": "b6ae51f08218a53308551a0918e789483f9133bb670d9bd47c10f17dedb9d543",
+          "modified": "2026-07-12T18:46:56.628048+00:00"
+        },
+        "dice-dark.jpg": {
+          "path": "output/elucidian-starstriders/dice/elucidian-starstriders-dice-dark.jpg",
+          "hash": "a681520ed638ced9224c2a73004da5839ae07a53d7923580462383d7bc2f0124",
+          "modified": "2026-07-12T18:46:56.643635+00:00"
+        }
+      },
+      "completed": "2026-07-12T18:46:56.653345+00:00",
+      "inputs": {
+        "layers/integration/elucidian-starstriders/artwork/icons/elucidian-starstriders-icon-token-transparent.png": "53fa78761c8a1ead8ed474f6064f94ae81755d5046dd44b0e518946dff7c4de5",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41"
+      }
+    },
+    "generate_box_texture": {
+      "outputs": {
+        "card-box-texture.jpg": {
+          "path": "output/elucidian-starstriders/cardbox/elucidian-starstriders-card-box-texture.jpg",
+          "hash": "33134ef6424e68331652b0bbf62f378c78dfac1e1b3477e974f86ce4978434af",
+          "modified": "2026-07-12T18:46:57.338176+00:00"
+        },
+        "card-box.obj": {
+          "path": "output/elucidian-starstriders/cardbox/elucidian-starstriders-card-box.obj",
+          "hash": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+          "modified": "2026-07-12T18:46:57.350005+00:00"
+        }
+      },
+      "completed": "2026-07-12T18:46:57.378184+00:00",
+      "inputs": {
+        "layers/integration/elucidian-starstriders/artwork/icons/elucidian-starstriders-icon-token.jpg": "7ca3a2f0ca4c19fc193e5d0b36a37e0bd995c6960c2785e37789f43725437e1c",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "config/defaults/box/card-box.obj": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+        "config/defaults/box/card-box-texture.jpg": "b2f310b01a0d28e8806e99ce0b972e8967e3014608eacefcb6ec51597695a313"
+      }
+    },
+    "generate_card_images": {
+      "outputs": {
+        "cards/datacards/canid-back.jpg": {
+          "path": "output/elucidian-starstriders/cards/datacards/canid-back.jpg",
+          "hash": "b2babe775013f7aedcda4d3c7c115526250d698d35d14599c29932e5d0b6f1f2",
+          "modified": "2026-07-12T19:11:48.357991+00:00"
+        },
+        "cards/datacards/canid-front.jpg": {
+          "path": "output/elucidian-starstriders/cards/datacards/canid-front.jpg",
+          "hash": "ee39ccf7f5b0b931274b53af8f3cd0b12e5a305d123c0fe1b5b88fb888791ef5",
+          "modified": "2026-07-12T19:11:48.372839+00:00"
+        },
+        "cards/datacards/death-cult-executioner-back.jpg": {
+          "path": "output/elucidian-starstriders/cards/datacards/death-cult-executioner-back.jpg",
+          "hash": "b2babe775013f7aedcda4d3c7c115526250d698d35d14599c29932e5d0b6f1f2",
+          "modified": "2026-07-12T19:11:48.386239+00:00"
+        },
+        "cards/datacards/death-cult-executioner-front.jpg": {
+          "path": "output/elucidian-starstriders/cards/datacards/death-cult-executioner-front.jpg",
+          "hash": "803f9bb08360c187adf5fdeb2b2ca2dac43f80d6249b3f3f9f4a8a426a2bc788",
+          "modified": "2026-07-12T19:11:48.407581+00:00"
+        },
+        "cards/datacards/elucia-vhane-back.jpg": {
+          "path": "output/elucidian-starstriders/cards/datacards/elucia-vhane-back.jpg",
+          "hash": "b2babe775013f7aedcda4d3c7c115526250d698d35d14599c29932e5d0b6f1f2",
+          "modified": "2026-07-12T19:11:48.422477+00:00"
+        },
+        "cards/datacards/elucia-vhane-front.jpg": {
+          "path": "output/elucidian-starstriders/cards/datacards/elucia-vhane-front.jpg",
+          "hash": "d1e24b1de0547d9a28ec648f96efe1e0bca5145547dc251617394cf364c76578",
+          "modified": "2026-07-12T19:11:48.430616+00:00"
+        },
+        "cards/datacards/lectro-maester-back.jpg": {
+          "path": "output/elucidian-starstriders/cards/datacards/lectro-maester-back.jpg",
+          "hash": "5ed5054c7ef8346a9403fa1e89c52e7aa864db3ac30334f3b0646f6c004a14ac",
+          "modified": "2026-07-12T19:11:48.433261+00:00"
+        },
+        "cards/datacards/lectro-maester-front.jpg": {
+          "path": "output/elucidian-starstriders/cards/datacards/lectro-maester-front.jpg",
+          "hash": "7fb2abc5894a0da98557e5a814273a1e018122e2cee149abe0a0ed5e3e8e1ccc",
+          "modified": "2026-07-12T19:11:48.439839+00:00"
+        },
+        "cards/datacards/rejuvenat-adept-back.jpg": {
+          "path": "output/elucidian-starstriders/cards/datacards/rejuvenat-adept-back.jpg",
+          "hash": "0fd96a9fc2850147e7dece5b3b40eb039c4b35bf8d93936c3405b93bdb0caf18",
+          "modified": "2026-07-12T19:11:48.441355+00:00"
+        },
+        "cards/datacards/rejuvenat-adept-front.jpg": {
+          "path": "output/elucidian-starstriders/cards/datacards/rejuvenat-adept-front.jpg",
+          "hash": "dbbb975e0b86f1beb2440a9263091bb562e20069b214245b2523fcb4f7ee294c",
+          "modified": "2026-07-12T19:11:48.449460+00:00"
+        },
+        "cards/datacards/voidmaster-back.jpg": {
+          "path": "output/elucidian-starstriders/cards/datacards/voidmaster-back.jpg",
+          "hash": "72382d2cefa0d424b453ef25acc879c77bd4f53be182830f23f587675694e20d",
+          "modified": "2026-07-12T19:11:48.453292+00:00"
+        },
+        "cards/datacards/voidmaster-front.jpg": {
+          "path": "output/elucidian-starstriders/cards/datacards/voidmaster-front.jpg",
+          "hash": "9148bd7534484e783fff9ecd15e8c1171d7c6e1263fa372752cd5057ce1798f8",
+          "modified": "2026-07-12T19:11:48.457544+00:00"
+        },
+        "cards/datacards/voidsman-back.jpg": {
+          "path": "output/elucidian-starstriders/cards/datacards/voidsman-back.jpg",
+          "hash": "b2babe775013f7aedcda4d3c7c115526250d698d35d14599c29932e5d0b6f1f2",
+          "modified": "2026-07-12T19:11:48.531227+00:00"
+        },
+        "cards/datacards/voidsman-front.jpg": {
+          "path": "output/elucidian-starstriders/cards/datacards/voidsman-front.jpg",
+          "hash": "fc8e88d989085d2bb9523516428bb26147e284efe25aa157a2fc96898ee409e9",
+          "modified": "2026-07-12T19:11:48.909431+00:00"
+        },
+        "cards/equipment/elucidian-starstriders-armoured-undersuit-back.jpg": {
+          "path": "output/elucidian-starstriders/cards/equipment/elucidian-starstriders-armoured-undersuit-back.jpg",
+          "hash": "09c85d2b9303a62e6c2582554241980fe6a8a0ae4b8800a6abe33fe6aacdb6e2",
+          "modified": "2026-07-12T19:11:48.920995+00:00"
+        },
+        "cards/equipment/elucidian-starstriders-armoured-undersuit-front.jpg": {
+          "path": "output/elucidian-starstriders/cards/equipment/elucidian-starstriders-armoured-undersuit-front.jpg",
+          "hash": "9fa2ae2fbcc29b3f8643b2340a881b87b0344a36e6ed1c9a0c8ff48a137db5f0",
+          "modified": "2026-07-12T19:11:48.933589+00:00"
+        },
+        "cards/equipment/elucidian-starstriders-hot-shot-capacitor-packs-back.jpg": {
+          "path": "output/elucidian-starstriders/cards/equipment/elucidian-starstriders-hot-shot-capacitor-packs-back.jpg",
+          "hash": "09c85d2b9303a62e6c2582554241980fe6a8a0ae4b8800a6abe33fe6aacdb6e2",
+          "modified": "2026-07-12T19:11:48.947515+00:00"
+        },
+        "cards/equipment/elucidian-starstriders-hot-shot-capacitor-packs-front.jpg": {
+          "path": "output/elucidian-starstriders/cards/equipment/elucidian-starstriders-hot-shot-capacitor-packs-front.jpg",
+          "hash": "2a5ddbc4da203a605ac67cef6cf971cd2b9986c8e2eee38bff5b9168c706a2a6",
+          "modified": "2026-07-12T19:11:48.957972+00:00"
+        },
+        "cards/equipment/elucidian-starstriders-improved-coordinates-uplink-back.jpg": {
+          "path": "output/elucidian-starstriders/cards/equipment/elucidian-starstriders-improved-coordinates-uplink-back.jpg",
+          "hash": "09c85d2b9303a62e6c2582554241980fe6a8a0ae4b8800a6abe33fe6aacdb6e2",
+          "modified": "2026-07-12T19:11:48.971717+00:00"
+        },
+        "cards/equipment/elucidian-starstriders-improved-coordinates-uplink-front.jpg": {
+          "path": "output/elucidian-starstriders/cards/equipment/elucidian-starstriders-improved-coordinates-uplink-front.jpg",
+          "hash": "82e7772ada7ff33ff5f55bf1ca916911eb76515e2df3e1b096b561455cba6ce2",
+          "modified": "2026-07-12T19:11:48.991374+00:00"
+        },
+        "cards/equipment/elucidian-starstriders-rapid-gunnery-back.jpg": {
+          "path": "output/elucidian-starstriders/cards/equipment/elucidian-starstriders-rapid-gunnery-back.jpg",
+          "hash": "09c85d2b9303a62e6c2582554241980fe6a8a0ae4b8800a6abe33fe6aacdb6e2",
+          "modified": "2026-07-12T19:11:49.006623+00:00"
+        },
+        "cards/equipment/elucidian-starstriders-rapid-gunnery-front.jpg": {
+          "path": "output/elucidian-starstriders/cards/equipment/elucidian-starstriders-rapid-gunnery-front.jpg",
+          "hash": "4c7f9110873704add82a3e2a07b04976cee81f6f43d0c86a281c5d53e952980b",
+          "modified": "2026-07-12T19:11:49.023218+00:00"
+        },
+        "cards/faction_rules/elucidian-starstriders-privateer-support-assets-back.jpg": {
+          "path": "output/elucidian-starstriders/cards/faction_rules/elucidian-starstriders-privateer-support-assets-back.jpg",
+          "hash": "59de1c900cae39fec181946f2e98ebb1fe3dbe614ef17467d11d93ce79399ca2",
+          "modified": "2026-07-12T19:11:49.039338+00:00"
+        },
+        "cards/faction_rules/elucidian-starstriders-privateer-support-assets-front.jpg": {
+          "path": "output/elucidian-starstriders/cards/faction_rules/elucidian-starstriders-privateer-support-assets-front.jpg",
+          "hash": "10b65e4a3c8d4e68f8ddfccc0c020aead3cd95b0c767736599472b286ee26dd3",
+          "modified": "2026-07-12T19:11:49.057675+00:00"
+        },
+        "cards/faction_rules/elucidian-starstriders-warrant-of-trade-2-back.jpg": {
+          "path": "output/elucidian-starstriders/cards/faction_rules/elucidian-starstriders-warrant-of-trade-2-back.jpg",
+          "hash": "e833fd0f73deca24359e49c80cf2d02ab04dd6363dd4d0e0bec5d548017d2022",
+          "modified": "2026-07-12T19:11:49.065994+00:00"
+        },
+        "cards/faction_rules/elucidian-starstriders-warrant-of-trade-2-front.jpg": {
+          "path": "output/elucidian-starstriders/cards/faction_rules/elucidian-starstriders-warrant-of-trade-2-front.jpg",
+          "hash": "ca67497ce02a15a97d68869b92f1411a1e9a01111f49f903a14d3af2a94b9588",
+          "modified": "2026-07-12T19:11:49.069539+00:00"
+        },
+        "cards/faction_rules/elucidian-starstriders-warrant-of-trade-back.jpg": {
+          "path": "output/elucidian-starstriders/cards/faction_rules/elucidian-starstriders-warrant-of-trade-back.jpg",
+          "hash": "626397170839b69039138aa9c92d554cd887aa7df9431cee44006fcc9a590bce",
+          "modified": "2026-07-12T19:11:49.071664+00:00"
+        },
+        "cards/faction_rules/elucidian-starstriders-warrant-of-trade-front.jpg": {
+          "path": "output/elucidian-starstriders/cards/faction_rules/elucidian-starstriders-warrant-of-trade-front.jpg",
+          "hash": "ca67497ce02a15a97d68869b92f1411a1e9a01111f49f903a14d3af2a94b9588",
+          "modified": "2026-07-12T19:11:49.074469+00:00"
+        },
+        "cards/firefight_ploys/elucidian-starstriders-combined-arms-back.jpg": {
+          "path": "output/elucidian-starstriders/cards/firefight_ploys/elucidian-starstriders-combined-arms-back.jpg",
+          "hash": "09c85d2b9303a62e6c2582554241980fe6a8a0ae4b8800a6abe33fe6aacdb6e2",
+          "modified": "2026-07-12T19:11:49.084640+00:00"
+        },
+        "cards/firefight_ploys/elucidian-starstriders-combined-arms-front.jpg": {
+          "path": "output/elucidian-starstriders/cards/firefight_ploys/elucidian-starstriders-combined-arms-front.jpg",
+          "hash": "1779ed7ab2a2dd9837c49b7ca21fea80ff552e55617ef3d685c3107b2b1a0f2e",
+          "modified": "2026-07-12T19:11:49.784328+00:00"
+        },
+        "cards/firefight_ploys/elucidian-starstriders-great-endurance-back.jpg": {
+          "path": "output/elucidian-starstriders/cards/firefight_ploys/elucidian-starstriders-great-endurance-back.jpg",
+          "hash": "09c85d2b9303a62e6c2582554241980fe6a8a0ae4b8800a6abe33fe6aacdb6e2",
+          "modified": "2026-07-12T19:11:49.797248+00:00"
+        },
+        "cards/firefight_ploys/elucidian-starstriders-great-endurance-front.jpg": {
+          "path": "output/elucidian-starstriders/cards/firefight_ploys/elucidian-starstriders-great-endurance-front.jpg",
+          "hash": "a34ef6e4915fb4529920e0b411618295638a49bfeeb894b4e024b5f9f31fbb5a",
+          "modified": "2026-07-12T19:11:49.800032+00:00"
+        },
+        "cards/firefight_ploys/elucidian-starstriders-survivalist-back.jpg": {
+          "path": "output/elucidian-starstriders/cards/firefight_ploys/elucidian-starstriders-survivalist-back.jpg",
+          "hash": "09c85d2b9303a62e6c2582554241980fe6a8a0ae4b8800a6abe33fe6aacdb6e2",
+          "modified": "2026-07-12T19:11:49.810261+00:00"
+        },
+        "cards/firefight_ploys/elucidian-starstriders-survivalist-front.jpg": {
+          "path": "output/elucidian-starstriders/cards/firefight_ploys/elucidian-starstriders-survivalist-front.jpg",
+          "hash": "99e5e77a256706b93f08e9fd35103efc284d652d235b287de4b2bcf37dccd0de",
+          "modified": "2026-07-12T19:11:49.817680+00:00"
+        },
+        "cards/firefight_ploys/elucidian-starstriders-well-drilled-back.jpg": {
+          "path": "output/elucidian-starstriders/cards/firefight_ploys/elucidian-starstriders-well-drilled-back.jpg",
+          "hash": "09c85d2b9303a62e6c2582554241980fe6a8a0ae4b8800a6abe33fe6aacdb6e2",
+          "modified": "2026-07-12T19:11:49.827595+00:00"
+        },
+        "cards/firefight_ploys/elucidian-starstriders-well-drilled-front.jpg": {
+          "path": "output/elucidian-starstriders/cards/firefight_ploys/elucidian-starstriders-well-drilled-front.jpg",
+          "hash": "9682d4b6dfa6bb1cb60416b3d0089351074a324e5448a5f6242fc408d84ff0d2",
+          "modified": "2026-07-12T19:11:49.832192+00:00"
+        },
+        "cards/operatives_selection/elucidian-starstriders-operative-selection-back.jpg": {
+          "path": "output/elucidian-starstriders/cards/operatives_selection/elucidian-starstriders-operative-selection-back.jpg",
+          "hash": "09c85d2b9303a62e6c2582554241980fe6a8a0ae4b8800a6abe33fe6aacdb6e2",
+          "modified": "2026-07-12T19:11:49.844167+00:00"
+        },
+        "cards/operatives_selection/elucidian-starstriders-operative-selection-front.jpg": {
+          "path": "output/elucidian-starstriders/cards/operatives_selection/elucidian-starstriders-operative-selection-front.jpg",
+          "hash": "e888203d34a3b369ed4e7c7a0b4e7cd3cefe56baf539965ab23112f3abc28157",
+          "modified": "2026-07-12T19:11:49.855886+00:00"
+        },
+        "cards/strategy_ploys/elucidian-starstriders-lethal-proximity-back.jpg": {
+          "path": "output/elucidian-starstriders/cards/strategy_ploys/elucidian-starstriders-lethal-proximity-back.jpg",
+          "hash": "09c85d2b9303a62e6c2582554241980fe6a8a0ae4b8800a6abe33fe6aacdb6e2",
+          "modified": "2026-07-12T19:11:49.871198+00:00"
+        },
+        "cards/strategy_ploys/elucidian-starstriders-lethal-proximity-front.jpg": {
+          "path": "output/elucidian-starstriders/cards/strategy_ploys/elucidian-starstriders-lethal-proximity-front.jpg",
+          "hash": "75b9b16976e6b151faef8dcda9f86c4ecc9adc6d72bfabcb296e98d0e2e35c2f",
+          "modified": "2026-07-12T19:11:49.889758+00:00"
+        },
+        "cards/strategy_ploys/elucidian-starstriders-quick-march-back.jpg": {
+          "path": "output/elucidian-starstriders/cards/strategy_ploys/elucidian-starstriders-quick-march-back.jpg",
+          "hash": "09c85d2b9303a62e6c2582554241980fe6a8a0ae4b8800a6abe33fe6aacdb6e2",
+          "modified": "2026-07-12T19:11:49.902766+00:00"
+        },
+        "cards/strategy_ploys/elucidian-starstriders-quick-march-front.jpg": {
+          "path": "output/elucidian-starstriders/cards/strategy_ploys/elucidian-starstriders-quick-march-front.jpg",
+          "hash": "60d3c4e9ab8d8803d6e70989346ad514b99e17b4d548d4c1ef7fead89ecea371",
+          "modified": "2026-07-12T19:11:49.916395+00:00"
+        },
+        "cards/strategy_ploys/elucidian-starstriders-stake-claim-back.jpg": {
+          "path": "output/elucidian-starstriders/cards/strategy_ploys/elucidian-starstriders-stake-claim-back.jpg",
+          "hash": "09c85d2b9303a62e6c2582554241980fe6a8a0ae4b8800a6abe33fe6aacdb6e2",
+          "modified": "2026-07-12T19:11:49.929232+00:00"
+        },
+        "cards/strategy_ploys/elucidian-starstriders-stake-claim-front.jpg": {
+          "path": "output/elucidian-starstriders/cards/strategy_ploys/elucidian-starstriders-stake-claim-front.jpg",
+          "hash": "f060496b67b2aaef848b97f96732fb3acec002d5727207d9c04b82f4d64c3768",
+          "modified": "2026-07-12T19:11:49.932983+00:00"
+        },
+        "cards/strategy_ploys/elucidian-starstriders-undaunted-explorers-back.jpg": {
+          "path": "output/elucidian-starstriders/cards/strategy_ploys/elucidian-starstriders-undaunted-explorers-back.jpg",
+          "hash": "09c85d2b9303a62e6c2582554241980fe6a8a0ae4b8800a6abe33fe6aacdb6e2",
+          "modified": "2026-07-12T19:11:50.018990+00:00"
+        },
+        "cards/strategy_ploys/elucidian-starstriders-undaunted-explorers-front.jpg": {
+          "path": "output/elucidian-starstriders/cards/strategy_ploys/elucidian-starstriders-undaunted-explorers-front.jpg",
+          "hash": "83badc57c414b0e1b14261898b307520bcf5397ee0f0fcb6a7803397b33f34e3",
+          "modified": "2026-07-12T19:11:50.037854+00:00"
+        }
+      },
+      "completed": "2026-07-12T19:11:53.895618+00:00",
+      "inputs": {
+        "layers/integration/elucidian-starstriders/manifest.json": "67e19d4ef2bc3dbed002541e7af9b13b7c7b681144f6441b6bae7570beafea95",
+        "layers/integration/elucidian-starstriders/elucidian-starstriders-datacard-canid.pdf": "c7d08c91b4a958b703a56976a4f61f275e44e97affb9088838e921144bdaf18e",
+        "layers/integration/elucidian-starstriders/elucidian-starstriders-datacard-death-cult-executioner.pdf": "9114d79efa2a65e46c84b04985a87d10a7355f82fbe6408cb1f62734dea4b5c6",
+        "layers/integration/elucidian-starstriders/elucidian-starstriders-datacard-elucia-vhane.pdf": "9f0e830b003e965ad00b422cd758a8b90192595266859921ab317b717aec1b07",
+        "layers/integration/elucidian-starstriders/elucidian-starstriders-datacard-lectro-maester.pdf": "8cf6a57517ba5c57c2cee1921b2fd53d982db545a0bb39562c69575911e68829",
+        "layers/integration/elucidian-starstriders/elucidian-starstriders-datacard-rejuvenat-adept.pdf": "80adffa8680f56133377e704a6bb9845e4de1ef01e0851eb99889454a411590a",
+        "layers/integration/elucidian-starstriders/elucidian-starstriders-datacard-voidmaster.pdf": "1885b054dbb92293fd0a525bf8eeece1436b977e1474150567ce7a5c91f966fc",
+        "layers/integration/elucidian-starstriders/elucidian-starstriders-datacard-voidsman.pdf": "a1ba40504a17fca5ad690612b745f069957e8496b88397a5fb63cffb31fe2ab4",
+        "layers/integration/elucidian-starstriders/elucidian-starstriders-equipment-armoured-undersuit.pdf": "dac663b758d0c3248398c9ba3110d6a829c001ddd3e8dc75e55e7aa21f65b302",
+        "layers/integration/elucidian-starstriders/elucidian-starstriders-equipment-hot-shot-capacitor-packs.pdf": "a97dae8a62175a99f7b52c8444f5b44cfa8815481ae51cde4d7f104c8e74e5bc",
+        "layers/integration/elucidian-starstriders/elucidian-starstriders-equipment-improved-coordinates-uplink.pdf": "9c463054c50e6e9006959d678e1e5924d5886efec9bd00059eb4ac9fba99dd60",
+        "layers/integration/elucidian-starstriders/elucidian-starstriders-equipment-rapid-gunnery.pdf": "cb0fc9e991402c5a0beb529c9516c14db0062a7791aa4b7cd46da6818dfd5c13",
+        "layers/integration/elucidian-starstriders/elucidian-starstriders-faction-rule-privateer-support-assets.pdf": "e48d39c2593b9d6a1e8f21f7749e71546290c933fdff0be39a0f603b225e5fe6",
+        "layers/integration/elucidian-starstriders/elucidian-starstriders-faction-rule-warrant-of-trade-2.pdf": "4f7eb34caa940612af8c0445d00510dd3569ba37ce67c88a43199c619317df8b",
+        "layers/integration/elucidian-starstriders/elucidian-starstriders-faction-rule-warrant-of-trade.pdf": "f9e97422f74871a23e0308e8467d9ed949ffbdb973523275e6fc568448cf359e",
+        "layers/integration/elucidian-starstriders/elucidian-starstriders-firefight-ploy-combined-arms.pdf": "64aed1c14ef8de9b2a5357ddd4aad8d14aa593866706641f78095c3297d55a70",
+        "layers/integration/elucidian-starstriders/elucidian-starstriders-firefight-ploy-great-endurance.pdf": "0db42348d6745b491eb84cc0ec6903539c3b845a6803f8f8cf6f435fa4ad4d0d",
+        "layers/integration/elucidian-starstriders/elucidian-starstriders-firefight-ploy-survivalist.pdf": "91483bf0a24a25a040610ba51808b0e4310c155570d5881c82a5a22402e5be5f",
+        "layers/integration/elucidian-starstriders/elucidian-starstriders-firefight-ploy-well-drilled.pdf": "afec3f5f4a7aee62cc035c75049b90a82c2c9bc983f82abf81f8b2cf70042f55",
+        "layers/integration/elucidian-starstriders/elucidian-starstriders-operatives-selection-operative-selection.pdf": "b15b2f066c16fd05685cf8f57c555b345dec54b733a23162bae4026f30f2ffcb",
+        "layers/integration/elucidian-starstriders/elucidian-starstriders-strategy-ploy-lethal-proximity.pdf": "c0e1361c35f6f7652c5d66adbad8823e17de644dc2103471961680ece3fefdd6",
+        "layers/integration/elucidian-starstriders/elucidian-starstriders-strategy-ploy-quick-march.pdf": "fc42fcdfa4a16b2b6dd77231eafbf8829f4fa82928bff60d42e28b39f6079c4a",
+        "layers/integration/elucidian-starstriders/elucidian-starstriders-strategy-ploy-stake-claim.pdf": "8c4ef9e63d90a35e424f421caa645724789bb10059942829b9d576ed7f570b61",
+        "layers/integration/elucidian-starstriders/elucidian-starstriders-strategy-ploy-undaunted-explorers.pdf": "5ce52242aa0fde51945144faf1fc6bc8eff507825ab411bda79a27e1aef014f9",
+        "layers/integration/elucidian-starstriders/card-backside/elucidian-starstriders-backside-portrait.jpg": "09c85d2b9303a62e6c2582554241980fe6a8a0ae4b8800a6abe33fe6aacdb6e2",
+        "config/defaults/card-backside/default-backside-portrait.jpg": "f00ff15fa70005b9f804de08519e2e83485d7eaf78dfacea65dcef0eb1a29c22",
+        "layers/integration/elucidian-starstriders/card-backside/elucidian-starstriders-backside-landscape.jpg": "b2babe775013f7aedcda4d3c7c115526250d698d35d14599c29932e5d0b6f1f2",
+        "config/defaults/card-backside/default-backside-landscape.jpg": "1cf5580a1dff0c10adb1a286edad4479c487f3d2d698b0b8be84fe653039fd7e"
+      }
+    },
+    "extract_stats": {
+      "outputs": {
+        "team-data.json": {
+          "path": "output/elucidian-starstriders/data/elucidian-starstriders-team-data.json",
+          "hash": "1610b2790f874c577487041503d5e74edc99d757dc8ac8559042136facfd4135",
+          "modified": "2026-07-12T18:48:18.573380+00:00"
+        }
+      },
+      "completed": "2026-07-12T18:48:19.516673+00:00",
+      "inputs": {
+        "layers/integration/elucidian-starstriders/content/elucidian-starstriders-content.json": "1610b2790f874c577487041503d5e74edc99d757dc8ac8559042136facfd4135"
+      }
+    },
+    "generate_tts": {
+      "outputs": {
+        "tts_objects/Elucidian Starstriders Box.json": {
+          "path": "output/elucidian-starstriders/tts_objects/Elucidian Starstriders Box.json",
+          "hash": "4e32ca0c23848213ca3898d3c086603e9b364fbcd4a06c7dcf5afa50fa5dc371",
+          "modified": "2026-07-12T20:56:34.882705+00:00"
+        },
+        "tts_objects/Elucidian Starstriders.json": {
+          "path": "output/elucidian-starstriders/tts_objects/Elucidian Starstriders.json",
+          "hash": "804e7b19bdfd5583f3155c7da65994f6fb268c47c8debe51b6f3506a09b798d0",
+          "modified": "2026-07-12T20:56:34.892274+00:00"
+        }
+      },
+      "completed": "2026-07-12T20:56:35.107664+00:00",
+      "inputs": {
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "config/team-guids.json": "1dea0eaf2c7d1c37c86aba088cdf876f0638d2dcaca162888fea8422c2d5c9db",
+        "output/elucidian-starstriders/cards/datacards/canid-back.jpg": "b2babe775013f7aedcda4d3c7c115526250d698d35d14599c29932e5d0b6f1f2",
+        "output/elucidian-starstriders/cards/datacards/canid-front.jpg": "ee39ccf7f5b0b931274b53af8f3cd0b12e5a305d123c0fe1b5b88fb888791ef5",
+        "output/elucidian-starstriders/cards/datacards/death-cult-executioner-back.jpg": "b2babe775013f7aedcda4d3c7c115526250d698d35d14599c29932e5d0b6f1f2",
+        "output/elucidian-starstriders/cards/datacards/death-cult-executioner-front.jpg": "803f9bb08360c187adf5fdeb2b2ca2dac43f80d6249b3f3f9f4a8a426a2bc788",
+        "output/elucidian-starstriders/cards/datacards/elucia-vhane-back.jpg": "b2babe775013f7aedcda4d3c7c115526250d698d35d14599c29932e5d0b6f1f2",
+        "output/elucidian-starstriders/cards/datacards/elucia-vhane-front.jpg": "d1e24b1de0547d9a28ec648f96efe1e0bca5145547dc251617394cf364c76578",
+        "output/elucidian-starstriders/cards/datacards/lectro-maester-back.jpg": "5ed5054c7ef8346a9403fa1e89c52e7aa864db3ac30334f3b0646f6c004a14ac",
+        "output/elucidian-starstriders/cards/datacards/lectro-maester-front.jpg": "7fb2abc5894a0da98557e5a814273a1e018122e2cee149abe0a0ed5e3e8e1ccc",
+        "output/elucidian-starstriders/cards/datacards/rejuvenat-adept-back.jpg": "0fd96a9fc2850147e7dece5b3b40eb039c4b35bf8d93936c3405b93bdb0caf18",
+        "output/elucidian-starstriders/cards/datacards/rejuvenat-adept-front.jpg": "dbbb975e0b86f1beb2440a9263091bb562e20069b214245b2523fcb4f7ee294c",
+        "output/elucidian-starstriders/cards/datacards/voidmaster-back.jpg": "72382d2cefa0d424b453ef25acc879c77bd4f53be182830f23f587675694e20d",
+        "output/elucidian-starstriders/cards/datacards/voidmaster-front.jpg": "9148bd7534484e783fff9ecd15e8c1171d7c6e1263fa372752cd5057ce1798f8",
+        "output/elucidian-starstriders/cards/datacards/voidsman-back.jpg": "b2babe775013f7aedcda4d3c7c115526250d698d35d14599c29932e5d0b6f1f2",
+        "output/elucidian-starstriders/cards/datacards/voidsman-front.jpg": "fc8e88d989085d2bb9523516428bb26147e284efe25aa157a2fc96898ee409e9",
+        "output/elucidian-starstriders/cards/equipment/elucidian-starstriders-armoured-undersuit-back.jpg": "09c85d2b9303a62e6c2582554241980fe6a8a0ae4b8800a6abe33fe6aacdb6e2",
+        "output/elucidian-starstriders/cards/equipment/elucidian-starstriders-armoured-undersuit-front.jpg": "9fa2ae2fbcc29b3f8643b2340a881b87b0344a36e6ed1c9a0c8ff48a137db5f0",
+        "output/elucidian-starstriders/cards/equipment/elucidian-starstriders-hot-shot-capacitor-packs-back.jpg": "09c85d2b9303a62e6c2582554241980fe6a8a0ae4b8800a6abe33fe6aacdb6e2",
+        "output/elucidian-starstriders/cards/equipment/elucidian-starstriders-hot-shot-capacitor-packs-front.jpg": "2a5ddbc4da203a605ac67cef6cf971cd2b9986c8e2eee38bff5b9168c706a2a6",
+        "output/elucidian-starstriders/cards/equipment/elucidian-starstriders-improved-coordinates-uplink-back.jpg": "09c85d2b9303a62e6c2582554241980fe6a8a0ae4b8800a6abe33fe6aacdb6e2",
+        "output/elucidian-starstriders/cards/equipment/elucidian-starstriders-improved-coordinates-uplink-front.jpg": "82e7772ada7ff33ff5f55bf1ca916911eb76515e2df3e1b096b561455cba6ce2",
+        "output/elucidian-starstriders/cards/equipment/elucidian-starstriders-rapid-gunnery-back.jpg": "09c85d2b9303a62e6c2582554241980fe6a8a0ae4b8800a6abe33fe6aacdb6e2",
+        "output/elucidian-starstriders/cards/equipment/elucidian-starstriders-rapid-gunnery-front.jpg": "4c7f9110873704add82a3e2a07b04976cee81f6f43d0c86a281c5d53e952980b",
+        "output/elucidian-starstriders/cards/faction_rules/elucidian-starstriders-privateer-support-assets-back.jpg": "59de1c900cae39fec181946f2e98ebb1fe3dbe614ef17467d11d93ce79399ca2",
+        "output/elucidian-starstriders/cards/faction_rules/elucidian-starstriders-privateer-support-assets-front.jpg": "10b65e4a3c8d4e68f8ddfccc0c020aead3cd95b0c767736599472b286ee26dd3",
+        "output/elucidian-starstriders/cards/faction_rules/elucidian-starstriders-warrant-of-trade-2-back.jpg": "e833fd0f73deca24359e49c80cf2d02ab04dd6363dd4d0e0bec5d548017d2022",
+        "output/elucidian-starstriders/cards/faction_rules/elucidian-starstriders-warrant-of-trade-2-front.jpg": "ca67497ce02a15a97d68869b92f1411a1e9a01111f49f903a14d3af2a94b9588",
+        "output/elucidian-starstriders/cards/faction_rules/elucidian-starstriders-warrant-of-trade-back.jpg": "626397170839b69039138aa9c92d554cd887aa7df9431cee44006fcc9a590bce",
+        "output/elucidian-starstriders/cards/faction_rules/elucidian-starstriders-warrant-of-trade-front.jpg": "ca67497ce02a15a97d68869b92f1411a1e9a01111f49f903a14d3af2a94b9588",
+        "output/elucidian-starstriders/cards/firefight_ploys/elucidian-starstriders-combined-arms-back.jpg": "09c85d2b9303a62e6c2582554241980fe6a8a0ae4b8800a6abe33fe6aacdb6e2",
+        "output/elucidian-starstriders/cards/firefight_ploys/elucidian-starstriders-combined-arms-front.jpg": "1779ed7ab2a2dd9837c49b7ca21fea80ff552e55617ef3d685c3107b2b1a0f2e",
+        "output/elucidian-starstriders/cards/firefight_ploys/elucidian-starstriders-great-endurance-back.jpg": "09c85d2b9303a62e6c2582554241980fe6a8a0ae4b8800a6abe33fe6aacdb6e2",
+        "output/elucidian-starstriders/cards/firefight_ploys/elucidian-starstriders-great-endurance-front.jpg": "a34ef6e4915fb4529920e0b411618295638a49bfeeb894b4e024b5f9f31fbb5a",
+        "output/elucidian-starstriders/cards/firefight_ploys/elucidian-starstriders-survivalist-back.jpg": "09c85d2b9303a62e6c2582554241980fe6a8a0ae4b8800a6abe33fe6aacdb6e2",
+        "output/elucidian-starstriders/cards/firefight_ploys/elucidian-starstriders-survivalist-front.jpg": "99e5e77a256706b93f08e9fd35103efc284d652d235b287de4b2bcf37dccd0de",
+        "output/elucidian-starstriders/cards/firefight_ploys/elucidian-starstriders-well-drilled-back.jpg": "09c85d2b9303a62e6c2582554241980fe6a8a0ae4b8800a6abe33fe6aacdb6e2",
+        "output/elucidian-starstriders/cards/firefight_ploys/elucidian-starstriders-well-drilled-front.jpg": "9682d4b6dfa6bb1cb60416b3d0089351074a324e5448a5f6242fc408d84ff0d2",
+        "output/elucidian-starstriders/cards/operatives_selection/elucidian-starstriders-operative-selection-back.jpg": "09c85d2b9303a62e6c2582554241980fe6a8a0ae4b8800a6abe33fe6aacdb6e2",
+        "output/elucidian-starstriders/cards/operatives_selection/elucidian-starstriders-operative-selection-front.jpg": "e888203d34a3b369ed4e7c7a0b4e7cd3cefe56baf539965ab23112f3abc28157",
+        "output/elucidian-starstriders/cards/strategy_ploys/elucidian-starstriders-lethal-proximity-back.jpg": "09c85d2b9303a62e6c2582554241980fe6a8a0ae4b8800a6abe33fe6aacdb6e2",
+        "output/elucidian-starstriders/cards/strategy_ploys/elucidian-starstriders-lethal-proximity-front.jpg": "75b9b16976e6b151faef8dcda9f86c4ecc9adc6d72bfabcb296e98d0e2e35c2f",
+        "output/elucidian-starstriders/cards/strategy_ploys/elucidian-starstriders-quick-march-back.jpg": "09c85d2b9303a62e6c2582554241980fe6a8a0ae4b8800a6abe33fe6aacdb6e2",
+        "output/elucidian-starstriders/cards/strategy_ploys/elucidian-starstriders-quick-march-front.jpg": "60d3c4e9ab8d8803d6e70989346ad514b99e17b4d548d4c1ef7fead89ecea371",
+        "output/elucidian-starstriders/cards/strategy_ploys/elucidian-starstriders-stake-claim-back.jpg": "09c85d2b9303a62e6c2582554241980fe6a8a0ae4b8800a6abe33fe6aacdb6e2",
+        "output/elucidian-starstriders/cards/strategy_ploys/elucidian-starstriders-stake-claim-front.jpg": "f060496b67b2aaef848b97f96732fb3acec002d5727207d9c04b82f4d64c3768",
+        "output/elucidian-starstriders/cards/strategy_ploys/elucidian-starstriders-undaunted-explorers-back.jpg": "09c85d2b9303a62e6c2582554241980fe6a8a0ae4b8800a6abe33fe6aacdb6e2",
+        "output/elucidian-starstriders/cards/strategy_ploys/elucidian-starstriders-undaunted-explorers-front.jpg": "83badc57c414b0e1b14261898b307520bcf5397ee0f0fcb6a7803397b33f34e3",
+        "output/elucidian-starstriders/cardbox/elucidian-starstriders-card-box-texture.jpg": "33134ef6424e68331652b0bbf62f378c78dfac1e1b3477e974f86ce4978434af",
+        "output/elucidian-starstriders/cardbox/elucidian-starstriders-card-box.obj": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+        "output/elucidian-starstriders/dice/elucidian-starstriders-dice-dark.jpg": "a681520ed638ced9224c2a73004da5839ae07a53d7923580462383d7bc2f0124",
+        "output/elucidian-starstriders/dice/elucidian-starstriders-dice-light.jpg": "b6ae51f08218a53308551a0918e789483f9133bb670d9bd47c10f17dedb9d543",
+        "output/elucidian-starstriders/data/elucidian-starstriders-team-data.json": "1610b2790f874c577487041503d5e74edc99d757dc8ac8559042136facfd4135",
+        "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
+        "config/defaults/tts-script/datacard-load-stats.lua": "2d5f4088c2ff09f54988cf8722080f536b4e1b998cc2b4c1f1ea94e6b18eb92e",
+        "config/defaults/tts-script/display-table-manager-script.lua": "0dab4381078d90802f25e2cc825bc3658be35ee13ab3e98831c9d248c2526689",
+        "config/defaults/tts-script/faction-rule-chapter-tactics.lua": "c906742268076fb91f7cb4a92c6b588e1122ccddb692688f635c8dd4f7110ad0",
+        "config/defaults/tts-script/intermediate-updater.lua": "1a2d6dbc1a8c9c57ba6a3e7a3d4bc4b7a38a6c242a93f6ef3dae698123384d35",
+        "config/defaults/tts-script/single-object-updater.lua": "3613b85169e986a8e50ebe221482079e27c18037e3f48920aa0f7e138c0ccacc",
+        "config/defaults/tts-script/team-spawner-clean-script.lua": "12457bff3961eee2293c42d81cf4f4eb8b103177245a1ab8b46fd65da40672a2",
+        "config/defaults/tts-script/team-spawner-script.lua": "a51ff45c8622923db909fb465781801511f235412f099f83dff728d4027650db",
+        "config/defaults/tts-script/tts-update-rules-in-box-script.lua": "84f7f9b260f4e4968d208953b534bdbb7ab0b2f475e13264a2407f6c4d4d2b03",
+        "config/defaults/tts-image/default-icon.png": "892aff2628b9685c813e77be05c66afc1dc4247bc1dc9ce6fe54f006c2608271",
+        "config/defaults/tts-image/spawner-token.png": "61903b093f01d834f5e4c4c069b1353ecf7d29f012fef914b3027266816d8a6b",
+        "config/defaults/tts-token/square-bag-mesh.obj": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+        "config/defaults/tts-token/template-diamond-cutter.png": "719f57ba2b86494be454a6d3d25d8567dde974a915f3dde5ddc0e2d8dafaa1a5",
+        "config/defaults/tts-token/template-octagon-cutter.png": "944632aeacab978293ae57758b63086166c5fbaf3b845f48b3dd61db67d5c076",
+        "config/defaults/tts-token/template-operative-cutter.png": "0e698ddd403d7f0e84f200eb42af73f5249a9c5539d773298ff4c700ac9fe153",
+        "config/defaults/tts-token/template-round-cutter.png": "6564e1451c9a135a1c756fd94cde1c71e373e3fa677b51bba9d4bbe9e795d544",
+        "config/defaults/tts-token/token-bag-script.lua": "1659887e0fbfb9e3ebbc1aa5f3df8e1ffd89ee192be24d2dd1f02fcb0407e486",
+        "config/defaults/tts-token/token-bg-sample.png": "f9f90664c7f1c877c6f050f6e85babde6523cdc0aed9c77de8c09214f44ee109",
+        "config/defaults/tts-token/token-mesh.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc"
+      }
+    },
+    "front_end": {
+      "outputs": {},
+      "sources": {
+        "faction-rules": {
+          "hash": "c8d1a6ff1894e505df05e038ffa3ac09d659c937b4c247ca057e9681c1cba083",
+          "outputs": [
+            "layers/kt-app/extracted/elucidian-starstriders/cards/faction-rules/elucidian-starstriders-faction-rules-page_0.pdf",
+            "layers/kt-app/extracted/elucidian-starstriders/cards/faction-rules/elucidian-starstriders-faction-rules-page_1.pdf",
+            "layers/kt-app/extracted/elucidian-starstriders/cards/faction-rules/elucidian-starstriders-faction-rules-page_2.pdf",
+            "layers/kt-app/extracted/elucidian-starstriders/cards/faction-rules/elucidian-starstriders-faction-rules-page_3.pdf",
+            "layers/kt-app/extracted/elucidian-starstriders/cards/faction-rules/elucidian-starstriders-faction-rules-page_4.pdf"
+          ],
+          "modified": "2026-07-06T15:59:49.889635+00:00"
+        },
+        "operatives-selection": {
+          "hash": "bbd96d6089f1abdd92c832260cfa9e04cea4444d198c5446b173b00246da28ad",
+          "outputs": [
+            "layers/kt-app/extracted/elucidian-starstriders/cards/operatives-selection/elucidian-starstriders-operatives-selection-page_0.pdf"
+          ],
+          "modified": "2026-07-06T16:01:30.738965+00:00"
+        },
+        "equipment": {
+          "hash": "f074d0bf4a91b9825885ddef28dbd802483b2e6fca60227f77cfbe9cb4e4d08f",
+          "outputs": [
+            "layers/kt-app/extracted/elucidian-starstriders/cards/equipment/elucidian-starstriders-equipment-page_0.pdf",
+            "layers/kt-app/extracted/elucidian-starstriders/cards/equipment/elucidian-starstriders-equipment-page_1.pdf",
+            "layers/kt-app/extracted/elucidian-starstriders/cards/equipment/elucidian-starstriders-equipment-page_2.pdf",
+            "layers/kt-app/extracted/elucidian-starstriders/cards/equipment/elucidian-starstriders-equipment-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:04:04.250908+00:00"
+        },
+        "firefight-ploys": {
+          "hash": "98f908164205a973b8e2ce86253d14e2640b66a45b67f88ab67bdc2bc962e242",
+          "outputs": [
+            "layers/kt-app/extracted/elucidian-starstriders/cards/firefight-ploys/elucidian-starstriders-firefight-ploys-page_0.pdf",
+            "layers/kt-app/extracted/elucidian-starstriders/cards/firefight-ploys/elucidian-starstriders-firefight-ploys-page_1.pdf",
+            "layers/kt-app/extracted/elucidian-starstriders/cards/firefight-ploys/elucidian-starstriders-firefight-ploys-page_2.pdf",
+            "layers/kt-app/extracted/elucidian-starstriders/cards/firefight-ploys/elucidian-starstriders-firefight-ploys-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:08:05.073503+00:00"
+        },
+        "strategy-ploys": {
+          "hash": "2107fcc41e8ab3b0493f80c99cc7e8941af139f358e2d92b50ebfde3d5e473dd",
+          "outputs": [
+            "layers/kt-app/extracted/elucidian-starstriders/cards/strategy-ploys/elucidian-starstriders-strategy-ploys-page_0.pdf",
+            "layers/kt-app/extracted/elucidian-starstriders/cards/strategy-ploys/elucidian-starstriders-strategy-ploys-page_1.pdf",
+            "layers/kt-app/extracted/elucidian-starstriders/cards/strategy-ploys/elucidian-starstriders-strategy-ploys-page_2.pdf",
+            "layers/kt-app/extracted/elucidian-starstriders/cards/strategy-ploys/elucidian-starstriders-strategy-ploys-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:10:35.457018+00:00"
+        },
+        "datacards": {
+          "hash": "ec193565f769811cc16fbe59b80939becdceb788b2bedab1391967a7ca7e2c0d",
+          "outputs": [
+            "layers/kt-app/extracted/elucidian-starstriders/cards/datacards/elucidian-starstriders-datacards-page_0.pdf",
+            "layers/kt-app/extracted/elucidian-starstriders/cards/datacards/elucidian-starstriders-datacards-page_1.pdf",
+            "layers/kt-app/extracted/elucidian-starstriders/cards/datacards/elucidian-starstriders-datacards-page_2.pdf",
+            "layers/kt-app/extracted/elucidian-starstriders/cards/datacards/elucidian-starstriders-datacards-page_3.pdf",
+            "layers/kt-app/extracted/elucidian-starstriders/cards/datacards/elucidian-starstriders-datacards-page_4.pdf",
+            "layers/kt-app/extracted/elucidian-starstriders/cards/datacards/elucidian-starstriders-datacards-page_5.pdf",
+            "layers/kt-app/extracted/elucidian-starstriders/cards/datacards/elucidian-starstriders-datacards-page_6.pdf",
+            "layers/kt-app/extracted/elucidian-starstriders/cards/datacards/elucidian-starstriders-datacards-page_7.pdf",
+            "layers/kt-app/extracted/elucidian-starstriders/cards/datacards/elucidian-starstriders-datacards-page_8.pdf",
+            "layers/kt-app/extracted/elucidian-starstriders/cards/datacards/elucidian-starstriders-datacards-page_9.pdf"
+          ],
+          "modified": "2026-07-06T16:10:48.125884+00:00"
+        },
+        "cards": {
+          "hash": "0df3d6cd167a659277d79fc017e018c4480929ab98ff321c5c28c458f8d1c02e",
+          "outputs": [
+            "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page01_card1_landscape.pdf",
+            "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page01_card2_landscape.pdf",
+            "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page01_card3_landscape.pdf",
+            "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page01_card4_landscape.pdf",
+            "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page02_card1_landscape.pdf",
+            "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page02_card2_landscape.pdf",
+            "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page02_card3_landscape.pdf",
+            "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page02_card4_landscape.pdf",
+            "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page03_card1_landscape.pdf",
+            "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page03_card2_landscape.pdf",
+            "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page03_card3_landscape.pdf",
+            "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page03_card4_landscape.pdf",
+            "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page04_card1_portrait.pdf",
+            "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page04_card2_portrait.pdf",
+            "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page04_card3_portrait.pdf",
+            "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page04_card4_portrait.pdf",
+            "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page05_card1_portrait.pdf",
+            "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page05_card2_portrait.pdf",
+            "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page05_card3_portrait.pdf",
+            "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page05_card4_portrait.pdf",
+            "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page06_card1_portrait.pdf",
+            "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page06_card2_portrait.pdf",
+            "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page06_card3_portrait.pdf",
+            "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page06_card4_portrait.pdf",
+            "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page07_card1_portrait.pdf",
+            "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page07_card2_portrait.pdf",
+            "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page07_card3_portrait.pdf",
+            "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page07_card4_portrait.pdf",
+            "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page08_card1_portrait.pdf",
+            "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page08_card2_portrait.pdf",
+            "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page08_card3_portrait.pdf",
+            "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page08_card4_portrait.pdf"
+          ],
+          "modified": "2026-07-08T19:04:34.730249+00:00"
+        }
+      },
+      "completed": "2026-07-08T19:04:34.730286+00:00"
+    },
+    "build_structure": {
+      "outputs": {
+        "structure": {
+          "path": "layers/warcom/structure/elucidian-starstriders-structure.json",
+          "hash": "67e19d4ef2bc3dbed002541e7af9b13b7c7b681144f6441b6bae7570beafea95",
+          "modified": "2026-07-12T18:46:02.855407+00:00"
+        }
+      },
+      "inputs": {
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page01_card1_landscape.pdf": "7bad6875427139650bb811c241d2be15920d5b2ad77afa27aa927b23dfde9014",
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page01_card2_landscape.pdf": "05a27a34da2b87a2fd65a489b671e985a42d440952b07e7a433c0f11199fcb37",
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page01_card3_landscape.pdf": "d6c73a2750ad07e18c10526a46c23fa1d9a6ccd91e6cd01bec864534dcf27eb9",
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page01_card4_landscape.pdf": "22d1445cf7c19b12dec89a6c6d4b387c5d822ae29e1dee417765b08434416bf6",
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page02_card1_landscape.pdf": "174f7d408d9e9f53791a23c79e709c952e7cd6b0933a379402b63adf211dc301",
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page02_card2_landscape.pdf": "7994cfca7ed78331de84b86512f3043d99abb407d23285158bfdb3484a855adb",
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page02_card3_landscape.pdf": "f37d01fe14cbde84964ff16379ebf7fadcdf0bdb7458e336f5a8b24e343d1b12",
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page02_card4_landscape.pdf": "2cd839bb9aa9ae2e6d65bfa21811fe657075b6f9f39a4bef42da1f91132a77d9",
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page03_card1_landscape.pdf": "0cfad953f2d3afe2e08234bbdc99063864f6eb6a75d6218eec68c50ba0052acf",
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page03_card2_landscape.pdf": "613836a9070baf0baaef450f2c9ff21fc7ab4266f7b6bdd729b214c9aebe6b26",
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page03_card3_landscape.pdf": "296d271dcffff910974571b4e64dcece57a63187acc6b89c4357bd63a5efbd67",
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page03_card4_landscape.pdf": "d71b5229bb252679015fac8dc199d783a5e7bf56acb0e4dc74a2fc56ad5b0043",
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page04_card1_portrait.pdf": "be1bdaff804569e975c3346fa4e18c1f0754acca8ee6a1e1704cae7acbdce09b",
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page04_card2_portrait.pdf": "d973e7121c9a6f570ed13046710509fda33a2ff9f2d8adbe7803da18425cc34e",
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page04_card3_portrait.pdf": "30d58d7413ec1bc347726af591622f8b2947f43319f20fd9936f89678111a6c9",
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page04_card4_portrait.pdf": "0a778ef253865e39bfc6ff4e69267b485d3b9270b76a90914e8ff677ca6c17d2",
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page05_card1_portrait.pdf": "afe7d010a9ed85065c9fd1bf7757f9f31969d543bfd05c17fbf7b5daa1f421ab",
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page05_card2_portrait.pdf": "e693700b30fcf240368a8cb3b615c54a5477e042e345411aed8d545155c7e5b8",
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page05_card3_portrait.pdf": "041dad88203918e4e3cca8224b81b5ea863831c3542d963c2b73b227fbfc2b38",
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page05_card4_portrait.pdf": "e9dcc80c27a93859f36f6158102ad87e899279e7e7e2bd7a9b5b190b607083a3",
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page06_card1_portrait.pdf": "2543aff46a4be653e7a41660292f5baf577d7eb43d033adf0631ace1ed050700",
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page06_card2_portrait.pdf": "25b4f8c35f66b06265f0daf099e4afa8bc9ba42a16bc6e988f3ea40e456bd88e",
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page06_card3_portrait.pdf": "992895f5fedee084a39df613d5b101a253b1bad0c08d8586170067a587c1b062",
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page06_card4_portrait.pdf": "7dbe90153855776d0074737b25fd585d2b523d782f44b0aad986e03521cefcf5",
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page07_card1_portrait.pdf": "08760f2dba89df91a67cd0ecf5d1ac3a36298e340c2df359cb23c2a6f6d19591",
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page07_card2_portrait.pdf": "daa569f58c0aa222065b59ad04168bff0f3f424c5ee2a1e57ef6f43bcbc2a7c6",
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page07_card3_portrait.pdf": "453a45bd3c512a691fc472eb65500389c1c39a29795ad271bfab29464dfc8afe",
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page07_card4_portrait.pdf": "608b44859d19be01299015c8006f66b66f402d12dd6cc8978a664e23110fa88a",
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page08_card1_portrait.pdf": "b5ab50185279b91cd603596469f1a9995d4b3b369a411ef867104eea217c17f7",
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page08_card2_portrait.pdf": "e881b7e60ece96f57295a676f46ac45a6170712709e465114691930eccee7986",
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page08_card3_portrait.pdf": "a4452ee0a3d2d3afef90ceb85c8c8092eba753eb763350a4b61d0f277185e5ae",
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page08_card4_portrait.pdf": "f083dc4b644d808f89e23f28d30c3e01a74851f690349678f60867443c83c9b7"
+      },
+      "completed": "2026-07-12T18:46:07.882920+00:00"
+    },
+    "integrate_classified": {
+      "outputs": {
+        "manifest.json": {
+          "path": "layers/integration/elucidian-starstriders/manifest.json",
+          "hash": "67e19d4ef2bc3dbed002541e7af9b13b7c7b681144f6441b6bae7570beafea95",
+          "modified": "2026-07-12T19:10:28.334280+00:00"
+        },
+        "elucidian-starstriders-datacard-elucia-vhane.pdf": {
+          "path": "layers/integration/elucidian-starstriders/elucidian-starstriders-datacard-elucia-vhane.pdf",
+          "hash": "9f0e830b003e965ad00b422cd758a8b90192595266859921ab317b717aec1b07",
+          "modified": "2026-07-12T19:10:28.381891+00:00"
+        },
+        "elucidian-starstriders-datacard-canid.pdf": {
+          "path": "layers/integration/elucidian-starstriders/elucidian-starstriders-datacard-canid.pdf",
+          "hash": "c7d08c91b4a958b703a56976a4f61f275e44e97affb9088838e921144bdaf18e",
+          "modified": "2026-07-12T19:10:28.410209+00:00"
+        },
+        "elucidian-starstriders-datacard-death-cult-executioner.pdf": {
+          "path": "layers/integration/elucidian-starstriders/elucidian-starstriders-datacard-death-cult-executioner.pdf",
+          "hash": "9114d79efa2a65e46c84b04985a87d10a7355f82fbe6408cb1f62734dea4b5c6",
+          "modified": "2026-07-12T19:10:29.357824+00:00"
+        },
+        "elucidian-starstriders-datacard-lectro-maester.pdf": {
+          "path": "layers/integration/elucidian-starstriders/elucidian-starstriders-datacard-lectro-maester.pdf",
+          "hash": "8cf6a57517ba5c57c2cee1921b2fd53d982db545a0bb39562c69575911e68829",
+          "modified": "2026-07-12T19:10:29.402396+00:00"
+        },
+        "elucidian-starstriders-datacard-rejuvenat-adept.pdf": {
+          "path": "layers/integration/elucidian-starstriders/elucidian-starstriders-datacard-rejuvenat-adept.pdf",
+          "hash": "80adffa8680f56133377e704a6bb9845e4de1ef01e0851eb99889454a411590a",
+          "modified": "2026-07-12T19:10:29.447392+00:00"
+        },
+        "elucidian-starstriders-datacard-voidmaster.pdf": {
+          "path": "layers/integration/elucidian-starstriders/elucidian-starstriders-datacard-voidmaster.pdf",
+          "hash": "1885b054dbb92293fd0a525bf8eeece1436b977e1474150567ce7a5c91f966fc",
+          "modified": "2026-07-12T19:10:29.545258+00:00"
+        },
+        "elucidian-starstriders-datacard-voidsman.pdf": {
+          "path": "layers/integration/elucidian-starstriders/elucidian-starstriders-datacard-voidsman.pdf",
+          "hash": "a1ba40504a17fca5ad690612b745f069957e8496b88397a5fb63cffb31fe2ab4",
+          "modified": "2026-07-12T19:10:29.598831+00:00"
+        },
+        "elucidian-starstriders-equipment-armoured-undersuit.pdf": {
+          "path": "layers/integration/elucidian-starstriders/elucidian-starstriders-equipment-armoured-undersuit.pdf",
+          "hash": "dac663b758d0c3248398c9ba3110d6a829c001ddd3e8dc75e55e7aa21f65b302",
+          "modified": "2026-07-12T19:10:29.619077+00:00"
+        },
+        "elucidian-starstriders-equipment-hot-shot-capacitor-packs.pdf": {
+          "path": "layers/integration/elucidian-starstriders/elucidian-starstriders-equipment-hot-shot-capacitor-packs.pdf",
+          "hash": "a97dae8a62175a99f7b52c8444f5b44cfa8815481ae51cde4d7f104c8e74e5bc",
+          "modified": "2026-07-12T19:10:29.644915+00:00"
+        },
+        "elucidian-starstriders-equipment-improved-coordinates-uplink.pdf": {
+          "path": "layers/integration/elucidian-starstriders/elucidian-starstriders-equipment-improved-coordinates-uplink.pdf",
+          "hash": "9c463054c50e6e9006959d678e1e5924d5886efec9bd00059eb4ac9fba99dd60",
+          "modified": "2026-07-12T19:10:29.694351+00:00"
+        },
+        "elucidian-starstriders-equipment-rapid-gunnery.pdf": {
+          "path": "layers/integration/elucidian-starstriders/elucidian-starstriders-equipment-rapid-gunnery.pdf",
+          "hash": "cb0fc9e991402c5a0beb529c9516c14db0062a7791aa4b7cd46da6818dfd5c13",
+          "modified": "2026-07-12T19:10:29.724087+00:00"
+        },
+        "elucidian-starstriders-faction-rule-warrant-of-trade.pdf": {
+          "path": "layers/integration/elucidian-starstriders/elucidian-starstriders-faction-rule-warrant-of-trade.pdf",
+          "hash": "f9e97422f74871a23e0308e8467d9ed949ffbdb973523275e6fc568448cf359e",
+          "modified": "2026-07-12T19:10:29.748500+00:00"
+        },
+        "elucidian-starstriders-faction-rule-warrant-of-trade-2.pdf": {
+          "path": "layers/integration/elucidian-starstriders/elucidian-starstriders-faction-rule-warrant-of-trade-2.pdf",
+          "hash": "4f7eb34caa940612af8c0445d00510dd3569ba37ce67c88a43199c619317df8b",
+          "modified": "2026-07-12T19:10:29.768709+00:00"
+        },
+        "elucidian-starstriders-faction-rule-privateer-support-assets.pdf": {
+          "path": "layers/integration/elucidian-starstriders/elucidian-starstriders-faction-rule-privateer-support-assets.pdf",
+          "hash": "e48d39c2593b9d6a1e8f21f7749e71546290c933fdff0be39a0f603b225e5fe6",
+          "modified": "2026-07-12T19:10:29.788409+00:00"
+        },
+        "elucidian-starstriders-firefight-ploy-combined-arms.pdf": {
+          "path": "layers/integration/elucidian-starstriders/elucidian-starstriders-firefight-ploy-combined-arms.pdf",
+          "hash": "64aed1c14ef8de9b2a5357ddd4aad8d14aa593866706641f78095c3297d55a70",
+          "modified": "2026-07-12T19:10:29.810486+00:00"
+        },
+        "elucidian-starstriders-firefight-ploy-survivalist.pdf": {
+          "path": "layers/integration/elucidian-starstriders/elucidian-starstriders-firefight-ploy-survivalist.pdf",
+          "hash": "91483bf0a24a25a040610ba51808b0e4310c155570d5881c82a5a22402e5be5f",
+          "modified": "2026-07-12T19:10:29.829923+00:00"
+        },
+        "elucidian-starstriders-firefight-ploy-great-endurance.pdf": {
+          "path": "layers/integration/elucidian-starstriders/elucidian-starstriders-firefight-ploy-great-endurance.pdf",
+          "hash": "0db42348d6745b491eb84cc0ec6903539c3b845a6803f8f8cf6f435fa4ad4d0d",
+          "modified": "2026-07-12T19:10:29.850958+00:00"
+        },
+        "elucidian-starstriders-firefight-ploy-well-drilled.pdf": {
+          "path": "layers/integration/elucidian-starstriders/elucidian-starstriders-firefight-ploy-well-drilled.pdf",
+          "hash": "afec3f5f4a7aee62cc035c75049b90a82c2c9bc983f82abf81f8b2cf70042f55",
+          "modified": "2026-07-12T19:10:29.863372+00:00"
+        },
+        "elucidian-starstriders-operatives-selection-operative-selection.pdf": {
+          "path": "layers/integration/elucidian-starstriders/elucidian-starstriders-operatives-selection-operative-selection.pdf",
+          "hash": "b15b2f066c16fd05685cf8f57c555b345dec54b733a23162bae4026f30f2ffcb",
+          "modified": "2026-07-12T19:10:29.880113+00:00"
+        },
+        "elucidian-starstriders-strategy-ploy-lethal-proximity.pdf": {
+          "path": "layers/integration/elucidian-starstriders/elucidian-starstriders-strategy-ploy-lethal-proximity.pdf",
+          "hash": "c0e1361c35f6f7652c5d66adbad8823e17de644dc2103471961680ece3fefdd6",
+          "modified": "2026-07-12T19:10:29.897385+00:00"
+        },
+        "elucidian-starstriders-strategy-ploy-stake-claim.pdf": {
+          "path": "layers/integration/elucidian-starstriders/elucidian-starstriders-strategy-ploy-stake-claim.pdf",
+          "hash": "8c4ef9e63d90a35e424f421caa645724789bb10059942829b9d576ed7f570b61",
+          "modified": "2026-07-12T19:10:29.920381+00:00"
+        },
+        "elucidian-starstriders-strategy-ploy-undaunted-explorers.pdf": {
+          "path": "layers/integration/elucidian-starstriders/elucidian-starstriders-strategy-ploy-undaunted-explorers.pdf",
+          "hash": "5ce52242aa0fde51945144faf1fc6bc8eff507825ab411bda79a27e1aef014f9",
+          "modified": "2026-07-12T19:10:29.938787+00:00"
+        },
+        "elucidian-starstriders-strategy-ploy-quick-march.pdf": {
+          "path": "layers/integration/elucidian-starstriders/elucidian-starstriders-strategy-ploy-quick-march.pdf",
+          "hash": "fc42fcdfa4a16b2b6dd77231eafbf8829f4fa82928bff60d42e28b39f6079c4a",
+          "modified": "2026-07-12T19:10:29.957470+00:00"
+        }
+      },
+      "inputs": {
+        "layers/warcom/structure/elucidian-starstriders-structure.json": "67e19d4ef2bc3dbed002541e7af9b13b7c7b681144f6441b6bae7570beafea95",
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page01_card1_landscape.pdf": "7bad6875427139650bb811c241d2be15920d5b2ad77afa27aa927b23dfde9014",
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page01_card2_landscape.pdf": "05a27a34da2b87a2fd65a489b671e985a42d440952b07e7a433c0f11199fcb37",
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page01_card3_landscape.pdf": "d6c73a2750ad07e18c10526a46c23fa1d9a6ccd91e6cd01bec864534dcf27eb9",
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page01_card4_landscape.pdf": "22d1445cf7c19b12dec89a6c6d4b387c5d822ae29e1dee417765b08434416bf6",
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page02_card1_landscape.pdf": "174f7d408d9e9f53791a23c79e709c952e7cd6b0933a379402b63adf211dc301",
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page02_card2_landscape.pdf": "7994cfca7ed78331de84b86512f3043d99abb407d23285158bfdb3484a855adb",
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page02_card3_landscape.pdf": "f37d01fe14cbde84964ff16379ebf7fadcdf0bdb7458e336f5a8b24e343d1b12",
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page02_card4_landscape.pdf": "2cd839bb9aa9ae2e6d65bfa21811fe657075b6f9f39a4bef42da1f91132a77d9",
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page03_card1_landscape.pdf": "0cfad953f2d3afe2e08234bbdc99063864f6eb6a75d6218eec68c50ba0052acf",
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page03_card2_landscape.pdf": "613836a9070baf0baaef450f2c9ff21fc7ab4266f7b6bdd729b214c9aebe6b26",
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page07_card3_portrait.pdf": "453a45bd3c512a691fc472eb65500389c1c39a29795ad271bfab29464dfc8afe",
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page07_card4_portrait.pdf": "608b44859d19be01299015c8006f66b66f402d12dd6cc8978a664e23110fa88a",
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page08_card1_portrait.pdf": "b5ab50185279b91cd603596469f1a9995d4b3b369a411ef867104eea217c17f7",
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page08_card2_portrait.pdf": "e881b7e60ece96f57295a676f46ac45a6170712709e465114691930eccee7986",
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page04_card2_portrait.pdf": "d973e7121c9a6f570ed13046710509fda33a2ff9f2d8adbe7803da18425cc34e",
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page04_card3_portrait.pdf": "30d58d7413ec1bc347726af591622f8b2947f43319f20fd9936f89678111a6c9",
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page04_card4_portrait.pdf": "0a778ef253865e39bfc6ff4e69267b485d3b9270b76a90914e8ff677ca6c17d2",
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page05_card1_portrait.pdf": "afe7d010a9ed85065c9fd1bf7757f9f31969d543bfd05c17fbf7b5daa1f421ab",
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page05_card2_portrait.pdf": "e693700b30fcf240368a8cb3b615c54a5477e042e345411aed8d545155c7e5b8",
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page06_card3_portrait.pdf": "992895f5fedee084a39df613d5b101a253b1bad0c08d8586170067a587c1b062",
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page06_card4_portrait.pdf": "7dbe90153855776d0074737b25fd585d2b523d782f44b0aad986e03521cefcf5",
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page07_card1_portrait.pdf": "08760f2dba89df91a67cd0ecf5d1ac3a36298e340c2df359cb23c2a6f6d19591",
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page07_card2_portrait.pdf": "daa569f58c0aa222065b59ad04168bff0f3f424c5ee2a1e57ef6f43bcbc2a7c6",
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page04_card1_portrait.pdf": "be1bdaff804569e975c3346fa4e18c1f0754acca8ee6a1e1704cae7acbdce09b",
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page05_card3_portrait.pdf": "041dad88203918e4e3cca8224b81b5ea863831c3542d963c2b73b227fbfc2b38",
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page05_card4_portrait.pdf": "e9dcc80c27a93859f36f6158102ad87e899279e7e7e2bd7a9b5b190b607083a3",
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page06_card1_portrait.pdf": "2543aff46a4be653e7a41660292f5baf577d7eb43d033adf0631ace1ed050700",
+        "layers/warcom/extracted/elucidian-starstriders/cards/elucidian-starstriders_page06_card2_portrait.pdf": "25b4f8c35f66b06265f0daf099e4afa8bc9ba42a16bc6e988f3ea40e456bd88e"
+      },
+      "completed": "2026-07-12T19:10:31.252576+00:00"
+    },
+    "extract_artwork": {
+      "outputs": {},
+      "sources": {
+        "artwork": {
+          "hash": "0df3d6cd167a659277d79fc017e018c4480929ab98ff321c5c28c458f8d1c02e",
+          "outputs": [
+            "layers/integration/elucidian-starstriders/artwork/elucidian-starstriders-artwork-01.jpeg",
+            "layers/integration/elucidian-starstriders/artwork/elucidian-starstriders-artwork-02.jpeg",
+            "layers/integration/elucidian-starstriders/artwork/elucidian-starstriders-artwork-03.png",
+            "layers/integration/elucidian-starstriders/artwork/elucidian-starstriders-artwork-04.jpeg",
+            "layers/integration/elucidian-starstriders/artwork/elucidian-starstriders-artwork-05.jpeg",
+            "layers/integration/elucidian-starstriders/artwork/elucidian-starstriders-artwork-06.jpeg",
+            "layers/integration/elucidian-starstriders/artwork/elucidian-starstriders-artwork-07.png",
+            "layers/integration/elucidian-starstriders/artwork/elucidian-starstriders-artwork-08.jpeg",
+            "layers/integration/elucidian-starstriders/artwork/elucidian-starstriders-artwork-09.jpeg",
+            "layers/integration/elucidian-starstriders/artwork/elucidian-starstriders-artwork-10.jpeg",
+            "layers/integration/elucidian-starstriders/artwork/elucidian-starstriders-artwork-11.jpeg",
+            "layers/integration/elucidian-starstriders/artwork/elucidian-starstriders-artwork-12.jpeg",
+            "layers/integration/elucidian-starstriders/artwork/elucidian-starstriders-artwork-13.jpeg",
+            "layers/integration/elucidian-starstriders/artwork/elucidian-starstriders-artwork-14.jpeg",
+            "layers/integration/elucidian-starstriders/artwork/elucidian-starstriders-artwork-15.jpeg",
+            "layers/integration/elucidian-starstriders/artwork/elucidian-starstriders-artwork-16.jpeg",
+            "layers/integration/elucidian-starstriders/artwork/elucidian-starstriders-artwork-17.jpeg",
+            "layers/integration/elucidian-starstriders/artwork/elucidian-starstriders-artwork-metadata.json",
+            "layers/integration/elucidian-starstriders/artwork/icons/elucidian-starstriders-icon-landscape.jpg",
+            "layers/integration/elucidian-starstriders/artwork/icons/elucidian-starstriders-icon-portrait.jpg",
+            "layers/integration/elucidian-starstriders/artwork/icons/elucidian-starstriders-icon-token-transparent.png",
+            "layers/integration/elucidian-starstriders/artwork/icons/elucidian-starstriders-icon-token.jpg"
+          ],
+          "modified": "2026-07-06T20:53:06.315164+00:00"
+        }
+      },
+      "completed": "2026-07-06T20:53:06.315178+00:00"
+    }
+  }
+}

@@ -1,0 +1,1409 @@
+{
+  "team": "inquisitorial-agents",
+  "pipeline_version": "2.0",
+  "last_updated": "2026-07-12T20:56:39.185686+00:00",
+  "steps": {
+    "content_analysis": {
+      "outputs": {
+        "content.json": {
+          "path": "layers/integration/inquisitorial-agents/content/inquisitorial-agents-content.json",
+          "hash": "532a0aa30b6448d75ea118f133fa819a511aee98f41acbc331c9f0ac25bc173e",
+          "modified": "2026-07-12T19:15:13.546151+00:00"
+        }
+      },
+      "completed": "2026-07-12T19:15:22.850225+00:00",
+      "inputs": {
+        "layers/integration/inquisitorial-agents/manifest.json": "d1b301d98e1fc48659268abd68a0e649f0c7934f6aeeab0dc9e084a2e9dadfc9",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-autosavant-agent.pdf": "f7cd3aaff627f6dc8f6e8434327d826eb1b50c06204b1d1bd97312d4556f107c",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-death-world-veteran-agent.pdf": "dfd31dc4015153ec242746cabbc972907964a0d0a6414949ed082890a6750edb",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-enlightener-agent.pdf": "d35631cb41f902cfc5075747bc6ace04d4f08514d66ad7bb3c632b53949da58e",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-hexorcist-agent.pdf": "56dfbf4da7d4435b4e13be76743a6e20f9d34c5ab4ffeae21974e265a09bfaf6",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-interrogator-agent.pdf": "ed1a2f71877305f7246d6e3feafc4e0511c4223a43208a67d8bf89f3a0bb5a02",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-mystic-agent.pdf": "1495c862c04971d924e9e09984614b1d708d12d8c8bbf9c19ec5ff413ceb5f36",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-penal-legionnaire-agent.pdf": "2e1d964306ee11738f82826c315ffcd94fcaac1fbc9020ebf5f1ca4a8a91b63d",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-pistolier-agent.pdf": "bc64a09384402f01daf2e4235876002ea2903bd30bf21ccda647e651e4815c53",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-questkeeper-agent.pdf": "89bf9cf2a4d92f1917428e13925ac312fa011d62f1dd9b7e97e1a44802c887f6",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-requisitioned-gun-servitor.pdf": "33083494cb06ccd652fb3aeefcfe86b20e24829304af5c529f330a79f50934b1",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-sister-of-silence-prosecutor.pdf": "ba00b52b67f27e706dfa4254cae2ef748de109c5852d1af8b0060f22a4646715",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-sister-of-silence-vigilator.pdf": "f01e07c2fd50ca0169cf969690b3474700cebddaeb0cd179cde33603a9269841",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-sister-of-silence-witchseeker.pdf": "cd5579ea9babd25e425a7473b03e9678c2205ad7fcbc71538f054c1e45838cc9",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-tempestus-scion-gunner.pdf": "c12e0f3a792948cd71b4c52e1415f900e1b9155b9015d1565a85140b83507626",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-tempestus-scion-medic.pdf": "739438c799b2ca275012fad11ea2d207ed117eb57148e5ef4f902f52e54e842f",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-tempestus-scion-trooper.pdf": "54915f75b3cc02d30719d9127f586daaa43eb21c42c2ef3a212d32613361b75f",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-tempestus-scion-vox-operator.pdf": "b2970f58d4240e787ea9ccc797aad1c67bb79a6a1905a03b9c7c4e99a4a5e212",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-tome-skull.pdf": "4c7cc9824531bbd38889c2909fd97e67cee836e381f7d105563d0f9d42ab5a40",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-equipment-armoured-bodysuits.pdf": "c0d95ee059f7116e91a873ad4934d6d70adb5cf29d706353006433452ee1d7b4",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-equipment-combat-daggers.pdf": "3a42dbb4b7e49df7213a2ef7c9e6750ee8a80f59c97fde6799f351da75139e90",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-equipment-inquisitorial-rosette.pdf": "91b864a729eae05f383bc91d0180360bd85561deecbf3d57ddf2d0008d097de3",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-equipment-servo-skull.pdf": "d75993581a1bb68bddc7ef6e2fab843f2961dd52c6e3fb9b319b5163fcf02041",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-faction-rule-death-korps.pdf": "b1669b38b012b149f6f5451c18f443a1d148cecd36664d522954a351fbc13b97",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-faction-rule-exaction-squad.pdf": "5c3f040cfb7be517da416cbd02b8d958a910c93e3532c7e3dd73933f7b4b6799",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-faction-rule-imperial-navy-breachers.pdf": "d93ba041b8b07959bb6c9f03ebd84bb1727eea39128224ab3e8cdbbf3cb6b112",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-faction-rule-inquisitorial-requisition.pdf": "d71b5f6079ce151be4cb4ff244f57cfe6059d9bbf81fc3b41300a90a374af681",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-faction-rule-kasrkin.pdf": "f43fd4cb5393f9c186c17188205ef39d8ef55517e926cdf9d45197d41d936854",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-faction-rule-sisters-of-silence.pdf": "7b23df490a93b28ae5c79fac6f13ea239360da1e1fc86521d138dc15880cffb6",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-faction-rule-tempestus-scions.pdf": "f2e6f14f94b76fe49cd0fd2b0be7b0b3aac087c1f90662feb461b5d2643678f9",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-firefight-ploy-absolute-authority.pdf": "a4b225da60b005c833eb1b34ad476f96ed0688863436710c3216f62484a8b05a",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-firefight-ploy-intimidating-presence.pdf": "f7d50cfa64210e01afc2dc6d0fd207ea8508ff8bc96be296cc0b8d24ae269528",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-firefight-ploy-relentless-in-pursuit.pdf": "e071b3f1f7d57792454fbd393c25f5e201debe086923db9c7706e79793bb4107",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-firefight-ploy-the-emperors-will.pdf": "6a3a783513e6bbb0fe63c957538fd8c962827b6860810ef2187d367ff6616621",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-operatives-selection-operative-selection.pdf": "078e37efef582be02c85b6243013f4d67abca0db2f58ff54efe5c825b957d58f",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-strategy-ploy-denounce.pdf": "cd851ecfe04c50e81659ea16d700caa8e424df9bcda8c22a72a3d442a5b7eda9",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-strategy-ploy-intense-scrutiny.pdf": "a39ff54bcc568138961b7b3d50feb517f7e8894a3566ac3f280d194b976c52a9",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-strategy-ploy-irrefutable-jurisdiction.pdf": "d5716eaac9d49e72aa8235d6e022efd409af40020e02a6d14f50eb0ea3dabe50",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-strategy-ploy-quarry.pdf": "d7477efe401157dfd6e916b7c51e14f9daf83228c1be67c8750ea7e5b7c5d687",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-token-guide-token-guide.pdf": "ceb4ceb47c51971b3e38464a254f20ab2f0c0005efd79474ac20d964b4b9aa11"
+      }
+    },
+    "extract_backsides": {
+      "outputs": {
+        "backside-landscape.jpg": {
+          "path": "layers/integration/inquisitorial-agents/card-backside/inquisitorial-agents-backside-landscape.jpg",
+          "hash": "3762c42c0ffbfbbb3a2a633dc0dcaf0e4cd4c533b13a0b4541a7685d3aa2f1d2",
+          "modified": "2026-07-12T18:51:29.461349+00:00"
+        },
+        "backside-portrait.jpg": {
+          "path": "layers/integration/inquisitorial-agents/card-backside/inquisitorial-agents-backside-portrait.jpg",
+          "hash": "a28477aaa05b7e64e07ec05638c268768b6b8dfe211b4fa249358be03ee45f03",
+          "modified": "2026-07-12T18:51:29.470448+00:00"
+        }
+      },
+      "completed": "2026-07-12T18:51:29.941112+00:00",
+      "inputs": {
+        "layers/integration/inquisitorial-agents/artwork/icons/inquisitorial-agents-icon-token.jpg": "73b79fd61658fef25fa398607b2b20b2e38cafa86d01474ae5aa6dca81a3cbfc",
+        "config/defaults/box/card-box-background.jpeg": "2dd1442a7c52ca1d66899333f678d60f48981ce20561ead77c1161d548176036"
+      }
+    },
+    "extract_tokens": {
+      "outputs": {
+        "tokens/inquisitorial-agents-chasten.png": {
+          "path": "output/inquisitorial-agents/tokens/inquisitorial-agents-chasten.png",
+          "hash": "7fae8e32c787ca2b13661ef3b34a9464a21583c0cd848b34c007b2602d7eb1ed",
+          "modified": "2026-07-12T19:16:00.761908+00:00"
+        },
+        "tokens/inquisitorial-agents-denounce.png": {
+          "path": "output/inquisitorial-agents/tokens/inquisitorial-agents-denounce.png",
+          "hash": "84d25c16a88f1df40379c2f9e54951bd9cb717c0703da9f3606b45b9aebc20ad",
+          "modified": "2026-07-12T19:16:01.702400+00:00"
+        },
+        "tokens/inquisitorial-agents-denunciation.png": {
+          "path": "output/inquisitorial-agents/tokens/inquisitorial-agents-denunciation.png",
+          "hash": "432e35aacd92a962ac8710691a2cd2edfcf5c251e196b5805fb4d11ffb8b2ccb",
+          "modified": "2026-07-12T19:16:02.546259+00:00"
+        },
+        "tokens/inquisitorial-agents-guidance.png": {
+          "path": "output/inquisitorial-agents/tokens/inquisitorial-agents-guidance.png",
+          "hash": "f1680041fbe4c92a6fa45474ccfde15c9f5841f2765e86562b579f7fb7096680",
+          "modified": "2026-07-12T19:16:03.315415+00:00"
+        },
+        "tokens/inquisitorial-agents-inquisitorial-rosette.png": {
+          "path": "output/inquisitorial-agents/tokens/inquisitorial-agents-inquisitorial-rosette.png",
+          "hash": "0006add46caf802d24f6873201362e8983940b4bb112951fb5275e3b18564a37",
+          "modified": "2026-07-12T19:16:03.787041+00:00"
+        },
+        "tokens/inquisitorial-agents-medic.png": {
+          "path": "output/inquisitorial-agents/tokens/inquisitorial-agents-medic.png",
+          "hash": "2f77e44db09710d4ae98cf48bb2ff14a46a9710bf7286b74f7db8cde72edee91",
+          "modified": "2026-07-12T19:16:05.413413+00:00"
+        },
+        "tokens/inquisitorial-agents-protection.png": {
+          "path": "output/inquisitorial-agents/tokens/inquisitorial-agents-protection.png",
+          "hash": "fa0c34244655c6313b6c9986bf19d2d67b884efdd5117b401f1958497b122121",
+          "modified": "2026-07-12T19:16:06.233674+00:00"
+        },
+        "tokens/inquisitorial-agents-quarry.png": {
+          "path": "output/inquisitorial-agents/tokens/inquisitorial-agents-quarry.png",
+          "hash": "2caa659f10843f46921996cf5bfbfcc9d8058c6048d7d3bec8dea5035ede1851",
+          "modified": "2026-07-12T19:16:07.039769+00:00"
+        },
+        "tokens/inquisitorial-agents-sanctification.png": {
+          "path": "output/inquisitorial-agents/tokens/inquisitorial-agents-sanctification.png",
+          "hash": "fb7ef455fc82d688b4ed9e73e1b01f0903fc88b89718d0068e7d1df858d7ac46",
+          "modified": "2026-07-12T19:16:07.846804+00:00"
+        },
+        "tokens/inquisitorial-agents-servo-skull.png": {
+          "path": "output/inquisitorial-agents/tokens/inquisitorial-agents-servo-skull.png",
+          "hash": "ca2a16f96f2b626ee5de021c3044014631c145c9829acebbd3dadf075bcb0568",
+          "modified": "2026-07-12T19:16:08.238529+00:00"
+        },
+        "tokens/inquisitorial-agents-tome-skull.png": {
+          "path": "output/inquisitorial-agents/tokens/inquisitorial-agents-tome-skull.png",
+          "hash": "941ded0db5b91a4e3f5fc64247b96d461a8b3750498be9be7ddc5de80b2ea5b9",
+          "modified": "2026-07-12T19:16:08.638622+00:00"
+        },
+        "tokens/inquisitorial-agents-weathered.png": {
+          "path": "output/inquisitorial-agents/tokens/inquisitorial-agents-weathered.png",
+          "hash": "446ff2dc6e51479632954f948f17c68c002b4a1d3d55b62a798f06b1af23a5d7",
+          "modified": "2026-07-12T19:16:09.091619+00:00"
+        },
+        "tokens/inquisitorial-agents-chasten.obj": {
+          "path": "output/inquisitorial-agents/tokens/inquisitorial-agents-chasten.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-12T19:16:09.847461+00:00"
+        },
+        "tokens/inquisitorial-agents-denounce.obj": {
+          "path": "output/inquisitorial-agents/tokens/inquisitorial-agents-denounce.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-12T19:16:10.312621+00:00"
+        },
+        "tokens/inquisitorial-agents-denunciation.obj": {
+          "path": "output/inquisitorial-agents/tokens/inquisitorial-agents-denunciation.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-12T19:16:10.736983+00:00"
+        },
+        "tokens/inquisitorial-agents-guidance.obj": {
+          "path": "output/inquisitorial-agents/tokens/inquisitorial-agents-guidance.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-12T19:16:11.142432+00:00"
+        },
+        "tokens/inquisitorial-agents-inquisitorial-rosette.obj": {
+          "path": "output/inquisitorial-agents/tokens/inquisitorial-agents-inquisitorial-rosette.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-12T19:16:11.558059+00:00"
+        },
+        "tokens/inquisitorial-agents-medic.obj": {
+          "path": "output/inquisitorial-agents/tokens/inquisitorial-agents-medic.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-12T19:16:11.968281+00:00"
+        },
+        "tokens/inquisitorial-agents-protection.obj": {
+          "path": "output/inquisitorial-agents/tokens/inquisitorial-agents-protection.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-12T19:16:12.387877+00:00"
+        },
+        "tokens/inquisitorial-agents-quarry.obj": {
+          "path": "output/inquisitorial-agents/tokens/inquisitorial-agents-quarry.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-12T19:16:13.265607+00:00"
+        },
+        "tokens/inquisitorial-agents-sanctification.obj": {
+          "path": "output/inquisitorial-agents/tokens/inquisitorial-agents-sanctification.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-12T19:16:13.688956+00:00"
+        },
+        "tokens/inquisitorial-agents-servo-skull.obj": {
+          "path": "output/inquisitorial-agents/tokens/inquisitorial-agents-servo-skull.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-12T19:16:14.573492+00:00"
+        },
+        "tokens/inquisitorial-agents-tome-skull.obj": {
+          "path": "output/inquisitorial-agents/tokens/inquisitorial-agents-tome-skull.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-12T19:16:15.051963+00:00"
+        },
+        "tokens/inquisitorial-agents-weathered.obj": {
+          "path": "output/inquisitorial-agents/tokens/inquisitorial-agents-weathered.obj",
+          "hash": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+          "modified": "2026-07-12T19:16:15.975422+00:00"
+        },
+        "tokens/tokenbag/inquisitorial-agents-token-bag-icon.png": {
+          "path": "output/inquisitorial-agents/tokens/tokenbag/inquisitorial-agents-token-bag-icon.png",
+          "hash": "73b79fd61658fef25fa398607b2b20b2e38cafa86d01474ae5aa6dca81a3cbfc",
+          "modified": "2026-07-12T19:16:16.838075+00:00"
+        },
+        "tokens/tokenbag/inquisitorial-agents-token-bag.obj": {
+          "path": "output/inquisitorial-agents/tokens/tokenbag/inquisitorial-agents-token-bag.obj",
+          "hash": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+          "modified": "2026-07-12T19:16:16.903483+00:00"
+        }
+      },
+      "completed": "2026-07-12T19:16:43.213571+00:00",
+      "inputs": {
+        "layers/integration/inquisitorial-agents/manifest.json": "d1b301d98e1fc48659268abd68a0e649f0c7934f6aeeab0dc9e084a2e9dadfc9",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "layers/integration/inquisitorial-agents/artwork/icons/inquisitorial-agents-icon-token.jpg": "73b79fd61658fef25fa398607b2b20b2e38cafa86d01474ae5aa6dca81a3cbfc",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-autosavant-agent.pdf": "f7cd3aaff627f6dc8f6e8434327d826eb1b50c06204b1d1bd97312d4556f107c",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-death-world-veteran-agent.pdf": "dfd31dc4015153ec242746cabbc972907964a0d0a6414949ed082890a6750edb",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-enlightener-agent.pdf": "d35631cb41f902cfc5075747bc6ace04d4f08514d66ad7bb3c632b53949da58e",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-hexorcist-agent.pdf": "56dfbf4da7d4435b4e13be76743a6e20f9d34c5ab4ffeae21974e265a09bfaf6",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-interrogator-agent.pdf": "ed1a2f71877305f7246d6e3feafc4e0511c4223a43208a67d8bf89f3a0bb5a02",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-mystic-agent.pdf": "1495c862c04971d924e9e09984614b1d708d12d8c8bbf9c19ec5ff413ceb5f36",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-penal-legionnaire-agent.pdf": "2e1d964306ee11738f82826c315ffcd94fcaac1fbc9020ebf5f1ca4a8a91b63d",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-pistolier-agent.pdf": "bc64a09384402f01daf2e4235876002ea2903bd30bf21ccda647e651e4815c53",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-questkeeper-agent.pdf": "89bf9cf2a4d92f1917428e13925ac312fa011d62f1dd9b7e97e1a44802c887f6",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-requisitioned-gun-servitor.pdf": "33083494cb06ccd652fb3aeefcfe86b20e24829304af5c529f330a79f50934b1",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-sister-of-silence-prosecutor.pdf": "ba00b52b67f27e706dfa4254cae2ef748de109c5852d1af8b0060f22a4646715",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-sister-of-silence-vigilator.pdf": "f01e07c2fd50ca0169cf969690b3474700cebddaeb0cd179cde33603a9269841",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-sister-of-silence-witchseeker.pdf": "cd5579ea9babd25e425a7473b03e9678c2205ad7fcbc71538f054c1e45838cc9",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-tempestus-scion-gunner.pdf": "c12e0f3a792948cd71b4c52e1415f900e1b9155b9015d1565a85140b83507626",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-tempestus-scion-medic.pdf": "739438c799b2ca275012fad11ea2d207ed117eb57148e5ef4f902f52e54e842f",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-tempestus-scion-trooper.pdf": "54915f75b3cc02d30719d9127f586daaa43eb21c42c2ef3a212d32613361b75f",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-tempestus-scion-vox-operator.pdf": "b2970f58d4240e787ea9ccc797aad1c67bb79a6a1905a03b9c7c4e99a4a5e212",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-tome-skull.pdf": "4c7cc9824531bbd38889c2909fd97e67cee836e381f7d105563d0f9d42ab5a40",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-equipment-armoured-bodysuits.pdf": "c0d95ee059f7116e91a873ad4934d6d70adb5cf29d706353006433452ee1d7b4",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-equipment-combat-daggers.pdf": "3a42dbb4b7e49df7213a2ef7c9e6750ee8a80f59c97fde6799f351da75139e90",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-equipment-inquisitorial-rosette.pdf": "91b864a729eae05f383bc91d0180360bd85561deecbf3d57ddf2d0008d097de3",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-equipment-servo-skull.pdf": "d75993581a1bb68bddc7ef6e2fab843f2961dd52c6e3fb9b319b5163fcf02041",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-faction-rule-death-korps.pdf": "b1669b38b012b149f6f5451c18f443a1d148cecd36664d522954a351fbc13b97",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-faction-rule-exaction-squad.pdf": "5c3f040cfb7be517da416cbd02b8d958a910c93e3532c7e3dd73933f7b4b6799",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-faction-rule-imperial-navy-breachers.pdf": "d93ba041b8b07959bb6c9f03ebd84bb1727eea39128224ab3e8cdbbf3cb6b112",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-faction-rule-inquisitorial-requisition.pdf": "d71b5f6079ce151be4cb4ff244f57cfe6059d9bbf81fc3b41300a90a374af681",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-faction-rule-kasrkin.pdf": "f43fd4cb5393f9c186c17188205ef39d8ef55517e926cdf9d45197d41d936854",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-faction-rule-sisters-of-silence.pdf": "7b23df490a93b28ae5c79fac6f13ea239360da1e1fc86521d138dc15880cffb6",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-faction-rule-tempestus-scions.pdf": "f2e6f14f94b76fe49cd0fd2b0be7b0b3aac087c1f90662feb461b5d2643678f9",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-firefight-ploy-absolute-authority.pdf": "a4b225da60b005c833eb1b34ad476f96ed0688863436710c3216f62484a8b05a",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-firefight-ploy-intimidating-presence.pdf": "f7d50cfa64210e01afc2dc6d0fd207ea8508ff8bc96be296cc0b8d24ae269528",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-firefight-ploy-relentless-in-pursuit.pdf": "e071b3f1f7d57792454fbd393c25f5e201debe086923db9c7706e79793bb4107",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-firefight-ploy-the-emperors-will.pdf": "6a3a783513e6bbb0fe63c957538fd8c962827b6860810ef2187d367ff6616621",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-operatives-selection-operative-selection.pdf": "078e37efef582be02c85b6243013f4d67abca0db2f58ff54efe5c825b957d58f",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-strategy-ploy-denounce.pdf": "cd851ecfe04c50e81659ea16d700caa8e424df9bcda8c22a72a3d442a5b7eda9",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-strategy-ploy-intense-scrutiny.pdf": "a39ff54bcc568138961b7b3d50feb517f7e8894a3566ac3f280d194b976c52a9",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-strategy-ploy-irrefutable-jurisdiction.pdf": "d5716eaac9d49e72aa8235d6e022efd409af40020e02a6d14f50eb0ea3dabe50",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-strategy-ploy-quarry.pdf": "d7477efe401157dfd6e916b7c51e14f9daf83228c1be67c8750ea7e5b7c5d687",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-token-guide-token-guide.pdf": "ceb4ceb47c51971b3e38464a254f20ab2f0c0005efd79474ac20d964b4b9aa11"
+      }
+    },
+    "generate_dice": {
+      "outputs": {
+        "dice-light.jpg": {
+          "path": "output/inquisitorial-agents/dice/inquisitorial-agents-dice-light.jpg",
+          "hash": "ba1086417b58b28fbaf91484de1ecc4747bcb071d89aa2b3a0e1b695498cb63a",
+          "modified": "2026-07-12T18:52:56.970185+00:00"
+        },
+        "dice-dark.jpg": {
+          "path": "output/inquisitorial-agents/dice/inquisitorial-agents-dice-dark.jpg",
+          "hash": "2f4a4fb9fc7d3156cf5939c2118955c70a7042282cd8fe6999989b27c775a84c",
+          "modified": "2026-07-12T18:52:57.304931+00:00"
+        },
+        "dice-team.jpg": {
+          "path": "output/inquisitorial-agents/dice/inquisitorial-agents-dice-team.jpg",
+          "hash": "6e264f575884885018d980cd45847131b0e49dd930781bd208a64e40b634c975",
+          "modified": "2026-07-12T18:52:57.950112+00:00"
+        }
+      },
+      "completed": "2026-07-12T18:52:58.392146+00:00",
+      "inputs": {
+        "layers/integration/inquisitorial-agents/artwork/icons/inquisitorial-agents-icon-token-transparent.png": "4892341cdfe367fe73bf8d093dd57687e9edc5c4b76e20aac7d00289ba6fdae0",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41"
+      }
+    },
+    "generate_box_texture": {
+      "outputs": {
+        "card-box-texture.jpg": {
+          "path": "output/inquisitorial-agents/cardbox/inquisitorial-agents-card-box-texture.jpg",
+          "hash": "cca1f0db0e0e5cc591214018f5602500148442a4a715892210487136b005dcdc",
+          "modified": "2026-07-12T18:53:05.385939+00:00"
+        },
+        "card-box.obj": {
+          "path": "output/inquisitorial-agents/cardbox/inquisitorial-agents-card-box.obj",
+          "hash": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+          "modified": "2026-07-12T18:53:05.918639+00:00"
+        }
+      },
+      "completed": "2026-07-12T18:53:07.983476+00:00",
+      "inputs": {
+        "layers/integration/inquisitorial-agents/artwork/icons/inquisitorial-agents-icon-token.jpg": "73b79fd61658fef25fa398607b2b20b2e38cafa86d01474ae5aa6dca81a3cbfc",
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "config/defaults/box/card-box.obj": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+        "config/defaults/box/card-box-texture.jpg": "b2f310b01a0d28e8806e99ce0b972e8967e3014608eacefcb6ec51597695a313"
+      }
+    },
+    "generate_card_images": {
+      "outputs": {
+        "cards/datacards/autosavant-agent-back.jpg": {
+          "path": "output/inquisitorial-agents/cards/datacards/autosavant-agent-back.jpg",
+          "hash": "3762c42c0ffbfbbb3a2a633dc0dcaf0e4cd4c533b13a0b4541a7685d3aa2f1d2",
+          "modified": "2026-07-12T19:18:05.912798+00:00"
+        },
+        "cards/datacards/autosavant-agent-front.jpg": {
+          "path": "output/inquisitorial-agents/cards/datacards/autosavant-agent-front.jpg",
+          "hash": "8a01d69d614b964a481c81d25f56cd442aeea7a4c2f167b145a42ad7e6abf087",
+          "modified": "2026-07-12T19:18:05.980362+00:00"
+        },
+        "cards/datacards/death-world-veteran-agent-back.jpg": {
+          "path": "output/inquisitorial-agents/cards/datacards/death-world-veteran-agent-back.jpg",
+          "hash": "3762c42c0ffbfbbb3a2a633dc0dcaf0e4cd4c533b13a0b4541a7685d3aa2f1d2",
+          "modified": "2026-07-12T19:18:05.989468+00:00"
+        },
+        "cards/datacards/death-world-veteran-agent-front.jpg": {
+          "path": "output/inquisitorial-agents/cards/datacards/death-world-veteran-agent-front.jpg",
+          "hash": "fbe985297b2f46df0dc73ab9c509faa7d48252da5e12d134292f5032faeb8c81",
+          "modified": "2026-07-12T19:18:05.993228+00:00"
+        },
+        "cards/datacards/enlightener-agent-back.jpg": {
+          "path": "output/inquisitorial-agents/cards/datacards/enlightener-agent-back.jpg",
+          "hash": "3762c42c0ffbfbbb3a2a633dc0dcaf0e4cd4c533b13a0b4541a7685d3aa2f1d2",
+          "modified": "2026-07-12T19:18:06.199464+00:00"
+        },
+        "cards/datacards/enlightener-agent-front.jpg": {
+          "path": "output/inquisitorial-agents/cards/datacards/enlightener-agent-front.jpg",
+          "hash": "20fda4f04376f86a32bce829c522c881701726d2c5ffd9cdaf3d969596fb4f16",
+          "modified": "2026-07-12T19:18:06.529776+00:00"
+        },
+        "cards/datacards/hexorcist-agent-back.jpg": {
+          "path": "output/inquisitorial-agents/cards/datacards/hexorcist-agent-back.jpg",
+          "hash": "3762c42c0ffbfbbb3a2a633dc0dcaf0e4cd4c533b13a0b4541a7685d3aa2f1d2",
+          "modified": "2026-07-12T19:18:06.855136+00:00"
+        },
+        "cards/datacards/hexorcist-agent-front.jpg": {
+          "path": "output/inquisitorial-agents/cards/datacards/hexorcist-agent-front.jpg",
+          "hash": "2f2dbc8fb22a2d2c6434283eab4aca6f38dd37b5843069f46becbdab22ca215e",
+          "modified": "2026-07-12T19:18:06.857209+00:00"
+        },
+        "cards/datacards/interrogator-agent-back.jpg": {
+          "path": "output/inquisitorial-agents/cards/datacards/interrogator-agent-back.jpg",
+          "hash": "3762c42c0ffbfbbb3a2a633dc0dcaf0e4cd4c533b13a0b4541a7685d3aa2f1d2",
+          "modified": "2026-07-12T19:18:06.865595+00:00"
+        },
+        "cards/datacards/interrogator-agent-front.jpg": {
+          "path": "output/inquisitorial-agents/cards/datacards/interrogator-agent-front.jpg",
+          "hash": "f1a4792bcf5ffe2f631c8df602e43e23107e16bff53e3756ae45bf3d5b9cd5bd",
+          "modified": "2026-07-12T19:18:06.867967+00:00"
+        },
+        "cards/datacards/mystic-agent-back.jpg": {
+          "path": "output/inquisitorial-agents/cards/datacards/mystic-agent-back.jpg",
+          "hash": "752c4941ad705a45d45e42955a4b0ade5cb865bf0b9fc5080272f594cd0e3ee8",
+          "modified": "2026-07-12T19:18:06.869947+00:00"
+        },
+        "cards/datacards/mystic-agent-front.jpg": {
+          "path": "output/inquisitorial-agents/cards/datacards/mystic-agent-front.jpg",
+          "hash": "385779696e6bc90f9b086bbc292238fb02196ced1ab74cd029f7bdcafc2da634",
+          "modified": "2026-07-12T19:18:06.874725+00:00"
+        },
+        "cards/datacards/penal-legionnaire-agent-back.jpg": {
+          "path": "output/inquisitorial-agents/cards/datacards/penal-legionnaire-agent-back.jpg",
+          "hash": "3762c42c0ffbfbbb3a2a633dc0dcaf0e4cd4c533b13a0b4541a7685d3aa2f1d2",
+          "modified": "2026-07-12T19:18:06.884211+00:00"
+        },
+        "cards/datacards/penal-legionnaire-agent-front.jpg": {
+          "path": "output/inquisitorial-agents/cards/datacards/penal-legionnaire-agent-front.jpg",
+          "hash": "2eb343a0500dc9ff0cc0028be67a96fa0029944deca9e68e13ac51a967869c64",
+          "modified": "2026-07-12T19:18:06.889094+00:00"
+        },
+        "cards/datacards/pistolier-agent-back.jpg": {
+          "path": "output/inquisitorial-agents/cards/datacards/pistolier-agent-back.jpg",
+          "hash": "3762c42c0ffbfbbb3a2a633dc0dcaf0e4cd4c533b13a0b4541a7685d3aa2f1d2",
+          "modified": "2026-07-12T19:18:06.895717+00:00"
+        },
+        "cards/datacards/pistolier-agent-front.jpg": {
+          "path": "output/inquisitorial-agents/cards/datacards/pistolier-agent-front.jpg",
+          "hash": "cb3cced255238161a659e2f215430920684f6d954e3cb39978109940add58099",
+          "modified": "2026-07-12T19:18:06.899832+00:00"
+        },
+        "cards/datacards/questkeeper-agent-back.jpg": {
+          "path": "output/inquisitorial-agents/cards/datacards/questkeeper-agent-back.jpg",
+          "hash": "3762c42c0ffbfbbb3a2a633dc0dcaf0e4cd4c533b13a0b4541a7685d3aa2f1d2",
+          "modified": "2026-07-12T19:18:06.906505+00:00"
+        },
+        "cards/datacards/questkeeper-agent-front.jpg": {
+          "path": "output/inquisitorial-agents/cards/datacards/questkeeper-agent-front.jpg",
+          "hash": "0ec911bd24005f2b8883d5a68b3faabde3104d251e74e16b33c02ebdee4b3c57",
+          "modified": "2026-07-12T19:18:06.909546+00:00"
+        },
+        "cards/datacards/requisitioned-gun-servitor-back.jpg": {
+          "path": "output/inquisitorial-agents/cards/datacards/requisitioned-gun-servitor-back.jpg",
+          "hash": "3762c42c0ffbfbbb3a2a633dc0dcaf0e4cd4c533b13a0b4541a7685d3aa2f1d2",
+          "modified": "2026-07-12T19:18:06.915820+00:00"
+        },
+        "cards/datacards/requisitioned-gun-servitor-front.jpg": {
+          "path": "output/inquisitorial-agents/cards/datacards/requisitioned-gun-servitor-front.jpg",
+          "hash": "a37cd05f82276651493b3250fb2803ff2885af37fb737667e620a6b08704217c",
+          "modified": "2026-07-12T19:18:06.923590+00:00"
+        },
+        "cards/datacards/sister-of-silence-prosecutor-back.jpg": {
+          "path": "output/inquisitorial-agents/cards/datacards/sister-of-silence-prosecutor-back.jpg",
+          "hash": "3762c42c0ffbfbbb3a2a633dc0dcaf0e4cd4c533b13a0b4541a7685d3aa2f1d2",
+          "modified": "2026-07-12T19:18:06.930907+00:00"
+        },
+        "cards/datacards/sister-of-silence-prosecutor-front.jpg": {
+          "path": "output/inquisitorial-agents/cards/datacards/sister-of-silence-prosecutor-front.jpg",
+          "hash": "af669080d372b4515b199473e83473e00b3e23a24b7be24cad2be8fe5427c8e6",
+          "modified": "2026-07-12T19:18:06.939896+00:00"
+        },
+        "cards/datacards/sister-of-silence-vigilator-back.jpg": {
+          "path": "output/inquisitorial-agents/cards/datacards/sister-of-silence-vigilator-back.jpg",
+          "hash": "3762c42c0ffbfbbb3a2a633dc0dcaf0e4cd4c533b13a0b4541a7685d3aa2f1d2",
+          "modified": "2026-07-12T19:18:06.950715+00:00"
+        },
+        "cards/datacards/sister-of-silence-vigilator-front.jpg": {
+          "path": "output/inquisitorial-agents/cards/datacards/sister-of-silence-vigilator-front.jpg",
+          "hash": "1e39d30bb88d3b84d4130ee252b144ee8cfcf4eadb8db3777090d3bd6e1542b3",
+          "modified": "2026-07-12T19:18:06.955959+00:00"
+        },
+        "cards/datacards/sister-of-silence-witchseeker-back.jpg": {
+          "path": "output/inquisitorial-agents/cards/datacards/sister-of-silence-witchseeker-back.jpg",
+          "hash": "3762c42c0ffbfbbb3a2a633dc0dcaf0e4cd4c533b13a0b4541a7685d3aa2f1d2",
+          "modified": "2026-07-12T19:18:06.967040+00:00"
+        },
+        "cards/datacards/sister-of-silence-witchseeker-front.jpg": {
+          "path": "output/inquisitorial-agents/cards/datacards/sister-of-silence-witchseeker-front.jpg",
+          "hash": "60bfec7144fb42baf57d2d9624fbc505e89fae069f2a8aa1e23c6d41bfb19d44",
+          "modified": "2026-07-12T19:18:06.982880+00:00"
+        },
+        "cards/datacards/tempestus-scion-gunner-back.jpg": {
+          "path": "output/inquisitorial-agents/cards/datacards/tempestus-scion-gunner-back.jpg",
+          "hash": "3762c42c0ffbfbbb3a2a633dc0dcaf0e4cd4c533b13a0b4541a7685d3aa2f1d2",
+          "modified": "2026-07-12T19:18:06.993114+00:00"
+        },
+        "cards/datacards/tempestus-scion-gunner-front.jpg": {
+          "path": "output/inquisitorial-agents/cards/datacards/tempestus-scion-gunner-front.jpg",
+          "hash": "23c6fe54009601d4c2b4fb362bf819a75a70250a814d4d337e88f49b7c2a45a3",
+          "modified": "2026-07-12T19:18:07.005145+00:00"
+        },
+        "cards/datacards/tempestus-scion-medic-back.jpg": {
+          "path": "output/inquisitorial-agents/cards/datacards/tempestus-scion-medic-back.jpg",
+          "hash": "7ac731436fc4ab3ad776d4992981695f86110a3bffee6178c7140542339c8ecb",
+          "modified": "2026-07-12T19:18:07.015535+00:00"
+        },
+        "cards/datacards/tempestus-scion-medic-front.jpg": {
+          "path": "output/inquisitorial-agents/cards/datacards/tempestus-scion-medic-front.jpg",
+          "hash": "9b617c6b890e2dfe60f5a3fe8011daceae00326a34978e33d567522ed10164d9",
+          "modified": "2026-07-12T19:18:07.027646+00:00"
+        },
+        "cards/datacards/tempestus-scion-trooper-back.jpg": {
+          "path": "output/inquisitorial-agents/cards/datacards/tempestus-scion-trooper-back.jpg",
+          "hash": "3762c42c0ffbfbbb3a2a633dc0dcaf0e4cd4c533b13a0b4541a7685d3aa2f1d2",
+          "modified": "2026-07-12T19:18:07.039840+00:00"
+        },
+        "cards/datacards/tempestus-scion-trooper-front.jpg": {
+          "path": "output/inquisitorial-agents/cards/datacards/tempestus-scion-trooper-front.jpg",
+          "hash": "6c8db7837b75a98bcaf84a8207fabca57d790a969a2dc7ff118fbc4576c54e94",
+          "modified": "2026-07-12T19:18:07.054783+00:00"
+        },
+        "cards/datacards/tempestus-scion-vox-operator-back.jpg": {
+          "path": "output/inquisitorial-agents/cards/datacards/tempestus-scion-vox-operator-back.jpg",
+          "hash": "3762c42c0ffbfbbb3a2a633dc0dcaf0e4cd4c533b13a0b4541a7685d3aa2f1d2",
+          "modified": "2026-07-12T19:18:07.063435+00:00"
+        },
+        "cards/datacards/tempestus-scion-vox-operator-front.jpg": {
+          "path": "output/inquisitorial-agents/cards/datacards/tempestus-scion-vox-operator-front.jpg",
+          "hash": "6f58604d3ca2bc50ebc43394627cf3b2a78a095db210dd1859ccfcaf8457f63f",
+          "modified": "2026-07-12T19:18:07.077427+00:00"
+        },
+        "cards/datacards/tome-skull-back.jpg": {
+          "path": "output/inquisitorial-agents/cards/datacards/tome-skull-back.jpg",
+          "hash": "a6b7a9aa3ba6f4c135914055a045f42f1f8be6c6e1103412da0d8653d72e971b",
+          "modified": "2026-07-12T19:18:07.081891+00:00"
+        },
+        "cards/datacards/tome-skull-front.jpg": {
+          "path": "output/inquisitorial-agents/cards/datacards/tome-skull-front.jpg",
+          "hash": "f0cda1e043590b69d96cb8c28efd64e4b9502fb005e2d2c7082b9e620e142e28",
+          "modified": "2026-07-12T19:18:07.103020+00:00"
+        },
+        "cards/equipment/inquisitorial-agents-armoured-bodysuits-back.jpg": {
+          "path": "output/inquisitorial-agents/cards/equipment/inquisitorial-agents-armoured-bodysuits-back.jpg",
+          "hash": "a28477aaa05b7e64e07ec05638c268768b6b8dfe211b4fa249358be03ee45f03",
+          "modified": "2026-07-12T19:18:07.110738+00:00"
+        },
+        "cards/equipment/inquisitorial-agents-armoured-bodysuits-front.jpg": {
+          "path": "output/inquisitorial-agents/cards/equipment/inquisitorial-agents-armoured-bodysuits-front.jpg",
+          "hash": "158b30f21880140aafbc602402de6abaf50cf6cb3813b6ae44dededb7726a14c",
+          "modified": "2026-07-12T19:18:07.121745+00:00"
+        },
+        "cards/equipment/inquisitorial-agents-combat-daggers-back.jpg": {
+          "path": "output/inquisitorial-agents/cards/equipment/inquisitorial-agents-combat-daggers-back.jpg",
+          "hash": "a28477aaa05b7e64e07ec05638c268768b6b8dfe211b4fa249358be03ee45f03",
+          "modified": "2026-07-12T19:18:07.130775+00:00"
+        },
+        "cards/equipment/inquisitorial-agents-combat-daggers-front.jpg": {
+          "path": "output/inquisitorial-agents/cards/equipment/inquisitorial-agents-combat-daggers-front.jpg",
+          "hash": "5b3fbfb82c0bd824bf0d25bb38d2aab72346d3c118f5277eac28894c68f982ee",
+          "modified": "2026-07-12T19:18:07.138256+00:00"
+        },
+        "cards/equipment/inquisitorial-agents-inquisitorial-rosette-back.jpg": {
+          "path": "output/inquisitorial-agents/cards/equipment/inquisitorial-agents-inquisitorial-rosette-back.jpg",
+          "hash": "a28477aaa05b7e64e07ec05638c268768b6b8dfe211b4fa249358be03ee45f03",
+          "modified": "2026-07-12T19:18:07.149692+00:00"
+        },
+        "cards/equipment/inquisitorial-agents-inquisitorial-rosette-front.jpg": {
+          "path": "output/inquisitorial-agents/cards/equipment/inquisitorial-agents-inquisitorial-rosette-front.jpg",
+          "hash": "bc0e224e08cf3c0e15a59a422918508e3fc8f00b5ae869760a22db65ca0d0750",
+          "modified": "2026-07-12T19:18:07.156206+00:00"
+        },
+        "cards/equipment/inquisitorial-agents-servo-skull-back.jpg": {
+          "path": "output/inquisitorial-agents/cards/equipment/inquisitorial-agents-servo-skull-back.jpg",
+          "hash": "a28477aaa05b7e64e07ec05638c268768b6b8dfe211b4fa249358be03ee45f03",
+          "modified": "2026-07-12T19:18:07.165586+00:00"
+        },
+        "cards/equipment/inquisitorial-agents-servo-skull-front.jpg": {
+          "path": "output/inquisitorial-agents/cards/equipment/inquisitorial-agents-servo-skull-front.jpg",
+          "hash": "0d16c45f3e75b74de30ce90642b7e61a1a223cc065819469265779ac016ef469",
+          "modified": "2026-07-12T19:18:07.172092+00:00"
+        },
+        "cards/faction_rules/inquisitorial-agents-death-korps-back.jpg": {
+          "path": "output/inquisitorial-agents/cards/faction_rules/inquisitorial-agents-death-korps-back.jpg",
+          "hash": "0a6cee717209dcf1bc0ad82ff6e51fa47b7806dd17bbf1a0c32365e6ce05d596",
+          "modified": "2026-07-12T19:18:07.180572+00:00"
+        },
+        "cards/faction_rules/inquisitorial-agents-death-korps-front.jpg": {
+          "path": "output/inquisitorial-agents/cards/faction_rules/inquisitorial-agents-death-korps-front.jpg",
+          "hash": "49631576fddeadaa4644577aad3f3b8cee072990685c22f9baf8330a41f824a6",
+          "modified": "2026-07-12T19:18:07.188838+00:00"
+        },
+        "cards/faction_rules/inquisitorial-agents-exaction-squad-back.jpg": {
+          "path": "output/inquisitorial-agents/cards/faction_rules/inquisitorial-agents-exaction-squad-back.jpg",
+          "hash": "6d66bd01fb17f581f6d5faf5c6535f33f638325844294960301f082c59ad1c4a",
+          "modified": "2026-07-12T19:18:07.199094+00:00"
+        },
+        "cards/faction_rules/inquisitorial-agents-exaction-squad-front.jpg": {
+          "path": "output/inquisitorial-agents/cards/faction_rules/inquisitorial-agents-exaction-squad-front.jpg",
+          "hash": "3e55e81dd0842acb1f227eeed4a8dbccbc5e44293ad574ec9ebb45d428423ff5",
+          "modified": "2026-07-12T19:18:07.206348+00:00"
+        },
+        "cards/faction_rules/inquisitorial-agents-imperial-navy-breachers-back.jpg": {
+          "path": "output/inquisitorial-agents/cards/faction_rules/inquisitorial-agents-imperial-navy-breachers-back.jpg",
+          "hash": "d010808e75ed168ad77052b01b919b6823af4f5965da896b3601e353778b6aea",
+          "modified": "2026-07-12T19:18:07.213063+00:00"
+        },
+        "cards/faction_rules/inquisitorial-agents-imperial-navy-breachers-front.jpg": {
+          "path": "output/inquisitorial-agents/cards/faction_rules/inquisitorial-agents-imperial-navy-breachers-front.jpg",
+          "hash": "c3e27948ce57cf298816f848fdf1d7a47f4eeac26c92fde7a9f0e299220e21f5",
+          "modified": "2026-07-12T19:18:07.220970+00:00"
+        },
+        "cards/faction_rules/inquisitorial-agents-inquisitorial-requisition-back.jpg": {
+          "path": "output/inquisitorial-agents/cards/faction_rules/inquisitorial-agents-inquisitorial-requisition-back.jpg",
+          "hash": "c442284ccb619b89c78d335783a05d7f8fe0bb2c9af0ad4f1511cd81684b67f3",
+          "modified": "2026-07-12T19:18:07.232743+00:00"
+        },
+        "cards/faction_rules/inquisitorial-agents-inquisitorial-requisition-front.jpg": {
+          "path": "output/inquisitorial-agents/cards/faction_rules/inquisitorial-agents-inquisitorial-requisition-front.jpg",
+          "hash": "61675015d386bb11554e64718c32e65e46fad98af550b81a8a6c3ccd5e58ae9d",
+          "modified": "2026-07-12T19:18:07.244358+00:00"
+        },
+        "cards/faction_rules/inquisitorial-agents-kasrkin-back.jpg": {
+          "path": "output/inquisitorial-agents/cards/faction_rules/inquisitorial-agents-kasrkin-back.jpg",
+          "hash": "a28477aaa05b7e64e07ec05638c268768b6b8dfe211b4fa249358be03ee45f03",
+          "modified": "2026-07-12T19:18:07.252816+00:00"
+        },
+        "cards/faction_rules/inquisitorial-agents-kasrkin-front.jpg": {
+          "path": "output/inquisitorial-agents/cards/faction_rules/inquisitorial-agents-kasrkin-front.jpg",
+          "hash": "6199b02f0a71b97a50fbe8c165a81901b258030c8babd902c1460ebe23bfa942",
+          "modified": "2026-07-12T19:18:07.270877+00:00"
+        },
+        "cards/faction_rules/inquisitorial-agents-sisters-of-silence-back.jpg": {
+          "path": "output/inquisitorial-agents/cards/faction_rules/inquisitorial-agents-sisters-of-silence-back.jpg",
+          "hash": "a28477aaa05b7e64e07ec05638c268768b6b8dfe211b4fa249358be03ee45f03",
+          "modified": "2026-07-12T19:18:07.279263+00:00"
+        },
+        "cards/faction_rules/inquisitorial-agents-sisters-of-silence-front.jpg": {
+          "path": "output/inquisitorial-agents/cards/faction_rules/inquisitorial-agents-sisters-of-silence-front.jpg",
+          "hash": "30e68c7d815172126f158644b96fb80cfbc22fc450eeeefd4f9f8fec609db551",
+          "modified": "2026-07-12T19:18:07.281598+00:00"
+        },
+        "cards/faction_rules/inquisitorial-agents-tempestus-scions-back.jpg": {
+          "path": "output/inquisitorial-agents/cards/faction_rules/inquisitorial-agents-tempestus-scions-back.jpg",
+          "hash": "a28477aaa05b7e64e07ec05638c268768b6b8dfe211b4fa249358be03ee45f03",
+          "modified": "2026-07-12T19:18:07.291412+00:00"
+        },
+        "cards/faction_rules/inquisitorial-agents-tempestus-scions-front.jpg": {
+          "path": "output/inquisitorial-agents/cards/faction_rules/inquisitorial-agents-tempestus-scions-front.jpg",
+          "hash": "fd8876369fa9fdc9ace70bdd6147fefd1eb5033364a6f337bfe27ea2a3f44378",
+          "modified": "2026-07-12T19:18:07.300870+00:00"
+        },
+        "cards/firefight_ploys/inquisitorial-agents-absolute-authority-back.jpg": {
+          "path": "output/inquisitorial-agents/cards/firefight_ploys/inquisitorial-agents-absolute-authority-back.jpg",
+          "hash": "a28477aaa05b7e64e07ec05638c268768b6b8dfe211b4fa249358be03ee45f03",
+          "modified": "2026-07-12T19:18:07.310658+00:00"
+        },
+        "cards/firefight_ploys/inquisitorial-agents-absolute-authority-front.jpg": {
+          "path": "output/inquisitorial-agents/cards/firefight_ploys/inquisitorial-agents-absolute-authority-front.jpg",
+          "hash": "9dffd6e2ce758296531e9b038faa5d1eb6ac7d7720a771cc4a988dfde99b3a95",
+          "modified": "2026-07-12T19:18:07.319710+00:00"
+        },
+        "cards/firefight_ploys/inquisitorial-agents-intimidating-presence-back.jpg": {
+          "path": "output/inquisitorial-agents/cards/firefight_ploys/inquisitorial-agents-intimidating-presence-back.jpg",
+          "hash": "a28477aaa05b7e64e07ec05638c268768b6b8dfe211b4fa249358be03ee45f03",
+          "modified": "2026-07-12T19:18:07.332967+00:00"
+        },
+        "cards/firefight_ploys/inquisitorial-agents-intimidating-presence-front.jpg": {
+          "path": "output/inquisitorial-agents/cards/firefight_ploys/inquisitorial-agents-intimidating-presence-front.jpg",
+          "hash": "4ffdda73e965be26e2bccc06f47314c6d32459908a336a6aa24197349743a5f1",
+          "modified": "2026-07-12T19:18:07.340614+00:00"
+        },
+        "cards/firefight_ploys/inquisitorial-agents-relentless-in-pursuit-back.jpg": {
+          "path": "output/inquisitorial-agents/cards/firefight_ploys/inquisitorial-agents-relentless-in-pursuit-back.jpg",
+          "hash": "a28477aaa05b7e64e07ec05638c268768b6b8dfe211b4fa249358be03ee45f03",
+          "modified": "2026-07-12T19:18:07.349960+00:00"
+        },
+        "cards/firefight_ploys/inquisitorial-agents-relentless-in-pursuit-front.jpg": {
+          "path": "output/inquisitorial-agents/cards/firefight_ploys/inquisitorial-agents-relentless-in-pursuit-front.jpg",
+          "hash": "c53049882ee264b4bfd2a4899886e4bbd91eea7351f8831373837ce347275910",
+          "modified": "2026-07-12T19:18:07.356996+00:00"
+        },
+        "cards/firefight_ploys/inquisitorial-agents-the-emperors-will-back.jpg": {
+          "path": "output/inquisitorial-agents/cards/firefight_ploys/inquisitorial-agents-the-emperors-will-back.jpg",
+          "hash": "a28477aaa05b7e64e07ec05638c268768b6b8dfe211b4fa249358be03ee45f03",
+          "modified": "2026-07-12T19:18:07.363885+00:00"
+        },
+        "cards/firefight_ploys/inquisitorial-agents-the-emperors-will-front.jpg": {
+          "path": "output/inquisitorial-agents/cards/firefight_ploys/inquisitorial-agents-the-emperors-will-front.jpg",
+          "hash": "9d98078f6e5e4271956d0ba68286eb41db7d1391f1230e7ecf3c6e44050e21ad",
+          "modified": "2026-07-12T19:18:07.370422+00:00"
+        },
+        "cards/operatives_selection/inquisitorial-agents-operative-selection-back.jpg": {
+          "path": "output/inquisitorial-agents/cards/operatives_selection/inquisitorial-agents-operative-selection-back.jpg",
+          "hash": "153dd4662e9177ba4e1fa834a571f4b9bc76fa5fdeadd983720f8a23a5315f1d",
+          "modified": "2026-07-12T19:18:07.380696+00:00"
+        },
+        "cards/operatives_selection/inquisitorial-agents-operative-selection-front.jpg": {
+          "path": "output/inquisitorial-agents/cards/operatives_selection/inquisitorial-agents-operative-selection-front.jpg",
+          "hash": "29aac95c863ad8ee94d996bd84f7a3d698b7fda4548a07749570b7f5d8ae6b8a",
+          "modified": "2026-07-12T19:18:07.384450+00:00"
+        },
+        "cards/strategy_ploys/inquisitorial-agents-denounce-back.jpg": {
+          "path": "output/inquisitorial-agents/cards/strategy_ploys/inquisitorial-agents-denounce-back.jpg",
+          "hash": "a28477aaa05b7e64e07ec05638c268768b6b8dfe211b4fa249358be03ee45f03",
+          "modified": "2026-07-12T19:18:07.392212+00:00"
+        },
+        "cards/strategy_ploys/inquisitorial-agents-denounce-front.jpg": {
+          "path": "output/inquisitorial-agents/cards/strategy_ploys/inquisitorial-agents-denounce-front.jpg",
+          "hash": "637ad4d22a0549ccd9419297e4cbf16a732472493e4edcdf6887f9c2e851f94d",
+          "modified": "2026-07-12T19:18:07.403295+00:00"
+        },
+        "cards/strategy_ploys/inquisitorial-agents-intense-scrutiny-back.jpg": {
+          "path": "output/inquisitorial-agents/cards/strategy_ploys/inquisitorial-agents-intense-scrutiny-back.jpg",
+          "hash": "a28477aaa05b7e64e07ec05638c268768b6b8dfe211b4fa249358be03ee45f03",
+          "modified": "2026-07-12T19:18:07.413950+00:00"
+        },
+        "cards/strategy_ploys/inquisitorial-agents-intense-scrutiny-front.jpg": {
+          "path": "output/inquisitorial-agents/cards/strategy_ploys/inquisitorial-agents-intense-scrutiny-front.jpg",
+          "hash": "f1eb49abacd57b1416f4c59034586be4c22457972f5b73d25f9cd447ab892277",
+          "modified": "2026-07-12T19:18:07.428201+00:00"
+        },
+        "cards/strategy_ploys/inquisitorial-agents-irrefutable-jurisdiction-back.jpg": {
+          "path": "output/inquisitorial-agents/cards/strategy_ploys/inquisitorial-agents-irrefutable-jurisdiction-back.jpg",
+          "hash": "a28477aaa05b7e64e07ec05638c268768b6b8dfe211b4fa249358be03ee45f03",
+          "modified": "2026-07-12T19:18:07.441550+00:00"
+        },
+        "cards/strategy_ploys/inquisitorial-agents-irrefutable-jurisdiction-front.jpg": {
+          "path": "output/inquisitorial-agents/cards/strategy_ploys/inquisitorial-agents-irrefutable-jurisdiction-front.jpg",
+          "hash": "83aad6c4ad80ccbfabd3fd23922fe7d0ac42c26afc338ea5cc2c6ef2cc1afc7c",
+          "modified": "2026-07-12T19:18:07.449252+00:00"
+        },
+        "cards/strategy_ploys/inquisitorial-agents-quarry-back.jpg": {
+          "path": "output/inquisitorial-agents/cards/strategy_ploys/inquisitorial-agents-quarry-back.jpg",
+          "hash": "a28477aaa05b7e64e07ec05638c268768b6b8dfe211b4fa249358be03ee45f03",
+          "modified": "2026-07-12T19:18:07.462583+00:00"
+        },
+        "cards/strategy_ploys/inquisitorial-agents-quarry-front.jpg": {
+          "path": "output/inquisitorial-agents/cards/strategy_ploys/inquisitorial-agents-quarry-front.jpg",
+          "hash": "59c57816f4adf7053a769276c6aa941b5dc4ac2099f3c0e5cfaa012619c69d0a",
+          "modified": "2026-07-12T19:18:07.478857+00:00"
+        },
+        "cards/token_guide/inquisitorial-agents-token-guide-back.jpg": {
+          "path": "output/inquisitorial-agents/cards/token_guide/inquisitorial-agents-token-guide-back.jpg",
+          "hash": "a28477aaa05b7e64e07ec05638c268768b6b8dfe211b4fa249358be03ee45f03",
+          "modified": "2026-07-12T19:18:07.488766+00:00"
+        },
+        "cards/token_guide/inquisitorial-agents-token-guide-front.jpg": {
+          "path": "output/inquisitorial-agents/cards/token_guide/inquisitorial-agents-token-guide-front.jpg",
+          "hash": "69cb5edf308de501f7f8530c065bdb4d97175b679f906cf9d33af5c376ebbdcb",
+          "modified": "2026-07-12T19:18:07.497040+00:00"
+        }
+      },
+      "completed": "2026-07-12T19:18:12.041767+00:00",
+      "inputs": {
+        "layers/integration/inquisitorial-agents/manifest.json": "d1b301d98e1fc48659268abd68a0e649f0c7934f6aeeab0dc9e084a2e9dadfc9",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-autosavant-agent.pdf": "f7cd3aaff627f6dc8f6e8434327d826eb1b50c06204b1d1bd97312d4556f107c",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-death-world-veteran-agent.pdf": "dfd31dc4015153ec242746cabbc972907964a0d0a6414949ed082890a6750edb",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-enlightener-agent.pdf": "d35631cb41f902cfc5075747bc6ace04d4f08514d66ad7bb3c632b53949da58e",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-hexorcist-agent.pdf": "56dfbf4da7d4435b4e13be76743a6e20f9d34c5ab4ffeae21974e265a09bfaf6",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-interrogator-agent.pdf": "ed1a2f71877305f7246d6e3feafc4e0511c4223a43208a67d8bf89f3a0bb5a02",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-mystic-agent.pdf": "1495c862c04971d924e9e09984614b1d708d12d8c8bbf9c19ec5ff413ceb5f36",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-penal-legionnaire-agent.pdf": "2e1d964306ee11738f82826c315ffcd94fcaac1fbc9020ebf5f1ca4a8a91b63d",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-pistolier-agent.pdf": "bc64a09384402f01daf2e4235876002ea2903bd30bf21ccda647e651e4815c53",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-questkeeper-agent.pdf": "89bf9cf2a4d92f1917428e13925ac312fa011d62f1dd9b7e97e1a44802c887f6",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-requisitioned-gun-servitor.pdf": "33083494cb06ccd652fb3aeefcfe86b20e24829304af5c529f330a79f50934b1",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-sister-of-silence-prosecutor.pdf": "ba00b52b67f27e706dfa4254cae2ef748de109c5852d1af8b0060f22a4646715",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-sister-of-silence-vigilator.pdf": "f01e07c2fd50ca0169cf969690b3474700cebddaeb0cd179cde33603a9269841",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-sister-of-silence-witchseeker.pdf": "cd5579ea9babd25e425a7473b03e9678c2205ad7fcbc71538f054c1e45838cc9",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-tempestus-scion-gunner.pdf": "c12e0f3a792948cd71b4c52e1415f900e1b9155b9015d1565a85140b83507626",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-tempestus-scion-medic.pdf": "739438c799b2ca275012fad11ea2d207ed117eb57148e5ef4f902f52e54e842f",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-tempestus-scion-trooper.pdf": "54915f75b3cc02d30719d9127f586daaa43eb21c42c2ef3a212d32613361b75f",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-tempestus-scion-vox-operator.pdf": "b2970f58d4240e787ea9ccc797aad1c67bb79a6a1905a03b9c7c4e99a4a5e212",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-tome-skull.pdf": "4c7cc9824531bbd38889c2909fd97e67cee836e381f7d105563d0f9d42ab5a40",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-equipment-armoured-bodysuits.pdf": "c0d95ee059f7116e91a873ad4934d6d70adb5cf29d706353006433452ee1d7b4",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-equipment-combat-daggers.pdf": "3a42dbb4b7e49df7213a2ef7c9e6750ee8a80f59c97fde6799f351da75139e90",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-equipment-inquisitorial-rosette.pdf": "91b864a729eae05f383bc91d0180360bd85561deecbf3d57ddf2d0008d097de3",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-equipment-servo-skull.pdf": "d75993581a1bb68bddc7ef6e2fab843f2961dd52c6e3fb9b319b5163fcf02041",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-faction-rule-death-korps.pdf": "b1669b38b012b149f6f5451c18f443a1d148cecd36664d522954a351fbc13b97",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-faction-rule-exaction-squad.pdf": "5c3f040cfb7be517da416cbd02b8d958a910c93e3532c7e3dd73933f7b4b6799",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-faction-rule-imperial-navy-breachers.pdf": "d93ba041b8b07959bb6c9f03ebd84bb1727eea39128224ab3e8cdbbf3cb6b112",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-faction-rule-inquisitorial-requisition.pdf": "d71b5f6079ce151be4cb4ff244f57cfe6059d9bbf81fc3b41300a90a374af681",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-faction-rule-kasrkin.pdf": "f43fd4cb5393f9c186c17188205ef39d8ef55517e926cdf9d45197d41d936854",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-faction-rule-sisters-of-silence.pdf": "7b23df490a93b28ae5c79fac6f13ea239360da1e1fc86521d138dc15880cffb6",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-faction-rule-tempestus-scions.pdf": "f2e6f14f94b76fe49cd0fd2b0be7b0b3aac087c1f90662feb461b5d2643678f9",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-firefight-ploy-absolute-authority.pdf": "a4b225da60b005c833eb1b34ad476f96ed0688863436710c3216f62484a8b05a",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-firefight-ploy-intimidating-presence.pdf": "f7d50cfa64210e01afc2dc6d0fd207ea8508ff8bc96be296cc0b8d24ae269528",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-firefight-ploy-relentless-in-pursuit.pdf": "e071b3f1f7d57792454fbd393c25f5e201debe086923db9c7706e79793bb4107",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-firefight-ploy-the-emperors-will.pdf": "6a3a783513e6bbb0fe63c957538fd8c962827b6860810ef2187d367ff6616621",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-operatives-selection-operative-selection.pdf": "078e37efef582be02c85b6243013f4d67abca0db2f58ff54efe5c825b957d58f",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-strategy-ploy-denounce.pdf": "cd851ecfe04c50e81659ea16d700caa8e424df9bcda8c22a72a3d442a5b7eda9",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-strategy-ploy-intense-scrutiny.pdf": "a39ff54bcc568138961b7b3d50feb517f7e8894a3566ac3f280d194b976c52a9",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-strategy-ploy-irrefutable-jurisdiction.pdf": "d5716eaac9d49e72aa8235d6e022efd409af40020e02a6d14f50eb0ea3dabe50",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-strategy-ploy-quarry.pdf": "d7477efe401157dfd6e916b7c51e14f9daf83228c1be67c8750ea7e5b7c5d687",
+        "layers/integration/inquisitorial-agents/inquisitorial-agents-token-guide-token-guide.pdf": "ceb4ceb47c51971b3e38464a254f20ab2f0c0005efd79474ac20d964b4b9aa11",
+        "layers/integration/inquisitorial-agents/card-backside/inquisitorial-agents-backside-portrait.jpg": "a28477aaa05b7e64e07ec05638c268768b6b8dfe211b4fa249358be03ee45f03",
+        "config/defaults/card-backside/default-backside-portrait.jpg": "f00ff15fa70005b9f804de08519e2e83485d7eaf78dfacea65dcef0eb1a29c22",
+        "layers/integration/inquisitorial-agents/card-backside/inquisitorial-agents-backside-landscape.jpg": "3762c42c0ffbfbbb3a2a633dc0dcaf0e4cd4c533b13a0b4541a7685d3aa2f1d2",
+        "config/defaults/card-backside/default-backside-landscape.jpg": "1cf5580a1dff0c10adb1a286edad4479c487f3d2d698b0b8be84fe653039fd7e"
+      }
+    },
+    "extract_stats": {
+      "outputs": {
+        "team-data.json": {
+          "path": "output/inquisitorial-agents/data/inquisitorial-agents-team-data.json",
+          "hash": "532a0aa30b6448d75ea118f133fa819a511aee98f41acbc331c9f0ac25bc173e",
+          "modified": "2026-07-12T18:54:30.302695+00:00"
+        }
+      },
+      "completed": "2026-07-12T18:54:30.305905+00:00",
+      "inputs": {
+        "layers/integration/inquisitorial-agents/content/inquisitorial-agents-content.json": "532a0aa30b6448d75ea118f133fa819a511aee98f41acbc331c9f0ac25bc173e"
+      }
+    },
+    "generate_tts": {
+      "outputs": {
+        "tts_objects/Inquisitorial Agents Box.json": {
+          "path": "output/inquisitorial-agents/tts_objects/Inquisitorial Agents Box.json",
+          "hash": "6e49e4c48219e1cc945cdfc7a6b861ebaf3598e135e62c0b18e037f9fbe32ede",
+          "modified": "2026-07-12T20:56:38.747219+00:00"
+        },
+        "tts_objects/Inquisitorial Agents.json": {
+          "path": "output/inquisitorial-agents/tts_objects/Inquisitorial Agents.json",
+          "hash": "6a7a4da34fe9271ec56fe6a062a6986949a7a8295d5da08883ded0815459589b",
+          "modified": "2026-07-12T20:56:38.757397+00:00"
+        }
+      },
+      "completed": "2026-07-12T20:56:39.185675+00:00",
+      "inputs": {
+        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "config/team-guids.json": "1dea0eaf2c7d1c37c86aba088cdf876f0638d2dcaca162888fea8422c2d5c9db",
+        "output/inquisitorial-agents/cards/datacards/autosavant-agent-back.jpg": "3762c42c0ffbfbbb3a2a633dc0dcaf0e4cd4c533b13a0b4541a7685d3aa2f1d2",
+        "output/inquisitorial-agents/cards/datacards/autosavant-agent-front.jpg": "8a01d69d614b964a481c81d25f56cd442aeea7a4c2f167b145a42ad7e6abf087",
+        "output/inquisitorial-agents/cards/datacards/death-world-veteran-agent-back.jpg": "3762c42c0ffbfbbb3a2a633dc0dcaf0e4cd4c533b13a0b4541a7685d3aa2f1d2",
+        "output/inquisitorial-agents/cards/datacards/death-world-veteran-agent-front.jpg": "fbe985297b2f46df0dc73ab9c509faa7d48252da5e12d134292f5032faeb8c81",
+        "output/inquisitorial-agents/cards/datacards/enlightener-agent-back.jpg": "3762c42c0ffbfbbb3a2a633dc0dcaf0e4cd4c533b13a0b4541a7685d3aa2f1d2",
+        "output/inquisitorial-agents/cards/datacards/enlightener-agent-front.jpg": "20fda4f04376f86a32bce829c522c881701726d2c5ffd9cdaf3d969596fb4f16",
+        "output/inquisitorial-agents/cards/datacards/hexorcist-agent-back.jpg": "3762c42c0ffbfbbb3a2a633dc0dcaf0e4cd4c533b13a0b4541a7685d3aa2f1d2",
+        "output/inquisitorial-agents/cards/datacards/hexorcist-agent-front.jpg": "2f2dbc8fb22a2d2c6434283eab4aca6f38dd37b5843069f46becbdab22ca215e",
+        "output/inquisitorial-agents/cards/datacards/interrogator-agent-back.jpg": "3762c42c0ffbfbbb3a2a633dc0dcaf0e4cd4c533b13a0b4541a7685d3aa2f1d2",
+        "output/inquisitorial-agents/cards/datacards/interrogator-agent-front.jpg": "f1a4792bcf5ffe2f631c8df602e43e23107e16bff53e3756ae45bf3d5b9cd5bd",
+        "output/inquisitorial-agents/cards/datacards/mystic-agent-back.jpg": "752c4941ad705a45d45e42955a4b0ade5cb865bf0b9fc5080272f594cd0e3ee8",
+        "output/inquisitorial-agents/cards/datacards/mystic-agent-front.jpg": "385779696e6bc90f9b086bbc292238fb02196ced1ab74cd029f7bdcafc2da634",
+        "output/inquisitorial-agents/cards/datacards/penal-legionnaire-agent-back.jpg": "3762c42c0ffbfbbb3a2a633dc0dcaf0e4cd4c533b13a0b4541a7685d3aa2f1d2",
+        "output/inquisitorial-agents/cards/datacards/penal-legionnaire-agent-front.jpg": "2eb343a0500dc9ff0cc0028be67a96fa0029944deca9e68e13ac51a967869c64",
+        "output/inquisitorial-agents/cards/datacards/pistolier-agent-back.jpg": "3762c42c0ffbfbbb3a2a633dc0dcaf0e4cd4c533b13a0b4541a7685d3aa2f1d2",
+        "output/inquisitorial-agents/cards/datacards/pistolier-agent-front.jpg": "cb3cced255238161a659e2f215430920684f6d954e3cb39978109940add58099",
+        "output/inquisitorial-agents/cards/datacards/questkeeper-agent-back.jpg": "3762c42c0ffbfbbb3a2a633dc0dcaf0e4cd4c533b13a0b4541a7685d3aa2f1d2",
+        "output/inquisitorial-agents/cards/datacards/questkeeper-agent-front.jpg": "0ec911bd24005f2b8883d5a68b3faabde3104d251e74e16b33c02ebdee4b3c57",
+        "output/inquisitorial-agents/cards/datacards/requisitioned-gun-servitor-back.jpg": "3762c42c0ffbfbbb3a2a633dc0dcaf0e4cd4c533b13a0b4541a7685d3aa2f1d2",
+        "output/inquisitorial-agents/cards/datacards/requisitioned-gun-servitor-front.jpg": "a37cd05f82276651493b3250fb2803ff2885af37fb737667e620a6b08704217c",
+        "output/inquisitorial-agents/cards/datacards/sister-of-silence-prosecutor-back.jpg": "3762c42c0ffbfbbb3a2a633dc0dcaf0e4cd4c533b13a0b4541a7685d3aa2f1d2",
+        "output/inquisitorial-agents/cards/datacards/sister-of-silence-prosecutor-front.jpg": "af669080d372b4515b199473e83473e00b3e23a24b7be24cad2be8fe5427c8e6",
+        "output/inquisitorial-agents/cards/datacards/sister-of-silence-vigilator-back.jpg": "3762c42c0ffbfbbb3a2a633dc0dcaf0e4cd4c533b13a0b4541a7685d3aa2f1d2",
+        "output/inquisitorial-agents/cards/datacards/sister-of-silence-vigilator-front.jpg": "1e39d30bb88d3b84d4130ee252b144ee8cfcf4eadb8db3777090d3bd6e1542b3",
+        "output/inquisitorial-agents/cards/datacards/sister-of-silence-witchseeker-back.jpg": "3762c42c0ffbfbbb3a2a633dc0dcaf0e4cd4c533b13a0b4541a7685d3aa2f1d2",
+        "output/inquisitorial-agents/cards/datacards/sister-of-silence-witchseeker-front.jpg": "60bfec7144fb42baf57d2d9624fbc505e89fae069f2a8aa1e23c6d41bfb19d44",
+        "output/inquisitorial-agents/cards/datacards/tempestus-scion-gunner-back.jpg": "3762c42c0ffbfbbb3a2a633dc0dcaf0e4cd4c533b13a0b4541a7685d3aa2f1d2",
+        "output/inquisitorial-agents/cards/datacards/tempestus-scion-gunner-front.jpg": "23c6fe54009601d4c2b4fb362bf819a75a70250a814d4d337e88f49b7c2a45a3",
+        "output/inquisitorial-agents/cards/datacards/tempestus-scion-medic-back.jpg": "7ac731436fc4ab3ad776d4992981695f86110a3bffee6178c7140542339c8ecb",
+        "output/inquisitorial-agents/cards/datacards/tempestus-scion-medic-front.jpg": "9b617c6b890e2dfe60f5a3fe8011daceae00326a34978e33d567522ed10164d9",
+        "output/inquisitorial-agents/cards/datacards/tempestus-scion-trooper-back.jpg": "3762c42c0ffbfbbb3a2a633dc0dcaf0e4cd4c533b13a0b4541a7685d3aa2f1d2",
+        "output/inquisitorial-agents/cards/datacards/tempestus-scion-trooper-front.jpg": "6c8db7837b75a98bcaf84a8207fabca57d790a969a2dc7ff118fbc4576c54e94",
+        "output/inquisitorial-agents/cards/datacards/tempestus-scion-vox-operator-back.jpg": "3762c42c0ffbfbbb3a2a633dc0dcaf0e4cd4c533b13a0b4541a7685d3aa2f1d2",
+        "output/inquisitorial-agents/cards/datacards/tempestus-scion-vox-operator-front.jpg": "6f58604d3ca2bc50ebc43394627cf3b2a78a095db210dd1859ccfcaf8457f63f",
+        "output/inquisitorial-agents/cards/datacards/tome-skull-back.jpg": "a6b7a9aa3ba6f4c135914055a045f42f1f8be6c6e1103412da0d8653d72e971b",
+        "output/inquisitorial-agents/cards/datacards/tome-skull-front.jpg": "f0cda1e043590b69d96cb8c28efd64e4b9502fb005e2d2c7082b9e620e142e28",
+        "output/inquisitorial-agents/cards/equipment/inquisitorial-agents-armoured-bodysuits-back.jpg": "a28477aaa05b7e64e07ec05638c268768b6b8dfe211b4fa249358be03ee45f03",
+        "output/inquisitorial-agents/cards/equipment/inquisitorial-agents-armoured-bodysuits-front.jpg": "158b30f21880140aafbc602402de6abaf50cf6cb3813b6ae44dededb7726a14c",
+        "output/inquisitorial-agents/cards/equipment/inquisitorial-agents-combat-daggers-back.jpg": "a28477aaa05b7e64e07ec05638c268768b6b8dfe211b4fa249358be03ee45f03",
+        "output/inquisitorial-agents/cards/equipment/inquisitorial-agents-combat-daggers-front.jpg": "5b3fbfb82c0bd824bf0d25bb38d2aab72346d3c118f5277eac28894c68f982ee",
+        "output/inquisitorial-agents/cards/equipment/inquisitorial-agents-inquisitorial-rosette-back.jpg": "a28477aaa05b7e64e07ec05638c268768b6b8dfe211b4fa249358be03ee45f03",
+        "output/inquisitorial-agents/cards/equipment/inquisitorial-agents-inquisitorial-rosette-front.jpg": "bc0e224e08cf3c0e15a59a422918508e3fc8f00b5ae869760a22db65ca0d0750",
+        "output/inquisitorial-agents/cards/equipment/inquisitorial-agents-servo-skull-back.jpg": "a28477aaa05b7e64e07ec05638c268768b6b8dfe211b4fa249358be03ee45f03",
+        "output/inquisitorial-agents/cards/equipment/inquisitorial-agents-servo-skull-front.jpg": "0d16c45f3e75b74de30ce90642b7e61a1a223cc065819469265779ac016ef469",
+        "output/inquisitorial-agents/cards/faction_rules/inquisitorial-agents-death-korps-back.jpg": "0a6cee717209dcf1bc0ad82ff6e51fa47b7806dd17bbf1a0c32365e6ce05d596",
+        "output/inquisitorial-agents/cards/faction_rules/inquisitorial-agents-death-korps-front.jpg": "49631576fddeadaa4644577aad3f3b8cee072990685c22f9baf8330a41f824a6",
+        "output/inquisitorial-agents/cards/faction_rules/inquisitorial-agents-exaction-squad-back.jpg": "6d66bd01fb17f581f6d5faf5c6535f33f638325844294960301f082c59ad1c4a",
+        "output/inquisitorial-agents/cards/faction_rules/inquisitorial-agents-exaction-squad-front.jpg": "3e55e81dd0842acb1f227eeed4a8dbccbc5e44293ad574ec9ebb45d428423ff5",
+        "output/inquisitorial-agents/cards/faction_rules/inquisitorial-agents-imperial-navy-breachers-back.jpg": "d010808e75ed168ad77052b01b919b6823af4f5965da896b3601e353778b6aea",
+        "output/inquisitorial-agents/cards/faction_rules/inquisitorial-agents-imperial-navy-breachers-front.jpg": "c3e27948ce57cf298816f848fdf1d7a47f4eeac26c92fde7a9f0e299220e21f5",
+        "output/inquisitorial-agents/cards/faction_rules/inquisitorial-agents-inquisitorial-requisition-back.jpg": "c442284ccb619b89c78d335783a05d7f8fe0bb2c9af0ad4f1511cd81684b67f3",
+        "output/inquisitorial-agents/cards/faction_rules/inquisitorial-agents-inquisitorial-requisition-front.jpg": "61675015d386bb11554e64718c32e65e46fad98af550b81a8a6c3ccd5e58ae9d",
+        "output/inquisitorial-agents/cards/faction_rules/inquisitorial-agents-kasrkin-back.jpg": "a28477aaa05b7e64e07ec05638c268768b6b8dfe211b4fa249358be03ee45f03",
+        "output/inquisitorial-agents/cards/faction_rules/inquisitorial-agents-kasrkin-front.jpg": "6199b02f0a71b97a50fbe8c165a81901b258030c8babd902c1460ebe23bfa942",
+        "output/inquisitorial-agents/cards/faction_rules/inquisitorial-agents-sisters-of-silence-back.jpg": "a28477aaa05b7e64e07ec05638c268768b6b8dfe211b4fa249358be03ee45f03",
+        "output/inquisitorial-agents/cards/faction_rules/inquisitorial-agents-sisters-of-silence-front.jpg": "30e68c7d815172126f158644b96fb80cfbc22fc450eeeefd4f9f8fec609db551",
+        "output/inquisitorial-agents/cards/faction_rules/inquisitorial-agents-tempestus-scions-back.jpg": "a28477aaa05b7e64e07ec05638c268768b6b8dfe211b4fa249358be03ee45f03",
+        "output/inquisitorial-agents/cards/faction_rules/inquisitorial-agents-tempestus-scions-front.jpg": "fd8876369fa9fdc9ace70bdd6147fefd1eb5033364a6f337bfe27ea2a3f44378",
+        "output/inquisitorial-agents/cards/firefight_ploys/inquisitorial-agents-absolute-authority-back.jpg": "a28477aaa05b7e64e07ec05638c268768b6b8dfe211b4fa249358be03ee45f03",
+        "output/inquisitorial-agents/cards/firefight_ploys/inquisitorial-agents-absolute-authority-front.jpg": "9dffd6e2ce758296531e9b038faa5d1eb6ac7d7720a771cc4a988dfde99b3a95",
+        "output/inquisitorial-agents/cards/firefight_ploys/inquisitorial-agents-intimidating-presence-back.jpg": "a28477aaa05b7e64e07ec05638c268768b6b8dfe211b4fa249358be03ee45f03",
+        "output/inquisitorial-agents/cards/firefight_ploys/inquisitorial-agents-intimidating-presence-front.jpg": "4ffdda73e965be26e2bccc06f47314c6d32459908a336a6aa24197349743a5f1",
+        "output/inquisitorial-agents/cards/firefight_ploys/inquisitorial-agents-relentless-in-pursuit-back.jpg": "a28477aaa05b7e64e07ec05638c268768b6b8dfe211b4fa249358be03ee45f03",
+        "output/inquisitorial-agents/cards/firefight_ploys/inquisitorial-agents-relentless-in-pursuit-front.jpg": "c53049882ee264b4bfd2a4899886e4bbd91eea7351f8831373837ce347275910",
+        "output/inquisitorial-agents/cards/firefight_ploys/inquisitorial-agents-the-emperors-will-back.jpg": "a28477aaa05b7e64e07ec05638c268768b6b8dfe211b4fa249358be03ee45f03",
+        "output/inquisitorial-agents/cards/firefight_ploys/inquisitorial-agents-the-emperors-will-front.jpg": "9d98078f6e5e4271956d0ba68286eb41db7d1391f1230e7ecf3c6e44050e21ad",
+        "output/inquisitorial-agents/cards/operatives_selection/inquisitorial-agents-operative-selection-back.jpg": "153dd4662e9177ba4e1fa834a571f4b9bc76fa5fdeadd983720f8a23a5315f1d",
+        "output/inquisitorial-agents/cards/operatives_selection/inquisitorial-agents-operative-selection-front.jpg": "29aac95c863ad8ee94d996bd84f7a3d698b7fda4548a07749570b7f5d8ae6b8a",
+        "output/inquisitorial-agents/cards/strategy_ploys/inquisitorial-agents-denounce-back.jpg": "a28477aaa05b7e64e07ec05638c268768b6b8dfe211b4fa249358be03ee45f03",
+        "output/inquisitorial-agents/cards/strategy_ploys/inquisitorial-agents-denounce-front.jpg": "637ad4d22a0549ccd9419297e4cbf16a732472493e4edcdf6887f9c2e851f94d",
+        "output/inquisitorial-agents/cards/strategy_ploys/inquisitorial-agents-intense-scrutiny-back.jpg": "a28477aaa05b7e64e07ec05638c268768b6b8dfe211b4fa249358be03ee45f03",
+        "output/inquisitorial-agents/cards/strategy_ploys/inquisitorial-agents-intense-scrutiny-front.jpg": "f1eb49abacd57b1416f4c59034586be4c22457972f5b73d25f9cd447ab892277",
+        "output/inquisitorial-agents/cards/strategy_ploys/inquisitorial-agents-irrefutable-jurisdiction-back.jpg": "a28477aaa05b7e64e07ec05638c268768b6b8dfe211b4fa249358be03ee45f03",
+        "output/inquisitorial-agents/cards/strategy_ploys/inquisitorial-agents-irrefutable-jurisdiction-front.jpg": "83aad6c4ad80ccbfabd3fd23922fe7d0ac42c26afc338ea5cc2c6ef2cc1afc7c",
+        "output/inquisitorial-agents/cards/strategy_ploys/inquisitorial-agents-quarry-back.jpg": "a28477aaa05b7e64e07ec05638c268768b6b8dfe211b4fa249358be03ee45f03",
+        "output/inquisitorial-agents/cards/strategy_ploys/inquisitorial-agents-quarry-front.jpg": "59c57816f4adf7053a769276c6aa941b5dc4ac2099f3c0e5cfaa012619c69d0a",
+        "output/inquisitorial-agents/cards/token_guide/inquisitorial-agents-token-guide-back.jpg": "a28477aaa05b7e64e07ec05638c268768b6b8dfe211b4fa249358be03ee45f03",
+        "output/inquisitorial-agents/cards/token_guide/inquisitorial-agents-token-guide-front.jpg": "69cb5edf308de501f7f8530c065bdb4d97175b679f906cf9d33af5c376ebbdcb",
+        "output/inquisitorial-agents/cardbox/inquisitorial-agents-card-box-texture.jpg": "cca1f0db0e0e5cc591214018f5602500148442a4a715892210487136b005dcdc",
+        "output/inquisitorial-agents/cardbox/inquisitorial-agents-card-box.obj": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
+        "output/inquisitorial-agents/tokens/inquisitorial-agents-chasten.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/inquisitorial-agents/tokens/inquisitorial-agents-chasten.png": "7fae8e32c787ca2b13661ef3b34a9464a21583c0cd848b34c007b2602d7eb1ed",
+        "output/inquisitorial-agents/tokens/inquisitorial-agents-denounce.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/inquisitorial-agents/tokens/inquisitorial-agents-denounce.png": "84d25c16a88f1df40379c2f9e54951bd9cb717c0703da9f3606b45b9aebc20ad",
+        "output/inquisitorial-agents/tokens/inquisitorial-agents-denunciation.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/inquisitorial-agents/tokens/inquisitorial-agents-denunciation.png": "432e35aacd92a962ac8710691a2cd2edfcf5c251e196b5805fb4d11ffb8b2ccb",
+        "output/inquisitorial-agents/tokens/inquisitorial-agents-guidance.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/inquisitorial-agents/tokens/inquisitorial-agents-guidance.png": "f1680041fbe4c92a6fa45474ccfde15c9f5841f2765e86562b579f7fb7096680",
+        "output/inquisitorial-agents/tokens/inquisitorial-agents-inquisitorial-rosette.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/inquisitorial-agents/tokens/inquisitorial-agents-inquisitorial-rosette.png": "0006add46caf802d24f6873201362e8983940b4bb112951fb5275e3b18564a37",
+        "output/inquisitorial-agents/tokens/inquisitorial-agents-medic.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/inquisitorial-agents/tokens/inquisitorial-agents-medic.png": "2f77e44db09710d4ae98cf48bb2ff14a46a9710bf7286b74f7db8cde72edee91",
+        "output/inquisitorial-agents/tokens/inquisitorial-agents-protection.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/inquisitorial-agents/tokens/inquisitorial-agents-protection.png": "fa0c34244655c6313b6c9986bf19d2d67b884efdd5117b401f1958497b122121",
+        "output/inquisitorial-agents/tokens/inquisitorial-agents-quarry.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/inquisitorial-agents/tokens/inquisitorial-agents-quarry.png": "2caa659f10843f46921996cf5bfbfcc9d8058c6048d7d3bec8dea5035ede1851",
+        "output/inquisitorial-agents/tokens/inquisitorial-agents-sanctification.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/inquisitorial-agents/tokens/inquisitorial-agents-sanctification.png": "fb7ef455fc82d688b4ed9e73e1b01f0903fc88b89718d0068e7d1df858d7ac46",
+        "output/inquisitorial-agents/tokens/inquisitorial-agents-servo-skull.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/inquisitorial-agents/tokens/inquisitorial-agents-servo-skull.png": "ca2a16f96f2b626ee5de021c3044014631c145c9829acebbd3dadf075bcb0568",
+        "output/inquisitorial-agents/tokens/inquisitorial-agents-tome-skull.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/inquisitorial-agents/tokens/inquisitorial-agents-tome-skull.png": "941ded0db5b91a4e3f5fc64247b96d461a8b3750498be9be7ddc5de80b2ea5b9",
+        "output/inquisitorial-agents/tokens/inquisitorial-agents-weathered.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc",
+        "output/inquisitorial-agents/tokens/inquisitorial-agents-weathered.png": "446ff2dc6e51479632954f948f17c68c002b4a1d3d55b62a798f06b1af23a5d7",
+        "output/inquisitorial-agents/tokens/tokenbag/inquisitorial-agents-token-bag-icon.png": "73b79fd61658fef25fa398607b2b20b2e38cafa86d01474ae5aa6dca81a3cbfc",
+        "output/inquisitorial-agents/tokens/tokenbag/inquisitorial-agents-token-bag.obj": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+        "output/inquisitorial-agents/dice/inquisitorial-agents-dice-dark.jpg": "2f4a4fb9fc7d3156cf5939c2118955c70a7042282cd8fe6999989b27c775a84c",
+        "output/inquisitorial-agents/dice/inquisitorial-agents-dice-light.jpg": "ba1086417b58b28fbaf91484de1ecc4747bcb071d89aa2b3a0e1b695498cb63a",
+        "output/inquisitorial-agents/dice/inquisitorial-agents-dice-team.jpg": "6e264f575884885018d980cd45847131b0e49dd930781bd208a64e40b634c975",
+        "output/inquisitorial-agents/data/inquisitorial-agents-team-data.json": "532a0aa30b6448d75ea118f133fa819a511aee98f41acbc331c9f0ac25bc173e",
+        "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
+        "config/defaults/tts-script/datacard-load-stats.lua": "2d5f4088c2ff09f54988cf8722080f536b4e1b998cc2b4c1f1ea94e6b18eb92e",
+        "config/defaults/tts-script/display-table-manager-script.lua": "0dab4381078d90802f25e2cc825bc3658be35ee13ab3e98831c9d248c2526689",
+        "config/defaults/tts-script/faction-rule-chapter-tactics.lua": "c906742268076fb91f7cb4a92c6b588e1122ccddb692688f635c8dd4f7110ad0",
+        "config/defaults/tts-script/intermediate-updater.lua": "1a2d6dbc1a8c9c57ba6a3e7a3d4bc4b7a38a6c242a93f6ef3dae698123384d35",
+        "config/defaults/tts-script/single-object-updater.lua": "3613b85169e986a8e50ebe221482079e27c18037e3f48920aa0f7e138c0ccacc",
+        "config/defaults/tts-script/team-spawner-clean-script.lua": "12457bff3961eee2293c42d81cf4f4eb8b103177245a1ab8b46fd65da40672a2",
+        "config/defaults/tts-script/team-spawner-script.lua": "a51ff45c8622923db909fb465781801511f235412f099f83dff728d4027650db",
+        "config/defaults/tts-script/tts-update-rules-in-box-script.lua": "84f7f9b260f4e4968d208953b534bdbb7ab0b2f475e13264a2407f6c4d4d2b03",
+        "config/defaults/tts-image/default-icon.png": "892aff2628b9685c813e77be05c66afc1dc4247bc1dc9ce6fe54f006c2608271",
+        "config/defaults/tts-image/spawner-token.png": "61903b093f01d834f5e4c4c069b1353ecf7d29f012fef914b3027266816d8a6b",
+        "config/defaults/tts-token/square-bag-mesh.obj": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
+        "config/defaults/tts-token/template-diamond-cutter.png": "719f57ba2b86494be454a6d3d25d8567dde974a915f3dde5ddc0e2d8dafaa1a5",
+        "config/defaults/tts-token/template-octagon-cutter.png": "944632aeacab978293ae57758b63086166c5fbaf3b845f48b3dd61db67d5c076",
+        "config/defaults/tts-token/template-operative-cutter.png": "0e698ddd403d7f0e84f200eb42af73f5249a9c5539d773298ff4c700ac9fe153",
+        "config/defaults/tts-token/template-round-cutter.png": "6564e1451c9a135a1c756fd94cde1c71e373e3fa677b51bba9d4bbe9e795d544",
+        "config/defaults/tts-token/token-bag-script.lua": "1659887e0fbfb9e3ebbc1aa5f3df8e1ffd89ee192be24d2dd1f02fcb0407e486",
+        "config/defaults/tts-token/token-bg-sample.png": "f9f90664c7f1c877c6f050f6e85babde6523cdc0aed9c77de8c09214f44ee109",
+        "config/defaults/tts-token/token-mesh.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc"
+      }
+    },
+    "front_end": {
+      "outputs": {},
+      "sources": {
+        "firefight-ploys": {
+          "hash": "836729677c0eaf4381beefed22d06760eaf6ade6479f7282abbb6c1ce26214ac",
+          "outputs": [
+            "layers/kt-app/extracted/inquisitorial-agents/cards/firefight-ploys/inquisitorial-agents-firefight-ploys-page_0.pdf",
+            "layers/kt-app/extracted/inquisitorial-agents/cards/firefight-ploys/inquisitorial-agents-firefight-ploys-page_1.pdf",
+            "layers/kt-app/extracted/inquisitorial-agents/cards/firefight-ploys/inquisitorial-agents-firefight-ploys-page_2.pdf",
+            "layers/kt-app/extracted/inquisitorial-agents/cards/firefight-ploys/inquisitorial-agents-firefight-ploys-page_3.pdf"
+          ],
+          "modified": "2026-07-06T15:59:00.426270+00:00"
+        },
+        "strategy-ploys": {
+          "hash": "73c627006e606f6d3f2eafffce17da144d2b080a0ec50c269bea8244d1a8857f",
+          "outputs": [
+            "layers/kt-app/extracted/inquisitorial-agents/cards/strategy-ploys/inquisitorial-agents-strategy-ploys-page_0.pdf",
+            "layers/kt-app/extracted/inquisitorial-agents/cards/strategy-ploys/inquisitorial-agents-strategy-ploys-page_1.pdf",
+            "layers/kt-app/extracted/inquisitorial-agents/cards/strategy-ploys/inquisitorial-agents-strategy-ploys-page_2.pdf",
+            "layers/kt-app/extracted/inquisitorial-agents/cards/strategy-ploys/inquisitorial-agents-strategy-ploys-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:02:41.830676+00:00"
+        },
+        "equipment": {
+          "hash": "4cc2e9b62beec462e9b8c48015b5272b2645d5a052ae8750bb7c77cb436115be",
+          "outputs": [
+            "layers/kt-app/extracted/inquisitorial-agents/cards/equipment/inquisitorial-agents-equipment-page_0.pdf",
+            "layers/kt-app/extracted/inquisitorial-agents/cards/equipment/inquisitorial-agents-equipment-page_1.pdf",
+            "layers/kt-app/extracted/inquisitorial-agents/cards/equipment/inquisitorial-agents-equipment-page_2.pdf",
+            "layers/kt-app/extracted/inquisitorial-agents/cards/equipment/inquisitorial-agents-equipment-page_3.pdf"
+          ],
+          "modified": "2026-07-06T16:03:30.311851+00:00"
+        },
+        "faction-rules": {
+          "hash": "d89bade119e00c25ce364e3d8dafa31fc1b85a78e5d0b0d61a58ac971e1e943b",
+          "outputs": [
+            "layers/kt-app/extracted/inquisitorial-agents/cards/faction-rules/inquisitorial-agents-faction-rules-page_0.pdf",
+            "layers/kt-app/extracted/inquisitorial-agents/cards/faction-rules/inquisitorial-agents-faction-rules-page_1.pdf",
+            "layers/kt-app/extracted/inquisitorial-agents/cards/faction-rules/inquisitorial-agents-faction-rules-page_2.pdf",
+            "layers/kt-app/extracted/inquisitorial-agents/cards/faction-rules/inquisitorial-agents-faction-rules-page_3.pdf",
+            "layers/kt-app/extracted/inquisitorial-agents/cards/faction-rules/inquisitorial-agents-faction-rules-page_4.pdf",
+            "layers/kt-app/extracted/inquisitorial-agents/cards/faction-rules/inquisitorial-agents-faction-rules-page_5.pdf",
+            "layers/kt-app/extracted/inquisitorial-agents/cards/faction-rules/inquisitorial-agents-faction-rules-page_6.pdf",
+            "layers/kt-app/extracted/inquisitorial-agents/cards/faction-rules/inquisitorial-agents-faction-rules-page_7.pdf",
+            "layers/kt-app/extracted/inquisitorial-agents/cards/faction-rules/inquisitorial-agents-faction-rules-page_8.pdf",
+            "layers/kt-app/extracted/inquisitorial-agents/cards/faction-rules/inquisitorial-agents-faction-rules-page_9.pdf",
+            "layers/kt-app/extracted/inquisitorial-agents/cards/faction-rules/inquisitorial-agents-faction-rules-page_10.pdf",
+            "layers/kt-app/extracted/inquisitorial-agents/cards/faction-rules/inquisitorial-agents-faction-rules-page_11.pdf"
+          ],
+          "modified": "2026-07-06T16:04:38.615892+00:00"
+        },
+        "operatives-selection": {
+          "hash": "e6af3a2efe6451017d078f8f3b38d812517eb4e1061517bdff1f32f5e7bbfcde",
+          "outputs": [
+            "layers/kt-app/extracted/inquisitorial-agents/cards/operatives-selection/inquisitorial-agents-operatives-selection-page_0.pdf",
+            "layers/kt-app/extracted/inquisitorial-agents/cards/operatives-selection/inquisitorial-agents-operatives-selection-page_1.pdf"
+          ],
+          "modified": "2026-07-06T16:07:24.312707+00:00"
+        },
+        "datacards": {
+          "hash": "24feafb4438dba1a84bcead527ef15c32ae31dd605bc14f744fd616bada73db7",
+          "outputs": [
+            "layers/kt-app/extracted/inquisitorial-agents/cards/datacards/inquisitorial-agents-datacards-page_0.pdf",
+            "layers/kt-app/extracted/inquisitorial-agents/cards/datacards/inquisitorial-agents-datacards-page_1.pdf",
+            "layers/kt-app/extracted/inquisitorial-agents/cards/datacards/inquisitorial-agents-datacards-page_2.pdf",
+            "layers/kt-app/extracted/inquisitorial-agents/cards/datacards/inquisitorial-agents-datacards-page_3.pdf",
+            "layers/kt-app/extracted/inquisitorial-agents/cards/datacards/inquisitorial-agents-datacards-page_4.pdf",
+            "layers/kt-app/extracted/inquisitorial-agents/cards/datacards/inquisitorial-agents-datacards-page_5.pdf",
+            "layers/kt-app/extracted/inquisitorial-agents/cards/datacards/inquisitorial-agents-datacards-page_6.pdf",
+            "layers/kt-app/extracted/inquisitorial-agents/cards/datacards/inquisitorial-agents-datacards-page_7.pdf",
+            "layers/kt-app/extracted/inquisitorial-agents/cards/datacards/inquisitorial-agents-datacards-page_8.pdf",
+            "layers/kt-app/extracted/inquisitorial-agents/cards/datacards/inquisitorial-agents-datacards-page_9.pdf",
+            "layers/kt-app/extracted/inquisitorial-agents/cards/datacards/inquisitorial-agents-datacards-page_10.pdf",
+            "layers/kt-app/extracted/inquisitorial-agents/cards/datacards/inquisitorial-agents-datacards-page_11.pdf",
+            "layers/kt-app/extracted/inquisitorial-agents/cards/datacards/inquisitorial-agents-datacards-page_12.pdf",
+            "layers/kt-app/extracted/inquisitorial-agents/cards/datacards/inquisitorial-agents-datacards-page_13.pdf",
+            "layers/kt-app/extracted/inquisitorial-agents/cards/datacards/inquisitorial-agents-datacards-page_14.pdf",
+            "layers/kt-app/extracted/inquisitorial-agents/cards/datacards/inquisitorial-agents-datacards-page_15.pdf",
+            "layers/kt-app/extracted/inquisitorial-agents/cards/datacards/inquisitorial-agents-datacards-page_16.pdf",
+            "layers/kt-app/extracted/inquisitorial-agents/cards/datacards/inquisitorial-agents-datacards-page_17.pdf",
+            "layers/kt-app/extracted/inquisitorial-agents/cards/datacards/inquisitorial-agents-datacards-page_18.pdf",
+            "layers/kt-app/extracted/inquisitorial-agents/cards/datacards/inquisitorial-agents-datacards-page_19.pdf",
+            "layers/kt-app/extracted/inquisitorial-agents/cards/datacards/inquisitorial-agents-datacards-page_20.pdf"
+          ],
+          "modified": "2026-07-06T16:11:59.719271+00:00"
+        },
+        "cards": {
+          "hash": "d325b46bd45b5c66219a3ff97aac58710a01068cad68f1c203da1b77fc5d1170",
+          "outputs": [
+            "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page01_card1_landscape.pdf",
+            "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page01_card2_landscape.pdf",
+            "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page01_card3_landscape.pdf",
+            "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page01_card4_landscape.pdf",
+            "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page02_card1_landscape.pdf",
+            "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page02_card2_landscape.pdf",
+            "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page02_card3_landscape.pdf",
+            "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page02_card4_landscape.pdf",
+            "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page03_card1_landscape.pdf",
+            "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page03_card2_landscape.pdf",
+            "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page03_card3_landscape.pdf",
+            "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page03_card4_landscape.pdf",
+            "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page04_card1_landscape.pdf",
+            "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page04_card2_landscape.pdf",
+            "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page04_card3_landscape.pdf",
+            "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page04_card4_landscape.pdf",
+            "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page05_card1_landscape.pdf",
+            "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page05_card2_landscape.pdf",
+            "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page05_card3_landscape.pdf",
+            "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page05_card4_landscape.pdf",
+            "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page06_card1_landscape.pdf",
+            "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page06_card2_landscape.pdf",
+            "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page06_card3_landscape.pdf",
+            "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page06_card4_landscape.pdf",
+            "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page07_card1_portrait.pdf",
+            "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page07_card2_portrait.pdf",
+            "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page07_card3_portrait.pdf",
+            "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page07_card4_portrait.pdf",
+            "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page08_card1_portrait.pdf",
+            "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page08_card2_portrait.pdf",
+            "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page08_card3_portrait.pdf",
+            "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page08_card4_portrait.pdf",
+            "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page09_card1_portrait.pdf",
+            "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page09_card2_portrait.pdf",
+            "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page09_card3_portrait.pdf",
+            "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page09_card4_portrait.pdf",
+            "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page10_card1_portrait.pdf",
+            "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page10_card2_portrait.pdf",
+            "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page10_card3_portrait.pdf",
+            "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page10_card4_portrait.pdf",
+            "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page11_card1_portrait.pdf",
+            "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page11_card2_portrait.pdf",
+            "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page11_card3_portrait.pdf",
+            "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page11_card4_portrait.pdf",
+            "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page12_card1_portrait.pdf",
+            "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page12_card2_portrait.pdf",
+            "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page12_card3_portrait.pdf",
+            "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page12_card4_portrait.pdf",
+            "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page13_card1_portrait.pdf",
+            "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page13_card2_portrait.pdf",
+            "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page13_card3_portrait.pdf",
+            "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page13_card4_portrait.pdf"
+          ],
+          "modified": "2026-07-08T18:55:44.297282+00:00"
+        }
+      },
+      "completed": "2026-07-08T18:55:44.297406+00:00"
+    },
+    "build_structure": {
+      "outputs": {
+        "structure": {
+          "path": "layers/warcom/structure/inquisitorial-agents-structure.json",
+          "hash": "d1b301d98e1fc48659268abd68a0e649f0c7934f6aeeab0dc9e084a2e9dadfc9",
+          "modified": "2026-07-12T18:49:19.431533+00:00"
+        }
+      },
+      "inputs": {
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page01_card1_landscape.pdf": "4c2207e0853663eee014ad8dadd1474ccea1863551e040bd27cf51ea39288c8e",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page01_card2_landscape.pdf": "dd7d0e3b5ceeb28661ff5a4263e7f90dba488c5aeaaf34cfebefd2677db4c317",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page01_card3_landscape.pdf": "e82161e8f2b748a3e025e3546a41f5d00ebf2fe46cf2bab9fbceef91de29f90b",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page01_card4_landscape.pdf": "4e024d926dbdefd59a0d1cb526bd1063b41115f8e6d69721dbaf2b5d05302dfd",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page02_card1_landscape.pdf": "0eba62aefa5e63fcaf39fa1f9043e921b8088352d1c7ce91be20d2b02dba3eb6",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page02_card2_landscape.pdf": "d7ecc0ce72c3b879a5331308da1602c35b40c14b7d5a67b34f8bd4e9d518b9de",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page02_card3_landscape.pdf": "b50b98d4bc2135fcc62956b3e4c85335f0cccd1ac988e9fcff371120710c8a35",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page02_card4_landscape.pdf": "0c63d0501c456d6fb97063673a40871f0ee93ec45ebce03889563a065fda24b3",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page03_card1_landscape.pdf": "efbc5f8120b772297cb0a41f6ecd64d56ba36fcbc914c2bc0aae31b7008a0c43",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page03_card2_landscape.pdf": "555836875ad88472876d60e73db8ae563bc048a0ce7fd0fc61a77874e584cef5",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page03_card3_landscape.pdf": "fcde6ab6375c3ea5a544829257589f8cac90a1b4d1650ad8f5ceb04e700d5a56",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page03_card4_landscape.pdf": "9e034637dbc9d2eb0432426984cf4241d998c68bddfc2a06ae3ffbea597478c6",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page04_card1_landscape.pdf": "4174b5b458a18dab1d7d79201d0617cc4a821f8f5f72f58d378ddc940549d08b",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page04_card2_landscape.pdf": "aab7fb3a6b4830a705e9956db1eb938eecdf06a95871f79c4d1d78af37aa291f",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page04_card3_landscape.pdf": "aafccb57b1c4053ab5f71d3aeadef8d00b4bdbece79ff4890e1691ba953032cc",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page04_card4_landscape.pdf": "8287c18721f83f52092574f5001aeeabd70746074fb906d90b64c6f2bdec6f10",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page05_card1_landscape.pdf": "5bb1728055e44e3d44304602f69fc8a454d2b68692fa9b7beb6f7ce81958247c",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page05_card2_landscape.pdf": "a6c6d0db08be0e4a120aac1f9d13cd065437d145f079c131c6e1e649666ef1b0",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page05_card3_landscape.pdf": "dc569105b57acf415ee81c076dce15a6a357d00e89a8c0b5bff4b49b5de7f822",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page05_card4_landscape.pdf": "791d21aa5e2fe9d4377b452ec9bf740b7b9875b146ba64db10e81fe148b2ff47",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page06_card1_landscape.pdf": "bba253267b71841e93bad755e15cef5503e1202d4954cf621b73d96c589c39e0",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page06_card2_landscape.pdf": "f209d0c34a2be3fe2e43ccb769203109608f24686626248c6e8bc9bce4bd9d89",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page06_card3_landscape.pdf": "be24201575c9dfa2464ac79cefdbbd1135c084ceebfcde34dfb6206a569ce877",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page06_card4_landscape.pdf": "d782b12727b05e69ab984bb8c1937f54350b3059593e036a653a42c90cc4ec06",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page07_card1_portrait.pdf": "3cc6900d658c4afdcdaa03b258e9cbe720d2439c7ddeb1cbcce0a3484fd21a71",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page07_card2_portrait.pdf": "b4fb3cca08cbe6132e73139c52efeef98244a7d1df84348b60d6b52dd54b8e84",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page07_card3_portrait.pdf": "cd5c98a66e3473f8b88d981c65df8b04fcfdd04ca1d67e9fba0389322b2b881f",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page07_card4_portrait.pdf": "be122e55bae12c4c65269b98e8387b4f6f4d9a6dd0dcd73a400ab1ff748f053d",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page08_card1_portrait.pdf": "ed1c3eafd90dfd4ae86094a8a9eec24db6c04d59bd214ecb43c4c871017b0fbc",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page08_card2_portrait.pdf": "2f23b962466cda1f4bda8a85758986d477616f15d63122e58fff3c301a3d94f3",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page08_card3_portrait.pdf": "eaa5d3d8c0b9cea4abc53154bebf377367d3bb16b978fc0587a0c43c301094f6",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page08_card4_portrait.pdf": "f70f2048e186112201bf12c3b2fd22e92f6c1bcf3d3745934baf4c0976ffc813",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page09_card1_portrait.pdf": "a4d807ed4bfb95f3b4034e595056be2efbf01792c7d5c7a98b7ee152b4fb1071",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page09_card2_portrait.pdf": "7788cc4741b3a121850120c0e1b025c418297194dd5c7a2d6cd5f1598bd01f45",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page09_card3_portrait.pdf": "af9991546cb580f5a9dac25cacaaa7165c3d97e23528bb40d01750fc66c092e8",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page09_card4_portrait.pdf": "40019f6cbfdc02aa05e995750d40a3c6473a641df19891e43ccfe0ff7f8ed067",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page10_card1_portrait.pdf": "d08facae3cd0e4f2cd8ebf7e0c919dae72b45a3affb66e61f483c6d4a682468d",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page10_card2_portrait.pdf": "4d45cc8b155714a346eaaece59818f026ae9908a60eadc6367a2ee012a11d39d",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page10_card3_portrait.pdf": "c6677c44b888b2114481e3ab3bd059f512fe92075c347b52e8692e71f7cc0d6a",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page10_card4_portrait.pdf": "5347c455ac19695534d271c3c1082479c4b51839e8db3e1d17464df02c132151",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page11_card1_portrait.pdf": "b74062a01cc7b4dfa8a5280cba531c968d6abfe025a4eb6a2d19d91c58cde8d3",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page11_card2_portrait.pdf": "efe49d7431fb37a4875bc7f6a074d370f313886212a4352638c5c0f2d7b98d91",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page11_card3_portrait.pdf": "4093baa0f512f97ad15ad0efef059833bb3fcc4cbea7bf554b0e03201f6b701c",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page11_card4_portrait.pdf": "72f904f788e11d94992efea2d2ddd1fa6bbd5c00d451b340ab1765d4a22acf6c",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page12_card1_portrait.pdf": "519629aea8ca7400aaafce99066a14889398b3ffd70001ebda80182033386d70",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page12_card2_portrait.pdf": "049105b1b6966022502852090ceb446a9cdab9ef5f6f0c061331a372640cca76",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page12_card3_portrait.pdf": "796552ae74bf0a9caba78d33ea046556a3eba5f56c7d2f2ee9e81fbdb236d7a8",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page12_card4_portrait.pdf": "75d4eac4872836b9649d727b7b1b0281eeb9edea43b9f7391daa762ec753e794",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page13_card1_portrait.pdf": "f1593a9c4873238b4422ee79cac0fca5321afe96459d1aadb3f8bb952f578be2",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page13_card2_portrait.pdf": "b631d5b90430246e94fe94e217d1a642ed69c1921d2bf36283365707a1912129",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page13_card3_portrait.pdf": "1a9c4e07cc187fc4e58992ac6aca5fb40fa3d0a6a21d903396532bd09a588836",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page13_card4_portrait.pdf": "9c65cf1631afdf8eac57bb3604c743a237543d291d9ada145c6405c7bd1f8c58"
+      },
+      "completed": "2026-07-12T18:50:14.327698+00:00"
+    },
+    "integrate_classified": {
+      "outputs": {
+        "manifest.json": {
+          "path": "layers/integration/inquisitorial-agents/manifest.json",
+          "hash": "d1b301d98e1fc48659268abd68a0e649f0c7934f6aeeab0dc9e084a2e9dadfc9",
+          "modified": "2026-07-12T19:14:22.450994+00:00"
+        },
+        "inquisitorial-agents-datacard-interrogator-agent.pdf": {
+          "path": "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-interrogator-agent.pdf",
+          "hash": "ed1a2f71877305f7246d6e3feafc4e0511c4223a43208a67d8bf89f3a0bb5a02",
+          "modified": "2026-07-12T19:14:22.486988+00:00"
+        },
+        "inquisitorial-agents-datacard-tome-skull.pdf": {
+          "path": "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-tome-skull.pdf",
+          "hash": "4c7cc9824531bbd38889c2909fd97e67cee836e381f7d105563d0f9d42ab5a40",
+          "modified": "2026-07-12T19:14:22.504674+00:00"
+        },
+        "inquisitorial-agents-datacard-autosavant-agent.pdf": {
+          "path": "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-autosavant-agent.pdf",
+          "hash": "f7cd3aaff627f6dc8f6e8434327d826eb1b50c06204b1d1bd97312d4556f107c",
+          "modified": "2026-07-12T19:14:22.529063+00:00"
+        },
+        "inquisitorial-agents-datacard-death-world-veteran-agent.pdf": {
+          "path": "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-death-world-veteran-agent.pdf",
+          "hash": "dfd31dc4015153ec242746cabbc972907964a0d0a6414949ed082890a6750edb",
+          "modified": "2026-07-12T19:14:22.556230+00:00"
+        },
+        "inquisitorial-agents-datacard-enlightener-agent.pdf": {
+          "path": "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-enlightener-agent.pdf",
+          "hash": "d35631cb41f902cfc5075747bc6ace04d4f08514d66ad7bb3c632b53949da58e",
+          "modified": "2026-07-12T19:14:22.574635+00:00"
+        },
+        "inquisitorial-agents-datacard-hexorcist-agent.pdf": {
+          "path": "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-hexorcist-agent.pdf",
+          "hash": "56dfbf4da7d4435b4e13be76743a6e20f9d34c5ab4ffeae21974e265a09bfaf6",
+          "modified": "2026-07-12T19:14:22.609681+00:00"
+        },
+        "inquisitorial-agents-datacard-mystic-agent.pdf": {
+          "path": "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-mystic-agent.pdf",
+          "hash": "1495c862c04971d924e9e09984614b1d708d12d8c8bbf9c19ec5ff413ceb5f36",
+          "modified": "2026-07-12T19:14:22.634693+00:00"
+        },
+        "inquisitorial-agents-datacard-penal-legionnaire-agent.pdf": {
+          "path": "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-penal-legionnaire-agent.pdf",
+          "hash": "2e1d964306ee11738f82826c315ffcd94fcaac1fbc9020ebf5f1ca4a8a91b63d",
+          "modified": "2026-07-12T19:14:22.653032+00:00"
+        },
+        "inquisitorial-agents-datacard-pistolier-agent.pdf": {
+          "path": "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-pistolier-agent.pdf",
+          "hash": "bc64a09384402f01daf2e4235876002ea2903bd30bf21ccda647e651e4815c53",
+          "modified": "2026-07-12T19:14:22.688137+00:00"
+        },
+        "inquisitorial-agents-datacard-questkeeper-agent.pdf": {
+          "path": "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-questkeeper-agent.pdf",
+          "hash": "89bf9cf2a4d92f1917428e13925ac312fa011d62f1dd9b7e97e1a44802c887f6",
+          "modified": "2026-07-12T19:14:22.716066+00:00"
+        },
+        "inquisitorial-agents-datacard-requisitioned-gun-servitor.pdf": {
+          "path": "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-requisitioned-gun-servitor.pdf",
+          "hash": "33083494cb06ccd652fb3aeefcfe86b20e24829304af5c529f330a79f50934b1",
+          "modified": "2026-07-12T19:14:22.731910+00:00"
+        },
+        "inquisitorial-agents-datacard-sister-of-silence-prosecutor.pdf": {
+          "path": "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-sister-of-silence-prosecutor.pdf",
+          "hash": "ba00b52b67f27e706dfa4254cae2ef748de109c5852d1af8b0060f22a4646715",
+          "modified": "2026-07-12T19:14:23.387092+00:00"
+        },
+        "inquisitorial-agents-datacard-sister-of-silence-vigilator.pdf": {
+          "path": "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-sister-of-silence-vigilator.pdf",
+          "hash": "f01e07c2fd50ca0169cf969690b3474700cebddaeb0cd179cde33603a9269841",
+          "modified": "2026-07-12T19:14:23.402128+00:00"
+        },
+        "inquisitorial-agents-datacard-sister-of-silence-witchseeker.pdf": {
+          "path": "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-sister-of-silence-witchseeker.pdf",
+          "hash": "cd5579ea9babd25e425a7473b03e9678c2205ad7fcbc71538f054c1e45838cc9",
+          "modified": "2026-07-12T19:14:23.416861+00:00"
+        },
+        "inquisitorial-agents-datacard-tempestus-scion-gunner.pdf": {
+          "path": "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-tempestus-scion-gunner.pdf",
+          "hash": "c12e0f3a792948cd71b4c52e1415f900e1b9155b9015d1565a85140b83507626",
+          "modified": "2026-07-12T19:14:23.429856+00:00"
+        },
+        "inquisitorial-agents-datacard-tempestus-scion-medic.pdf": {
+          "path": "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-tempestus-scion-medic.pdf",
+          "hash": "739438c799b2ca275012fad11ea2d207ed117eb57148e5ef4f902f52e54e842f",
+          "modified": "2026-07-12T19:14:23.443968+00:00"
+        },
+        "inquisitorial-agents-datacard-tempestus-scion-trooper.pdf": {
+          "path": "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-tempestus-scion-trooper.pdf",
+          "hash": "54915f75b3cc02d30719d9127f586daaa43eb21c42c2ef3a212d32613361b75f",
+          "modified": "2026-07-12T19:14:23.453719+00:00"
+        },
+        "inquisitorial-agents-datacard-tempestus-scion-vox-operator.pdf": {
+          "path": "layers/integration/inquisitorial-agents/inquisitorial-agents-datacard-tempestus-scion-vox-operator.pdf",
+          "hash": "b2970f58d4240e787ea9ccc797aad1c67bb79a6a1905a03b9c7c4e99a4a5e212",
+          "modified": "2026-07-12T19:14:23.463156+00:00"
+        },
+        "inquisitorial-agents-equipment-inquisitorial-rosette.pdf": {
+          "path": "layers/integration/inquisitorial-agents/inquisitorial-agents-equipment-inquisitorial-rosette.pdf",
+          "hash": "91b864a729eae05f383bc91d0180360bd85561deecbf3d57ddf2d0008d097de3",
+          "modified": "2026-07-12T19:14:23.472357+00:00"
+        },
+        "inquisitorial-agents-equipment-combat-daggers.pdf": {
+          "path": "layers/integration/inquisitorial-agents/inquisitorial-agents-equipment-combat-daggers.pdf",
+          "hash": "3a42dbb4b7e49df7213a2ef7c9e6750ee8a80f59c97fde6799f351da75139e90",
+          "modified": "2026-07-12T19:14:23.480938+00:00"
+        },
+        "inquisitorial-agents-equipment-armoured-bodysuits.pdf": {
+          "path": "layers/integration/inquisitorial-agents/inquisitorial-agents-equipment-armoured-bodysuits.pdf",
+          "hash": "c0d95ee059f7116e91a873ad4934d6d70adb5cf29d706353006433452ee1d7b4",
+          "modified": "2026-07-12T19:14:23.492065+00:00"
+        },
+        "inquisitorial-agents-equipment-servo-skull.pdf": {
+          "path": "layers/integration/inquisitorial-agents/inquisitorial-agents-equipment-servo-skull.pdf",
+          "hash": "d75993581a1bb68bddc7ef6e2fab843f2961dd52c6e3fb9b319b5163fcf02041",
+          "modified": "2026-07-12T19:14:23.502626+00:00"
+        },
+        "inquisitorial-agents-faction-rule-inquisitorial-requisition.pdf": {
+          "path": "layers/integration/inquisitorial-agents/inquisitorial-agents-faction-rule-inquisitorial-requisition.pdf",
+          "hash": "d71b5f6079ce151be4cb4ff244f57cfe6059d9bbf81fc3b41300a90a374af681",
+          "modified": "2026-07-12T19:14:23.512892+00:00"
+        },
+        "inquisitorial-agents-faction-rule-death-korps.pdf": {
+          "path": "layers/integration/inquisitorial-agents/inquisitorial-agents-faction-rule-death-korps.pdf",
+          "hash": "b1669b38b012b149f6f5451c18f443a1d148cecd36664d522954a351fbc13b97",
+          "modified": "2026-07-12T19:14:23.522054+00:00"
+        },
+        "inquisitorial-agents-faction-rule-exaction-squad.pdf": {
+          "path": "layers/integration/inquisitorial-agents/inquisitorial-agents-faction-rule-exaction-squad.pdf",
+          "hash": "5c3f040cfb7be517da416cbd02b8d958a910c93e3532c7e3dd73933f7b4b6799",
+          "modified": "2026-07-12T19:14:23.530781+00:00"
+        },
+        "inquisitorial-agents-faction-rule-imperial-navy-breachers.pdf": {
+          "path": "layers/integration/inquisitorial-agents/inquisitorial-agents-faction-rule-imperial-navy-breachers.pdf",
+          "hash": "d93ba041b8b07959bb6c9f03ebd84bb1727eea39128224ab3e8cdbbf3cb6b112",
+          "modified": "2026-07-12T19:14:23.540054+00:00"
+        },
+        "inquisitorial-agents-faction-rule-kasrkin.pdf": {
+          "path": "layers/integration/inquisitorial-agents/inquisitorial-agents-faction-rule-kasrkin.pdf",
+          "hash": "f43fd4cb5393f9c186c17188205ef39d8ef55517e926cdf9d45197d41d936854",
+          "modified": "2026-07-12T19:14:23.550119+00:00"
+        },
+        "inquisitorial-agents-faction-rule-sisters-of-silence.pdf": {
+          "path": "layers/integration/inquisitorial-agents/inquisitorial-agents-faction-rule-sisters-of-silence.pdf",
+          "hash": "7b23df490a93b28ae5c79fac6f13ea239360da1e1fc86521d138dc15880cffb6",
+          "modified": "2026-07-12T19:14:23.560500+00:00"
+        },
+        "inquisitorial-agents-faction-rule-tempestus-scions.pdf": {
+          "path": "layers/integration/inquisitorial-agents/inquisitorial-agents-faction-rule-tempestus-scions.pdf",
+          "hash": "f2e6f14f94b76fe49cd0fd2b0be7b0b3aac087c1f90662feb461b5d2643678f9",
+          "modified": "2026-07-12T19:14:23.571031+00:00"
+        },
+        "inquisitorial-agents-token-guide-token-guide.pdf": {
+          "path": "layers/integration/inquisitorial-agents/inquisitorial-agents-token-guide-token-guide.pdf",
+          "hash": "ceb4ceb47c51971b3e38464a254f20ab2f0c0005efd79474ac20d964b4b9aa11",
+          "modified": "2026-07-12T19:14:23.586109+00:00"
+        },
+        "inquisitorial-agents-firefight-ploy-absolute-authority.pdf": {
+          "path": "layers/integration/inquisitorial-agents/inquisitorial-agents-firefight-ploy-absolute-authority.pdf",
+          "hash": "a4b225da60b005c833eb1b34ad476f96ed0688863436710c3216f62484a8b05a",
+          "modified": "2026-07-12T19:14:23.606086+00:00"
+        },
+        "inquisitorial-agents-firefight-ploy-relentless-in-pursuit.pdf": {
+          "path": "layers/integration/inquisitorial-agents/inquisitorial-agents-firefight-ploy-relentless-in-pursuit.pdf",
+          "hash": "e071b3f1f7d57792454fbd393c25f5e201debe086923db9c7706e79793bb4107",
+          "modified": "2026-07-12T19:14:23.617716+00:00"
+        },
+        "inquisitorial-agents-firefight-ploy-the-emperors-will.pdf": {
+          "path": "layers/integration/inquisitorial-agents/inquisitorial-agents-firefight-ploy-the-emperors-will.pdf",
+          "hash": "6a3a783513e6bbb0fe63c957538fd8c962827b6860810ef2187d367ff6616621",
+          "modified": "2026-07-12T19:14:23.636128+00:00"
+        },
+        "inquisitorial-agents-firefight-ploy-intimidating-presence.pdf": {
+          "path": "layers/integration/inquisitorial-agents/inquisitorial-agents-firefight-ploy-intimidating-presence.pdf",
+          "hash": "f7d50cfa64210e01afc2dc6d0fd207ea8508ff8bc96be296cc0b8d24ae269528",
+          "modified": "2026-07-12T19:14:23.650870+00:00"
+        },
+        "inquisitorial-agents-operatives-selection-operative-selection.pdf": {
+          "path": "layers/integration/inquisitorial-agents/inquisitorial-agents-operatives-selection-operative-selection.pdf",
+          "hash": "078e37efef582be02c85b6243013f4d67abca0db2f58ff54efe5c825b957d58f",
+          "modified": "2026-07-12T19:14:23.670958+00:00"
+        },
+        "inquisitorial-agents-strategy-ploy-denounce.pdf": {
+          "path": "layers/integration/inquisitorial-agents/inquisitorial-agents-strategy-ploy-denounce.pdf",
+          "hash": "cd851ecfe04c50e81659ea16d700caa8e424df9bcda8c22a72a3d442a5b7eda9",
+          "modified": "2026-07-12T19:14:23.705409+00:00"
+        },
+        "inquisitorial-agents-strategy-ploy-intense-scrutiny.pdf": {
+          "path": "layers/integration/inquisitorial-agents/inquisitorial-agents-strategy-ploy-intense-scrutiny.pdf",
+          "hash": "a39ff54bcc568138961b7b3d50feb517f7e8894a3566ac3f280d194b976c52a9",
+          "modified": "2026-07-12T19:14:23.746753+00:00"
+        },
+        "inquisitorial-agents-strategy-ploy-quarry.pdf": {
+          "path": "layers/integration/inquisitorial-agents/inquisitorial-agents-strategy-ploy-quarry.pdf",
+          "hash": "d7477efe401157dfd6e916b7c51e14f9daf83228c1be67c8750ea7e5b7c5d687",
+          "modified": "2026-07-12T19:14:23.755369+00:00"
+        },
+        "inquisitorial-agents-strategy-ploy-irrefutable-jurisdiction.pdf": {
+          "path": "layers/integration/inquisitorial-agents/inquisitorial-agents-strategy-ploy-irrefutable-jurisdiction.pdf",
+          "hash": "d5716eaac9d49e72aa8235d6e022efd409af40020e02a6d14f50eb0ea3dabe50",
+          "modified": "2026-07-12T19:14:23.817167+00:00"
+        }
+      },
+      "inputs": {
+        "layers/warcom/structure/inquisitorial-agents-structure.json": "d1b301d98e1fc48659268abd68a0e649f0c7934f6aeeab0dc9e084a2e9dadfc9",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page01_card1_landscape.pdf": "4c2207e0853663eee014ad8dadd1474ccea1863551e040bd27cf51ea39288c8e",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page01_card2_landscape.pdf": "dd7d0e3b5ceeb28661ff5a4263e7f90dba488c5aeaaf34cfebefd2677db4c317",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page01_card3_landscape.pdf": "e82161e8f2b748a3e025e3546a41f5d00ebf2fe46cf2bab9fbceef91de29f90b",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page01_card4_landscape.pdf": "4e024d926dbdefd59a0d1cb526bd1063b41115f8e6d69721dbaf2b5d05302dfd",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page02_card1_landscape.pdf": "0eba62aefa5e63fcaf39fa1f9043e921b8088352d1c7ce91be20d2b02dba3eb6",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page02_card2_landscape.pdf": "d7ecc0ce72c3b879a5331308da1602c35b40c14b7d5a67b34f8bd4e9d518b9de",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page02_card3_landscape.pdf": "b50b98d4bc2135fcc62956b3e4c85335f0cccd1ac988e9fcff371120710c8a35",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page02_card4_landscape.pdf": "0c63d0501c456d6fb97063673a40871f0ee93ec45ebce03889563a065fda24b3",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page03_card1_landscape.pdf": "efbc5f8120b772297cb0a41f6ecd64d56ba36fcbc914c2bc0aae31b7008a0c43",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page03_card2_landscape.pdf": "555836875ad88472876d60e73db8ae563bc048a0ce7fd0fc61a77874e584cef5",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page03_card3_landscape.pdf": "fcde6ab6375c3ea5a544829257589f8cac90a1b4d1650ad8f5ceb04e700d5a56",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page03_card4_landscape.pdf": "9e034637dbc9d2eb0432426984cf4241d998c68bddfc2a06ae3ffbea597478c6",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page04_card1_landscape.pdf": "4174b5b458a18dab1d7d79201d0617cc4a821f8f5f72f58d378ddc940549d08b",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page04_card2_landscape.pdf": "aab7fb3a6b4830a705e9956db1eb938eecdf06a95871f79c4d1d78af37aa291f",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page04_card3_landscape.pdf": "aafccb57b1c4053ab5f71d3aeadef8d00b4bdbece79ff4890e1691ba953032cc",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page04_card4_landscape.pdf": "8287c18721f83f52092574f5001aeeabd70746074fb906d90b64c6f2bdec6f10",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page05_card1_landscape.pdf": "5bb1728055e44e3d44304602f69fc8a454d2b68692fa9b7beb6f7ce81958247c",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page05_card2_landscape.pdf": "a6c6d0db08be0e4a120aac1f9d13cd065437d145f079c131c6e1e649666ef1b0",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page05_card3_landscape.pdf": "dc569105b57acf415ee81c076dce15a6a357d00e89a8c0b5bff4b49b5de7f822",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page05_card4_landscape.pdf": "791d21aa5e2fe9d4377b452ec9bf740b7b9875b146ba64db10e81fe148b2ff47",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page06_card1_landscape.pdf": "bba253267b71841e93bad755e15cef5503e1202d4954cf621b73d96c589c39e0",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page12_card3_portrait.pdf": "796552ae74bf0a9caba78d33ea046556a3eba5f56c7d2f2ee9e81fbdb236d7a8",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page12_card4_portrait.pdf": "75d4eac4872836b9649d727b7b1b0281eeb9edea43b9f7391daa762ec753e794",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page13_card1_portrait.pdf": "f1593a9c4873238b4422ee79cac0fca5321afe96459d1aadb3f8bb952f578be2",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page13_card2_portrait.pdf": "b631d5b90430246e94fe94e217d1a642ed69c1921d2bf36283365707a1912129",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page07_card3_portrait.pdf": "cd5c98a66e3473f8b88d981c65df8b04fcfdd04ca1d67e9fba0389322b2b881f",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page07_card4_portrait.pdf": "be122e55bae12c4c65269b98e8387b4f6f4d9a6dd0dcd73a400ab1ff748f053d",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page08_card1_portrait.pdf": "ed1c3eafd90dfd4ae86094a8a9eec24db6c04d59bd214ecb43c4c871017b0fbc",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page08_card2_portrait.pdf": "2f23b962466cda1f4bda8a85758986d477616f15d63122e58fff3c301a3d94f3",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page08_card3_portrait.pdf": "eaa5d3d8c0b9cea4abc53154bebf377367d3bb16b978fc0587a0c43c301094f6",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page08_card4_portrait.pdf": "f70f2048e186112201bf12c3b2fd22e92f6c1bcf3d3745934baf4c0976ffc813",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page09_card1_portrait.pdf": "a4d807ed4bfb95f3b4034e595056be2efbf01792c7d5c7a98b7ee152b4fb1071",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page09_card2_portrait.pdf": "7788cc4741b3a121850120c0e1b025c418297194dd5c7a2d6cd5f1598bd01f45",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page09_card3_portrait.pdf": "af9991546cb580f5a9dac25cacaaa7165c3d97e23528bb40d01750fc66c092e8",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page09_card4_portrait.pdf": "40019f6cbfdc02aa05e995750d40a3c6473a641df19891e43ccfe0ff7f8ed067",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page10_card1_portrait.pdf": "d08facae3cd0e4f2cd8ebf7e0c919dae72b45a3affb66e61f483c6d4a682468d",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page10_card2_portrait.pdf": "4d45cc8b155714a346eaaece59818f026ae9908a60eadc6367a2ee012a11d39d",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page11_card3_portrait.pdf": "4093baa0f512f97ad15ad0efef059833bb3fcc4cbea7bf554b0e03201f6b701c",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page11_card4_portrait.pdf": "72f904f788e11d94992efea2d2ddd1fa6bbd5c00d451b340ab1765d4a22acf6c",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page12_card1_portrait.pdf": "519629aea8ca7400aaafce99066a14889398b3ffd70001ebda80182033386d70",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page12_card2_portrait.pdf": "049105b1b6966022502852090ceb446a9cdab9ef5f6f0c061331a372640cca76",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page07_card1_portrait.pdf": "3cc6900d658c4afdcdaa03b258e9cbe720d2439c7ddeb1cbcce0a3484fd21a71",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page07_card2_portrait.pdf": "b4fb3cca08cbe6132e73139c52efeef98244a7d1df84348b60d6b52dd54b8e84",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page10_card3_portrait.pdf": "c6677c44b888b2114481e3ab3bd059f512fe92075c347b52e8692e71f7cc0d6a",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page10_card4_portrait.pdf": "5347c455ac19695534d271c3c1082479c4b51839e8db3e1d17464df02c132151",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page11_card1_portrait.pdf": "b74062a01cc7b4dfa8a5280cba531c968d6abfe025a4eb6a2d19d91c58cde8d3",
+        "layers/warcom/extracted/inquisitorial-agents/cards/inquisitorial-agents_page11_card2_portrait.pdf": "efe49d7431fb37a4875bc7f6a074d370f313886212a4352638c5c0f2d7b98d91"
+      },
+      "completed": "2026-07-12T19:15:02.628352+00:00"
+    },
+    "extract_artwork": {
+      "outputs": {},
+      "sources": {
+        "artwork": {
+          "hash": "d325b46bd45b5c66219a3ff97aac58710a01068cad68f1c203da1b77fc5d1170",
+          "outputs": [
+            "layers/integration/inquisitorial-agents/artwork/inquisitorial-agents-artwork-01.jpeg",
+            "layers/integration/inquisitorial-agents/artwork/inquisitorial-agents-artwork-02.jpeg",
+            "layers/integration/inquisitorial-agents/artwork/inquisitorial-agents-artwork-03.jpeg",
+            "layers/integration/inquisitorial-agents/artwork/inquisitorial-agents-artwork-03.png",
+            "layers/integration/inquisitorial-agents/artwork/inquisitorial-agents-artwork-04.jpeg",
+            "layers/integration/inquisitorial-agents/artwork/inquisitorial-agents-artwork-05.jpeg",
+            "layers/integration/inquisitorial-agents/artwork/inquisitorial-agents-artwork-06.jpeg",
+            "layers/integration/inquisitorial-agents/artwork/inquisitorial-agents-artwork-07.jpeg",
+            "layers/integration/inquisitorial-agents/artwork/inquisitorial-agents-artwork-07.png",
+            "layers/integration/inquisitorial-agents/artwork/inquisitorial-agents-artwork-08.jpeg",
+            "layers/integration/inquisitorial-agents/artwork/inquisitorial-agents-artwork-09.jpeg",
+            "layers/integration/inquisitorial-agents/artwork/inquisitorial-agents-artwork-10.jpeg",
+            "layers/integration/inquisitorial-agents/artwork/inquisitorial-agents-artwork-11.jpeg",
+            "layers/integration/inquisitorial-agents/artwork/inquisitorial-agents-artwork-12.jpeg",
+            "layers/integration/inquisitorial-agents/artwork/inquisitorial-agents-artwork-13.jpeg",
+            "layers/integration/inquisitorial-agents/artwork/inquisitorial-agents-artwork-14.jpeg",
+            "layers/integration/inquisitorial-agents/artwork/inquisitorial-agents-artwork-15.jpeg",
+            "layers/integration/inquisitorial-agents/artwork/inquisitorial-agents-artwork-16.jpeg",
+            "layers/integration/inquisitorial-agents/artwork/inquisitorial-agents-artwork-17.jpeg",
+            "layers/integration/inquisitorial-agents/artwork/inquisitorial-agents-artwork-18.jpeg",
+            "layers/integration/inquisitorial-agents/artwork/inquisitorial-agents-artwork-19.jpeg",
+            "layers/integration/inquisitorial-agents/artwork/inquisitorial-agents-artwork-metadata.json",
+            "layers/integration/inquisitorial-agents/artwork/icons/inquisitorial-agents-icon-landscape.jpg",
+            "layers/integration/inquisitorial-agents/artwork/icons/inquisitorial-agents-icon-portrait.jpg",
+            "layers/integration/inquisitorial-agents/artwork/icons/inquisitorial-agents-icon-token-transparent.png",
+            "layers/integration/inquisitorial-agents/artwork/icons/inquisitorial-agents-icon-token.jpg"
+          ],
+          "modified": "2026-07-06T20:43:01.533460+00:00"
+        }
+      },
+      "completed": "2026-07-06T20:43:01.533475+00:00"
+    }
+  }
+}
