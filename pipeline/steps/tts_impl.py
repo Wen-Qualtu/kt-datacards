@@ -1908,6 +1908,26 @@ def _build_gm_notes(operative: dict, team_data: dict, weapon_rules: dict,
         if indexed:
             result['selection'] = indexed
 
+    # Faction-rule upgrades: mounted operatives (CLANBLADE / LEYSTALKER /
+    # STONESINGER, etc.) choose N of the "<ARCHETYPE> UPGRADE" faction-rule cards.
+    # We match by the operative's archetype keyword against each faction rule's
+    # line 2 ("<ARCH> UPGRADE"); line 3 is the upgrade name, the rest is its text.
+    upgrade_arches = ("CLANBLADE", "LEYSTALKER", "STONESINGER")
+    op_kw_upper = [str(k).upper() for k in operative.get('keywords', [])]
+    arch = next((k for k in op_kw_upper if k in upgrade_arches), None)
+    if arch:
+        options = []
+        for fr in team_data.get('faction_rules', []) or []:
+            text = fr.get('text', '') or ''
+            lines = [ln.strip() for ln in text.split('\n') if ln.strip()]
+            if len(lines) >= 3 and lines[1].upper() == f"{arch} UPGRADE":
+                options.append({
+                    'name': lines[2],
+                    'text': _normalize_text('\n'.join(lines[3:]).strip()),
+                })
+        if len(options) >= 2:
+            result['upgrades'] = {'select': 2, 'options': options}
+
     return result
 
 

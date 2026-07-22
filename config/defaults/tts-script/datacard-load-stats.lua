@@ -13,9 +13,28 @@ local groupSelections = {}
 local exclusiveSets = {}
 local activeSet = 1
 
+-- Faction-rule "Choose upgrades" flow. Mounted operatives pick N of the
+-- <archetype> UPGRADE options embedded in GMNotes.upgrades = {select, options}.
+local upgradeOptions = nil
+local upgradeChosen = {}
+local upgradeSelect = 2
+local upgradeModel = nil
+local upgradeData = nil
+local upgradePlayerColor = nil
+
 function onLoad()
     self.addContextMenuItem("Load stats to model", loadStatsToModel)
     self.addContextMenuItem("Load stats (all)", loadStatsToModelAll)
+    -- Only operatives with upgrade choices (mounted Dragon Masters) get "Choose
+    -- upgrades"; the DRAKOLITHE and other plain operatives have none.
+    if hasUpgrades() then
+        self.addContextMenuItem("Choose upgrades", chooseUpgrades)
+    end
+    -- Only oval-base operatives get "Rotate base 90"; round bases (e.g. 32mm
+    -- DRAKOLITHE) are orientation-independent, so the item would be a no-op.
+    if hasOvalBase() then
+        self.addContextMenuItem("Rotate base 90", rotateBase90)
+    end
 end
 
 -- helpers
@@ -467,6 +486,12 @@ function diffAndApply(model, data)
                 if valEq(x, z) then return tostring(x) end
                 return string.format("%sx%s", tostring(x), tostring(z))
             end
+            -- Store the long dimension on Z (front-back). "Rotate base 90" can
+            -- later swap x/z to put the long axis left-right instead. Round bases
+            -- (bx==bz) are orientation-independent.
+            if not valEq(bx, bz) then
+                bx, bz = math.min(bx, bz), math.max(bx, bz)
+            end
             local oldX = (type(ms.base) == "table") and tonumber(ms.base.x) or nil
             local oldZ = (type(ms.base) == "table") and tonumber(ms.base.z) or nil
             local oldStr, newStr = baseStr(oldX, oldZ), baseStr(bx, bz)
@@ -571,7 +596,7 @@ function diffAndApply(model, data)
     -- Only a truly plain model (no KTUI mini tag at all) gets our bundled script
     -- installed. If the model is already a KTUI mini -- whether our bundled one or
     -- the real KT UI extender the player upgraded it to -- we leave its script and
-    -- fancy UI intact and just refresh it in place.
+    -- fancy UI intact and just refresh it in place (never overwrite the extender).
     local needsScript = (not isKtui) and KTUI_MODELSCRIPT ~= nil and KTUI_MODELSCRIPT ~= ""
     if #changes > 0 or needsScript then
         model.script_state = JSON.encode(ms)
@@ -613,6 +638,230 @@ end
 
 -- main entry
 
+function reportChanges(changes, playerColor)
+    if #changes == 0 then
+        broadcastToColor("Already up to date.", playerColor, Color.White)
+    elseif #changes == 1 then
+        broadcastToColor("Updated: " .. changes[1], playerColor, Color.Green)
+    else
+        local msg = "Updated:\n"
+        for _, c in ipairs(changes) do
+            msg = msg .. " - " .. c .. "\n"
+        end
+        broadcastToColor(msg, playerColor, Color.Green)
+    end
+end
+
+function showSelectionPanel(data, model, playerColor)
+    pendingData = data
+    pendingModel = model
+    pendingPlayerColor = playerColor
+    selectionData = data.selection
+
+    -- Initialize exclusive sets (convert 0-based to 1-based)
+    exclusiveSets = {}
+    if data.selection.exclusive_sets then
+        for _, set in ipairs(data.selection.exclusive_sets) do
+            local luaSet = {}
+            for _, idx in ipairs(set) do
+                table.insert(luaSet, idx + 1)
+            end
+            table.insert(exclusiveSets, luaSet)
+        end
+    end
+    activeSet = 1
+
+    -- Pre-select first option in each group of the active set
+    groupSelections = {}
+    if #exclusiveSets > 0 then
+        for _, g in ipairs(exclusiveSets[activeSet]) do
+            groupSelections[g] = 1
+        end
+    else
+        for g = 1, #data.selection.groups do
+            groupSelections[g] = 1
+        end
+    end
+
+    self.UI.setXml(buildSelectionPanelXml(data.selection))
+    broadcastToColor("Choose options, then click Apply.", playerColor, Color.Yellow)
+end
+
+-- True only when this card's operative has faction-rule upgrade choices in its
+-- GMNotes. Operatives without upgrades get no "Choose upgrades" context item.
+function hasUpgrades()
+    local ok, data = pcall(function() return JSON.decode(self.getGMNotes() or "") end)
+    if not ok or type(data) ~= "table" then return false end
+    local up = data.upgrades
+    return up ~= nil and type(up.options) == "table" and #up.options > 0
+end
+
+-- True only when this card's operative uses an oval base (two different base
+-- dimensions). Round-base operatives get no "Rotate base 90" context item.
+function hasOvalBase()
+    local ok, data = pcall(function() return JSON.decode(self.getGMNotes() or "") end)
+    if not ok or type(data) ~= "table" then return false end
+    local bx, bz = parseBaseSize(data.stats and data.stats.Base)
+    return bx ~= nil and bz ~= nil and not valEq(bx, bz)
+end
+
+-- Rotate the oval base 90 degrees (KT UI compatible). The KT UI extender stores
+-- base = { x, z } (axis-aligned, no rotation field), so swapping x<->z is the only
+-- orientation it can render. We patch the model's OWN state and reload its OWN
+-- script -- never setLuaScript -- so the KT UI extender is preserved.
+function rotateBase90(playerColor)
+    local model = findModelOnCard()
+    if not model then
+        broadcastToColor("Place the model on this card first.", playerColor, Color.Orange)
+        return
+    end
+    local okd, ms = pcall(function() return JSON.decode(model.script_state or "") end)
+    if not okd or type(ms) ~= "table" then
+        broadcastToColor("Load stats to this model first.", playerColor, Color.Orange)
+        return
+    end
+    local bx = ms.base and tonumber(ms.base.x)
+    local bz = ms.base and tonumber(ms.base.z)
+    if not (bx and bz) then
+        local ok2, data = pcall(function() return JSON.decode(self.getGMNotes() or "") end)
+        if ok2 and data then bx, bz = parseBaseSize(data.stats and data.stats.Base) end
+    end
+    if not (bx and bz) or valEq(bx, bz) then
+        broadcastToColor("This operative has a round base -- nothing to rotate.", playerColor, Color.Orange)
+        return
+    end
+    ms.base = { x = bz, z = bx }   -- swap = rotate the oval 90 degrees
+    model.script_state = JSON.encode(ms)
+    model.reload()
+    broadcastToColor(string.format("Base rotated 90 (now %sx%s).", tostring(bz), tostring(bx)), playerColor, Color.Green)
+end
+
+function proceedLoad(playerColor, data, model, ignoreWeapons)
+    if (not ignoreWeapons) and data.selection and data.selection.groups and #data.selection.groups > 0 then
+        showSelectionPanel(data, model, playerColor)
+    else
+        local changes = diffAndApply(model, data)
+        reportChanges(changes, playerColor)
+        pendingData = nil
+        pendingModel = nil
+        pendingPlayerColor = nil
+    end
+end
+
+-- ===== Faction-rule upgrades (mounted operatives pick N of M) =====
+
+function chooseUpgrades(playerColor)
+    local raw = self.getGMNotes()
+    local ok, data = pcall(function() return JSON.decode(raw or "") end)
+    if not ok or not data then
+        broadcastToColor("No stat data on this card.", playerColor, Color.Red)
+        return
+    end
+    local up = data.upgrades
+    if not up or not up.options or #up.options == 0 then
+        broadcastToColor("This datacard has no upgrade choices.", playerColor, Color.Orange)
+        return
+    end
+    local model = findModelOnCard()
+    if not model then
+        broadcastToColor("Place the model on this card first.", playerColor, Color.Orange)
+        return
+    end
+    upgradeOptions = up.options
+    upgradeSelect = tonumber(up.select) or 2
+    upgradeChosen = {}
+    upgradeModel = model
+    upgradeData = data
+    upgradePlayerColor = playerColor
+    self.UI.setXml(buildUpgradePanelXml(up.options, upgradeSelect))
+    broadcastToColor(string.format("Select %d upgrades, then click Apply.", upgradeSelect), playerColor, Color.Yellow)
+end
+
+function buildUpgradePanelXml(options, selectN)
+    local rows = ""
+    for i, opt in ipairs(options) do
+        local label = opt.name or ("Upgrade " .. i)
+        label = label:gsub("&", "&amp;"):gsub("<", "&lt;"):gsub(">", "&gt;"):gsub('"', "&quot;")
+        rows = rows .. string.format(
+            '<Toggle id="upg_%d" isOn="false" onValueChanged="onUpgradeToggle" '
+            .. 'fontSize="11" textColor="#FFFFFF" colors="#444444|#666666|#333333|#222222" '
+            .. 'toggleWidth="18" toggleHeight="18">%s</Toggle>\n', i, label)
+    end
+    local h = 74 + #options * 26
+    return string.format([[
+<Panel id="upgradePanel" active="true" width="264" height="%d"
+       color="rgba(0,0,0,0.92)" padding="6 6 6 6" position="0 0 -50"
+       rotation="0 0 180" allowDragging="true">
+  <VerticalLayout spacing="3" childForceExpandWidth="true" childForceExpandHeight="false">
+    <Text fontSize="12" fontStyle="Bold" color="#FF9900" alignment="MiddleCenter" preferredHeight="20">Choose %d Upgrades</Text>
+    <Image color="rgba(255,255,255,0.15)" preferredHeight="1" />
+    %s
+    <Image color="rgba(255,255,255,0.15)" preferredHeight="1" />
+    <HorizontalLayout spacing="4" preferredHeight="24">
+      <Button id="btnUpgApply" onClick="onApplyUpgrades" fontSize="10" fontStyle="Bold" colors="#2E7D32|#388E3C|#1B5E20|#555555" textColor="#FFFFFF">Apply</Button>
+      <Button id="btnUpgCancel" onClick="onCancelUpgrades" fontSize="10" colors="#C62828|#D32F2F|#B71C1C|#555555" textColor="#FFFFFF">Cancel</Button>
+    </HorizontalLayout>
+  </VerticalLayout>
+</Panel>
+]], h, selectN, rows)
+end
+
+function _upgradeCount()
+    local n = 0
+    for _ in pairs(upgradeChosen) do n = n + 1 end
+    return n
+end
+
+function onUpgradeToggle(player, value, id)
+    local i = tonumber(id:match("upg_(%d+)"))
+    if not i then return end
+    if value == "True" then
+        if _upgradeCount() >= upgradeSelect then
+            -- Enforce the limit: bounce this toggle back off.
+            self.UI.setAttribute(id, "isOn", "false")
+            broadcastToColor(string.format("Pick exactly %d -- deselect one first.", upgradeSelect), upgradePlayerColor, Color.Orange)
+            return
+        end
+        upgradeChosen[i] = true
+    else
+        upgradeChosen[i] = nil
+    end
+end
+
+function onApplyUpgrades(player, value, id)
+    if _upgradeCount() ~= upgradeSelect then
+        broadcastToColor(string.format("Select exactly %d upgrades.", upgradeSelect), upgradePlayerColor, Color.Orange)
+        return
+    end
+    self.UI.setXml("")
+    if not upgradeData or not upgradeModel or not upgradeOptions then return end
+    local data = upgradeData
+    data.abilities = data.abilities or {}
+    local chosenNames = {}
+    for i in pairs(upgradeChosen) do
+        local opt = upgradeOptions[i]
+        if opt then
+            table.insert(data.abilities, { name = opt.name, text = opt.text })
+            table.insert(chosenNames, opt.name)
+        end
+    end
+    local changes = diffAndApply(upgradeModel, data, nil)
+    broadcastToColor("Upgrades applied: " .. table.concat(chosenNames, ", "), upgradePlayerColor, Color.Green)
+    upgradeChosen = {}
+    upgradeModel = nil
+    upgradeData = nil
+    upgradeOptions = nil
+end
+
+function onCancelUpgrades(player, value, id)
+    self.UI.setXml("")
+    broadcastToColor("Upgrade selection cancelled.", upgradePlayerColor or (player and player.color) or "White", Color.White)
+    upgradeChosen = {}
+    upgradeModel = nil
+    upgradeData = nil
+    upgradeOptions = nil
+end
+
 function loadStatsToModelAll(playerColor)
     local raw = self.getGMNotes()
     if raw == nil or raw == "" then
@@ -626,25 +875,14 @@ function loadStatsToModelAll(playerColor)
         return
     end
 
-    local model = findModelOnCard()
-    if model == nil then
+    -- Base (incl. oval) applies in its default orientation; use "Rotate base 90"
+    -- afterwards if a mesh needs the oval turned.
+    local modelAll = findModelOnCard()
+    if modelAll == nil then
         broadcastToColor("Place a model on this card first.", playerColor, Color.Orange)
         return
     end
-
-    -- Apply all weapons directly, ignoring selection
-    local changes = diffAndApply(model, data)
-    if #changes == 0 then
-        broadcastToColor("Already up to date.", playerColor, Color.White)
-    elseif #changes == 1 then
-        broadcastToColor("Updated: " .. changes[1], playerColor, Color.Green)
-    else
-        local msg = "Updated:\n"
-        for _, c in ipairs(changes) do
-            msg = msg .. " - " .. c .. "\n"
-        end
-        broadcastToColor(msg, playerColor, Color.Green)
-    end
+    proceedLoad(playerColor, data, modelAll, true)
 end
 
 function loadStatsToModel(playerColor)
@@ -660,59 +898,12 @@ function loadStatsToModel(playerColor)
         return
     end
 
+    -- Base (incl. oval) applies in its default orientation; use "Rotate base 90"
+    -- afterwards if a mesh needs the oval turned.
     local model = findModelOnCard()
     if model == nil then
         broadcastToColor("Place a model on this card first.", playerColor, Color.Orange)
         return
     end
-
-    -- Check for selection data (operatives with weapon loadout choices)
-    if data.selection and data.selection.groups and #data.selection.groups > 0 then
-        pendingData = data
-        pendingModel = model
-        pendingPlayerColor = playerColor
-        selectionData = data.selection
-
-        -- Initialize exclusive sets (convert 0-based to 1-based)
-        exclusiveSets = {}
-        if data.selection.exclusive_sets then
-            for _, set in ipairs(data.selection.exclusive_sets) do
-                local luaSet = {}
-                for _, idx in ipairs(set) do
-                    table.insert(luaSet, idx + 1)
-                end
-                table.insert(exclusiveSets, luaSet)
-            end
-        end
-        activeSet = 1
-
-        -- Pre-select first option in each group of the active set
-        groupSelections = {}
-        if #exclusiveSets > 0 then
-            for _, g in ipairs(exclusiveSets[activeSet]) do
-                groupSelections[g] = 1
-            end
-        else
-            for g = 1, #data.selection.groups do
-                groupSelections[g] = 1
-            end
-        end
-
-        self.UI.setXml(buildSelectionPanelXml(data.selection))
-        broadcastToColor("Select loadout, then click Apply.", playerColor, Color.Yellow)
-    else
-        -- No selection choices: apply all weapons directly
-        local changes = diffAndApply(model, data)
-        if #changes == 0 then
-            broadcastToColor("Already up to date.", playerColor, Color.White)
-        elseif #changes == 1 then
-            broadcastToColor("Updated: " .. changes[1], playerColor, Color.Green)
-        else
-            local msg = "Updated:\n"
-            for _, c in ipairs(changes) do
-                msg = msg .. " - " .. c .. "\n"
-            end
-            broadcastToColor(msg, playerColor, Color.Green)
-        end
-    end
+    proceedLoad(playerColor, data, model, false)
 end
