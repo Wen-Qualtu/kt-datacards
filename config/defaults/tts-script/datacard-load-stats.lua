@@ -64,6 +64,25 @@ function valEq(a, b)
     return tostring(a) == tostring(b)
 end
 
+-- Parse a base-size stat into (x, z) millimetres. Round bases are a single
+-- number (e.g. 32 -> 32,32); oval bases are "AxB" (e.g. "75x42" -> 75,42). The
+-- KTUI extender draws base.x and base.z independently, so an oval base ring/mesh
+-- falls out for free once the two dimensions are split. Returns nil,nil on junk.
+function parseBaseSize(raw)
+    if type(raw) == "number" then
+        return raw, raw
+    end
+    if type(raw) == "string" then
+        local a, b = string.match(raw, "^%s*(%d+%.?%d*)%s*[xX]%s*(%d+%.?%d*)%s*$")
+        if a and b then
+            return tonumber(a), tonumber(b)
+        end
+        local n = tonumber(raw)
+        if n then return n, n end
+    end
+    return nil, nil
+end
+
 function tableEq(a, b)
     if type(a) ~= "table" or type(b) ~= "table" then return valEq(a, b) end
     if #a ~= #b then return false end
@@ -383,8 +402,8 @@ function ensureKtuiState(ms, data)
     if type(ms.uiAngle)  ~= "number" then ms.uiAngle = 0 end
     if ms.display_arrows == nil then ms.display_arrows = false end
     if ms.base          == nil then
-        local size = tonumber(data.stats and data.stats.Base) or 25
-        ms.base = { x = size, z = size }
+        local bx, bz = parseBaseSize(data.stats and data.stats.Base)
+        ms.base = { x = bx or 25, z = bz or 25 }
     end
     if ms.modelid == nil or ms.modelid == "" then
         local slug = tostring(data.name or "operative"):lower():gsub("[^%w]+", "-")
@@ -441,14 +460,21 @@ function diffAndApply(model, data)
     -- Base size: physical base diameter (mm) used for the extender's base ring.
     -- Update it on every apply so swapping operatives resizes the ring.
     if data.stats and data.stats.Base ~= nil then
-        local newBase = tonumber(data.stats.Base)
-        if newBase then
-            local oldBase = (type(ms.base) == "table") and tonumber(ms.base.x) or nil
-            if not valEq(oldBase, newBase) then
-                table.insert(changes, string.format("Base: %smm -> %smm", tostring(oldBase or "-"), tostring(newBase)))
+        local bx, bz = parseBaseSize(data.stats.Base)
+        if bx then
+            local function baseStr(x, z)
+                if x == nil then return "-" end
+                if valEq(x, z) then return tostring(x) end
+                return string.format("%sx%s", tostring(x), tostring(z))
             end
-            ms.base = { x = newBase, z = newBase }
-            ms.stats.Base = newBase
+            local oldX = (type(ms.base) == "table") and tonumber(ms.base.x) or nil
+            local oldZ = (type(ms.base) == "table") and tonumber(ms.base.z) or nil
+            local oldStr, newStr = baseStr(oldX, oldZ), baseStr(bx, bz)
+            if oldStr ~= newStr then
+                table.insert(changes, string.format("Base: %smm -> %smm", oldStr, newStr))
+            end
+            ms.base = { x = bx, z = bz }
+            ms.stats.Base = data.stats.Base
         end
     end
 
