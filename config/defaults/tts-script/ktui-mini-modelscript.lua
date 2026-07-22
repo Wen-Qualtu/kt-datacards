@@ -517,8 +517,8 @@ function getCircleVectorPoints(radius, height, segments)
 
 	for i = 0, steps do
 		table.insert(result, {
-			x = cos(toRads(degrees * i)) * ((radius + baseX) * scaleFactorX),
-			z = sin(toRads(degrees * i)) * ((radius + baseZ) * scaleFactorZ),
+			x = cos(toRads(degrees * i)) * (radius + baseX) * scaleFactorX,
+			z = sin(toRads(degrees * i)) * (radius + baseZ) * scaleFactorZ,
 			y = height * scaleFactorY,
 		})
 	end
