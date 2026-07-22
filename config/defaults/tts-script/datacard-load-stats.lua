@@ -12,6 +12,9 @@ local selectionData = nil
 local groupSelections = {}
 local exclusiveSets = {}
 local activeSet = 1
+-- Oval-base orientation: whether to swap the base's x/z (rotate the oval 90 deg)
+-- when applying. Chosen via the shared loadout-selection popup.
+local pendingBaseSwap = false
 
 function onLoad()
     self.addContextMenuItem("Load stats to model", loadStatsToModel)
@@ -150,6 +153,9 @@ function findSetForGroup(g)
 end
 
 function isGroupInActiveSet(g)
+    -- The oval-base orientation group is never part of an exclusive weapon set,
+    -- but must always stay selectable.
+    if selectionData and selectionData.orientationGroup == g then return true end
     if #exclusiveSets == 0 then return true end
     for _, sg in ipairs(exclusiveSets[activeSet] or {}) do
         if sg == g then return true end
@@ -208,7 +214,14 @@ function buildSelectionPanelXml(selection)
         end
     end
 
-    local headerText = #selection.groups > 1 and "Select Loadout" or "Select Weapon"
+    local headerText
+    if selection.orientationGroup and #selection.groups == 1 then
+        headerText = "Base Orientation"
+    elseif #selection.groups > 1 then
+        headerText = "Select Loadout"
+    else
+        headerText = "Select Weapon"
+    end
 
     return string.format([[
 <Panel id="selectionPanel" active="true"
@@ -319,6 +332,10 @@ function onApplySelection(player, value, id)
         end
     end
 
+    if selectionData.orientationGroup then
+        activeGroups[selectionData.orientationGroup] = true
+    end
+
     for g, group in ipairs(selectionData.groups) do
         if activeGroups[g] then
             local sel = groupSelections[g] or 1
@@ -331,19 +348,32 @@ function onApplySelection(player, value, id)
         end
     end
 
-    -- Filter weapons to selected set
-    local selectedWeapons = {}
-    for i, w in ipairs(pendingData.weapons) do
-        if weaponSet[i] then
-            table.insert(selectedWeapons, w)
-        end
+    -- Oval base orientation: a synthetic group appended for oval-based
+    -- operatives. Read the chosen option's baseSwap to rotate the oval 90 deg.
+    if selectionData.orientationGroup then
+        local og = selectionData.orientationGroup
+        local opt = selectionData.groups[og] and selectionData.groups[og][groupSelections[og] or 1]
+        pendingBaseSwap = (opt and opt.baseSwap) and true or false
+    else
+        pendingBaseSwap = false
     end
-    pendingData.weapons = selectedWeapons
 
-    -- Rebuild description with filtered weapons
+    -- Filter weapons to the selected set. Skip when no weapon options were
+    -- offered (e.g. an orientation-only prompt) so all weapons are kept.
+    if next(weaponSet) ~= nil then
+        local selectedWeapons = {}
+        for i, w in ipairs(pendingData.weapons or {}) do
+            if weaponSet[i] then
+                table.insert(selectedWeapons, w)
+            end
+        end
+        pendingData.weapons = selectedWeapons
+    end
+
+    -- Rebuild description with the (possibly filtered) weapons
     pendingData.description = rebuildDescription(pendingData)
 
-    local changes = diffAndApply(pendingModel, pendingData)
+    local changes = diffAndApply(pendingModel, pendingData, pendingBaseSwap)
 
     if #changes == 0 then
         broadcastToColor("Already up to date.", pendingPlayerColor, Color.White)
@@ -370,6 +400,7 @@ function onCancelSelection(player, value, id)
     pendingModel = nil
     pendingPlayerColor = nil
     selectionData = nil
+    pendingBaseSwap = false
 end
 
 -- diff and apply
@@ -414,7 +445,7 @@ function ensureKtuiState(ms, data)
     -- owner intentionally left unset => the model is visible to all players.
 end
 
-function diffAndApply(model, data)
+function diffAndApply(model, data, swapBase)
     local changes = {}
 
     local msRaw = model.script_state
@@ -462,6 +493,9 @@ function diffAndApply(model, data)
     if data.stats and data.stats.Base ~= nil then
         local bx, bz = parseBaseSize(data.stats.Base)
         if bx then
+            -- Oval bases can align either way depending on how the mesh was built;
+            -- the load flow asks the user and passes swapBase to rotate it 90 deg.
+            if swapBase and not valEq(bx, bz) then bx, bz = bz, bx end
             local function baseStr(x, z)
                 if x == nil then return "-" end
                 if valEq(x, z) then return tostring(x) end
@@ -613,6 +647,76 @@ end
 
 -- main entry
 
+-- Two perpendicular orientation options for an oval base, or nil for a round /
+-- missing base. Reuses the shared loadout picker: this is appended to
+-- data.selection.groups as one more "choose one" group, tagged via
+-- data.selection.orientationGroup so onApplySelection can read the choice.
+function orientationGroupFor(data)
+    local bx, bz = parseBaseSize(data and data.stats and data.stats.Base)
+    if not (bx and bz) or valEq(bx, bz) then return nil end
+    local long = math.floor(math.max(bx, bz) + 0.5)
+    local short = math.floor(math.min(bx, bz) + 0.5)
+    -- baseSwap=true puts the long axis on Z (front-back); false keeps it on X.
+    return {
+        { label = string.format("Base %dx%d: long axis front-back", long, short), baseSwap = true },
+        { label = string.format("Base %dx%d: long axis left-right", long, short), baseSwap = false },
+    }
+end
+
+function reportChanges(changes, playerColor)
+    if #changes == 0 then
+        broadcastToColor("Already up to date.", playerColor, Color.White)
+    elseif #changes == 1 then
+        broadcastToColor("Updated: " .. changes[1], playerColor, Color.Green)
+    else
+        local msg = "Updated:\n"
+        for _, c in ipairs(changes) do
+            msg = msg .. " - " .. c .. "\n"
+        end
+        broadcastToColor(msg, playerColor, Color.Green)
+    end
+end
+
+function showSelectionPanel(data, model, playerColor)
+    pendingData = data
+    pendingModel = model
+    pendingPlayerColor = playerColor
+    selectionData = data.selection
+
+    -- Initialize exclusive sets (convert 0-based to 1-based)
+    exclusiveSets = {}
+    if data.selection.exclusive_sets then
+        for _, set in ipairs(data.selection.exclusive_sets) do
+            local luaSet = {}
+            for _, idx in ipairs(set) do
+                table.insert(luaSet, idx + 1)
+            end
+            table.insert(exclusiveSets, luaSet)
+        end
+    end
+    activeSet = 1
+
+    -- Pre-select first option in each group of the active set
+    groupSelections = {}
+    if #exclusiveSets > 0 then
+        for _, g in ipairs(exclusiveSets[activeSet]) do
+            groupSelections[g] = 1
+        end
+    else
+        for g = 1, #data.selection.groups do
+            groupSelections[g] = 1
+        end
+    end
+    -- The orientation group is never in an exclusive set; default it to option 1
+    -- (long axis front-back).
+    if data.selection.orientationGroup then
+        groupSelections[data.selection.orientationGroup] = 1
+    end
+
+    self.UI.setXml(buildSelectionPanelXml(data.selection))
+    broadcastToColor("Choose options, then click Apply.", playerColor, Color.Yellow)
+end
+
 function loadStatsToModelAll(playerColor)
     local raw = self.getGMNotes()
     if raw == nil or raw == "" then
@@ -632,19 +736,18 @@ function loadStatsToModelAll(playerColor)
         return
     end
 
-    -- Apply all weapons directly, ignoring selection
-    local changes = diffAndApply(model, data)
-    if #changes == 0 then
-        broadcastToColor("Already up to date.", playerColor, Color.White)
-    elseif #changes == 1 then
-        broadcastToColor("Updated: " .. changes[1], playerColor, Color.Green)
-    else
-        local msg = "Updated:\n"
-        for _, c in ipairs(changes) do
-            msg = msg .. " - " .. c .. "\n"
-        end
-        broadcastToColor(msg, playerColor, Color.Green)
+    -- "All" ignores weapon loadout choices, but an oval base still needs an
+    -- orientation, so present an orientation-only picker via the shared popup.
+    local og = orientationGroupFor(data)
+    if og then
+        data.selection = { groups = { og }, orientationGroup = 1 }
+        showSelectionPanel(data, model, playerColor)
+        return
     end
+
+    pendingBaseSwap = false
+    local changes = diffAndApply(model, data, false)
+    reportChanges(changes, playerColor)
 end
 
 function loadStatsToModel(playerColor)
@@ -666,53 +769,23 @@ function loadStatsToModel(playerColor)
         return
     end
 
-    -- Check for selection data (operatives with weapon loadout choices)
+    -- For an oval base, append an orientation "choose one" group so the user
+    -- picks how the oval aligns to the mesh via the same loadout popup.
+    local og = orientationGroupFor(data)
+    if og then
+        data.selection = data.selection or {}
+        data.selection.groups = data.selection.groups or {}
+        table.insert(data.selection.groups, og)
+        data.selection.orientationGroup = #data.selection.groups
+    end
+
+    -- Show the popup when there's anything to choose (weapon loadout and/or
+    -- oval-base orientation); otherwise apply directly.
     if data.selection and data.selection.groups and #data.selection.groups > 0 then
-        pendingData = data
-        pendingModel = model
-        pendingPlayerColor = playerColor
-        selectionData = data.selection
-
-        -- Initialize exclusive sets (convert 0-based to 1-based)
-        exclusiveSets = {}
-        if data.selection.exclusive_sets then
-            for _, set in ipairs(data.selection.exclusive_sets) do
-                local luaSet = {}
-                for _, idx in ipairs(set) do
-                    table.insert(luaSet, idx + 1)
-                end
-                table.insert(exclusiveSets, luaSet)
-            end
-        end
-        activeSet = 1
-
-        -- Pre-select first option in each group of the active set
-        groupSelections = {}
-        if #exclusiveSets > 0 then
-            for _, g in ipairs(exclusiveSets[activeSet]) do
-                groupSelections[g] = 1
-            end
-        else
-            for g = 1, #data.selection.groups do
-                groupSelections[g] = 1
-            end
-        end
-
-        self.UI.setXml(buildSelectionPanelXml(data.selection))
-        broadcastToColor("Select loadout, then click Apply.", playerColor, Color.Yellow)
+        showSelectionPanel(data, model, playerColor)
     else
-        -- No selection choices: apply all weapons directly
-        local changes = diffAndApply(model, data)
-        if #changes == 0 then
-            broadcastToColor("Already up to date.", playerColor, Color.White)
-        elseif #changes == 1 then
-            broadcastToColor("Updated: " .. changes[1], playerColor, Color.Green)
-        else
-            local msg = "Updated:\n"
-            for _, c in ipairs(changes) do
-                msg = msg .. " - " .. c .. "\n"
-            end
-            broadcastToColor(msg, playerColor, Color.Green)
-        end
+        pendingBaseSwap = false
+        local changes = diffAndApply(model, data, false)
+        reportChanges(changes, playerColor)
     end
 end
