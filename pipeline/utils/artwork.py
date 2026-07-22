@@ -54,8 +54,9 @@ LANDSCAPE_ICON_X2 = 0.1839
 LANDSCAPE_ICON_Y2 = 0.1027
 
 # When the page title "<NAME> KILL TEAM" wraps to a second line, everything below
-# shifts down. Empirically this happens once the canonical name exceeds 22 chars.
-TITLE_WRAP_THRESHOLD_CHARS = 22
+# shifts down. This is detected directly from the splash-page title geometry (see
+# ``title_wraps_on_page``) rather than guessed from name length, since equal-length
+# names can wrap differently depending on glyph widths.
 TITLE_WRAP_Y_OFFSET = 0.045
 
 RENDER_SCALE = 5.0  # 5x DPI render for crisp card-scale icons
@@ -220,6 +221,31 @@ def find_kill_team_page(doc: fitz.Document, min_title_size: float = 30.0) -> int
     return best_page
 
 
+def title_wraps_on_page(page: fitz.Page, min_title_size: float = 30.0) -> bool:
+    """True if the splash title wraps so "KILL TEAM" sits on its own line.
+
+    On short-name splashes the whole title is one line ("KOMMANDOS KILL TEAM");
+    on long-name splashes the team name fills the first line and "KILL TEAM" drops
+    to a second line, shifting the team symbol (and everything below) down. Detect
+    that from the largest "KILL TEAM" title span: if the span carries only the words
+    "KILL TEAM" (no team name on the same line), the title wrapped.
+    """
+    kt_text = None
+    kt_size = min_title_size
+    for block in page.get_text("dict").get("blocks", []):
+        if block.get("type") != 0:
+            continue
+        for line in block.get("lines", []):
+            for span in line.get("spans", []):
+                size = span.get("size", 0)
+                if "KILL TEAM" in span.get("text", "").upper() and size >= kt_size:
+                    kt_size = size
+                    kt_text = span.get("text", "")
+    if kt_text is None:
+        return False
+    return kt_text.strip().upper() == "KILL TEAM"
+
+
 def extract_token_icon(doc: fitz.Document, icons_dir: Path, team: str,
                        canonical_name: str = "") -> Dict[str, bool]:
     """Extract the token-bag icon (+ transparent variant) from the KILL TEAM page."""
@@ -230,7 +256,7 @@ def extract_token_icon(doc: fitz.Document, icons_dir: Path, team: str,
     if page_num == -1:
         return extracted
 
-    title_wraps = bool(canonical_name) and len(canonical_name) > TITLE_WRAP_THRESHOLD_CHARS
+    title_wraps = title_wraps_on_page(doc[page_num])
     y_offset = TITLE_WRAP_Y_OFFSET if title_wraps else 0.0
 
     img = render_page_bgr(doc[page_num])
