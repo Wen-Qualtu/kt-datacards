@@ -283,14 +283,39 @@ def _extract_stats_from_blocks(blocks: list, page_width: float, page_height: flo
         stats["wounds"] = int(num_str)
         break
 
+    # Fallback for cards whose stat header merges into the top-left name block
+    # (seen on some MOUNTED operatives, e.g. "DRAGON MASTER LEYSTALKER43+24" =
+    # NAME + APL(4) + SAVE(3) + "+" + WOUNDS(24)). Only runs when the standard
+    # region scan failed to find wounds, so it never affects working cards. The
+    # movement value is not merged and is still read from the region above.
+    if stats["wounds"] is None:
+        for block in blocks:
+            if block.get("type") != 0:
+                continue
+            bbox = block["bbox"]
+            if bbox[0] < page_width * 0.6 and bbox[1] < 15:
+                text = "".join(
+                    span.get("text", "")
+                    for line in block.get("lines", [])
+                    for span in line.get("spans", [])
+                ).strip()
+                m = re.search(r"(\d)(\d)\+(\d{1,2})$", text)
+                if m:
+                    stats["apl"] = int(m.group(1))
+                    stats["save"] = m.group(2) + "+"
+                    stats["wounds"] = int(m.group(3))
+                break
+
     return stats
 
 
-def _extract_base_size_from_blocks(blocks: list, page_width: float, page_height: float) -> int | float | None:
+def _extract_base_size_from_blocks(blocks: list, page_width: float, page_height: float) -> int | float | str | None:
     """Extract the model base size (mm) from the black circle in the bottom-right corner.
 
-    The datacard prints the base diameter (e.g. 25, 32, 40) as white text inside a
-    black circle at the far bottom-right of the front page.
+    The datacard prints the base size as white text inside a black circle at the far
+    bottom-right of the front page. Round bases are a single diameter (e.g. 25, 32,
+    40); oval bases are two dimensions (e.g. "75x42" for the 75mm x 42mm mounted
+    bases) and are returned verbatim as an "AxB" string.
     """
     candidates = []
     for block in blocks:
@@ -304,6 +329,14 @@ def _extract_base_size_from_blocks(blocks: list, page_width: float, page_height:
                 for span in line.get("spans", []):
                     text += span.get("text", "")
             text = text.strip()
+            # Oval base, e.g. "75x42" / "75 x 42" / "75×42".
+            oval = re.fullmatch(r"(\d+)\s*[xX×]\s*(\d+)", text)
+            if oval:
+                a, b = int(oval.group(1)), int(oval.group(2))
+                # Guard against stray numbers; real base sizes fall in this range.
+                if 15 <= a <= 200 and 15 <= b <= 200:
+                    candidates.append((y0, x0, f"{a}x{b}"))
+                continue
             match = re.fullmatch(r"(\d+(?:\.\d+)?)", text)
             if not match:
                 continue
@@ -316,6 +349,8 @@ def _extract_base_size_from_blocks(blocks: list, page_width: float, page_height:
     # Prefer the lowest, right-most candidate (the base circle).
     candidates.sort(key=lambda c: (c[0], c[1]), reverse=True)
     value = candidates[0][2]
+    if isinstance(value, str):
+        return value
     return int(value) if value == int(value) else value
 
 
