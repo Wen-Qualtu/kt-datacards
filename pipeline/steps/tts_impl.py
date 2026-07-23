@@ -2519,11 +2519,195 @@ end
     )
 
 
+def _oc_slug(name: str) -> str:
+    """Stable identifier suffix for a counter (unique Lua names / panel ids)."""
+    s = re.sub(r'[^a-z0-9]+', '_', str(name).lower()).strip('_')
+    return s or 'counter'
+
+
+_MULTI_COUNTER_WRAPPER = r'''
+
+-- ===== OPERATIVE COUNTERS =====
+
+MOC_MENU_LABEL = "<<MENU_LABEL>>"
+
+function addOperativeCountersToModel(playerColor)
+    local model = findModelOnCard()
+    if model == nil then
+        broadcastToColor("Place a KTUIMini model on this card first.", playerColor, Color.Orange)
+        return
+    end
+    local modelLua = model.getLuaScript() or ""
+    if modelLua == "" then
+        broadcastToColor("Model has no Lua script (not a KTUI model?).", playerColor, Color.Red)
+        return
+    end
+    local modelState = model.script_state or "{}"
+    local okS, mState = pcall(function() return JSON.decode(modelState) end)
+    if not okS or not mState then mState = {} end
+    local added = {}
+    local xmlPattern = '(<HorizontalLayout spacing="3" width="@totalAtt")'
+    local bundlePattern = '({name="Wound_red"[^\n]+)'
+
+<<LOCAL_DEFS>>
+<<INJECT_BLOCKS>>
+    if #added == 0 then
+        broadcastToColor("Model already has these counters.", playerColor, Color.White)
+        return
+    end
+    model.script_state = JSON.encode(mState)
+    model.setLuaScript(modelLua)
+    Wait.frames(function() model.reload() end, 10)
+    broadcastToColor("Added: " .. table.concat(added, ", "), playerColor, Color.Green)
+end
+
+local mocBaseOnLoad = onLoad
+function onLoad()
+    if mocBaseOnLoad then mocBaseOnLoad() end
+    self.addContextMenuItem(MOC_MENU_LABEL, addOperativeCountersToModel)
+end
+
+-- ===== END OPERATIVE COUNTERS =====
+'''
+
+
+def _build_operative_counters_lua(team: str, counters: list, url_branch: str, menu_label: str) -> str:
+    """Generate Lua adding one or more left/right-click cycling image counters to
+    the model on the card, exposed via a single context-menu item.
+
+    Each counter gets unique Lua identifiers (state key / handlers / panel id /
+    assets) so multiple can coexist on the same model. Panels are auto-positioned
+    side by side (a single counter ends up centred). Right-click = up, left = down.
+    """
+    base_url = f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/{url_branch}/output/{team}/tokens"
+
+    def lua_str(s: str) -> str:
+        return '"' + str(s).replace('\\', '\\\\').replace('"', '\\"') + '"'
+
+    prepared = []
+    for cfg in counters:
+        raw_states = cfg.get('states') or []
+        if not raw_states:
+            continue
+        states = sorted(raw_states, key=lambda s: int(s.get('value', 0)))
+        prepared.append((cfg, states))
+
+    n = len(prepared)
+    if n == 0:
+        return ""
+
+    local_defs = []
+    inject_blocks = []
+    for i, (cfg, states) in enumerate(prepared):
+        name = str(cfg.get('name', 'Counter'))
+        slug = _oc_slug(name)
+        min_val = int(cfg.get('min', int(states[0]['value'])))
+        max_val = int(cfg.get('max', int(states[-1]['value'])))
+        init_val = int(cfg.get('init', int(states[0]['value'])))
+        state_vals = {int(s['value']) for s in states}
+        default_val = init_val if init_val in state_vals else int(states[0]['value'])
+        offx = round((i - (n - 1) / 2) * 50)
+
+        def asset_name(v: int) -> str:
+            return f"oc_{slug}_asset_{v}"
+
+        assets_table_lua = "{" + ", ".join(
+            f'[{int(s["value"])}]="{asset_name(int(s["value"]))}"' for s in states
+        ) + "}"
+        labels_lua = "{" + ", ".join(
+            f'[{int(s["value"])}]={lua_str(s.get("label", ""))}' for s in states
+        ) + "}"
+        default_asset = asset_name(default_val)
+
+        # Panel XML long-string. The `]]..getter()..[[` splice re-enters the
+        # model's own createUI [[ ]] XML block so the image updates dynamically.
+        panel_def = (
+            f"    local panelXml_{slug} = [==[\n\n"
+            f'    <Panel color="#80808000" outline="#FFFF00" outlineSize="3 3" width="45" height="45" offsetXY="{offx} -10">\n'
+            f'      <Image id="ktcnid-status-oc-{slug}" image="]]..getOperativeCounterImage_{slug}()..[[" '
+            f'preserveAspect="true" rectAlignment="MiddleCenter" onClick="change_operative_counter_{slug}" />\n'
+            f"    </Panel>]==]\n"
+        )
+
+        asset_lines = "\n".join(
+            f'    {{name="{asset_name(int(s["value"]))}", url=[=[{base_url}/{s.get("token", "")}]=]}},'
+            for s in states
+        )
+        assets_def = f"    local assetLines_{slug} = [==[\n\n{asset_lines}\n]==]\n"
+
+        helper_inner = f"""
+
+-- {name} Counter (auto-injected)
+function getOperativeCounterImage_{slug}()
+  if not state or not state.operative_counter_{slug} then return "{default_asset}" end
+  local v = state.operative_counter_{slug}.current or {default_val}
+  local assets = {assets_table_lua}
+  return assets[v] or "{default_asset}"
+end
+
+function change_operative_counter_{slug}(player, value, id)
+  if not state.operative_counter_{slug} then return end
+  local current = state.operative_counter_{slug}.current or {default_val}
+  local maxv = state.operative_counter_{slug}.max or {max_val}
+  local minv = state.operative_counter_{slug}.min or {min_val}
+  if value == "-1" then
+    if current > minv then current = current - 1 end
+  elseif value == "-2" then
+    if current < maxv then current = current + 1 end
+  end
+  state.operative_counter_{slug}.current = current
+  if refreshUI then refreshUI() end
+  local labels = {labels_lua}
+  broadcastToColor({lua_str(name + ': ')} .. (labels[current] or "?"), player.color, Color.Yellow)
+end
+"""
+        helper_def = f"    local helperFuncs_{slug} = [==[{helper_inner}]==]\n"
+
+        local_defs.append(panel_def + assets_def + helper_def)
+
+        inject_blocks.append(
+            f'    if not modelLua:find("ktcnid%-status%-oc%-{slug}") then\n'
+            f'        if modelLua:find(xmlPattern) then\n'
+            f'            modelLua = modelLua:gsub(xmlPattern, panelXml_{slug} .. "\\n    %1", 1)\n'
+            f'        end\n'
+            f'        if modelLua:find(bundlePattern) then\n'
+            f'            modelLua = modelLua:gsub(bundlePattern, "%1" .. assetLines_{slug}, 1)\n'
+            f'        end\n'
+            f'        modelLua = modelLua .. helperFuncs_{slug}\n'
+            f'        if not mState.operative_counter_{slug} then\n'
+            f'            mState.operative_counter_{slug} = {{name={lua_str(name)}, current={init_val}, min={min_val}, max={max_val}}}\n'
+            f'        end\n'
+            f'        table.insert(added, {lua_str(name)})\n'
+            f'    end\n'
+        )
+
+    return (
+        _MULTI_COUNTER_WRAPPER
+        .replace("<<MENU_LABEL>>", str(menu_label).replace('\\', '\\\\').replace('"', '\\"'))
+        .replace("<<LOCAL_DEFS>>", "\n".join(local_defs))
+        .replace("<<INJECT_BLOCKS>>", "\n".join(inject_blocks))
+    )
+
+
 def _get_faction_rule_code(team: str, team_data: dict, operative: dict, team_config: dict) -> str:
     """Generate faction rule Lua code if applicable, using inline Lua builders."""
     team_info = team_config.get('teams', {}).get(team, {})
 
-    # Operative counter takes precedence over standard faction_rule popup UI
+    # Multiple operative counters (list) take precedence: filter to those that
+    # apply to this operative and inject them via a single menu item.
+    counters_cfg = team_info.get('operative_counters')
+    if counters_cfg:
+        applicable = [
+            c for c in counters_cfg
+            if _operative_matches_counter(operative, c.get('applies_to', 'all'))
+        ]
+        if applicable:
+            menu_label = team_info.get('operative_counters_menu', 'Add Counters')
+            counters_lua = _build_operative_counters_lua(team, applicable, URL_BRANCH, menu_label)
+            if counters_lua:
+                return counters_lua
+
+    # Single operative counter takes precedence over standard faction_rule popup UI
     counter_cfg = team_info.get('operative_counter')
     if counter_cfg and _operative_matches_counter(operative, counter_cfg.get('operatives', 'all')):
         counter_lua = _build_operative_counter_lua(team, counter_cfg, URL_BRANCH)

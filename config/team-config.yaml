@@ -435,10 +435,73 @@ teams:
     army: aeldari
     aliases:
     - exodite-dragon-master
-    tokens:
+    # Two per-model click counters injected onto the datacard via one context
+    # menu item. MOUNTED riders get Remaining Actions + Speed; other operatives
+    # (Drakolithe) get only Speed (auto-centred). Right-click = up, left = down.
+    operative_counters_menu: Add Exodite Counters
+    operative_counters:
     - name: Remaining Actions
+      applies_to:
+      - MOUNTED
+      init: 4
+      min: 1
+      max: 4
+      states:
+      - value: 1
+        label: '1 Action'
+        token: exodite-dragon-masters-remaining-actions-1.png
+      - value: 2
+        label: '2 Actions'
+        token: exodite-dragon-masters-remaining-actions-2.png
+      - value: 3
+        label: '3 Actions'
+        token: exodite-dragon-masters-remaining-actions-3.png
+      - value: 4
+        label: '4 Actions'
+        token: exodite-dragon-masters-remaining-actions-4.png
+    - name: Speed
+      applies_to: all
+      init: 1
+      min: 1
+      max: 3
+      states:
+      - value: 1
+        label: 'SPEED 3-'
+        token: exodite-dragon-masters-speed-3.png
+      - value: 2
+        label: 'SPEED 4+'
+        token: exodite-dragon-masters-speed-4.png
+      - value: 3
+        label: 'SPEED 7+'
+        token: exodite-dragon-masters-speed-7.png
+    # Auto-extracted tokens replaced by the custom-token variants below (and a
+    # blank misdetection). Dropped during extraction via exclude_tokens.
+    exclude_tokens:
+    - remaining-actions
+    - speed-speed-3-indicated-by-no
+    - token-01
+    tokens:
+    - name: Remaining Actions 1
       shape: operative
-      type: marker
+      type: token
+    - name: Remaining Actions 2
+      shape: operative
+      type: token
+    - name: Remaining Actions 3
+      shape: operative
+      type: token
+    - name: Remaining Actions 4
+      shape: operative
+      type: token
+    - name: Speed 3
+      shape: operative
+      type: token
+    - name: Speed 4
+      shape: operative
+      type: token
+    - name: Speed 7
+      shape: operative
+      type: token
     - name: Sow the Seeds
       shape: operative
       type: token

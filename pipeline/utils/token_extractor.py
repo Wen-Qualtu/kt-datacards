@@ -122,6 +122,23 @@ class TokenExtractor:
         
         return None
 
+    def _get_excluded_tokens(self, team_name: str) -> set:
+        """Return normalized token identifiers to drop from auto-extraction.
+
+        Driven by the team config ``exclude_tokens:`` list. Each entry is matched
+        (case-insensitive, whitespace-normalized) against a token's ``safe_name``
+        or display ``name``. Custom tokens are never affected.
+        """
+        if not self._team_config_cache:
+            return set()
+        team_cfg = self._team_config_cache.get(team_name)
+        if not team_cfg:
+            return set()
+        return {
+            ' '.join(str(entry).lower().split())
+            for entry in (team_cfg.get('exclude_tokens', []) or [])
+        }
+
     def _write_cutout_debug_overlay(self, *, token_img: np.ndarray, mask: np.ndarray, meta: dict) -> None:
         if self._debug_output_dir is None or self._debug_token_tag is None:
             return
@@ -2862,10 +2879,33 @@ class TokenExtractor:
             debug=debug
         )
 
+        # Drop auto-extracted tokens explicitly listed in config `exclude_tokens`.
+        # (Used to suppress blank misdetections and originals being replaced by
+        # custom-token variants.) Custom tokens copied below are unaffected.
+        excluded = self._get_excluded_tokens(team_name)
+        if excluded:
+            survivors: List[Dict] = []
+            for tok in extracted:
+                safe = ' '.join((tok.get('safe_name') or '').lower().split())
+                name = ' '.join((tok.get('name') or '').lower().split())
+                if safe in excluded or name in excluded:
+                    tok_path = tok.get('path')
+                    try:
+                        if isinstance(tok_path, Path) and tok_path.exists():
+                            tok_path.unlink()
+                    except Exception:
+                        pass
+                    print(f"  ⚠ Excluded token (config exclude_tokens): {tok.get('safe_name') or name}")
+                    continue
+                survivors.append(tok)
+            extracted = survivors
+
         # Copy custom tokens from config/teams/{team}/custom-tokens/
         custom_tokens_dir = Path(f"config/teams/{team_name}/custom-tokens")
         custom_base_names: set[str] = set()
-        if custom_tokens_dir.exists():
+        # Custom tokens are team-level, not page-level: only apply them on the first
+        # token-guide page so multi-page teams don't get duplicate `_pageN` copies.
+        if marker_guide_info.get('page_index', 1) == 1 and custom_tokens_dir.exists():
             for custom_token_path in custom_tokens_dir.glob("*.png"):
                 if custom_token_path.name.startswith("_"):
                     continue
