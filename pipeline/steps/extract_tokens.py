@@ -328,6 +328,14 @@ def _extract_team(team: str) -> bool:
 
     output_tokens_dir = paths.team_output(team) / "tokens"
     output_tokens_dir.mkdir(parents=True, exist_ok=True)
+    # Clean stale top-level token textures/meshes so tokens excluded or renamed
+    # since the previous run don't linger (regeneration is authoritative). The
+    # tokenbag/ subdir is left alone — _emit_token_meshes overwrites it.
+    for stale in list(output_tokens_dir.glob(f"{team}-*.png")) + list(output_tokens_dir.glob(f"{team}-*.obj")):
+        try:
+            stale.unlink()
+        except Exception:
+            pass
     count = _process_tokens_phase2(team, token_dir, output_tokens_dir, templates)
     if count == 0:
         logger.warning(f"  {team}: no tokens processed")
