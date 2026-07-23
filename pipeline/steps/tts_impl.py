@@ -1416,6 +1416,12 @@ def rebuild_kill_team_card_boxes_example(output_dir: Path) -> tuple[int, Optiona
     if manager_script:
         manager_obj["LuaScript"] = manager_script
 
+    # Ship without a saved layout: the manager bag's LuaScriptState is just the
+    # per-team `positions` map, which goes stale whenever the team set changes
+    # (a new team would inherit an old team's saved slot). Clearing it makes a
+    # freshly spawned bag lay every team out on a clean grid.
+    manager_obj["LuaScriptState"] = ""
+
     team_box_objects = []
     for team_tts_dir in sorted(output_dir.glob("*/tts_objects")):
         # Prefer the bare {Team}.json (clean format). Fall back to extracting

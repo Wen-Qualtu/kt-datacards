@@ -643,40 +643,58 @@ function placeTeamsOnTable()
         table.sort(teamList, function(a, b)
             return a.name < b.name
         end)
-        
-        -- Take out each team bag
+
+        -- Precompute a COLLISION-FREE target for every team. Teams with a saved
+        -- custom position keep it and CLAIM that grid cell; teams without one
+        -- get the next FREE grid cell. This stops a newly added team from
+        -- landing on an existing (saved) team's slot -- the bug where two teams
+        -- (e.g. Exodite + Farstalker) spawned on the same spot.
+        local function cellKey(px, pz)
+            local col = math.floor((px / GRID_SPACING_X) + (GRID_COLUMNS - 1) / 2 + 0.5)
+            local row = math.floor(((GRID_START_Z - pz) / GRID_SPACING_Z) + 0.5)
+            return col .. "|" .. row
+        end
+        local occupied = {}
+        local targets = {}
+        for _, team in ipairs(teamList) do
+            local pd = positions[team.name]
+            if pd and pd.pos then
+                targets[team.name] = { pos = pd.pos, rot = pd.rot or {x = 0, y = 270, z = 0} }
+                occupied[cellKey(pd.pos.x, pd.pos.z)] = true
+            end
+        end
+        local gridIndex = 0
+        for _, team in ipairs(teamList) do
+            if not targets[team.name] then
+                local gp, key
+                repeat
+                    gridIndex = gridIndex + 1
+                    gp = calculateGridPosition(gridIndex)
+                    key = cellKey(gp.x, gp.z)
+                until not occupied[key]
+                occupied[key] = true
+                targets[team.name] = { pos = {x = gp.x, y = gp.y, z = gp.z}, rot = {x = 0, y = 270, z = 0} }
+            end
+        end
+
+        -- Take out each team bag at its precomputed, collision-free position.
         local placed = 0
         for i, team in ipairs(teamList) do
             Wait.time(function()
-                local guid = team.guid
-                local teamName = team.name
-                local posData = positions[teamName]  -- Check for saved custom position
-                
-                local relativePos
-                if posData then
-                    -- Use saved custom position
-                    relativePos = {
-                        x = bagPos.x + posData.pos.x,
-                        y = bagPos.y + posData.pos.y,
-                        z = bagPos.z + posData.pos.z
-                    }
-                else
-                    -- Use default grid position (alphabetical order)
-                    local gridPos = calculateGridPosition(i)
-                    relativePos = {
-                        x = bagPos.x + gridPos.x,
-                        y = bagPos.y + gridPos.y,
-                        z = bagPos.z + gridPos.z
-                    }
-                end
-                
-                local bagObj = self.takeObject({
-                    guid = guid,
+                local t = targets[team.name]
+                local relativePos = {
+                    x = bagPos.x + t.pos.x,
+                    y = bagPos.y + t.pos.y,
+                    z = bagPos.z + t.pos.z
+                }
+
+                self.takeObject({
+                    guid = team.guid,
                     position = Vector(relativePos.x, relativePos.y, relativePos.z),
-                    rotation = posData and Vector(posData.rot.x, posData.rot.y, posData.rot.z) or Vector(0, 270, 0),
+                    rotation = Vector(t.rot.x, t.rot.y, t.rot.z),
                     smooth = false
                 })
-                
+
                 placed = placed + 1
                 if placed == #teamList then
                     Wait.time(function()
