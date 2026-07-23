@@ -42,8 +42,8 @@ def main() -> int:
     if len(missing) > 30:
         print(f"  ... and {len(missing) - 30} more")
     print()
-    print("Fix: run step 7 for those teams to populate hashes:")
-    print("  python pipelines/kt-app/steps/7_generate_tts_objects.py --teams <team>")
+    print("Fix: run the generate_tts step for those teams to populate hashes:")
+    print("  python -m pipeline.main --source warcom --step generate_tts --teams <team>")
     return 1
 
 

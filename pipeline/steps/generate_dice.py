@@ -12,9 +12,8 @@ Three variants per team:
              3. auto-extract colours from output/{team}/tokens/*.png
            If none available, the team variant is skipped.
 
-PORT-FROM: pipelines/kt-app/steps/5b_generate_dice.py
-SOURCE-DECISION: source-agnostic — drives off the shared artwork icon; the team
-  variant reuses the tokens produced by ``extract_tokens`` (run tokens first).
+Source-agnostic — drives off the shared artwork icon; the team variant reuses the
+tokens produced by ``extract_tokens`` (run tokens first).
 """
 from __future__ import annotations
 

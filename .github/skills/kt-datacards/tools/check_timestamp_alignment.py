@@ -48,8 +48,8 @@ def main() -> int:
     for team, local, remote in risk:
         print(f"  {team}: local={local} remote={remote} (local < remote)")
     print()
-    print("Fix (recommended): re-run step 7 for the affected team(s):")
-    print("  python pipelines/kt-app/steps/7_generate_tts_objects.py --teams <team>")
+    print("Fix (recommended): re-run the generate_tts step for the affected team(s):")
+    print("  python -m pipeline.main --source warcom --step generate_tts --teams <team>")
     print("Surgical fix (no cascade churn): see /memories/repo/kt-app-step7-timestamp-alignment.md")
     return 1
 

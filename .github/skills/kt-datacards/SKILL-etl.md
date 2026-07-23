@@ -20,141 +20,86 @@ Also load **SKILL-project.md** for directory structure and naming conventions.
 
 ## Pipeline Overview
 
-### Three Pipeline Systems
+### One Pipeline, Two Tracks
 
-**kt-app pipeline** (PRODUCTION — main branch):
-- Entry: `script/run_pipeline.py`
-- Orchestrator: `script/src/pipeline.py`
-- Output: `output_v2/` (faction-organized), `tts_objects/`
-- Processes PDFs from the Kill Team mobile app (UUID filenames)
+There is a single pipeline: the `pipeline/` package at the repo root. Run it from the
+repo root with `PYTHONPATH` = repo root:
+
+```powershell
+python -m pipeline.main --source kt-app|warcom [--step X | --from X --to Y] [--teams a,b] [--jobs N] [--force]
+python -m pipeline.main --list
+```
+
+Two interchangeable extraction front-ends (**tracks**) converge on a shared,
+source-agnostic integration layer, then share the rest of asset/TTS generation:
+
+**kt-app track** (`--source kt-app`):
+- Processes PDFs from the Kill Team mobile app (`input/`, UUID filenames)
 - Requires content analysis to identify team and card types
 
-**kt-app refactor** (REFACTOR — refactor-kt-app-pipeline branch):
-- Entry: `pipelines/kt-app/steps/1_process_pdfs.py` through `7_generate_tts_objects.py`
-- Output: `output_v3/` (team-organized), intermediate data in `layers/kt-app/`
-- Modular 7-step architecture with clean separation of concerns
-- Uses classification-based structure (structure.json)
-- Run individual steps or use pipeline orchestrator
-- **Stats embedded automatically in step 7** (no separate embedding step)
+**warcom track** (`--source warcom`):
+- Processes official PDFs scraped from Warhammer Community (`layers/warcom/staging/`)
+- 4 cards per page in a grid layout; includes token guide cards alongside datacards
 
-**warcom pipeline** (LEGACY — kept for reference):
-- Entry: `pipelines/warcom/pdf_process_pipeline.py`
-- Steps: `pipelines/warcom/steps/` (numbered 1–9)
-- Processes official PDFs from Warhammer Community website
-- 4 cards per page in a grid layout
-- Includes token guide cards alongside datacards
-
-> **Main vs Refactor**: Main branch uses `script/` (production), refactor branch uses `pipelines/kt-app/steps/` (new architecture).
+Steps 1–4 are track-specific (need `--source`); steps 5–12 operate only on the shared
+`layers/integration/` layer and are source-agnostic.
 
 ---
 
-## Pipeline Steps (kt-app)
+## Pipeline Steps (`pipeline/main.py` → `STEP_ORDER`)
 
-| Step | Name | Script/Module |
-|------|------|---------------|
-| 1 | Process raw PDFs | `script/process_pdfs.py` |
-| 2 | Extract images (parallel) | `script/src/processors/image_extractor.py` + token integration |
-| 3 | Add backsides | `script/src/processors/backside_processor.py` |
-| 3.5 | Process box textures | `script/src/processors/box_texture_processor.py` |
-| 4 | Generate V2 URLs JSON | `script/generate_urls.py` |
-| 5 | Generate TTS objects | `script/generate_tts_objects.py` |
-| 5.25 | Embed ready team tokens | Locked teams only |
-| 5.4 | Extract statlines | From datacard PDFs → `output/{team}/statlines/roster.json` |
-| 5.5 | Embed datacard stats | Patches TTS objects with GMNotes + LuaScript |
-| 6 | Generate metadata | `script/generate_metadata.py` |
-| 6.5 | Generate TTS metadata | `script/generate_tts_metadata.py` (with timestamps) |
-| 7 | Display table generation | Deployment only |
+| # | Step | Scope | Reads → Writes |
+|---|------|-------|----------------|
+| 1 | `front_end` | track | raw source → `layers/{track}/extracted/{team}/…` |
+| 2 | `extract_artwork` | source | raw source → `layers/integration/{team}/artwork/{,icons}` |
+| 3 | `build_structure` | source | extracted → `layers/{track}/structure/{team}-structure.json` |
+| 4 | `integrate_classified` | source | extracted + structure → `layers/integration/{team}/*.pdf` + `manifest.json` |
+| 5 | `content_analysis` | shared | classified PDFs + manifest → `layers/integration/{team}/content/*.json` + `{team}-pipeline-state.json` |
+| 6 | `extract_backsides` | shared | artwork → `output/{team}/card-backside/*` |
+| 7 | `extract_tokens` | shared | content + artwork → `output/{team}/tokens/*.png` |
+| 8 | `generate_dice` | shared | artwork + config → `output/{team}/dice/*` |
+| 9 | `generate_box_texture` | shared | artwork + config → `output/{team}/cardbox/*` |
+| 10 | `generate_card_images` | shared | classified PDFs + backsides + content → `output/{team}/cards/*` |
+| 11 | `extract_stats` | shared | content → `output/{team}/data/{team}-team-data.json` |
+| 12 | `generate_tts` | shared | cards + stats + dice + cardbox → `output/{team}/tts_objects/*.json` |
+
+Scope: **track** = front-end resolved by `--source`; **source** = shared code that still
+needs the raw/track input (takes `--source`); **shared** = operates only on the
+integration layer, source-agnostic (no `--source` needed).
 
 ### Running Specific Steps
 ```powershell
-poetry run python script/run_pipeline.py --step all
-poetry run python script/run_pipeline.py --step extract --teams kasrkin
-poetry run python script/run_pipeline.py --step extract --teams angels-of-death,kommandos
+python -m pipeline.main --source kt-app                                  # full run, all teams
+python -m pipeline.main --source kt-app --step build_structure --teams kasrkin
+python -m pipeline.main --source warcom --from build_structure --to content_analysis --teams kasrkin,mandrakes
+python -m pipeline.main --step generate_tts --teams angels-of-death,kommandos  # shared step, no --source
 ```
 
----
+### Structure Manifests
 
-## Pipeline Steps (kt-app refactor)
-
-**Location**: `pipelines/kt-app/steps/`
-
-| Step | Name | Script | Output |
-|------|------|--------|--------|
-| 1 | Process PDFs | `1_process_pdfs.py` | `layers/kt-app/processed/`, `layers/kt-app/extracted/` |
-| 2 | Classify Structure | `2_classify_structure.py` | `layers/kt-app/classified/{team}/structure.json` |
-| 3 | Extract Team Data | `3_extract_team_data.py` | `output_v3/{team}/data/{team}-team-data.json` |
-| 4 | Extract Card Images | `4_extract_card_images.py` | `output_v3/{team}/cards/{type}/*.png` |
-| 5 | Extract Tokens | `5_extract_tokens.py` | `output_v3/{team}/tokens/*.png` |
-| 6 | Generate TTS Assets | `6_generate_tts_assets.py` | `output_v3/{team}/cardbox/`, `output_v3/{team}/tokens/*.obj` |
-| 7 | Generate TTS Objects + Embed Stats | `7_generate_tts_objects.py` | `output_v3/{team}/tts_object/*.json` (with embedded GMNotes) |
-
-### Running Refactor Steps
-```powershell
-# Run all steps for a team
-cd pipelines/kt-app/steps
-python 1_process_pdfs.py --team spectre-squad --force
-python 2_classify_structure.py --team spectre-squad --force
-python 3_extract_team_data.py --team spectre-squad --force
-python 4_extract_card_images.py --team spectre-squad --force
-python 5_extract_tokens.py --teams spectre-squad
-python 6_generate_tts_assets.py --teams spectre-squad
-python 7_generate_tts_objects.py --teams spectre-squad  # Embeds stats automatically
-```
-
-### Refactor Pipeline Key Features
-
-**Classification-Based**: Step 2 creates `structure.json` mapping all cards:
-```json
-{
-  "team": "spectre-squad",
-  "datacards": [...],
-  "equipment": [...],
-  "faction_rules": [...],
-  "firefight_ploys": [...],
-  "strategy_ploys": [...],
-  "operatives_selection": [...]
-}
-```
-
-**Team-Organized Output** (`output_v3/{team}/`):
-```
-{team}/
-  ├── cards/
-  │   ├── datacards/          # {operative-name}-front.png, -back.png
-  │   ├── equipment/          # {equipment-name}-front.png, -back.png
-  │   ├── faction_rules/      # {rule-name}-front.png, -back.png
-  │   ├── firefight_ploys/    # {ploy-name}-front.png, -back.png
-  │   ├── strategy_ploys/     # {ploy-name}-front.png, -back.png
-  │   └── operatives_selection/ # operatives-front.png, -back.png
-  ├── tokens/                 # {team}-{token-name}.png (with transparency)
-  ├── cardbox/                # card-box.obj, card-box-texture.jpg, icon.png
-  ├── data/                   # {team}-team-data.json
-  └── tts_object/             # {Team Name} Cards.json
-```
-
-**Intermediate Layers** (`layers/kt-app/`):
-```
-layers/kt-app/
-  ├── processed/{team}/       # Copied and renamed PDFs
-  ├── extracted/{team}/cards/{type}/  # Single-page PDFs
-  ├── classified/{team}/      # structure.json
-  └── metadata.json           # Pipeline state tracking
-```
+`build_structure` writes `layers/{track}/structure/{team}-structure.json` classifying all
+cards (datacards, equipment, faction rules, ploys, operative selection). `integrate_classified`
+turns that into per-card classified PDFs under `layers/integration/{team}/` plus a
+`manifest.json` — the shared, source-agnostic merge point both tracks feed.
 
 ---
 
 ## Data Flow
 
 ```
-input/*.pdf (UUID filenames)
-  ↓ Step 1
-processed/{team}/{team}-datacards.pdf
-  ↓ Step 2 (parallel)
-output_v2/{faction}/{team}/datacards/*.jpg   ← card images
-  ↓ Step 5.4
-output/{team}/statlines/roster.json          ← extracted statlines
-  ↓ Step 5.5
-tts_objects/{team}/*.json                    ← patched with GMNotes + LuaScript
+input/*.pdf (kt-app)  OR  layers/warcom/staging/*.pdf (warcom)
+  ↓ front_end
+layers/{track}/extracted/{team}/…            ← per-card split PDFs
+  ↓ build_structure
+layers/{track}/structure/{team}-structure.json
+  ↓ integrate_classified
+layers/integration/{team}/*.pdf + manifest.json  ← shared, source-agnostic
+  ↓ content_analysis
+layers/integration/{team}/content/*.json
+  ↓ generate_card_images / extract_stats
+output/{team}/cards/…  +  output/{team}/data/{team}-team-data.json
+  ↓ generate_tts
+output/{team}/tts_objects/*.json             ← GMNotes + LuaScript embedded
 ```
 
 ---
@@ -377,7 +322,7 @@ Name extraction stripped "(CARD X/Y)" → all extracted as "elite-fieldcraft" �
 
 ### Solution
 
-**Step 1: Enhanced Name Extraction** (both pipelines)
+**Step 1: Enhanced Name Extraction**
 ```python
 import re
 
@@ -407,14 +352,10 @@ if current_has_card_num and next_has_card_num:
     pass
 ```
 
-### Implementation Locations
-- **Main pipeline**: `script/src/processors/image_extractor.py`
-  - Lines 397-417: `extract_card_name()` with regex
-  - Lines 172-203: Pairing logic with pattern check
-- **Refactor pipeline**: `pipelines/kt-app/steps/2_classify_structure.py`
-  - `extract_card_name()`: Enhanced regex extraction
-  - `has_multi_card_pattern()`: New helper method
-  - Pairing logic: Check both pages before pairing
+### Implementation Location
+- `build_structure` (`pipeline/steps/`): card-name extraction (`extract_card_name()` with the
+  regex) plus the pairing logic that checks both pages for `(CARD X/Y)` before pairing.
+  Shared extraction helpers live in `pipeline/utils/`.
 
 ### Result
 ```
@@ -439,13 +380,13 @@ Conservative white detection threshold allowed slightly off-white pixels (HSV va
 - Light gray or off-white (not pure white)
 - Below saturation threshold for color detection
 
-### Token Processing Flow (Refactor Pipeline)
+### Token Processing Flow (`extract_tokens` step)
 
-**Location**: `pipelines/kt-app/steps/5_extract_tokens.py`
+**Location**: `pipeline/steps/` (extract_tokens) + `pipeline/utils/artwork.py`
 
 ```
 1. Extract rough token from PDF (contour detection)
-   └─> layers/kt-app/extracted/_tuning/{team}/
+   └─> output/{team}/tokens/ (final PNGs)
    
 2. Remove background (white/gray detection)
    └─> HSV thresholds: v > 235, s < 25
@@ -468,7 +409,7 @@ Conservative white detection threshold allowed slightly off-white pixels (HSV va
 
 ### Solution
 
-**Threshold Adjustments** (lines ~128):
+**Threshold Adjustments** (in `remove_background()`):
 ```python
 # Before: Too conservative
 is_white = ((v > 245) & (s < 15)) | (bgr > 245)
@@ -477,7 +418,7 @@ is_white = ((v > 245) & (s < 15)) | (bgr > 245)
 is_white = ((v > 235) & (s < 25)) | (bgr > 235)
 ```
 
-**Hard Template Boundary** (lines ~313):
+**Hard Template Boundary** (during token processing):
 ```python
 # Step 4: Create alpha from fitted template
 template_area = fitted_template > 127
@@ -494,6 +435,6 @@ cropped_bgr[~template_area] = [255, 255, 255]  # Set to white
 ### Testing
 After changes, verify tokens with white content:
 ```powershell
-python pipelines/kt-app/steps/5_extract_tokens.py --teams spectre-squad
+python -m pipeline.main --step extract_tokens --teams spectre-squad
 # Check: medic.png (skull, wings), fieldcraft-points.png (rifles, numbers)
 ```

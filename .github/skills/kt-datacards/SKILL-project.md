@@ -42,7 +42,7 @@ ALL pipeline scripts MUST use Python's `logging` module exclusively.
 **Work spans multiple machines with different paths — absolute paths break.**
 Any path written into an artifact (JSON, metadata, manifest, output file) MUST be
 workspace-relative POSIX (relative to project root, forward slashes) or a URL.
-- ✅ `str(path.resolve().relative_to(ROOT)).replace("\\", "/")` → `"layers/shared/content/foo.json"`
+- ✅ `str(path.resolve().relative_to(ROOT)).replace("\\", "/")` → `"layers/integration/kasrkin/content/kasrkin-content.json"`
 - ✅ URLs for remote references
 - ❌ `str(path)` → `"C:\\git\\kt-datacards\\..."` (machine-specific, breaks on other PCs)
 
@@ -55,6 +55,10 @@ Accuracy is paramount for stats extraction. Warn/error rather than produce wrong
 
 ```
 kt-datacards/
+├── pipeline/                      # THE pipeline (Python package)
+│   ├── main.py                    # Entry point (python -m pipeline.main) + STEP_ORDER
+│   ├── steps/                     # One module per pipeline step
+│   └── utils/                     # Shared helpers (paths.py, artwork.py, ...)
 ├── config/
 │   ├── team-config.yaml           # Master team registry (names, factions, aliases, tokens)
 │   ├── team-guids.json            # TTS GUID assignments per team
@@ -65,63 +69,42 @@ kt-datacards/
 │   │   ├── tts-image/             # Default TTS object images
 │   │   ├── tts-script/            # Default Lua scripts
 │   │   └── tts-token/             # Default token meshes/scripts
-│   ├── pipelines/warcom/          # Warcom scraping patterns
+│   ├── pipelines/warcom/          # Warcom card templates / scrape config
 │   └── teams/{teamname}.yaml      # Team-specific overrides
-├── input/                         # Raw unprocessed PDFs (kt-app pipeline)
-├── processed/{team}/              # Organized PDFs: {team}-datacards.pdf
+├── input/                         # Raw unprocessed kt-app PDFs
+├── input_archive/                 # Archived source PDFs by team
+├── layers/                        # Intermediate data
+│   ├── kt-app/                    # kt-app track: staging/ extracted/ structure/ (gitignored)
+│   ├── warcom/                    # warcom track: staging/ extracted/ structure/ (gitignored)
+│   │   ├── staging/               # Downloaded PDFs awaiting processing
+│   │   └── extracted/{teamname}/  # Extracted cards and tokens
+│   └── integration/               # SHARED, source-agnostic merge point (committed)
+│       ├── pipeline-state.json    # Global index (teams -> state path + last_updated)
+│       └── {teamname}/            # Classified PDFs, manifest.json, content/, artwork/,
+│                                  #   {team}-pipeline-state.json
 ├── output/                        # ⚠️ IMMUTABLE — TTS references these URLs
+│   ├── _generic-tts-objects/      # Shared/generic TTS objects
 │   └── {teamname}/
 │       ├── cards/{cardtype}/      # Card images
-│       ├── textures/              # Team box textures
 │       ├── tokens/                # Processed token images
-│       └── tts/                   # TTS object JSON files
-├── output_v2/                     # Active faction-organized output (current pipeline)
-│   ├── .tts-image-hashes.json     # Hash cache for change detection
-│   ├── datacards-urls.json        # All card URLs by team
-│   ├── tts-metadata.json          # Timestamps for TTS update checking
-│   ├── chaos/{teamname}/
-│   ├── imperium/{teamname}/
-│   └── xenos/{teamname}/
-│       └── datacards/             # Extracted card JPGs
-├── metadata/{team}/               # Per-team metadata JSONs
-│   ├── card_index.json            # Card number → operative name mapping
-│   ├── extraction_metadata.json   # Extraction details (⚠️ OFTEN MALFORMED)
-│   └── token_index.json           # Token inventory
-├── tts_objects/{team}/            # Generated TTS save JSON files
-├── layers/
-│   ├── kt-app/                    # kt-app pipeline intermediate data
-│   └── warcom/                    # warcom pipeline intermediate data
-│       ├── staging/               # Downloaded PDFs awaiting processing
-│       └── extracted/{teamname}/  # Extracted cards and tokens
-├── script/                        # PRIMARY pipeline (kt-app)
-│   ├── run_pipeline.py            # CLI entry point
-│   ├── generate_tts_objects.py    # Standalone TTS generation
-│   ├── generate_tts_metadata.py   # Metadata generation
-│   └── src/
-│       ├── pipeline.py            # Pipeline orchestrator
-│       ├── generators/            # TTS, URL, display table generators
-│       ├── managers/              # Management utilities
-│       ├── models/                # Data models (Team, Card, Token)
-│       ├── processors/            # PDF, image, token processors
-│       ├── token_tools/           # Token-specific utilities
-│       └── utils/                 # Shared utilities
-├── pipelines/warcom/              # Legacy pipeline (kept for reference)
-│   ├── pdf_process_pipeline.py    # Warcom orchestrator
-│   └── steps/                    # Numbered step implementations
+│       ├── dice/                  # Team dice assets
+│       ├── cardbox/               # Card box mesh/textures
+│       ├── card-backside/         # Extracted card backsides
+│       ├── data/                  # {team}-team-data.json
+│       └── tts_objects/           # Generated TTS save JSON files
 ├── tools/                         # Standalone utility scripts
 ├── dev/                           # Development/debugging scripts
-├── docs/                          # Human-facing documentation
-└── archive/                       # Source PDFs archived by team
+└── docs/                          # Human-facing documentation
 ```
 
 ---
 
 ## 🏗️ Architecture Principles
 
-- **Models**: Data structures (`Team`, `Card`, `Token`) in `script/src/models/`
-- **Processors**: Business logic (extraction, classification) in `script/src/processors/`
-- **Generators**: Output creation (TTS objects, URLs) in `script/src/generators/`
-- **Utils**: Shared utilities (file I/O, logging) in `script/src/utils/`
+- **Steps**: One module per pipeline step in `pipeline/steps/`, orchestrated by `pipeline/main.py` (`STEP_ORDER`)
+- **Utils**: Shared helpers in `pipeline/utils/` — `paths.py` for all path resolution, `artwork.py` for pixel work
+- **Two tracks, one integration layer**: `--source kt-app|warcom` front-ends converge on `layers/integration/`
+- **Paths via helpers**: resolve paths through `pipeline/utils/paths.py`, never hardcode
 - **Dependency Injection**: Pass dependencies explicitly via parameters, never hardcode paths
 
 ---
@@ -210,7 +193,7 @@ Default assets shared by all teams: box mesh/textures, card backside, Lua script
 
 ### Faction
 - Three values: `imperium`, `chaos`, `xenos`
-- Determines subfolder in `output_v2/`
+- Used for grouping/metadata; canonical faction comes from `team-config.yaml`
 
 ### Name Normalization
 ```python
@@ -268,7 +251,9 @@ beautifulsoup4 = "*"  # HTML parsing (warcom pipeline)
 ### Running Commands
 ```powershell
 poetry install                  # Install all dependencies
-poetry run python script/run_pipeline.py --step all
-poetry run python script/run_pipeline.py --step extract --teams kasrkin
+# Run from the repo root with PYTHONPATH = repo root
+python -m pipeline.main --list                                   # List the 12 steps
+python -m pipeline.main --source kt-app                          # Full run, all teams
+python -m pipeline.main --source kt-app --step extract_artwork --teams kasrkin
 poetry run black .              # Code formatting
 ```

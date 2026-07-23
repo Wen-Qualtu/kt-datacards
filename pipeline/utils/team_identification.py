@@ -1,8 +1,8 @@
 """Team identification + card-type detection.
 
-Ported from pipelines/kt-app/steps/1_process_pdfs.py (Team, TeamIdentifier,
-CardType, and the content-based identification logic). Identification is by PDF
-*content*, never filename — the kt-app raw inputs are GUID-named.
+Provides Team, TeamIdentifier, CardType, and the content-based identification
+logic. Identification is by PDF *content*, never filename — the kt-app raw
+inputs are GUID-named.
 """
 from __future__ import annotations
 

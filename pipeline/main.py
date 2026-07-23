@@ -26,7 +26,7 @@ from typing import Callable, Optional
 from .utils import paths
 from .utils.parallel import map_items
 
-# Ported steps print status with Unicode glyphs (checkmarks etc.); force UTF-8 on
+# Pipeline steps print status with Unicode glyphs (checkmarks etc.); force UTF-8 on
 # stdout/stderr so they don't crash on a Windows cp1252 console.
 for _stream in (sys.stdout, sys.stderr):
     _reconfigure = getattr(_stream, "reconfigure", None)

@@ -10,10 +10,9 @@ Why this is safe to share (unlike the front-end card split):
   - Both tracks hand us a single-card PDF whose text layer is intact, with the
     same header order: line 0 = TEAM, line 1 = TYPE, line 2 = NAME.
 
-Base logic is the warcom line-index classifier (more robust than kt-app's
-bbox-position heuristics); the one behaviour borrowed from kt-app is the
-``(CARD x/y)`` rule-name handling, which warcom previously mangled
-("ELITE FIELDCRAFT (CARD 1/3)" -> ``...-card-13`` instead of ``...-card-1``).
+Classification uses a line-index heuristic. The ``(CARD x/y)`` rule-name handling
+keeps the slash-separated card index intact ("ELITE FIELDCRAFT (CARD 1/3)" ->
+``...-card-1``, not ``...-card-13``).
 """
 from __future__ import annotations
 
@@ -224,8 +223,8 @@ def extract_name(lines: List[str]) -> Optional[str]:
             return "TOKEN GUIDE"
 
     # "(CARD x/y)" multi-part rule (e.g. "ELITE FIELDCRAFT (CARD 1/3)").
-    # Borrowed from kt-app: keep the slash-separated card index instead of
-    # letting the slug collapse "1/3" into "13".
+    # Keep the slash-separated card index instead of letting the slug collapse
+    # "1/3" into "13".
     card_line = next((l for l in lines if re.search(r"\(CARD\s+\d+\s*/\s*\d+\)", l, re.IGNORECASE)), None)
     if card_line:
         m = re.search(r"\(CARD\s+(\d+)\s*/\s*(\d+)\)", card_line, re.IGNORECASE)

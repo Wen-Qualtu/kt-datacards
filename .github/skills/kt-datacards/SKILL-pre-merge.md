@@ -69,24 +69,24 @@ READY TO MERGE — all checks PASS
 ## Fix-it recipes (linked from check output)
 
 ### TTS update-loop alignment fail
-- Recommended: full step 7 regen for the affected team(s).
-  `python pipelines/kt-app/steps/7_generate_tts_objects.py --teams <team>`
+- Recommended: full generate_tts regen for the affected team(s).
+  `python -m pipeline.main --source warcom --step generate_tts --teams <team>`
 - Surgical (no cascade churn): bump `bag.LuaScriptState.lastCardUpdate` to match
   `obj-urls.box.modified` and refresh `obj-urls.box.hash` — see
   `/memories/repo/kt-app-step7-timestamp-alignment.md` for the exact recipe.
 
 ### Missing `hash` field
-- Run step 7 once for that team. The hash-aware generator populates `hash`
+- Run the generate_tts step once for that team. The hash-aware generator populates `hash`
   on every entry while preserving URLs/modified for unchanged content.
 
 ### structure ↔ card image drift
-- Re-run step 4 for the affected team:
-  `python pipelines/kt-app/steps/4_extract_card_images.py --teams <team> --force`
-- If step 2 also changed, run step 2 first then step 4.
+- Re-run the generate_card_images step for the affected team:
+  `python -m pipeline.main --source warcom --step generate_card_images --teams <team> --force`
+- If build_structure also changed, run it first then generate_card_images.
 
 ### Non-`main` URL leak
 - An asset URL was generated against a feature/dev branch (likely via
-  `KT_DATACARDS_URL_BRANCH=<other>` in the environment). Re-run step 7 with
+  `KT_DATACARDS_URL_BRANCH=<other>` in the environment). Re-run the generate_tts step with
   the env var unset or set to `main`.
 
 ---

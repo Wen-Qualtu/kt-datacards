@@ -8,9 +8,8 @@ team icon) so ``generate_card_images`` can reuse a single file instead of
 re-deriving it per card. A manual override in ``config/teams/{team}/card-backside/``
 is respected (skipped unless ``--force``).
 
-PORT-FROM: pipelines/kt-app/steps/5d_generate_card_backsides.py
-SOURCE-DECISION: source-agnostic — drives off the shared artwork icon, so it does
-  not matter which track produced it.
+Source-agnostic — drives off the shared artwork icon, so it does not matter which
+track produced it.
 """
 from __future__ import annotations
 

@@ -2,11 +2,9 @@
 
 input/*.pdf  ->  layers/kt-app/extracted/{team}/cards/{type}/{team}-{type}-page_N.pdf
 
-Single step (the production ``processed`` stage is dropped — straight to extracted).
+Single step (there is no separate ``processed`` stage — straight to extracted).
 
-PORT-FROM: pipelines/kt-app/steps/1_process_pdfs.py
-  (PDFProcessor.identify_pdf -> _identify_card_type / _identify_team_name, split_pdf_to_pages)
-SOURCE-DECISION: n/a (kt-app only). Identification is content-based, never filename.
+Identification is content-based, never filename.
 """
 from __future__ import annotations
 
@@ -33,7 +31,7 @@ MIN_DESIGNED_PAGE_WIDTH = 400.0
 
 
 # ---------------------------------------------------------------------------
-# Content-based identification (ported from kt-app step 1)
+# Content-based identification
 # ---------------------------------------------------------------------------
 def _identify_card_type(page) -> Optional[CardType]:
     all_text = page.get_text()

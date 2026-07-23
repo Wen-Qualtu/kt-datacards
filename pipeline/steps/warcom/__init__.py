@@ -1,8 +1,7 @@
 """Standalone warcom front-end helpers (scrape + per-card PDF extraction).
 
-This is a clean, self-contained port of the warcom card-extraction logic. It does
-NOT import or execute the legacy ``pipelines/warcom/steps`` scripts — the new
-pipeline is a standalone implementation.
+This is a self-contained, standalone implementation of the warcom
+card-extraction logic.
 
 Scope of this package:
   - ``scraper``        : fetch + download team-rules PDFs from warhammer-community

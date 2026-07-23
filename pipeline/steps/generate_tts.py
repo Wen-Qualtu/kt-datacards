@@ -2,35 +2,30 @@
 
 output/{team}/{cards,data,tokens,dice,cardbox}  ->  output/{team}/tts_objects/{Team}.json
 
-PORT-FROM:
-  - assets:  pipelines/kt-app/steps/6_generate_tts_assets.py
-  - objects: pipelines/kt-app/steps/7_generate_tts_objects.py
-SOURCE-DECISION: USE kt-app step 7 (bare/legacy dual format, embedded stats + Lua,
-  stable hashing, persistent GUIDs). warcom step 5 is metadata-only — dropped.
+Emits the bare/legacy dual box format: embedded stats + Lua, stable hashing, and
+persistent GUIDs.
 
-PORT-NOTES (carry these over when implementing):
+Behaviour notes:
   - Token tags: honour config token `type: both` -> ["KTUIToken", "KTUIMarker",
     "KTUITokenSimple"] (a marker that can also be picked up / attached to a model),
     alongside the existing marker/token/custom mappings (_build_token_tags_map).
-  - GMNotes: when an operative has a `base_size` (now extracted by content_analysis),
+  - GMNotes: when an operative has a `base_size` (extracted by content_analysis),
     surface it as stats['Base'] in _build_gm_notes.
   - KTUI enhanced stat-loading: the ktui-mini-modelscript.lua extender is embedded
     via a KTUI_MODELSCRIPT prefix on each datacard's Lua, so "Load stats to model"
     can turn any plain model into a KTUI-compatible mini on the fly.
 
 IMPLEMENTATION NOTES:
-  - The heavy lifting lives in pipeline/steps/tts_impl.py (the legacy step 7,
-    copied and adapted for the sandbox layout) + pipeline/steps/templates/.
+  - The heavy lifting lives in pipeline/steps/tts_impl.py + pipeline/steps/templates/.
   - Scope: per-team {Team}.json (clean bare box) + {Team} Box.json (slim legacy
     wrapper) + individual card/dice JSONs + preview. Also finalizes the hosting
     metadata: per-team {team}-object-urls.json + a global team-urls.json summary
     (content-hashed for stable in-game update checks). The cross-team manager bag
     is still left out for now (production-hosting concern; portable later).
-  - Cardbox mesh + texture come from generate_box_texture (output/{team}/cardbox);
-    step-6 asset copying is therefore already satisfied and not re-ported.
-  - Token BAGS need per-token .obj meshes (legacy sourced these from output_v2).
-    The integrated pipeline does not yet produce token meshes, so load_token_bag
-    gracefully returns None and the box ships with card decks + dice only.
+  - Cardbox mesh + texture come from generate_box_texture (output/{team}/cardbox).
+  - Token BAGS need per-token .obj meshes. The pipeline does not yet produce token
+    meshes, so load_token_bag gracefully returns None and the box ships with card
+    decks + dice only.
   - Image URLs default to the repo-root host path (…/output);
     override via KT_DATACARDS_URL_BASE / KT_DATACARDS_URL_BRANCH.
 """

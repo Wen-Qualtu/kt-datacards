@@ -935,7 +935,7 @@ def _build_token_memory_list(token_objects: list) -> dict:
     """Build default grid layout for token bag memory list (ml).
     
     Lays tokens out in rows of 4, spaced 1.5 units apart, starting at
-    x=-2.25, z=-3.0 — matching the old pipeline's default layout.
+    x=-2.25, z=-3.0 — the default layout.
     """
     cols = 4
     x_start = -2.25
@@ -1737,7 +1737,7 @@ def _match_card_to_operative(nickname: str, team: str, team_data: dict) -> Optio
     return None
 
 
-# ─── Weapon classification patterns (ported from script/embed_datacard_stats.py) ───
+# ─── Weapon classification patterns ───
 _RANGED_RULES_PAT = re.compile(r"(range\s*\d|blast|torrent|silent)", re.IGNORECASE)
 _RANGED_NAME_PAT = re.compile(
     r"(pistol|rifle|carbine|blaster|bolter|cannon|gun|launcher|"
@@ -1798,7 +1798,6 @@ def _match_weapon_rules(special_rules: str, all_rules: dict) -> dict:
 def _build_selection_for_gmnotes(selection_groups: list, weapons: list, exclusive_sets: dict = None) -> Optional[dict]:
     """
     Convert string-based selection groups to index-based format for GMNotes.
-    Mirrors script/embed_datacard_stats.py _build_selection_for_gmnotes().
     """
     if not selection_groups or not weapons:
         return None

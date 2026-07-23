@@ -5,7 +5,7 @@ future changes get caught automatically instead of by manual version-control rev
 Motivation: in prior implementations a change in one place silently broke another, and
 large runs produce too many changed files to eyeball.
 
-Suggested stack: `pytest`. Put tests under `new_implementation/tests/`.
+Suggested stack: `pytest`. Put tests under `tests/`.
 
 ## 1. Track-parity test (highest value)
 Both sources must produce identical integration filenames for every team.

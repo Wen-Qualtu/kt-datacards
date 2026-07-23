@@ -17,10 +17,8 @@ INPUT_ARCHIVE = ROOT / "input_archive" # consumed input PDFs are moved here
 LAYERS = ROOT / "layers"   # intermediate layers
 OUTPUT = ROOT / "output"   # final outputs
 
-# Config is self-contained inside the sandbox (copied from the repo-root config
-# and stripped of pre-baked token data + the tokens_ready flag so the pipeline
-# regenerates everything from scratch).
-REPO_ROOT = ROOT.parent
+# Config is stripped of pre-baked token data + the tokens_ready flag so the
+# pipeline regenerates everything from scratch.
 CONFIG = ROOT / "config"
 DEFAULTS = CONFIG / "defaults"
 TEAM_CONFIG = CONFIG / "team-config.yaml"

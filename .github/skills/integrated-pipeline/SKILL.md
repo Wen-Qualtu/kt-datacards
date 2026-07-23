@@ -1,14 +1,13 @@
 ---
 name: integrated-pipeline
-description: 'Understand and work with the integrated kt-datacards pipeline under new_implementation/ (the merged kt-app + warcom tracks). USE WHEN: running or debugging the new pipeline; asking where artwork/icons/classified PDFs/content/metadata live; editing pipeline steps or paths.py; adding a team; understanding the layers/integration per-team layout; wiring the --source kt-app|warcom track selector. This is the refactor sandbox, NOT the production script/ or pipelines/ tracks. DO NOT USE FOR: the legacy production pipeline in script/ or the warcom/kt-app pipelines under pipelines/.'
+description: 'Understand and work with the integrated kt-datacards pipeline at the repo root (`pipeline/`, the merged kt-app + warcom tracks). USE WHEN: running or debugging the pipeline; asking where artwork/icons/classified PDFs/content/metadata live; editing pipeline steps or paths.py; adding a team; understanding the layers/integration per-team layout; wiring the --source kt-app|warcom track selector.'
 ---
 
-# Integrated Pipeline (new_implementation/)
+# Integrated Pipeline (`pipeline/`)
 
-The `new_implementation/` sandbox is the merged pipeline: two extraction front-ends
+The `pipeline/` package at the repo root is the pipeline: two extraction front-ends
 (`kt-app` and `warcom`) that converge on a single **source-agnostic integration layer**.
-Everything is self-contained under `new_implementation/` and detached from the production
-pipelines at the repo root (`script/`, `pipelines/`).
+
 
 ## When to Use
 - Running or debugging the new pipeline (`python -m pipeline.main ...`).
@@ -19,7 +18,7 @@ pipelines at the repo root (`script/`, `pipelines/`).
 ## Layer Layout (source of truth: `pipeline/utils/paths.py`)
 
 ```
-new_implementation/
+<repo root>/
   input/                          raw PDFs for the kt-app track (UUID-named)
   layers/
     {track}/                      track = kt-app | warcom  (GITIGNORED — reproducible)
@@ -37,6 +36,7 @@ new_implementation/
           icons/                  token, token-transparent, portrait, landscape
   output/{team}/...               final assets (cards, tokens, dice, cardbox, data)
 ```
+
 
 Key facts:
 - **Per-team** integration folders. Each team's run state (step completion + output
@@ -70,12 +70,13 @@ There are **no** `SHARED`, `ARTWORK`, `CONTENT`, or `INTEGRATION_MANIFESTS` cons
 
 ## Running the Pipeline
 
-Always run from the `new_implementation/` directory (the PowerShell cwd resets to the repo
-root between commands — prefix with `Set-Location C:\git\kt-datacards\new_implementation`).
+Run from the repo root with `PYTHONPATH` set to the repo root (the PowerShell cwd resets
+to the repo root between commands — set `$env:PYTHONPATH='C:\git\kt-datacards'` first).
 
 ```powershell
 # full run for one track
 python -m pipeline.main --source kt-app --teams kasrkin
+
 
 # single step (comma-separated teams; NO spaces)
 python -m pipeline.main --step extract_artwork --source warcom --teams kasrkin,mandrakes --force
@@ -127,22 +128,22 @@ integration layer, source-agnostic (no `--source` needed).
 - **`generate_tts` internals** live in `pipeline/steps/tts_impl.py` (adapted copy of legacy
   `7_generate_tts_objects.py`) + `pipeline/steps/templates/tts_templates.py`; `generate_tts.py`
   is a thin `run()` wrapper. Image URLs default to
-  `…/kt-datacards/{branch}/new_implementation/output` (override via `KT_DATACARDS_URL_BASE` /
+  `…/kt-datacards/{branch}/output` (override via `KT_DATACARDS_URL_BASE` /
   `KT_DATACARDS_URL_BRANCH`). `base_size` is embedded as GMNotes `stats['Base']`; token
   `type: both` → tags `[KTUIToken, KTUIMarker, KTUITokenSimple]`.
 - **`generate_tts` known gaps** (by design, not bugs): (a) **no token bag** — `load_token_bag`
   needs per-token `.obj` meshes that legacy step 6 copied from `output_v2`; the integrated
   pipeline only produces token `.png`, so the bag is omitted and the box ships with card decks
   + dice. (b) **no weapon-selection groups** — `embed_datacard_stats` reads them from
-  `output_v2/{faction}/{team}/statlines/roster.json`, which the sandbox lacks, so the
+  `output_v2/{faction}/{team}/statlines/roster.json`, which the integrated pipeline lacks, so the
   `selection` key is skipped (stats/weapons/abilities still embed). (c) KTUI enhanced
   stat-loading (`ktui-mini-modelscript.lua`) is intentionally excluded.
 
 ## Onboarding on a New Machine
 
 1. Clone repo; `layers/kt-app/` + `layers/warcom/` are gitignored, so re-fetch/re-scrape
-   raw inputs: kt-app PDFs go in `new_implementation/input/`; warcom PDFs go in
-   `new_implementation/layers/warcom/staging/{team}-datacards.pdf`.
+   raw inputs: kt-app PDFs go in `input/`; warcom PDFs go in
+   `layers/warcom/staging/{team}-datacards.pdf`.
 2. `layers/integration/**` and `output/**` come with the repo (committed artifacts).
-3. Run from `new_implementation/`: `python -m pipeline.main --list` to confirm steps load.
+3. From the repo root (`PYTHONPATH` = repo root): `python -m pipeline.main --list` to confirm steps load.
 4. Regenerate a team end-to-end to validate: `python -m pipeline.main --source warcom --teams kasrkin --force`.

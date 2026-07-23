@@ -42,64 +42,49 @@ The Kill Team mobile app exports datacards as PDFs with random UUID filenames, c
 
 ## 🔧 How It Works
 
-The pipeline processes your Kill Team PDFs in 7 automated steps:
+There is one pipeline, the `pipeline/` Python package at the repo root. It has two
+interchangeable extraction front-ends (**tracks**) that converge on a single
+source-agnostic integration layer, then share the rest of the asset/TTS generation:
+
+- `--source kt-app` — processes PDFs exported from the Kill Team mobile app (`input/`).
+- `--source warcom` — processes official PDFs scraped from Warhammer Community.
+
+The full run is 12 ordered steps:
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  Step 1: Extract from PDFs                                      │
-│  • Analyze PDF content to identify team and card type           │
-│  • Split into individual card images (front/back detection)     │
-└────────────────────┬────────────────────────────────────────────┘
-                     │
-┌────────────────────▼────────────────────────────────────────────┐
-│  Step 2: Identify Card Backsides                                │
-│  • Detect which cards have backside content                     │
-│  • Flag cards that need default backsides added                 │
-└────────────────────┬────────────────────────────────────────────┘
-                     │
-┌────────────────────▼────────────────────────────────────────────┐
-│  Step 3: Copy Team-Specific Backsides                           │
-│  • Apply custom backsides from config/teams/{team}/card-backside/│
-└────────────────────┬────────────────────────────────────────────┘
-                     │
-┌────────────────────▼────────────────────────────────────────────┐
-│  Step 4: Copy Default Backsides                                 │
-│  • Add default backsides for remaining cards                    │
-└────────────────────┬────────────────────────────────────────────┘
-                     │
-┌────────────────────▼────────────────────────────────────────────┐
-│  Step 5: Copy 3D Box Models                                     │
-│  • Copy team-specific or default box.obj files to output        │
-└────────────────────┬────────────────────────────────────────────┘
-                     │
-┌────────────────────▼────────────────────────────────────────────┐
-│  Step 6: Generate TTS JSON Objects                              │
-│  • Create TTS-compatible JSON for each team's card deck         │
-│  • Include mesh URLs, deck state, card positions                │
-└────────────────────┬────────────────────────────────────────────┘
-                     │
-┌────────────────────▼────────────────────────────────────────────┐
-│  Step 7: Generate Display Table Grid                            │
-│  • Create master TTS object with all teams in alphabetical grid │
-│  • 7-column layout with hand triggers and team labels           │
-└─────────────────────────────────────────────────────────────────┘
+ 1  front_end            raw source → per-card split PDFs (layers/{track}/…)
+ 2  extract_artwork      raw source → lore art + icons (layers/integration/{team}/artwork)
+ 3  build_structure      split PDFs → layers/{track}/structure/{team}-structure.json
+ 4  integrate_classified extracted + structure → layers/integration/{team}/*.pdf + manifest.json
+ 5  content_analysis     classified PDFs + manifest → content maps + pipeline-state.json
+ 6  extract_backsides    artwork → output/{team}/card-backside/*
+ 7  extract_tokens       content + artwork → output/{team}/tokens/*.png
+ 8  generate_dice        artwork + config → output/{team}/dice/*
+ 9  generate_box_texture artwork + config → output/{team}/cardbox/*
+10  generate_card_images classified PDFs + backsides + content → output/{team}/cards/*
+11  extract_stats        content → output/{team}/data/{team}-team-data.json
+12  generate_tts         cards + stats + dice + cardbox → output/{team}/tts_objects/*.json
 ```
+
+Steps 1–4 are track-specific (need `--source`); steps 5–12 operate only on the shared
+integration layer and are source-agnostic. Run `python -m pipeline.main --list` to see
+the step list.
 
 ### Input → Output Flow
 
 ```
-input/legionaries.pdf  →  [PIPELINE]  →  output_v2/legionaries/
-                                            ├── datacards/
-                                            │   ├── card-001-front.png
-                                            │   └── card-001-back.png
-                                            ├── equipment/
-                                            ├── faction-rules/
-                                            └── ...
-                                         
-                                         tts_objects/
-                                            ├── legionariesCards.json
-                                            └── display-table/
-                                                └── kt_all_teams_grid.json
+input/legionaries.pdf  →  [PIPELINE]  →  output/legionaries/
+                                            ├── cards/
+                                            │   ├── datacards/
+                                            │   ├── equipment/
+                                            │   └── faction-rules/
+                                            ├── tokens/
+                                            ├── dice/
+                                            ├── cardbox/
+                                            ├── data/
+                                            │   └── legionaries-team-data.json
+                                            └── tts_objects/
+                                                └── Legionaries.json
 ```
 
 ## 🚀 Setup
@@ -141,111 +126,102 @@ pyenv local 3.12.5
 
 ## 📖 Usage
 
-### Basic Usage: Process All PDFs
+Run the pipeline from the repo root with `PYTHONPATH` set to the repo root.
+
+### Basic Usage: Process All Teams
 
 Place your Kill Team PDF exports in the `input/` directory, then run:
 
 ```bash
-poetry run python script/run_pipeline.py --step all
+python -m pipeline.main --source kt-app
 ```
 
-This executes all 7 steps automatically. Progress is displayed in real-time, and results are saved to:
-- `output_v2/{teamname}/` - Organized card images
-- `metadata/{teamname}/` - Card metadata JSON
-- `tts_objects/` - TTS-ready JSON objects
+This executes all 12 steps for every team on the `kt-app` track. Progress is displayed
+in real-time, and results are saved to `output/{team}/` (cards, tokens, dice, cardbox,
+data, and `tts_objects/`).
+
+Use `--source warcom` instead to process official Warhammer Community PDFs.
+
+### List Steps
+
+```bash
+python -m pipeline.main --list
+```
 
 ### Process Specific Steps
 
-Run individual pipeline steps:
-
 ```bash
-# Extract cards from PDFs only
-poetry run python script/run_pipeline.py --step 1
+# Run a single step
+python -m pipeline.main --source kt-app --step extract_artwork
 
-# Generate TTS objects only (steps 1-5 must be complete)
-poetry run python script/run_pipeline.py --step 6
+# Run a range of steps
+python -m pipeline.main --source kt-app --from build_structure --to content_analysis
 
-# Generate display table grid only
-poetry run python script/run_pipeline.py --step 7
+# Generate only the TTS objects (shared step — no --source needed for steps 5–12)
+python -m pipeline.main --step generate_tts
 ```
 
 ### Process Specific Teams
 
 ```bash
 # Process only one team
-poetry run python script/run_pipeline.py --step all --team legionaries
+python -m pipeline.main --source kt-app --teams legionaries
 
-# Process multiple teams
-poetry run python script/run_pipeline.py --step all --team legionaries kommandos kasrkin
+# Process multiple teams (comma-separated, no spaces)
+python -m pipeline.main --source kt-app --teams legionaries,kommandos,kasrkin
 ```
 
-### Generate Tokens
+### Useful Flags
 
-To generate tokens for a team with `tokens_ready: true` in config:
-
-```bash
-# Generate tokens for one team
-poetry run python script/generate_team_tokens.py --team murderwings
-
-# Generate tokens for multiple teams
-poetry run python script/generate_team_tokens.py --team murderwings celestian-insidiant
-
-# Extract from PDF and generate tokens
-poetry run python script/generate_team_tokens.py --team murderwings --extract
-```
-
-**See [docs/token-generation-workflow.md](docs/token-generation-workflow.md) for the complete token workflow.**
+- `--teams a,b` — comma-separated team filter (default: all teams)
+- `--step X` — run a single named step
+- `--from X --to Y` — run an inclusive range of steps
+- `--jobs N` — parallel worker count
+- `--force` — ignore caches and regenerate
 
 ## 📁 Project Structure
 
 ```
 kt-datacards/
-├── input/                          # Place your PDF exports here (transient/import only)
-├── processed/                      # Intermediate processing files (incl. extracted tokens)
-├── output_v2/                      # Final organized card images
-│   └── {teamname}/
-│       ├── datacards/
-│       ├── equipment/
-│       ├── faction-rules/
-│       ├── firefight-ploys/
-│       ├── operatives/
-│       └── strategy-ploys/
-├── metadata/                       # Card metadata and tracking
-│   └── {teamname}/
-│       ├── cards.json              # Card metadata
-│       ├── backsides.json          # Backside status
-│       └── extraction.json         # Extraction tracking
-├── tts_objects/                    # TTS-ready JSON files
-│   ├── {teamname}Cards.json        # Individual team decks
-│   └── display-table/
-│       └── kt_all_teams_grid.json  # Master grid with all teams
+├── pipeline/                       # The pipeline (Python package)
+│   ├── main.py                     # Entry point (python -m pipeline.main)
+│   ├── steps/                      # One module per pipeline step
+│   └── utils/                      # Shared helpers (paths, artwork, etc.)
+├── input/                          # Raw kt-app PDF exports (transient/import only)
+├── input_archive/                  # Archived source PDFs by team
+├── layers/                         # Intermediate data
+│   ├── kt-app/                     # kt-app track staging/extracted/structure (gitignored)
+│   ├── warcom/                     # warcom track staging/extracted/structure (gitignored)
+│   └── integration/                # Shared classified PDFs + per-team pipeline-state.json
+├── output/                         # Final assets (referenced by TTS via main-branch URLs)
+│   ├── {teamname}/
+│   │   ├── cards/                  # Card images by type
+│   │   ├── tokens/                 # Processed token images
+│   │   ├── dice/                   # Team dice assets
+│   │   ├── cardbox/                # Card box mesh/texture
+│   │   ├── data/                   # {team}-team-data.json
+│   │   └── tts_objects/            # TTS-ready JSON objects
+│   └── _generic-tts-objects/       # Shared/generic TTS objects
 ├── config/                         # Configuration and assets
-│   ├── team-config.yaml            # Team name mappings
-│   ├── defaults/                   # Default assets
-│   │   ├── box/                    # Default 3D box model
-│   │   ├── card-backside/          # Default card backs
-│   │   └── tts-image/              # Default preview image
-│   └── teams/{teamname}/           # Team-specific assets
-│       ├── box/                    # Custom 3D box (optional)
-│       ├── card-backside/          # Custom card backs (optional)
-│       └── tts-image/              # Custom preview (optional)
-├── script/                         # Main pipeline scripts
-│   ├── run_pipeline.py             # Main entry point
-│   └── src/                        # Pipeline implementation
-│   └── tools/                      # Maintenance utilities (token extraction/transparency)
+│   ├── team-config.yaml            # Team name mappings, factions, tokens
+│   ├── defaults/                   # Default assets (box, card-backside, tts-image, ...)
+│   ├── teams/{teamname}.yaml       # Team-specific overrides
+│   └── pipelines/warcom/           # Warcom card templates / scrape config
+├── tools/                          # Standalone utility scripts
+├── dev/                            # Development/debugging scripts
 └── docs/                           # Project documentation
-    ├── README.md                   # Documentation index
-    ├── DEVELOPMENT.md              # Development guidelines
-    ├── card-structure.md           # Card format documentation
-    └── display-table-generation.md # Display table docs
 ```
 
 ### Key Directories
 
-- **`input/`**: Drop your PDF exports here (any filename works)
-- **`output_v2/`**: Organized card images ready for TTS
-- **`tts_objects/`**: Complete TTS JSON objects you can import directly
-- **`config/teams/`**: Add team-specific assets (custom backsides, box models, icons)
+- **`input/`**: Drop your kt-app PDF exports here (any filename works)
+- **`layers/integration/`**: Shared, source-agnostic classified PDFs + per-team state
+- **`output/{team}/`**: Final assets (cards, tokens, dice, cardbox, data, tts_objects)
+- **`config/teams/`**: Add team-specific overrides (custom backsides, box models, tokens)
+
+> Output assets are referenced by TTS via `main`-branch raw URLs:
+> `https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/{team}/...`
+
 
 ## 🤝 Contributing
 

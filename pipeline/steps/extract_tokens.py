@@ -6,13 +6,11 @@ manifest.json token_guide entry (which page PDF to read) + config token shapes
 
 Phase 1: contour-based rough token extraction from the token-guide PDF page
          (pipeline.utils.token_extractor.TokenExtractor.process_team_auto_tuned).
-Phase 2: transparency + shape-template cutting (ported from
-         pipelines/kt-app/steps/5_extract_tokens.py).
+Phase 2: transparency + shape-template cutting.
 
-PORT-FROM: pipelines/kt-app/steps/5_extract_tokens.py + utils/token_extractor.py.
-SOURCE-DECISION: source-agnostic — drives off the integration manifest instead
-  of the legacy multi-page ``{team}-faction-rules.pdf``. ``find_marker_guides``
-  is overridden to return the token-guide page(s) declared by the manifest.
+Source-agnostic — drives off the integration manifest instead of a multi-page
+``{team}-faction-rules.pdf``. ``find_marker_guides`` is overridden to return the
+token-guide page(s) declared by the manifest.
 """
 from __future__ import annotations
 
@@ -77,7 +75,6 @@ class IntegrationTokenExtractor(TokenExtractor):
 
 # ========================================
 # Phase 2: transparency and shape cutting
-# (ported verbatim from 5_extract_tokens.py)
 # ========================================
 
 def _load_template(path: Path) -> np.ndarray:

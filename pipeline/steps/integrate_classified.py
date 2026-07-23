@@ -14,9 +14,8 @@ When an entity has more than one physical card (e.g. a datacard whose actions ar
 on their own cards, or a multi-card faction rule), the card number is appended to
 keep filenames unique: {team}-{type}-{name}-{card_number}.pdf.
 
-SOURCE-DECISION: source only selects which track's structure/extracted to read.
-OPEN: conflict policy when both tracks ran a team (currently last-run-wins —
-files are simply overwritten).
+The source only selects which track's structure/extracted to read. Conflict
+policy when both tracks ran a team: last-run-wins (files are overwritten).
 """
 from __future__ import annotations
 

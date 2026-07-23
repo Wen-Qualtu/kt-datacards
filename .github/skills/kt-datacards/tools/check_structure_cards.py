@@ -91,8 +91,8 @@ def main() -> int:
     if len(drift) > 30:
         print(f"  ... and {len(drift) - 30} more")
     print()
-    print("Fix: re-run step 4 for the affected team(s):")
-    print("  python pipelines/kt-app/steps/4_extract_card_images.py --teams <team> --force")
+    print("Fix: re-run the generate_card_images step for the affected team(s):")
+    print("  python -m pipeline.main --source warcom --step generate_card_images --teams <team> --force")
     return 1
 
 

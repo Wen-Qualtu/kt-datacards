@@ -8,9 +8,8 @@ Fronts (and any real back) are rendered at 300 DPI; when a card has no back page
 the pre-generated team backside (``extract_backsides``) is used, falling back to
 the global default. Datacards are landscape; all other card types are portrait.
 
-PORT-FROM: pipelines/kt-app/steps/4_extract_card_images.py
-SOURCE-DECISION: source-agnostic — drives off the shared integration PDFs +
-  manifest instead of a track-specific structure.json.
+Source-agnostic — drives off the shared integration PDFs + manifest instead of a
+track-specific structure.json.
 """
 from __future__ import annotations
 

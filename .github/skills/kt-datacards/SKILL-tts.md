@@ -143,97 +143,101 @@ Detect actual visual changes in card images to enable smart cache-busting. Preve
 - String comparison works for ordering because format is zero-padded and sortable
 - Used as URL cache-busting parameter and as TTS update sentinel
 
-### Core Files
+### Core Files (per team)
 
 | File | Location | Purpose |
 |------|----------|---------|
-| `.tts-image-hashes.json` | `output_v2/.tts-image-hashes.json` | Hash cache: URL → `{hash, timestamp}` |
-| TTS box JSON | `tts_objects/{team}/{Team Name} Cards.json` | Contains `lastCardUpdate` in `LuaScriptState` |
-| `tts-metadata.json` | `output_v2/tts-metadata.json` | Remote metadata checked by TTS update button |
+| Bag / box JSON | `output/{team}/tts_objects/{Team Name}.json` | Contains `lastCardUpdate` in `LuaScriptState` |
+| Object URLs | `output/{team}/{team}-object-urls.json` | Per-entry `{url, hash, modified}` for the box + each object |
+| Pipeline state | `layers/integration/{team}/{team}-pipeline-state.json` | Step completion + output hashes (change detection) |
 
-### Hash Cache Format
+All asset URLs point at the `main` branch:
+`https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/{team}/...`
+
+### Object URLs Format
 ```json
 {
-  "https://raw.githubusercontent.com/.../output_v2/imperium/angels-of-death/datacards/card-01.jpg": {
+  "box": {
+    "url": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/angels-of-death/tts_objects/Angels Of Death.json",
     "hash": "86b9c446",
-    "timestamp": "202602271335"
-  }
+    "modified": "202602271335"
+  },
+  "objects": [
+    {
+      "type": "card",
+      "name": "stalker-alpha",
+      "url": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/angels-of-death/cards/datacards/stalker-alpha-front.jpg",
+      "hash": "1a2b3c4d",
+      "modified": "202602271335"
+    }
+  ]
 }
 ```
 - Hash: MD5 of file bytes, first 8 hex chars
-- Commit this file — it's the source of truth for timestamps
+- Commit this file — the `hash`/`modified` pair is the source of truth for change detection
+- Every entry MUST carry a `hash` field (validated by the pre-merge check suite)
 
-### How Change Detection Works (`_get_cached_timestamp`)
-
+### How Change Detection Works
 ```
+For each asset:
 1. Compute current MD5 hash of local file
-2. Look up URL in cache
-   a. If cache miss → generate new timestamp, store hash+timestamp
-   b. If hash matches cache → return cached timestamp (no change)
-   c. If hash differs → generate new timestamp, update cache entry, log "Image changed"
+2. Compare against the committed `hash` in {team}-object-urls.json
+   a. If hash matches → keep the existing `modified` timestamp (no change)
+   b. If hash differs (or missing) → bump `modified` to now, update `hash`
 ```
 
-### Box Timestamp (`_get_box_timestamp`)
-The box timestamp = `max()` of all image timestamps for the team. If ANY card image changes, the box shows as updated.
-
-### Preload Logic — IMPORTANT FIX
-`_preload_timestamps_from_existing_tts_files` only runs when the hash cache is **empty**.
-
-**Why**: Previously it computed fresh hashes from current files but stored old box timestamps, which broke change detection. Fixed: 2026-02-27.  
-Code: `script/src/generators/tts_generator.py` ~L214.
-
-### tts-metadata.json Format
-```json
-{
-  "teams": {
-    "angels-of-death": {
-      "team": "Angels of Death",
-      "cards_last_modified": "202602271715"
-    }
-  }
-}
-```
+### Box Timestamp Alignment
+The bag's `LuaScriptState.lastCardUpdate` MUST be `>=` the max `modified` across that
+team's `{team}-object-urls.json` entries. If ANY asset changes, `lastCardUpdate` bumps so
+TTS clients see the update. The pre-merge check `check_timestamp_alignment.py` enforces
+this (see **SKILL-pre-merge.md**). A surgical realignment recipe lives in
+`/memories/repo/kt-app-step7-timestamp-alignment.md`.
 
 ---
 
-## Key Scripts
+## Key Code
 
-| Script | Purpose |
+| Location | Purpose |
 |--------|---------|
-| `script/generate_tts_objects.py` | Generate TTS box JSON for one or all teams |
-| `script/generate_tts_metadata.py` | Generate `tts-metadata.json` from box files |
-| `script/src/generators/tts_generator.py` | Core TTSGenerator class |
-| `script/src/generators/tts_boxes_json_generator.py` | Box JSON helpers |
+| `generate_tts` step (`pipeline/steps/`) | Generates the box JSON + `{team}-object-urls.json`, embeds GMNotes/LuaScript, aligns timestamps |
+| `pipeline/steps/` (tts implementation + templates) | Box/deck/card assembly and TTS templates |
+| `pipeline/utils/paths.py` | Resolves `output/{team}/tts_objects/...` and object-urls paths |
+
+Run it with `python -m pipeline.main --step generate_tts --teams {team}` (or `--source
+warcom`). URL base/branch override via `KT_DATACARDS_URL_BASE` / `KT_DATACARDS_URL_BRANCH`
+(default branch `main`).
 
 ---
 
 ## Standard Deployment Workflow
 
 ```powershell
-# 1. Edit PDF and copy to processed folder
-Copy-Item "dev\{team}-datacards.pdf" -Destination "processed\{team}\{team}-datacards.pdf" -Force
+# Run from the repo root with PYTHONPATH = repo root
 
-# 2. Extract images (regenerates JPGs in output_v2/)
-poetry run python script/run_pipeline.py --step extract --teams {team}
+# 1. Import the updated source PDF (kt-app: into input/; warcom: into layers/warcom/staging/)
+Copy-Item "dev\{team}-datacards.pdf" -Destination "input\{team}-datacards.pdf" -Force
 
-# 3. Generate TTS objects (computes hashes, updates timestamps)
-poetry run python script/generate_tts_objects.py {team}
+# 2. Regenerate the team end-to-end (regenerates cards under output/{team}/cards/)
+python -m pipeline.main --source kt-app --teams {team} --force
 
-# 4. Verify timestamps changed
+# 3. (Or just regenerate the TTS objects if only stats/box changed)
+python -m pipeline.main --step generate_tts --teams {team}
+
+# 4. Verify the box timestamp changed
 python -c "
 import json
-obj = json.load(open('tts_objects/{team}/{Team} Cards.json'))
+obj = json.load(open('output/{team}/tts_objects/{Team}.json'))
 state = json.loads(obj['ObjectStates'][0]['LuaScriptState'])
 print(f'lastCardUpdate: {state[\"lastCardUpdate\"]}')
 "
 
-# 5. Regenerate tts-metadata.json
-poetry run python script/generate_tts_metadata.py
+# 5. Run the pre-merge check suite before committing
+python .github/skills/kt-datacards/tools/check_all.py
 
 # 6. Stage, commit, push
-git add output_v2/ tts_objects/ -A
+git add output/ layers/integration/ -A
 git commit -m "Update {team} cards"
-git push origin acc
+git push
 ```
 
 ### Verifying Hash Changes
@@ -242,13 +246,13 @@ git push origin acc
 python -c "
 import hashlib
 from pathlib import Path
-cards = sorted(Path('output_v2/{faction}/{team}/datacards').glob('*.jpg'))
+cards = sorted(Path('output/{team}/cards/datacards').glob('*.jpg'))
 for c in cards:
     print(f'{c.name}: {hashlib.md5(c.read_bytes()).hexdigest()[:8]}')
 "
 
-# Check what changed in hash cache
-git diff output_v2/.tts-image-hashes.json | Select-String "{card-name}" -Context 2
+# Check what changed in the object-urls hashes
+git diff output/{team}/{team}-object-urls.json | Select-String "{card-name}" -Context 2
 ```
 
 ---
@@ -261,30 +265,39 @@ git diff output_v2/.tts-image-hashes.json | Select-String "{card-name}" -Context
 **Solution**: The change must be visible in the rendered card image, not just in PDF metadata.
 
 ### "TTS shows update on first click, then 'no changes'"
-**Cause**: `tts-metadata.json` has old timestamps while box files have new ones.  
-**Solution**:
+**Cause**: The box's `lastCardUpdate` is out of sync with the max `modified` in
+`{team}-object-urls.json`.  
+**Solution**: Re-run the `generate_tts` step for the team, or apply the surgical
+realignment in `/memories/repo/kt-app-step7-timestamp-alignment.md`, then re-run the
+pre-merge checks:
 ```powershell
-poetry run python script/generate_tts_metadata.py
-git add output_v2/tts-metadata.json
-git commit -m "Sync metadata timestamps"
-git push origin acc
+python -m pipeline.main --step generate_tts --teams {team}
+python .github/skills/kt-datacards/tools/check_all.py
+git add output/{team} -A
+git commit -m "Sync {team} timestamps"
+git push
 ```
 
-### "Hash cache not detecting changes after regeneration"
-**Cause**: Old preload logic — was computing fresh hashes and pairing with old timestamps.  
-**Status**: Fixed 2026-02-27. Preloading skips if hash cache already exists.
+### "Change detection not firing after regeneration"
+**Cause**: An entry in `{team}-object-urls.json` is missing its `hash` field, so change
+detection can't compare against a baseline.  
+**Solution**: Re-run the `generate_tts` step for the team to repopulate `hash` on every
+entry (validated by `check_hash_baseline.py`).
 
-### "datacards-urls.json changes every time"
-**Cause**: Old code rebuilt entire TTS entries list on each run.  
-**Status**: Fixed 2026-02-27. Now updates in-place, preserving order.
+### "Object URLs churn every run"
+**Cause**: Content is genuinely unchanged but timestamps/URLs are being rewritten.  
+**Debug**: Confirm the per-entry `hash` matches the on-disk file; unchanged hashes should
+preserve the existing `modified` timestamp and URL.
 
 ---
 
 ## Best Practices
 
-1. **Extract images before generating TTS objects** — don't regenerate TTS from stale JPGs
-2. **Always regenerate `tts-metadata.json` after TTS objects** — keeps timestamps in sync
-3. **Commit `.tts-image-hashes.json`** — it's the timestamp source of truth
+1. **Regenerate assets before the TTS objects** — don't build TTS from stale card images
+2. **Run the pre-merge check suite before committing** — `check_all.py` gates timestamp
+   alignment, hash baselines, and `main`-branch URLs
+3. **Commit `{team}-object-urls.json`** — the `hash`/`modified` pairs are the change-detection source of truth
 4. **Use `--teams` filter** to only regenerate what changed, not all 46+ teams
 5. **Test with actual visual changes** — PDF metadata changes don't affect extracted images
 6. **Never push without verifying** `lastCardUpdate` changed in the box JSON
+

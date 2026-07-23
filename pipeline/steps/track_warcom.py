@@ -3,8 +3,7 @@
 scrape site  ->  layers/warcom/staging/*.pdf
                  ->  layers/warcom/extracted/{team}/cards/*.pdf  (per-card split)
 
-Standalone implementation — does NOT import or execute the legacy
-``pipelines/warcom/steps`` scripts. The low-level work lives in the local
+Standalone implementation. The low-level work lives in the local
 ``warcom`` package:
 
   - scrape:  warcom.scraper        (Playwright + requests)
@@ -65,7 +64,7 @@ def _team_from_filename(pdf: Path, team_config: dict) -> Optional[str]:
 
 
 def _scrape(teams: Optional[List[str]], force: bool) -> List[Path]:
-    """Scrape + download team-rules PDFs into the sandbox staging dir.
+    """Scrape + download team-rules PDFs into the staging dir.
 
     Returns the list of staging PDF paths relevant to this run.
     """
@@ -134,7 +133,7 @@ def _extract(staging_pdfs: List[Path], teams: Optional[List[str]], force: bool, 
 
             # The staging PDF is the durable source; gate on its content hash so a
             # re-scrape of the byte-identical rules PDF is not re-split while its
-            # extracted cards are still on disk. (Fresh sandbox has no baseline, so
+            # extracted cards are still on disk. (A fresh run has no baseline, so
             # this always processes on the first run.)
             state = StateManager(team_name)
             pdf_hash = StateManager._compute_hash(pdf)

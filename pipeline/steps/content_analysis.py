@@ -10,9 +10,6 @@ abilities, keywords). For other cards: name + text (with option/selection parsin
 Source-agnostic: reads the per-team integration PDFs and the source-agnostic manifest
 emitted by integrate_classified, so it does not depend on which track ran.
 
-PORT-FROM: pipelines/kt-app/steps/3_extract_team_data.py (extraction logic verbatim;
-           only the IO layer is re-pointed at the integration layer + team manifest).
-
 Data Structure:
 {
   "team": "battleclade",
@@ -52,7 +49,7 @@ logger = logging.getLogger(__name__)
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# Proven Datacard Extraction Functions (from script/extract_statlines.py)
+# Proven Datacard Extraction Functions
 # ══════════════════════════════════════════════════════════════════════════════
 
 def _clean_extracted_text(text: str) -> str:

@@ -6,10 +6,8 @@ Per-track because the two extracted layouts differ (file naming, page/card order
 Both tracks must emit the SAME schema. Describes each card: name, type,
 front/back presence, and card-group membership (multi-card rules, "CARD X/Y").
 
-Ported from pipelines/kt-app/steps/2_classify_structure.py. Differences from the
-production step:
-  - Output path: layers/{track}/structure/{team}-structure.json (one file per team)
-    instead of layers/kt-app/classified/{team}/structure.json.
+Implementation notes:
+  - Output path: layers/{track}/structure/{team}-structure.json (one file per team).
   - Paths inside the JSON are relative to the repo ROOT.
   - No StateManager / hash change-detection (the orchestrator owns --force).
   - No token-metadata extraction (TokenExtractor). Token-guide pages are still

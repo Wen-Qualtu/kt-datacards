@@ -51,8 +51,8 @@ def main() -> int:
     if len(bad) > 30:
         print(f"  ... and {len(bad) - 30} more")
     print()
-    print(f"Fix: regenerate via step 7 with KT_DATACARDS_URL_BRANCH=main, or")
-    print(f"     check the env var when running pipelines/kt-app/steps/7_generate_tts_objects.py.")
+    print(f"Fix: regenerate via the generate_tts step with KT_DATACARDS_URL_BRANCH=main, or")
+    print(f"     check the env var when running python -m pipeline.main --source warcom --step generate_tts.")
     return 1
 
 

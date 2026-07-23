@@ -9,8 +9,7 @@ Texture priority:
   3. neither                                        -> copy the global default texture
 The OBJ is always copied from config/defaults/box/card-box.obj (identical per team).
 
-PORT-FROM: pipelines/kt-app/steps/5c_generate_box_textures.py
-SOURCE-DECISION: source-agnostic — drives off the shared artwork icon.
+Source-agnostic — drives off the shared artwork icon.
 """
 from __future__ import annotations
 

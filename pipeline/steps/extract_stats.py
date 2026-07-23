@@ -10,8 +10,7 @@ writing byte-stably: if the content (excluding the volatile ``generated_at``
 timestamp) is unchanged, the prior file's bytes + mtime are restored so
 downstream cache-busters do not spuriously bump.
 
-PORT-FROM: pipelines/kt-app/steps/3_extract_team_data.py (serialization half).
-SOURCE-DECISION: source-agnostic (reads the shared content map).
+Source-agnostic (reads the shared content map).
 """
 from __future__ import annotations
 
