@@ -1603,6 +1603,22 @@ def embed_datacard_stats(bag_obj: dict, team_name: str, output_dir: Path, config
     else:
         logger.warning(f"  KTUI model script not found at {modelscript_path}; plain models won't be auto-scripted")
 
+    # Load the Sprint/Turn movement tool. It's embedded as SPRINT_TOOL_CODE only
+    # on MOUNTED operative cards (which expose an "Add sprint action" item that
+    # injects it onto the model on top). Keeps non-mounted cards lean.
+    sprint_tool_prefix = ""
+    sprint_tool_path = config_dir / "defaults" / "tts-script" / "sprint-movement-tool.lua"
+    if sprint_tool_path.exists():
+        with open(sprint_tool_path, 'r', encoding='utf-8') as f:
+            sprint_tool_text = f.read()
+        level = 0
+        while ("]" + "=" * level + "]") in sprint_tool_text:
+            level += 1
+        eq = "=" * level
+        sprint_tool_prefix = f"SPRINT_TOOL_CODE = [{eq}[\n-- KT_SPRINT_TOOL_V1\n{sprint_tool_text}\n]{eq}]\n\n"
+    else:
+        logger.warning(f"  Sprint tool not found at {sprint_tool_path}; mounted operatives won't get the sprint action")
+
     # Find all datacard objects in the bag
     datacards = _find_datacards(bag_obj)
     if not datacards:
@@ -1635,7 +1651,10 @@ def embed_datacard_stats(bag_obj: dict, team_name: str, output_dir: Path, config
             
             # Get faction rule code if applicable
             faction_rule_code = _get_faction_rule_code(team_name, team_data, operative, team_config)
-            lua_script = ktui_modelscript_prefix + datacard_lua_script + "\n\n" + faction_rule_code + "\n\n" + (single_object_updater_script or "")
+            # Embed the sprint tool only for MOUNTED operatives.
+            op_keywords = [str(k).upper() for k in operative.get('keywords', [])]
+            sprint_prefix = sprint_tool_prefix if ("MOUNTED" in op_keywords and sprint_tool_prefix) else ""
+            lua_script = ktui_modelscript_prefix + sprint_prefix + datacard_lua_script + "\n\n" + faction_rule_code + "\n\n" + (single_object_updater_script or "")
             
             # Set GMNotes and Lua script
             card["GMNotes"] = gm_notes_json
