@@ -35,6 +35,11 @@ function onLoad()
     if hasOvalBase() then
         self.addContextMenuItem("Rotate base 90", rotateBase90)
     end
+    -- MOUNTED operatives can add the Sprint / Turn movement actions to the model
+    -- on top. The tool code is embedded (SPRINT_TOOL_CODE) only on mounted cards.
+    if type(SPRINT_TOOL_CODE) == "string" and hasKeyword("MOUNTED") then
+        self.addContextMenuItem("Add sprint action", addSprintAction)
+    end
 end
 
 -- helpers
@@ -694,6 +699,41 @@ function hasUpgrades()
     if not ok or type(data) ~= "table" then return false end
     local up = data.upgrades
     return up ~= nil and type(up.options) == "table" and #up.options > 0
+end
+
+-- True when this card's operative has the given keyword (e.g. "MOUNTED"),
+-- read from GMNotes.keywords. Used to gate the "Add sprint action" item.
+function hasKeyword(kw)
+    local ok, data = pcall(function() return JSON.decode(self.getGMNotes() or "") end)
+    if not ok or type(data) ~= "table" or type(data.keywords) ~= "table" then return false end
+    kw = tostring(kw):upper()
+    for _, k in ipairs(data.keywords) do
+        if tostring(k):upper() == kw then return true end
+    end
+    return false
+end
+
+-- Append the Sprint/Turn movement tool (SPRINT_TOOL_CODE, embedded on mounted
+-- cards) to the model on top, adding "Sprint" and "Turn" context items to it.
+-- Injection-safe: the tool chains onLoad/onPickUp and never writes script_state.
+function addSprintAction(playerColor)
+    if type(SPRINT_TOOL_CODE) ~= "string" or SPRINT_TOOL_CODE == "" then
+        broadcastToColor("Sprint tool code missing - regenerate the cards.", playerColor, Color.Orange)
+        return
+    end
+    local model = findModelOnCard()
+    if not model then
+        broadcastToColor("Place the model on this card first.", playerColor, Color.Orange)
+        return
+    end
+    local lua = model.getLuaScript() or ""
+    if lua:find("KT_SPRINT_TOOL_V1", 1, true) then
+        broadcastToColor("Model already has the Sprint action.", playerColor, {1, 1, 1})
+        return
+    end
+    model.setLuaScript(lua .. "\n\n" .. SPRINT_TOOL_CODE)
+    Wait.frames(function() if model ~= nil then model.reload() end end, 10)
+    broadcastToColor("Sprint action added. Right-click the model -> Sprint / Turn.", playerColor, {0.2, 0.85, 0.3})
 end
 
 -- True only when this card's operative uses an oval base (two different base
