@@ -35,10 +35,16 @@ function onLoad()
     if hasOvalBase() then
         self.addContextMenuItem("Rotate base 90", rotateBase90)
     end
-    -- MOUNTED operatives can add the Sprint / Turn movement actions to the model
-    -- on top. The tool code is embedded (SPRINT_TOOL_CODE) only on mounted cards.
+    -- MOUNTED operatives can add the Sprint / Turn / Leap movement actions to
+    -- the model on top. The tool code is embedded (SPRINT_TOOL_CODE) only on
+    -- mounted cards.
     if type(SPRINT_TOOL_CODE) == "string" and hasKeyword("MOUNTED") then
         self.addContextMenuItem("Add sprint action", addSprintAction)
+    end
+    -- NON-MOUNTED operatives get the standard Move action instead. The tool
+    -- code is embedded (MOVE_TOOL_CODE) only on non-mounted cards.
+    if type(MOVE_TOOL_CODE) == "string" and not hasKeyword("MOUNTED") then
+        self.addContextMenuItem("Add Move Action", addMoveAction)
     end
 end
 
@@ -713,8 +719,8 @@ function hasKeyword(kw)
     return false
 end
 
--- Append the Sprint/Turn movement tool (SPRINT_TOOL_CODE, embedded on mounted
--- cards) to the model on top, adding "Sprint" and "Turn" context items to it.
+-- Append the movement tool (SPRINT_TOOL_CODE, embedded on mounted cards) to the
+-- model on top, adding "Sprint", "Turn" and "Leap" context items to it.
 -- Injection-safe: the tool chains onLoad/onPickUp and never writes script_state.
 function addSprintAction(playerColor)
     if type(SPRINT_TOOL_CODE) ~= "string" or SPRINT_TOOL_CODE == "" then
@@ -726,14 +732,67 @@ function addSprintAction(playerColor)
         broadcastToColor("Place the model on this card first.", playerColor, Color.Orange)
         return
     end
+    -- Strip any previously injected block (between its START/END markers, any
+    -- version) so re-running installs the CURRENT tool version - it doubles as an
+    -- updater. The host script + script_state are left intact.
     local lua = model.getLuaScript() or ""
-    if lua:find("KT_SPRINT_TOOL_V1", 1, true) then
-        broadcastToColor("Model already has the Sprint action.", playerColor, {1, 1, 1})
-        return
+    local updating = false
+    local s = lua:find("-- START KT_SPRINT_TOOL_", 1, true)
+    if s then
+        updating = true
+        local e = lua:find("-- END KT_SPRINT_TOOL_", s, true)
+        if e then
+            local nl = lua:find("\n", e, true)
+            lua = nl and (lua:sub(1, s - 1) .. lua:sub(nl + 1)) or lua:sub(1, s - 1)
+        else
+            lua = lua:sub(1, s - 1)
+        end
     end
     model.setLuaScript(lua .. "\n\n" .. SPRINT_TOOL_CODE)
     Wait.frames(function() if model ~= nil then model.reload() end end, 10)
-    broadcastToColor("Sprint action added. Right-click the model -> Sprint / Turn.", playerColor, {0.2, 0.85, 0.3})
+    if updating then
+        broadcastToColor("Sprint action updated to the latest version.", playerColor, {0.2, 0.85, 0.3})
+    else
+        broadcastToColor("Sprint action added. Right-click the model -> Sprint / Turn / Leap.", playerColor, {0.2, 0.85, 0.3})
+    end
+end
+
+-- Append the Move tool (MOVE_TOOL_CODE, embedded on non-mounted cards) to the
+-- model on top, adding a "Move" context item to it. Injection-safe: the tool
+-- chains onLoad/onPickUp and never writes script_state.
+function addMoveAction(playerColor)
+    if type(MOVE_TOOL_CODE) ~= "string" or MOVE_TOOL_CODE == "" then
+        broadcastToColor("Move tool code missing - regenerate the cards.", playerColor, Color.Orange)
+        return
+    end
+    local model = findModelOnCard()
+    if not model then
+        broadcastToColor("Place the model on this card first.", playerColor, Color.Orange)
+        return
+    end
+    -- Strip any previously injected block (between its START/END markers, any
+    -- version) so re-running installs the CURRENT tool version - it doubles as an
+    -- updater. The host script + script_state are left intact.
+    local lua = model.getLuaScript() or ""
+    local updating = false
+    local s = lua:find("-- START KT_MOVE_TOOL_", 1, true)
+    if s then
+        updating = true
+        local e = lua:find("-- END KT_MOVE_TOOL_", s, true)
+        if e then
+            local nl = lua:find("\n", e, true)
+            lua = nl and (lua:sub(1, s - 1) .. lua:sub(nl + 1)) or lua:sub(1, s - 1)
+        else
+            lua = lua:sub(1, s - 1)
+        end
+    end
+    model.setLuaScript(lua .. "\n\n" .. MOVE_TOOL_CODE)
+    Wait.frames(function() if model ~= nil then model.reload() end end, 10)
+    if updating then
+        broadcastToColor("Move action updated to the latest version.", playerColor, {0.2, 0.85, 0.3})
+    else
+        broadcastToColor("Move action added. Right-click the model -> Move.", playerColor, {0.2, 0.85, 0.3})
+    end
 end
 
 -- True only when this card's operative uses an oval base (two different base

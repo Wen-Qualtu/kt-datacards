@@ -26,7 +26,8 @@ SRC = HERE.parent / "config" / "defaults" / "tts-script" / "sprint-movement-tool
 OUT = HERE / "sprint-loader-card.lua"
 OUT_JSON = HERE / "sprint-loader-card.json"
 
-MARKER = "-- KT_SPRINT_TOOL_V1"
+MARKER_START = "-- START KT_SPRINT_TOOL_V1"
+MARKER_END   = "-- END KT_SPRINT_TOOL_V1"
 
 # Fixed so re-runs are idempotent (only the embedded Lua changes when the tool
 # does). Unique enough for a standalone loader object.
@@ -46,19 +47,22 @@ def build(code: str) -> str:
     eq = "=" * level
     open_b, close_b = f"[{eq}[", f"]{eq}]"
 
-    # Embed the tool with the marker as its first line so the guard can detect it.
-    embedded = f"{open_b}\n{MARKER}\n{code}\n{close_b}"
+    # Embed the tool wrapped in START/END markers so it can be safely stripped
+    # and re-applied (updated) without cutting unrelated appended scripts.
+    embedded = f"{open_b}\n{MARKER_START}\n{code}\n{MARKER_END}\n{close_b}"
 
-    return f"""-- kt-datacards: Sprint Tool Loader (POC)  [GENERATED - do not hand-edit]
+    return f"""-- kt-datacards: Add Exodite Actions Loader (POC)  [GENERATED - do not hand-edit]
 -- Source: dev/sprint-movement-tool.lua  |  Regenerate: python dev/build_sprint_loader.py
 --
 -- Paste this onto any card / tile. Put a scripted model (e.g. a KTUI mini) on
--- top, then right-click the card -> "Load Sprint tool to model". It APPENDS
--- the sprint movement tool to the model's existing Lua script; because the
--- tool chains onLoad/onPickUp and never touches script_state, the model's own
--- scripts and saved state stay intact.
+-- top, then right-click the card -> "Add Exodite Actions". It APPENDS the
+-- movement tool (Sprint / Turn / Leap) to the model's existing Lua script;
+-- because the tool chains onLoad/onPickUp and never touches script_state, the
+-- model's own scripts and saved state stay intact.
 
-local SPRINT_MARKER = "{MARKER}"
+-- Version-agnostic family prefixes so any prior version's block is stripped.
+local SPRINT_START = "-- START KT_SPRINT_TOOL_"
+local SPRINT_END   = "-- END KT_SPRINT_TOOL_"
 
 local SPRINT_CODE = {embedded}
 
@@ -99,19 +103,31 @@ function addSprintToModel(playerColor)
     end
 
     local lua = model.getLuaScript() or ""
-    if lua:find(SPRINT_MARKER, 1, true) then
-        broadcastToColor("Model already has the Sprint tool.", playerColor, {{1, 1, 1}})
-        return
+    -- Strip any previously injected block (between its START/END markers, any
+    -- version) so re-running installs the CURRENT tool - it doubles as an updater.
+    local updating = false
+    local s = lua:find(SPRINT_START, 1, true)
+    if s then
+        updating = true
+        local e = lua:find(SPRINT_END, s, true)
+        if e then
+            local nl = lua:find("\\n", e, true)
+            lua = nl and (lua:sub(1, s - 1) .. lua:sub(nl + 1)) or lua:sub(1, s - 1)
+        else
+            lua = lua:sub(1, s - 1)
+        end
     end
-
-    -- Append (never replace). Chained onLoad/onPickUp keep the host intact.
     model.setLuaScript(lua .. "\\n\\n" .. SPRINT_CODE)
     Wait.frames(function() if model ~= nil then model.reload() end end, 10)
-    broadcastToColor("Sprint tool added. Right-click the model -> 'Sprint: Begin'.", playerColor, {{0.2, 0.85, 0.3}})
+    if updating then
+        broadcastToColor("Exodite actions updated to the latest version.", playerColor, {{0.2, 0.85, 0.3}})
+    else
+        broadcastToColor("Exodite actions added. Right-click the model -> Sprint / Turn / Leap.", playerColor, {{0.2, 0.85, 0.3}})
+    end
 end
 
 function onLoad()
-    self.addContextMenuItem("Load Sprint tool to model", addSprintToModel)
+    self.addContextMenuItem("Add Exodite Actions", addSprintToModel)
 end
 """
 
@@ -130,10 +146,10 @@ def build_pad_object(loader_code: str) -> dict:
             "rotX": 0.0, "rotY": 0.0, "rotZ": 0.0,
             "scaleX": 4.0, "scaleY": 0.3, "scaleZ": 4.0,
         },
-        "Nickname": "Sprint Tool Loader",
-        "Description": "Put a model on top, then right-click -> 'Load Sprint tool to model'.",
+        "Nickname": "Add Exodite Actions",
+        "Description": "Put a model on top, then right-click -> 'Add Exodite Actions'.",
         "GMNotes": "",
-        "ColorDiffuse": {"r": 0.10, "g": 0.55, "b": 0.55},
+        "ColorDiffuse": {"r": 0.02, "g": 0.02, "b": 0.02},
         "Locked": True,
         "Grid": True,
         "Snap": True,
@@ -156,7 +172,7 @@ def build_pad_object(loader_code: str) -> dict:
 def build_save_file(loader_code: str) -> dict:
     """Minimal valid TTS save-file wrapper holding just the loader pad."""
     return {
-        "SaveName": "Sprint Tool Loader",
+        "SaveName": "Add Exodite Actions",
         "Date": "",
         "VersionNumber": "",
         "GameMode": "",

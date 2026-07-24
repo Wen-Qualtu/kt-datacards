@@ -1621,9 +1621,25 @@ def embed_datacard_stats(bag_obj: dict, team_name: str, output_dir: Path, config
         while ("]" + "=" * level + "]") in sprint_tool_text:
             level += 1
         eq = "=" * level
-        sprint_tool_prefix = f"SPRINT_TOOL_CODE = [{eq}[\n-- KT_SPRINT_TOOL_V1\n{sprint_tool_text}\n]{eq}]\n\n"
+        sprint_tool_prefix = f"SPRINT_TOOL_CODE = [{eq}[\n-- START KT_SPRINT_TOOL_V1\n{sprint_tool_text}\n-- END KT_SPRINT_TOOL_V1\n]{eq}]\n\n"
     else:
         logger.warning(f"  Sprint tool not found at {sprint_tool_path}; mounted operatives won't get the sprint action")
+
+    # Load the Move tool. It's embedded as MOVE_TOOL_CODE only on NON-MOUNTED
+    # operative cards (which expose an "Add Move Action" item that injects it
+    # onto the model on top). Mounted operatives get the sprint tool instead.
+    move_tool_prefix = ""
+    move_tool_path = config_dir / "defaults" / "tts-script" / "move-tool.lua"
+    if move_tool_path.exists():
+        with open(move_tool_path, 'r', encoding='utf-8') as f:
+            move_tool_text = f.read()
+        level = 0
+        while ("]" + "=" * level + "]") in move_tool_text:
+            level += 1
+        eq = "=" * level
+        move_tool_prefix = f"MOVE_TOOL_CODE = [{eq}[\n-- START KT_MOVE_TOOL_V1\n{move_tool_text}\n-- END KT_MOVE_TOOL_V1\n]{eq}]\n\n"
+    else:
+        logger.warning(f"  Move tool not found at {move_tool_path}; non-mounted operatives won't get the move action")
 
     # Find all datacard objects in the bag
     datacards = _find_datacards(bag_obj)
@@ -1657,10 +1673,13 @@ def embed_datacard_stats(bag_obj: dict, team_name: str, output_dir: Path, config
             
             # Get faction rule code if applicable
             faction_rule_code = _get_faction_rule_code(team_name, team_data, operative, team_config)
-            # Embed the sprint tool only for MOUNTED operatives.
+            # Movement tools: MOUNTED operatives get the sprint tool; every other
+            # operative gets the standard Move tool.
             op_keywords = [str(k).upper() for k in operative.get('keywords', [])]
-            sprint_prefix = sprint_tool_prefix if ("MOUNTED" in op_keywords and sprint_tool_prefix) else ""
-            lua_script = ktui_modelscript_prefix + sprint_prefix + datacard_lua_script + "\n\n" + faction_rule_code + "\n\n" + (single_object_updater_script or "")
+            is_mounted = "MOUNTED" in op_keywords
+            sprint_prefix = sprint_tool_prefix if (is_mounted and sprint_tool_prefix) else ""
+            move_prefix = move_tool_prefix if (not is_mounted and move_tool_prefix) else ""
+            lua_script = ktui_modelscript_prefix + sprint_prefix + move_prefix + datacard_lua_script + "\n\n" + faction_rule_code + "\n\n" + (single_object_updater_script or "")
             
             # Set GMNotes and Lua script
             card["GMNotes"] = gm_notes_json

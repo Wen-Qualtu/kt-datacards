@@ -88,6 +88,22 @@ local MAX_PIVOT_DEG  = 45       -- max single turn, left or right
 local MAX_BACK_INCHES = 3       -- total BACKWARD straight distance cap
 local UNITS_PER_INCH = 1        -- world units per inch (KT-UI table = 1)
 
+-- Leap (Exodite special move): reposition the base freely by aiming, with FREE
+-- 360 rotation, clamped so ANY part of the base stays within MAX_LEAP_INCHES of
+-- ANY part of the original footprint (edge-to-edge gap). Rotation is driven by
+-- HOLDING numpad 1/2 (smooth) or TAPPING the number row 1/2 (stepped).
+local MAX_LEAP_INCHES   = 1     -- max edge-to-edge gap from the original base
+local LEAP_ROT_DEG_SEC  = 120   -- rotation speed (deg/sec) while a numpad key is held
+local LEAP_ROT_STEP     = 5     -- degrees per number-row 1/2 tap
+local LEAP_STEPS        = 32    -- oval perimeter samples for the gap clamp
+
+-- Pivot/Turn aiming: how far past +/-45deg the pointer may stray before the
+-- ghost hides (so aiming behind the model doesn't snap to a weird 45deg turn).
+local PIVOT_AIM_TOL = 22        -- degrees of tolerance outside the turn cone
+
+-- Live distance/angle readout drawn as a 3DText object near the ghost.
+local READOUT_FONT  = 70        -- font size of the readout text
+
 -- Default base footprint (mm), used only when a model exposes NO base metadata.
 -- Long axis (z) runs along the model's facing. The tool prefers each model's
 -- ACTUAL base: KTUI script_state.base, then datacard GMNotes "Base", then the
@@ -106,6 +122,7 @@ local MM_TO_INCH     = 0.0393701
 local KTUI_FACING_OFFSET = 180
 
 -- Drawing
+local PREVIEW_HZ     = 60       -- preview / rotation refresh rate (Hz)
 local LINE_HEIGHT    = 0.20     -- how high above the base to draw the preview
 local LINE_THICKNESS = 0.12
 local COL_LEG        = { 0.20, 0.85, 0.30 }  -- active leg / corridor (green)
@@ -113,12 +130,14 @@ local COL_LEG_DONE   = { 0.12, 0.45, 0.18 }  -- already-committed legs (dim)
 local COL_PIVOT      = { 1.00, 0.75, 0.10 }  -- amber pivot marker / prompts
 local COL_LIMIT      = { 0.55, 0.55, 0.55 }  -- grey +/-45 guide lines
 local COL_GHOST      = { 0.30, 0.90, 1.00 }  -- cyan destination footprint
+local COL_ORIG       = { 0.55, 0.55, 0.55 }  -- grey original footprint (Leap)
 
 -- --------------------------------------------------------------- constants ---
 local PHASE_IDLE  = "idle"
 local PHASE_S1    = "s1"        -- first step: straight OR pivot (mode-selectable)
 local PHASE_PIVOT = "pivot"     -- middle step: pivot only
 local PHASE_S2    = "s2"        -- last step: straight only
+local PHASE_LEAP  = "leap"      -- Exodite Leap: free reposition + free rotate
 
 -- ------------------------------------------------------------------- state ---
 local phase        = PHASE_IDLE
@@ -141,6 +160,19 @@ local s1Mode       = "straight"
 local pivotOrigin  = "center"
 local turnOnly     = false      -- "Turn" action: a single pivot, no movement
 local history      = {}
+
+-- Leap state (Exodite special move)
+local leapOrig        = nil     -- original planar centre {x,z} (fixed anchor)
+local leapOrigHeading = 0       -- original heading (the footprint doesn't turn)
+local leapOrigPts     = nil     -- cached original oval perimeter points
+local leapRotHeld     = {}      -- [1]/[2] = numpad rotate key currently held?
+local leapLastClock   = nil     -- os.clock() of the previous Leap tick (for dt)
+
+-- Live readout (distance/angle) + its 3DText object
+local distTextObj    = nil      -- spawned 3DText that shows the live measurement
+local distTextStyled = false    -- has the font size/colour been applied yet?
+local readoutText    = nil      -- text to show this tick (nil = hide)
+local readoutPos     = nil      -- world {x,z} to place the readout this tick
 
 -- live preview cache (refreshed every tick; used by commit/confirm)
 local prevStraight = 0          -- signed inches of the active straight leg
@@ -278,12 +310,26 @@ local function pivotAnchor(origin, pos, heading)
 end
 
 -- Pivot preview: turn the facing toward the pointer, clamped to +/-45deg,
--- rotating about the chosen anchor. Returns new heading, new centre Vector,
--- the anchor point, and the signed turn delta (degrees).
+-- rotating about the chosen anchor. Aiming works in TWO cones: the FRONT cone
+-- aims the front of the base at the pointer (normal turn); the BACK cone aims
+-- the REAR of the base at the pointer (inverse turn), so pointing behind the
+-- model turns it toward you instead of snapping to max. Between the cones (the
+-- sides) there is no valid aim. Returns new heading, new centre Vector, the
+-- anchor point, the signed turn delta, and whether the aim is valid.
 local function pivotPreview(pointer, origin, pos, heading)
 	local anchor  = pivotAnchor(origin, pos, heading)
 	local desired = headingOf(pointer.x - anchor.x, pointer.z - anchor.z)
-	local delta   = clamp(wrap180(desired - heading), -MAX_PIVOT_DEG, MAX_PIVOT_DEG)
+	local raw     = wrap180(desired - heading)          -- front-aim angle
+	local rawBack = wrap180(raw - 180)                  -- rear-aim angle
+	local base, valid
+	if math.abs(raw) <= MAX_PIVOT_DEG + PIVOT_AIM_TOL then
+		base, valid = raw, true                         -- front cone: aim the front
+	elseif math.abs(rawBack) <= MAX_PIVOT_DEG + PIVOT_AIM_TOL then
+		base, valid = rawBack, true                     -- back cone: aim the rear (inverse)
+	else
+		base, valid = 0, false                          -- side dead zone: no aim
+	end
+	local delta   = clamp(base, -MAX_PIVOT_DEG, MAX_PIVOT_DEG)
 	local newH    = heading + delta
 	local nfd     = dirFromHeading(newH)
 	local hl      = halfLong()
@@ -295,7 +341,71 @@ local function pivotPreview(pointer, origin, pos, heading)
 	else
 		newPos = { x = pos.x, y = pos.y, z = pos.z }
 	end
-	return newH, newPos, anchor, delta
+	return newH, newPos, anchor, delta, valid
+end
+
+-- --------------------------------------------------------------------- leap ---
+-- Sample the model's oval base perimeter (planar {x,z}) at a centre/heading.
+-- Used to measure the edge-to-edge gap for the Leap clamp.
+local function ovalPerimeter(cx, cz, heading, steps)
+	local aLong = halfLong()
+	local bWide = halfWide()
+	local fdir  = dirFromHeading(heading)
+	local sdir  = dirFromHeading(heading + 90)
+	local pts = {}
+	for i = 0, steps - 1 do
+		local t  = (i / steps) * 2 * math.pi
+		local fl = aLong * math.cos(t)
+		local sl = bWide * math.sin(t)
+		pts[#pts + 1] = {
+			x = cx + fdir.x * fl + sdir.x * sl,
+			z = cz + fdir.z * fl + sdir.z * sl,
+		}
+	end
+	return pts
+end
+
+-- Smallest distance between two sampled perimeters (world units). Once the two
+-- ovals separate this equals the edge-to-edge gap; while overlapping it stays
+-- near zero, which is fine for the clamp (overlap is always a legal Leap).
+local function minPerimeterGap(ptsA, ptsB)
+	local best = math.huge
+	for _, a in ipairs(ptsA) do
+		for _, b in ipairs(ptsB) do
+			local dx, dz = a.x - b.x, a.z - b.z
+			local d2 = dx * dx + dz * dz
+			if d2 < best then best = d2 end
+		end
+	end
+	return math.sqrt(best)
+end
+
+-- Clamp a desired Leap centre so the base's edge stays within MAX_LEAP_INCHES of
+-- the original footprint. The ghost slides along the original->pointer line: if
+-- the far end is legal it's used as-is, otherwise a binary search finds the
+-- furthest legal point on that line for the current (ghost) heading.
+local function clampLeapPos(desired, heading)
+	local dx = desired.x - leapOrig.x
+	local dz = desired.z - leapOrig.z
+	local dist = math.sqrt(dx * dx + dz * dz)
+	if dist < 1e-6 then
+		return { x = leapOrig.x, y = startY, z = leapOrig.z }
+	end
+	local ux, uz = dx / dist, dz / dist
+	local maxGapU = toUnits(MAX_LEAP_INCHES)
+	local function gapAt(d)
+		local cx, cz = leapOrig.x + ux * d, leapOrig.z + uz * d
+		return minPerimeterGap(leapOrigPts, ovalPerimeter(cx, cz, heading, LEAP_STEPS))
+	end
+	if gapAt(dist) <= maxGapU then
+		return { x = desired.x, y = startY, z = desired.z }
+	end
+	local lo, hi = 0, dist
+	for _ = 1, 24 do
+		local mid = (lo + hi) * 0.5
+		if gapAt(mid) <= maxGapU then lo = mid else hi = mid end
+	end
+	return { x = leapOrig.x + ux * lo, y = startY, z = leapOrig.z + uz * lo }
 end
 
 -- ----------------------------------------------------------------- drawing ---
@@ -323,22 +433,72 @@ local function appendCorridor(out, a, b, heading, color)
 	table.insert(out, line(aR, bR, color, LINE_THICKNESS * 0.7))
 end
 
--- Pivot helpers: a cross at the anchor + faint +/-45 guide lines from the
--- anchor showing the allowed turn cone.
+-- Grey full-range straight guide: the swept corridor of the base over the whole
+-- reachable straight distance - the two base SIDES (no centre line) plus a
+-- half-oval cap of the base at EACH end (forward tip and backward tip), so you
+-- can see exactly how far the base reaches either way.
+local function appendRangeGuide(out, pos, heading, fwdInches, backInches, color)
+	local fdir = dirFromHeading(heading)
+	local side = dirFromHeading(heading + 90)
+	local hw   = halfWide()
+	local aL   = halfLong()
+	local f    = toUnits(fwdInches)
+	local b    = toUnits(backInches)
+	local cf   = { x = pos.x + fdir.x * f, z = pos.z + fdir.z * f }   -- centre at max forward
+	local cb   = { x = pos.x - fdir.x * b, z = pos.z - fdir.z * b }   -- centre at max backward
+	local thin = LINE_THICKNESS * 0.6
+	local y    = pos.y + LINE_HEIGHT
+	-- Left / right swept edges (base sides).
+	table.insert(out, line({ x = cb.x + side.x * hw, y = pos.y, z = cb.z + side.z * hw },
+	                       { x = cf.x + side.x * hw, y = pos.y, z = cf.z + side.z * hw }, color, thin))
+	table.insert(out, line({ x = cb.x - side.x * hw, y = pos.y, z = cb.z - side.z * hw },
+	                       { x = cf.x - side.x * hw, y = pos.y, z = cf.z - side.z * hw }, color, thin))
+	-- Half-oval cap of the base at each end (t sweeps 180deg through the tip).
+	local steps = 20
+	local function cap(centre, tStart)
+		local pts = {}
+		for i = 0, steps do
+			local t  = tStart + (i / steps) * math.pi
+			local fl = aL * math.cos(t)
+			local sl = hw * math.sin(t)
+			pts[#pts + 1] = { centre.x + fdir.x * fl + side.x * sl, y, centre.z + fdir.z * fl + side.z * sl }
+		end
+		table.insert(out, { points = pts, color = color, thickness = thin })
+	end
+	if f > 1e-3 then cap(cf, -math.pi / 2) end   -- forward half (front tip)
+	if b > 1e-3 then cap(cb,  math.pi / 2) end   -- rear half (back tip)
+end
+
+-- Grey reachable cone (a "range map"): the sector the base's front tip can reach
+-- by pivoting up to +/-spanDeg and then spending the remaining straight budget.
+-- Drawn as an outer arc plus the two side edges from the model centre.
+local function appendReachCone(out, pos, heading, spanDeg, radiusInches, color)
+	local r = toUnits(radiusInches)
+	local y = (pos.y or curPos.y) + LINE_HEIGHT
+	local steps = 28
+	local arc = {}
+	for i = 0, steps do
+		local h = heading - spanDeg + (2 * spanDeg) * (i / steps)
+		local d = dirFromHeading(h)
+		arc[#arc + 1] = { pos.x + d.x * r, y, pos.z + d.z * r }
+	end
+	table.insert(out, { points = arc, color = color, thickness = LINE_THICKNESS * 0.6 })
+	local dL = dirFromHeading(heading - spanDeg)
+	local dR = dirFromHeading(heading + spanDeg)
+	table.insert(out, { points = { { pos.x, y, pos.z }, { pos.x + dL.x * r, y, pos.z + dL.z * r } }, color = color, thickness = LINE_THICKNESS * 0.6 })
+	table.insert(out, { points = { { pos.x, y, pos.z }, { pos.x + dR.x * r, y, pos.z + dR.z * r } }, color = color, thickness = LINE_THICKNESS * 0.6 })
+end
+
+-- Pivot helper: a small cross drawn at the pivot anchor point. (The allowed
+-- turn range is shown separately by the grey reach cone.)
 local function appendPivotGuides(out, anchor, heading, y)
 	local m = 0.35
 	table.insert(out, line({ x = anchor.x - m, y = y, z = anchor.z }, { x = anchor.x + m, y = y, z = anchor.z }, COL_PIVOT))
 	table.insert(out, line({ x = anchor.x, y = y, z = anchor.z - m }, { x = anchor.x, y = y, z = anchor.z + m }, COL_PIVOT))
-	local glen = halfLong() * 2 + 1
-	for _, off in ipairs({ -MAX_PIVOT_DEG, MAX_PIVOT_DEG }) do
-		local gdir = dirFromHeading(heading + off)
-		local ge   = { x = anchor.x + gdir.x * glen, y = y, z = anchor.z + gdir.z * glen }
-		table.insert(out, line({ x = anchor.x, y = y, z = anchor.z }, ge, COL_LIMIT))
-	end
 end
 
 -- Closed oval outline (the base) centred at (cx,cy,cz), long axis along heading.
-local function appendGhost(out, cx, cy, cz, heading)
+local function appendGhost(out, cx, cy, cz, heading, color)
 	local aLong = halfLong()
 	local bWide = halfWide()
 	local fdir  = dirFromHeading(heading)
@@ -354,7 +514,19 @@ local function appendGhost(out, cx, cy, cz, heading)
 			cz + fdir.z * fl + sdir.z * sl,
 		})
 	end
-	table.insert(out, { points = pts, color = COL_GHOST, thickness = LINE_THICKNESS * 0.8 })
+	table.insert(out, { points = pts, color = color or COL_GHOST, thickness = LINE_THICKNESS * 0.8 })
+
+	-- Front marker: a small chevron ">" at the front edge, pointing along the
+	-- heading, so the model's facing (and any rotation) is easy to read.
+	local col = color or COL_GHOST
+	local m   = math.max(0.18, math.min(aLong, bWide) * 0.55)
+	local fex = cx + fdir.x * aLong           -- centre of the front edge
+	local fez = cz + fdir.z * aLong
+	local y   = cy + LINE_HEIGHT
+	local apex  = { fex + fdir.x * m, y, fez + fdir.z * m }
+	local barbL = { fex + sdir.x * m * 0.8, y, fez + sdir.z * m * 0.8 }
+	local barbR = { fex - sdir.x * m * 0.8, y, fez - sdir.z * m * 0.8 }
+	table.insert(out, { points = { barbL, apex, barbR }, color = col, thickness = LINE_THICKNESS })
 end
 
 -- Draw everything: committed legs (dim) + the active preview + the end ghost.
@@ -372,6 +544,53 @@ end
 
 local function clearPreview() Global.setVectorLines({}) end
 
+-- --------------------------------------------------------- distance readout --
+-- A spawned 3DText object that live-shows the current step's distance/angle
+-- near the ghost (like the built-in ruler) - no chat spam. Created on begin,
+-- moved + updated each tick, destroyed on finish/cancel.
+local function ensureDistText()
+	if distTextObj ~= nil then return end
+	distTextStyled = true   -- style + initial text are baked into the spawn data
+	-- Spawn with an initial " " (and the font size) already set, so TTS never
+	-- shows its "Type here" placeholder during the async spawn gap.
+	distTextObj = spawnObjectData({
+		data = {
+			Name = "3DText",
+			Transform = {
+				posX = curPos.x, posY = startY + 0.5, posZ = curPos.z,
+				rotX = 90, rotY = 0, rotZ = 0,
+				scaleX = 0.35, scaleY = 0.35, scaleZ = 0.35,
+			},
+			Text = {
+				Text       = " ",
+				colorstate = { r = 1, g = 1, b = 1 },
+				fontSize   = READOUT_FONT,
+			},
+			Locked = true,
+		},
+	})
+end
+
+local function updateDistText()
+	if distTextObj == nil or distTextObj.TextTool == nil then return end
+	if not readoutText then
+		-- A single space renders as nothing, avoiding the "Type here" placeholder.
+		pcall(function() distTextObj.TextTool.setValue(" ") end)
+		return
+	end
+	local p = readoutPos or curPos
+	pcall(function() distTextObj.setPosition({ p.x, startY + 0.5, p.z }) end)
+	pcall(function() distTextObj.TextTool.setValue(readoutText) end)
+end
+
+local function destroyDistText()
+	if distTextObj ~= nil then
+		local o = distTextObj
+		distTextObj = nil
+		pcall(function() if o ~= nil then o.destruct() end end)
+	end
+end
+
 -- ------------------------------------------------------------- update loop ---
 local function s1Origin()
 	if s1Mode == "pivotFront" then return "front" end
@@ -386,38 +605,89 @@ local function tick()
 
 	local active = {}
 	local endPos, endHeading
+	readoutText, readoutPos = nil, nil
 
 	if phase == PHASE_S1 and s1Mode == "straight" then
+		-- Grey full-range guide: the whole straight budget you could still spend.
+		appendRangeGuide(active, curPos, curHeading, remainingInches(),
+			math.max(0, MAX_BACK_INCHES - backSpent), COL_LIMIT)
 		local d, e, h = straightPreview(pointer)
 		prevStraight, prevEndPos, prevHeading = d, e, h
 		appendCorridor(active, curPos, e, h, COL_LEG)
 		endPos, endHeading = e, h
+		readoutText = string.format('%.1f"', math.abs(d)) .. (d < 0 and " back" or "")
+		readoutPos  = { x = (curPos.x + e.x) * 0.5, y = curPos.y, z = (curPos.z + e.z) * 0.5 }
 
 	elseif phase == PHASE_S1 then
-		local nh, np, anchor, delta = pivotPreview(pointer, s1Origin(), curPos, curHeading)
-		prevStraight, prevEndPos, prevHeading = 0, np, nh
+		local nh, np, anchor, delta, valid = pivotPreview(pointer, s1Origin(), curPos, curHeading)
+		-- Grey reachable cones from the pivot anchor (moves with the mode): pivot
+		-- +/-45, then spend the straight budget FORWARD or BACKWARD.
+		local fdir = dirFromHeading(curHeading)
+		local anchorFwdU = (anchor.x - curPos.x) * fdir.x + (anchor.z - curPos.z) * fdir.z
+		local backRem = math.max(0, MAX_BACK_INCHES - backSpent)
+		appendReachCone(active, anchor, curHeading, MAX_PIVOT_DEG,
+			remainingInches() + toInches(halfLong() - anchorFwdU), COL_LIMIT)
+		appendReachCone(active, anchor, curHeading + 180, MAX_PIVOT_DEG,
+			backRem + toInches(halfLong() + anchorFwdU), COL_LIMIT)
 		appendPivotGuides(active, anchor, curHeading, curPos.y)
-		endPos, endHeading = np, nh
+		if valid then
+			prevStraight, prevEndPos, prevHeading = 0, np, nh
+			endPos, endHeading = np, nh
+		else
+			prevEndPos = nil   -- side dead zone: hide ghost, block commit
+		end
 
 	elseif phase == PHASE_PIVOT then
-		local nh, np, anchor, delta = pivotPreview(pointer, pivotOrigin, curPos, curHeading)
-		prevStraight, prevEndPos, prevHeading = 0, np, nh
+		local nh, np, anchor, delta, valid = pivotPreview(pointer, pivotOrigin, curPos, curHeading)
+		-- Reach cones from the pivot anchor (moves with the chosen mode): forward
+		-- (remaining straight budget) and backward (remaining backward budget).
+		local fdir = dirFromHeading(curHeading)
+		local anchorFwdU = (anchor.x - curPos.x) * fdir.x + (anchor.z - curPos.z) * fdir.z
+		local backRem = math.max(0, MAX_BACK_INCHES - backSpent)
+		appendReachCone(active, anchor, curHeading, MAX_PIVOT_DEG,
+			remainingInches() + toInches(halfLong() - anchorFwdU), COL_LIMIT)
+		appendReachCone(active, anchor, curHeading + 180, MAX_PIVOT_DEG,
+			backRem + toInches(halfLong() + anchorFwdU), COL_LIMIT)
 		appendPivotGuides(active, anchor, curHeading, curPos.y)
-		endPos, endHeading = np, nh
+		if valid then
+			prevStraight, prevEndPos, prevHeading = 0, np, nh
+			endPos, endHeading = np, nh
+		else
+			prevEndPos = nil   -- side dead zone: hide ghost, block commit
+		end
 
 	elseif phase == PHASE_S2 then
+		appendRangeGuide(active, curPos, curHeading, remainingInches(),
+			math.max(0, MAX_BACK_INCHES - backSpent), COL_LIMIT)
 		local d, e, h = straightPreview(pointer)
 		prevStraight, prevEndPos, prevHeading = d, e, h
 		appendCorridor(active, curPos, e, h, COL_LEG)
 		endPos, endHeading = e, h
+		readoutText = string.format('%.1f"', math.abs(d)) .. (d < 0 and " back" or "")
+		readoutPos  = { x = (curPos.x + e.x) * 0.5, y = curPos.y, z = (curPos.z + e.z) * 0.5 }
+
+	elseif phase == PHASE_LEAP then
+		-- Smooth free rotation while a numpad rotate key is held. Drive it by real
+		-- elapsed time (deg/sec) so the spin speed is frame-rate independent.
+		local now = os.clock()
+		local dt  = leapLastClock and (now - leapLastClock) or 0
+		leapLastClock = now
+		if leapRotHeld[1] then curHeading = curHeading - LEAP_ROT_DEG_SEC * dt end
+		if leapRotHeld[2] then curHeading = curHeading + LEAP_ROT_DEG_SEC * dt end
+		local pos = clampLeapPos(pointer, curHeading)
+		prevStraight, prevEndPos, prevHeading = 0, pos, curHeading
+		-- Grey ghost = original footprint (the 1" anchor); cyan = destination.
+		appendGhost(active, leapOrig.x, startY, leapOrig.z, leapOrigHeading, COL_ORIG)
+		endPos, endHeading = pos, curHeading
 	end
 
 	redraw(active, endPos, endHeading)
+	updateDistText()
 end
 
 local function startLoop()
 	if loopHandle then return end
-	loopHandle = Wait.time(tick, 1 / 30, -1)
+	loopHandle = Wait.time(tick, 1 / PREVIEW_HZ, -1)
 end
 
 local function stopLoop()
@@ -430,7 +700,7 @@ end
 -- --------------------------------------------------------- click catcher ----
 -- A big, fully transparent button pinned to the model. LEFT-click = apply,
 -- RIGHT-click = back. No physics collider, so the pointer still aims freely.
-local function createCatcher()
+local function createCatcher(tooltip)
 	if catcherActive then return end
 	local sc = self.getScale()
 	self.createButton({
@@ -443,7 +713,7 @@ local function createCatcher()
 		height         = 14000 / (sc.z ~= 0 and sc.z or 1),
 		font_size      = 100,
 		color          = { 0, 0, 0, 0 },   -- fully transparent; raise alpha to debug
-		tooltip        = "Left: apply   Right: back   1/2/3/4: mode   9: finish   0: cancel",
+		tooltip        = tooltip or "Left: apply   Right: back   1/2/3/4: mode   9: finish   0: cancel",
 	})
 	catcherActive = true
 end
@@ -498,6 +768,7 @@ local function finishSprint(pc, text)
 	stopLoop()
 	clearPreview()
 	removeCatcher()
+	destroyDistText()
 	applyToModel()
 	msg(pc, text or "Sprint complete.", COL_LEG)
 	phase        = PHASE_IDLE
@@ -509,6 +780,7 @@ local function cancelSprint(pc)
 	stopLoop()
 	clearPreview()
 	removeCatcher()
+	destroyDistText()
 	phase        = PHASE_IDLE
 	controlColor = nil
 	history      = {}
@@ -535,6 +807,7 @@ local function beginSprint(pc)
 	lastReport   = nil
 	startLoop()
 	createCatcher()
+	ensureDistText()
 	msg(pc, "Sprint: drag to aim. 1=straight, 2/3/4=pivot front/centre/back. "
 		.. "Left=apply, right=back, 9=finish straight, 0=cancel.", COL_PIVOT)
 end
@@ -560,9 +833,41 @@ local function beginTurn(pc)
 	phase        = PHASE_PIVOT
 	lastReport   = nil
 	startLoop()
-	createCatcher()
+	createCatcher("Left: apply   Right: cancel   2/3/4: pivot point   0: cancel")
+	ensureDistText()
 	msg(pc, "Turn: 2/3/4 = pivot from front/centre/back, drag to turn (+/-45deg). "
 		.. "Left=apply, right/0=cancel.", COL_PIVOT)
+end
+
+-- "Leap" (Exodite special move): reposition the base freely by aiming, clamped
+-- so any part of the base stays within 1" of any part of the original footprint,
+-- with FREE 360 rotation (hold numpad 1/2, or tap number-row 1/2). Left-click
+-- applies; right-click / 0 cancels.
+local function beginLeap(pc)
+	refreshBaseDims()
+	controlColor = pc
+	local p      = self.getPosition()
+	startY       = p.y
+	curPos       = { x = p.x, y = p.y, z = p.z }
+	local fwd    = self.getTransformForward()
+	curHeading   = headingOf(fwd.x, fwd.z) + facingOffset
+	leapOrig        = { x = p.x, z = p.z }
+	leapOrigHeading = curHeading
+	leapOrigPts     = ovalPerimeter(p.x, p.z, curHeading, LEAP_STEPS)
+	leapRotHeld     = {}
+	leapLastClock   = nil
+	spentInches  = 0
+	backSpent    = 0
+	rawStraight  = 0
+	committedLegs = {}
+	history      = {}
+	phase        = PHASE_LEAP
+	lastReport   = nil
+	startLoop()
+	createCatcher("Left: apply   Right: cancel   Hold 1/2: rotate   0: cancel")
+	ensureDistText()
+	msg(pc, 'Leap: aim to move (auto-clamped to 1").  Hold numpad 1/2 = rotate '
+		.. "(or tap number-row 1/2).  Left=apply, right/0=cancel.", COL_PIVOT)
 end
 
 local function commitStraight(d, endPos)
@@ -625,6 +930,13 @@ local function advance(pc)
 	elseif phase == PHASE_S2 then
 		if prevEndPos then commitStraight(prevStraight, prevEndPos) end
 		finishSprint(pc, string.format('Sprint complete: %.1f" total.', rawStraight))
+
+	elseif phase == PHASE_LEAP then
+		if prevEndPos then
+			curPos     = { x = prevEndPos.x, y = curPos.y, z = prevEndPos.z }
+			curHeading = prevHeading
+		end
+		finishSprint(pc, "Leap complete.")
 	end
 end
 
@@ -640,12 +952,14 @@ local function stepBack(pc)
 	msg(pc, "Stepped back.", COL_PIVOT)
 end
 
--- Key 9: finish with a straight move and NO (further) pivot. Works at any point
--- along a straight step, so a short move (e.g. 2" and stop) can be locked in
--- without having to hand-aim the exact end point.
+-- Key 9: lock in the current step and finish. In a straight step it commits the
+-- current straight move (so a short "2" and stop" needs no exact end aim). In
+-- the pivot step it APPLIES the current pivot and finishes (skips the final
+-- straight leg) - i.e. "apply this rotation and stop here".
 local function finishStraightNoPivot(pc)
 	if phase == PHASE_PIVOT then
-		finishSprint(pc, string.format('Sprint complete: %.1f" (no pivot).', rawStraight))
+		if prevEndPos then commitPivot(prevHeading, prevEndPos) end
+		finishSprint(pc, string.format('Sprint complete: %.1f" total.', rawStraight))
 		return
 	end
 	if phase == PHASE_S1 or phase == PHASE_S2 then
@@ -684,6 +998,16 @@ end
 local function handleDigit(pc, digit)
 	if phase == PHASE_IDLE then return false end
 	if controlColor and pc ~= controlColor then return false end
+	if phase == PHASE_LEAP then
+		-- Number-row 1/2 = stepped rotate (fallback for the held-numpad spin);
+		-- 9 = apply, 0 = cancel.
+		if digit == 1 then curHeading = curHeading - LEAP_ROT_STEP
+		elseif digit == 2 then curHeading = curHeading + LEAP_ROT_STEP
+		elseif digit == 9 then advance(pc)
+		elseif digit == 0 then cancelSprint(pc)
+		else return false end
+		return true
+	end
 	if digit >= 1 and digit <= 4 then
 		selectMode(pc, digit)
 	elseif digit == 9 then
@@ -708,7 +1032,21 @@ end
 -- TTS scripting buttons = the NUMPAD by default (index 10 == the "0" key). No
 -- hover needed, so this works while aiming at the table.
 function sprintScriptingButton(index, playerColor)
-	handleDigit(playerColor, index == 10 and 0 or index)
+	local digit = index == 10 and 0 or index
+	-- During a Leap, holding numpad 1/2 drives smooth free rotation; track the
+	-- held state here and let the tick loop spin the ghost while the key is down.
+	if phase == PHASE_LEAP and (not controlColor or playerColor == controlColor)
+		and (digit == 1 or digit == 2) then
+		leapRotHeld[digit] = true
+		return
+	end
+	handleDigit(playerColor, digit)
+end
+
+-- Release handler for the numpad rotate keys (Leap only).
+function sprintScriptingButtonUp(index, playerColor)
+	local digit = index == 10 and 0 or index
+	if digit == 1 or digit == 2 then leapRotHeld[digit] = nil end
 end
 
 -- Registers the context-menu items. Advancing/cancelling happen via clicks and
@@ -719,6 +1057,9 @@ function setupSprintTool()
 	end, false)
 	self.addContextMenuItem("Turn", function(pc)
 		if phase == PHASE_IDLE then beginTurn(pc) end
+	end, false)
+	self.addContextMenuItem("Leap", function(pc)
+		if phase == PHASE_IDLE then beginLeap(pc) end
 	end, false)
 end
 
@@ -747,6 +1088,12 @@ local _sprint_prev_onScriptingButtonDown = onScriptingButtonDown
 function onScriptingButtonDown(...)
 	if _sprint_prev_onScriptingButtonDown then _sprint_prev_onScriptingButtonDown(...) end
 	sprintScriptingButton(...)
+end
+
+local _sprint_prev_onScriptingButtonUp = onScriptingButtonUp
+function onScriptingButtonUp(...)
+	if _sprint_prev_onScriptingButtonUp then _sprint_prev_onScriptingButtonUp(...) end
+	sprintScriptingButtonUp(...)
 end
 
 -- Number ROW typed while hovering the model (no binding needed). During a
