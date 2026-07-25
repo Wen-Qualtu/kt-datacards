@@ -1,18 +1,26 @@
 """Canonical naming helpers.
 
-Slugs are lowercase, ASCII-only, hyphen-separated. Matches the production
-convention (``roster_slug`` strips non-ASCII, see copilot-instructions).
-Card ``type`` vocabulary is still being locked — see design open questions.
+Slugs are lowercase, ASCII-only, hyphen-separated. Non-ASCII letters are
+transliterated to their closest ASCII form (ô→o, â→a) so accented operative
+names keep their letters in filenames/URLs (``DÔZR`` → ``dozr``).
 """
 from __future__ import annotations
 
 import re
+import unicodedata
 
 
 def slug(value: str) -> str:
-    """Normalize a name/title to a lowercase, ASCII, hyphenated slug."""
-    s = value.strip().lower()
-    s = re.sub(r"[^\x00-\x7f]", "", s)   # strip non-ASCII (ô, â, ', non-breaking hyphen…)
+    """Normalize a name/title to a lowercase, ASCII, hyphenated slug.
+
+    Non-ASCII letters are *transliterated* to their closest ASCII form via NFKD
+    decomposition (ô→o, â→a, é→e) rather than dropped, so accented operative
+    names keep their letters: ``DÔZR`` → ``dozr`` (not ``dzr``), ``LOKÂTR`` →
+    ``lokatr``. Combining marks, curly quotes and other non-ASCII punctuation
+    still fall away.
+    """
+    s = unicodedata.normalize("NFKD", value).encode("ascii", "ignore").decode("ascii")
+    s = s.strip().lower()
     s = re.sub(r"['.]", "", s)           # drop apostrophes/periods (emperor's→emperors, C.A.T.→cat)
     s = re.sub(r"[^a-z0-9]+", "-", s)    # collapse runs of non-alphanumerics to a hyphen
     return s.strip("-")

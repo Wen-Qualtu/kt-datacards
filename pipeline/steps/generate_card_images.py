@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import logging
 import shutil
+import unicodedata
 from pathlib import Path
 from typing import Optional
 
@@ -48,8 +49,16 @@ DEFAULT_BACKSIDE = {
 
 
 def _sanitize_filename(name: str) -> str:
-    """Legacy step-4 sanitize: lowercase, hyphenate, strip unsafe chars."""
-    safe = name.lower()
+    """Legacy step-4 sanitize: strip accents, lowercase, hyphenate.
+
+    Only combining accent marks are removed (ô→o, â→a) so accented operatives
+    get consistent ASCII filenames (``DÔZR`` → ``dozr``). Apostrophes, dashes
+    and other characters are handled exactly as before, so non-accented names
+    are unchanged.
+    """
+    decomposed = unicodedata.normalize("NFD", name)
+    safe = "".join(c for c in decomposed if not unicodedata.combining(c))
+    safe = safe.lower()
     for ch in " /\\:*?<>|":
         safe = safe.replace(ch, "-")
     safe = safe.replace('"', "").replace("'", "")
