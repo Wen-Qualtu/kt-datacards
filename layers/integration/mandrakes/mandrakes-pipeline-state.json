@@ -1,20 +1,20 @@
 {
   "team": "mandrakes",
   "pipeline_version": "2.0",
-  "last_updated": "2026-07-21T11:11:14.044242+00:00",
+  "last_updated": "2026-07-25T17:16:54.852054+00:00",
   "steps": {
     "content_analysis": {
       "outputs": {
         "content.json": {
           "path": "layers/integration/mandrakes/content/mandrakes-content.json",
-          "hash": "966b7017a241a1a5fce0db8b5ad24e6346b578cc1f59676e3a472fb848f7e2a5",
-          "modified": "2026-07-21T11:00:28.692921+00:00"
+          "hash": "a9e8e3da9616b2358ff81dbfc29b5a751bc42a106eb92621add829728d0fe2a1",
+          "modified": "2026-07-25T17:14:02.049750+00:00"
         }
       },
-      "completed": "2026-07-21T11:00:29.171337+00:00",
+      "completed": "2026-07-25T17:14:21.891908+00:00",
       "inputs": {
         "layers/integration/mandrakes/manifest.json": "66e3261e8cbef888e7cb17cbf6c13c299f7397576cace825b3e0216312c86c04",
-        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "config/team-config.yaml": "b8ca8191fcfbccdfb363ab8c3eaf7e4e95ef35b5a914828a1a2b4a62cd02c680",
         "layers/integration/mandrakes/mandrakes-datacard-mandrake-abyssal.pdf": "b2a74241d87cd1faa356f9532234a7b6f3cb4dae5812b21d65ecb02955e2270e",
         "layers/integration/mandrakes/mandrakes-datacard-mandrake-chooser-of-the-flesh.pdf": "68f64dde70560f2b2a3b0cdbe399f1a1cdab61cad17a2c631226bb4724241345",
         "layers/integration/mandrakes/mandrakes-datacard-mandrake-dirgemaw.pdf": "635f946064d18c584ebd38637d2509f63202862bbf7f5edcc6c9a94b9519794c",
@@ -550,13 +550,13 @@
       "outputs": {
         "team-data.json": {
           "path": "output/mandrakes/data/mandrakes-team-data.json",
-          "hash": "966b7017a241a1a5fce0db8b5ad24e6346b578cc1f59676e3a472fb848f7e2a5",
-          "modified": "2026-07-21T11:00:40.944475+00:00"
+          "hash": "a9e8e3da9616b2358ff81dbfc29b5a751bc42a106eb92621add829728d0fe2a1",
+          "modified": "2026-07-25T17:16:00.835786+00:00"
         }
       },
-      "completed": "2026-07-21T11:00:40.958803+00:00",
+      "completed": "2026-07-25T17:16:00.846568+00:00",
       "inputs": {
-        "layers/integration/mandrakes/content/mandrakes-content.json": "966b7017a241a1a5fce0db8b5ad24e6346b578cc1f59676e3a472fb848f7e2a5"
+        "layers/integration/mandrakes/content/mandrakes-content.json": "a9e8e3da9616b2358ff81dbfc29b5a751bc42a106eb92621add829728d0fe2a1"
       }
     },
     "generate_tts": {
@@ -568,14 +568,14 @@
         },
         "tts_objects/Mandrakes.json": {
           "path": "output/mandrakes/tts_objects/Mandrakes.json",
-          "hash": "da1935edec7896a99b2db687529e9d28165a711a864c7ee9704d85fcd4bf6ec6",
-          "modified": "2026-07-21T11:11:13.960467+00:00"
+          "hash": "016201cfeb3263d70c0fe8293b7608994fdf089ca048cee2c87b7e7cde5d6ab7",
+          "modified": "2026-07-25T17:16:54.791943+00:00"
         }
       },
-      "completed": "2026-07-21T11:11:14.044227+00:00",
+      "completed": "2026-07-25T17:16:54.852043+00:00",
       "inputs": {
-        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
-        "config/team-guids.json": "1dea0eaf2c7d1c37c86aba088cdf876f0638d2dcaca162888fea8422c2d5c9db",
+        "config/team-config.yaml": "b8ca8191fcfbccdfb363ab8c3eaf7e4e95ef35b5a914828a1a2b4a62cd02c680",
+        "config/team-guids.json": "906473ddbf256345a4150df497def05ec513f95948b27d6fc98fa6dba00bb7d0",
         "output/mandrakes/cards/datacards/mandrake-abyssal-back.jpg": "271d0005a384c04e3c434d283e111aee177a08b71b73e156efa937722310240a",
         "output/mandrakes/cards/datacards/mandrake-abyssal-front.jpg": "f67a4673d59ccaa2595a4322359b896fa6d1747af88346238b5b389ff2049cf4",
         "output/mandrakes/cards/datacards/mandrake-chooser-of-the-flesh-back.jpg": "627f0cc842cb0ca749c5084e6bc0499be088b4f55596762dc622e363c0da1055",
@@ -655,14 +655,15 @@
         "output/mandrakes/dice/mandrakes-dice-dark.jpg": "99128db18477196ec36d0328b11a596fea58ca700fcafa909106ef1078abe007",
         "output/mandrakes/dice/mandrakes-dice-light.jpg": "f52603c5bb9d1ad4b2deb106923747801c1fd52a427162828d66dffdc2b9c9c4",
         "output/mandrakes/dice/mandrakes-dice-team.jpg": "889578a15f21a63a70901a42c29b10f0dbfbbecee650627caa8fa9349f4fcaca",
-        "output/mandrakes/data/mandrakes-team-data.json": "966b7017a241a1a5fce0db8b5ad24e6346b578cc1f59676e3a472fb848f7e2a5",
+        "output/mandrakes/data/mandrakes-team-data.json": "a9e8e3da9616b2358ff81dbfc29b5a751bc42a106eb92621add829728d0fe2a1",
         "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
-        "config/defaults/tts-script/datacard-load-stats.lua": "8c3702f37cbf4fa3556af81a2b375f846945a2ee2e9c7d4daf14cd6a3d1216c6",
-        "config/defaults/tts-script/display-table-manager-script.lua": "0dab4381078d90802f25e2cc825bc3658be35ee13ab3e98831c9d248c2526689",
+        "config/defaults/tts-script/datacard-load-stats.lua": "62bc91f7825c6166cc138b96b8bef95717322c5b39ea38b4ce9e9d4c040a5a89",
+        "config/defaults/tts-script/display-table-manager-script.lua": "846de299f8e2c925e63cc77c4991fedd07ae75e9bde375f3b3c991c8730b891b",
         "config/defaults/tts-script/faction-rule-chapter-tactics.lua": "c906742268076fb91f7cb4a92c6b588e1122ccddb692688f635c8dd4f7110ad0",
         "config/defaults/tts-script/intermediate-updater.lua": "1a2d6dbc1a8c9c57ba6a3e7a3d4bc4b7a38a6c242a93f6ef3dae698123384d35",
-        "config/defaults/tts-script/ktui-mini-modelscript.lua": "1b87f973d38437099d7275a2c06a82918d5b9beb32ae7038da3f7ba37707f6af",
+        "config/defaults/tts-script/ktui-mini-modelscript.lua": "8e5170ef7f20d7008dc0d86cc8bd01f659379f70a02343f22b1b305c34641018",
         "config/defaults/tts-script/single-object-updater.lua": "3613b85169e986a8e50ebe221482079e27c18037e3f48920aa0f7e138c0ccacc",
+        "config/defaults/tts-script/sprint-movement-tool.lua": "5a4b0618df37dfb0dc6382e4aa42210e423a50015a7eb4c0492c9b1155b9b2f2",
         "config/defaults/tts-script/team-spawner-clean-script.lua": "12457bff3961eee2293c42d81cf4f4eb8b103177245a1ab8b46fd65da40672a2",
         "config/defaults/tts-script/team-spawner-script.lua": "a51ff45c8622923db909fb465781801511f235412f099f83dff728d4027650db",
         "config/defaults/tts-script/tts-update-rules-in-box-script.lua": "84f7f9b260f4e4968d208953b534bdbb7ab0b2f475e13264a2407f6c4d4d2b03",

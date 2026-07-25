@@ -19,12 +19,8 @@ Input:
 Output:
     output/{team}/tts_objects/{Team Name}.json - TTS card box as bare Custom_Model_Bag
         (clean/primary format, referenced by output/team-urls.json)
-    output/{team}/tts_objects/{Team Name} Box.json - Slim save-file wrapper
-        (legacy entry point for in-the-wild boxes; per-card LuaScripts stripped)
-    output/{team}/tts_objects/{Team Name} Box.png - Preview image
 """
 
-import argparse
 import hashlib
 import json
 import logging
@@ -54,8 +50,6 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 PROJECT_ROOT = _paths.ROOT  # repo root
-PIPELINE_METADATA_FILE = PROJECT_ROOT / "layers" / "metadata.json"
-OUTPUT_METADATA_FILE = PROJECT_ROOT / "output" / "metadata.json"
 URL_BRANCH = os.environ.get("KT_DATACARDS_URL_BRANCH", "main")
 # Base path (under the repo) that hosts the generated output. Output lives at the
 # repo-root ``output/``, so URLs point there directly. Overridable via env.
@@ -68,59 +62,9 @@ URL_OUTPUT_BASE = os.environ.get(
 # ===================================================================
 # BARE/CLEAN BOX FORMAT HELPERS
 # ===================================================================
-# Pipeline emits two TTS box files per team:
-#   {Team}.json     - bare/clean Custom_Model_Bag object (NEW primary format).
-#                     Spawned via spawnObjectJSON; referenced by team-urls.json.
-#   {Team} Box.json - slim save-file wrapper with per-card LuaScripts stripped
-#                     (legacy entry point for in-the-wild boxes via
-#                     output_v2/tts-card-boxes.json / tts-metadata.json).
-# The updater Lua in tts-update-rules-in-box-script.lua handles both formats.
-
-def _strip_sub_lua(node) -> int:
-    """Recursively clear nested LuaScript fields on cards/decks/sub-objects.
-
-    Leaves the top-level (box-level) LuaScript untouched — that's the caller's
-    job. Used to slim the legacy wrapper so its only purpose is to cascade an
-    Update click to the full clean box.
-    """
-    stripped = 0
-    if isinstance(node, dict):
-        for child in node.get("ContainedObjects") or []:
-            if isinstance(child, dict):
-                if child.get("LuaScript"):
-                    child["LuaScript"] = ""
-                    stripped += 1
-                stripped += _strip_sub_lua(child)
-        # Decks contain cards under "ContainedObjects" too — handled above.
-    elif isinstance(node, list):
-        for item in node:
-            stripped += _strip_sub_lua(item)
-    return stripped
-
-
-def _empty_save_wrapper() -> dict:
-    """Minimal TTS save-file envelope. Grid is left null/None — only valid as
-    a GridState object at top level, never as a bool here."""
-    return {
-        "SaveName": "",
-        "Date": "",
-        "VersionNumber": "",
-        "GameMode": "",
-        "GameType": "",
-        "GameComplexity": "",
-        "Tags": [],
-        "Gravity": 0.5,
-        "PlayArea": 0.5,
-        "Table": "",
-        "Sky": "",
-        "Note": "",
-        "TabStates": {},
-        "LuaScript": "",
-        "LuaScriptState": "",
-        "XmlUI": "",
-        "ObjectStates": [],
-    }
-
+# Pipeline emits one TTS box file per team:
+#   {Team}.json - bare/clean Custom_Model_Bag object. Spawned via
+#                 spawnObjectJSON; referenced by team-urls.json.
 
 def _bare_from_wrapper(bag_obj: dict) -> dict:
     """Extract the Custom_Model_Bag from a wrapper dict, or return as-is if
@@ -234,144 +178,23 @@ def _write_json_stable(path: Path, data, *, indent: int = 2,
 
 
 def write_team_box_files(bag_obj: dict, team_output_dir: Path, team_display_name: str,
-                         intermediate_lua: str = "",
                          clean_prior_bytes: bytes | None = None,
-                         clean_prior_mtime: float | None = None) -> tuple[Path, Path]:
-    """Write both the clean bare object and the slim legacy wrapper.
+                         clean_prior_mtime: float | None = None) -> Path:
+    """Write the clean bare team box object (spawned via spawnObjectJSON).
 
-    If `clean_prior_bytes`/`clean_prior_mtime` are provided, they're used as
-    the baseline for byte-stable preservation of the clean file (since the
-    caller may have already written a placeholder over the real prior file).
+    If `clean_prior_bytes`/`clean_prior_mtime` are provided, they're used as the
+    baseline for byte-stable preservation of the clean file (since the caller
+    may have already written a placeholder over the real prior file).
 
-    Returns: (clean_path, wrapper_path)
+    Returns: clean_path
     """
-    import copy
-
     inner = _bare_from_wrapper(bag_obj)
-
     clean_path = team_output_dir / f"{team_display_name}.json"
-    wrapper_path = team_output_dir / f"{team_display_name} Box.json"
-
-    # Clean: full bare object exactly as TTS expects via spawnObjectJSON.
     _write_json_stable(
         clean_path, inner, indent=2, ensure_ascii=True,
         prior_bytes=clean_prior_bytes, prior_mtime=clean_prior_mtime,
     )
-
-    # Wrapper: ruthlessly slimmed copy. Sole purpose is to be a one-click hop
-    # to the clean file. We strip:
-    #   - all per-card LuaScripts (legacy cards still updatable via clean box)
-    #   - full updater Lua at box level -> replaced with minimal updater
-    #   - LuaScriptState (memoryList, cached timestamps) -> empty, no Reset use
-    # Description nudges the user toward the Update button.
-    slim_inner = copy.deepcopy(inner)
-    _strip_sub_lua(slim_inner)
-    if intermediate_lua:
-        slim_inner["LuaScript"] = intermediate_lua
-    slim_inner["LuaScriptState"] = ""
-    slim_inner["Description"] = (
-        "OUTDATED VERSION. Click the red UPDATE button (or right-click -> "
-        "Update to latest) to replace this with the full current team box. "
-        "This intermediate is a one-time bridge and should not be reused."
-    )
-
-    wrapper = _empty_save_wrapper()
-    wrapper["SaveName"] = inner.get("Nickname") or team_display_name
-    wrapper["ObjectStates"] = [slim_inner]
-    _write_json_stable(wrapper_path, wrapper, indent=2, ensure_ascii=True)
-
-    return clean_path, wrapper_path
-
-
-# ===================================================================
-# METADATA MANAGEMENT
-# ===================================================================
-
-class MetadataManager:
-    """Manages pipeline metadata with hash-based change detection"""
-
-    def __init__(self, metadata_file: Path):
-        self.metadata_file = metadata_file
-        self.metadata = self._load_metadata()
-
-    def _load_metadata(self) -> Dict:
-        if self.metadata_file.exists():
-            with open(self.metadata_file, 'r', encoding='utf-8') as f:
-                return json.load(f)
-        return {"pipeline_version": "2.0", "last_full_run": None, "teams": {}}
-
-    def save_metadata(self):
-        self.metadata_file.parent.mkdir(parents=True, exist_ok=True)
-        with open(self.metadata_file, 'w', encoding='utf-8') as f:
-            json.dump(self.metadata, f, indent=2, ensure_ascii=False)
-
-    def compute_hash(self, file_path: Path) -> str:
-        sha256 = hashlib.sha256()
-        with open(file_path, 'rb') as f:
-            for chunk in iter(lambda: f.read(4096), b''):
-                sha256.update(chunk)
-        return sha256.hexdigest()
-
-    def update_file(self, team: str, step: str, file_key: str, file_path: Path):
-        if team not in self.metadata["teams"]:
-            self.metadata["teams"][team] = {"steps": {}}
-        if "steps" not in self.metadata["teams"][team]:
-            self.metadata["teams"][team]["steps"] = {}
-        if step not in self.metadata["teams"][team]["steps"]:
-            self.metadata["teams"][team]["steps"][step] = {"outputs": {}}
-        if "outputs" not in self.metadata["teams"][team]["steps"][step]:
-            self.metadata["teams"][team]["steps"][step]["outputs"] = {}
-        file_hash = self.compute_hash(file_path)
-        timestamp = datetime.now(timezone.utc).isoformat()
-        self.metadata["teams"][team]["steps"][step]["outputs"][file_key] = {
-            "path": str(file_path), "hash": file_hash, "modified": timestamp
-        }
-
-    def mark_step_complete(self, team: str, step: str):
-        if team not in self.metadata["teams"]:
-            self.metadata["teams"][team] = {"steps": {}}
-        if "steps" not in self.metadata["teams"][team]:
-            self.metadata["teams"][team]["steps"] = {}
-        if step not in self.metadata["teams"][team]["steps"]:
-            self.metadata["teams"][team]["steps"][step] = {}
-        self.metadata["teams"][team]["steps"][step]["completed"] = datetime.now(timezone.utc).isoformat()
-
-
-class OutputMetadataManager:
-    """Manages shared output metadata across pipelines"""
-
-    def __init__(self, metadata_file: Path):
-        self.metadata_file = metadata_file
-        self.metadata = self._load_metadata()
-
-    def _load_metadata(self) -> Dict:
-        if self.metadata_file.exists():
-            try:
-                with open(self.metadata_file, 'r', encoding='utf-8') as f:
-                    return json.load(f)
-            except Exception:
-                pass
-        return {"version": "1.0", "last_updated": None, "files": {}}
-
-    def save_metadata(self):
-        self.metadata_file.parent.mkdir(parents=True, exist_ok=True)
-        self.metadata["last_updated"] = datetime.now(timezone.utc).isoformat()
-        with open(self.metadata_file, 'w', encoding='utf-8') as f:
-            json.dump(self.metadata, f, indent=2, ensure_ascii=False)
-
-    def compute_hash(self, file_path: Path) -> str:
-        sha256 = hashlib.sha256()
-        with open(file_path, 'rb') as f:
-            for chunk in iter(lambda: f.read(4096), b''):
-                sha256.update(chunk)
-        return sha256.hexdigest()
-
-    def update_file(self, rel_path: str, file_path: Path, pipeline: str, step: str):
-        file_hash = self.compute_hash(file_path)
-        timestamp = datetime.now(timezone.utc).isoformat()
-        self.metadata.setdefault("files", {})[rel_path] = {
-            "hash": file_hash, "modified": timestamp, "pipeline": pipeline, "step": step
-        }
+    return clean_path
 
 
 def generate_urls_json_v3(repo_branch: str = URL_BRANCH):
@@ -852,26 +675,6 @@ def load_lua_script(config_dir: Path) -> str:
         return ""
 
 
-def load_intermediate_updater_script(config_dir: Path) -> str:
-    """Slim updater embedded in the legacy save-file wrapper {Team} Box.json.
-
-    Sole job: fetch team-urls.json, download the bare {Team}.json, respawn.
-    Keeps the wrapper lean so spawning it (the slow save-file code path in
-    TTS) stays as cheap as possible.
-    """
-    script_path = config_dir / "defaults" / "tts-script" / "intermediate-updater.lua"
-    try:
-        with open(script_path, 'r', encoding='utf-8-sig') as f:
-            content = f.read()
-            if content.startswith('\ufeff'):
-                content = content[1:]
-            content = content.replace('\n', '\r\n')
-            return content
-    except Exception as e:
-        logger.warning(f"Could not load intermediate updater script: {e}")
-        return ""
-
-
 def load_single_object_updater_script(config_dir: Path) -> str:
     """Load reusable per-object updater Lua script from defaults folder.
 
@@ -879,8 +682,7 @@ def load_single_object_updater_script(config_dir: Path) -> str:
     object and update it in place. Lives in both the standalone per-object
     JSON files and the in-box copies inside the clean {Team}.json. Whole-box
     spawn stays fast because the clean bare object skips TTS's slow save-file
-    parser. The intermediate {Team} Box.json wrapper still strips this script
-    (one-off bridge, lean as possible).
+    parser.
     """
     script_path = config_dir / "defaults" / "tts-script" / "single-object-updater.lua"
     try:
@@ -1037,9 +839,7 @@ def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Pa
     github_base = ""
     if sample_url and '/output/' in sample_url:
         github_base = sample_url.split('/output/')[0]
-    elif sample_url and '/output_v2/' in sample_url:
-        github_base = sample_url.split('/output_v2/')[0]
-    
+
     if not github_base:
         logger.warning(f"Could not extract github base URL, using placeholder")
         github_base = "https://github.com/user/repo/raw/main"
@@ -1300,8 +1100,6 @@ def load_dice_objects(team_name: str, sample_url: Optional[str], output_dir: Pat
     if sample_url:
         if "/output/" in sample_url:
             github_base = sample_url.split("/output/")[0]
-        elif "/output_v2/" in sample_url:
-            github_base = sample_url.split("/output_v2/")[0]
     if not github_base:
         github_base = f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/{repo_branch}"
 
@@ -1337,43 +1135,6 @@ def load_dice_objects(team_name: str, sample_url: Optional[str], output_dir: Pat
     if dice_objects:
         logger.info(f"  Added {len(dice_objects)} dice for {team_name}")
     return dice_objects
-
-
-def copy_preview_image(team_folder_name: str, team_display_name: str, config_dir: Path, output_dir: Path):
-    """Copy preview/icon image for a team.
-
-    Priority:
-      1. config/teams/{team}/tts-image/{team}-icon.png   — manual override
-      2. config/teams/{team}/tts-image/{team}-preview.png — manual override (alt)
-      3. layers/integration/{team}/artwork/icons/{team}-icon-token.jpg — auto-source
-      4. config/defaults/tts-image/default-icon.png       — generic fallback
-      5. config/defaults/tts-image/default-preview.png    — generic fallback (alt)
-    """
-    team_icon    = config_dir / "teams" / team_folder_name / "tts-image" / f"{team_folder_name}-icon.png"
-    team_preview = config_dir / "teams" / team_folder_name / "tts-image" / f"{team_folder_name}-preview.png"
-    integ_icon   = _paths.artwork_team_dir(team_folder_name) / "icons" / f"{team_folder_name}-icon-token.jpg"
-    default_icon    = config_dir / "defaults" / "tts-image" / "default-icon.png"
-    default_preview = config_dir / "defaults" / "tts-image" / "default-preview.png"
-
-    # Priority: team icon > team preview > integration icon > default icon > default preview
-    if team_icon.exists():
-        source_preview = team_icon
-    elif team_preview.exists():
-        source_preview = team_preview
-    elif integ_icon.exists():
-        source_preview = integ_icon
-    elif default_icon.exists():
-        source_preview = default_icon
-    else:
-        source_preview = default_preview
-    
-    if source_preview.exists():
-        team_output_dir = output_dir / team_folder_name / 'tts_objects'
-        team_output_dir.mkdir(parents=True, exist_ok=True)
-        dest_preview = team_output_dir / f"{team_display_name} Box.png"
-        shutil.copy2(source_preview, dest_preview)
-    else:
-        logger.warning(f"No preview/icon image found for {team_folder_name}")
 
 
 def rebuild_kill_team_card_boxes_example(output_dir: Path) -> tuple[int, Optional[Path]]:
@@ -1424,36 +1185,22 @@ def rebuild_kill_team_card_boxes_example(output_dir: Path) -> tuple[int, Optiona
 
     team_box_objects = []
     for team_tts_dir in sorted(output_dir.glob("*/tts_objects")):
-        # Prefer the bare {Team}.json (clean format). Fall back to extracting
-        # ObjectStates[0] from the legacy wrapper for backwards compatibility.
+        # Use the bare {Team}.json clean box (skip urls/metadata json files).
         clean_candidates = sorted(
             p for p in team_tts_dir.glob("*.json")
-            if not p.name.endswith(" Box.json") and "urls" not in p.name.lower()
+            if "urls" not in p.name.lower()
         )
-        if clean_candidates:
-            box_file = clean_candidates[0]
-            try:
-                with open(box_file, 'r', encoding='utf-8') as f:
-                    team_obj = json.load(f)
-                if not isinstance(team_obj, dict) or team_obj.get("Name") != "Custom_Model_Bag":
-                    continue
-            except Exception as e:
-                logger.warning(f"Could not read clean team box for manager bag ({box_file}): {e}")
+        if not clean_candidates:
+            continue
+        box_file = clean_candidates[0]
+        try:
+            with open(box_file, 'r', encoding='utf-8') as f:
+                team_obj = json.load(f)
+            if not isinstance(team_obj, dict) or team_obj.get("Name") != "Custom_Model_Bag":
                 continue
-        else:
-            team_box_files = sorted(team_tts_dir.glob("* Box.json"))
-            if not team_box_files:
-                continue
-            box_file = team_box_files[0]
-            try:
-                with open(box_file, 'r', encoding='utf-8') as f:
-                    team_data = json.load(f)
-                team_obj = (team_data.get("ObjectStates") or [None])[0]
-                if not isinstance(team_obj, dict):
-                    continue
-            except Exception as e:
-                logger.warning(f"Could not read team box for manager bag ({box_file}): {e}")
-                continue
+        except Exception as e:
+            logger.warning(f"Could not read clean team box for manager bag ({box_file}): {e}")
+            continue
 
         team_box_objects.append(team_obj)
 
@@ -1571,21 +1318,15 @@ def embed_datacard_stats(bag_obj: dict, team_name: str, output_dir: Path, config
     with open(team_config_path, 'r', encoding='utf-8') as f:
         team_config = yaml.safe_load(f)
     
-    # Load selection data from roster.json (output_v2)
-    faction = team_config.get('teams', {}).get(team_name, {}).get('faction', '')
+    # Operative weapon-selection groups are produced by content_analysis and carried
+    # through team-data (operatives_selection[0].selection), keyed by datacard name.
     roster_selection: dict = {}
     roster_exclusive_sets: dict = {}
-    if faction:
-        roster_path = PROJECT_ROOT / 'output_v2' / faction / team_name / 'statlines' / 'roster.json'
-        if roster_path.exists():
-            try:
-                with open(roster_path, 'r', encoding='utf-8') as f:
-                    roster_data = json.load(f)
-                roster_selection = roster_data.get('selection', {})
-                roster_exclusive_sets = roster_data.get('exclusive_sets', {})
-                logger.debug(f"  Loaded selection for {sum(1 for v in roster_selection.values() if v)} operatives")
-            except Exception as e:
-                logger.warning(f"  Could not load roster.json for {team_name}: {e}")
+    op_sel = team_data.get('operatives_selection') or []
+    if op_sel and isinstance(op_sel, list):
+        roster_selection = op_sel[0].get('selection', {}) or {}
+    if roster_selection:
+        logger.debug(f"  Loaded selection for {sum(1 for v in roster_selection.values() if v)} operatives")
 
     # Load datacard Lua script
     lua_script_path = config_dir / "defaults" / "tts-script" / "datacard-load-stats.lua"
@@ -2892,8 +2633,7 @@ def save_individual_token_json(token_obj: dict, team_name: str, token_index: int
 
 
 def generate_team_tts_object(team_name: str, cards: list, lua_script: str, box_description: str, single_object_updater_script: str, texture_url: str,
-                            mesh_url: str, config_dir: Path, output_dir: Path, repo_branch: str = URL_BRANCH,
-                            intermediate_lua: str = ""):
+                            mesh_url: str, config_dir: Path, output_dir: Path, repo_branch: str = URL_BRANCH):
     """Generate TTS object for a single team"""
     # Extract faction from first card's URL
     faction = None
@@ -3014,10 +2754,8 @@ def generate_team_tts_object(team_name: str, cards: list, lua_script: str, box_d
     # Get output file path
     team_output_dir = output_dir / team_name / 'tts_objects'
     team_output_dir.mkdir(parents=True, exist_ok=True)
-    # Two outputs: bare {Team}.json (clean, primary) and slim {Team} Box.json
-    # (legacy wrapper for in-the-wild boxes). See write_team_box_files docstring.
+    # Single output: bare {Team}.json (clean Custom_Model_Bag).
     clean_file = team_output_dir / f"{team_display_name}.json"
-    output_file = team_output_dir / f"{team_display_name} Box.json"
     
     # Create bag with placeholder timestamp
     import os
@@ -3092,21 +2830,17 @@ def generate_team_tts_object(team_name: str, cards: list, lua_script: str, box_d
     # Embed datacard stats (optional - skips if no team data)
     embed_datacard_stats(bag_obj, team_name, output_dir, config_dir, single_object_updater_script)
     
-    # Write final versions: clean (full bare) + slim wrapper.
+    # Write final version: clean bare box.
     write_team_box_files(
-        bag_obj, team_output_dir, team_display_name, intermediate_lua,
+        bag_obj, team_output_dir, team_display_name,
         clean_prior_bytes=clean_prior_bytes, clean_prior_mtime=clean_prior_mtime,
     )
-    
-    # Copy preview image
-    copy_preview_image(team_name, team_display_name, config_dir, output_dir)
 
 
 def generate_all_tts_objects(urls_data: list, config_dir: Path, output_dir: Path, team_filter: list = None, repo_branch: str = URL_BRANCH) -> int:
     """Generate TTS objects for all teams"""
     # Load Lua script
     lua_script = load_lua_script(config_dir)
-    intermediate_lua = load_intermediate_updater_script(config_dir)
     single_object_updater_script = load_single_object_updater_script(config_dir)
     box_description = load_box_description(config_dir)
     
@@ -3140,98 +2874,10 @@ def generate_all_tts_objects(urls_data: list, config_dir: Path, output_dir: Path
         texture_url = team_textures.get(team_name)
         mesh_url = team_meshes.get(team_name)
         
-        generate_team_tts_object(team_name, cards, lua_script, box_description, single_object_updater_script, texture_url, mesh_url, config_dir, output_dir, repo_branch, intermediate_lua)
+        generate_team_tts_object(team_name, cards, lua_script, box_description, single_object_updater_script, texture_url, mesh_url, config_dir, output_dir, repo_branch)
         count += 1
     
     if skipped > 0:
         logger.info(f"Skipped {skipped} team(s) (no changes or filtered out)")
     
     return count
-
-
-def main():
-    parser = argparse.ArgumentParser(description='Generate TTS objects from classified cards')
-    parser.add_argument('--teams', nargs='+', help='Specific teams to process (default: all)')
-    parser.add_argument('--log-level', default='INFO',
-                       choices=['DEBUG', 'INFO', 'WARNING', 'ERROR'],
-                       help='Logging level (default: INFO)')
-    
-    args = parser.parse_args()
-    
-    logging.getLogger().setLevel(getattr(logging, args.log_level))
-
-    logger.info("=" * 60)
-    logger.info("TTS Object Generation (with embedded stats) - KT-App Pipeline")
-    logger.info(f"URL branch: {URL_BRANCH}")
-    logger.info("=" * 60)
-
-    # Initialize metadata managers
-    pipeline_meta = MetadataManager(PIPELINE_METADATA_FILE)
-    output_meta = OutputMetadataManager(OUTPUT_METADATA_FILE)
-
-    # Generate URLs JSON from v3 structure (flat format for internal use)
-    logger.info("Scanning output structure...")
-    urls_data = generate_urls_json_v3(URL_BRANCH)
-    logger.info(f"Found {len(urls_data)} card/asset entries")
-
-    # Generate TTS objects
-    config_dir = PROJECT_ROOT / 'config'
-    output_dir = PROJECT_ROOT / 'output'
-    count = generate_all_tts_objects(urls_data, config_dir, output_dir, args.teams, URL_BRANCH)
-
-    # Rebuild manager bag with latest team boxes.
-    manager_count, manager_path = rebuild_kill_team_card_boxes_example(output_dir)
-
-    # Build per-team metadata after Box.json files exist.
-    logger.info("Generating team URL metadata for TTS update checks...")
-    team_object_urls_data = generate_object_urls_json(URL_BRANCH)
-    object_urls_data = generate_object_urls_summary(team_object_urls_data, URL_BRANCH)
-    object_urls_file = PROJECT_ROOT / 'output' / 'team-urls.json'
-    with open(object_urls_file, 'w', encoding='utf-8') as f:
-        json.dump(object_urls_data, f, indent=2, ensure_ascii=False)
-    logger.info(f"Saved summary team-urls.json with {len(object_urls_data)} teams")
-
-    legacy_object_urls_file = PROJECT_ROOT / 'output' / 'object-urls.json'
-    if legacy_object_urls_file.exists():
-        try:
-            legacy_object_urls_file.unlink()
-            logger.info("Removed legacy output/object-urls.json")
-        except Exception as e:
-            logger.warning(f"Could not remove legacy output/object-urls.json: {e}")
-
-    team_object_url_files = save_object_urls_team_files(team_object_urls_data, PROJECT_ROOT / 'output')
-    logger.info(f"Saved {len(team_object_url_files)} team metadata files in output/{{team}}/{{team}}-object-urls.json")
-
-    # Track metadata for all generated Box.json files
-    for team_tts_dir in sorted(output_dir.glob("*/tts_objects")):
-        team_slug = team_tts_dir.parent.name
-        for f in team_tts_dir.glob("*.json"):
-            rel = f"{team_slug}/tts_objects/{f.name}"
-            pipeline_meta.update_file(team_slug, "7_generate_tts_objects", f.name, f)
-            output_meta.update_file(rel, f, "kt-app", "7_generate_tts_objects")
-        pipeline_meta.mark_step_complete(team_slug, "7_generate_tts_objects")
-
-    # Track team-urls.json
-    output_meta.update_file("team-urls.json", object_urls_file, "kt-app", "7_generate_tts_objects")
-    output_meta.metadata.setdefault("files", {}).pop("object-urls.json", None)
-    output_meta.metadata.setdefault("files", {}).pop("output_v2/tts-metadata.json", None)
-    for team_file in team_object_url_files:
-        rel = f"{team_file.parent.name}/{team_file.name}"
-        output_meta.update_file(rel, team_file, "kt-app", "7_generate_tts_objects")
-    if manager_path:
-        output_meta.update_file("_generic-tts-objects/Kill Team Card Boxes.json", manager_path, "kt-app", "7_generate_tts_objects")
-
-    # Save metadata
-    pipeline_meta.metadata["last_full_run"] = datetime.now(timezone.utc).isoformat()
-    pipeline_meta.save_metadata()
-    output_meta.save_metadata()
-
-    logger.info("=" * 60)
-    logger.info("Generation Complete")
-    logger.info("=" * 60)
-    logger.info(f"Teams processed: {count}")
-    logger.info(f"Output: {PROJECT_ROOT / 'output' / '{team}' / 'tts_objects'}")
-
-
-if __name__ == '__main__':
-    main()

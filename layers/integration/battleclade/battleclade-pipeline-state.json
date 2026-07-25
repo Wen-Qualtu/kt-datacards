@@ -1,20 +1,20 @@
 {
   "team": "battleclade",
   "pipeline_version": "2.0",
-  "last_updated": "2026-07-21T11:11:10.641607+00:00",
+  "last_updated": "2026-07-25T17:16:52.630193+00:00",
   "steps": {
     "content_analysis": {
       "outputs": {
         "content.json": {
           "path": "layers/integration/battleclade/content/battleclade-content.json",
-          "hash": "cb30c48fa1c168d3a23e76cd8fe65e16e97a69efa72407798196a6fa04af3083",
-          "modified": "2026-07-21T11:00:17.553221+00:00"
+          "hash": "f6d08e3c130e690ab8ec91b039b5f7e014cb6907ab06dc55f99edc37f5da6f63",
+          "modified": "2026-07-25T17:11:29.972992+00:00"
         }
       },
-      "completed": "2026-07-21T11:00:18.219059+00:00",
+      "completed": "2026-07-25T17:11:32.313699+00:00",
       "inputs": {
         "layers/integration/battleclade/manifest.json": "d97fab15e09e0d40d687af288192c32a4e3b4372143438b296212122b35a489e",
-        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "config/team-config.yaml": "b8ca8191fcfbccdfb363ab8c3eaf7e4e95ef35b5a914828a1a2b4a62cd02c680",
         "layers/integration/battleclade/battleclade-datacard-battleclade-auto-proxy-servitor.pdf": "12d9845a9baddc64ebdbe9dfde565bbce3718e73977166f4b4ebe9246845c0cf",
         "layers/integration/battleclade/battleclade-datacard-battleclade-breacher-servitor.pdf": "7d8cdb133d42aa2f73f771e9f551d3039baf5e819ec067f87e3ef7e30b6f0ba6",
         "layers/integration/battleclade/battleclade-datacard-battleclade-combat-servitor.pdf": "eed12eca0417cc3767478e85fd8aeb7fe14593c9181a40539a80f1058f9a1976",
@@ -463,13 +463,13 @@
       "outputs": {
         "team-data.json": {
           "path": "output/battleclade/data/battleclade-team-data.json",
-          "hash": "cb30c48fa1c168d3a23e76cd8fe65e16e97a69efa72407798196a6fa04af3083",
-          "modified": "2026-07-21T11:00:39.420308+00:00"
+          "hash": "f6d08e3c130e690ab8ec91b039b5f7e014cb6907ab06dc55f99edc37f5da6f63",
+          "modified": "2026-07-25T17:15:59.953096+00:00"
         }
       },
-      "completed": "2026-07-21T11:00:39.424286+00:00",
+      "completed": "2026-07-25T17:15:59.954084+00:00",
       "inputs": {
-        "layers/integration/battleclade/content/battleclade-content.json": "cb30c48fa1c168d3a23e76cd8fe65e16e97a69efa72407798196a6fa04af3083"
+        "layers/integration/battleclade/content/battleclade-content.json": "f6d08e3c130e690ab8ec91b039b5f7e014cb6907ab06dc55f99edc37f5da6f63"
       }
     },
     "generate_tts": {
@@ -481,14 +481,14 @@
         },
         "tts_objects/Battleclade.json": {
           "path": "output/battleclade/tts_objects/Battleclade.json",
-          "hash": "6da91059ed4f6bb43536f1badaf36497b9fa5ac9135ef46f8a618decd3deaf6f",
-          "modified": "2026-07-21T11:11:10.561236+00:00"
+          "hash": "7c06c2f35ad9c7c7153d18b88367a71177eb08f816487545551ce69d5aefd681",
+          "modified": "2026-07-25T17:16:52.579392+00:00"
         }
       },
-      "completed": "2026-07-21T11:11:10.641594+00:00",
+      "completed": "2026-07-25T17:16:52.630182+00:00",
       "inputs": {
-        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
-        "config/team-guids.json": "1dea0eaf2c7d1c37c86aba088cdf876f0638d2dcaca162888fea8422c2d5c9db",
+        "config/team-config.yaml": "b8ca8191fcfbccdfb363ab8c3eaf7e4e95ef35b5a914828a1a2b4a62cd02c680",
+        "config/team-guids.json": "906473ddbf256345a4150df497def05ec513f95948b27d6fc98fa6dba00bb7d0",
         "output/battleclade/cards/datacards/battleclade-auto-proxy-servitor-back.jpg": "f7c3ef35b32e09b799649516ddb0765ecb1b60bd6f91d72ae123bed500fe890e",
         "output/battleclade/cards/datacards/battleclade-auto-proxy-servitor-front.jpg": "63b7238a29fdcb5ab2fd9d6e21615f8827e1b2aae8d6f2d51f08d8c67126d6de",
         "output/battleclade/cards/datacards/battleclade-breacher-servitor-back.jpg": "f7c3ef35b32e09b799649516ddb0765ecb1b60bd6f91d72ae123bed500fe890e",
@@ -552,14 +552,15 @@
         "output/battleclade/dice/battleclade-dice-dark.jpg": "1f797a13ab5859f0478240f198a615bff21975bc1c469ea250a99d2ef7b4237c",
         "output/battleclade/dice/battleclade-dice-light.jpg": "c298570bf57b0ec2e4580f9fd142ace0255f7770fbefb6b76839c1295b44ef91",
         "output/battleclade/dice/battleclade-dice-team.jpg": "4508446c3c0e490a38f36e146df6441112edbd3aa195431184303f036150e483",
-        "output/battleclade/data/battleclade-team-data.json": "cb30c48fa1c168d3a23e76cd8fe65e16e97a69efa72407798196a6fa04af3083",
+        "output/battleclade/data/battleclade-team-data.json": "f6d08e3c130e690ab8ec91b039b5f7e014cb6907ab06dc55f99edc37f5da6f63",
         "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
-        "config/defaults/tts-script/datacard-load-stats.lua": "8c3702f37cbf4fa3556af81a2b375f846945a2ee2e9c7d4daf14cd6a3d1216c6",
-        "config/defaults/tts-script/display-table-manager-script.lua": "0dab4381078d90802f25e2cc825bc3658be35ee13ab3e98831c9d248c2526689",
+        "config/defaults/tts-script/datacard-load-stats.lua": "62bc91f7825c6166cc138b96b8bef95717322c5b39ea38b4ce9e9d4c040a5a89",
+        "config/defaults/tts-script/display-table-manager-script.lua": "846de299f8e2c925e63cc77c4991fedd07ae75e9bde375f3b3c991c8730b891b",
         "config/defaults/tts-script/faction-rule-chapter-tactics.lua": "c906742268076fb91f7cb4a92c6b588e1122ccddb692688f635c8dd4f7110ad0",
         "config/defaults/tts-script/intermediate-updater.lua": "1a2d6dbc1a8c9c57ba6a3e7a3d4bc4b7a38a6c242a93f6ef3dae698123384d35",
-        "config/defaults/tts-script/ktui-mini-modelscript.lua": "1b87f973d38437099d7275a2c06a82918d5b9beb32ae7038da3f7ba37707f6af",
+        "config/defaults/tts-script/ktui-mini-modelscript.lua": "8e5170ef7f20d7008dc0d86cc8bd01f659379f70a02343f22b1b305c34641018",
         "config/defaults/tts-script/single-object-updater.lua": "3613b85169e986a8e50ebe221482079e27c18037e3f48920aa0f7e138c0ccacc",
+        "config/defaults/tts-script/sprint-movement-tool.lua": "5a4b0618df37dfb0dc6382e4aa42210e423a50015a7eb4c0492c9b1155b9b2f2",
         "config/defaults/tts-script/team-spawner-clean-script.lua": "12457bff3961eee2293c42d81cf4f4eb8b103177245a1ab8b46fd65da40672a2",
         "config/defaults/tts-script/team-spawner-script.lua": "a51ff45c8622923db909fb465781801511f235412f099f83dff728d4027650db",
         "config/defaults/tts-script/tts-update-rules-in-box-script.lua": "84f7f9b260f4e4968d208953b534bdbb7ab0b2f475e13264a2407f6c4d4d2b03",

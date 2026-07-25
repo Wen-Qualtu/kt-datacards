@@ -1,20 +1,20 @@
 {
   "team": "novitiates",
   "pipeline_version": "2.0",
-  "last_updated": "2026-07-21T11:11:14.425818+00:00",
+  "last_updated": "2026-07-25T17:16:55.072559+00:00",
   "steps": {
     "content_analysis": {
       "outputs": {
         "content.json": {
           "path": "layers/integration/novitiates/content/novitiates-content.json",
-          "hash": "cfe93d278d478254213ce2d0831dfc6b1729c76cbb6b686e9766698dc7c45810",
-          "modified": "2026-07-21T11:00:30.001842+00:00"
+          "hash": "59037ce37a5b1866bdca4d1c42ffda526fee963922736c976027f0a3e426ebe4",
+          "modified": "2026-07-25T17:14:21.898114+00:00"
         }
       },
-      "completed": "2026-07-21T11:00:34.877809+00:00",
+      "completed": "2026-07-25T17:15:17.295591+00:00",
       "inputs": {
         "layers/integration/novitiates/manifest.json": "4c37851e948626885a676111741e80a6fea24356f34a77897b78fecde123395f",
-        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "config/team-config.yaml": "b8ca8191fcfbccdfb363ab8c3eaf7e4e95ef35b5a914828a1a2b4a62cd02c680",
         "layers/integration/novitiates/novitiates-datacard-novitiate-condemnor.pdf": "6415b6854a702e057288441d738cac8c613d6a9ba2997821eb840042f3f81c04",
         "layers/integration/novitiates/novitiates-datacard-novitiate-dialogus.pdf": "c851396ecc3c67ca26fb9ca9850c222a2771eb8583bf430bc168a47f79a30d8b",
         "layers/integration/novitiates/novitiates-datacard-novitiate-duellist.pdf": "ee0faf6a81e15ec0f962a9d629cdc71aeddd20ff7ec720f49d3c56e97da90783",
@@ -569,13 +569,13 @@
       "outputs": {
         "team-data.json": {
           "path": "output/novitiates/data/novitiates-team-data.json",
-          "hash": "cfe93d278d478254213ce2d0831dfc6b1729c76cbb6b686e9766698dc7c45810",
-          "modified": "2026-07-21T11:00:41.177892+00:00"
+          "hash": "59037ce37a5b1866bdca4d1c42ffda526fee963922736c976027f0a3e426ebe4",
+          "modified": "2026-07-25T17:16:00.915298+00:00"
         }
       },
-      "completed": "2026-07-21T11:00:41.182576+00:00",
+      "completed": "2026-07-25T17:16:00.924637+00:00",
       "inputs": {
-        "layers/integration/novitiates/content/novitiates-content.json": "cfe93d278d478254213ce2d0831dfc6b1729c76cbb6b686e9766698dc7c45810"
+        "layers/integration/novitiates/content/novitiates-content.json": "59037ce37a5b1866bdca4d1c42ffda526fee963922736c976027f0a3e426ebe4"
       }
     },
     "generate_tts": {
@@ -587,14 +587,14 @@
         },
         "tts_objects/Novitiates.json": {
           "path": "output/novitiates/tts_objects/Novitiates.json",
-          "hash": "2f5838671ff2dbf3bf035330b8b11deb1e7168eb77c0ce63c7ebc8926956725f",
-          "modified": "2026-07-21T11:11:14.328510+00:00"
+          "hash": "915ed859822d30a884091c470cf4ba934b24d05999939089202241ae445ab4ca",
+          "modified": "2026-07-25T17:16:55.013344+00:00"
         }
       },
-      "completed": "2026-07-21T11:11:14.425803+00:00",
+      "completed": "2026-07-25T17:16:55.072549+00:00",
       "inputs": {
-        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
-        "config/team-guids.json": "1dea0eaf2c7d1c37c86aba088cdf876f0638d2dcaca162888fea8422c2d5c9db",
+        "config/team-config.yaml": "b8ca8191fcfbccdfb363ab8c3eaf7e4e95ef35b5a914828a1a2b4a62cd02c680",
+        "config/team-guids.json": "906473ddbf256345a4150df497def05ec513f95948b27d6fc98fa6dba00bb7d0",
         "output/novitiates/cards/datacards/novitiate-condemnor-back.jpg": "24aebb02a5ca4f607f926dfaa96c91d410902db0a51f3ab8104c238084dce507",
         "output/novitiates/cards/datacards/novitiate-condemnor-front.jpg": "6f58a00f48807bf029404b3ac955ae3fe5db0d25dd1fc4e1d6d330b2e2b8fc55",
         "output/novitiates/cards/datacards/novitiate-dialogus-back.jpg": "041b12e8995e43cfd7545beec3eb0cc29a43e7b3588bbbf2ce9199dac8b3ba74",
@@ -676,14 +676,15 @@
         "output/novitiates/dice/novitiates-dice-dark.jpg": "2090355229895178956bdeddeb3bd5ac0562b5c67ac9bf8d85f92d8a53662b76",
         "output/novitiates/dice/novitiates-dice-light.jpg": "c60bb21554b04d3ffb9e25b774ec80f9d60aacef9bdfe0d7fb1e120110e545c1",
         "output/novitiates/dice/novitiates-dice-team.jpg": "4e5548e1605d905b5cf08ad76dab6770dfe2b43bdd33b07fc148844161241c83",
-        "output/novitiates/data/novitiates-team-data.json": "cfe93d278d478254213ce2d0831dfc6b1729c76cbb6b686e9766698dc7c45810",
+        "output/novitiates/data/novitiates-team-data.json": "59037ce37a5b1866bdca4d1c42ffda526fee963922736c976027f0a3e426ebe4",
         "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
-        "config/defaults/tts-script/datacard-load-stats.lua": "8c3702f37cbf4fa3556af81a2b375f846945a2ee2e9c7d4daf14cd6a3d1216c6",
-        "config/defaults/tts-script/display-table-manager-script.lua": "0dab4381078d90802f25e2cc825bc3658be35ee13ab3e98831c9d248c2526689",
+        "config/defaults/tts-script/datacard-load-stats.lua": "62bc91f7825c6166cc138b96b8bef95717322c5b39ea38b4ce9e9d4c040a5a89",
+        "config/defaults/tts-script/display-table-manager-script.lua": "846de299f8e2c925e63cc77c4991fedd07ae75e9bde375f3b3c991c8730b891b",
         "config/defaults/tts-script/faction-rule-chapter-tactics.lua": "c906742268076fb91f7cb4a92c6b588e1122ccddb692688f635c8dd4f7110ad0",
         "config/defaults/tts-script/intermediate-updater.lua": "1a2d6dbc1a8c9c57ba6a3e7a3d4bc4b7a38a6c242a93f6ef3dae698123384d35",
-        "config/defaults/tts-script/ktui-mini-modelscript.lua": "1b87f973d38437099d7275a2c06a82918d5b9beb32ae7038da3f7ba37707f6af",
+        "config/defaults/tts-script/ktui-mini-modelscript.lua": "8e5170ef7f20d7008dc0d86cc8bd01f659379f70a02343f22b1b305c34641018",
         "config/defaults/tts-script/single-object-updater.lua": "3613b85169e986a8e50ebe221482079e27c18037e3f48920aa0f7e138c0ccacc",
+        "config/defaults/tts-script/sprint-movement-tool.lua": "5a4b0618df37dfb0dc6382e4aa42210e423a50015a7eb4c0492c9b1155b9b2f2",
         "config/defaults/tts-script/team-spawner-clean-script.lua": "12457bff3961eee2293c42d81cf4f4eb8b103177245a1ab8b46fd65da40672a2",
         "config/defaults/tts-script/team-spawner-script.lua": "a51ff45c8622923db909fb465781801511f235412f099f83dff728d4027650db",
         "config/defaults/tts-script/tts-update-rules-in-box-script.lua": "84f7f9b260f4e4968d208953b534bdbb7ab0b2f475e13264a2407f6c4d4d2b03",

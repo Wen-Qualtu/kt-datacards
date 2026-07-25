@@ -1,20 +1,20 @@
 {
   "team": "kommandos",
   "pipeline_version": "2.0",
-  "last_updated": "2026-07-21T11:11:13.788406+00:00",
+  "last_updated": "2026-07-25T17:16:54.692069+00:00",
   "steps": {
     "content_analysis": {
       "outputs": {
         "content.json": {
           "path": "layers/integration/kommandos/content/kommandos-content.json",
-          "hash": "39a9ae3b0af99b63be45b917c54448448f8918d7299483be6d6b7474714cbf84",
-          "modified": "2026-07-21T11:00:28.382064+00:00"
+          "hash": "4850f4a2bc02c31528934f097329118086648b7e3f226e9c74996616266b1eb1",
+          "modified": "2026-07-25T17:13:45.857289+00:00"
         }
       },
-      "completed": "2026-07-21T11:00:29.239874+00:00",
+      "completed": "2026-07-25T17:14:11.454063+00:00",
       "inputs": {
         "layers/integration/kommandos/manifest.json": "f77af415870af7f20057e79639cc4f2c1db8d2353444d3f6886b581106d43c3b",
-        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "config/team-config.yaml": "b8ca8191fcfbccdfb363ab8c3eaf7e4e95ef35b5a914828a1a2b4a62cd02c680",
         "layers/integration/kommandos/kommandos-datacard-kommando-bomb-squig.pdf": "9453ac7d764efa0877db03384ab34eec45bd999264228bf9bb9eec814effdab4",
         "layers/integration/kommandos/kommandos-datacard-kommando-boss-nob.pdf": "5394a77ae69385f199806994dac3ba799b45ea595324c78423d33a4ad06668ae",
         "layers/integration/kommandos/kommandos-datacard-kommando-boy.pdf": "557fb92fa04fa1e89440b1b862864c1b18eb33ebbe8e3f55ddb4ac04bcc0ad58",
@@ -565,13 +565,13 @@
       "outputs": {
         "team-data.json": {
           "path": "output/kommandos/data/kommandos-team-data.json",
-          "hash": "39a9ae3b0af99b63be45b917c54448448f8918d7299483be6d6b7474714cbf84",
-          "modified": "2026-07-21T11:00:40.849664+00:00"
+          "hash": "4850f4a2bc02c31528934f097329118086648b7e3f226e9c74996616266b1eb1",
+          "modified": "2026-07-25T17:16:00.787545+00:00"
         }
       },
-      "completed": "2026-07-21T11:00:40.863079+00:00",
+      "completed": "2026-07-25T17:16:00.798503+00:00",
       "inputs": {
-        "layers/integration/kommandos/content/kommandos-content.json": "39a9ae3b0af99b63be45b917c54448448f8918d7299483be6d6b7474714cbf84"
+        "layers/integration/kommandos/content/kommandos-content.json": "4850f4a2bc02c31528934f097329118086648b7e3f226e9c74996616266b1eb1"
       }
     },
     "generate_tts": {
@@ -583,14 +583,14 @@
         },
         "tts_objects/Kommandos.json": {
           "path": "output/kommandos/tts_objects/Kommandos.json",
-          "hash": "06b11420459fc93222cca1c001a37648e05c743b5d47f988f8584525b03ce9ef",
-          "modified": "2026-07-21T11:11:13.690876+00:00"
+          "hash": "3d6a95ef4847d70ba36feffbe8ea97a41a2de489b55fbf5a98defb4fc7ac3bf4",
+          "modified": "2026-07-25T17:16:54.628944+00:00"
         }
       },
-      "completed": "2026-07-21T11:11:13.788392+00:00",
+      "completed": "2026-07-25T17:16:54.692058+00:00",
       "inputs": {
-        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
-        "config/team-guids.json": "1dea0eaf2c7d1c37c86aba088cdf876f0638d2dcaca162888fea8422c2d5c9db",
+        "config/team-config.yaml": "b8ca8191fcfbccdfb363ab8c3eaf7e4e95ef35b5a914828a1a2b4a62cd02c680",
+        "config/team-guids.json": "906473ddbf256345a4150df497def05ec513f95948b27d6fc98fa6dba00bb7d0",
         "output/kommandos/cards/datacards/kommando-bomb-squig-back.jpg": "6c1a10e5722341cb887218a404a2bce3f821a7d48084065271aa63398be2513d",
         "output/kommandos/cards/datacards/kommando-bomb-squig-front.jpg": "d3856f316bedd83492d0b350a0f545d275ef543efe34ae033172a8d03e9f69a8",
         "output/kommandos/cards/datacards/kommando-boss-nob-back.jpg": "c8727bb48bc517e3af66a4ea1207dbff0286ab384fb400e03c38adcdc9f40a29",
@@ -672,14 +672,15 @@
         "output/kommandos/dice/kommandos-dice-dark.jpg": "60da105dbf4f616c19827552289d16934a673b5c516e7698e41821674913ddfb",
         "output/kommandos/dice/kommandos-dice-light.jpg": "a91678e0f78657fe1a7e1a7858798c499bf2662167ceb74d6b43bea12105cb56",
         "output/kommandos/dice/kommandos-dice-team.jpg": "557756c66d8a866ce5d24239f3829341bedd2b418f70677d796565d71972feba",
-        "output/kommandos/data/kommandos-team-data.json": "39a9ae3b0af99b63be45b917c54448448f8918d7299483be6d6b7474714cbf84",
+        "output/kommandos/data/kommandos-team-data.json": "4850f4a2bc02c31528934f097329118086648b7e3f226e9c74996616266b1eb1",
         "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
-        "config/defaults/tts-script/datacard-load-stats.lua": "8c3702f37cbf4fa3556af81a2b375f846945a2ee2e9c7d4daf14cd6a3d1216c6",
-        "config/defaults/tts-script/display-table-manager-script.lua": "0dab4381078d90802f25e2cc825bc3658be35ee13ab3e98831c9d248c2526689",
+        "config/defaults/tts-script/datacard-load-stats.lua": "62bc91f7825c6166cc138b96b8bef95717322c5b39ea38b4ce9e9d4c040a5a89",
+        "config/defaults/tts-script/display-table-manager-script.lua": "846de299f8e2c925e63cc77c4991fedd07ae75e9bde375f3b3c991c8730b891b",
         "config/defaults/tts-script/faction-rule-chapter-tactics.lua": "c906742268076fb91f7cb4a92c6b588e1122ccddb692688f635c8dd4f7110ad0",
         "config/defaults/tts-script/intermediate-updater.lua": "1a2d6dbc1a8c9c57ba6a3e7a3d4bc4b7a38a6c242a93f6ef3dae698123384d35",
-        "config/defaults/tts-script/ktui-mini-modelscript.lua": "1b87f973d38437099d7275a2c06a82918d5b9beb32ae7038da3f7ba37707f6af",
+        "config/defaults/tts-script/ktui-mini-modelscript.lua": "8e5170ef7f20d7008dc0d86cc8bd01f659379f70a02343f22b1b305c34641018",
         "config/defaults/tts-script/single-object-updater.lua": "3613b85169e986a8e50ebe221482079e27c18037e3f48920aa0f7e138c0ccacc",
+        "config/defaults/tts-script/sprint-movement-tool.lua": "5a4b0618df37dfb0dc6382e4aa42210e423a50015a7eb4c0492c9b1155b9b2f2",
         "config/defaults/tts-script/team-spawner-clean-script.lua": "12457bff3961eee2293c42d81cf4f4eb8b103177245a1ab8b46fd65da40672a2",
         "config/defaults/tts-script/team-spawner-script.lua": "a51ff45c8622923db909fb465781801511f235412f099f83dff728d4027650db",
         "config/defaults/tts-script/tts-update-rules-in-box-script.lua": "84f7f9b260f4e4968d208953b534bdbb7ab0b2f475e13264a2407f6c4d4d2b03",

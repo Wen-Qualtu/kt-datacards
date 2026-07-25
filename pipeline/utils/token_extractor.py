@@ -3,13 +3,8 @@ Token Extraction Script for Kill Team Datacards
 
 Extracts individual token images from marker/token guide cards.
 Uses PDF text extraction for accurate token names, falling back to OCR if needed.
-
-Usage:
-    poetry run python -m pipeline.utils.token_extractor --team farstalker-kinband
-    poetry run python -m pipeline.utils.token_extractor --all
 """
 
-import argparse
 import os
 from pathlib import Path
 import shutil
@@ -1393,12 +1388,6 @@ class TokenExtractor:
         """Extract team name from image path or PDF path."""
         parts = image_path.parts
         
-        # Check for output_v2 structure (legacy JPG images)
-        if 'output_v2' in parts:
-            faction_idx = parts.index('output_v2') + 1
-            if faction_idx + 1 < len(parts):
-                return parts[faction_idx + 1]
-        
         # Check for processed structure (PDF files)
         if 'processed' in parts:
             processed_idx = parts.index('processed') + 1
@@ -1793,7 +1782,7 @@ class TokenExtractor:
         if extract_names:
             # When we were given an explicit page PDF (integration layer), use it
             # directly for text extraction. Otherwise fall back to path-based PDF
-            # discovery (output_v2 / processed layouts).
+            # discovery (processed layouts).
             if pdf_page_info:
                 pdf_path = pdf_page_info['pdf_path']
                 team_name = self._extract_team_from_path(image_path)
@@ -2696,21 +2685,14 @@ class TokenExtractor:
         Returns:
             Path to the PDF file, or None if not found
         """
-        # Image is in output_v2/{faction}/{team}/faction-rules/{team}-markertoken-guide_front.jpg
-        # PDF should be in processed/{team}/{team}-faction-rules.pdf
-        
-        # Extract team name from path
+        # PDF lives in processed/{team}/{team}-faction-rules.pdf
         parts = image_path.parts
-        if 'output_v2' in parts:
-            faction_idx = parts.index('output_v2') + 1
-            if faction_idx + 1 < len(parts):
-                team = parts[faction_idx + 1]
-                
-                # Look for PDF in processed/{team}/
-                pdf_path = Path('processed') / team / f"{team}-faction-rules.pdf"
+        if 'processed' in parts:
+            idx = parts.index('processed') + 1
+            if idx < len(parts):
+                pdf_path = Path('processed') / parts[idx] / f"{parts[idx]}-faction-rules.pdf"
                 if pdf_path.exists():
                     return pdf_path
-        
         return None
     
     def process_team(self, team_name: str, method: str = 'auto', debug: bool = False, clean: bool = False) -> bool:
@@ -3102,112 +3084,3 @@ class TokenExtractor:
             return None
 
         return best_dir, best_metrics
-
-
-def main():
-    parser = argparse.ArgumentParser(description='Extract tokens from marker/token guides')
-    parser.add_argument('--team', type=str, help='Team name (e.g., farstalker-kinband)')
-    parser.add_argument('--all', action='store_true', help='Process all teams')
-    parser.add_argument('--method', choices=['auto'], default='auto',
-                       help='Extraction method (default: auto)')
-    parser.add_argument('--debug', action='store_true', help='Save debug images')
-    parser.add_argument('--clean', action='store_true', help='Delete existing extracted tokens for the team(s) before extracting')
-    parser.add_argument('--output-dir', type=str, default='processed',
-                       help='Output directory for extracted tokens (tokens go in {output-dir}/{team}/token/)')
-    parser.add_argument('--text-gap-max', type=float, default=6.0,
-                       help='Max horizontal gap (PDF units) to group words on the same label line (default: 6.0)')
-    parser.add_argument('--same-line-y-max', type=float, default=15.0,
-                       help='Max vertical delta (scaled) to consider words on the same line (default: 15.0)')
-    parser.add_argument('--next-line-y-min', type=float, default=5.0,
-                       help='Min vertical delta (scaled) to consider next-line continuation (default: 5.0)')
-    parser.add_argument('--next-line-y-max', type=float, default=25.0,
-                       help='Max vertical delta (scaled) to consider next-line continuation (default: 25.0)')
-    parser.add_argument('--next-line-x-overlap-ratio', type=float, default=0.25,
-                       help='Min x-overlap ratio to treat word as continuation on next line (default: 0.25)')
-    parser.add_argument('--name-match-max-distance', type=float, default=300.0,
-                       help='Max pixel distance between token center and label point (default: 300)')
-    
-    args = parser.parse_args()
-    
-    if not args.team and not args.all:
-        parser.error('Must specify --team or --all')
-    
-    # Setup
-    output_base = Path(args.output_dir)
-    extractor = TokenExtractor(
-        output_base,
-        text_gap_max=args.text_gap_max,
-        same_line_y_max=args.same_line_y_max,
-        next_line_y_min=args.next_line_y_min,
-        next_line_y_max=args.next_line_y_max,
-        next_line_x_overlap_ratio=args.next_line_x_overlap_ratio,
-        name_match_max_distance=args.name_match_max_distance,
-    )
-    
-    if args.team:
-        # Process single team
-        success = extractor.process_team_auto_tuned(
-            args.team,
-            method=args.method,
-            debug=args.debug,
-            clean=args.clean,
-            expected_token_count=None,
-        )
-        if not success:
-            exit(1)
-    
-    elif args.all:
-        # Find all teams with marker guides
-        print("Searching for teams with marker/token guides...")
-        teams = []
-        
-        # Load team config for tokens_ready check
-        config_path = Path('config/team-config.yaml')
-        all_teams_config = {}
-        if config_path.exists():
-            with open(config_path, 'r', encoding='utf-8') as f:
-                data = yaml.safe_load(f)
-                all_teams_config = data.get('teams', {}) if data else {}
-        
-        skipped_locked = []
-        for faction_dir in Path("output_v2").iterdir():
-            if faction_dir.is_dir():
-                for team_dir in faction_dir.iterdir():
-                    if team_dir.is_dir():
-                        faction_rules = team_dir / "faction-rules"
-                        if faction_rules.exists():
-                            marker_files = list(faction_rules.glob("*markertoken-guide*_front.jpg"))
-                            if marker_files:
-                                team_slug = team_dir.name
-                                team_cfg = all_teams_config.get(team_slug, {})
-                                if team_cfg.get('tokens_ready', False):
-                                    skipped_locked.append(team_slug)
-                                else:
-                                    teams.append(team_slug)
-        
-        print(f"Found {len(teams)} teams with marker guides")
-        if skipped_locked:
-            print(f"Skipped {len(skipped_locked)} locked teams (tokens_ready=true): {', '.join(sorted(skipped_locked))}")
-        
-        # Process each team
-        success_count = 0
-        for team in sorted(teams):
-            if extractor.process_team_auto_tuned(
-                team,
-                method=args.method,
-                debug=args.debug,
-                clean=args.clean,
-                expected_token_count=None,
-            ):
-                success_count += 1
-        
-        print(f"\n{'='*60}")
-        print(f"Summary: {success_count}/{len(teams)} teams processed successfully")
-        print(f"{'='*60}")
-    
-    print(f"\n✓ Token extraction complete!")
-    print(f"  Output directory: {output_base.absolute()}")
-
-
-if __name__ == '__main__':
-    main()

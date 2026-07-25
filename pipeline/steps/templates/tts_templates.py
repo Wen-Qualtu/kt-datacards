@@ -351,18 +351,13 @@ def create_bag(team_name, team_tag, contained_objects, lua_script, texture_url=N
     # Get team folder name from tag
     team_folder_name = team_tag.strip('_').lower().replace(' ', '-')
     
-    # IMPORTANT: URLs should ALWAYS point to output_v3/{team}/cardbox/
-    # NO fallback logic here - that's handled in step 6 which copies the actual files
-    # If team-specific texture doesn't exist, step 6 copies default to this location
-    # This allows backend updates per team without regenerating TTS objects
-    
+    # Fallback cardbox URLs point to output/{team}/cardbox/ (step 6 writes the
+    # actual files there, copying defaults when a team has no custom cardbox).
     if not mesh_url:
-        # Always point to output_v3 cardbox location
-        mesh_url = f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/{repo_branch}/output_v3/{team_folder_name}/cardbox/{team_folder_name}-card-box.obj"
-    
+        mesh_url = f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/{repo_branch}/output/{team_folder_name}/cardbox/{team_folder_name}-card-box.obj"
+
     if not texture_url:
-        # Always point to output_v3 cardbox location
-        texture_url = f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/{repo_branch}/output_v3/{team_folder_name}/cardbox/{team_folder_name}-card-box-texture.jpg"
+        texture_url = f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/{repo_branch}/output/{team_folder_name}/cardbox/{team_folder_name}-card-box-texture.jpg"
     
     # Create LuaScriptState with positions for each contained object.
     # IMPORTANT: Placement must be stable across teams.
@@ -406,22 +401,8 @@ def create_bag(team_name, team_tag, contained_objects, lua_script, texture_url=N
         if not face_url:
             return None
         
-        # Support v2, v3 and current output structures
-        if "/output_v2/" in face_url:
-            after = face_url.split("/output_v2/", 1)[1]
-            # URL format: .../output_v2/{faction}/{team}/{card_type}/...
-            parts = after.split("/")
-            if len(parts) < 3:
-                return None
-            folder = parts[2].strip().lower()
-        elif "/output_v3/" in face_url:
-            after = face_url.split("/output_v3/", 1)[1]
-            # URL format: .../output_v3/{team}/cards/{card_type}/...
-            parts = after.split("/")
-            if len(parts) < 3:
-                return None
-            folder = parts[2].strip().lower()
-        elif "/output/" in face_url:
+        # Card type is inferred from the current output/{team}/cards/{type}/ URL.
+        if "/output/" in face_url:
             after = face_url.split("/output/", 1)[1]
             # URL format: .../output/{team}/cards/{card_type}/...
             parts = after.split("/")

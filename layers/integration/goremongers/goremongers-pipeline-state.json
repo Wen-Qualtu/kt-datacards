@@ -1,20 +1,20 @@
 {
   "team": "goremongers",
   "pipeline_version": "2.0",
-  "last_updated": "2026-07-21T11:11:12.590669+00:00",
+  "last_updated": "2026-07-25T17:16:53.930193+00:00",
   "steps": {
     "content_analysis": {
       "outputs": {
         "content.json": {
           "path": "layers/integration/goremongers/content/goremongers-content.json",
-          "hash": "a8beb7511d42569a15b72ff7f6d6e01d98f54bb156e577049688e61206f4c370",
-          "modified": "2026-07-21T11:00:23.012647+00:00"
+          "hash": "594ef44011b12772e5d7136669e98f8c809a36f14dcaf66d18046c198d5b85af",
+          "modified": "2026-07-25T17:12:37.053907+00:00"
         }
       },
-      "completed": "2026-07-21T11:00:24.009231+00:00",
+      "completed": "2026-07-25T17:13:37.329052+00:00",
       "inputs": {
         "layers/integration/goremongers/manifest.json": "b0e8673c59aac3051ab1af3a72226ac71eb6d2dc7a76c48f7f07d5a79deb66f0",
-        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
+        "config/team-config.yaml": "b8ca8191fcfbccdfb363ab8c3eaf7e4e95ef35b5a914828a1a2b4a62cd02c680",
         "layers/integration/goremongers/goremongers-datacard-goremonger-aspirant.pdf": "689bfa3011062ff019f78df92c2255769885a61e83f3997176d307e0014674ec",
         "layers/integration/goremongers/goremongers-datacard-goremonger-blood-herald.pdf": "b7e757892a7b79a3ffb3c10bcec034a061287bf57bdcd3709dd0f1a7a99f30e1",
         "layers/integration/goremongers/goremongers-datacard-goremonger-bloodtaker.pdf": "f7d8bc6d7fb06c4bd7a4cb82ba781847c9cf68af3feb493cb1dc4a969d8cfb82",
@@ -608,13 +608,13 @@
       "outputs": {
         "team-data.json": {
           "path": "output/goremongers/data/goremongers-team-data.json",
-          "hash": "a8beb7511d42569a15b72ff7f6d6e01d98f54bb156e577049688e61206f4c370",
-          "modified": "2026-07-21T11:00:40.407050+00:00"
+          "hash": "594ef44011b12772e5d7136669e98f8c809a36f14dcaf66d18046c198d5b85af",
+          "modified": "2026-07-25T17:16:00.449246+00:00"
         }
       },
-      "completed": "2026-07-21T11:00:40.416302+00:00",
+      "completed": "2026-07-25T17:16:00.463061+00:00",
       "inputs": {
-        "layers/integration/goremongers/content/goremongers-content.json": "a8beb7511d42569a15b72ff7f6d6e01d98f54bb156e577049688e61206f4c370"
+        "layers/integration/goremongers/content/goremongers-content.json": "594ef44011b12772e5d7136669e98f8c809a36f14dcaf66d18046c198d5b85af"
       }
     },
     "generate_tts": {
@@ -626,14 +626,14 @@
         },
         "tts_objects/Goremongers.json": {
           "path": "output/goremongers/tts_objects/Goremongers.json",
-          "hash": "f35beada3c1dc37e6dec52b3dba9606f75e50059063a16e746bcdecdb88bc2b4",
-          "modified": "2026-07-21T11:11:12.482827+00:00"
+          "hash": "8d7b5425e2d07ad848cc3c67abd6b4b5a5ee60e024b7c93658b7171bf5d60a69",
+          "modified": "2026-07-25T17:16:53.846291+00:00"
         }
       },
-      "completed": "2026-07-21T11:11:12.590656+00:00",
+      "completed": "2026-07-25T17:16:53.930182+00:00",
       "inputs": {
-        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41",
-        "config/team-guids.json": "1dea0eaf2c7d1c37c86aba088cdf876f0638d2dcaca162888fea8422c2d5c9db",
+        "config/team-config.yaml": "b8ca8191fcfbccdfb363ab8c3eaf7e4e95ef35b5a914828a1a2b4a62cd02c680",
+        "config/team-guids.json": "906473ddbf256345a4150df497def05ec513f95948b27d6fc98fa6dba00bb7d0",
         "output/goremongers/cards/datacards/goremonger-aspirant-back.jpg": "fc60e0a87b3eb96519b347952cee3ea2431630bef591cb10fec47e93fdb0ed95",
         "output/goremongers/cards/datacards/goremonger-aspirant-front.jpg": "a65b48c25fae748cc96102f11036511b5bdb16ac1fb5e593f93c782b2a1c29d3",
         "output/goremongers/cards/datacards/goremonger-blood-herald-back.jpg": "fc60e0a87b3eb96519b347952cee3ea2431630bef591cb10fec47e93fdb0ed95",
@@ -721,14 +721,15 @@
         "output/goremongers/dice/goremongers-dice-dark.jpg": "138ff0d25de61c6e6dd53c5cb412bcd5b92f3e671f05b70fa1228dce3f4e1d9f",
         "output/goremongers/dice/goremongers-dice-light.jpg": "447e531f316a858de4e493cf8845b8eb41024cebe39c607f51e12fd96d6bfe6c",
         "output/goremongers/dice/goremongers-dice-team.jpg": "7aa3eca0e1ca61b66fcf8527004e534921a059703c564936a293a739117906b1",
-        "output/goremongers/data/goremongers-team-data.json": "a8beb7511d42569a15b72ff7f6d6e01d98f54bb156e577049688e61206f4c370",
+        "output/goremongers/data/goremongers-team-data.json": "594ef44011b12772e5d7136669e98f8c809a36f14dcaf66d18046c198d5b85af",
         "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
-        "config/defaults/tts-script/datacard-load-stats.lua": "8c3702f37cbf4fa3556af81a2b375f846945a2ee2e9c7d4daf14cd6a3d1216c6",
-        "config/defaults/tts-script/display-table-manager-script.lua": "0dab4381078d90802f25e2cc825bc3658be35ee13ab3e98831c9d248c2526689",
+        "config/defaults/tts-script/datacard-load-stats.lua": "62bc91f7825c6166cc138b96b8bef95717322c5b39ea38b4ce9e9d4c040a5a89",
+        "config/defaults/tts-script/display-table-manager-script.lua": "846de299f8e2c925e63cc77c4991fedd07ae75e9bde375f3b3c991c8730b891b",
         "config/defaults/tts-script/faction-rule-chapter-tactics.lua": "c906742268076fb91f7cb4a92c6b588e1122ccddb692688f635c8dd4f7110ad0",
         "config/defaults/tts-script/intermediate-updater.lua": "1a2d6dbc1a8c9c57ba6a3e7a3d4bc4b7a38a6c242a93f6ef3dae698123384d35",
-        "config/defaults/tts-script/ktui-mini-modelscript.lua": "1b87f973d38437099d7275a2c06a82918d5b9beb32ae7038da3f7ba37707f6af",
+        "config/defaults/tts-script/ktui-mini-modelscript.lua": "8e5170ef7f20d7008dc0d86cc8bd01f659379f70a02343f22b1b305c34641018",
         "config/defaults/tts-script/single-object-updater.lua": "3613b85169e986a8e50ebe221482079e27c18037e3f48920aa0f7e138c0ccacc",
+        "config/defaults/tts-script/sprint-movement-tool.lua": "5a4b0618df37dfb0dc6382e4aa42210e423a50015a7eb4c0492c9b1155b9b2f2",
         "config/defaults/tts-script/team-spawner-clean-script.lua": "12457bff3961eee2293c42d81cf4f4eb8b103177245a1ab8b46fd65da40672a2",
         "config/defaults/tts-script/team-spawner-script.lua": "a51ff45c8622923db909fb465781801511f235412f099f83dff728d4027650db",
         "config/defaults/tts-script/tts-update-rules-in-box-script.lua": "84f7f9b260f4e4968d208953b534bdbb7ab0b2f475e13264a2407f6c4d4d2b03",

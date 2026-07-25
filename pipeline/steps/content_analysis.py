@@ -775,6 +775,316 @@ def clean_text(text: str) -> str:
     return text
 
 
+# ══════════════════════════════════════════════════════════════════════════════
+# Operative-selection parser (PDF-native, drawing-aware * footnote detection)
+# ══════════════════════════════════════════════════════════════════════════════
+# Extracts per-operative weapon-loadout selection groups from the operative-selection
+# card PDF automatically for any team. The "*" footnote marker is a vector drawing
+# (small star), not a text char, so star detection uses page.get_drawings().
+
+# Rules-prose markers: a wrapped weapon option never contains these nor ends with '.'
+_SEL_CONT_STOP = (
+    "includes", "must", "up to", "different", "other side", "faction rule",
+    "instead", "you can", "e.g", " list", "this card", "cannot", "can only",
+    "each operative", "kill team", "option)", "selected", "chosen",
+    "weapon rule", "count", "selection", "piercing", "excluding",
+)
+
+
+def _sel_norm(s: str) -> str:
+    return re.sub(r"\s+", " ", re.sub(r"[^A-Za-z0-9 ]", "", (s or "").upper())).strip()
+
+
+def _sel_is_bold(span: dict) -> bool:
+    return bool(span.get("flags", 0) & 16) or any(
+        k in span.get("font", "") for k in ("Bold", "-Bd", "Heavy", "Demi"))
+
+
+def _sel_is_prose(line: str) -> bool:
+    low = line.strip().lower()
+    if not low:
+        return True
+    if low.endswith("."):
+        return True
+    return any(k in low for k in _SEL_CONT_STOP)
+
+
+def _sel_split_options(seg: str) -> List[str]:
+    """Split "A, B or C" -> [A, B, C]; keep "X; Y" combos whole; preserve casing."""
+    seg = seg.strip().rstrip(",")
+    if ";" in seg:
+        return [seg.strip()]
+    seg = seg.replace(" or ", "|OR|")
+    out = []
+    for part in seg.split("|OR|"):
+        for pp in part.split(","):
+            pp = pp.strip()
+            if len(pp) > 1:
+                out.append(pp)
+    return out
+
+
+def _sel_star_positions(page) -> List[tuple]:
+    """(x0, y_center) for each small star glyph (the * footnote/markers)."""
+    stars = []
+    for dr in page.get_drawings():
+        r = dr["rect"]
+        w, h = r.width, r.height
+        if 3.5 <= w <= 8 and 3.5 <= h <= 9 and len(dr.get("items", [])) >= 12:
+            stars.append((r.x0, (r.y0 + r.y1) / 2))
+    return stars
+
+
+def _sel_extract_rows(pdfs: List[Path]) -> List[dict]:
+    """Ordered rows across every operative-selection page.
+    Each row: dict(text, bold_name, name_x1, ycen, has_star, is_bullet)."""
+    rows: List[dict] = []
+    for p in pdfs:
+        if not p.exists():
+            continue
+        try:
+            doc = fitz.open(p)
+        except Exception as e:
+            logger.warning(f"Failed to open {p}: {e}")
+            continue
+        for page in doc:
+            stars = _sel_star_positions(page)
+            d = page.get_text("dict")
+            lines = []
+            for b in d.get("blocks", []):
+                for ln in b.get("lines", []):
+                    spans = ln.get("spans", [])
+                    if not spans:
+                        continue
+                    text = "".join(s.get("text", "") for s in spans)
+                    bold_parts = [s.get("text", "") for s in spans
+                                  if _sel_is_bold(s) and s.get("text", "").strip()]
+                    bold_name = " ".join(t.strip() for t in bold_parts).strip()
+                    # strip leaked leading symbols/arrows/numbers (e.g. "↘ 1 ")
+                    bold_name = re.sub(r"^[^A-Za-z\u00c0-\u024f]+", "", bold_name).strip()
+                    # strip trailing superscript footnote digits ("GUNNER 1,2" -> "GUNNER")
+                    bold_name = re.sub(r"[\s,0-9]+$", "", bold_name).strip()
+                    name_x1 = None
+                    for s in spans:
+                        if _sel_is_bold(s) and s.get("text", "").strip():
+                            name_x1 = s["bbox"][2]
+                    y0 = ln["bbox"][1]
+                    y1 = ln["bbox"][3]
+                    lines.append((text, bold_name, name_x1, (y0 + y1) / 2))
+            for text, bold_name, name_x1, ycen in lines:
+                has_star = False
+                if name_x1 is not None:
+                    for sx, sy in stars:
+                        if abs(sy - ycen) < 5 and (name_x1 - 4) <= sx <= (name_x1 + 14):
+                            has_star = True
+                            break
+                stript = text.strip()
+                rows.append(dict(text=stript, bold_name=bold_name, name_x1=name_x1,
+                                 ycen=ycen, has_star=has_star, is_bullet=stript.startswith("•")))
+        doc.close()
+    return _sel_merge_continuations(rows)
+
+
+def _sel_merge_continuations(rows: List[dict]) -> List[dict]:
+    """Stitch an operative-name row with following wrapped fragments so a split
+    header ('• MILITANT with' / 'one of the' / 'following options:') or a split
+    loadout ('• GUNNER with' / 'flamer and' / 'bayonet1') lands on one row.
+    Narrow-column PDFs wrap these across many short lines."""
+    def _complete_hdr(low: str) -> bool:
+        return "following" in low and ("option" in low or low.rstrip().endswith(":"))
+
+    out = []
+    i = 0
+    while i < len(rows):
+        r = dict(rows[i])
+        low = r["text"].lower()
+        if r["bold_name"] and not _complete_hdr(low):
+            while i + 1 < len(rows):
+                nxt = rows[i + 1]
+                if nxt["bold_name"] or nxt["is_bullet"] or nxt["text"].startswith(("\u25cb", "\u25ef")):
+                    break
+                if _sel_is_prose(nxt["text"]):
+                    break
+                r["text"] = (r["text"] + " " + nxt["text"]).strip()
+                low = r["text"].lower()
+                i += 1
+                if _complete_hdr(low):
+                    break
+        out.append(r)
+        i += 1
+    return out
+
+
+def _sel_parse(rows: List[dict]) -> Dict[str, List]:
+    """Walk rows -> {card_operative_name: [[option, ...], ...]} resolving * footnote."""
+    selection: Dict[str, object] = {}
+    starred: List[str] = []
+    variants: Dict[str, List[str]] = {}
+    footnote_raw: List[str] = []
+    in_footnote = False
+    cur = None
+    cur_groups: List[List[str]] = []
+    each_mode = False
+
+    def flatten(groups):
+        out = []
+        for g in groups:
+            opts = []
+            for raw in g:
+                opts.extend(_sel_split_options(raw))
+            if opts:
+                out.append(opts)
+        return out
+
+    def finalize():
+        nonlocal cur, cur_groups
+        if cur is not None:
+            newsel = flatten(cur_groups)
+            old = selection.get(cur)
+            if old and isinstance(old, list) and newsel:
+                if len(old) == 1 and len(newsel) == 1:
+                    old[0].extend(newsel[0])
+                else:
+                    old.extend(newsel)
+            else:
+                selection[cur] = newsel
+        cur = None
+        cur_groups = []
+
+    for r in rows:
+        t = r["text"]
+        low = t.lower()
+        # Footnote header: standalone "* With one of the following options:" (no bold name)
+        if not r["bold_name"] and not r["is_bullet"] and "with one of the following option" in low:
+            finalize()
+            in_footnote = True
+            footnote_raw = []
+            continue
+        if in_footnote:
+            if r["is_bullet"] and not r["bold_name"]:
+                opt = t.lstrip("•").strip()
+                if opt:
+                    footnote_raw.append(opt)
+                continue
+            if not r["bold_name"] and not r["is_bullet"] and t.startswith(("\u25cb", "\u25ef")):
+                footnote_raw.append(re.sub(r"^[\u25cb\u25ef]\s*", "", t).strip())
+                continue
+            if not r["bold_name"] and not r["is_bullet"] and footnote_raw and not _sel_is_prose(t):
+                if t and (t[0].islower() or t[0] in ",;"):
+                    footnote_raw[-1] += " " + t
+                    continue
+            in_footnote = False
+
+        # Operative WITH inline options (leader or list)
+        if r["bold_name"] and ("one of the following" in low or "one option from" in low
+                               or "with one option" in low or "with the following" in low):
+            finalize()
+            cur = r["bold_name"]
+            cur_groups = []
+            each_mode = (("each of the following" in low) or ("one option from each" in low)
+                         or ("with the following" in low and "one of the following" not in low))
+            continue
+        # Loadout variant: "• NAME with <loadout>" (not an options header) -> one option
+        if (r["is_bullet"] and r["bold_name"] and " with " in low
+                and not any(k in low for k in ("following", "one of the", "one option from"))):
+            finalize()
+            name = r["bold_name"]
+            m = re.search(r"\bwith\s+(.*)$", t, re.IGNORECASE)
+            loadout = m.group(1).strip() if m else ""
+            if loadout:
+                variants.setdefault(name, []).append(loadout)
+            continue
+        # Plain list operative: bulleted bold name, no "with"
+        if r["is_bullet"] and r["bold_name"] and " with " not in low:
+            finalize()
+            name = r["bold_name"]
+            if r["has_star"]:
+                starred.append(name)
+                selection[name] = "STAR"
+            else:
+                selection[name] = []
+            continue
+        # Option markers / lines while collecting for cur
+        if cur is not None:
+            if ("one option from each" in low) or ("or one option from each" in low):
+                each_mode = True  # mid-operative switch
+                continue
+            if "or the following option" in low:
+                if not each_mode:
+                    cur_groups.append([])
+                continue
+            opt = None
+            if t.startswith(("\u25cb", "\u25ef")):
+                opt = re.sub(r"^[\u25cb\u25ef]\s*", "", t).strip()
+            elif r["is_bullet"] and not r["bold_name"]:
+                opt = t.lstrip("•").strip()
+            if opt is not None:
+                if not opt or any(s in low for s in _SEL_CONT_STOP) or _sel_is_prose(t):
+                    continue
+                if each_mode:
+                    cur_groups.append([opt])
+                else:
+                    if not cur_groups:
+                        cur_groups.append([])
+                    cur_groups[-1].append(opt)
+                continue
+            if not r["bold_name"] and cur_groups and cur_groups[-1] and not _sel_is_prose(t):
+                prev = cur_groups[-1][-1].rstrip()
+                incomplete = prev.endswith((";", ",", "&", " or", " and", "-"))
+                if t and (incomplete or t[0].islower() or t[0] in ",;"):
+                    cur_groups[-1][-1] += " " + t
+                    continue
+    finalize()
+
+    footnote_group = None
+    if footnote_raw:
+        opts = []
+        for raw in footnote_raw:
+            opts.extend(_sel_split_options(raw))
+        footnote_group = opts
+    for name in starred:
+        selection[name] = [footnote_group] if footnote_group else []
+    for name, loadouts in variants.items():
+        if not selection.get(name):
+            selection[name] = [loadouts]
+    return selection
+
+
+def _sel_map_to_datacards(selection: Dict[str, List], datacard_names: List[str]) -> Dict[str, List]:
+    """Map card operative names to datacard names by shared-word scoring, one-to-one."""
+    if not datacard_names:
+        return dict(selection)
+    stop = {"OF", "THE", "AND", "A", "AN", "WITH"}
+    dc = [(set(_sel_norm(n).split()) - stop, _sel_norm(n), n) for n in datacard_names]
+    used = set()
+    out: Dict[str, List] = {}
+    for card_name in sorted(selection, key=lambda s: len(_sel_norm(s).split()), reverse=True):
+        groups = selection[card_name]
+        cw = set(_sel_norm(card_name).split()) - stop
+        cn = _sel_norm(card_name)
+        best = None
+        best_score = None
+        for dwords, dnorm, dorig in dc:
+            if dorig in used:
+                continue
+            if dnorm == cn:
+                score = (100, 0)
+            else:
+                shared = len(cw & dwords)
+                if shared == 0:
+                    continue
+                score = (shared, -abs(len(dwords) - len(cw)))
+            if best_score is None or score > best_score:
+                best_score = score
+                best = dorig
+        if best is not None:
+            used.add(best)
+            out[best] = groups
+        else:
+            out[card_name] = groups
+    return out
+
+
 # ===================================================================
 # DATA EXTRACTION
 # ===================================================================
@@ -786,6 +1096,9 @@ class TeamDataExtractor:
         self.team = team
         self.manifest_path = paths.integration_manifest_file(team)
         self.output_path = paths.content_file(team)
+        # Populated when datacards are extracted; used to key operative-selection
+        # entries by datacard name (datacards run first in extract()).
+        self._datacard_names: List[str] = []
 
     def _entity_integration_pdfs(self, entity: Dict, entity_type: str) -> List[Path]:
         """Resolve an entity's integration PDF paths, mirroring integrate_classified
@@ -865,6 +1178,10 @@ class TeamDataExtractor:
             
             if extracted_data:
                 team_data[key] = extracted_data
+                if key == "datacards":
+                    # Stash datacard operative names so operatives_selection (later in
+                    # this loop) can map card names -> datacard names.
+                    self._datacard_names = [d.get("name", "") for d in extracted_data if d.get("name")]
         
         if total_extracted > 0:
             logger.info(f"  Extracted data from {total_extracted} cards")
@@ -1292,234 +1609,36 @@ class TeamDataExtractor:
     
     def _extract_operatives_selection(self, entity: Dict, pdfs: List[Path]) -> Optional[Dict]:
         """
-        Extract operative loadout selection options from operatives card.
-        
+        Extract operative loadout selection options from the operatives-selection card.
+
+        Uses a PDF-native, drawing-aware parser (the "*" footnote marker is a vector
+        star, not a text char) and maps the card's operative names to the team's
+        datacard names so `selection` is keyed consistently with the datacards.
+
         Args:
             entity: Entity dict from the manifest
             pdfs: Integration PDFs for this entity
-            
+
         Returns:
             Dict with name, text, and selection (structured loadout options)
         """
-        # First get the text using simple extraction
+        # Keep the raw text for reference / downstream text consumers.
         simple_data = self._extract_simple_text(entity.get("name", "UNKNOWN"), pdfs)
         if not simple_data:
             return None
-        
+
         text = simple_data.get("text", "")
-        
-        # Parse loadout selection from text
-        selection = self._parse_selection_from_text(text)
-        
-        # Return with both text and structured selection
+
+        # Structured loadout selection, parsed straight from the PDF geometry.
+        rows = _sel_extract_rows(pdfs)
+        raw_selection = _sel_parse(rows)
+        selection = _sel_map_to_datacards(raw_selection, getattr(self, "_datacard_names", []))
+
         return {
             "name": simple_data.get("name"),
             "text": text,
-            "selection": selection
+            "selection": selection,
         }
-    
-    def _parse_selection_from_text(self, text: str) -> Dict[str, List]:
-        """
-        Parse operative loadout selection options from operatives card text.
-        
-        Format example:
-            "ASSAULT INTERCESSOR SERGEANT with one option from each of the following:
-                • Hand flamer or heavy bolt pistol
-                • Chainsword, power fist, power weapon or thunder hammer
-             Or the following option:
-                • Plasma pistol; chainsword"
-        
-        Returns:
-            Dict mapping operative names to list of option groups (arrays of weapon choices)
-        """
-        selection = {}
-        
-        # Pre-process: merge operative header lines that span multiple lines
-        # E.g., "• OPERATIVE with \n one option from" → "• OPERATIVE with one option from"
-        lines = text.split('\n')
-        processed_lines = []
-        i = 0
-        while i < len(lines):
-            line = lines[i].strip()
-            
-            # If line ends with "with" or "with auxiliary", merge with next line(s) until we get full phrase
-            if line and (line.endswith(' with') or line.endswith(' auxiliary')) and i + 1 < len(lines):
-                # Keep merging until we get a complete "with ... one of/one option" phrase
-                while i + 1 < len(lines):
-                    next_line = lines[i + 1].strip()
-                    if not next_line:
-                        i += 1
-                        continue
-                    line = line + ' ' + next_line
-                    i += 1
-                    # Stop if we've completed the phrase
-                    if 'one of' in line.lower() or 'one option' in line.lower():
-                        break
-            
-            if line:
-                processed_lines.append(line)
-            i += 1
-        
-        lines = processed_lines
-        
-        i = 0
-        while i < len(lines):
-            line = lines[i]
-            
-            # Look for operative name with loadout options
-            # Pattern: "• OPERATIVE NAME with one option from"
-            # or: "• OPERATIVE NAME with auxiliary ... and one of"
-            # or: "• OPERATIVE NAME with one of the following"
-            if ('with one option' in line.lower() or 
-                ('with auxiliary' in line.lower() and 'one of' in line.lower()) or
-                ('with one of the following' in line.lower())):
-                # Extract operative name (everything between • and "with")
-                match = re.match(r'^[•\s]*(.+?)\s+with\s+', line, re.IGNORECASE)
-                if match:
-                    operative_name = match.group(1).strip().upper()
-                    option_groups = []
-                    i += 1
-                    
-                    # Parse option groups marked by ◯ or "Or the following option"
-                    current_group_lines = []
-                    
-                    while i < len(lines):
-                        opt_line = lines[i].strip()
-                        
-                        # Check if we hit next operative (starts with • and looks like operative name with "with")
-                        if opt_line.startswith('•') and ' with ' in opt_line.lower():
-                            # Next operative found, stop here
-                            break
-                        
-                        # Check for standalone operative names without options
-                        if (opt_line.startswith('•') and 
-                            opt_line[1:].strip().isupper() and
-                            len(opt_line) < 60 and
-                            any(kw in opt_line.upper() for kw in ['SERGEANT', 'CAPTAIN', 'WARRIOR', 'GUNNER', 'GRENADIER', 'SNIPER']) and
-                            ' with ' not in opt_line.lower()):
-                            # Next operative found, stop here
-                            break
-                        
-                        # Option group marker (◯ or ○)
-                        if opt_line.startswith('◯') or opt_line.startswith('○'):
-                            # Save previous group if any
-                            if current_group_lines:
-                                group_text = ' '.join(current_group_lines)
-                                parsed_group = self._parse_weapon_options(group_text)
-                                if parsed_group:
-                                    option_groups.append(parsed_group)
-                                current_group_lines = []
-                            i += 1
-                            continue
-                        
-                        # Alternative option group marker: "Or the following option:"
-                        if 'or the following option' in opt_line.lower():
-                            # Save previous group if any
-                            if current_group_lines:
-                                group_text = ' '.join(current_group_lines)
-                                parsed_group = self._parse_weapon_options(group_text)
-                                if parsed_group:
-                                    option_groups.append(parsed_group)
-                                current_group_lines = []
-                            i += 1
-                            continue
-                        
-                        # Weapon option line (starts with •)
-                        if opt_line.startswith('•'):
-                            # Remove bullet
-                            opt_text = opt_line[1:].strip()
-                            
-                            # Skip certain non-weapon lines
-                            if any(skip in opt_text.lower() for skip in ['auxiliary grenade launcher and', 'selected from', 'you cannot', 'other than', 'some', 'your kill team']):
-                                i += 1
-                                continue
-                            
-                            # Add to current group
-                            current_group_lines.append(opt_text)
-                        # Non-bullet line might be continuation of weapon name
-                        elif current_group_lines and not opt_line.startswith('◯') and not opt_line.startswith('○'):
-                            # Only merge if it looks like a continuation (lowercase start or partial word)
-                            if opt_line and opt_line[0].islower():
-                                current_group_lines[-1] += ' ' + opt_line
-                        
-                        i += 1
-                    
-                    # Save last group if any
-                    if current_group_lines:
-                        group_text = ' '.join(current_group_lines)
-                        parsed_group = self._parse_weapon_options(group_text)
-                        if parsed_group:
-                            option_groups.append(parsed_group)
-                    
-                    # Save to selection
-                    selection[operative_name] = option_groups
-                    continue
-            
-            # Check for operative with no loadout options (e.g., "• SPACE MARINE CAPTAIN")
-            elif line.startswith('•'):
-                # Remove bullet
-                operative_line = line[1:].strip()
-                # Check if it's just an operative name (all caps, no "with")
-                if (operative_line.isupper() and 
-                    len(operative_line) < 60 and
-                    'with' not in operative_line.lower() and
-                    any(keyword in operative_line for keyword in ['SERGEANT', 'CAPTAIN', 'WARRIOR', 'GUNNER', 'GRENADIER', 'SNIPER', 'LEADER'])):
-                    
-                    # This is an operative with no loadout options
-                    selection[operative_line] = []
-            
-            i += 1
-        
-        return selection
-    
-    def _parse_weapon_options(self, options_text: str) -> List[str]:
-        """
-        Parse a weapon options string into a list of weapon names.
-        
-        Handles:
-        - "A or B" → ["A", "B"]
-        - "A, B or C" → ["A", "B", "C"]
-        - "A; B" → ["A; B"] (exclusive combo, kept as single option)
-        
-        Args:
-            options_text: Text containing weapon options
-            
-        Returns:
-            List of weapon option strings
-        """
-        # Check if this is a semicolon combo (exclusive set)
-        if ';' in options_text:
-            # Keep as single option
-            return [options_text.strip()]
-        
-        # Split by " or " and ", " but preserve multi-word weapon names
-        # Replace " or " with a marker
-        text = options_text.replace(' or ', '|||OR|||')
-        
-        # Now split by both comma and our marker
-        parts = []
-        for segment in text.split('|||OR|||'):
-            # Split segment by comma if present
-            if ',' in segment:
-                # Be careful with commas - they might be within weapon names or separating them
-                # Strategy: split by comma, then check if parts make sense
-                comma_parts = [p.strip() for p in segment.split(',')]
-                for part in comma_parts:
-                    if part:
-                        parts.append(part)
-            else:
-                if segment.strip():
-                    parts.append(segment.strip())
-        
-        # Clean up and capitalize properly
-        weapons = []
-        for part in parts:
-            part = part.strip()
-            if part and len(part) > 1:
-                # Capitalize first letter only
-                weapons.append(part[0].upper() + part[1:])
-        
-        return weapons
     
     def _extract_simple_text(self, name: str, pdfs: List[Path]) -> Optional[Dict]:
         """

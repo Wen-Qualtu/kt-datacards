@@ -17,8 +17,8 @@ Behaviour notes:
 
 IMPLEMENTATION NOTES:
   - The heavy lifting lives in pipeline/steps/tts_impl.py + pipeline/steps/templates/.
-  - Scope: per-team {Team}.json (clean bare box) + {Team} Box.json (slim legacy
-    wrapper) + individual card/dice JSONs + preview. Also finalizes the hosting
+  - Scope: per-team {Team}.json (clean bare box) + individual card/dice JSONs.
+    Also finalizes the hosting
     metadata: per-team {team}-object-urls.json + a global team-urls.json summary
     (content-hashed for stable in-game update checks). The cross-team manager bag
     is still left out for now (production-hosting concern; portable later).
