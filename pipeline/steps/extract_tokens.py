@@ -53,6 +53,22 @@ class IntegrationTokenExtractor(TokenExtractor):
             logger.warning(f"  {team_name}: could not read manifest: {e}")
             return []
 
+        # Prefer the committed classified single-card token-guide PDF(s) under
+        # layers/integration/{team}. The manifest's `front` points at the per-track
+        # raw extract under layers/{track}/extracted, which is GITIGNORED and thus
+        # absent on a fresh clone (or after a track re-scrape) — using it breaks
+        # token re-runs. The classified PDFs are committed and carry identical
+        # page content, so they are the reliable source of truth.
+        team_dir = paths.integration_team_dir(team_name)
+        classified = sorted(team_dir.glob(f"{team_name}-token-guide-*.pdf"))
+        if classified:
+            return [
+                {"pdf_path": p, "page_num": 0, "page_index": i + 1}
+                for i, p in enumerate(classified)
+            ]
+
+        # Fallback: raw extract path from the manifest (only present mid-run when
+        # the track's extracted layer still exists).
         guides: List[Dict] = []
         for entry in manifest.get("token_guide", []):
             for card in entry.get("cards", []):
@@ -236,6 +252,18 @@ def _process_token(input_path: Path, output_path: Path, shape: str,
     rgba[transparent_holes, 3] = 255
 
     target_w, target_h = _standard_token_size(shape)
+    # For symmetric (square-target) shapes — round/octagon/diamond — pad the canvas
+    # to a square before resizing to the fixed token size. Otherwise a non-square
+    # content bounding box (e.g. a tall glyph) gets squished into the square target,
+    # turning a circular cut into an oval. This is a no-op for already-square canvases
+    # and never touches the operative shape (which has a non-square target).
+    if target_w == target_h and rgba.shape[0] != rgba.shape[1]:
+        side = max(rgba.shape[0], rgba.shape[1])
+        padded = np.zeros((side, side, 4), dtype=rgba.dtype)
+        y_off = (side - rgba.shape[0]) // 2
+        x_off = (side - rgba.shape[1]) // 2
+        padded[y_off:y_off + rgba.shape[0], x_off:x_off + rgba.shape[1]] = rgba
+        rgba = padded
     if rgba.shape[1] != target_w or rgba.shape[0] != target_h:
         rgba = cv2.resize(rgba, (target_w, target_h), interpolation=cv2.INTER_AREA)
 

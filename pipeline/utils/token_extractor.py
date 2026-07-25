@@ -2499,7 +2499,13 @@ class TokenExtractor:
                     safe_name = re.sub(r'[^a-z0-9\-]', '-', token_name.lower())
                     safe_name = re.sub(r'-+', '-', safe_name).strip('-')
             else:
-                safe_name = f"token-{idx:02d}"
+                # Unnamed detection: no text label could be matched to this contour.
+                # These are almost always misdetections — a decorative element or a
+                # stacked point/value token that is instead supplied via
+                # config/teams/{team}/custom-tokens/. Exporting it as a generic
+                # "token-NN" yields a stray, unusable token in the bag, so skip it.
+                print(f"  ⚠ Skipping unnamed token (misdetection): token-{idx:02d}")
+                continue
 
             # Wrecka-Krew: the item labeled "Wrecka 2" is a combined/double marker on the guide.
             # Skip it rather than exporting an incorrect cutout.
