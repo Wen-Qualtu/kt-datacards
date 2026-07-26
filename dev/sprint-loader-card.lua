@@ -88,9 +88,9 @@ local SPRINT_CODE = [=[
       (host runs first).
     * It never WRITES self.script_state, so saved state (wounds, roles, base,
       etc.) is untouched. It only READS script_state to size the base ghost.
-    * The click catcher is a per-player Global-UI overlay (visibility = the
-      driving player) added/removed by id, so it never touches the model's own
-      self.UI and never locks the table for the opponent.
+    * The click catcher is a transparent button pinned to the model, sized to
+      just past the reach (not the whole table), and removed by its own
+      click_function so it never calls clearButtons().
     * Globals it adds are uniquely named (setupSprintTool, sprintOnPickUp,
       sprintCatcherClick, sprintScriptingButton + chained handlers).
 
@@ -104,6 +104,18 @@ local MAX_INCHES     = 9        -- total straight distance cap
 local MAX_PIVOT_DEG  = 45       -- max single turn, left or right
 local MAX_BACK_INCHES = 3       -- total BACKWARD straight distance cap
 local UNITS_PER_INCH = 1        -- world units per inch (KT-UI table = 1)
+
+-- Click-catcher: a transparent button pinned to the model, covering the area the
+-- ghost can reach for the CURRENT step -- a disc of radius = remaining budget
+-- (+ margin) centred on curPos. Because it is a button ON the model, hovering it
+-- counts as hovering the model, so the number ROW (onNumberTyped) works across
+-- the reach with NO key binding. It locks only this small area, not the table.
+-- It is re-centred/resized ONLY when the reach changes (a leg is committed or a
+-- step-back happens), NOT every frame -- so there is no per-tick cursor-lag.
+local CATCHER_MARGIN_IN    = 2           -- inches of catch area past the reach (~1" felt short at 1)
+-- button-units per inch. TUNING KNOB: raise = bigger catcher, lower = smaller.
+-- (14000/9 rendered ~2-3x too wide -- 30" for a ~10" reach; ~450 targets it.)
+local CATCHER_UNITS_PER_IN = 450
 
 -- Leap (Exodite special move): reposition the base freely by aiming, with FREE
 -- 360 rotation, clamped so ANY part of the base stays within MAX_LEAP_INCHES of
@@ -199,6 +211,8 @@ local prevHeading  = 0          -- heading at the end of the active preview
 local loopHandle    = nil
 local lastReport    = nil
 local catcherActive = false
+local catcherTooltip = nil       -- tooltip for the current catcher (varies by Sprint/Turn/Leap)
+local syncCatcher                -- fwd decl; defined with the catcher, called from tick()
 
 -- --------------------------------------------------------------- utilities ---
 local function toUnits(inches) return inches * UNITS_PER_INCH end
@@ -619,6 +633,7 @@ local function tick()
 	if phase == PHASE_IDLE or not controlColor then return end
 	local pointer = Player[controlColor].getPointerPosition()
 	if not pointer then return end
+	syncCatcher()   -- match the catch area to the current step's reach (no-op unless it changed)
 
 	local active = {}
 	local endPos, endHeading
@@ -715,66 +730,53 @@ local function stopLoop()
 end
 
 -- --------------------------------------------------------- click catcher ----
--- Per-player, screen-space click catcher (Global UI). A full-screen, effectively
--- invisible overlay shown ONLY to the driving player (visibility = controlColor).
--- Because it lives on the driver's own screen, opponents have NO such element and
--- keep interacting with the whole table while a sprint is active -- unlike a
--- physical table button, which every player can click and which therefore locked
--- the board. The click LOCATION is irrelevant (the ghost already tracks the
--- pointer and the model moves to the ghost); the overlay only turns a left/right
--- click into apply/back. It is added/removed on the shared Global canvas by id,
--- so it never clobbers the model's own self.UI or any other Global UI.
-local CATCHER_UI_ID = "ktSprintCatcher"
+-- A static transparent DISC pinned to the model, centred on it and sized to the
+-- whole sprint envelope (MAX_INCHES + margin). The model does not move during a
+-- sprint, so ONE fixed circle covers every leg (straight, pivot, leap) -- simple
+-- and reliable: rotation-proof (centred + symmetric) and never rebuilt. LEFT-
+-- click = apply, RIGHT-click = back. Because it is a button ON the model,
+-- hovering it counts as hovering the model, so the number ROW works with no
+-- binding. It locks only this bubble around the model, not the whole table.
 
-local function uiRootTable()
-	local t = UI.getXmlTable()
-	if type(t) ~= "table" then t = {} end
-	return t
-end
-
--- Return a copy of the Global-UI table with our catcher element removed.
-local function uiWithoutCatcher(t)
-	local out = {}
-	for _, el in ipairs(t) do
-		if not (type(el) == "table" and el.attributes and el.attributes.id == CATCHER_UI_ID) then
-			out[#out + 1] = el
-		end
+-- Remove every catcher button currently on the model (high->low: removeButton
+-- reshuffles indices, so removing while iterating by index can skip one).
+local function clearCatcherButtons()
+	local idx = {}
+	for _, b in ipairs(self.getButtons() or {}) do
+		if b.click_function == "sprintCatcherClick" then idx[#idx + 1] = b.index end
 	end
-	return out
+	table.sort(idx, function(a, b) return a > b end)
+	for _, i in ipairs(idx) do self.removeButton(i) end
 end
 
--- Global UI rejects an empty array ("table was null"); when our catcher was the
--- only element, clear the whole Global canvas with setXml("") instead.
-local function uiApply(t)
-	if #t == 0 then UI.setXml("") else UI.setXmlTable(t) end
-end
-
-local function createCatcher(_tooltip)
+local function createCatcher(tooltip)
 	if catcherActive then return end
-	if not controlColor then return end
-	local t = uiWithoutCatcher(uiRootTable())
-	t[#t + 1] = {
-		tag = "Image",
-		attributes = {
-			id            = CATCHER_UI_ID,
-			visibility    = controlColor,               -- only the driving player sees/clicks it
-			color         = "#00000001",                -- effectively invisible, still raycasts
-			raycastTarget = "true",                     -- captures the click
-			width         = "100%",
-			height        = "100%",
-			rectAlignment = "MiddleCenter",
-			-- Global-UI events default to the Global script; the GUID prefix routes
-			-- the click back to THIS model's (appended) script instead.
-			onClick       = self.getGUID() .. "/sprintCatcherClick",
-		},
-	}
-	uiApply(t)
+	clearCatcherButtons()
+	catcherTooltip = tooltip or "Left: apply   Right: back   1/2/3/4: mode   9: finish   0: cancel"
+	local sc   = self.getScale()
+	local span = 2 * (MAX_INCHES + CATCHER_MARGIN_IN) * CATCHER_UNITS_PER_IN
+	self.createButton({
+		click_function = "sprintCatcherClick",
+		function_owner = self,
+		label          = "",
+		position       = { 0, 0.6 / (sc.y ~= 0 and sc.y or 1), 0 },
+		rotation       = { 0, 0, 0 },
+		width          = span / (sc.x ~= 0 and sc.x or 1),
+		height         = span / (sc.z ~= 0 and sc.z or 1),
+		font_size      = 100,
+		color          = { 0, 0, 0, 0 },
+		tooltip        = catcherTooltip,
+	})
 	catcherActive = true
 end
 
+-- The catcher is static (see createCatcher), so there is nothing to update per
+-- tick. Kept as a no-op so tick() (which calls it) needs no change.
+syncCatcher = function() end
+
 local function removeCatcher()
 	if not catcherActive then return end
-	uiApply(uiWithoutCatcher(uiRootTable()))
+	clearCatcherButtons()
 	catcherActive = false
 end
 
@@ -1072,15 +1074,11 @@ end
 
 -- ----------------------------------------------------------------- wiring ----
 
--- Global-UI catcher handler. Signature is (player, mouseButton, id): a non-Button
--- element passes the mouse button as the 2nd arg -- "-2" is right-click (back),
--- anything else ("-1" left) is apply. visibility already restricts this to the
--- driving player; the controlColor check is a belt-and-braces guard.
-function sprintCatcherClick(player, mouseButton, _id)
+-- Invisible catcher handler. altClick == true means a right-click.
+function sprintCatcherClick(_, playerColor, altClick)
 	if phase == PHASE_IDLE then return end
-	local pc = player and player.color
-	if controlColor and pc ~= controlColor then return end
-	if mouseButton == "-2" then stepBack(pc) else advance(pc) end
+	if controlColor and playerColor ~= controlColor then return end
+	if altClick then stepBack(playerColor) else advance(playerColor) end
 end
 
 -- TTS scripting buttons = the NUMPAD by default (index 10 == the "0" key). No
@@ -1151,11 +1149,10 @@ function onScriptingButtonUp(...)
 end
 
 -- Number ROW typed while hovering the model (no binding needed). The catcher is
--- now a screen overlay rather than a table-covering button, so the number ROW
--- only fires while actually hovering the model; the NUMPAD (onScriptingButton)
--- is the reliable across-the-table path. We still consume the row here and
--- return true so the host's default (e.g. setting wounds) is suppressed; when
--- idle we defer to the host.
+-- a transparent button pinned to the model sized to the reach, so hovering
+-- anywhere in it counts as hovering the model and the number ROW works across
+-- the whole reach. We consume the row here and return true so the host's default
+-- (e.g. setting wounds) is suppressed; when idle we defer to the host.
 local _sprint_prev_onNumberTyped = onNumberTyped
 function onNumberTyped(playerColor, number, alt)
 	if phase ~= PHASE_IDLE and (not controlColor or playerColor == controlColor) then

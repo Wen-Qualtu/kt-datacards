@@ -52,9 +52,9 @@ local MOVE_CODE = [=[
   Can be APPENDED to a model that already has its own script:
     * onLoad / onPickUp / onScriptingButtonDown / onNumberTyped are CHAINED.
     * It never WRITES self.script_state (only reads it to size the base ghost).
-    * The click catcher is a per-player Global-UI overlay (visibility = the
-      driving player) added/removed by id, so it never touches the model's own
-      self.UI and never locks the table for the opponent.
+    * The click catcher is a transparent button pinned to the model, sized to the
+      current reach (resized live as the 1/2 keys change it) and removed by its
+      own click_function, so it never calls clearButtons().
     * Globals it adds are uniquely named (setupMoveTool, moveOnPickUp,
       moveCatcherClick, moveScriptingButton + chained handlers).
 
@@ -65,6 +65,16 @@ local MOVE_CODE = [=[
 local MOVE_DEFAULT   = 6        -- fallback Move stat when none can be read (inches)
 local DASH_INCHES    = 3        -- Dash action always starts from this budget (inches)
 local UNITS_PER_INCH = 1        -- world units per inch (KT-UI table = 1)
+
+-- Click-catcher: a transparent button pinned to the model, covering the CURRENT
+-- leg's REMAINING reach + a margin (a disc centred on curPos), so hovering it
+-- counts as hovering the model (the number ROW works with no key binding) and it
+-- only locks a small area, not the table. As budget is spent (or the 1/2 keys
+-- change it) the catcher re-centres and shrinks (resizeCatcher) to what's left.
+local CATCHER_MARGIN_IN    = 2           -- inches of catch area past the reach
+-- button-units per inch. TUNING KNOB: raise = bigger catcher, lower = smaller.
+-- (14000/9 rendered ~2-3x too wide -- 40" for an 8" move; ~450 targets it.)
+local CATCHER_UNITS_PER_IN = 450
 
 -- Default base footprint (mm); used only when a model exposes no base metadata.
 local DEF_BASE_MM_LONG = 40
@@ -117,6 +127,8 @@ local prevEndPos   = nil            -- Vector end of the active leg
 
 local loopHandle    = nil
 local catcherActive = false
+local lastMoveKey   = nil       -- guard: only edit the catcher when the reach/centre changes
+local resizeCatcher  -- fwd decl; defined with the catcher, called from tick()
 
 -- readout
 local distTextObj = nil
@@ -429,6 +441,7 @@ local function tick()
 
 	local pointer = Player[controlColor].getPointerPosition()
 	if not pointer then return end
+	resizeCatcher()   -- match the catch area to the CURRENT leg's remaining reach (no-op unless it changed)
 
 	-- Skip the whole rebuild when nothing that affects the drawing changed
 	-- (pointer still + no budget / leg / mode change). This keeps the tool light
@@ -480,66 +493,84 @@ local function stopLoop()
 end
 
 -- --------------------------------------------------------- click catcher ----
--- Per-player, screen-space click catcher (Global UI). A full-screen, effectively
--- invisible overlay shown ONLY to the driving player (visibility = controlColor),
--- so opponents have NO such element and keep interacting with the whole table
--- while a move is active -- unlike a physical table button, which every player
--- can click and which therefore locked the board. The click LOCATION is
--- irrelevant (the ghost already tracks the pointer and the model moves to the
--- ghost); the overlay only turns a left/right click into step/undo. It is
--- added/removed on the shared Global canvas by id, so it never clobbers the
--- model's own self.UI or any other Global UI.
-local CATCHER_UI_ID = "ktMoveCatcher"
+-- A transparent button pinned to the model, covering the CURRENT leg's reach (a
+-- disc of radius = REMAINING budget + margin, centred on curPos). LEFT-click =
+-- step, RIGHT-click = undo. Because it is a button ON the model, hovering it
+-- counts as hovering the model, so the number ROW works with no binding. It only
+-- locks that small area (not the table); as you spend budget it re-centres on
+-- the new point and shrinks to what's left, so it never claims more than needed.
 
-local function uiRootTable()
-	local t = UI.getXmlTable()
-	if type(t) ~= "table" then t = {} end
-	return t
+-- Half-reach (inches) of the catch disc for the CURRENT leg: remaining budget +
+-- margin, floored so a nearly-spent move still has a clickable area.
+local function catcherReachIn()
+	local r = remainingInches() + CATCHER_MARGIN_IN
+	return (r < 3) and 3 or r
 end
 
--- Return a copy of the Global-UI table with our catcher element removed.
-local function uiWithoutCatcher(t)
-	local out = {}
-	for _, el in ipairs(t) do
-		if not (type(el) == "table" and el.attributes and el.attributes.id == CATCHER_UI_ID) then
-			out[#out + 1] = el
-		end
+local function catcherKey()
+	if not curPos then return "none" end
+	return string.format("%.2f:%.2f:%.2f", curPos.x, curPos.z, catcherReachIn())
+end
+
+-- Remove every catcher button currently on the model. Collect indices first and
+-- remove high->low: removeButton(index) reshuffles the remaining indices, so
+-- removing while iterating by index can skip a button (leaving a stale catcher).
+local function clearCatcherButtons()
+	local idx = {}
+	for _, b in ipairs(self.getButtons() or {}) do
+		if b.click_function == "moveCatcherClick" then idx[#idx + 1] = b.index end
 	end
-	return out
+	table.sort(idx, function(a, b) return a > b end)
+	for _, i in ipairs(idx) do self.removeButton(i) end
 end
 
--- Global UI rejects an empty array ("table was null"); when our catcher was the
--- only element, clear the whole Global canvas with setXml("") instead.
-local function uiApply(t)
-	if #t == 0 then UI.setXml("") else UI.setXmlTable(t) end
+-- (Re)create the catcher as a FRESH button at the model CENTRE, sized to the
+-- current leg's remaining reach. The model steps to each committed leg (see
+-- commitLeg), so a CENTRED button always sits on the operative's current spot --
+-- rotation/scale-proof, no offset math, and the catch area stays the reachable
+-- bubble. We remove+recreate rather than editButton because editing a button's
+-- size/position does not reliably rebuild its invisible click hitbox in TTS.
+local function placeCatcher()
+	clearCatcherButtons()
+	local sc   = self.getScale()
+	local span = 2 * catcherReachIn() * CATCHER_UNITS_PER_IN
+	self.createButton({
+		click_function = "moveCatcherClick",
+		function_owner = self,
+		label          = "",
+		position       = { 0, 0.6 / (sc.y ~= 0 and sc.y or 1), 0 },
+		rotation       = { 0, 0, 0 },
+		width          = span / (sc.x ~= 0 and sc.x or 1),
+		height         = span / (sc.z ~= 0 and sc.z or 1),
+		font_size      = 100,
+		color          = { 0, 0, 0, 0 },
+		tooltip        = "Left: step (double=finish)  Right: undo  1:-1\"  2:+1\"  3:3D range  0:cancel",
+	})
 end
 
-local function createCatcher(_tooltip)
+local function createCatcher()
 	if catcherActive then return end
-	if not controlColor then return end
-	local t = uiWithoutCatcher(uiRootTable())
-	t[#t + 1] = {
-		tag = "Image",
-		attributes = {
-			id            = CATCHER_UI_ID,
-			visibility    = controlColor,               -- only the driving player sees/clicks it
-			color         = "#00000001",                -- effectively invisible, still raycasts
-			raycastTarget = "true",                     -- captures the click
-			width         = "100%",
-			height        = "100%",
-			rectAlignment = "MiddleCenter",
-			-- Global-UI events default to the Global script; the GUID prefix routes
-			-- the click back to THIS model's (appended) script instead.
-			onClick       = self.getGUID() .. "/moveCatcherClick",
-		},
-	}
-	uiApply(t)
+	placeCatcher()
 	catcherActive = true
+	lastMoveKey   = catcherKey()
+end
+
+-- Re-centre + resize the catcher to the CURRENT leg's reachable area (a disc of
+-- radius = remaining budget around curPos). Guarded so it only rebuilds when the
+-- reach/centre actually changes (a leg commits, a 1/2 budget change, or a
+-- step-back), never per frame -- so there is no cursor-follow lag. Assigns the
+-- forward-declared upvalue so tick() (defined earlier) can call it.
+resizeCatcher = function()
+	if not catcherActive or not curPos then return end
+	local key = catcherKey()
+	if key == lastMoveKey then return end   -- nothing changed -> no rebuild (no lag)
+	lastMoveKey = key
+	placeCatcher()
 end
 
 local function removeCatcher()
 	if not catcherActive then return end
-	uiApply(uiWithoutCatcher(uiRootTable()))
+	clearCatcherButtons()
 	catcherActive = false
 end
 
@@ -556,6 +587,8 @@ end
 
 local function restoreFrom(s)
 	curPos      = { x = s.pos.x, y = s.pos.y, z = s.pos.z }
+	-- Move the model back to the restored point (it steps with each leg).
+	self.setPosition({ curPos.x, curPos.y, curPos.z })
 	usedInches  = s.used
 	rawTotal    = s.raw
 	modifier    = s.modifier
@@ -586,6 +619,8 @@ local function cancelMove(pc)
 	clearPreview()
 	removeCatcher()
 	destroyDistText()
+	-- Return the model to where the move began (it steps with each committed leg).
+	if startPos then self.setPosition({ startPos.x, startPos.y, startPos.z }) end
 	phase        = PHASE_IDLE
 	controlColor = nil
 	history      = {}
@@ -627,6 +662,9 @@ local function commitLeg(rawIn, endPos)
 	usedInches = usedInches + math.ceil(rawIn - 1e-6)
 	rawTotal   = rawTotal + rawIn
 	curPos     = { x = endPos.x, y = endPos.y, z = endPos.z }
+	-- Step the model to the committed point so the (centred) catcher rides with
+	-- it -- keeps the catch area on the operative's real spot, rotation-proof.
+	self.setPosition({ curPos.x, curPos.y, curPos.z })
 	-- Each committed step lands flat; the next increment starts in 2D again.
 	-- (3D is only needed while measuring a climb/drop; re-toggle with 3 if so.)
 	rangeMode  = "flat"
@@ -701,15 +739,11 @@ local function handleDigit(pc, number)
 end
 
 -- ----------------------------------------------------------------- wiring ----
--- Global-UI catcher handler. Signature is (player, mouseButton, id): a non-Button
--- element passes the mouse button as the 2nd arg -- "-2" is right-click (undo),
--- anything else ("-1" left) is step. visibility already restricts this to the
--- driving player; the controlColor check is a belt-and-braces guard.
-function moveCatcherClick(player, mouseButton, _id)
+-- Invisible catcher handler. altClick == true means a right-click (undo).
+function moveCatcherClick(_, playerColor, altClick)
 	if phase ~= PHASE_MOVE then return end
-	local pc = player and player.color
-	if controlColor and pc ~= controlColor then return end
-	if mouseButton == "-2" then stepBack(pc) else advance(pc) end
+	if controlColor and playerColor ~= controlColor then return end
+	if altClick then stepBack(playerColor) else advance(playerColor) end
 end
 
 function moveScriptingButton(index, playerColor)
