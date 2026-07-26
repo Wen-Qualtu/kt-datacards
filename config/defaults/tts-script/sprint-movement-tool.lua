@@ -73,7 +73,9 @@
       (host runs first).
     * It never WRITES self.script_state, so saved state (wounds, roles, base,
       etc.) is untouched. It only READS script_state to size the base ghost.
-    * removeCatcher() removes only its own button, never clearButtons().
+    * The click catcher is a per-player Global-UI overlay (visibility = the
+      driving player) added/removed by id, so it never touches the model's own
+      self.UI and never locks the table for the opponent.
     * Globals it adds are uniquely named (setupSprintTool, sprintOnPickUp,
       sprintCatcherClick, sprintScriptingButton + chained handlers).
 
@@ -698,33 +700,66 @@ local function stopLoop()
 end
 
 -- --------------------------------------------------------- click catcher ----
--- A big, fully transparent button pinned to the model. LEFT-click = apply,
--- RIGHT-click = back. No physics collider, so the pointer still aims freely.
-local function createCatcher(tooltip)
+-- Per-player, screen-space click catcher (Global UI). A full-screen, effectively
+-- invisible overlay shown ONLY to the driving player (visibility = controlColor).
+-- Because it lives on the driver's own screen, opponents have NO such element and
+-- keep interacting with the whole table while a sprint is active -- unlike a
+-- physical table button, which every player can click and which therefore locked
+-- the board. The click LOCATION is irrelevant (the ghost already tracks the
+-- pointer and the model moves to the ghost); the overlay only turns a left/right
+-- click into apply/back. It is added/removed on the shared Global canvas by id,
+-- so it never clobbers the model's own self.UI or any other Global UI.
+local CATCHER_UI_ID = "ktSprintCatcher"
+
+local function uiRootTable()
+	local t = UI.getXmlTable()
+	if type(t) ~= "table" then t = {} end
+	return t
+end
+
+-- Return a copy of the Global-UI table with our catcher element removed.
+local function uiWithoutCatcher(t)
+	local out = {}
+	for _, el in ipairs(t) do
+		if not (type(el) == "table" and el.attributes and el.attributes.id == CATCHER_UI_ID) then
+			out[#out + 1] = el
+		end
+	end
+	return out
+end
+
+-- Global UI rejects an empty array ("table was null"); when our catcher was the
+-- only element, clear the whole Global canvas with setXml("") instead.
+local function uiApply(t)
+	if #t == 0 then UI.setXml("") else UI.setXmlTable(t) end
+end
+
+local function createCatcher(_tooltip)
 	if catcherActive then return end
-	local sc = self.getScale()
-	self.createButton({
-		click_function = "sprintCatcherClick",
-		function_owner = self,
-		label          = "",
-		position       = { 0, 0.6 / (sc.y ~= 0 and sc.y or 1), 0 },
-		rotation       = { 0, 0, 0 },
-		width          = 14000 / (sc.x ~= 0 and sc.x or 1),
-		height         = 14000 / (sc.z ~= 0 and sc.z or 1),
-		font_size      = 100,
-		color          = { 0, 0, 0, 0 },   -- fully transparent; raise alpha to debug
-		tooltip        = tooltip or "Left: apply   Right: back   1/2/3/4: mode   9: finish   0: cancel",
-	})
+	if not controlColor then return end
+	local t = uiWithoutCatcher(uiRootTable())
+	t[#t + 1] = {
+		tag = "Image",
+		attributes = {
+			id            = CATCHER_UI_ID,
+			visibility    = controlColor,               -- only the driving player sees/clicks it
+			color         = "#00000001",                -- effectively invisible, still raycasts
+			raycastTarget = "true",                     -- captures the click
+			width         = "100%",
+			height        = "100%",
+			rectAlignment = "MiddleCenter",
+			-- Global-UI events default to the Global script; the GUID prefix routes
+			-- the click back to THIS model's (appended) script instead.
+			onClick       = self.getGUID() .. "/sprintCatcherClick",
+		},
+	}
+	uiApply(t)
 	catcherActive = true
 end
 
 local function removeCatcher()
 	if not catcherActive then return end
-	for _, b in ipairs(self.getButtons() or {}) do
-		if b.click_function == "sprintCatcherClick" then
-			self.removeButton(b.index)
-		end
-	end
+	uiApply(uiWithoutCatcher(uiRootTable()))
 	catcherActive = false
 end
 
@@ -1022,11 +1057,15 @@ end
 
 -- ----------------------------------------------------------------- wiring ----
 
--- Invisible catcher handler. altClick == true means a right-click.
-function sprintCatcherClick(_, playerColor, altClick)
+-- Global-UI catcher handler. Signature is (player, mouseButton, id): a non-Button
+-- element passes the mouse button as the 2nd arg -- "-2" is right-click (back),
+-- anything else ("-1" left) is apply. visibility already restricts this to the
+-- driving player; the controlColor check is a belt-and-braces guard.
+function sprintCatcherClick(player, mouseButton, _id)
 	if phase == PHASE_IDLE then return end
-	if controlColor and playerColor ~= controlColor then return end
-	if altClick then stepBack(playerColor) else advance(playerColor) end
+	local pc = player and player.color
+	if controlColor and pc ~= controlColor then return end
+	if mouseButton == "-2" then stepBack(pc) else advance(pc) end
 end
 
 -- TTS scripting buttons = the NUMPAD by default (index 10 == the "0" key). No
@@ -1096,10 +1135,12 @@ function onScriptingButtonUp(...)
 	sprintScriptingButtonUp(...)
 end
 
--- Number ROW typed while hovering the model (no binding needed). During a
--- sprint the table-covering catcher counts as hovering the model, so the row
--- works across the play area. We consume it and return true so the host's
--- default (e.g. setting wounds) is suppressed; when idle we defer to the host.
+-- Number ROW typed while hovering the model (no binding needed). The catcher is
+-- now a screen overlay rather than a table-covering button, so the number ROW
+-- only fires while actually hovering the model; the NUMPAD (onScriptingButton)
+-- is the reliable across-the-table path. We still consume the row here and
+-- return true so the host's default (e.g. setting wounds) is suppressed; when
+-- idle we defer to the host.
 local _sprint_prev_onNumberTyped = onNumberTyped
 function onNumberTyped(playerColor, number, alt)
 	if phase ~= PHASE_IDLE and (not controlColor or playerColor == controlColor) then

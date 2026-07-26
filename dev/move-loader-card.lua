@@ -52,7 +52,9 @@ local MOVE_CODE = [=[
   Can be APPENDED to a model that already has its own script:
     * onLoad / onPickUp / onScriptingButtonDown / onNumberTyped are CHAINED.
     * It never WRITES self.script_state (only reads it to size the base ghost).
-    * removeCatcher() removes only its own button.
+    * The click catcher is a per-player Global-UI overlay (visibility = the
+      driving player) added/removed by id, so it never touches the model's own
+      self.UI and never locks the table for the opponent.
     * Globals it adds are uniquely named (setupMoveTool, moveOnPickUp,
       moveCatcherClick, moveScriptingButton + chained handlers).
 
@@ -61,6 +63,7 @@ local MOVE_CODE = [=[
 
 -- ------------------------------------------------------------------ tuning ---
 local MOVE_DEFAULT   = 6        -- fallback Move stat when none can be read (inches)
+local DASH_INCHES    = 3        -- Dash action always starts from this budget (inches)
 local UNITS_PER_INCH = 1        -- world units per inch (KT-UI table = 1)
 
 -- Default base footprint (mm); used only when a model exposes no base metadata.
@@ -477,31 +480,66 @@ local function stopLoop()
 end
 
 -- --------------------------------------------------------- click catcher ----
-local function createCatcher(tooltip)
+-- Per-player, screen-space click catcher (Global UI). A full-screen, effectively
+-- invisible overlay shown ONLY to the driving player (visibility = controlColor),
+-- so opponents have NO such element and keep interacting with the whole table
+-- while a move is active -- unlike a physical table button, which every player
+-- can click and which therefore locked the board. The click LOCATION is
+-- irrelevant (the ghost already tracks the pointer and the model moves to the
+-- ghost); the overlay only turns a left/right click into step/undo. It is
+-- added/removed on the shared Global canvas by id, so it never clobbers the
+-- model's own self.UI or any other Global UI.
+local CATCHER_UI_ID = "ktMoveCatcher"
+
+local function uiRootTable()
+	local t = UI.getXmlTable()
+	if type(t) ~= "table" then t = {} end
+	return t
+end
+
+-- Return a copy of the Global-UI table with our catcher element removed.
+local function uiWithoutCatcher(t)
+	local out = {}
+	for _, el in ipairs(t) do
+		if not (type(el) == "table" and el.attributes and el.attributes.id == CATCHER_UI_ID) then
+			out[#out + 1] = el
+		end
+	end
+	return out
+end
+
+-- Global UI rejects an empty array ("table was null"); when our catcher was the
+-- only element, clear the whole Global canvas with setXml("") instead.
+local function uiApply(t)
+	if #t == 0 then UI.setXml("") else UI.setXmlTable(t) end
+end
+
+local function createCatcher(_tooltip)
 	if catcherActive then return end
-	local sc = self.getScale()
-	self.createButton({
-		click_function = "moveCatcherClick",
-		function_owner = self,
-		label          = "",
-		position       = { 0, 0.6 / (sc.y ~= 0 and sc.y or 1), 0 },
-		rotation       = { 0, 0, 0 },
-		width          = 14000 / (sc.x ~= 0 and sc.x or 1),
-		height         = 14000 / (sc.z ~= 0 and sc.z or 1),
-		font_size      = 100,
-		color          = { 0, 0, 0, 0 },
-		tooltip        = tooltip or "Left: step (double=finish)  Right: undo  1:-1\"  2:+1\"  3:3D range  0:cancel",
-	})
+	if not controlColor then return end
+	local t = uiWithoutCatcher(uiRootTable())
+	t[#t + 1] = {
+		tag = "Image",
+		attributes = {
+			id            = CATCHER_UI_ID,
+			visibility    = controlColor,               -- only the driving player sees/clicks it
+			color         = "#00000001",                -- effectively invisible, still raycasts
+			raycastTarget = "true",                     -- captures the click
+			width         = "100%",
+			height        = "100%",
+			rectAlignment = "MiddleCenter",
+			-- Global-UI events default to the Global script; the GUID prefix routes
+			-- the click back to THIS model's (appended) script instead.
+			onClick       = self.getGUID() .. "/moveCatcherClick",
+		},
+	}
+	uiApply(t)
 	catcherActive = true
 end
 
 local function removeCatcher()
 	if not catcherActive then return end
-	for _, b in ipairs(self.getButtons() or {}) do
-		if b.click_function == "moveCatcherClick" then
-			self.removeButton(b.index)
-		end
-	end
+	uiApply(uiWithoutCatcher(uiRootTable()))
 	catcherActive = false
 end
 
@@ -554,7 +592,7 @@ local function cancelMove(pc)
 	if pc then msg(pc, "Move cancelled.", COL_RANGE) end
 end
 
-local function beginMove(pc)
+local function beginMove(pc, forcedBase)
 	refreshBaseDims()
 	controlColor = pc
 	local p      = self.getPosition()
@@ -562,7 +600,7 @@ local function beginMove(pc)
 	curPos       = { x = p.x, y = p.y, z = p.z }
 	local fwd    = self.getTransformForward()
 	baseHeading  = headingOf(fwd.x, fwd.z) + facingOffset
-	baseMove     = readMoveStat()
+	baseMove     = forcedBase or readMoveStat()
 	modifier     = 0
 	adjustQueue  = 0
 	usedInches   = 0
@@ -663,10 +701,15 @@ local function handleDigit(pc, number)
 end
 
 -- ----------------------------------------------------------------- wiring ----
-function moveCatcherClick(_, playerColor, altClick)
+-- Global-UI catcher handler. Signature is (player, mouseButton, id): a non-Button
+-- element passes the mouse button as the 2nd arg -- "-2" is right-click (undo),
+-- anything else ("-1" left) is step. visibility already restricts this to the
+-- driving player; the controlColor check is a belt-and-braces guard.
+function moveCatcherClick(player, mouseButton, _id)
 	if phase ~= PHASE_MOVE then return end
-	if controlColor and playerColor ~= controlColor then return end
-	if altClick then stepBack(playerColor) else advance(playerColor) end
+	local pc = player and player.color
+	if controlColor and pc ~= controlColor then return end
+	if mouseButton == "-2" then stepBack(pc) else advance(pc) end
 end
 
 function moveScriptingButton(index, playerColor)
@@ -678,19 +721,36 @@ function moveHotkeyTrigger(params)
 	if phase == PHASE_IDLE then beginMove((params or {}).color) end
 end
 
+-- Dash is identical to Move but always starts from a fixed DASH_INCHES budget
+-- instead of the model's Move stat.
+function dashHotkeyTrigger(params)
+	if phase == PHASE_IDLE then beginMove((params or {}).color, DASH_INCHES) end
+end
+
 function setupMoveTool()
 	self.addContextMenuItem("Move", function(pc)
 		if phase == PHASE_IDLE then beginMove(pc) end
 	end, false)
-	-- Optional keyboard shortcut. Registered ONCE globally (guarded via a Global
-	-- var) so it isn't re-registered by every model; the callback starts a Move
-	-- on whatever model the player is HOVERING. Bind a key to this entry under
-	-- Options -> Controls -> Game Keys ("KT: Move (hovered model)").
+	self.addContextMenuItem("Dash", function(pc)
+		if phase == PHASE_IDLE then beginMove(pc, DASH_INCHES) end
+	end, false)
+	-- Optional keyboard shortcuts. Registered ONCE globally (guarded via Global
+	-- vars) so they aren't re-registered by every model; each callback starts the
+	-- action on whatever model the player is HOVERING. Bind keys under
+	-- Options -> Controls -> Game Keys ("KT: Move/Dash (hovered model)").
 	if Global.getVar("KT_MOVE_HOTKEY") ~= true then
 		Global.setVar("KT_MOVE_HOTKEY", true)
 		addHotkey("KT: Move (hovered model)", function(color, hovered)
 			if hovered ~= nil and hovered.call ~= nil then
 				hovered.call("moveHotkeyTrigger", { color = color })
+			end
+		end, false)
+	end
+	if Global.getVar("KT_DASH_HOTKEY") ~= true then
+		Global.setVar("KT_DASH_HOTKEY", true)
+		addHotkey("KT: Dash (hovered model)", function(color, hovered)
+			if hovered ~= nil and hovered.call ~= nil then
+				hovered.call("dashHotkeyTrigger", { color = color })
 			end
 		end, false)
 	end
