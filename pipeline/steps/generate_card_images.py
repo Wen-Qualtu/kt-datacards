@@ -15,7 +15,6 @@ from __future__ import annotations
 
 import logging
 import shutil
-import unicodedata
 from pathlib import Path
 from typing import Optional
 
@@ -49,22 +48,17 @@ DEFAULT_BACKSIDE = {
 
 
 def _sanitize_filename(name: str) -> str:
-    """Legacy step-4 sanitize: strip accents, lowercase, hyphenate.
+    """Canonical card-image slug — delegates to :func:`naming.slug`.
 
-    Only combining accent marks are removed (ô→o, â→a) so accented operatives
-    get consistent ASCII filenames (``DÔZR`` → ``dozr``). Apostrophes, dashes
-    and other characters are handled exactly as before, so non-accented names
-    are unchanged.
+    Uses the SAME normalization as the classified PDF names (``naming.slug``) so
+    a card only ever has ONE filename. Accents are transliterated (``DÔZR`` →
+    ``dozr``) and punctuation is normalized consistently — apostrophes/periods
+    dropped (``SHAS'UI`` → ``shasui``, ``C.A.T.`` → ``cat``) and ``! & , ‑`` and
+    other non-alphanumerics collapsed to a hyphen (``SSSSHHHH!`` → ``sssshhhh``,
+    ``FAITH & FURY`` → ``faith-fury``). This removes the punctuation/curly-quote
+    duplicate cards (``sssshhhh`` vs ``sssshhhh!``, ``khaines`` vs ``khaine’s``).
     """
-    decomposed = unicodedata.normalize("NFD", name)
-    safe = "".join(c for c in decomposed if not unicodedata.combining(c))
-    safe = safe.lower()
-    for ch in " /\\:*?<>|":
-        safe = safe.replace(ch, "-")
-    safe = safe.replace('"', "").replace("'", "")
-    while "--" in safe:
-        safe = safe.replace("--", "-")
-    return safe.strip("-")
+    return naming.slug(name)
 
 
 def _image_base(team: str, card_type: str, name: str) -> str:
