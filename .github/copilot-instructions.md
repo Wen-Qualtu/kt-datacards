@@ -92,7 +92,7 @@ Order prefix (`[FF5500]E[-]`) + wounds (`{8/8}`) + operative name
 ### Lua Scripts
 - `config/defaults/tts-script/datacard-load-stats.lua` — card right-click menu, in order:
   **Load everything** (one button: stats → loadout → faction rules → movement),
-  **Load stats and loadout** (always forces the loadout popup when present),
+  **Load stats** (loads stats + weapons; forces the loadout popup when present),
   **Add Move Action** / **Add sprint action** (keyword-gated), **Choose upgrades**,
   **Special: Rotate base 90**
 - Uses `diffAndApply()` for per-field comparison with change reporting

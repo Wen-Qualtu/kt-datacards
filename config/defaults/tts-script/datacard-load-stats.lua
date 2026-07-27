@@ -1,6 +1,6 @@
 -- kt-datacards: Load Stats to Model
 -- Card stores operative data in GMNotes (JSON).
--- Context menu "Load stats and loadout" finds a KTUIMini on top,
+-- Context menu "Load stats" finds a KTUIMini on top,
 -- shows a weapon selection popup (if multiple weapons),
 -- compares current vs new, reports diffs, and applies changes.
 
@@ -27,7 +27,7 @@ local upgradePlayerColor = nil
 --                          tools; not wired here yet -- see TODO).
 --   2. Load everything    one button: stats (+loadout) -> faction upgrades ->
 --                          operative counters -> movement. Excludes Rotate base.
---   3. Load stats and loadout  stats only; ALWAYS forces the loadout popup when present.
+--   3. Load stats          stats + weapons; ALWAYS forces the loadout popup when present.
 --   4. Movement           Move (non-mounted) or Sprint/Turn/Leap (mounted).
 --   5. Faction specifics   e.g. Choose upgrades (chapter tactics / gore tank / counters).
 --   6. Special            low-frequency extras (Rotate base 90), always last.
@@ -39,7 +39,7 @@ function onLoad()
 
     -- 3. Stats only. Always prompts the loadout selection when the operative has
     --    one (there is no silent "apply all" anymore).
-    self.addContextMenuItem("Load stats and loadout", loadStatsToModel)
+    self.addContextMenuItem("Load stats", loadStatsToModel)
 
     -- 4. Movement action for the model on top (keyword-gated by embedded code).
     if type(SPRINT_TOOL_CODE) == "string" and hasKeyword("MOUNTED") then
