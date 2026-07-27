@@ -1,6 +1,6 @@
 -- kt-datacards: Load Stats to Model
 -- Card stores operative data in GMNotes (JSON).
--- Context menu "Load stats to model" finds a KTUIMini on top,
+-- Context menu "Load stats and loadout" finds a KTUIMini on top,
 -- shows a weapon selection popup (if multiple weapons),
 -- compares current vs new, reports diffs, and applies changes.
 
@@ -22,29 +22,40 @@ local upgradeModel = nil
 local upgradeData = nil
 local upgradePlayerColor = nil
 
+-- Context menu order (TTS shows items top -> bottom in REGISTRATION order):
+--   1. Update card        reserved top slot (self-update lives in the updater
+--                          tools; not wired here yet -- see TODO).
+--   2. Load everything    one button: stats (+loadout) -> faction rules -> movement.
+--   3. Load stats and loadout  stats only; ALWAYS forces the loadout popup when present.
+--   4. Movement           Move (non-mounted) or Sprint/Turn/Leap (mounted).
+--   5. Faction specifics   e.g. Choose upgrades (chapter tactics / gore tank / counters).
+--   6. Special            low-frequency extras (Rotate base 90), always last.
 function onLoad()
-    self.addContextMenuItem("Load stats to model", loadStatsToModel)
-    self.addContextMenuItem("Load stats (all)", loadStatsToModelAll)
-    -- Only operatives with upgrade choices (mounted Dragon Masters) get "Choose
-    -- upgrades"; the DRAKOLITHE and other plain operatives have none.
-    if hasUpgrades() then
-        self.addContextMenuItem("Choose upgrades", chooseUpgrades)
-    end
-    -- Only oval-base operatives get "Rotate base 90"; round bases (e.g. 32mm
-    -- DRAKOLITHE) are orientation-independent, so the item would be a no-op.
-    if hasOvalBase() then
-        self.addContextMenuItem("Rotate base 90", rotateBase90)
-    end
-    -- MOUNTED operatives can add the Sprint / Turn / Leap movement actions to
-    -- the model on top. The tool code is embedded (SPRINT_TOOL_CODE) only on
-    -- mounted cards.
+    -- 1. TODO: "Update card" self-update item belongs here, at the very top.
+
+    -- 2. One-button setup: stats + loadout + faction rules + movement.
+    self.addContextMenuItem("Load everything", loadEverything)
+
+    -- 3. Stats only. Always prompts the loadout selection when the operative has
+    --    one (there is no silent "apply all" anymore).
+    self.addContextMenuItem("Load stats and loadout", loadStatsToModel)
+
+    -- 4. Movement action for the model on top (keyword-gated by embedded code).
     if type(SPRINT_TOOL_CODE) == "string" and hasKeyword("MOUNTED") then
         self.addContextMenuItem("Add sprint action", addSprintAction)
     end
-    -- NON-MOUNTED operatives get the standard Move action instead. The tool
-    -- code is embedded (MOVE_TOOL_CODE) only on non-mounted cards.
     if type(MOVE_TOOL_CODE) == "string" and not hasKeyword("MOUNTED") then
         self.addContextMenuItem("Add Move Action", addMoveAction)
+    end
+
+    -- 5. Faction specifics.
+    if hasUpgrades() then
+        self.addContextMenuItem("Choose upgrades", chooseUpgrades)
+    end
+
+    -- 6. Special (always last).
+    if hasOvalBase() then
+        self.addContextMenuItem("Special: Rotate base 90", rotateBase90)
     end
 end
 
@@ -387,14 +398,18 @@ function onApplySelection(player, value, id)
         broadcastToColor(msg, pendingPlayerColor, Color.Green)
     end
 
+    local pc = pendingPlayerColor
     pendingData = nil
     pendingModel = nil
     pendingPlayerColor = nil
     selectionData = nil
+    -- Advance the "Load everything" chain (no-op unless active).
+    if loadEverythingActive then afterStatsLoaded(pc) end
 end
 
 function onCancelSelection(player, value, id)
     self.UI.setXml("")
+    cancelLoadEverything()
     broadcastToColor("Selection cancelled.", pendingPlayerColor or player.color, Color.White)
     pendingData = nil
     pendingModel = nil
@@ -719,6 +734,35 @@ function hasKeyword(kw)
     return false
 end
 
+-- Generic in-place injector/updater for a TAGGED block of Lua on a MODEL.
+-- Strips any existing block delimited by `startMarker` .. `endMarker` (any
+-- version) and appends the current `code`. When the tag is ABSENT (an older
+-- model, or a first install) it simply appends -- so it works as both installer
+-- and updater, and still overwrites/extends models that predate the tags. The
+-- host script and script_state are left intact. Returns true if a block existed
+-- (i.e. this was an update rather than a fresh install).
+-- Convention going forward: wrap every injectable function block in the model
+-- source with `-- START KT_<NAME> --` / `-- END KT_<NAME> --` so it can be
+-- find/replaced in place with an improved version.
+function injectBlock(model, startMarker, endMarker, code)
+    local lua = model.getLuaScript() or ""
+    local existed = false
+    local s = lua:find(startMarker, 1, true)
+    if s then
+        existed = true
+        local e = lua:find(endMarker, s, true)
+        if e then
+            local nl = lua:find("\n", e, true)
+            lua = nl and (lua:sub(1, s - 1) .. lua:sub(nl + 1)) or lua:sub(1, s - 1)
+        else
+            lua = lua:sub(1, s - 1)
+        end
+    end
+    model.setLuaScript(lua .. "\n\n" .. code)
+    Wait.frames(function() if model ~= nil then model.reload() end end, 10)
+    return existed
+end
+
 -- Append the movement tool (SPRINT_TOOL_CODE, embedded on mounted cards) to the
 -- model on top, adding "Sprint", "Turn" and "Leap" context items to it.
 -- Injection-safe: the tool chains onLoad/onPickUp and never writes script_state.
@@ -732,24 +776,8 @@ function addSprintAction(playerColor)
         broadcastToColor("Place the model on this card first.", playerColor, Color.Orange)
         return
     end
-    -- Strip any previously injected block (between its START/END markers, any
-    -- version) so re-running installs the CURRENT tool version - it doubles as an
-    -- updater. The host script + script_state are left intact.
-    local lua = model.getLuaScript() or ""
-    local updating = false
-    local s = lua:find("-- START KT_SPRINT_TOOL_", 1, true)
-    if s then
-        updating = true
-        local e = lua:find("-- END KT_SPRINT_TOOL_", s, true)
-        if e then
-            local nl = lua:find("\n", e, true)
-            lua = nl and (lua:sub(1, s - 1) .. lua:sub(nl + 1)) or lua:sub(1, s - 1)
-        else
-            lua = lua:sub(1, s - 1)
-        end
-    end
-    model.setLuaScript(lua .. "\n\n" .. SPRINT_TOOL_CODE)
-    Wait.frames(function() if model ~= nil then model.reload() end end, 10)
+    -- Re-running installs the CURRENT version (doubles as an updater).
+    local updating = injectBlock(model, "-- START KT_SPRINT_TOOL_", "-- END KT_SPRINT_TOOL_", SPRINT_TOOL_CODE)
     if updating then
         broadcastToColor("Sprint action updated to the latest version.", playerColor, {0.2, 0.85, 0.3})
     else
@@ -770,24 +798,8 @@ function addMoveAction(playerColor)
         broadcastToColor("Place the model on this card first.", playerColor, Color.Orange)
         return
     end
-    -- Strip any previously injected block (between its START/END markers, any
-    -- version) so re-running installs the CURRENT tool version - it doubles as an
-    -- updater. The host script + script_state are left intact.
-    local lua = model.getLuaScript() or ""
-    local updating = false
-    local s = lua:find("-- START KT_MOVE_TOOL_", 1, true)
-    if s then
-        updating = true
-        local e = lua:find("-- END KT_MOVE_TOOL_", s, true)
-        if e then
-            local nl = lua:find("\n", e, true)
-            lua = nl and (lua:sub(1, s - 1) .. lua:sub(nl + 1)) or lua:sub(1, s - 1)
-        else
-            lua = lua:sub(1, s - 1)
-        end
-    end
-    model.setLuaScript(lua .. "\n\n" .. MOVE_TOOL_CODE)
-    Wait.frames(function() if model ~= nil then model.reload() end end, 10)
+    -- Re-running installs the CURRENT version (doubles as an updater).
+    local updating = injectBlock(model, "-- START KT_MOVE_TOOL_", "-- END KT_MOVE_TOOL_", MOVE_TOOL_CODE)
     if updating then
         broadcastToColor("Move action updated to the latest version.", playerColor, {0.2, 0.85, 0.3})
     else
@@ -844,7 +856,49 @@ function proceedLoad(playerColor, data, model, ignoreWeapons)
         pendingData = nil
         pendingModel = nil
         pendingPlayerColor = nil
+        -- No loadout popup: the stats step finished synchronously, so advance the
+        -- "Load everything" chain now (no-op unless it is active).
+        if loadEverythingActive then afterStatsLoaded(playerColor) end
     end
+end
+
+-- ===== "Load everything" orchestrator =====
+-- One click runs the full setup IN ORDER: load stats (forcing the loadout popup
+-- when the operative has one) -> apply faction upgrades if any -> add the
+-- movement action. The stats and upgrade steps use ASYNC selection popups, so
+-- the chain is advanced from their Apply handlers, guarded by this flag. Any
+-- Cancel aborts the chain. The individual menu items still work standalone.
+loadEverythingActive = false
+
+function loadEverything(playerColor)
+    loadEverythingActive = true
+    loadStatsToModel(playerColor)          -- continues via afterStatsLoaded(...)
+end
+
+-- After the STATS step (called from onApplySelection and the sync path above).
+function afterStatsLoaded(playerColor)
+    if not loadEverythingActive then return end
+    if hasUpgrades() then
+        chooseUpgrades(playerColor)        -- async -> continues via afterUpgradesLoaded
+    else
+        afterUpgradesLoaded(playerColor)
+    end
+end
+
+-- After the FACTION step. Adds the movement action (the final step) and ends.
+function afterUpgradesLoaded(playerColor)
+    if not loadEverythingActive then return end
+    loadEverythingActive = false
+    if type(SPRINT_TOOL_CODE) == "string" and hasKeyword("MOUNTED") then
+        addSprintAction(playerColor)
+    elseif type(MOVE_TOOL_CODE) == "string" then
+        addMoveAction(playerColor)
+    end
+end
+
+-- Abort the chain (called from the Cancel handlers of either popup).
+function cancelLoadEverything()
+    loadEverythingActive = false
 end
 
 -- ===== Faction-rule upgrades (mounted operatives pick N of M) =====
@@ -946,14 +1000,18 @@ function onApplyUpgrades(player, value, id)
     end
     local changes = diffAndApply(upgradeModel, data, nil)
     broadcastToColor("Upgrades applied: " .. table.concat(chosenNames, ", "), upgradePlayerColor, Color.Green)
+    local pc = upgradePlayerColor
     upgradeChosen = {}
     upgradeModel = nil
     upgradeData = nil
     upgradeOptions = nil
+    -- Advance the "Load everything" chain to the movement step (no-op unless active).
+    if loadEverythingActive then afterUpgradesLoaded(pc) end
 end
 
 function onCancelUpgrades(player, value, id)
     self.UI.setXml("")
+    cancelLoadEverything()
     broadcastToColor("Upgrade selection cancelled.", upgradePlayerColor or (player and player.color) or "White", Color.White)
     upgradeChosen = {}
     upgradeModel = nil
