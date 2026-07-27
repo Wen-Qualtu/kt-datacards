@@ -46,19 +46,25 @@ def build(code: str) -> str:
     eq = "=" * level
     open_b, close_b = f"[{eq}[", f"]{eq}]"
 
-    # Embed the tool with the marker as its first line so the guard can detect it.
-    embedded = f"{open_b}\n{MARKER}\n{code}\n{close_b}"
+    # Embed the tool wrapped in START/END sentinels so a second load can find the
+    # previously-injected block and REPLACE it (update) instead of refusing.
+    start_marker = f"-- START {MARKER[3:]}"   # "-- START KT_SPRINT_TOOL_V1"
+    end_marker = f"-- END {MARKER[3:]}"       # "-- END KT_SPRINT_TOOL_V1"
+    embedded = f"{open_b}\n{start_marker}\n{code}\n{end_marker}\n{close_b}"
 
     return f"""-- kt-datacards: Sprint Tool Loader (POC)  [GENERATED - do not hand-edit]
 -- Source: dev/sprint-movement-tool.lua  |  Regenerate: python dev/build_sprint_loader.py
 --
 -- Paste this onto any card / tile. Put a scripted model (e.g. a KTUI mini) on
--- top, then right-click the card -> "Load Sprint tool to model". It APPENDS
--- the sprint movement tool to the model's existing Lua script; because the
+-- top, then right-click the card -> "Load Sprint tool to model". It injects
+-- the sprint movement tool into the model's existing Lua script (wrapped in
+-- START/END markers); loading again UPDATES that block in place. Because the
 -- tool chains onLoad/onPickUp and never touches script_state, the model's own
 -- scripts and saved state stay intact.
 
-local SPRINT_MARKER = "{MARKER}"
+local SPRINT_START = "{start_marker}"
+local SPRINT_END   = "{end_marker}"
+local SPRINT_LEGACY = "{MARKER}"   -- pre-START/END block marker (older loads)
 
 local SPRINT_CODE = {embedded}
 
@@ -99,15 +105,36 @@ function addSprintToModel(playerColor)
     end
 
     local lua = model.getLuaScript() or ""
-    if lua:find(SPRINT_MARKER, 1, true) then
-        broadcastToColor("Model already has the Sprint tool.", playerColor, {{1, 1, 1}})
+    local sStart = lua:find(SPRINT_START, 1, true)
+    if sStart then
+        -- UPDATE: excise the old block (START..END inclusive) and drop the new one in.
+        local _, eEnd = lua:find(SPRINT_END, sStart, true)
+        if not eEnd then
+            broadcastToColor("Sprint block looks corrupt (no END marker); left as-is.", playerColor, {{1, 0.6, 0}})
+            return
+        end
+        local before = (lua:sub(1, sStart - 1)):gsub("%s+$", "")
+        local after  = lua:sub(eEnd + 1)
+        model.setLuaScript(before .. "\\n\\n" .. SPRINT_CODE .. after)
+        Wait.frames(function() if model ~= nil then model.reload() end end, 10)
+        broadcastToColor("Sprint tool updated to the latest version.", playerColor, {{0.2, 0.85, 0.3}})
         return
     end
 
-    -- Append (never replace). Chained onLoad/onPickUp keep the host intact.
+    -- First load: append. Chained onLoad/onPickUp keep the host intact.
+    local legacy = lua:find(SPRINT_LEGACY, 1, true)
+    if legacy then
+        -- Old block (no START/END) was always appended at the end: strip from its
+        -- marker to end-of-script so we don't stack a duplicate copy.
+        lua = (lua:sub(1, legacy - 1)):gsub("%s+$", "")
+    end
     model.setLuaScript(lua .. "\\n\\n" .. SPRINT_CODE)
     Wait.frames(function() if model ~= nil then model.reload() end end, 10)
-    broadcastToColor("Sprint tool added. Right-click the model -> 'Sprint: Begin'.", playerColor, {{0.2, 0.85, 0.3}})
+    if legacy then
+        broadcastToColor("Sprint tool updated to the latest version.", playerColor, {{0.2, 0.85, 0.3}})
+    else
+        broadcastToColor("Sprint tool added. Right-click the model -> 'Sprint: Begin'.", playerColor, {{0.2, 0.85, 0.3}})
+    end
 end
 
 function onLoad()

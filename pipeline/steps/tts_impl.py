@@ -1151,9 +1151,18 @@ def rebuild_kill_team_card_boxes_example(output_dir: Path) -> tuple[int, Optiona
     manager_output_dir.mkdir(parents=True, exist_ok=True)
     manager_output_path = manager_output_dir / "Kill Team Card Boxes.json"
 
+    # Prefer the dev/examples template; fall back to the previously generated
+    # manager bag so the top-level bag settings/skeleton are preserved even when
+    # the template isn't checked out. Only ContainedObjects + Lua are rewritten.
+    wrapped_existing = manager_output_dir / "Kill Team Card Boxes (saved object).json"
     source_path = manager_template_path
     if not source_path.exists():
-        logger.warning(f"Manager bag template file not found: {source_path}")
+        if wrapped_existing.exists():
+            source_path = wrapped_existing        # save-file wrapper (has ObjectStates)
+        elif manager_output_path.exists():
+            source_path = manager_output_path      # bare bag object
+    if not source_path.exists():
+        logger.warning(f"Manager bag template file not found: {manager_template_path}")
         return 0, None
 
     try:
@@ -1164,11 +1173,13 @@ def rebuild_kill_team_card_boxes_example(output_dir: Path) -> tuple[int, Optiona
         return 0, None
 
     object_states = manager_data.get("ObjectStates") or []
-    if not object_states or not isinstance(object_states[0], dict):
-        logger.warning("Manager bag JSON has no valid ObjectStates[0]")
+    if object_states and isinstance(object_states[0], dict):
+        manager_obj = object_states[0]                      # save-file wrapper form
+    elif isinstance(manager_data, dict) and manager_data.get("Name") == "Custom_Model_Bag":
+        manager_obj = manager_data                          # bare bag object form
+    else:
+        logger.warning("Manager bag JSON has no valid ObjectStates[0] or bare bag object")
         return 0, None
-
-    manager_obj = object_states[0]
     # Build manager bag contents from scratch each run to avoid stale nested state.
     manager_obj["ContainedObjects"] = []
 
@@ -1362,9 +1373,33 @@ def embed_datacard_stats(bag_obj: dict, team_name: str, output_dir: Path, config
         while ("]" + "=" * level + "]") in sprint_tool_text:
             level += 1
         eq = "=" * level
-        sprint_tool_prefix = f"SPRINT_TOOL_CODE = [{eq}[\n-- KT_SPRINT_TOOL_V1\n{sprint_tool_text}\n]{eq}]\n\n"
+        # Wrap in START/END markers so addSprintAction -> injectBlock can find and
+        # REPLACE an existing block in place (update) instead of appending a copy.
+        sprint_tool_prefix = (
+            f"SPRINT_TOOL_CODE = [{eq}[\n-- START KT_SPRINT_TOOL_V1\n"
+            f"{sprint_tool_text}\n-- END KT_SPRINT_TOOL_V1\n]{eq}]\n\n"
+        )
     else:
         logger.warning(f"  Sprint tool not found at {sprint_tool_path}; mounted operatives won't get the sprint action")
+
+    # Load the plain Move tool. It's embedded as MOVE_TOOL_CODE only on
+    # NON-mounted operative cards (which expose an "Add Move Action" item that
+    # injects it onto the model on top). Mounted operatives use the sprint tool.
+    move_tool_prefix = ""
+    move_tool_path = config_dir / "defaults" / "tts-script" / "move-tool.lua"
+    if move_tool_path.exists():
+        with open(move_tool_path, 'r', encoding='utf-8') as f:
+            move_tool_text = f.read()
+        level = 0
+        while ("]" + "=" * level + "]") in move_tool_text:
+            level += 1
+        eq = "=" * level
+        move_tool_prefix = (
+            f"MOVE_TOOL_CODE = [{eq}[\n-- START KT_MOVE_TOOL_V1\n"
+            f"{move_tool_text}\n-- END KT_MOVE_TOOL_V1\n]{eq}]\n\n"
+        )
+    else:
+        logger.warning(f"  Move tool not found at {move_tool_path}; non-mounted operatives won't get the move action")
 
     # Find all datacard objects in the bag
     datacards = _find_datacards(bag_obj)
@@ -1398,10 +1433,13 @@ def embed_datacard_stats(bag_obj: dict, team_name: str, output_dir: Path, config
             
             # Get faction rule code if applicable
             faction_rule_code = _get_faction_rule_code(team_name, team_data, operative, team_config)
-            # Embed the sprint tool only for MOUNTED operatives.
+            # Embed the movement tool matching the operative: MOUNTED -> sprint,
+            # everyone else -> the plain move tool.
             op_keywords = [str(k).upper() for k in operative.get('keywords', [])]
-            sprint_prefix = sprint_tool_prefix if ("MOUNTED" in op_keywords and sprint_tool_prefix) else ""
-            lua_script = ktui_modelscript_prefix + sprint_prefix + datacard_lua_script + "\n\n" + faction_rule_code + "\n\n" + (single_object_updater_script or "")
+            is_mounted = "MOUNTED" in op_keywords
+            sprint_prefix = sprint_tool_prefix if (is_mounted and sprint_tool_prefix) else ""
+            move_prefix = move_tool_prefix if (not is_mounted and move_tool_prefix) else ""
+            lua_script = ktui_modelscript_prefix + sprint_prefix + move_prefix + datacard_lua_script + "\n\n" + faction_rule_code + "\n\n" + (single_object_updater_script or "")
             
             # Set GMNotes and Lua script
             card["GMNotes"] = gm_notes_json
@@ -1534,6 +1572,86 @@ def _match_weapon_rules(special_rules: str, all_rules: dict) -> dict:
         if re.search(re.escape(base), special_rules, re.IGNORECASE):
             matched[rule_name] = desc
     return matched
+
+
+def _derive_exclusive_sets(op_name: str, selection_text: str, num_groups: int):
+    """Detect a mutually-exclusive loadout split from the operative-selection text.
+
+    Pattern (per operative): "... with one option from EACH of the following:" then
+    a run of option groups (bulleted with • or ○ depending on the team's nesting),
+    then "Or the following option:" then more group(s). The "Or" makes the groups
+    before it (set 1) mutually exclusive with the group(s) after it (set 2).
+    Returns [[set1 group indices], [set2 group indices]] (0-based), or None when the
+    operative has no such split (so nothing changes for it).
+    """
+    if not selection_text or num_groups < 2:
+        return None
+    up = (op_name or "").strip().upper()
+    if not up:
+        return None
+    lines = selection_text.split("\n")
+
+    def marker_stripped(s: str) -> str:
+        # Drop leading list markers / numbers / arrows (•, ○, ↘, digits, spaces).
+        return re.sub(r"^[^A-Za-z]+", "", s).upper()
+
+    # Find this operative's header line (startswith avoids matching a longer name
+    # that merely contains this one, e.g. "INTERCESSOR SERGEANT" in "ASSAULT ...").
+    start = None
+    for i, ln in enumerate(lines):
+        if marker_stripped(ln.strip()).startswith(up):
+            start = i
+            break
+    if start is None:
+        return None
+
+    option_markers = ("\u2022", "\u25cb", "\u25ef")  # • ○ ◯
+    count = 0
+    boundary = None
+    for ln in lines[start + 1:]:
+        s = ln.strip()
+        low = s.lower()
+        if s.startswith("---") or "continues on other side" in low:
+            break
+        if "or the following option" in low:
+            boundary = count
+            break
+        # A later operative's own option list has begun -> stop (only after we've
+        # started counting this operative's options, so the header's own
+        # "one option from each" continuation line doesn't trip it).
+        if count > 0 and ("one option from" in low or "one of the following" in low):
+            break
+        if s.startswith(option_markers):
+            count += 1
+    if boundary is None or boundary <= 0 or boundary >= num_groups:
+        return None
+    return [list(range(0, boundary)), list(range(boundary, num_groups))]
+
+
+# Rule text (vs lore/flavour prose) reliably starts with one of these game-rules
+# sentence openers or a cost/PSYCHIC token, or repeats the rule name (action cards).
+# Used to drop the leading lore paragraph from EXODITE upgrade text only.
+_EXODITE_RULE_START_RE = re.compile(
+    r"^(When\b|Whenever\b|Once\b|At the (end|start)\b|Each (friendly|EXODITE)\b"
+    r"|An EXODITE\b|This operative\b|MOUNTED\b|If you\b|If it\b|If this\b"
+    r"|\d+\s*AP\b|PSYCHIC\b)"
+)
+
+
+def _strip_exodite_lore(body_lines: list, rule_name: str) -> list:
+    """Drop a leading flavour/lore paragraph from an EXODITE upgrade's body, returning
+    from the first line that reads as game-rules text (or a repeat of the rule name).
+    Fail-safe: if no rule opener is found, returns the body unchanged."""
+    name_norm = re.sub(r"[^a-z0-9]", "", (rule_name or "").lower())
+    for idx, ln in enumerate(body_lines):
+        s = ln.strip()
+        if not s:
+            continue
+        if name_norm and re.sub(r"[^a-z0-9]", "", s.lower()) == name_norm:
+            return body_lines[idx:]
+        if _EXODITE_RULE_START_RE.match(s):
+            return body_lines[idx:]
+    return body_lines
 
 
 def _build_selection_for_gmnotes(selection_groups: list, weapons: list, exclusive_sets: dict = None) -> Optional[dict]:
@@ -1669,6 +1787,14 @@ def _build_gm_notes(operative: dict, team_data: dict, weapon_rules: dict,
     }
 
     if selection_groups:
+        # When no explicit exclusive sets were supplied, derive them from the
+        # operative-selection text ("... one option from each ... Or the following
+        # option ..."). Only operatives with that "Or" split get exclusive sets;
+        # everything else is unchanged.
+        if not exclusive_sets:
+            osel = team_data.get('operatives_selection') or []
+            sel_text = osel[0].get('text', '') if osel else ''
+            exclusive_sets = _derive_exclusive_sets(operative.get('name', ''), sel_text, len(selection_groups))
         indexed = _build_selection_for_gmnotes(selection_groups, weapons, exclusive_sets)
         if indexed:
             result['selection'] = indexed
@@ -1686,9 +1812,12 @@ def _build_gm_notes(operative: dict, team_data: dict, weapon_rules: dict,
             text = fr.get('text', '') or ''
             lines = [ln.strip() for ln in text.split('\n') if ln.strip()]
             if len(lines) >= 3 and lines[1].upper() == f"{arch} UPGRADE":
+                # Drop the leading lore/flavour paragraph (EXODITE upgrades only):
+                # keep from where the actual rule text starts.
+                body = _strip_exodite_lore(lines[3:], lines[2])
                 options.append({
                     'name': lines[2],
-                    'text': _normalize_text('\n'.join(lines[3:]).strip()),
+                    'text': _normalize_text('\n'.join(body).strip()),
                 })
         if len(options) >= 2:
             result['upgrades'] = {'select': 2, 'options': options}
@@ -1836,6 +1965,10 @@ function onFrApply(player, value, id)
 
     frPendingModel = nil
     frPendingPlayerColor = nil
+    -- Advance the "Load everything" chain (no-op unless it is active).
+    if loadEverythingActive and type(afterFactionRuleLoaded) == "function" then
+        afterFactionRuleLoaded(pc)
+    end
 end
 
 function onFrCancel(player, value, id)
@@ -1843,6 +1976,7 @@ function onFrCancel(player, value, id)
     broadcastToColor(FACTION_RULE_NAME .. " selection cancelled.", frPendingPlayerColor or player.color, Color.White)
     frPendingModel = nil
     frPendingPlayerColor = nil
+    if type(cancelLoadEverything) == "function" then cancelLoadEverything() end
 end
 
 function applyFactionRule(playerColor)
@@ -2055,6 +2189,10 @@ function onFrApply(player, value, id)
 
     frPendingModel = nil
     frPendingPlayerColor = nil
+    -- Advance the "Load everything" chain (no-op unless it is active).
+    if loadEverythingActive and type(afterFactionRuleLoaded) == "function" then
+        afterFactionRuleLoaded(pc)
+    end
 end
 
 function onFrCancel(player, value, id)
@@ -2062,6 +2200,7 @@ function onFrCancel(player, value, id)
     broadcastToColor(FACTION_RULE_NAME .. " selection cancelled.", frPendingPlayerColor or player.color, Color.White)
     frPendingModel = nil
     frPendingPlayerColor = nil
+    if type(cancelLoadEverything) == "function" then cancelLoadEverything() end
 end
 
 function applyFactionRule(playerColor)
@@ -2098,7 +2237,10 @@ OC_INIT_VALUE = <<INIT_VALUE>>
 OC_MIN_VAL = <<MIN_VAL>>
 OC_MAX_VAL = <<MAX_VAL>>
 
-OC_HELPER_FUNCS = [==[<<HELPER_BLOCK>>]==]
+OC_HELPER_FUNCS = [==[
+--OC1_HELP:START<<HELPER_BLOCK>>
+--OC1_HELP:END
+]==]
 
 OC_ASSET_LINES = [==[<<ASSET_BLOCK>>
 ]==]
@@ -2108,6 +2250,44 @@ OC_PANEL_XML = "\n    <Panel color=\"#80808000\" outline=\"#FFFF00\" outlineSize
     .. "]]..getOperativeCounterImage()..[["
     .. "\" preserveAspect=\"true\" rectAlignment=\"MiddleCenter\" onClick=\"change_operative_counter\" />"
     .. "\n    </Panel>"
+
+-- Strip helpers so re-applying UPDATES in place (mirrors the sprint/move and
+-- multi-counter behaviour) instead of bailing with "already has".
+function ocStrip1(s, a, b)
+    while true do
+        local i = s:find(a, 1, true)
+        if not i then break end
+        local j = s:find(b, i, true)
+        if not j then return s:sub(1, i - 1) end
+        s = s:sub(1, i - 1) .. s:sub(j + #b)
+    end
+    return s
+end
+
+function ocStripPanelById1(s, id)
+    while true do
+        local idpos = s:find(id, 1, true)
+        if not idpos then break end
+        local ps, from = nil, 1
+        while true do
+            local p = s:find("<Panel", from, true)
+            if not p or p > idpos then break end
+            ps, from = p, p + 1
+        end
+        local pe = s:find("</Panel>", idpos, true)
+        if not ps or not pe then break end
+        s = s:sub(1, ps - 1) .. s:sub(pe + 8)
+    end
+    return s
+end
+
+function ocStripLines1(s, sub)
+    local out = {}
+    for line in (s .. "\n"):gmatch("([^\n]*)\n") do
+        if not line:find(sub, 1, true) then out[#out + 1] = line end
+    end
+    return table.concat(out, "\n")
+end
 
 function addOperativeCounterToModel(playerColor)
     local model = findModelOnCard()
@@ -2122,10 +2302,12 @@ function addOperativeCounterToModel(playerColor)
         return
     end
 
-    if modelLua:find("ktcnid%-status%-operative%-counter") then
-        broadcastToColor("Model already has " .. OC_NAME .. " counter.", playerColor, Color.White)
-        return
-    end
+    local existed = modelLua:find("ktcnid%-status%-operative%-counter") ~= nil
+
+    -- Remove any prior copy (old OR new) then (re)inject.
+    modelLua = ocStripPanelById1(modelLua, 'id="ktcnid-status-operative-counter"')
+    modelLua = ocStripLines1(modelLua, 'name="oc_asset_')
+    modelLua = ocStrip1(modelLua, "--OC1_HELP:START", "--OC1_HELP:END")
 
     local xmlPattern = "(<HorizontalLayout spacing=\"3\" width=\"@totalAtt\")"
     if modelLua:find(xmlPattern) then
@@ -2145,20 +2327,21 @@ function addOperativeCounterToModel(playerColor)
     local modelState = model.script_state or "{}"
     local ok, mState = pcall(function() return JSON.decode(modelState) end)
     if not ok or not mState then mState = {} end
-    if not mState.operative_counter then
-        mState.operative_counter = {
-            name = OC_NAME,
-            current = OC_INIT_VALUE,
-            min = OC_MIN_VAL,
-            max = OC_MAX_VAL
-        }
-    end
+    local prev = mState.operative_counter
+    local cur = (prev and prev.current) or OC_INIT_VALUE
+    if cur < OC_MIN_VAL then cur = OC_MIN_VAL end
+    if cur > OC_MAX_VAL then cur = OC_MAX_VAL end
+    mState.operative_counter = { name = OC_NAME, current = cur, min = OC_MIN_VAL, max = OC_MAX_VAL }
     model.script_state = JSON.encode(mState)
 
     model.setLuaScript(modelLua)
     Wait.frames(function() model.reload() end, 10)
 
-    broadcastToColor("Added " .. OC_NAME .. " counter to model!", playerColor, Color.Green)
+    if existed then
+        broadcastToColor("Updated " .. OC_NAME .. " counter.", playerColor, Color.Green)
+    else
+        broadcastToColor("Added " .. OC_NAME .. " counter to model!", playerColor, Color.Green)
+    end
 end
 
 local ocBaseOnLoad = onLoad
@@ -2271,6 +2454,50 @@ _MULTI_COUNTER_WRAPPER = r'''
 
 MOC_MENU_LABEL = "<<MENU_LABEL>>"
 
+-- Remove every region delimited by markers a..b (inclusive) from s. Used to
+-- strip a previously-injected counter so re-adding UPDATES in place instead of
+-- being skipped -- mirrors the sprint/move injectBlock behaviour.
+function mocStrip(s, a, b)
+    while true do
+        local i = s:find(a, 1, true)
+        if not i then break end
+        local j = s:find(b, i, true)
+        if not j then return s:sub(1, i - 1) end
+        s = s:sub(1, i - 1) .. s:sub(j + #b)
+    end
+    return s
+end
+
+-- Remove a whole <Panel>...</Panel> that contains the given (plain) image id.
+-- Works on OLD unmarked injections too, so updates never leave a duplicate id
+-- (which would break the UI rebuild). Loops to clear stacked duplicates.
+function mocStripPanelById(s, id)
+    while true do
+        local idpos = s:find(id, 1, true)
+        if not idpos then break end
+        local ps, from = nil, 1
+        while true do
+            local p = s:find("<Panel", from, true)
+            if not p or p > idpos then break end
+            ps, from = p, p + 1
+        end
+        local pe = s:find("</Panel>", idpos, true)
+        if not ps or not pe then break end
+        s = s:sub(1, ps - 1) .. s:sub(pe + 8)   -- 8 = #"</Panel>"
+    end
+    return s
+end
+
+-- Remove any asset-bundle line containing the given (plain) name prefix, so old
+-- token entries don't pile up in the bundle when a counter is updated.
+function mocStripAssetsByName(s, namePrefix)
+    local out = {}
+    for line in (s .. "\n"):gmatch("([^\n]*)\n") do
+        if not line:find(namePrefix, 1, true) then out[#out + 1] = line end
+    end
+    return table.concat(out, "\n")
+end
+
 function addOperativeCountersToModel(playerColor)
     local model = findModelOnCard()
     if model == nil then
@@ -2286,19 +2513,21 @@ function addOperativeCountersToModel(playerColor)
     local okS, mState = pcall(function() return JSON.decode(modelState) end)
     if not okS or not mState then mState = {} end
     local added = {}
+    local updated = false
     local xmlPattern = '(<HorizontalLayout spacing="3" width="@totalAtt")'
     local bundlePattern = '({name="Wound_red"[^\n]+)'
 
 <<LOCAL_DEFS>>
 <<INJECT_BLOCKS>>
     if #added == 0 then
-        broadcastToColor("Model already has these counters.", playerColor, Color.White)
+        broadcastToColor("No counters to apply for this operative.", playerColor, Color.White)
         return
     end
     model.script_state = JSON.encode(mState)
     model.setLuaScript(modelLua)
     Wait.frames(function() model.reload() end, 10)
-    broadcastToColor("Added: " .. table.concat(added, ", "), playerColor, Color.Green)
+    local verb = updated and "Updated: " or "Added: "
+    broadcastToColor(verb .. table.concat(added, ", "), playerColor, Color.Green)
 end
 
 local mocBaseOnLoad = onLoad
@@ -2401,24 +2630,31 @@ function change_operative_counter_{slug}(player, value, id)
   broadcastToColor({lua_str(name + ': ')} .. (labels[current] or "?"), player.color, Color.Yellow)
 end
 """
-        helper_def = f"    local helperFuncs_{slug} = [==[{helper_inner}]==]\n"
+        helper_def = f"    local helperFuncs_{slug} = [==[\n--OC_HELP:{slug}:START{helper_inner}\n--OC_HELP:{slug}:END\n]==]\n"
 
         local_defs.append(panel_def + assets_def + helper_def)
 
         inject_blocks.append(
-            f'    if not modelLua:find("ktcnid%-status%-oc%-{slug}") then\n'
-            f'        if modelLua:find(xmlPattern) then\n'
-            f'            modelLua = modelLua:gsub(xmlPattern, panelXml_{slug} .. "\\n    %1", 1)\n'
-            f'        end\n'
-            f'        if modelLua:find(bundlePattern) then\n'
-            f'            modelLua = modelLua:gsub(bundlePattern, "%1" .. assetLines_{slug}, 1)\n'
-            f'        end\n'
-            f'        modelLua = modelLua .. helperFuncs_{slug}\n'
-            f'        if not mState.operative_counter_{slug} then\n'
-            f'            mState.operative_counter_{slug} = {{name={lua_str(name)}, current={init_val}, min={min_val}, max={max_val}}}\n'
-            f'        end\n'
-            f'        table.insert(added, {lua_str(name)})\n'
+            f'    -- {name}: remove any prior copy (old OR new) then (re)inject.\n'
+            f'    if mState.operative_counter_{slug} ~= nil or modelLua:find(\'id="ktcnid-status-oc-{slug}"\', 1, true) then updated = true end\n'
+            f'    modelLua = mocStripPanelById(modelLua, \'id="ktcnid-status-oc-{slug}"\')\n'
+            f'    modelLua = mocStripAssetsByName(modelLua, \'name="oc_{slug}_asset_\')\n'
+            f'    modelLua = mocStrip(modelLua, "--OC_HELP:{slug}:START", "--OC_HELP:{slug}:END")\n'
+            f'    if modelLua:find(xmlPattern) then\n'
+            f'        modelLua = modelLua:gsub(xmlPattern, panelXml_{slug} .. "\\n    %1", 1)\n'
             f'    end\n'
+            f'    if modelLua:find(bundlePattern) then\n'
+            f'        modelLua = modelLua:gsub(bundlePattern, "%1" .. assetLines_{slug}, 1)\n'
+            f'    end\n'
+            f'    modelLua = modelLua .. helperFuncs_{slug}\n'
+            f'    do\n'
+            f'        local prev = mState.operative_counter_{slug}\n'
+            f'        local cur = (prev and prev.current) or {init_val}\n'
+            f'        if cur < {min_val} then cur = {min_val} end\n'
+            f'        if cur > {max_val} then cur = {max_val} end\n'
+            f'        mState.operative_counter_{slug} = {{name={lua_str(name)}, current=cur, min={min_val}, max={max_val}}}\n'
+            f'    end\n'
+            f'    table.insert(added, {lua_str(name)})\n'
         )
 
     return (
