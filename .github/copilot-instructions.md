@@ -90,9 +90,17 @@ input/*.pdf (kt-app)  OR  layers/warcom/staging/*.pdf (warcom)
 Order prefix (`[FF5500]E[-]`) + wounds (`{8/8}`) + operative name
 
 ### Lua Scripts
-- `config/defaults/tts-script/datacard-load-stats.lua` — "Load stats to model" context menu
+- `config/defaults/tts-script/datacard-load-stats.lua` — card right-click menu, in order:
+  **Load everything** (one button: stats → loadout → faction rules → movement),
+  **Load stats and loadout** (always forces the loadout popup when present),
+  **Add Move Action** / **Add sprint action** (keyword-gated), **Choose upgrades**,
+  **Special: Rotate base 90**
 - Uses `diffAndApply()` for per-field comparison with change reporting
 - `findModelOnCard()` uses `Physics.cast` to find models on card
+- `injectBlock()` installs/updates a tagged block on the model (`-- START/END KT_<NAME> --`,
+  replace-in-place or append for old models); movement embeds via `MOVE_TOOL_CODE`/`SPRINT_TOOL_CODE`
+- Movement tools: `move-tool.lua` (Move + Dash) and `sprint-movement-tool.lua`
+  (Sprint/Turn/Leap, MOUNTED only) — both step the model per leg with a centred click-catcher
 
 ## Key Conventions
 

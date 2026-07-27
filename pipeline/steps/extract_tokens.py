@@ -141,7 +141,14 @@ def _remove_background(img: np.ndarray) -> np.ndarray:
 
     num_labels, labels, stats, _ = cv2.connectedComponentsWithStats(mask, connectivity=8)
     if num_labels > 1:
-        min_area = 100
+        # Drop components that are tiny RELATIVE to the largest one. This removes a
+        # caption/label that bled into the rough crop (e.g. wrecka-krew "breach",
+        # whose circle bridged to its text below) so the content bbox becomes just
+        # the token — otherwise the tall bbox shrinks the token and leaves margin.
+        # The absolute floor (100px) is kept for genuinely small tokens.
+        areas = stats[1:, cv2.CC_STAT_AREA]
+        max_area = int(areas.max()) if areas.size else 0
+        min_area = max(100, int(max_area * 0.15))
         cleaned_mask = np.zeros_like(mask)
         for label in range(1, num_labels):
             if stats[label, cv2.CC_STAT_AREA] >= min_area:
