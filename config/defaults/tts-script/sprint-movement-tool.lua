@@ -108,8 +108,12 @@ local CATCHER_UNITS_PER_IN = 450
 -- 360 rotation, clamped so ANY part of the base stays within MAX_LEAP_INCHES of
 -- ANY part of the original footprint (edge-to-edge gap). Rotation is STEPPED:
 -- each tap of 1/2 (numpad OR number row) turns the base LEAP_ROT_STEP degrees.
+-- Taps are BATCHED: every tap adds/subtracts one step to a pending counter that
+-- is flushed to curHeading on the next preview tick, so rapid taps within a
+-- frame all count (n taps = n steps) instead of being swallowed. This keeps the
+-- turn smooth regardless of how fast you tap.
 local MAX_LEAP_INCHES   = 1     -- max edge-to-edge gap from the original base
-local LEAP_ROT_STEP     = 15    -- degrees turned per 1/2 tap (numpad or number row)
+local LEAP_ROT_STEP     = 5     -- degrees turned per 1/2 tap (numpad or number row)
 local LEAP_STEPS        = 32    -- oval perimeter samples for the gap clamp
 
 -- Pivot/Turn aiming: how far past +/-45deg the pointer may stray before the
@@ -182,6 +186,8 @@ local history      = {}
 local leapOrig        = nil     -- original planar centre {x,z} (fixed anchor)
 local leapOrigHeading = 0       -- original heading (the footprint doesn't turn)
 local leapOrigPts     = nil     -- cached original oval perimeter points
+local leapPendingRot  = 0       -- net rotation steps tapped since the last tick
+                                -- (+ = clockwise, - = anticlockwise); flushed in tick()
 
 -- Live readout (distance/angle) + its 3DText object
 local distTextObj    = nil      -- spawned 3DText that shows the live measurement
@@ -689,9 +695,14 @@ local function tick()
 		readoutPos  = { x = (curPos.x + e.x) * 0.5, y = curPos.y, z = (curPos.z + e.z) * 0.5 }
 
 	elseif phase == PHASE_LEAP then
-		-- Rotation is STEPPED: each 1/2 tap turns curHeading by LEAP_ROT_STEP
-		-- (handled in handleDigit). Here we just clamp the aimed position to the
-		-- current heading and preview the ghost.
+		-- Rotation is STEPPED and BATCHED: handleDigit only accumulates taps into
+		-- leapPendingRot; we flush the whole batch to curHeading ONCE here so any
+		-- number of taps landing between two ticks all register (n taps = n steps).
+		if leapPendingRot ~= 0 then
+			curHeading = curHeading + leapPendingRot * LEAP_ROT_STEP
+			leapPendingRot = 0
+		end
+		-- Here we just clamp the aimed position to the current heading and preview.
 		local pos = clampLeapPos(pointer, curHeading)
 		prevStraight, prevEndPos, prevHeading = 0, pos, curHeading
 		-- Grey ghost = original footprint (the 1" anchor); cyan = destination.
@@ -993,6 +1004,7 @@ local function beginLeap(pc)
 	leapOrig        = { x = p.x, z = p.z }
 	leapOrigHeading = curHeading
 	leapOrigPts     = ovalPerimeter(p.x, p.z, curHeading, LEAP_STEPS)
+	leapPendingRot  = 0
 	spentInches  = 0
 	backSpent    = 0
 	rawStraight  = 0
@@ -1138,14 +1150,22 @@ local function handleDigit(pc, digit)
 	if phase == PHASE_IDLE then return false end
 	if controlColor and pc ~= controlColor then return false end
 	if phase == PHASE_LEAP then
-		-- Stepped rotation: each 1/2 tap (numpad OR number row) turns the base by
-		-- LEAP_ROT_STEP degrees; 9 = apply, 0 = cancel.
-		if digit == 1 then curHeading = curHeading - LEAP_ROT_STEP
-		elseif digit == 2 then curHeading = curHeading + LEAP_ROT_STEP
-		elseif digit == 9 then advance(pc)
-		elseif digit == 0 then cancelSprint(pc)
-		else return false end
-		return true
+		-- Deliberate single-press commands first: 9 = apply, 0 = cancel.
+		if digit == 9 then advance(pc); return true
+		elseif digit == 0 then cancelSprint(pc); return true end
+		-- Stepped + BATCHED rotation. CRITICAL: TTS merges rapid same-key presses
+		-- on the number ROW into ONE multi-digit number (three quick 1s arrive as
+		-- 111, not three 1s), so an exact `digit == 1` test DROPS fast taps -- which
+		-- is why they "didn't register". We DECOMPOSE the number into its digits and
+		-- queue each one: every 1 = -1 step, every 2 = +1 step (11 -> two -1;
+		-- 12 -> -1 then +1). The tick loop applies the summed total, so no tap is
+		-- lost no matter how fast you tap.
+		local matched = false
+		for d in tostring(digit):gmatch("%d") do
+			if d == "1" then leapPendingRot = leapPendingRot - 1; matched = true
+			elseif d == "2" then leapPendingRot = leapPendingRot + 1; matched = true end
+		end
+		return matched
 	end
 	if digit >= 1 and digit <= 4 then
 		selectMode(pc, digit)
