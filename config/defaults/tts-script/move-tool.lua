@@ -781,7 +781,11 @@ end
 
 local _move_prev_onLoad = onLoad
 function onLoad(...)
-	if _move_prev_onLoad then _move_prev_onLoad(...) end
+	-- pcall-guard the host's onLoad: a broken host extender (e.g. a third-party
+	-- KTUI / Command Node extender that errors inside its own refreshUI) must not
+	-- abort loading and drop the Move tool. Our setup always runs; the host keeps
+	-- whatever it managed to complete before the error.
+	if _move_prev_onLoad then pcall(_move_prev_onLoad, ...) end
 	setupMoveTool()
 end
 
