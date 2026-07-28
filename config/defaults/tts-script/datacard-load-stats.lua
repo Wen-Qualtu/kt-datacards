@@ -1,6 +1,6 @@
 -- kt-datacards: Load Stats to Model
 -- Card stores operative data in GMNotes (JSON).
--- Context menu "Load stats and loadout" finds a KTUIMini on top,
+-- Context menu "Load stats" finds a KTUIMini on top,
 -- shows a weapon selection popup (if multiple weapons),
 -- compares current vs new, reports diffs, and applies changes.
 
@@ -27,7 +27,7 @@ local upgradePlayerColor = nil
 --                          tools; not wired here yet -- see TODO).
 --   2. Load everything    one button: stats (+loadout) -> faction upgrades ->
 --                          operative counters -> movement. Excludes Rotate base.
---   3. Load stats and loadout  stats only; ALWAYS forces the loadout popup when present.
+--   3. Load stats          stats + weapons; ALWAYS forces the loadout popup when present.
 --   4. Movement           Move (non-mounted) or Sprint/Turn/Leap (mounted).
 --   5. Faction specifics   e.g. Choose upgrades (chapter tactics / gore tank / counters).
 --   6. Special            low-frequency extras (Rotate base 90), always last.
@@ -39,7 +39,7 @@ function onLoad()
 
     -- 3. Stats only. Always prompts the loadout selection when the operative has
     --    one (there is no silent "apply all" anymore).
-    self.addContextMenuItem("Load stats and loadout", loadStatsToModel)
+    self.addContextMenuItem("Load stats", loadStatsToModel)
 
     -- 4. Movement action for the model on top (keyword-gated by embedded code).
     if type(SPRINT_TOOL_CODE) == "string" and hasKeyword("MOUNTED") then
@@ -638,24 +638,33 @@ function diffAndApply(model, data)
             model.reload()
         else
             -- Already a KTUI mini (ours OR the real extender): refresh in place so
-            -- the existing script/UI is preserved. Redraw the base ring
-            -- (refreshVectors) AND the status UI (refreshUI). Each is guarded so one
-            -- failure can't halt the apply. Fall back to a full reload() ONLY for our
-            -- own bundled mini -- reloading a foreign extender could nil-crash its
-            -- ownership setup, and we must never wipe the player's fancy UI.
-            local ok = pcall(function()
-                model.call("loadState")
-                pcall(function() model.call("refreshVectors") end)
-                model.call("refreshUI")
-            end)
-            -- If an in-place refresh threw (e.g. a foreign extender hit an
-            -- unguarded field before our written state fully applied), fall back to
-            -- a full reload. reload() re-runs the extender's own onLoad -> loadState,
-            -- which re-reads the valid script_state we just wrote (uiHeight etc.
-            -- guaranteed present), rebuilding the fancy UI cleanly. Guarded so a
-            -- foreign onLoad that dislikes reload can't halt the apply.
-            if not ok then
+            -- the existing script/UI is preserved.
+            --
+            -- First heal the real extender's malformed getWoundPanelWidth (see
+            -- healExtenderScript). If we detect it, patch this model's OWN copy of
+            -- the script (never the extender object) and reload so the corrected
+            -- chunk re-parses; onLoad rebuilds the fancy UI from the script_state we
+            -- just wrote. This is what makes repeat loads consistent.
+            local healed, didHeal = healExtenderScript(model.getLuaScript() or "")
+            if didHeal then
+                model.setLuaScript(healed)
                 pcall(function() model.reload() end)
+                table.insert(changes, "Patched extender UI script")
+            else
+                -- Redraw the base ring (refreshVectors) AND the status UI
+                -- (refreshUI). Each is guarded so one failure can't halt the apply.
+                -- Fall back to a full reload() only if the in-place refresh throws;
+                -- reload re-runs the extender's onLoad -> loadState, which re-reads
+                -- the valid script_state we just wrote (uiHeight etc. guaranteed
+                -- present), rebuilding the fancy UI cleanly.
+                local ok = pcall(function()
+                    model.call("loadState")
+                    pcall(function() model.call("refreshVectors") end)
+                    model.call("refreshUI")
+                end)
+                if not ok then
+                    pcall(function() model.reload() end)
+                end
             end
         end
     end
@@ -745,6 +754,35 @@ end
 -- Convention going forward: wrap every injectable function block in the model
 -- source with `-- START KT_<NAME> --` / `-- END KT_<NAME> --` so it can be
 -- find/replaced in place with an improved version.
+
+-- Heal a known defect in the third-party "KT Command Node UI Extender" script
+-- that the extender object stamps onto models. Its getWoundPanelWidth() is
+-- written with bare `if` where it needs `elseif`:
+--     if wounds <= 7 then  return 60
+--     if wounds <= 10 then return 80      -- should be elseif
+--     if wounds <= 14 then return 100     -- should be elseif
+--     elseif wounds <= 18 then return 120
+--     else return 140 end
+--     end
+-- Those two bare ifs nest instead of chaining, so the function is 2 `end`s short.
+-- On its own the missing ends are tolerated at end-of-file, but as soon as we
+-- append our movement tool the deficit swallows the start of the appended code
+-- and a callee inside refreshUI resolves to nil ("attempt to call a nil value"
+-- -- the model loads once, then breaks the next time it is loaded).
+--
+-- We cannot edit the extender object, but every model carries its OWN copy of the
+-- script, so we patch that copy: converting the two bare ifs to `elseif` makes the
+-- two existing `end`s correctly close the if-chain and the function. Returns the
+-- (possibly healed) code plus a boolean telling whether anything changed.
+function healExtenderScript(code)
+    if type(code) ~= "string" or code == "" then return code, false end
+    if not code:find("getWoundPanelWidth", 1, true) then return code, false end
+    local healed, a, b = code, 0, 0
+    healed, a = healed:gsub("(return%s+60%s+)if(%s+wounds%s*<=%s*10%s+then)", "%1elseif%2")
+    healed, b = healed:gsub("(return%s+80%s+)if(%s+wounds%s*<=%s*14%s+then)", "%1elseif%2")
+    return healed, (a + b) > 0
+end
+
 function injectBlock(model, startMarker, endMarker, code)
     local lua = model.getLuaScript() or ""
     local existed = false
@@ -775,6 +813,9 @@ function injectBlock(model, startMarker, endMarker, code)
         lua = lua:sub(1, ls - 1)
     end
     lua = lua:gsub("%s+$", "")
+    -- Heal a malformed foreign extender script (see healExtenderScript) BEFORE
+    -- appending so the extender's missing `end`s can't swallow our code.
+    lua = healExtenderScript(lua)
     model.setLuaScript(lua .. "\n\n" .. code)
     Wait.frames(function() if model ~= nil then model.reload() end end, 10)
     return existed

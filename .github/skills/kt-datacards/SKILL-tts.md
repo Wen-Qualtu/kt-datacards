@@ -105,7 +105,7 @@ end
 function diffAndApply(card_stats, model_stats)
     -- Per-field comparison between card data and model
     -- Returns array of change description strings
-    -- Used by "Load stats and loadout" / "Load everything" context menu
+    -- Used by "Load stats" / "Load everything" context menu
 end
 
 function findModelOnCard()
