@@ -126,6 +126,17 @@ def run(teams: Optional[list] = None, source=None, force: bool = False):
     # unchanged assets keep their prior url/modified stamp).
     _write_object_urls(branch)
 
+    # Rebuild the cross-team manager bag ("Kill Team Card Boxes" + its saved-object
+    # wrapper) so its contained team boxes reflect the freshly generated cards.
+    # Runs across ALL output teams (not just the filtered set) and is guarded so a
+    # manager-bag failure can't fail the whole step.
+    try:
+        n, mgr_path = tts_impl.rebuild_kill_team_card_boxes_example(paths.OUTPUT)
+        if mgr_path is not None:
+            logger.info(f"  rebuilt manager bag: {n} team boxes")
+    except Exception as e:
+        logger.warning(f"  manager bag rebuild failed: {e}")
+
     StateIndex().rebuild_and_save()
     logger.info(f"generate_tts done: processed={processed} skipped={skipped} (generated={count})")
     return {"processed": processed, "skipped": skipped}
