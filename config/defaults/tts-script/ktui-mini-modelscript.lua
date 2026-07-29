@@ -154,6 +154,11 @@ function refreshWounds()
 
 	self.UI.setValue("ktcnid-status-wounds", uiwstring())
 
+	-- Resize/recolor the graphical HP bar to match the new wound count.
+	local _, filledWidth, barColor = hpBarFill()
+	self.UI.setAttribute("ktcnid-status-hpbar", "width", filledWidth)
+	self.UI.setAttribute("ktcnid-status-hpbar", "color", barColor)
+
 	local nname = self.getName()
 	if string.find(nname, "%b{}") == nil then
 		nname = "{} " .. nname
@@ -174,6 +179,42 @@ function callback_item(player, value, id)
 	player.broadcast(table.concat(state.items, ", "))
 end
 
+-- Health bar sizing/coloring mirrors the base-table UI extender's
+-- getWoundPanelWidth/buildHPBar so our bundled mini shows the same graphical bar.
+function getWoundPanelWidth()
+	local wounds = state.stats and state.stats.Wounds or 0
+	if wounds <= 7 then
+		return 60
+	elseif wounds <= 10 then
+		return 80
+	elseif wounds <= 14 then
+		return 100
+	elseif wounds <= 18 then
+		return 120
+	else
+		return 140
+	end
+end
+
+-- Returns panelWidth, filledWidth, barColor for the HP bar. Green when full,
+-- orange below full, red below half -- matching the extender.
+function hpBarFill()
+	local maxWounds = state.stats.Wounds or 0
+	local currentWounds = state.wounds or 0
+	local panelWidth = getWoundPanelWidth()
+	local filledWidth = 0
+	if maxWounds > 0 then
+		filledWidth = math.floor(panelWidth * currentWounds / maxWounds)
+	end
+	local barColor = "#098e00"
+	if currentWounds < (maxWounds / 2) then
+		barColor = "#FF0000"
+	elseif currentWounds < maxWounds then
+		barColor = "#e29300"
+	end
+	return panelWidth, filledWidth, barColor
+end
+
 function refreshUI()
 	local sc = self.getScale()
 	local scaleFactorX = 1 / sc.x
@@ -188,6 +229,8 @@ function refreshUI()
 	local uid = 50
 
 	local sv = secretVisibility()
+
+	local panelWidth, filledWidth, barColor = hpBarFill()
 
 	self.UI.setXmlTable({
 		xt("Defaults", {}, {
@@ -204,6 +247,33 @@ function refreshUI()
 			rotation = "0 0 " .. (state.uiAngle or 0),
 			scale = string.format("%f %f %f", scaleFactorX, scaleFactorY, scaleFactorZ),
 		}, {
+			-- Graphical HP bar (mirrors the base-table UI extender's buildHPBar):
+			-- a black, orange-outlined track with a colored fill sized to current
+			-- wounds. Sits at the top-centre of the status UI.
+			xt("Panel", {
+				offsetXY = circOffset(0, 90),
+				rectAlignment = "UpperCenter",
+				raycastTarget = false,
+			}, {
+				xt("Panel", {
+					width = panelWidth,
+					height = 23,
+					color = "#000000",
+					outline = "#FF5500",
+					outlineSize = "2 2",
+					rectAlignment = "LowerCenter",
+					raycastTarget = false,
+				}, {
+					xt("Panel", {
+						id = "ktcnid-status-hpbar",
+						width = filledWidth,
+						height = 23,
+						color = barColor,
+						rectAlignment = "MiddleLeft",
+						raycastTarget = false,
+					}),
+				}),
+			}),
 			xt("Panel", {
 				id = "ktcnid-status-display-ring",
 			}, {
