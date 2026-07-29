@@ -385,7 +385,7 @@ function onApplySelection(player, value, id)
     -- Rebuild description with filtered weapons
     pendingData.description = rebuildDescription(pendingData)
 
-    local changes = diffAndApply(pendingModel, pendingData)
+    local changes = diffAndApply(pendingModel, pendingData, pendingPlayerColor)
 
     if #changes == 0 then
         broadcastToColor("Already up to date.", pendingPlayerColor, Color.White)
@@ -460,7 +460,7 @@ function ensureKtuiState(ms, data)
     -- owner intentionally left unset => the model is visible to all players.
 end
 
-function diffAndApply(model, data)
+function diffAndApply(model, data, playerColor)
     local changes = {}
 
     local msRaw = model.script_state
@@ -485,6 +485,22 @@ function diffAndApply(model, data)
     ms.info  = ms.info or {}
 
     ensureKtuiState(ms, data)
+
+    -- Ownership + discovery for the base table's UI Extender tools. Those tools
+    -- (Ready Operatives / Save Positions / Load Positions) only act on objects
+    -- tagged 'KTUIMini' whose getOwningPlayer() is non-nil (state.owner == a seated
+    -- player's steam_id). Loading stats must (re)assert both so they keep working:
+    -- ensure the tag, and set the loading player as owner -- persisted in
+    -- script_state (survives save/reload) AND applied to the live extender now.
+    if not model.hasTag("KTUIMini") then model.addTag("KTUIMini") end
+    if playerColor then
+        local pl = Player[playerColor]
+        local sid = pl and pl.steam_id or nil
+        if sid ~= nil and sid ~= "" then
+            ms.owner = sid
+            pcall(function() model.call("setOwningPlayer", sid) end)
+        end
+    end
 
     -- 1. Core stats
     local oldMaxWounds = ms.stats["Wounds"]
@@ -909,7 +925,7 @@ function proceedLoad(playerColor, data, model, ignoreWeapons)
     if (not ignoreWeapons) and data.selection and data.selection.groups and #data.selection.groups > 0 then
         showSelectionPanel(data, model, playerColor)
     else
-        local changes = diffAndApply(model, data)
+        local changes = diffAndApply(model, data, playerColor)
         reportChanges(changes, playerColor)
         pendingData = nil
         pendingModel = nil
@@ -1124,7 +1140,7 @@ function onApplyUpgrades(player, value, id)
             table.insert(chosenNames, opt.name)
         end
     end
-    local changes = diffAndApply(upgradeModel, data, nil)
+    local changes = diffAndApply(upgradeModel, data, upgradePlayerColor)
     broadcastToColor("Upgrades applied: " .. table.concat(chosenNames, ", "), upgradePlayerColor, Color.Green)
     local pc = upgradePlayerColor
     upgradeChosen = {}
