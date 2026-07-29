@@ -179,8 +179,13 @@ function callback_item(player, value, id)
 	player.broadcast(table.concat(state.items, ", "))
 end
 
--- Health bar sizing/coloring mirrors the base-table UI extender's
--- getWoundPanelWidth/buildHPBar so our bundled mini shows the same graphical bar.
+-- Health bar sizing/coloring is a verbatim port of the base-table UI extender's
+-- getWoundPanelWidth + buildHPBar (see dev/_extender_full.lua, extracted from the
+-- live mod dev/3573927734.json). The rendered bar is byte-identical; to re-sync
+-- after an extender update, diff these two functions against the extender's. Kept
+-- in table form because our mini renders via setXmlTable (not setXml), so their
+-- XML-string buildHPBar can't be pasted in literally without rewriting the whole
+-- mini UI to a string.
 function getWoundPanelWidth()
 	local wounds = state.stats and state.stats.Wounds or 0
 	if wounds <= 7 then
@@ -320,11 +325,13 @@ function refreshUI()
 				active = false,
 				id = "ktcnid-status-order",
 			}),
+			-- Wound box: transparent and sized to getWoundPanelWidth() so it lines
+			-- up under the HP bar exactly like the base-table extender's widget.
 			xt("Panel", {
-				color = "#808080",
+				color = "#80808000",
 				outline = "#FF5500",
 				outlineSize = "2 2",
-				width = 50,
+				width = panelWidth,
 				height = 25,
 				offsetXY = circOffset(40, 270),
 			}, {
