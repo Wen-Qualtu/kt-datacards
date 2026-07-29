@@ -1202,8 +1202,22 @@ end
 function sprintScriptingButtonUp(index, playerColor)
 end
 
--- Registers the context-menu items. Advancing/cancelling happen via clicks and
--- number keys, so only the two entry points live in the menu.
+-- Hotkey entry points, called on the HOVERED model by the global hotkeys in
+-- setupSprintTool. Each begins its action only when idle. Mirrors the Move/Dash
+-- hotkeys in move-tool.lua.
+function sprintHotkeyTrigger(params)
+	if phase == PHASE_IDLE then beginSprint((params or {}).color) end
+end
+function turnHotkeyTrigger(params)
+	if phase == PHASE_IDLE then beginTurn((params or {}).color) end
+end
+function leapHotkeyTrigger(params)
+	if phase == PHASE_IDLE then beginLeap((params or {}).color) end
+end
+
+-- Registers the context-menu items plus optional keyboard shortcuts. Advancing/
+-- cancelling happen via clicks and number keys, so only the entry points live in
+-- the menu.
 function setupSprintTool()
 	self.addContextMenuItem("Sprint", function(pc)
 		if phase == PHASE_IDLE then beginSprint(pc) end
@@ -1214,6 +1228,36 @@ function setupSprintTool()
 	self.addContextMenuItem("Leap", function(pc)
 		if phase == PHASE_IDLE then beginLeap(pc) end
 	end, false)
+	-- Optional keyboard shortcuts. Registered ONCE globally (guarded via Global
+	-- vars) so they aren't re-registered by every model; each callback starts the
+	-- action on whatever model the player is HOVERING. Bind keys under
+	-- Options -> Controls -> Game Keys ("KT: Sprint/Turn/Leap (hovered model)").
+	-- Sprint/Turn/Leap only exist on MOUNTED operatives, so these keys only act on
+	-- models that carry this tool.
+	if Global.getVar("KT_SPRINT_HOTKEY") ~= true then
+		Global.setVar("KT_SPRINT_HOTKEY", true)
+		addHotkey("KT: Sprint (hovered model)", function(color, hovered)
+			if hovered ~= nil and hovered.call ~= nil then
+				hovered.call("sprintHotkeyTrigger", { color = color })
+			end
+		end, false)
+	end
+	if Global.getVar("KT_TURN_HOTKEY") ~= true then
+		Global.setVar("KT_TURN_HOTKEY", true)
+		addHotkey("KT: Turn (hovered model)", function(color, hovered)
+			if hovered ~= nil and hovered.call ~= nil then
+				hovered.call("turnHotkeyTrigger", { color = color })
+			end
+		end, false)
+	end
+	if Global.getVar("KT_LEAP_HOTKEY") ~= true then
+		Global.setVar("KT_LEAP_HOTKEY", true)
+		addHotkey("KT: Leap (hovered model)", function(color, hovered)
+			if hovered ~= nil and hovered.call ~= nil then
+				hovered.call("leapHotkeyTrigger", { color = color })
+			end
+		end, false)
+	end
 end
 
 -- Safety: if the model is picked up mid-sprint, abort cleanly.
