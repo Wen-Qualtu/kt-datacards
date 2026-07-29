@@ -489,11 +489,17 @@ function diffAndApply(model, data, playerColor)
     -- Ownership + discovery for the base table's UI Extender tools. Those tools
     -- (Ready Operatives / Save Positions / Load Positions) only act on objects
     -- tagged 'KTUIMini' whose getOwningPlayer() is non-nil (state.owner == a seated
-    -- player's steam_id). Loading stats must (re)assert both so they keep working:
-    -- ensure the tag, and set the loading player as owner -- persisted in
-    -- script_state (survives save/reload) AND applied to the live extender now.
+    -- player's steam_id). Ensure the tag so the tools can find the model.
     if not model.hasTag("KTUIMini") then model.addTag("KTUIMini") end
-    if playerColor then
+    -- Owner is only meaningful for the REAL KT UI extender: its table tools gate on
+    -- getOwningPlayer(), and only it defines setOwningPlayer. Detect it by checking
+    -- the model's OWN script (robust even if a model carried over our mini's tags
+    -- before being extended). Our bundled mini is intentionally ownerless (secrets
+    -- stay visible to all) and has NO setOwningPlayer, so calling it there throws
+    -- "function is not a function". ms.owner must be written too, or the
+    -- script_state we save below would wipe the owner the extender just set.
+    local isRealExtender = ((model.getLuaScript() or ""):find("function setOwningPlayer", 1, true)) ~= nil
+    if isRealExtender and playerColor then
         local pl = Player[playerColor]
         local sid = pl and pl.steam_id or nil
         if sid ~= nil and sid ~= "" then
