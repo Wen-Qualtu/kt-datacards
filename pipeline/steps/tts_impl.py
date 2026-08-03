@@ -22,6 +22,7 @@ Output:
 """
 
 import hashlib
+import itertools
 import json
 import logging
 import os
@@ -1577,11 +1578,23 @@ def _match_weapon_rules(special_rules: str, all_rules: dict) -> dict:
 def _derive_exclusive_sets(op_name: str, selection_text: str, num_groups: int):
     """Detect a mutually-exclusive loadout split from the operative-selection text.
 
-    Pattern (per operative): "... with one option from EACH of the following:" then
-    a run of option groups (bulleted with • or ○ depending on the team's nesting),
-    then "Or the following option:" then more group(s). The "Or" makes the groups
-    before it (set 1) mutually exclusive with the group(s) after it (set 2).
-    Returns [[set1 group indices], [set2 group indices]] (0-based), or None when the
+    Pattern (per operative): the operative offers a first loadout section, then an
+    "Or ..." divider, then a second section; picking from one section excludes the
+    other. GW phrases both the header and the divider inconsistently:
+
+      Header (section 1 grouping):
+        * "... with one option from EACH of the following:"  -> every marker is its
+          OWN group (N markers = N groups).
+        * "... with one of the following options:"           -> all markers are ONE
+          group (a single "choose one" list).
+      Divider:
+        * "Or the following option:"                (Angels of Death, Murderwings)
+        * "Or one option from each of the following:" (Death Korps, Blades of Khaine,
+          Hunter Clade)
+
+    Because a marker is not always a group, we count GROUPS (respecting the header
+    mode), not raw markers, to place the boundary. Returns
+    [[set1 group indices], [set2 group indices]] (0-based), or None when the
     operative has no such split (so nothing changes for it).
     """
     if not selection_text or num_groups < 2:
@@ -1606,26 +1619,57 @@ def _derive_exclusive_sets(op_name: str, selection_text: str, num_groups: int):
         return None
 
     option_markers = ("\u2022", "\u25cb", "\u25ef")  # • ○ ◯
-    count = 0
-    boundary = None
+
+    def is_divider(low: str) -> bool:
+        return (low.startswith("or ") and "following" in low) or "or the following option" in low
+
+    # Read the (possibly line-wrapped) header phrase for section 1 to learn its
+    # grouping mode: "one option from each" -> each marker is its own group;
+    # "one of the following options" (no "each") -> all markers are one group.
+    header = lines[start].strip()
+    k = start + 1
+    while k < len(lines) and (k - start) <= 4:
+        s = lines[k].strip()
+        if not s:
+            k += 1
+            continue
+        if s.startswith(option_markers) or is_divider(s.lower()):
+            break
+        header += " " + s
+        hlow = header.lower()
+        if "following" in hlow and ("option" in hlow or header.rstrip().endswith(":")):
+            break
+        k += 1
+    hlow = header.lower()
+    each_mode = ("each of the following" in hlow or "one option from each" in hlow
+                 or ("with the following" in hlow and "one of the following" not in hlow))
+
+    # Walk section 1's markers until the "Or" divider, counting GROUPS.
+    markers_before = 0
+    found_divider = False
     for ln in lines[start + 1:]:
         s = ln.strip()
         low = s.lower()
         if s.startswith("---") or "continues on other side" in low:
             break
-        if "or the following option" in low:
-            boundary = count
+        if is_divider(low):
+            found_divider = True
             break
         # A later operative's own option list has begun -> stop (only after we've
         # started counting this operative's options, so the header's own
         # "one option from each" continuation line doesn't trip it).
-        if count > 0 and ("one option from" in low or "one of the following" in low):
+        if markers_before > 0 and ("one option from" in low or "one of the following" in low):
             break
         if s.startswith(option_markers):
-            count += 1
-    if boundary is None or boundary <= 0 or boundary >= num_groups:
+            markers_before += 1
+    if not found_divider or markers_before <= 0:
         return None
-    return [list(range(0, boundary)), list(range(boundary, num_groups))]
+    # each_mode: one group per marker. Otherwise the whole "choose one" list is
+    # a single group.
+    groups_before = markers_before if each_mode else 1
+    if groups_before <= 0 or groups_before >= num_groups:
+        return None
+    return [list(range(0, groups_before)), list(range(groups_before, num_groups))]
 
 
 # Rule text (vs lore/flavour prose) reliably starts with one of these game-rules
@@ -1657,25 +1701,51 @@ def _strip_exodite_lore(body_lines: list, rule_name: str) -> list:
 def _build_selection_for_gmnotes(selection_groups: list, weapons: list, exclusive_sets: dict = None) -> Optional[dict]:
     """
     Convert string-based selection groups to index-based format for GMNotes.
+
+    An option label may combine several weapons with ';' or ' and ' (all
+    required) and offer a sub-choice with ' or ' inside one of those parts
+    (e.g. "Bolt pistol or relic laspistol; chainsword"). Each ' or ' sub-choice
+    is expanded via a cartesian product so every resulting option loads exactly
+    one concrete weapon combination (radio-selectable), instead of loading both
+    sides of the ' or ' at once.
+
+    A PDF footnote superscript sometimes leaks onto the end of a weapon name as a
+    1-2 digit number stuck to a letter (e.g. "improvised blade2", "bayonet1");
+    these are stripped so the label reads cleanly and the weapon still matches.
     """
     if not selection_groups or not weapons:
         return None
     weapon_names_lower = [(w.get('plain_name') or w.get('name', '')).lower() for w in weapons]
+
+    def _strip_footnotes(s: str) -> str:
+        # Drop a footnote digit glued to the end of a weapon name, i.e. one that
+        # sits right before a separator (; ,), an ' and '/' or ' join, or the end.
+        return re.sub(r'(?<=[A-Za-z])\d{1,2}(?=\s*(?:[;,]|$)|\s+(?:and|or)\s+)', '', s)
+
+    def _match(label: str) -> List[int]:
+        low = label.strip().lower()
+        if not low:
+            return []
+        return [i for i, wname in enumerate(weapon_names_lower) if wname.startswith(low)]
+
     all_matched = set()
     result_groups = []
     for group in selection_groups:
         group_options = []
-        for option_label in group:
-            fragments = [f.strip().lower() for f in re.split(r'\s*;\s*|\s+and\s+', option_label)]
-            matched = set()
-            for frag in fragments:
-                sub_frags = [sf.strip() for sf in frag.split(' or ')]
-                for sf in sub_frags:
-                    for i, wname in enumerate(weapon_names_lower):
-                        if wname.startswith(sf):
-                            matched.add(i)
-            all_matched.update(matched)
-            group_options.append({'label': option_label, 'weapons': sorted(matched)})
+        for raw_label in group:
+            option_label = _strip_footnotes(raw_label)
+            # Required parts (all loaded); each part may carry an ' or ' sub-choice.
+            parts = [p.strip() for p in re.split(r'\s*;\s*|\s+and\s+', option_label) if p.strip()]
+            part_alts = [[(alt.strip(), _match(alt)) for alt in re.split(r'\s+or\s+', part)]
+                         for part in parts]
+            combos = list(itertools.product(*part_alts)) if part_alts else []
+            for combo in combos:
+                idxs = set()
+                for _, m in combo:
+                    idxs.update(m)
+                all_matched.update(idxs)
+                label = option_label if len(combos) == 1 else "; ".join(c[0] for c in combo)
+                group_options.append({'label': label, 'weapons': sorted(idxs)})
         result_groups.append(group_options)
     fixed = [i for i in range(len(weapons)) if i not in all_matched]
     result: dict = {'groups': result_groups, 'fixed': fixed}
