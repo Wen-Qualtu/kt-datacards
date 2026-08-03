@@ -1708,10 +1708,19 @@ def _build_selection_for_gmnotes(selection_groups: list, weapons: list, exclusiv
     is expanded via a cartesian product so every resulting option loads exactly
     one concrete weapon combination (radio-selectable), instead of loading both
     sides of the ' or ' at once.
+
+    A PDF footnote superscript sometimes leaks onto the end of a weapon name as a
+    1-2 digit number stuck to a letter (e.g. "improvised blade2", "bayonet1");
+    these are stripped so the label reads cleanly and the weapon still matches.
     """
     if not selection_groups or not weapons:
         return None
     weapon_names_lower = [(w.get('plain_name') or w.get('name', '')).lower() for w in weapons]
+
+    def _strip_footnotes(s: str) -> str:
+        # Drop a footnote digit glued to the end of a weapon name, i.e. one that
+        # sits right before a separator (; ,), an ' and '/' or ' join, or the end.
+        return re.sub(r'(?<=[A-Za-z])\d{1,2}(?=\s*(?:[;,]|$)|\s+(?:and|or)\s+)', '', s)
 
     def _match(label: str) -> List[int]:
         low = label.strip().lower()
@@ -1723,7 +1732,8 @@ def _build_selection_for_gmnotes(selection_groups: list, weapons: list, exclusiv
     result_groups = []
     for group in selection_groups:
         group_options = []
-        for option_label in group:
+        for raw_label in group:
+            option_label = _strip_footnotes(raw_label)
             # Required parts (all loaded); each part may carry an ' or ' sub-choice.
             parts = [p.strip() for p in re.split(r'\s*;\s*|\s+and\s+', option_label) if p.strip()]
             part_alts = [[(alt.strip(), _match(alt)) for alt in re.split(r'\s+or\s+', part)]
