@@ -41,6 +41,7 @@ from .templates.tts_templates import (
     generate_guid
 )
 from ..utils import paths as _paths
+from ..utils import naming
 
 # Setup logging
 logging.basicConfig(
@@ -1491,27 +1492,29 @@ def _find_datacards(tts_data: dict) -> list:
 
 
 def _match_card_to_operative(nickname: str, team: str, team_data: dict) -> Optional[dict]:
-    """Match a card nickname to an operative in team_data."""
-    def normalize(s):
-        return s.lower().strip().replace("-", " ").replace("_", " ")
-    
-    nickname_norm = normalize(nickname)
-    team_norm = normalize(team)
+    """Match a card nickname to an operative in team_data.
+
+    Both sides are compared via :func:`naming.slug`, the SAME normalization that
+    produces the card-image filename / card Nickname. This keeps matching stable
+    across punctuation and accents (curly apostrophes, periods, ô/â): the card
+    Nickname ``xv26-shasvre`` matches the team-data operative ``XV26 SHAS'VRE``.
+    """
+    nickname_slug = naming.slug(nickname)
+    team_slug = naming.slug(team)
     
     # Strip -card1, -card2, etc. suffix for multi-page operatives (e.g. Necron leaders)
-    nickname_base = re.sub(r'\s+card\d+$', '', nickname_norm)
+    nickname_base = re.sub(r'-card\d+$', '', nickname_slug)
     
     datacards = team_data.get('datacards', [])
     for operative in datacards:
-        op_name = operative.get('name', '')
-        op_name_norm = normalize(op_name)
+        op_slug = naming.slug(operative.get('name', ''))
         
-        if op_name_norm == nickname_norm or op_name_norm == nickname_base:
+        if op_slug == nickname_slug or op_slug == nickname_base:
             return operative
         
-        if op_name_norm.startswith(team_norm):
-            op_type = op_name_norm[len(team_norm):].strip()
-            if op_type == nickname_norm or op_type == nickname_base:
+        if team_slug and op_slug.startswith(team_slug + '-'):
+            op_type = op_slug[len(team_slug) + 1:]
+            if op_type == nickname_slug or op_type == nickname_base:
                 return operative
     
     return None
