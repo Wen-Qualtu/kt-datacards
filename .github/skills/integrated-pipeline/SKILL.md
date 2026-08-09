@@ -8,6 +8,15 @@ description: 'Understand and work with the integrated kt-datacards pipeline at t
 The `pipeline/` package at the repo root is the pipeline: two extraction front-ends
 (`kt-app` and `warcom`) that converge on a single **source-agnostic integration layer**.
 
+> ## ⛔ GOLDEN RULE — never hand-edit generated files
+> This is a **pipeline**. Everything under `layers/**` and `output/**` (classified PDFs,
+> `*-content.json`, `manifest.json`, `*-team-data.json`, extracted images, `tts_objects/*`,
+> `*-pipeline-state.json`, metadata, …) is a **generated artifact**. Editing one by hand is
+> pointless — the next run **overwrites/reverts it**. ALL fixes must be made in the
+> **step source code** under `pipeline/` (or in `config/`), then applied by **re-running the
+> affected step** with `--force`. If you catch yourself opening an `output/` or `layers/` file
+> to change a value, stop and fix the generating step instead.
+
 
 ## When to Use
 - Running or debugging the new pipeline (`python -m pipeline.main ...`).

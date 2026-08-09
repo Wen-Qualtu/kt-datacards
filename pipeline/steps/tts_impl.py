@@ -786,7 +786,7 @@ def _build_token_tags_map(team_name: str, config_dir: Path) -> dict:
         name = token_cfg.get('name', '')
         if not name:
             continue
-        normalized = ' '.join(name.lower().split())
+        normalized = naming.slug(name)
         token_type = (token_cfg.get('type') or '').strip().lower()
 
         if token_type == 'marker':
@@ -854,7 +854,10 @@ def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Pa
     token_objects = []
     for token_name, obj_path, png_path in sorted(token_files):
         display_name = token_name.replace(f'{team_name}-', '').replace('-', ' ').title()
-        normalized_name = ' '.join(token_name.replace(f'{team_name}-', '').replace('-', ' ').lower().split())
+        # Match tags by the SAME canonical slug used for the token filename and
+        # for the config name in _build_token_tags_map (naming.slug), so punctuation
+        # / accents can't split a config token from its generated asset.
+        normalized_name = naming.slug(token_name.replace(f'{team_name}-', ''))
         token_tags = token_tags_by_name.get(normalized_name, ["KTUIToken", "KTUITokenSimple"])
         
         mesh_mtime = int(obj_path.stat().st_mtime)
