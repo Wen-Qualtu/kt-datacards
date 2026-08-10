@@ -806,6 +806,181 @@ def _build_token_tags_map(team_name: str, config_dir: Path) -> dict:
     return tags_by_name
 
 
+def _build_tile_token_objects(team_name: str, config_dir: Path, output_dir: Path,
+                              github_base: str, single_object_updater_script: str = "") -> list:
+    """Build double-sided ``Custom_Tile`` token dispensers from team-config
+    ``type: tile`` entries.
+
+    Unlike normal tokens (a single image shown on both faces), a tile has a
+    distinct front and back. TTS requires two textures for that: ``ImageURL``
+    (front) + ``ImageSecondaryURL`` (back) — a single texture can only show the
+    same art on both sides. Finished source textures live (committed) in
+    ``config/teams/{team}/custom-tiles/``. Following the custom-token pattern, the
+    served copy is republished under ``output/{team}/tokens/tiles/`` and the box
+    references THAT — so every TTS-referenced asset lives under ``output/``. The
+    dispenser mirrors the in-game-validated structure: an infinite bag whose
+    dispensed object is the double-sided tile and whose on-top display is a
+    single-image token of the front.
+    """
+    objs: list = []
+    team_config_path = config_dir / "team-config.yaml"
+    try:
+        with open(team_config_path, 'r', encoding='utf-8') as f:
+            cfg = yaml.safe_load(f)
+    except Exception as e:
+        logger.warning(f"Could not load team-config for tile tokens ({team_name}): {e}")
+        return objs
+
+    tokens_cfg = cfg.get('teams', {}).get(team_name, {}).get('tokens', []) or []
+    tile_entries = [t for t in tokens_cfg if (t.get('type') or '').strip().lower() == 'tile']
+    if not tile_entries:
+        return objs
+
+    # Source art (committed) lives in config/; the served copy is republished under
+    # output/{team}/tokens/tiles/ each run so the box only references output/ assets
+    # (same split as custom tokens). tiles/ is a subfolder so the top-level token
+    # stale-cleanup and the *.obj token loop never touch it.
+    tiles_src_dir = config_dir / "teams" / team_name / "custom-tiles"
+    tiles_out_dir = output_dir / team_name / "tokens" / "tiles"
+    if tiles_out_dir.exists():
+        for stale in tiles_out_dir.glob("*"):
+            try:
+                stale.unlink()
+            except Exception:
+                pass
+    tiles_out_dir.mkdir(parents=True, exist_ok=True)
+
+    # Dispenser mesh: the same shared quad the per-token dispensers use, copied in
+    # so it, too, is served from output/.
+    mesh_src = config_dir / "defaults" / "tts-token" / "token-mesh.obj"
+    mesh_url = ""
+    if mesh_src.exists():
+        shutil.copy2(mesh_src, tiles_out_dir / "tile-mesh.obj")
+        mesh_v = int((tiles_out_dir / "tile-mesh.obj").stat().st_mtime)
+        mesh_url = f"{github_base}/output/{team_name}/tokens/tiles/tile-mesh.obj?v={mesh_v}"
+
+    for tcfg in tile_entries:
+        name = tcfg.get('name', '')
+        front = tcfg.get('front')
+        back = tcfg.get('back')
+        if not name or not front or not back:
+            logger.warning(f"  {team_name}: tile token '{name or '?'}' missing name/front/back — skipped")
+            continue
+        front_src = tiles_src_dir / front
+        back_src = tiles_src_dir / back
+        if not front_src.exists() or not back_src.exists():
+            logger.warning(f"  {team_name}: tile token '{name}' front/back file missing under {tiles_src_dir} — skipped")
+            continue
+
+        # Publish the served copies under output/ and point the box at them.
+        shutil.copy2(front_src, tiles_out_dir / front)
+        shutil.copy2(back_src, tiles_out_dir / back)
+        fv = int((tiles_out_dir / front).stat().st_mtime)
+        bv = int((tiles_out_dir / back).stat().st_mtime)
+        front_url = f"{github_base}/output/{team_name}/tokens/tiles/{front}?v={fv}"
+        back_url = f"{github_base}/output/{team_name}/tokens/tiles/{back}?v={bv}"
+
+        # On-table identity MUST be indistinguishable between tile variants (e.g. a
+        # live HY-PEX vs a blank Minefield): the opponent must not learn which is which
+        # by hovering. So the DISPENSED tile + its on-top display use a shared neutral
+        # label (config `label`, else the name minus any " (variant)" suffix) and NO
+        # description. Only the dispenser bag keeps the distinct name so the OWNER can
+        # pick the right one.
+        label = (tcfg.get('label') or re.sub(r"\s*\(.*\)\s*$", "", name)).strip() or name
+
+        # KTUI tags: KTUIToken (always) + KTUIMarker + any extra tags from config.
+        tile_tags = ["KTUIToken", "KTUIMarker"]
+        for t in (tcfg.get('tags') or []):
+            if t not in tile_tags:
+                tile_tags.append(t)
+
+        inner_tile = {
+            "GUID": generate_guid(f"{team_name}:tiletoken:{name}"),
+            "Name": "Custom_Tile",
+            "Transform": {
+                "posX": 0.0, "posY": 1.66, "posZ": 0.0,
+                "rotX": 0.0, "rotY": 270.0, "rotZ": 0.0,
+                "scaleX": 0.4086667, "scaleY": 1.0, "scaleZ": 0.4086667,
+            },
+            "Nickname": label,
+            "Description": "",
+            "ColorDiffuse": {"r": 1.0, "g": 1.0, "b": 1.0},
+            "Tags": list(tile_tags),
+            "Locked": False, "Grid": True, "Snap": True, "IgnoreFoW": False,
+            "MeasureMovement": False, "DragSelectable": True, "Autoraise": True,
+            "Sticky": True, "Tooltip": True, "GridProjection": False,
+            "HideWhenFaceDown": False, "Hands": False,
+            "CustomImage": {
+                "ImageURL": front_url,
+                "ImageSecondaryURL": back_url,
+                "ImageScalar": 1.0,
+                "WidthScale": 0.0,
+                "CustomTile": {"Type": 2, "Thickness": 0.1, "Stackable": False, "Stretch": True},
+            },
+            "LuaScript": "", "LuaScriptState": "", "XmlUI": "",
+        }
+
+        # On-top display: a single-image token showing the front face only.
+        display_token = {
+            "GUID": generate_guid(f"{team_name}:tiledisplay:{name}"),
+            "Name": "Custom_Token",
+            "Transform": {
+                "posX": 0.0, "posY": 0.0, "posZ": 0.0,
+                "rotX": 0.0, "rotY": 270.0, "rotZ": 0.0,
+                "scaleX": 0.2899108, "scaleY": 9.999986, "scaleZ": 0.2899103,
+            },
+            "Nickname": label,
+            "Description": "",
+            "ColorDiffuse": {"r": 1.0, "g": 1.0, "b": 1.0},
+            "Tags": ["KTUIToken", "KTUITokenSimple"],
+            "Locked": True, "Grid": True, "Snap": False, "IgnoreFoW": False,
+            "MeasureMovement": False, "DragSelectable": True, "Autoraise": True,
+            "Sticky": False, "Tooltip": False, "Hands": False,
+            "CustomImage": {
+                "ImageURL": front_url,
+                "ImageSecondaryURL": "",
+                "ImageScalar": 1.0,
+                "WidthScale": 0.0,
+                "CustomToken": {"Thickness": 0.1, "MergeDistancePixels": 10.0, "StandUp": False, "Stackable": False},
+            },
+            "LuaScript": "", "LuaScriptState": "", "XmlUI": "",
+        }
+
+        bag = {
+            "GUID": generate_guid(f"{team_name}:tilebag:{name}"),
+            "Name": "Custom_Model_Infinite_Bag",
+            "Transform": {
+                "posX": 0.0, "posY": 1.03, "posZ": 0.0,
+                "rotX": 0.0, "rotY": 270.0, "rotZ": 0.0,
+                "scaleX": 1.10072327, "scaleY": 0.1, "scaleZ": 1.10072136,
+            },
+            "Nickname": name,
+            "Description": f"Infinite {name} tokens",
+            "GMNotes": "",
+            "ColorDiffuse": {"r": 1.0, "g": 1.0, "b": 1.0, "a": 0.0},
+            "Tags": [f"_{team_name}_tokens"],
+            "Locked": False, "Grid": True, "Snap": True, "IgnoreFoW": False,
+            "MeasureMovement": False, "DragSelectable": True, "Autoraise": True,
+            "Sticky": True, "Tooltip": True, "GridProjection": False,
+            "HideWhenFaceDown": False, "Hands": False,
+            "MaterialIndex": -1, "MeshIndex": -1,
+            "CustomMesh": {
+                "MeshURL": mesh_url,
+                "DiffuseURL": "", "NormalURL": "", "ColliderURL": "",
+                "Convex": True, "MaterialIndex": 0, "TypeIndex": 7, "CastShadows": True,
+            },
+            "Bag": {"Order": 0},
+            "ContainedObjects": [inner_tile],
+            "ChildObjects": [display_token],
+            "LuaScript": single_object_updater_script or "",
+            "LuaScriptState": "", "XmlUI": "",
+        }
+        objs.append(bag)
+        logger.info(f"  {team_name}: built double-sided tile token '{name}'")
+
+    return objs
+
+
 def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Path, output_dir: Path, single_object_updater_script: str = "") -> tuple:
     """
     Generate token bag from output/{team}/tokens/ files.
@@ -988,6 +1163,24 @@ def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Pa
         }
         token_objects.append(token_obj)
     
+    # Append config-driven double-sided tile tokens (front/back textures), e.g.
+    # the Hernkyn Yaegirs Minefield markers. These are not file-extracted; they are
+    # built directly from team-config `type: tile` entries + committed textures.
+    token_objects.extend(
+        _build_tile_token_objects(team_name, config_dir, output_dir, github_base, single_object_updater_script)
+    )
+
+    # Clear stale per-token JSONs so tokens removed/renamed since the last run
+    # (e.g. an excluded token) don't linger as orphaned files. Regeneration below
+    # rewrites the current set authoritatively.
+    indiv_tokens_dir = output_dir / team_name / 'tts_objects' / 'tokens'
+    if indiv_tokens_dir.exists():
+        for stale in indiv_tokens_dir.glob('*.json'):
+            try:
+                stale.unlink()
+            except Exception:
+                pass
+
     # Save individual token JSONs
     for idx, token_obj in enumerate(token_objects, start=1):
         save_individual_token_json(token_obj, team_name, idx, output_dir)
