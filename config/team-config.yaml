@@ -794,6 +794,12 @@ teams:
     - 255
     - 255
     - 255
+    # The single-image "Minefield" and "hy-pex mine" auto-extracted from the token
+    # guide are replaced by the two double-sided Minefield tiles below (HY-PEX shows
+    # the mine on its back, Blank shows plain), so drop both standalones.
+    exclude_tokens:
+    - Minefield
+    - hy-pex mine
     tokens:
     - name: Fallen Kin
       shape: round
@@ -801,9 +807,6 @@ teams:
     - name: Firestorm Bolt Shells
       shape: round
       type: token
-    - name: Minefield
-      shape: round
-      type: marker
     - name: Outright Conviction
       shape: operative
       type: token
@@ -816,12 +819,29 @@ teams:
     - name: Throwing Plasma Knife
       shape: operative
       type: token
-    - name: hy-pex mine
+    - name: Resourceful Points
       shape: round
-      type: marker
-    - name: Resourceful
+      type: token
+    # Double-sided Minefield markers (TTS Custom_Tile): front is the Minefield art,
+    # back differs per token. Finished textures live in
+    # config/teams/hernkyn-yaegirs/custom-tiles/ and are referenced directly (no
+    # extraction/compositing). See tts_impl._build_tile_token_objects.
+    - name: Minefield (HY-PEX)
       shape: round
-      type: custom
+      type: tile
+      label: Minefield
+      front: minefield-front.png
+      back: hy-pex-back.png
+      tags:
+      - KTUIMarker
+    - name: Minefield (Blank)
+      shape: round
+      type: tile
+      label: Minefield
+      front: minefield-front.png
+      back: blank-back.png
+      tags:
+      - KTUIMarker
   hierotek-circle:
     canonical_name: Hierotek Circle
     faction: xenos
