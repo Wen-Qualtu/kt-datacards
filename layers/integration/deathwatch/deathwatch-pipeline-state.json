@@ -1,20 +1,20 @@
 {
   "team": "deathwatch",
   "pipeline_version": "2.0",
-  "last_updated": "2026-07-29T11:11:24.391686+00:00",
+  "last_updated": "2026-08-15T19:05:06.582603+00:00",
   "steps": {
     "content_analysis": {
       "outputs": {
         "content.json": {
           "path": "layers/integration/deathwatch/content/deathwatch-content.json",
-          "hash": "1d1fbb8c9ea2d4b034119994a1129eb3004803651db159a09ad7cd4ac07268fe",
-          "modified": "2026-07-25T17:12:00.861198+00:00"
+          "hash": "1302e292843c77faa06792a4de883ba549a091f8105048212c0032a2802223a7",
+          "modified": "2026-08-15T18:37:56.959792+00:00"
         }
       },
-      "completed": "2026-07-25T17:13:03.100878+00:00",
+      "completed": "2026-08-15T18:39:16.854337+00:00",
       "inputs": {
         "layers/integration/deathwatch/manifest.json": "d61295cf5f39ef86c19832a09d39b8526c94c174f9b22e84c425cc871071b034",
-        "config/team-config.yaml": "b8ca8191fcfbccdfb363ab8c3eaf7e4e95ef35b5a914828a1a2b4a62cd02c680",
+        "config/team-config.yaml": "3866486652c388d422dbad96f89458bc2172fbe12dfc202355763a69d3f798f5",
         "layers/integration/deathwatch/deathwatch-datacard-deathwatch-aegis-veteran.pdf": "290039a3f47085ac13dd9f23213f8e40623dac9f4feceba15008bad53d95517c",
         "layers/integration/deathwatch/deathwatch-datacard-deathwatch-blademaster-veteran.pdf": "8cecc73940c42100b85dc498f41af56e17cf5ce5f7ba2a494e1a049b0472ccfa",
         "layers/integration/deathwatch/deathwatch-datacard-deathwatch-bombard-veteran.pdf": "558494f185b488c3506a5d9517712464f6b1a81be67c96cf620e39f8c2a35ebd",
@@ -548,13 +548,13 @@
       "outputs": {
         "team-data.json": {
           "path": "output/deathwatch/data/deathwatch-team-data.json",
-          "hash": "1d1fbb8c9ea2d4b034119994a1129eb3004803651db159a09ad7cd4ac07268fe",
-          "modified": "2026-07-25T17:16:00.277974+00:00"
+          "hash": "1302e292843c77faa06792a4de883ba549a091f8105048212c0032a2802223a7",
+          "modified": "2026-08-15T18:43:29.683470+00:00"
         }
       },
-      "completed": "2026-07-25T17:16:00.278925+00:00",
+      "completed": "2026-08-15T18:43:29.683940+00:00",
       "inputs": {
-        "layers/integration/deathwatch/content/deathwatch-content.json": "1d1fbb8c9ea2d4b034119994a1129eb3004803651db159a09ad7cd4ac07268fe"
+        "layers/integration/deathwatch/content/deathwatch-content.json": "1302e292843c77faa06792a4de883ba549a091f8105048212c0032a2802223a7"
       }
     },
     "generate_tts": {
@@ -566,13 +566,13 @@
         },
         "tts_objects/Deathwatch.json": {
           "path": "output/deathwatch/tts_objects/Deathwatch.json",
-          "hash": "298c1b569178c6975200728e74f1e0a610a42939894391a134749bcf8bed7cd6",
-          "modified": "2026-07-29T11:11:24.301216+00:00"
+          "hash": "3a06d6444463afaf0d39a53f63912c90719a6a146a2467689b77bb3ed13a80c9",
+          "modified": "2026-08-15T19:05:06.542062+00:00"
         }
       },
-      "completed": "2026-07-29T11:11:24.391670+00:00",
+      "completed": "2026-08-15T19:05:06.582594+00:00",
       "inputs": {
-        "config/team-config.yaml": "81bac78914c95effe29896c5f18bf0f292c23d41f48a6dbe84ea996de2c16482",
+        "config/team-config.yaml": "3866486652c388d422dbad96f89458bc2172fbe12dfc202355763a69d3f798f5",
         "config/team-guids.json": "906473ddbf256345a4150df497def05ec513f95948b27d6fc98fa6dba00bb7d0",
         "output/deathwatch/cards/datacards/deathwatch-aegis-veteran-back.jpg": "263e999124b42be1bc40666d029eb4841c013801a9098604e56a0779a8fb7fa1",
         "output/deathwatch/cards/datacards/deathwatch-aegis-veteran-front.jpg": "3b85ec105c51fcb9757a5768f258fd0a924e6d91ef8f23b88e33671adf66853a",
@@ -651,9 +651,9 @@
         "output/deathwatch/dice/deathwatch-dice-dark.jpg": "43577cdeef68dd0fcbca51f29fa32216c60ea35a1e786469e6c4a4ae7e320245",
         "output/deathwatch/dice/deathwatch-dice-light.jpg": "87eb26eba3decf20856e39075166b073832b58d8c4bf0646884b9364ccb0971c",
         "output/deathwatch/dice/deathwatch-dice-team.jpg": "fdd06ac60ecbd846d290482b6e5ddd5d3b7b96286383f0e6076f124dd6f7f4fd",
-        "output/deathwatch/data/deathwatch-team-data.json": "1d1fbb8c9ea2d4b034119994a1129eb3004803651db159a09ad7cd4ac07268fe",
+        "output/deathwatch/data/deathwatch-team-data.json": "1302e292843c77faa06792a4de883ba549a091f8105048212c0032a2802223a7",
         "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
-        "config/defaults/tts-script/datacard-load-stats.lua": "40233ccaaea04d4068ebcc7d3a3dc9b59eec593f24d82438777f7c16f9e0c793",
+        "config/defaults/tts-script/datacard-load-stats.lua": "020cce7b0205309770a8978e8f674aa57b40f19e1a9057e0fc48e3749b1998ad",
         "config/defaults/tts-script/display-table-manager-script.lua": "846de299f8e2c925e63cc77c4991fedd07ae75e9bde375f3b3c991c8730b891b",
         "config/defaults/tts-script/faction-rule-chapter-tactics.lua": "c906742268076fb91f7cb4a92c6b588e1122ccddb692688f635c8dd4f7110ad0",
         "config/defaults/tts-script/intermediate-updater.lua": "1a2d6dbc1a8c9c57ba6a3e7a3d4bc4b7a38a6c242a93f6ef3dae698123384d35",

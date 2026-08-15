@@ -235,8 +235,12 @@ function buildSelectionPanelXml(selection)
             local isOn = (inActive and o == 1) and "true" or "false"
             local textColor = inActive and "#FFFFFF" or "#666666"
             local label = option.label or ("Option " .. o)
-            label = label:gsub("&", "&amp;"):gsub("<", "&lt;"):gsub(">", "&gt;"):gsub('"', "&quot;")
+            -- Swap the "; " separator to " + " BEFORE XML-escaping. If escaping runs
+            -- first, an escaped entity like "&amp; " contains "; " and the separator
+            -- pass mangles it into "&amp + ", breaking the entity and the whole panel
+            -- XML (e.g. loadouts such as "dominator maul & assault shield").
             label = label:gsub("; ", " + ")
+            label = label:gsub("&", "&amp;"):gsub("<", "&lt;"):gsub(">", "&gt;"):gsub('"', "&quot;")
 
             rows = rows .. string.format(
                 '<Toggle id="sel_%d_%d" isOn="%s" '
