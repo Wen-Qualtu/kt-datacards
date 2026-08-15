@@ -383,9 +383,18 @@ def _reuse_or_new_single(prev_entry, file_path, url, entry):
             entry["url"] = prev_entry.get("url", url)
             entry["modified"] = prev_entry.get("modified")
     else:
-        mtime = file_path.stat().st_mtime
-        entry["url"] = f"{url}?v={int(mtime)}"
-        entry["modified"] = datetime.fromtimestamp(mtime, tz=timezone.utc).isoformat()
+        # prev hash present but differs. If the deployed file is NONETHELESS
+        # unchanged from git HEAD, the stored hash is merely stale (e.g. assets
+        # regenerated non-deterministically on another machine) -- the published
+        # ?v= still points at the current bytes, so reuse it (and heal the hash
+        # below) instead of forcing a needless re-download.
+        if prev_entry and _git_unchanged_from_head(file_path) is not False:
+            entry["url"] = prev_entry.get("url", url)
+            entry["modified"] = prev_entry.get("modified")
+        else:
+            mtime = file_path.stat().st_mtime
+            entry["url"] = f"{url}?v={int(mtime)}"
+            entry["modified"] = datetime.fromtimestamp(mtime, tz=timezone.utc).isoformat()
     entry["hash"] = new_hash
     return entry
 
@@ -423,7 +432,16 @@ def _reuse_or_new_pair(prev_entry, file_a, file_b, url_a, url_b, key_a, key_b, e
         else:
             _emit_prev()
     else:
-        _emit_new()
+        # prev hash present but differs. If BOTH deployed files are unchanged
+        # from git HEAD, the stored hash is merely stale -- the published ?v=
+        # still points at the current bytes, so reuse it (and heal the hash
+        # below) rather than force a needless re-download.
+        clean_a = _git_unchanged_from_head(file_a)
+        clean_b = _git_unchanged_from_head(file_b)
+        if prev_entry and clean_a is not False and clean_b is not False:
+            _emit_prev()
+        else:
+            _emit_new()
     entry["hash"] = new_hash
     return entry
 
@@ -1627,6 +1645,10 @@ def embed_datacard_stats(bag_obj: dict, team_name: str, output_dir: Path, config
             gm_notes_data = _build_gm_notes(operative, team_data, weapon_rules,
                                              selection_groups=selection_groups,
                                              exclusive_sets=op_exclusive_sets)
+            # Strip isolated '&' from all text (weapon names, loadout labels, rules,
+            # etc.) so no downstream XML UI (loadout panel, KTUI extender weapon list)
+            # can break on an unescaped ampersand. Keeps the '&&' icon markers intact.
+            gm_notes_data = _sanitize_ampersands(gm_notes_data)
             gm_notes_json = json.dumps(gm_notes_data, separators=(",", ":"), ensure_ascii=False)
             
             # Get faction rule code if applicable
@@ -1911,6 +1933,14 @@ def _build_selection_for_gmnotes(selection_groups: list, weapons: list, exclusiv
     A PDF footnote superscript sometimes leaks onto the end of a weapon name as a
     1-2 digit number stuck to a letter (e.g. "improvised blade2", "bayonet1");
     these are stripped so the label reads cleanly and the weapon still matches.
+
+    TODO (non-essential edge case): a few loadout options list defensive WARGEAR
+    that is an ability, not a weapon (e.g. Dire Avenger Exarch "shimmershield",
+    Sanctifier Missionary "holy relic"). These already load as passive abilities
+    on every apply, so they are effectively always-on; here they simply map to
+    weapons=[] (no weapon added). Ideally the ability would be applied only when
+    its loadout option is chosen, and the ability-name component stripped from
+    the label. Only ~2 operatives are affected, so this is deferred.
     """
     if not selection_groups or not weapons:
         return None
@@ -1951,6 +1981,27 @@ def _build_selection_for_gmnotes(selection_groups: list, weapons: list, exclusiv
     if exclusive_sets:
         result['exclusive_sets'] = exclusive_sets
     return result
+
+
+def _sanitize_ampersands(obj):
+    """Recursively replace an ISOLATED '&' with 'and' in every string of a data
+    structure (dict/list/str), leaving the KTUI range-icon markers ('1&&', '2&&',
+    '3&&', '6&&') untouched.
+
+    A literal '&' is invalid in TTS XML UI unless escaped, and any consumer that
+    forgets to escape it (the loadout panel, the KTUI extender's weapon list, etc.)
+    fails to build its UI. Rather than depend on every consumer escaping, we strip
+    the '&' from the source data so the rendered text is always XML-safe (e.g.
+    "Tzaangor blade & shield" -> "Tzaangor blade and shield"). The '&&' markers use
+    a doubled '&', so the (?<!&)&(?!&) rule never touches them.
+    """
+    if isinstance(obj, str):
+        return re.sub(r"(?<!&)&(?!&)", "and", obj)
+    if isinstance(obj, list):
+        return [_sanitize_ampersands(v) for v in obj]
+    if isinstance(obj, dict):
+        return {k: _sanitize_ampersands(v) for k, v in obj.items()}
+    return obj
 
 
 def _build_gm_notes(operative: dict, team_data: dict, weapon_rules: dict,

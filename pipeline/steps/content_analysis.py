@@ -408,6 +408,15 @@ def _parse_weapon_block(block_text: str) -> dict | None:
                 continue
         expanded.append(ln)
     lines = expanded
+    # Some (usually melee) weapons render the ATK value on the SAME line as the
+    # name, e.g. "Dominator maul & assault shield 4". The per-line stat detection
+    # below only recognises a STANDALONE attacks digit, so without this split the
+    # weapon has no ATK and is dropped entirely. Peel a trailing 1-2 digit number
+    # (a valid ATK, 1-20) off the name line into its own token so it parses.
+    if lines:
+        m = re.match(r'^(.*\S)\s+(\d{1,2})$', lines[0])
+        if m and 1 <= int(m.group(2)) <= 20:
+            lines = [m.group(1).strip(), m.group(2)] + lines[1:]
     if len(lines) >= 4:
         weapon = {"name": lines[0]}
         attacks = hit = damage = None
