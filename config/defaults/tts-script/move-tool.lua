@@ -13,8 +13,8 @@
   Controls
   --------
   While a move is active, for the driving player:
-    1 = +1" to the max move   (charge, terrain bonus, etc.)
-    2 = -1" to the max move   (injured, difficult terrain, etc.)
+    1 = -1" to the max move   (injured, difficult terrain, etc.)
+    2 = +1" to the max move   (charge, terrain bonus, etc.)
     9 = finish (commits the current leg, applies the move)
     0 = cancel the whole move
   Mouse (via an invisible click catcher pinned to the model):
@@ -56,14 +56,14 @@ local UNITS_PER_INCH = 1        -- world units per inch (KT-UI table = 1)
 -- counts as hovering the model (the number ROW works with no key binding) and it
 -- only locks a small area, not the table. As budget is spent (or the 1/2 keys
 -- change it) the catcher re-centres and shrinks (resizeCatcher) to what's left.
-local CATCHER_MARGIN_IN    = 2           -- inches of catch area past the reach
+local CATCHER_MARGIN_IN    = 1           -- inches of catch area past the reach
 -- button-units per inch. TUNING KNOB: raise = bigger catcher, lower = smaller.
 -- (14000/9 rendered ~2-3x too wide -- 40" for an 8" move; ~450 targets it.)
 local CATCHER_UNITS_PER_IN = 450
 
 -- Default base footprint (mm); used only when a model exposes no base metadata.
-local DEF_BASE_MM_LONG = 40
-local DEF_BASE_MM_WIDE = 40
+local DEF_BASE_MM_LONG = 32
+local DEF_BASE_MM_WIDE = 32
 local BASE_MM_LONG   = DEF_BASE_MM_LONG
 local BASE_MM_WIDE   = DEF_BASE_MM_WIDE
 local MM_TO_INCH     = 0.0393701
@@ -97,7 +97,6 @@ local baseMove     = MOVE_DEFAULT   -- the model's Move stat (inches)
 local modifier     = 0              -- +/- inches from the 1/2 keys
 local adjustQueue  = 0              -- queued 1/2 presses, applied in the tick loop
 local usedInches   = 0              -- budget already spent (rounded up per leg)
-local rawTotal     = 0              -- exact distance travelled (for readout)
 local baseHeading  = 0              -- ghost facing (degrees; movement doesn't turn)
 local facingOffset = 0
 local startPos     = nil            -- Vector, where the move began
@@ -116,11 +115,7 @@ local lastMoveKey   = nil       -- guard: only edit the catcher when the reach/c
 local resizeCatcher  -- fwd decl; defined with the catcher, called from tick()
 
 -- readout
-local distTextObj = nil
 local readoutText = nil
-local readoutPos  = nil
-local lastText    = nil             -- last text pushed to the 3DText (avoid re-render)
-local lastTextPos = nil             -- last position pushed to the 3DText
 local lastSig     = nil             -- last draw signature (skip identical frames)
 
 -- --------------------------------------------------------------- utilities ---
@@ -133,24 +128,28 @@ local function dirFromHeading(h)
 	return { x = math.sin(r), z = math.cos(r) }
 end
 
-local function clamp(v, lo, hi)
-	if v < lo then return lo end
-	if v > hi then return hi end
-	return v
-end
-
 local function msg(pc, text, col)
 	if pc and Player[pc] then Player[pc].broadcast(text, col or { 1, 1, 1 }) end
 end
 
-local function isTargeted(playerColor, hoveredObject)
-	if hoveredObject == self then return true end
-	local p = Player[playerColor]
-	if not p then return false end
-	for _, o in ipairs(p.getSelectedObjects() or {}) do
-		if o == self then return true end
+-- Active-move registry: one Global var per player color holding the GUID of the
+-- model that player is currently moving (or "" for none), so the global
+-- +1"/-1"/finish/cancel game-keys can reach that model even when the cursor is
+-- aimed away from it (past the click-catcher).
+--
+-- IMPORTANT: use PRIMITIVE string vars, never a shared table. A table stored via
+-- Global.setVar is OWNED by the script that created it; another model's script
+-- (or the same model after a reload()) crashes with "Attempt to perform
+-- operations with resources owned by different scripts" when it re-stores it.
+-- Strings are copied across scripts, so they are safe to share.
+local function setActiveMove(pc, on)
+	if not pc then return end
+	local key = "KT_MOVE_ACTIVE_" .. pc
+	if on then
+		Global.setVar(key, self.getGUID())
+	elseif Global.getVar(key) == self.getGUID() then
+		Global.setVar(key, "")
 	end
-	return false
 end
 
 -- ---------------------------------------------------------------- base dims --
@@ -237,20 +236,51 @@ end
 local function maxInches() return math.max(0, baseMove + modifier) end
 local function remainingInches() return math.max(0, maxInches() - usedInches) end
 
+-- True surface height at world (x, z): a downward physics ray that ignores the
+-- moving model itself. We can't trust the pointer's reported Y because the
+-- click-catcher (a UI button pinned ~0.6 above the model) lifts it and keeps it
+-- flat; the catcher is NOT a physics collider, so the ray sees the real
+-- table/terrain/building surface instead. Only called when the cursor actually
+-- moves (tick's signature gate), so the cast rate stays low even on slow PCs.
+local function surfaceY(x, z, fallbackY)
+	local base = (curPos and curPos.y) or self.getPosition().y
+	local hits = Physics.cast({
+		origin       = { x = x, y = base + 25, z = z },
+		direction    = { 0, -1, 0 },
+		type         = 1,   -- ray
+		max_distance = 60,
+	})
+	local best = nil
+	for _, h in ipairs(hits or {}) do
+		if h.hit_object ~= self and h.point and (best == nil or h.point.y > best) then
+			best = h.point.y
+		end
+	end
+	return best or fallbackY
+end
+
 -- Active leg preview: HORIZONTAL (2D) distance from curPos toward the pointer,
 -- clamped to the remaining budget. Kill Team measures the move in 2D; a vertical
 -- climb/drop is a separate penalty the player applies with the 1/2 keys. The
--- ghost still takes the pointer's height so it sits on top of terrain/buildings.
+-- ghost sits on the ACTUAL surface under its landing point (via surfaceY), so it
+-- tracks terrain/buildings instead of floating on the click-catcher's plane.
 local function legPreview(pointer)
+	-- No budget left: freeze the ghost exactly at the current point so it doesn't
+	-- bob up/down with the cursor's surface height (there is nowhere left to go).
+	if remainingInches() <= 1e-6 then
+		return 0, { x = curPos.x, y = curPos.y, z = curPos.z }
+	end
 	local dx = pointer.x - curPos.x
 	local dz = pointer.z - curPos.z
 	local horiz = math.sqrt(dx * dx + dz * dz)
 	if horiz < 1e-6 then
-		return 0, { x = curPos.x, y = pointer.y, z = curPos.z }
+		return 0, { x = curPos.x, y = surfaceY(curPos.x, curPos.z, curPos.y), z = curPos.z }
 	end
 	local d = math.min(horiz, toUnits(remainingInches()))
 	local s = d / horiz
-	local endPos = { x = curPos.x + dx * s, y = pointer.y, z = curPos.z + dz * s }
+	local ex = curPos.x + dx * s
+	local ez = curPos.z + dz * s
+	local endPos = { x = ex, y = surfaceY(ex, ez, curPos.y), z = ez }
 	return toInches(d), endPos
 end
 
@@ -358,54 +388,71 @@ end
 
 local function clearPreview() Global.setVectorLines({}) end
 
--- --------------------------------------------------------- distance readout --
-local function ensureDistText()
-	if distTextObj ~= nil then return end
-	distTextObj = spawnObjectData({
-		data = {
-			Name = "3DText",
-			Transform = {
-				posX = curPos.x, posY = curPos.y + 0.5, posZ = curPos.z,
-				rotX = 90, rotY = 0, rotZ = 0,
-				scaleX = 0.35, scaleY = 0.35, scaleZ = 0.35,
-			},
-			Text = {
-				Text       = " ",
-				colorstate = { r = 1, g = 1, b = 1 },
-				fontSize   = READOUT_FONT,
-			},
-			Locked = true,
-		},
-	})
+-- --------------------------------------------------- distance readout (HUD) --
+-- A screen-space, top-centre readout via Global.UI. Unlike a world 3DText it is
+-- NEVER hidden by terrain and is NOT written to chat. One row per player colour,
+-- coloured to that player, so simultaneous moves stack (blue + red, ...) and
+-- every player can read them.
+--
+-- Global.UI is shared, and setXml REPLACES it wholesale; another feature
+-- (Chapter Tactics' fr_info_panel) also uses it. So we APPEND our container to
+-- whatever UI already exists (never clobber it) and re-append if it goes
+-- missing. Per-row updates use setAttribute/setValue, which don't replace the UI.
+local HUD_COLORS = { "White", "Brown", "Red", "Orange", "Yellow",
+                     "Green", "Teal", "Blue", "Purple", "Pink" }
+
+local function hudColorHex(c)
+	local col = Color.fromString(c)
+	if not col then return "#FFFFFF" end
+	-- Lighten toward white so darker player colours stay readable via the outline.
+	col = col:lerp(Color.White, 0.25)
+	return "#" .. col:toHex(false)
 end
 
-local function updateDistText()
-	if distTextObj == nil or distTextObj.TextTool == nil then return end
-	-- Only push changes: re-setting the text value every frame forces a text-mesh
-	-- rebuild and is what made the tool feel heavy.
-	local text = readoutText or " "
-	if text ~= lastText then
-		pcall(function() distTextObj.TextTool.setValue(text) end)
-		lastText = text
+local function buildHudXml()
+	-- Bare outlined text per colour (no background box, so it hugs the value and
+	-- can't stretch). A strong black outline keeps it readable over any terrain.
+	-- The layout forces each text to the container width and centres it, so it
+	-- always renders (a width-less Text can collapse to nothing in a layout).
+	local rows = ""
+	for _, c in ipairs(HUD_COLORS) do
+		rows = rows .. string.format(
+			'<Text id="ktmove_txt_%s" active="false" color="%s" fontSize="26" '
+			.. 'fontStyle="Bold" alignment="Center" preferredHeight="32" '
+			.. 'outline="#000000" outlineSize="2 -2" raycastTarget="false"> </Text>', c, hudColorHex(c))
 	end
-	local p = readoutPos or curPos
-	if p ~= nil then
-		if lastTextPos == nil
-			or math.abs(p.x - lastTextPos.x) > 0.05
-			or math.abs((p.y or 0) - lastTextPos.y) > 0.05
-			or math.abs(p.z - lastTextPos.z) > 0.05 then
-			pcall(function() distTextObj.setPosition({ p.x, (p.y or 0) + 0.5, p.z }) end)
-			lastTextPos = { x = p.x, y = p.y or 0, z = p.z }
-		end
-	end
+	return '<Panel id="ktmove_hud" active="true" rectAlignment="UpperCenter" '
+		.. 'width="600" height="120" offsetXY="0 -80" color="#00000000" raycastTarget="false">'
+		.. '<VerticalLayout childAlignment="UpperCenter" childForceExpandWidth="true" '
+		.. 'childForceExpandHeight="false" spacing="2" raycastTarget="false">'
+		.. rows
+		.. '</VerticalLayout></Panel>'
 end
 
-local function destroyDistText()
-	if distTextObj ~= nil then
-		local o = distTextObj
-		distTextObj = nil
-		pcall(function() if o ~= nil then o.destruct() end end)
-	end
+-- Ensure our HUD container exists in the (possibly shared) Global UI WITHOUT
+-- wiping anything else already there. Called at move start (once), not per frame.
+local function ensureHud()
+	local cur = ""
+	pcall(function() cur = Global.UI.getXml() or "" end)
+	if type(cur) ~= "string" then cur = "" end
+	if cur:find("ktmove_hud", 1, true) then return end
+	pcall(function() Global.UI.setXml(cur .. buildHudXml()) end)
+end
+
+local function hudShow(color, text)
+	if not color then return end
+	pcall(function()
+		Global.UI.setAttribute("ktmove_txt_" .. color, "active", "true")
+		Global.UI.setValue("ktmove_txt_" .. color, text or " ")
+	end)
+end
+
+local function hudHide(color)
+	if not color then return end
+	pcall(function()
+		Global.UI.setAttribute("ktmove_txt_" .. color, "active", "false")
+		Global.UI.setValue("ktmove_txt_" .. color, " ")
+	end)
 end
 
 -- ------------------------------------------------------------- update loop ---
@@ -431,13 +478,18 @@ local function tick()
 	-- Skip the whole rebuild when nothing that affects the drawing changed
 	-- (pointer still + no budget / leg / mode change). This keeps the tool light
 	-- instead of re-sending all vector lines and text every frame.
+	-- With no budget left the ghost is frozen at curPos (see legPreview), so drop
+	-- the pointer from the signature: roaming the cursor over terrain of different
+	-- heights must NOT rebuild the draw or make the ghost bob up/down.
+	local px, py, pz = pointer.x, pointer.y, pointer.z
+	if remainingInches() <= 1e-6 then px, py, pz = 0, 0, 0 end
 	local sig = string.format("%.2f_%.2f_%.2f_%d_%d_%s_%d",
-		pointer.x, pointer.y, pointer.z, usedInches, modifier, rangeMode, #committedLegs)
+		px, py, pz, usedInches, modifier, rangeMode, #committedLegs)
 	if sig == lastSig then return end
 	lastSig = sig
 
 	local active = {}
-	readoutText, readoutPos = nil, nil
+	readoutText = nil
 
 	-- Remaining-reach range from the current point (flat circle, or a 3D column).
 	-- Range shows where the base EDGE can reach: the centre's travel budget plus
@@ -454,15 +506,16 @@ local function tick()
 	prevRaw, prevEndPos = raw, e
 	appendLegCorridor(active, curPos, e, COL_LEG)
 
-	local projected = usedInches + math.ceil(raw - 1e-6)
-	readoutText = string.format('%d" / %d"', projected, maxInches())
+	-- Live total shows the EXACT distance to one decimal (committed whole inches +
+	-- the current leg's raw length) so the ghost readout tracks smoothly. The leg
+	-- still COSTS a whole inch (rounded up) when committed, so the running total
+	-- snaps to the whole number on the next step.
+	local liveTotal = usedInches + raw
+	readoutText = string.format('%.1f" / %d"', liveTotal, maxInches())
 		.. (modifier ~= 0 and string.format(" (%+d)", modifier) or "")
-	-- Keep the readout at the leg MIDPOINT, off the cursor/click point (a 3DText
-	-- under the cursor swallows the catcher's clicks and makes them feel janky).
-	readoutPos = { x = (curPos.x + e.x) * 0.5, y = (curPos.y + e.y) * 0.5, z = (curPos.z + e.z) * 0.5 }
 
 	redraw(active, e)
-	updateDistText()
+	hudShow(controlColor, readoutText)
 end
 
 local function startLoop()
@@ -564,7 +617,6 @@ local function pushHistory()
 	table.insert(history, {
 		pos      = { x = curPos.x, y = curPos.y, z = curPos.z },
 		used     = usedInches,
-		raw      = rawTotal,
 		modifier = modifier,
 		legs     = #committedLegs,
 	})
@@ -575,7 +627,6 @@ local function restoreFrom(s)
 	-- Move the model back to the restored point (it steps with each leg).
 	self.setPosition({ curPos.x, curPos.y, curPos.z })
 	usedInches  = s.used
-	rawTotal    = s.raw
 	modifier    = s.modifier
 	while #committedLegs > s.legs do table.remove(committedLegs) end
 end
@@ -591,7 +642,8 @@ local function finishMove(pc, text)
 	stopLoop()
 	clearPreview()
 	removeCatcher()
-	destroyDistText()
+	hudHide(pc or controlColor)
+	setActiveMove(pc or controlColor, false)
 	applyToModel()
 	msg(pc, text or string.format('Move complete: %d" used.', usedInches), COL_LEG)
 	phase        = PHASE_IDLE
@@ -603,13 +655,30 @@ local function cancelMove(pc)
 	stopLoop()
 	clearPreview()
 	removeCatcher()
-	destroyDistText()
+	hudHide(pc or controlColor)
+	setActiveMove(pc or controlColor, false)
 	-- Return the model to where the move began (it steps with each committed leg).
 	if startPos then self.setPosition({ startPos.x, startPos.y, startPos.z }) end
 	phase        = PHASE_IDLE
 	controlColor = nil
 	history      = {}
 	if pc then msg(pc, "Move cancelled.", COL_RANGE) end
+end
+
+-- A quiet teardown for when the player physically PICKS UP the model mid-move:
+-- stop the preview, drop the HUD/catcher and clear the active flag, but DON'T
+-- snap the model back and DON'T broadcast a "cancelled" message -- the pickup is
+-- a deliberate manual reposition, not a cancel, so it shouldn't give false
+-- "Move cancelled" feedback.
+local function abortMove()
+	stopLoop()
+	clearPreview()
+	removeCatcher()
+	hudHide(controlColor)
+	setActiveMove(controlColor, false)
+	phase        = PHASE_IDLE
+	controlColor = nil
+	history      = {}
 end
 
 local function beginMove(pc, forcedBase)
@@ -624,17 +693,15 @@ local function beginMove(pc, forcedBase)
 	modifier     = 0
 	adjustQueue  = 0
 	usedInches   = 0
-	rawTotal     = 0
 	rangeMode    = "flat"
 	committedLegs = {}
 	history      = {}
-	lastText     = nil
-	lastTextPos  = nil
 	lastSig      = nil
 	phase        = PHASE_MOVE
 	startLoop()
 	createCatcher()
-	ensureDistText()
+	ensureHud()
+	setActiveMove(pc, true)
 end
 
 local function commitLeg(rawIn, endPos)
@@ -645,7 +712,6 @@ local function commitLeg(rawIn, endPos)
 		b = { x = endPos.x, y = endPos.y, z = endPos.z },
 	})
 	usedInches = usedInches + math.ceil(rawIn - 1e-6)
-	rawTotal   = rawTotal + rawIn
 	curPos     = { x = endPos.x, y = endPos.y, z = endPos.z }
 	-- Step the model to the committed point so the (centred) catcher rides with
 	-- it -- keeps the catch area on the operative's real spot, rotation-proof.
@@ -746,6 +812,56 @@ function dashHotkeyTrigger(params)
 	if phase == PHASE_IDLE then beginMove((params or {}).color, DASH_INCHES) end
 end
 
+-- Per-action entry points for the global game-keys, called on the active-move
+-- model. The +/-1" nudges only ADD to the per-tick queue (like the number keys),
+-- so presses are coalesced and applied once per tick (no redraw-per-press cost),
+-- yet each press is captured instantly (no number-row multi-digit input wait).
+function moveAdjustPlus(params)
+	local pc = (params or {}).color
+	if phase ~= PHASE_MOVE then return end
+	if controlColor and pc and pc ~= controlColor then return end
+	adjustQueue = adjustQueue + 1
+end
+
+function moveAdjustMinus(params)
+	local pc = (params or {}).color
+	if phase ~= PHASE_MOVE then return end
+	if controlColor and pc and pc ~= controlColor then return end
+	adjustQueue = adjustQueue - 1
+end
+
+function moveFinishHotkey(params)
+	local pc = (params or {}).color
+	if phase ~= PHASE_MOVE then return end
+	if controlColor and pc and pc ~= controlColor then return end
+	finishNow(pc)
+end
+
+function moveCancelHotkey(params)
+	local pc = (params or {}).color
+	if phase ~= PHASE_MOVE then return end
+	if controlColor and pc and pc ~= controlColor then return end
+	cancelMove(pc)
+end
+
+function moveToggleRangeHotkey(params)
+	local pc = (params or {}).color
+	if phase ~= PHASE_MOVE then return end
+	if controlColor and pc and pc ~= controlColor then return end
+	rangeMode = (rangeMode == "3d") and "flat" or "3d"
+end
+
+-- Resolve the model a player is currently moving: prefer the active-move
+-- registry (works even when the cursor is aimed away from it), fall back to the
+-- hovered object.
+local function moveAdjustDispatch(color, hovered, fn)
+	local obj = nil
+	local guid = Global.getVar("KT_MOVE_ACTIVE_" .. color)
+	if type(guid) == "string" and guid ~= "" then obj = getObjectFromGUID(guid) end
+	if obj == nil and hovered ~= nil and hovered.call ~= nil then obj = hovered end
+	if obj ~= nil and obj.call ~= nil then obj.call(fn, { color = color }) end
+end
+
 function setupMoveTool()
 	self.addContextMenuItem("Move", function(pc)
 		if phase == PHASE_IDLE then beginMove(pc) end
@@ -773,10 +889,45 @@ function setupMoveTool()
 			end
 		end, false)
 	end
+	-- Per-action game-keys (instant, rebindable). They feed the SAME per-tick queue
+	-- as the number keys and reach the active-move model via the registry, so
+	-- binding them sidesteps the number row's built-in multi-digit input wait.
+	if Global.getVar("KT_MOVE_PLUS_HOTKEY") ~= true then
+		Global.setVar("KT_MOVE_PLUS_HOTKEY", true)
+		addHotkey("KT: Move +1 inch", function(color, hovered)
+			moveAdjustDispatch(color, hovered, "moveAdjustPlus")
+		end, false)
+	end
+	if Global.getVar("KT_MOVE_MINUS_HOTKEY") ~= true then
+		Global.setVar("KT_MOVE_MINUS_HOTKEY", true)
+		addHotkey("KT: Move -1 inch", function(color, hovered)
+			moveAdjustDispatch(color, hovered, "moveAdjustMinus")
+		end, false)
+	end
+	if Global.getVar("KT_MOVE_FINISH_HOTKEY") ~= true then
+		Global.setVar("KT_MOVE_FINISH_HOTKEY", true)
+		addHotkey("KT: Move finish", function(color, hovered)
+			moveAdjustDispatch(color, hovered, "moveFinishHotkey")
+		end, false)
+	end
+	if Global.getVar("KT_MOVE_CANCEL_HOTKEY") ~= true then
+		Global.setVar("KT_MOVE_CANCEL_HOTKEY", true)
+		addHotkey("KT: Move cancel", function(color, hovered)
+			moveAdjustDispatch(color, hovered, "moveCancelHotkey")
+		end, false)
+	end
+	if Global.getVar("KT_MOVE_RANGE_HOTKEY") ~= true then
+		Global.setVar("KT_MOVE_RANGE_HOTKEY", true)
+		addHotkey("KT: Move toggle 3D range", function(color, hovered)
+			moveAdjustDispatch(color, hovered, "moveToggleRangeHotkey")
+		end, false)
+	end
 end
 
 function moveOnPickUp(playerColor)
-	if phase ~= PHASE_IDLE then cancelMove(playerColor) end
+	-- A manual pickup is NOT a cancel: tear down the preview/HUD/catcher quietly
+	-- and leave the model where the player drops it (no snap-back, no callout).
+	if phase ~= PHASE_IDLE then abortMove() end
 end
 
 local _move_prev_onLoad = onLoad
