@@ -440,6 +440,33 @@ teams:
     # (Drakolithe) get only Speed (auto-centred). Right-click = up, left = down.
     operative_counters_menu: Add Exodite Counters
     operative_counters:
+    # Left: inches of movement used (generated 1-12 -> counter-only art under a
+    # tokens/counters/ subfolder, so NO box dispensers). Centre: Speed (every
+    # operative). Right: Remaining Actions. Non-mounted (Drakolithe) get only
+    # Speed, auto-centred. Right-click = up, left = down.
+    - name: Movement Remaining
+      applies_to:
+      - MOUNTED
+      init: 12
+      min: 1
+      max: 12
+      generate:
+        background: exodite-dragon-masters-counter-bg.png
+    - name: Speed
+      applies_to: all
+      init: 1
+      min: 1
+      max: 3
+      states:
+      - value: 1
+        label: 'SPEED 3-'
+        token: exodite-dragon-masters-speed-3.png
+      - value: 2
+        label: 'SPEED 4+'
+        token: exodite-dragon-masters-speed-4.png
+      - value: 3
+        label: 'SPEED 7+'
+        token: exodite-dragon-masters-speed-7.png
     - name: Remaining Actions
       applies_to:
       - MOUNTED
@@ -459,21 +486,6 @@ teams:
       - value: 4
         label: '4 Actions'
         token: exodite-dragon-masters-remaining-actions-4.png
-    - name: Speed
-      applies_to: all
-      init: 1
-      min: 1
-      max: 3
-      states:
-      - value: 1
-        label: 'SPEED 3-'
-        token: exodite-dragon-masters-speed-3.png
-      - value: 2
-        label: 'SPEED 4+'
-        token: exodite-dragon-masters-speed-4.png
-      - value: 3
-        label: 'SPEED 7+'
-        token: exodite-dragon-masters-speed-7.png
     # Auto-extracted tokens replaced by the custom-token variants below (and a
     # blank misdetection). Dropped during extraction via exclude_tokens.
     exclude_tokens:

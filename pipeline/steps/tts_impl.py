@@ -2685,6 +2685,20 @@ def _operative_matches_counter(operative: dict, applies) -> bool:
     return any(kw.upper() in op_kw for kw in applies)
 
 
+def _apply_generated_counter_states(cfg: dict) -> dict:
+    """If ``cfg`` is a generated counter (a ``generate`` block, no explicit
+    ``states``), return a copy with synthesized states pointing at the counters
+    subfolder; otherwise return ``cfg`` unchanged. The images themselves are
+    produced by extract_tokens."""
+    from ..utils.counter_tokens import generated_counter_states
+    states = generated_counter_states(cfg)
+    if states is None:
+        return cfg
+    out = dict(cfg)
+    out['states'] = states
+    return out
+
+
 def _build_operative_counter_lua(team: str, counter_cfg: dict, url_branch: str) -> str:
     """Generate Lua that adds a left/right-click cycling image counter to a model placed on the card."""
     name = str(counter_cfg.get('name', 'Counter'))
@@ -2860,6 +2874,21 @@ end
 '''
 
 
+def _counter_asset_base(team: str, url_branch: str, cfg: dict) -> str:
+    """Asset base URL for a counter's token images.
+
+    GENERATED counters (a ``generate`` block) reference images that only exist on
+    the current feature branch until the PR lands on main; ``KT_COUNTER_ASSET_BRANCH``
+    can point just those URLs at a testing branch. Hand-authored counter tokens
+    (already published on main) always use ``url_branch``. Defaults to ``url_branch``
+    so normal runs are unaffected.
+    """
+    branch = url_branch
+    if cfg.get('generate'):
+        branch = os.environ.get("KT_COUNTER_ASSET_BRANCH", url_branch)
+    return f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/{branch}/output/{team}/tokens"
+
+
 def _build_operative_counters_lua(team: str, counters: list, url_branch: str, menu_label: str) -> str:
     """Generate Lua adding one or more left/right-click cycling image counters to
     the model on the card, exposed via a single context-menu item.
@@ -2919,7 +2948,7 @@ def _build_operative_counters_lua(team: str, counters: list, url_branch: str, me
         )
 
         asset_lines = "\n".join(
-            f'    {{name="{asset_name(int(s["value"]))}", url=[=[{base_url}/{s.get("token", "")}]=]}},'
+            f'    {{name="{asset_name(int(s["value"]))}", url=[=[{_counter_asset_base(team, url_branch, cfg)}/{s.get("token", "")}]=]}},'
             for s in states
         )
         assets_def = f"    local assetLines_{slug} = [==[\n\n{asset_lines}\n]==]\n"
@@ -2994,7 +3023,7 @@ def _get_faction_rule_code(team: str, team_data: dict, operative: dict, team_con
     counters_cfg = team_info.get('operative_counters')
     if counters_cfg:
         applicable = [
-            c for c in counters_cfg
+            _apply_generated_counter_states(c) for c in counters_cfg
             if _operative_matches_counter(operative, c.get('applies_to', 'all'))
         ]
         if applicable:
