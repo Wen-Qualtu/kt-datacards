@@ -214,6 +214,13 @@ local applyToModel               -- fwd decl; steps/rotates the model to the cur
 local function toUnits(inches) return inches * UNITS_PER_INCH end
 local function toInches(units) return units / UNITS_PER_INCH end
 
+-- Ceil inches to the 1-decimal precision the HUD shows. The readout and the
+-- whole-inch charge (spentInches ceil) are both CEILINGS -- just at different
+-- accuracy (1 vs 0 decimals) -- so they always agree and never grant free
+-- movement. The tiny epsilon only absorbs float noise on a clean whole value.
+-- (Backward travel is raw-tracked/capped, so it keeps its raw readout.)
+local function ceilToShown(inches) return math.ceil((inches - 1e-6) * 10) / 10 end
+
 -- Heading (degrees) of a planar vector, matching TTS yaw: forward = (sin,0,cos)
 local function headingOf(x, z) return math.deg(math.atan2(x, z)) end
 
@@ -707,7 +714,7 @@ local function tick()
 		prevStraight, prevEndPos, prevHeading = d, e, h
 		appendCorridor(active, curPos, e, h, COL_LEG)
 		endPos, endHeading = e, h
-		readoutText = string.format('%.1f"', math.abs(d)) .. (d < 0 and " back" or "")
+		readoutText = string.format('%.1f"', (d >= 0) and ceilToShown(d) or math.abs(d)) .. (d < 0 and " back" or "")
 		readoutPos  = { x = (curPos.x + e.x) * 0.5, y = curPos.y, z = (curPos.z + e.z) * 0.5 }
 
 	elseif phase == PHASE_S1 then
@@ -755,7 +762,7 @@ local function tick()
 		prevStraight, prevEndPos, prevHeading = d, e, h
 		appendCorridor(active, curPos, e, h, COL_LEG)
 		endPos, endHeading = e, h
-		readoutText = string.format('%.1f"', math.abs(d)) .. (d < 0 and " back" or "")
+		readoutText = string.format('%.1f"', (d >= 0) and ceilToShown(d) or math.abs(d)) .. (d < 0 and " back" or "")
 		readoutPos  = { x = (curPos.x + e.x) * 0.5, y = curPos.y, z = (curPos.z + e.z) * 0.5 }
 
 	elseif phase == PHASE_LEAP then
