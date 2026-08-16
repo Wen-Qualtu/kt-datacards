@@ -147,6 +147,18 @@ integration layer, source-agnostic (no `--source` needed).
   `output_v2/{faction}/{team}/statlines/roster.json`, which the integrated pipeline lacks, so the
   `selection` key is skipped (stats/weapons/abilities still embed). (c) KTUI enhanced
   stat-loading (`ktui-mini-modelscript.lua`) is intentionally excluded.
+- **Generated counter tokens** (`pipeline/utils/counter_tokens.py`, driven by a team's
+  `operative_counters: … generate:` block in `team-config.yaml`): `extract_tokens` renders
+  numbered per-value PNGs into `output/{team}/tokens/counters/`. That subfolder is skipped by
+  the **non-recursive** box-dispenser scan (`tokens_dir.glob('*.obj')`), so counters never
+  become token bags. Exodite uses it for a Movement Remaining 1-12 counter (PR #69).
+- **Targeted rebuild for embedded-Lua changes**: the movement tools are baked into card
+  LuaScripts at `generate_tts` time (`MOVE_TOOL_CODE`/`SPRINT_TOOL_CODE`). A change that only
+  affects MOUNTED teams (e.g. the Sprint tool / `kt_front` facing, PR #72) only needs
+  `generate_tts --teams exodite-dragon-masters` — rebuilding all 48 boxes is wasteful and
+  triggers needless in-game re-downloads. When only the LuaScript changes, just the box
+  object's `?v=`/`modified`/`hash` churns (0 card/token churn); stabilise image mtimes first
+  (a `restore_image_mtimes`-style pass) so tokens/cards don't bump their `?v=`.
 
 ## Onboarding on a New Machine
 
