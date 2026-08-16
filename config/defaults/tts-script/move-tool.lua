@@ -85,6 +85,17 @@ local READOUT_FONT   = 70       -- font size of the live readout text
 local VERT_RANGE     = 6        -- +/- inches shown by the 3D range column (key 3; max KT climb/drop)
 local RANGE_RING_STEP = 0.5    -- vertical gap (inches) between the cylinder rings
 
+-- Ignore a 2nd left-click within this many seconds of the previous accepted one:
+-- a jittery mouse can fire a stray double-click that commits an extra step (+1").
+-- Real clicks -- stepping, and the same-spot finish click -- are always well over
+-- this apart, so only accidental double-clicks are swallowed.
+local CLICK_DEBOUNCE_SEC = 0.2
+
+-- A leg shorter than this (inches) counts as "no move" -> finish, not a step. The
+-- same-spot finish click reads a tiny residual (sub-pixel / parallax off the
+-- catcher plane, e.g. 0.000x") that would otherwise ceil() up to a full 1" step.
+local FINISH_EPS_IN = 0.1
+
 -- --------------------------------------------------------------- constants ---
 local PHASE_IDLE = "idle"
 local PHASE_MOVE = "move"
@@ -104,6 +115,7 @@ local curPos       = nil            -- Vector, current committed point (3D)
 local committedLegs = {}            -- { {a=,b=}, ... }
 local history      = {}
 local rangeMode    = "flat"         -- "flat" circle or "3d" vertical column (key 3)
+local lastLeftClickAt = -1          -- os.clock() of the last accepted left-click (debounce)
 
 -- live preview cache
 local prevRaw      = 0              -- inches of the active leg
@@ -193,8 +205,16 @@ local function refreshBaseDims()
 
 	local bOk, b = pcall(function() return self.getBoundsNormalized() end)
 	if bOk and b and b.size and b.size.x > 0 and b.size.z > 0 then
-		BASE_MM_WIDE = b.size.x / MM_TO_INCH
-		BASE_MM_LONG = b.size.z / MM_TO_INCH
+		local wmm = b.size.x / MM_TO_INCH
+		local lmm = b.size.z / MM_TO_INCH
+		-- Reject a polluted read: getBoundsNormalized can balloon to the whole
+		-- reach area if a leftover click-catcher BUTTON is counted in the bounds
+		-- (seen on blank models). A real base -- even a winged/oval model -- is
+		-- well under 120mm, so anything bigger keeps the sane default instead of
+		-- an area-sized ghost.
+		if wmm <= 120 and lmm <= 120 then
+			BASE_MM_WIDE, BASE_MM_LONG = wmm, lmm
+		end
 	end
 end
 
@@ -237,12 +257,14 @@ local function maxInches() return math.max(0, baseMove + modifier) end
 local function remainingInches() return math.max(0, maxInches() - usedInches) end
 
 -- True surface height at world (x, z): a downward physics ray that ignores the
--- moving model itself. We can't trust the pointer's reported Y because the
--- click-catcher (a UI button pinned ~0.6 above the model) lifts it and keeps it
--- flat; the catcher is NOT a physics collider, so the ray sees the real
--- table/terrain/building surface instead. Only called when the cursor actually
--- moves (tick's signature gate), so the cast rate stays low even on slow PCs.
-local function surfaceY(x, z, fallbackY)
+-- moving model itself, so it sees the real table/terrain/building surface even
+-- when the cursor is over the (non-collider) click-catcher. When an `aimY` is
+-- given (the cursor's reported height, lifted ~0.6 by the catcher) the ray picks
+-- the surface NEAREST that level, so a landing point UNDER an overhang stays on
+-- the lower floor instead of snapping to the overhang's top; only when aimY is
+-- omitted does it keep the legacy "highest surface" pick. Only called when the
+-- cursor moves (tick's signature gate), so the cast rate stays low.
+local function surfaceY(x, z, fallbackY, aimY)
 	local base = (curPos and curPos.y) or self.getPosition().y
 	local hits = Physics.cast({
 		origin       = { x = x, y = base + 25, z = z },
@@ -252,8 +274,12 @@ local function surfaceY(x, z, fallbackY)
 	})
 	local best = nil
 	for _, h in ipairs(hits or {}) do
-		if h.hit_object ~= self and h.point and (best == nil or h.point.y > best) then
-			best = h.point.y
+		if h.hit_object ~= self and h.point then
+			if aimY == nil then
+				if best == nil or h.point.y > best then best = h.point.y end
+			elseif best == nil or math.abs(h.point.y - aimY) < math.abs(best - aimY) then
+				best = h.point.y
+			end
 		end
 	end
 	return best or fallbackY
@@ -274,13 +300,13 @@ local function legPreview(pointer)
 	local dz = pointer.z - curPos.z
 	local horiz = math.sqrt(dx * dx + dz * dz)
 	if horiz < 1e-6 then
-		return 0, { x = curPos.x, y = surfaceY(curPos.x, curPos.z, curPos.y), z = curPos.z }
+		return 0, { x = curPos.x, y = surfaceY(curPos.x, curPos.z, curPos.y, curPos.y), z = curPos.z }
 	end
 	local d = math.min(horiz, toUnits(remainingInches()))
 	local s = d / horiz
 	local ex = curPos.x + dx * s
 	local ez = curPos.z + dz * s
-	local endPos = { x = ex, y = surfaceY(ex, ez, curPos.y), z = ez }
+	local endPos = { x = ex, y = surfaceY(ex, ez, curPos.y, pointer.y), z = ez }
 	return toInches(d), endPos
 end
 
@@ -697,6 +723,7 @@ local function beginMove(pc, forcedBase)
 	committedLegs = {}
 	history      = {}
 	lastSig      = nil
+	lastLeftClickAt = -1
 	phase        = PHASE_MOVE
 	startLoop()
 	createCatcher()
@@ -734,7 +761,7 @@ local function advance(pc)
 		prevRaw, prevEndPos = raw, e
 	end
 	if not prevEndPos then return end
-	if prevRaw <= 1e-6 then
+	if prevRaw < FINISH_EPS_IN then
 		-- Finish only if we've already moved or the budget is spent; otherwise
 		-- ignore, so a stray click at the very start doesn't end the move instantly.
 		if #committedLegs > 0 or remainingInches() <= 0 then
@@ -794,7 +821,17 @@ end
 function moveCatcherClick(_, playerColor, altClick)
 	if phase ~= PHASE_MOVE then return end
 	if controlColor and playerColor ~= controlColor then return end
-	if altClick then stepBack(playerColor) else advance(playerColor) end
+	if altClick then
+		stepBack(playerColor)
+	else
+		-- Debounce accidental double-clicks (jittery mice): swallow a left-click that
+		-- lands within CLICK_DEBOUNCE_SEC of the last accepted one so it can't eat an
+		-- extra step. Intentional step/finish clicks are always well over this apart.
+		local now = os.clock()
+		if now - lastLeftClickAt < CLICK_DEBOUNCE_SEC then return end
+		lastLeftClickAt = now
+		advance(playerColor)
+	end
 end
 
 function moveScriptingButton(index, playerColor)
