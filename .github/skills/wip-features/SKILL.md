@@ -90,20 +90,23 @@ dynamic bar + order token + owner set + `KT: extension OK` item; Movement item g
 - Today the model gets a tool via runtime `injectBlock` (START/END markers) on "Add … action".
 
 ### Lua block inventory (modularity audit — verified)
-MODULAR `.lua` files (good): `move-tool.lua`, `sprint-movement-tool.lua`,
-`ktui-mini-modelscript.lua` (default model), `datacard-load-stats.lua` (card loader),
-`single-object-updater.lua`, `intermediate-updater.lua`, `team-spawner-*.lua`,
-`display-table-manager-script.lua`, `bag-of-bags-reload-script.lua`,
+MODULAR `.lua` files (STATIC / logic-only — same code every team, read `state` at runtime):
+`move-tool.lua`, `sprint-movement-tool.lua`, `ktui-mini-modelscript.lua` (default model),
+`datacard-load-stats.lua` (card loader), `single-object-updater.lua`, `intermediate-updater.lua`,
+`team-spawner-*.lua`, `display-table-manager-script.lua`, `bag-of-bags-reload-script.lua`,
 `tts-update-rules-in-box-script.lua`.
-NOT modular — Lua LOGIC embedded in `tts_impl.py` as f-strings:
+DATA-PARAMETERIZED (Lua generated in `tts_impl.py` from team-config — ONE builder serves all 48
+teams; this is CORRECT, not a wart):
 - Faction-rule popups: `_build_select1_lua` (L2201) / `_build_select2_lua` (L2379).
 - Counters/tokens: `_build_operative_counters_lua` (L2945) / `_build_operative_counter_lua` (L2755).
-- `faction-rule-chapter-tactics.lua` is ORPHANED (not referenced in code; only in pipeline-state
-  fingerprints). Likely legacy from before the inline builders — verify + remove.
-GOAL: extract the inline faction-rule + counter builders into `.lua` TEMPLATE files
-(logic in a file with `{{PLACEHOLDER}}` tokens; Python supplies only the data table), so every
-block (move/sprint/default/loader/faction-rule/counters/callout) is a real file the
-composer/embedder selects + fills — uniform, "decide what blocks are needed" architecture.
+
+PRINCIPLE (decided): static/logic-only block -> `.lua` file; data-parameterized block -> keep the
+Python generator (preserves cross-team reuse; static files would force per-team hardcoding).
+Do NOT force the generators into files. Only if an inline builder becomes unwieldy, the middle
+option is a `.lua` TEMPLATE with `{{tokens}}` that Python still fills with the data (keeps reuse) —
+optional polish, not a goal.
+CLEANUP: `faction-rule-chapter-tactics.lua` is ORPHANED (not referenced in code; only in
+pipeline-state fingerprints) — verify + remove.
 
 ### NEXT STEPS to productionize
 1. Move the composer output into `config/` as the default `KTUI_MODELSCRIPT`
