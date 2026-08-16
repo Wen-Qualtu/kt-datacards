@@ -148,6 +148,39 @@ the old model's `KTUIDiceRoller`/`askSpawn` is stale).
 
 ---
 
+## Feature C — Smart Targeting Lines (BACKLOG / future idea)
+
+**Idea.** Extend the extender's targeting-lines tool (`agregaCono`, kept in the composed
+script) so it auto-detects KT cover/obscurity from the drawn shooter→target line and
+lights up a "Cover" / "Obscured" indicator.
+
+**Feasibility: CONFIRMED possible.** TTS `Physics.cast` returns the objects a line
+crosses/near; we already use ray, sphere, and box casts (`move-tool.lua` L275,
+`datacard-load-stats.lua` L80, `tts-update-rules-in-box-script.lua` L798 sphere,
+`team-spawner-clean-script.lua` L122 box). Cast shooter-base → target-base and read
+`hit.hit_object`.
+
+**Rules → mechanism.**
+- Cover = any terrain within 1" of the line → swept SPHERE cast (`type=2`), radius =
+  1"-in-TTS-units, `max_distance` = base-to-base distance.
+- Obscured = heavy terrain that is intervening AND >1" from BOTH operatives → geometry
+  check on hit positions along the segment.
+- ≤2" apart → no cover/obscured (base-to-base distance check).
+- Vantage (2"/4" above) → compare Y heights; LATER layer.
+
+**Dependencies / limits (honest).**
+- Terrain must have colliders (most killzone terrain does; flat decor may be missed).
+- Light-vs-heavy typing needs a terrain TAG or name→type mapping. MVP: detect ANY terrain
+  in the way ("cover"/"obscured" flags) without the light/heavy split.
+- Center-to-center is a simplification vs KT's base-edge/all-sightlines — build it as a
+  HELPER/indicator, not a perfect rules enforcer. Accuracy ceiling depends on terrain tagging.
+- Multiple rule sources/edge cases exist (see the user's cover-matrix image) — start with the
+  core cover/obscured/2" cases, iterate.
+
+**Status:** idea only, not started. Verdict = worth building later; NOT binned.
+
+---
+
 ## Cross-cutting reminders
 - Force composed URLs for a test build by deleting `output/{team}/{team}-object-urls.json` first.
 - `git`/`gh` write to stderr (PowerShell shows "NativeCommandError" but the command succeeds);
