@@ -161,12 +161,22 @@ crosses/near; we already use ray, sphere, and box casts (`move-tool.lua` L275,
 `hit.hit_object`.
 
 **Rules → mechanism.**
-- Cover = any terrain within 1" of the line → swept SPHERE cast (`type=2`), radius =
-  1"-in-TTS-units, `max_distance` = base-to-base distance.
-- Obscured = heavy terrain that is intervening AND >1" from BOTH operatives → geometry
-  check on hit positions along the segment.
+- LoS/cover is a CONE, not one line: from one point of the shooter's base to BOTH edges of
+  the target's base (all lines between). Approximate with a fan of rays, or a sphere-at-target.
+- Cover = terrain within the DEFENDER's 1" control range → terrain near the TARGET. Measure
+  distance from the terrain hit to the TARGET (the "remaining line" from hit.point to target);
+  cover only if < 1". (`Physics.cast` returns `hit.point` — see `move-tool.lua` L283 — so this
+  remaining distance is directly computable.) NOT "within 1" of the whole line" (that was wrong).
+- Obscured = heavy terrain intervening but >1" from BOTH operatives → terrain in the MIDDLE
+  (complement of cover: in the cone, outside both 1" bubbles).
 - ≤2" apart → no cover/obscured (base-to-base distance check).
 - Vantage (2"/4" above) → compare Y heights; LATER layer.
+- Two implementation options for the cone:
+  1. RAY FAN — cast N rays shooter-point → sampled points across the target base (edges + between);
+     take the last terrain hit before the target per ray; any within 1" of target → cover.
+  2. SPHERE-AT-TARGET + filter — sphere-cast at the target (radius = baseRadius + 1") for terrain
+     in control range, keep only terrain toward the shooter (dot(terrain−target, shooter−target)>0)
+     and inside the tangent cone. Simpler; maps 1:1 to the rule.
 
 **Dependencies / limits (honest).**
 - Terrain must have colliders (most killzone terrain does; flat decor may be missed).
