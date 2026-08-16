@@ -134,6 +134,12 @@ local lastSig     = nil             -- last draw signature (skip identical frame
 local function toUnits(inches) return inches * UNITS_PER_INCH end
 local function toInches(units) return units / UNITS_PER_INCH end
 
+-- Ceil inches to the 1-decimal precision the HUD shows. Both the readout and the
+-- whole-inch charge are CEILINGS -- just at different accuracy (1 vs 0 decimals) --
+-- so they always agree and never grant free movement (round-to-nearest would
+-- shave up to ~0.05"). The tiny epsilon only absorbs float noise on a clean whole.
+local function ceilToShown(inches) return math.ceil((inches - 1e-6) * 10) / 10 end
+
 local function headingOf(x, z) return math.deg(math.atan2(x, z)) end
 local function dirFromHeading(h)
 	local r = math.rad(h)
@@ -532,11 +538,10 @@ local function tick()
 	prevRaw, prevEndPos = raw, e
 	appendLegCorridor(active, curPos, e, COL_LEG)
 
-	-- Live total shows the EXACT distance to one decimal (committed whole inches +
-	-- the current leg's raw length) so the ghost readout tracks smoothly. The leg
-	-- still COSTS a whole inch (rounded up) when committed, so the running total
-	-- snaps to the whole number on the next step.
-	local liveTotal = usedInches + raw
+	-- Live total shows the distance CEIL'd to one decimal (committed whole inches +
+	-- the current leg). The leg then COSTS the whole-inch ceil of that same shown
+	-- value, so the HUD and the budget always agree (both ceilings, 1 vs 0 decimals).
+	local liveTotal = usedInches + ceilToShown(raw)
 	readoutText = string.format('%.1f" / %d"', liveTotal, maxInches())
 		.. (modifier ~= 0 and string.format(" (%+d)", modifier) or "")
 
@@ -738,7 +743,7 @@ local function commitLeg(rawIn, endPos)
 		a = { x = curPos.x, y = curPos.y, z = curPos.z },
 		b = { x = endPos.x, y = endPos.y, z = endPos.z },
 	})
-	usedInches = usedInches + math.ceil(rawIn - 1e-6)
+	usedInches = usedInches + math.ceil(ceilToShown(rawIn) - 1e-6)
 	curPos     = { x = endPos.x, y = endPos.y, z = endPos.z }
 	-- Step the model to the committed point so the (centred) catcher rides with
 	-- it -- keeps the catch area on the operative's real spot, rotation-proof.
