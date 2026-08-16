@@ -824,6 +824,38 @@ def _build_token_tags_map(team_name: str, config_dir: Path) -> dict:
     return tags_by_name
 
 
+# In-game scale of a standard 20mm round token (the dispensed Custom_Token).
+_TOKEN_BASE_SCALE = 0.21
+_TOKEN_BASE_MM = 20.0
+
+
+def _build_token_sizes_map(team_name: str, config_dir: Path) -> dict:
+    """Map normalized token name -> physical token size (mm) from team-config.
+
+    Standard round/marker tokens are 20mm. A token entry may set a `size` field
+    (e.g. Skytorch = 28) to scale the DISPENSED token (not the dispenser bag).
+    """
+    sizes_by_name = {}
+    team_config_path = config_dir / "team-config.yaml"
+    try:
+        with open(team_config_path, 'r', encoding='utf-8') as f:
+            team_config = yaml.safe_load(f)
+    except Exception as e:
+        logger.warning(f"Could not load team-config for token sizes ({team_name}): {e}")
+        return sizes_by_name
+
+    tokens_cfg = team_config.get('teams', {}).get(team_name, {}).get('tokens', []) or []
+    for token_cfg in tokens_cfg:
+        name = token_cfg.get('name', '')
+        size = token_cfg.get('size')
+        if name and size:
+            try:
+                sizes_by_name[naming.slug(name)] = float(size)
+            except (TypeError, ValueError):
+                pass
+    return sizes_by_name
+
+
 def _build_tile_token_objects(team_name: str, config_dir: Path, output_dir: Path,
                               github_base: str, single_object_updater_script: str = "") -> list:
     """Build double-sided ``Custom_Tile`` token dispensers from team-config
@@ -1042,6 +1074,9 @@ def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Pa
     # Build a lookup of token name -> KTUI tags driven by the config `type`.
     # marker -> KTUIMarker, token -> KTUITokenSimple, custom -> config tags.
     token_tags_by_name = _build_token_tags_map(team_name, config_dir)
+    # Optional per-token physical size (mm); default 20mm. Scales the dispensed
+    # token (not the dispenser bag), e.g. Skytorch = 28mm.
+    token_sizes_by_name = _build_token_sizes_map(team_name, config_dir)
     
     # Generate token objects (Custom_Model_Infinite_Bag, each containing a Custom_Token)
     token_objects = []
@@ -1052,6 +1087,11 @@ def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Pa
         # / accents can't split a config token from its generated asset.
         normalized_name = naming.slug(token_name.replace(f'{team_name}-', ''))
         token_tags = token_tags_by_name.get(normalized_name, ["KTUIToken", "KTUITokenSimple"])
+        # Per-token size (mm) -> DISPENSED Custom_Token scale (0.21 == 20mm). The
+        # dispenser bag and its on-bag preview stay at the standard size, so only
+        # the token you pull out is larger (e.g. Skytorch 28mm).
+        size_mm = token_sizes_by_name.get(normalized_name, _TOKEN_BASE_MM)
+        token_scale = round(_TOKEN_BASE_SCALE * size_mm / _TOKEN_BASE_MM, 6)
         
         mesh_mtime = int(obj_path.stat().st_mtime)
         png_mtime = int(png_path.stat().st_mtime)
@@ -1068,9 +1108,9 @@ def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Pa
                 "rotX": 0.0,
                 "rotY": 0.0,
                 "rotZ": 0.0,
-                "scaleX": 0.21,
+                "scaleX": token_scale,
                 "scaleY": 1.0,
-                "scaleZ": 0.21
+                "scaleZ": token_scale
             },
             "Nickname": display_name,
             "Description": display_name,
@@ -1106,7 +1146,7 @@ def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Pa
             "Transform": {
                 "posX": 0.0, "posY": 0.0, "posZ": 0.0,
                 "rotX": 0.0, "rotY": 0.0, "rotZ": 0.0,
-                "scaleX": 0.21, "scaleY": 1.0, "scaleZ": 0.21
+                "scaleX": _TOKEN_BASE_SCALE, "scaleY": 1.0, "scaleZ": _TOKEN_BASE_SCALE
             },
             "Nickname": display_name,
             "Description": display_name,
