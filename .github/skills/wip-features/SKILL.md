@@ -80,11 +80,26 @@ dynamic bar + order token + owner set + `KT: extension OK` item; Movement item g
   (only real gap was `owner`, now handled). One unguarded game-log call → guarded in patch.
 - TTS/MoonSharp accepts `!=`; strict `luaparser` doesn't — sanitize `!=`→`~=` for parse checks only.
 
+### Action gating & modularity (how it works TODAY — keep this model)
+- Gating is done at CREATION, not runtime. Two gates:
+  1. Build-time embed (`tts_impl.py` ~L1697): MOUNTED card embeds `SPRINT_TOOL_CODE` only,
+     non-MOUNTED embeds `MOVE_TOOL_CODE` only. Unused tool never ships on the card.
+  2. Card onLoad menu gate (`datacard-load-stats.lua` L45-49): item added only if the code
+     var exists AND `hasKeyword("MOUNTED")` matches — one GMNotes read, no per-action logic.
+     "Load everything" (afterStatsLoaded L1045) auto-adds the right one by keyword.
+- OUR tools are ALREADY separate files: `move-tool.lua`, `sprint-movement-tool.lua`, callout.
+  The "one script, remove parts" pattern is ONLY the third-party extender monolith (can't split).
+- Today the model gets a tool via runtime `injectBlock` (START/END markers) on "Add … action".
+
 ### NEXT STEPS to productionize
 1. Move the composer output into `config/` as the default `KTUI_MODELSCRIPT`
    (or run the composer as a build step); drop the env-var gate once it's the default.
-2. Grow `dev/ktui-extension.lua` (→ `config/`) to carry the real move/sprint/callout hooks
-   (the blocks the cards inject today), so a single stamp includes them.
+2. **Compose per-keyword variants at build time** (preferred — keeps gating at creation):
+   `composed_mounted = patch(extender)+ktui-extension.lua+sprint-movement-tool.lua`;
+   `composed_default = patch(extender)+ktui-extension.lua+move-tool.lua`. Embed the right
+   variant per card (same MOUNTED gate), so one stamp bakes in the correct movement — no
+   runtime inject. Shared always-on hooks (owner, callout) live in `ktui-extension.lua`;
+   keyword-specific tools are appended by the composer. Keep one source file per tool.
 3. Rebuild all 48 boxes; verify bar + tokens + table Save/Load + Ready work with the
    physical extender ABSENT, and 0 unexpected card-image churn.
 4. Attribution: keep the extender authors' credit (Nyirsh, Feuerfritas, Ixidior, Mal20k).
