@@ -160,23 +160,40 @@ crosses/near; we already use ray, sphere, and box casts (`move-tool.lua` L275,
 `team-spawner-clean-script.lua` L122 box). Cast shooter-base → target-base and read
 `hit.hit_object`.
 
-**Rules → mechanism.**
-- LoS/cover is a CONE, not one line: from one point of the shooter's base to BOTH edges of
-  the target's base (all lines between). Approximate with a fan of rays, or a sphere-at-target.
-- Cover = terrain within the DEFENDER's 1" control range → terrain near the TARGET. Measure
-  distance from the terrain hit to the TARGET (the "remaining line" from hit.point to target);
-  cover only if < 1". (`Physics.cast` returns `hit.point` — see `move-tool.lua` L283 — so this
-  remaining distance is directly computable.) NOT "within 1" of the whole line" (that was wrong).
-- Obscured = heavy terrain intervening but >1" from BOTH operatives → terrain in the MIDDLE
-  (complement of cover: in the cone, outside both 1" bubbles).
+**Official rules (verbatim intent — keep exact). Ref: https://battlekit.killteam.ru/ (Cover / Obscured / Intervening).**
+- INTERVENING (the core primitive): the shooter's player draws imaginary straight lines ~1mm
+  diameter from ANY ONE point of its base to EVERY facing part of the target's base. Terrain that
+  AT LEAST ONE line crosses is "intervening"; terrain that ALL lines cross is "WHOLLY intervening".
+  The shooter chooses the origin point (can lean left/right for a better angle) → so an auto-tool
+  is an AID/approximation, not authoritative. Determined in 3D when heights differ (Vantage);
+  otherwise top-down is fine. (For non-operative sources like markers, treat all parts as the base.)
+- COVER: an operative is in cover if there is INTERVENING terrain within ITS 1" control range
+  (i.e. near the TARGET when shooting). Exceptions: NOT in cover if within 2" of the other
+  operative; terrain within control range but NOT intervening does not count (must be between them).
+  Outcome (we can surface via `state.order`): Conceal + cover → NOT a valid target; Engage + cover
+  → valid target but gets a COVER SAVE.
+- OBSCURED: an operative is obscured if there is INTERVENING HEAVY terrain that is >1" from BOTH
+  operatives. Heavy terrain within 1" of EITHER operative does not obscure — BUT this is PART-based:
+  being within 1" of a terrain feature doesn't stop the REST of that feature (the part >1" from both)
+  from obscuring. So classify by the intervening POINT, not the whole piece.
+  Outcome: attacker discards one success; all crits are retained as normal successes (cannot crit).
+
+**Mechanism.**
+- The official targeting-lines model IS a ray fan: from ONE shooter-base point → every facing part
+  of the target base (a cone). `Physics.cast` returns `hit.point` (see `move-tool.lua` L283), so per
+  hit we can measure distance to the target and to the shooter, and classify the exact part hit.
+- Cover: any intervening hit with `distance(hit.point, target) − targetRadius < 1"` AND bases >2" apart.
+- Obscured: any intervening HEAVY hit with `hit.point` >1" from BOTH operatives.
+- Track BOTH "intervening" (≥1 ray crosses) and "wholly intervening" (ALL rays cross) — some rules need it.
+- 3D is AUTOMATIC: `Physics.cast` is 3D, so casting from the shooter point at its real height to
+  points on the target base at their height handles Vantage line-of-sight for free. Only the Vantage
+  GAME EFFECTS (extra Accuracy / save changes) are a separate later layer — the geometry is not.
 - ≤2" apart → no cover/obscured (base-to-base distance check).
-- Vantage (2"/4" above) → compare Y heights; LATER layer.
-- Two implementation options for the cone:
-  1. RAY FAN — cast N rays shooter-point → sampled points across the target base (edges + between);
-     take the last terrain hit before the target per ray; any within 1" of target → cover.
-  2. SPHERE-AT-TARGET + filter — sphere-cast at the target (radius = baseRadius + 1") for terrain
-     in control range, keep only terrain toward the shooter (dot(terrain−target, shooter−target)>0)
-     and inside the tangent cone. Simpler; maps 1:1 to the rule.
+- Preferred impl = RAY FAN (shooter-point → sampled points across the target base: edges + between).
+  Per-ray `hit.point` classification NATURALLY satisfies (a) "intervening" (only terrain the
+  sightlines actually cross), (b) the cone (fan spans the base width), and (c) the PART-based obscured
+  rule (each ray classifies the exact part hit). A single center line or a sphere-at-target both need
+  extra filtering to approximate "intervening" + the part-based nuance, so the fan is cleaner.
 
 **Dependencies / limits (honest).**
 - Terrain must have colliders (most killzone terrain does; flat decor may be missed).
