@@ -1603,8 +1603,21 @@ def embed_datacard_stats(bag_obj: dict, team_name: str, output_dir: Path, config
     # Load the KTUI extender model script and expose it to the datacard Lua as a
     # KTUI_MODELSCRIPT string. This lets "Load stats to model" turn any plain
     # model into a KTUI-compatible mini on the fly.
+    #
+    # KT_KTUI_MODELSCRIPT (optional) overrides the model script with a path
+    # (e.g. the composed real-extender script from dev/build_ktui_model_script.py)
+    # so we can build sample boxes for the KTUI-integration POC without changing
+    # the default. Path is resolved relative to the current working directory.
     ktui_modelscript_prefix = ""
     modelscript_path = config_dir / "defaults" / "tts-script" / "ktui-mini-modelscript.lua"
+    _ktui_override = os.environ.get("KT_KTUI_MODELSCRIPT")
+    if _ktui_override:
+        _override_path = Path(_ktui_override)
+        if _override_path.exists():
+            modelscript_path = _override_path
+            logger.info(f"  KTUI_MODELSCRIPT override in use: {_override_path}")
+        else:
+            logger.warning(f"  KT_KTUI_MODELSCRIPT set but not found: {_override_path}; using default")
     if modelscript_path.exists():
         with open(modelscript_path, 'r', encoding='utf-8') as f:
             modelscript_text = f.read()

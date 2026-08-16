@@ -389,7 +389,7 @@ function onApplySelection(player, value, id)
     -- Rebuild description with filtered weapons
     pendingData.description = rebuildDescription(pendingData)
 
-    local changes = diffAndApply(pendingModel, pendingData)
+    local changes = diffAndApply(pendingModel, pendingData, pendingPlayerColor)
 
     if #changes == 0 then
         broadcastToColor("Already up to date.", pendingPlayerColor, Color.White)
@@ -464,7 +464,7 @@ function ensureKtuiState(ms, data)
     -- owner intentionally left unset => the model is visible to all players.
 end
 
-function diffAndApply(model, data)
+function diffAndApply(model, data, playerColor)
     local changes = {}
 
     local msRaw = model.script_state
@@ -628,6 +628,7 @@ function diffAndApply(model, data)
     -- installed. If the model is already a KTUI mini -- whether our bundled one or
     -- the real KT UI extender the player upgraded it to -- we leave its script and
     -- fancy UI intact and just refresh it in place (never overwrite the extender).
+    -- playerColor (optional) is used to assign the KTUI owner on a fresh stamp.
     local needsScript = (not isKtui) and KTUI_MODELSCRIPT ~= nil and KTUI_MODELSCRIPT ~= ""
     if #changes > 0 or needsScript then
         model.script_state = JSON.encode(ms)
@@ -640,6 +641,22 @@ function diffAndApply(model, data)
             model.addTag("KTUIMiniDatacard")
             table.insert(changes, "Prepared model for KTUI extender")
             model.reload()
+            -- Assign the KTUI owner to whoever loaded stats (mirrors the physical
+            -- extender's stamp: setLuaScript -> reload -> setOwningPlayer). This is
+            -- what lets the table-level Save/Load Positions + Ready Operatives find
+            -- this model. Guarded so scripts without setOwningPlayer (our older
+            -- bundled mimic) are unaffected.
+            if playerColor and Player[playerColor] then
+                local sid = Player[playerColor].steam_id
+                if sid then
+                    Wait.frames(function()
+                        if model ~= nil then
+                            pcall(function() model.call("setOwningPlayer", sid) end)
+                            pcall(function() model.call("saveState") end)
+                        end
+                    end, 30)
+                end
+            end
         else
             -- Already a KTUI mini (ours OR the real extender): refresh in place so
             -- the existing script/UI is preserved.
@@ -919,7 +936,7 @@ function proceedLoad(playerColor, data, model, ignoreWeapons)
     if (not ignoreWeapons) and data.selection and data.selection.groups and #data.selection.groups > 0 then
         showSelectionPanel(data, model, playerColor)
     else
-        local changes = diffAndApply(model, data)
+        local changes = diffAndApply(model, data, playerColor)
         reportChanges(changes, playerColor)
         pendingData = nil
         pendingModel = nil
