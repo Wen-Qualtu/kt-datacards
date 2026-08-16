@@ -151,7 +151,7 @@ integration layer, source-agnostic (no `--source` needed).
   `operative_counters: … generate:` block in `team-config.yaml`): `extract_tokens` renders
   numbered per-value PNGs into `output/{team}/tokens/counters/`. That subfolder is skipped by
   the **non-recursive** box-dispenser scan (`tokens_dir.glob('*.obj')`), so counters never
-  become token bags. Exodite uses it for a Movement Remaining 1-12 counter (PR #69).
+  become token bags. Exodite uses it for a Movement Remaining 0-12 counter (PR #69).
 - **Targeted rebuild for embedded-Lua changes**: the movement tools are baked into card
   LuaScripts at `generate_tts` time (`MOVE_TOOL_CODE`/`SPRINT_TOOL_CODE`). A change that only
   affects MOUNTED teams (e.g. the Sprint tool / `kt_front` facing, PR #72) only needs

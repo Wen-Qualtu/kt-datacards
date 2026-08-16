@@ -168,7 +168,7 @@ block (min/max + a background image); the pipeline renders one numbered token pe
 - The **dispenser scan is non-recursive** (`tokens_dir.glob('*.obj')`), so the `counters/`
   subfolder is auto-excluded — generated counters are art-only, no box token bags.
 - TTS: `tts_impl._build_operative_counters_lua` positions the panels; Exodite MOUNTED riders
-  get a Movement Remaining 1-12 counter (default 12) beside Speed + Remaining Actions. (PR #69)
+  get a Movement Remaining 0-12 counter (starts at 12) beside Speed + Remaining Actions. (PR #69)
 
 ### Metadata JSON
 - `extraction_metadata.json` per team — some teams have malformed JSON (battleclade, deathwatch, exaction-squad), always wrap in try/except
