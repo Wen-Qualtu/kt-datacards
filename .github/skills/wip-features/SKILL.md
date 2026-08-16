@@ -87,9 +87,23 @@ dynamic bar + order token + owner set + `KT: extension OK` item; Movement item g
   2. Card onLoad menu gate (`datacard-load-stats.lua` L45-49): item added only if the code
      var exists AND `hasKeyword("MOUNTED")` matches — one GMNotes read, no per-action logic.
      "Load everything" (afterStatsLoaded L1045) auto-adds the right one by keyword.
-- OUR tools are ALREADY separate files: `move-tool.lua`, `sprint-movement-tool.lua`, callout.
-  The "one script, remove parts" pattern is ONLY the third-party extender monolith (can't split).
 - Today the model gets a tool via runtime `injectBlock` (START/END markers) on "Add … action".
+
+### Lua block inventory (modularity audit — verified)
+MODULAR `.lua` files (good): `move-tool.lua`, `sprint-movement-tool.lua`,
+`ktui-mini-modelscript.lua` (default model), `datacard-load-stats.lua` (card loader),
+`single-object-updater.lua`, `intermediate-updater.lua`, `team-spawner-*.lua`,
+`display-table-manager-script.lua`, `bag-of-bags-reload-script.lua`,
+`tts-update-rules-in-box-script.lua`.
+NOT modular — Lua LOGIC embedded in `tts_impl.py` as f-strings:
+- Faction-rule popups: `_build_select1_lua` (L2201) / `_build_select2_lua` (L2379).
+- Counters/tokens: `_build_operative_counters_lua` (L2945) / `_build_operative_counter_lua` (L2755).
+- `faction-rule-chapter-tactics.lua` is ORPHANED (not referenced in code; only in pipeline-state
+  fingerprints). Likely legacy from before the inline builders — verify + remove.
+GOAL: extract the inline faction-rule + counter builders into `.lua` TEMPLATE files
+(logic in a file with `{{PLACEHOLDER}}` tokens; Python supplies only the data table), so every
+block (move/sprint/default/loader/faction-rule/counters/callout) is a real file the
+composer/embedder selects + fills — uniform, "decide what blocks are needed" architecture.
 
 ### NEXT STEPS to productionize
 1. Move the composer output into `config/` as the default `KTUI_MODELSCRIPT`
