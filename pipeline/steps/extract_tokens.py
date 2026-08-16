@@ -138,6 +138,11 @@ def _remove_background(img: np.ndarray) -> np.ndarray:
     is_white = ((v > 235) & (s < 25)) | (
         (bgr[:, :, 0] > 235) & (bgr[:, :, 1] > 235) & (bgr[:, :, 2] > 235)
     )
+    # Treat fully/near-transparent pixels as background too. Custom-token sources
+    # can be camo-on-TRANSPARENT (not camo-on-white); without this the transparent
+    # RGB (0,0,0 once alpha is dropped) survives as opaque black around the token.
+    if img.ndim == 3 and img.shape[2] == 4:
+        is_white = is_white | (img[:, :, 3] < 16)
     mask = (~is_white).astype(np.uint8) * 255
 
     num_labels, labels, stats, _ = cv2.connectedComponentsWithStats(mask, connectivity=8)
