@@ -133,12 +133,12 @@ local BASE_MM_LONG   = DEF_BASE_MM_LONG
 local BASE_MM_WIDE   = DEF_BASE_MM_WIDE
 local MM_TO_INCH     = 0.0393701
 
--- KTUI minis are built facing the OPPOSITE way to their transform "forward",
--- which swaps front/back (and the forward move direction). When the tool
--- detects a KTUI base (script_state.base) it offsets its notion of facing by
--- this many degrees so "front" is the visual front. Set to 0 if a model comes
--- out reversed; plain objects (no KTUI base) always use 0.
-local KTUI_FACING_OFFSET = 180
+-- Baseline facing offset (degrees) added to a KTUI mini's transform-forward.
+-- The common/correct Exodite sculpts run head-first at 0, so the default is 0.
+-- Mirrored/alternate models come out reversed -- the player flips them with the
+-- "Rotate base 90" menu item, which stores a per-model kt_front (e.g. 180) that
+-- is ADDED to this. Plain objects (no KTUI base) always use 0.
+local KTUI_FACING_OFFSET = 0
 
 -- Drawing
 local PREVIEW_HZ     = 60       -- preview / rotation refresh rate (Hz)
@@ -293,7 +293,20 @@ local function refreshBaseDims()
 			local bz = tonumber(data.base.z)   -- length (front-to-back)
 			if bx and bx > 0 and bz and bz > 0 then
 				BASE_MM_WIDE, BASE_MM_LONG = bx, bz
-				facingOffset = KTUI_FACING_OFFSET   -- KTUI mesh faces the other way
+				-- Facing = transform-forward + KTUI_FACING_OFFSET (default 0, i.e.
+				-- correct sculpts run head-first) + a per-model kt_front offset
+				-- (0/90/180/270, cycled by the "Rotate base 90" menu item) that
+				-- corrects mirrored/alternate sculpts so Sprint/Turn/Leap don't run
+				-- tail-first. Absent kt_front = 0 = no change.
+				local ktf = tonumber(data.kt_front) or 0
+				facingOffset = KTUI_FACING_OFFSET + ktf
+				-- "Rotate base 90" also SWAPS base.x/base.z in state (to rotate the
+				-- KTUI ring). At odd quarters (90/270) that moves the long axis onto
+				-- the OTHER dimension, so re-label LONG(front-to-back)/WIDE(side-to-
+				-- side) here to keep the ghost + corridor drawn long-along-heading.
+				if (math.floor(ktf / 90) % 2) == 1 then
+					BASE_MM_WIDE, BASE_MM_LONG = BASE_MM_LONG, BASE_MM_WIDE
+				end
 				return
 			end
 		end
