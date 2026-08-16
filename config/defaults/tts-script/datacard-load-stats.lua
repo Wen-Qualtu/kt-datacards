@@ -903,10 +903,16 @@ function rotateBase90(playerColor)
         broadcastToColor("This operative has a round base -- nothing to rotate.", playerColor, Color.Orange)
         return
     end
-    ms.base = { x = bz, z = bx }   -- swap = rotate the oval 90 degrees
+    ms.base = { x = bz, z = bx }   -- swap = rotate the oval RING 90 degrees
+    -- Also rotate the operative FRONT: Sprint/Turn/Leap derive their heading from
+    -- the transform + a per-model kt_front offset (0/90/180/270). Bumping it here
+    -- keeps the movement direction aligned with the (now-rotated) long axis and
+    -- lets players correct sculpts that otherwise run tail-first. KTUI ignores
+    -- this key but preserves it (loadState/saveState round-trip the whole table).
+    ms.kt_front = ((tonumber(ms.kt_front) or 0) + 90) % 360
     model.script_state = JSON.encode(ms)
     model.reload()
-    broadcastToColor(string.format("Base rotated 90 (now %sx%s).", tostring(bz), tostring(bx)), playerColor, Color.Green)
+    broadcastToColor(string.format("Base rotated 90 (now %sx%s, front +%d).", tostring(bz), tostring(bx), ms.kt_front), playerColor, Color.Green)
 end
 
 function proceedLoad(playerColor, data, model, ignoreWeapons)
