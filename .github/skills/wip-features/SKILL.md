@@ -204,6 +204,27 @@ crosses/near; we already use ray, sphere, and box casts (`move-tool.lua` L275,
 - Multiple rule sources/edge cases exist (see the user's cover-matrix image) — start with the
   core cover/obscured/2" cases, iterate.
 
+**Terrain typing — investigated in the base mod (2026-08-17).**
+- Terrain IS visible in the mod (~3.5k candidate objects). At runtime read
+  `hit.hit_object.getName()` + `.getTags()`.
+- TYPE lives in the NICKNAME, not tags. ~554 pieces / 27 distinct names carry Light/Heavy (+ traits
+  like Vantage / Traversable / Door / Scramble / Scalable / Insignificant), e.g. "Light Rubble",
+  "Heavy Rubble", "Capillary Tower (Heavy)", "G3: Heavy Terrain", "Heavy, Door, Vantage". Some are
+  MIXED (Heavy base + "On Top: Light" = Vantage). Runtime can classify these by parsing getName().
+- NO terrain-type TAG scheme exists. Tags are killzone-set groupings (`ITD_Piece`, `Tomb_World_1..6`,
+  `Barrier`, `_Octarius`, `_Moroch`, `_Bheta_Decima_*`) + `KT_Objective`. => asking the creator to add
+  Light/Heavy(+Vantage) TAGS to pieces is the real fix.
+- GAP: ~2.9k pieces / 35 names have NO type in the name:
+  * BLANK-nickname killzone sets (Tomb World, ITD "Into the Dark", Bheta-Decima) — identified ONLY by
+    a set-tag, no per-piece name → CANNOT be classified by name/tag (different pieces share tag+blank
+    name). These NEED creator tags (or a fragile mesh-URL map).
+  * Named-but-untyped Into-the-Dark pieces (Open/Closed Door, Breachable Wall, Hatchway, Pillar,
+    Teleport pad) — a small finite list the user can hand-classify.
+- PLAN: temp repo `name→type` mapping (seed the 27 typed names automatically from nicknames; user
+  hand-fills the ~20 named-untyped). Real fix = creator-added tags. "is-terrain" runtime heuristic =
+  set-tag OR terrain nickname, EXCLUDING `KTUIMini`/`Operative`/`KTUIToken*`/`KT24Token`/`KT_Objective`.
+- Survey scripts (temp, not committed): `$TEMP/kt-split/survey_terrain.py`, `seed_terrain_map.py`.
+
 **Status:** idea only, not started. Verdict = worth building later; NOT binned.
 
 ---
