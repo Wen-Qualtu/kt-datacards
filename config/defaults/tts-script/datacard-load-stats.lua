@@ -488,6 +488,15 @@ function diffAndApply(model, data, playerColor)
     -- A truly plain model (neither tag) gets our bundled script installed.
     local isKtui    = model.hasTag("KTUIMini")
     local isManaged = model.hasTag("KTUIMiniDatacard")
+    -- Our OWN managed mini carrying an older script version -> re-stamp (upgrade),
+    -- mirroring how the real extender re-applies its latest. Real extender minis
+    -- (KTUIMini but NOT managed) are never re-stamped -- only their state updates.
+    local ktuiOutdated = false
+    if isManaged and type(KTUI_MODELSCRIPT_VERSION) == "string" then
+        local modelVer
+        pcall(function() modelVer = model.getVar("KT_MODELSCRIPT_VERSION") end)
+        ktuiOutdated = modelVer ~= KTUI_MODELSCRIPT_VERSION
+    end
 
     ms.stats = ms.stats or {}
     ms.info  = ms.info or {}
@@ -628,12 +637,12 @@ function diffAndApply(model, data, playerColor)
     end
 
     -- Write back
-    -- Only a truly plain model (no KTUI mini tag at all) gets our bundled script
-    -- installed. If the model is already a KTUI mini -- whether our bundled one or
-    -- the real KT UI extender the player upgraded it to -- we leave its script and
-    -- fancy UI intact and just refresh it in place (never overwrite the extender).
-    -- playerColor (optional) is used to assign the KTUI owner on a fresh stamp.
-    local needsScript = (not isKtui) and KTUI_MODELSCRIPT ~= nil and KTUI_MODELSCRIPT ~= ""
+    -- A plain model (no KTUI tag) OR our OWN managed mini on an OLD version gets
+    -- the current composed script (re)installed. A real KT UI extender mini
+    -- (KTUIMini but not managed) is left alone -- we only update its state and
+    -- refresh in place (never overwrite the extender's script).
+    -- playerColor (optional) is used to assign the KTUI owner on a (re)stamp.
+    local needsScript = ((not isKtui) or ktuiOutdated) and KTUI_MODELSCRIPT ~= nil and KTUI_MODELSCRIPT ~= ""
     if #changes > 0 or needsScript then
         -- Bake the KTUI owner into the persisted state (never a post-reload call).
         -- The table-level Save/Load Positions + Ready Operatives SKIP any model whose
@@ -651,13 +660,13 @@ function diffAndApply(model, data, playerColor)
         end
         model.script_state = JSON.encode(ms)
         if needsScript then
-            -- Convert a plain model into our bundled KTUI mini: attach our model
-            -- script + tags, then reload to activate. Our onLoad tolerates a missing
-            -- owner, so this is safe.
+            -- Install (plain model) or upgrade (our managed mini on an old version)
+            -- the composed KTUI script + tags, then reload. State (owner/wounds) is
+            -- preserved via the script_state we just wrote.
             model.setLuaScript(KTUI_MODELSCRIPT)
             if not model.hasTag("KTUIMini") then model.addTag("KTUIMini") end
             model.addTag("KTUIMiniDatacard")
-            table.insert(changes, "Prepared model for KTUI extender")
+            table.insert(changes, ktuiOutdated and "Upgraded KTUI script" or "Prepared model for KTUI extender")
             model.reload()
         else
             -- Already a KTUI mini (ours OR the real extender): refresh in place so

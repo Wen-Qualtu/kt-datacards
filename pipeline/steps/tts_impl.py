@@ -1607,12 +1607,21 @@ def embed_datacard_stats(bag_obj: dict, team_name: str, output_dir: Path, config
     ktui_modelscript_prefix = ""
     modelscript_text = compose_ktui_model_script(config_dir)
     if modelscript_text:
+        # Version = content hash, exposed both INSIDE the model script (global
+        # KT_MODELSCRIPT_VERSION, read via getVar) and card-side
+        # (KTUI_MODELSCRIPT_VERSION), so "Load stats" can re-stamp OUR OWN minis
+        # carrying an older version -- real extender minis are left alone.
+        ktui_version = hashlib.sha1(modelscript_text.encode("utf-8")).hexdigest()[:12]
+        modelscript_text = f'KT_MODELSCRIPT_VERSION = "{ktui_version}"\n\n' + modelscript_text
         # Wrap in a Lua long-bracket whose level cannot appear in the body.
         level = 0
         while ("]" + "=" * level + "]") in modelscript_text:
             level += 1
         eq = "=" * level
-        ktui_modelscript_prefix = f"KTUI_MODELSCRIPT = [{eq}[\n{modelscript_text}\n]{eq}]\n\n"
+        ktui_modelscript_prefix = (
+            f'KTUI_MODELSCRIPT_VERSION = "{ktui_version}"\n\n'
+            f"KTUI_MODELSCRIPT = [{eq}[\n{modelscript_text}\n]{eq}]\n\n"
+        )
     else:
         logger.warning("  KTUI extender source not found; plain models won't be auto-scripted")
 
