@@ -450,6 +450,9 @@ function ensureKtuiState(ms, data)
     -- force them to valid numbers on every apply -- never leave them as-is.
     if type(ms.uiHeight) ~= "number" or ms.uiHeight <= 0 then ms.uiHeight = 2 end
     if type(ms.uiAngle)  ~= "number" then ms.uiAngle = 0 end
+    -- getUIPosition() returns nil for an out-of-range index -> the same refreshUI
+    -- concat crash when the in-place refresh runs without onLoad's default.
+    if type(ms.uiPositionIndex) ~= "number" then ms.uiPositionIndex = 1 end
     if ms.display_arrows == nil then ms.display_arrows = false end
     if ms.base          == nil then
         local bx, bz = parseBaseSize(data.stats and data.stats.Base)
@@ -461,7 +464,8 @@ function ensureKtuiState(ms, data)
         if slug == "" then slug = "operative" end
         ms.modelid = "ktui-" .. slug
     end
-    -- owner intentionally left unset => the model is visible to all players.
+    -- owner is assigned in diffAndApply (baked into script_state) so the table
+    -- Save/Load Positions + Ready Operatives can find the model.
 end
 
 function diffAndApply(model, data, playerColor)
@@ -631,6 +635,20 @@ function diffAndApply(model, data, playerColor)
     -- playerColor (optional) is used to assign the KTUI owner on a fresh stamp.
     local needsScript = (not isKtui) and KTUI_MODELSCRIPT ~= nil and KTUI_MODELSCRIPT ~= ""
     if #changes > 0 or needsScript then
+        -- Bake the KTUI owner into the persisted state (never a post-reload call).
+        -- The table-level Save/Load Positions + Ready Operatives SKIP any model whose
+        -- getOwningPlayer() is nil, so state.owner must be a seated player's steam_id
+        -- AND must survive every reload in the chain. Keep an existing owner, else
+        -- assign the loader; loadState restores it, so it persists (no race).
+        if not ms.owner or ms.owner == "" then
+            local prev
+            if isKtui then pcall(function() prev = model.call("getOwningPlayer") end) end
+            if prev and prev.steam_id and prev.steam_id ~= "" then
+                ms.owner = prev.steam_id
+            elseif playerColor and Player[playerColor] and Player[playerColor].steam_id ~= "" then
+                ms.owner = Player[playerColor].steam_id
+            end
+        end
         model.script_state = JSON.encode(ms)
         if needsScript then
             -- Convert a plain model into our bundled KTUI mini: attach our model
@@ -641,22 +659,6 @@ function diffAndApply(model, data, playerColor)
             model.addTag("KTUIMiniDatacard")
             table.insert(changes, "Prepared model for KTUI extender")
             model.reload()
-            -- Assign the KTUI owner to whoever loaded stats (mirrors the physical
-            -- extender's stamp: setLuaScript -> reload -> setOwningPlayer). This is
-            -- what lets the table-level Save/Load Positions + Ready Operatives find
-            -- this model. Guarded so scripts without setOwningPlayer (our older
-            -- bundled mimic) are unaffected.
-            if playerColor and Player[playerColor] then
-                local sid = Player[playerColor].steam_id
-                if sid then
-                    Wait.frames(function()
-                        if model ~= nil then
-                            pcall(function() model.call("setOwningPlayer", sid) end)
-                            pcall(function() model.call("saveState") end)
-                        end
-                    end, 30)
-                end
-            end
         else
             -- Already a KTUI mini (ours OR the real extender): refresh in place so
             -- the existing script/UI is preserved.
@@ -962,7 +964,7 @@ end
 -- short window for the previous reload to settle. Each step re-acquires the
 -- model via findModelOnCard(), so it always works on the freshly reloaded object.
 loadEverythingActive = false
-local LOAD_EVERYTHING_STEP_FRAMES = 25   -- window between mutate+reload steps
+local LOAD_EVERYTHING_STEP_FRAMES = 45   -- window between mutate+reload steps (the composed KTUI script is large -> reload needs longer to settle)
 
 -- Run nextFn(playerColor) after a short settle window, if the chain is still active.
 function loadEverythingWait(nextFn, playerColor)

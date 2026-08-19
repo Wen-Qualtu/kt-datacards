@@ -45,39 +45,37 @@ That composed script REPLACES the mimic as the `KTUI_MODELSCRIPT` our cards stam
 - `owner` (`state.owner`) is set **card-side** on load (only the card knows who clicked).
 - Keep `agregaCono` (targeting lines), Change UI position, Update stats.
 
-### Files (all on the branch)
+### STATUS: DEPLOYED to all 48 boxes (2026-08-19)
+Composed by the pipeline as the DEFAULT `KTUI_MODELSCRIPT`; the mimic
+(`ktui-mini-modelscript.lua`) and the env-var override are removed. Still on
+`feat/ktui-extender-extract` — needs a main merge to reach players.
+
+### Files
 | File | Role |
 |---|---|
-| `dev/extract_ktui_extender.py` | manual-trigger extractor: mod JSON → `dev/ktui-extender-modelscript.lua` (vendored verbatim, provenance header). Re-run when the owner updates the extender. |
-| `dev/ktui-extender-modelscript.lua` | vendored real extender model script (tracked). |
-| `dev/build_ktui_model_script.py` | the composer: patch(vendored) + `ktui-extension.lua` → `dev/ktui-model-composed.lua`; validates balance (append-safe). |
-| `dev/ktui-extension.lua` | OUR model-side additions (POC: chained-onLoad proof block). **Grows to carry move/sprint/callout hooks.** |
-| `dev/ktui-model-composed.lua` | generated composed script (the future `KTUI_MODELSCRIPT`). |
-| `dev/build_ktui_composed_loader.py` + `dev/ktui-composed-loader-card.*` | dev pad to stamp the composed script onto a model for isolated testing. |
+| `config/defaults/tts-script/ktui-extender-modelscript.lua` | vendored real extender model script (tracked, provenance header). |
+| `config/defaults/tts-script/ktui-extension.lua` | OUR model-side additions (chained onLoad). **Grows to carry move/sprint/callout hooks.** |
+| `pipeline/utils/ktui_model_script.py` | `compose_ktui_model_script()` = patch(vendored) + extension; called by `tts_impl` at build. Fails loud on anchor drift. |
+| `tools/extract_ktui_extender.py` | manual re-vendor: mod JSON → `config/.../ktui-extender-modelscript.lua`. Re-run when the owner updates the extender. Needs the local (gitignored) `dev/3573927734.json`. |
+| `config/defaults/tts-script/datacard-load-stats.lua` | card loader: stamps composed script, bakes `owner` into script_state, guards `uiPositionIndex`. |
 
-### Code seams already wired (default behavior unchanged)
-- `pipeline/steps/tts_impl.py` — `KT_KTUI_MODELSCRIPT` env var overrides the model script
-  path (default = mimic). Used to build sample boxes with the composed script.
-- `config/defaults/tts-script/datacard-load-stats.lua` — `diffAndApply(model, data, playerColor)`
-  now sets `owner` (+ `saveState`) on a fresh stamp, guarded so the mimic is unaffected.
-
-### How to build/test sample boxes (regenerate; do NOT commit output)
+### Rebuild (composed automatically — no env var)
 ```powershell
-python dev/extract_ktui_extender.py           # needs dev/3573927734.json (gitignored)
-python dev/build_ktui_model_script.py         # -> dev/ktui-model-composed.lua
-$env:PYTHONPATH="."; $env:KT_KTUI_MODELSCRIPT="dev/ktui-model-composed.lua"
-python -m pipeline.main --source kt-app --step generate_tts --teams hearthkyn-salvagers,angels-of-death --force
-Remove-Item env:KT_KTUI_MODELSCRIPT
+python tools/extract_ktui_extender.py    # ONLY when re-vendoring a new extender version
+$env:PYTHONPATH="."; python -m pipeline.main --source kt-app --step generate_tts --force
 ```
-Load the box → put any model on a card → right-click **Load stats** (one click) → expect
-dynamic bar + order token + owner set + `KT: extension OK` item; Movement item gone.
+Load a box → model on a card → **Load stats** (one click) → dynamic bar + order token +
+owner set; table Save/Load + Ready work; Movement item gone.
 
 ### Verified facts (so we don't re-derive)
 - Table controls discover models by **tag** (`getAllObjects()` + `hasTag('KTUIMini')`), not a
   private registry → our stamped models are found by the *existing* table buttons.
-- Owner is set the way the extender does: `model.call("setOwningPlayer", steam_id)` after stamp.
-- Cards + extender are **enough**; the Command Node adds nothing our card stat-load misses
-  (only real gap was `owner`, now handled). One unguarded game-log call → guarded in patch.
+- Table Save/Load/Ready SKIP any model whose `getOwningPlayer()` is nil, so `owner` MUST be a
+  seated player's steam_id. We **bake `owner` into script_state** before stamping (race-free,
+  survives reloads) — a post-reload `setOwningPlayer` call raced the multi-step chain and broke it.
+- The in-place refresh (`refreshUI`) needs `state.uiPositionIndex` (getUIPosition returns nil
+  without it) — `ensureKtuiState` guards it alongside uiHeight/uiAngle.
+- Cards + extender are **enough**; the Command Node adds nothing our card stat-load misses.
 - TTS/MoonSharp accepts `!=`; strict `luaparser` doesn't — sanitize `!=`→`~=` for parse checks only.
 
 ### Action gating & modularity (how it works TODAY — keep this model)
@@ -108,18 +106,16 @@ optional polish, not a goal.
 CLEANUP: `faction-rule-chapter-tactics.lua` is ORPHANED (not referenced in code; only in
 pipeline-state fingerprints) — verify + remove.
 
-### NEXT STEPS to productionize
-1. Move the composer output into `config/` as the default `KTUI_MODELSCRIPT`
-   (or run the composer as a build step); drop the env-var gate once it's the default.
-2. **Compose per-keyword variants at build time** (preferred — keeps gating at creation):
-   `composed_mounted = patch(extender)+ktui-extension.lua+sprint-movement-tool.lua`;
-   `composed_default = patch(extender)+ktui-extension.lua+move-tool.lua`. Embed the right
-   variant per card (same MOUNTED gate), so one stamp bakes in the correct movement — no
-   runtime inject. Shared always-on hooks (owner, callout) live in `ktui-extension.lua`;
-   keyword-specific tools are appended by the composer. Keep one source file per tool.
-3. Rebuild all 48 boxes; verify bar + tokens + table Save/Load + Ready work with the
-   physical extender ABSENT, and 0 unexpected card-image churn.
-4. Attribution: keep the extender authors' credit (Nyirsh, Feuerfritas, Ixidior, Mal20k).
+### NEXT STEPS (remaining)
+- DONE: composer is the default `KTUI_MODELSCRIPT` (build-time), env-var gate removed, mimic
+  removed, all 48 boxes rebuilt + verified, owner/uiPositionIndex fixes in.
+- TODO: merge to `main` (explicit approval each time) to reach players.
+- OPTIONAL refinement: **compose per-keyword variants at build time** so movement is baked into
+  the stamp instead of the runtime `injectBlock` — `composed_mounted = patch(extender)+extension+
+  sprint-movement-tool.lua`, `composed_default = …+move-tool.lua`, embed per card by the MOUNTED
+  gate. Today movement still injects at runtime (works; append-safe). Keep one source file per tool.
+- OPTIONAL: fold the Attack Callout (Feature B) into `ktui-extension.lua` so every operative gets it.
+- Attribution: keep the extender authors' credit (Nyirsh, Feuerfritas, Ixidior, Mal20k).
 
 ---
 

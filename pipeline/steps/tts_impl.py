@@ -42,6 +42,7 @@ from .templates.tts_templates import (
 )
 from ..utils import paths as _paths
 from ..utils import naming
+from ..utils.ktui_model_script import compose_ktui_model_script
 
 # Setup logging
 logging.basicConfig(
@@ -1600,27 +1601,12 @@ def embed_datacard_stats(bag_obj: dict, team_name: str, output_dir: Path, config
     with open(lua_script_path, 'r', encoding='utf-8') as f:
         datacard_lua_script = f.read()
 
-    # Load the KTUI extender model script and expose it to the datacard Lua as a
-    # KTUI_MODELSCRIPT string. This lets "Load stats to model" turn any plain
-    # model into a KTUI-compatible mini on the fly.
-    #
-    # KT_KTUI_MODELSCRIPT (optional) overrides the model script with a path
-    # (e.g. the composed real-extender script from dev/build_ktui_model_script.py)
-    # so we can build sample boxes for the KTUI-integration POC without changing
-    # the default. Path is resolved relative to the current working directory.
+    # Compose the KTUI model script (real extender + our extension, patched) and
+    # expose it to the datacard Lua as KTUI_MODELSCRIPT. "Load stats to model"
+    # stamps it so a plain model becomes the full KTUI mini on the fly.
     ktui_modelscript_prefix = ""
-    modelscript_path = config_dir / "defaults" / "tts-script" / "ktui-mini-modelscript.lua"
-    _ktui_override = os.environ.get("KT_KTUI_MODELSCRIPT")
-    if _ktui_override:
-        _override_path = Path(_ktui_override)
-        if _override_path.exists():
-            modelscript_path = _override_path
-            logger.info(f"  KTUI_MODELSCRIPT override in use: {_override_path}")
-        else:
-            logger.warning(f"  KT_KTUI_MODELSCRIPT set but not found: {_override_path}; using default")
-    if modelscript_path.exists():
-        with open(modelscript_path, 'r', encoding='utf-8') as f:
-            modelscript_text = f.read()
+    modelscript_text = compose_ktui_model_script(config_dir)
+    if modelscript_text:
         # Wrap in a Lua long-bracket whose level cannot appear in the body.
         level = 0
         while ("]" + "=" * level + "]") in modelscript_text:
@@ -1628,7 +1614,7 @@ def embed_datacard_stats(bag_obj: dict, team_name: str, output_dir: Path, config
         eq = "=" * level
         ktui_modelscript_prefix = f"KTUI_MODELSCRIPT = [{eq}[\n{modelscript_text}\n]{eq}]\n\n"
     else:
-        logger.warning(f"  KTUI model script not found at {modelscript_path}; plain models won't be auto-scripted")
+        logger.warning("  KTUI extender source not found; plain models won't be auto-scripted")
 
     # Load the Sprint/Turn movement tool. It's embedded as SPRINT_TOOL_CODE only
     # on MOUNTED operative cards (which expose an "Add sprint action" item that
