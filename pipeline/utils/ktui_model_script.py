@@ -69,6 +69,11 @@ def compose_ktui_model_script(config_dir: Path) -> str:
         'local _kt_gl = getObjectFromGUID(gamelogGuid)\n'
         '    if _kt_gl then _kt_gl.call("gameLogAppendOperativeChangedState", event) end')
 
+    # Clear the context menu first: TTS keeps runtime-added items across a script
+    # swap/reload, so a re-stamp would otherwise leave stale items (e.g. an old
+    # proof button) behind. Runs before the extender re-adds its own items.
+    base = "self.clearContextMenu()\n\n" + base
+
     ext_path = tdir / _EXTENSION
     ext = ext_path.read_text(encoding="utf-8").replace("\r\n", "\n") if ext_path.exists() else ""
     return base.rstrip("\n") + ("\n\n" + ext.rstrip("\n") + "\n" if ext.strip() else "\n")
