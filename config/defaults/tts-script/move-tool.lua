@@ -91,10 +91,12 @@ local RANGE_RING_STEP = 0.5    -- vertical gap (inches) between the cylinder rin
 -- this apart, so only accidental double-clicks are swallowed.
 local CLICK_DEBOUNCE_SEC = 0.2
 
--- A leg shorter than this (inches) counts as "no move" -> finish, not a step. The
--- same-spot finish click reads a tiny residual (sub-pixel / parallax off the
--- catcher plane, e.g. 0.000x") that would otherwise ceil() up to a full 1" step.
-local FINISH_EPS_IN = 0.1
+-- A leg shorter than this (inches) counts as "no move" -> finish, not a step, and
+-- the readout shows 0 additional. This is the "cancel" window: bring the ghost back
+-- within this of the model to zero the next leg. Kept small (0.05") so the 0.05-0.1"
+-- band is still available as a 0.1" step; also absorbs the same-spot finish residual
+-- (sub-pixel / parallax off the catcher plane, ~0.000x").
+local FINISH_EPS_IN = 0.05
 
 -- --------------------------------------------------------------- constants ---
 local PHASE_IDLE = "idle"
@@ -539,9 +541,11 @@ local function tick()
 	appendLegCorridor(active, curPos, e, COL_LEG)
 
 	-- Live total shows the distance CEIL'd to one decimal (committed whole inches +
-	-- the current leg). The leg then COSTS the whole-inch ceil of that same shown
-	-- value, so the HUD and the budget always agree (both ceilings, 1 vs 0 decimals).
-	local liveTotal = usedInches + ceilToShown(raw)
+	-- the current leg). A leg below FINISH_EPS_IN reads as 0 here because a click
+	-- there FINISHES (no step), so a sub-threshold hover doesn't look like it costs
+	-- the next whole inch -- you can bring the ghost back onto the model to cancel.
+	local legShown = (raw < FINISH_EPS_IN) and 0 or ceilToShown(raw)
+	local liveTotal = usedInches + legShown
 	readoutText = string.format('%.1f" / %d"', liveTotal, maxInches())
 		.. (modifier ~= 0 and string.format(" (%+d)", modifier) or "")
 
