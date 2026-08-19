@@ -389,7 +389,7 @@ function onApplySelection(player, value, id)
     -- Rebuild description with filtered weapons
     pendingData.description = rebuildDescription(pendingData)
 
-    local changes = diffAndApply(pendingModel, pendingData)
+    local changes = diffAndApply(pendingModel, pendingData, pendingPlayerColor)
 
     if #changes == 0 then
         broadcastToColor("Already up to date.", pendingPlayerColor, Color.White)
@@ -450,6 +450,9 @@ function ensureKtuiState(ms, data)
     -- force them to valid numbers on every apply -- never leave them as-is.
     if type(ms.uiHeight) ~= "number" or ms.uiHeight <= 0 then ms.uiHeight = 2 end
     if type(ms.uiAngle)  ~= "number" then ms.uiAngle = 0 end
+    -- getUIPosition() returns nil for an out-of-range index -> the same refreshUI
+    -- concat crash when the in-place refresh runs without onLoad's default.
+    if type(ms.uiPositionIndex) ~= "number" then ms.uiPositionIndex = 1 end
     if ms.display_arrows == nil then ms.display_arrows = false end
     if ms.base          == nil then
         local bx, bz = parseBaseSize(data.stats and data.stats.Base)
@@ -461,10 +464,11 @@ function ensureKtuiState(ms, data)
         if slug == "" then slug = "operative" end
         ms.modelid = "ktui-" .. slug
     end
-    -- owner intentionally left unset => the model is visible to all players.
+    -- owner is assigned in diffAndApply (baked into script_state) so the table
+    -- Save/Load Positions + Ready Operatives can find the model.
 end
 
-function diffAndApply(model, data)
+function diffAndApply(model, data, playerColor)
     local changes = {}
 
     local msRaw = model.script_state
@@ -628,8 +632,23 @@ function diffAndApply(model, data)
     -- installed. If the model is already a KTUI mini -- whether our bundled one or
     -- the real KT UI extender the player upgraded it to -- we leave its script and
     -- fancy UI intact and just refresh it in place (never overwrite the extender).
+    -- playerColor (optional) is used to assign the KTUI owner on a fresh stamp.
     local needsScript = (not isKtui) and KTUI_MODELSCRIPT ~= nil and KTUI_MODELSCRIPT ~= ""
     if #changes > 0 or needsScript then
+        -- Bake the KTUI owner into the persisted state (never a post-reload call).
+        -- The table-level Save/Load Positions + Ready Operatives SKIP any model whose
+        -- getOwningPlayer() is nil, so state.owner must be a seated player's steam_id
+        -- AND must survive every reload in the chain. Keep an existing owner, else
+        -- assign the loader; loadState restores it, so it persists (no race).
+        if not ms.owner or ms.owner == "" then
+            local prev
+            if isKtui then pcall(function() prev = model.call("getOwningPlayer") end) end
+            if prev and prev.steam_id and prev.steam_id ~= "" then
+                ms.owner = prev.steam_id
+            elseif playerColor and Player[playerColor] and Player[playerColor].steam_id ~= "" then
+                ms.owner = Player[playerColor].steam_id
+            end
+        end
         model.script_state = JSON.encode(ms)
         if needsScript then
             -- Convert a plain model into our bundled KTUI mini: attach our model
@@ -919,7 +938,7 @@ function proceedLoad(playerColor, data, model, ignoreWeapons)
     if (not ignoreWeapons) and data.selection and data.selection.groups and #data.selection.groups > 0 then
         showSelectionPanel(data, model, playerColor)
     else
-        local changes = diffAndApply(model, data)
+        local changes = diffAndApply(model, data, playerColor)
         reportChanges(changes, playerColor)
         pendingData = nil
         pendingModel = nil
@@ -945,7 +964,7 @@ end
 -- short window for the previous reload to settle. Each step re-acquires the
 -- model via findModelOnCard(), so it always works on the freshly reloaded object.
 loadEverythingActive = false
-local LOAD_EVERYTHING_STEP_FRAMES = 25   -- window between mutate+reload steps
+local LOAD_EVERYTHING_STEP_FRAMES = 45   -- window between mutate+reload steps (the composed KTUI script is large -> reload needs longer to settle)
 
 -- Run nextFn(playerColor) after a short settle window, if the chain is still active.
 function loadEverythingWait(nextFn, playerColor)

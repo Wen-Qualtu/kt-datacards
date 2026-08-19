@@ -146,7 +146,8 @@ integration layer, source-agnostic (no `--source` needed).
   + dice. (b) **no weapon-selection groups** — `embed_datacard_stats` reads them from
   `output_v2/{faction}/{team}/statlines/roster.json`, which the integrated pipeline lacks, so the
   `selection` key is skipped (stats/weapons/abilities still embed). (c) KTUI enhanced
-  stat-loading (`ktui-mini-modelscript.lua`) is intentionally excluded.
+  stat-loading (composed by `pipeline/utils/ktui_model_script.py` from
+  `config/defaults/tts-script/ktui-extender-modelscript.lua` + `ktui-extension.lua`).
 - **Generated counter tokens** (`pipeline/utils/counter_tokens.py`, driven by a team's
   `operative_counters: … generate:` block in `team-config.yaml`): `extract_tokens` renders
   numbered per-value PNGs into `output/{team}/tokens/counters/`. That subfolder is skipped by
