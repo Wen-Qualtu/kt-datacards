@@ -129,6 +129,9 @@ def main() -> None:
     p.add_argument("--from", dest="from_", choices=STEP_KEYS, help="start step (inclusive)")
     p.add_argument("--to", choices=STEP_KEYS, help="end step (inclusive)")
     p.add_argument("--force", action="store_true", help="ignore caches / re-run")
+    p.add_argument("--recent", action="store_true",
+                   help="warcom only: resolve --teams from the site's 'Recently Added' "
+                        "section (latest balance dataslate) and process only those")
     p.add_argument("--jobs", type=int, default=10,
                    help="parallel team workers (default: 10; 1 = fully serial)")
     p.add_argument("--list", action="store_true", help="list steps and exit")
@@ -147,6 +150,18 @@ def main() -> None:
         return
 
     teams = [t.strip() for t in args.teams.split(",")] if args.teams else None
+
+    if args.recent:
+        if args.source != "warcom":
+            raise SystemExit("--recent requires --source warcom")
+        from .steps import track_warcom
+        teams = track_warcom.recent_team_slugs(teams)
+        if not teams:
+            raise SystemExit(
+                "--recent: no recently-added teams resolved from warhammer-community"
+            )
+        print(f"--recent: {len(teams)} recently-added team(s): {', '.join(teams)}")
+
     selected = _select_steps(args)
     jobs = max(1, args.jobs)
 

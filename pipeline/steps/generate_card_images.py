@@ -30,6 +30,12 @@ DPI = 300
 ZOOM = DPI / 72  # PDF base is 72 DPI
 JPEG_QUALITY = 90
 
+# Max per-channel pixel diff treated as pure re-encode/requant noise: a re-exported
+# source PDF re-compresses embedded art, so a visually-identical card renders to
+# different JPEG bytes. Below this the prior card file is kept (no churn); a real
+# text/stat change flips glyph pixels fully (~255) and is always above it.
+STABLE_IMAGE_TOLERANCE = 40
+
 # Card types in manifest order (plural underscore keys == output subdir names).
 CARD_TYPES = (
     "datacards",
@@ -93,7 +99,7 @@ def _render_page(doc: fitz.Document, page_idx: int, out_path: Path) -> bool:
     try:
         pix = doc[page_idx].get_pixmap(matrix=fitz.Matrix(ZOOM, ZOOM), alpha=False)
         out_path.parent.mkdir(parents=True, exist_ok=True)
-        with stable_write(out_path):
+        with stable_write(out_path, image_tolerance=STABLE_IMAGE_TOLERANCE):
             pix.save(out_path, jpg_quality=JPEG_QUALITY)
         return True
     except Exception as e:
