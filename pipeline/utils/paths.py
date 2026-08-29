@@ -52,8 +52,35 @@ def track_dir(track: str) -> Path:
 
 
 def staging_dir(track: str) -> Path:
-    """layers/{track}/staging — warcom scrape target."""
+    """layers/{track}/staging — warcom scrape target (an inbox)."""
     return track_dir(track) / "staging"
+
+
+def staging_archive_dir(track: str) -> Path:
+    """layers/{track}/staging_archive — where processed staging PDFs are moved.
+
+    Keeps ``staging`` an inbox that only ever holds not-yet-processed files.
+    """
+    return track_dir(track) / "staging_archive"
+
+
+def archive_staging(pdf_path: Path, track: str) -> Path:
+    """Move a fully-processed staging PDF into the track's ``staging_archive``.
+
+    Overwrites any same-name archived copy. No-op-safe if the file is already
+    gone. Returns the destination path.
+    """
+    dest_dir = staging_archive_dir(track)
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    dest = dest_dir / pdf_path.name
+    if not pdf_path.exists():
+        return dest
+    if pdf_path.resolve() == dest.resolve():
+        return dest  # already archived — nothing to move
+    if dest.exists():
+        dest.unlink()
+    shutil.move(str(pdf_path), str(dest))
+    return dest
 
 
 def extracted_dir(track: str) -> Path:

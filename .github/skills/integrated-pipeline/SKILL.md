@@ -31,7 +31,8 @@ The `pipeline/` package at the repo root is the pipeline: two extraction front-e
   input/                          raw PDFs for the kt-app track (UUID-named)
   layers/
     {track}/                      track = kt-app | warcom  (GITIGNORED — reproducible)
-      staging/                    warcom scrape target ({team}-datacards.pdf)
+      staging/                    warcom scrape INBOX (holds only not-yet-processed PDFs)
+      staging_archive/            warcom processed PDFs (moved here after split; read by extract_artwork)
       extracted/                  per-card split PDFs
       structure/{team}-structure.json
     integration/                  SHARED, source-agnostic merge point (COMMITTED)
