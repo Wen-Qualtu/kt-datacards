@@ -1,7 +1,7 @@
 {
   "team": "chaos-cult",
   "pipeline_version": "2.0",
-  "last_updated": "2026-08-19T20:40:07.549292+00:00",
+  "last_updated": "2026-08-29T15:38:01.617255+00:00",
   "steps": {
     "content_analysis": {
       "outputs": {
@@ -69,18 +69,23 @@
         "dice-light.jpg": {
           "path": "output/chaos-cult/dice/chaos-cult-dice-light.jpg",
           "hash": "e4675d8c4b80fb9cb796e60b75573eb843aecb663e87a6a81ac0fb4b08d75cae",
-          "modified": "2026-07-12T18:43:09.639511+00:00"
+          "modified": "2026-08-29T15:36:28.066366+00:00"
         },
         "dice-dark.jpg": {
           "path": "output/chaos-cult/dice/chaos-cult-dice-dark.jpg",
           "hash": "4261a69c3ef16c141ae6b6bec2c9758c5d6ed14eadbe51fd4f06f0e53b5c33cd",
-          "modified": "2026-07-12T18:43:09.647960+00:00"
+          "modified": "2026-08-29T15:36:28.108154+00:00"
+        },
+        "dice-team.jpg": {
+          "path": "output/chaos-cult/dice/chaos-cult-dice-team.jpg",
+          "hash": "24605a5cacebbb8dc39f8ad77615d2c81c32aa43396d36cc03245e2745dfb42c",
+          "modified": "2026-08-29T15:36:28.131973+00:00"
         }
       },
-      "completed": "2026-07-12T18:43:09.651493+00:00",
+      "completed": "2026-08-29T15:36:28.144338+00:00",
       "inputs": {
         "layers/integration/chaos-cult/artwork/icons/chaos-cult-icon-token-transparent.png": "ae4baa07f39e39f77c1c2039c249799a94472bbdd682a1b1d1e86f621f8c7edd",
-        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41"
+        "config/team-config.yaml": "91d8f657dda8db8fe1455119c1675c3d41d1dd5243a896a92d0a0cbefd6b728b"
       }
     },
     "generate_box_texture": {
@@ -456,13 +461,13 @@
         },
         "tts_objects/Chaos Cult.json": {
           "path": "output/chaos-cult/tts_objects/Chaos Cult.json",
-          "hash": "7808a906101ee2b089e3ce317186e2e37f71cce17de3f2c3311c0a2b417fbf1f",
-          "modified": "2026-08-19T20:40:07.389687+00:00"
+          "hash": "b33f7a9be2ffc0d64fcfedaa6ed5eaad5966d7112a3ce8406e1fea1f02469861",
+          "modified": "2026-08-29T15:38:01.569194+00:00"
         }
       },
-      "completed": "2026-08-19T20:40:07.549265+00:00",
+      "completed": "2026-08-29T15:38:01.617239+00:00",
       "inputs": {
-        "config/team-config.yaml": "f519a4a58a2c96dcda0d1bf7cbb5f51e71f5194eb68396b61ad6697a5593e2d3",
+        "config/team-config.yaml": "91d8f657dda8db8fe1455119c1675c3d41d1dd5243a896a92d0a0cbefd6b728b",
         "config/team-guids.json": "906473ddbf256345a4150df497def05ec513f95948b27d6fc98fa6dba00bb7d0",
         "output/chaos-cult/cards/datacards/blessed-blade-back.jpg": "4706bf0697b7842b0005dca726b930b42abd8094899150f1cf326039970f6484",
         "output/chaos-cult/cards/datacards/blessed-blade-front.jpg": "0c4e87da45557f7624ab4554812538259637e0c391a3feebea33841d7d66b07b",
@@ -526,6 +531,7 @@
         "output/chaos-cult/cardbox/chaos-cult-card-box.obj": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
         "output/chaos-cult/dice/chaos-cult-dice-dark.jpg": "4261a69c3ef16c141ae6b6bec2c9758c5d6ed14eadbe51fd4f06f0e53b5c33cd",
         "output/chaos-cult/dice/chaos-cult-dice-light.jpg": "e4675d8c4b80fb9cb796e60b75573eb843aecb663e87a6a81ac0fb4b08d75cae",
+        "output/chaos-cult/dice/chaos-cult-dice-team.jpg": "24605a5cacebbb8dc39f8ad77615d2c81c32aa43396d36cc03245e2745dfb42c",
         "output/chaos-cult/data/chaos-cult-team-data.json": "52f00f9a0071d6e40dd2a549bc6e18ef4023a28ee1c146d7f508c8a0dbb7cabf",
         "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
         "config/defaults/tts-script/datacard-load-stats.lua": "e163a1c2bbf015020a7ffe5ee861e9e78e7127ed99661187805c247862108260",
