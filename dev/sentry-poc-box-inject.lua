@@ -38,11 +38,11 @@ function KT.resolvePlayer(color)
 end
 
 -- Build + POST one Sentry event. `kind` is "error" (an issue, carries a stack-
--- like exception) or "action" (an informational breadcrumb at info level).
--- Telemetry must NEVER break gameplay or be seen by players: the whole body
--- (build + JSON.encode + WebRequest + response handling) is pcall-wrapped so any
--- internal failure is swallowed, and nothing is shown in-game (prints gated on
--- KT.DEBUG; no broadcasts at all).
+-- like exception), "action" (a menu action, info level, status ok/failed), or
+-- "spawn" (a box usage ping, info level). Telemetry must NEVER break gameplay or
+-- be seen by players: the whole body (build + JSON.encode + WebRequest + response
+-- handling) is pcall-wrapped so any internal failure is swallowed, and nothing is
+-- shown in-game (prints gated on KT.DEBUG; no broadcasts at all).
 function KT.send(kind, message, ctx)
     pcall(function()
         ctx = ctx or {}
@@ -63,6 +63,7 @@ function KT.send(kind, message, ctx)
             tags = {
                 team            = KT.TEAM,
                 event_kind      = kind,
+                status          = ctx.status or (isError and "failed" or "ok"),
                 action          = ctx.source or "unknown",
                 object_type     = tostring(self.type or self.name),
                 object_name     = tostring(self.name),
@@ -105,16 +106,20 @@ function KT.capture(message, ctx) KT.send("error", message, ctx) end
 -- Record a successful action (info-level breadcrumb, e.g. "Update done").
 function KT.log(message, ctx) KT.send("action", message, ctx) end
 
--- Wrap a menu handler so it self-reports: a successful click logs the action,
--- a raised error is captured. Either way the handler's own result is returned.
+-- Record a box usage event when it loads into a game (info level, team-tagged).
+function KT.spawn(message, ctx) KT.send("spawn", message, ctx) end
+
+-- Wrap a menu handler so it self-reports: a successful click logs the action with
+-- status=ok, a raised error is captured with status=failed. Either way the
+-- handler's own result is returned. Filter status:failed to find broken actions.
 function KT.guard(source, fn)
     return function(playerColor, ...)
         local ok, err = pcall(fn, playerColor, ...)
         if ok then
-            KT.log(tostring(source) .. " done", { source = source, playerColor = playerColor })
+            KT.log(tostring(source) .. " done", { source = source, playerColor = playerColor, status = "ok" })
         else
             if KT.DEBUG then print("[KT] captured '" .. tostring(source) .. "': " .. tostring(err)) end
-            KT.capture(err, { source = source, playerColor = playerColor })
+            KT.capture(err, { source = source, playerColor = playerColor, status = "failed" })
         end
         return ok
     end
@@ -149,6 +154,6 @@ end
 local KT_prevOnLoad = onLoad
 function onLoad(saveState)
     if KT_prevOnLoad then KT_prevOnLoad(saveState) end
-    pcall(function() KT.log("box spawned", { source = "spawn" }) end)
+    pcall(function() KT.spawn("box spawned: " .. tostring(KT.TEAM), { source = "spawn" }) end)
 end
 -- === end kt-datacards spawn telemetry =======================================
