@@ -1,0 +1,57 @@
+{
+  "SaveName": "KT Sentry POC Box",
+  "Date": "",
+  "VersionNumber": "",
+  "GameMode": "",
+  "GameType": "",
+  "GameComplexity": "",
+  "Tags": [],
+  "Gravity": 0.5,
+  "PlayArea": 0.5,
+  "Table": "",
+  "Sky": "",
+  "Note": "",
+  "TabStates": {},
+  "LuaScript": "",
+  "LuaScriptState": "",
+  "XmlUI": "",
+  "ObjectStates": [
+    {
+      "Name": "Bag",
+      "Transform": {
+        "posX": 0.0,
+        "posY": 1.0,
+        "posZ": 0.0,
+        "rotX": 0.0,
+        "rotY": 0.0,
+        "rotZ": 0.0,
+        "scaleX": 2.0,
+        "scaleY": 2.0,
+        "scaleZ": 2.0
+      },
+      "Nickname": "KT Sentry POC Box",
+      "Description": "Right-click to simulate box / card / model-load errors (reported to bug tracker with your Steam name).",
+      "ColorDiffuse": {
+        "r": 0.6,
+        "g": 0.1,
+        "b": 0.1
+      },
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": false,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "LuaScript": "-- kt-datacards: Sentry telemetry POC  [source for dev/sentry-poc-box.json]\n-- A standalone TTS \"box\" that reports errors to Sentry so we can verify what\n-- context we can capture BEFORE touching real boxes.\n--\n-- Regenerate the JSON after editing this file with the inline embed command\n-- (see chat / session memory): reads this .lua, writes dev/sentry-poc-box.json.\n\n-- === Sentry config (client-side DSN key; safe to embed) =====================\nlocal SENTRY_KEY    = \"c7ee834628991c2845e5e7e6cf03f764\"\nlocal SENTRY_INGEST = \"https://o4512026767392768.ingest.de.sentry.io/api/4512026819231824/store/\"\nlocal RELEASE       = \"kt-datacards-poc@0.0.1\"\nlocal ENVIRONMENT   = \"poc\"\n\n-- Stamped per object at generation time for real boxes. Hardcoded for the POC.\nlocal KT_TEAM       = \"poc-team\"\n\n-- 32 hex chars, no dashes (Sentry event_id format).\nlocal function newEventId()\n    return ((\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"):gsub(\"x\", function()\n        return string.format(\"%x\", math.random(0, 15))\n    end))\nend\n\n-- Resolve the clicking player's Steam identity (nil color -> fall back to host).\nlocal function resolvePlayer(color)\n    local ok, info = pcall(function()\n        local p = color and color ~= \"\" and Player[color]\n        if p and p.steam_name then\n            return { color = color, steam_name = p.steam_name, steam_id = p.steam_id, host = p.host }\n        end\n        for _, pl in ipairs(Player.getPlayers()) do\n            if pl.host then\n                return { color = pl.color, steam_name = pl.steam_name, steam_id = pl.steam_id, host = true, note = \"host-fallback\" }\n            end\n        end\n        return nil\n    end)\n    if ok and info then return info end\n    return { color = color or \"none\", steam_name = \"unknown\", steam_id = \"unknown\" }\nend\n\n-- Build + POST a Sentry event. ctx: { source, playerColor, objectType, team, operative }\nlocal function sentryCapture(message, ctx)\n    ctx = ctx or {}\n    local who = resolvePlayer(ctx.playerColor)\n    local objectType = ctx.objectType or self.type or self.name\n\n    local event = {\n        event_id    = newEventId(),\n        timestamp   = os.time(),\n        platform    = \"other\",\n        level       = \"error\",\n        logger      = \"tts\",\n        transaction = ctx.source or \"unknown\",\n        release     = RELEASE,\n        environment = ENVIRONMENT,\n        server_name = \"tabletop-simulator\",\n        message     = { formatted = tostring(message) },\n        exception   = {\n            values = {\n                { type = \"LuaError\", value = tostring(message) },\n            },\n        },\n        -- Native Sentry user -> powers \"users affected\" + who to contact.\n        user = {\n            id       = tostring(who.steam_id or \"unknown\"),\n            username = tostring(who.steam_name or \"unknown\"),\n        },\n        -- Searchable/filterable in Sentry.\n        tags = {\n            team            = ctx.team or KT_TEAM,\n            action          = ctx.source or \"unknown\",\n            object_type     = tostring(objectType),\n            object_nickname = self.getName(),\n            operative       = ctx.operative or \"\",\n            steam_name      = tostring(who.steam_name or \"unknown\"),\n        },\n        extra = {\n            object_guid  = self.getGUID(),\n            player_color = who.color,\n            is_host      = who.host,\n            steam_id     = who.steam_id,\n            note         = who.note,\n        },\n    }\n\n    local headers = {\n        [\"Content-Type\"]  = \"application/json\",\n        [\"X-Sentry-Auth\"] = \"Sentry sentry_version=7, sentry_client=kt-tts/0.0.1, sentry_key=\" .. SENTRY_KEY,\n    }\n\n    WebRequest.custom(SENTRY_INGEST, \"POST\", true, JSON.encode(event), headers, function(req)\n        if req.is_error then\n            print(\"[Sentry] send FAILED: \" .. tostring(req.error))\n            broadcastToAll(\"Sentry send failed: \" .. tostring(req.error), {1, 0.3, 0.3})\n        else\n            print(\"[Sentry] sent (\" .. tostring(req.response_code) .. \") as \" .. tostring(who.steam_name))\n            broadcastToAll(\"Reported to bug tracker (\" .. tostring(req.response_code) .. \") as \" .. tostring(who.steam_name), {0.4, 1, 0.4})\n        end\n    end)\nend\n\n-- Wrap a handler so any Lua error is reported to Sentry with the clicker's\n-- identity. Context-menu callbacks pass (player_color, position, object).\nlocal function guard(source, extra, fn)\n    return function(playerColor, ...)\n        local ok, err = pcall(fn, playerColor, ...)\n        if not ok then\n            local ctx = { source = source, playerColor = playerColor }\n            for k, v in pairs(extra or {}) do ctx[k] = v end\n            print(\"[Sentry] captured '\" .. source .. \"': \" .. tostring(err))\n            sentryCapture(err, ctx)\n        end\n    end\nend\n\nfunction onLoad()\n    math.randomseed(os.time())\n    self.setName(\"KT Sentry POC Box\")\n    self.setDescription(\"Right-click to simulate box / card / model-load errors. Errors are reported to a bug tracker (includes your Steam name so we can follow up).\")\n\n    -- Simulate the three cases you want to tell apart in Sentry:\n    self.addContextMenuItem(\"Fail: box update\",         guard(\"box-update\",         { objectType = \"Bag\" }, failNilIndex))\n    self.addContextMenuItem(\"Fail: card load-stats\",    guard(\"card-load-stats\",    { objectType = \"Card\", operative = \"Stalker Alpha\" }, failNilIndex))\n    self.addContextMenuItem(\"Fail: model feature load\", guard(\"model-feature-load\", { objectType = \"Figurine\", operative = \"Stalker Alpha\" }, failCallNil))\n    self.addContextMenuItem(\"Send test ping\",           guard(\"ping\", {}, doPing))\nend\n\n-- Intentional errors --------------------------------------------------------\nfunction failNilIndex()\n    local payload = nil\n    return payload.missing_field  -- attempt to index a nil value\nend\n\nfunction failCallNil()\n    local apply = nil\n    return apply()                 -- attempt to call a nil value\nend\n\nfunction doPing(playerColor)\n    sentryCapture(\"POC manual test ping\", { source = \"ping\", playerColor = playerColor })\nend\n",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "GUID": "5e0701"
+    }
+  ]
+}
