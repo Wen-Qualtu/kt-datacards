@@ -141,3 +141,14 @@ function onError(errorMessage)
 end
 -- === end kt-datacards telemetry =============================================
 
+
+
+-- === kt-datacards spawn telemetry (box usage ping) ==========================
+-- One info event each time the box loads into a game. Chained onto any existing
+-- onLoad; pure backend, pcall-wrapped, so it never affects the box.
+local KT_prevOnLoad = onLoad
+function onLoad(saveState)
+    if KT_prevOnLoad then KT_prevOnLoad(saveState) end
+    pcall(function() KT.log("box spawned", { source = "spawn" }) end)
+end
+-- === end kt-datacards spawn telemetry =======================================

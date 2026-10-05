@@ -188,6 +188,23 @@ end
 
 """
 
+# Appended ONLY to the ROOT box's script (after its own code) so the box emits a
+# single usage ping each time it loads into a game -> real usage data without
+# flooding (the 30+ inner objects do NOT get this). Chained so any existing
+# onLoad still runs; `KT` is the local defined by PRELUDE in the same script.
+SPAWN_HOOK = r"""
+
+-- === kt-datacards spawn telemetry (box usage ping) ==========================
+-- One info event each time the box loads into a game. Chained onto any existing
+-- onLoad; pure backend, pcall-wrapped, so it never affects the box.
+local KT_prevOnLoad = onLoad
+function onLoad(saveState)
+    if KT_prevOnLoad then KT_prevOnLoad(saveState) end
+    pcall(function() KT.log("box spawned", { source = "spawn" }) end)
+end
+-- === end kt-datacards spawn telemetry =======================================
+"""
+
 
 def backdate_state(raw: str) -> str:
     if not raw:
@@ -205,13 +222,20 @@ def backdate_state(raw: str) -> str:
     return json.dumps(data) if changed else raw
 
 
-def process(obj, prelude, stats) -> None:
-    """Recursively inject telemetry + back-date stamps on every scripted object."""
+def process(obj, prelude, stats, is_root=False) -> None:
+    """Recursively inject telemetry + back-date stamps on every scripted object.
+
+    The root box additionally gets a chained onLoad spawn ping (box-only usage).
+    """
     if isinstance(obj, dict):
         lua = obj.get("LuaScript") or ""
         if lua.strip() and PRELUDE_MARK not in lua:
             n = lua.count(MENU_CALL)
-            obj["LuaScript"] = prelude + lua.replace(MENU_CALL, MENU_REPL)
+            new_lua = prelude + lua.replace(MENU_CALL, MENU_REPL)
+            if is_root:
+                new_lua += SPAWN_HOOK
+                stats["spawn_hook"] = True
+            obj["LuaScript"] = new_lua
             stats["objects"] += 1
             stats["menus"] += n
         if isinstance(obj.get("LuaScriptState"), str):
@@ -241,8 +265,8 @@ def main() -> int:
                       .replace("__INGEST__", SENTRY_INGEST)
                       .replace("__TEAM__", team))
 
-    stats = {"objects": 0, "menus": 0}
-    process(box, prelude, stats)
+    stats = {"objects": 0, "menus": 0, "spawn_hook": False}
+    process(box, prelude, stats, is_root=True)
 
     # Make the POC box obvious in-game.
     box["Nickname"] = f"[POC] {box.get('Nickname', display)}"
@@ -267,12 +291,14 @@ def main() -> int:
     out_path.write_text(json.dumps(save, indent=2), encoding="utf-8")
 
     inject_path = REPO / "dev" / "sentry-poc-box-inject.lua"
-    inject_path.write_text(prelude, encoding="utf-8")
+    # Review copy: shared telemetry + the box-only spawn ping (box gets both).
+    inject_path.write_text(prelude + SPAWN_HOOK, encoding="utf-8")
 
     print(f"wrote {out_path.relative_to(REPO)}")
     print(f"wrote {inject_path.relative_to(REPO)}  (review-only)")
     print(f"team={team}  injected into {stats['objects']} scripted objects, "
-          f"rewired {stats['menus']} menu registrations; stamps back-dated to {OLD_STAMP}")
+          f"rewired {stats['menus']} menu registrations; "
+          f"spawn-ping on box={stats['spawn_hook']}; stamps back-dated to {OLD_STAMP}")
     return 0
 
 
