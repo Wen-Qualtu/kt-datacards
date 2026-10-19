@@ -102,44 +102,73 @@ def _generate_dice_texture(bg_path: Path, dots_dir: Path, icon_path: Optional[Pa
         bg.save(output_path, "JPEG", quality=95)
 
 
-def _extract_token_colors(tokens_dir: Path) -> Optional[Tuple[RGB, RGB]]:
-    files = sorted(tokens_dir.glob("*.png"))
-    if not files:
+def _dominant(pixels: np.ndarray, mask: Optional[np.ndarray] = None) -> Optional[RGB]:
+    """Most-represented colour, grouping shades into coarse buckets."""
+    if mask is not None:
+        pixels = pixels[mask]
+    if len(pixels) == 0:
         return None
+    q = pixels.astype(np.int32) // 24
+    codes = q[:, 0] * 10000 + q[:, 1] * 100 + q[:, 2]
+    vals, counts = np.unique(codes, return_counts=True)
+    top = vals[counts.argmax()]
+    return tuple(int(x) for x in pixels[codes == top].mean(axis=0))
 
-    bg_px, all_px = [], []
-    for f in files:
+
+def _luminance(c: RGB) -> float:
+    return 0.299 * c[0] + 0.587 * c[1] + 0.114 * c[2]
+
+
+def _saturated_icon(all_px: np.ndarray) -> Optional[RGB]:
+    """Most-represented vivid colour (the icon on a light/white background)."""
+    sat = (all_px.max(axis=1).astype(np.int32) - all_px.min(axis=1)) > 45
+    nonwhite = np.any(all_px < 235, axis=1)
+    return _dominant(all_px, sat & nonwhite)
+
+
+def _extract_token_colors(tokens_dir: Path) -> Optional[Tuple[RGB, RGB]]:
+    """Team dice colours from token art.
+
+    back  = dominant colour of the background (outside the central icon, excluding
+            near-black outlines/shadows) -- tokens are mostly shades of one colour.
+    front = dominant colour of the centre (the icon). If icon and background read
+            too similar, fall back to the token's most-saturated colour, then to
+            white / near-black by contrast so the pips stay visible.
+    """
+    border, center, allpx = [], [], []
+    for f in sorted(tokens_dir.glob("*.png")):
+        if "icon" in f.name.lower():
+            continue
         arr = np.array(Image.open(f).convert("RGBA"))
         alpha = arr[:, :, 3] > 128
         if not alpha.any():
             continue
         h, w = arr.shape[:2]
         ys, xs = np.where(alpha)
-        y0, y1 = int(ys.min()), int(ys.max())
-        x0, x1 = int(xs.min()), int(xs.max())
-        bh, bw = y1 - y0, x1 - x0
+        y0, y1, x0, x1 = int(ys.min()), int(ys.max()), int(xs.min()), int(xs.max())
         cy, cx = (y0 + y1) / 2.0, (x0 + x1) / 2.0
         Y, X = np.mgrid[0:h, 0:w].astype(np.float32)
-        norm_dist = np.sqrt(
-            ((Y - cy) / (bh / 2.0 + 1)) ** 2 + ((X - cx) / (bw / 2.0 + 1)) ** 2
-        )
-        bg_mask = alpha & (norm_dist > 0.65)
-        all_px.append(arr[alpha, :3])
-        if bg_mask.any():
-            bg_px.append(arr[bg_mask, :3])
-
-    if not all_px:
+        nd = np.sqrt(((Y - cy) / ((y1 - y0) / 2.0 + 1)) ** 2 + ((X - cx) / ((x1 - x0) / 2.0 + 1)) ** 2)
+        not_black = arr[:, :, :3].max(axis=2) >= 25
+        b = alpha & (nd > 0.42) & not_black
+        c = alpha & (nd < 0.30)
+        allpx.append(arr[alpha, :3])
+        if b.any():
+            border.append(arr[b, :3])
+        if c.any():
+            center.append(arr[c, :3])
+    if not border or not center:
         return None
 
-    source = bg_px if bg_px else all_px
-    bg_color = np.vstack(source).astype(np.float32).mean(axis=0)
-    all_pixels = np.vstack(all_px).astype(np.float32)
-    dist = ((all_pixels - bg_color) ** 2).sum(axis=1)
-    threshold = np.percentile(dist, 80)
-    dot_color = all_pixels[dist >= threshold].mean(axis=0)
-
-    to_rgb = lambda v: tuple(int(x) for x in v.astype(int))
-    return to_rgb(bg_color), to_rgb(dot_color)
+    back = _dominant(np.vstack(border))
+    front = _dominant(np.vstack(center))
+    if back and front and abs(_luminance(front) - _luminance(back)) < 45:
+        icon = _saturated_icon(np.vstack(allpx))
+        if icon and abs(_luminance(icon) - _luminance(back)) >= 45:
+            front = icon
+        else:
+            front = (255, 255, 255) if _luminance(back) < 128 else (25, 25, 25)
+    return back, front
 
 
 def _icon_path(team: str) -> Path:
@@ -229,9 +258,14 @@ def run(teams: Optional[list] = None, source=None, force: bool = False):
     logger.info(f"generate_dice: {len(teams)} team(s)")
 
     counts = {"light": 0, "dark": 0, "team": 0, "skipped": 0}
+    newly_ready: list = []  # teams confirmed complete this run -> flag dice_ready
     for team in teams:
         cfg = team_config.team_data(team)
         logger.info(f"[{team}]")
+        if team_config.asset_ready(team, "dice") and not force:
+            logger.info("  dice_ready in config, skip")
+            counts["skipped"] += 1
+            continue
 
         state = StateManager(team)
         inputs = [
@@ -242,6 +276,7 @@ def run(teams: Optional[list] = None, source=None, force: bool = False):
         if state.can_skip("generate_dice", inputs, force):
             logger.info("  unchanged, skip")
             counts["skipped"] += 1
+            newly_ready.append(team)  # asset present -> mark done
             continue
 
         results = _process_team(team, cfg)
@@ -257,7 +292,11 @@ def run(teams: Optional[list] = None, source=None, force: bool = False):
         state.record_inputs("generate_dice", inputs)
         state.mark_complete("generate_dice")
         state.save()
+        newly_ready.append(team)
 
+    n = team_config.mark_ready((t, "dice") for t in newly_ready)
+    if n:
+        logger.info(f"  set dice_ready for {n} team(s)")
     StateIndex().rebuild_and_save()
     logger.info(
         f"generate_dice done: light={counts['light']} dark={counts['dark']} "

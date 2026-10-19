@@ -857,6 +857,29 @@ def _build_token_sizes_map(team_name: str, config_dir: Path) -> dict:
     return sizes_by_name
 
 
+def _build_token_stackable_map(team_name: str, config_dir: Path) -> dict:
+    """Map normalized token name -> stackable flag from team-config.
+
+    Operative tokens stack (x2/x3 in the KTUI mod) by default. A token entry may
+    set ``stackable: false`` to opt out (e.g. a one-per-operative status token).
+    """
+    stackable_by_name = {}
+    team_config_path = config_dir / "team-config.yaml"
+    try:
+        with open(team_config_path, 'r', encoding='utf-8') as f:
+            team_config = yaml.safe_load(f)
+    except Exception as e:
+        logger.warning(f"Could not load team-config for token stackable ({team_name}): {e}")
+        return stackable_by_name
+
+    tokens_cfg = team_config.get('teams', {}).get(team_name, {}).get('tokens', []) or []
+    for token_cfg in tokens_cfg:
+        name = token_cfg.get('name', '')
+        if name and 'stackable' in token_cfg:
+            stackable_by_name[naming.slug(name)] = bool(token_cfg.get('stackable'))
+    return stackable_by_name
+
+
 def _build_tile_token_objects(team_name: str, config_dir: Path, output_dir: Path,
                               github_base: str, single_object_updater_script: str = "") -> list:
     """Build double-sided ``Custom_Tile`` token dispensers from team-config
@@ -1078,6 +1101,9 @@ def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Pa
     # Optional per-token physical size (mm); default 20mm. Scales the dispensed
     # token (not the dispenser bag), e.g. Skytorch = 28mm.
     token_sizes_by_name = _build_token_sizes_map(team_name, config_dir)
+    # Per-token stacking override. Operative tokens stack (x2/x3) by default; a
+    # config `stackable: false` opts a token out.
+    token_stackable_by_name = _build_token_stackable_map(team_name, config_dir)
     
     # Generate token objects (Custom_Model_Infinite_Bag, each containing a Custom_Token)
     token_objects = []
@@ -1087,7 +1113,13 @@ def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Pa
         # for the config name in _build_token_tags_map (naming.slug), so punctuation
         # / accents can't split a config token from its generated asset.
         normalized_name = naming.slug(token_name.replace(f'{team_name}-', ''))
-        token_tags = token_tags_by_name.get(normalized_name, ["KTUIToken", "KTUITokenSimple"])
+        token_tags = list(token_tags_by_name.get(normalized_name, ["KTUIToken", "KTUITokenSimple"]))
+        # Operative tokens stack (x2/x3) by default; config `stackable: false` opts out.
+        # Drive it both ways the KTUI mod understands: the CustomToken.Stackable flag
+        # AND the KTUIStackable tag (other mod behaviour keys off the tag).
+        is_stackable = token_stackable_by_name.get(normalized_name, True)
+        if is_stackable and "KTUIStackable" not in token_tags:
+            token_tags.append("KTUIStackable")
         # Per-token size (mm) -> DISPENSED Custom_Token scale (0.21 == 20mm). The
         # dispenser bag and its on-bag preview stay at the standard size, so only
         # the token you pull out is larger (e.g. Skytorch 28mm).
@@ -1133,7 +1165,7 @@ def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Pa
                     "Thickness": 0.1,
                     "MergeDistancePixels": 6.0,
                     "StandUp": False,
-                    "Stackable": False
+                    "Stackable": is_stackable
                 }
             },
             "LuaScript": "",
@@ -1169,7 +1201,7 @@ def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Pa
                     "Thickness": 0.1,
                     "MergeDistancePixels": 6.0,
                     "StandUp": False,
-                    "Stackable": False
+                    "Stackable": is_stackable
                 }
             },
             "LuaScript": "",

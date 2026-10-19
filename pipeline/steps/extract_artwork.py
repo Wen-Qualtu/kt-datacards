@@ -20,7 +20,7 @@ from typing import Optional
 
 import fitz  # PyMuPDF
 
-from ..utils import artwork, paths
+from ..utils import artwork, paths, team_config
 from ..utils.state import StateIndex, StateManager
 from ..utils.team_identification import TeamIdentifier, normalize_name
 
@@ -126,6 +126,11 @@ def _process_kt_app(teams: Optional[list], force: bool) -> dict:
 
     # Pass 2: extract from the chosen source per team.
     for slug, (_rank, pdf) in sorted(best.items()):
+        if team_config.asset_ready(slug, "artwork") and not force:
+            logger.info(f"  = {slug}: artwork_ready in config, skip")
+            results["skipped"].append(slug)
+            paths.archive_input(pdf)
+            continue
         out = paths.artwork_team_dir(slug)
         icons_dir = out / "icons"
         token_jpg = icons_dir / f"{slug}-icon-token.jpg"
@@ -189,7 +194,18 @@ def _process_warcom(teams: Optional[list], force: bool) -> dict:
     generic_exact, generic_perceptual = artwork.load_generic_hashes(GENERIC_DIR)
 
     staging = paths.staging_dir("warcom")
-    pdfs = sorted(staging.glob("*.pdf"))
+    archive = paths.staging_archive_dir("warcom")
+    # front_end moves processed PDFs from staging into staging_archive, so read
+    # both; an unprocessed inbox file wins over its archived copy for a team.
+    pdfs = []
+    seen: set = set()
+    for pdf in sorted(staging.glob("*.pdf")) + sorted(archive.glob("*.pdf")):
+        slug = _team_from_warcom_filename(pdf, identifier)
+        if slug and slug in seen:
+            continue
+        if slug:
+            seen.add(slug)
+        pdfs.append(pdf)
     results = {"processed": [], "skipped": [], "unidentified": 0}
 
     for pdf in pdfs:
@@ -198,6 +214,10 @@ def _process_warcom(teams: Optional[list], force: bool) -> dict:
             results["unidentified"] += 1
             continue
         if teams and slug not in teams:
+            continue
+        if team_config.asset_ready(slug, "artwork") and not force:
+            logger.info(f"  = {slug}: artwork_ready in config, skip")
+            results["skipped"].append(slug)
             continue
 
         out = paths.artwork_team_dir(slug)
@@ -245,6 +265,13 @@ def run(teams=None, source=None, force=False):
         results = _process_warcom(teams, force)
     else:
         results = _process_kt_app(teams, force)
+
+    # Flag every team whose artwork is now complete (freshly extracted or already
+    # present) so later runs skip it. Written once here (both track loops done).
+    ready = set(results.get("processed", [])) | set(results.get("skipped", []))
+    n = team_config.mark_ready((t, "artwork") for t in ready)
+    if n:
+        logger.info(f"  set artwork_ready for {n} team(s)")
 
     logger.info(
         f"extract_artwork done: processed={len(results['processed'])} "

@@ -13,7 +13,9 @@ track-specific structure.json.
 """
 from __future__ import annotations
 
+import hashlib
 import logging
+import re
 import shutil
 from pathlib import Path
 from typing import Optional
@@ -205,6 +207,25 @@ def _inputs_for(team: str) -> list:
     return inputs
 
 
+def _text_signature(team: str) -> str:
+    """SHA-256 of the team's classified PDFs' normalized text (+ filenames).
+
+    The rendered card is a function of the source PDF's TEXT, not its bytes, so
+    this ignores re-export byte churn and is identical across tracks (kt-app and
+    warcom emit the same classified file set + rules text). Used to skip a whole
+    team's re-render when nothing textual changed.
+    """
+    parts = []
+    for pdf in sorted(paths.integration_team_dir(team).glob("*.pdf")):
+        try:
+            with fitz.open(pdf) as doc:
+                txt = "".join(p.get_text() for p in doc)
+        except Exception:
+            txt = "<err>"
+        parts.append(pdf.name + "\x00" + re.sub(r"\s+", " ", txt).strip())
+    return hashlib.sha256("\x01".join(parts).encode("utf-8")).hexdigest()
+
+
 def run(teams: Optional[list] = None, source=None, force: bool = False):
     """Orchestrator entry point. Shared step — ``source`` is ignored."""
     if teams is None:
@@ -220,6 +241,16 @@ def run(teams: Optional[list] = None, source=None, force: bool = False):
         logger.info(f"[{team}]")
         state = StateManager(team)
         inputs = _inputs_for(team)
+        # Content gate: the render depends on the classified PDFs' TEXT, not their
+        # bytes. A source re-export (or switching kt-app<->warcom) changes bytes
+        # but not rules text, so skip when the text signature is unchanged and the
+        # cards still exist -- this stops cross-track border/re-encode churn.
+        text_sig = _text_signature(team)
+        prior_sig = state.state["steps"].get("generate_card_images", {}).get("text_signature")
+        if not force and prior_sig == text_sig and state.outputs_present("generate_card_images"):
+            logger.info("  text unchanged, skip")
+            skipped += 1
+            continue
         if state.can_skip("generate_card_images", inputs, force):
             logger.info("  unchanged, skip")
             skipped += 1
@@ -237,6 +268,7 @@ def run(teams: Optional[list] = None, source=None, force: bool = False):
             for f in sorted(cards_root.rglob("*.jpg")):
                 state.record_output("generate_card_images", f"cards/{f.relative_to(cards_root).as_posix()}", f)
             state.record_inputs("generate_card_images", inputs)
+            state.state["steps"]["generate_card_images"]["text_signature"] = text_sig
             state.mark_complete("generate_card_images")
             state.save()
         else:

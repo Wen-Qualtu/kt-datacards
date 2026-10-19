@@ -506,13 +506,19 @@ def run(teams: Optional[list] = None, source=None, force: bool = False):
     logger.info(f"extract_tokens: {len(teams)} team(s)")
 
     processed = failed = skipped = 0
+    newly_ready: list = []  # teams confirmed complete this run -> flag tokens_ready
     for team in teams:
         logger.info(f"[{team}]")
+        if team_config.asset_ready(team, "tokens") and not force:
+            logger.info("  tokens_ready in config, skip")
+            skipped += 1
+            continue
         state = StateManager(team)
         inputs = _inputs_for(team)
         if state.can_skip("extract_tokens", inputs, force):
             logger.info("  unchanged, skip")
             skipped += 1
+            newly_ready.append(team)  # asset present -> mark done
             continue
 
         try:
@@ -528,6 +534,7 @@ def run(teams: Optional[list] = None, source=None, force: bool = False):
 
         if ok is None:
             skipped += 1  # no token guide -> nothing to do (not a failure)
+            newly_ready.append(team)  # nothing to make -> done
             continue
         if not ok:
             failed += 1
@@ -546,7 +553,11 @@ def run(teams: Optional[list] = None, source=None, force: bool = False):
         state.record_inputs("extract_tokens", inputs)
         state.mark_complete("extract_tokens")
         state.save()
+        newly_ready.append(team)
 
+    n = team_config.mark_ready((t, "tokens") for t in newly_ready)
+    if n:
+        logger.info(f"  set tokens_ready for {n} team(s)")
     StateIndex().rebuild_and_save()
     logger.info(f"extract_tokens done: processed={processed} skipped={skipped} failed={failed}")
     return {"processed": processed, "skipped": skipped, "failed": failed}

@@ -1,7 +1,15 @@
 """Front-end (warcom track): scrape + coordinate-map per-card split.
 
-scrape site  ->  layers/warcom/staging/*.pdf
+scrape site  ->  layers/warcom/staging/*.pdf          (an inbox)
                  ->  layers/warcom/extracted/{team}/cards/*.pdf  (per-card split)
+                 ->  layers/warcom/staging_archive/*.pdf         (processed source)
+
+``staging`` is treated as an inbox: a PDF is downloaded, split, then moved to
+``staging_archive`` so the inbox only ever holds not-yet-processed files. A
+re-run skips downloading anything already in staging or the archive, so an
+unchanged team is never re-fetched; only a new/renamed dataslate PDF flows in.
+``extract_artwork`` reads from staging AND the archive so art extraction still
+finds each team's source after the split has archived it.
 
 Standalone implementation. The low-level work lives in the local
 ``warcom`` package:
@@ -152,13 +160,22 @@ def _scrape(teams: Optional[List[str]], force: bool, section: str = "Team Rules"
         urls = filtered
 
     downloaded: List[Path] = []
+    archive = paths.staging_archive_dir(TRACK)
     for url in urls:
-        out = staging / Path(url).name
+        name = Path(url).name
+        out = staging / name
+        archived = archive / name
         if out.exists() and not force:
-            logger.info(f"  staging exists, skipping download: {out.name}")
+            logger.info(f"  staging exists, skipping download: {name}")
             downloaded.append(out)
             continue
-        logger.info(f"  downloading {out.name}")
+        if archived.exists() and not force:
+            # Already processed in a prior run — don't re-download. Still hand it
+            # to _extract so its change-detection gate can heal a missing split.
+            logger.info(f"  already processed (archived), skipping download: {name}")
+            downloaded.append(archived)
+            continue
+        logger.info(f"  downloading {name}")
         if scraper.download_pdf(url, out):
             downloaded.append(out)
         else:
@@ -207,6 +224,7 @@ def _extract(staging_pdfs: List[Path], teams: Optional[List[str]], force: bool, 
             pdf_hash = StateManager._compute_hash(pdf)
             if state.source_can_skip("front_end", "cards", pdf_hash, force):
                 logger.info(f"  = {team_name}: unchanged (skip split)")
+                paths.archive_staging(pdf, TRACK)  # inbox: processed, move out of staging
                 stat["skipped"] = 1
                 return stat
 
@@ -225,6 +243,7 @@ def _extract(staging_pdfs: List[Path], teams: Optional[List[str]], force: bool, 
                                 sorted(team_cards_dir.glob("*.pdf")))
             state.mark_complete("front_end")
             state.save()
+            paths.archive_staging(pdf, TRACK)  # inbox: processed, move out of staging
             stat["processed"] = 1
             stat["cards"] = result["total_cards"]
         except Exception as e:
@@ -236,6 +255,12 @@ def _extract(staging_pdfs: List[Path], teams: Optional[List[str]], force: bool, 
     for stat in map_items(worker, staging_pdfs, jobs=jobs):
         for k in stats:
             stats[k] += stat[k]
+
+    # Keep the archive an at-most-one-per-team store (drop superseded versions).
+    archive = paths.staging_archive_dir(TRACK)
+    archived = [archive / p.name for p in staging_pdfs if (archive / p.name).exists()]
+    if archived:
+        _purge_stale_staging(archive, archived, team_config)
 
     StateIndex().rebuild_and_save()
     return stats
