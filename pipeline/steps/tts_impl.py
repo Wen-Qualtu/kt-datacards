@@ -860,8 +860,9 @@ def _build_token_sizes_map(team_name: str, config_dir: Path) -> dict:
 def _build_token_stackable_map(team_name: str, config_dir: Path) -> dict:
     """Map normalized token name -> stackable flag from team-config.
 
-    Operative tokens stack (x2/x3 in the KTUI mod) by default. A token entry may
-    set ``stackable: false`` to opt out (e.g. a one-per-operative status token).
+    Tokens don't stack by default (a permanent x1 badge is noise). A token entry
+    opts IN with ``stackable: true`` — use it for tokens whose rule counts up/down
+    (e.g. activation/scramble counters, Crossfire, grudges, stacking points).
     """
     stackable_by_name = {}
     team_config_path = config_dir / "team-config.yaml"
@@ -1114,10 +1115,10 @@ def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Pa
         # / accents can't split a config token from its generated asset.
         normalized_name = naming.slug(token_name.replace(f'{team_name}-', ''))
         token_tags = list(token_tags_by_name.get(normalized_name, ["KTUIToken", "KTUITokenSimple"]))
-        # Operative tokens stack (x2/x3) by default; config `stackable: false` opts out.
-        # Drive it both ways the KTUI mod understands: the CustomToken.Stackable flag
-        # AND the KTUIStackable tag (other mod behaviour keys off the tag).
-        is_stackable = token_stackable_by_name.get(normalized_name, True)
+        # Tokens don't stack by default (avoids a permanent x1 badge); a token opts
+        # IN with config `stackable: true`. Drive it both ways the KTUI mod understands:
+        # the CustomToken.Stackable flag AND the KTUIStackable tag.
+        is_stackable = token_stackable_by_name.get(normalized_name, False)
         if is_stackable and "KTUIStackable" not in token_tags:
             token_tags.append("KTUIStackable")
         # Per-token size (mm) -> DISPENSED Custom_Token scale (0.21 == 20mm). The
