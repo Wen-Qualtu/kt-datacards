@@ -32,6 +32,7 @@ logger = logging.getLogger(__name__)
 # the existing WARCOM_TYPE_TO_KEY map keeps working.
 _TYPE_HEADERS: Tuple[Tuple[str, str], ...] = (
     ("MARKER/TOKEN GUIDE", "token-guide"),
+    ("STONESINGER UPGRADE", "faction-rules"),
     ("FACTION RULE", "faction-rules"),
     ("EQUIPMENT", "equipment"),
     ("FIREFIGHT PLOY", "ploys/firefight"),
