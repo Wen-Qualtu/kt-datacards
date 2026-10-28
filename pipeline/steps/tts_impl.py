@@ -3261,6 +3261,16 @@ def save_individual_card_json(card_obj: dict, team_name: str, card_type: str, ca
     return file_path, timestamp
 
 
+def _prune_stale_individual_card_jsons(cards_root: Path, expected_paths: set[Path]) -> list[Path]:
+    expected = {path.resolve() for path in expected_paths}
+    if not cards_root.exists():
+        return []
+    stale = [path for path in cards_root.rglob("*.json") if path.resolve() not in expected]
+    for path in stale:
+        path.unlink()
+    return stale
+
+
 def save_individual_token_json(token_obj: dict, team_name: str, token_index: int, output_dir: Path) -> tuple:
     """
     Save individual token JSON to tts_objects/tokens/.
@@ -3339,6 +3349,7 @@ def generate_team_tts_object(team_name: str, cards: list, lua_script: str, box_d
     for dice_obj in load_dice_objects(team_name, sample_url, output_dir, repo_branch):
         contained_objects.append(dice_obj)
 
+    written_card_jsons = set()
     for card_type in type_order:
         if card_type not in cards_by_type:
             continue
@@ -3398,7 +3409,8 @@ def generate_team_tts_object(team_name: str, cards: list, lua_script: str, box_d
             )
             
             # Save individual card JSON
-            save_individual_card_json(card_obj, team_name, card_type, 1, output_dir)
+            card_json, _ = save_individual_card_json(card_obj, team_name, card_type, 1, output_dir)
+            written_card_jsons.add(card_json)
             
             contained_objects.append(card_obj)
             deck_id_counter += 1
@@ -3408,10 +3420,17 @@ def generate_team_tts_object(team_name: str, cards: list, lua_script: str, box_d
             
             # Save individual card JSONs from deck
             for idx, card_obj in enumerate(deck_obj['ContainedObjects'], start=1):
-                save_individual_card_json(card_obj, team_name, card_type, idx, output_dir)
+                card_json, _ = save_individual_card_json(card_obj, team_name, card_type, idx, output_dir)
+                written_card_jsons.add(card_json)
             
             contained_objects.append(deck_obj)
             deck_id_counter += len(type_cards_data)
+
+    stale_card_jsons = _prune_stale_individual_card_jsons(
+        output_dir / team_name / 'tts_objects' / 'cards', written_card_jsons
+    )
+    if stale_card_jsons:
+        logger.info(f"  Removed {len(stale_card_jsons)} stale individual card JSONs for {team_name}")
     
     # Create the bag
     team_display_name = team_name.replace('-', ' ').title()
