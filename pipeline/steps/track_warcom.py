@@ -19,7 +19,7 @@ Standalone implementation. The low-level work lives in the local
 
 The scrape downloads ALL team-rules PDFs from the kill-team page; team identity is
 read from PDF content afterwards. When --teams is given we filter the scraped URLs
-by team slug (the slug appears in the PDF filename) to avoid pulling every team.
+by configured team identity (including aliases) to avoid pulling every team.
 
 Token extraction is intentionally NOT done here. Tokens are produced once per team
 by the shared ``extract_tokens`` step.
@@ -151,11 +151,11 @@ def _scrape(teams: Optional[List[str]], force: bool, section: str = "Team Rules"
 
     if teams:
         wanted = {_slug(t) for t in teams}
-        filtered = []
-        for url in urls:
-            fname = _slug(Path(url).stem)
-            if any(w in fname for w in wanted):
-                filtered.append(url)
+        team_config = card_extractor.load_team_config(paths.TEAM_CONFIG)
+        filtered = [
+            url for url in urls
+            if _team_from_filename(Path(url), team_config) in wanted
+        ]
         logger.info(f"Filtered {len(urls)} scraped URLs down to {len(filtered)} for teams={sorted(wanted)}")
         urls = filtered
 
