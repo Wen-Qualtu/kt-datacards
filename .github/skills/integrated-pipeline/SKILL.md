@@ -89,7 +89,7 @@ python -m pipeline.main --source kt-app --teams kasrkin
 
 
 # single step (comma-separated teams; NO spaces)
-python -m pipeline.main --step extract_artwork --source warcom --teams kasrkin,mandrakes --force
+python -m pipeline.main --step extract_artwork --source warcom --teams kasrkin,mandrakes
 
 # range of steps
 python -m pipeline.main --source kt-app --from build_structure --to content_analysis --teams kasrkin
@@ -100,6 +100,13 @@ python -m pipeline.main --list
 
 Flags: `--source kt-app|warcom` (required for front-end/source steps), `--teams a,b`
 (comma-separated, default all), `--step`, `--from`/`--to`, `--force` (ignore caches).
+
+> **Don't add `--force` by default.** Steps hash-track their inputs, so a plain run already
+> re-processes exactly what changed (e.g. a new PDF in `input/` flows through to cards, data
+> and TTS). `--force` re-renders *unchanged* outputs too: tokens/artwork can come out
+> pixel-different after code drift, which churns their `?v=` URLs and makes every TTS client
+> re-download identical assets. Only use it when you intentionally want those outputs
+> regenerated (e.g. after changing the step's own code), and scope it with `--step`/`--teams`.
 
 ## Step Order & Scope (`pipeline/main.py` → `STEP_ORDER`)
 
@@ -169,4 +176,4 @@ integration layer, source-agnostic (no `--source` needed).
    `layers/warcom/staging/{team}-datacards.pdf`.
 2. `layers/integration/**` and `output/**` come with the repo (committed artifacts).
 3. From the repo root (`PYTHONPATH` = repo root): `python -m pipeline.main --list` to confirm steps load.
-4. Regenerate a team end-to-end to validate: `python -m pipeline.main --source warcom --teams kasrkin --force`.
+4. Regenerate a team end-to-end to validate: `python -m pipeline.main --source warcom --teams kasrkin`.

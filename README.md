@@ -177,7 +177,10 @@ python -m pipeline.main --source kt-app --teams legionaries,kommandos,kasrkin
 - `--step X` — run a single named step
 - `--from X --to Y` — run an inclusive range of steps
 - `--jobs N` — parallel worker count
-- `--force` — ignore caches and regenerate
+- `--force` — ignore caches and regenerate. **Not a default flag**: a normal run already
+  re-processes whatever changed (inputs are hash-tracked). Only use it when you deliberately
+  want unchanged outputs (tokens, artwork, card images) re-rendered — it can rewrite
+  visually-identical assets and churn their TTS `?v=` URLs, forcing needless re-downloads.
 
 ## 📁 Project Structure
 

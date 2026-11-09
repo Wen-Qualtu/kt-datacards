@@ -576,7 +576,7 @@ def _extract_rules_from_blocks(blocks: list, page_width: float, page_height: flo
         if not is_bold and text.isupper() and len(text) > 3 and i + 1 < len(ability_text):
             nt, nb = ability_text[i + 1]
             if nt.endswith('AP') and len(nt) <= 5 and nt[0].isdigit():
-                ua_name = text.lstrip('•■●▪-– ').rstrip('\x08\x07')
+                ua_name = text.lstrip('•■●▪-– \t\x07\x08').rstrip('\x08\x07')
                 cost = nt
                 ua_desc = ""
                 j = i + 2
@@ -603,7 +603,7 @@ def _extract_rules_from_blocks(blocks: list, page_width: float, page_height: flo
         if is_bold:
             if ':' in text:
                 parts = text.split(':', 1)
-                ua_name = parts[0].strip().lstrip('•■●▪-– ')
+                ua_name = parts[0].strip().lstrip('•■●▪-– \t\x07\x08')
                 ua_desc = parts[1].strip() if len(parts) > 1 else ""
                 j = i + 1
                 while j < len(ability_text):
@@ -627,7 +627,7 @@ def _extract_rules_from_blocks(blocks: list, page_width: float, page_height: flo
             elif i + 1 < len(ability_text):
                 nt, nb = ability_text[i + 1]
                 if nb and nt.endswith('AP') and len(nt) <= 5:
-                    ua_name = text.lstrip('•■●▪-– ')
+                    ua_name = text.lstrip('•■●▪-– \t\x07\x08')
                     cost = nt
                     ua_desc = ""
                     j = i + 2
