@@ -362,6 +362,39 @@ def _git_unchanged_from_head(file_path: Path) -> bool | None:
         return None
 
 
+_PUBLISHED_VERSIONS: dict[str, dict[str, str]] = {}
+
+
+def _published_versions(team_name: str) -> dict[str, str]:
+    """Map asset base URL -> ?v= value as committed (git HEAD) in the team box JSON."""
+    if team_name not in _PUBLISHED_VERSIONS:
+        rel = f"output/{team_name}/tts_objects/{team_name.replace('-', ' ').title()}.json"
+        text = ""
+        try:
+            import subprocess
+            r = subprocess.run(
+                ["git", "-C", str(PROJECT_ROOT), "show", f"HEAD:{rel}"],
+                capture_output=True
+            )
+            if r.returncode == 0:
+                text = r.stdout.decode("utf-8", "replace")
+        except Exception:
+            pass
+        _PUBLISHED_VERSIONS[team_name] = dict(re.findall(r'(https://[^"?\s\\]+)\?v=(\d+)', text))
+    return _PUBLISHED_VERSIONS[team_name]
+
+
+def _stable_asset_url(team_name: str, base_url: str, file_path: Path) -> str:
+    """``base_url?v=`` that only changes when the asset's content changes.
+
+    mtimes differ per checkout/machine, so an unchanged asset reuses its published ?v=.
+    """
+    published = _published_versions(team_name).get(base_url)
+    if published is not None and _git_unchanged_from_head(file_path):
+        return f"{base_url}?v={published}"
+    return f"{base_url}?v={int(file_path.stat().st_mtime)}"
+
+
 def _reuse_or_new_single(prev_entry, file_path, url, entry):
     """Single-file entry: reuse prev url/modified if hash matches.
 
@@ -931,8 +964,9 @@ def _build_tile_token_objects(team_name: str, config_dir: Path, output_dir: Path
     mesh_url = ""
     if mesh_src.exists():
         shutil.copy2(mesh_src, tiles_out_dir / "tile-mesh.obj")
-        mesh_v = int((tiles_out_dir / "tile-mesh.obj").stat().st_mtime)
-        mesh_url = f"{github_base}/output/{team_name}/tokens/tiles/tile-mesh.obj?v={mesh_v}"
+        mesh_url = _stable_asset_url(
+            team_name, f"{github_base}/output/{team_name}/tokens/tiles/tile-mesh.obj",
+            tiles_out_dir / "tile-mesh.obj")
 
     for tcfg in tile_entries:
         name = tcfg.get('name', '')
@@ -950,10 +984,10 @@ def _build_tile_token_objects(team_name: str, config_dir: Path, output_dir: Path
         # Publish the served copies under output/ and point the box at them.
         shutil.copy2(front_src, tiles_out_dir / front)
         shutil.copy2(back_src, tiles_out_dir / back)
-        fv = int((tiles_out_dir / front).stat().st_mtime)
-        bv = int((tiles_out_dir / back).stat().st_mtime)
-        front_url = f"{github_base}/output/{team_name}/tokens/tiles/{front}?v={fv}"
-        back_url = f"{github_base}/output/{team_name}/tokens/tiles/{back}?v={bv}"
+        front_url = _stable_asset_url(
+            team_name, f"{github_base}/output/{team_name}/tokens/tiles/{front}", tiles_out_dir / front)
+        back_url = _stable_asset_url(
+            team_name, f"{github_base}/output/{team_name}/tokens/tiles/{back}", tiles_out_dir / back)
 
         # On-table identity MUST be indistinguishable between tile variants (e.g. a
         # live HY-PEX vs a blank Minefield): the opponent must not learn which is which
@@ -1127,10 +1161,10 @@ def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Pa
         size_mm = token_sizes_by_name.get(normalized_name, _TOKEN_BASE_MM)
         token_scale = round(_TOKEN_BASE_SCALE * size_mm / _TOKEN_BASE_MM, 6)
         
-        mesh_mtime = int(obj_path.stat().st_mtime)
-        png_mtime = int(png_path.stat().st_mtime)
-        mesh_url = f"{github_base}/output/{team_name}/tokens/{obj_path.name}?v={mesh_mtime}"
-        diffuse_url = f"{github_base}/output/{team_name}/tokens/{png_path.name}?v={png_mtime}"
+        mesh_url = _stable_asset_url(
+            team_name, f"{github_base}/output/{team_name}/tokens/{obj_path.name}", obj_path)
+        diffuse_url = _stable_asset_url(
+            team_name, f"{github_base}/output/{team_name}/tokens/{png_path.name}", png_path)
         
         inner_token = {
             "GUID": generate_guid(f"{team_name}:customtoken:{token_name}"),
@@ -1278,10 +1312,10 @@ def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Pa
         save_individual_token_json(token_obj, team_name, idx, output_dir)
     
     # Build token bag mesh and icon URLs
-    bag_mesh_mtime = int(bag_mesh_file.stat().st_mtime)
-    bag_icon_mtime = int(bag_icon_file.stat().st_mtime)
-    bag_mesh_url = f"{github_base}/output/{team_name}/tokens/tokenbag/{bag_mesh_file.name}?v={bag_mesh_mtime}"
-    bag_icon_url = f"{github_base}/output/{team_name}/tokens/tokenbag/{bag_icon_file.name}?v={bag_icon_mtime}"
+    bag_mesh_url = _stable_asset_url(
+        team_name, f"{github_base}/output/{team_name}/tokens/tokenbag/{bag_mesh_file.name}", bag_mesh_file)
+    bag_icon_url = _stable_asset_url(
+        team_name, f"{github_base}/output/{team_name}/tokens/tokenbag/{bag_icon_file.name}", bag_icon_file)
     
     # Create token bag
     token_timestamp = datetime.now(timezone.utc).isoformat()
@@ -1411,8 +1445,8 @@ def load_dice_objects(team_name: str, sample_url: Optional[str], output_dir: Pat
         if not texture_file.exists():
             continue
 
-        mtime = int(texture_file.stat().st_mtime)
-        texture_url = f"{github_base}/output/{team_name}/dice/{filename}?v={mtime}"
+        texture_url = _stable_asset_url(
+            team_name, f"{github_base}/output/{team_name}/dice/{filename}", texture_file)
 
         dice_obj = create_custom_dice(nickname, texture_url, team_tag, variant)
         dice_objects.append(dice_obj)
