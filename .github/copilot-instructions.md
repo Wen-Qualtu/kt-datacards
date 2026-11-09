@@ -14,6 +14,10 @@ python -m pipeline.main --source kt-app|warcom [--step X | --from X --to Y] [--t
 python -m pipeline.main --list
 ```
 
+Run **without `--force`** by default: inputs are hash-tracked, so a plain run processes
+exactly what changed. `--force` re-renders unchanged outputs (tokens, artwork, cards), which
+can churn their TTS `?v=` URLs — only use it when you deliberately want them regenerated.
+
 Two interchangeable extraction front-ends (**tracks**) converge on a shared,
 source-agnostic integration layer, then share the rest of asset/TTS generation:
 - `--source kt-app` — PDFs exported from the Kill Team mobile app (`input/`).
