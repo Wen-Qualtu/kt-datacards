@@ -1,7 +1,7 @@
 {
   "team": "hand-of-the-archon",
   "pipeline_version": "2.0",
-  "last_updated": "2026-10-28T13:56:00.408449+00:00",
+  "last_updated": "2026-11-13T21:25:08.792662+00:00",
   "steps": {
     "content_analysis": {
       "outputs": {
@@ -570,13 +570,16 @@
       "outputs": {
         "team-data.json": {
           "path": "output/hand-of-the-archon/data/hand-of-the-archon-team-data.json",
-          "hash": "273f97cdbe40b70de30a0909a00774c65c578f733ca61f42edd64916e84728be",
-          "modified": "2026-10-28T13:54:58.757065+00:00"
+          "hash": "f49699d4ba80ca65e783bacceb65c3272043ef5c0283a6e5c6c9946bfc653abd",
+          "modified": "2026-11-13T21:18:53.402793+00:00"
         }
       },
-      "completed": "2026-10-28T13:54:58.869718+00:00",
+      "completed": "2026-11-13T21:18:53.420879+00:00",
       "inputs": {
-        "layers/integration/hand-of-the-archon/content/hand-of-the-archon-content.json": "273f97cdbe40b70de30a0909a00774c65c578f733ca61f42edd64916e84728be"
+        "layers/integration/hand-of-the-archon/content/hand-of-the-archon-content.json": "273f97cdbe40b70de30a0909a00774c65c578f733ca61f42edd64916e84728be",
+        "config/weapon_rules.json": "4dd2e044dbd2dfdc8d1e035bd31d1fa7e72c70b6424a733ea315a392368848b9",
+        "pipeline/steps/extract_stats.py": "f29227a25a76a7f9e1a74c882454f13539c4733462e64abd034469eb2a3bef83",
+        "pipeline/steps/tts_impl.py": "2fd98b5d7b04687525be043fa87b3adb0d8d90763305755aa8c6e0c062f4320b"
       }
     },
     "generate_tts": {
@@ -589,10 +592,10 @@
         "tts_objects/Hand Of The Archon.json": {
           "path": "output/hand-of-the-archon/tts_objects/Hand Of The Archon.json",
           "hash": "8bf7a66b0fae5e90eac33037598fe69ce6c6ccb43162bdff8f5156434e7666e9",
-          "modified": "2026-10-28T13:56:00.358196+00:00"
+          "modified": "2026-11-13T21:25:08.584519+00:00"
         }
       },
-      "completed": "2026-10-28T13:56:00.408435+00:00",
+      "completed": "2026-11-13T21:25:08.792629+00:00",
       "inputs": {
         "config/team-config.yaml": "b1b298df3441797113db36d9524566fa76c836df085b140b54eaac01e26fd9f9",
         "config/team-guids.json": "906473ddbf256345a4150df497def05ec513f95948b27d6fc98fa6dba00bb7d0",
@@ -671,7 +674,7 @@
         "output/hand-of-the-archon/dice/hand-of-the-archon-dice-dark.jpg": "ce70f336af07329c189f01880841f4fa8c58dd0561814f8bad78e079359548cf",
         "output/hand-of-the-archon/dice/hand-of-the-archon-dice-light.jpg": "f55226c0241fd3fd07c4c3cc93de1462dbdf06e9a5cc5ffe4981fb92305c1d1d",
         "output/hand-of-the-archon/dice/hand-of-the-archon-dice-team.jpg": "08626d2db58e85c9ae23544c0c8a631eba5f79a8dee9764f63524f227a848ced",
-        "output/hand-of-the-archon/data/hand-of-the-archon-team-data.json": "273f97cdbe40b70de30a0909a00774c65c578f733ca61f42edd64916e84728be",
+        "output/hand-of-the-archon/data/hand-of-the-archon-team-data.json": "f49699d4ba80ca65e783bacceb65c3272043ef5c0283a6e5c6c9946bfc653abd",
         "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
         "config/defaults/tts-script/datacard-load-stats.lua": "e163a1c2bbf015020a7ffe5ee861e9e78e7127ed99661187805c247862108260",
         "config/defaults/tts-script/display-table-manager-script.lua": "846de299f8e2c925e63cc77c4991fedd07ae75e9bde375f3b3c991c8730b891b",

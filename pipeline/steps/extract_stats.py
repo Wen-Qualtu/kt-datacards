@@ -5,10 +5,10 @@ layers/integration/{team}/content/{team}-content.json
 
 The content map produced by ``content_analysis`` already has the exact team-data
 schema (datacards, equipment, faction_rules, ploys, operatives_selection). This
-step simply relocates it into the ``output`` tree for the TTS step to consume,
-writing byte-stably: if the content (excluding the volatile ``generated_at``
-timestamp) is unchanged, the prior file's bytes + mtime are restored so
-downstream cache-busters do not spuriously bump.
+step adds compact node metadata and relocates it into the ``output`` tree for the
+TTS step to consume, writing byte-stably: if the content (excluding the volatile
+``generated_at`` timestamp) is unchanged, the prior file's bytes + mtime are
+restored so downstream cache-busters do not spuriously bump.
 
 Source-agnostic (reads the shared content map).
 """
@@ -18,12 +18,47 @@ import copy
 import json
 import logging
 import os
+from pathlib import Path
 from typing import Optional
 
 from ..utils import paths
 from ..utils.state import StateIndex, StateManager
+from . import tts_impl
 
 logger = logging.getLogger(__name__)
+
+
+def add_node_fields(team_data: dict, weapon_rules: dict) -> dict:
+    result = copy.deepcopy(team_data)
+    selections = result.get("operatives_selection") or []
+    selection_map = selections[0].get("selection", {}) if selections else {}
+    shared_rules = {}
+    for operative in result.get("datacards") or []:
+        groups = selection_map.get(operative.get("name", "").upper()) or []
+        model = tts_impl._sanitize_ampersands(
+            tts_impl._build_gm_notes(operative, result, weapon_rules, selection_groups=groups)
+        )
+        node_fields = {
+            "weapon_types": [
+                "melee" if weapon["name"].startswith("[F4641D]M[-]") else "ranged"
+                for weapon in model["weapons"]
+            ],
+            "weapon_rule_names": list(model["weapon_rules"]),
+        }
+        shared_rules.update(model["weapon_rules"])
+        if "selection" in model:
+            node_fields["selection"] = model["selection"]
+        operative["node"] = node_fields
+    result["node_weapon_rules"] = shared_rules
+    return result
+
+
+def remove_legacy_node_data(team: str, team_dir: Path, state: StateManager) -> None:
+    filename = f"{team}-node-data.json"
+    legacy = team_dir / "data" / filename
+    legacy.unlink(missing_ok=True)
+    outputs = state.state.get("steps", {}).get("generate_tts", {}).get("outputs", {})
+    outputs.pop(f"data/{filename}", None)
 
 
 def _save_stable(team_data: dict, output_path) -> bool:
@@ -84,6 +119,9 @@ def run(teams: Optional[list] = None, source=None, force: bool = False):
         return {"processed": 0, "skipped": 0, "failed": 0}
 
     logger.info(f"extract_stats: {len(teams)} team(s)")
+    rules_path = paths.CONFIG / "weapon_rules.json"
+    with open(rules_path, "r", encoding="utf-8") as source:
+        weapon_rules = json.load(source)
 
     processed = skipped = failed = 0
     for team in teams:
@@ -94,8 +132,11 @@ def run(teams: Optional[list] = None, source=None, force: bool = False):
             continue
 
         state = StateManager(team)
-        inputs = [content_path]
-        if state.can_skip("extract_stats", inputs, force):
+        inputs = [content_path, rules_path, Path(__file__), Path(tts_impl.__file__)]
+        legacy = paths.team_output(team) / "data" / f"{team}-node-data.json"
+        old_outputs = state.state.get("steps", {}).get("generate_tts", {}).get("outputs", {})
+        if (not legacy.exists() and f"data/{legacy.name}" not in old_outputs
+            and state.can_skip("extract_stats", inputs, force)):
             logger.info(f"  {team}: unchanged, skip")
             skipped += 1
             continue
@@ -109,7 +150,8 @@ def run(teams: Optional[list] = None, source=None, force: bool = False):
             continue
 
         out_path = paths.team_output(team) / "data" / f"{team}-team-data.json"
-        if _save_stable(team_data, out_path):
+        if _save_stable(add_node_fields(team_data, weapon_rules), out_path):
+            remove_legacy_node_data(team, paths.team_output(team), state)
             processed += 1
             state.record_output("extract_stats", "team-data.json", out_path)
             state.record_inputs("extract_stats", inputs)

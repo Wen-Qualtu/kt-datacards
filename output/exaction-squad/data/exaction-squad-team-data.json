@@ -65,7 +65,20 @@
         "ADEPTUS ARBITES",
         "LEADER",
         "PROCTOR-EXACTANT"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "melee",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Shock"
+        ]
+      }
     },
     {
       "name": "ARBITES CHIRURGANT",
@@ -113,7 +126,17 @@
         "ADEPTUS ARBITES",
         "MEDIC",
         "CHIRURGANT"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x"
+        ]
+      }
     },
     {
       "name": "ARBITES LEASHMASTER",
@@ -186,7 +209,18 @@
         "IMPERIUM",
         "ADEPTUS ARBITES",
         "LEASHMASTER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x"
+        ]
+      }
     },
     {
       "name": "R-VR CYBER-MASTIFF",
@@ -220,7 +254,13 @@
         "IMPERIUM",
         "ADEPTUS ARBITES",
         "R-VR CYBER-MASTIFF"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "melee"
+        ],
+        "weapon_rule_names": []
+      }
     },
     {
       "name": "ARBITES CASTIGATOR",
@@ -271,7 +311,19 @@
         "IMPERIUM",
         "ADEPTUS ARBITES",
         "CASTIGATOR"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Rending",
+          "Shock"
+        ]
+      }
     },
     {
       "name": "ARBITES GUNNER",
@@ -321,7 +373,24 @@
         "IMPERIUM",
         "ADEPTUS ARBITES",
         "GUNNER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Piercing x",
+          "Heavy",
+          "Torrent x",
+          "Range x",
+          "Severe",
+          "Stun"
+        ]
+      }
     },
     {
       "name": "ARBITES MALOCATOR",
@@ -368,7 +437,17 @@
         "IMPERIUM",
         "ADEPTUS ARBITES",
         "MALOCATOR"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x"
+        ]
+      }
     },
     {
       "name": "ARBITES MARKSMAN",
@@ -422,7 +501,20 @@
         "IMPERIUM",
         "ADEPTUS ARBITES",
         "MARKSMAN"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Devastating x",
+          "Heavy",
+          "Silent"
+        ]
+      }
     },
     {
       "name": "ARBITES REVELATUM",
@@ -469,7 +561,17 @@
         "IMPERIUM",
         "ADEPTUS ARBITES",
         "REVELATUM"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x"
+        ]
+      }
     },
     {
       "name": "ARBITES SUBDUCTOR",
@@ -506,7 +608,17 @@
         "IMPERIUM",
         "ADEPTUS ARBITES",
         "SUBDUCTOR"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Shock"
+        ]
+      }
     },
     {
       "name": "ARBITES VIGILANT",
@@ -548,7 +660,17 @@
         "IMPERIUM",
         "ADEPTUS ARBITES",
         "VIGILANT"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x"
+        ]
+      }
     },
     {
       "name": "ARBITES VOX-SIGNIFIER",
@@ -590,7 +712,17 @@
         "IMPERIUM",
         "ADEPTUS ARBITES",
         "VOX-SIGNIFIER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x"
+        ]
+      }
     }
   ],
   "equipment": [
@@ -660,5 +792,17 @@
       "name": "terminal-decree",
       "text": "EXACTION SQUAD\nSTRATEGY PLOY\nTERMINAL DECREE\nA dangerous quarry has been judged guilty of heinous \ncrimes against the Imperium and must be terminated \nwith extreme prejudice.\nWhenever a friendly EXACTION SQUAD \noperative is shooting an enemy operative within \n6\" of it, or whenever a friendly EXACTION \nSQUAD GUNNER operative is shooting, that \nfriendly operative’s ranged weapons have the \nBalanced weapon rule."
     }
-  ]
+  ],
+  "node_weapon_rules": {
+    "Range x": "Only operatives within x of the active operative can be valid targets, e.g. Range 9\".",
+    "Shock": "The first time you strike with a critical success in each sequence, also discard one of your opponent's unresolved normal successes (or one of their critical successes if there are none).",
+    "Rending": "If you retain any critical successes, you can retain one of your normal successes as a critical success instead.",
+    "Piercing x": "The defender collects x less defence dice, e.g. Piercing 1. If the rule is Piercing Crits x, this only comes into effect if you retain any critical successes.",
+    "Heavy": "An operative cannot use this weapon in an activation or counteraction in which it moved, and it cannot move in an activation or counteraction in which it used this weapon. If the rule is Heavy (x only), where x is a move action, only that move is allowed, e.g. Heavy (Dash only). This weapon rule has no effect on preventing the Guard action.",
+    "Torrent x": "Select a valid target as normal as the primary target, then select any number of other valid targets within x of the first valid target, but not within control range of friendly operatives, as secondary targets, e.g. Torrent 2\". Shoot with this weapon against all of them in an order of your choice (roll each sequence separately).",
+    "Severe": "If you don't retain any critical successes, you can change one of your normal successes to a critical success. The Devastating and Piercing Crits weapon rules still take effect, but Punishing and Rending don't.",
+    "Stun": "If you retain any critical successes, subtract 1 from the APL stat of the operative this weapon is being used against until the end of its next activation.",
+    "Devastating x": "Each retained critical success immediately inflicts x damage on the operative this weapon is being used against, e.g. Devastating 3. If the rule starts with a distance (e.g. 1\" Devastating x), inflict x damage on that operative and each other operative visible to and within that distance of it. Note that success isn't discarded after doing so - it can still be resolved later in the sequence.",
+    "Silent": "An operative can perform the Shoot action with this weapon while it has a Conceal order."
+  }
 }

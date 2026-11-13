@@ -1,7 +1,7 @@
 {
   "team": "angels-of-death",
   "pipeline_version": "2.0",
-  "last_updated": "2026-10-20T07:54:09.698235+00:00",
+  "last_updated": "2026-11-13T21:25:03.707921+00:00",
   "steps": {
     "content_analysis": {
       "outputs": {
@@ -397,13 +397,16 @@
       "outputs": {
         "team-data.json": {
           "path": "output/angels-of-death/data/angels-of-death-team-data.json",
-          "hash": "fef672bd9b43801d26618eba401138322c852edce73441f88ee4027827d7a2a5",
-          "modified": "2026-08-26T15:26:53.732115+00:00"
+          "hash": "d1f51999a4d9960ac20b50f9c06c82a8b80323d55b66d73b8ac79d372cd834c8",
+          "modified": "2026-11-13T21:18:51.271235+00:00"
         }
       },
-      "completed": "2026-08-26T15:26:53.739092+00:00",
+      "completed": "2026-11-13T21:18:51.282656+00:00",
       "inputs": {
-        "layers/integration/angels-of-death/content/angels-of-death-content.json": "fef672bd9b43801d26618eba401138322c852edce73441f88ee4027827d7a2a5"
+        "layers/integration/angels-of-death/content/angels-of-death-content.json": "fef672bd9b43801d26618eba401138322c852edce73441f88ee4027827d7a2a5",
+        "config/weapon_rules.json": "4dd2e044dbd2dfdc8d1e035bd31d1fa7e72c70b6424a733ea315a392368848b9",
+        "pipeline/steps/extract_stats.py": "f29227a25a76a7f9e1a74c882454f13539c4733462e64abd034469eb2a3bef83",
+        "pipeline/steps/tts_impl.py": "2fd98b5d7b04687525be043fa87b3adb0d8d90763305755aa8c6e0c062f4320b"
       }
     },
     "generate_tts": {
@@ -416,10 +419,10 @@
         "tts_objects/Angels Of Death.json": {
           "path": "output/angels-of-death/tts_objects/Angels Of Death.json",
           "hash": "c282c28094ca820af617c19986064ba6a5fdb01c2d539b259605208ecf046d05",
-          "modified": "2026-10-20T07:54:09.558359+00:00"
+          "modified": "2026-11-13T21:25:03.508105+00:00"
         }
       },
-      "completed": "2026-10-20T07:54:09.698220+00:00",
+      "completed": "2026-11-13T21:25:03.707880+00:00",
       "inputs": {
         "config/team-config.yaml": "b1b298df3441797113db36d9524566fa76c836df085b140b54eaac01e26fd9f9",
         "config/team-guids.json": "906473ddbf256345a4150df497def05ec513f95948b27d6fc98fa6dba00bb7d0",
@@ -478,7 +481,7 @@
         "output/angels-of-death/dice/angels-of-death-dice-dark.jpg": "e5817825390b412fe683be6631f4363d791ca9fe193671a57c6850f5ac7108fb",
         "output/angels-of-death/dice/angels-of-death-dice-light.jpg": "06f6aca1b74a5fd1efa1105022b8b080ad73d862bc416936bb68a660bb833d45",
         "output/angels-of-death/dice/angels-of-death-dice-team.jpg": "979b07300f4698b924092463745d3973e18b9aa6c6bd18b7de3d26b362b2987c",
-        "output/angels-of-death/data/angels-of-death-team-data.json": "fef672bd9b43801d26618eba401138322c852edce73441f88ee4027827d7a2a5",
+        "output/angels-of-death/data/angels-of-death-team-data.json": "d1f51999a4d9960ac20b50f9c06c82a8b80323d55b66d73b8ac79d372cd834c8",
         "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
         "config/defaults/tts-script/datacard-load-stats.lua": "e163a1c2bbf015020a7ffe5ee861e9e78e7127ed99661187805c247862108260",
         "config/defaults/tts-script/display-table-manager-script.lua": "846de299f8e2c925e63cc77c4991fedd07ae75e9bde375f3b3c991c8730b891b",

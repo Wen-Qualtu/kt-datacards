@@ -60,12 +60,32 @@ def _inputs_for(team: str) -> list:
     for sub in ("cards", "cardbox", "tokens", "dice", "data"):
         d = out / sub
         if d.exists():
-            inputs.extend(sorted(p for p in d.rglob("*") if p.is_file()))
+            inputs.extend(sorted(
+                p for p in d.rglob("*")
+                if p.is_file() and p != out / "data" / f"{team}-node-data.json"
+            ))
     for sub in ("tts-script", "tts-image", "tts-token"):
         d = paths.DEFAULTS / sub
         if d.exists():
-            inputs.extend(sorted(p for p in d.rglob("*") if p.is_file()))
+            inputs.extend(sorted(
+                p for p in d.rglob("*")
+                if p.is_file() and p != paths.DEFAULTS / "tts-script" / "command-node.lua"
+            ))
     return inputs
+
+
+def _prune_missing_legacy_box(state: StateManager, team: str) -> bool:
+    filename = f"{team.replace('-', ' ').title()} Box.json"
+    legacy = paths.team_output(team) / "tts_objects" / filename
+    key = f"tts_objects/{filename}"
+    outputs = state.state.get("steps", {}).get("generate_tts", {}).get("outputs", {})
+    entry = outputs.get(key)
+    if not entry or not entry.get("path") or legacy.exists():
+        return False
+    if (paths.ROOT / entry["path"]).resolve() != legacy.resolve():
+        return False
+    del outputs[key]
+    return True
 
 
 def run(teams: Optional[list] = None, source=None, force: bool = False):
@@ -84,8 +104,11 @@ def run(teams: Optional[list] = None, source=None, force: bool = False):
     skipped = 0
     for team in teams:
         state = StateManager(team)
+        pruned = _prune_missing_legacy_box(state, team)
         inputs = _inputs_for(team)
         if state.can_skip("generate_tts", inputs, force):
+            if pruned:
+                state.save()
             logger.info(f"  [skip] {team} (unchanged)")
             skipped += 1
             continue
@@ -119,6 +142,8 @@ def run(teams: Optional[list] = None, source=None, force: bool = False):
             state.record_inputs("generate_tts", inputs)
             state.mark_complete("generate_tts")
             state.save()
+
+    tts_impl.write_command_node_loader(paths.CONFIG, paths.OUTPUT)
 
     # Finalization (runs across ALL output teams, not just the filtered set):
     # per-team {team}-object-urls.json + a global team-urls.json summary. These

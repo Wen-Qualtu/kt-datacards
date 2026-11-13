@@ -1,7 +1,7 @@
 {
   "team": "raveners",
   "pipeline_version": "2.0",
-  "last_updated": "2026-10-28T13:55:33.558193+00:00",
+  "last_updated": "2026-11-13T21:25:15.898263+00:00",
   "steps": {
     "content_analysis": {
       "outputs": {
@@ -493,13 +493,16 @@
       "outputs": {
         "team-data.json": {
           "path": "output/raveners/data/raveners-team-data.json",
-          "hash": "b32f301777686562d6df1cf6bb1dd7c38d56478afc9c82e47146f9a2cfb59166",
-          "modified": "2026-08-26T15:26:54.156366+00:00"
+          "hash": "41c8fb5c4c780565fe2eb44625f639485a8c8e6c9f292da56ca3bf7c0223b4bb",
+          "modified": "2026-11-13T21:18:55.492051+00:00"
         }
       },
-      "completed": "2026-08-26T15:26:54.165308+00:00",
+      "completed": "2026-11-13T21:18:55.509684+00:00",
       "inputs": {
-        "layers/integration/raveners/content/raveners-content.json": "b32f301777686562d6df1cf6bb1dd7c38d56478afc9c82e47146f9a2cfb59166"
+        "layers/integration/raveners/content/raveners-content.json": "b32f301777686562d6df1cf6bb1dd7c38d56478afc9c82e47146f9a2cfb59166",
+        "config/weapon_rules.json": "4dd2e044dbd2dfdc8d1e035bd31d1fa7e72c70b6424a733ea315a392368848b9",
+        "pipeline/steps/extract_stats.py": "f29227a25a76a7f9e1a74c882454f13539c4733462e64abd034469eb2a3bef83",
+        "pipeline/steps/tts_impl.py": "2fd98b5d7b04687525be043fa87b3adb0d8d90763305755aa8c6e0c062f4320b"
       }
     },
     "generate_tts": {
@@ -512,10 +515,10 @@
         "tts_objects/Raveners.json": {
           "path": "output/raveners/tts_objects/Raveners.json",
           "hash": "ed16426cff6f2c1181d6d21df06ef34767342d051923b7f7b8301f8402926dab",
-          "modified": "2026-10-20T07:54:12.917396+00:00"
+          "modified": "2026-11-13T21:25:15.665941+00:00"
         }
       },
-      "completed": "2026-10-20T07:54:12.975400+00:00",
+      "completed": "2026-11-13T21:25:15.898215+00:00",
       "inputs": {
         "config/team-config.yaml": "b1b298df3441797113db36d9524566fa76c836df085b140b54eaac01e26fd9f9",
         "config/team-guids.json": "906473ddbf256345a4150df497def05ec513f95948b27d6fc98fa6dba00bb7d0",
@@ -582,7 +585,7 @@
         "output/raveners/dice/raveners-dice-dark.jpg": "95e274e56ea2400ef341f75cb699c97f85acabb94c3e9eb6b2a71cd4d7af7d08",
         "output/raveners/dice/raveners-dice-light.jpg": "45c000a199b32df99f2050e583ac50c8c8c9f886b07b0e74211a0557f9f4ac6a",
         "output/raveners/dice/raveners-dice-team.jpg": "e76ae4edd62a295ef0a0e8fde515af1930c4d75d67a062c02812321b8540c75c",
-        "output/raveners/data/raveners-team-data.json": "b32f301777686562d6df1cf6bb1dd7c38d56478afc9c82e47146f9a2cfb59166",
+        "output/raveners/data/raveners-team-data.json": "41c8fb5c4c780565fe2eb44625f639485a8c8e6c9f292da56ca3bf7c0223b4bb",
         "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
         "config/defaults/tts-script/datacard-load-stats.lua": "e163a1c2bbf015020a7ffe5ee861e9e78e7127ed99661187805c247862108260",
         "config/defaults/tts-script/display-table-manager-script.lua": "846de299f8e2c925e63cc77c4991fedd07ae75e9bde375f3b3c991c8730b891b",

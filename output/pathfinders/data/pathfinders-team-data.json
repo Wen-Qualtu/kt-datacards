@@ -48,7 +48,14 @@
         "T'AU EMPIRE",
         "LEADER",
         "SHAS’UI"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged"
+        ],
+        "weapon_rule_names": []
+      }
     },
     {
       "name": "ASSAULT GRENADIER PATHFINDER",
@@ -94,7 +101,21 @@
         "PATHFINDER",
         "T'AU EMPIRE",
         "ASSAULT GRENADIER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged"
+        ],
+        "weapon_rule_names": [
+          "Devastating x",
+          "Limited x",
+          "Piercing x",
+          "Range x",
+          "Saturate"
+        ]
+      }
     },
     {
       "name": "BLOODED PATHFINDER",
@@ -134,7 +155,16 @@
         "PATHFINDER",
         "T'AU EMPIRE",
         "BLOODED"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Silent"
+        ]
+      }
     },
     {
       "name": "COMMS SPECIALIST PATHFINDER",
@@ -172,7 +202,14 @@
         "PATHFINDER",
         "T'AU EMPIRE",
         "COMMS SPECIALIST"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": []
+      }
     },
     {
       "name": "DRONE CONTROLLER PATHFINDER",
@@ -215,7 +252,14 @@
         "PATHFINDER",
         "T'AU EMPIRE",
         "DRONE CONTROLLER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged"
+        ],
+        "weapon_rule_names": []
+      }
     },
     {
       "name": "MARKSMAN PATHFINDER",
@@ -257,7 +301,19 @@
         "PATHFINDER",
         "T'AU EMPIRE",
         "MARKSMAN"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged"
+        ],
+        "weapon_rule_names": [
+          "Devastating x",
+          "Piercing x",
+          "Silent"
+        ]
+      }
     },
     {
       "name": "MEDICAL TECHNICIAN PATHFINDER",
@@ -301,7 +357,14 @@
         "T'AU EMPIRE",
         "MEDIC",
         "MEDICAL TECHNICIAN"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged"
+        ],
+        "weapon_rule_names": []
+      }
     },
     {
       "name": "SHAS’LA PATHFINDER",
@@ -344,7 +407,14 @@
         "PATHFINDER",
         "T'AU EMPIRE",
         "SHAS’LA"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged"
+        ],
+        "weapon_rule_names": []
+      }
     },
     {
       "name": "TRANSPECTRAL INTERFERENCE PATHFINDER",
@@ -378,7 +448,14 @@
         "PATHFINDER",
         "T'AU EMPIRE",
         "TRANSPECTRAL INTERFERENCE"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged"
+        ],
+        "weapon_rule_names": []
+      }
     },
     {
       "name": "WEAPONS EXPERT PATHFINDER",
@@ -420,7 +497,42 @@
         "PATHFINDER",
         "T'AU EMPIRE",
         "WEAPONS EXPERT"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "ranged"
+        ],
+        "weapon_rule_names": [
+          "Piercing x",
+          "Hot",
+          "Devastating x"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "Ion rifle; gun butt",
+                "weapons": [
+                  0,
+                  1,
+                  3
+                ]
+              },
+              {
+                "label": "Rail rifle; gun butt",
+                "weapons": [
+                  2,
+                  3
+                ]
+              }
+            ]
+          ],
+          "fixed": []
+        }
+      }
     },
     {
       "name": "MB3 RECON DRONE",
@@ -469,7 +581,20 @@
         "T'AU EMPIRE",
         "MB3 RECON",
         "DRONE"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Ceaseless",
+          "Heavy",
+          "Punishing",
+          "Torrent x"
+        ]
+      }
     },
     {
       "name": "MV1 GUN DRONE",
@@ -505,7 +630,16 @@
         "T'AU EMPIRE",
         "MV1 GUN",
         "DRONE"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Ceaseless"
+        ]
+      }
     },
     {
       "name": "MV4 SHIELD DRONE",
@@ -538,7 +672,13 @@
         "T'AU EMPIRE",
         "MV4 SHIELD",
         "DRONE"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "melee"
+        ],
+        "weapon_rule_names": []
+      }
     },
     {
       "name": "MV7 MARKER DRONE",
@@ -572,7 +712,13 @@
         "T'AU EMPIRE",
         "MV7 MARKER",
         "DRONE"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "melee"
+        ],
+        "weapon_rule_names": []
+      }
     },
     {
       "name": "MV31 PULSE ACCELERATOR DRONE",
@@ -606,7 +752,13 @@
         "T'AU EMPIRE",
         "MV31 PULSE ACCELERATOR",
         "DRONE"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "melee"
+        ],
+        "weapon_rule_names": []
+      }
     },
     {
       "name": "MV33 GRAV-INHIBITOR DRONE",
@@ -639,7 +791,13 @@
         "T'AU EMPIRE",
         "MV33 GRAV-INHIBITOR",
         "DRONE"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "melee"
+        ],
+        "weapon_rule_names": []
+      }
     }
   ],
   "equipment": [
@@ -740,5 +898,18 @@
       "name": "take-cover",
       "text": "PATHFINDER\nSTRATEGY PLOY\nTAKE COVER\nPathfinders are lightly armoured and equipped for \nmobility. They must use surrounding terrain to their \nadvantage in order to survive.\nWhenever an operative is shooting a friendly \nPATHFINDER operative, if you can retain any \ncover saves, improve that friendly operative’s \nSave stat by 1."
     }
-  ]
+  ],
+  "node_weapon_rules": {
+    "Devastating x": "Each retained critical success immediately inflicts x damage on the operative this weapon is being used against, e.g. Devastating 3. If the rule starts with a distance (e.g. 1\" Devastating x), inflict x damage on that operative and each other operative visible to and within that distance of it. Note that success isn't discarded after doing so - it can still be resolved later in the sequence.",
+    "Limited x": "After an operative uses this weapon a number of times in the battle equal to x, they no longer have it. If it's used multiple times in one action (e.g. Blast), treat this as one use.",
+    "Piercing x": "The defender collects x less defence dice, e.g. Piercing 1. If the rule is Piercing Crits x, this only comes into effect if you retain any critical successes.",
+    "Range x": "Only operatives within x of the active operative can be valid targets, e.g. Range 9\".",
+    "Saturate": "The defender cannot retain cover saves.",
+    "Silent": "An operative can perform the Shoot action with this weapon while it has a Conceal order.",
+    "Hot": "After an operative uses this weapon, roll one D6: if the result is less than the weapon's Hit stat, inflict damage on that operative equal to the result multiplied by two. If it's used multiple times in one action (e.g. Blast), still only roll one D6.",
+    "Ceaseless": "You can re-roll any of your attack dice results of one result (e.g. results of 2).",
+    "Heavy": "An operative cannot use this weapon in an activation or counteraction in which it moved, and it cannot move in an activation or counteraction in which it used this weapon. If the rule is Heavy (x only), where x is a move action, only that move is allowed, e.g. Heavy (Dash only). This weapon rule has no effect on preventing the Guard action.",
+    "Punishing": "If you retain any critical successes, you can retain one of your fails as a normal success instead of discarding it.",
+    "Torrent x": "Select a valid target as normal as the primary target, then select any number of other valid targets within x of the first valid target, but not within control range of friendly operatives, as secondary targets, e.g. Torrent 2\". Shoot with this weapon against all of them in an order of your choice (roll each sequence separately)."
+  }
 }

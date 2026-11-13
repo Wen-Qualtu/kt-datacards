@@ -53,7 +53,41 @@
         "ASTRA MILITARUM",
         "LEADER",
         "FIXER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Devastating x",
+          "Heavy"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "Battle rifle; fists",
+                "weapons": [
+                  0,
+                  3
+                ]
+              },
+              {
+                "label": "Sniper rifle; fists",
+                "weapons": [
+                  1,
+                  2,
+                  3
+                ]
+              }
+            ]
+          ],
+          "fixed": []
+        }
+      }
     },
     {
       "name": "RATLING BATTLEMUTT",
@@ -86,7 +120,13 @@
         "IMPERIUM",
         "ASTRA MILITARUM",
         "BATTLEMUTT"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "melee"
+        ],
+        "weapon_rule_names": []
+      }
     },
     {
       "name": "BULLGRYN",
@@ -143,7 +183,52 @@
         "IMPERIUM",
         "ASTRA MILITARUM",
         "BULLGRYN"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee",
+          "melee",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Blast x",
+          "Shock"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "Grenadier gauntlet",
+                "weapons": [
+                  0
+                ]
+              },
+              {
+                "label": "power maul",
+                "weapons": [
+                  1
+                ]
+              }
+            ],
+            [
+              {
+                "label": "Brute shield",
+                "weapons": [
+                  2
+                ]
+              },
+              {
+                "label": "slabshield",
+                "weapons": [
+                  3
+                ]
+              }
+            ]
+          ],
+          "fixed": []
+        }
+      }
     },
     {
       "name": "OGRYN",
@@ -187,7 +272,17 @@
         "IMPERIUM",
         "ASTRA MILITARUM",
         "OGRYN"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Punishing",
+          "Range x"
+        ]
+      }
     },
     {
       "name": "RATLING BIG SHOT",
@@ -223,7 +318,20 @@
         "IMPERIUM",
         "ASTRA MILITARUM",
         "BIG SHOT"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Devastating x",
+          "Heavy",
+          "Piercing x",
+          "Severe"
+        ]
+      }
     },
     {
       "name": "RATLING BOMBER",
@@ -276,7 +384,24 @@
         "IMPERIUM",
         "ASTRA MILITARUM",
         "BOMBER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Blast x",
+          "Heavy",
+          "Limited x",
+          "Piercing x",
+          "Range x",
+          "Saturate",
+          "Devastating x"
+        ]
+      }
     },
     {
       "name": "RATLING HARDBIT",
@@ -316,7 +441,16 @@
         "IMPERIUM",
         "ASTRA MILITARUM",
         "HARDBIT"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Balanced"
+        ]
+      }
     },
     {
       "name": "RATLING RAIDER",
@@ -358,7 +492,19 @@
           "name": "SLINGSHOT (1AP)",
           "description": "Select a point on a terrain feature; that point must be visible to and within 6\" of this operative. Remove this operative from the killzone and set it back up in a location it can be placed wholly within 6\" horizontally of that point, not within control range of enemy operatives, and with that point visible to it. This action is treated as a Reposition action. This operative cannot perform this action while within control range of an enemy operative, or during an activation in which it performed the Charge, Fall Back or Shoot action (or vice versa). Grappling Hook: Whenever this operative is climbing up, you can treat the vertical distance as 2\" (regardless of how far the operative actually moves vertically). SLINGSHOT WHOLLY WITHIN 6\" WITHIN 6\""
         }
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Silent",
+          "Devastating x",
+          "Heavy"
+        ]
+      }
     },
     {
       "name": "RATLING SNEAK",
@@ -401,7 +547,19 @@
         "IMPERIUM",
         "ASTRA MILITARUM",
         "SNEAK"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Silent",
+          "Devastating x",
+          "Heavy"
+        ]
+      }
     },
     {
       "name": "RATLING SNIPER",
@@ -436,7 +594,18 @@
         "IMPERIUM",
         "ASTRA MILITARUM",
         "SNIPER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Devastating x",
+          "Heavy"
+        ]
+      }
     },
     {
       "name": "RATLING SPOTTER",
@@ -478,7 +647,18 @@
         "IMPERIUM",
         "ASTRA MILITARUM",
         "SPOTTER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Devastating x",
+          "Heavy"
+        ]
+      }
     },
     {
       "name": "RATLING STASHMASTER",
@@ -524,7 +704,18 @@
         "IMPERIUM",
         "ASTRA MILITARUM",
         "STASHMASTER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Devastating x",
+          "Heavy"
+        ]
+      }
     },
     {
       "name": "RATLING VOX-THIEF",
@@ -566,7 +757,18 @@
         "IMPERIUM",
         "ASTRA MILITARUM",
         "VOX-THIEF"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Devastating x",
+          "Heavy"
+        ]
+      }
     }
   ],
   "equipment": [
@@ -663,5 +865,19 @@
       "name": "frontline-assault",
       "text": "RATLING\nSTRATEGY PLOY\nFRONTLINE ASSAULT\nOgryns are brutish, muscular soldiers who are most \neffective when deployed as close combat troops.\nWhenever a friendly RATLING BULLGRYN or \nfriendly RATLING OGRYN operative within your \nopponent’s territory or within 3\" of an objective \nmarker is shooting, fighting or retaliating, its \nweapons have the Balanced weapon rule."
     }
-  ]
+  ],
+  "node_weapon_rules": {
+    "Devastating x": "Each retained critical success immediately inflicts x damage on the operative this weapon is being used against, e.g. Devastating 3. If the rule starts with a distance (e.g. 1\" Devastating x), inflict x damage on that operative and each other operative visible to and within that distance of it. Note that success isn't discarded after doing so - it can still be resolved later in the sequence.",
+    "Heavy": "An operative cannot use this weapon in an activation or counteraction in which it moved, and it cannot move in an activation or counteraction in which it used this weapon. If the rule is Heavy (x only), where x is a move action, only that move is allowed, e.g. Heavy (Dash only). This weapon rule has no effect on preventing the Guard action.",
+    "Blast x": "The target you select is the primary target. After shooting the primary target, shoot with this weapon against each secondary target in an order of your choice (roll each sequence separately). Secondary targets are other operatives visible to and within x of the primary target, e.g. Blast 2\" (they are all valid targets, regardless of a Conceal order). Secondary targets are in cover and obscured if the primary target was.",
+    "Shock": "The first time you strike with a critical success in each sequence, also discard one of your opponent's unresolved normal successes (or one of their critical successes if there are none).",
+    "Punishing": "If you retain any critical successes, you can retain one of your fails as a normal success instead of discarding it.",
+    "Range x": "Only operatives within x of the active operative can be valid targets, e.g. Range 9\".",
+    "Piercing x": "The defender collects x less defence dice, e.g. Piercing 1. If the rule is Piercing Crits x, this only comes into effect if you retain any critical successes.",
+    "Severe": "If you don't retain any critical successes, you can change one of your normal successes to a critical success. The Devastating and Piercing Crits weapon rules still take effect, but Punishing and Rending don't.",
+    "Limited x": "After an operative uses this weapon a number of times in the battle equal to x, they no longer have it. If it's used multiple times in one action (e.g. Blast), treat this as one use.",
+    "Saturate": "The defender cannot retain cover saves.",
+    "Balanced": "You can re-roll one of your attack dice.",
+    "Silent": "An operative can perform the Shoot action with this weapon while it has a Conceal order."
+  }
 }

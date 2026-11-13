@@ -1,7 +1,7 @@
 {
   "team": "phobos-strike-team",
   "pipeline_version": "2.0",
-  "last_updated": "2026-10-28T13:56:01.069217+00:00",
+  "last_updated": "2026-11-13T21:25:15.247016+00:00",
   "steps": {
     "content_analysis": {
       "outputs": {
@@ -654,13 +654,16 @@
       "outputs": {
         "team-data.json": {
           "path": "output/phobos-strike-team/data/phobos-strike-team-team-data.json",
-          "hash": "663931698c8e2fe8fcc789f751979a06970cff1355dc0580b7078665561b6e8f",
-          "modified": "2026-10-28T13:55:38.231217+00:00"
+          "hash": "7dfa2023588d119d210d2f1d15bdae8bcaacf7e869e22f56e6b7492ea045bbb7",
+          "modified": "2026-11-13T21:18:55.218642+00:00"
         }
       },
-      "completed": "2026-10-28T13:55:38.235040+00:00",
+      "completed": "2026-11-13T21:18:55.225548+00:00",
       "inputs": {
-        "layers/integration/phobos-strike-team/content/phobos-strike-team-content.json": "663931698c8e2fe8fcc789f751979a06970cff1355dc0580b7078665561b6e8f"
+        "layers/integration/phobos-strike-team/content/phobos-strike-team-content.json": "663931698c8e2fe8fcc789f751979a06970cff1355dc0580b7078665561b6e8f",
+        "config/weapon_rules.json": "4dd2e044dbd2dfdc8d1e035bd31d1fa7e72c70b6424a733ea315a392368848b9",
+        "pipeline/steps/extract_stats.py": "f29227a25a76a7f9e1a74c882454f13539c4733462e64abd034469eb2a3bef83",
+        "pipeline/steps/tts_impl.py": "2fd98b5d7b04687525be043fa87b3adb0d8d90763305755aa8c6e0c062f4320b"
       }
     },
     "generate_tts": {
@@ -673,10 +676,10 @@
         "tts_objects/Phobos Strike Team.json": {
           "path": "output/phobos-strike-team/tts_objects/Phobos Strike Team.json",
           "hash": "d12495c4df8aa8a35ef83d2a17508f4912939f76549402024d62c9835db5017f",
-          "modified": "2026-10-28T13:56:01.008371+00:00"
+          "modified": "2026-11-13T21:25:15.074737+00:00"
         }
       },
-      "completed": "2026-10-28T13:56:01.069206+00:00",
+      "completed": "2026-11-13T21:25:15.246993+00:00",
       "inputs": {
         "config/team-config.yaml": "b1b298df3441797113db36d9524566fa76c836df085b140b54eaac01e26fd9f9",
         "config/team-guids.json": "906473ddbf256345a4150df497def05ec513f95948b27d6fc98fa6dba00bb7d0",
@@ -769,7 +772,7 @@
         "output/phobos-strike-team/dice/phobos-strike-team-dice-dark.jpg": "d98fc1dfe13e407d6a2daa732480fb4969b61eb8849dba1a4f5006d3d6f3678c",
         "output/phobos-strike-team/dice/phobos-strike-team-dice-light.jpg": "6136c79394dbc52a3b1a62d151c4208f32607c32d98775234ca634d33017245d",
         "output/phobos-strike-team/dice/phobos-strike-team-dice-team.jpg": "60b573ca6cb70a746f09f30f8e845bba1674db7fcd04d60627ec1f4f9c696722",
-        "output/phobos-strike-team/data/phobos-strike-team-team-data.json": "663931698c8e2fe8fcc789f751979a06970cff1355dc0580b7078665561b6e8f",
+        "output/phobos-strike-team/data/phobos-strike-team-team-data.json": "7dfa2023588d119d210d2f1d15bdae8bcaacf7e869e22f56e6b7492ea045bbb7",
         "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
         "config/defaults/tts-script/datacard-load-stats.lua": "e163a1c2bbf015020a7ffe5ee861e9e78e7127ed99661187805c247862108260",
         "config/defaults/tts-script/display-table-manager-script.lua": "846de299f8e2c925e63cc77c4991fedd07ae75e9bde375f3b3c991c8730b891b",

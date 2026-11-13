@@ -56,7 +56,43 @@
         "ANHRATHE",
         "LEADER",
         "FELARCH"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Piercing x",
+          "Range x",
+          "Stun",
+          "Rending"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "Shuriken rifle; shuriken pistol; power weapon",
+                "weapons": [
+                  1,
+                  2,
+                  3
+                ]
+              },
+              {
+                "label": "Neuro disruptor; power weapon",
+                "weapons": [
+                  0,
+                  3
+                ]
+              }
+            ]
+          ],
+          "fixed": []
+        }
+      }
     },
     {
       "name": "VOIDSCARRED FATE DEALER",
@@ -105,7 +141,22 @@
         "AELDARI",
         "ANHRATHE",
         "FATE DEALER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Devastating x",
+          "Heavy",
+          "Silent",
+          "Range x",
+          "Rending"
+        ]
+      }
     },
     {
       "name": "VOIDSCARRED GUNNER",
@@ -148,7 +199,44 @@
         "AELDARI",
         "ANHRATHE",
         "GUNNER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Piercing x",
+          "Rending",
+          "Torrent x",
+          "Range x"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "Blaster ; shuriken pistol; fists",
+                "weapons": [
+                  0,
+                  2,
+                  3
+                ]
+              },
+              {
+                "label": "Shredder; shuriken pistol; fists",
+                "weapons": [
+                  1,
+                  2,
+                  3
+                ]
+              }
+            ]
+          ],
+          "fixed": []
+        }
+      }
     },
     {
       "name": "VOIDSCARRED HEAVY GUNNER",
@@ -198,7 +286,48 @@
         "AELDARI",
         "ANHRATHE",
         "HEAVY GUNNER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Heavy",
+          "Rending",
+          "Torrent x",
+          "Range x",
+          "Devastating x",
+          "Piercing x"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "Shuriken cannon; shuriken pistol; fists",
+                "weapons": [
+                  0,
+                  1,
+                  2,
+                  4
+                ]
+              },
+              {
+                "label": "Shuriken pistol; wraithcannon ; fists",
+                "weapons": [
+                  2,
+                  3,
+                  4
+                ]
+              }
+            ]
+          ],
+          "fixed": []
+        }
+      }
     },
     {
       "name": "VOIDSCARRED KURNATHI",
@@ -239,7 +368,18 @@
         "AELDARI",
         "ANHRATHE",
         "KURNATHI"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Rending",
+          "Ceaseless"
+        ]
+      }
     },
     {
       "name": "VOIDSCARRED KURNITE HUNTER",
@@ -287,7 +427,21 @@
         "AELDARI",
         "ANHRATHE",
         "KURNITE HUNTER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Rending",
+          "Saturate",
+          "Seek",
+          "Silent",
+          "Range x"
+        ]
+      }
     },
     {
       "name": "VOIDSCARRED SHADE RUNNER",
@@ -335,7 +489,20 @@
         "AELDARI",
         "ANHRATHE",
         "SHADE RUNNER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Rending",
+          "Silent",
+          "Ceaseless"
+        ]
+      }
     },
     {
       "name": "VOIDSCARRED SOUL WEAVER",
@@ -378,7 +545,17 @@
         "PSYKER",
         "MEDIC",
         "SOUL WEAVER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Rending"
+        ]
+      }
     },
     {
       "name": "VOIDSCARRED STARSTORM DUELLIST",
@@ -426,7 +603,20 @@
         "AELDARI",
         "ANHRATHE",
         "STARSTORM DUELLIST"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Devastating x",
+          "Piercing x",
+          "Range x",
+          "Rending"
+        ]
+      }
     },
     {
       "name": "VOIDSCARRED WARRIOR",
@@ -476,7 +666,40 @@
         "AELDARI",
         "ANHRATHE",
         "WARRIOR"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Rending"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "Shuriken pistol; power weapon",
+                "weapons": [
+                  0,
+                  2
+                ]
+              },
+              {
+                "label": "Shuriken rifle; fists",
+                "weapons": [
+                  1,
+                  3
+                ]
+              }
+            ]
+          ],
+          "fixed": []
+        }
+      }
     },
     {
       "name": "VOIDSCARRED WAY SEEKER",
@@ -531,7 +754,24 @@
           "name": "WARDING SHIELD (1AP)",
           "description": "PSYCHIC. Select one friendly CORSAIR VOIDSCARRED operative visible to and within 6\" of this operative. Until the start of this operative’s next activation, until it’s incapacitated or until it performs this action again (whichever comes first), the first time an attack dice inflicts Normal Dmg on that friendly operative, ignore that inflicted damage. This operative cannot perform this action while within control range of an enemy operative."
         }
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Severe",
+          "Silent",
+          "Stun",
+          "Devastating x",
+          "Range x",
+          "Rending",
+          "Shock"
+        ]
+      }
     }
   ],
   "equipment": [
@@ -636,5 +876,20 @@
       "name": "outcasts",
       "text": "CORSAIR VOIDSCARRED\nSTRATEGY PLOY\nOUTCASTS\nThose who walk the Path of the Outcast are no strangers \nto solitude. Some even fight better alone.\nWhenever a friendly CORSAIR VOIDSCARRED \noperative is more than 5\" from other friendly \noperatives, its weapons have the Punishing \nweapon rule."
     }
-  ]
+  ],
+  "node_weapon_rules": {
+    "Piercing x": "The defender collects x less defence dice, e.g. Piercing 1. If the rule is Piercing Crits x, this only comes into effect if you retain any critical successes.",
+    "Range x": "Only operatives within x of the active operative can be valid targets, e.g. Range 9\".",
+    "Stun": "If you retain any critical successes, subtract 1 from the APL stat of the operative this weapon is being used against until the end of its next activation.",
+    "Rending": "If you retain any critical successes, you can retain one of your normal successes as a critical success instead.",
+    "Devastating x": "Each retained critical success immediately inflicts x damage on the operative this weapon is being used against, e.g. Devastating 3. If the rule starts with a distance (e.g. 1\" Devastating x), inflict x damage on that operative and each other operative visible to and within that distance of it. Note that success isn't discarded after doing so - it can still be resolved later in the sequence.",
+    "Heavy": "An operative cannot use this weapon in an activation or counteraction in which it moved, and it cannot move in an activation or counteraction in which it used this weapon. If the rule is Heavy (x only), where x is a move action, only that move is allowed, e.g. Heavy (Dash only). This weapon rule has no effect on preventing the Guard action.",
+    "Silent": "An operative can perform the Shoot action with this weapon while it has a Conceal order.",
+    "Torrent x": "Select a valid target as normal as the primary target, then select any number of other valid targets within x of the first valid target, but not within control range of friendly operatives, as secondary targets, e.g. Torrent 2\". Shoot with this weapon against all of them in an order of your choice (roll each sequence separately).",
+    "Ceaseless": "You can re-roll any of your attack dice results of one result (e.g. results of 2).",
+    "Saturate": "The defender cannot retain cover saves.",
+    "Seek": "When selecting a valid target, operatives with a Conceal order cannot use terrain for cover. If the rule is Seek Light, they cannot use Light terrain for cover. While this can allow operatives to be targeted (assuming they're visible), it doesn't remove their cover save (if any).",
+    "Severe": "If you don't retain any critical successes, you can change one of your normal successes to a critical success. The Devastating and Piercing Crits weapon rules still take effect, but Punishing and Rending don't.",
+    "Shock": "The first time you strike with a critical success in each sequence, also discard one of your opponent's unresolved normal successes (or one of their critical successes if there are none)."
+  }
 }

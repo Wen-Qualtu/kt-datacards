@@ -1,7 +1,7 @@
 {
   "team": "hearthkyn-salvagers",
   "pipeline_version": "2.0",
-  "last_updated": "2026-10-20T07:54:11.459115+00:00",
+  "last_updated": "2026-11-13T21:25:09.119183+00:00",
   "steps": {
     "content_analysis": {
       "outputs": {
@@ -636,13 +636,16 @@
       "outputs": {
         "team-data.json": {
           "path": "output/hearthkyn-salvagers/data/hearthkyn-salvagers-team-data.json",
-          "hash": "022060850322987e506691306f65783f4ab45dd886503e09368090ed211b94a4",
-          "modified": "2026-08-15T18:43:29.851992+00:00"
+          "hash": "7ef8db696e44d24d5dc61abd518dc3a1920f56b31db69316bce4e5d722d50a17",
+          "modified": "2026-11-13T21:18:53.570127+00:00"
         }
       },
-      "completed": "2026-08-15T18:43:29.864686+00:00",
+      "completed": "2026-11-13T21:18:53.582705+00:00",
       "inputs": {
-        "layers/integration/hearthkyn-salvagers/content/hearthkyn-salvagers-content.json": "022060850322987e506691306f65783f4ab45dd886503e09368090ed211b94a4"
+        "layers/integration/hearthkyn-salvagers/content/hearthkyn-salvagers-content.json": "022060850322987e506691306f65783f4ab45dd886503e09368090ed211b94a4",
+        "config/weapon_rules.json": "4dd2e044dbd2dfdc8d1e035bd31d1fa7e72c70b6424a733ea315a392368848b9",
+        "pipeline/steps/extract_stats.py": "f29227a25a76a7f9e1a74c882454f13539c4733462e64abd034469eb2a3bef83",
+        "pipeline/steps/tts_impl.py": "2fd98b5d7b04687525be043fa87b3adb0d8d90763305755aa8c6e0c062f4320b"
       }
     },
     "generate_tts": {
@@ -655,10 +658,10 @@
         "tts_objects/Hearthkyn Salvagers.json": {
           "path": "output/hearthkyn-salvagers/tts_objects/Hearthkyn Salvagers.json",
           "hash": "707bd0787702ef208b37763c369389b080984d11d98eecf716ee336e0b074ec6",
-          "modified": "2026-10-20T07:54:11.371869+00:00"
+          "modified": "2026-11-13T21:25:08.857715+00:00"
         }
       },
-      "completed": "2026-10-20T07:54:11.459102+00:00",
+      "completed": "2026-11-13T21:25:09.119154+00:00",
       "inputs": {
         "config/team-config.yaml": "b1b298df3441797113db36d9524566fa76c836df085b140b54eaac01e26fd9f9",
         "config/team-guids.json": "906473ddbf256345a4150df497def05ec513f95948b27d6fc98fa6dba00bb7d0",
@@ -745,7 +748,7 @@
         "output/hearthkyn-salvagers/dice/hearthkyn-salvagers-dice-dark.jpg": "292e82108cba0010282ebf7b2f31bb53a937aeb6a05e4dd47dc5a360188fa66d",
         "output/hearthkyn-salvagers/dice/hearthkyn-salvagers-dice-light.jpg": "9c936d95e5a5b337e18d80e98c7845b93b1800f12157eb9e62af1df5858069ba",
         "output/hearthkyn-salvagers/dice/hearthkyn-salvagers-dice-team.jpg": "b0810e00768b1267b2b51d029d28e51c24b96c20ab971566474634864a8ef800",
-        "output/hearthkyn-salvagers/data/hearthkyn-salvagers-team-data.json": "022060850322987e506691306f65783f4ab45dd886503e09368090ed211b94a4",
+        "output/hearthkyn-salvagers/data/hearthkyn-salvagers-team-data.json": "7ef8db696e44d24d5dc61abd518dc3a1920f56b31db69316bce4e5d722d50a17",
         "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
         "config/defaults/tts-script/datacard-load-stats.lua": "e163a1c2bbf015020a7ffe5ee861e9e78e7127ed99661187805c247862108260",
         "config/defaults/tts-script/display-table-manager-script.lua": "846de299f8e2c925e63cc77c4991fedd07ae75e9bde375f3b3c991c8730b891b",

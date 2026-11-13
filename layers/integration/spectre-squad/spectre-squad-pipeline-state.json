@@ -1,7 +1,7 @@
 {
   "team": "spectre-squad",
   "pipeline_version": "2.0",
-  "last_updated": "2026-10-28T13:55:39.265557+00:00",
+  "last_updated": "2026-11-13T21:25:16.968596+00:00",
   "steps": {
     "content_analysis": {
       "outputs": {
@@ -640,13 +640,16 @@
       "outputs": {
         "team-data.json": {
           "path": "output/spectre-squad/data/spectre-squad-team-data.json",
-          "hash": "d2827d1d3c1ea51069b898fb56e1f4abcb80b6e56b22c687f562d36799cfe21b",
-          "modified": "2026-08-26T15:26:54.213538+00:00"
+          "hash": "d0f84c6bcd5eea413a502fe44c8af5a1e009541b81fa39f5a24d5947474c863f",
+          "modified": "2026-11-13T21:18:55.825181+00:00"
         }
       },
-      "completed": "2026-08-26T15:26:54.221390+00:00",
+      "completed": "2026-11-13T21:18:55.835154+00:00",
       "inputs": {
-        "layers/integration/spectre-squad/content/spectre-squad-content.json": "d2827d1d3c1ea51069b898fb56e1f4abcb80b6e56b22c687f562d36799cfe21b"
+        "layers/integration/spectre-squad/content/spectre-squad-content.json": "d2827d1d3c1ea51069b898fb56e1f4abcb80b6e56b22c687f562d36799cfe21b",
+        "config/weapon_rules.json": "4dd2e044dbd2dfdc8d1e035bd31d1fa7e72c70b6424a733ea315a392368848b9",
+        "pipeline/steps/extract_stats.py": "f29227a25a76a7f9e1a74c882454f13539c4733462e64abd034469eb2a3bef83",
+        "pipeline/steps/tts_impl.py": "2fd98b5d7b04687525be043fa87b3adb0d8d90763305755aa8c6e0c062f4320b"
       }
     },
     "generate_tts": {
@@ -659,10 +662,10 @@
         "tts_objects/Spectre Squad.json": {
           "path": "output/spectre-squad/tts_objects/Spectre Squad.json",
           "hash": "aeb1d0827bb15ef86fbdb120c26222272eb3d23ee03da0f36869bad0adbd5d4c",
-          "modified": "2026-10-20T07:54:13.181279+00:00"
+          "modified": "2026-11-13T21:25:16.614519+00:00"
         }
       },
-      "completed": "2026-10-20T07:54:13.257815+00:00",
+      "completed": "2026-11-13T21:25:16.968552+00:00",
       "inputs": {
         "config/team-config.yaml": "b1b298df3441797113db36d9524566fa76c836df085b140b54eaac01e26fd9f9",
         "config/team-guids.json": "906473ddbf256345a4150df497def05ec513f95948b27d6fc98fa6dba00bb7d0",
@@ -753,7 +756,7 @@
         "output/spectre-squad/dice/spectre-squad-dice-dark.jpg": "179725301698d412816beab39c09b7efa07bbbeee5012a9a634fff697d66ba1f",
         "output/spectre-squad/dice/spectre-squad-dice-light.jpg": "4108285b840b66f6b53db8ba843ca72da40b061dc552dcf0669ec01a8142c624",
         "output/spectre-squad/dice/spectre-squad-dice-team.jpg": "d521e61ec24f0375c0e89309dd6b0e04a5be8fb3d6ba1abf9296167102dc0d67",
-        "output/spectre-squad/data/spectre-squad-team-data.json": "d2827d1d3c1ea51069b898fb56e1f4abcb80b6e56b22c687f562d36799cfe21b",
+        "output/spectre-squad/data/spectre-squad-team-data.json": "d0f84c6bcd5eea413a502fe44c8af5a1e009541b81fa39f5a24d5947474c863f",
         "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
         "config/defaults/tts-script/datacard-load-stats.lua": "e163a1c2bbf015020a7ffe5ee861e9e78e7127ed99661187805c247862108260",
         "config/defaults/tts-script/display-table-manager-script.lua": "846de299f8e2c925e63cc77c4991fedd07ae75e9bde375f3b3c991c8730b891b",

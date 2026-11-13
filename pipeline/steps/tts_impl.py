@@ -42,7 +42,7 @@ from .templates.tts_templates import (
 )
 from ..utils import paths as _paths
 from ..utils import naming
-from ..utils.ktui_model_script import compose_ktui_model_script
+from ..utils.ktui_model_script import compose_command_node_loader, compose_ktui_model_script
 
 # Setup logging
 logging.basicConfig(
@@ -532,6 +532,20 @@ def generate_object_urls_json(repo_branch: str = URL_BRANCH):
         if box_file.exists():
             box_base = f"{base_url}/{team}/tts_objects/{box_file.name.replace(' ', '%20')}"
             team_entry["box"] = _reuse_or_new_single(prev_box, box_file, box_base, {})
+
+        team_data_file = team_dir / "data" / f"{team}-team-data.json"
+        if team_data_file.exists():
+            team_data_url = f"{base_url}/{team}/data/{team_data_file.name}"
+            team_hash = _sha256_of_files([team_data_file])
+            previous_team = prev_data.get("team_data") or {}
+            modified = previous_team.get("modified") if previous_team.get("hash") == team_hash else None
+            if not modified:
+                modified = datetime.fromtimestamp(team_data_file.stat().st_mtime, tz=timezone.utc).isoformat()
+            team_entry["team_data"] = {
+                "url": f"{team_data_url}?v={team_hash}",
+                "modified": modified,
+                "hash": team_hash,
+            }
         
         # Add Lua script
         lua_script_path = config_dir / "defaults" / "tts-script" / "tts-update-rules-in-box-script.lua"
@@ -668,10 +682,14 @@ def generate_object_urls_summary(teams_data: dict, repo_branch: str = URL_BRANCH
                 max_modified = obj_modified
 
         team_url = f"{base_url}/{team}/{team}-object-urls.json"
+        version = str(max_stamp)
+        team_hash = (team_entry.get("team_data") or {}).get("hash")
+        if team_hash:
+            version += f"-{team_hash[:12]}"
         summary[team] = {
             "team": team,
             "modified": max_modified,
-            "team_url": f"{team_url}?v={max_stamp}",
+            "team_url": f"{team_url}?v={version}",
             "box": team_entry.get("box"),
         }
 
@@ -1822,6 +1840,15 @@ def _find_datacards(tts_data: dict) -> list:
     
     recurse(tts_data)
     return datacards
+
+
+def write_command_node_loader(config_dir: Path, output_dir: Path) -> Path:
+    target = output_dir / "_generic-tts-objects" / "command-node-loader.lua"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    contents = compose_command_node_loader(config_dir).encode("utf-8")
+    if not target.exists() or target.read_bytes() != contents:
+        target.write_bytes(contents)
+    return target
 
 
 def _match_card_to_operative(nickname: str, team: str, team_data: dict) -> Optional[dict]:

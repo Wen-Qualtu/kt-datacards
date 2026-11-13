@@ -1,7 +1,7 @@
 {
   "team": "wolf-scouts",
   "pipeline_version": "2.0",
-  "last_updated": "2026-10-20T07:54:13.629730+00:00",
+  "last_updated": "2026-11-13T21:25:18.462144+00:00",
   "steps": {
     "content_analysis": {
       "outputs": {
@@ -539,13 +539,16 @@
       "outputs": {
         "team-data.json": {
           "path": "output/wolf-scouts/data/wolf-scouts-team-data.json",
-          "hash": "ec5ef86b6170e8de9029f7d6a14335f6bdac1cd98489c47451b522fd57fa5496",
-          "modified": "2026-08-26T15:26:54.344271+00:00"
+          "hash": "81a04176bc80116abe74e5f80d097f19d6fc419b3bf7ae1e7861a6f9c881f3a0",
+          "modified": "2026-11-13T21:18:56.513268+00:00"
         }
       },
-      "completed": "2026-08-26T15:26:54.353715+00:00",
+      "completed": "2026-11-13T21:18:56.531485+00:00",
       "inputs": {
-        "layers/integration/wolf-scouts/content/wolf-scouts-content.json": "ec5ef86b6170e8de9029f7d6a14335f6bdac1cd98489c47451b522fd57fa5496"
+        "layers/integration/wolf-scouts/content/wolf-scouts-content.json": "ec5ef86b6170e8de9029f7d6a14335f6bdac1cd98489c47451b522fd57fa5496",
+        "config/weapon_rules.json": "4dd2e044dbd2dfdc8d1e035bd31d1fa7e72c70b6424a733ea315a392368848b9",
+        "pipeline/steps/extract_stats.py": "f29227a25a76a7f9e1a74c882454f13539c4733462e64abd034469eb2a3bef83",
+        "pipeline/steps/tts_impl.py": "2fd98b5d7b04687525be043fa87b3adb0d8d90763305755aa8c6e0c062f4320b"
       }
     },
     "generate_tts": {
@@ -558,10 +561,10 @@
         "tts_objects/Wolf Scouts.json": {
           "path": "output/wolf-scouts/tts_objects/Wolf Scouts.json",
           "hash": "076f99f5d345ac4aa5c54bfc7dc7f448bd8c8d810faab1bcc8ee0550997e1db4",
-          "modified": "2026-10-20T07:54:13.559516+00:00"
+          "modified": "2026-11-13T21:25:18.188575+00:00"
         }
       },
-      "completed": "2026-10-20T07:54:13.629719+00:00",
+      "completed": "2026-11-13T21:25:18.462112+00:00",
       "inputs": {
         "config/team-config.yaml": "b1b298df3441797113db36d9524566fa76c836df085b140b54eaac01e26fd9f9",
         "config/team-guids.json": "906473ddbf256345a4150df497def05ec513f95948b27d6fc98fa6dba00bb7d0",
@@ -640,7 +643,7 @@
         "output/wolf-scouts/dice/wolf-scouts-dice-dark.jpg": "34eeda8f35b8004afee2e42e7644875d69c7c3467a2d0bd3133d289cb093b737",
         "output/wolf-scouts/dice/wolf-scouts-dice-light.jpg": "4caa26d4bc484d7643cef443c4a6fa236609b6cbd11fa750b2e7f2d5d3eda6f9",
         "output/wolf-scouts/dice/wolf-scouts-dice-team.jpg": "889bffb91e64ffcdd08c25d919cd87ab86faa19aa1037808f56b591a3102eaf3",
-        "output/wolf-scouts/data/wolf-scouts-team-data.json": "ec5ef86b6170e8de9029f7d6a14335f6bdac1cd98489c47451b522fd57fa5496",
+        "output/wolf-scouts/data/wolf-scouts-team-data.json": "81a04176bc80116abe74e5f80d097f19d6fc419b3bf7ae1e7861a6f9c881f3a0",
         "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
         "config/defaults/tts-script/datacard-load-stats.lua": "e163a1c2bbf015020a7ffe5ee861e9e78e7127ed99661187805c247862108260",
         "config/defaults/tts-script/display-table-manager-script.lua": "846de299f8e2c925e63cc77c4991fedd07ae75e9bde375f3b3c991c8730b891b",

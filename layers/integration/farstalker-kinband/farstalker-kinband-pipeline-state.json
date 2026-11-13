@@ -1,7 +1,7 @@
 {
   "team": "farstalker-kinband",
   "pipeline_version": "2.0",
-  "last_updated": "2026-10-20T07:54:11.016504+00:00",
+  "last_updated": "2026-11-13T21:25:07.768605+00:00",
   "steps": {
     "content_analysis": {
       "outputs": {
@@ -555,13 +555,16 @@
       "outputs": {
         "team-data.json": {
           "path": "output/farstalker-kinband/data/farstalker-kinband-team-data.json",
-          "hash": "17fb58915a515669aaca883ce18774986c77677b36ea57f9b5e73e05086b86c5",
-          "modified": "2026-08-15T18:43:29.727521+00:00"
+          "hash": "11aa6e2b324b3191e64342c60541dc94094288df7b2c1e518510c95b30ef0c07",
+          "modified": "2026-11-13T21:18:52.903905+00:00"
         }
       },
-      "completed": "2026-08-15T18:43:29.737035+00:00",
+      "completed": "2026-11-13T21:18:52.915352+00:00",
       "inputs": {
-        "layers/integration/farstalker-kinband/content/farstalker-kinband-content.json": "17fb58915a515669aaca883ce18774986c77677b36ea57f9b5e73e05086b86c5"
+        "layers/integration/farstalker-kinband/content/farstalker-kinband-content.json": "17fb58915a515669aaca883ce18774986c77677b36ea57f9b5e73e05086b86c5",
+        "config/weapon_rules.json": "4dd2e044dbd2dfdc8d1e035bd31d1fa7e72c70b6424a733ea315a392368848b9",
+        "pipeline/steps/extract_stats.py": "f29227a25a76a7f9e1a74c882454f13539c4733462e64abd034469eb2a3bef83",
+        "pipeline/steps/tts_impl.py": "2fd98b5d7b04687525be043fa87b3adb0d8d90763305755aa8c6e0c062f4320b"
       }
     },
     "generate_tts": {
@@ -574,10 +577,10 @@
         "tts_objects/Farstalker Kinband.json": {
           "path": "output/farstalker-kinband/tts_objects/Farstalker Kinband.json",
           "hash": "eaae4ae24ab58171ba3f888cc8be6ab871f3e23c1d84410db3bfa49dedd5e539",
-          "modified": "2026-10-20T07:54:10.930804+00:00"
+          "modified": "2026-11-13T21:25:07.583553+00:00"
         }
       },
-      "completed": "2026-10-20T07:54:11.016493+00:00",
+      "completed": "2026-11-13T21:25:07.768579+00:00",
       "inputs": {
         "config/team-config.yaml": "b1b298df3441797113db36d9524566fa76c836df085b140b54eaac01e26fd9f9",
         "config/team-guids.json": "906473ddbf256345a4150df497def05ec513f95948b27d6fc98fa6dba00bb7d0",
@@ -660,7 +663,7 @@
         "output/farstalker-kinband/dice/farstalker-kinband-dice-dark.jpg": "adc48c65fab1b995d8770fa77de62fe0785cbe6af400de4b167a7c65a8176dd0",
         "output/farstalker-kinband/dice/farstalker-kinband-dice-light.jpg": "2e0e70607d0ace35ea0f925f197d70c7c28b01eaadf2a0370c7c8f731afad428",
         "output/farstalker-kinband/dice/farstalker-kinband-dice-team.jpg": "926587791c797975cff858d6919ba070eb187fd7f3ffb1ab0e93cbf480508bba",
-        "output/farstalker-kinband/data/farstalker-kinband-team-data.json": "17fb58915a515669aaca883ce18774986c77677b36ea57f9b5e73e05086b86c5",
+        "output/farstalker-kinband/data/farstalker-kinband-team-data.json": "11aa6e2b324b3191e64342c60541dc94094288df7b2c1e518510c95b30ef0c07",
         "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
         "config/defaults/tts-script/datacard-load-stats.lua": "e163a1c2bbf015020a7ffe5ee861e9e78e7127ed99661187805c247862108260",
         "config/defaults/tts-script/display-table-manager-script.lua": "846de299f8e2c925e63cc77c4991fedd07ae75e9bde375f3b3c991c8730b891b",

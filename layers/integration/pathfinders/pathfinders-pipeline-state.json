@@ -1,7 +1,7 @@
 {
   "team": "pathfinders",
   "pipeline_version": "2.0",
-  "last_updated": "2026-10-28T13:56:00.991883+00:00",
+  "last_updated": "2026-11-13T21:25:15.024953+00:00",
   "steps": {
     "content_analysis": {
       "outputs": {
@@ -719,13 +719,16 @@
       "outputs": {
         "team-data.json": {
           "path": "output/pathfinders/data/pathfinders-team-data.json",
-          "hash": "8d3520d5acd541770183b6dd6c86b5669a3a63ccadb9b28fce738066bd45db9d",
-          "modified": "2026-10-28T13:55:22.576322+00:00"
+          "hash": "9b8d944560f87bf2472b82c3f142be11b6c8a8c2d1bf6b2b292caac741fa1252",
+          "modified": "2026-11-13T21:18:55.131466+00:00"
         }
       },
-      "completed": "2026-10-28T13:55:22.585482+00:00",
+      "completed": "2026-11-13T21:18:55.139560+00:00",
       "inputs": {
-        "layers/integration/pathfinders/content/pathfinders-content.json": "8d3520d5acd541770183b6dd6c86b5669a3a63ccadb9b28fce738066bd45db9d"
+        "layers/integration/pathfinders/content/pathfinders-content.json": "8d3520d5acd541770183b6dd6c86b5669a3a63ccadb9b28fce738066bd45db9d",
+        "config/weapon_rules.json": "4dd2e044dbd2dfdc8d1e035bd31d1fa7e72c70b6424a733ea315a392368848b9",
+        "pipeline/steps/extract_stats.py": "f29227a25a76a7f9e1a74c882454f13539c4733462e64abd034469eb2a3bef83",
+        "pipeline/steps/tts_impl.py": "2fd98b5d7b04687525be043fa87b3adb0d8d90763305755aa8c6e0c062f4320b"
       }
     },
     "generate_tts": {
@@ -738,10 +741,10 @@
         "tts_objects/Pathfinders.json": {
           "path": "output/pathfinders/tts_objects/Pathfinders.json",
           "hash": "0d427d2e3edbe5a353568fbbbfe45df5bb8473ffbd508d196e997c2a13ffb2dc",
-          "modified": "2026-10-28T13:56:00.935614+00:00"
+          "modified": "2026-11-13T21:25:14.810213+00:00"
         }
       },
-      "completed": "2026-10-28T13:56:00.991871+00:00",
+      "completed": "2026-11-13T21:25:15.024917+00:00",
       "inputs": {
         "config/team-config.yaml": "b1b298df3441797113db36d9524566fa76c836df085b140b54eaac01e26fd9f9",
         "config/team-guids.json": "906473ddbf256345a4150df497def05ec513f95948b27d6fc98fa6dba00bb7d0",
@@ -840,7 +843,7 @@
         "output/pathfinders/dice/pathfinders-dice-dark.jpg": "653fb947215e041ed2be20751a873bcd710cb955c2071d09ba8d62b926b57b7e",
         "output/pathfinders/dice/pathfinders-dice-light.jpg": "ac93e21afbf80016682a286dbd9adaa36163e1eb42fe0d5921ac06499ae0afe6",
         "output/pathfinders/dice/pathfinders-dice-team.jpg": "33d75ce8d2d2c25093f579232a7c1947a1a9e975a671d72232cfce7ac44409e1",
-        "output/pathfinders/data/pathfinders-team-data.json": "8d3520d5acd541770183b6dd6c86b5669a3a63ccadb9b28fce738066bd45db9d",
+        "output/pathfinders/data/pathfinders-team-data.json": "9b8d944560f87bf2472b82c3f142be11b6c8a8c2d1bf6b2b292caac741fa1252",
         "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
         "config/defaults/tts-script/datacard-load-stats.lua": "e163a1c2bbf015020a7ffe5ee861e9e78e7127ed99661187805c247862108260",
         "config/defaults/tts-script/display-table-manager-script.lua": "846de299f8e2c925e63cc77c4991fedd07ae75e9bde375f3b3c991c8730b891b",

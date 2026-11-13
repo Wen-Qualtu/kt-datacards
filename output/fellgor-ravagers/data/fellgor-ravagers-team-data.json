@@ -58,7 +58,45 @@
         "CHAOS",
         "LEADER",
         "IRONHORN"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "melee",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Rending",
+          "Piercing x",
+          "Hot",
+          "Brutal"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "Corrupted pistol; corrupted chainsword",
+                "weapons": [
+                  0,
+                  4
+                ]
+              },
+              {
+                "label": "Plasma pistol; bludgeon",
+                "weapons": [
+                  1,
+                  2,
+                  3
+                ]
+              }
+            ]
+          ],
+          "fixed": []
+        }
+      }
     },
     {
       "name": "FELLGOR DEATHKNELL",
@@ -103,7 +141,17 @@
         "FELLGOR RAVAGER",
         "CHAOS",
         "DEATHKNELL"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Brutal"
+        ]
+      }
     },
     {
       "name": "FELLGOR FLUXBRAY",
@@ -137,7 +185,15 @@
         "FELLGOR RAVAGER",
         "CHAOS",
         "FLUXBRAY"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Ceaseless"
+        ]
+      }
     },
     {
       "name": "FELLGOR GNARLSCAR",
@@ -178,7 +234,17 @@
         "FELLGOR RAVAGER",
         "CHAOS",
         "GNARLSCAR"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Brutal"
+        ]
+      }
     },
     {
       "name": "FELLGOR GOREHORN",
@@ -218,7 +284,16 @@
         "FELLGOR RAVAGER",
         "CHAOS",
         "GOREHORN"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x"
+        ]
+      }
     },
     {
       "name": "FELLGOR HERD-GOAD",
@@ -266,7 +341,19 @@
         "FELLGOR RAVAGER",
         "CHAOS",
         "HERD-GOAD"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Stun",
+          "Shock"
+        ]
+      }
     },
     {
       "name": "FELLGOR MANGLER",
@@ -303,7 +390,15 @@
         "FELLGOR RAVAGER",
         "CHAOS",
         "MANGLER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Ceaseless"
+        ]
+      }
     },
     {
       "name": "FELLGOR SHAMAN",
@@ -351,7 +446,21 @@
         "CHAOS",
         "PSYKER",
         "SHAMAN"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Rending",
+          "Saturate",
+          "Seek",
+          "Shock"
+        ]
+      }
     },
     {
       "name": "FELLGOR TOXHORN",
@@ -390,7 +499,16 @@
         "FELLGOR RAVAGER",
         "CHAOS",
         "TOXHORN"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x"
+        ]
+      }
     },
     {
       "name": "FELLGOR VANDAL",
@@ -424,7 +542,15 @@
         "FELLGOR RAVAGER",
         "CHAOS",
         "VANDAL"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Brutal"
+        ]
+      }
     },
     {
       "name": "FELLGOR WARRIOR",
@@ -466,7 +592,39 @@
         "FELLGOR RAVAGER",
         "CHAOS",
         "WARRIOR"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Brutal"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "Autopistol; bludgeon",
+                "weapons": [
+                  0,
+                  1
+                ]
+              },
+              {
+                "label": "Autopistol; cleaver",
+                "weapons": [
+                  0,
+                  2
+                ]
+              }
+            ]
+          ],
+          "fixed": []
+        }
+      }
     }
   ],
   "equipment": [
@@ -563,5 +721,17 @@
       "name": "reckless-determination",
       "text": "FELLGOR RAVAGER\nSTRATEGY PLOY\nRECKLESS DETERMINATION\nSuch is their determination to slaughter the enemy \nthat the Fellgor Ravagers will shrug off volleys of \nincoming fire.\nWhenever an enemy operative is shooting \nan expended friendly FELLGOR RAVAGER \noperative, if you cannot retain any cover saves, \nyou can retain one of your defence dice as a \nnormal success without rolling it."
     }
-  ]
+  ],
+  "node_weapon_rules": {
+    "Range x": "Only operatives within x of the active operative can be valid targets, e.g. Range 9\".",
+    "Rending": "If you retain any critical successes, you can retain one of your normal successes as a critical success instead.",
+    "Piercing x": "The defender collects x less defence dice, e.g. Piercing 1. If the rule is Piercing Crits x, this only comes into effect if you retain any critical successes.",
+    "Hot": "After an operative uses this weapon, roll one D6: if the result is less than the weapon's Hit stat, inflict damage on that operative equal to the result multiplied by two. If it's used multiple times in one action (e.g. Blast), still only roll one D6.",
+    "Brutal": "Your opponent can only block with critical successes.",
+    "Ceaseless": "You can re-roll any of your attack dice results of one result (e.g. results of 2).",
+    "Stun": "If you retain any critical successes, subtract 1 from the APL stat of the operative this weapon is being used against until the end of its next activation.",
+    "Shock": "The first time you strike with a critical success in each sequence, also discard one of your opponent's unresolved normal successes (or one of their critical successes if there are none).",
+    "Saturate": "The defender cannot retain cover saves.",
+    "Seek": "When selecting a valid target, operatives with a Conceal order cannot use terrain for cover. If the rule is Seek Light, they cannot use Light terrain for cover. While this can allow operatives to be targeted (assuming they're visible), it doesn't remove their cover save (if any)."
+  }
 }

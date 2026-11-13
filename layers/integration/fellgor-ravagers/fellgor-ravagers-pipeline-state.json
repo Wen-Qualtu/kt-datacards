@@ -1,7 +1,7 @@
 {
   "team": "fellgor-ravagers",
   "pipeline_version": "2.0",
-  "last_updated": "2026-10-28T13:56:00.189229+00:00",
+  "last_updated": "2026-11-13T21:25:07.963539+00:00",
   "steps": {
     "content_analysis": {
       "outputs": {
@@ -554,13 +554,16 @@
       "outputs": {
         "team-data.json": {
           "path": "output/fellgor-ravagers/data/fellgor-ravagers-team-data.json",
-          "hash": "efeafbc410b365908768620e49e2919a5349502303947e10ba9d7eef1b7d49e0",
-          "modified": "2026-10-28T13:54:31.177266+00:00"
+          "hash": "c7c2ab225de923b416d2ef21cafe561b68a2284bcbd17776be348ea6b1a8f98e",
+          "modified": "2026-11-13T21:18:53.013329+00:00"
         }
       },
-      "completed": "2026-10-28T13:54:31.182987+00:00",
+      "completed": "2026-11-13T21:18:53.024655+00:00",
       "inputs": {
-        "layers/integration/fellgor-ravagers/content/fellgor-ravagers-content.json": "efeafbc410b365908768620e49e2919a5349502303947e10ba9d7eef1b7d49e0"
+        "layers/integration/fellgor-ravagers/content/fellgor-ravagers-content.json": "efeafbc410b365908768620e49e2919a5349502303947e10ba9d7eef1b7d49e0",
+        "config/weapon_rules.json": "4dd2e044dbd2dfdc8d1e035bd31d1fa7e72c70b6424a733ea315a392368848b9",
+        "pipeline/steps/extract_stats.py": "f29227a25a76a7f9e1a74c882454f13539c4733462e64abd034469eb2a3bef83",
+        "pipeline/steps/tts_impl.py": "2fd98b5d7b04687525be043fa87b3adb0d8d90763305755aa8c6e0c062f4320b"
       }
     },
     "generate_tts": {
@@ -573,10 +576,10 @@
         "tts_objects/Fellgor Ravagers.json": {
           "path": "output/fellgor-ravagers/tts_objects/Fellgor Ravagers.json",
           "hash": "cae7d82396814bfd5567b9b23535534fae6befdec5187400f2c9f7433e333eda",
-          "modified": "2026-10-28T13:56:00.127113+00:00"
+          "modified": "2026-11-13T21:25:07.811557+00:00"
         }
       },
-      "completed": "2026-10-28T13:56:00.189219+00:00",
+      "completed": "2026-11-13T21:25:07.963503+00:00",
       "inputs": {
         "config/team-config.yaml": "b1b298df3441797113db36d9524566fa76c836df085b140b54eaac01e26fd9f9",
         "config/team-guids.json": "906473ddbf256345a4150df497def05ec513f95948b27d6fc98fa6dba00bb7d0",
@@ -653,7 +656,7 @@
         "output/fellgor-ravagers/dice/fellgor-ravagers-dice-dark.jpg": "77a7cfa5068b571afed6f8b0c88b0eca1a1d77d61fdaac0589a57214d1d457ae",
         "output/fellgor-ravagers/dice/fellgor-ravagers-dice-light.jpg": "5719d8ebbc15d701130d86e8213f3d6eb40a3b8dff5b172679ead3b399d77d14",
         "output/fellgor-ravagers/dice/fellgor-ravagers-dice-team.jpg": "b2e9c19e0de75e46720f01b6b28a70260162efaa1a0f3009b024a6719fbdd517",
-        "output/fellgor-ravagers/data/fellgor-ravagers-team-data.json": "efeafbc410b365908768620e49e2919a5349502303947e10ba9d7eef1b7d49e0",
+        "output/fellgor-ravagers/data/fellgor-ravagers-team-data.json": "c7c2ab225de923b416d2ef21cafe561b68a2284bcbd17776be348ea6b1a8f98e",
         "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
         "config/defaults/tts-script/datacard-load-stats.lua": "e163a1c2bbf015020a7ffe5ee861e9e78e7127ed99661187805c247862108260",
         "config/defaults/tts-script/display-table-manager-script.lua": "846de299f8e2c925e63cc77c4991fedd07ae75e9bde375f3b3c991c8730b891b",

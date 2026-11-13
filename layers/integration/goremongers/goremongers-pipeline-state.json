@@ -1,7 +1,7 @@
 {
   "team": "goremongers",
   "pipeline_version": "2.0",
-  "last_updated": "2026-10-28T13:56:00.343070+00:00",
+  "last_updated": "2026-11-13T21:25:08.524623+00:00",
   "steps": {
     "content_analysis": {
       "outputs": {
@@ -641,13 +641,16 @@
       "outputs": {
         "team-data.json": {
           "path": "output/goremongers/data/goremongers-team-data.json",
-          "hash": "521467495eb653096455fcd87a146bb39e53e988d82df9ef41af1b8b19ac93a6",
-          "modified": "2026-10-28T13:55:07.009745+00:00"
+          "hash": "000ae17e4362eb0da89f144858f68c68f6afc41b75856d51c325e358882dd924",
+          "modified": "2026-11-13T21:18:53.262346+00:00"
         }
       },
-      "completed": "2026-10-28T13:55:07.010951+00:00",
+      "completed": "2026-11-13T21:18:53.276645+00:00",
       "inputs": {
-        "layers/integration/goremongers/content/goremongers-content.json": "521467495eb653096455fcd87a146bb39e53e988d82df9ef41af1b8b19ac93a6"
+        "layers/integration/goremongers/content/goremongers-content.json": "521467495eb653096455fcd87a146bb39e53e988d82df9ef41af1b8b19ac93a6",
+        "config/weapon_rules.json": "4dd2e044dbd2dfdc8d1e035bd31d1fa7e72c70b6424a733ea315a392368848b9",
+        "pipeline/steps/extract_stats.py": "f29227a25a76a7f9e1a74c882454f13539c4733462e64abd034469eb2a3bef83",
+        "pipeline/steps/tts_impl.py": "2fd98b5d7b04687525be043fa87b3adb0d8d90763305755aa8c6e0c062f4320b"
       }
     },
     "generate_tts": {
@@ -659,11 +662,11 @@
         },
         "tts_objects/Goremongers.json": {
           "path": "output/goremongers/tts_objects/Goremongers.json",
-          "hash": "c49bda342933cb25ca78642e2069d124e9e6a19a16a1e0701b4b4dedcc1e26ab",
-          "modified": "2026-10-28T13:56:00.285783+00:00"
+          "hash": "bc37aa75350f45a9c018bf8368de2e3179bcafb6300f91fc083396fbc72ff127",
+          "modified": "2026-11-13T21:25:08.289748+00:00"
         }
       },
-      "completed": "2026-10-28T13:56:00.343042+00:00",
+      "completed": "2026-11-13T21:25:08.524593+00:00",
       "inputs": {
         "config/team-config.yaml": "b1b298df3441797113db36d9524566fa76c836df085b140b54eaac01e26fd9f9",
         "config/team-guids.json": "906473ddbf256345a4150df497def05ec513f95948b27d6fc98fa6dba00bb7d0",
@@ -754,7 +757,7 @@
         "output/goremongers/dice/goremongers-dice-dark.jpg": "138ff0d25de61c6e6dd53c5cb412bcd5b92f3e671f05b70fa1228dce3f4e1d9f",
         "output/goremongers/dice/goremongers-dice-light.jpg": "447e531f316a858de4e493cf8845b8eb41024cebe39c607f51e12fd96d6bfe6c",
         "output/goremongers/dice/goremongers-dice-team.jpg": "a96357922712875bb6a23f8469a35775661216e57f7483c75e6e1695c847c31f",
-        "output/goremongers/data/goremongers-team-data.json": "521467495eb653096455fcd87a146bb39e53e988d82df9ef41af1b8b19ac93a6",
+        "output/goremongers/data/goremongers-team-data.json": "000ae17e4362eb0da89f144858f68c68f6afc41b75856d51c325e358882dd924",
         "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
         "config/defaults/tts-script/datacard-load-stats.lua": "e163a1c2bbf015020a7ffe5ee861e9e78e7127ed99661187805c247862108260",
         "config/defaults/tts-script/display-table-manager-script.lua": "846de299f8e2c925e63cc77c4991fedd07ae75e9bde375f3b3c991c8730b891b",

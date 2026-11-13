@@ -58,7 +58,22 @@
         "LEADER",
         "CRYPTEK",
         "GEOMANCER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "melee",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Piercing x",
+          "Blast x",
+          "Seek",
+          "Stun",
+          "Severe",
+          "Shock"
+        ]
+      }
     },
     {
       "name": "CANOPTEK MACROCYTE ACCELERATOR",
@@ -99,7 +114,18 @@
           "name": "CRANIAL OVERLOAD (1AP)",
           "description": "Select one enemy operative visible to and within 3\" of this operative. Alternatively, if this operative is within your OBELISK NODE MATRIX, you can select one enemy operative within your OBELISK NODE MATRIX. Until the end of that enemy operative’s next activation, subtract 1 from its APL stat. This operative cannot perform this action while within control range of an enemy operative."
         }
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Piercing x",
+          "Range x",
+          "Stun"
+        ]
+      }
     },
     {
       "name": "CANOPTEK MACROCYTE REANIMATOR",
@@ -141,7 +167,16 @@
           "name": "NANOSCARAB BEAM (1AP)",
           "description": "Select one friendly CANOPTEK CIRCLE operative visible to and within 6\" of this operative. Alternatively, if this operative is within your OBELISK NODE MATRIX, you can select one other friendly CANOPTEK CIRCLE operative within your OBELISK NODE MATRIX. The selected operative regains up to 3D3 lost wounds. It cannot be an operative that the Reanimate rule was used on during this turning point. This operative cannot perform this action while within control range of an enemy operative, or more than once per turning point."
         }
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x"
+        ]
+      }
     },
     {
       "name": "CANOPTEK MACROCYTE WARRIOR",
@@ -198,7 +233,41 @@
           "name": "A Ceaseless Scuttling",
           "description": "As a STRATEGIC GAMBIT in each turning point after the first, if you have less than three non-incapacitated friendly CANOPTEK CIRCLE WARRIOR operatives, you can set up another one ready and with a Conceal order wholly within your drop zone (you can select its weapon options as normal)."
         }
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "melee",
+          "melee",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Piercing x",
+          "Blast x"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "Gauss scalpel; claws and tail",
+                "weapons": [
+                  0,
+                  3
+                ]
+              },
+              {
+                "label": "Tesla caster; claws and tail",
+                "weapons": [
+                  1,
+                  2,
+                  3
+                ]
+              }
+            ]
+          ],
+          "fixed": []
+        }
+      }
     },
     {
       "name": "CANOPTEK TOMB CRAWLER",
@@ -256,7 +325,42 @@
         "NECRON",
         "CANOPTEK",
         "TOMB CRAWLER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "melee",
+          "melee",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Piercing x",
+          "Severe",
+          "Torrent x"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "Twin gauss reapers; claws",
+                "weapons": [
+                  1,
+                  2,
+                  3
+                ]
+              },
+              {
+                "label": "Transdimensional isolator; claws",
+                "weapons": [
+                  0,
+                  3
+                ]
+              }
+            ]
+          ],
+          "fixed": []
+        }
+      }
     }
   ],
   "equipment": [
@@ -348,5 +452,15 @@
       "name": "souldrain",
       "text": "CANOPTEK CIRCLE\nSTRATEGY PLOY\nSOULDRAIN\nA lifeless chill creeps into the hearts of those who would \ndare to breach the Necrons’ realm – an enervating \nleeching of strength and vitality that leaves them \neasy prey.\nWhenever an enemy operative is within your \nOBELISK NODE MATRIX, or whenever it’s fighting \nor retaliating against a friendly CANOPTEK \nCIRCLE operative that’s within your OBELISK \nNODE MATRIX, subtract 1 from both Dmg stats \nof that enemy operative’s melee weapons (to a \nminimum of 2) until the end of the activation/\ncounteraction. Note this means if the enemy \noperative moves through your OBELISK NODE \nMATRIX, apply this change at the end of that \nmove action until the end of the activation/\ncounteraction."
     }
-  ]
+  ],
+  "node_weapon_rules": {
+    "Piercing x": "The defender collects x less defence dice, e.g. Piercing 1. If the rule is Piercing Crits x, this only comes into effect if you retain any critical successes.",
+    "Blast x": "The target you select is the primary target. After shooting the primary target, shoot with this weapon against each secondary target in an order of your choice (roll each sequence separately). Secondary targets are other operatives visible to and within x of the primary target, e.g. Blast 2\" (they are all valid targets, regardless of a Conceal order). Secondary targets are in cover and obscured if the primary target was.",
+    "Seek": "When selecting a valid target, operatives with a Conceal order cannot use terrain for cover. If the rule is Seek Light, they cannot use Light terrain for cover. While this can allow operatives to be targeted (assuming they're visible), it doesn't remove their cover save (if any).",
+    "Stun": "If you retain any critical successes, subtract 1 from the APL stat of the operative this weapon is being used against until the end of its next activation.",
+    "Severe": "If you don't retain any critical successes, you can change one of your normal successes to a critical success. The Devastating and Piercing Crits weapon rules still take effect, but Punishing and Rending don't.",
+    "Shock": "The first time you strike with a critical success in each sequence, also discard one of your opponent's unresolved normal successes (or one of their critical successes if there are none).",
+    "Range x": "Only operatives within x of the active operative can be valid targets, e.g. Range 9\".",
+    "Torrent x": "Select a valid target as normal as the primary target, then select any number of other valid targets within x of the first valid target, but not within control range of friendly operatives, as secondary targets, e.g. Torrent 2\". Shoot with this weapon against all of them in an order of your choice (roll each sequence separately)."
+  }
 }

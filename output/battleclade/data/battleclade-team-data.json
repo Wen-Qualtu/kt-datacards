@@ -44,7 +44,19 @@
         "TECH-PRIEST",
         "LEADER",
         "TECHNOARCHEOLOGIST"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Devastating x",
+          "Range x",
+          "Severe",
+          "Shock"
+        ]
+      }
     },
     {
       "name": "BATTLECLADE AUTO-PROXY SERVITOR",
@@ -80,7 +92,15 @@
         "ADEPTUS MECHANICUS",
         "AUTO-PROXY",
         "SERVITOR"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Shock"
+        ]
+      }
     },
     {
       "name": "BATTLECLADE BREACHER SERVITOR",
@@ -125,7 +145,18 @@
         "ADEPTUS MECHANICUS",
         "BREACHER",
         "SERVITOR"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Piercing x",
+          "Range x"
+        ]
+      }
     },
     {
       "name": "BATTLECLADE COMBAT SERVITOR",
@@ -169,7 +200,52 @@
         "ADEPTUS MECHANICUS",
         "COMBAT",
         "SERVITOR"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Saturate",
+          "Torrent x",
+          "Devastating x",
+          "Piercing x",
+          "Blast x",
+          "Severe"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "Servo-claw; incendine igniter",
+                "weapons": [
+                  0,
+                  3
+                ]
+              },
+              {
+                "label": "Servo-claw; meltagun",
+                "weapons": [
+                  1,
+                  3
+                ]
+              },
+              {
+                "label": "Servo-claw; phosphor blaster",
+                "weapons": [
+                  2,
+                  3
+                ]
+              }
+            ]
+          ],
+          "fixed": []
+        }
+      }
     },
     {
       "name": "BATTLECLADE GUN SERVITOR",
@@ -214,7 +290,44 @@
         "ADEPTUS MECHANICUS",
         "GUN",
         "SERVITOR"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Heavy",
+          "Piercing x",
+          "Stun",
+          "Torrent x",
+          "Brutal"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "heavy arc rifle and augmetic claw",
+                "weapons": [
+                  0,
+                  3
+                ]
+              },
+              {
+                "label": "heavy bolter and augmetic claw",
+                "weapons": [
+                  1,
+                  2,
+                  3
+                ]
+              }
+            ]
+          ],
+          "fixed": []
+        }
+      }
     },
     {
       "name": "BATTLECLADE SERVITOR UNDERSEER",
@@ -255,7 +368,18 @@
         "ADEPTUS MECHANICUS",
         "TECH-PRIEST",
         "SERVITOR UNDERSEER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Balanced",
+          "Range x",
+          "Rending"
+        ]
+      }
     },
     {
       "name": "BATTLECLADE TECHNOMEDIC SERVITOR",
@@ -292,7 +416,15 @@
         "MEDIC",
         "TECHNOMEDIC",
         "SERVITOR"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Rending"
+        ]
+      }
     }
   ],
   "equipment": [
@@ -384,5 +516,20 @@
       "name": "prioritised-acquisition",
       "text": "BATTLECLADE\nSTRATEGY PLOY\nPRIORITISED ACQUISITION\nAcquisition is a holy task to a Technoarcheologist, \nand their zealous fanaticism bleeds into their binharic \ninstructions. Faced with the sacrilege of thieves, \naggression protocols are initiated and biochemical \nstimulants are released in their thralls, endowing all with \na measure of their master’s repugnance.\nSelect one objective marker or one of your \nmission markers.\n• Whenever determining control of that \nmarker, treat the total APL stat of friendly \nBATTLECLADE operatives that contest it as 1 \nhigher if at least one friendly BATTLECLADE \noperative contests that marker. Note this isn’t \na change to the APL stat, so any changes are \ncumulative with this.\n• Whenever a friendly BATTLECLADE operative \nis within 3\" of that marker, add 1 to the Atk stat \nof its melee weapons (to a maximum of 4)."
     }
-  ]
+  ],
+  "node_weapon_rules": {
+    "Devastating x": "Each retained critical success immediately inflicts x damage on the operative this weapon is being used against, e.g. Devastating 3. If the rule starts with a distance (e.g. 1\" Devastating x), inflict x damage on that operative and each other operative visible to and within that distance of it. Note that success isn't discarded after doing so - it can still be resolved later in the sequence.",
+    "Range x": "Only operatives within x of the active operative can be valid targets, e.g. Range 9\".",
+    "Severe": "If you don't retain any critical successes, you can change one of your normal successes to a critical success. The Devastating and Piercing Crits weapon rules still take effect, but Punishing and Rending don't.",
+    "Shock": "The first time you strike with a critical success in each sequence, also discard one of your opponent's unresolved normal successes (or one of their critical successes if there are none).",
+    "Piercing x": "The defender collects x less defence dice, e.g. Piercing 1. If the rule is Piercing Crits x, this only comes into effect if you retain any critical successes.",
+    "Saturate": "The defender cannot retain cover saves.",
+    "Torrent x": "Select a valid target as normal as the primary target, then select any number of other valid targets within x of the first valid target, but not within control range of friendly operatives, as secondary targets, e.g. Torrent 2\". Shoot with this weapon against all of them in an order of your choice (roll each sequence separately).",
+    "Blast x": "The target you select is the primary target. After shooting the primary target, shoot with this weapon against each secondary target in an order of your choice (roll each sequence separately). Secondary targets are other operatives visible to and within x of the primary target, e.g. Blast 2\" (they are all valid targets, regardless of a Conceal order). Secondary targets are in cover and obscured if the primary target was.",
+    "Heavy": "An operative cannot use this weapon in an activation or counteraction in which it moved, and it cannot move in an activation or counteraction in which it used this weapon. If the rule is Heavy (x only), where x is a move action, only that move is allowed, e.g. Heavy (Dash only). This weapon rule has no effect on preventing the Guard action.",
+    "Stun": "If you retain any critical successes, subtract 1 from the APL stat of the operative this weapon is being used against until the end of its next activation.",
+    "Brutal": "Your opponent can only block with critical successes.",
+    "Balanced": "You can re-roll one of your attack dice.",
+    "Rending": "If you retain any critical successes, you can retain one of your normal successes as a critical success instead."
+  }
 }

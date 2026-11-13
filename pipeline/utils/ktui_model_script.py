@@ -16,6 +16,7 @@ Owner assignment is card-side (baked into script_state in datacard-load-stats.lu
 """
 from __future__ import annotations
 
+import hashlib
 import re
 from pathlib import Path
 
@@ -77,3 +78,20 @@ def compose_ktui_model_script(config_dir: Path) -> str:
     ext_path = tdir / _EXTENSION
     ext = ext_path.read_text(encoding="utf-8").replace("\r\n", "\n") if ext_path.exists() else ""
     return base.rstrip("\n") + ("\n\n" + ext.rstrip("\n") + "\n" if ext.strip() else "\n")
+
+
+def compose_command_node_loader(config_dir: Path) -> str:
+    model_script = compose_ktui_model_script(config_dir)
+    if not model_script:
+        raise ValueError("KTUI model script is not available")
+    version = hashlib.sha1(model_script.encode("utf-8")).hexdigest()[:12]
+    model_script = f'KT_MODELSCRIPT_VERSION = "{version}"\n\n' + model_script
+    equals = ""
+    while "]" + equals + "]" in model_script:
+        equals += "="
+    card_script = (config_dir / "defaults" / "tts-script" / "datacard-load-stats.lua").read_text(encoding="utf-8")
+    return (
+        f'KTUI_MODELSCRIPT_VERSION = "{version}"\n\n'
+        f"KTUI_MODELSCRIPT = [{equals}[{model_script}]{equals}]\n\n"
+        f"{card_script}"
+    )

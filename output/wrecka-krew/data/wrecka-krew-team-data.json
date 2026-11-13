@@ -61,7 +61,44 @@
         "ORK",
         "LEADER",
         "BOSS NOB"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "melee",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Blast x",
+          "Range x",
+          "Ceaseless",
+          "Brutal"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "Rokkit pistol; smash hammer",
+                "weapons": [
+                  0,
+                  4
+                ]
+              },
+              {
+                "label": "Two rokkit pistols; choppa",
+                "weapons": [
+                  1,
+                  2,
+                  3
+                ]
+              }
+            ]
+          ],
+          "fixed": []
+        }
+      }
     },
     {
       "name": "WRECKA BOMB SQUIG",
@@ -108,7 +145,17 @@
         "WRECKA KREW",
         "ORK",
         "BOMB SQUIG"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Blast x",
+          "Limited x"
+        ]
+      }
     },
     {
       "name": "BREAKA BOY DEMOLISHA",
@@ -141,7 +188,13 @@
         "ORK",
         "BREAKA BOY",
         "DEMOLISHA"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "melee"
+        ],
+        "weapon_rule_names": []
+      }
     },
     {
       "name": "BREAKA BOY FIGHTER",
@@ -171,7 +224,15 @@
         "ORK",
         "BREAKA BOY",
         "FIGHTER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Brutal"
+        ]
+      }
     },
     {
       "name": "BREAKA BOY KRUSHA",
@@ -205,7 +266,16 @@
         "ORK",
         "BREAKA BOY",
         "KRUSHA"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Brutal",
+          "Shock"
+        ]
+      }
     },
     {
       "name": "TANKBUSTA GUNNER",
@@ -248,7 +318,39 @@
         "ORK",
         "TANKBUSTA",
         "GUNNER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Blast x",
+          "Heavy"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "’Eavy rokkit launcha; fists",
+                "weapons": [
+                  0,
+                  2
+                ]
+              },
+              {
+                "label": "Rokkit launcha; fists",
+                "weapons": [
+                  1,
+                  2
+                ]
+              }
+            ]
+          ],
+          "fixed": []
+        }
+      }
     },
     {
       "name": "TANKBUSTA ROKKITEER",
@@ -295,7 +397,42 @@
         "ORK",
         "TANKBUSTA",
         "ROKKITEER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Blast x",
+          "Heavy",
+          "Limited x",
+          "Relentless"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "Rokkit launcha; pulsa rokkit; fists",
+                "weapons": [
+                  0,
+                  2
+                ]
+              },
+              {
+                "label": "Rokkit launcha; rokkit rack; fists",
+                "weapons": [
+                  0,
+                  1,
+                  2
+                ]
+              }
+            ]
+          ],
+          "fixed": []
+        }
+      }
     }
   ],
   "equipment": [
@@ -390,5 +527,15 @@
       "name": "amped-up",
       "text": "WRECKA KREW\nSTRATEGY PLOY\nAMPED UP\nOrks thrive in the chaos and cacophony of battle. The \ngreater the explosions and destruction around them, the \nmore their adrenaline kicks in. When whipped up into \nsuch a fury, they can fight on through injuries that would \nordinarily lay them low.\nEach friendly WRECKA KREW operative that has \nan Engage order can immediately regain up to \nD3+1 lost wounds (roll separately for each)."
     }
-  ]
+  ],
+  "node_weapon_rules": {
+    "Blast x": "The target you select is the primary target. After shooting the primary target, shoot with this weapon against each secondary target in an order of your choice (roll each sequence separately). Secondary targets are other operatives visible to and within x of the primary target, e.g. Blast 2\" (they are all valid targets, regardless of a Conceal order). Secondary targets are in cover and obscured if the primary target was.",
+    "Range x": "Only operatives within x of the active operative can be valid targets, e.g. Range 9\".",
+    "Ceaseless": "You can re-roll any of your attack dice results of one result (e.g. results of 2).",
+    "Brutal": "Your opponent can only block with critical successes.",
+    "Limited x": "After an operative uses this weapon a number of times in the battle equal to x, they no longer have it. If it's used multiple times in one action (e.g. Blast), treat this as one use.",
+    "Shock": "The first time you strike with a critical success in each sequence, also discard one of your opponent's unresolved normal successes (or one of their critical successes if there are none).",
+    "Heavy": "An operative cannot use this weapon in an activation or counteraction in which it moved, and it cannot move in an activation or counteraction in which it used this weapon. If the rule is Heavy (x only), where x is a move action, only that move is allowed, e.g. Heavy (Dash only). This weapon rule has no effect on preventing the Guard action.",
+    "Relentless": "You can re-roll any of your attack dice."
+  }
 }

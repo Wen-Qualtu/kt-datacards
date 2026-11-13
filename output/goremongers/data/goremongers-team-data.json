@@ -41,7 +41,18 @@
         "CHAOS",
         "LEADER",
         "BLOOD HERALD"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Saturate",
+          "Rending"
+        ]
+      }
     },
     {
       "name": "GOREMONGER ASPIRANT",
@@ -77,7 +88,17 @@
         "GOREMONGER",
         "CHAOS",
         "ASPIRANT"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Rending"
+        ]
+      }
     },
     {
       "name": "GOREMONGER BLOODTAKER",
@@ -118,7 +139,16 @@
         "GOREMONGER",
         "CHAOS",
         "BLOODTAKER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x"
+        ]
+      }
     },
     {
       "name": "GOREMONGER IMPALER",
@@ -165,7 +195,19 @@
         "GOREMONGER",
         "CHAOS",
         "IMPALER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Piercing x",
+          "Stun"
+        ]
+      }
     },
     {
       "name": "GOREMONGER INCITER",
@@ -206,7 +248,19 @@
         "GOREMONGER",
         "CHAOS",
         "INCITER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged"
+        ],
+        "weapon_rule_names": [
+          "Ceaseless",
+          "Devastating x",
+          "Range x",
+          "Rending"
+        ]
+      }
     },
     {
       "name": "GOREMONGER SKULLCLAIMER",
@@ -246,7 +300,17 @@
         "GOREMONGER",
         "CHAOS",
         "SKULLCLAIMER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Brutal"
+        ]
+      }
     },
     {
       "name": "GOREMONGER STALKER",
@@ -286,7 +350,17 @@
         "GOREMONGER",
         "CHAOS",
         "STALKER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Rending"
+        ]
+      }
     }
   ],
   "equipment": [
@@ -402,5 +476,15 @@
       "name": "hunt-for-blood",
       "text": "GOREMONGER\nSTRATEGY PLOY\nHUNT FOR BLOOD\nAs blood is spilled, its copper scent fills the air, driving \nthe Goremongers into a thirsting frenzy.\nSelect one friendly GOREMONGER operative. If \nit has a Conceal order, change it to Engage. Then \nit can immediately perform a free Charge action, \nbut cannot move more than 3\" during that action."
     }
-  ]
+  ],
+  "node_weapon_rules": {
+    "Range x": "Only operatives within x of the active operative can be valid targets, e.g. Range 9\".",
+    "Saturate": "The defender cannot retain cover saves.",
+    "Rending": "If you retain any critical successes, you can retain one of your normal successes as a critical success instead.",
+    "Piercing x": "The defender collects x less defence dice, e.g. Piercing 1. If the rule is Piercing Crits x, this only comes into effect if you retain any critical successes.",
+    "Stun": "If you retain any critical successes, subtract 1 from the APL stat of the operative this weapon is being used against until the end of its next activation.",
+    "Ceaseless": "You can re-roll any of your attack dice results of one result (e.g. results of 2).",
+    "Devastating x": "Each retained critical success immediately inflicts x damage on the operative this weapon is being used against, e.g. Devastating 3. If the rule starts with a distance (e.g. 1\" Devastating x), inflict x damage on that operative and each other operative visible to and within that distance of it. Note that success isn't discarded after doing so - it can still be resolved later in the sequence.",
+    "Brutal": "Your opponent can only block with critical successes."
+  }
 }
