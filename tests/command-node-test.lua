@@ -45,6 +45,17 @@ local cardScript = [[
 KTUI_MODELSCRIPT = "test"
 MOVE_TOOL_CODE = "-- move-dash-regression"
 SPRINT_TOOL_CODE = "-- sprint-leap-regression"
+NODE_COUNTER_SETUP = [====[{"test":{"name":"Gore Tank"}}]====]
+function ktCommandNodeAddCounters(params)
+    assert(getObjectFromGUID(helperObject.guid) == helperObject)
+    params.model.counterInstalls = (params.model.counterInstalls or 0) + 1
+    params.model.script_state.operative_counter = {name = "Gore Tank", current = 0}
+    Wait.frames(function()
+        assert(getObjectFromGUID(helperObject.guid) == helperObject, "Counter helper destroyed before reload")
+        params.model.reload()
+    end, 10)
+    return true
+end
 function rebuildDescription(data) return "Chosen loadout" end
 function diffAndApply(model, data, color, replaceScript, modelScript)
     assert(replaceScript == true)
@@ -94,6 +105,7 @@ JSON = {
     decode = function(value)
         if value == "team-index" then return index end
         if value == "empty-index" then return {} end
+        if value == '{"test":{"name":"Gore Tank"}}' then return {test = {name = "Gore Tank"}} end
         if value == "team-metadata" then return {
             team = "test", team_data = {url = "https://example.test/main/test-data", hash = "abc123"},
             box = {url = "https://example.test/main/output/test/tts_objects/Test.json", hash = "def456"},
@@ -239,7 +251,7 @@ local function newObject(kind, position)
             end
             return object
         end
-        local environment = setmetatable({applied = applied}, {__index = _G})
+        local environment = setmetatable({applied = applied, helperObject = object}, {__index = _G})
         assert(load(object.script, "helper", "t", environment))()
         applyAdapter = environment.ktCommandNodeApply
         object.call = function(name, parameters) return environment[name](parameters) end
@@ -378,8 +390,9 @@ assert(#spawnedSupplies == 4)
 assert(spawnedSupplies[1].data.LuaScript == "token-bag-script")
 assert(#spawnedSupplies[1].data.ContainedObjects == 1)
 assert(spawnedSupplies[2].data.LuaScript == "dice-script")
-assert(spawnedSupplies[1].position.x > 10)
+assert(spawnedSupplies[1].position.x > 5.2 and spawnedSupplies[1].position.x < 8)
 assert(spawnedSupplies[2].position.z - spawnedSupplies[1].position.z == 3)
+assert(spawnedSupplies[3].position.z - spawnedSupplies[2].position.z == 1.5)
 commandNodeSpawnSupplies({color = "White"})
 assert(#spawnedSupplies == 4)
 assert(assertPanelAboveNode() < teamPanelHeight)
@@ -812,6 +825,34 @@ deferRequest = false
 commandNodeSpawnSupplies({color = "White"})
 assert(#spawnedSupplies == initialSupplyCount + 4)
 commandNodeCancel({color = "White"})
+
+for _, enabled in ipairs({true, false}) do
+    startSupplySetup()
+    commandNodeChangeCount({color = "White"}, nil, "plus_1")
+    commandNodeSetup({color = "White"})
+    assert(lastXml:find('id="setup_tokens"', 1, true))
+    assert(lastXml:find('id="setup_rules"', 1, true))
+    assert(lastXml:find('Special rules: Gore Tank', 1, true))
+    assert(lastXml:find('id="setup_supplies"', 1, true))
+    commandNodeSetupToggle({color = "White"}, "False", "setup_tokens")
+    assert(not lastXml:find('id="setup_supplies"', 1, true))
+    commandNodeSetupToggle({color = "White"}, enabled and "True" or "False", "setup_rules")
+    commandNodeCreateSlots({color = "White"})
+    flushCallbacks()
+    local marker = spawnedSlots[1]
+    local model = newObject("Figurine", Vector(0, 1, 0))
+    hits[string.format("%.1f,%.1f", marker.position.x, marker.position.z)] = {{hit_object = model}}
+    commandNodeConfirm({color = "White"})
+    flushCallbacks()
+    assert(model.applied and model.uiVisible)
+    if enabled then
+        assert(model.counterInstalls == 1 and model.script_state.operative_counter.name == "Gore Tank")
+        assert(model.frontReloads == 2)
+    else
+        assert(not model.counterInstalls and not model.script_state.operative_counter)
+        assert(model.frontReloads == 1)
+    end
+end
 
 metadataMissing = true
 commandNodeStart(nil, "White")

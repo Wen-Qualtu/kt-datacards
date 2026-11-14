@@ -444,7 +444,8 @@ def test_builder_can_target_a_feature_branch_without_embedded_data(tmp_path):
     assert "KTUI_MODELSCRIPT =" not in node
     assert "MOVE_TOOL_CODE =" not in node
     assert "SPRINT_TOOL_CODE =" not in node
-    assert len(node.encode("utf-8")) < 45_000
+    assert "function ktCommandNodeAddCounters" not in node
+    assert len(node.encode("utf-8")) < 50_000
 
 
 def test_shared_helper_includes_composed_model_and_card_loader():
@@ -454,6 +455,9 @@ def test_shared_helper_includes_composed_model_and_card_loader():
     assert "function diffAndApply" in helper
     assert "function rebuildDescription" in helper
     assert "function onLoad" in helper
+    assert "NODE_COUNTER_SETUP" in helper
+    assert "function ktCommandNodeAddCounters" in helper
+    assert "Gore Tank" in helper
     scripts = CONFIG / "defaults" / "tts-script"
     assert (scripts / "move-tool.lua").read_text(encoding="utf-8") in helper
     assert (scripts / "sprint-movement-tool.lua").read_text(encoding="utf-8") in helper

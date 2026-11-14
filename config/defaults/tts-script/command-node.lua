@@ -148,6 +148,7 @@ local activeHelper = nil
 local loaderScript = nil
 local panelPage = 1
 local panelRender = nil
+local showSetup
 local PANEL_MAX_HEIGHT = 550
 
 local MODEL_TYPES = {
@@ -354,13 +355,74 @@ local function showRoster()
     end
     panel(currentTeam.name, rows,
         button("back", "commandNodeBackToTeams", "Teams")
-        .. supplies
-        .. button("next", "commandNodeCreateSlots", "Create slots", "#237A60")
+        .. (currentTeam.useTokens ~= false and supplies or "")
+        .. button("next", "commandNodeSetup", "Next", "#237A60")
         .. button("cancel", "commandNodeCancel", "Cancel"), 42)
 end
 
 local function isSessionPlayer(player)
     return player and player.color == sessionColor
+end
+
+showSetup = function()
+    panelRender = showSetup
+    local rows = {
+        '<Toggle id="setup_tokens" onValueChanged="commandNodeSetupToggle" preferredHeight="34" fontSize="17" textColor="#FFFFFF" isOn="'
+            .. tostring(currentTeam.useTokens ~= false) .. '">Team tokens + dice</Toggle>',
+    }
+    if currentTeam.useTokens ~= false then
+        local label = currentTeam.suppliesBusy and "Spawning..." or (currentTeam.suppliesSpawned and "Spawned" or "Spawn tokens + dice")
+        local control = button("setup_supplies", "commandNodeSpawnSupplies", label)
+        if currentTeam.suppliesBusy or currentTeam.suppliesSpawned then
+            control = control:gsub('onClick=', 'interactable="false" onClick=', 1)
+        end
+        rows[#rows + 1] = control
+    end
+    if currentTeam.counterRule then
+        rows[#rows + 1] = '<Toggle id="setup_rules" onValueChanged="commandNodeSetupToggle" preferredHeight="34" fontSize="17" textColor="#FFFFFF" isOn="'
+            .. tostring(currentTeam.useSpecialRules ~= false) .. '">Special rules: '
+            .. xmlEscape(currentTeam.counterRule.name) .. '</Toggle>'
+    end
+    panel(currentTeam.name .. " setup", rows,
+        button("setup_back", "commandNodeSetupBack", "Back")
+        .. button("setup_create", "commandNodeCreateSlots", "Create slots", "#237A60")
+        .. button("cancel", "commandNodeCancel", "Cancel"))
+end
+
+function commandNodeSetupToggle(player, value, id)
+    if not isSessionPlayer(player) or panelRender ~= showSetup then return end
+    local enabled = value == "True" or value == "true" or value == true
+    if id == "setup_tokens" then currentTeam.useTokens = enabled end
+    if id == "setup_rules" then currentTeam.useSpecialRules = enabled end
+    showSetup()
+end
+
+function commandNodeSetupBack(player)
+    if not isSessionPlayer(player) then return end
+    panelPage = 1
+    showRoster()
+end
+
+function commandNodeSetup(player)
+    if not isSessionPlayer(player) or applying or building or panelRender ~= showRoster then return end
+    local version = sessionVersion
+    local function loaded(script, errorMessage)
+        if version ~= sessionVersion then return end
+        local metadata = type(script) == "string" and script:match("NODE_COUNTER_SETUP%s*=%s*%[====%[(.-)%]====%]")
+        local ok, rules = pcall(function() return metadata and JSON.decode(metadata) end)
+        if not compatibleLoader(script) or not ok or type(rules) ~= "table" then
+            notify(sessionColor, errorMessage or "Published loader needs the special-rule setup update.", {1, 0.3, 0.3})
+            showRoster()
+            return
+        end
+        loaderScript = script
+        currentTeam.counterRule = rules[currentTeam.slug]
+        panelPage = 1
+        showSetup()
+    end
+    if loaderScript then loaded(loaderScript); return end
+    panel("Loading team setup...", {}, button("cancel", "commandNodeCancel", "Cancel"))
+    requestText(NODE_LOADER_URL .. "?v=" .. tostring(os.time()), loaded)
 end
 
 function commandNodePage(player, _, id)
@@ -501,7 +563,7 @@ end
 
 function commandNodeSpawnSupplies(player)
     if not isSessionPlayer(player) or not currentTeam or applying or building
-        or panelRender ~= showRoster then return end
+        or (panelRender ~= showRoster and panelRender ~= showSetup) then return end
     local team = currentTeam
     if team.suppliesBusy or team.suppliesSpawned then return end
     local base = REPO_BASE_URL .. "/output/" .. team.slug .. "/tts_objects/"
@@ -513,7 +575,7 @@ function commandNodeSpawnSupplies(player)
     local version = sessionVersion
     local color = sessionColor
     local function refreshRoster()
-        if panelRender == showRoster then showRoster() end
+        if panelRender == showRoster or panelRender == showSetup then panelRender() end
     end
     team.suppliesBusy = true
     showRoster()
@@ -554,10 +616,11 @@ function commandNodeSpawnSupplies(player)
                 return
             end
             local scale = self.getScale()
-            local side = self.getBoundsNormalized().size.x * 0.5 + 10
+            local side = math.max(self.getBoundsNormalized().size.x * 0.5, 2.6 * scale.x) + 1.5
+            local depth = hasTokens and (3 + (#spawned - 1) * 1.5) or #spawned * 1.5
             local called, object = pcall(function()
                 return spawnObjectJSON({json = JSON.encode(root),
-                    position = self.positionToWorld({side / scale.x, 1 / scale.y, #spawned * 3 / scale.z}),
+                    position = self.positionToWorld({side / scale.x, 1 / scale.y, depth / scale.z}),
                     rotation = self.getRotation()})
             end)
             if not called or not object then finish("Could not spawn team supplies; try again."); return end
@@ -852,6 +915,11 @@ end
 
 local function finishApply(errorMessage)
     applying = false
+    if activeHelper then
+        local helper = getObjectFromGUID(activeHelper)
+        if helper then helper.destruct() end
+        activeHelper = nil
+    end
     if errorMessage then
         notify(sessionColor, errorMessage, {1, 0.3, 0.3})
         showSlots()
@@ -908,13 +976,11 @@ local function applyNext(index, models)
                     heading = self.getRotation().y,
                 })
             end)
-            loaded.destruct()
-            activeHelper = nil
             if not called or type(result) ~= "table" or not result.applied then
                 finishApply("Slot " .. index .. ": failed to apply stats; check the TTS log.")
                 return
             end
-            Wait.frames(function()
+            local function finishModel()
                 local refreshed = getObjectFromGUID(targetGuid)
                 if not refreshed then
                     finishApply("Slot " .. index .. ": model is no longer available after reload.")
@@ -929,10 +995,30 @@ local function applyNext(index, models)
                     finishApply("Slot " .. index .. ": could not refresh model UI; check the TTS log.")
                     return
                 end
+                loaded.destruct()
+                activeHelper = nil
                 slot.done = true
                 slot.modelGuid = targetGuid
                 applyNext(index + 1, models)
-            end, 10)
+            end
+            if currentTeam.useSpecialRules ~= false and currentTeam.counterRule then
+                Wait.frames(function()
+                    local refreshed = getObjectFromGUID(targetGuid)
+                    local counterOk, added = pcall(function()
+                        if not refreshed then return false end
+                        return loaded.call("ktCommandNodeAddCounters", {
+                            model = refreshed, team = currentTeam.slug, playerColor = sessionColor,
+                        })
+                    end)
+                    if not counterOk or not added then
+                        finishApply("Slot " .. index .. ": could not add special-rule counters.")
+                        return
+                    end
+                    Wait.frames(finishModel, 30)
+                end, 10)
+            else
+                Wait.frames(finishModel, 10)
+            end
         end, 60)
     end})
     if not helper then finishApply("Slot " .. index .. ": could not create the stats helper."); return end

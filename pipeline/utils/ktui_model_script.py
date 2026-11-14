@@ -17,8 +17,11 @@ Owner assignment is card-side (baked into script_state in datacard-load-stats.lu
 from __future__ import annotations
 
 import hashlib
+import json
 import re
 from pathlib import Path
+
+import yaml
 
 _EXTENDER = "ktui-extender-modelscript.lua"
 _EXTENSION = "ktui-extension.lua"
@@ -81,6 +84,8 @@ def compose_ktui_model_script(config_dir: Path) -> str:
 
 
 def compose_command_node_loader(config_dir: Path) -> str:
+    from ..steps.tts_impl import _build_operative_counter_lua
+
     model_script = compose_ktui_model_script(config_dir)
     if not model_script:
         raise ValueError("KTUI model script is not available")
@@ -99,4 +104,19 @@ def compose_command_node_loader(config_dir: Path) -> str:
             equals += "="
         parts.append(f"{name} = [{equals}[{script}]{equals}]\n\n")
     parts.append((script_dir / "datacard-load-stats.lua").read_text(encoding="utf-8"))
+    config = yaml.safe_load((config_dir / "team-config.yaml").read_text(encoding="utf-8"))
+    counters = {
+        team: info["operative_counter"] for team, info in config.get("teams", {}).items()
+        if info.get("operative_counter")
+    }
+    metadata = json.dumps({team: {"name": counter["name"]} for team, counter in counters.items()})
+    parts.append(f"\nNODE_COUNTER_SETUP = [====[{metadata}]====]\n")
+    parts.append("\nfunction ktCommandNodeAddCounters(params)\n"
+                 "    local findModelOnCard = function() return params.model end\n")
+    for team, counter in counters.items():
+        parts.append(f"    if params.team == {json.dumps(team)} then\n")
+        parts.append(_build_operative_counter_lua(team, counter, "main"))
+        parts.append("\n        addOperativeCounterToModel(params.playerColor)\n"
+                     "        return true\n    end\n")
+    parts.append("    return false\nend\n")
     return "".join(parts)

@@ -6181,3 +6181,166 @@ function loadStatsToModel(playerColor)
     end
     proceedLoad(playerColor, data, model, false)
 end
+
+NODE_COUNTER_SETUP = [====[{"goremongers": {"name": "Gore Tank"}}]====]
+
+function ktCommandNodeAddCounters(params)
+    local findModelOnCard = function() return params.model end
+    if params.team == "goremongers" then
+
+
+-- ===== OPERATIVE COUNTER: GORE TANK =====
+
+OC_NAME = "Gore Tank"
+OC_INIT_VALUE = 0
+OC_MIN_VAL = 0
+OC_MAX_VAL = 2
+
+OC_HELPER_FUNCS = [==[
+--OC1_HELP:START
+
+-- Gore Tank Counter (auto-injected)
+function getOperativeCounterImage()
+  if not state or not state.operative_counter then return "oc_asset_0" end
+  local v = state.operative_counter.current or 0
+  local assets = {[0]="oc_asset_0", [1]="oc_asset_1", [2]="oc_asset_2"}
+  return assets[v] or "oc_asset_0"
+end
+
+function change_operative_counter(player, value, id)
+  if not state.operative_counter then return end
+  local current = state.operative_counter.current or 0
+  local maxv = state.operative_counter.max or 2
+  local minv = state.operative_counter.min or 0
+  if value == "-1" then
+    if current > minv then current = current - 1 end
+  elseif value == "-2" then
+    if current < maxv then current = current + 1 end
+  end
+  state.operative_counter.current = current
+  if refreshUI then refreshUI() end
+  local labels = {[0]="Empty", [1]="Half", [2]="Full"}
+  broadcastToColor("Gore Tank: " .. (labels[current] or "?"), player.color, Color.Yellow)
+end
+
+--OC1_HELP:END
+]==]
+
+OC_ASSET_LINES = [==[
+    {name="oc_asset_0", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/goremongers/tokens/goremongers-gore-tank-empty.png]=]},
+    {name="oc_asset_1", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/goremongers/tokens/goremongers-gore-tank-half.png]=]},
+    {name="oc_asset_2", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/goremongers/tokens/goremongers-gore-tank-full.png]=]},
+]==]
+
+OC_PANEL_XML = "\n    <Panel color=\"#80808000\" outline=\"#FFFF00\" outlineSize=\"3 3\" width=\"45\" height=\"45\" offsetXY=\"0 -10\">"
+    .. "\n      <Image id=\"ktcnid-status-operative-counter\" image=\""
+    .. "]]..getOperativeCounterImage()..[["
+    .. "\" preserveAspect=\"true\" rectAlignment=\"MiddleCenter\" onClick=\"change_operative_counter\" />"
+    .. "\n    </Panel>"
+
+-- Strip helpers so re-applying UPDATES in place (mirrors the sprint/move and
+-- multi-counter behaviour) instead of bailing with "already has".
+function ocStrip1(s, a, b)
+    while true do
+        local i = s:find(a, 1, true)
+        if not i then break end
+        local j = s:find(b, i, true)
+        if not j then return s:sub(1, i - 1) end
+        s = s:sub(1, i - 1) .. s:sub(j + #b)
+    end
+    return s
+end
+
+function ocStripPanelById1(s, id)
+    while true do
+        local idpos = s:find(id, 1, true)
+        if not idpos then break end
+        local ps, from = nil, 1
+        while true do
+            local p = s:find("<Panel", from, true)
+            if not p or p > idpos then break end
+            ps, from = p, p + 1
+        end
+        local pe = s:find("</Panel>", idpos, true)
+        if not ps or not pe then break end
+        s = s:sub(1, ps - 1) .. s:sub(pe + 8)
+    end
+    return s
+end
+
+function ocStripLines1(s, sub)
+    local out = {}
+    for line in (s .. "\n"):gmatch("([^\n]*)\n") do
+        if not line:find(sub, 1, true) then out[#out + 1] = line end
+    end
+    return table.concat(out, "\n")
+end
+
+function addOperativeCounterToModel(playerColor)
+    local model = findModelOnCard()
+    if model == nil then
+        broadcastToColor("Place a KTUIMini model on this card first.", playerColor, Color.Orange)
+        return
+    end
+
+    local modelLua = model.getLuaScript() or ""
+    if modelLua == "" then
+        broadcastToColor("Model has no Lua script (not a KTUI model?).", playerColor, Color.Red)
+        return
+    end
+
+    local existed = modelLua:find("ktcnid%-status%-operative%-counter") ~= nil
+
+    -- Remove any prior copy (old OR new) then (re)inject.
+    modelLua = ocStripPanelById1(modelLua, 'id="ktcnid-status-operative-counter"')
+    modelLua = ocStripLines1(modelLua, 'name="oc_asset_')
+    modelLua = ocStrip1(modelLua, "--OC1_HELP:START", "--OC1_HELP:END")
+
+    local xmlPattern = "(<HorizontalLayout spacing=\"3\" width=\"@totalAtt\")"
+    if modelLua:find(xmlPattern) then
+        modelLua = modelLua:gsub(xmlPattern, OC_PANEL_XML .. "\n    %1")
+    else
+        broadcastToColor("Could not find attachment layout in model.", playerColor, Color.Red)
+        return
+    end
+
+    local bundlePattern = "({name=\"Wound_red\"[^\n]+)"
+    if modelLua:find(bundlePattern) then
+        modelLua = modelLua:gsub(bundlePattern, "%1" .. OC_ASSET_LINES)
+    end
+
+    modelLua = modelLua .. OC_HELPER_FUNCS
+
+    local modelState = model.script_state or "{}"
+    local ok, mState = pcall(function() return JSON.decode(modelState) end)
+    if not ok or not mState then mState = {} end
+    local prev = mState.operative_counter
+    local cur = (prev and prev.current) or OC_INIT_VALUE
+    if cur < OC_MIN_VAL then cur = OC_MIN_VAL end
+    if cur > OC_MAX_VAL then cur = OC_MAX_VAL end
+    mState.operative_counter = { name = OC_NAME, current = cur, min = OC_MIN_VAL, max = OC_MAX_VAL }
+    model.script_state = JSON.encode(mState)
+
+    model.setLuaScript(modelLua)
+    Wait.frames(function() model.reload() end, 10)
+
+    if existed then
+        broadcastToColor("Updated " .. OC_NAME .. " counter.", playerColor, Color.Green)
+    else
+        broadcastToColor("Added " .. OC_NAME .. " counter to model!", playerColor, Color.Green)
+    end
+end
+
+local ocBaseOnLoad = onLoad
+function onLoad()
+    if ocBaseOnLoad then ocBaseOnLoad() end
+    self.addContextMenuItem("Add " .. OC_NAME, addOperativeCounterToModel)
+end
+
+-- ===== END OPERATIVE COUNTER =====
+
+        addOperativeCounterToModel(params.playerColor)
+        return true
+    end
+    return false
+end
