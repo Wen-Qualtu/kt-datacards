@@ -154,6 +154,8 @@ local indexEmpty = false
 local metadataMissing = false
 local loaderMissing = false
 local loaderOutdated = false
+local loaderMetadataTruncated = false
+local loaderPadding = string.rep("-- loader padding\n", 12000)
 local deferRequest = false
 WebRequest = {get = function(url, callback)
     assert(expectCardbox or not url:find("/tts_objects/Test.json", 1, true), "Unselected cardbox must not be downloaded")
@@ -179,6 +181,8 @@ WebRequest = {get = function(url, callback)
         end
     elseif url:find("command%-node%-loader%.lua") and not loaderMissing then
         text = loaderOutdated and cardScript:gsub("color, replaceScript, modelScript%)", "color)") or cardScript
+        if loaderMetadataTruncated then text = text:gsub("%]====%]", "") end
+        text = loaderPadding .. text
     end
     local response = {response_code = text and 200 or 404, is_error = not text, text = text, error = ""}
     if deferRequest then
@@ -347,6 +351,12 @@ local function assertPanelAboveNode()
     assert(scale < 1)
     assert(height >= 116 and height <= 550)
     return height
+end
+
+local originalMatch = string.match
+string.match = function(text, pattern, ...)
+    assert(#text < 100000, "Do not pattern-match the entire loader: TTS reports pattern too complex")
+    return originalMatch(text, pattern, ...)
 end
 
 dofile("config/defaults/tts-script/command-node.lua")
@@ -1011,6 +1021,14 @@ for _, enabled in ipairs({true, false}) do
     end
 end
 choicesSupported = false
+
+loaderMetadataTruncated = true
+commandNodeStart(nil, "White")
+commandNodeChooseTeam({color = "White"}, nil, "team_1")
+assert(messages[#messages]:find("special-rule setup update", 1, true))
+assert(lastXml:find('id="team_1"', 1, true))
+commandNodeCancel({color = "White"})
+loaderMetadataTruncated = false
 
 metadataMissing = true
 commandNodeStart(nil, "White")

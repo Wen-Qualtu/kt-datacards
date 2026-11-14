@@ -253,7 +253,10 @@ end
 local function compatibleLoader(script)
     if type(script) ~= "string" or not script:find("function rebuildDescription", 1, true)
         or not script:find("KTUI_MODELSCRIPT", 1, true) then return false end
-    local signature = script:match("function%s+diffAndApply%s*(%b())")
+    local declaration = script:find("function diffAndApply", 1, true)
+    local opening = declaration and script:find("(", declaration, true)
+    local closing = opening and script:find(")", opening + 1, true)
+    local signature = closing and script:sub(opening, closing)
     return signature and signature:find("replaceScript", 1, true) ~= nil
         and signature:find("modelScript", 1, true) ~= nil
 end
@@ -594,7 +597,16 @@ function commandNodeChooseTeam(player, _, id)
             panelPage = 1
             local function ready(script, loaderError)
                 if version ~= sessionVersion then return end
-                local metadata = type(script) == "string" and script:match("NODE_COUNTER_SETUP%s*=%s*%[====%[(.-)%]====%]")
+                local metadata
+                if type(script) == "string" then
+                    local marker = "NODE_COUNTER_SETUP = [====["
+                    local opening = script:find(marker, 1, true)
+                    if opening then
+                        local start = opening + #marker
+                        local closing = script:find("]====]", start, true)
+                        if closing then metadata = script:sub(start, closing - 1) end
+                    end
+                end
                 local ok, rules = pcall(function() return metadata and JSON.decode(metadata) end)
                 if not compatibleLoader(script) or not ok or type(rules) ~= "table" then
                     notify(sessionColor, loaderError or "Published loader needs the special-rule setup update.", {1, 0.3, 0.3})
