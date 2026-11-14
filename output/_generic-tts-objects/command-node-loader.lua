@@ -6244,9 +6244,9 @@ end
 ]==]
 
 OC_ASSET_LINES = [==[
-    {name="oc_asset_0", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/goremongers/tokens/goremongers-gore-tank-empty.png]=]},
-    {name="oc_asset_1", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/goremongers/tokens/goremongers-gore-tank-half.png]=]},
-    {name="oc_asset_2", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/goremongers/tokens/goremongers-gore-tank-full.png]=]},
+    {name="oc_asset_0", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/acc/output/goremongers/tokens/goremongers-gore-tank-empty.png]=]},
+    {name="oc_asset_1", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/acc/output/goremongers/tokens/goremongers-gore-tank-half.png]=]},
+    {name="oc_asset_2", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/acc/output/goremongers/tokens/goremongers-gore-tank-full.png]=]},
 ]==]
 
 OC_PANEL_XML = "\n    <Panel color=\"#80808000\" outline=\"#FFFF00\" outlineSize=\"3 3\" width=\"45\" height=\"45\" offsetXY=\"0 -10\">"
@@ -6456,19 +6456,19 @@ function addOperativeCountersToModel(playerColor)
     </Panel>]==]
     local assetLines_movement_remaining = [==[
 
-    {name="oc_movement_remaining_asset_0", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/exodite-dragon-masters/tokens/counters/movement_remaining-0.png]=]},
-    {name="oc_movement_remaining_asset_1", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/exodite-dragon-masters/tokens/counters/movement_remaining-1.png]=]},
-    {name="oc_movement_remaining_asset_2", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/exodite-dragon-masters/tokens/counters/movement_remaining-2.png]=]},
-    {name="oc_movement_remaining_asset_3", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/exodite-dragon-masters/tokens/counters/movement_remaining-3.png]=]},
-    {name="oc_movement_remaining_asset_4", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/exodite-dragon-masters/tokens/counters/movement_remaining-4.png]=]},
-    {name="oc_movement_remaining_asset_5", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/exodite-dragon-masters/tokens/counters/movement_remaining-5.png]=]},
-    {name="oc_movement_remaining_asset_6", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/exodite-dragon-masters/tokens/counters/movement_remaining-6.png]=]},
-    {name="oc_movement_remaining_asset_7", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/exodite-dragon-masters/tokens/counters/movement_remaining-7.png]=]},
-    {name="oc_movement_remaining_asset_8", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/exodite-dragon-masters/tokens/counters/movement_remaining-8.png]=]},
-    {name="oc_movement_remaining_asset_9", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/exodite-dragon-masters/tokens/counters/movement_remaining-9.png]=]},
-    {name="oc_movement_remaining_asset_10", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/exodite-dragon-masters/tokens/counters/movement_remaining-10.png]=]},
-    {name="oc_movement_remaining_asset_11", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/exodite-dragon-masters/tokens/counters/movement_remaining-11.png]=]},
-    {name="oc_movement_remaining_asset_12", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/exodite-dragon-masters/tokens/counters/movement_remaining-12.png]=]},
+    {name="oc_movement_remaining_asset_0", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/acc/output/exodite-dragon-masters/tokens/counters/movement_remaining-0.png]=]},
+    {name="oc_movement_remaining_asset_1", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/acc/output/exodite-dragon-masters/tokens/counters/movement_remaining-1.png]=]},
+    {name="oc_movement_remaining_asset_2", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/acc/output/exodite-dragon-masters/tokens/counters/movement_remaining-2.png]=]},
+    {name="oc_movement_remaining_asset_3", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/acc/output/exodite-dragon-masters/tokens/counters/movement_remaining-3.png]=]},
+    {name="oc_movement_remaining_asset_4", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/acc/output/exodite-dragon-masters/tokens/counters/movement_remaining-4.png]=]},
+    {name="oc_movement_remaining_asset_5", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/acc/output/exodite-dragon-masters/tokens/counters/movement_remaining-5.png]=]},
+    {name="oc_movement_remaining_asset_6", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/acc/output/exodite-dragon-masters/tokens/counters/movement_remaining-6.png]=]},
+    {name="oc_movement_remaining_asset_7", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/acc/output/exodite-dragon-masters/tokens/counters/movement_remaining-7.png]=]},
+    {name="oc_movement_remaining_asset_8", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/acc/output/exodite-dragon-masters/tokens/counters/movement_remaining-8.png]=]},
+    {name="oc_movement_remaining_asset_9", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/acc/output/exodite-dragon-masters/tokens/counters/movement_remaining-9.png]=]},
+    {name="oc_movement_remaining_asset_10", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/acc/output/exodite-dragon-masters/tokens/counters/movement_remaining-10.png]=]},
+    {name="oc_movement_remaining_asset_11", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/acc/output/exodite-dragon-masters/tokens/counters/movement_remaining-11.png]=]},
+    {name="oc_movement_remaining_asset_12", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/acc/output/exodite-dragon-masters/tokens/counters/movement_remaining-12.png]=]},
 ]==]
     local helperFuncs_movement_remaining = [==[
 --OC_HELP:movement_remaining:START
@@ -6507,9 +6507,9 @@ end
     </Panel>]==]
     local assetLines_speed = [==[
 
-    {name="oc_speed_asset_1", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/exodite-dragon-masters/tokens/exodite-dragon-masters-speed-3.png]=]},
-    {name="oc_speed_asset_2", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/exodite-dragon-masters/tokens/exodite-dragon-masters-speed-4.png]=]},
-    {name="oc_speed_asset_3", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/exodite-dragon-masters/tokens/exodite-dragon-masters-speed-7.png]=]},
+    {name="oc_speed_asset_1", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/acc/output/exodite-dragon-masters/tokens/exodite-dragon-masters-speed-3.png]=]},
+    {name="oc_speed_asset_2", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/acc/output/exodite-dragon-masters/tokens/exodite-dragon-masters-speed-4.png]=]},
+    {name="oc_speed_asset_3", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/acc/output/exodite-dragon-masters/tokens/exodite-dragon-masters-speed-7.png]=]},
 ]==]
     local helperFuncs_speed = [==[
 --OC_HELP:speed:START
@@ -6548,10 +6548,10 @@ end
     </Panel>]==]
     local assetLines_remaining_actions = [==[
 
-    {name="oc_remaining_actions_asset_1", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/exodite-dragon-masters/tokens/exodite-dragon-masters-remaining-actions-1.png]=]},
-    {name="oc_remaining_actions_asset_2", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/exodite-dragon-masters/tokens/exodite-dragon-masters-remaining-actions-2.png]=]},
-    {name="oc_remaining_actions_asset_3", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/exodite-dragon-masters/tokens/exodite-dragon-masters-remaining-actions-3.png]=]},
-    {name="oc_remaining_actions_asset_4", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/exodite-dragon-masters/tokens/exodite-dragon-masters-remaining-actions-4.png]=]},
+    {name="oc_remaining_actions_asset_1", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/acc/output/exodite-dragon-masters/tokens/exodite-dragon-masters-remaining-actions-1.png]=]},
+    {name="oc_remaining_actions_asset_2", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/acc/output/exodite-dragon-masters/tokens/exodite-dragon-masters-remaining-actions-2.png]=]},
+    {name="oc_remaining_actions_asset_3", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/acc/output/exodite-dragon-masters/tokens/exodite-dragon-masters-remaining-actions-3.png]=]},
+    {name="oc_remaining_actions_asset_4", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/acc/output/exodite-dragon-masters/tokens/exodite-dragon-masters-remaining-actions-4.png]=]},
 ]==]
     local helperFuncs_remaining_actions = [==[
 --OC_HELP:remaining_actions:START

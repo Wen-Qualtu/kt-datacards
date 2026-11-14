@@ -75,7 +75,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--overwrite", action="store_true")
-    parser.add_argument("--branch", default="main")
+    parser.add_argument("--branch", default="acc")
     args = parser.parse_args()
     if not re.fullmatch(r"[A-Za-z0-9._/-]+", args.branch):
         parser.error("branch must contain only letters, numbers, '.', '_', '-' or '/'")

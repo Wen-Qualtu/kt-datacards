@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import re
 from pathlib import Path
 
@@ -126,6 +127,7 @@ def compose_command_node_loader(config_dir: Path) -> str:
         parts.append(f"{name} = [{equals}[{script}]{equals}]\n\n")
     parts.append((script_dir / "datacard-load-stats.lua").read_text(encoding="utf-8"))
     config = yaml.safe_load((config_dir / "team-config.yaml").read_text(encoding="utf-8"))
+    asset_branch = os.environ.get("KT_DATACARDS_URL_BRANCH", "acc")
     counters = {
         team: info["operative_counter"] for team, info in config.get("teams", {}).items()
         if info.get("operative_counter")
@@ -147,14 +149,14 @@ def compose_command_node_loader(config_dir: Path) -> str:
                  "    local findModelOnCard = function() return params.model end\n")
     for team, counter in counters.items():
         parts.append(f"    if params.team == {json.dumps(team)} then\n")
-        parts.append(_build_operative_counter_lua(team, counter, "main"))
+        parts.append(_build_operative_counter_lua(team, counter, asset_branch))
         parts.append("\n        addOperativeCounterToModel(params.playerColor)\n"
                      "        return true\n    end\n")
     for team, info in multi_counters.items():
         parts.append(f"    if params.team == {json.dumps(team)} then\n")
         prepared = [_apply_generated_counter_states(counter) for counter in info["operative_counters"]]
         parts.append(_build_operative_counters_lua(
-            team, prepared, "main", info.get("operative_counters_menu", "Add Counters"), filter_keywords=True,
+            team, prepared, asset_branch, info.get("operative_counters_menu", "Add Counters"), filter_keywords=True,
         ))
         parts.append("\n        addOperativeCountersToModel(params.playerColor)\n"
                      "        return true\n    end\n")

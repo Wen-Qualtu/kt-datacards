@@ -3,10 +3,10 @@
 
 -- New canonical source: keyed map { slug -> { team, modified, box={url, modified}, ... } }
 -- Each box URL is a BARE Custom_Model_Bag JSON (no ObjectStates wrapper).
-local TTS_METADATA_URL = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/team-urls.json"
+local TTS_METADATA_URL = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/acc/output/team-urls.json"
 -- The manager bag itself is published as a bare Custom_Bag JSON (no save-file
 -- wrapper) so it can be downloaded and handed straight to spawnObjectJSON.
-local MANAGER_BAG_URL = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/_generic-tts-objects/Kill%20Team%20Card%20Boxes.json"
+local MANAGER_BAG_URL = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/acc/output/_generic-tts-objects/Kill%20Team%20Card%20Boxes.json"
 local isUpdating = false
 local cancelRequested = false
 local positions = {}

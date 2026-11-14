@@ -345,7 +345,7 @@ def create_custom_dice(nickname: str, texture_url: str, team_tag: str, variant: 
     }
 
 
-def create_bag(team_name, team_tag, contained_objects, lua_script, texture_url=None, mesh_url=None, faction=None, last_modified=None, last_token_modified=None, box_description="", repo_branch="main"):
+def create_bag(team_name, team_tag, contained_objects, lua_script, texture_url=None, mesh_url=None, faction=None, last_modified=None, last_token_modified=None, box_description="", repo_branch="acc"):
     """Create a TTS Custom_Model_Bag containing decks and cards"""
     
     # Get team folder name from tag

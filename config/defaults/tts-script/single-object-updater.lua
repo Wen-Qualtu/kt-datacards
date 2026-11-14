@@ -4,7 +4,7 @@
 -- URLs in place (new cache-busting ?v= postfix). It does NOT download the full
 -- team box JSON, so it stays tiny and cheap to spawn.
 
-local KTU_REPO = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main"
+local KTU_REPO = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/acc"
 
 local function ktu_strip(url)
   if not url or url == "" then return "" end

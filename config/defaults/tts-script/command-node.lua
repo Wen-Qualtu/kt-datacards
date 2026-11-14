@@ -140,7 +140,7 @@ function commandNodeModelData(operative, teamRules)
     return data
 end
 
-local REPO_BASE_URL = NODE_REPO_BASE_URL or "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main"
+local REPO_BASE_URL = NODE_REPO_BASE_URL or "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/acc"
 local TEAM_INDEX_URL = REPO_BASE_URL .. "/output/team-urls.json"
 local NODE_LOADER_URL = REPO_BASE_URL .. "/output/_generic-tts-objects/command-node-loader.lua"
 local teams = {}

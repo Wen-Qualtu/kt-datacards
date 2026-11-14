@@ -5,7 +5,7 @@
 -- spawnObjectJSON. No save-file slicing, no manual URL cache-busting (the
 -- generated files already carry ?v= on every asset URL).
 
-local TEAM_URLS_URL = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/team-urls.json"
+local TEAM_URLS_URL = "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/acc/output/team-urls.json"
 local allTeams = {}  -- { {slug, name, url}, ... } sorted by name
 
 local function slugToName(slug)
