@@ -1,6 +1,6 @@
-KTUI_MODELSCRIPT_VERSION = "12167bfd1d3f"
+KTUI_MODELSCRIPT_VERSION = "a856c18392d0"
 
-KTUI_MODELSCRIPT = [==[KT_MODELSCRIPT_VERSION = "12167bfd1d3f"
+KTUI_MODELSCRIPT = [==[KT_MODELSCRIPT_VERSION = "a856c18392d0"
 
 self.clearContextMenu()
 
@@ -2440,6 +2440,23 @@ function getUIPosition()
 		depth)
 end
 -- END KT_EXTENSION_V1 --
+
+
+local nodeGetCircleVectorPoints = getCircleVectorPoints
+
+function getCircleVectorPoints(...)
+    local points = nodeGetCircleVectorPoints(...)
+    if not state.kt_node_ui or not state.base or state.base.x == state.base.z then return points end
+    local scale = self.getScale()
+    local angle = math.rad(tonumber(state.kt_front) or 0)
+    local cosine, sine = math.cos(angle), math.sin(angle)
+    for _, point in ipairs(points) do
+        local horizontal, depth = point.x * scale.x, point.z * scale.z
+        point.x = (horizontal * cosine + depth * sine) / scale.x
+        point.z = (-horizontal * sine + depth * cosine) / scale.z
+    end
+    return points
+end
 ]==]
 
 MOVE_TOOL_CODE = [=[--[[ ============================================================================

@@ -7,7 +7,7 @@ import sys
 import pytest
 
 from pipeline.steps import extract_stats, generate_tts, tts_impl
-from pipeline.utils.ktui_model_script import compose_command_node_loader
+from pipeline.utils.ktui_model_script import compose_command_node_loader, compose_ktui_model_script
 from tools.build_command_node import ROOT, SCRIPT, build_save
 
 CONFIG = ROOT / "config"
@@ -530,6 +530,54 @@ print("exodite counter integration passed")
     )
     assert result.stdout.strip() == "exodite counter integration passed", result.stderr
     assert not result.stderr
+
+
+@pytest.mark.skipif(not shutil.which("npx"), reason="npx is required for Lua geometry integration")
+def test_command_node_oval_ring_follows_calibrated_front():
+    script = compose_command_node_loader(CONFIG) + r'''
+Color = setmetatable({}, {__call = function() return {} end})
+local scale = {x = 1.7, y = 0.4, z = 2.3}
+self = {
+    clearContextMenu = function() end,
+    addContextMenuItem = function() end,
+    getScale = function() return scale end,
+    getBoundsNormalized = function() return {size = {x = 1, y = 1, z = 1}} end,
+}
+assert(load((KTUI_MODELSCRIPT:gsub("!=", "~="))))()
+for _, headings in ipairs({{0, 90}, {90, 0}, {180, 270}, {40, 170}}) do
+    local target, modelHeading = headings[1], headings[2]
+    state = {base = {x = 42, z = 75}, kt_node_ui = true, kt_front = (target - modelHeading) % 360}
+    local points = getCircleVectorPoints(0, 0.2, 64)
+    local point = points[17]
+    local horizontal, depth = point.x * scale.x, point.z * scale.z
+    local yaw = math.rad(modelHeading)
+    local worldX = horizontal * math.cos(yaw) + depth * math.sin(yaw)
+    local worldZ = -horizontal * math.sin(yaw) + depth * math.cos(yaw)
+    assert(math.abs(worldX - (75 / 2 / 25.4) * math.sin(math.rad(target))) < 0.001)
+    assert(math.abs(worldZ - (75 / 2 / 25.4) * math.cos(math.rad(target))) < 0.001)
+    assert(math.abs(point.y * scale.y - 0.2) < 0.001)
+end
+state = {base = {x = 32, z = 32}, kt_node_ui = true, kt_front = 90}
+local round = getCircleVectorPoints(0, 0.2, 64)
+assert(math.abs(round[1].x * scale.x - 16 / 25.4) < 0.001 and round[1].z == 0)
+state = {base = {x = 42, z = 75}, kt_front = 90}
+local stock = getCircleVectorPoints(0, 0.2, 64)
+assert(math.abs(stock[1].x * scale.x - 21 / 25.4) < 0.001 and stock[1].z == 0)
+print("front-aware oval geometry passed")
+'''
+    result = subprocess.run(
+        [shutil.which("npx"), "--yes", "--package=fengari-node-cli", "fengari", "-"],
+        input=script, cwd=ROOT, capture_output=True, text=True, encoding="utf-8", check=True,
+    )
+    assert result.stdout.strip() == "front-aware oval geometry passed", result.stderr
+    assert not result.stderr
+
+
+def test_oval_renderer_is_only_in_command_node_model_scripts():
+    shared = compose_ktui_model_script(CONFIG)
+    node_loader = compose_command_node_loader(CONFIG)
+    assert "nodeGetCircleVectorPoints" not in shared
+    assert "nodeGetCircleVectorPoints" in node_loader
 
 
 def test_standalone_token_bag_preserves_contents_and_script(tmp_path):

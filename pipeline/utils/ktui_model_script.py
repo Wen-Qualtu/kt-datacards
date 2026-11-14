@@ -26,6 +26,24 @@ import yaml
 _EXTENDER = "ktui-extender-modelscript.lua"
 _EXTENSION = "ktui-extension.lua"
 
+_COMMAND_NODE_OVAL_RENDERER = r'''
+local nodeGetCircleVectorPoints = getCircleVectorPoints
+
+function getCircleVectorPoints(...)
+    local points = nodeGetCircleVectorPoints(...)
+    if not state.kt_node_ui or not state.base or state.base.x == state.base.z then return points end
+    local scale = self.getScale()
+    local angle = math.rad(tonumber(state.kt_front) or 0)
+    local cosine, sine = math.cos(angle), math.sin(angle)
+    for _, point in ipairs(points) do
+        local horizontal, depth = point.x * scale.x, point.z * scale.z
+        point.x = (horizontal * cosine + depth * sine) / scale.x
+        point.z = (-horizontal * sine + depth * cosine) / scale.z
+    end
+    return points
+end
+'''
+
 
 def _strip_header(text: str) -> str:
     lines = text.splitlines()
@@ -91,6 +109,7 @@ def compose_command_node_loader(config_dir: Path) -> str:
     model_script = compose_ktui_model_script(config_dir)
     if not model_script:
         raise ValueError("KTUI model script is not available")
+    model_script += "\n" + _COMMAND_NODE_OVAL_RENDERER
     version = hashlib.sha1(model_script.encode("utf-8")).hexdigest()[:12]
     model_script = f'KT_MODELSCRIPT_VERSION = "{version}"\n\n' + model_script
     script_dir = config_dir / "defaults" / "tts-script"
