@@ -79,12 +79,13 @@ end
 
 function commandNodeModelData(operative, teamRules)
     local node = operative.node
-    if type(node) ~= "table" or type(node.weapon_types) ~= "table" then
-        return nil, "Team data needs node fields. Regenerate the team data."
+    local prepared = type(operative.stats) == "table"
+    if not prepared and (type(node) ~= "table" or type(node.weapon_types) ~= "table") then
+        return nil, "Team data needs prepared model fields. Regenerate the team data."
     end
     local data = {
         name = cleanText(operative.name or ""),
-        stats = {
+        stats = operative.stats or {
             APL = operative.apl or 2,
             Move = tonumber(tostring(operative.movement or "6"):match("%d+")) or 6,
             Save = tonumber(tostring(operative.save or "5+"):match("%d+")) or 5,
@@ -92,9 +93,10 @@ function commandNodeModelData(operative, teamRules)
             Base = operative.base_size,
         },
         keywords = {"Operative"}, weapons = {}, abilities = {}, actions = {},
-        weapon_rules = {}, selection = node.selection,
+        weapon_rules = {}, selection = operative.selection or (node and node.selection),
+        upgrades = operative.upgrades,
     }
-    for _, name in ipairs(node.weapon_rule_names or {}) do
+    for _, name in ipairs(not prepared and node.weapon_rule_names or {}) do
         if type(teamRules) ~= "table" or teamRules[name] == nil then
             return nil, "Missing weapon rule " .. tostring(name) .. "."
         end
@@ -104,28 +106,35 @@ function commandNodeModelData(operative, teamRules)
         data.keywords[#data.keywords + 1] = cleanText(keyword, true)
     end
     for index, weapon in ipairs(operative.weapons or {}) do
-        local kind = node.weapon_types[index]
+        local kind = weapon.type or (node and node.weapon_types and node.weapon_types[index])
         if kind ~= "melee" and kind ~= "ranged" then
             return nil, "Invalid weapon classification for " .. data.name .. "."
         end
         local name = cleanText(weapon.name or "")
         local prefix = kind == "melee" and "[F4641D]M[-] " or "[1E87FF]R[-] "
+        local stats = weapon.stats or {
+            ATK = weapon.attacks or "", HIT = weapon.hit or "",
+            DMG = weapon.damage or "", WR = weapon.special_rules or "",
+        }
         data.weapons[#data.weapons + 1] = {
             name = prefix .. name, plain_name = name,
-            stats = {ATK = cleanText(weapon.attacks or ""), HIT = cleanText(weapon.hit or ""),
-                DMG = cleanText(weapon.damage or ""), WR = cleanText(weapon.special_rules or "")},
+            stats = {ATK = cleanText(stats.ATK), HIT = cleanText(stats.HIT),
+                DMG = cleanText(stats.DMG), WR = cleanText(stats.WR)},
         }
-    end
-    for _, ability in ipairs(operative.passive_abilities or {}) do
-        local name = cleanText(ability.name or "", true)
-        if name ~= "" then
-            data.abilities[#data.abilities + 1] = {name = name, text = cleanText(ability.description or "", true)}
+        for rule, description in pairs(weapon.weapon_rules or {}) do
+            data.weapon_rules[rule] = cleanText(description)
         end
     end
-    for _, action in ipairs(operative.unique_actions or {}) do
+    for _, ability in ipairs(operative.abilities or operative.passive_abilities or {}) do
+        local name = cleanText(ability.name or "", true)
+        if name ~= "" then
+            data.abilities[#data.abilities + 1] = {name = name, text = cleanText(ability.text or ability.description or "", true)}
+        end
+    end
+    for _, action in ipairs(operative.actions or operative.unique_actions or {}) do
         local name = cleanText(action.name or "", true)
         if name ~= "" then
-            data.actions[#data.actions + 1] = {name = name, text = cleanText(action.description or "", true)}
+            data.actions[#data.actions + 1] = {name = name, text = cleanText(action.text or action.description or "", true)}
         end
     end
     return data

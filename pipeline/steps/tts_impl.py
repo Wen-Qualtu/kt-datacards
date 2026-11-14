@@ -21,6 +21,7 @@ Output:
         (clean/primary format, referenced by output/team-urls.json)
 """
 
+import copy
 import hashlib
 import itertools
 import json
@@ -2167,7 +2168,7 @@ def _build_gm_notes(operative: dict, team_data: dict, weapon_rules: dict,
         m = re.search(r"(\d+)", str(s))
         return int(m.group(1)) if m else 5
 
-    stats = {
+    stats = dict(operative['stats']) if 'stats' in operative else {
         'APL': operative.get('apl', 2),
         'Move': parse_move(operative.get('movement', '6')),
         'Save': parse_save(operative.get('save', '5+')),
@@ -2176,7 +2177,7 @@ def _build_gm_notes(operative: dict, team_data: dict, weapon_rules: dict,
 
     # base_size is extracted by content_analysis (e.g. 28 for a 28mm base).
     base_size = operative.get('base_size')
-    if base_size is not None:
+    if base_size is not None and 'stats' not in operative:
         stats['Base'] = base_size
 
     keywords = ['Operative'] + [_normalize_text(k) for k in operative.get('keywords', [])]
@@ -2186,29 +2187,31 @@ def _build_gm_notes(operative: dict, team_data: dict, weapon_rules: dict,
     for weapon in operative.get('weapons', []):
         weapon_name = weapon.get('name', '')
         special_rules = weapon.get('special_rules', '')
-        prefix = '[F4641D]M[-]' if _classify_weapon(weapon) == 'melee' else '[1E87FF]R[-]'
+        kind = weapon['type'] if 'type' in weapon else _classify_weapon(weapon)
+        prefix = '[F4641D]M[-]' if kind == 'melee' else '[1E87FF]R[-]'
         full_name = f'{prefix} {weapon_name}'
         weapons.append({
             'name': full_name,
             'plain_name': weapon_name,
-            'stats': {
+            'stats': dict(weapon['stats']) if 'stats' in weapon else {
                 'ATK': weapon.get('attacks', ''),
                 'HIT': weapon.get('hit', ''),
                 'DMG': weapon.get('damage', ''),
                 'WR': special_rules
             }
         })
-        weapon_rules_found.update(_match_weapon_rules(special_rules, weapon_rules))
+        matched_rules = weapon['weapon_rules'] if 'weapon_rules' in weapon else _match_weapon_rules(special_rules, weapon_rules)
+        weapon_rules_found.update(matched_rules)
 
-    abilities = []
-    for ability in operative.get('passive_abilities', []):
+    abilities = copy.deepcopy(operative.get('abilities', []))
+    for ability in operative.get('passive_abilities', []) if 'abilities' not in operative else []:
         name = _normalize_text(ability.get('name', ''))
         text = _normalize_text(ability.get('description', ''))
         if name:
             abilities.append({'name': name, 'text': text})
 
-    actions = []
-    for action in operative.get('unique_actions', []):
+    actions = copy.deepcopy(operative.get('actions', []))
+    for action in operative.get('unique_actions', []) if 'actions' not in operative else []:
         name = _normalize_text(action.get('name', ''))
         text = _normalize_text(action.get('description', ''))
         if name:
@@ -2258,7 +2261,9 @@ def _build_gm_notes(operative: dict, team_data: dict, weapon_rules: dict,
         'description': description
     }
 
-    if selection_groups:
+    if 'selection' in operative:
+        result['selection'] = copy.deepcopy(operative['selection'])
+    elif selection_groups:
         # When no explicit exclusive sets were supplied, derive them from the
         # operative-selection text ("... one option from each ... Or the following
         # option ..."). Only operatives with that "Or" split get exclusive sets;
@@ -2278,7 +2283,9 @@ def _build_gm_notes(operative: dict, team_data: dict, weapon_rules: dict,
     upgrade_arches = ("CLANBLADE", "LEYSTALKER", "STONESINGER")
     op_kw_upper = [str(k).upper() for k in operative.get('keywords', [])]
     arch = next((k for k in op_kw_upper if k in upgrade_arches), None)
-    if arch:
+    if 'upgrades' in operative:
+        result['upgrades'] = copy.deepcopy(operative['upgrades'])
+    elif arch and not team_data.get('model_data_version'):
         options = []
         for fr in team_data.get('faction_rules', []) or []:
             text = fr.get('text', '') or ''

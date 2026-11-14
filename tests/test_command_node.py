@@ -1,3 +1,4 @@
+import hashlib
 import json
 import os
 import shutil
@@ -9,6 +10,7 @@ import pytest
 from pipeline.steps import extract_stats, generate_tts, tts_impl
 from pipeline.utils.ktui_model_script import compose_command_node_loader, compose_ktui_model_script
 from tools.build_command_node import ROOT, SCRIPT, build_save
+from tools.check_gmnotes_parity import BASELINE, gmnotes_manifest
 
 CONFIG = ROOT / "config"
 
@@ -37,7 +39,7 @@ def lua_literal(value):
     return "{" + ",".join(f"[{lua_literal(key)}]={lua_literal(item)}" for key, item in value.items()) + "}"
 
 
-@pytest.mark.skipif(not os.environ.get("COMMAND_NODE_LUA_PARITY"), reason="optional Lua parity check")
+@pytest.mark.skipif(not shutil.which("npx"), reason="npx is required for Lua parity")
 def test_real_team_data_converts_to_existing_card_fields():
     npx = shutil.which("npx")
     assert npx, "npx is required for the optional Lua parity check"
@@ -50,15 +52,14 @@ def test_real_team_data_converts_to_existing_card_fields():
     ]:
         team_path = ROOT / "output" / slug / "data" / f"{slug}-team-data.json"
         box_path = ROOT / "output" / slug / "tts_objects" / f"{title}.json"
-        team = extract_stats.add_node_fields(json.loads(team_path.read_text(encoding="utf-8")), rules)
+        team = extract_stats.prepare_team_data(json.loads(team_path.read_text(encoding="utf-8")), rules)
         cards = embedded_card_data(json.loads(box_path.read_text(encoding="utf-8")))
         for operative in team["datacards"]:
             if operative["name"] not in cards:
                 continue
             expected = dict(cards[operative["name"]])
             expected.pop("description", None)
-            expected.pop("upgrades", None)
-            cases.append({"operative": operative, "rules": team["node_weapon_rules"], "expected": expected})
+            cases.append({"operative": operative, "rules": {}, "expected": expected})
 
     lua = """
 dofile("config/defaults/tts-script/command-node.lua")
@@ -83,34 +84,43 @@ print("parity " .. #cases)
     assert result.stdout.strip() == f"parity {len(cases)}", result.stderr
 
 
-def test_node_fields_reuse_card_loadout_indexes_without_changing_existing_data():
+def test_prepared_fields_reuse_card_loadouts_without_mutating_source():
     team_path = ROOT / "output" / "blades-of-khaine" / "data" / "blades-of-khaine-team-data.json"
     box_path = ROOT / "output" / "blades-of-khaine" / "tts_objects" / "Blades Of Khaine.json"
     team = json.loads(team_path.read_text(encoding="utf-8"))
     box = json.loads(box_path.read_text(encoding="utf-8"))
     rules = json.loads((CONFIG / "weapon_rules.json").read_text(encoding="utf-8"))
-    enriched = extract_stats.add_node_fields(team, rules)
+    original_team = json.loads(json.dumps(team))
+    enriched = extract_stats.prepare_team_data(team, rules)
     expected = embedded_card_data(box)
 
+    assert team == original_team
+    assert "node_weapon_rules" not in enriched
+    assert enriched["model_data_version"] == 1
+    assert all("selection" not in item for item in enriched.get("operatives_selection", []))
     for original, operative in zip(team["datacards"], enriched["datacards"]):
-        node = operative.pop("node")
-        original_fields = dict(original)
-        original_fields.pop("node", None)
-        assert operative == original_fields
+        assert "node" not in operative
         model = expected[original["name"]]
-        assert node.get("selection") == model.get("selection")
-        assert {name: enriched["node_weapon_rules"][name] for name in node["weapon_rule_names"]} == model["weapon_rules"]
-        assert len(node["weapon_types"]) == len(original.get("weapons", []))
-        assert node["weapon_types"] == [
+        assert operative.get("selection") == model.get("selection")
+        assert operative["stats"] == model["stats"]
+        assert [weapon["type"] for weapon in operative["weapons"]] == [
             "melee" if weapon["name"].startswith("[F4641D]M[-]") else "ranged"
             for weapon in model["weapons"]
         ]
+        resolved = {}
+        for weapon in operative["weapons"]:
+            resolved.update(weapon["weapon_rules"])
+        assert resolved == model["weapon_rules"]
+        for key in ("name", "apl", "movement", "save", "wounds", "base_size"):
+            assert operative.get(key) == original.get(key)
 
 
 def test_canoptek_warrior_and_crawler_loadout_options_are_precomputed():
     team = json.loads((ROOT / "output/canoptek-circle/data/canoptek-circle-team-data.json").read_text(encoding="utf-8"))
+    rules = json.loads((CONFIG / "weapon_rules.json").read_text(encoding="utf-8"))
+    team = extract_stats.prepare_team_data(team, rules)
     nodes = {
-        operative["name"]: operative["node"]["selection"]
+        operative["name"]: operative["selection"]
         for operative in team["datacards"]
         if operative["name"] in {"CANOPTEK MACROCYTE WARRIOR", "CANOPTEK TOMB CRAWLER"}
     }
@@ -123,32 +133,53 @@ def test_canoptek_warrior_and_crawler_loadout_options_are_precomputed():
     ]
 
 
-def test_all_team_node_fields_match_existing_card_loadouts():
+def test_all_prepared_team_data_preserves_exact_serialized_gmnotes():
+    expected = json.loads(BASELINE.read_text(encoding="utf-8"))
+    assert len(expected["teams"]) == 48
+    assert sum(map(len, expected["teams"].values())) == 453
+    assert gmnotes_manifest(prepared=True) == expected
+
+
+def test_preparation_is_idempotent_and_cards_do_not_reclassify(monkeypatch):
+    team = json.loads((ROOT / "output/angels-of-death/data/angels-of-death-team-data.json").read_text(encoding="utf-8"))
     rules = json.loads((CONFIG / "weapon_rules.json").read_text(encoding="utf-8"))
-    for path in sorted((ROOT / "output").glob("*/data/*-team-data.json")):
-        team = json.loads(path.read_text(encoding="utf-8"))
-        slug = team["team"]
-        box_path = ROOT / "output" / slug / "tts_objects" / f"{slug.replace('-', ' ').title()}.json"
-        assert box_path.exists(), slug
-        cards = embedded_card_data(json.loads(box_path.read_text(encoding="utf-8")))
-        enriched = extract_stats.add_node_fields(team, rules)
-        selections = team.get("operatives_selection") or []
-        groups_by_name = selections[0].get("selection", {}) if selections else {}
-        for original, operative in zip(team["datacards"], enriched["datacards"]):
-            name = operative["name"]
-            assert name in cards, f"{slug}: {name} has no card data"
-            node = operative["node"]
-            model = cards[name]
-            assert node.get("selection") == model.get("selection"), f"{slug}: {name} loadout"
-            assert {rule: enriched["node_weapon_rules"][rule] for rule in node["weapon_rule_names"]} == model["weapon_rules"], f"{slug}: {name} rules"
-            assert node["weapon_types"] == [
-                "melee" if weapon["name"].startswith("[F4641D]M[-]") else "ranged"
-                for weapon in model["weapons"]
-            ], f"{slug}: {name} weapon classification"
-            groups = groups_by_name.get(name.upper()) or []
-            before = tts_impl._build_gm_notes(original, team, rules, selection_groups=groups)
-            after = tts_impl._build_gm_notes(operative, enriched, rules, selection_groups=groups)
-            assert before == after, f"{slug}: {name} card-box data changed"
+    prepared = extract_stats.prepare_team_data(team, rules)
+    assert extract_stats.prepare_team_data(prepared, rules) == prepared
+
+    def unexpected(*args, **kwargs):
+        pytest.fail("Prepared card serialization repeated upstream weapon or selection processing")
+
+    monkeypatch.setattr(tts_impl, "_classify_weapon", unexpected)
+    monkeypatch.setattr(tts_impl, "_match_weapon_rules", unexpected)
+    monkeypatch.setattr(tts_impl, "_build_selection_for_gmnotes", unexpected)
+    for operative in prepared["datacards"]:
+        expected = tts_impl._build_gm_notes(operative, prepared, {})
+        assert expected["stats"] == operative["stats"]
+        assert expected["weapon_rules"]
+
+
+@pytest.mark.parametrize("team_path", sorted((ROOT / "output").glob("*/data/*-team-data.json")),
+                         ids=lambda path: path.parent.parent.name)
+def test_real_card_embedding_keeps_gmnotes_and_lua_exactly_unchanged(team_path, tmp_path):
+    raw = json.loads(team_path.read_text(encoding="utf-8"))
+    rules = json.loads((CONFIG / "weapon_rules.json").read_text(encoding="utf-8"))
+    prepared = extract_stats.prepare_team_data(raw, rules)
+    slug = raw["team"]
+    target = tmp_path / slug / "data" / team_path.name
+    target.parent.mkdir(parents=True)
+    original_cards = [{"CardID": 1000 + index, "Nickname": operative["name"]}
+                      for index, operative in enumerate(raw["datacards"])]
+    before = {"ContainedObjects": json.loads(json.dumps(original_cards))}
+    after = {"ContainedObjects": json.loads(json.dumps(original_cards))}
+    target.write_text(json.dumps(raw, ensure_ascii=False), encoding="utf-8")
+    assert tts_impl.embed_datacard_stats(before, slug, tmp_path, CONFIG)
+    target.write_text(json.dumps(prepared, ensure_ascii=False), encoding="utf-8")
+    assert tts_impl.embed_datacard_stats(after, slug, tmp_path, CONFIG)
+    expected_hashes = json.loads(BASELINE.read_text(encoding="utf-8"))["teams"][slug]
+    for legacy, current in zip(before["ContainedObjects"], after["ContainedObjects"]):
+        assert current["GMNotes"] == legacy["GMNotes"], (slug, current["Nickname"])
+        assert current["LuaScript"] == legacy["LuaScript"], (slug, current["Nickname"])
+        assert hashlib.sha256(current["GMNotes"].encode("utf-8")).hexdigest() == expected_hashes[current["Nickname"]]
 
 
 def test_saved_object_embeds_current_node_script():
@@ -200,7 +231,7 @@ def test_pipeline_writes_combined_stable_team_data(tmp_path):
     path = ROOT / "output" / "warpcoven" / "data" / "warpcoven-team-data.json"
     team = json.loads(path.read_text(encoding="utf-8"))
     rules = json.loads((CONFIG / "weapon_rules.json").read_text(encoding="utf-8"))
-    enriched = extract_stats.add_node_fields(team, rules)
+    enriched = extract_stats.prepare_team_data(team, rules)
     target = tmp_path / "warpcoven-team-data.json"
     assert extract_stats._save_stable(enriched, target)
     timestamp = target.stat().st_mtime_ns
@@ -208,7 +239,9 @@ def test_pipeline_writes_combined_stable_team_data(tmp_path):
     result = json.loads(target.read_text(encoding="utf-8"))
 
     assert result["team"] == "warpcoven"
-    assert all("node" in card for card in result["datacards"])
+    assert result["model_data_version"] == 1
+    assert "node_weapon_rules" not in result
+    assert all("node" not in card and "stats" in card for card in result["datacards"])
     assert extract_stats._save_stable(enriched, target)
     assert target.read_bytes() == original_bytes
     assert abs(target.stat().st_mtime_ns - timestamp) < 1_000

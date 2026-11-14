@@ -3,10 +3,10 @@
 layers/integration/{team}/content/{team}-content.json
    ->  output/{team}/data/{team}-team-data.json
 
-The content map produced by ``content_analysis`` already has the exact team-data
-schema (datacards, equipment, faction_rules, ploys, operatives_selection). This
-step adds compact node metadata and relocates it into the ``output`` tree for the
-TTS step to consume, writing byte-stably: if the content (excluding the volatile
+The content map supplies raw operatives, equipment, faction rules and selection
+groups. This step prepares consumer-neutral model fields for both cards and the
+command node, then relocates the data into the ``output`` tree, writing
+byte-stably: if the content (excluding the volatile
 ``generated_at`` timestamp) is unchanged, the prior file's bytes + mtime are
 restored so downstream cache-busters do not spuriously bump.
 
@@ -28,28 +28,35 @@ from . import tts_impl
 logger = logging.getLogger(__name__)
 
 
-def add_node_fields(team_data: dict, weapon_rules: dict) -> dict:
+def prepare_team_data(team_data: dict, weapon_rules: dict) -> dict:
     result = copy.deepcopy(team_data)
+    result.pop("node_weapon_rules", None)
+    result.pop("model_data_version", None)
     selections = result.get("operatives_selection") or []
     selection_map = selections[0].get("selection", {}) if selections else {}
-    shared_rules = {}
     for operative in result.get("datacards") or []:
+        operative.pop("node", None)
+        for weapon in operative.get("weapons") or []:
+            kind = weapon["type"] if "type" in weapon else tts_impl._classify_weapon(weapon)
+            if kind not in ("melee", "ranged"):
+                raise ValueError(f"Invalid weapon type for {operative.get('name')}: {kind}")
+            weapon["type"] = kind
+            weapon["weapon_rules"] = tts_impl._match_weapon_rules(weapon.get("special_rules", ""), weapon_rules)
         groups = selection_map.get(operative.get("name", "").upper()) or []
-        model = tts_impl._sanitize_ampersands(
-            tts_impl._build_gm_notes(operative, result, weapon_rules, selection_groups=groups)
-        )
-        node_fields = {
-            "weapon_types": [
-                "melee" if weapon["name"].startswith("[F4641D]M[-]") else "ranged"
-                for weapon in model["weapons"]
-            ],
-            "weapon_rule_names": list(model["weapon_rules"]),
-        }
-        shared_rules.update(model["weapon_rules"])
+        model = tts_impl._build_gm_notes(operative, result, weapon_rules, selection_groups=groups)
+        operative["stats"] = model["stats"]
+        operative["abilities"] = model["abilities"]
+        operative["actions"] = model["actions"]
+        if "upgrades" in model:
+            operative["upgrades"] = model["upgrades"]
+        operative["keywords"] = model["keywords"][1:]
+        for weapon, prepared in zip(operative.get("weapons") or [], model["weapons"]):
+            weapon["stats"] = prepared["stats"]
         if "selection" in model:
-            node_fields["selection"] = model["selection"]
-        operative["node"] = node_fields
-    result["node_weapon_rules"] = shared_rules
+            operative["selection"] = tts_impl._sanitize_ampersands(model["selection"])
+    for selection in selections:
+        selection.pop("selection", None)
+    result["model_data_version"] = 1
     return result
 
 
@@ -150,7 +157,7 @@ def run(teams: Optional[list] = None, source=None, force: bool = False):
             continue
 
         out_path = paths.team_output(team) / "data" / f"{team}-team-data.json"
-        if _save_stable(add_node_fields(team_data, weapon_rules), out_path):
+        if _save_stable(prepare_team_data(team_data, weapon_rules), out_path):
             remove_legacy_node_data(team, paths.team_output(team), state)
             processed += 1
             state.record_output("extract_stats", "team-data.json", out_path)
