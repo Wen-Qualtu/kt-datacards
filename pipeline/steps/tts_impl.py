@@ -3041,7 +3041,8 @@ def _counter_asset_base(team: str, url_branch: str, cfg: dict) -> str:
     return f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/{branch}/output/{team}/tokens"
 
 
-def _build_operative_counters_lua(team: str, counters: list, url_branch: str, menu_label: str) -> str:
+def _build_operative_counters_lua(team: str, counters: list, url_branch: str, menu_label: str,
+                                filter_keywords: bool = False) -> str:
     """Generate Lua adding one or more left/right-click cycling image counters to
     the model on the card, exposed via a single context-menu item.
 
@@ -3068,6 +3069,22 @@ def _build_operative_counters_lua(team: str, counters: list, url_branch: str, me
 
     local_defs = []
     inject_blocks = []
+    if filter_keywords:
+        local_defs.append("    local counterCount, counterPosition = 0, 0\n")
+        for cfg, _ in prepared:
+            slug = _oc_slug(str(cfg.get('name', 'Counter')))
+            applies = cfg.get('applies_to', 'all')
+            if applies in (None, 'all', True):
+                condition = "true"
+            else:
+                keywords = [applies] if isinstance(applies, str) else (applies or [])
+                conditions = [f"keyword:upper() == {lua_str(str(keyword).upper())}" for keyword in keywords]
+                condition = " or ".join(conditions) or "false"
+            local_defs.append(f"    local counterEnabled_{slug} = {str(condition == 'true').lower()}\n"
+                              "    for _, keyword in ipairs((mState.info or {}).categories or {}) do\n"
+                              f"        if {condition} then counterEnabled_{slug} = true end\n"
+                              "    end\n"
+                              f"    if counterEnabled_{slug} then counterCount = counterCount + 1 end\n")
     for i, (cfg, states) in enumerate(prepared):
         name = str(cfg.get('name', 'Counter'))
         slug = _oc_slug(name)
@@ -3158,6 +3175,15 @@ end
             f'    table.insert(added, {lua_str(name)})\n'
         )
 
+    if filter_keywords:
+        inject_blocks = [
+            f"    if counterEnabled_{_oc_slug(str(cfg.get('name', 'Counter')))} then\n"
+            f"        panelXml_{_oc_slug(str(cfg.get('name', 'Counter')))} = "
+            f"panelXml_{_oc_slug(str(cfg.get('name', 'Counter')))}:gsub('offsetXY=\"[^\"]+\"', "
+            "'offsetXY=\"' .. tostring((counterPosition - (counterCount - 1) / 2) * 50) .. ' -10\"', 1)\n"
+            "        counterPosition = counterPosition + 1\n" + block + "    end\n"
+            for (cfg, _), block in zip(prepared, inject_blocks)
+        ]
     return (
         _MULTI_COUNTER_WRAPPER
         .replace("<<MENU_LABEL>>", str(menu_label).replace('\\', '\\\\').replace('"', '\\"'))

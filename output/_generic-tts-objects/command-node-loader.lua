@@ -6182,7 +6182,7 @@ function loadStatsToModel(playerColor)
     proceedLoad(playerColor, data, model, false)
 end
 
-NODE_COUNTER_SETUP = [====[{"goremongers": {"name": "Gore Tank", "kind": "counter"}, "angels-of-death": {"name": "Chapter Tactics", "select": 2, "options": [{"name": "Aggressive"}, {"name": "Dueller"}, {"name": "Resolute"}, {"name": "Stealthy"}, {"name": "Mobile"}, {"name": "Hardy"}, {"name": "Sharpshooter"}, {"name": "Siege Specialist"}], "kind": "choice"}, "chaos-cult": {"name": "Accursed Gifts", "select": 1, "applies_to": ["MUTANT", "TORMENT"], "operative_select_count": {"MUTANT": 1, "TORMENT": 2}, "options": [{"name": "Deformed Wings"}, {"name": "Fleet"}, {"name": "Chitinous"}, {"name": "Horned"}, {"name": "Sinewed"}, {"name": "Barbed"}], "kind": "choice"}, "legionaries": {"name": "Marks of Chaos", "select": 1, "options": [{"name": "Khorne"}, {"name": "Nurgle"}, {"name": "Slaanesh"}, {"name": "Tzeentch"}, {"name": "Undivided"}], "kind": "choice"}}]====]
+NODE_COUNTER_SETUP = [====[{"goremongers": {"name": "Gore Tank", "kind": "counter"}, "exodite-dragon-masters": {"name": "Exodite Counters", "kind": "counter"}, "angels-of-death": {"name": "Chapter Tactics", "select": 2, "options": [{"name": "Aggressive"}, {"name": "Dueller"}, {"name": "Resolute"}, {"name": "Stealthy"}, {"name": "Mobile"}, {"name": "Hardy"}, {"name": "Sharpshooter"}, {"name": "Siege Specialist"}], "kind": "choice"}, "chaos-cult": {"name": "Accursed Gifts", "select": 1, "applies_to": ["MUTANT", "TORMENT"], "operative_select_count": {"MUTANT": 1, "TORMENT": 2}, "options": [{"name": "Deformed Wings"}, {"name": "Fleet"}, {"name": "Chitinous"}, {"name": "Horned"}, {"name": "Sinewed"}, {"name": "Barbed"}], "kind": "choice"}, "legionaries": {"name": "Marks of Chaos", "select": 1, "options": [{"name": "Khorne"}, {"name": "Nurgle"}, {"name": "Slaanesh"}, {"name": "Tzeentch"}, {"name": "Undivided"}], "kind": "choice"}}]====]
 
 function ktCommandNodeAddCounters(params)
     local findModelOnCard = function() return params.model end
@@ -6340,6 +6340,327 @@ end
 -- ===== END OPERATIVE COUNTER =====
 
         addOperativeCounterToModel(params.playerColor)
+        return true
+    end
+    if params.team == "exodite-dragon-masters" then
+
+
+-- ===== OPERATIVE COUNTERS =====
+
+MOC_MENU_LABEL = "Add Exodite Counters"
+
+-- Remove every region delimited by markers a..b (inclusive) from s. Used to
+-- strip a previously-injected counter so re-adding UPDATES in place instead of
+-- being skipped -- mirrors the sprint/move injectBlock behaviour.
+function mocStrip(s, a, b)
+    while true do
+        local i = s:find(a, 1, true)
+        if not i then break end
+        local j = s:find(b, i, true)
+        if not j then return s:sub(1, i - 1) end
+        s = s:sub(1, i - 1) .. s:sub(j + #b)
+    end
+    return s
+end
+
+-- Remove a whole <Panel>...</Panel> that contains the given (plain) image id.
+-- Works on OLD unmarked injections too, so updates never leave a duplicate id
+-- (which would break the UI rebuild). Loops to clear stacked duplicates.
+function mocStripPanelById(s, id)
+    while true do
+        local idpos = s:find(id, 1, true)
+        if not idpos then break end
+        local ps, from = nil, 1
+        while true do
+            local p = s:find("<Panel", from, true)
+            if not p or p > idpos then break end
+            ps, from = p, p + 1
+        end
+        local pe = s:find("</Panel>", idpos, true)
+        if not ps or not pe then break end
+        s = s:sub(1, ps - 1) .. s:sub(pe + 8)   -- 8 = #"</Panel>"
+    end
+    return s
+end
+
+-- Remove any asset-bundle line containing the given (plain) name prefix, so old
+-- token entries don't pile up in the bundle when a counter is updated.
+function mocStripAssetsByName(s, namePrefix)
+    local out = {}
+    for line in (s .. "\n"):gmatch("([^\n]*)\n") do
+        if not line:find(namePrefix, 1, true) then out[#out + 1] = line end
+    end
+    return table.concat(out, "\n")
+end
+
+function addOperativeCountersToModel(playerColor)
+    local model = findModelOnCard()
+    if model == nil then
+        broadcastToColor("Place a KTUIMini model on this card first.", playerColor, Color.Orange)
+        return
+    end
+    local modelLua = model.getLuaScript() or ""
+    if modelLua == "" then
+        broadcastToColor("Model has no Lua script (not a KTUI model?).", playerColor, Color.Red)
+        return
+    end
+    local modelState = model.script_state or "{}"
+    local okS, mState = pcall(function() return JSON.decode(modelState) end)
+    if not okS or not mState then mState = {} end
+    local added = {}
+    local updated = false
+    local xmlPattern = '(<HorizontalLayout spacing="3" width="@totalAtt")'
+    local bundlePattern = '({name="Wound_red"[^\n]+)'
+
+    local counterCount, counterPosition = 0, 0
+
+    local counterEnabled_movement_remaining = false
+    for _, keyword in ipairs((mState.info or {}).categories or {}) do
+        if keyword:upper() == "MOUNTED" then counterEnabled_movement_remaining = true end
+    end
+    if counterEnabled_movement_remaining then counterCount = counterCount + 1 end
+
+    local counterEnabled_speed = true
+    for _, keyword in ipairs((mState.info or {}).categories or {}) do
+        if true then counterEnabled_speed = true end
+    end
+    if counterEnabled_speed then counterCount = counterCount + 1 end
+
+    local counterEnabled_remaining_actions = false
+    for _, keyword in ipairs((mState.info or {}).categories or {}) do
+        if keyword:upper() == "MOUNTED" then counterEnabled_remaining_actions = true end
+    end
+    if counterEnabled_remaining_actions then counterCount = counterCount + 1 end
+
+    local panelXml_movement_remaining = [==[
+
+    <Panel color="#80808000" outline="#FFFF00" outlineSize="3 3" width="45" height="45" offsetXY="-50 -10">
+      <Image id="ktcnid-status-oc-movement_remaining" image="]]..getOperativeCounterImage_movement_remaining()..[[" preserveAspect="true" rectAlignment="MiddleCenter" onClick="change_operative_counter_movement_remaining" />
+    </Panel>]==]
+    local assetLines_movement_remaining = [==[
+
+    {name="oc_movement_remaining_asset_0", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/exodite-dragon-masters/tokens/counters/movement_remaining-0.png]=]},
+    {name="oc_movement_remaining_asset_1", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/exodite-dragon-masters/tokens/counters/movement_remaining-1.png]=]},
+    {name="oc_movement_remaining_asset_2", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/exodite-dragon-masters/tokens/counters/movement_remaining-2.png]=]},
+    {name="oc_movement_remaining_asset_3", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/exodite-dragon-masters/tokens/counters/movement_remaining-3.png]=]},
+    {name="oc_movement_remaining_asset_4", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/exodite-dragon-masters/tokens/counters/movement_remaining-4.png]=]},
+    {name="oc_movement_remaining_asset_5", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/exodite-dragon-masters/tokens/counters/movement_remaining-5.png]=]},
+    {name="oc_movement_remaining_asset_6", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/exodite-dragon-masters/tokens/counters/movement_remaining-6.png]=]},
+    {name="oc_movement_remaining_asset_7", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/exodite-dragon-masters/tokens/counters/movement_remaining-7.png]=]},
+    {name="oc_movement_remaining_asset_8", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/exodite-dragon-masters/tokens/counters/movement_remaining-8.png]=]},
+    {name="oc_movement_remaining_asset_9", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/exodite-dragon-masters/tokens/counters/movement_remaining-9.png]=]},
+    {name="oc_movement_remaining_asset_10", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/exodite-dragon-masters/tokens/counters/movement_remaining-10.png]=]},
+    {name="oc_movement_remaining_asset_11", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/exodite-dragon-masters/tokens/counters/movement_remaining-11.png]=]},
+    {name="oc_movement_remaining_asset_12", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/exodite-dragon-masters/tokens/counters/movement_remaining-12.png]=]},
+]==]
+    local helperFuncs_movement_remaining = [==[
+--OC_HELP:movement_remaining:START
+
+-- Movement Remaining Counter (auto-injected)
+function getOperativeCounterImage_movement_remaining()
+  if not state or not state.operative_counter_movement_remaining then return "oc_movement_remaining_asset_12" end
+  local v = state.operative_counter_movement_remaining.current or 12
+  local assets = {[0]="oc_movement_remaining_asset_0", [1]="oc_movement_remaining_asset_1", [2]="oc_movement_remaining_asset_2", [3]="oc_movement_remaining_asset_3", [4]="oc_movement_remaining_asset_4", [5]="oc_movement_remaining_asset_5", [6]="oc_movement_remaining_asset_6", [7]="oc_movement_remaining_asset_7", [8]="oc_movement_remaining_asset_8", [9]="oc_movement_remaining_asset_9", [10]="oc_movement_remaining_asset_10", [11]="oc_movement_remaining_asset_11", [12]="oc_movement_remaining_asset_12"}
+  return assets[v] or "oc_movement_remaining_asset_12"
+end
+
+function change_operative_counter_movement_remaining(player, value, id)
+  if not state.operative_counter_movement_remaining then return end
+  local current = state.operative_counter_movement_remaining.current or 12
+  local maxv = state.operative_counter_movement_remaining.max or 12
+  local minv = state.operative_counter_movement_remaining.min or 0
+  if value == "-1" then
+    if current > minv then current = current - 1 end
+  elseif value == "-2" then
+    if current < maxv then current = current + 1 end
+  end
+  state.operative_counter_movement_remaining.current = current
+  if refreshUI then refreshUI() end
+  local labels = {[0]="0", [1]="1", [2]="2", [3]="3", [4]="4", [5]="5", [6]="6", [7]="7", [8]="8", [9]="9", [10]="10", [11]="11", [12]="12"}
+  broadcastToColor("Movement Remaining: " .. (labels[current] or "?"), player.color, Color.Yellow)
+end
+
+--OC_HELP:movement_remaining:END
+]==]
+
+    local panelXml_speed = [==[
+
+    <Panel color="#80808000" outline="#FFFF00" outlineSize="3 3" width="45" height="45" offsetXY="0 -10">
+      <Image id="ktcnid-status-oc-speed" image="]]..getOperativeCounterImage_speed()..[[" preserveAspect="true" rectAlignment="MiddleCenter" onClick="change_operative_counter_speed" />
+    </Panel>]==]
+    local assetLines_speed = [==[
+
+    {name="oc_speed_asset_1", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/exodite-dragon-masters/tokens/exodite-dragon-masters-speed-3.png]=]},
+    {name="oc_speed_asset_2", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/exodite-dragon-masters/tokens/exodite-dragon-masters-speed-4.png]=]},
+    {name="oc_speed_asset_3", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/exodite-dragon-masters/tokens/exodite-dragon-masters-speed-7.png]=]},
+]==]
+    local helperFuncs_speed = [==[
+--OC_HELP:speed:START
+
+-- Speed Counter (auto-injected)
+function getOperativeCounterImage_speed()
+  if not state or not state.operative_counter_speed then return "oc_speed_asset_1" end
+  local v = state.operative_counter_speed.current or 1
+  local assets = {[1]="oc_speed_asset_1", [2]="oc_speed_asset_2", [3]="oc_speed_asset_3"}
+  return assets[v] or "oc_speed_asset_1"
+end
+
+function change_operative_counter_speed(player, value, id)
+  if not state.operative_counter_speed then return end
+  local current = state.operative_counter_speed.current or 1
+  local maxv = state.operative_counter_speed.max or 3
+  local minv = state.operative_counter_speed.min or 1
+  if value == "-1" then
+    if current > minv then current = current - 1 end
+  elseif value == "-2" then
+    if current < maxv then current = current + 1 end
+  end
+  state.operative_counter_speed.current = current
+  if refreshUI then refreshUI() end
+  local labels = {[1]="SPEED 3-", [2]="SPEED 4+", [3]="SPEED 7+"}
+  broadcastToColor("Speed: " .. (labels[current] or "?"), player.color, Color.Yellow)
+end
+
+--OC_HELP:speed:END
+]==]
+
+    local panelXml_remaining_actions = [==[
+
+    <Panel color="#80808000" outline="#FFFF00" outlineSize="3 3" width="45" height="45" offsetXY="50 -10">
+      <Image id="ktcnid-status-oc-remaining_actions" image="]]..getOperativeCounterImage_remaining_actions()..[[" preserveAspect="true" rectAlignment="MiddleCenter" onClick="change_operative_counter_remaining_actions" />
+    </Panel>]==]
+    local assetLines_remaining_actions = [==[
+
+    {name="oc_remaining_actions_asset_1", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/exodite-dragon-masters/tokens/exodite-dragon-masters-remaining-actions-1.png]=]},
+    {name="oc_remaining_actions_asset_2", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/exodite-dragon-masters/tokens/exodite-dragon-masters-remaining-actions-2.png]=]},
+    {name="oc_remaining_actions_asset_3", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/exodite-dragon-masters/tokens/exodite-dragon-masters-remaining-actions-3.png]=]},
+    {name="oc_remaining_actions_asset_4", url=[=[https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/exodite-dragon-masters/tokens/exodite-dragon-masters-remaining-actions-4.png]=]},
+]==]
+    local helperFuncs_remaining_actions = [==[
+--OC_HELP:remaining_actions:START
+
+-- Remaining Actions Counter (auto-injected)
+function getOperativeCounterImage_remaining_actions()
+  if not state or not state.operative_counter_remaining_actions then return "oc_remaining_actions_asset_4" end
+  local v = state.operative_counter_remaining_actions.current or 4
+  local assets = {[1]="oc_remaining_actions_asset_1", [2]="oc_remaining_actions_asset_2", [3]="oc_remaining_actions_asset_3", [4]="oc_remaining_actions_asset_4"}
+  return assets[v] or "oc_remaining_actions_asset_4"
+end
+
+function change_operative_counter_remaining_actions(player, value, id)
+  if not state.operative_counter_remaining_actions then return end
+  local current = state.operative_counter_remaining_actions.current or 4
+  local maxv = state.operative_counter_remaining_actions.max or 4
+  local minv = state.operative_counter_remaining_actions.min or 1
+  if value == "-1" then
+    if current > minv then current = current - 1 end
+  elseif value == "-2" then
+    if current < maxv then current = current + 1 end
+  end
+  state.operative_counter_remaining_actions.current = current
+  if refreshUI then refreshUI() end
+  local labels = {[1]="1 Action", [2]="2 Actions", [3]="3 Actions", [4]="4 Actions"}
+  broadcastToColor("Remaining Actions: " .. (labels[current] or "?"), player.color, Color.Yellow)
+end
+
+--OC_HELP:remaining_actions:END
+]==]
+
+    if counterEnabled_movement_remaining then
+        panelXml_movement_remaining = panelXml_movement_remaining:gsub('offsetXY="[^"]+"', 'offsetXY="' .. tostring((counterPosition - (counterCount - 1) / 2) * 50) .. ' -10"', 1)
+        counterPosition = counterPosition + 1
+    -- Movement Remaining: remove any prior copy (old OR new) then (re)inject.
+    if mState.operative_counter_movement_remaining ~= nil or modelLua:find('id="ktcnid-status-oc-movement_remaining"', 1, true) then updated = true end
+    modelLua = mocStripPanelById(modelLua, 'id="ktcnid-status-oc-movement_remaining"')
+    modelLua = mocStripAssetsByName(modelLua, 'name="oc_movement_remaining_asset_')
+    modelLua = mocStrip(modelLua, "--OC_HELP:movement_remaining:START", "--OC_HELP:movement_remaining:END")
+    if modelLua:find(xmlPattern) then
+        modelLua = modelLua:gsub(xmlPattern, panelXml_movement_remaining .. "\n    %1", 1)
+    end
+    if modelLua:find(bundlePattern) then
+        modelLua = modelLua:gsub(bundlePattern, "%1" .. assetLines_movement_remaining, 1)
+    end
+    modelLua = modelLua .. helperFuncs_movement_remaining
+    do
+        local prev = mState.operative_counter_movement_remaining
+        local cur = (prev and prev.current) or 12
+        if cur < 0 then cur = 0 end
+        if cur > 12 then cur = 12 end
+        mState.operative_counter_movement_remaining = {name="Movement Remaining", current=cur, min=0, max=12}
+    end
+    table.insert(added, "Movement Remaining")
+    end
+
+    if counterEnabled_speed then
+        panelXml_speed = panelXml_speed:gsub('offsetXY="[^"]+"', 'offsetXY="' .. tostring((counterPosition - (counterCount - 1) / 2) * 50) .. ' -10"', 1)
+        counterPosition = counterPosition + 1
+    -- Speed: remove any prior copy (old OR new) then (re)inject.
+    if mState.operative_counter_speed ~= nil or modelLua:find('id="ktcnid-status-oc-speed"', 1, true) then updated = true end
+    modelLua = mocStripPanelById(modelLua, 'id="ktcnid-status-oc-speed"')
+    modelLua = mocStripAssetsByName(modelLua, 'name="oc_speed_asset_')
+    modelLua = mocStrip(modelLua, "--OC_HELP:speed:START", "--OC_HELP:speed:END")
+    if modelLua:find(xmlPattern) then
+        modelLua = modelLua:gsub(xmlPattern, panelXml_speed .. "\n    %1", 1)
+    end
+    if modelLua:find(bundlePattern) then
+        modelLua = modelLua:gsub(bundlePattern, "%1" .. assetLines_speed, 1)
+    end
+    modelLua = modelLua .. helperFuncs_speed
+    do
+        local prev = mState.operative_counter_speed
+        local cur = (prev and prev.current) or 1
+        if cur < 1 then cur = 1 end
+        if cur > 3 then cur = 3 end
+        mState.operative_counter_speed = {name="Speed", current=cur, min=1, max=3}
+    end
+    table.insert(added, "Speed")
+    end
+
+    if counterEnabled_remaining_actions then
+        panelXml_remaining_actions = panelXml_remaining_actions:gsub('offsetXY="[^"]+"', 'offsetXY="' .. tostring((counterPosition - (counterCount - 1) / 2) * 50) .. ' -10"', 1)
+        counterPosition = counterPosition + 1
+    -- Remaining Actions: remove any prior copy (old OR new) then (re)inject.
+    if mState.operative_counter_remaining_actions ~= nil or modelLua:find('id="ktcnid-status-oc-remaining_actions"', 1, true) then updated = true end
+    modelLua = mocStripPanelById(modelLua, 'id="ktcnid-status-oc-remaining_actions"')
+    modelLua = mocStripAssetsByName(modelLua, 'name="oc_remaining_actions_asset_')
+    modelLua = mocStrip(modelLua, "--OC_HELP:remaining_actions:START", "--OC_HELP:remaining_actions:END")
+    if modelLua:find(xmlPattern) then
+        modelLua = modelLua:gsub(xmlPattern, panelXml_remaining_actions .. "\n    %1", 1)
+    end
+    if modelLua:find(bundlePattern) then
+        modelLua = modelLua:gsub(bundlePattern, "%1" .. assetLines_remaining_actions, 1)
+    end
+    modelLua = modelLua .. helperFuncs_remaining_actions
+    do
+        local prev = mState.operative_counter_remaining_actions
+        local cur = (prev and prev.current) or 4
+        if cur < 1 then cur = 1 end
+        if cur > 4 then cur = 4 end
+        mState.operative_counter_remaining_actions = {name="Remaining Actions", current=cur, min=1, max=4}
+    end
+    table.insert(added, "Remaining Actions")
+    end
+
+    if #added == 0 then
+        broadcastToColor("No counters to apply for this operative.", playerColor, Color.White)
+        return
+    end
+    model.script_state = JSON.encode(mState)
+    model.setLuaScript(modelLua)
+    Wait.frames(function() model.reload() end, 10)
+    local verb = updated and "Updated: " or "Added: "
+    broadcastToColor(verb .. table.concat(added, ", "), playerColor, Color.Green)
+end
+
+local mocBaseOnLoad = onLoad
+function onLoad()
+    if mocBaseOnLoad then mocBaseOnLoad() end
+    self.addContextMenuItem(MOC_MENU_LABEL, addOperativeCountersToModel)
+end
+
+-- ===== END OPERATIVE COUNTERS =====
+
+        addOperativeCountersToModel(params.playerColor)
         return true
     end
     return false

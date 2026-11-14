@@ -84,7 +84,9 @@ def compose_ktui_model_script(config_dir: Path) -> str:
 
 
 def compose_command_node_loader(config_dir: Path) -> str:
-    from ..steps.tts_impl import _build_operative_counter_lua
+    from ..steps.tts_impl import (
+        _apply_generated_counter_states, _build_operative_counter_lua, _build_operative_counters_lua,
+    )
 
     model_script = compose_ktui_model_script(config_dir)
     if not model_script:
@@ -110,6 +112,12 @@ def compose_command_node_loader(config_dir: Path) -> str:
         if info.get("operative_counter")
     }
     setups = {team: {"name": counter["name"], "kind": "counter"} for team, counter in counters.items()}
+    multi_counters = {
+        team: info for team, info in config.get("teams", {}).items() if info.get("operative_counters")
+    }
+    for team, info in multi_counters.items():
+        label = info.get("operative_counters_menu", "Add Counters").removeprefix("Add ")
+        setups[team] = {"name": label, "kind": "counter"}
     for team, info in config.get("teams", {}).items():
         rule = info.get("faction_rule")
         if team not in setups and rule and rule.get("options"):
@@ -122,6 +130,14 @@ def compose_command_node_loader(config_dir: Path) -> str:
         parts.append(f"    if params.team == {json.dumps(team)} then\n")
         parts.append(_build_operative_counter_lua(team, counter, "main"))
         parts.append("\n        addOperativeCounterToModel(params.playerColor)\n"
+                     "        return true\n    end\n")
+    for team, info in multi_counters.items():
+        parts.append(f"    if params.team == {json.dumps(team)} then\n")
+        prepared = [_apply_generated_counter_states(counter) for counter in info["operative_counters"]]
+        parts.append(_build_operative_counters_lua(
+            team, prepared, "main", info.get("operative_counters_menu", "Add Counters"), filter_keywords=True,
+        ))
+        parts.append("\n        addOperativeCountersToModel(params.playerColor)\n"
                      "        return true\n    end\n")
     parts.append("    return false\nend\n")
     return "".join(parts)

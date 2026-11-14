@@ -464,6 +464,8 @@ def test_shared_helper_includes_composed_model_and_card_loader():
     assert setup["angels-of-death"]["select"] == 2
     assert len(setup["angels-of-death"]["options"]) == 8
     assert setup["goremongers"]["kind"] == "counter"
+    assert setup["exodite-dragon-masters"]["kind"] == "counter"
+    assert setup["exodite-dragon-masters"]["name"] == "Exodite Counters"
     assert setup["chaos-cult"]["applies_to"] == ["MUTANT", "TORMENT"]
     assert setup["chaos-cult"]["operative_select_count"] == {"MUTANT": 1, "TORMENT": 2}
     scripts = CONFIG / "defaults" / "tts-script"
@@ -476,6 +478,58 @@ def test_pipeline_shared_loader_matches_existing_composition(tmp_path):
     assert target.read_text(encoding="utf-8") == compose_command_node_loader(CONFIG)
     timestamp = target.stat().st_mtime_ns
     assert tts_impl.write_command_node_loader(CONFIG, tmp_path).stat().st_mtime_ns == timestamp
+
+
+@pytest.mark.skipif(not shutil.which("npx"), reason="npx is required for Lua counter integration")
+def test_remote_exodite_counters_filter_models_and_preserve_values():
+    script = compose_command_node_loader(CONFIG) + r'''
+Wait = {frames = function(callback) callback() end}
+Color = {Green = {}, Orange = {}, Red = {}, White = {}}
+function broadcastToColor() end
+JSON = {decode = function(value) return value end, encode = function(value) return value end}
+for _, mounted in ipairs({true, false}) do
+    local installed = KTUI_MODELSCRIPT .. "\n" .. MOVE_TOOL_CODE
+    local model = {script_state = {info = {categories = mounted and {"MOUNTED"} or {"DRAKOLITHE"}},
+        owner = "existing-owner", kt_front = 90}, reloads = 0}
+    model.getLuaScript = function() return installed end
+    model.setLuaScript = function(value) installed = value end
+    model.reload = function() model.reloads = model.reloads + 1 end
+    local params = {team = "exodite-dragon-masters", model = model, playerColor = "White"}
+    assert(ktCommandNodeAddCounters(params))
+    assert(model.script_state.operative_counter_speed.current == 1)
+    assert(installed:find('offsetXY="0 -10"', 1, true)
+        or installed:find('offsetXY="0.0 -10"', 1, true))
+    if mounted then
+        assert(model.script_state.operative_counter_movement_remaining.current == 12)
+        assert(model.script_state.operative_counter_remaining_actions.current == 4)
+        assert(installed:find('id="ktcnid-status-oc-movement_remaining"', 1, true))
+        assert(installed:find('id="ktcnid-status-oc-remaining_actions"', 1, true))
+        model.script_state.operative_counter_movement_remaining.current = 7
+    else
+        assert(not model.script_state.operative_counter_movement_remaining)
+        assert(not model.script_state.operative_counter_remaining_actions)
+        assert(not installed:find('id="ktcnid-status-oc-movement_remaining"', 1, true))
+        assert(not installed:find('id="ktcnid-status-oc-remaining_actions"', 1, true))
+    end
+    model.script_state.operative_counter_speed.current = 3
+    assert(ktCommandNodeAddCounters(params))
+    assert(model.script_state.operative_counter_speed.current == 3)
+    if mounted then assert(model.script_state.operative_counter_movement_remaining.current == 7) end
+    assert(model.script_state.owner == "existing-owner" and model.script_state.kt_front == 90)
+    assert(model.reloads == 2)
+    local marker = 'id="ktcnid-status-oc-speed"'
+    local first = assert(installed:find(marker, 1, true))
+    assert(not installed:find(marker, first + #marker, true))
+    assert(load((installed:gsub("!=", "~="))))
+end
+print("exodite counter integration passed")
+'''
+    result = subprocess.run(
+        [shutil.which("npx"), "--yes", "--package=fengari-node-cli", "fengari", "-"],
+        input=script, cwd=ROOT, capture_output=True, text=True, encoding="utf-8", check=True,
+    )
+    assert result.stdout.strip() == "exodite counter integration passed", result.stderr
+    assert not result.stderr
 
 
 def test_standalone_token_bag_preserves_contents_and_script(tmp_path):
