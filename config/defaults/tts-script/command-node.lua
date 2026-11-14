@@ -380,7 +380,8 @@ local function showRoster()
             .. tostring(currentTeam.useSpecialRules ~= false) .. '">Special rules: '
             .. xmlEscape(currentTeam.counterRule.name) .. '</Toggle>'
         if currentTeam.counterRule.options and currentTeam.useSpecialRules then
-            controls = controls .. button("choose_rules", "commandNodeChooseRules", "Choose " .. currentTeam.counterRule.name)
+            local selector = button("choose_rules", "commandNodeChooseRules", "Select " .. currentTeam.counterRule.name)
+            controls = controls .. selector:gsub('preferredHeight=', 'preferredWidth="330" flexibleWidth="0" preferredHeight=', 1)
         end
         controls = controls .. '</HorizontalLayout>'
     end
@@ -395,13 +396,19 @@ local function isSessionPlayer(player)
     return player and player.color == sessionColor
 end
 
+local function ruleChoiceCount(rule)
+    local count = rule.select or 1
+    for _, override in pairs(rule.operative_select_count or {}) do count = math.max(count, override) end
+    return count
+end
+
 local function showRuleChoices()
     panelRender = showRuleChoices
     local rule = currentTeam.counterRule
     local rows, groups = {}, {}
-    for choice = 1, rule.select or 1 do
+    for choice = 1, ruleChoiceCount(rule) do
         groups[#rows + 1] = #rule.options + 1
-        local label = (rule.select or 1) == 1 and "Choose one" or (choice == 1 and "Primary" or "Secondary")
+        local label = ruleChoiceCount(rule) == 1 and "Choose one" or (choice == 1 and "Primary" or "Secondary")
         rows[#rows + 1] = '<Text preferredHeight="26" fontSize="16" color="#A8BEB7">' .. label .. '</Text>'
         for index, option in ipairs(rule.options) do
             rows[#rows + 1] = button("rule_" .. choice .. "_" .. index, "commandNodeRuleOption",
@@ -423,7 +430,7 @@ function commandNodeRuleOption(player, _, id)
     local choice, option = id:match("^rule_(%d+)_(%d+)$")
     choice, option = tonumber(choice), tonumber(option)
     local rule = currentTeam.counterRule
-    if not choice or not option or choice > (rule.select or 1) or not rule.options[option] then return end
+    if not choice or not option or choice > ruleChoiceCount(rule) or not rule.options[option] then return end
     local previous = currentTeam.ruleChoices[choice]
     for index, selected in ipairs(currentTeam.ruleChoices) do
         if index ~= choice and selected == option then currentTeam.ruleChoices[index] = previous end
@@ -627,7 +634,7 @@ function commandNodeChooseTeam(player, _, id)
                     for _, option in ipairs(rule.options) do
                         option.text = option.text or texts[cleanText(option.name, true):lower()] or ""
                     end
-                    for choice = 1, rule.select or 1 do currentTeam.ruleChoices[choice] = choice end
+                    for choice = 1, ruleChoiceCount(rule) do currentTeam.ruleChoices[choice] = choice end
                 end
                 showRoster()
             end
@@ -1064,10 +1071,18 @@ local function applyNext(index, models)
             end
         end
         if applies then
+            local selectCount = rule.select or 1
+            local overrideCount = 0
+            for _, keyword in ipairs(data.keywords or {}) do
+                local override = (rule.operative_select_count or {})[keyword:upper()]
+                if override then overrideCount = math.max(overrideCount, override) end
+            end
+            if overrideCount > 0 then selectCount = overrideCount end
             for choice, selected in ipairs(currentTeam.ruleChoices) do
+                if choice > selectCount then break end
                 local option = rule.options[selected]
                 if not option then finishApply("Invalid special-rule choice."); return end
-                local suffix = (rule.select or 1) == 1 and "" or (choice == 1 and " (Primary)" or " (Secondary)")
+                local suffix = selectCount == 1 and "" or (choice == 1 and " (Primary)" or " (Secondary)")
                 data.abilities[#data.abilities + 1] = {name = option.name .. suffix, text = option.text}
             end
         end

@@ -18,6 +18,7 @@ local supplyFailAt
 local suppliesMissing = false
 local counterSupported = false
 local choicesSupported = false
+local choiceOverride
 local tacticNames = {"Aggressive", "Dueller", "Resolute", "Stealthy", "Mobile", "Hardy", "Sharpshooter", "Siege Specialist"}
 local expectCardbox = false
 local rawCardbox = false
@@ -120,6 +121,7 @@ JSON = {
         if value == "empty-index" then return {} end
         if value == '{"test":{"name":"Gore Tank"}}' then
             if choicesSupported then
+                if choiceOverride then return {test = copy(choiceOverride)} end
                 local options = {}
                 for _, name in ipairs(tacticNames) do options[#options + 1] = {name = name} end
                 return {test = {name = "Chapter Tactics", select = 2, kind = "choice", options = options}}
@@ -987,6 +989,8 @@ for _, enabled in ipairs({true, false}) do
     commandNodeChooseTeam({color = "White"}, nil, "team_1")
     assert(lastXml:find('isOn="true">Special rules: Chapter Tactics</Toggle>', 1, true))
     assert(lastXml:find('id="choose_rules"', 1, true))
+    assert(lastXml:find('preferredWidth="330" flexibleWidth="0" preferredHeight=', 1, true))
+    assert(lastXml:find('>Select Chapter Tactics</Button>', 1, true))
     if enabled then
         commandNodeChooseRules({color = "White"})
         assert(lastXml:find("Primary", 1, true))
@@ -1021,6 +1025,51 @@ for _, enabled in ipairs({true, false}) do
     end
 end
 choicesSupported = false
+
+choicesSupported = true
+choiceOverride = {
+    name = "Accursed Gifts", select = 1, kind = "choice", applies_to = {"MUTANT", "TORMENT"},
+    operative_select_count = {MUTANT = 1, TORMENT = 2},
+    options = {{name = "Fleet"}, {name = "Chitinous"}},
+}
+local originalCard = copy(cardData)
+cardData.name = "A MUTANT"
+cardData.keywords = {"MUTANT"}
+extraCards = {copy(cardData), copy(cardData)}
+extraCards[1].name = "B TORMENT"
+extraCards[1].keywords = {"TORMENT"}
+extraCards[2].name = "C CULTIST"
+extraCards[2].keywords = {"CULTIST"}
+spawnedSlots = {}
+commandNodeStart(nil, "White")
+commandNodeChooseTeam({color = "White"}, nil, "team_1")
+assert(lastXml:find('>Select Accursed Gifts</Button>', 1, true))
+commandNodeChooseRules({color = "White"})
+assert(lastXml:find('id="rule_1_1"', 1, true))
+assert(lastXml:find('id="rule_2_2"', 1, true))
+commandNodeRulesDone({color = "White"})
+for index = 1, 3 do commandNodeChangeCount({color = "White"}, nil, "plus_" .. index) end
+commandNodeNext({color = "White"})
+flushCallbacks()
+local cultModels = {}
+for _, marker in ipairs(spawnedSlots) do
+    local model = newObject("Figurine", Vector(0, 1, 0))
+    cultModels[#cultModels + 1] = model
+    hits[string.format("%.1f,%.1f", marker.position.x, marker.position.z)] = {{hit_object = model}}
+end
+commandNodeConfirm({color = "White"})
+flushCallbacks()
+assert(#cultModels[1].applied.abilities == 1)
+assert(cultModels[1].applied.abilities[1].name == "Fleet")
+assert(#cultModels[2].applied.abilities == 2)
+assert(cultModels[2].applied.abilities[1].name == "Fleet (Primary)")
+assert(cultModels[2].applied.abilities[2].name == "Chitinous (Secondary)")
+assert(#cultModels[3].applied.abilities == 0)
+for _, model in ipairs(cultModels) do assert(model.uiVisible and not model.counterInstalls) end
+cardData = originalCard
+extraCards = {}
+choicesSupported = false
+choiceOverride = nil
 
 loaderMetadataTruncated = true
 commandNodeStart(nil, "White")

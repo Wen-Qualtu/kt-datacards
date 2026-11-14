@@ -464,6 +464,8 @@ def test_shared_helper_includes_composed_model_and_card_loader():
     assert setup["angels-of-death"]["select"] == 2
     assert len(setup["angels-of-death"]["options"]) == 8
     assert setup["goremongers"]["kind"] == "counter"
+    assert setup["chaos-cult"]["applies_to"] == ["MUTANT", "TORMENT"]
+    assert setup["chaos-cult"]["operative_select_count"] == {"MUTANT": 1, "TORMENT": 2}
     scripts = CONFIG / "defaults" / "tts-script"
     assert (scripts / "move-tool.lua").read_text(encoding="utf-8") in helper
     assert (scripts / "sprint-movement-tool.lua").read_text(encoding="utf-8") in helper
