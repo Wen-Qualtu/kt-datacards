@@ -1,7 +1,7 @@
 {
   "team": "canoptek-circle",
   "pipeline_version": "2.0",
-  "last_updated": "2026-10-28T13:55:59.678508+00:00",
+  "last_updated": "2026-11-13T21:25:05.125277+00:00",
   "steps": {
     "content_analysis": {
       "outputs": {
@@ -488,13 +488,16 @@
       "outputs": {
         "team-data.json": {
           "path": "output/canoptek-circle/data/canoptek-circle-team-data.json",
-          "hash": "df9e9439b702b44d552f20a3bfb19a01645f0a5087e351d312b8faf8de9b01f4",
-          "modified": "2026-10-28T13:54:28.297902+00:00"
+          "hash": "4c1ce62bbd31828b0d4544aa8d4e60555773aeae295f895291c82f40092a47bf",
+          "modified": "2026-11-13T21:18:51.863144+00:00"
         }
       },
-      "completed": "2026-10-28T13:54:28.299354+00:00",
+      "completed": "2026-11-13T21:18:51.875897+00:00",
       "inputs": {
-        "layers/integration/canoptek-circle/content/canoptek-circle-content.json": "df9e9439b702b44d552f20a3bfb19a01645f0a5087e351d312b8faf8de9b01f4"
+        "layers/integration/canoptek-circle/content/canoptek-circle-content.json": "df9e9439b702b44d552f20a3bfb19a01645f0a5087e351d312b8faf8de9b01f4",
+        "config/weapon_rules.json": "4dd2e044dbd2dfdc8d1e035bd31d1fa7e72c70b6424a733ea315a392368848b9",
+        "pipeline/steps/extract_stats.py": "f29227a25a76a7f9e1a74c882454f13539c4733462e64abd034469eb2a3bef83",
+        "pipeline/steps/tts_impl.py": "2fd98b5d7b04687525be043fa87b3adb0d8d90763305755aa8c6e0c062f4320b"
       }
     },
     "generate_tts": {
@@ -507,10 +510,10 @@
         "tts_objects/Canoptek Circle.json": {
           "path": "output/canoptek-circle/tts_objects/Canoptek Circle.json",
           "hash": "ad950021888f8432cf81f757f308cef7b7613ced71177ee0d7cbcf8ef005041a",
-          "modified": "2026-10-28T13:55:59.634896+00:00"
+          "modified": "2026-11-13T21:25:04.980328+00:00"
         }
       },
-      "completed": "2026-10-28T13:55:59.678496+00:00",
+      "completed": "2026-11-13T21:25:05.125254+00:00",
       "inputs": {
         "config/team-config.yaml": "b1b298df3441797113db36d9524566fa76c836df085b140b54eaac01e26fd9f9",
         "config/team-guids.json": "906473ddbf256345a4150df497def05ec513f95948b27d6fc98fa6dba00bb7d0",
@@ -577,7 +580,7 @@
         "output/canoptek-circle/dice/canoptek-circle-dice-dark.jpg": "523e3ba6f5a57cfe415e15f1f3eb121207fcc985801dbce2822696b812101bbb",
         "output/canoptek-circle/dice/canoptek-circle-dice-light.jpg": "31b0092d1d5075034bec6c07cefbd10fdfaddd999bdcba85eecf57882b7e7109",
         "output/canoptek-circle/dice/canoptek-circle-dice-team.jpg": "fc621fec033be9a4ecbd24e1ea630e721604939cb929d6c005884244dc635340",
-        "output/canoptek-circle/data/canoptek-circle-team-data.json": "df9e9439b702b44d552f20a3bfb19a01645f0a5087e351d312b8faf8de9b01f4",
+        "output/canoptek-circle/data/canoptek-circle-team-data.json": "4c1ce62bbd31828b0d4544aa8d4e60555773aeae295f895291c82f40092a47bf",
         "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
         "config/defaults/tts-script/datacard-load-stats.lua": "e163a1c2bbf015020a7ffe5ee861e9e78e7127ed99661187805c247862108260",
         "config/defaults/tts-script/display-table-manager-script.lua": "846de299f8e2c925e63cc77c4991fedd07ae75e9bde375f3b3c991c8730b891b",

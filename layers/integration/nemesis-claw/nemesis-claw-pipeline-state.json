@@ -1,7 +1,7 @@
 {
   "team": "nemesis-claw",
   "pipeline_version": "2.0",
-  "last_updated": "2026-10-28T13:56:00.850003+00:00",
+  "last_updated": "2026-11-13T21:25:14.562214+00:00",
   "steps": {
     "content_analysis": {
       "outputs": {
@@ -527,13 +527,16 @@
       "outputs": {
         "team-data.json": {
           "path": "output/nemesis-claw/data/nemesis-claw-team-data.json",
-          "hash": "79136884bd8af63211f07bb0cf71744fc0250d9b70c0a09775fb401ed7b5396c",
-          "modified": "2026-10-28T13:55:00.399881+00:00"
+          "hash": "afd54fed44f254a9a34810d970a2dbc9d5aeffaba8145846f366b0cf966fd4ea",
+          "modified": "2026-11-13T21:18:54.948495+00:00"
         }
       },
-      "completed": "2026-10-28T13:55:00.402075+00:00",
+      "completed": "2026-11-13T21:18:54.955900+00:00",
       "inputs": {
-        "layers/integration/nemesis-claw/content/nemesis-claw-content.json": "79136884bd8af63211f07bb0cf71744fc0250d9b70c0a09775fb401ed7b5396c"
+        "layers/integration/nemesis-claw/content/nemesis-claw-content.json": "79136884bd8af63211f07bb0cf71744fc0250d9b70c0a09775fb401ed7b5396c",
+        "config/weapon_rules.json": "4dd2e044dbd2dfdc8d1e035bd31d1fa7e72c70b6424a733ea315a392368848b9",
+        "pipeline/steps/extract_stats.py": "f29227a25a76a7f9e1a74c882454f13539c4733462e64abd034469eb2a3bef83",
+        "pipeline/steps/tts_impl.py": "2fd98b5d7b04687525be043fa87b3adb0d8d90763305755aa8c6e0c062f4320b"
       }
     },
     "generate_tts": {
@@ -546,10 +549,10 @@
         "tts_objects/Nemesis Claw.json": {
           "path": "output/nemesis-claw/tts_objects/Nemesis Claw.json",
           "hash": "cd3ac2234e9ead47124f69307e7855682b47da0fe9fa836191222a5584cd1a29",
-          "modified": "2026-10-28T13:56:00.800246+00:00"
+          "modified": "2026-11-13T21:25:14.406458+00:00"
         }
       },
-      "completed": "2026-10-28T13:56:00.849993+00:00",
+      "completed": "2026-11-13T21:25:14.562185+00:00",
       "inputs": {
         "config/team-config.yaml": "b1b298df3441797113db36d9524566fa76c836df085b140b54eaac01e26fd9f9",
         "config/team-guids.json": "906473ddbf256345a4150df497def05ec513f95948b27d6fc98fa6dba00bb7d0",
@@ -622,7 +625,7 @@
         "output/nemesis-claw/dice/nemesis-claw-dice-dark.jpg": "2e3cbe415ed9d59610b4c04206ee80026bee1380bce7041babdb0327a588e3b3",
         "output/nemesis-claw/dice/nemesis-claw-dice-light.jpg": "759a55b30981cf9fd3fc43be88b45263f0f870eedb1b5dbf0266e2642f002406",
         "output/nemesis-claw/dice/nemesis-claw-dice-team.jpg": "9ebeb11e950f59d759a96a6656fb768afcfe3f1a6c3e5b31859de5f3aad1776b",
-        "output/nemesis-claw/data/nemesis-claw-team-data.json": "79136884bd8af63211f07bb0cf71744fc0250d9b70c0a09775fb401ed7b5396c",
+        "output/nemesis-claw/data/nemesis-claw-team-data.json": "afd54fed44f254a9a34810d970a2dbc9d5aeffaba8145846f366b0cf966fd4ea",
         "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
         "config/defaults/tts-script/datacard-load-stats.lua": "e163a1c2bbf015020a7ffe5ee861e9e78e7127ed99661187805c247862108260",
         "config/defaults/tts-script/display-table-manager-script.lua": "846de299f8e2c925e63cc77c4991fedd07ae75e9bde375f3b3c991c8730b891b",

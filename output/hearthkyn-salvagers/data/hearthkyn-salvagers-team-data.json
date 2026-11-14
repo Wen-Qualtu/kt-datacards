@@ -82,7 +82,83 @@
           "name": "Weavefield Crest",
           "description": "Once per battle, when an attack dice inflicts Normal Dmg on this operative, you can ignore that inflicted damage."
         }
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "ranged",
+          "ranged",
+          "ranged",
+          "melee",
+          "ranged"
+        ],
+        "weapon_rule_names": [
+          "Accurate x",
+          "Range x",
+          "Piercing x",
+          "Brutal",
+          "Shock"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "Autoch-pattern bolt pistol",
+                "weapons": [
+                  0
+                ]
+              },
+              {
+                "label": "Autoch-pattern bolter",
+                "weapons": [
+                  1
+                ]
+              },
+              {
+                "label": "bolt revolver",
+                "weapons": [
+                  2
+                ]
+              },
+              {
+                "label": "EtaCarn plasma pistol",
+                "weapons": [
+                  3
+                ]
+              },
+              {
+                "label": "ion blaster",
+                "weapons": [
+                  4
+                ]
+              },
+              {
+                "label": "ion pistol",
+                "weapons": [
+                  5
+                ]
+              }
+            ],
+            [
+              {
+                "label": "Concussion gauntlet",
+                "weapons": [
+                  6
+                ]
+              },
+              {
+                "label": "plasma weapon",
+                "weapons": [
+                  7
+                ]
+              }
+            ]
+          ],
+          "fixed": []
+        }
+      }
     },
     {
       "name": "HEARTHKYN DÔZR",
@@ -123,7 +199,19 @@
         "HEARTHKYN SALVAGER",
         "LEAGUES OF VOTANN",
         "DÔZR"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Accurate x",
+          "Range x",
+          "Ceaseless",
+          "Shock"
+        ]
+      }
     },
     {
       "name": "HEARTHKYN FIELD MEDIC",
@@ -165,7 +253,16 @@
         "LEAGUES OF VOTANN",
         "MEDIC",
         "FIELD MEDIC"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x"
+        ]
+      }
     },
     {
       "name": "HEARTHKYN GRENADIER",
@@ -212,7 +309,23 @@
         "HEARTHKYN SALVAGER",
         "LEAGUES OF VOTANN",
         "GRENADIER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Accurate x",
+          "Range x",
+          "Blast x",
+          "Heavy",
+          "Limited x",
+          "Piercing x",
+          "Saturate"
+        ]
+      }
     },
     {
       "name": "HEARTHKYN GUNNER",
@@ -288,7 +401,73 @@
           "name": "*Beam",
           "description": "Whenever this operative is shooting with this weapon, each retained critical success immediately inflicts D3 damage on each other operative along one (and only one) beam line (roll separately for each operative), but the target isn’t affected. An operative is along a beam line if a targeting line can be drawn from this operative to its base, and that line crosses the base of the original target but doesn’t cross Heavy terrain. In this example, Operative A is the target. Operatives B and C are along the beam line, but Operative D isn’t."
         }
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "ranged",
+          "ranged",
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Piercing x",
+          "Ceaseless",
+          "Rending",
+          "Heavy",
+          "Saturate",
+          "Torrent x",
+          "Blast x",
+          "Devastating x"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "EtaCarn plasma beamer; fists",
+                "weapons": [
+                  0,
+                  7
+                ]
+              },
+              {
+                "label": "HYLas auto rifle; fists",
+                "weapons": [
+                  1,
+                  7
+                ]
+              },
+              {
+                "label": "HYLas rotary cannon; fists",
+                "weapons": [
+                  2,
+                  3,
+                  7
+                ]
+              },
+              {
+                "label": "L7 missile launcher; fists",
+                "weapons": [
+                  4,
+                  5,
+                  7
+                ]
+              },
+              {
+                "label": "Magna rail rifle; fists",
+                "weapons": [
+                  6,
+                  7
+                ]
+              }
+            ]
+          ],
+          "fixed": []
+        }
+      }
     },
     {
       "name": "HEARTHKYN JUMP PACK WARRIOR",
@@ -328,7 +507,17 @@
         "HEARTHKYN SALVAGER",
         "LEAGUES OF VOTANN",
         "JUMP PACK WARRIOR"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged"
+        ],
+        "weapon_rule_names": [
+          "Accurate x",
+          "Range x"
+        ]
+      }
     },
     {
       "name": "HEARTHKYN KINLYNK",
@@ -374,7 +563,39 @@
         "HEARTHKYN SALVAGER",
         "LEAGUES OF VOTANN",
         "KINLYNK"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Accurate x",
+          "Piercing x"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "Autoch-pattern bolter; fists",
+                "weapons": [
+                  0,
+                  2
+                ]
+              },
+              {
+                "label": "Ion blaster; fists",
+                "weapons": [
+                  1,
+                  2
+                ]
+              }
+            ]
+          ],
+          "fixed": []
+        }
+      }
     },
     {
       "name": "HEARTHKYN KOGNITÂAR",
@@ -421,7 +642,39 @@
         "HEARTHKYN SALVAGER",
         "LEAGUES OF VOTANN",
         "KOGNITÂAR"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Accurate x",
+          "Piercing x"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "Autoch-pattern bolter; fists",
+                "weapons": [
+                  0,
+                  2
+                ]
+              },
+              {
+                "label": "Ion blaster; fists",
+                "weapons": [
+                  1,
+                  2
+                ]
+              }
+            ]
+          ],
+          "fixed": []
+        }
+      }
     },
     {
       "name": "HEARTHKYN LOKÂTR",
@@ -466,7 +719,39 @@
           "name": "PAN SPECTRAL SCAN (1AP)",
           "description": "Place your Pan Spectral Scan marker in the killzone. Whenever a friendly HEARTHKYN SALVAGER operative is shooting an enemy operative that’s within 3\" of that marker, that friendly operative’s ranged weapons have the Accurate 1 and Saturate weapon rules. When this operative is next activated, is incapacitated or performs this action again (whichever comes first), remove that marker. This operative cannot perform this action while within control range of an enemy operative."
         }
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Accurate x",
+          "Piercing x"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "Autoch-pattern bolter; fists",
+                "weapons": [
+                  0,
+                  2
+                ]
+              },
+              {
+                "label": "Ion blaster; fists",
+                "weapons": [
+                  1,
+                  2
+                ]
+              }
+            ]
+          ],
+          "fixed": []
+        }
+      }
     },
     {
       "name": "HEARTHKYN LUGGER",
@@ -512,7 +797,39 @@
         "HEARTHKYN SALVAGER",
         "LEAGUES OF VOTANN",
         "LUGGER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Accurate x",
+          "Piercing x"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "Autoch-pattern bolter; fists",
+                "weapons": [
+                  0,
+                  2
+                ]
+              },
+              {
+                "label": "Ion blaster; fists",
+                "weapons": [
+                  1,
+                  2
+                ]
+              }
+            ]
+          ],
+          "fixed": []
+        }
+      }
     },
     {
       "name": "HEARTHKYN WARRIOR",
@@ -554,7 +871,39 @@
         "HEARTHKYN SALVAGER",
         "LEAGUES OF VOTANN",
         "WARRIOR"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Accurate x",
+          "Piercing x"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "Autoch-pattern bolter; fists",
+                "weapons": [
+                  0,
+                  2
+                ]
+              },
+              {
+                "label": "Ion blaster; fists",
+                "weapons": [
+                  1,
+                  2
+                ]
+              }
+            ]
+          ],
+          "fixed": []
+        }
+      }
     }
   ],
   "equipment": [
@@ -681,5 +1030,20 @@
       "name": "proximate-firepower",
       "text": "STRATEGY PLOY\nPROXIMATE FIREPOWER\nHearthkyn Salvagers are supremely effective in \nclose-quarters environments.\nWhenever a friendly HEARTHKYN SALVAGER \noperative is shooting an enemy operative within \n6\" of it, improve the Hit stat of that friendly \noperative’s ranged weapons by 1 (to a maximum \nof 3+). This can allow you to apply or remove \nthe Hit stat change during an action (this takes \nprecedence over the core rules).\nHEARTHKYN SALVAGER"
     }
-  ]
+  ],
+  "node_weapon_rules": {
+    "Accurate x": "You can retain up to x attack dice as normal successes without rolling them. If a weapon has more than one instance of Accurate x, you can treat it as one instance of Accurate 2 instead (this takes precedence over x rules above).",
+    "Range x": "Only operatives within x of the active operative can be valid targets, e.g. Range 9\".",
+    "Piercing x": "The defender collects x less defence dice, e.g. Piercing 1. If the rule is Piercing Crits x, this only comes into effect if you retain any critical successes.",
+    "Brutal": "Your opponent can only block with critical successes.",
+    "Shock": "The first time you strike with a critical success in each sequence, also discard one of your opponent's unresolved normal successes (or one of their critical successes if there are none).",
+    "Ceaseless": "You can re-roll any of your attack dice results of one result (e.g. results of 2).",
+    "Blast x": "The target you select is the primary target. After shooting the primary target, shoot with this weapon against each secondary target in an order of your choice (roll each sequence separately). Secondary targets are other operatives visible to and within x of the primary target, e.g. Blast 2\" (they are all valid targets, regardless of a Conceal order). Secondary targets are in cover and obscured if the primary target was.",
+    "Heavy": "An operative cannot use this weapon in an activation or counteraction in which it moved, and it cannot move in an activation or counteraction in which it used this weapon. If the rule is Heavy (x only), where x is a move action, only that move is allowed, e.g. Heavy (Dash only). This weapon rule has no effect on preventing the Guard action.",
+    "Limited x": "After an operative uses this weapon a number of times in the battle equal to x, they no longer have it. If it's used multiple times in one action (e.g. Blast), treat this as one use.",
+    "Saturate": "The defender cannot retain cover saves.",
+    "Rending": "If you retain any critical successes, you can retain one of your normal successes as a critical success instead.",
+    "Torrent x": "Select a valid target as normal as the primary target, then select any number of other valid targets within x of the first valid target, but not within control range of friendly operatives, as secondary targets, e.g. Torrent 2\". Shoot with this weapon against all of them in an order of your choice (roll each sequence separately).",
+    "Devastating x": "Each retained critical success immediately inflicts x damage on the operative this weapon is being used against, e.g. Devastating 3. If the rule starts with a distance (e.g. 1\" Devastating x), inflict x damage on that operative and each other operative visible to and within that distance of it. Note that success isn't discarded after doing so - it can still be resolved later in the sequence."
+  }
 }

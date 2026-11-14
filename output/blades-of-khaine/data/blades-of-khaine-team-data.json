@@ -79,7 +79,79 @@
           "name": "Shimmershield",
           "description": "Whenever an operative is shooting a friendly BLADES OF KHAINE operative that’s visible to and within 2\" of this operative, ignore the Piercing weapon rule. This operative only has this rule if you select the shimmershield weapon option."
         }
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "melee",
+          "melee",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Rending",
+          "Range x",
+          "Ceaseless"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "Shuriken catapult; fists",
+                "weapons": [
+                  0,
+                  4
+                ]
+              },
+              {
+                "label": "Twin shuriken catapult; gun butts",
+                "weapons": [
+                  2,
+                  5
+                ]
+              }
+            ],
+            [
+              {
+                "label": "Diresword",
+                "weapons": [
+                  3
+                ]
+              },
+              {
+                "label": "power weapon",
+                "weapons": [
+                  6
+                ]
+              }
+            ],
+            [
+              {
+                "label": "Shuriken pistol",
+                "weapons": [
+                  1
+                ]
+              },
+              {
+                "label": "shimmershield",
+                "weapons": []
+              }
+            ]
+          ],
+          "fixed": [],
+          "exclusive_sets": [
+            [
+              0
+            ],
+            [
+              1,
+              2
+            ]
+          ]
+        }
+      }
     },
     {
       "name": "DIRE AVENGER WARRIOR",
@@ -116,7 +188,16 @@
         "ASURYANI",
         "DIRE AVENGER",
         "WARRIOR"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Rending"
+        ]
+      }
     },
     {
       "name": "HOWLING BANSHEE EXARCH",
@@ -187,7 +268,66 @@
         "LEADER",
         "HOWLING BANSHEE",
         "EXARCH"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee",
+          "melee",
+          "melee",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Rending",
+          "Torrent x",
+          "Ceaseless"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "Mirrorswords",
+                "weapons": [
+                  3
+                ]
+              },
+              {
+                "label": "Shuriken pistol; executioner",
+                "weapons": [
+                  0,
+                  2
+                ]
+              },
+              {
+                "label": "Shuriken pistol; power weapon",
+                "weapons": [
+                  0,
+                  4
+                ]
+              },
+              {
+                "label": "Shuriken pistol; triskele",
+                "weapons": [
+                  0,
+                  1,
+                  5
+                ]
+              },
+              {
+                "label": "Triskele; power weapon",
+                "weapons": [
+                  1,
+                  4,
+                  5
+                ]
+              }
+            ]
+          ],
+          "fixed": []
+        }
+      }
     },
     {
       "name": "HOWLING BANSHEE WARRIOR",
@@ -225,7 +365,17 @@
         "ASURYANI",
         "HOWLING BANSHEE",
         "WARRIOR"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Rending"
+        ]
+      }
     },
     {
       "name": "STRIKING SCORPION EXARCH",
@@ -289,7 +439,50 @@
         "LEADER",
         "STRIKING SCORPION",
         "EXARCH"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee",
+          "melee",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Rending",
+          "Ceaseless",
+          "Brutal"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "Shuriken pistol; biting blade",
+                "weapons": [
+                  0,
+                  2
+                ]
+              },
+              {
+                "label": "Shuriken pistol; scorpion’s claw and chainsword",
+                "weapons": [
+                  0,
+                  3
+                ]
+              },
+              {
+                "label": "Twin shuriken pistols; twin chainswords",
+                "weapons": [
+                  1,
+                  4
+                ]
+              }
+            ]
+          ],
+          "fixed": []
+        }
+      }
     },
     {
       "name": "STRIKING SCORPION WARRIOR",
@@ -327,7 +520,17 @@
         "ASURYANI",
         "STRIKING SCORPION",
         "WARRIOR"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Rending"
+        ]
+      }
     }
   ],
   "equipment": [
@@ -487,5 +690,12 @@
       "name": "dance-of-death",
       "text": "BLADES OF KHAINE\nSTRATEGY PLOY\nDANCE OF DEATH\nLithe, acrobatic and utterly deadly, Aeldari Aspect \nWarriors exchange tactical positions with flawless grace.\nSelect two friendly BLADES OF KHAINE \noperatives visible to and within 6\" of each other. \nRemove them both from the killzone and set \nthem back up in each other’s previous locations \n(in other words, swap their positions)."
     }
-  ]
+  ],
+  "node_weapon_rules": {
+    "Rending": "If you retain any critical successes, you can retain one of your normal successes as a critical success instead.",
+    "Range x": "Only operatives within x of the active operative can be valid targets, e.g. Range 9\".",
+    "Ceaseless": "You can re-roll any of your attack dice results of one result (e.g. results of 2).",
+    "Torrent x": "Select a valid target as normal as the primary target, then select any number of other valid targets within x of the first valid target, but not within control range of friendly operatives, as secondary targets, e.g. Torrent 2\". Shoot with this weapon against all of them in an order of your choice (roll each sequence separately).",
+    "Brutal": "Your opponent can only block with critical successes."
+  }
 }

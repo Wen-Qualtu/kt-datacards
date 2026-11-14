@@ -1,0 +1,625 @@
+import hashlib
+import json
+import os
+import shutil
+import subprocess
+import sys
+
+import pytest
+
+from pipeline.steps import extract_stats, generate_tts, tts_impl
+from pipeline.utils.ktui_model_script import compose_command_node_loader, compose_ktui_model_script
+from tools.build_command_node import ROOT, SCRIPT, build_save
+from tools.check_gmnotes_parity import BASELINE, gmnotes_manifest
+
+CONFIG = ROOT / "config"
+
+
+def embedded_card_data(box):
+    return {
+        data["name"]: data
+        for card in tts_impl._find_datacards(box)
+        if card.get("GMNotes") and "function diffAndApply" in card.get("LuaScript", "")
+        for data in [json.loads(card["GMNotes"])]
+        if data.get("name") and data.get("stats")
+    }
+
+
+def lua_literal(value):
+    if value is None:
+        return "nil"
+    if isinstance(value, bool):
+        return "true" if value else "false"
+    if isinstance(value, (int, float)):
+        return str(value)
+    if isinstance(value, str):
+        return '"' + "".join(f"\\{byte:03d}" for byte in value.encode("utf-8")) + '"'
+    if isinstance(value, list):
+        return "{" + ",".join(lua_literal(item) for item in value) + "}"
+    return "{" + ",".join(f"[{lua_literal(key)}]={lua_literal(item)}" for key, item in value.items()) + "}"
+
+
+@pytest.mark.skipif(not shutil.which("npx"), reason="npx is required for Lua parity")
+def test_real_team_data_converts_to_existing_card_fields():
+    npx = shutil.which("npx")
+    assert npx, "npx is required for the optional Lua parity check"
+    rules = json.loads((CONFIG / "weapon_rules.json").read_text(encoding="utf-8"))
+    cases = []
+    for slug, title in [
+        ("blades-of-khaine", "Blades Of Khaine"),
+        ("warpcoven", "Warpcoven"),
+        ("exodite-dragon-masters", "Exodite Dragon Masters"),
+    ]:
+        team_path = ROOT / "output" / slug / "data" / f"{slug}-team-data.json"
+        box_path = ROOT / "output" / slug / "tts_objects" / f"{title}.json"
+        team = extract_stats.prepare_team_data(json.loads(team_path.read_text(encoding="utf-8")), rules)
+        cards = embedded_card_data(json.loads(box_path.read_text(encoding="utf-8")))
+        for operative in team["datacards"]:
+            if operative["name"] not in cards:
+                continue
+            expected = dict(cards[operative["name"]])
+            expected.pop("description", None)
+            cases.append({"operative": operative, "rules": {}, "expected": expected})
+
+    lua = """
+dofile("config/defaults/tts-script/command-node.lua")
+local cases = CASES
+local function equal(left, right)
+    if type(left) ~= type(right) then return false end
+    if type(left) ~= "table" then return left == right end
+    for key, value in pairs(left) do if not equal(value, right[key]) then return false end end
+    for key in pairs(right) do if left[key] == nil then return false end end
+    return true
+end
+for _, case in ipairs(cases) do
+    local actual, reason = commandNodeModelData(case.operative, case.rules)
+    assert(actual and equal(actual, case.expected), case.operative.name .. ": " .. tostring(reason))
+end
+print("parity " .. #cases)
+""".replace("CASES", lua_literal(cases))
+    result = subprocess.run(
+        [npx, "--yes", "--package=fengari-node-cli", "fengari", "-"],
+        input=lua, cwd=ROOT, capture_output=True, text=True, encoding="utf-8", check=True,
+    )
+    assert result.stdout.strip() == f"parity {len(cases)}", result.stderr
+
+
+def test_prepared_fields_reuse_card_loadouts_without_mutating_source():
+    team_path = ROOT / "output" / "blades-of-khaine" / "data" / "blades-of-khaine-team-data.json"
+    box_path = ROOT / "output" / "blades-of-khaine" / "tts_objects" / "Blades Of Khaine.json"
+    team = json.loads(team_path.read_text(encoding="utf-8"))
+    box = json.loads(box_path.read_text(encoding="utf-8"))
+    rules = json.loads((CONFIG / "weapon_rules.json").read_text(encoding="utf-8"))
+    original_team = json.loads(json.dumps(team))
+    enriched = extract_stats.prepare_team_data(team, rules)
+    expected = embedded_card_data(box)
+
+    assert team == original_team
+    assert "node_weapon_rules" not in enriched
+    assert enriched["model_data_version"] == 1
+    assert all("selection" not in item for item in enriched.get("operatives_selection", []))
+    for original, operative in zip(team["datacards"], enriched["datacards"]):
+        assert "node" not in operative
+        model = expected[original["name"]]
+        assert operative.get("selection") == model.get("selection")
+        assert operative["stats"] == model["stats"]
+        assert [weapon["type"] for weapon in operative["weapons"]] == [
+            "melee" if weapon["name"].startswith("[F4641D]M[-]") else "ranged"
+            for weapon in model["weapons"]
+        ]
+        resolved = {}
+        for weapon in operative["weapons"]:
+            resolved.update(weapon["weapon_rules"])
+        assert resolved == model["weapon_rules"]
+        for key in ("name", "apl", "movement", "save", "wounds", "base_size"):
+            assert operative.get(key) == original.get(key)
+
+
+def test_canoptek_warrior_and_crawler_loadout_options_are_precomputed():
+    team = json.loads((ROOT / "output/canoptek-circle/data/canoptek-circle-team-data.json").read_text(encoding="utf-8"))
+    rules = json.loads((CONFIG / "weapon_rules.json").read_text(encoding="utf-8"))
+    team = extract_stats.prepare_team_data(team, rules)
+    nodes = {
+        operative["name"]: operative["selection"]
+        for operative in team["datacards"]
+        if operative["name"] in {"CANOPTEK MACROCYTE WARRIOR", "CANOPTEK TOMB CRAWLER"}
+    }
+
+    assert [option["label"] for option in nodes["CANOPTEK MACROCYTE WARRIOR"]["groups"][0]] == [
+        "Gauss scalpel; claws and tail", "Tesla caster; claws and tail"
+    ]
+    assert [option["label"] for option in nodes["CANOPTEK TOMB CRAWLER"]["groups"][0]] == [
+        "Twin gauss reapers; claws", "Transdimensional isolator; claws"
+    ]
+
+
+def test_all_prepared_team_data_preserves_exact_serialized_gmnotes():
+    expected = json.loads(BASELINE.read_text(encoding="utf-8"))
+    assert len(expected["teams"]) == 48
+    assert sum(map(len, expected["teams"].values())) == 453
+    assert gmnotes_manifest(prepared=True) == expected
+
+
+def test_preparation_is_idempotent_and_cards_do_not_reclassify(monkeypatch):
+    team = json.loads((ROOT / "output/angels-of-death/data/angels-of-death-team-data.json").read_text(encoding="utf-8"))
+    rules = json.loads((CONFIG / "weapon_rules.json").read_text(encoding="utf-8"))
+    prepared = extract_stats.prepare_team_data(team, rules)
+    assert extract_stats.prepare_team_data(prepared, rules) == prepared
+
+    def unexpected(*args, **kwargs):
+        pytest.fail("Prepared card serialization repeated upstream weapon or selection processing")
+
+    monkeypatch.setattr(tts_impl, "_classify_weapon", unexpected)
+    monkeypatch.setattr(tts_impl, "_match_weapon_rules", unexpected)
+    monkeypatch.setattr(tts_impl, "_build_selection_for_gmnotes", unexpected)
+    for operative in prepared["datacards"]:
+        expected = tts_impl._build_gm_notes(operative, prepared, {})
+        assert expected["stats"] == operative["stats"]
+        assert expected["weapon_rules"]
+
+
+@pytest.mark.parametrize("team_path", sorted((ROOT / "output").glob("*/data/*-team-data.json")),
+                         ids=lambda path: path.parent.parent.name)
+def test_real_card_embedding_keeps_gmnotes_and_lua_exactly_unchanged(team_path, tmp_path):
+    raw = json.loads(team_path.read_text(encoding="utf-8"))
+    rules = json.loads((CONFIG / "weapon_rules.json").read_text(encoding="utf-8"))
+    prepared = extract_stats.prepare_team_data(raw, rules)
+    slug = raw["team"]
+    target = tmp_path / slug / "data" / team_path.name
+    target.parent.mkdir(parents=True)
+    original_cards = [{"CardID": 1000 + index, "Nickname": operative["name"]}
+                      for index, operative in enumerate(raw["datacards"])]
+    before = {"ContainedObjects": json.loads(json.dumps(original_cards))}
+    after = {"ContainedObjects": json.loads(json.dumps(original_cards))}
+    target.write_text(json.dumps(raw, ensure_ascii=False), encoding="utf-8")
+    assert tts_impl.embed_datacard_stats(before, slug, tmp_path, CONFIG)
+    target.write_text(json.dumps(prepared, ensure_ascii=False), encoding="utf-8")
+    assert tts_impl.embed_datacard_stats(after, slug, tmp_path, CONFIG)
+    expected_hashes = json.loads(BASELINE.read_text(encoding="utf-8"))["teams"][slug]
+    for legacy, current in zip(before["ContainedObjects"], after["ContainedObjects"]):
+        assert current["GMNotes"] == legacy["GMNotes"], (slug, current["Nickname"])
+        assert current["LuaScript"] == legacy["LuaScript"], (slug, current["Nickname"])
+        assert hashlib.sha256(current["GMNotes"].encode("utf-8")).hexdigest() == expected_hashes[current["Nickname"]]
+
+
+def test_saved_object_embeds_current_node_script():
+    script = SCRIPT.read_text(encoding="utf-8")
+    save = json.loads(json.dumps(build_save(script)))
+
+    assert save["SaveName"] == "Kill Team Command Node"
+    assert len(save["ObjectStates"]) == 1
+    node = save["ObjectStates"][0]
+    assert node["Name"] == "Custom_Tile"
+    assert node["CustomImage"]["CustomTile"] == {
+        "Type": 1, "Thickness": 0.2, "Stackable": False, "Stretch": True,
+    }
+    assert node["CustomImage"]["ImageURL"].endswith("C19BB145DB4C70E131F1184AC1C81EC5EC446D31/")
+    assert node["ColorDiffuse"] == {"r": 0.2, "g": 0.2, "b": 0.2}
+    assert node["Transform"]["scaleX"] == node["Transform"]["scaleZ"] == 1
+    assert save["ObjectStates"][0]["LuaScript"] == script
+    assert "function commandNodeConfirm" in script
+    assert "NODE_TEAM_DATA" not in script
+    assert "NODE_APPLY_SCRIPT" not in script
+
+
+def test_existing_card_loadouts_are_preserved():
+    path = ROOT / "output" / "angels-of-death" / "tts_objects" / "Angels Of Death.json"
+    box = json.loads(path.read_text(encoding="utf-8"))
+    cards = embedded_card_data(box)
+    sergeant = cards["ASSAULT INTERCESSOR SERGEANT"]
+
+    assert len(cards) == 9
+    assert sergeant["selection"]["exclusive_sets"] == [[0, 1], [2]]
+    assert "script" not in sergeant
+    assert len(json.dumps(cards, ensure_ascii=False)) < path.stat().st_size / 10
+
+
+def test_embedded_card_data_matches_warpcoven_datacards():
+    path = ROOT / "output" / "warpcoven" / "tts_objects" / "Warpcoven.json"
+    box = json.loads(path.read_text(encoding="utf-8"))
+
+    cards = embedded_card_data(box)
+    deck = next(item for item in box["ContainedObjects"] if item["Nickname"] == "Datacards")
+    expected = sorted(
+        (json.loads(card["GMNotes"]) for card in deck["ContainedObjects"]),
+        key=lambda card: card["name"].lower(),
+    )
+    assert sorted(cards.values(), key=lambda card: card["name"].lower()) == expected
+
+
+def test_pipeline_writes_combined_stable_team_data(tmp_path):
+    path = ROOT / "output" / "warpcoven" / "data" / "warpcoven-team-data.json"
+    team = json.loads(path.read_text(encoding="utf-8"))
+    rules = json.loads((CONFIG / "weapon_rules.json").read_text(encoding="utf-8"))
+    enriched = extract_stats.prepare_team_data(team, rules)
+    target = tmp_path / "warpcoven-team-data.json"
+    assert extract_stats._save_stable(enriched, target)
+    timestamp = target.stat().st_mtime_ns
+    original_bytes = target.read_bytes()
+    result = json.loads(target.read_text(encoding="utf-8"))
+
+    assert result["team"] == "warpcoven"
+    assert result["model_data_version"] == 1
+    assert "node_weapon_rules" not in result
+    assert all("node" not in card and "stats" in card for card in result["datacards"])
+    assert extract_stats._save_stable(enriched, target)
+    assert target.read_bytes() == original_bytes
+    assert abs(target.stat().st_mtime_ns - timestamp) < 1_000
+
+
+def test_legacy_node_cleanup_preserves_other_files_and_state(tmp_path):
+    data = tmp_path / "data"
+    data.mkdir()
+    legacy = data / "test-team-node-data.json"
+    legacy.write_text("old", encoding="utf-8")
+    team_data = data / "test-team-team-data.json"
+    team_data.write_text("current", encoding="utf-8")
+
+    class FakeState:
+        state = {"steps": {"generate_tts": {"outputs": {
+            "data/test-team-node-data.json": {"path": "old"},
+            "tts_objects/Test Team.json": {"path": "box"},
+        }}}}
+
+    state = FakeState()
+    extract_stats.remove_legacy_node_data("test-team", tmp_path, state)
+    assert not legacy.exists()
+    assert team_data.read_text(encoding="utf-8") == "current"
+    assert state.state["steps"]["generate_tts"]["outputs"] == {
+        "tts_objects/Test Team.json": {"path": "box"}
+    }
+    extract_stats.remove_legacy_node_data("test-team", tmp_path, state)
+
+
+def test_stats_keeps_legacy_data_if_combined_save_fails(tmp_path, monkeypatch):
+    team_dir = tmp_path / "test-team"
+    data = team_dir / "data"
+    data.mkdir(parents=True)
+    legacy = data / "test-team-node-data.json"
+    legacy.write_text("old", encoding="utf-8")
+    content = tmp_path / "content.json"
+    content.write_text('{"team":"test-team","datacards":[]}', encoding="utf-8")
+    config = tmp_path / "config"
+    config.mkdir()
+    (config / "weapon_rules.json").write_text("{}", encoding="utf-8")
+
+    class FakeState:
+        def __init__(self, team):
+            self.state = {"steps": {"generate_tts": {"outputs": {}}}}
+
+        def can_skip(self, step, inputs, force):
+            return True
+
+    class FakeIndex:
+        def rebuild_and_save(self):
+            pass
+
+    monkeypatch.setattr(extract_stats.paths, "team_output", lambda team: team_dir)
+    monkeypatch.setattr(extract_stats.paths, "content_file", lambda team: content)
+    monkeypatch.setattr(extract_stats.paths, "CONFIG", config)
+    monkeypatch.setattr(extract_stats, "StateManager", FakeState)
+    monkeypatch.setattr(extract_stats, "StateIndex", FakeIndex)
+    monkeypatch.setattr(extract_stats, "_save_stable", lambda data, path: False)
+
+    assert extract_stats.run(teams=["test-team"])["failed"] == 1
+    assert legacy.read_text(encoding="utf-8") == "old"
+
+
+def test_team_data_is_published_and_existing_box_input_is_preserved(tmp_path, monkeypatch):
+    team_dir = tmp_path / "output" / "test-team"
+    (team_dir / "data").mkdir(parents=True)
+    (team_dir / "tts_objects").mkdir()
+    team_data = team_dir / "data" / "test-team-team-data.json"
+    team_data.write_text('{"team":"test-team","datacards":[]}', encoding="utf-8")
+    node_data = team_dir / "data" / "test-team-node-data.json"
+    node_data.write_text('{"team":"test-team","operatives":[]}', encoding="utf-8")
+    (team_dir / "tts_objects" / "Test Team.json").write_text("{}", encoding="utf-8")
+    scripts = tmp_path / "config" / "defaults" / "tts-script"
+    scripts.mkdir(parents=True)
+    node_script = scripts / "command-node.lua"
+    node_script.write_text("node", encoding="utf-8")
+    card_script = scripts / "datacard-load-stats.lua"
+    card_script.write_text("card", encoding="utf-8")
+    monkeypatch.setattr(tts_impl, "PROJECT_ROOT", tmp_path)
+    monkeypatch.setattr(generate_tts.paths, "team_output", lambda team: team_dir)
+    monkeypatch.setattr(generate_tts.paths, "CONFIG", tmp_path / "config")
+    monkeypatch.setattr(generate_tts.paths, "DEFAULTS", tmp_path / "config" / "defaults")
+    monkeypatch.setattr(generate_tts.paths, "TEAM_CONFIG", tmp_path / "config" / "team-config.yaml")
+
+    metadata = tts_impl.generate_object_urls_json("feature/command-node")
+    summary = tts_impl.generate_object_urls_summary(metadata, "feature/command-node")
+
+    assert "/data/test-team-team-data.json?v=" in metadata["test-team"]["team_data"]["url"]
+    assert "feature/command-node" in summary["test-team"]["team_url"]
+    assert metadata["test-team"]["team_data"]["hash"][:12] in summary["test-team"]["team_url"]
+    assert node_data not in generate_tts._inputs_for("test-team")
+    assert team_data in generate_tts._inputs_for("test-team")
+    assert node_script not in generate_tts._inputs_for("test-team")
+    assert card_script in generate_tts._inputs_for("test-team")
+
+    (team_dir / "test-team-object-urls.json").write_text(
+        json.dumps(metadata["test-team"]), encoding="utf-8"
+    )
+    monkeypatch.setattr(tts_impl, "_git_unchanged_from_head", lambda path: True)
+    team_data.write_text('{"team":"test-team","datacards":[{"name":"new"}]}', encoding="utf-8")
+    updated = tts_impl.generate_object_urls_json("feature/command-node")
+    updated_summary = tts_impl.generate_object_urls_summary(updated, "feature/command-node")
+    assert updated["test-team"]["team_data"]["url"] != metadata["test-team"]["team_data"]["url"]
+    assert updated_summary["test-team"]["team_url"] != summary["test-team"]["team_url"]
+    assert updated_summary["test-team"]["modified"] == summary["test-team"]["modified"]
+
+
+def test_missing_legacy_node_data_does_not_trigger_tts_generation(tmp_path, monkeypatch):
+    team_dir = tmp_path / "test-team"
+    tts_dir = team_dir / "tts_objects"
+    tts_dir.mkdir(parents=True)
+    (tts_dir / "Test Team.json").write_text("{}", encoding="utf-8")
+    runs = []
+
+    class FakeState:
+        def __init__(self, team):
+            self.team = team
+            self.state = {"steps": {}}
+
+        def can_skip(self, step, inputs, force):
+            return True
+
+        def record_output(self, step, key, path):
+            pass
+
+        def record_inputs(self, step, inputs):
+            pass
+
+        def mark_complete(self, step):
+            pass
+
+        def save(self):
+            pass
+
+    class FakeIndex:
+        def rebuild_and_save(self):
+            pass
+
+    def generate(urls, config_dir, output_dir, team_filter, repo_branch):
+        runs.append(team_filter)
+        node_data = team_dir / "data" / "test-team-node-data.json"
+        node_data.parent.mkdir(exist_ok=True)
+        node_data.write_text("{}", encoding="utf-8")
+        return 1
+
+    monkeypatch.setattr(generate_tts, "StateManager", FakeState)
+    monkeypatch.setattr(generate_tts, "StateIndex", FakeIndex)
+    monkeypatch.setattr(generate_tts.paths, "team_output", lambda team: team_dir)
+    monkeypatch.setattr(generate_tts.paths, "OUTPUT", tmp_path)
+    monkeypatch.setattr(generate_tts, "_inputs_for", lambda team: [])
+    monkeypatch.setattr(generate_tts, "_write_object_urls", lambda branch: None)
+    monkeypatch.setattr(tts_impl, "generate_urls_json_v3", lambda branch: [])
+    monkeypatch.setattr(tts_impl, "generate_all_tts_objects", generate)
+    monkeypatch.setattr(tts_impl, "write_command_node_loader", lambda config_dir, output_dir: None)
+    monkeypatch.setattr(tts_impl, "rebuild_kill_team_card_boxes_example", lambda output_dir: (0, None))
+
+    assert generate_tts.run(teams=["test-team"])["skipped"] == 1
+    assert generate_tts.run(teams=["test-team"])["skipped"] == 1
+    assert runs == []
+
+
+def test_missing_legacy_box_state_is_pruned_without_removing_current_outputs(tmp_path, monkeypatch):
+    team_dir = tmp_path / "output" / "test-team"
+    tts_dir = team_dir / "tts_objects"
+    tts_dir.mkdir(parents=True)
+    current = tts_dir / "Test Team.json"
+    current.write_text("{}", encoding="utf-8")
+    legacy = tts_dir / "Test Team Box.json"
+
+    class FakeState:
+        state = {"steps": {"generate_tts": {"outputs": {
+            "tts_objects/Test Team Box.json": {"path": "output/test-team/tts_objects/Test Team Box.json"},
+            "tts_objects/Test Team.json": {"path": "output/test-team/tts_objects/Test Team.json"},
+        }}}}
+
+    monkeypatch.setattr(generate_tts.paths, "ROOT", tmp_path)
+    monkeypatch.setattr(generate_tts.paths, "team_output", lambda team: team_dir)
+    state = FakeState()
+    assert generate_tts._prune_missing_legacy_box(state, "test-team")
+    assert "tts_objects/Test Team.json" in state.state["steps"]["generate_tts"]["outputs"]
+    assert current.exists()
+    assert not generate_tts._prune_missing_legacy_box(state, "test-team")
+    state.state["steps"]["generate_tts"]["outputs"]["tts_objects/Test Team Box.json"] = {
+        "path": "output/test-team/tts_objects/Test Team Box.json"
+    }
+    legacy.write_text("{}", encoding="utf-8")
+    assert not generate_tts._prune_missing_legacy_box(state, "test-team")
+    assert legacy.exists()
+
+
+def test_tts_saves_repaired_state_even_when_team_is_skipped(tmp_path, monkeypatch):
+    saved = []
+
+    class FakeState:
+        def __init__(self, team):
+            self.team = team
+
+        def can_skip(self, step, inputs, force):
+            return True
+
+        def save(self):
+            saved.append(self.team)
+
+    class FakeIndex:
+        def rebuild_and_save(self):
+            pass
+
+    monkeypatch.setattr(generate_tts, "StateManager", FakeState)
+    monkeypatch.setattr(generate_tts, "StateIndex", FakeIndex)
+    monkeypatch.setattr(generate_tts, "_inputs_for", lambda team: [])
+    monkeypatch.setattr(generate_tts, "_prune_missing_legacy_box", lambda state, team: True)
+    monkeypatch.setattr(generate_tts, "_write_object_urls", lambda branch: None)
+    monkeypatch.setattr(tts_impl, "write_command_node_loader", lambda config_dir, output_dir: None)
+    monkeypatch.setattr(tts_impl, "rebuild_kill_team_card_boxes_example", lambda output_dir: (0, None))
+
+    assert generate_tts.run(teams=["test-team"])["skipped"] == 1
+    assert saved == ["test-team"]
+
+
+def test_builder_can_target_a_feature_branch_without_embedded_data(tmp_path):
+    output = tmp_path / "node.json"
+    subprocess.run(
+        [sys.executable, "-m", "tools.build_command_node", "--output", str(output),
+         "--branch", "feature/command-node"],
+        cwd=ROOT, check=True, capture_output=True, text=True,
+    )
+    node = json.loads(output.read_text(encoding="utf-8"))["ObjectStates"][0]["LuaScript"]
+
+    assert "refs/heads/feature/command-node" in node
+    assert "NODE_TEAM_DATA" not in node
+    assert "NODE_APPLY_SCRIPT" not in node
+    assert "NODE_LOADER_FALLBACK" not in node
+    assert "KTUI_MODELSCRIPT =" not in node
+    assert "MOVE_TOOL_CODE =" not in node
+    assert "SPRINT_TOOL_CODE =" not in node
+    assert "function ktCommandNodeAddCounters" not in node
+    assert len(node.encode("utf-8")) < 55_000
+
+
+def test_shared_helper_includes_composed_model_and_card_loader():
+    helper = compose_command_node_loader(CONFIG)
+
+    assert "KTUI_MODELSCRIPT_VERSION" in helper
+    assert "function diffAndApply" in helper
+    assert "function rebuildDescription" in helper
+    assert "function onLoad" in helper
+    assert "NODE_COUNTER_SETUP" in helper
+    assert "function ktCommandNodeAddCounters" in helper
+    assert "Gore Tank" in helper
+    setup = json.loads(helper.split("NODE_COUNTER_SETUP = [====[", 1)[1].split("]====]", 1)[0])
+    assert setup["angels-of-death"]["name"] == "Chapter Tactics"
+    assert setup["angels-of-death"]["kind"] == "choice"
+    assert setup["angels-of-death"]["select"] == 2
+    assert len(setup["angels-of-death"]["options"]) == 8
+    assert setup["goremongers"]["kind"] == "counter"
+    assert setup["exodite-dragon-masters"]["kind"] == "counter"
+    assert setup["exodite-dragon-masters"]["name"] == "Exodite Counters"
+    assert setup["chaos-cult"]["applies_to"] == ["MUTANT", "TORMENT"]
+    assert setup["chaos-cult"]["operative_select_count"] == {"MUTANT": 1, "TORMENT": 2}
+    scripts = CONFIG / "defaults" / "tts-script"
+    assert (scripts / "move-tool.lua").read_text(encoding="utf-8") in helper
+    assert (scripts / "sprint-movement-tool.lua").read_text(encoding="utf-8") in helper
+
+
+def test_pipeline_shared_loader_matches_existing_composition(tmp_path):
+    target = tts_impl.write_command_node_loader(CONFIG, tmp_path)
+    assert target.read_text(encoding="utf-8") == compose_command_node_loader(CONFIG)
+    timestamp = target.stat().st_mtime_ns
+    assert tts_impl.write_command_node_loader(CONFIG, tmp_path).stat().st_mtime_ns == timestamp
+
+
+@pytest.mark.skipif(not shutil.which("npx"), reason="npx is required for Lua counter integration")
+def test_remote_exodite_counters_filter_models_and_preserve_values():
+    script = compose_command_node_loader(CONFIG) + r'''
+Wait = {frames = function(callback) callback() end}
+Color = {Green = {}, Orange = {}, Red = {}, White = {}}
+function broadcastToColor() end
+JSON = {decode = function(value) return value end, encode = function(value) return value end}
+for _, mounted in ipairs({true, false}) do
+    local installed = KTUI_MODELSCRIPT .. "\n" .. MOVE_TOOL_CODE
+    local model = {script_state = {info = {categories = mounted and {"MOUNTED"} or {"DRAKOLITHE"}},
+        owner = "existing-owner", kt_front = 90}, reloads = 0}
+    model.getLuaScript = function() return installed end
+    model.setLuaScript = function(value) installed = value end
+    model.reload = function() model.reloads = model.reloads + 1 end
+    local params = {team = "exodite-dragon-masters", model = model, playerColor = "White"}
+    assert(ktCommandNodeAddCounters(params))
+    assert(model.script_state.operative_counter_speed.current == 1)
+    assert(installed:find('offsetXY="0 -10"', 1, true)
+        or installed:find('offsetXY="0.0 -10"', 1, true))
+    if mounted then
+        assert(model.script_state.operative_counter_movement_remaining.current == 12)
+        assert(model.script_state.operative_counter_remaining_actions.current == 4)
+        assert(installed:find('id="ktcnid-status-oc-movement_remaining"', 1, true))
+        assert(installed:find('id="ktcnid-status-oc-remaining_actions"', 1, true))
+        model.script_state.operative_counter_movement_remaining.current = 7
+    else
+        assert(not model.script_state.operative_counter_movement_remaining)
+        assert(not model.script_state.operative_counter_remaining_actions)
+        assert(not installed:find('id="ktcnid-status-oc-movement_remaining"', 1, true))
+        assert(not installed:find('id="ktcnid-status-oc-remaining_actions"', 1, true))
+    end
+    model.script_state.operative_counter_speed.current = 3
+    assert(ktCommandNodeAddCounters(params))
+    assert(model.script_state.operative_counter_speed.current == 3)
+    if mounted then assert(model.script_state.operative_counter_movement_remaining.current == 7) end
+    assert(model.script_state.owner == "existing-owner" and model.script_state.kt_front == 90)
+    assert(model.reloads == 2)
+    local marker = 'id="ktcnid-status-oc-speed"'
+    local first = assert(installed:find(marker, 1, true))
+    assert(not installed:find(marker, first + #marker, true))
+    assert(load((installed:gsub("!=", "~="))))
+end
+print("exodite counter integration passed")
+'''
+    result = subprocess.run(
+        [shutil.which("npx"), "--yes", "--package=fengari-node-cli", "fengari", "-"],
+        input=script, cwd=ROOT, capture_output=True, text=True, encoding="utf-8", check=True,
+    )
+    assert result.stdout.strip() == "exodite counter integration passed", result.stderr
+    assert not result.stderr
+
+
+@pytest.mark.skipif(not shutil.which("npx"), reason="npx is required for Lua geometry integration")
+def test_command_node_oval_ring_follows_calibrated_front():
+    script = compose_command_node_loader(CONFIG) + r'''
+Color = setmetatable({}, {__call = function() return {} end})
+local scale = {x = 1.7, y = 0.4, z = 2.3}
+self = {
+    clearContextMenu = function() end,
+    addContextMenuItem = function() end,
+    getScale = function() return scale end,
+    getBoundsNormalized = function() return {size = {x = 1, y = 1, z = 1}} end,
+}
+assert(load((KTUI_MODELSCRIPT:gsub("!=", "~="))))()
+for _, headings in ipairs({{0, 90}, {90, 0}, {180, 270}, {40, 170}}) do
+    local target, modelHeading = headings[1], headings[2]
+    state = {base = {x = 42, z = 75}, kt_node_ui = true, kt_front = (target - modelHeading) % 360}
+    local points = getCircleVectorPoints(0, 0.2, 64)
+    local point = points[17]
+    local horizontal, depth = point.x * scale.x, point.z * scale.z
+    local yaw = math.rad(modelHeading)
+    local worldX = horizontal * math.cos(yaw) + depth * math.sin(yaw)
+    local worldZ = -horizontal * math.sin(yaw) + depth * math.cos(yaw)
+    assert(math.abs(worldX - (75 / 2 / 25.4) * math.sin(math.rad(target))) < 0.001)
+    assert(math.abs(worldZ - (75 / 2 / 25.4) * math.cos(math.rad(target))) < 0.001)
+    assert(math.abs(point.y * scale.y - 0.2) < 0.001)
+end
+state = {base = {x = 32, z = 32}, kt_node_ui = true, kt_front = 90}
+local round = getCircleVectorPoints(0, 0.2, 64)
+assert(math.abs(round[1].x * scale.x - 16 / 25.4) < 0.001 and round[1].z == 0)
+state = {base = {x = 42, z = 75}, kt_front = 90}
+local stock = getCircleVectorPoints(0, 0.2, 64)
+assert(math.abs(stock[1].x * scale.x - 21 / 25.4) < 0.001 and stock[1].z == 0)
+print("front-aware oval geometry passed")
+'''
+    result = subprocess.run(
+        [shutil.which("npx"), "--yes", "--package=fengari-node-cli", "fengari", "-"],
+        input=script, cwd=ROOT, capture_output=True, text=True, encoding="utf-8", check=True,
+    )
+    assert result.stdout.strip() == "front-aware oval geometry passed", result.stderr
+    assert not result.stderr
+
+
+def test_oval_renderer_is_only_in_command_node_model_scripts():
+    shared = compose_ktui_model_script(CONFIG)
+    node_loader = compose_command_node_loader(CONFIG)
+    assert "nodeGetCircleVectorPoints" not in shared
+    assert "nodeGetCircleVectorPoints" in node_loader
+
+
+def test_standalone_token_bag_preserves_contents_and_script(tmp_path):
+    bag = {
+        "Name": "Custom_Model_Bag", "LuaScript": "bag script", "LuaScriptState": "saved layout",
+        "ContainedObjects": [{"Name": "Custom_Model_Infinite_Bag", "Nickname": "Team token"}],
+    }
+    target = tts_impl.write_token_bag_object("test-team", bag, tmp_path)
+    assert target.relative_to(tmp_path).as_posix() == "test-team/tts_objects/test-team-token-bag.json"
+    assert json.loads(target.read_text(encoding="utf-8")) == {"ObjectStates": [bag]}
+    timestamp = target.stat().st_mtime_ns
+    assert tts_impl.write_token_bag_object("test-team", bag, tmp_path).stat().st_mtime_ns == timestamp

@@ -1,7 +1,7 @@
 {
   "team": "brood-brothers",
   "pipeline_version": "2.0",
-  "last_updated": "2026-10-28T13:55:59.619185+00:00",
+  "last_updated": "2026-11-13T21:25:04.932490+00:00",
   "steps": {
     "content_analysis": {
       "outputs": {
@@ -641,13 +641,16 @@
       "outputs": {
         "team-data.json": {
           "path": "output/brood-brothers/data/brood-brothers-team-data.json",
-          "hash": "8decb8f2cb6d25ea37d0f5a9db451574359608a1de2df86fd80da531b2fa840f",
-          "modified": "2026-10-28T13:54:31.711848+00:00"
+          "hash": "f5295eb1b9325152d45432ce2c9d8544b5de968bc02cdbfbdb7a249ce55cab02",
+          "modified": "2026-11-13T21:18:51.746832+00:00"
         }
       },
-      "completed": "2026-10-28T13:54:31.717950+00:00",
+      "completed": "2026-11-13T21:18:51.758867+00:00",
       "inputs": {
-        "layers/integration/brood-brothers/content/brood-brothers-content.json": "8decb8f2cb6d25ea37d0f5a9db451574359608a1de2df86fd80da531b2fa840f"
+        "layers/integration/brood-brothers/content/brood-brothers-content.json": "8decb8f2cb6d25ea37d0f5a9db451574359608a1de2df86fd80da531b2fa840f",
+        "config/weapon_rules.json": "4dd2e044dbd2dfdc8d1e035bd31d1fa7e72c70b6424a733ea315a392368848b9",
+        "pipeline/steps/extract_stats.py": "f29227a25a76a7f9e1a74c882454f13539c4733462e64abd034469eb2a3bef83",
+        "pipeline/steps/tts_impl.py": "2fd98b5d7b04687525be043fa87b3adb0d8d90763305755aa8c6e0c062f4320b"
       }
     },
     "generate_tts": {
@@ -660,10 +663,10 @@
         "tts_objects/Brood Brothers.json": {
           "path": "output/brood-brothers/tts_objects/Brood Brothers.json",
           "hash": "f02e0a9d0591d41bc72e70ad190497494eea4cf431e36f2b9f801f6920a64137",
-          "modified": "2026-10-28T13:55:59.555853+00:00"
+          "modified": "2026-11-13T21:25:04.718495+00:00"
         }
       },
-      "completed": "2026-10-28T13:55:59.619172+00:00",
+      "completed": "2026-11-13T21:25:04.932463+00:00",
       "inputs": {
         "config/team-config.yaml": "b1b298df3441797113db36d9524566fa76c836df085b140b54eaac01e26fd9f9",
         "config/team-guids.json": "906473ddbf256345a4150df497def05ec513f95948b27d6fc98fa6dba00bb7d0",
@@ -754,7 +757,7 @@
         "output/brood-brothers/dice/brood-brothers-dice-dark.jpg": "f9eb179bd782e0efe24e34d727c7831ba9bbd2181efd6bae746c0f0fbbe83c96",
         "output/brood-brothers/dice/brood-brothers-dice-light.jpg": "e2dde78050398a28f63ea397a5112ce4c58f0ac0c32789ea73b824bcccfb9b0f",
         "output/brood-brothers/dice/brood-brothers-dice-team.jpg": "dfa9c1173618aab786f79f7fff2a90411b00c9c39a84e4f69b984ae2fab5bbff",
-        "output/brood-brothers/data/brood-brothers-team-data.json": "8decb8f2cb6d25ea37d0f5a9db451574359608a1de2df86fd80da531b2fa840f",
+        "output/brood-brothers/data/brood-brothers-team-data.json": "f5295eb1b9325152d45432ce2c9d8544b5de968bc02cdbfbdb7a249ce55cab02",
         "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
         "config/defaults/tts-script/datacard-load-stats.lua": "e163a1c2bbf015020a7ffe5ee861e9e78e7127ed99661187805c247862108260",
         "config/defaults/tts-script/display-table-manager-script.lua": "846de299f8e2c925e63cc77c4991fedd07ae75e9bde375f3b3c991c8730b891b",

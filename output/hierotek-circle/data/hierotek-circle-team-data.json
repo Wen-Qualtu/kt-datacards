@@ -62,7 +62,43 @@
           "name": "CHRONOMETRON (1AP)",
           "description": "SUPPORT. Select one friendly HIEROTEK CIRCLE operative visible to and within 6\" of this operative. Until the start of this operative’s next activation, until this operative is incapacitated or until this action is performed again by a friendly operative (whichever comes first), subtract 1 from the Atk stat of an operative’s weapons whenever it’s shooting that selected operative. This operative cannot perform this action while within control range of an enemy operative."
         }
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee",
+          "melee",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Blast x",
+          "Stun",
+          "Devastating x",
+          "Piercing x",
+          "Shock"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "Aeonstave",
+                "weapons": [
+                  0,
+                  2
+                ]
+              },
+              {
+                "label": "Entropic lance",
+                "weapons": [
+                  1,
+                  3
+                ]
+              }
+            ]
+          ],
+          "fixed": []
+        }
+      }
     },
     {
       "name": "PSYCHOMANCER",
@@ -111,7 +147,18 @@
           "name": "VISION OF MADNESS (1AP)",
           "description": "Select one enemy operative visible to this operative. Until the start of this operative’s next activation, until it’s incapacitated or until this action is performed again by a friendly operative (whichever comes first), that selected operative gains one of your Madness tokens. Whenever your opponent would activate an enemy operative that has one of your Madness tokens, you can roll one D6: if the result is equal to or higher than that enemy operative’s APL, they cannot activate it during this activation. If that operative is successfully activated, or there are no other enemy operatives eligible to be activated, remove its Madness token. This operative cannot perform this action while within control range of an enemy operative. PSYCHOMANCER ACTIONS"
         }
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Blast x",
+          "Devastating x",
+          "Piercing x"
+        ]
+      }
     },
     {
       "name": "TECHNOMANCER",
@@ -160,7 +207,16 @@
           "name": "REINFORCE METAL (1AP)",
           "description": "SUPPORT. Select one friendly HIEROTEK CIRCLE operative visible to and within 6\" of this operative. Until the start of this operative’s next activation, until it’s incapacitated or until this action is performed again by a friendly operative (whichever comes first), whenever an attack dice inflicts damage of 3 or more on that operative, subtract 1 from that inflicted damage. This operative cannot perform this action while within control range of an enemy operative. TECHNOMANCER ACTIONS"
         }
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "melee",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Rending"
+        ]
+      }
     },
     {
       "name": "PLASMACYTE ACCELERATOR",
@@ -201,7 +257,17 @@
         "NECRON",
         "PLASMACYTE",
         "ACCELERATOR"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Piercing x",
+          "Range x"
+        ]
+      }
     },
     {
       "name": "PLASMACYTE REANIMATOR",
@@ -243,7 +309,16 @@
         "MEDIC",
         "PLASMACYTE",
         "REANIMATOR"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x"
+        ]
+      }
     },
     {
       "name": "APPRENTEK",
@@ -278,7 +353,16 @@
         "HIEROTEK CIRCLE",
         "NECRON",
         "APPRENTEK"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "melee",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Piercing x"
+        ]
+      }
     },
     {
       "name": "DEATHMARK",
@@ -318,7 +402,19 @@
         "HIEROTEK CIRCLE",
         "NECRON",
         "DEATHMARK"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "melee",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Devastating x",
+          "Heavy",
+          "Piercing x",
+          "Severe"
+        ]
+      }
     },
     {
       "name": "IMMORTAL DESPOTEK",
@@ -366,7 +462,39 @@
         "NECRON",
         "IMMORTAL",
         "DESPOTEK"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Piercing x",
+          "Devastating x"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "Gauss blaster; bayonet",
+                "weapons": [
+                  0,
+                  2
+                ]
+              },
+              {
+                "label": "Tesla carbine; bayonet",
+                "weapons": [
+                  1,
+                  2
+                ]
+              }
+            ]
+          ],
+          "fixed": []
+        }
+      }
     },
     {
       "name": "IMMORTAL GUARDIAN",
@@ -409,7 +537,39 @@
         "NECRON",
         "IMMORTAL",
         "GUARDIAN"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Piercing x",
+          "Devastating x"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "Gauss blaster; bayonet",
+                "weapons": [
+                  0,
+                  2
+                ]
+              },
+              {
+                "label": "Tesla carbine; bayonet",
+                "weapons": [
+                  1,
+                  2
+                ]
+              }
+            ]
+          ],
+          "fixed": []
+        }
+      }
     }
   ],
   "equipment": [
@@ -515,5 +675,16 @@
       "name": "command-underlings",
       "text": "HIEROTEK CIRCLE\nSTRATEGY PLOY\nCOMMAND UNDERLINGS\nNecron Crypteks and Apprenteks wield their underlings \nlike puppets, directing their every movement and action \nin order to confound the enemy.\nSelect one of the following:\n• SUPPORT. Each other friendly HIEROTEK \nCIRCLE operative visible to and within 6\" of a \nfriendly CRYPTEK operative can immediately \nperform a free Dash action in an order of \nyour choice.\n• SUPPORT. Each other friendly HIEROTEK \nCIRCLE operative (excluding CRYPTEK) visible \nto and within 3\" of a friendly APPRENTEK \noperative can immediately perform a free Dash \naction in an order of your choice."
     }
-  ]
+  ],
+  "node_weapon_rules": {
+    "Blast x": "The target you select is the primary target. After shooting the primary target, shoot with this weapon against each secondary target in an order of your choice (roll each sequence separately). Secondary targets are other operatives visible to and within x of the primary target, e.g. Blast 2\" (they are all valid targets, regardless of a Conceal order). Secondary targets are in cover and obscured if the primary target was.",
+    "Stun": "If you retain any critical successes, subtract 1 from the APL stat of the operative this weapon is being used against until the end of its next activation.",
+    "Devastating x": "Each retained critical success immediately inflicts x damage on the operative this weapon is being used against, e.g. Devastating 3. If the rule starts with a distance (e.g. 1\" Devastating x), inflict x damage on that operative and each other operative visible to and within that distance of it. Note that success isn't discarded after doing so - it can still be resolved later in the sequence.",
+    "Piercing x": "The defender collects x less defence dice, e.g. Piercing 1. If the rule is Piercing Crits x, this only comes into effect if you retain any critical successes.",
+    "Shock": "The first time you strike with a critical success in each sequence, also discard one of your opponent's unresolved normal successes (or one of their critical successes if there are none).",
+    "Rending": "If you retain any critical successes, you can retain one of your normal successes as a critical success instead.",
+    "Range x": "Only operatives within x of the active operative can be valid targets, e.g. Range 9\".",
+    "Heavy": "An operative cannot use this weapon in an activation or counteraction in which it moved, and it cannot move in an activation or counteraction in which it used this weapon. If the rule is Heavy (x only), where x is a move action, only that move is allowed, e.g. Heavy (Dash only). This weapon rule has no effect on preventing the Guard action.",
+    "Severe": "If you don't retain any critical successes, you can change one of your normal successes to a critical success. The Devastating and Piercing Crits weapon rules still take effect, but Punishing and Rending don't."
+  }
 }

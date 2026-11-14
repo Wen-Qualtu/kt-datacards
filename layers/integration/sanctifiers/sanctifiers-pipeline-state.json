@@ -1,7 +1,7 @@
 {
   "team": "sanctifiers",
   "pipeline_version": "2.0",
-  "last_updated": "2026-10-20T07:54:13.077532+00:00",
+  "last_updated": "2026-11-13T21:25:16.300178+00:00",
   "steps": {
     "content_analysis": {
       "outputs": {
@@ -588,13 +588,16 @@
       "outputs": {
         "team-data.json": {
           "path": "output/sanctifiers/data/sanctifiers-team-data.json",
-          "hash": "12aa31afc9c3206e89af19aed6ca3dfd461ce7881c0e0ed8a60c53ca674443f4",
-          "modified": "2026-07-25T17:16:01.142333+00:00"
+          "hash": "61da36955b1a374bdd64ebf8c725d482d6408429f4b4a763b95f72fc6df98094",
+          "modified": "2026-11-13T21:18:55.614699+00:00"
         }
       },
-      "completed": "2026-07-25T17:16:01.152470+00:00",
+      "completed": "2026-11-13T21:18:55.629761+00:00",
       "inputs": {
-        "layers/integration/sanctifiers/content/sanctifiers-content.json": "12aa31afc9c3206e89af19aed6ca3dfd461ce7881c0e0ed8a60c53ca674443f4"
+        "layers/integration/sanctifiers/content/sanctifiers-content.json": "12aa31afc9c3206e89af19aed6ca3dfd461ce7881c0e0ed8a60c53ca674443f4",
+        "config/weapon_rules.json": "4dd2e044dbd2dfdc8d1e035bd31d1fa7e72c70b6424a733ea315a392368848b9",
+        "pipeline/steps/extract_stats.py": "f29227a25a76a7f9e1a74c882454f13539c4733462e64abd034469eb2a3bef83",
+        "pipeline/steps/tts_impl.py": "2fd98b5d7b04687525be043fa87b3adb0d8d90763305755aa8c6e0c062f4320b"
       }
     },
     "generate_tts": {
@@ -607,10 +610,10 @@
         "tts_objects/Sanctifiers.json": {
           "path": "output/sanctifiers/tts_objects/Sanctifiers.json",
           "hash": "6c6d7b75805c7c537c28e1166bff65308a3bfc135df0a5326d189b88822294c5",
-          "modified": "2026-10-20T07:54:12.993802+00:00"
+          "modified": "2026-11-13T21:25:15.993994+00:00"
         }
       },
-      "completed": "2026-10-20T07:54:13.077518+00:00",
+      "completed": "2026-11-13T21:25:16.300145+00:00",
       "inputs": {
         "config/team-config.yaml": "b1b298df3441797113db36d9524566fa76c836df085b140b54eaac01e26fd9f9",
         "config/team-guids.json": "906473ddbf256345a4150df497def05ec513f95948b27d6fc98fa6dba00bb7d0",
@@ -699,7 +702,7 @@
         "output/sanctifiers/dice/sanctifiers-dice-dark.jpg": "4b46e13d03076b1bb606f0c5074bbc135282e69aac6f2ef820b1e0febf468bbb",
         "output/sanctifiers/dice/sanctifiers-dice-light.jpg": "8ae973cae5ce6febbc4f9ed846062d2bc855b504d138d69e9263f72b4245b940",
         "output/sanctifiers/dice/sanctifiers-dice-team.jpg": "7d2b139d8cae749952be02b8572ba09fb07cf21e0b5256dccf5abafa5ab60aa2",
-        "output/sanctifiers/data/sanctifiers-team-data.json": "12aa31afc9c3206e89af19aed6ca3dfd461ce7881c0e0ed8a60c53ca674443f4",
+        "output/sanctifiers/data/sanctifiers-team-data.json": "61da36955b1a374bdd64ebf8c725d482d6408429f4b4a763b95f72fc6df98094",
         "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
         "config/defaults/tts-script/datacard-load-stats.lua": "e163a1c2bbf015020a7ffe5ee861e9e78e7127ed99661187805c247862108260",
         "config/defaults/tts-script/display-table-manager-script.lua": "846de299f8e2c925e63cc77c4991fedd07ae75e9bde375f3b3c991c8730b891b",

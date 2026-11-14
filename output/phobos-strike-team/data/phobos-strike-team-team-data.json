@@ -38,7 +38,14 @@
         "LEADER",
         "INFILTRATOR",
         "SERGEANT"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": []
+      }
     },
     {
       "name": "INFILTRATOR COMMSMAN",
@@ -79,7 +86,14 @@
         "ADEPTUS ASTARTES",
         "INFILTRATOR",
         "COMMSMAN"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": []
+      }
     },
     {
       "name": "INFILTRATOR HELIX ADEPT",
@@ -122,7 +136,14 @@
         "MEDIC",
         "INFILTRATOR",
         "HELIX ADEPT"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": []
+      }
     },
     {
       "name": "INFILTRATOR SABOTEUR",
@@ -170,7 +191,20 @@
         "ADEPTUS ASTARTES",
         "INFILTRATOR",
         "SABOTEUR"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Heavy",
+          "Limited x",
+          "Piercing x",
+          "Silent"
+        ]
+      }
     },
     {
       "name": "INFILTRATOR VETERAN",
@@ -207,7 +241,14 @@
         "ADEPTUS ASTARTES",
         "INFILTRATOR",
         "VETERAN"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": []
+      }
     },
     {
       "name": "INFILTRATOR VOXBREAKER",
@@ -249,7 +290,14 @@
         "ADEPTUS ASTARTES",
         "INFILTRATOR",
         "VOXBREAKER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": []
+      }
     },
     {
       "name": "INFILTRATOR WARRIOR",
@@ -286,7 +334,14 @@
         "ADEPTUS ASTARTES",
         "INFILTRATOR",
         "WARRIOR"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": []
+      }
     },
     {
       "name": "INCURSOR SERGEANT",
@@ -324,7 +379,16 @@
         "LEADER",
         "INCURSOR",
         "SERGEANT"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Saturate"
+        ]
+      }
     },
     {
       "name": "INCURSOR MARKSMAN",
@@ -361,7 +425,16 @@
         "ADEPTUS ASTARTES",
         "INCURSOR",
         "MARKSMAN"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Piercing x"
+        ]
+      }
     },
     {
       "name": "INCURSOR MINELAYER",
@@ -402,7 +475,16 @@
         "ADEPTUS ASTARTES",
         "INCURSOR",
         "MINELAYER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Saturate"
+        ]
+      }
     },
     {
       "name": "INCURSOR WARRIOR",
@@ -439,7 +521,16 @@
         "ADEPTUS ASTARTES",
         "INCURSOR",
         "WARRIOR"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Saturate"
+        ]
+      }
     },
     {
       "name": "REIVER SERGEANT",
@@ -494,7 +585,41 @@
         "LEADER",
         "REIVER",
         "SERGEANT"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Accurate x",
+          "Piercing x",
+          "Range x"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "Special issue bolt pistol; combat knife",
+                "weapons": [
+                  1,
+                  2
+                ]
+              },
+              {
+                "label": "Bolt carbine; fists",
+                "weapons": [
+                  0,
+                  3
+                ]
+              }
+            ]
+          ],
+          "fixed": []
+        }
+      }
     },
     {
       "name": "REIVER WARRIOR",
@@ -548,7 +673,41 @@
         "ADEPTUS ASTARTES",
         "REIVER",
         "WARRIOR"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Accurate x",
+          "Piercing x",
+          "Range x"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "Special issue bolt pistol; combat knife",
+                "weapons": [
+                  1,
+                  2
+                ]
+              },
+              {
+                "label": "Bolt carbine; fists",
+                "weapons": [
+                  0,
+                  3
+                ]
+              }
+            ]
+          ],
+          "fixed": []
+        }
+      }
     }
   ],
   "equipment": [
@@ -653,5 +812,14 @@
       "name": "lethal-assaults",
       "text": "PHOBOS STRIKE TEAM\nSTRATEGY PLOY\nLETHAL ASSAULTS\nSpace Marine warriors strike down their foes with \nincredible power and precision.\nWhenever a friendly PHOBOS STRIKE TEAM \noperative is fighting, its melee weapons have the \nBalanced weapon rule. If that friendly operative \nis doing so during an activation in which it \nperformed the Charge action, its melee weapons \nalso have the Lethal 5+ weapon rule."
     }
-  ]
+  ],
+  "node_weapon_rules": {
+    "Heavy": "An operative cannot use this weapon in an activation or counteraction in which it moved, and it cannot move in an activation or counteraction in which it used this weapon. If the rule is Heavy (x only), where x is a move action, only that move is allowed, e.g. Heavy (Dash only). This weapon rule has no effect on preventing the Guard action.",
+    "Limited x": "After an operative uses this weapon a number of times in the battle equal to x, they no longer have it. If it's used multiple times in one action (e.g. Blast), treat this as one use.",
+    "Piercing x": "The defender collects x less defence dice, e.g. Piercing 1. If the rule is Piercing Crits x, this only comes into effect if you retain any critical successes.",
+    "Silent": "An operative can perform the Shoot action with this weapon while it has a Conceal order.",
+    "Saturate": "The defender cannot retain cover saves.",
+    "Accurate x": "You can retain up to x attack dice as normal successes without rolling them. If a weapon has more than one instance of Accurate x, you can treat it as one instance of Accurate 2 instead (this takes precedence over x rules above).",
+    "Range x": "Only operatives within x of the active operative can be valid targets, e.g. Range 9\"."
+  }
 }

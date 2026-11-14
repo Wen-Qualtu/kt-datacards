@@ -1,7 +1,7 @@
 {
   "team": "warpcoven",
   "pipeline_version": "2.0",
-  "last_updated": "2026-10-20T07:54:13.542456+00:00",
+  "last_updated": "2026-11-13T21:25:18.116280+00:00",
   "steps": {
     "content_analysis": {
       "outputs": {
@@ -409,13 +409,16 @@
       "outputs": {
         "team-data.json": {
           "path": "output/warpcoven/data/warpcoven-team-data.json",
-          "hash": "1edc5fd4361c14cb1873fb6a39892401671d4d07b9149bc594ef608147fc8f7b",
-          "modified": "2026-07-25T17:16:01.419527+00:00"
+          "hash": "e39341b6ae7068f56246f5afe419fad7cb1e4f8e4a92386a2886a69f75db7114",
+          "modified": "2026-11-13T21:18:56.382950+00:00"
         }
       },
-      "completed": "2026-07-25T17:16:01.426786+00:00",
+      "completed": "2026-11-13T21:18:56.403001+00:00",
       "inputs": {
-        "layers/integration/warpcoven/content/warpcoven-content.json": "1edc5fd4361c14cb1873fb6a39892401671d4d07b9149bc594ef608147fc8f7b"
+        "layers/integration/warpcoven/content/warpcoven-content.json": "1edc5fd4361c14cb1873fb6a39892401671d4d07b9149bc594ef608147fc8f7b",
+        "config/weapon_rules.json": "4dd2e044dbd2dfdc8d1e035bd31d1fa7e72c70b6424a733ea315a392368848b9",
+        "pipeline/steps/extract_stats.py": "f29227a25a76a7f9e1a74c882454f13539c4733462e64abd034469eb2a3bef83",
+        "pipeline/steps/tts_impl.py": "2fd98b5d7b04687525be043fa87b3adb0d8d90763305755aa8c6e0c062f4320b"
       }
     },
     "generate_tts": {
@@ -428,10 +431,10 @@
         "tts_objects/Warpcoven.json": {
           "path": "output/warpcoven/tts_objects/Warpcoven.json",
           "hash": "599970c7d5e1ec0d121d921e107aa00e24fa397ce3d0f255c397c1d5b6887543",
-          "modified": "2026-10-20T07:54:13.493975+00:00"
+          "modified": "2026-11-13T21:25:17.882127+00:00"
         }
       },
-      "completed": "2026-10-20T07:54:13.542445+00:00",
+      "completed": "2026-11-13T21:25:18.116245+00:00",
       "inputs": {
         "config/team-config.yaml": "b1b298df3441797113db36d9524566fa76c836df085b140b54eaac01e26fd9f9",
         "config/team-guids.json": "906473ddbf256345a4150df497def05ec513f95948b27d6fc98fa6dba00bb7d0",
@@ -492,7 +495,7 @@
         "output/warpcoven/dice/warpcoven-dice-dark.jpg": "453f59b2b7c306808dd37329ddae09bd662dea96e637ac9421520850f42f664a",
         "output/warpcoven/dice/warpcoven-dice-light.jpg": "04e973cdfb7df15230f53a4ba85293a186d4cbdbaf8e1abbac40d67c21958032",
         "output/warpcoven/dice/warpcoven-dice-team.jpg": "6be198a79fb6daa3b279cde928a20471c1887c24ee9f81becffcd12c4bedd017",
-        "output/warpcoven/data/warpcoven-team-data.json": "1edc5fd4361c14cb1873fb6a39892401671d4d07b9149bc594ef608147fc8f7b",
+        "output/warpcoven/data/warpcoven-team-data.json": "e39341b6ae7068f56246f5afe419fad7cb1e4f8e4a92386a2886a69f75db7114",
         "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
         "config/defaults/tts-script/datacard-load-stats.lua": "e163a1c2bbf015020a7ffe5ee861e9e78e7127ed99661187805c247862108260",
         "config/defaults/tts-script/display-table-manager-script.lua": "846de299f8e2c925e63cc77c4991fedd07ae75e9bde375f3b3c991c8730b891b",

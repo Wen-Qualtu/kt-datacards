@@ -49,7 +49,18 @@
         "IMPERIUM",
         "LEADER",
         "ELUCIA VHANE"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Piercing x",
+          "Range x",
+          "Seek"
+        ]
+      }
     },
     {
       "name": "CANID",
@@ -87,7 +98,15 @@
         "ELUCIDIAN STARSTRIDER",
         "IMPERIUM",
         "CANID"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Rending"
+        ]
+      }
     },
     {
       "name": "DEATH CULT EXECUTIONER",
@@ -136,7 +155,18 @@
         "ELUCIDIAN STARSTRIDER",
         "IMPERIUM",
         "DEATH CULT EXECUTIONER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Silent",
+          "Stun"
+        ]
+      }
     },
     {
       "name": "LECTRO-MAESTER",
@@ -179,7 +209,18 @@
         "ELUCIDIAN STARSTRIDER",
         "IMPERIUM",
         "LECTRO-MAESTER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged"
+        ],
+        "weapon_rule_names": [
+          "Devastating x",
+          "Range x",
+          "Rending"
+        ]
+      }
     },
     {
       "name": "REJUVENAT ADEPT",
@@ -225,7 +266,17 @@
         "IMPERIUM",
         "MEDIC",
         "REJUVENAT ADEPT"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Rending"
+        ]
+      }
     },
     {
       "name": "VOIDMASTER",
@@ -283,7 +334,18 @@
         "IMPERIUM",
         "NAVIS",
         "VOIDMASTER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "ranged"
+        ],
+        "weapon_rule_names": [
+          "Range x"
+        ]
+      }
     },
     {
       "name": "VOIDSMAN",
@@ -332,7 +394,42 @@
         "IMPERIUM",
         "NAVIS",
         "VOIDSMAN"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "ranged"
+        ],
+        "weapon_rule_names": [
+          "Heavy",
+          "Rending",
+          "Torrent x"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "lasgun and gun butt",
+                "weapons": [
+                  0,
+                  3
+                ]
+              },
+              {
+                "label": "rotor cannon and gun butt",
+                "weapons": [
+                  1,
+                  2,
+                  3
+                ]
+              }
+            ]
+          ],
+          "fixed": []
+        }
+      }
     }
   ],
   "equipment": [
@@ -451,5 +548,16 @@
       "name": "quick-march",
       "text": "ELUCIDIAN STARSTRIDER\nSTRATEGY PLOY\nQUICK MARCH\nAs fearless as any elite Astra Militarum regiment, the \nElucidian Starstriders advance swiftly to outflank and \nisolate their enemies.\nWhenever a friendly ELUCIDIAN STARSTRIDER \noperative performs the Reposition action \nduring its activation, you can use this rule. If \nyou do, add 1\" to its Move stat until the end \nof that activation, but it must end that move \ncloser to your opponent’s drop zone and cannot \nuse a PRIVATEER SUPPORT ASSET during \nthat activation."
     }
-  ]
+  ],
+  "node_weapon_rules": {
+    "Piercing x": "The defender collects x less defence dice, e.g. Piercing 1. If the rule is Piercing Crits x, this only comes into effect if you retain any critical successes.",
+    "Range x": "Only operatives within x of the active operative can be valid targets, e.g. Range 9\".",
+    "Seek": "When selecting a valid target, operatives with a Conceal order cannot use terrain for cover. If the rule is Seek Light, they cannot use Light terrain for cover. While this can allow operatives to be targeted (assuming they're visible), it doesn't remove their cover save (if any).",
+    "Rending": "If you retain any critical successes, you can retain one of your normal successes as a critical success instead.",
+    "Silent": "An operative can perform the Shoot action with this weapon while it has a Conceal order.",
+    "Stun": "If you retain any critical successes, subtract 1 from the APL stat of the operative this weapon is being used against until the end of its next activation.",
+    "Devastating x": "Each retained critical success immediately inflicts x damage on the operative this weapon is being used against, e.g. Devastating 3. If the rule starts with a distance (e.g. 1\" Devastating x), inflict x damage on that operative and each other operative visible to and within that distance of it. Note that success isn't discarded after doing so - it can still be resolved later in the sequence.",
+    "Heavy": "An operative cannot use this weapon in an activation or counteraction in which it moved, and it cannot move in an activation or counteraction in which it used this weapon. If the rule is Heavy (x only), where x is a move action, only that move is allowed, e.g. Heavy (Dash only). This weapon rule has no effect on preventing the Guard action.",
+    "Torrent x": "Select a valid target as normal as the primary target, then select any number of other valid targets within x of the first valid target, but not within control range of friendly operatives, as secondary targets, e.g. Torrent 2\". Shoot with this weapon against all of them in an order of your choice (roll each sequence separately)."
+  }
 }

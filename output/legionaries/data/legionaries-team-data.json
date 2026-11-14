@@ -73,7 +73,72 @@
         "HERETIC ASTARTES",
         "LEADER",
         "ASPIRING CHAMPION"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "melee",
+          "melee",
+          "melee",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Piercing x",
+          "Range x",
+          "Hot",
+          "Rending",
+          "Brutal",
+          "Shock"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "Plasma pistol",
+                "weapons": [
+                  0,
+                  1
+                ]
+              },
+              {
+                "label": "tainted bolt pistol",
+                "weapons": [
+                  2
+                ]
+              }
+            ],
+            [
+              {
+                "label": "Power fist",
+                "weapons": [
+                  3
+                ]
+              },
+              {
+                "label": "power maul",
+                "weapons": [
+                  4
+                ]
+              },
+              {
+                "label": "power weapon",
+                "weapons": [
+                  5
+                ]
+              },
+              {
+                "label": "tainted chainsword",
+                "weapons": [
+                  6
+                ]
+              }
+            ]
+          ],
+          "fixed": []
+        }
+      }
     },
     {
       "name": "LEGIONARY CHOSEN",
@@ -129,7 +194,43 @@
         "HERETIC ASTARTES",
         "LEADER",
         "CHOSEN"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Piercing x",
+          "Range x",
+          "Hot",
+          "Rending"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "Plasma pistol; daemon blade",
+                "weapons": [
+                  0,
+                  1,
+                  3
+                ]
+              },
+              {
+                "label": "Tainted bolt pistol; daemon blade",
+                "weapons": [
+                  2,
+                  3
+                ]
+              }
+            ]
+          ],
+          "fixed": []
+        }
+      }
     },
     {
       "name": "LEGIONARY ANOINTED",
@@ -166,7 +267,17 @@
         "CHAOS",
         "HERETIC ASTARTES",
         "ANOINTED"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Rending"
+        ]
+      }
     },
     {
       "name": "LEGIONARY BALEFIRE ACOLYTE",
@@ -218,7 +329,22 @@
         "HERETIC ASTARTES",
         "PSYKER",
         "BALEFIRE ACOLYTE"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Blast x",
+          "Devastating x",
+          "Saturate",
+          "Rending"
+        ]
+      }
     },
     {
       "name": "LEGIONARY BUTCHER",
@@ -255,7 +381,17 @@
         "CHAOS",
         "HERETIC ASTARTES",
         "BUTCHER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Brutal"
+        ]
+      }
     },
     {
       "name": "LEGIONARY GUNNER",
@@ -312,7 +448,57 @@
         "CHAOS",
         "HERETIC ASTARTES",
         "GUNNER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Saturate",
+          "Torrent x",
+          "Devastating x",
+          "Piercing x",
+          "Hot"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "Bolt pistol; flamer; fists",
+                "weapons": [
+                  0,
+                  1,
+                  5
+                ]
+              },
+              {
+                "label": "Bolt pistol; meltagun; fists",
+                "weapons": [
+                  0,
+                  2,
+                  5
+                ]
+              },
+              {
+                "label": "Bolt pistol; plasma gun; fists",
+                "weapons": [
+                  0,
+                  3,
+                  4,
+                  5
+                ]
+              }
+            ]
+          ],
+          "fixed": []
+        }
+      }
     },
     {
       "name": "LEGIONARY HEAVY GUNNER",
@@ -377,7 +563,58 @@
         "CHAOS",
         "HERETIC ASTARTES",
         "HEAVY GUNNER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "ranged",
+          "ranged",
+          "ranged",
+          "ranged"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Heavy",
+          "Piercing x",
+          "Torrent x",
+          "Blast x",
+          "Ceaseless",
+          "Punishing"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "Bolt pistol; heavy bolter; fists",
+                "weapons": [
+                  0,
+                  1,
+                  2
+                ]
+              },
+              {
+                "label": "Bolt pistol; missile launcher; fists",
+                "weapons": [
+                  0,
+                  3,
+                  4
+                ]
+              },
+              {
+                "label": "Bolt pistol; reaper chaincannon; fists",
+                "weapons": [
+                  0,
+                  5,
+                  6
+                ]
+              }
+            ]
+          ],
+          "fixed": []
+        }
+      }
     },
     {
       "name": "LEGIONARY ICON BEARER",
@@ -429,7 +666,39 @@
         "CHAOS",
         "HERETIC ASTARTES",
         "ICON BEARER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "Boltgun; fists",
+                "weapons": [
+                  1,
+                  3
+                ]
+              },
+              {
+                "label": "Bolt pistol; chainsword",
+                "weapons": [
+                  0,
+                  2
+                ]
+              }
+            ]
+          ],
+          "fixed": []
+        }
+      }
     },
     {
       "name": "LEGIONARY SHRIVETALON",
@@ -475,7 +744,16 @@
         "CHAOS",
         "HERETIC ASTARTES",
         "SHRIVETALON"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x"
+        ]
+      }
     },
     {
       "name": "LEGIONARY WARRIOR",
@@ -523,7 +801,39 @@
         "CHAOS",
         "HERETIC ASTARTES",
         "WARRIOR"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "Boltgun; fists",
+                "weapons": [
+                  1,
+                  3
+                ]
+              },
+              {
+                "label": "Bolt pistol; chainsword",
+                "weapons": [
+                  0,
+                  2
+                ]
+              }
+            ]
+          ],
+          "fixed": []
+        }
+      }
     }
   ],
   "equipment": [
@@ -667,5 +977,20 @@
       "name": "fickle-fates",
       "text": "LEGIONARY\nSTRATEGY PLOY\nFICKLE FATES\nWith superhuman reactions, a Heretic Astartes warrior \ncan use even fractional glimpses of future events to \ndevastating effect.\nWhenever a friendly LEGIONARY operative is \nshooting a ready enemy operative, that friendly \noperative’s ranged weapons have the Balanced \nweapon rule.\nWhenever an operative is shooting a ready \nfriendly LEGIONARY TZEENTCH operative, in the \nRoll Defence Dice step, if you retain any critical \nsuccesses, you can retain one of your fails as a \nnormal success instead of discarding it."
     }
-  ]
+  ],
+  "node_weapon_rules": {
+    "Piercing x": "The defender collects x less defence dice, e.g. Piercing 1. If the rule is Piercing Crits x, this only comes into effect if you retain any critical successes.",
+    "Range x": "Only operatives within x of the active operative can be valid targets, e.g. Range 9\".",
+    "Hot": "After an operative uses this weapon, roll one D6: if the result is less than the weapon's Hit stat, inflict damage on that operative equal to the result multiplied by two. If it's used multiple times in one action (e.g. Blast), still only roll one D6.",
+    "Rending": "If you retain any critical successes, you can retain one of your normal successes as a critical success instead.",
+    "Brutal": "Your opponent can only block with critical successes.",
+    "Shock": "The first time you strike with a critical success in each sequence, also discard one of your opponent's unresolved normal successes (or one of their critical successes if there are none).",
+    "Blast x": "The target you select is the primary target. After shooting the primary target, shoot with this weapon against each secondary target in an order of your choice (roll each sequence separately). Secondary targets are other operatives visible to and within x of the primary target, e.g. Blast 2\" (they are all valid targets, regardless of a Conceal order). Secondary targets are in cover and obscured if the primary target was.",
+    "Devastating x": "Each retained critical success immediately inflicts x damage on the operative this weapon is being used against, e.g. Devastating 3. If the rule starts with a distance (e.g. 1\" Devastating x), inflict x damage on that operative and each other operative visible to and within that distance of it. Note that success isn't discarded after doing so - it can still be resolved later in the sequence.",
+    "Saturate": "The defender cannot retain cover saves.",
+    "Torrent x": "Select a valid target as normal as the primary target, then select any number of other valid targets within x of the first valid target, but not within control range of friendly operatives, as secondary targets, e.g. Torrent 2\". Shoot with this weapon against all of them in an order of your choice (roll each sequence separately).",
+    "Heavy": "An operative cannot use this weapon in an activation or counteraction in which it moved, and it cannot move in an activation or counteraction in which it used this weapon. If the rule is Heavy (x only), where x is a move action, only that move is allowed, e.g. Heavy (Dash only). This weapon rule has no effect on preventing the Guard action.",
+    "Ceaseless": "You can re-roll any of your attack dice results of one result (e.g. results of 2).",
+    "Punishing": "If you retain any critical successes, you can retain one of your fails as a normal success instead of discarding it."
+  }
 }

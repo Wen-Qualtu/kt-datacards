@@ -1,7 +1,7 @@
 {
   "team": "novitiates",
   "pipeline_version": "2.0",
-  "last_updated": "2026-10-28T13:55:03.829294+00:00",
+  "last_updated": "2026-11-13T21:25:14.755426+00:00",
   "steps": {
     "content_analysis": {
       "outputs": {
@@ -599,13 +599,16 @@
       "outputs": {
         "team-data.json": {
           "path": "output/novitiates/data/novitiates-team-data.json",
-          "hash": "aaf95045d9144ab94b8c5b6d18047109074c0180337ab86b1fca7932f25aa28c",
-          "modified": "2026-08-26T15:26:54.075407+00:00"
+          "hash": "fb14f2936df721b5d603a02ac7372091a8fd2f7c3ec7a21411895563193c443c",
+          "modified": "2026-11-13T21:18:55.034125+00:00"
         }
       },
-      "completed": "2026-08-26T15:26:54.082191+00:00",
+      "completed": "2026-11-13T21:18:55.041418+00:00",
       "inputs": {
-        "layers/integration/novitiates/content/novitiates-content.json": "aaf95045d9144ab94b8c5b6d18047109074c0180337ab86b1fca7932f25aa28c"
+        "layers/integration/novitiates/content/novitiates-content.json": "aaf95045d9144ab94b8c5b6d18047109074c0180337ab86b1fca7932f25aa28c",
+        "config/weapon_rules.json": "4dd2e044dbd2dfdc8d1e035bd31d1fa7e72c70b6424a733ea315a392368848b9",
+        "pipeline/steps/extract_stats.py": "f29227a25a76a7f9e1a74c882454f13539c4733462e64abd034469eb2a3bef83",
+        "pipeline/steps/tts_impl.py": "2fd98b5d7b04687525be043fa87b3adb0d8d90763305755aa8c6e0c062f4320b"
       }
     },
     "generate_tts": {
@@ -618,10 +621,10 @@
         "tts_objects/Novitiates.json": {
           "path": "output/novitiates/tts_objects/Novitiates.json",
           "hash": "445f31b48d279eefc78249fd709046b129f88aa4a11ac03cf9b96524805f39f3",
-          "modified": "2026-10-20T07:54:12.478634+00:00"
+          "modified": "2026-11-13T21:25:14.608139+00:00"
         }
       },
-      "completed": "2026-10-20T07:54:12.549051+00:00",
+      "completed": "2026-11-13T21:25:14.755401+00:00",
       "inputs": {
         "config/team-config.yaml": "b1b298df3441797113db36d9524566fa76c836df085b140b54eaac01e26fd9f9",
         "config/team-guids.json": "906473ddbf256345a4150df497def05ec513f95948b27d6fc98fa6dba00bb7d0",
@@ -704,7 +707,7 @@
         "output/novitiates/dice/novitiates-dice-dark.jpg": "2090355229895178956bdeddeb3bd5ac0562b5c67ac9bf8d85f92d8a53662b76",
         "output/novitiates/dice/novitiates-dice-light.jpg": "c60bb21554b04d3ffb9e25b774ec80f9d60aacef9bdfe0d7fb1e120110e545c1",
         "output/novitiates/dice/novitiates-dice-team.jpg": "900f46d61f53a09e31ade293455bb75338943b9c0bef39c65cedbf121a9cb480",
-        "output/novitiates/data/novitiates-team-data.json": "aaf95045d9144ab94b8c5b6d18047109074c0180337ab86b1fca7932f25aa28c",
+        "output/novitiates/data/novitiates-team-data.json": "fb14f2936df721b5d603a02ac7372091a8fd2f7c3ec7a21411895563193c443c",
         "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
         "config/defaults/tts-script/datacard-load-stats.lua": "e163a1c2bbf015020a7ffe5ee861e9e78e7127ed99661187805c247862108260",
         "config/defaults/tts-script/display-table-manager-script.lua": "846de299f8e2c925e63cc77c4991fedd07ae75e9bde375f3b3c991c8730b891b",

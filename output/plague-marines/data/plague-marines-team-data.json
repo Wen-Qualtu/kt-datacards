@@ -49,7 +49,20 @@
         "HERETIC ASTARTES",
         "LEADER",
         "CHAMPION"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Piercing x",
+          "Range x",
+          "Hot",
+          "Severe"
+        ]
+      }
     },
     {
       "name": "PLAGUE MARINE BOMBARDIER",
@@ -88,7 +101,14 @@
         "CHAOS",
         "HERETIC ASTARTES",
         "BOMBARDIER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": []
+      }
     },
     {
       "name": "PLAGUE MARINE FIGHTER",
@@ -125,7 +145,19 @@
         "CHAOS",
         "HERETIC ASTARTES",
         "FIGHTER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Brutal",
+          "Severe",
+          "Shock"
+        ]
+      }
     },
     {
       "name": "PLAGUE MARINE HEAVY GUNNER",
@@ -161,7 +193,20 @@
         "CHAOS",
         "HERETIC ASTARTES",
         "HEAVY GUNNER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Saturate",
+          "Severe",
+          "Torrent x"
+        ]
+      }
     },
     {
       "name": "PLAGUE MARINE ICON BEARER",
@@ -202,7 +247,17 @@
         "CHAOS",
         "HERETIC ASTARTES",
         "ICON BEARER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Severe"
+        ]
+      }
     },
     {
       "name": "MALIGNANT PLAGUECASTER",
@@ -250,7 +305,22 @@
           "name": "PUTRESCENT VITALITY (1AP)",
           "description": "PSYCHIC. Select one friendly operative visible to and within 3\" of this operative, then roll 2D6: if the result is 7, the selected operative regains 7 lost wounds; otherwise, the selected operative regains lost wounds equal to the highest D6. This operative cannot perform this action while within control range of an enemy operative, or more than once per turning point."
         }
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Saturate",
+          "Severe",
+          "Torrent x",
+          "Shock",
+          "Stun"
+        ]
+      }
     },
     {
       "name": "PLAGUE MARINE WARRIOR",
@@ -291,7 +361,16 @@
         "CHAOS",
         "HERETIC ASTARTES",
         "WARRIOR"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Severe"
+        ]
+      }
     }
   ],
   "equipment": [
@@ -375,5 +454,16 @@
       "name": "nurglings",
       "text": "PLAGUE MARINE\nSTRATEGY PLOY\nNURGLINGS\nThe smallest of Nurgle’s daemons, Nurglings are both \nmalicious and playful, cackling wildly as they claw and \nharass the Plague Marines’ foes with pestilent claws \nand teeth.\nSelect one enemy operative within 3\" of a \nfriendly PLAGUE MARINE operative, or one \nenemy operative that has one of your Poison \ntokens and is within 7\" of a friendly PLAGUE \nMARINE operative. Until the end of the selected \noperative’s next activation, subtract 1 from its \nAPL stat."
     }
-  ]
+  ],
+  "node_weapon_rules": {
+    "Piercing x": "The defender collects x less defence dice, e.g. Piercing 1. If the rule is Piercing Crits x, this only comes into effect if you retain any critical successes.",
+    "Range x": "Only operatives within x of the active operative can be valid targets, e.g. Range 9\".",
+    "Hot": "After an operative uses this weapon, roll one D6: if the result is less than the weapon's Hit stat, inflict damage on that operative equal to the result multiplied by two. If it's used multiple times in one action (e.g. Blast), still only roll one D6.",
+    "Severe": "If you don't retain any critical successes, you can change one of your normal successes to a critical success. The Devastating and Piercing Crits weapon rules still take effect, but Punishing and Rending don't.",
+    "Brutal": "Your opponent can only block with critical successes.",
+    "Shock": "The first time you strike with a critical success in each sequence, also discard one of your opponent's unresolved normal successes (or one of their critical successes if there are none).",
+    "Saturate": "The defender cannot retain cover saves.",
+    "Torrent x": "Select a valid target as normal as the primary target, then select any number of other valid targets within x of the first valid target, but not within control range of friendly operatives, as secondary targets, e.g. Torrent 2\". Shoot with this weapon against all of them in an order of your choice (roll each sequence separately).",
+    "Stun": "If you retain any critical successes, subtract 1 from the APL stat of the operative this weapon is being used against until the end of its next activation."
+  }
 }

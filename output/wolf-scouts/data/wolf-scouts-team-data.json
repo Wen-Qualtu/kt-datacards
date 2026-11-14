@@ -50,7 +50,19 @@
         "SPACE WOLVES",
         "PACK",
         "LEADER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Piercing x",
+          "Range x",
+          "Hot"
+        ]
+      }
     },
     {
       "name": "WOLF SCOUT FANGBEARER",
@@ -92,7 +104,17 @@
         "ADEPTUS ASTARTES",
         "SPACE WOLVES",
         "FANGBEARER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Piercing x",
+          "Range x"
+        ]
+      }
     },
     {
       "name": "WOLF SCOUT FROSTEYE",
@@ -134,7 +156,17 @@
         "ADEPTUS ASTARTES",
         "SPACE WOLVES",
         "FROSTEYE"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Piercing x",
+          "Silent"
+        ]
+      }
     },
     {
       "name": "WOLF SCOUT GUNNER",
@@ -178,7 +210,18 @@
         "ADEPTUS ASTARTES",
         "SPACE WOLVES",
         "GUNNER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Piercing x",
+          "Hot"
+        ]
+      }
     },
     {
       "name": "WOLF SCOUT HUNTER",
@@ -222,7 +265,19 @@
         "ADEPTUS ASTARTES",
         "SPACE WOLVES",
         "HUNTER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Piercing x",
+          "Range x",
+          "Hot"
+        ]
+      }
     },
     {
       "name": "WOLF SCOUT RUNE PRIEST SKJALD",
@@ -280,7 +335,25 @@
         "SPACE WOLVES",
         "PSYKER",
         "RUNE PRIEST SKJALD"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Blast x",
+          "Severe",
+          "Saturate",
+          "Seek",
+          "Stun",
+          "Torrent x",
+          "Shock"
+        ]
+      }
     },
     {
       "name": "WOLF SCOUT TRAPMASTER",
@@ -328,7 +401,19 @@
         "ADEPTUS ASTARTES",
         "SPACE WOLVES",
         "TRAPMASTER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Piercing x",
+          "Range x",
+          "Hot"
+        ]
+      }
     },
     {
       "name": "WOLF SCOUT FENRISIAN WOLF",
@@ -363,7 +448,15 @@
         "ADEPTUS ASTARTES",
         "SPACE WOLVES",
         "FENRISIAN WOLF"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Rending"
+        ]
+      }
     }
   ],
   "equipment": [
@@ -444,5 +537,19 @@
       "name": "savage-fighters",
       "text": "WOLF SCOUT\nSTRATEGY PLOY\nSAVAGE FIGHTERS\nOnce their prey have been cornered, the Wolf Scouts \nsavagely sustain the pressure, ensuring no opportunity \nis missed to weaken their quarry.\nWhenever a friendly WOLF SCOUT operative \nfinishes retaliating, if it wasn’t incapacitated and \nis still within control range of the enemy operative \nin that sequence, you can inflict D3+1 damage on \nthat enemy operative."
     }
-  ]
+  ],
+  "node_weapon_rules": {
+    "Piercing x": "The defender collects x less defence dice, e.g. Piercing 1. If the rule is Piercing Crits x, this only comes into effect if you retain any critical successes.",
+    "Range x": "Only operatives within x of the active operative can be valid targets, e.g. Range 9\".",
+    "Hot": "After an operative uses this weapon, roll one D6: if the result is less than the weapon's Hit stat, inflict damage on that operative equal to the result multiplied by two. If it's used multiple times in one action (e.g. Blast), still only roll one D6.",
+    "Silent": "An operative can perform the Shoot action with this weapon while it has a Conceal order.",
+    "Blast x": "The target you select is the primary target. After shooting the primary target, shoot with this weapon against each secondary target in an order of your choice (roll each sequence separately). Secondary targets are other operatives visible to and within x of the primary target, e.g. Blast 2\" (they are all valid targets, regardless of a Conceal order). Secondary targets are in cover and obscured if the primary target was.",
+    "Severe": "If you don't retain any critical successes, you can change one of your normal successes to a critical success. The Devastating and Piercing Crits weapon rules still take effect, but Punishing and Rending don't.",
+    "Saturate": "The defender cannot retain cover saves.",
+    "Seek": "When selecting a valid target, operatives with a Conceal order cannot use terrain for cover. If the rule is Seek Light, they cannot use Light terrain for cover. While this can allow operatives to be targeted (assuming they're visible), it doesn't remove their cover save (if any).",
+    "Stun": "If you retain any critical successes, subtract 1 from the APL stat of the operative this weapon is being used against until the end of its next activation.",
+    "Torrent x": "Select a valid target as normal as the primary target, then select any number of other valid targets within x of the first valid target, but not within control range of friendly operatives, as secondary targets, e.g. Torrent 2\". Shoot with this weapon against all of them in an order of your choice (roll each sequence separately).",
+    "Shock": "The first time you strike with a critical success in each sequence, also discard one of your opponent's unresolved normal successes (or one of their critical successes if there are none).",
+    "Rending": "If you retain any critical successes, you can retain one of your normal successes as a critical success instead."
+  }
 }

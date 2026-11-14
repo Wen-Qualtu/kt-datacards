@@ -87,7 +87,62 @@
           "name": "PREMONITION (1AP)",
           "description": "PSYCHIC. Spend 1 of your Prescience points to gain 1CP."
         }
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "melee",
+          "melee",
+          "melee",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Piercing x",
+          "Hot",
+          "Rending",
+          "Brutal",
+          "Shock"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "Bolt pistol; power fist",
+                "weapons": [
+                  0,
+                  4
+                ]
+              },
+              {
+                "label": "Bolt pistol; power maul",
+                "weapons": [
+                  0,
+                  5
+                ]
+              },
+              {
+                "label": "Bolt pistol; power weapon",
+                "weapons": [
+                  0,
+                  6
+                ]
+              },
+              {
+                "label": "Plasma pistol; Nostraman chainblade",
+                "weapons": [
+                  1,
+                  2,
+                  3
+                ]
+              }
+            ]
+          ],
+          "fixed": []
+        }
+      }
     },
     {
       "name": "NIGHT LORD FEARMONGER",
@@ -146,7 +201,22 @@
         "CHAOS",
         "HERETIC ASTARTES",
         "FEARMONGER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Blast x",
+          "Devastating x",
+          "Limited x",
+          "Saturate"
+        ]
+      }
     },
     {
       "name": "NIGHT LORD GUNNER",
@@ -203,7 +273,57 @@
         "CHAOS",
         "HERETIC ASTARTES",
         "GUNNER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Saturate",
+          "Torrent x",
+          "Devastating x",
+          "Piercing x",
+          "Hot"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "Bolt pistol; flamer; fists",
+                "weapons": [
+                  0,
+                  1,
+                  5
+                ]
+              },
+              {
+                "label": "Bolt pistol; meltagun; fists",
+                "weapons": [
+                  0,
+                  2,
+                  5
+                ]
+              },
+              {
+                "label": "Bolt pistol; plasma gun; fists",
+                "weapons": [
+                  0,
+                  3,
+                  4,
+                  5
+                ]
+              }
+            ]
+          ],
+          "fixed": []
+        }
+      }
     },
     {
       "name": "NIGHT LORD HEAVY GUNNER",
@@ -260,7 +380,49 @@
         "CHAOS",
         "HERETIC ASTARTES",
         "HEAVY GUNNER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Heavy",
+          "Piercing x",
+          "Torrent x",
+          "Blast x"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "Bolt pistol; heavy bolter; fists",
+                "weapons": [
+                  0,
+                  1,
+                  2,
+                  5
+                ]
+              },
+              {
+                "label": "Bolt pistol; missile launcher; fists",
+                "weapons": [
+                  0,
+                  3,
+                  4,
+                  5
+                ]
+              }
+            ]
+          ],
+          "fixed": []
+        }
+      }
     },
     {
       "name": "NIGHT LORD SCREECHER",
@@ -294,7 +456,15 @@
         "CHAOS",
         "HERETIC ASTARTES",
         "SCREECHER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Ceaseless"
+        ]
+      }
     },
     {
       "name": "NIGHT LORD SKINTHIEF",
@@ -335,7 +505,17 @@
         "CHAOS",
         "HERETIC ASTARTES",
         "SKINTHIEF"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Rending"
+        ]
+      }
     },
     {
       "name": "NIGHT LORD VENTRILOKAR",
@@ -377,7 +557,16 @@
         "HERETIC ASTARTES",
         "PSYKER",
         "VENTRILOKAR"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x"
+        ]
+      }
     },
     {
       "name": "NIGHT LORD WARRIOR",
@@ -425,7 +614,39 @@
         "CHAOS",
         "HERETIC ASTARTES",
         "WARRIOR"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "Bolt pistol; chainsword",
+                "weapons": [
+                  0,
+                  2
+                ]
+              },
+              {
+                "label": "Boltgun; fists",
+                "weapons": [
+                  1,
+                  3
+                ]
+              }
+            ]
+          ],
+          "fixed": []
+        }
+      }
     }
   ],
   "equipment": [
@@ -530,5 +751,20 @@
       "name": "return-to-darkness",
       "text": "NEMESIS CLAW\nSTRATEGY PLOY\nRETURN TO DARKNESS\nThe Night Lords move from shadow to shadow with an \nagility and speed belied by their transhuman bulk.\nOne friendly NEMESIS CLAW operative \ncan immediately perform a free Fall Back or \nReposition action, but it must end that move \nwith Heavy terrain within its control range, or \nany part of its base underneath Vantage terrain. \nIn addition, it cannot move more than 4\" during \nthat action and it cannot end that move closer \nto enemy operatives (in a killzone that uses the \nclose quarters rules, e.g. Killzone: Tomb World, \nignore Wall terrain when determining this)."
     }
-  ]
+  ],
+  "node_weapon_rules": {
+    "Range x": "Only operatives within x of the active operative can be valid targets, e.g. Range 9\".",
+    "Piercing x": "The defender collects x less defence dice, e.g. Piercing 1. If the rule is Piercing Crits x, this only comes into effect if you retain any critical successes.",
+    "Hot": "After an operative uses this weapon, roll one D6: if the result is less than the weapon's Hit stat, inflict damage on that operative equal to the result multiplied by two. If it's used multiple times in one action (e.g. Blast), still only roll one D6.",
+    "Rending": "If you retain any critical successes, you can retain one of your normal successes as a critical success instead.",
+    "Brutal": "Your opponent can only block with critical successes.",
+    "Shock": "The first time you strike with a critical success in each sequence, also discard one of your opponent's unresolved normal successes (or one of their critical successes if there are none).",
+    "Blast x": "The target you select is the primary target. After shooting the primary target, shoot with this weapon against each secondary target in an order of your choice (roll each sequence separately). Secondary targets are other operatives visible to and within x of the primary target, e.g. Blast 2\" (they are all valid targets, regardless of a Conceal order). Secondary targets are in cover and obscured if the primary target was.",
+    "Devastating x": "Each retained critical success immediately inflicts x damage on the operative this weapon is being used against, e.g. Devastating 3. If the rule starts with a distance (e.g. 1\" Devastating x), inflict x damage on that operative and each other operative visible to and within that distance of it. Note that success isn't discarded after doing so - it can still be resolved later in the sequence.",
+    "Limited x": "After an operative uses this weapon a number of times in the battle equal to x, they no longer have it. If it's used multiple times in one action (e.g. Blast), treat this as one use.",
+    "Saturate": "The defender cannot retain cover saves.",
+    "Torrent x": "Select a valid target as normal as the primary target, then select any number of other valid targets within x of the first valid target, but not within control range of friendly operatives, as secondary targets, e.g. Torrent 2\". Shoot with this weapon against all of them in an order of your choice (roll each sequence separately).",
+    "Heavy": "An operative cannot use this weapon in an activation or counteraction in which it moved, and it cannot move in an activation or counteraction in which it used this weapon. If the rule is Heavy (x only), where x is a move action, only that move is allowed, e.g. Heavy (Dash only). This weapon rule has no effect on preventing the Guard action.",
+    "Ceaseless": "You can re-roll any of your attack dice results of one result (e.g. results of 2)."
+  }
 }

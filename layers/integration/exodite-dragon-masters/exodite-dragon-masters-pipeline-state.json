@@ -1,7 +1,7 @@
 {
   "team": "exodite-dragon-masters",
   "pipeline_version": "2.0",
-  "last_updated": "2026-10-28T14:24:39.728279+00:00",
+  "last_updated": "2026-11-13T21:25:07.521322+00:00",
   "steps": {
     "front_end": {
       "outputs": {},
@@ -1362,14 +1362,17 @@
       "outputs": {
         "team-data.json": {
           "path": "output/exodite-dragon-masters/data/exodite-dragon-masters-team-data.json",
-          "hash": "86e25b9d6e2e21e01780db46966f91fdeda474d4c194f7b6552191efcd05a3b1",
-          "modified": "2026-10-28T14:24:37.300491+00:00"
+          "hash": "e41ee86e2d41967eb6f9017d4f682dd6815a7dafde5abb7d89e87e986c55318c",
+          "modified": "2026-11-13T21:18:52.788659+00:00"
         }
       },
       "inputs": {
-        "layers/integration/exodite-dragon-masters/content/exodite-dragon-masters-content.json": "86e25b9d6e2e21e01780db46966f91fdeda474d4c194f7b6552191efcd05a3b1"
+        "layers/integration/exodite-dragon-masters/content/exodite-dragon-masters-content.json": "86e25b9d6e2e21e01780db46966f91fdeda474d4c194f7b6552191efcd05a3b1",
+        "config/weapon_rules.json": "4dd2e044dbd2dfdc8d1e035bd31d1fa7e72c70b6424a733ea315a392368848b9",
+        "pipeline/steps/extract_stats.py": "f29227a25a76a7f9e1a74c882454f13539c4733462e64abd034469eb2a3bef83",
+        "pipeline/steps/tts_impl.py": "2fd98b5d7b04687525be043fa87b3adb0d8d90763305755aa8c6e0c062f4320b"
       },
-      "completed": "2026-10-28T14:24:37.300909+00:00"
+      "completed": "2026-11-13T21:18:52.801105+00:00"
     },
     "generate_tts": {
       "outputs": {
@@ -1380,8 +1383,8 @@
         },
         "tts_objects/Exodite Dragon Masters.json": {
           "path": "output/exodite-dragon-masters/tts_objects/Exodite Dragon Masters.json",
-          "hash": "275a422cab84433e9ae1d005fc51a500d022fa8cf60926b8894fb31576c3aad1",
-          "modified": "2026-10-28T14:24:39.650398+00:00"
+          "hash": "1af2188bd45699389d78425618391d1e27301ba4af55f586b2984196cfc7fee8",
+          "modified": "2026-11-13T21:25:07.068613+00:00"
         }
       },
       "inputs": {
@@ -1517,7 +1520,7 @@
         "output/exodite-dragon-masters/dice/exodite-dragon-masters-dice-dark.jpg": "5b5de8f6b027b5a452dacafa48536d0ba0d64c7005fc3137379d7726686eb580",
         "output/exodite-dragon-masters/dice/exodite-dragon-masters-dice-light.jpg": "632ddee181bb1bcb851870dfde65746d7dde26f55fefa24b1170f7f9c8ac8593",
         "output/exodite-dragon-masters/dice/exodite-dragon-masters-dice-team.jpg": "eed5355126b9c762280b8bcf7df36fc0a357950924aff034899ee5e90779f021",
-        "output/exodite-dragon-masters/data/exodite-dragon-masters-team-data.json": "86e25b9d6e2e21e01780db46966f91fdeda474d4c194f7b6552191efcd05a3b1",
+        "output/exodite-dragon-masters/data/exodite-dragon-masters-team-data.json": "e41ee86e2d41967eb6f9017d4f682dd6815a7dafde5abb7d89e87e986c55318c",
         "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
         "config/defaults/tts-script/datacard-load-stats.lua": "e163a1c2bbf015020a7ffe5ee861e9e78e7127ed99661187805c247862108260",
         "config/defaults/tts-script/display-table-manager-script.lua": "846de299f8e2c925e63cc77c4991fedd07ae75e9bde375f3b3c991c8730b891b",
@@ -1542,7 +1545,7 @@
         "config/defaults/tts-token/token-bg-sample.png": "f9f90664c7f1c877c6f050f6e85babde6523cdc0aed9c77de8c09214f44ee109",
         "config/defaults/tts-token/token-mesh.obj": "381bf5e083c56c569ee9eb6d48eb847bf94e4fe338a01afaae8bc8e77144e1cc"
       },
-      "completed": "2026-10-28T14:24:39.728268+00:00"
+      "completed": "2026-11-13T21:25:07.521289+00:00"
     }
   }
 }

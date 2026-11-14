@@ -42,7 +42,18 @@
         "TYRANID",
         "LEADER",
         "PRIME"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Rending",
+          "Silent"
+        ]
+      }
     },
     {
       "name": "RAVENER FELLTALON",
@@ -91,7 +102,19 @@
         "GREAT DEVOURER",
         "TYRANID",
         "FELLTALON"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Silent",
+          "Shock"
+        ]
+      }
     },
     {
       "name": "RAVENER TREMORSCYTHE",
@@ -132,7 +155,18 @@
         "GREAT DEVOURER",
         "TYRANID",
         "TREMORSCYTHE"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Silent",
+          "Rending"
+        ]
+      }
     },
     {
       "name": "RAVENER VENOMSPITTER",
@@ -187,7 +221,21 @@
         "GREAT DEVOURER",
         "TYRANID",
         "VENOMSPITTER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Silent",
+          "Blast x",
+          "Piercing x"
+        ]
+      }
     },
     {
       "name": "RAVENER WARRIOR",
@@ -223,7 +271,17 @@
         "GREAT DEVOURER",
         "TYRANID",
         "WARRIOR"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Silent"
+        ]
+      }
     },
     {
       "name": "RAVENER WRECKER",
@@ -264,7 +322,18 @@
         "GREAT DEVOURER",
         "TYRANID",
         "WRECKER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Piercing x",
+          "Range x",
+          "Silent"
+        ]
+      }
     }
   ],
   "equipment": [
@@ -359,5 +428,13 @@
       "name": "tunnel-lurkers",
       "text": "RAVENER\nSTRATEGY PLOY\nTUNNEL LURKERS\nRaveners are horrifically adept at remaining all but \ninvisible, partially submerged amidst broken terrain, \nuntil the moment they lunge.\nWhenever a friendly RAVENER operative is \non your TUNNEL it’s in cover, unless it’s within \n2\" of the active operative. Treat this as cover \nprovided by Light terrain (therefore it’s affected \nby rules that prevent this, e.g. Seek Light and \nVantage terrain)."
     }
-  ]
+  ],
+  "node_weapon_rules": {
+    "Range x": "Only operatives within x of the active operative can be valid targets, e.g. Range 9\".",
+    "Rending": "If you retain any critical successes, you can retain one of your normal successes as a critical success instead.",
+    "Silent": "An operative can perform the Shoot action with this weapon while it has a Conceal order.",
+    "Shock": "The first time you strike with a critical success in each sequence, also discard one of your opponent's unresolved normal successes (or one of their critical successes if there are none).",
+    "Blast x": "The target you select is the primary target. After shooting the primary target, shoot with this weapon against each secondary target in an order of your choice (roll each sequence separately). Secondary targets are other operatives visible to and within x of the primary target, e.g. Blast 2\" (they are all valid targets, regardless of a Conceal order). Secondary targets are in cover and obscured if the primary target was.",
+    "Piercing x": "The defender collects x less defence dice, e.g. Piercing 1. If the rule is Piercing Crits x, this only comes into effect if you retain any critical successes."
+  }
 }

@@ -45,7 +45,20 @@
         "ADEPTUS ASTARTES",
         "LEADER",
         "SPACE MARINE CAPTAIN"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Piercing x",
+          "Range x",
+          "Hot",
+          "Brutal"
+        ]
+      }
     },
     {
       "name": "ASSAULT INTERCESSOR SERGEANT",
@@ -128,7 +141,93 @@
           "name": "Chapter Veteran",
           "description": "At the end of the Select Operatives step, if this operative is selected for deployment, select one additional CHAPTER TACTIC for it to have for the battle. Unlike primary and secondary CHAPTER TACTICS, you don’t have to select the same one for each battle in a campaign or tournament."
         }
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "ranged",
+          "melee",
+          "melee",
+          "melee",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Saturate",
+          "Torrent x",
+          "Piercing x",
+          "Hot",
+          "Brutal",
+          "Shock",
+          "Stun"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "Hand flamer",
+                "weapons": [
+                  0
+                ]
+              },
+              {
+                "label": "heavy bolt pistol",
+                "weapons": [
+                  1
+                ]
+              }
+            ],
+            [
+              {
+                "label": "Chainsword",
+                "weapons": [
+                  4
+                ]
+              },
+              {
+                "label": "power fist",
+                "weapons": [
+                  5
+                ]
+              },
+              {
+                "label": "power weapon",
+                "weapons": [
+                  6
+                ]
+              },
+              {
+                "label": "thunder hammer",
+                "weapons": [
+                  7
+                ]
+              }
+            ],
+            [
+              {
+                "label": "Plasma pistol; chainsword",
+                "weapons": [
+                  2,
+                  3,
+                  4
+                ]
+              }
+            ]
+          ],
+          "fixed": [],
+          "exclusive_sets": [
+            [
+              0,
+              1
+            ],
+            [
+              2
+            ]
+          ]
+        }
+      }
     },
     {
       "name": "INTERCESSOR SERGEANT",
@@ -216,7 +315,86 @@
           "name": "Chapter Veteran",
           "description": "At the end of the Select Operatives step, if this operative is selected for deployment, select one additional CHAPTER TACTIC for it to have for the battle. Unlike primary and secondary CHAPTER TACTICS, you don’t have to select the same one for each battle in a campaign or tournament."
         }
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "ranged",
+          "melee",
+          "melee",
+          "melee",
+          "melee",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Torrent x",
+          "Piercing x",
+          "Heavy",
+          "Brutal",
+          "Shock",
+          "Stun"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "Auto bolt rifle",
+                "weapons": [
+                  0
+                ]
+              },
+              {
+                "label": "bolt rifle",
+                "weapons": [
+                  1
+                ]
+              },
+              {
+                "label": "stalker bolt rifle",
+                "weapons": [
+                  2,
+                  3
+                ]
+              }
+            ],
+            [
+              {
+                "label": "Chainsword",
+                "weapons": [
+                  4
+                ]
+              },
+              {
+                "label": "fists",
+                "weapons": [
+                  5
+                ]
+              },
+              {
+                "label": "power fist",
+                "weapons": [
+                  6
+                ]
+              },
+              {
+                "label": "power weapon",
+                "weapons": [
+                  7
+                ]
+              },
+              {
+                "label": "thunder hammer",
+                "weapons": [
+                  8
+                ]
+              }
+            ]
+          ],
+          "fixed": []
+        }
+      }
     },
     {
       "name": "ASSAULT INTERCESSOR GRENADIER",
@@ -253,7 +431,17 @@
         "ADEPTUS ASTARTES",
         "ASSAULT INTERCESSOR",
         "GRENADIER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Piercing x",
+          "Range x"
+        ]
+      }
     },
     {
       "name": "ASSAULT INTERCESSOR WARRIOR",
@@ -283,7 +471,17 @@
         "ADEPTUS ASTARTES",
         "ASSAULT INTERCESSOR",
         "WARRIOR"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Piercing x",
+          "Range x"
+        ]
+      }
     },
     {
       "name": "HEAVY INTERCESSOR GUNNER",
@@ -327,7 +525,20 @@
         "ADEPTUS ASTARTES",
         "HEAVY INTERCESSOR",
         "GUNNER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Piercing x",
+          "Torrent x"
+        ]
+      }
     },
     {
       "name": "INTERCESSOR GUNNER",
@@ -391,7 +602,56 @@
         "ADEPTUS ASTARTES",
         "INTERCESSOR",
         "GUNNER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "ranged",
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Torrent x",
+          "Blast x",
+          "Piercing x",
+          "Heavy"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "Auto bolt rifle; fists",
+                "weapons": [
+                  0,
+                  6
+                ]
+              },
+              {
+                "label": "Bolt rifle; fists",
+                "weapons": [
+                  3,
+                  6
+                ]
+              },
+              {
+                "label": "Stalker bolt rifle; fists",
+                "weapons": [
+                  4,
+                  5,
+                  6
+                ]
+              }
+            ]
+          ],
+          "fixed": [
+            1,
+            2
+          ]
+        }
+      }
     },
     {
       "name": "INTERCESSOR WARRIOR",
@@ -441,7 +701,50 @@
         "ADEPTUS ASTARTES",
         "INTERCESSOR",
         "WARRIOR"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Torrent x",
+          "Piercing x",
+          "Heavy"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "Auto bolt rifle; fists",
+                "weapons": [
+                  0,
+                  4
+                ]
+              },
+              {
+                "label": "Bolt rifle; fists",
+                "weapons": [
+                  1,
+                  4
+                ]
+              },
+              {
+                "label": "Stalker bolt rifle; fists",
+                "weapons": [
+                  2,
+                  3,
+                  4
+                ]
+              }
+            ]
+          ],
+          "fixed": []
+        }
+      }
     },
     {
       "name": "ELIMINATOR SNIPER",
@@ -504,7 +807,26 @@
           "name": "OPTICS (1AP)",
           "description": "Until the start of this operative’s next activation, whenever it’s shooting, enemy operatives cannot be obscured. This operative cannot perform this action while within control range of an enemy operative."
         }
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Heavy",
+          "Saturate",
+          "Seek",
+          "Silent",
+          "Blast x",
+          "Devastating x",
+          "Piercing x"
+        ]
+      }
     }
   ],
   "equipment": [
@@ -660,5 +982,20 @@
       "name": "indomitus",
       "text": "ANGEL OF DEATH\nSTRATEGY PLOY\nINDOMITUS\nThis is the Era Indomitus. The Imperium wages \ngalaxy-spanning crusades to drive back the horrors \nthat plague it, and the battle-brothers of the Adeptus \nAstartes are spurred on by this righteous purpose.\nWhenever an operative is shooting a friendly \nANGEL OF DEATH operative, if you roll two or \nmore fails, you can discard one of them to retain \nanother as a normal success instead."
     }
-  ]
+  ],
+  "node_weapon_rules": {
+    "Piercing x": "The defender collects x less defence dice, e.g. Piercing 1. If the rule is Piercing Crits x, this only comes into effect if you retain any critical successes.",
+    "Range x": "Only operatives within x of the active operative can be valid targets, e.g. Range 9\".",
+    "Hot": "After an operative uses this weapon, roll one D6: if the result is less than the weapon's Hit stat, inflict damage on that operative equal to the result multiplied by two. If it's used multiple times in one action (e.g. Blast), still only roll one D6.",
+    "Brutal": "Your opponent can only block with critical successes.",
+    "Saturate": "The defender cannot retain cover saves.",
+    "Torrent x": "Select a valid target as normal as the primary target, then select any number of other valid targets within x of the first valid target, but not within control range of friendly operatives, as secondary targets, e.g. Torrent 2\". Shoot with this weapon against all of them in an order of your choice (roll each sequence separately).",
+    "Shock": "The first time you strike with a critical success in each sequence, also discard one of your opponent's unresolved normal successes (or one of their critical successes if there are none).",
+    "Stun": "If you retain any critical successes, subtract 1 from the APL stat of the operative this weapon is being used against until the end of its next activation.",
+    "Heavy": "An operative cannot use this weapon in an activation or counteraction in which it moved, and it cannot move in an activation or counteraction in which it used this weapon. If the rule is Heavy (x only), where x is a move action, only that move is allowed, e.g. Heavy (Dash only). This weapon rule has no effect on preventing the Guard action.",
+    "Blast x": "The target you select is the primary target. After shooting the primary target, shoot with this weapon against each secondary target in an order of your choice (roll each sequence separately). Secondary targets are other operatives visible to and within x of the primary target, e.g. Blast 2\" (they are all valid targets, regardless of a Conceal order). Secondary targets are in cover and obscured if the primary target was.",
+    "Seek": "When selecting a valid target, operatives with a Conceal order cannot use terrain for cover. If the rule is Seek Light, they cannot use Light terrain for cover. While this can allow operatives to be targeted (assuming they're visible), it doesn't remove their cover save (if any).",
+    "Silent": "An operative can perform the Shoot action with this weapon while it has a Conceal order.",
+    "Devastating x": "Each retained critical success immediately inflicts x damage on the operative this weapon is being used against, e.g. Devastating 3. If the rule starts with a distance (e.g. 1\" Devastating x), inflict x damage on that operative and each other operative visible to and within that distance of it. Note that success isn't discarded after doing so - it can still be resolved later in the sequence."
+  }
 }

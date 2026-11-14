@@ -45,7 +45,16 @@
         "INQUISITION",
         "LEADER",
         "INTERROGATOR"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x"
+        ]
+      }
     },
     {
       "name": "TOME-SKULL",
@@ -78,7 +87,11 @@
         "IMPERIUM",
         "INQUISITION",
         "TOME-SKULL"
-      ]
+      ],
+      "node": {
+        "weapon_types": [],
+        "weapon_rule_names": []
+      }
     },
     {
       "name": "AUTOSAVANT AGENT",
@@ -115,7 +128,13 @@
         "IMPERIUM",
         "INQUISITION",
         "AUTOSAVANT"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "melee"
+        ],
+        "weapon_rule_names": []
+      }
     },
     {
       "name": "DEATH WORLD VETERAN AGENT",
@@ -162,7 +181,17 @@
         "IMPERIUM",
         "INQUISITION",
         "DEATH WORLD VETERAN"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x"
+        ]
+      }
     },
     {
       "name": "ENLIGHTENER AGENT",
@@ -203,7 +232,18 @@
         "IMPERIUM",
         "INQUISITION",
         "ENLIGHTENER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Balanced",
+          "Rending"
+        ]
+      }
     },
     {
       "name": "HEXORCIST AGENT",
@@ -244,7 +284,16 @@
         "IMPERIUM",
         "INQUISITION",
         "HEXORCIST"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x"
+        ]
+      }
     },
     {
       "name": "MYSTIC AGENT",
@@ -290,7 +339,17 @@
         "INQUISITION",
         "PSYKER",
         "MYSTIC"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Seek"
+        ]
+      }
     },
     {
       "name": "PENAL LEGIONNAIRE AGENT",
@@ -330,7 +389,18 @@
         "IMPERIUM",
         "INQUISITION",
         "PENAL LEGIONNAIRE"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Saturate",
+          "Torrent x"
+        ]
+      }
     },
     {
       "name": "PISTOLIER AGENT",
@@ -385,7 +455,21 @@
         "IMPERIUM",
         "INQUISITION",
         "PISTOLIER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Piercing x",
+          "Range x",
+          "Hot",
+          "Silent"
+        ]
+      }
     },
     {
       "name": "QUESTKEEPER AGENT",
@@ -426,7 +510,17 @@
         "IMPERIUM",
         "INQUISITION",
         "QUESTKEEPER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Brutal"
+        ]
+      }
     },
     {
       "name": "REQUISITIONED GUN SERVITOR",
@@ -490,7 +584,55 @@
         "IMPERIUM",
         "INQUISITION",
         "GUN SERVITOR"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Heavy",
+          "Piercing x",
+          "Torrent x",
+          "Devastating x",
+          "Blast x",
+          "Hot"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "Heavy bolter; servo claw",
+                "weapons": [
+                  0,
+                  1,
+                  5
+                ]
+              },
+              {
+                "label": "Multi-melta; servo claw",
+                "weapons": [
+                  2,
+                  5
+                ]
+              },
+              {
+                "label": "Plasma cannon; servo claw",
+                "weapons": [
+                  3,
+                  4,
+                  5
+                ]
+              }
+            ]
+          ],
+          "fixed": []
+        }
+      }
     },
     {
       "name": "SISTER OF SILENCE PROSECUTOR",
@@ -526,7 +668,14 @@
         "ANATHEMA PSYKANA",
         "SISTER OF SILENCE",
         "PROSECUTOR"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged"
+        ],
+        "weapon_rule_names": []
+      }
     },
     {
       "name": "SISTER OF SILENCE VIGILATOR",
@@ -557,7 +706,13 @@
         "ANATHEMA PSYKANA",
         "SISTER OF SILENCE",
         "VIGILATOR"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "melee"
+        ],
+        "weapon_rule_names": []
+      }
     },
     {
       "name": "SISTER OF SILENCE WITCHSEEKER",
@@ -594,7 +749,18 @@
         "ANATHEMA PSYKANA",
         "SISTER OF SILENCE",
         "WITCHSEEKER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Saturate",
+          "Torrent x"
+        ]
+      }
     },
     {
       "name": "TEMPESTUS SCION GUNNER",
@@ -673,7 +839,29 @@
         "ASTRA MILITARUM",
         "TEMPESTUS SCION",
         "GUNNER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "ranged",
+          "ranged",
+          "ranged",
+          "ranged",
+          "ranged",
+          "ranged"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Saturate",
+          "Torrent x",
+          "Blast x",
+          "Piercing x",
+          "Devastating x",
+          "Hot"
+        ]
+      }
     },
     {
       "name": "TEMPESTUS SCION MEDIC",
@@ -714,7 +902,14 @@
         "ASTRA MILITARUM",
         "TEMPESTUS SCION",
         "MEDIC"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged"
+        ],
+        "weapon_rule_names": []
+      }
     },
     {
       "name": "TEMPESTUS SCION TROOPER",
@@ -750,7 +945,14 @@
         "ASTRA MILITARUM",
         "TEMPESTUS SCION",
         "TROOPER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged"
+        ],
+        "weapon_rule_names": []
+      }
     },
     {
       "name": "TEMPESTUS SCION VOX-OPERATOR",
@@ -786,7 +988,14 @@
         "ASTRA MILITARUM",
         "TEMPESTUS SCION",
         "VOX-OPERATOR"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged"
+        ],
+        "weapon_rule_names": []
+      }
     }
   ],
   "equipment": [
@@ -914,5 +1123,20 @@
       "name": "irrefutable-jurisdiction",
       "text": "INQUISITORIAL AGENT\nSTRATEGY PLOY\nIRREFUTABLE JURISDICTION\nThe Agents of the Inquisition are emboldened by their \nnear-limitless authority, and will bow before neither \ntraitor nor xenos.\nWhenever an operative is shooting a friendly \nINQUISITORIAL AGENT operative that’s within \n3\" of an objective marker, you can re-roll one \nof your defence dice. If that friendly operative \ncontests that marker, you can re-roll any of your \ndefence dice results of one result instead (e.g. \nresults of 2)."
     }
-  ]
+  ],
+  "node_weapon_rules": {
+    "Range x": "Only operatives within x of the active operative can be valid targets, e.g. Range 9\".",
+    "Balanced": "You can re-roll one of your attack dice.",
+    "Rending": "If you retain any critical successes, you can retain one of your normal successes as a critical success instead.",
+    "Seek": "When selecting a valid target, operatives with a Conceal order cannot use terrain for cover. If the rule is Seek Light, they cannot use Light terrain for cover. While this can allow operatives to be targeted (assuming they're visible), it doesn't remove their cover save (if any).",
+    "Saturate": "The defender cannot retain cover saves.",
+    "Torrent x": "Select a valid target as normal as the primary target, then select any number of other valid targets within x of the first valid target, but not within control range of friendly operatives, as secondary targets, e.g. Torrent 2\". Shoot with this weapon against all of them in an order of your choice (roll each sequence separately).",
+    "Piercing x": "The defender collects x less defence dice, e.g. Piercing 1. If the rule is Piercing Crits x, this only comes into effect if you retain any critical successes.",
+    "Hot": "After an operative uses this weapon, roll one D6: if the result is less than the weapon's Hit stat, inflict damage on that operative equal to the result multiplied by two. If it's used multiple times in one action (e.g. Blast), still only roll one D6.",
+    "Silent": "An operative can perform the Shoot action with this weapon while it has a Conceal order.",
+    "Brutal": "Your opponent can only block with critical successes.",
+    "Heavy": "An operative cannot use this weapon in an activation or counteraction in which it moved, and it cannot move in an activation or counteraction in which it used this weapon. If the rule is Heavy (x only), where x is a move action, only that move is allowed, e.g. Heavy (Dash only). This weapon rule has no effect on preventing the Guard action.",
+    "Devastating x": "Each retained critical success immediately inflicts x damage on the operative this weapon is being used against, e.g. Devastating 3. If the rule starts with a distance (e.g. 1\" Devastating x), inflict x damage on that operative and each other operative visible to and within that distance of it. Note that success isn't discarded after doing so - it can still be resolved later in the sequence.",
+    "Blast x": "The target you select is the primary target. After shooting the primary target, shoot with this weapon against each secondary target in an order of your choice (roll each sequence separately). Secondary targets are other operatives visible to and within x of the primary target, e.g. Blast 2\" (they are all valid targets, regardless of a Conceal order). Secondary targets are in cover and obscured if the primary target was."
+  }
 }

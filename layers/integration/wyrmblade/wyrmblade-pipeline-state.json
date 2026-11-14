@@ -1,7 +1,7 @@
 {
   "team": "wyrmblade",
   "pipeline_version": "2.0",
-  "last_updated": "2026-10-20T07:54:13.779879+00:00",
+  "last_updated": "2026-11-13T21:25:18.948136+00:00",
   "steps": {
     "content_analysis": {
       "outputs": {
@@ -397,13 +397,16 @@
       "outputs": {
         "team-data.json": {
           "path": "output/wyrmblade/data/wyrmblade-team-data.json",
-          "hash": "10746a1e3e1baa64185b07c7e85411ce4dab904b7f3e975449bc519fb1269074",
-          "modified": "2026-08-15T18:43:30.794964+00:00"
+          "hash": "2e502ef5309d1d7da64341ea8585b59da8314b2f2313f4bf559d8aab1fb1c3a2",
+          "modified": "2026-11-13T21:18:56.894045+00:00"
         }
       },
-      "completed": "2026-08-15T18:43:30.809624+00:00",
+      "completed": "2026-11-13T21:18:56.919836+00:00",
       "inputs": {
-        "layers/integration/wyrmblade/content/wyrmblade-content.json": "10746a1e3e1baa64185b07c7e85411ce4dab904b7f3e975449bc519fb1269074"
+        "layers/integration/wyrmblade/content/wyrmblade-content.json": "10746a1e3e1baa64185b07c7e85411ce4dab904b7f3e975449bc519fb1269074",
+        "config/weapon_rules.json": "4dd2e044dbd2dfdc8d1e035bd31d1fa7e72c70b6424a733ea315a392368848b9",
+        "pipeline/steps/extract_stats.py": "f29227a25a76a7f9e1a74c882454f13539c4733462e64abd034469eb2a3bef83",
+        "pipeline/steps/tts_impl.py": "2fd98b5d7b04687525be043fa87b3adb0d8d90763305755aa8c6e0c062f4320b"
       }
     },
     "generate_tts": {
@@ -416,10 +419,10 @@
         "tts_objects/Wyrmblade.json": {
           "path": "output/wyrmblade/tts_objects/Wyrmblade.json",
           "hash": "4d5fd8f5a8e21f1df811e54286d9e71c4865187c5dbcb41e706e12fcec60ed2f",
-          "modified": "2026-10-20T07:54:13.735613+00:00"
+          "modified": "2026-11-13T21:25:18.797412+00:00"
         }
       },
-      "completed": "2026-10-20T07:54:13.779870+00:00",
+      "completed": "2026-11-13T21:25:18.948112+00:00",
       "inputs": {
         "config/team-config.yaml": "b1b298df3441797113db36d9524566fa76c836df085b140b54eaac01e26fd9f9",
         "config/team-guids.json": "906473ddbf256345a4150df497def05ec513f95948b27d6fc98fa6dba00bb7d0",
@@ -478,7 +481,7 @@
         "output/wyrmblade/dice/wyrmblade-dice-dark.jpg": "7ac4fc4af96288ec5782b84f3544529f74794aa1d561f6469562318c2e4a2b90",
         "output/wyrmblade/dice/wyrmblade-dice-light.jpg": "c547500ae0e6b9e1a2bcdf01b08f121fe503be7b29a6eb6904523b1abf7074fe",
         "output/wyrmblade/dice/wyrmblade-dice-team.jpg": "5c317757aeca1329211ae3f1176b6622cb96915c4c3815a5c93c34f7127f93e3",
-        "output/wyrmblade/data/wyrmblade-team-data.json": "10746a1e3e1baa64185b07c7e85411ce4dab904b7f3e975449bc519fb1269074",
+        "output/wyrmblade/data/wyrmblade-team-data.json": "2e502ef5309d1d7da64341ea8585b59da8314b2f2313f4bf559d8aab1fb1c3a2",
         "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
         "config/defaults/tts-script/datacard-load-stats.lua": "e163a1c2bbf015020a7ffe5ee861e9e78e7127ed99661187805c247862108260",
         "config/defaults/tts-script/display-table-manager-script.lua": "846de299f8e2c925e63cc77c4991fedd07ae75e9bde375f3b3c991c8730b891b",

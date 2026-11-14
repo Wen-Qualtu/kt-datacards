@@ -1,7 +1,7 @@
 {
   "team": "corsair-voidscarred",
   "pipeline_version": "2.0",
-  "last_updated": "2026-10-20T07:54:10.425723+00:00",
+  "last_updated": "2026-11-13T21:25:05.783650+00:00",
   "steps": {
     "content_analysis": {
       "outputs": {
@@ -528,13 +528,16 @@
       "outputs": {
         "team-data.json": {
           "path": "output/corsair-voidscarred/data/corsair-voidscarred-team-data.json",
-          "hash": "4b53f48d50c8d173b05f22c88a727e5b4e9b212fbcf7a11fc8338dc13c176bf1",
-          "modified": "2026-07-25T17:15:59.959045+00:00"
+          "hash": "2cec5f61c515a26b50235bc6f71f7da5b2a4990c409d9e68b540e85f8cd777a7",
+          "modified": "2026-11-13T21:18:52.233951+00:00"
         }
       },
-      "completed": "2026-07-25T17:15:59.966808+00:00",
+      "completed": "2026-11-13T21:18:52.244738+00:00",
       "inputs": {
-        "layers/integration/corsair-voidscarred/content/corsair-voidscarred-content.json": "4b53f48d50c8d173b05f22c88a727e5b4e9b212fbcf7a11fc8338dc13c176bf1"
+        "layers/integration/corsair-voidscarred/content/corsair-voidscarred-content.json": "4b53f48d50c8d173b05f22c88a727e5b4e9b212fbcf7a11fc8338dc13c176bf1",
+        "config/weapon_rules.json": "4dd2e044dbd2dfdc8d1e035bd31d1fa7e72c70b6424a733ea315a392368848b9",
+        "pipeline/steps/extract_stats.py": "f29227a25a76a7f9e1a74c882454f13539c4733462e64abd034469eb2a3bef83",
+        "pipeline/steps/tts_impl.py": "2fd98b5d7b04687525be043fa87b3adb0d8d90763305755aa8c6e0c062f4320b"
       }
     },
     "generate_tts": {
@@ -547,10 +550,10 @@
         "tts_objects/Corsair Voidscarred.json": {
           "path": "output/corsair-voidscarred/tts_objects/Corsair Voidscarred.json",
           "hash": "928f911d085261508d919d6a631b6b5cea0a05b19dfd83ddf8accf041da2659d",
-          "modified": "2026-10-20T07:54:10.356788+00:00"
+          "modified": "2026-11-13T21:25:05.594751+00:00"
         }
       },
-      "completed": "2026-10-20T07:54:10.425714+00:00",
+      "completed": "2026-11-13T21:25:05.783607+00:00",
       "inputs": {
         "config/team-config.yaml": "b1b298df3441797113db36d9524566fa76c836df085b140b54eaac01e26fd9f9",
         "config/team-guids.json": "906473ddbf256345a4150df497def05ec513f95948b27d6fc98fa6dba00bb7d0",
@@ -627,7 +630,7 @@
         "output/corsair-voidscarred/dice/corsair-voidscarred-dice-dark.jpg": "62d3807cfc70a6db7bd3b04da3fda818efcdb6b0c2c3cb034921dd8e9a5fb5f9",
         "output/corsair-voidscarred/dice/corsair-voidscarred-dice-light.jpg": "323fcae0891736bf7ec3f632d95a9c4c9897606810cf2245bbfbb61c6afa479e",
         "output/corsair-voidscarred/dice/corsair-voidscarred-dice-team.jpg": "b416a5a43eaf538431e9dce10a7f92efea7e03e1fc25fd187a4fdd145d16a1ce",
-        "output/corsair-voidscarred/data/corsair-voidscarred-team-data.json": "4b53f48d50c8d173b05f22c88a727e5b4e9b212fbcf7a11fc8338dc13c176bf1",
+        "output/corsair-voidscarred/data/corsair-voidscarred-team-data.json": "2cec5f61c515a26b50235bc6f71f7da5b2a4990c409d9e68b540e85f8cd777a7",
         "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
         "config/defaults/tts-script/datacard-load-stats.lua": "e163a1c2bbf015020a7ffe5ee861e9e78e7127ed99661187805c247862108260",
         "config/defaults/tts-script/display-table-manager-script.lua": "846de299f8e2c925e63cc77c4991fedd07ae75e9bde375f3b3c991c8730b891b",

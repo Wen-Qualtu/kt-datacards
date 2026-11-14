@@ -1,7 +1,7 @@
 {
   "team": "celestian-insidiants",
   "pipeline_version": "2.0",
-  "last_updated": "2026-10-28T13:54:29.475155+00:00",
+  "last_updated": "2026-11-13T21:25:05.344603+00:00",
   "steps": {
     "content_analysis": {
       "outputs": {
@@ -648,13 +648,16 @@
       "outputs": {
         "team-data.json": {
           "path": "output/celestian-insidiants/data/celestian-insidiants-team-data.json",
-          "hash": "3810c3389f667a816c4d09bf1ce0734a571df91ae7f105b66f8e4e2fb047cf81",
-          "modified": "2026-07-25T17:15:59.952752+00:00"
+          "hash": "6e10bd25b7aaf6755e7f5dd0c5fd9725796737f605da82601f62fd8ea15487c5",
+          "modified": "2026-11-13T21:18:51.986819+00:00"
         }
       },
-      "completed": "2026-07-25T17:15:59.953348+00:00",
+      "completed": "2026-11-13T21:18:52.002631+00:00",
       "inputs": {
-        "layers/integration/celestian-insidiants/content/celestian-insidiants-content.json": "3810c3389f667a816c4d09bf1ce0734a571df91ae7f105b66f8e4e2fb047cf81"
+        "layers/integration/celestian-insidiants/content/celestian-insidiants-content.json": "3810c3389f667a816c4d09bf1ce0734a571df91ae7f105b66f8e4e2fb047cf81",
+        "config/weapon_rules.json": "4dd2e044dbd2dfdc8d1e035bd31d1fa7e72c70b6424a733ea315a392368848b9",
+        "pipeline/steps/extract_stats.py": "f29227a25a76a7f9e1a74c882454f13539c4733462e64abd034469eb2a3bef83",
+        "pipeline/steps/tts_impl.py": "2fd98b5d7b04687525be043fa87b3adb0d8d90763305755aa8c6e0c062f4320b"
       }
     },
     "generate_tts": {
@@ -667,10 +670,10 @@
         "tts_objects/Celestian Insidiants.json": {
           "path": "output/celestian-insidiants/tts_objects/Celestian Insidiants.json",
           "hash": "b7f7e440d3a96a79e77d54e188f21519b3f0576b7d52b3ff80caf4cef1cadc96",
-          "modified": "2026-10-20T07:54:10.182126+00:00"
+          "modified": "2026-11-13T21:25:05.166333+00:00"
         }
       },
-      "completed": "2026-10-20T07:54:10.267687+00:00",
+      "completed": "2026-11-13T21:25:05.344576+00:00",
       "inputs": {
         "config/team-config.yaml": "b1b298df3441797113db36d9524566fa76c836df085b140b54eaac01e26fd9f9",
         "config/team-guids.json": "906473ddbf256345a4150df497def05ec513f95948b27d6fc98fa6dba00bb7d0",
@@ -759,7 +762,7 @@
         "output/celestian-insidiants/dice/celestian-insidiants-dice-dark.jpg": "b2d5afe73e2eb8ad602b11a0329b7ebf2e0ff0db4fdcfb8e91b8b9745cadbe0c",
         "output/celestian-insidiants/dice/celestian-insidiants-dice-light.jpg": "38acfcee31413fa354f159136e39a5af333fd19491ec8f4a9efdc60eb1e5ac7d",
         "output/celestian-insidiants/dice/celestian-insidiants-dice-team.jpg": "6e73daa747078c1c4e6dcf92d749c69aba4670417f28130e76af96258b47dbc2",
-        "output/celestian-insidiants/data/celestian-insidiants-team-data.json": "3810c3389f667a816c4d09bf1ce0734a571df91ae7f105b66f8e4e2fb047cf81",
+        "output/celestian-insidiants/data/celestian-insidiants-team-data.json": "6e10bd25b7aaf6755e7f5dd0c5fd9725796737f605da82601f62fd8ea15487c5",
         "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
         "config/defaults/tts-script/datacard-load-stats.lua": "e163a1c2bbf015020a7ffe5ee861e9e78e7127ed99661187805c247862108260",
         "config/defaults/tts-script/display-table-manager-script.lua": "846de299f8e2c925e63cc77c4991fedd07ae75e9bde375f3b3c991c8730b891b",

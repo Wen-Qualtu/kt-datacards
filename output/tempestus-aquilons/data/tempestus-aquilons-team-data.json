@@ -70,7 +70,48 @@
           "name": "COMMAND (1AP)",
           "description": "SUPPORT. Select one other friendly TEMPESTUS AQUILON operative (excluding SERVO‑SENTRY) visible to and within 6\" of this operative. Until the end of that operative’s next activation, add 1 to its APL stat. This operative cannot perform this action while within control range of an enemy operative."
         }
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "melee",
+          "melee",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "Hot‑shot laspistol; power weapon",
+                "weapons": [
+                  1,
+                  5
+                ]
+              },
+              {
+                "label": "Relic bolt pistol; chainsword",
+                "weapons": [
+                  2,
+                  3
+                ]
+              },
+              {
+                "label": "Hot‑shot lascarbine; fists",
+                "weapons": [
+                  0,
+                  4
+                ]
+              }
+            ]
+          ],
+          "fixed": []
+        }
+      }
     },
     {
       "name": "AQUILON GRENADIER",
@@ -113,7 +154,21 @@
         "TEMPESTUS AQUILON",
         "IMPERIUM",
         "GRENADIER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Devastating x",
+          "Heavy",
+          "Limited x",
+          "Piercing x"
+        ]
+      }
     },
     {
       "name": "AQUILON GUNFIGHTER",
@@ -160,7 +215,19 @@
         "TEMPESTUS AQUILON",
         "IMPERIUM",
         "GUNFIGHTER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged"
+        ],
+        "weapon_rule_names": [
+          "Ceaseless",
+          "Range x",
+          "Rending"
+        ]
+      }
     },
     {
       "name": "AQUILON GUNNER",
@@ -203,7 +270,43 @@
         "TEMPESTUS AQUILON",
         "IMPERIUM",
         "GUNNER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Devastating x",
+          "Piercing x",
+          "Range x",
+          "Hot"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "melta carbine and fists",
+                "weapons": [
+                  0,
+                  3
+                ]
+              },
+              {
+                "label": "plasma carbine and fists",
+                "weapons": [
+                  1,
+                  2,
+                  3
+                ]
+              }
+            ]
+          ],
+          "fixed": []
+        }
+      }
     },
     {
       "name": "AQUILON MARKSMAN",
@@ -257,7 +360,20 @@
         "TEMPESTUS AQUILON",
         "IMPERIUM",
         "MARKSMAN"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee",
+          "melee",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Devastating x",
+          "Heavy",
+          "Silent"
+        ]
+      }
     },
     {
       "name": "AQUILON PRECURSOR",
@@ -297,7 +413,17 @@
         "TEMPESTUS AQUILON",
         "IMPERIUM",
         "PRECURSOR"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Ceaseless"
+        ]
+      }
     },
     {
       "name": "AQUILON SERVO‑SENTRY",
@@ -358,7 +484,50 @@
         "TEMPESTUS AQUILON",
         "IMPERIUM",
         "SERVO‑SENTRY"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "ranged",
+          "ranged"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Saturate",
+          "Torrent x",
+          "Blast x",
+          "Piercing x"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "Flamer",
+                "weapons": [
+                  0
+                ]
+              },
+              {
+                "label": "Grenade launcher",
+                "weapons": [
+                  1,
+                  2
+                ]
+              },
+              {
+                "label": "Hot‑shot volley gun",
+                "weapons": [
+                  3,
+                  4
+                ]
+              }
+            ]
+          ],
+          "fixed": []
+        }
+      }
     },
     {
       "name": "AQUILON TROOPER",
@@ -398,7 +567,14 @@
         "TEMPESTUS AQUILON",
         "IMPERIUM",
         "TROOPER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": []
+      }
     }
   ],
   "equipment": [
@@ -503,5 +679,19 @@
       "name": "drop-and-secure",
       "text": "TEMPESTUS AQUILON\nSTRATEGY PLOY\nDROP AND SECURE\nPriority tactical objectives must be secured to ensure \nvictory is absolute.\nSelect one marker.\n• Until the Ready step of the next Strategy \nphase, when determining control of that \nmarker, treat the total APL stat of friendly \nTEMPESTUS AQUILON operatives that \ncontest it as 1 higher if at least one friendly \nTEMPESTUS AQUILON operative contests \nthat marker. Note this isn’t a change to the APL \nstat, so any changes are cumulative with this.\n• Whenever a friendly TEMPESTUS \nAQUILON operative is within 3\" of that \nmarker, add 1 to the Atk stat of its melee \nweapons (to a maximum of 4)."
     }
-  ]
+  ],
+  "node_weapon_rules": {
+    "Range x": "Only operatives within x of the active operative can be valid targets, e.g. Range 9\".",
+    "Devastating x": "Each retained critical success immediately inflicts x damage on the operative this weapon is being used against, e.g. Devastating 3. If the rule starts with a distance (e.g. 1\" Devastating x), inflict x damage on that operative and each other operative visible to and within that distance of it. Note that success isn't discarded after doing so - it can still be resolved later in the sequence.",
+    "Heavy": "An operative cannot use this weapon in an activation or counteraction in which it moved, and it cannot move in an activation or counteraction in which it used this weapon. If the rule is Heavy (x only), where x is a move action, only that move is allowed, e.g. Heavy (Dash only). This weapon rule has no effect on preventing the Guard action.",
+    "Limited x": "After an operative uses this weapon a number of times in the battle equal to x, they no longer have it. If it's used multiple times in one action (e.g. Blast), treat this as one use.",
+    "Piercing x": "The defender collects x less defence dice, e.g. Piercing 1. If the rule is Piercing Crits x, this only comes into effect if you retain any critical successes.",
+    "Ceaseless": "You can re-roll any of your attack dice results of one result (e.g. results of 2).",
+    "Rending": "If you retain any critical successes, you can retain one of your normal successes as a critical success instead.",
+    "Hot": "After an operative uses this weapon, roll one D6: if the result is less than the weapon's Hit stat, inflict damage on that operative equal to the result multiplied by two. If it's used multiple times in one action (e.g. Blast), still only roll one D6.",
+    "Silent": "An operative can perform the Shoot action with this weapon while it has a Conceal order.",
+    "Saturate": "The defender cannot retain cover saves.",
+    "Torrent x": "Select a valid target as normal as the primary target, then select any number of other valid targets within x of the first valid target, but not within control range of friendly operatives, as secondary targets, e.g. Torrent 2\". Shoot with this weapon against all of them in an order of your choice (roll each sequence separately).",
+    "Blast x": "The target you select is the primary target. After shooting the primary target, shoot with this weapon against each secondary target in an order of your choice (roll each sequence separately). Secondary targets are other operatives visible to and within x of the primary target, e.g. Blast 2\" (they are all valid targets, regardless of a Conceal order). Secondary targets are in cover and obscured if the primary target was."
+  }
 }

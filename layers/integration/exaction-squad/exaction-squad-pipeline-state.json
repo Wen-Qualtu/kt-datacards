@@ -1,7 +1,7 @@
 {
   "team": "exaction-squad",
   "pipeline_version": "2.0",
-  "last_updated": "2026-10-28T13:55:59.978587+00:00",
+  "last_updated": "2026-11-13T21:25:06.920926+00:00",
   "steps": {
     "content_analysis": {
       "outputs": {
@@ -615,13 +615,16 @@
       "outputs": {
         "team-data.json": {
           "path": "output/exaction-squad/data/exaction-squad-team-data.json",
-          "hash": "30bb07f734380298dc2ff1b754469c7beca502765aeea143971149798167195f",
-          "modified": "2026-10-28T13:54:32.150524+00:00"
+          "hash": "1a9f66c72b7ead76aab3a4a8f80c264208b148e20bbeb83e54465f366496ff7a",
+          "modified": "2026-11-13T21:18:52.685800+00:00"
         }
       },
-      "completed": "2026-10-28T13:54:32.151555+00:00",
+      "completed": "2026-11-13T21:18:52.697289+00:00",
       "inputs": {
-        "layers/integration/exaction-squad/content/exaction-squad-content.json": "30bb07f734380298dc2ff1b754469c7beca502765aeea143971149798167195f"
+        "layers/integration/exaction-squad/content/exaction-squad-content.json": "30bb07f734380298dc2ff1b754469c7beca502765aeea143971149798167195f",
+        "config/weapon_rules.json": "4dd2e044dbd2dfdc8d1e035bd31d1fa7e72c70b6424a733ea315a392368848b9",
+        "pipeline/steps/extract_stats.py": "f29227a25a76a7f9e1a74c882454f13539c4733462e64abd034469eb2a3bef83",
+        "pipeline/steps/tts_impl.py": "2fd98b5d7b04687525be043fa87b3adb0d8d90763305755aa8c6e0c062f4320b"
       }
     },
     "generate_tts": {
@@ -634,10 +637,10 @@
         "tts_objects/Exaction Squad.json": {
           "path": "output/exaction-squad/tts_objects/Exaction Squad.json",
           "hash": "083e5a5a748525d66a3108cfe5a2772d7a56bd28178225b3af68b65a7c10ab3e",
-          "modified": "2026-10-28T13:55:59.920071+00:00"
+          "modified": "2026-11-13T21:25:06.548778+00:00"
         }
       },
-      "completed": "2026-10-28T13:55:59.978575+00:00",
+      "completed": "2026-11-13T21:25:06.920882+00:00",
       "inputs": {
         "config/team-config.yaml": "b1b298df3441797113db36d9524566fa76c836df085b140b54eaac01e26fd9f9",
         "config/team-guids.json": "906473ddbf256345a4150df497def05ec513f95948b27d6fc98fa6dba00bb7d0",
@@ -724,7 +727,7 @@
         "output/exaction-squad/dice/exaction-squad-dice-dark.jpg": "b3e667a8d28a89ce152470a954adff3916eb37666751a47e671da3daaa9b2335",
         "output/exaction-squad/dice/exaction-squad-dice-light.jpg": "fe9a6b8a2e41eb6f26b19024923954e2ed199edd2819dc6b00f5691ce2d5ead7",
         "output/exaction-squad/dice/exaction-squad-dice-team.jpg": "0ef92b3fd2daa7cc5ac9a99dab6ae7089a9e9f315b75211f60e46fe2bb8208a1",
-        "output/exaction-squad/data/exaction-squad-team-data.json": "30bb07f734380298dc2ff1b754469c7beca502765aeea143971149798167195f",
+        "output/exaction-squad/data/exaction-squad-team-data.json": "1a9f66c72b7ead76aab3a4a8f80c264208b148e20bbeb83e54465f366496ff7a",
         "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
         "config/defaults/tts-script/datacard-load-stats.lua": "e163a1c2bbf015020a7ffe5ee861e9e78e7127ed99661187805c247862108260",
         "config/defaults/tts-script/display-table-manager-script.lua": "846de299f8e2c925e63cc77c4991fedd07ae75e9bde375f3b3c991c8730b891b",

@@ -21,6 +21,7 @@ Output:
         (clean/primary format, referenced by output/team-urls.json)
 """
 
+import copy
 import hashlib
 import itertools
 import json
@@ -42,7 +43,7 @@ from .templates.tts_templates import (
 )
 from ..utils import paths as _paths
 from ..utils import naming
-from ..utils.ktui_model_script import compose_ktui_model_script
+from ..utils.ktui_model_script import compose_command_node_loader, compose_ktui_model_script
 
 # Setup logging
 logging.basicConfig(
@@ -532,6 +533,20 @@ def generate_object_urls_json(repo_branch: str = URL_BRANCH):
         if box_file.exists():
             box_base = f"{base_url}/{team}/tts_objects/{box_file.name.replace(' ', '%20')}"
             team_entry["box"] = _reuse_or_new_single(prev_box, box_file, box_base, {})
+
+        team_data_file = team_dir / "data" / f"{team}-team-data.json"
+        if team_data_file.exists():
+            team_data_url = f"{base_url}/{team}/data/{team_data_file.name}"
+            team_hash = _sha256_of_files([team_data_file])
+            previous_team = prev_data.get("team_data") or {}
+            modified = previous_team.get("modified") if previous_team.get("hash") == team_hash else None
+            if not modified:
+                modified = datetime.fromtimestamp(team_data_file.stat().st_mtime, tz=timezone.utc).isoformat()
+            team_entry["team_data"] = {
+                "url": f"{team_data_url}?v={team_hash}",
+                "modified": modified,
+                "hash": team_hash,
+            }
         
         # Add Lua script
         lua_script_path = config_dir / "defaults" / "tts-script" / "tts-update-rules-in-box-script.lua"
@@ -668,10 +683,14 @@ def generate_object_urls_summary(teams_data: dict, repo_branch: str = URL_BRANCH
                 max_modified = obj_modified
 
         team_url = f"{base_url}/{team}/{team}-object-urls.json"
+        version = str(max_stamp)
+        team_hash = (team_entry.get("team_data") or {}).get("hash")
+        if team_hash:
+            version += f"-{team_hash[:12]}"
         summary[team] = {
             "team": team,
             "modified": max_modified,
-            "team_url": f"{team_url}?v={max_stamp}",
+            "team_url": f"{team_url}?v={version}",
             "box": team_entry.get("box"),
         }
 
@@ -1406,8 +1425,18 @@ def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Pa
         "ContainedObjects": token_objects
     }
     
+    write_token_bag_object(team_name, token_bag, output_dir)
     logger.info(f"Generated token bag for {team_name} with {len(token_objects)} tokens from output")
     return token_bag, token_timestamp
+
+
+def write_token_bag_object(team_name: str, token_bag: dict, output_dir: Path) -> Path:
+    target = output_dir / team_name / "tts_objects" / f"{team_name}-token-bag.json"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    contents = (json.dumps({"ObjectStates": [token_bag]}, indent=2) + "\n").encode("utf-8")
+    if not target.exists() or target.read_bytes() != contents:
+        target.write_bytes(contents)
+    return target
 
 
 def load_dice_objects(team_name: str, sample_url: Optional[str], output_dir: Path, repo_branch: str = URL_BRANCH) -> list:
@@ -1824,6 +1853,15 @@ def _find_datacards(tts_data: dict) -> list:
     return datacards
 
 
+def write_command_node_loader(config_dir: Path, output_dir: Path) -> Path:
+    target = output_dir / "_generic-tts-objects" / "command-node-loader.lua"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    contents = compose_command_node_loader(config_dir).encode("utf-8")
+    if not target.exists() or target.read_bytes() != contents:
+        target.write_bytes(contents)
+    return target
+
+
 def _match_card_to_operative(nickname: str, team: str, team_data: dict) -> Optional[dict]:
     """Match a card nickname to an operative in team_data.
 
@@ -2130,7 +2168,7 @@ def _build_gm_notes(operative: dict, team_data: dict, weapon_rules: dict,
         m = re.search(r"(\d+)", str(s))
         return int(m.group(1)) if m else 5
 
-    stats = {
+    stats = dict(operative['stats']) if 'stats' in operative else {
         'APL': operative.get('apl', 2),
         'Move': parse_move(operative.get('movement', '6')),
         'Save': parse_save(operative.get('save', '5+')),
@@ -2139,7 +2177,7 @@ def _build_gm_notes(operative: dict, team_data: dict, weapon_rules: dict,
 
     # base_size is extracted by content_analysis (e.g. 28 for a 28mm base).
     base_size = operative.get('base_size')
-    if base_size is not None:
+    if base_size is not None and 'stats' not in operative:
         stats['Base'] = base_size
 
     keywords = ['Operative'] + [_normalize_text(k) for k in operative.get('keywords', [])]
@@ -2149,29 +2187,31 @@ def _build_gm_notes(operative: dict, team_data: dict, weapon_rules: dict,
     for weapon in operative.get('weapons', []):
         weapon_name = weapon.get('name', '')
         special_rules = weapon.get('special_rules', '')
-        prefix = '[F4641D]M[-]' if _classify_weapon(weapon) == 'melee' else '[1E87FF]R[-]'
+        kind = weapon['type'] if 'type' in weapon else _classify_weapon(weapon)
+        prefix = '[F4641D]M[-]' if kind == 'melee' else '[1E87FF]R[-]'
         full_name = f'{prefix} {weapon_name}'
         weapons.append({
             'name': full_name,
             'plain_name': weapon_name,
-            'stats': {
+            'stats': dict(weapon['stats']) if 'stats' in weapon else {
                 'ATK': weapon.get('attacks', ''),
                 'HIT': weapon.get('hit', ''),
                 'DMG': weapon.get('damage', ''),
                 'WR': special_rules
             }
         })
-        weapon_rules_found.update(_match_weapon_rules(special_rules, weapon_rules))
+        matched_rules = weapon['weapon_rules'] if 'weapon_rules' in weapon else _match_weapon_rules(special_rules, weapon_rules)
+        weapon_rules_found.update(matched_rules)
 
-    abilities = []
-    for ability in operative.get('passive_abilities', []):
+    abilities = copy.deepcopy(operative.get('abilities', []))
+    for ability in operative.get('passive_abilities', []) if 'abilities' not in operative else []:
         name = _normalize_text(ability.get('name', ''))
         text = _normalize_text(ability.get('description', ''))
         if name:
             abilities.append({'name': name, 'text': text})
 
-    actions = []
-    for action in operative.get('unique_actions', []):
+    actions = copy.deepcopy(operative.get('actions', []))
+    for action in operative.get('unique_actions', []) if 'actions' not in operative else []:
         name = _normalize_text(action.get('name', ''))
         text = _normalize_text(action.get('description', ''))
         if name:
@@ -2221,7 +2261,9 @@ def _build_gm_notes(operative: dict, team_data: dict, weapon_rules: dict,
         'description': description
     }
 
-    if selection_groups:
+    if 'selection' in operative:
+        result['selection'] = copy.deepcopy(operative['selection'])
+    elif selection_groups:
         # When no explicit exclusive sets were supplied, derive them from the
         # operative-selection text ("... one option from each ... Or the following
         # option ..."). Only operatives with that "Or" split get exclusive sets;
@@ -2241,7 +2283,9 @@ def _build_gm_notes(operative: dict, team_data: dict, weapon_rules: dict,
     upgrade_arches = ("CLANBLADE", "LEYSTALKER", "STONESINGER")
     op_kw_upper = [str(k).upper() for k in operative.get('keywords', [])]
     arch = next((k for k in op_kw_upper if k in upgrade_arches), None)
-    if arch:
+    if 'upgrades' in operative:
+        result['upgrades'] = copy.deepcopy(operative['upgrades'])
+    elif arch and not team_data.get('model_data_version'):
         options = []
         for fr in team_data.get('faction_rules', []) or []:
             text = fr.get('text', '') or ''
@@ -3004,7 +3048,8 @@ def _counter_asset_base(team: str, url_branch: str, cfg: dict) -> str:
     return f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/{branch}/output/{team}/tokens"
 
 
-def _build_operative_counters_lua(team: str, counters: list, url_branch: str, menu_label: str) -> str:
+def _build_operative_counters_lua(team: str, counters: list, url_branch: str, menu_label: str,
+                                filter_keywords: bool = False) -> str:
     """Generate Lua adding one or more left/right-click cycling image counters to
     the model on the card, exposed via a single context-menu item.
 
@@ -3031,6 +3076,22 @@ def _build_operative_counters_lua(team: str, counters: list, url_branch: str, me
 
     local_defs = []
     inject_blocks = []
+    if filter_keywords:
+        local_defs.append("    local counterCount, counterPosition = 0, 0\n")
+        for cfg, _ in prepared:
+            slug = _oc_slug(str(cfg.get('name', 'Counter')))
+            applies = cfg.get('applies_to', 'all')
+            if applies in (None, 'all', True):
+                condition = "true"
+            else:
+                keywords = [applies] if isinstance(applies, str) else (applies or [])
+                conditions = [f"keyword:upper() == {lua_str(str(keyword).upper())}" for keyword in keywords]
+                condition = " or ".join(conditions) or "false"
+            local_defs.append(f"    local counterEnabled_{slug} = {str(condition == 'true').lower()}\n"
+                              "    for _, keyword in ipairs((mState.info or {}).categories or {}) do\n"
+                              f"        if {condition} then counterEnabled_{slug} = true end\n"
+                              "    end\n"
+                              f"    if counterEnabled_{slug} then counterCount = counterCount + 1 end\n")
     for i, (cfg, states) in enumerate(prepared):
         name = str(cfg.get('name', 'Counter'))
         slug = _oc_slug(name)
@@ -3121,6 +3182,15 @@ end
             f'    table.insert(added, {lua_str(name)})\n'
         )
 
+    if filter_keywords:
+        inject_blocks = [
+            f"    if counterEnabled_{_oc_slug(str(cfg.get('name', 'Counter')))} then\n"
+            f"        panelXml_{_oc_slug(str(cfg.get('name', 'Counter')))} = "
+            f"panelXml_{_oc_slug(str(cfg.get('name', 'Counter')))}:gsub('offsetXY=\"[^\"]+\"', "
+            "'offsetXY=\"' .. tostring((counterPosition - (counterCount - 1) / 2) * 50) .. ' -10\"', 1)\n"
+            "        counterPosition = counterPosition + 1\n" + block + "    end\n"
+            for (cfg, _), block in zip(prepared, inject_blocks)
+        ]
     return (
         _MULTI_COUNTER_WRAPPER
         .replace("<<MENU_LABEL>>", str(menu_label).replace('\\', '\\\\').replace('"', '\\"'))

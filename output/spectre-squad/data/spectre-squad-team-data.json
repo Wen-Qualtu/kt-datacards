@@ -37,7 +37,16 @@
         "ASTRA MILITARUM",
         "LEADER",
         "VETERAN SERGEANT"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Rending"
+        ]
+      }
     },
     {
       "name": "SPECTRE FIELD MEDICAE",
@@ -84,7 +93,39 @@
         "IMPERIUM",
         "ASTRA MILITARUM",
         "FIELD MEDICAE"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged"
+        ],
+        "weapon_rule_names": [
+          "Rending",
+          "Heavy"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "Lasrifle; gun butt",
+                "weapons": [
+                  1,
+                  2
+                ]
+              },
+              {
+                "label": "Lascarbine; gun butt",
+                "weapons": [
+                  0,
+                  2
+                ]
+              }
+            ]
+          ],
+          "fixed": []
+        }
+      }
     },
     {
       "name": "SPECTRE GRENADIER",
@@ -135,7 +176,39 @@
         "IMPERIUM",
         "ASTRA MILITARUM",
         "GRENADIER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged"
+        ],
+        "weapon_rule_names": [
+          "Rending",
+          "Heavy"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "Lasrifle; gun butt",
+                "weapons": [
+                  1,
+                  2
+                ]
+              },
+              {
+                "label": "Lascarbine; gun butt",
+                "weapons": [
+                  0,
+                  2
+                ]
+              }
+            ]
+          ],
+          "fixed": []
+        }
+      }
     },
     {
       "name": "SPECTRE GUIDE",
@@ -186,7 +259,39 @@
         "IMPERIUM",
         "ASTRA MILITARUM",
         "GUIDE"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged"
+        ],
+        "weapon_rule_names": [
+          "Rending",
+          "Heavy"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "Lasrifle; gun butt",
+                "weapons": [
+                  1,
+                  2
+                ]
+              },
+              {
+                "label": "Lascarbine; gun butt",
+                "weapons": [
+                  0,
+                  2
+                ]
+              }
+            ]
+          ],
+          "fixed": []
+        }
+      }
     },
     {
       "name": "SPECTRE GUNNER",
@@ -229,7 +334,43 @@
         "IMPERIUM",
         "ASTRA MILITARUM",
         "GUNNER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "ranged"
+        ],
+        "weapon_rule_names": [
+          "Devastating x",
+          "Piercing x",
+          "Range x",
+          "Hot"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "Meltagun; fists",
+                "weapons": [
+                  0
+                ]
+              },
+              {
+                "label": "Plasma gun; fists",
+                "weapons": [
+                  1,
+                  2
+                ]
+              }
+            ]
+          ],
+          "fixed": [
+            3
+          ]
+        }
+      }
     },
     {
       "name": "SPECTRE HEAVY GUNNER",
@@ -279,7 +420,21 @@
         "IMPERIUM",
         "ASTRA MILITARUM",
         "HEAVY GUNNER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Blast x",
+          "Heavy",
+          "Piercing x"
+        ]
+      }
     },
     {
       "name": "SPECTRE LOADER",
@@ -320,7 +475,16 @@
         "IMPERIUM",
         "ASTRA MILITARUM",
         "LOADER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x"
+        ]
+      }
     },
     {
       "name": "SPECTRE SHARPSHOOTER",
@@ -369,7 +533,20 @@
         "IMPERIUM",
         "ASTRA MILITARUM",
         "SHARPSHOOTER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee",
+          "melee",
+          "ranged"
+        ],
+        "weapon_rule_names": [
+          "Devastating x",
+          "Heavy",
+          "Silent"
+        ]
+      }
     },
     {
       "name": "SPECTRE STUB-GUNNER",
@@ -419,7 +596,21 @@
         "IMPERIUM",
         "ASTRA MILITARUM",
         "STUB-GUNNER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Heavy",
+          "Seek",
+          "Stun",
+          "Torrent x"
+        ]
+      }
     },
     {
       "name": "SPECTRE TROOPER",
@@ -462,7 +653,39 @@
         "IMPERIUM",
         "ASTRA MILITARUM",
         "TROOPER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged"
+        ],
+        "weapon_rule_names": [
+          "Rending",
+          "Heavy"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "Lasrifle; gun butt",
+                "weapons": [
+                  1,
+                  2
+                ]
+              },
+              {
+                "label": "Lascarbine; gun butt",
+                "weapons": [
+                  0,
+                  2
+                ]
+              }
+            ]
+          ],
+          "fixed": []
+        }
+      }
     },
     {
       "name": "SPECTRE VOX-OPERATOR",
@@ -505,7 +728,39 @@
         "IMPERIUM",
         "ASTRA MILITARUM",
         "VOX-OPERATOR"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged"
+        ],
+        "weapon_rule_names": [
+          "Rending",
+          "Heavy"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "Lasrifle; gun butt",
+                "weapons": [
+                  1,
+                  2
+                ]
+              },
+              {
+                "label": "Lascarbine; gun butt",
+                "weapons": [
+                  0,
+                  2
+                ]
+              }
+            ]
+          ],
+          "fixed": []
+        }
+      }
     },
     {
       "name": "SPECTRE VOX-RELAY BEACON",
@@ -535,7 +790,11 @@
         "IMPERIUM",
         "ASTRA MILITARUM",
         "VOX-RELAY BEACON"
-      ]
+      ],
+      "node": {
+        "weapon_types": [],
+        "weapon_rule_names": []
+      }
     }
   ],
   "equipment": [
@@ -663,5 +922,18 @@
       "name": "patience",
       "text": "SPECTRE SQUAD\nSTRATEGY PLOY\nPATIENCE\nBloody experience has taught these operatives the \nmerits of patience.\nIn the Firefight phase of this turning point, you \ncan do one of the following:\n• Once, when it’s your turn to activate a friendly \noperative, you can skip that activation. You \ncannot do this until after your opponent’s \nfirst activation.\n• When a friendly SPECTRE SQUAD operative \nperforms the Shoot or Fight action during its \nactivation, if it’s the last friendly operative to be \nactivated during this turning point, its weapons \nhave the Relentless weapon rule for that action."
     }
-  ]
+  ],
+  "node_weapon_rules": {
+    "Rending": "If you retain any critical successes, you can retain one of your normal successes as a critical success instead.",
+    "Heavy": "An operative cannot use this weapon in an activation or counteraction in which it moved, and it cannot move in an activation or counteraction in which it used this weapon. If the rule is Heavy (x only), where x is a move action, only that move is allowed, e.g. Heavy (Dash only). This weapon rule has no effect on preventing the Guard action.",
+    "Devastating x": "Each retained critical success immediately inflicts x damage on the operative this weapon is being used against, e.g. Devastating 3. If the rule starts with a distance (e.g. 1\" Devastating x), inflict x damage on that operative and each other operative visible to and within that distance of it. Note that success isn't discarded after doing so - it can still be resolved later in the sequence.",
+    "Piercing x": "The defender collects x less defence dice, e.g. Piercing 1. If the rule is Piercing Crits x, this only comes into effect if you retain any critical successes.",
+    "Range x": "Only operatives within x of the active operative can be valid targets, e.g. Range 9\".",
+    "Hot": "After an operative uses this weapon, roll one D6: if the result is less than the weapon's Hit stat, inflict damage on that operative equal to the result multiplied by two. If it's used multiple times in one action (e.g. Blast), still only roll one D6.",
+    "Blast x": "The target you select is the primary target. After shooting the primary target, shoot with this weapon against each secondary target in an order of your choice (roll each sequence separately). Secondary targets are other operatives visible to and within x of the primary target, e.g. Blast 2\" (they are all valid targets, regardless of a Conceal order). Secondary targets are in cover and obscured if the primary target was.",
+    "Silent": "An operative can perform the Shoot action with this weapon while it has a Conceal order.",
+    "Seek": "When selecting a valid target, operatives with a Conceal order cannot use terrain for cover. If the rule is Seek Light, they cannot use Light terrain for cover. While this can allow operatives to be targeted (assuming they're visible), it doesn't remove their cover save (if any).",
+    "Stun": "If you retain any critical successes, subtract 1 from the APL stat of the operative this weapon is being used against until the end of its next activation.",
+    "Torrent x": "Select a valid target as normal as the primary target, then select any number of other valid targets within x of the first valid target, but not within control range of friendly operatives, as secondary targets, e.g. Torrent 2\". Shoot with this weapon against all of them in an order of your choice (roll each sequence separately)."
+  }
 }
