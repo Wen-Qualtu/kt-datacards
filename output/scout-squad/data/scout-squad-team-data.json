@@ -60,7 +60,47 @@
         "ADEPTUS ASTARTES",
         "LEADER",
         "SERGEANT"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "melee",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "Astartes shotgun; fists",
+                "weapons": [
+                  0,
+                  4
+                ]
+              },
+              {
+                "label": "Boltgun; fists",
+                "weapons": [
+                  2,
+                  4
+                ]
+              },
+              {
+                "label": "Bolt pistol; chainsword",
+                "weapons": [
+                  1,
+                  3
+                ]
+              }
+            ]
+          ],
+          "fixed": []
+        }
+      }
     },
     {
       "name": "SCOUT HEAVY GUNNER",
@@ -124,7 +164,48 @@
         "IMPERIUM",
         "ADEPTUS ASTARTES",
         "HEAVY GUNNER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Heavy",
+          "Piercing x",
+          "Torrent x",
+          "Blast x"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "fists, bolt pistol and heavy bolter",
+                "weapons": [
+                  1,
+                  2
+                ]
+              },
+              {
+                "label": "fists, bolt pistol and missile launcher",
+                "weapons": [
+                  3,
+                  4
+                ]
+              }
+            ]
+          ],
+          "fixed": [
+            0,
+            5
+          ]
+        }
+      }
     },
     {
       "name": "SCOUT HUNTER",
@@ -164,7 +245,16 @@
         "IMPERIUM",
         "ADEPTUS ASTARTES",
         "HUNTER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x"
+        ]
+      }
     },
     {
       "name": "SCOUT SNIPER",
@@ -218,7 +308,21 @@
         "IMPERIUM",
         "ADEPTUS ASTARTES",
         "SNIPER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Devastating x",
+          "Heavy",
+          "Silent"
+        ]
+      }
     },
     {
       "name": "SCOUT TRACKER",
@@ -257,7 +361,14 @@
         "IMPERIUM",
         "ADEPTUS ASTARTES",
         "TRACKER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": []
+      }
     },
     {
       "name": "SCOUT WARRIOR",
@@ -312,7 +423,47 @@
         "IMPERIUM",
         "ADEPTUS ASTARTES",
         "WARRIOR"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "melee",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "Astartes shotgun; fists",
+                "weapons": [
+                  0,
+                  4
+                ]
+              },
+              {
+                "label": "Boltgun; fists",
+                "weapons": [
+                  2,
+                  4
+                ]
+              },
+              {
+                "label": "Bolt pistol; combat blade",
+                "weapons": [
+                  1,
+                  3
+                ]
+              }
+            ]
+          ],
+          "fixed": []
+        }
+      }
     }
   ],
   "equipment": [
@@ -419,5 +570,14 @@
       "name": "stealth-relocation",
       "text": "SCOUT SQUAD\nSTRATEGY PLOY\nSTEALTH RELOCATION\nSpace Marine Scout Squads are highly mobile \nunits, shifting swiftly from cover to cover in order to \noutmanoeuvre the foe.\nUp to D3 friendly SCOUT SQUAD operatives that \nhave a Conceal order and are more than 4\" from \nenemy operatives can immediately perform a free \nDash action. You cannot use this ploy during the \nfirst turning point."
     }
-  ]
+  ],
+  "node_weapon_rules": {
+    "Range x": "Only operatives within x of the active operative can be valid targets, e.g. Range 9\".",
+    "Heavy": "An operative cannot use this weapon in an activation or counteraction in which it moved, and it cannot move in an activation or counteraction in which it used this weapon. If the rule is Heavy (x only), where x is a move action, only that move is allowed, e.g. Heavy (Dash only). This weapon rule has no effect on preventing the Guard action.",
+    "Piercing x": "The defender collects x less defence dice, e.g. Piercing 1. If the rule is Piercing Crits x, this only comes into effect if you retain any critical successes.",
+    "Torrent x": "Select a valid target as normal as the primary target, then select any number of other valid targets within x of the first valid target, but not within control range of friendly operatives, as secondary targets, e.g. Torrent 2\". Shoot with this weapon against all of them in an order of your choice (roll each sequence separately).",
+    "Blast x": "The target you select is the primary target. After shooting the primary target, shoot with this weapon against each secondary target in an order of your choice (roll each sequence separately). Secondary targets are other operatives visible to and within x of the primary target, e.g. Blast 2\" (they are all valid targets, regardless of a Conceal order). Secondary targets are in cover and obscured if the primary target was.",
+    "Devastating x": "Each retained critical success immediately inflicts x damage on the operative this weapon is being used against, e.g. Devastating 3. If the rule starts with a distance (e.g. 1\" Devastating x), inflict x damage on that operative and each other operative visible to and within that distance of it. Note that success isn't discarded after doing so - it can still be resolved later in the sequence.",
+    "Silent": "An operative can perform the Shoot action with this weapon while it has a Conceal order."
+  }
 }

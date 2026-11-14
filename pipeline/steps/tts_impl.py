@@ -21,7 +21,9 @@ Output:
         (clean/primary format, referenced by output/team-urls.json)
 """
 
+import copy
 import hashlib
+import itertools
 import json
 import logging
 import os
@@ -40,6 +42,8 @@ from .templates.tts_templates import (
     generate_guid
 )
 from ..utils import paths as _paths
+from ..utils import naming
+from ..utils.ktui_model_script import compose_command_node_loader, compose_ktui_model_script
 
 # Setup logging
 logging.basicConfig(
@@ -359,6 +363,39 @@ def _git_unchanged_from_head(file_path: Path) -> bool | None:
         return None
 
 
+_PUBLISHED_VERSIONS: dict[str, dict[str, str]] = {}
+
+
+def _published_versions(team_name: str) -> dict[str, str]:
+    """Map asset base URL -> ?v= value as committed (git HEAD) in the team box JSON."""
+    if team_name not in _PUBLISHED_VERSIONS:
+        rel = f"output/{team_name}/tts_objects/{team_name.replace('-', ' ').title()}.json"
+        text = ""
+        try:
+            import subprocess
+            r = subprocess.run(
+                ["git", "-C", str(PROJECT_ROOT), "show", f"HEAD:{rel}"],
+                capture_output=True
+            )
+            if r.returncode == 0:
+                text = r.stdout.decode("utf-8", "replace")
+        except Exception:
+            pass
+        _PUBLISHED_VERSIONS[team_name] = dict(re.findall(r'(https://[^"?\s\\]+)\?v=(\d+)', text))
+    return _PUBLISHED_VERSIONS[team_name]
+
+
+def _stable_asset_url(team_name: str, base_url: str, file_path: Path) -> str:
+    """``base_url?v=`` that only changes when the asset's content changes.
+
+    mtimes differ per checkout/machine, so an unchanged asset reuses its published ?v=.
+    """
+    published = _published_versions(team_name).get(base_url)
+    if published is not None and _git_unchanged_from_head(file_path):
+        return f"{base_url}?v={published}"
+    return f"{base_url}?v={int(file_path.stat().st_mtime)}"
+
+
 def _reuse_or_new_single(prev_entry, file_path, url, entry):
     """Single-file entry: reuse prev url/modified if hash matches.
 
@@ -381,9 +418,18 @@ def _reuse_or_new_single(prev_entry, file_path, url, entry):
             entry["url"] = prev_entry.get("url", url)
             entry["modified"] = prev_entry.get("modified")
     else:
-        mtime = file_path.stat().st_mtime
-        entry["url"] = f"{url}?v={int(mtime)}"
-        entry["modified"] = datetime.fromtimestamp(mtime, tz=timezone.utc).isoformat()
+        # prev hash present but differs. If the deployed file is NONETHELESS
+        # unchanged from git HEAD, the stored hash is merely stale (e.g. assets
+        # regenerated non-deterministically on another machine) -- the published
+        # ?v= still points at the current bytes, so reuse it (and heal the hash
+        # below) instead of forcing a needless re-download.
+        if prev_entry and _git_unchanged_from_head(file_path) is not False:
+            entry["url"] = prev_entry.get("url", url)
+            entry["modified"] = prev_entry.get("modified")
+        else:
+            mtime = file_path.stat().st_mtime
+            entry["url"] = f"{url}?v={int(mtime)}"
+            entry["modified"] = datetime.fromtimestamp(mtime, tz=timezone.utc).isoformat()
     entry["hash"] = new_hash
     return entry
 
@@ -421,7 +467,16 @@ def _reuse_or_new_pair(prev_entry, file_a, file_b, url_a, url_b, key_a, key_b, e
         else:
             _emit_prev()
     else:
-        _emit_new()
+        # prev hash present but differs. If BOTH deployed files are unchanged
+        # from git HEAD, the stored hash is merely stale -- the published ?v=
+        # still points at the current bytes, so reuse it (and heal the hash
+        # below) rather than force a needless re-download.
+        clean_a = _git_unchanged_from_head(file_a)
+        clean_b = _git_unchanged_from_head(file_b)
+        if prev_entry and clean_a is not False and clean_b is not False:
+            _emit_prev()
+        else:
+            _emit_new()
     entry["hash"] = new_hash
     return entry
 
@@ -478,6 +533,20 @@ def generate_object_urls_json(repo_branch: str = URL_BRANCH):
         if box_file.exists():
             box_base = f"{base_url}/{team}/tts_objects/{box_file.name.replace(' ', '%20')}"
             team_entry["box"] = _reuse_or_new_single(prev_box, box_file, box_base, {})
+
+        team_data_file = team_dir / "data" / f"{team}-team-data.json"
+        if team_data_file.exists():
+            team_data_url = f"{base_url}/{team}/data/{team_data_file.name}"
+            team_hash = _sha256_of_files([team_data_file])
+            previous_team = prev_data.get("team_data") or {}
+            modified = previous_team.get("modified") if previous_team.get("hash") == team_hash else None
+            if not modified:
+                modified = datetime.fromtimestamp(team_data_file.stat().st_mtime, tz=timezone.utc).isoformat()
+            team_entry["team_data"] = {
+                "url": f"{team_data_url}?v={team_hash}",
+                "modified": modified,
+                "hash": team_hash,
+            }
         
         # Add Lua script
         lua_script_path = config_dir / "defaults" / "tts-script" / "tts-update-rules-in-box-script.lua"
@@ -614,10 +683,14 @@ def generate_object_urls_summary(teams_data: dict, repo_branch: str = URL_BRANCH
                 max_modified = obj_modified
 
         team_url = f"{base_url}/{team}/{team}-object-urls.json"
+        version = str(max_stamp)
+        team_hash = (team_entry.get("team_data") or {}).get("hash")
+        if team_hash:
+            version += f"-{team_hash[:12]}"
         summary[team] = {
             "team": team,
             "modified": max_modified,
-            "team_url": f"{team_url}?v={max_stamp}",
+            "team_url": f"{team_url}?v={version}",
             "box": team_entry.get("box"),
         }
 
@@ -784,7 +857,7 @@ def _build_token_tags_map(team_name: str, config_dir: Path) -> dict:
         name = token_cfg.get('name', '')
         if not name:
             continue
-        normalized = ' '.join(name.lower().split())
+        normalized = naming.slug(name)
         token_type = (token_cfg.get('type') or '').strip().lower()
 
         if token_type == 'marker':
@@ -802,6 +875,238 @@ def _build_token_tags_map(team_name: str, config_dir: Path) -> dict:
         tags_by_name[normalized] = tags
 
     return tags_by_name
+
+
+# In-game scale of a standard 20mm round token (the dispensed Custom_Token).
+_TOKEN_BASE_SCALE = 0.21
+_TOKEN_BASE_MM = 20.0
+
+
+def _build_token_sizes_map(team_name: str, config_dir: Path) -> dict:
+    """Map normalized token name -> physical token size (mm) from team-config.
+
+    Standard round/marker tokens are 20mm. A token entry may set a `size` field
+    (e.g. Skytorch = 28) to scale the DISPENSED token (not the dispenser bag).
+    """
+    sizes_by_name = {}
+    team_config_path = config_dir / "team-config.yaml"
+    try:
+        with open(team_config_path, 'r', encoding='utf-8') as f:
+            team_config = yaml.safe_load(f)
+    except Exception as e:
+        logger.warning(f"Could not load team-config for token sizes ({team_name}): {e}")
+        return sizes_by_name
+
+    tokens_cfg = team_config.get('teams', {}).get(team_name, {}).get('tokens', []) or []
+    for token_cfg in tokens_cfg:
+        name = token_cfg.get('name', '')
+        size = token_cfg.get('size')
+        if name and size:
+            try:
+                sizes_by_name[naming.slug(name)] = float(size)
+            except (TypeError, ValueError):
+                pass
+    return sizes_by_name
+
+
+def _build_token_stackable_map(team_name: str, config_dir: Path) -> dict:
+    """Map normalized token name -> stackable flag from team-config.
+
+    Tokens don't stack by default (a permanent x1 badge is noise). A token entry
+    opts IN with ``stackable: true`` — use it for tokens whose rule counts up/down
+    (e.g. activation/scramble counters, Crossfire, grudges, stacking points).
+    """
+    stackable_by_name = {}
+    team_config_path = config_dir / "team-config.yaml"
+    try:
+        with open(team_config_path, 'r', encoding='utf-8') as f:
+            team_config = yaml.safe_load(f)
+    except Exception as e:
+        logger.warning(f"Could not load team-config for token stackable ({team_name}): {e}")
+        return stackable_by_name
+
+    tokens_cfg = team_config.get('teams', {}).get(team_name, {}).get('tokens', []) or []
+    for token_cfg in tokens_cfg:
+        name = token_cfg.get('name', '')
+        if name and 'stackable' in token_cfg:
+            stackable_by_name[naming.slug(name)] = bool(token_cfg.get('stackable'))
+    return stackable_by_name
+
+
+def _build_tile_token_objects(team_name: str, config_dir: Path, output_dir: Path,
+                              github_base: str, single_object_updater_script: str = "") -> list:
+    """Build double-sided ``Custom_Tile`` token dispensers from team-config
+    ``type: tile`` entries.
+
+    Unlike normal tokens (a single image shown on both faces), a tile has a
+    distinct front and back. TTS requires two textures for that: ``ImageURL``
+    (front) + ``ImageSecondaryURL`` (back) — a single texture can only show the
+    same art on both sides. Finished source textures live (committed) in
+    ``config/teams/{team}/custom-tiles/``. Following the custom-token pattern, the
+    served copy is republished under ``output/{team}/tokens/tiles/`` and the box
+    references THAT — so every TTS-referenced asset lives under ``output/``. The
+    dispenser mirrors the in-game-validated structure: an infinite bag whose
+    dispensed object is the double-sided tile and whose on-top display is a
+    single-image token of the front.
+    """
+    objs: list = []
+    team_config_path = config_dir / "team-config.yaml"
+    try:
+        with open(team_config_path, 'r', encoding='utf-8') as f:
+            cfg = yaml.safe_load(f)
+    except Exception as e:
+        logger.warning(f"Could not load team-config for tile tokens ({team_name}): {e}")
+        return objs
+
+    tokens_cfg = cfg.get('teams', {}).get(team_name, {}).get('tokens', []) or []
+    tile_entries = [t for t in tokens_cfg if (t.get('type') or '').strip().lower() == 'tile']
+    if not tile_entries:
+        return objs
+
+    # Source art (committed) lives in config/; the served copy is republished under
+    # output/{team}/tokens/tiles/ each run so the box only references output/ assets
+    # (same split as custom tokens). tiles/ is a subfolder so the top-level token
+    # stale-cleanup and the *.obj token loop never touch it.
+    tiles_src_dir = config_dir / "teams" / team_name / "custom-tiles"
+    tiles_out_dir = output_dir / team_name / "tokens" / "tiles"
+    if tiles_out_dir.exists():
+        for stale in tiles_out_dir.glob("*"):
+            try:
+                stale.unlink()
+            except Exception:
+                pass
+    tiles_out_dir.mkdir(parents=True, exist_ok=True)
+
+    # Dispenser mesh: the same shared quad the per-token dispensers use, copied in
+    # so it, too, is served from output/.
+    mesh_src = config_dir / "defaults" / "tts-token" / "token-mesh.obj"
+    mesh_url = ""
+    if mesh_src.exists():
+        shutil.copy2(mesh_src, tiles_out_dir / "tile-mesh.obj")
+        mesh_url = _stable_asset_url(
+            team_name, f"{github_base}/output/{team_name}/tokens/tiles/tile-mesh.obj",
+            tiles_out_dir / "tile-mesh.obj")
+
+    for tcfg in tile_entries:
+        name = tcfg.get('name', '')
+        front = tcfg.get('front')
+        back = tcfg.get('back')
+        if not name or not front or not back:
+            logger.warning(f"  {team_name}: tile token '{name or '?'}' missing name/front/back — skipped")
+            continue
+        front_src = tiles_src_dir / front
+        back_src = tiles_src_dir / back
+        if not front_src.exists() or not back_src.exists():
+            logger.warning(f"  {team_name}: tile token '{name}' front/back file missing under {tiles_src_dir} — skipped")
+            continue
+
+        # Publish the served copies under output/ and point the box at them.
+        shutil.copy2(front_src, tiles_out_dir / front)
+        shutil.copy2(back_src, tiles_out_dir / back)
+        front_url = _stable_asset_url(
+            team_name, f"{github_base}/output/{team_name}/tokens/tiles/{front}", tiles_out_dir / front)
+        back_url = _stable_asset_url(
+            team_name, f"{github_base}/output/{team_name}/tokens/tiles/{back}", tiles_out_dir / back)
+
+        # On-table identity MUST be indistinguishable between tile variants (e.g. a
+        # live HY-PEX vs a blank Minefield): the opponent must not learn which is which
+        # by hovering. So the DISPENSED tile + its on-top display use a shared neutral
+        # label (config `label`, else the name minus any " (variant)" suffix) and NO
+        # description. Only the dispenser bag keeps the distinct name so the OWNER can
+        # pick the right one.
+        label = (tcfg.get('label') or re.sub(r"\s*\(.*\)\s*$", "", name)).strip() or name
+
+        # KTUI tags: KTUIToken (always) + KTUIMarker + any extra tags from config.
+        tile_tags = ["KTUIToken", "KTUIMarker"]
+        for t in (tcfg.get('tags') or []):
+            if t not in tile_tags:
+                tile_tags.append(t)
+
+        inner_tile = {
+            "GUID": generate_guid(f"{team_name}:tiletoken:{name}"),
+            "Name": "Custom_Tile",
+            "Transform": {
+                "posX": 0.0, "posY": 1.66, "posZ": 0.0,
+                "rotX": 0.0, "rotY": 270.0, "rotZ": 0.0,
+                "scaleX": 0.4086667, "scaleY": 1.0, "scaleZ": 0.4086667,
+            },
+            "Nickname": label,
+            "Description": "",
+            "ColorDiffuse": {"r": 1.0, "g": 1.0, "b": 1.0},
+            "Tags": list(tile_tags),
+            "Locked": False, "Grid": True, "Snap": True, "IgnoreFoW": False,
+            "MeasureMovement": False, "DragSelectable": True, "Autoraise": True,
+            "Sticky": True, "Tooltip": True, "GridProjection": False,
+            "HideWhenFaceDown": False, "Hands": False,
+            "CustomImage": {
+                "ImageURL": front_url,
+                "ImageSecondaryURL": back_url,
+                "ImageScalar": 1.0,
+                "WidthScale": 0.0,
+                "CustomTile": {"Type": 2, "Thickness": 0.1, "Stackable": False, "Stretch": True},
+            },
+            "LuaScript": "", "LuaScriptState": "", "XmlUI": "",
+        }
+
+        # On-top display: a single-image token showing the front face only.
+        display_token = {
+            "GUID": generate_guid(f"{team_name}:tiledisplay:{name}"),
+            "Name": "Custom_Token",
+            "Transform": {
+                "posX": 0.0, "posY": 0.0, "posZ": 0.0,
+                "rotX": 0.0, "rotY": 270.0, "rotZ": 0.0,
+                "scaleX": 0.2899108, "scaleY": 9.999986, "scaleZ": 0.2899103,
+            },
+            "Nickname": label,
+            "Description": "",
+            "ColorDiffuse": {"r": 1.0, "g": 1.0, "b": 1.0},
+            "Tags": ["KTUIToken", "KTUITokenSimple"],
+            "Locked": True, "Grid": True, "Snap": False, "IgnoreFoW": False,
+            "MeasureMovement": False, "DragSelectable": True, "Autoraise": True,
+            "Sticky": False, "Tooltip": False, "Hands": False,
+            "CustomImage": {
+                "ImageURL": front_url,
+                "ImageSecondaryURL": "",
+                "ImageScalar": 1.0,
+                "WidthScale": 0.0,
+                "CustomToken": {"Thickness": 0.1, "MergeDistancePixels": 10.0, "StandUp": False, "Stackable": False},
+            },
+            "LuaScript": "", "LuaScriptState": "", "XmlUI": "",
+        }
+
+        bag = {
+            "GUID": generate_guid(f"{team_name}:tilebag:{name}"),
+            "Name": "Custom_Model_Infinite_Bag",
+            "Transform": {
+                "posX": 0.0, "posY": 1.03, "posZ": 0.0,
+                "rotX": 0.0, "rotY": 270.0, "rotZ": 0.0,
+                "scaleX": 1.10072327, "scaleY": 0.1, "scaleZ": 1.10072136,
+            },
+            "Nickname": name,
+            "Description": f"Infinite {name} tokens",
+            "GMNotes": "",
+            "ColorDiffuse": {"r": 1.0, "g": 1.0, "b": 1.0, "a": 0.0},
+            "Tags": [f"_{team_name}_tokens"],
+            "Locked": False, "Grid": True, "Snap": True, "IgnoreFoW": False,
+            "MeasureMovement": False, "DragSelectable": True, "Autoraise": True,
+            "Sticky": True, "Tooltip": True, "GridProjection": False,
+            "HideWhenFaceDown": False, "Hands": False,
+            "MaterialIndex": -1, "MeshIndex": -1,
+            "CustomMesh": {
+                "MeshURL": mesh_url,
+                "DiffuseURL": "", "NormalURL": "", "ColliderURL": "",
+                "Convex": True, "MaterialIndex": 0, "TypeIndex": 7, "CastShadows": True,
+            },
+            "Bag": {"Order": 0},
+            "ContainedObjects": [inner_tile],
+            "ChildObjects": [display_token],
+            "LuaScript": single_object_updater_script or "",
+            "LuaScriptState": "", "XmlUI": "",
+        }
+        objs.append(bag)
+        logger.info(f"  {team_name}: built double-sided tile token '{name}'")
+
+    return objs
 
 
 def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Path, output_dir: Path, single_object_updater_script: str = "") -> tuple:
@@ -847,18 +1152,38 @@ def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Pa
     # Build a lookup of token name -> KTUI tags driven by the config `type`.
     # marker -> KTUIMarker, token -> KTUITokenSimple, custom -> config tags.
     token_tags_by_name = _build_token_tags_map(team_name, config_dir)
+    # Optional per-token physical size (mm); default 20mm. Scales the dispensed
+    # token (not the dispenser bag), e.g. Skytorch = 28mm.
+    token_sizes_by_name = _build_token_sizes_map(team_name, config_dir)
+    # Per-token stacking override. Operative tokens stack (x2/x3) by default; a
+    # config `stackable: false` opts a token out.
+    token_stackable_by_name = _build_token_stackable_map(team_name, config_dir)
     
     # Generate token objects (Custom_Model_Infinite_Bag, each containing a Custom_Token)
     token_objects = []
     for token_name, obj_path, png_path in sorted(token_files):
         display_name = token_name.replace(f'{team_name}-', '').replace('-', ' ').title()
-        normalized_name = ' '.join(token_name.replace(f'{team_name}-', '').replace('-', ' ').lower().split())
-        token_tags = token_tags_by_name.get(normalized_name, ["KTUIToken", "KTUITokenSimple"])
+        # Match tags by the SAME canonical slug used for the token filename and
+        # for the config name in _build_token_tags_map (naming.slug), so punctuation
+        # / accents can't split a config token from its generated asset.
+        normalized_name = naming.slug(token_name.replace(f'{team_name}-', ''))
+        token_tags = list(token_tags_by_name.get(normalized_name, ["KTUIToken", "KTUITokenSimple"]))
+        # Tokens don't stack by default (avoids a permanent x1 badge); a token opts
+        # IN with config `stackable: true`. Drive it both ways the KTUI mod understands:
+        # the CustomToken.Stackable flag AND the KTUIStackable tag.
+        is_stackable = token_stackable_by_name.get(normalized_name, False)
+        if is_stackable and "KTUIStackable" not in token_tags:
+            token_tags.append("KTUIStackable")
+        # Per-token size (mm) -> DISPENSED Custom_Token scale (0.21 == 20mm). The
+        # dispenser bag and its on-bag preview stay at the standard size, so only
+        # the token you pull out is larger (e.g. Skytorch 28mm).
+        size_mm = token_sizes_by_name.get(normalized_name, _TOKEN_BASE_MM)
+        token_scale = round(_TOKEN_BASE_SCALE * size_mm / _TOKEN_BASE_MM, 6)
         
-        mesh_mtime = int(obj_path.stat().st_mtime)
-        png_mtime = int(png_path.stat().st_mtime)
-        mesh_url = f"{github_base}/output/{team_name}/tokens/{obj_path.name}?v={mesh_mtime}"
-        diffuse_url = f"{github_base}/output/{team_name}/tokens/{png_path.name}?v={png_mtime}"
+        mesh_url = _stable_asset_url(
+            team_name, f"{github_base}/output/{team_name}/tokens/{obj_path.name}", obj_path)
+        diffuse_url = _stable_asset_url(
+            team_name, f"{github_base}/output/{team_name}/tokens/{png_path.name}", png_path)
         
         inner_token = {
             "GUID": generate_guid(f"{team_name}:customtoken:{token_name}"),
@@ -870,9 +1195,9 @@ def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Pa
                 "rotX": 0.0,
                 "rotY": 0.0,
                 "rotZ": 0.0,
-                "scaleX": 0.21,
+                "scaleX": token_scale,
                 "scaleY": 1.0,
-                "scaleZ": 0.21
+                "scaleZ": token_scale
             },
             "Nickname": display_name,
             "Description": display_name,
@@ -894,7 +1219,7 @@ def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Pa
                     "Thickness": 0.1,
                     "MergeDistancePixels": 6.0,
                     "StandUp": False,
-                    "Stackable": False
+                    "Stackable": is_stackable
                 }
             },
             "LuaScript": "",
@@ -908,7 +1233,7 @@ def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Pa
             "Transform": {
                 "posX": 0.0, "posY": 0.0, "posZ": 0.0,
                 "rotX": 0.0, "rotY": 0.0, "rotZ": 0.0,
-                "scaleX": 0.21, "scaleY": 1.0, "scaleZ": 0.21
+                "scaleX": _TOKEN_BASE_SCALE, "scaleY": 1.0, "scaleZ": _TOKEN_BASE_SCALE
             },
             "Nickname": display_name,
             "Description": display_name,
@@ -930,7 +1255,7 @@ def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Pa
                     "Thickness": 0.1,
                     "MergeDistancePixels": 6.0,
                     "StandUp": False,
-                    "Stackable": False
+                    "Stackable": is_stackable
                 }
             },
             "LuaScript": "",
@@ -983,15 +1308,33 @@ def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Pa
         }
         token_objects.append(token_obj)
     
+    # Append config-driven double-sided tile tokens (front/back textures), e.g.
+    # the Hernkyn Yaegirs Minefield markers. These are not file-extracted; they are
+    # built directly from team-config `type: tile` entries + committed textures.
+    token_objects.extend(
+        _build_tile_token_objects(team_name, config_dir, output_dir, github_base, single_object_updater_script)
+    )
+
+    # Clear stale per-token JSONs so tokens removed/renamed since the last run
+    # (e.g. an excluded token) don't linger as orphaned files. Regeneration below
+    # rewrites the current set authoritatively.
+    indiv_tokens_dir = output_dir / team_name / 'tts_objects' / 'tokens'
+    if indiv_tokens_dir.exists():
+        for stale in indiv_tokens_dir.glob('*.json'):
+            try:
+                stale.unlink()
+            except Exception:
+                pass
+
     # Save individual token JSONs
     for idx, token_obj in enumerate(token_objects, start=1):
         save_individual_token_json(token_obj, team_name, idx, output_dir)
     
     # Build token bag mesh and icon URLs
-    bag_mesh_mtime = int(bag_mesh_file.stat().st_mtime)
-    bag_icon_mtime = int(bag_icon_file.stat().st_mtime)
-    bag_mesh_url = f"{github_base}/output/{team_name}/tokens/tokenbag/{bag_mesh_file.name}?v={bag_mesh_mtime}"
-    bag_icon_url = f"{github_base}/output/{team_name}/tokens/tokenbag/{bag_icon_file.name}?v={bag_icon_mtime}"
+    bag_mesh_url = _stable_asset_url(
+        team_name, f"{github_base}/output/{team_name}/tokens/tokenbag/{bag_mesh_file.name}", bag_mesh_file)
+    bag_icon_url = _stable_asset_url(
+        team_name, f"{github_base}/output/{team_name}/tokens/tokenbag/{bag_icon_file.name}", bag_icon_file)
     
     # Create token bag
     token_timestamp = datetime.now(timezone.utc).isoformat()
@@ -1082,8 +1425,18 @@ def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Pa
         "ContainedObjects": token_objects
     }
     
+    write_token_bag_object(team_name, token_bag, output_dir)
     logger.info(f"Generated token bag for {team_name} with {len(token_objects)} tokens from output")
     return token_bag, token_timestamp
+
+
+def write_token_bag_object(team_name: str, token_bag: dict, output_dir: Path) -> Path:
+    target = output_dir / team_name / "tts_objects" / f"{team_name}-token-bag.json"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    contents = (json.dumps({"ObjectStates": [token_bag]}, indent=2) + "\n").encode("utf-8")
+    if not target.exists() or target.read_bytes() != contents:
+        target.write_bytes(contents)
+    return target
 
 
 def load_dice_objects(team_name: str, sample_url: Optional[str], output_dir: Path, repo_branch: str = URL_BRANCH) -> list:
@@ -1121,8 +1474,8 @@ def load_dice_objects(team_name: str, sample_url: Optional[str], output_dir: Pat
         if not texture_file.exists():
             continue
 
-        mtime = int(texture_file.stat().st_mtime)
-        texture_url = f"{github_base}/output/{team_name}/dice/{filename}?v={mtime}"
+        texture_url = _stable_asset_url(
+            team_name, f"{github_base}/output/{team_name}/dice/{filename}", texture_file)
 
         dice_obj = create_custom_dice(nickname, texture_url, team_tag, variant)
         dice_objects.append(dice_obj)
@@ -1344,22 +1697,29 @@ def embed_datacard_stats(bag_obj: dict, team_name: str, output_dir: Path, config
     with open(lua_script_path, 'r', encoding='utf-8') as f:
         datacard_lua_script = f.read()
 
-    # Load the KTUI extender model script and expose it to the datacard Lua as a
-    # KTUI_MODELSCRIPT string. This lets "Load stats to model" turn any plain
-    # model into a KTUI-compatible mini on the fly.
+    # Compose the KTUI model script (real extender + our extension, patched) and
+    # expose it to the datacard Lua as KTUI_MODELSCRIPT. "Load stats to model"
+    # stamps it so a plain model becomes the full KTUI mini on the fly.
     ktui_modelscript_prefix = ""
-    modelscript_path = config_dir / "defaults" / "tts-script" / "ktui-mini-modelscript.lua"
-    if modelscript_path.exists():
-        with open(modelscript_path, 'r', encoding='utf-8') as f:
-            modelscript_text = f.read()
+    modelscript_text = compose_ktui_model_script(config_dir)
+    if modelscript_text:
+        # Version = content hash, exposed both INSIDE the model script (global
+        # KT_MODELSCRIPT_VERSION, read via getVar) and card-side
+        # (KTUI_MODELSCRIPT_VERSION), so "Load stats" can re-stamp OUR OWN minis
+        # carrying an older version -- real extender minis are left alone.
+        ktui_version = hashlib.sha1(modelscript_text.encode("utf-8")).hexdigest()[:12]
+        modelscript_text = f'KT_MODELSCRIPT_VERSION = "{ktui_version}"\n\n' + modelscript_text
         # Wrap in a Lua long-bracket whose level cannot appear in the body.
         level = 0
         while ("]" + "=" * level + "]") in modelscript_text:
             level += 1
         eq = "=" * level
-        ktui_modelscript_prefix = f"KTUI_MODELSCRIPT = [{eq}[\n{modelscript_text}\n]{eq}]\n\n"
+        ktui_modelscript_prefix = (
+            f'KTUI_MODELSCRIPT_VERSION = "{ktui_version}"\n\n'
+            f"KTUI_MODELSCRIPT = [{eq}[\n{modelscript_text}\n]{eq}]\n\n"
+        )
     else:
-        logger.warning(f"  KTUI model script not found at {modelscript_path}; plain models won't be auto-scripted")
+        logger.warning("  KTUI extender source not found; plain models won't be auto-scripted")
 
     # Load the Sprint/Turn movement tool. It's embedded as SPRINT_TOOL_CODE only
     # on MOUNTED operative cards (which expose an "Add sprint action" item that
@@ -1429,6 +1789,10 @@ def embed_datacard_stats(bag_obj: dict, team_name: str, output_dir: Path, config
             gm_notes_data = _build_gm_notes(operative, team_data, weapon_rules,
                                              selection_groups=selection_groups,
                                              exclusive_sets=op_exclusive_sets)
+            # Strip isolated '&' from all text (weapon names, loadout labels, rules,
+            # etc.) so no downstream XML UI (loadout panel, KTUI extender weapon list)
+            # can break on an unescaped ampersand. Keeps the '&&' icon markers intact.
+            gm_notes_data = _sanitize_ampersands(gm_notes_data)
             gm_notes_json = json.dumps(gm_notes_data, separators=(",", ":"), ensure_ascii=False)
             
             # Get faction rule code if applicable
@@ -1489,28 +1853,39 @@ def _find_datacards(tts_data: dict) -> list:
     return datacards
 
 
+def write_command_node_loader(config_dir: Path, output_dir: Path) -> Path:
+    target = output_dir / "_generic-tts-objects" / "command-node-loader.lua"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    contents = compose_command_node_loader(config_dir).encode("utf-8")
+    if not target.exists() or target.read_bytes() != contents:
+        target.write_bytes(contents)
+    return target
+
+
 def _match_card_to_operative(nickname: str, team: str, team_data: dict) -> Optional[dict]:
-    """Match a card nickname to an operative in team_data."""
-    def normalize(s):
-        return s.lower().strip().replace("-", " ").replace("_", " ")
-    
-    nickname_norm = normalize(nickname)
-    team_norm = normalize(team)
+    """Match a card nickname to an operative in team_data.
+
+    Both sides are compared via :func:`naming.slug`, the SAME normalization that
+    produces the card-image filename / card Nickname. This keeps matching stable
+    across punctuation and accents (curly apostrophes, periods, ô/â): the card
+    Nickname ``xv26-shasvre`` matches the team-data operative ``XV26 SHAS'VRE``.
+    """
+    nickname_slug = naming.slug(nickname)
+    team_slug = naming.slug(team)
     
     # Strip -card1, -card2, etc. suffix for multi-page operatives (e.g. Necron leaders)
-    nickname_base = re.sub(r'\s+card\d+$', '', nickname_norm)
+    nickname_base = re.sub(r'-card\d+$', '', nickname_slug)
     
     datacards = team_data.get('datacards', [])
     for operative in datacards:
-        op_name = operative.get('name', '')
-        op_name_norm = normalize(op_name)
+        op_slug = naming.slug(operative.get('name', ''))
         
-        if op_name_norm == nickname_norm or op_name_norm == nickname_base:
+        if op_slug == nickname_slug or op_slug == nickname_base:
             return operative
         
-        if op_name_norm.startswith(team_norm):
-            op_type = op_name_norm[len(team_norm):].strip()
-            if op_type == nickname_norm or op_type == nickname_base:
+        if team_slug and op_slug.startswith(team_slug + '-'):
+            op_type = op_slug[len(team_slug) + 1:]
+            if op_type == nickname_slug or op_type == nickname_base:
                 return operative
     
     return None
@@ -1577,11 +1952,23 @@ def _match_weapon_rules(special_rules: str, all_rules: dict) -> dict:
 def _derive_exclusive_sets(op_name: str, selection_text: str, num_groups: int):
     """Detect a mutually-exclusive loadout split from the operative-selection text.
 
-    Pattern (per operative): "... with one option from EACH of the following:" then
-    a run of option groups (bulleted with • or ○ depending on the team's nesting),
-    then "Or the following option:" then more group(s). The "Or" makes the groups
-    before it (set 1) mutually exclusive with the group(s) after it (set 2).
-    Returns [[set1 group indices], [set2 group indices]] (0-based), or None when the
+    Pattern (per operative): the operative offers a first loadout section, then an
+    "Or ..." divider, then a second section; picking from one section excludes the
+    other. GW phrases both the header and the divider inconsistently:
+
+      Header (section 1 grouping):
+        * "... with one option from EACH of the following:"  -> every marker is its
+          OWN group (N markers = N groups).
+        * "... with one of the following options:"           -> all markers are ONE
+          group (a single "choose one" list).
+      Divider:
+        * "Or the following option:"                (Angels of Death, Murderwings)
+        * "Or one option from each of the following:" (Death Korps, Blades of Khaine,
+          Hunter Clade)
+
+    Because a marker is not always a group, we count GROUPS (respecting the header
+    mode), not raw markers, to place the boundary. Returns
+    [[set1 group indices], [set2 group indices]] (0-based), or None when the
     operative has no such split (so nothing changes for it).
     """
     if not selection_text or num_groups < 2:
@@ -1606,26 +1993,57 @@ def _derive_exclusive_sets(op_name: str, selection_text: str, num_groups: int):
         return None
 
     option_markers = ("\u2022", "\u25cb", "\u25ef")  # • ○ ◯
-    count = 0
-    boundary = None
+
+    def is_divider(low: str) -> bool:
+        return (low.startswith("or ") and "following" in low) or "or the following option" in low
+
+    # Read the (possibly line-wrapped) header phrase for section 1 to learn its
+    # grouping mode: "one option from each" -> each marker is its own group;
+    # "one of the following options" (no "each") -> all markers are one group.
+    header = lines[start].strip()
+    k = start + 1
+    while k < len(lines) and (k - start) <= 4:
+        s = lines[k].strip()
+        if not s:
+            k += 1
+            continue
+        if s.startswith(option_markers) or is_divider(s.lower()):
+            break
+        header += " " + s
+        hlow = header.lower()
+        if "following" in hlow and ("option" in hlow or header.rstrip().endswith(":")):
+            break
+        k += 1
+    hlow = header.lower()
+    each_mode = ("each of the following" in hlow or "one option from each" in hlow
+                 or ("with the following" in hlow and "one of the following" not in hlow))
+
+    # Walk section 1's markers until the "Or" divider, counting GROUPS.
+    markers_before = 0
+    found_divider = False
     for ln in lines[start + 1:]:
         s = ln.strip()
         low = s.lower()
         if s.startswith("---") or "continues on other side" in low:
             break
-        if "or the following option" in low:
-            boundary = count
+        if is_divider(low):
+            found_divider = True
             break
         # A later operative's own option list has begun -> stop (only after we've
         # started counting this operative's options, so the header's own
         # "one option from each" continuation line doesn't trip it).
-        if count > 0 and ("one option from" in low or "one of the following" in low):
+        if markers_before > 0 and ("one option from" in low or "one of the following" in low):
             break
         if s.startswith(option_markers):
-            count += 1
-    if boundary is None or boundary <= 0 or boundary >= num_groups:
+            markers_before += 1
+    if not found_divider or markers_before <= 0:
         return None
-    return [list(range(0, boundary)), list(range(boundary, num_groups))]
+    # each_mode: one group per marker. Otherwise the whole "choose one" list is
+    # a single group.
+    groups_before = markers_before if each_mode else 1
+    if groups_before <= 0 or groups_before >= num_groups:
+        return None
+    return [list(range(0, groups_before)), list(range(groups_before, num_groups))]
 
 
 # Rule text (vs lore/flavour prose) reliably starts with one of these game-rules
@@ -1657,31 +2075,86 @@ def _strip_exodite_lore(body_lines: list, rule_name: str) -> list:
 def _build_selection_for_gmnotes(selection_groups: list, weapons: list, exclusive_sets: dict = None) -> Optional[dict]:
     """
     Convert string-based selection groups to index-based format for GMNotes.
+
+    An option label may combine several weapons with ';' or ' and ' (all
+    required) and offer a sub-choice with ' or ' inside one of those parts
+    (e.g. "Bolt pistol or relic laspistol; chainsword"). Each ' or ' sub-choice
+    is expanded via a cartesian product so every resulting option loads exactly
+    one concrete weapon combination (radio-selectable), instead of loading both
+    sides of the ' or ' at once.
+
+    A PDF footnote superscript sometimes leaks onto the end of a weapon name as a
+    1-2 digit number stuck to a letter (e.g. "improvised blade2", "bayonet1");
+    these are stripped so the label reads cleanly and the weapon still matches.
+
+    TODO (non-essential edge case): a few loadout options list defensive WARGEAR
+    that is an ability, not a weapon (e.g. Dire Avenger Exarch "shimmershield",
+    Sanctifier Missionary "holy relic"). These already load as passive abilities
+    on every apply, so they are effectively always-on; here they simply map to
+    weapons=[] (no weapon added). Ideally the ability would be applied only when
+    its loadout option is chosen, and the ability-name component stripped from
+    the label. Only ~2 operatives are affected, so this is deferred.
     """
     if not selection_groups or not weapons:
         return None
     weapon_names_lower = [(w.get('plain_name') or w.get('name', '')).lower() for w in weapons]
+
+    def _strip_footnotes(s: str) -> str:
+        # Drop a footnote digit glued to the end of a weapon name, i.e. one that
+        # sits right before a separator (; ,), an ' and '/' or ' join, or the end.
+        return re.sub(r'(?<=[A-Za-z])\d{1,2}(?=\s*(?:[;,]|$)|\s+(?:and|or)\s+)', '', s)
+
+    def _match(label: str) -> List[int]:
+        low = label.strip().lower()
+        if not low:
+            return []
+        return [i for i, wname in enumerate(weapon_names_lower) if wname.startswith(low)]
+
     all_matched = set()
     result_groups = []
     for group in selection_groups:
         group_options = []
-        for option_label in group:
-            fragments = [f.strip().lower() for f in re.split(r'\s*;\s*|\s+and\s+', option_label)]
-            matched = set()
-            for frag in fragments:
-                sub_frags = [sf.strip() for sf in frag.split(' or ')]
-                for sf in sub_frags:
-                    for i, wname in enumerate(weapon_names_lower):
-                        if wname.startswith(sf):
-                            matched.add(i)
-            all_matched.update(matched)
-            group_options.append({'label': option_label, 'weapons': sorted(matched)})
+        for raw_label in group:
+            option_label = _strip_footnotes(raw_label)
+            # Required parts (all loaded); each part may carry an ' or ' sub-choice.
+            parts = [p.strip() for p in re.split(r'\s*;\s*|\s+and\s+', option_label) if p.strip()]
+            part_alts = [[(alt.strip(), _match(alt)) for alt in re.split(r'\s+or\s+', part)]
+                         for part in parts]
+            combos = list(itertools.product(*part_alts)) if part_alts else []
+            for combo in combos:
+                idxs = set()
+                for _, m in combo:
+                    idxs.update(m)
+                all_matched.update(idxs)
+                label = option_label if len(combos) == 1 else "; ".join(c[0] for c in combo)
+                group_options.append({'label': label, 'weapons': sorted(idxs)})
         result_groups.append(group_options)
     fixed = [i for i in range(len(weapons)) if i not in all_matched]
     result: dict = {'groups': result_groups, 'fixed': fixed}
     if exclusive_sets:
         result['exclusive_sets'] = exclusive_sets
     return result
+
+
+def _sanitize_ampersands(obj):
+    """Recursively replace an ISOLATED '&' with 'and' in every string of a data
+    structure (dict/list/str), leaving the KTUI range-icon markers ('1&&', '2&&',
+    '3&&', '6&&') untouched.
+
+    A literal '&' is invalid in TTS XML UI unless escaped, and any consumer that
+    forgets to escape it (the loadout panel, the KTUI extender's weapon list, etc.)
+    fails to build its UI. Rather than depend on every consumer escaping, we strip
+    the '&' from the source data so the rendered text is always XML-safe (e.g.
+    "Tzaangor blade & shield" -> "Tzaangor blade and shield"). The '&&' markers use
+    a doubled '&', so the (?<!&)&(?!&) rule never touches them.
+    """
+    if isinstance(obj, str):
+        return re.sub(r"(?<!&)&(?!&)", "and", obj)
+    if isinstance(obj, list):
+        return [_sanitize_ampersands(v) for v in obj]
+    if isinstance(obj, dict):
+        return {k: _sanitize_ampersands(v) for k, v in obj.items()}
+    return obj
 
 
 def _build_gm_notes(operative: dict, team_data: dict, weapon_rules: dict,
@@ -1695,7 +2168,7 @@ def _build_gm_notes(operative: dict, team_data: dict, weapon_rules: dict,
         m = re.search(r"(\d+)", str(s))
         return int(m.group(1)) if m else 5
 
-    stats = {
+    stats = dict(operative['stats']) if 'stats' in operative else {
         'APL': operative.get('apl', 2),
         'Move': parse_move(operative.get('movement', '6')),
         'Save': parse_save(operative.get('save', '5+')),
@@ -1704,7 +2177,7 @@ def _build_gm_notes(operative: dict, team_data: dict, weapon_rules: dict,
 
     # base_size is extracted by content_analysis (e.g. 28 for a 28mm base).
     base_size = operative.get('base_size')
-    if base_size is not None:
+    if base_size is not None and 'stats' not in operative:
         stats['Base'] = base_size
 
     keywords = ['Operative'] + [_normalize_text(k) for k in operative.get('keywords', [])]
@@ -1714,29 +2187,31 @@ def _build_gm_notes(operative: dict, team_data: dict, weapon_rules: dict,
     for weapon in operative.get('weapons', []):
         weapon_name = weapon.get('name', '')
         special_rules = weapon.get('special_rules', '')
-        prefix = '[F4641D]M[-]' if _classify_weapon(weapon) == 'melee' else '[1E87FF]R[-]'
+        kind = weapon['type'] if 'type' in weapon else _classify_weapon(weapon)
+        prefix = '[F4641D]M[-]' if kind == 'melee' else '[1E87FF]R[-]'
         full_name = f'{prefix} {weapon_name}'
         weapons.append({
             'name': full_name,
             'plain_name': weapon_name,
-            'stats': {
+            'stats': dict(weapon['stats']) if 'stats' in weapon else {
                 'ATK': weapon.get('attacks', ''),
                 'HIT': weapon.get('hit', ''),
                 'DMG': weapon.get('damage', ''),
                 'WR': special_rules
             }
         })
-        weapon_rules_found.update(_match_weapon_rules(special_rules, weapon_rules))
+        matched_rules = weapon['weapon_rules'] if 'weapon_rules' in weapon else _match_weapon_rules(special_rules, weapon_rules)
+        weapon_rules_found.update(matched_rules)
 
-    abilities = []
-    for ability in operative.get('passive_abilities', []):
+    abilities = copy.deepcopy(operative.get('abilities', []))
+    for ability in operative.get('passive_abilities', []) if 'abilities' not in operative else []:
         name = _normalize_text(ability.get('name', ''))
         text = _normalize_text(ability.get('description', ''))
         if name:
             abilities.append({'name': name, 'text': text})
 
-    actions = []
-    for action in operative.get('unique_actions', []):
+    actions = copy.deepcopy(operative.get('actions', []))
+    for action in operative.get('unique_actions', []) if 'actions' not in operative else []:
         name = _normalize_text(action.get('name', ''))
         text = _normalize_text(action.get('description', ''))
         if name:
@@ -1786,7 +2261,9 @@ def _build_gm_notes(operative: dict, team_data: dict, weapon_rules: dict,
         'description': description
     }
 
-    if selection_groups:
+    if 'selection' in operative:
+        result['selection'] = copy.deepcopy(operative['selection'])
+    elif selection_groups:
         # When no explicit exclusive sets were supplied, derive them from the
         # operative-selection text ("... one option from each ... Or the following
         # option ..."). Only operatives with that "Or" split get exclusive sets;
@@ -1806,7 +2283,9 @@ def _build_gm_notes(operative: dict, team_data: dict, weapon_rules: dict,
     upgrade_arches = ("CLANBLADE", "LEYSTALKER", "STONESINGER")
     op_kw_upper = [str(k).upper() for k in operative.get('keywords', [])]
     arch = next((k for k in op_kw_upper if k in upgrade_arches), None)
-    if arch:
+    if 'upgrades' in operative:
+        result['upgrades'] = copy.deepcopy(operative['upgrades'])
+    elif arch and not team_data.get('model_data_version'):
         options = []
         for fr in team_data.get('faction_rules', []) or []:
             text = fr.get('text', '') or ''
@@ -2365,6 +2844,20 @@ def _operative_matches_counter(operative: dict, applies) -> bool:
     return any(kw.upper() in op_kw for kw in applies)
 
 
+def _apply_generated_counter_states(cfg: dict) -> dict:
+    """If ``cfg`` is a generated counter (a ``generate`` block, no explicit
+    ``states``), return a copy with synthesized states pointing at the counters
+    subfolder; otherwise return ``cfg`` unchanged. The images themselves are
+    produced by extract_tokens."""
+    from ..utils.counter_tokens import generated_counter_states
+    states = generated_counter_states(cfg)
+    if states is None:
+        return cfg
+    out = dict(cfg)
+    out['states'] = states
+    return out
+
+
 def _build_operative_counter_lua(team: str, counter_cfg: dict, url_branch: str) -> str:
     """Generate Lua that adds a left/right-click cycling image counter to a model placed on the card."""
     name = str(counter_cfg.get('name', 'Counter'))
@@ -2540,7 +3033,23 @@ end
 '''
 
 
-def _build_operative_counters_lua(team: str, counters: list, url_branch: str, menu_label: str) -> str:
+def _counter_asset_base(team: str, url_branch: str, cfg: dict) -> str:
+    """Asset base URL for a counter's token images.
+
+    GENERATED counters (a ``generate`` block) reference images that only exist on
+    the current feature branch until the PR lands on main; ``KT_COUNTER_ASSET_BRANCH``
+    can point just those URLs at a testing branch. Hand-authored counter tokens
+    (already published on main) always use ``url_branch``. Defaults to ``url_branch``
+    so normal runs are unaffected.
+    """
+    branch = url_branch
+    if cfg.get('generate'):
+        branch = os.environ.get("KT_COUNTER_ASSET_BRANCH", url_branch)
+    return f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/{branch}/output/{team}/tokens"
+
+
+def _build_operative_counters_lua(team: str, counters: list, url_branch: str, menu_label: str,
+                                filter_keywords: bool = False) -> str:
     """Generate Lua adding one or more left/right-click cycling image counters to
     the model on the card, exposed via a single context-menu item.
 
@@ -2567,6 +3076,22 @@ def _build_operative_counters_lua(team: str, counters: list, url_branch: str, me
 
     local_defs = []
     inject_blocks = []
+    if filter_keywords:
+        local_defs.append("    local counterCount, counterPosition = 0, 0\n")
+        for cfg, _ in prepared:
+            slug = _oc_slug(str(cfg.get('name', 'Counter')))
+            applies = cfg.get('applies_to', 'all')
+            if applies in (None, 'all', True):
+                condition = "true"
+            else:
+                keywords = [applies] if isinstance(applies, str) else (applies or [])
+                conditions = [f"keyword:upper() == {lua_str(str(keyword).upper())}" for keyword in keywords]
+                condition = " or ".join(conditions) or "false"
+            local_defs.append(f"    local counterEnabled_{slug} = {str(condition == 'true').lower()}\n"
+                              "    for _, keyword in ipairs((mState.info or {}).categories or {}) do\n"
+                              f"        if {condition} then counterEnabled_{slug} = true end\n"
+                              "    end\n"
+                              f"    if counterEnabled_{slug} then counterCount = counterCount + 1 end\n")
     for i, (cfg, states) in enumerate(prepared):
         name = str(cfg.get('name', 'Counter'))
         slug = _oc_slug(name)
@@ -2599,7 +3124,7 @@ def _build_operative_counters_lua(team: str, counters: list, url_branch: str, me
         )
 
         asset_lines = "\n".join(
-            f'    {{name="{asset_name(int(s["value"]))}", url=[=[{base_url}/{s.get("token", "")}]=]}},'
+            f'    {{name="{asset_name(int(s["value"]))}", url=[=[{_counter_asset_base(team, url_branch, cfg)}/{s.get("token", "")}]=]}},'
             for s in states
         )
         assets_def = f"    local assetLines_{slug} = [==[\n\n{asset_lines}\n]==]\n"
@@ -2657,6 +3182,15 @@ end
             f'    table.insert(added, {lua_str(name)})\n'
         )
 
+    if filter_keywords:
+        inject_blocks = [
+            f"    if counterEnabled_{_oc_slug(str(cfg.get('name', 'Counter')))} then\n"
+            f"        panelXml_{_oc_slug(str(cfg.get('name', 'Counter')))} = "
+            f"panelXml_{_oc_slug(str(cfg.get('name', 'Counter')))}:gsub('offsetXY=\"[^\"]+\"', "
+            "'offsetXY=\"' .. tostring((counterPosition - (counterCount - 1) / 2) * 50) .. ' -10\"', 1)\n"
+            "        counterPosition = counterPosition + 1\n" + block + "    end\n"
+            for (cfg, _), block in zip(prepared, inject_blocks)
+        ]
     return (
         _MULTI_COUNTER_WRAPPER
         .replace("<<MENU_LABEL>>", str(menu_label).replace('\\', '\\\\').replace('"', '\\"'))
@@ -2674,7 +3208,7 @@ def _get_faction_rule_code(team: str, team_data: dict, operative: dict, team_con
     counters_cfg = team_info.get('operative_counters')
     if counters_cfg:
         applicable = [
-            c for c in counters_cfg
+            _apply_generated_counter_states(c) for c in counters_cfg
             if _operative_matches_counter(operative, c.get('applies_to', 'all'))
         ]
         if applicable:
@@ -2831,6 +3365,16 @@ def save_individual_card_json(card_obj: dict, team_name: str, card_type: str, ca
     return file_path, timestamp
 
 
+def _prune_stale_individual_card_jsons(cards_root: Path, expected_paths: set[Path]) -> list[Path]:
+    expected = {path.resolve() for path in expected_paths}
+    if not cards_root.exists():
+        return []
+    stale = [path for path in cards_root.rglob("*.json") if path.resolve() not in expected]
+    for path in stale:
+        path.unlink()
+    return stale
+
+
 def save_individual_token_json(token_obj: dict, team_name: str, token_index: int, output_dir: Path) -> tuple:
     """
     Save individual token JSON to tts_objects/tokens/.
@@ -2909,6 +3453,7 @@ def generate_team_tts_object(team_name: str, cards: list, lua_script: str, box_d
     for dice_obj in load_dice_objects(team_name, sample_url, output_dir, repo_branch):
         contained_objects.append(dice_obj)
 
+    written_card_jsons = set()
     for card_type in type_order:
         if card_type not in cards_by_type:
             continue
@@ -2968,7 +3513,8 @@ def generate_team_tts_object(team_name: str, cards: list, lua_script: str, box_d
             )
             
             # Save individual card JSON
-            save_individual_card_json(card_obj, team_name, card_type, 1, output_dir)
+            card_json, _ = save_individual_card_json(card_obj, team_name, card_type, 1, output_dir)
+            written_card_jsons.add(card_json)
             
             contained_objects.append(card_obj)
             deck_id_counter += 1
@@ -2978,10 +3524,17 @@ def generate_team_tts_object(team_name: str, cards: list, lua_script: str, box_d
             
             # Save individual card JSONs from deck
             for idx, card_obj in enumerate(deck_obj['ContainedObjects'], start=1):
-                save_individual_card_json(card_obj, team_name, card_type, idx, output_dir)
+                card_json, _ = save_individual_card_json(card_obj, team_name, card_type, idx, output_dir)
+                written_card_jsons.add(card_json)
             
             contained_objects.append(deck_obj)
             deck_id_counter += len(type_cards_data)
+
+    stale_card_jsons = _prune_stale_individual_card_jsons(
+        output_dir / team_name / 'tts_objects' / 'cards', written_card_jsons
+    )
+    if stale_card_jsons:
+        logger.info(f"  Removed {len(stale_card_jsons)} stale individual card JSONs for {team_name}")
     
     # Create the bag
     team_display_name = team_name.replace('-', ' ').title()

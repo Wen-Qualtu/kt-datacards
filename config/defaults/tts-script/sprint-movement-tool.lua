@@ -133,12 +133,12 @@ local BASE_MM_LONG   = DEF_BASE_MM_LONG
 local BASE_MM_WIDE   = DEF_BASE_MM_WIDE
 local MM_TO_INCH     = 0.0393701
 
--- KTUI minis are built facing the OPPOSITE way to their transform "forward",
--- which swaps front/back (and the forward move direction). When the tool
--- detects a KTUI base (script_state.base) it offsets its notion of facing by
--- this many degrees so "front" is the visual front. Set to 0 if a model comes
--- out reversed; plain objects (no KTUI base) always use 0.
-local KTUI_FACING_OFFSET = 180
+-- Baseline facing offset (degrees) added to a KTUI mini's transform-forward.
+-- The common/correct Exodite sculpts run head-first at 0, so the default is 0.
+-- Mirrored/alternate models come out reversed -- the player flips them with the
+-- "Rotate base 90" menu item, which stores a per-model kt_front (e.g. 180) that
+-- is ADDED to this. Plain objects (no KTUI base) always use 0.
+local KTUI_FACING_OFFSET = 0
 
 -- Drawing
 local PREVIEW_HZ     = 60       -- preview / rotation refresh rate (Hz)
@@ -189,11 +189,11 @@ local leapOrigPts     = nil     -- cached original oval perimeter points
 local leapPendingRot  = 0       -- net rotation steps tapped since the last tick
                                 -- (+ = clockwise, - = anticlockwise); flushed in tick()
 
--- Live readout (distance/angle) + its 3DText object
-local distTextObj    = nil      -- spawned 3DText that shows the live measurement
-local distTextStyled = false    -- has the font size/colour been applied yet?
+-- Live readout (distance/angle) shown as a screen-space HUD (Global.UI), shared
+-- with the Move tool via the same ktmove_hud container, so it never occludes
+-- terrain and always renders top-centre in the driving player's colour.
 local readoutText    = nil      -- text to show this tick (nil = hide)
-local readoutPos     = nil      -- world {x,z} to place the readout this tick
+local readoutPos     = nil      -- world {x,z} of the measurement (unused by the HUD)
 
 -- live preview cache (refreshed every tick; used by commit/confirm)
 local prevStraight = 0          -- signed inches of the active straight leg
@@ -213,6 +213,13 @@ local applyToModel               -- fwd decl; steps/rotates the model to the cur
 -- --------------------------------------------------------------- utilities ---
 local function toUnits(inches) return inches * UNITS_PER_INCH end
 local function toInches(units) return units / UNITS_PER_INCH end
+
+-- Ceil inches to the 1-decimal precision the HUD shows. The readout and the
+-- whole-inch charge (spentInches ceil) are both CEILINGS -- just at different
+-- accuracy (1 vs 0 decimals) -- so they always agree and never grant free
+-- movement. The tiny epsilon only absorbs float noise on a clean whole value.
+-- (Backward travel is raw-tracked/capped, so it keeps its raw readout.)
+local function ceilToShown(inches) return math.ceil((inches - 1e-6) * 10) / 10 end
 
 -- Heading (degrees) of a planar vector, matching TTS yaw: forward = (sin,0,cos)
 local function headingOf(x, z) return math.deg(math.atan2(x, z)) end
@@ -234,6 +241,22 @@ end
 
 local function msg(pc, text, col)
 	if pc and Player[pc] then Player[pc].broadcast(text, col or { 1, 1, 1 }) end
+end
+
+-- Active-sprint registry: one Global var per player colour holding the GUID of
+-- the model that player is currently sprinting (or "" for none), so the mode /
+-- rotate / finish / cancel game-keys can reach that model even when the cursor
+-- is aimed at the table, past the click catcher. PRIMITIVE strings only (a table
+-- stored via Global.setVar is owned by the creating script and crashes another
+-- model's script on re-store); strings copy safely across scripts.
+local function setActiveSprint(pc, on)
+	if not pc then return end
+	local key = "KT_SPRINT_ACTIVE_" .. pc
+	if on then
+		Global.setVar(key, self.getGUID())
+	elseif Global.getVar(key) == self.getGUID() then
+		Global.setVar(key, "")
+	end
 end
 
 -- Is this player currently acting on THIS model? (used to gate "Begin")
@@ -277,7 +300,20 @@ local function refreshBaseDims()
 			local bz = tonumber(data.base.z)   -- length (front-to-back)
 			if bx and bx > 0 and bz and bz > 0 then
 				BASE_MM_WIDE, BASE_MM_LONG = bx, bz
-				facingOffset = KTUI_FACING_OFFSET   -- KTUI mesh faces the other way
+				-- Facing = transform-forward + KTUI_FACING_OFFSET (default 0, i.e.
+				-- correct sculpts run head-first) + a per-model kt_front offset
+				-- (0/90/180/270, cycled by the "Rotate base 90" menu item) that
+				-- corrects mirrored/alternate sculpts so Sprint/Turn/Leap don't run
+				-- tail-first. Absent kt_front = 0 = no change.
+				local ktf = tonumber(data.kt_front) or 0
+				facingOffset = KTUI_FACING_OFFSET + ktf
+				-- "Rotate base 90" also SWAPS base.x/base.z in state (to rotate the
+				-- KTUI ring). At odd quarters (90/270) that moves the long axis onto
+				-- the OTHER dimension, so re-label LONG(front-to-back)/WIDE(side-to-
+				-- side) here to keep the ghost + corridor drawn long-along-heading.
+				if (math.floor(ktf / 90) % 2) == 1 then
+					BASE_MM_WIDE, BASE_MM_LONG = BASE_MM_LONG, BASE_MM_WIDE
+				end
 				return
 			end
 		end
@@ -572,50 +608,85 @@ end
 local function clearPreview() Global.setVectorLines({}) end
 
 -- --------------------------------------------------------- distance readout --
--- A spawned 3DText object that live-shows the current step's distance/angle
--- near the ghost (like the built-in ruler) - no chat spam. Created on begin,
--- moved + updated each tick, destroyed on finish/cancel.
+-- The live distance/angle is shown as a screen-space HUD in the Global UI
+-- instead of a world-space 3DText, so terrain never hides it. The Global UI is
+-- SHARED (Chapter Tactics' fr_info_panel, the Move tool's HUD, etc.), so we
+-- APPEND our container (id ktmove_hud) to whatever UI already exists and reuse
+-- it if present -- we never clobber the rest. The Move tool builds the EXACT
+-- same container, so the two tools share one HUD. Per-row updates use
+-- setAttribute/setValue, which don't replace the UI.
+local HUD_COLORS = { "White", "Brown", "Red", "Orange", "Yellow",
+                     "Green", "Teal", "Blue", "Purple", "Pink" }
+
+local function hudColorHex(c)
+	local col = Color.fromString(c)
+	if not col then return "#FFFFFF" end
+	-- Lighten toward white so darker player colours stay readable via the outline.
+	col = col:lerp(Color.White, 0.25)
+	return "#" .. col:toHex(false)
+end
+
+local function buildHudXml()
+	-- Bare outlined text per colour (no background box, so it hugs the value and
+	-- can't stretch). The layout forces each text to the container width and
+	-- centres it, so it always renders (a width-less Text can collapse to nothing).
+	local rows = ""
+	for _, c in ipairs(HUD_COLORS) do
+		rows = rows .. string.format(
+			'<Text id="ktmove_txt_%s" active="false" color="%s" fontSize="26" '
+			.. 'fontStyle="Bold" alignment="Center" preferredHeight="32" '
+			.. 'outline="#000000" outlineSize="2 -2" raycastTarget="false"> </Text>', c, hudColorHex(c))
+	end
+	return '<Panel id="ktmove_hud" active="true" rectAlignment="UpperCenter" '
+		.. 'width="600" height="120" offsetXY="0 -80" color="#00000000" raycastTarget="false">'
+		.. '<VerticalLayout childAlignment="UpperCenter" childForceExpandWidth="true" '
+		.. 'childForceExpandHeight="false" spacing="2" raycastTarget="false">'
+		.. rows
+		.. '</VerticalLayout></Panel>'
+end
+
+-- Ensure our HUD container exists in the (possibly shared) Global UI WITHOUT
+-- wiping anything else already there. Called on begin (once), not per frame.
+local function ensureHud()
+	local cur = ""
+	pcall(function() cur = Global.UI.getXml() or "" end)
+	if type(cur) ~= "string" then cur = "" end
+	if cur:find("ktmove_hud", 1, true) then return end
+	pcall(function() Global.UI.setXml(cur .. buildHudXml()) end)
+end
+
+local function hudShow(color, text)
+	if not color then return end
+	pcall(function()
+		Global.UI.setAttribute("ktmove_txt_" .. color, "active", "true")
+		Global.UI.setValue("ktmove_txt_" .. color, text or " ")
+	end)
+end
+
+local function hudHide(color)
+	if not color then return end
+	pcall(function()
+		Global.UI.setAttribute("ktmove_txt_" .. color, "active", "false")
+		Global.UI.setValue("ktmove_txt_" .. color, " ")
+	end)
+end
+
+-- Injection-safe wrappers so the begin/finish/cancel call sites read the same as
+-- before but now drive the shared screen-space HUD.
 local function ensureDistText()
-	if distTextObj ~= nil then return end
-	distTextStyled = true   -- style + initial text are baked into the spawn data
-	-- Spawn with an initial " " (and the font size) already set, so TTS never
-	-- shows its "Type here" placeholder during the async spawn gap.
-	distTextObj = spawnObjectData({
-		data = {
-			Name = "3DText",
-			Transform = {
-				posX = curPos.x, posY = startY + 0.5, posZ = curPos.z,
-				rotX = 90, rotY = 0, rotZ = 0,
-				scaleX = 0.35, scaleY = 0.35, scaleZ = 0.35,
-			},
-			Text = {
-				Text       = " ",
-				colorstate = { r = 1, g = 1, b = 1 },
-				fontSize   = READOUT_FONT,
-			},
-			Locked = true,
-		},
-	})
+	ensureHud()
 end
 
 local function updateDistText()
-	if distTextObj == nil or distTextObj.TextTool == nil then return end
-	if not readoutText then
-		-- A single space renders as nothing, avoiding the "Type here" placeholder.
-		pcall(function() distTextObj.TextTool.setValue(" ") end)
-		return
+	if readoutText then
+		hudShow(controlColor, readoutText)
+	else
+		hudHide(controlColor)
 	end
-	local p = readoutPos or curPos
-	pcall(function() distTextObj.setPosition({ p.x, startY + 0.5, p.z }) end)
-	pcall(function() distTextObj.TextTool.setValue(readoutText) end)
 end
 
 local function destroyDistText()
-	if distTextObj ~= nil then
-		local o = distTextObj
-		distTextObj = nil
-		pcall(function() if o ~= nil then o.destruct() end end)
-	end
+	hudHide(controlColor)
 end
 
 -- ------------------------------------------------------------- update loop ---
@@ -643,7 +714,7 @@ local function tick()
 		prevStraight, prevEndPos, prevHeading = d, e, h
 		appendCorridor(active, curPos, e, h, COL_LEG)
 		endPos, endHeading = e, h
-		readoutText = string.format('%.1f"', math.abs(d)) .. (d < 0 and " back" or "")
+		readoutText = string.format('%.1f"', (d >= 0) and ceilToShown(d) or math.abs(d)) .. (d < 0 and " back" or "")
 		readoutPos  = { x = (curPos.x + e.x) * 0.5, y = curPos.y, z = (curPos.z + e.z) * 0.5 }
 
 	elseif phase == PHASE_S1 then
@@ -691,7 +762,7 @@ local function tick()
 		prevStraight, prevEndPos, prevHeading = d, e, h
 		appendCorridor(active, curPos, e, h, COL_LEG)
 		endPos, endHeading = e, h
-		readoutText = string.format('%.1f"', math.abs(d)) .. (d < 0 and " back" or "")
+		readoutText = string.format('%.1f"', (d >= 0) and ceilToShown(d) or math.abs(d)) .. (d < 0 and " back" or "")
 		readoutPos  = { x = (curPos.x + e.x) * 0.5, y = curPos.y, z = (curPos.z + e.z) * 0.5 }
 
 	elseif phase == PHASE_LEAP then
@@ -907,6 +978,7 @@ local function finishSprint(pc, text)
 	clearPreview()
 	removeCatcher()
 	destroyDistText()
+	setActiveSprint(pc or controlColor, false)
 	applyToModel()
 	msg(pc, text or "Sprint complete.", COL_LEG)
 	phase        = PHASE_IDLE
@@ -919,6 +991,7 @@ local function cancelSprint(pc)
 	clearPreview()
 	removeCatcher()
 	destroyDistText()
+	setActiveSprint(pc or controlColor, false)
 	-- the model stepped along the sprint; put it back where it started
 	if startPos then
 		local r = self.getRotation()
@@ -954,6 +1027,7 @@ local function beginSprint(pc)
 	startLoop()
 	createCatcher()
 	ensureDistText()
+	setActiveSprint(pc, true)
 	msg(pc, "Sprint: drag to aim. 1=straight, 2/3/4=pivot front/centre/back. "
 		.. "Left=apply, right=back, 9=finish straight, 0=cancel.", COL_PIVOT)
 end
@@ -983,6 +1057,7 @@ local function beginTurn(pc)
 	startLoop()
 	createCatcher("Left: apply   Right: cancel   2/3/4: pivot point   0: cancel")
 	ensureDistText()
+	setActiveSprint(pc, true)
 	msg(pc, "Turn: 2/3/4 = pivot from front/centre/back, drag to turn (+/-45deg). "
 		.. "Left=apply, right/0=cancel.", COL_PIVOT)
 end
@@ -1015,6 +1090,7 @@ local function beginLeap(pc)
 	startLoop()
 	createCatcher("Left: apply   Right: cancel   1/2: rotate   0: cancel")
 	ensureDistText()
+	setActiveSprint(pc, true)
 	msg(pc, 'Leap: aim to move (auto-clamped to 1").  Tap 1/2 = rotate '
 		.. string.format('%d', LEAP_ROT_STEP) .. "deg.  Left=apply, right/0=cancel.", COL_PIVOT)
 end
@@ -1215,6 +1291,46 @@ function leapHotkeyTrigger(params)
 	if phase == PHASE_IDLE then beginLeap((params or {}).color) end
 end
 
+-- Named-hotkey entry points on the model for the in-action controls (mode /
+-- rotate / finish / cancel). They mirror the number-row / numpad inputs but as
+-- rebindable game keys, and are phase-guarded so each only fires when its step
+-- is live: mode keys during a Sprint/Turn step, rotate keys during a Leap.
+function sprintKeyMode(params)
+	local p = params or {}
+	if phase == PHASE_IDLE or phase == PHASE_LEAP then return end
+	if controlColor and p.color and p.color ~= controlColor then return end
+	selectMode(p.color, p.key)
+end
+
+function sprintKeyRotate(params)
+	local p = params or {}
+	if phase ~= PHASE_LEAP then return end
+	if controlColor and p.color and p.color ~= controlColor then return end
+	leapPendingRot = leapPendingRot + (p.dir or 0)
+end
+
+function sprintKeyFinish(params)
+	handleDigit((params or {}).color, 9)
+end
+
+function sprintKeyCancel(params)
+	handleDigit((params or {}).color, 0)
+end
+
+-- Resolve the model a player is currently sprinting: prefer the active-sprint
+-- registry (works even when the cursor is aimed away, past the catcher), fall
+-- back to the hovered object. Then call fn on it with { color = ..., ...extra }.
+local function sprintKeyDispatch(color, hovered, fn, extra)
+	local obj = nil
+	local guid = Global.getVar("KT_SPRINT_ACTIVE_" .. color)
+	if type(guid) == "string" and guid ~= "" then obj = getObjectFromGUID(guid) end
+	if obj == nil and hovered ~= nil and hovered.call ~= nil then obj = hovered end
+	if obj == nil or obj.call == nil then return end
+	local params = { color = color }
+	if extra then for k, v in pairs(extra) do params[k] = v end end
+	obj.call(fn, params)
+end
+
 -- Registers the context-menu items plus optional keyboard shortcuts. Advancing/
 -- cancelling happen via clicks and number keys, so only the entry points live in
 -- the menu.
@@ -1258,11 +1374,78 @@ function setupSprintTool()
 			end
 		end, false)
 	end
+	-- In-action controls as rebindable game keys (mode / rotate / finish / cancel),
+	-- routed to the ACTIVE sprint model via the registry so they work while the
+	-- cursor is aimed at the table. Bind under Options -> Controls -> Game Keys.
+	if Global.getVar("KT_SPRINT_MODE1_HOTKEY") ~= true then
+		Global.setVar("KT_SPRINT_MODE1_HOTKEY", true)
+		addHotkey("KT: Sprint/Turn straight (mode 1)", function(color, hovered)
+			sprintKeyDispatch(color, hovered, "sprintKeyMode", { key = 1 })
+		end, false)
+	end
+	if Global.getVar("KT_SPRINT_MODE2_HOTKEY") ~= true then
+		Global.setVar("KT_SPRINT_MODE2_HOTKEY", true)
+		addHotkey("KT: Sprint/Turn pivot from front (mode 2)", function(color, hovered)
+			sprintKeyDispatch(color, hovered, "sprintKeyMode", { key = 2 })
+		end, false)
+	end
+	if Global.getVar("KT_SPRINT_MODE3_HOTKEY") ~= true then
+		Global.setVar("KT_SPRINT_MODE3_HOTKEY", true)
+		addHotkey("KT: Sprint/Turn pivot from centre (mode 3)", function(color, hovered)
+			sprintKeyDispatch(color, hovered, "sprintKeyMode", { key = 3 })
+		end, false)
+	end
+	if Global.getVar("KT_SPRINT_MODE4_HOTKEY") ~= true then
+		Global.setVar("KT_SPRINT_MODE4_HOTKEY", true)
+		addHotkey("KT: Sprint/Turn pivot from back (mode 4)", function(color, hovered)
+			sprintKeyDispatch(color, hovered, "sprintKeyMode", { key = 4 })
+		end, false)
+	end
+	if Global.getVar("KT_LEAP_ROTL_HOTKEY") ~= true then
+		Global.setVar("KT_LEAP_ROTL_HOTKEY", true)
+		addHotkey("KT: Leap rotate left", function(color, hovered)
+			sprintKeyDispatch(color, hovered, "sprintKeyRotate", { dir = -1 })
+		end, false)
+	end
+	if Global.getVar("KT_LEAP_ROTR_HOTKEY") ~= true then
+		Global.setVar("KT_LEAP_ROTR_HOTKEY", true)
+		addHotkey("KT: Leap rotate right", function(color, hovered)
+			sprintKeyDispatch(color, hovered, "sprintKeyRotate", { dir = 1 })
+		end, false)
+	end
+	if Global.getVar("KT_SPRINT_FINISH_HOTKEY") ~= true then
+		Global.setVar("KT_SPRINT_FINISH_HOTKEY", true)
+		addHotkey("KT: Sprint finish", function(color, hovered)
+			sprintKeyDispatch(color, hovered, "sprintKeyFinish")
+		end, false)
+	end
+	if Global.getVar("KT_SPRINT_CANCEL_HOTKEY") ~= true then
+		Global.setVar("KT_SPRINT_CANCEL_HOTKEY", true)
+		addHotkey("KT: Sprint cancel", function(color, hovered)
+			sprintKeyDispatch(color, hovered, "sprintKeyCancel")
+		end, false)
+	end
 end
 
--- Safety: if the model is picked up mid-sprint, abort cleanly.
+-- A quiet teardown for when the player physically PICKS UP the model mid-sprint:
+-- stop the preview, drop the HUD/catcher, but DON'T snap the model back and
+-- DON'T broadcast a "cancelled" message -- the pickup is a deliberate manual
+-- reposition, not a cancel, so it shouldn't give false "Sprint cancelled" feedback.
+local function abortSprint()
+	stopLoop()
+	clearPreview()
+	removeCatcher()
+	destroyDistText()
+	setActiveSprint(controlColor, false)
+	phase        = PHASE_IDLE
+	controlColor = nil
+	history      = {}
+end
+
+-- A manual pickup is NOT a cancel: tear down the preview/HUD/catcher quietly and
+-- leave the model where the player drops it (no snap-back, no callout).
 function sprintOnPickUp(playerColor)
-	if phase ~= PHASE_IDLE then cancelSprint(playerColor) end
+	if phase ~= PHASE_IDLE then abortSprint() end
 end
 
 -- onLoad / onPickUp / onScriptingButtonDown are CHAINED: any pre-existing

@@ -1,82 +1,56 @@
 {
   "team": "hand-of-the-archon",
-  "generated_at": "2026-07-25T17:12:10.795391+00:00",
+  "generated_at": "2026-10-28T13:54:44.707531+00:00",
   "datacards": [
     {
-      "name": "KABALITE ARCHSYBARITE",
+      "name": "KABALITE DISCIPLE OF YAELINDRA",
       "apl": 2,
       "movement": "7″",
       "save": "4+",
-      "wounds": 9,
+      "wounds": 8,
       "base_size": 25,
       "weapons": [
         {
-          "name": "Blast pistol",
-          "attacks": "4",
-          "hit": "3+",
-          "damage": "3/4",
-          "special_rules": "Range 8\", Piercing 2"
-        },
-        {
-          "name": "Splinter pistol",
-          "attacks": "4",
-          "hit": "3+",
-          "damage": "2/4",
-          "special_rules": "Range 8\", Lethal 5+"
-        },
-        {
-          "name": "Splinter rifle",
-          "attacks": "4",
-          "hit": "3+",
-          "damage": "2/4",
-          "special_rules": "Lethal 5+"
-        },
-        {
-          "name": "Agoniser",
+          "name": "Stinger pistol",
           "attacks": "4",
           "hit": "3+",
           "damage": "3/5",
-          "special_rules": "Brutal, Lethal 5+, Shock"
+          "special_rules": "Range 8\", Lethal 5+, Stinger*"
         },
         {
           "name": "Array of blades",
           "attacks": "3",
           "hit": "3+",
           "damage": "3/4"
-        },
-        {
-          "name": "Power weapon",
-          "attacks": "4",
-          "hit": "3+",
-          "damage": "4/6",
-          "special_rules": "Lethal 5+"
-        },
-        {
-          "name": "Venom blade",
-          "attacks": "4",
-          "hit": "3+",
-          "damage": "4/5",
-          "special_rules": "Lethal 4+"
         }
       ],
       "passive_abilities": [
         {
-          "name": "Cunning",
-          "description": "In the Gambit step of each Strategy phase, if this operative is in the killzone and you pass at the first opportunity, you gain 1CP. Ignore each STRATEGIC GAMBIT from the mission pack (if any) when determining this."
-        },
-        {
-          "name": "Torturous Vision",
-          "description": "Once during each of this operative’s activations, if it doesn’t have any of your Pain tokens when it performs either the Fight or Shoot action, it can gain one of your Pain tokens when you select a valid target or an enemy operative to fight against."
+          "name": "*Stinger",
+          "description": "Whenever an enemy operative is incapacitated by this weapon, before it’s removed from the killzone, inflict D3 damage on each other operative visible to and within 2\" of it (roll separately for each). Each operative subsequently incapacitated as a result of this weapon rule will cause this to happen again."
         }
       ],
-      "unique_actions": [],
+      "unique_actions": [
+        {
+          "name": "TORMENT GRENADE (1AP)",
+          "description": "Select one enemy operative visible to and within 6\" of this operative. That operative and each other operative within 1\" of it takes a poison test. For an operative to take a poison test, roll one D6, adding 1 to the result if that operative has a Save stat of 4+ or worse: on a 3+, inflict D3 damage on that operative and it gains one of your Poison tokens (if it doesn’t already have one). Whenever an operative that has one of your Poison tokens is activated, inflict D3 damage on it. This operative cannot perform this action while within control range of an enemy operative."
+        }
+      ],
       "keywords": [
         "HAND OF THE ARCHON",
         "AELDARI",
         "DRUKHARI",
-        "LEADER",
-        "ARCHSYBARITE"
-      ]
+        "DISCIPLE OF YAELINDRA"
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x"
+        ]
+      }
     },
     {
       "name": "KABALITE AGENT",
@@ -112,7 +86,14 @@
         "AELDARI",
         "DRUKHARI",
         "AGENT"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": []
+      }
     },
     {
       "name": "KABALITE CRIMSON DUELLIST",
@@ -157,48 +138,17 @@
         "AELDARI",
         "DRUKHARI",
         "CRIMSON DUELLIST"
-      ]
-    },
-    {
-      "name": "KABALITE DISCIPLE OF YAELINDRA",
-      "apl": 2,
-      "movement": "7″",
-      "save": "4+",
-      "wounds": 8,
-      "base_size": 25,
-      "weapons": [
-        {
-          "name": "Stinger pistol",
-          "attacks": "4",
-          "hit": "3+",
-          "damage": "3/5",
-          "special_rules": "Range 8\", Lethal 5+, Stinger*"
-        },
-        {
-          "name": "Array of blades",
-          "attacks": "3",
-          "hit": "3+",
-          "damage": "3/4"
-        }
       ],
-      "passive_abilities": [
-        {
-          "name": "*Stinger",
-          "description": "Whenever an enemy operative is incapacitated by this weapon, before it’s removed from the killzone, inflict D3 damage on each other operative visible to and within 2\" of it (roll separately for each). Each operative subsequently incapacitated as a result of this weapon rule will cause this to happen again."
-        }
-      ],
-      "unique_actions": [
-        {
-          "name": "TORMENT GRENADE (1AP)",
-          "description": "Select one enemy operative visible to and within 6\" of this operative. That operative and each other operative within 1\" of it takes a poison test. For an operative to take a poison test, roll one D6, adding 1 to the result if that operative has a Save stat of 4+ or worse: on a 3+, inflict D3 damage on that operative and it gains one of your Poison tokens (if it doesn’t already have one). Whenever an operative that has one of your Poison tokens is activated, inflict D3 damage on it. This operative cannot perform this action while within control range of an enemy operative."
-        }
-      ],
-      "keywords": [
-        "HAND OF THE ARCHON",
-        "AELDARI",
-        "DRUKHARI",
-        "DISCIPLE OF YAELINDRA"
-      ]
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Brutal"
+        ]
+      }
     },
     {
       "name": "KABALITE ELIXICANT",
@@ -244,7 +194,7 @@
         },
         {
           "name": "Adrenalight",
-          "description": "In the Ready step of each Strategy phase, you can select one friendly operative that has this COMBAT DRUG to gain one of your Pain tokens."
+          "description": "STRATEGIC GAMBIT. Select one friendly operative that has this COMBAT DRUG to gain one of your Pain tokens."
         },
         {
           "name": "Hypex",
@@ -262,120 +212,18 @@
         "AELDARI",
         "DRUKHARI",
         "ELIXICANT"
-      ]
-    },
-    {
-      "name": "KABALITE FLAYER",
-      "apl": 2,
-      "movement": "7″",
-      "save": "4+",
-      "wounds": 8,
-      "base_size": 25,
-      "weapons": [
-        {
-          "name": "Pain sculptors",
-          "attacks": "4",
-          "hit": "3+",
-          "damage": "4/5",
-          "special_rules": "Ceaseless, Flay*"
-        }
       ],
-      "passive_abilities": [
-        {
-          "name": "Insensible to Pain",
-          "description": "Normal and Critical Dmg of 3 or more inflicts 1 less damage on this operative."
-        },
-        {
-          "name": "*Flay",
-          "description": "Whenever this operative is using this weapon, the first time you strike with a critical success during that sequence, you can select one friendly HAND OF THE ARCHON operative within 6\" of it to gain one of your Pain tokens."
-        }
-      ],
-      "unique_actions": [],
-      "keywords": [
-        "HAND OF THE ARCHON",
-        "AELDARI",
-        "DRUKHARI",
-        "FLAYER"
-      ]
-    },
-    {
-      "name": "KABALITE GUNNER",
-      "apl": 2,
-      "movement": "7″",
-      "save": "4+",
-      "wounds": 8,
-      "base_size": 25,
-      "weapons": [
-        {
-          "name": "Blaster",
-          "attacks": "4",
-          "hit": "3+",
-          "damage": "4/5",
-          "special_rules": "Piercing 2"
-        },
-        {
-          "name": "Shredder",
-          "attacks": "4",
-          "hit": "3+",
-          "damage": "4/5",
-          "special_rules": "Rending, Torrent 2\""
-        },
-        {
-          "name": "Array of blades",
-          "attacks": "3",
-          "hit": "3+",
-          "damage": "3/4"
-        }
-      ],
-      "keywords": [
-        "HAND OF THE ARCHON",
-        "AELDARI",
-        "DRUKHARI",
-        "GUNNER"
-      ]
-    },
-    {
-      "name": "KABALITE HEAVY GUNNER",
-      "apl": 2,
-      "movement": "7″",
-      "save": "4+",
-      "wounds": 8,
-      "base_size": 25,
-      "weapons": [
-        {
-          "name": "Dark lance",
-          "attacks": "4",
-          "hit": "3+",
-          "damage": "6/7",
-          "special_rules": "Heavy (Dash only), Piercing 2"
-        },
-        {
-          "name": "Splinter cannon (focused)",
-          "attacks": "5",
-          "hit": "3+",
-          "damage": "3/5",
-          "special_rules": "Heavy (Dash only), Lethal 5+"
-        },
-        {
-          "name": "Splinter cannon (sweeping)",
-          "attacks": "4",
-          "hit": "3+",
-          "damage": "3/5",
-          "special_rules": "Heavy (Dash only), Lethal 5+, Torrent 1\""
-        },
-        {
-          "name": "Array of blades",
-          "attacks": "3",
-          "hit": "3+",
-          "damage": "3/4"
-        }
-      ],
-      "keywords": [
-        "HAND OF THE ARCHON",
-        "AELDARI",
-        "DRUKHARI",
-        "HEAVY GUNNER"
-      ]
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Stun"
+        ]
+      }
     },
     {
       "name": "KABALITE SKYSPLINTER ASSASSIN",
@@ -427,7 +275,209 @@
         "AELDARI",
         "DRUKHARI",
         "SKYSPLINTER ASSASSIN"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Saturate",
+          "Seek",
+          "Silent",
+          "Devastating x"
+        ]
+      }
+    },
+    {
+      "name": "KABALITE FLAYER",
+      "apl": 2,
+      "movement": "7″",
+      "save": "4+",
+      "wounds": 8,
+      "base_size": 25,
+      "weapons": [
+        {
+          "name": "Pain sculptors",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "4/5",
+          "special_rules": "Ceaseless, Flay*"
+        }
+      ],
+      "passive_abilities": [
+        {
+          "name": "Insensible to Pain",
+          "description": "Normal and Critical Dmg of 3 or more inflicts 1 less damage on this operative."
+        },
+        {
+          "name": "*Flay",
+          "description": "Whenever this operative is using this weapon, the first time you strike with a critical success during that sequence, you can select one friendly HAND OF THE ARCHON operative within 6\" of it to gain one of your Pain tokens."
+        }
+      ],
+      "unique_actions": [],
+      "keywords": [
+        "HAND OF THE ARCHON",
+        "AELDARI",
+        "DRUKHARI",
+        "FLAYER"
+      ],
+      "node": {
+        "weapon_types": [
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Ceaseless"
+        ]
+      }
+    },
+    {
+      "name": "KABALITE GUNNER",
+      "apl": 2,
+      "movement": "7″",
+      "save": "4+",
+      "wounds": 8,
+      "base_size": 25,
+      "weapons": [
+        {
+          "name": "Blaster",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "4/5",
+          "special_rules": "Piercing 2"
+        },
+        {
+          "name": "Shredder",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "4/5",
+          "special_rules": "Rending, Torrent 2\""
+        },
+        {
+          "name": "Array of blades",
+          "attacks": "3",
+          "hit": "3+",
+          "damage": "3/4"
+        }
+      ],
+      "keywords": [
+        "HAND OF THE ARCHON",
+        "AELDARI",
+        "DRUKHARI",
+        "GUNNER"
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Piercing x",
+          "Rending",
+          "Torrent x"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "Blaster; array of blades",
+                "weapons": [
+                  0,
+                  2
+                ]
+              },
+              {
+                "label": "Shredder; array of blades",
+                "weapons": [
+                  1,
+                  2
+                ]
+              }
+            ]
+          ],
+          "fixed": []
+        }
+      }
+    },
+    {
+      "name": "KABALITE HEAVY GUNNER",
+      "apl": 2,
+      "movement": "7″",
+      "save": "4+",
+      "wounds": 8,
+      "base_size": 25,
+      "weapons": [
+        {
+          "name": "Dark lance",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "6/7",
+          "special_rules": "Heavy (Dash only), Piercing 2"
+        },
+        {
+          "name": "Splinter cannon (focused)",
+          "attacks": "5",
+          "hit": "3+",
+          "damage": "3/5",
+          "special_rules": "Heavy (Dash only), Lethal 5+"
+        },
+        {
+          "name": "Splinter cannon (sweeping)",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "3/5",
+          "special_rules": "Heavy (Dash only), Lethal 5+, Torrent 1\""
+        },
+        {
+          "name": "Array of blades",
+          "attacks": "3",
+          "hit": "3+",
+          "damage": "3/4"
+        }
+      ],
+      "keywords": [
+        "HAND OF THE ARCHON",
+        "AELDARI",
+        "DRUKHARI",
+        "HEAVY GUNNER"
+      ],
+      "node": {
+        "weapon_types": [
+          "melee",
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Heavy",
+          "Piercing x",
+          "Torrent x"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "Dark lance; array of blades",
+                "weapons": [
+                  0,
+                  3
+                ]
+              },
+              {
+                "label": "Splinter cannon; array of blades",
+                "weapons": [
+                  1,
+                  2,
+                  3
+                ]
+              }
+            ]
+          ],
+          "fixed": []
+        }
+      }
     }
   ],
   "equipment": [
@@ -479,7 +529,7 @@
     },
     {
       "name": "prey-on-the-wounded",
-      "text": "HAND OF THE ARCHON\nFIREFIGHT PLOY\nPREY ON THE WOUNDED\nDrukhari are drawn to agony, seeking out the injured to \nland a killing blow.\nUse this firefight ploy after rolling your attack dice \nfor a friendly HAND OF THE ARCHON operative, \nif it’s shooting against or fighting against a \nwounded enemy operative. You can re-roll any of \nyour attack dice."
+      "text": "HAND OF THE ARCHON\nFIREFIGHT PLOY\nPREY ON THE WOUNDED\nDrukhari are drawn to agony, seeking out the injured to \nland a killing blow.\nUse this firefight ploy after rolling your attack dice \nfor a friendly HAND OF THE ARCHON operative, \nif it’s shooting against or fighting against an \nenemy operative that was wounded at the start of \nthe action. You can re-roll any of your attack dice."
     }
   ],
   "operatives_selection": [
@@ -487,7 +537,7 @@
       "name": "OPERATIVE SELECTION",
       "text": "HAND OF THE ARCHON \nKILL TEAM\nARCHETYPES: RECON, SEEK & DESTROY\nOPERATIVES\n \n↘ 1 HAND OF THE ARCHON ARCHSYBARITE \noperative with one of the following options:\n• Blast pistol; venom blade\n• Splinter pistol; venom blade\n• Splinter pistol; agoniser\n• Splinter pistol; power weapon\n• Splinter rifle; array of blades \n \n↘ 8 HAND OF THE ARCHON operatives selected \nfrom the following list:\n• AGENT\n• CRIMSON DUELLIST\n• DISCIPLE OF YAELINDRA\n• ELIXICANT\n• FLAYER\n• GUNNER with one of the following options:\n \n○ Blaster; array of blades \n \n○Shredder; array of blades\nCONTINUES ON OTHER SIDE\n\n---\n\n• HEAVY GUNNER with one of the \nfollowing options:\n \n○ Dark lance; array of blades\n \n○Splinter cannon; array of blades\n• SKYSPLINTER ASSASSIN \nOther than AGENT operatives, your kill team can \nonly include each operative on this list once. Your \nkill team can only include up to two darklight \nweapons (blast pistol, blaster and dark lance are \ndarklight weapons).",
       "selection": {
-        "KABALITE ARCHSYBARITE": [
+        "HAND OF THE ARCHON ARCHSYBARITE": [
           [
             "Blast pistol; venom blade",
             "Splinter pistol; venom blade",
@@ -524,7 +574,7 @@
     },
     {
       "name": "merciless-sadists",
-      "text": "HAND OF THE ARCHON\nSTRATEGY PLOY\nMERCILESS SADISTS\nThe Drukhari are sustained by the agony of others and \nare devoid of pity. There is no act of depraved torture to \nwhich they will not stoop.\nWhenever a friendly HAND OF THE ARCHON \noperative is shooting against or fighting against \na wounded enemy operative, that friendly \noperative’s weapons have the Balanced \nweapon rule."
+      "text": "HAND OF THE ARCHON\nSTRATEGY PLOY\nMERCILESS SADISTS\nThe Drukhari are sustained by the agony of others and \nare devoid of pity. There is no act of depraved torture to \nwhich they will not stoop.\nWhenever a friendly HAND OF THE ARCHON \noperative is shooting against or fighting against \nan enemy operative that was wounded at the start \nof the action, that friendly operative’s weapons \nhave the Balanced weapon rule."
     },
     {
       "name": "from-darkness-death",
@@ -534,5 +584,19 @@
       "name": "denizens-of-night",
       "text": "HAND OF THE ARCHON\nSTRATEGY PLOY\nDENIZENS OF NIGHT\nHailing from Commorragh – the Dark City – the Drukhari \nare born and raised in shadow, and use it to conceal \ntheir movements.\nWhenever an enemy operative is shooting a \nfriendly HAND OF THE ARCHON operative that’s \nmore than 2\" from enemy operatives, if Heavy \nor Light terrain is intervening, or any part of that \nfriendly operative’s base is underneath Vantage \nterrain, you can re-roll one of your defence dice."
     }
-  ]
+  ],
+  "node_weapon_rules": {
+    "Range x": "Only operatives within x of the active operative can be valid targets, e.g. Range 9\".",
+    "Brutal": "Your opponent can only block with critical successes.",
+    "Stun": "If you retain any critical successes, subtract 1 from the APL stat of the operative this weapon is being used against until the end of its next activation.",
+    "Saturate": "The defender cannot retain cover saves.",
+    "Seek": "When selecting a valid target, operatives with a Conceal order cannot use terrain for cover. If the rule is Seek Light, they cannot use Light terrain for cover. While this can allow operatives to be targeted (assuming they're visible), it doesn't remove their cover save (if any).",
+    "Silent": "An operative can perform the Shoot action with this weapon while it has a Conceal order.",
+    "Devastating x": "Each retained critical success immediately inflicts x damage on the operative this weapon is being used against, e.g. Devastating 3. If the rule starts with a distance (e.g. 1\" Devastating x), inflict x damage on that operative and each other operative visible to and within that distance of it. Note that success isn't discarded after doing so - it can still be resolved later in the sequence.",
+    "Ceaseless": "You can re-roll any of your attack dice results of one result (e.g. results of 2).",
+    "Piercing x": "The defender collects x less defence dice, e.g. Piercing 1. If the rule is Piercing Crits x, this only comes into effect if you retain any critical successes.",
+    "Rending": "If you retain any critical successes, you can retain one of your normal successes as a critical success instead.",
+    "Torrent x": "Select a valid target as normal as the primary target, then select any number of other valid targets within x of the first valid target, but not within control range of friendly operatives, as secondary targets, e.g. Torrent 2\". Shoot with this weapon against all of them in an order of your choice (roll each sequence separately).",
+    "Heavy": "An operative cannot use this weapon in an activation or counteraction in which it moved, and it cannot move in an activation or counteraction in which it used this weapon. If the rule is Heavy (x only), where x is a move action, only that move is allowed, e.g. Heavy (Dash only). This weapon rule has no effect on preventing the Guard action."
+  }
 }

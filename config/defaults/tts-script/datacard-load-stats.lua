@@ -235,8 +235,12 @@ function buildSelectionPanelXml(selection)
             local isOn = (inActive and o == 1) and "true" or "false"
             local textColor = inActive and "#FFFFFF" or "#666666"
             local label = option.label or ("Option " .. o)
-            label = label:gsub("&", "&amp;"):gsub("<", "&lt;"):gsub(">", "&gt;"):gsub('"', "&quot;")
+            -- Swap the "; " separator to " + " BEFORE XML-escaping. If escaping runs
+            -- first, an escaped entity like "&amp; " contains "; " and the separator
+            -- pass mangles it into "&amp + ", breaking the entity and the whole panel
+            -- XML (e.g. loadouts such as "dominator maul & assault shield").
             label = label:gsub("; ", " + ")
+            label = label:gsub("&", "&amp;"):gsub("<", "&lt;"):gsub(">", "&gt;"):gsub('"', "&quot;")
 
             rows = rows .. string.format(
                 '<Toggle id="sel_%d_%d" isOn="%s" '
@@ -446,6 +450,9 @@ function ensureKtuiState(ms, data)
     -- force them to valid numbers on every apply -- never leave them as-is.
     if type(ms.uiHeight) ~= "number" or ms.uiHeight <= 0 then ms.uiHeight = 2 end
     if type(ms.uiAngle)  ~= "number" then ms.uiAngle = 0 end
+    -- getUIPosition() returns nil for an out-of-range index -> the same refreshUI
+    -- concat crash when the in-place refresh runs without onLoad's default.
+    if type(ms.uiPositionIndex) ~= "number" then ms.uiPositionIndex = 1 end
     if ms.display_arrows == nil then ms.display_arrows = false end
     if ms.base          == nil then
         local bx, bz = parseBaseSize(data.stats and data.stats.Base)
@@ -457,10 +464,11 @@ function ensureKtuiState(ms, data)
         if slug == "" then slug = "operative" end
         ms.modelid = "ktui-" .. slug
     end
-    -- owner intentionally left unset => the model is visible to all players.
+    -- owner is assigned in diffAndApply (baked into script_state) so the table
+    -- Save/Load Positions + Ready Operatives can find the model.
 end
 
-function diffAndApply(model, data, playerColor)
+function diffAndApply(model, data, playerColor, replaceScript, modelScript)
     local changes = {}
 
     local msRaw = model.script_state
@@ -472,41 +480,28 @@ function diffAndApply(model, data, playerColor)
 
     -- What kind of model is this?
     --  * isKtui    : already a KTUI mini of ANY kind (our bundled one OR the real
-    --                KT UI extender). If so we NEVER replace its script -- we just
-    --                update its state in place so a fancy extender keeps its UI.
+    --                KT UI extender). Card loading preserves its script; the
+    --                command node explicitly opts into replacement.
     --  * isManaged : specifically OUR bundled mini (we tag those "KTUIMiniDatacard").
     --                Only our own mini is safe to hard-reload() as a fallback,
     --                because its onLoad tolerates a missing owner.
     -- A truly plain model (neither tag) gets our bundled script installed.
     local isKtui    = model.hasTag("KTUIMini")
     local isManaged = model.hasTag("KTUIMiniDatacard")
+    -- Our OWN managed mini carrying an older script version -> re-stamp (upgrade),
+    -- mirroring how the real extender re-applies its latest. Real extender minis
+    -- (KTUIMini but NOT managed) are never re-stamped -- only their state updates.
+    local ktuiOutdated = false
+    if isManaged and type(KTUI_MODELSCRIPT_VERSION) == "string" then
+        local modelVer
+        pcall(function() modelVer = model.getVar("KT_MODELSCRIPT_VERSION") end)
+        ktuiOutdated = modelVer ~= KTUI_MODELSCRIPT_VERSION
+    end
 
     ms.stats = ms.stats or {}
     ms.info  = ms.info or {}
 
     ensureKtuiState(ms, data)
-
-    -- Ownership + discovery for the base table's UI Extender tools. Those tools
-    -- (Ready Operatives / Save Positions / Load Positions) only act on objects
-    -- tagged 'KTUIMini' whose getOwningPlayer() is non-nil (state.owner == a seated
-    -- player's steam_id). Ensure the tag so the tools can find the model.
-    if not model.hasTag("KTUIMini") then model.addTag("KTUIMini") end
-    -- Owner is only meaningful for the REAL KT UI extender: its table tools gate on
-    -- getOwningPlayer(), and only it defines setOwningPlayer. Detect it by checking
-    -- the model's OWN script (robust even if a model carried over our mini's tags
-    -- before being extended). Our bundled mini is intentionally ownerless (secrets
-    -- stay visible to all) and has NO setOwningPlayer, so calling it there throws
-    -- "function is not a function". ms.owner must be written too, or the
-    -- script_state we save below would wipe the owner the extender just set.
-    local isRealExtender = ((model.getLuaScript() or ""):find("function setOwningPlayer", 1, true)) ~= nil
-    if isRealExtender and playerColor then
-        local pl = Player[playerColor]
-        local sid = pl and pl.steam_id or nil
-        if sid ~= nil and sid ~= "" then
-            ms.owner = sid
-            pcall(function() model.call("setOwningPlayer", sid) end)
-        end
-    end
 
     -- 1. Core stats
     local oldMaxWounds = ms.stats["Wounds"]
@@ -642,21 +637,38 @@ function diffAndApply(model, data, playerColor)
     end
 
     -- Write back
-    -- Only a truly plain model (no KTUI mini tag at all) gets our bundled script
-    -- installed. If the model is already a KTUI mini -- whether our bundled one or
-    -- the real KT UI extender the player upgraded it to -- we leave its script and
-    -- fancy UI intact and just refresh it in place (never overwrite the extender).
-    local needsScript = (not isKtui) and KTUI_MODELSCRIPT ~= nil and KTUI_MODELSCRIPT ~= ""
+    -- A plain model (no KTUI tag) OR our OWN managed mini on an OLD version gets
+    -- the current composed script (re)installed. Command-node replacement also
+    -- reinstalls current scripts and real extender minis; ordinary card loading
+    -- preserves real extender scripts and refreshes their state in place.
+    -- playerColor (optional) is used to assign the KTUI owner on a (re)stamp.
+    local installedScript = modelScript or KTUI_MODELSCRIPT
+    local needsScript = (replaceScript or (not isKtui) or ktuiOutdated) and installedScript ~= nil and installedScript ~= ""
     if #changes > 0 or needsScript then
+        -- Bake the KTUI owner into the persisted state (never a post-reload call).
+        -- The table-level Save/Load Positions + Ready Operatives SKIP any model whose
+        -- getOwningPlayer() is nil, so state.owner must be a seated player's steam_id
+        -- AND must survive every reload in the chain. Keep an existing owner, else
+        -- assign the loader; loadState restores it, so it persists (no race).
+        if not ms.owner or ms.owner == "" then
+            local prev
+            if isKtui then pcall(function() prev = model.call("getOwningPlayer") end) end
+            if prev and prev.steam_id and prev.steam_id ~= "" then
+                ms.owner = prev.steam_id
+            elseif playerColor and Player[playerColor] and Player[playerColor].steam_id ~= "" then
+                ms.owner = Player[playerColor].steam_id
+            end
+        end
         model.script_state = JSON.encode(ms)
         if needsScript then
-            -- Convert a plain model into our bundled KTUI mini: attach our model
-            -- script + tags, then reload to activate. Our onLoad tolerates a missing
-            -- owner, so this is safe.
-            model.setLuaScript(KTUI_MODELSCRIPT)
+            -- Install (plain model) or upgrade (our managed mini on an old version)
+            -- the composed KTUI script + tags, then reload. State (owner/wounds) is
+            -- preserved via the script_state we just wrote.
+            model.setLuaScript(installedScript)
             if not model.hasTag("KTUIMini") then model.addTag("KTUIMini") end
             model.addTag("KTUIMiniDatacard")
-            table.insert(changes, "Prepared model for KTUI extender")
+            table.insert(changes, replaceScript and "Installed command-node model script"
+                or (ktuiOutdated and "Upgraded KTUI script" or "Prepared model for KTUI extender"))
             model.reload()
         else
             -- Already a KTUI mini (ours OR the real extender): refresh in place so
@@ -921,10 +933,16 @@ function rotateBase90(playerColor)
         broadcastToColor("This operative has a round base -- nothing to rotate.", playerColor, Color.Orange)
         return
     end
-    ms.base = { x = bz, z = bx }   -- swap = rotate the oval 90 degrees
+    ms.base = { x = bz, z = bx }   -- swap = rotate the oval RING 90 degrees
+    -- Also rotate the operative FRONT: Sprint/Turn/Leap derive their heading from
+    -- the transform + a per-model kt_front offset (0/90/180/270). Bumping it here
+    -- keeps the movement direction aligned with the (now-rotated) long axis and
+    -- lets players correct sculpts that otherwise run tail-first. KTUI ignores
+    -- this key but preserves it (loadState/saveState round-trip the whole table).
+    ms.kt_front = ((tonumber(ms.kt_front) or 0) + 90) % 360
     model.script_state = JSON.encode(ms)
     model.reload()
-    broadcastToColor(string.format("Base rotated 90 (now %sx%s).", tostring(bz), tostring(bx)), playerColor, Color.Green)
+    broadcastToColor(string.format("Base rotated 90 (now %sx%s, front +%d).", tostring(bz), tostring(bx), ms.kt_front), playerColor, Color.Green)
 end
 
 function proceedLoad(playerColor, data, model, ignoreWeapons)
@@ -957,7 +975,7 @@ end
 -- short window for the previous reload to settle. Each step re-acquires the
 -- model via findModelOnCard(), so it always works on the freshly reloaded object.
 loadEverythingActive = false
-local LOAD_EVERYTHING_STEP_FRAMES = 25   -- window between mutate+reload steps
+local LOAD_EVERYTHING_STEP_FRAMES = 45   -- window between mutate+reload steps (the composed KTUI script is large -> reload needs longer to settle)
 
 -- Run nextFn(playerColor) after a short settle window, if the chain is still active.
 function loadEverythingWait(nextFn, playerColor)
@@ -1146,7 +1164,7 @@ function onApplyUpgrades(player, value, id)
             table.insert(chosenNames, opt.name)
         end
     end
-    local changes = diffAndApply(upgradeModel, data, upgradePlayerColor)
+    local changes = diffAndApply(upgradeModel, data, nil)
     broadcastToColor("Upgrades applied: " .. table.concat(chosenNames, ", "), upgradePlayerColor, Color.Green)
     local pc = upgradePlayerColor
     upgradeChosen = {}

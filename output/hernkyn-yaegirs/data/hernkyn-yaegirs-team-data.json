@@ -1,6 +1,6 @@
 {
   "team": "hernkyn-yaegirs",
-  "generated_at": "2026-07-25T17:12:37.509650+00:00",
+  "generated_at": "2026-10-28T13:54:44.308745+00:00",
   "datacards": [
     {
       "name": "YAEGIR THEYN",
@@ -28,7 +28,7 @@
           "name": "Bolt shotgun (long range)",
           "attacks": "4",
           "hit": "5+",
-          "damage": "2/2"
+          "damage": "2/3"
         },
         {
           "name": "Plasma knife",
@@ -54,7 +54,18 @@
         "LEAGUES OF VOTANN",
         "LEADER",
         "THEYN"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x"
+        ]
+      }
     },
     {
       "name": "YAEGIR BLADEKYN",
@@ -94,7 +105,19 @@
         "HERNKYN YAEGIR",
         "LEAGUES OF VOTANN",
         "BLADEKYN"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged"
+        ],
+        "weapon_rule_names": [
+          "Limited x",
+          "Range x",
+          "Silent",
+          "Ceaseless"
+        ]
+      }
     },
     {
       "name": "YAEGIR BOMBAST",
@@ -133,7 +156,17 @@
         "HERNKYN YAEGIR",
         "LEAGUES OF VOTANN",
         "BOMBAST"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Ceaseless",
+          "Range x"
+        ]
+      }
     },
     {
       "name": "YAEGIR GUNNER",
@@ -143,6 +176,13 @@
       "wounds": 8,
       "base_size": 28,
       "weapons": [
+        {
+          "name": "APM launcher (armour piercing)",
+          "attacks": "5",
+          "hit": "4+",
+          "damage": "4/5",
+          "special_rules": "Heavy (Reposition only), Piercing 1,  Bipod*"
+        },
         {
           "name": "APM launcher (breaching)",
           "attacks": "5",
@@ -175,7 +215,20 @@
         "HERNKYN YAEGIR",
         "LEAGUES OF VOTANN",
         "GUNNER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Heavy",
+          "Piercing x",
+          "Blast x"
+        ]
+      }
     },
     {
       "name": "YAEGIR IRONBRAEK",
@@ -214,7 +267,16 @@
         "HERNKYN YAEGIR",
         "LEAGUES OF VOTANN",
         "IRONBRAEK"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x"
+        ]
+      }
     },
     {
       "name": "YAEGIR RIFLEKYN",
@@ -267,7 +329,21 @@
         "HERNKYN YAEGIR",
         "LEAGUES OF VOTANN",
         "RIFLEKYN"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Devastating x",
+          "Heavy",
+          "Piercing x",
+          "Silent"
+        ]
+      }
     },
     {
       "name": "YAEGIR TRACKER",
@@ -313,7 +389,20 @@
         "HERNKYN YAEGIR",
         "LEAGUES OF VOTANN",
         "TRACKER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Silent",
+          "Limited x",
+          "Range x",
+          "Rending"
+        ]
+      }
     },
     {
       "name": "YAEGIR WARRIOR",
@@ -341,7 +430,7 @@
           "name": "Bolt shotgun (long range)",
           "attacks": "4",
           "hit": "5+",
-          "damage": "2/2"
+          "damage": "2/3"
         },
         {
           "name": "Fists",
@@ -368,7 +457,41 @@
         "HERNKYN YAEGIR",
         "LEAGUES OF VOTANN",
         "WARRIOR"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "melee",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x"
+        ],
+        "selection": {
+          "groups": [
+            [
+              {
+                "label": "Bolt revolver; plasma knife",
+                "weapons": [
+                  0,
+                  4
+                ]
+              },
+              {
+                "label": "Bolt shotgun; fists",
+                "weapons": [
+                  1,
+                  2,
+                  3
+                ]
+              }
+            ]
+          ],
+          "fixed": []
+        }
+      }
     }
   ],
   "equipment": [
@@ -378,7 +501,7 @@
     },
     {
       "name": "stabilised-bolt-shells",
-      "text": "HERNKYN YAEGIR\nFACTION EQUIPMENT\nSTABILISED BOLT SHELLS\nFitted with fin stabilisers, these specially crafted bolt \nshells are designed to enhance accuracy and lethality at \nextreme range.\nUp to twice per turning point, whenever a friendly \nHERNKYN YAEGIR operative is performing the \nShoot action and you select a bolt shotgun (long \nrange), you can use this rule. If you do, until the \nend of that action, improve the Hit stat of that \nweapon by 1 and add 1 to both of its Dmg stats."
+      "text": "HERNKYN YAEGIR\nFACTION EQUIPMENT\nSTABILISED BOLT SHELLS\nFitted with fin stabilisers, these specially crafted bolt \nshells are designed to enhance accuracy and lethality at \nextreme range.\nUp to twice per turning point, whenever a friendly \nHERNKYN YAEGIR operative is performing the \nShoot action and you select a bolt shotgun (long \nrange), you can use this rule. If you do, until the \nend of that action, improve the Hit stat of that \nweapon by 1 and add 1 to both of its Dmg stats, \nand that weapon has the Accurate 1 weapon rule."
     },
     {
       "name": "firestorm-bolt-shells",
@@ -420,7 +543,7 @@
     },
     {
       "name": "stalwart-defence",
-      "text": "HERNKYN YAEGIR\nFIREFIGHT PLOY\nSTALWART DEFENCE\nThe Kin are steadfast and determined in defence. They \nmaintain accurate and punishing fire even as their \nenemies close in.\nUse this firefight ploy when an enemy operative \nends the Charge action within control range of \na friendly HERNKYN YAEGIR operative. Select \none other friendly HERNKYN YAEGIR operative \nvisible to and within 6\" of that friendly operative, \nbut that isn’t itself within control range of enemy \noperatives. The selected operative can perform a \nfree Shoot action. During that action:\n• It can target that enemy operative even though \nit’s within control range of a friendly operative.\n• You cannot select any other enemy operative \nas a valid target.\n• You cannot select a frag or krak grenade, or \na weapon with the Blast or x\" Devastating \nx weapon rule (i.e. Devastating with a distance)."
+      "text": "HERNKYN YAEGIR\nFIREFIGHT PLOY\nSTALWART DEFENCE\nThe Kin are steadfast and determined in defence. They \nmaintain accurate and punishing fire even as their \nenemies close in.\nUse this firefight ploy when an enemy operative \nends the Charge action within control range of \na friendly HERNKYN YAEGIR operative. Select \none other friendly HERNKYN YAEGIR operative \nvisible to and within 6\" of that friendly operative, \nbut that isn’t itself within control range of enemy \noperatives. The selected operative can perform a \nfree Shoot action. During that action:\n• It can target that enemy operative even though \nit’s within control range of a friendly operative.\n• You cannot select any other enemy operative \nas a valid target.\n• You cannot select a frag or krak grenade, or \na weapon with the Blast or x\" Devastating \nx weapon rule (i.e. Devastating with a distance).\nYou cannot use this ploy during an activation in \nwhich you’ve interrupted with the Guard action \n(or vice versa)."
     }
   ],
   "operatives_selection": [
@@ -460,5 +583,16 @@
       "name": "in-position",
       "text": "HERNKYN YAEGIR\nSTRATEGY PLOY\nIN POSITION\nHernkyn Yaegirs stalk their enemies with great patience, \nusing the surrounding terrain to conceal themselves \nfrom prying eyes.\nWhenever a friendly HERNKYN YAEGIR \noperative has a Conceal order and is in cover, \nit cannot be selected as a valid target, taking \nprecedence over all other rules (e.g. Seek, \nVantage terrain) except being within 2\"."
     }
-  ]
+  ],
+  "node_weapon_rules": {
+    "Range x": "Only operatives within x of the active operative can be valid targets, e.g. Range 9\".",
+    "Limited x": "After an operative uses this weapon a number of times in the battle equal to x, they no longer have it. If it's used multiple times in one action (e.g. Blast), treat this as one use.",
+    "Silent": "An operative can perform the Shoot action with this weapon while it has a Conceal order.",
+    "Ceaseless": "You can re-roll any of your attack dice results of one result (e.g. results of 2).",
+    "Heavy": "An operative cannot use this weapon in an activation or counteraction in which it moved, and it cannot move in an activation or counteraction in which it used this weapon. If the rule is Heavy (x only), where x is a move action, only that move is allowed, e.g. Heavy (Dash only). This weapon rule has no effect on preventing the Guard action.",
+    "Piercing x": "The defender collects x less defence dice, e.g. Piercing 1. If the rule is Piercing Crits x, this only comes into effect if you retain any critical successes.",
+    "Blast x": "The target you select is the primary target. After shooting the primary target, shoot with this weapon against each secondary target in an order of your choice (roll each sequence separately). Secondary targets are other operatives visible to and within x of the primary target, e.g. Blast 2\" (they are all valid targets, regardless of a Conceal order). Secondary targets are in cover and obscured if the primary target was.",
+    "Devastating x": "Each retained critical success immediately inflicts x damage on the operative this weapon is being used against, e.g. Devastating 3. If the rule starts with a distance (e.g. 1\" Devastating x), inflict x damage on that operative and each other operative visible to and within that distance of it. Note that success isn't discarded after doing so - it can still be resolved later in the sequence.",
+    "Rending": "If you retain any critical successes, you can retain one of your normal successes as a critical success instead."
+  }
 }

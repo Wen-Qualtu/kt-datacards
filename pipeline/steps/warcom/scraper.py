@@ -46,27 +46,42 @@ def _is_team_rules_file(filename: str, link_text: str) -> bool:
     return not any(p in filename or p in link_text for p in _EXCLUDE_PATTERNS)
 
 
-async def _expand_team_rules_section(page) -> object | None:
-    """Find + expand the Team Rules section and return its container locator."""
+async def _expand_section(page, heading: str) -> object | None:
+    """Find + expand a named download section and return its container locator.
+
+    ``heading`` is the section title as shown on the page (e.g. ``"Team Rules"``
+    or ``"Recently Added"``); matching is case-insensitive substring.
+    """
     selectors = [
-        'h2:has-text("Team Rules")',
-        'h3:has-text("Team Rules")',
-        'button:has-text("Team Rules")',
-        'summary:has-text("Team Rules")',
-        '[aria-label*="Team Rules"]',
+        f'h2:has-text("{heading}")',
+        f'h3:has-text("{heading}")',
+        f'h4:has-text("{heading}")',
+        f'button:has-text("{heading}")',
+        f'summary:has-text("{heading}")',
+        f'[aria-label*="{heading}"]',
     ]
     for selector in selectors:
         try:
             elem = page.locator(selector).first
             if await elem.count() == 0:
                 continue
-            logger.info(f"Found Team Rules section with: {selector}")
-            if await elem.get_attribute("aria-expanded") == "false":
-                await elem.click(timeout=3000)
+            logger.info(f"Found '{heading}' section with: {selector}")
+            # The accordion toggle is the heading's enclosing button; expand if collapsed.
+            toggle = elem.locator("xpath=ancestor-or-self::button[1]").first
+            toggle = toggle if await toggle.count() > 0 else elem
+            if await toggle.get_attribute("aria-expanded") == "false":
+                await toggle.click(timeout=3000)
                 await page.wait_for_timeout(2000)
+            # This section's links live in its OWN accordion item (nearest ancestor
+            # div with the item border class), NOT the outer <section> that wraps
+            # every accordion (which would mix Recently Added + Team Rules + …).
             container = elem.locator(
-                "xpath=ancestor::section | "
-                "ancestor::div[contains(@class, 'accordion')] | ancestor::details"
+                "xpath=ancestor::div[contains(@class,'border-b')][1]"
+            ).first
+            if await container.count() > 0:
+                return container
+            container = elem.locator(
+                "xpath=ancestor::div[contains(@class, 'accordion')][1] | ancestor::details[1]"
             ).first
             if await container.count() > 0:
                 return container
@@ -78,8 +93,16 @@ async def _expand_team_rules_section(page) -> object | None:
     return None
 
 
-async def extract_pdf_urls_from_page(url: str = DOWNLOADS_URL) -> list[str]:
-    """Return team-rules PDF URLs from the Kill Team downloads page."""
+async def extract_pdf_urls_from_page(
+    url: str = DOWNLOADS_URL, section: str = "Team Rules"
+) -> list[str]:
+    """Return team-rules PDF URLs from a named section of the Kill Team downloads page.
+
+    ``section`` selects which page accordion to read: the default ``"Team Rules"``
+    (all teams) or ``"Recently Added"`` (only the PDFs updated in the latest
+    balance dataslate / release). Non-team files (update logs, mission packs,
+    companions, …) are filtered out of either section by ``_is_team_rules_file``.
+    """
     logger.info("Launching browser to fetch Kill Team downloads page...")
     async with async_playwright() as p:
         browser = await p.chromium.launch(headless=True)
@@ -98,7 +121,7 @@ async def extract_pdf_urls_from_page(url: str = DOWNLOADS_URL) -> list[str]:
             except Exception:
                 pass
 
-            container = await _expand_team_rules_section(page)
+            container = await _expand_section(page, section)
 
             team_pdfs: list[str] = []
             if container is not None:
@@ -110,7 +133,7 @@ async def extract_pdf_urls_from_page(url: str = DOWNLOADS_URL) -> list[str]:
                     full_url = _absolute_url(href)
                     if _is_team_rules_file(Path(full_url).name, text):
                         team_pdfs.append(full_url)
-            else:
+            elif section == "Team Rules":
                 logger.warning(
                     "Team Rules container not found; falling back to filename filter"
                 )
@@ -123,11 +146,15 @@ async def extract_pdf_urls_from_page(url: str = DOWNLOADS_URL) -> list[str]:
                     if ("team_rules" in name or "teamrules" in name or "_online_rules" in name) \
                             and _is_team_rules_file(name, ""):
                         team_pdfs.append(full_url)
+            else:
+                logger.warning(
+                    f"'{section}' section not found; no reliable filename fallback"
+                )
         finally:
             await browser.close()
 
     team_pdfs = list(dict.fromkeys(team_pdfs))  # de-dup, preserve order
-    logger.info(f"Found {len(team_pdfs)} team-rules PDFs")
+    logger.info(f"Found {len(team_pdfs)} PDFs in section '{section}'")
     return team_pdfs
 
 

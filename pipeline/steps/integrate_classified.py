@@ -157,8 +157,20 @@ def run(teams=None, source=None, force=False):
         # analysis, etc.) can group entities without knowing which track ran.
         manifest_path = paths.integration_manifest_file(team)
         manifest_path.parent.mkdir(parents=True, exist_ok=True)
+        manifest = dict(structure)
+        # A partial source (e.g. a datacards-only app PDF) must not drop sections another track supplied.
+        if manifest_path.exists():
+            with open(manifest_path, "r", encoding="utf-8") as mf:
+                previous = json.load(mf)
+            for key in TYPE_KEYS:
+                if not manifest.get(key) and previous.get(key):
+                    manifest[key] = previous[key]
+                    logger.info(f"  kept existing '{key}' section from previous manifest")
+            manifest = {k: manifest[k] for k in ["team", *TYPE_KEYS] if k in manifest} | {
+                k: v for k, v in manifest.items() if k not in ("team", *TYPE_KEYS)
+            }
         with open(manifest_path, "w", encoding="utf-8") as mf:
-            json.dump(structure, mf, indent=2, ensure_ascii=False)
+            json.dump(manifest, mf, indent=2, ensure_ascii=False)
         logger.info(f"  wrote {stats['written']} classified PDFs (missing {stats['missing']})")
 
         state.record_output("integrate_classified", "manifest.json", manifest_path)

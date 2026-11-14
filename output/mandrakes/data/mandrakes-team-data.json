@@ -42,7 +42,16 @@
         "DRUKHARI",
         "LEADER",
         "NIGHTFIEND"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "melee",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Shock"
+        ]
+      }
     },
     {
       "name": "MANDRAKE ABYSSAL",
@@ -91,7 +100,17 @@
         "AELDARI",
         "DRUKHARI",
         "ABYSSAL"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Blast x"
+        ]
+      }
     },
     {
       "name": "MANDRAKE CHOOSER OF THE FLESH",
@@ -132,7 +151,16 @@
         "AELDARI",
         "DRUKHARI",
         "CHOOSER OF THE FLESH"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "melee",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Brutal"
+        ]
+      }
     },
     {
       "name": "MANDRAKE DIRGEMAW",
@@ -181,7 +209,20 @@
         "AELDARI",
         "DRUKHARI",
         "DIRGEMAW"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "melee",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Devastating x",
+          "Range x",
+          "Seek",
+          "Stun"
+        ]
+      }
     },
     {
       "name": "MANDRAKE SHADEWEAVER",
@@ -223,7 +264,14 @@
         "AELDARI",
         "DRUKHARI",
         "SHADEWEAVER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "melee",
+          "melee"
+        ],
+        "weapon_rule_names": []
+      }
     },
     {
       "name": "MANDRAKE WARRIOR",
@@ -260,7 +308,14 @@
         "AELDARI",
         "DRUKHARI",
         "WARRIOR"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "melee",
+          "melee"
+        ],
+        "weapon_rule_names": []
+      }
     }
   ],
   "equipment": [
@@ -347,5 +402,14 @@
       "name": "inescapable-nightmare",
       "text": "MANDRAKE\nSTRATEGY PLOY\nINESCAPABLE NIGHTMARE\nThe nightmarish appearance of a Mandrake is matched \nby its terrifying speed and accuracy.\nWhenever a friendly MANDRAKE operative is \nshooting, fighting or retaliating, if it’s WITHIN \nSHADOW, you can re-roll one of your attack dice."
     }
-  ]
+  ],
+  "node_weapon_rules": {
+    "Shock": "The first time you strike with a critical success in each sequence, also discard one of your opponent's unresolved normal successes (or one of their critical successes if there are none).",
+    "Blast x": "The target you select is the primary target. After shooting the primary target, shoot with this weapon against each secondary target in an order of your choice (roll each sequence separately). Secondary targets are other operatives visible to and within x of the primary target, e.g. Blast 2\" (they are all valid targets, regardless of a Conceal order). Secondary targets are in cover and obscured if the primary target was.",
+    "Brutal": "Your opponent can only block with critical successes.",
+    "Devastating x": "Each retained critical success immediately inflicts x damage on the operative this weapon is being used against, e.g. Devastating 3. If the rule starts with a distance (e.g. 1\" Devastating x), inflict x damage on that operative and each other operative visible to and within that distance of it. Note that success isn't discarded after doing so - it can still be resolved later in the sequence.",
+    "Range x": "Only operatives within x of the active operative can be valid targets, e.g. Range 9\".",
+    "Seek": "When selecting a valid target, operatives with a Conceal order cannot use terrain for cover. If the rule is Seek Light, they cannot use Light terrain for cover. While this can allow operatives to be targeted (assuming they're visible), it doesn't remove their cover save (if any).",
+    "Stun": "If you retain any critical successes, subtract 1 from the APL stat of the operative this weapon is being used against until the end of its next activation."
+  }
 }

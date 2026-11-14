@@ -1,6 +1,6 @@
 {
   "team": "deathwatch",
-  "generated_at": "2026-07-25T17:11:32.769425+00:00",
+  "generated_at": "2026-10-28T13:54:05.380559+00:00",
   "datacards": [
     {
       "name": "DEATHWATCH WATCH SERGEANT",
@@ -49,7 +49,19 @@
         "ADEPTUS ASTARTES",
         "LEADER",
         "WATCH SERGEANT"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Piercing x",
+          "Range x",
+          "Hot"
+        ]
+      }
     },
     {
       "name": "DEATHWATCH AEGIS VETERAN",
@@ -90,7 +102,17 @@
         "IMPERIUM",
         "ADEPTUS ASTARTES",
         "AEGIS"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Shock"
+        ]
+      }
     },
     {
       "name": "DEATHWATCH BLADEMASTER VETERAN",
@@ -113,6 +135,13 @@
           "hit": "3+",
           "damage": "4/6",
           "special_rules": "Brutal, Lethal 5+"
+        },
+        {
+          "name": "Xenophase blade (phase sweep)",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "4/6",
+          "special_rules": "Brutal, Lethal 5+, Phase Sweep*"
         }
       ],
       "passive_abilities": [
@@ -131,7 +160,19 @@
         "IMPERIUM",
         "ADEPTUS ASTARTES",
         "BLADEMASTER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Piercing x",
+          "Range x",
+          "Brutal"
+        ]
+      }
     },
     {
       "name": "DEATHWATCH BOMBARD VETERAN",
@@ -175,7 +216,20 @@
         "ADEPTUS ASTARTES",
         "GRAVIS",
         "BOMBARD"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Piercing x",
+          "Torrent x"
+        ]
+      }
     },
     {
       "name": "DEATHWATCH BREACHER VETERAN",
@@ -226,7 +280,25 @@
         "ADEPTUS ASTARTES",
         "GRAVIS",
         "BREACHER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Blast x",
+          "Piercing x",
+          "Torrent x",
+          "Devastating x",
+          "Heavy",
+          "Limited x",
+          "Range x"
+        ]
+      }
     },
     {
       "name": "DEATHWATCH DEMOLISHER VETERAN",
@@ -267,7 +339,18 @@
         "IMPERIUM",
         "ADEPTUS ASTARTES",
         "DEMOLISHER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Shock",
+          "Stun"
+        ]
+      }
     },
     {
       "name": "DEATHWATCH DISRUPTOR VETERAN",
@@ -294,7 +377,7 @@
       "passive_abilities": [
         {
           "name": "Advanced Omni-Scrambler",
-          "description": "STRATEGIC GAMBIT. Select one enemy operative visible to or within 6\" of this operative, then roll one D6. In the Firefight phase of this turning point, that enemy operative cannot be activated or perform actions until one of the following is true:\n• Your opponent has activated a number of enemy operatives equal to the result of the D6.\n• It’s the last enemy operative to be activated."
+          "description": "STRATEGIC GAMBIT. Select one enemy operative visible to or within 6\" of this operative, then roll one D6. In the Firefight phase of this turning point, that enemy operative cannot be activated or perform actions until one of the following is true:\n• Your opponent has completed the activation of a number of enemy operatives equal to the result of the D6.\n• It’s the last enemy operative to be activated."
         },
         {
           "name": "Auspex Triangulation",
@@ -307,7 +390,14 @@
         "IMPERIUM",
         "ADEPTUS ASTARTES",
         "DISRUPTOR"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": []
+      }
     },
     {
       "name": "DEATHWATCH GUNNER VETERAN",
@@ -350,7 +440,20 @@
         "IMPERIUM",
         "ADEPTUS ASTARTES",
         "GUNNER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Piercing x",
+          "Hot"
+        ]
+      }
     },
     {
       "name": "DEATHWATCH HEADTAKER VETERAN",
@@ -390,7 +493,17 @@
         "IMPERIUM",
         "ADEPTUS ASTARTES",
         "HEADTAKER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Piercing x",
+          "Range x"
+        ]
+      }
     },
     {
       "name": "DEATHWATCH HORDE-SLAYER VETERAN",
@@ -441,7 +554,22 @@
         "ADEPTUS ASTARTES",
         "GRAVIS",
         "HORDE-SLAYER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Saturate",
+          "Torrent x",
+          "Piercing x"
+        ]
+      }
     },
     {
       "name": "DEATHWATCH MARKSMAN VETERAN",
@@ -483,7 +611,18 @@
         "IMPERIUM",
         "ADEPTUS ASTARTES",
         "MARKSMAN"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Heavy",
+          "Piercing x"
+        ]
+      }
     }
   ],
   "equipment": [
@@ -517,7 +656,7 @@
   "firefight_ploys": [
     {
       "name": "suffer-not-the-alien",
-      "text": "DEATHWATCH\nFIREFIGHT PLOY\nSUFFER NOT THE ALIEN\nEvery tool at their disposal, every scrap of knowledge, \nis sharpened upon the whetstone of the Deathwatch’s \nhatred of the alien.\nUse this firefight ploy after rolling your attack dice \nfor a friendly DEATHWATCH operative, if it’s \nshooting against or fighting against an operative \nthat doesn’t have the CHAOS or IMPERIUM \nkeyword. You can re-roll any of your attack dice."
+      "text": "DEATHWATCH\nFIREFIGHT PLOY\nSUFFER NOT THE ALIEN\nEvery tool at their disposal, every scrap of knowledge, \nis sharpened upon the whetstone of the Deathwatch’s \nhatred of the alien.\nUse this firefight ploy after rolling your attack dice \nfor a friendly DEATHWATCH operative, if it’s \nshooting against, fighting against, or retaliating \nagainst an operative that doesn’t have the CHAOS \nor IMPERIUM keyword. You can re-roll any of your \nattack dice."
     },
     {
       "name": "auspicator-tracking",
@@ -554,7 +693,7 @@
   "strategy_ploys": [
     {
       "name": "mission-tactics",
-      "text": "DEATHWATCH\nSTRATEGY PLOY\nMISSION TACTICS\nThrough collated strategic data and hard-won combat \nexperience, the Deathwatch possess the tactics to \ncombat almost any foe.\nSelect Conceal or Engage. Whenever a friendly \nDEATHWATCH operative is shooting against or \nfighting against an enemy operative that has that \norder, that friendly operative’s weapons have the \nBalanced weapon rule."
+      "text": "DEATHWATCH\nSTRATEGY PLOY\nMISSION TACTICS\nThrough collated strategic data and hard-won combat \nexperience, the Deathwatch possess the tactics to \ncombat almost any foe.\nSelect Conceal or Engage. Whenever a friendly \nDEATHWATCH operative is shooting against, \nfighting against, or retaliating against an enemy \noperative that has that order, that friendly \noperative’s weapons have the Balanced \nweapon rule."
     },
     {
       "name": "the-long-vigil",
@@ -568,5 +707,19 @@
       "name": "and-they-shall-know-no-fear",
       "text": "DEATHWATCH\nSTRATEGY PLOY\nAND THEY SHALL KNOW NO FEAR\nSpace Marines possess extraordinary courage and are \nutterly unflinching in the face of terrifying horrors and \noverwhelming odds.\nYou can ignore any changes to the stats of \nfriendly DEATHWATCH operatives from being \ninjured (including their weapons’ stats)."
     }
-  ]
+  ],
+  "node_weapon_rules": {
+    "Piercing x": "The defender collects x less defence dice, e.g. Piercing 1. If the rule is Piercing Crits x, this only comes into effect if you retain any critical successes.",
+    "Range x": "Only operatives within x of the active operative can be valid targets, e.g. Range 9\".",
+    "Hot": "After an operative uses this weapon, roll one D6: if the result is less than the weapon's Hit stat, inflict damage on that operative equal to the result multiplied by two. If it's used multiple times in one action (e.g. Blast), still only roll one D6.",
+    "Shock": "The first time you strike with a critical success in each sequence, also discard one of your opponent's unresolved normal successes (or one of their critical successes if there are none).",
+    "Brutal": "Your opponent can only block with critical successes.",
+    "Torrent x": "Select a valid target as normal as the primary target, then select any number of other valid targets within x of the first valid target, but not within control range of friendly operatives, as secondary targets, e.g. Torrent 2\". Shoot with this weapon against all of them in an order of your choice (roll each sequence separately).",
+    "Blast x": "The target you select is the primary target. After shooting the primary target, shoot with this weapon against each secondary target in an order of your choice (roll each sequence separately). Secondary targets are other operatives visible to and within x of the primary target, e.g. Blast 2\" (they are all valid targets, regardless of a Conceal order). Secondary targets are in cover and obscured if the primary target was.",
+    "Devastating x": "Each retained critical success immediately inflicts x damage on the operative this weapon is being used against, e.g. Devastating 3. If the rule starts with a distance (e.g. 1\" Devastating x), inflict x damage on that operative and each other operative visible to and within that distance of it. Note that success isn't discarded after doing so - it can still be resolved later in the sequence.",
+    "Heavy": "An operative cannot use this weapon in an activation or counteraction in which it moved, and it cannot move in an activation or counteraction in which it used this weapon. If the rule is Heavy (x only), where x is a move action, only that move is allowed, e.g. Heavy (Dash only). This weapon rule has no effect on preventing the Guard action.",
+    "Limited x": "After an operative uses this weapon a number of times in the battle equal to x, they no longer have it. If it's used multiple times in one action (e.g. Blast), treat this as one use.",
+    "Stun": "If you retain any critical successes, subtract 1 from the APL stat of the operative this weapon is being used against until the end of its next activation.",
+    "Saturate": "The defender cannot retain cover saves."
+  }
 }

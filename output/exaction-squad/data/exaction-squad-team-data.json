@@ -1,6 +1,6 @@
 {
   "team": "exaction-squad",
-  "generated_at": "2026-07-25T17:11:34.997430+00:00",
+  "generated_at": "2026-10-28T13:54:06.174024+00:00",
   "datacards": [
     {
       "name": "ARBITES PROCTOR-EXACTANT",
@@ -31,6 +31,13 @@
           "special_rules": "Range 8\""
         },
         {
+          "name": "Dominator maul & assault shield",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "4/4",
+          "special_rules": "Lethal 5+, Shock, Repress*"
+        },
+        {
           "name": "Repression baton",
           "attacks": "3",
           "hit": "3+",
@@ -58,7 +65,20 @@
         "ADEPTUS ARBITES",
         "LEADER",
         "PROCTOR-EXACTANT"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "melee",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Shock"
+        ]
+      }
     },
     {
       "name": "ARBITES CHIRURGANT",
@@ -106,7 +126,17 @@
         "ADEPTUS ARBITES",
         "MEDIC",
         "CHIRURGANT"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x"
+        ]
+      }
     },
     {
       "name": "ARBITES LEASHMASTER",
@@ -179,7 +209,18 @@
         "IMPERIUM",
         "ADEPTUS ARBITES",
         "LEASHMASTER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x"
+        ]
+      }
     },
     {
       "name": "R-VR CYBER-MASTIFF",
@@ -213,7 +254,13 @@
         "IMPERIUM",
         "ADEPTUS ARBITES",
         "R-VR CYBER-MASTIFF"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "melee"
+        ],
+        "weapon_rule_names": []
+      }
     },
     {
       "name": "ARBITES CASTIGATOR",
@@ -264,7 +311,19 @@
         "IMPERIUM",
         "ADEPTUS ARBITES",
         "CASTIGATOR"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Rending",
+          "Shock"
+        ]
+      }
     },
     {
       "name": "ARBITES GUNNER",
@@ -314,7 +373,24 @@
         "IMPERIUM",
         "ADEPTUS ARBITES",
         "GUNNER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Piercing x",
+          "Heavy",
+          "Torrent x",
+          "Range x",
+          "Severe",
+          "Stun"
+        ]
+      }
     },
     {
       "name": "ARBITES MALOCATOR",
@@ -361,7 +437,17 @@
         "IMPERIUM",
         "ADEPTUS ARBITES",
         "MALOCATOR"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x"
+        ]
+      }
     },
     {
       "name": "ARBITES MARKSMAN",
@@ -372,10 +458,24 @@
       "base_size": 28,
       "weapons": [
         {
+          "name": "Executioner shotgun (concealed)",
+          "attacks": "4",
+          "hit": "2+",
+          "damage": "4/0",
+          "special_rules": "Devastating 4, Heavy, Silent, Concealed Position*"
+        },
+        {
           "name": "Executioner shotgun (mobile)",
           "attacks": "4",
           "hit": "3+",
           "damage": "4/4"
+        },
+        {
+          "name": "Executioner shotgun (stationary)",
+          "attacks": "4",
+          "hit": "2+",
+          "damage": "4/0",
+          "special_rules": "Devastating 4, Heavy"
         },
         {
           "name": "Repression baton",
@@ -401,7 +501,20 @@
         "IMPERIUM",
         "ADEPTUS ARBITES",
         "MARKSMAN"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Devastating x",
+          "Heavy",
+          "Silent"
+        ]
+      }
     },
     {
       "name": "ARBITES REVELATUM",
@@ -411,6 +524,13 @@
       "wounds": 8,
       "base_size": 28,
       "weapons": [
+        {
+          "name": "Scoped shotpistol (short range)",
+          "attacks": "4",
+          "hit": "3+",
+          "damage": "3/3",
+          "special_rules": "Range 8\", Lethal 5+"
+        },
         {
           "name": "Scoped shotpistol (long range)",
           "attacks": "4",
@@ -441,7 +561,17 @@
         "IMPERIUM",
         "ADEPTUS ARBITES",
         "REVELATUM"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x"
+        ]
+      }
     },
     {
       "name": "ARBITES SUBDUCTOR",
@@ -478,7 +608,17 @@
         "IMPERIUM",
         "ADEPTUS ARBITES",
         "SUBDUCTOR"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Shock"
+        ]
+      }
     },
     {
       "name": "ARBITES VIGILANT",
@@ -520,7 +660,17 @@
         "IMPERIUM",
         "ADEPTUS ARBITES",
         "VIGILANT"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x"
+        ]
+      }
     },
     {
       "name": "ARBITES VOX-SIGNIFIER",
@@ -562,7 +712,17 @@
         "IMPERIUM",
         "ADEPTUS ARBITES",
         "VOX-SIGNIFIER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x"
+        ]
+      }
     }
   ],
   "equipment": [
@@ -612,38 +772,7 @@
     },
     {
       "name": "execution-order",
-      "text": "EXACTION SQUAD\nFIREFIGHT PLOY\nEXECUTION ORDER\nThose who have earned the ire of the Imperium are \nmarked by the Adeptus Arbites for execution, their \ntermination prioritised.\nUse this firefight ploy when an enemy operative \nperforms a mission action (excluding Operate \nHatch). Alternatively, use it at the end of the \nFirefight phase and select one enemy operative \nthat controls an objective marker. \nIn either case, the next time your opponent would \nactivate that enemy operative, you can interrupt \nthat activation and activate a ready friendly \nEXACTION SQUAD operative. If you do, during \nthat activation, that friendly operative must shoot \nagainst or fight against that enemy operative, and \ncannot do so against any other enemy operatives \nuntil it does (if this isn’t possible, that friendly \noperative’s activation is cancelled). \nAfter completing that friendly operative’s \nactivation, continue that enemy operative’s \nactivation (if possible). You cannot use this ploy \nagain until that enemy operative is activated \nor incapacitated."
-    }
-  ],
-  "operatives_selection": [
-    {
-      "name": "OPERATIVE SELECTION",
-      "text": "EXACTION SQUAD \nKILL TEAM\nARCHETYPES: SECURITY, SEEK & DESTROY\nOPERATIVES\n \n↘ 1 EXACTION SQUAD PROCTOR-EXACTANT \noperative with one of the following options:\n• Combat shotgun; repression baton\n• Shotpistol; dominator maul & assault shield \n \n↘ 10 EXACTION SQUAD operatives selected \nfrom the following list:\n• CASTIGATOR\n• CHIRURGANT\n• LEASHMASTER\n• R-VR \nCYBER-MASTIFF\n• MALOCATOR\n• MARKSMAN\n• REVELATUM\n• SUBDUCTOR\n• VIGILANT\n• VOX-SIGNIFIER\n• GUNNER with one of the following options:\n \n○ Grenade launcher; repression baton\n \n○ Heavy stubber; repression baton\n \n○ Webber; repression baton\nCONTINUES ON OTHER SIDE\n\n---\n\nOther than GUNNER, SUBDUCTOR and VIGILANT \noperatives, your kill team can only include each \noperative on this list once. Your kill team can \nonly include up to two GUNNER operatives (each \nmust have a different option) and up to four \nSUBDUCTOR operatives.",
-      "selection": {
-        "ARBITES PROCTOR-EXACTANT": [
-          [
-            "Combat shotgun; repression baton",
-            "Shotpistol; dominator maul & assault shield"
-          ]
-        ],
-        "ARBITES CASTIGATOR": [],
-        "ARBITES CHIRURGANT": [],
-        "ARBITES LEASHMASTER": [],
-        "R-VR CYBER-MASTIFF": [],
-        "ARBITES MALOCATOR": [],
-        "ARBITES MARKSMAN": [],
-        "ARBITES REVELATUM": [],
-        "ARBITES SUBDUCTOR": [],
-        "ARBITES VIGILANT": [],
-        "ARBITES VOX-SIGNIFIER": [],
-        "ARBITES GUNNER": [
-          [
-            "Grenade launcher; repression baton",
-            "Heavy stubber; repression baton",
-            "Webber; repression baton"
-          ]
-        ]
-      }
+      "text": "EXACTION SQUAD\nFIREFIGHT PLOY\nEXECUTION ORDER\nThose who have earned the ire of the Imperium are \nmarked by the Adeptus Arbites for execution, their \ntermination prioritised.\nUse this firefight ploy when an enemy operative \nperforms a mission action (excluding Breach \nand Operate Hatch). Alternatively, use it at the \nend of the Firefight phase and select one enemy \noperative that controls an objective marker. \nIn either case, the next time your opponent would \nactivate that enemy operative, you can interrupt \nthat activation and activate a ready friendly \nEXACTION SQUAD operative. If you do, during \nthat activation, that friendly operative must shoot \nagainst or fight against that enemy operative, and \ncannot do so against any other enemy operatives \nuntil it does (if this isn’t possible, that friendly \noperative’s activation is cancelled). \nAfter completing that friendly operative’s \nactivation, continue that enemy operative’s \nactivation (if possible). You cannot use this ploy \nagain until that enemy operative is activated \nor incapacitated."
     }
   ],
   "strategy_ploys": [
@@ -663,5 +792,17 @@
       "name": "terminal-decree",
       "text": "EXACTION SQUAD\nSTRATEGY PLOY\nTERMINAL DECREE\nA dangerous quarry has been judged guilty of heinous \ncrimes against the Imperium and must be terminated \nwith extreme prejudice.\nWhenever a friendly EXACTION SQUAD \noperative is shooting an enemy operative within \n6\" of it, or whenever a friendly EXACTION \nSQUAD GUNNER operative is shooting, that \nfriendly operative’s ranged weapons have the \nBalanced weapon rule."
     }
-  ]
+  ],
+  "node_weapon_rules": {
+    "Range x": "Only operatives within x of the active operative can be valid targets, e.g. Range 9\".",
+    "Shock": "The first time you strike with a critical success in each sequence, also discard one of your opponent's unresolved normal successes (or one of their critical successes if there are none).",
+    "Rending": "If you retain any critical successes, you can retain one of your normal successes as a critical success instead.",
+    "Piercing x": "The defender collects x less defence dice, e.g. Piercing 1. If the rule is Piercing Crits x, this only comes into effect if you retain any critical successes.",
+    "Heavy": "An operative cannot use this weapon in an activation or counteraction in which it moved, and it cannot move in an activation or counteraction in which it used this weapon. If the rule is Heavy (x only), where x is a move action, only that move is allowed, e.g. Heavy (Dash only). This weapon rule has no effect on preventing the Guard action.",
+    "Torrent x": "Select a valid target as normal as the primary target, then select any number of other valid targets within x of the first valid target, but not within control range of friendly operatives, as secondary targets, e.g. Torrent 2\". Shoot with this weapon against all of them in an order of your choice (roll each sequence separately).",
+    "Severe": "If you don't retain any critical successes, you can change one of your normal successes to a critical success. The Devastating and Piercing Crits weapon rules still take effect, but Punishing and Rending don't.",
+    "Stun": "If you retain any critical successes, subtract 1 from the APL stat of the operative this weapon is being used against until the end of its next activation.",
+    "Devastating x": "Each retained critical success immediately inflicts x damage on the operative this weapon is being used against, e.g. Devastating 3. If the rule starts with a distance (e.g. 1\" Devastating x), inflict x damage on that operative and each other operative visible to and within that distance of it. Note that success isn't discarded after doing so - it can still be resolved later in the sequence.",
+    "Silent": "An operative can perform the Shoot action with this weapon while it has a Conceal order."
+  }
 }

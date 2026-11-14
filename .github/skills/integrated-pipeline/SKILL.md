@@ -8,6 +8,15 @@ description: 'Understand and work with the integrated kt-datacards pipeline at t
 The `pipeline/` package at the repo root is the pipeline: two extraction front-ends
 (`kt-app` and `warcom`) that converge on a single **source-agnostic integration layer**.
 
+> ## ⛔ GOLDEN RULE — never hand-edit generated files
+> This is a **pipeline**. Everything under `layers/**` and `output/**` (classified PDFs,
+> `*-content.json`, `manifest.json`, `*-team-data.json`, extracted images, `tts_objects/*`,
+> `*-pipeline-state.json`, metadata, …) is a **generated artifact**. Editing one by hand is
+> pointless — the next run **overwrites/reverts it**. ALL fixes must be made in the
+> **step source code** under `pipeline/` (or in `config/`), then applied by **re-running the
+> affected step** with `--force`. If you catch yourself opening an `output/` or `layers/` file
+> to change a value, stop and fix the generating step instead.
+
 
 ## When to Use
 - Running or debugging the new pipeline (`python -m pipeline.main ...`).
@@ -22,7 +31,8 @@ The `pipeline/` package at the repo root is the pipeline: two extraction front-e
   input/                          raw PDFs for the kt-app track (UUID-named)
   layers/
     {track}/                      track = kt-app | warcom  (GITIGNORED — reproducible)
-      staging/                    warcom scrape target ({team}-datacards.pdf)
+      staging/                    warcom scrape INBOX (holds only not-yet-processed PDFs)
+      staging_archive/            warcom processed PDFs (moved here after split; read by extract_artwork)
       extracted/                  per-card split PDFs
       structure/{team}-structure.json
     integration/                  SHARED, source-agnostic merge point (COMMITTED)
@@ -79,7 +89,7 @@ python -m pipeline.main --source kt-app --teams kasrkin
 
 
 # single step (comma-separated teams; NO spaces)
-python -m pipeline.main --step extract_artwork --source warcom --teams kasrkin,mandrakes --force
+python -m pipeline.main --step extract_artwork --source warcom --teams kasrkin,mandrakes
 
 # range of steps
 python -m pipeline.main --source kt-app --from build_structure --to content_analysis --teams kasrkin
@@ -90,6 +100,13 @@ python -m pipeline.main --list
 
 Flags: `--source kt-app|warcom` (required for front-end/source steps), `--teams a,b`
 (comma-separated, default all), `--step`, `--from`/`--to`, `--force` (ignore caches).
+
+> **Don't add `--force` by default.** Steps hash-track their inputs, so a plain run already
+> re-processes exactly what changed (e.g. a new PDF in `input/` flows through to cards, data
+> and TTS). `--force` re-renders *unchanged* outputs too: tokens/artwork can come out
+> pixel-different after code drift, which churns their `?v=` URLs and makes every TTS client
+> re-download identical assets. Only use it when you intentionally want those outputs
+> regenerated (e.g. after changing the step's own code), and scope it with `--step`/`--teams`.
 
 ## Step Order & Scope (`pipeline/main.py` → `STEP_ORDER`)
 
@@ -137,7 +154,20 @@ integration layer, source-agnostic (no `--source` needed).
   + dice. (b) **no weapon-selection groups** — `embed_datacard_stats` reads them from
   `output_v2/{faction}/{team}/statlines/roster.json`, which the integrated pipeline lacks, so the
   `selection` key is skipped (stats/weapons/abilities still embed). (c) KTUI enhanced
-  stat-loading (`ktui-mini-modelscript.lua`) is intentionally excluded.
+  stat-loading (composed by `pipeline/utils/ktui_model_script.py` from
+  `config/defaults/tts-script/ktui-extender-modelscript.lua` + `ktui-extension.lua`).
+- **Generated counter tokens** (`pipeline/utils/counter_tokens.py`, driven by a team's
+  `operative_counters: … generate:` block in `team-config.yaml`): `extract_tokens` renders
+  numbered per-value PNGs into `output/{team}/tokens/counters/`. That subfolder is skipped by
+  the **non-recursive** box-dispenser scan (`tokens_dir.glob('*.obj')`), so counters never
+  become token bags. Exodite uses it for a Movement Remaining 0-12 counter (PR #69).
+- **Targeted rebuild for embedded-Lua changes**: the movement tools are baked into card
+  LuaScripts at `generate_tts` time (`MOVE_TOOL_CODE`/`SPRINT_TOOL_CODE`). A change that only
+  affects MOUNTED teams (e.g. the Sprint tool / `kt_front` facing, PR #72) only needs
+  `generate_tts --teams exodite-dragon-masters` — rebuilding all 48 boxes is wasteful and
+  triggers needless in-game re-downloads. When only the LuaScript changes, just the box
+  object's `?v=`/`modified`/`hash` churns (0 card/token churn); stabilise image mtimes first
+  (a `restore_image_mtimes`-style pass) so tokens/cards don't bump their `?v=`.
 
 ## Onboarding on a New Machine
 
@@ -146,4 +176,4 @@ integration layer, source-agnostic (no `--source` needed).
    `layers/warcom/staging/{team}-datacards.pdf`.
 2. `layers/integration/**` and `output/**` come with the repo (committed artifacts).
 3. From the repo root (`PYTHONPATH` = repo root): `python -m pipeline.main --list` to confirm steps load.
-4. Regenerate a team end-to-end to validate: `python -m pipeline.main --source warcom --teams kasrkin --force`.
+4. Regenerate a team end-to-end to validate: `python -m pipeline.main --source warcom --teams kasrkin`.

@@ -1,20 +1,20 @@
 {
   "team": "elucidian-starstriders",
   "pipeline_version": "2.0",
-  "last_updated": "2026-07-29T12:35:06.301806+00:00",
+  "last_updated": "2026-11-13T21:25:06.487365+00:00",
   "steps": {
     "content_analysis": {
       "outputs": {
         "content.json": {
           "path": "layers/integration/elucidian-starstriders/content/elucidian-starstriders-content.json",
           "hash": "099df7dde6c13c1a1ffd4c0adf4661e3154c8a164b787b8d48bb928c0f3305a9",
-          "modified": "2026-07-25T17:12:05.834111+00:00"
+          "modified": "2026-08-15T18:37:59.278511+00:00"
         }
       },
-      "completed": "2026-07-25T17:12:37.399535+00:00",
+      "completed": "2026-08-15T18:38:24.478365+00:00",
       "inputs": {
         "layers/integration/elucidian-starstriders/manifest.json": "67e19d4ef2bc3dbed002541e7af9b13b7c7b681144f6441b6bae7570beafea95",
-        "config/team-config.yaml": "b8ca8191fcfbccdfb363ab8c3eaf7e4e95ef35b5a914828a1a2b4a62cd02c680",
+        "config/team-config.yaml": "3866486652c388d422dbad96f89458bc2172fbe12dfc202355763a69d3f798f5",
         "layers/integration/elucidian-starstriders/elucidian-starstriders-datacard-canid.pdf": "c7d08c91b4a958b703a56976a4f61f275e44e97affb9088838e921144bdaf18e",
         "layers/integration/elucidian-starstriders/elucidian-starstriders-datacard-death-cult-executioner.pdf": "9114d79efa2a65e46c84b04985a87d10a7355f82fbe6408cb1f62734dea4b5c6",
         "layers/integration/elucidian-starstriders/elucidian-starstriders-datacard-elucia-vhane.pdf": "9f0e830b003e965ad00b422cd758a8b90192595266859921ab317b717aec1b07",
@@ -64,18 +64,23 @@
         "dice-light.jpg": {
           "path": "output/elucidian-starstriders/dice/elucidian-starstriders-dice-light.jpg",
           "hash": "b6ae51f08218a53308551a0918e789483f9133bb670d9bd47c10f17dedb9d543",
-          "modified": "2026-07-12T18:46:56.628048+00:00"
+          "modified": "2026-08-29T15:36:27.999303+00:00"
         },
         "dice-dark.jpg": {
           "path": "output/elucidian-starstriders/dice/elucidian-starstriders-dice-dark.jpg",
           "hash": "a681520ed638ced9224c2a73004da5839ae07a53d7923580462383d7bc2f0124",
-          "modified": "2026-07-12T18:46:56.643635+00:00"
+          "modified": "2026-08-29T15:36:28.012308+00:00"
+        },
+        "dice-team.jpg": {
+          "path": "output/elucidian-starstriders/dice/elucidian-starstriders-dice-team.jpg",
+          "hash": "3407b739de9913105cb6520a12c089bd301aa05e0278439036f694acf1845924",
+          "modified": "2026-08-29T15:36:28.053395+00:00"
         }
       },
-      "completed": "2026-07-12T18:46:56.653345+00:00",
+      "completed": "2026-08-29T15:36:28.058551+00:00",
       "inputs": {
         "layers/integration/elucidian-starstriders/artwork/icons/elucidian-starstriders-icon-token-transparent.png": "53fa78761c8a1ead8ed474f6064f94ae81755d5046dd44b0e518946dff7c4de5",
-        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41"
+        "config/team-config.yaml": "91d8f657dda8db8fe1455119c1675c3d41d1dd5243a896a92d0a0cbefd6b728b"
       }
     },
     "generate_box_texture": {
@@ -368,13 +373,16 @@
       "outputs": {
         "team-data.json": {
           "path": "output/elucidian-starstriders/data/elucidian-starstriders-team-data.json",
-          "hash": "099df7dde6c13c1a1ffd4c0adf4661e3154c8a164b787b8d48bb928c0f3305a9",
-          "modified": "2026-07-25T17:16:00.297763+00:00"
+          "hash": "d651b39b20b287b2b69afa724e5133b8291ac1e7132a8c7eb78791a48afe2cca",
+          "modified": "2026-11-13T21:18:52.574634+00:00"
         }
       },
-      "completed": "2026-07-25T17:16:00.299037+00:00",
+      "completed": "2026-11-13T21:18:52.587124+00:00",
       "inputs": {
-        "layers/integration/elucidian-starstriders/content/elucidian-starstriders-content.json": "099df7dde6c13c1a1ffd4c0adf4661e3154c8a164b787b8d48bb928c0f3305a9"
+        "layers/integration/elucidian-starstriders/content/elucidian-starstriders-content.json": "099df7dde6c13c1a1ffd4c0adf4661e3154c8a164b787b8d48bb928c0f3305a9",
+        "config/weapon_rules.json": "4dd2e044dbd2dfdc8d1e035bd31d1fa7e72c70b6424a733ea315a392368848b9",
+        "pipeline/steps/extract_stats.py": "f29227a25a76a7f9e1a74c882454f13539c4733462e64abd034469eb2a3bef83",
+        "pipeline/steps/tts_impl.py": "2fd98b5d7b04687525be043fa87b3adb0d8d90763305755aa8c6e0c062f4320b"
       }
     },
     "generate_tts": {
@@ -386,13 +394,13 @@
         },
         "tts_objects/Elucidian Starstriders.json": {
           "path": "output/elucidian-starstriders/tts_objects/Elucidian Starstriders.json",
-          "hash": "85be4b252ef178ad5633698e5b8cb43e6c056886016434fb45c0db7bbb7ddc2f",
-          "modified": "2026-07-29T12:35:06.239703+00:00"
+          "hash": "9a6689fa650bd671c882b66e5b85e6fe04a1bb8c5b62c39bea795142fccbcb06",
+          "modified": "2026-11-13T21:25:06.315651+00:00"
         }
       },
-      "completed": "2026-07-29T12:35:06.301794+00:00",
+      "completed": "2026-11-13T21:25:06.487323+00:00",
       "inputs": {
-        "config/team-config.yaml": "81bac78914c95effe29896c5f18bf0f292c23d41f48a6dbe84ea996de2c16482",
+        "config/team-config.yaml": "b1b298df3441797113db36d9524566fa76c836df085b140b54eaac01e26fd9f9",
         "config/team-guids.json": "906473ddbf256345a4150df497def05ec513f95948b27d6fc98fa6dba00bb7d0",
         "output/elucidian-starstriders/cards/datacards/canid-back.jpg": "b2babe775013f7aedcda4d3c7c115526250d698d35d14599c29932e5d0b6f1f2",
         "output/elucidian-starstriders/cards/datacards/canid-front.jpg": "ee39ccf7f5b0b931274b53af8f3cd0b12e5a305d123c0fe1b5b88fb888791ef5",
@@ -444,16 +452,18 @@
         "output/elucidian-starstriders/cardbox/elucidian-starstriders-card-box.obj": "094d162a26a5626f427ce0f06ef87394b93f6ddae867a3b629c60d5e7e8fb2dd",
         "output/elucidian-starstriders/dice/elucidian-starstriders-dice-dark.jpg": "a681520ed638ced9224c2a73004da5839ae07a53d7923580462383d7bc2f0124",
         "output/elucidian-starstriders/dice/elucidian-starstriders-dice-light.jpg": "b6ae51f08218a53308551a0918e789483f9133bb670d9bd47c10f17dedb9d543",
-        "output/elucidian-starstriders/data/elucidian-starstriders-team-data.json": "099df7dde6c13c1a1ffd4c0adf4661e3154c8a164b787b8d48bb928c0f3305a9",
+        "output/elucidian-starstriders/dice/elucidian-starstriders-dice-team.jpg": "3407b739de9913105cb6520a12c089bd301aa05e0278439036f694acf1845924",
+        "output/elucidian-starstriders/data/elucidian-starstriders-team-data.json": "d651b39b20b287b2b69afa724e5133b8291ac1e7132a8c7eb78791a48afe2cca",
         "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
-        "config/defaults/tts-script/datacard-load-stats.lua": "a6693f511ecce4b5f4f3101f319837a8a0cda0561b66d4ea9a154b7524429c0d",
+        "config/defaults/tts-script/datacard-load-stats.lua": "e163a1c2bbf015020a7ffe5ee861e9e78e7127ed99661187805c247862108260",
         "config/defaults/tts-script/display-table-manager-script.lua": "846de299f8e2c925e63cc77c4991fedd07ae75e9bde375f3b3c991c8730b891b",
         "config/defaults/tts-script/faction-rule-chapter-tactics.lua": "c906742268076fb91f7cb4a92c6b588e1122ccddb692688f635c8dd4f7110ad0",
         "config/defaults/tts-script/intermediate-updater.lua": "1a2d6dbc1a8c9c57ba6a3e7a3d4bc4b7a38a6c242a93f6ef3dae698123384d35",
-        "config/defaults/tts-script/ktui-mini-modelscript.lua": "60c2404aad548eb9a39eb5edc353c8b1049276da1bdc332e9774eeaa38ee690c",
-        "config/defaults/tts-script/move-tool.lua": "5aaab1f1e60c830fa509822ab989984a8c8da9ca71af8ef6ec3b02424a597305",
+        "config/defaults/tts-script/ktui-extender-modelscript.lua": "efaa258acaadc765e64e274a97c327161d6d9f3f1068582b8e097bdbb87318f7",
+        "config/defaults/tts-script/ktui-extension.lua": "3e7ec3dad8556d351dcb9a7fc399592f582b08434bc22ed45b6735cafabfad9b",
+        "config/defaults/tts-script/move-tool.lua": "68059b5fd1b60ab7037930223b7d64863c0619e12719d1866853b010c651b34e",
         "config/defaults/tts-script/single-object-updater.lua": "3613b85169e986a8e50ebe221482079e27c18037e3f48920aa0f7e138c0ccacc",
-        "config/defaults/tts-script/sprint-movement-tool.lua": "fa25a2f86cf8a29b659c43700644e41fe129a52872f0793c2511519cb2bafd63",
+        "config/defaults/tts-script/sprint-movement-tool.lua": "c0b96cbf193785c64dc6cb4bb90b4730d872214581c3973e9fbf30a01e8c5fd8",
         "config/defaults/tts-script/team-spawner-clean-script.lua": "12457bff3961eee2293c42d81cf4f4eb8b103177245a1ab8b46fd65da40672a2",
         "config/defaults/tts-script/team-spawner-script.lua": "a51ff45c8622923db909fb465781801511f235412f099f83dff728d4027650db",
         "config/defaults/tts-script/tts-update-rules-in-box-script.lua": "84f7f9b260f4e4968d208953b534bdbb7ab0b2f475e13264a2407f6c4d4d2b03",

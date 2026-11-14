@@ -1,6 +1,6 @@
 {
   "team": "exodite-dragon-masters",
-  "generated_at": "2026-07-22T14:44:52.053324+00:00",
+  "generated_at": "2026-10-28T14:24:34.124248+00:00",
   "datacards": [
     {
       "name": "DRAGON MASTER CLANBLADE",
@@ -202,6 +202,10 @@
   ],
   "equipment": [
     {
+      "name": "spirit-stones",
+      "text": "EXODITE DRAGON MASTER\nFACTION EQUIPMENT\nSPIRIT STONES\nSpirit stones carrying the souls of a former triad are \npriceless artefacts whose occupants provide wisdom to \ntheir living peers. Should the bearer of such treasures \nfall in battle, their comrades fight all the harder to \nrecover their stone and those of the long departed. Such \na collection of the clan’s most powerful souls cannot be \nallowed to slip into the enemy’s profane clutches.\nWhenever a friendly EXODITE DRAGON \nMASTER MOUNTED operative is incapacitated, \nyou gain 1CP."
+    },
+    {
       "name": "dragonscale-mesh",
       "text": "EXODITE DRAGON MASTER\nFACTION EQUIPMENT\nDRAGONSCALE MESH\nThese unique suits of mesh armour incorporate the \nglittering, crystalline scales of elder dragons and can \nwithstand even esoteric assaults.\nOnce per turning point, when an operative \nis shooting a friendly EXODITE DRAGON \nMASTER MOUNTED operative, in the Roll \nDefence Dice step, you can retain one of your \nnormal successes as a critical success instead."
     },
@@ -212,10 +216,6 @@
     {
       "name": "lileathan-crystal-matrices",
       "text": "EXODITE DRAGON MASTER\nFACTION EQUIPMENT\nLILEATHAN CRYSTAL MATRICES\nExceptionally rare crystals from the hardest to reach \nmaiden worlds focus the shots of the Exodites’ laser \nweaponry into searing beams.\nOnce per turning point, when a friendly EXODITE \nDRAGON MASTER operative is performing the \nShoot action and you select a solar carbine or a \nprofile of its long rifle, you can use this rule. If you \ndo, until the end of that activation, that weapon \nhas the Piercing 1 weapon rule."
-    },
-    {
-      "name": "spirit-stones",
-      "text": "EXODITE DRAGON MASTER\nFACTION EQUIPMENT\nSPIRIT STONES\nSpirit stones carrying the souls of a former triad are \npriceless artefacts whose occupants provide wisdom to \ntheir living peers. Should the bearer of such treasures \nfall in battle, their comrades fight all the harder to \nrecover their stone and those of the long departed. Such \na collection of the clan’s most powerful souls cannot be \nallowed to slip into the enemy’s profane clutches.\nWhenever a friendly EXODITE DRAGON \nMASTER MOUNTED operative is incapacitated, \nyou gain 1CP."
     }
   ],
   "faction_rules": [
@@ -225,13 +225,13 @@
       "options": [
         {
           "name": "The active operative cannot climb or finish",
-          "text": "the move on Vantage terrain higher than 2\" from the killzone floor. It can move through operatives and it treats terrain parts less than 2\" tall as Accessible terrain. Whenever it moves through an equipment terrain feature, remove that terrain feature from the battle. An operative cannot perform this action while counteracting. For the purposes of your opponent's rules, mission rules and killzone rules, this action is treated as the Reposition action, or the Charge action if the active operative ends the action within control range of an enemy operative."
-        },
-        {
-          "name": "TURN",
-          "text": "1AP Pivot the active operative up to 45°. This doesn’t use any of its movement allowance. An operative cannot perform this action while counteracting. For the purposes of your opponent's rules, mission rules and killzone rules, this action is treated as the Dash action, or the Charge action if the active operative ends the action within control range of an enemy operative."
+          "text": "the move on Vantage terrain higher than 2\" from the killzone floor. It can move through operatives and it treats terrain parts less than 2\" tall as Accessible terrain. Whenever it moves through an equipment terrain feature, remove that terrain feature from the battle. An operative cannot perform this action while counteracting. For the purposes of your opponent's rules, mission rules and killzone rules, this action is treated as the Reposition action, or the Charge action if the active operative ends the action within control range of an enemy operative. An operative cannot perform this action while it has a Conceal order if it would end the action within control range of an enemy operative."
         }
       ]
+    },
+    {
+      "name": "pivot-the-active-operative-up-to-45-this",
+      "text": "TURN \n1AP\n Pivot the active operative up to 45°. This \ndoesn’t use any of its movement allowance.\n An operative cannot perform this action \nwhile counteracting. For the purposes of your \nopponent's rules, mission rules and killzone \nrules, this action is treated as the Dash action, \nor the Charge action if the active operative \nends the action within control range of an \nenemy operative. An operative cannot perform \nthis action while it has a Conceal order if it \nwould end the action within control range of an \nenemy operative."
     },
     {
       "name": "draconic-cavalry-tactics",
@@ -320,6 +320,10 @@
   ],
   "firefight_ploys": [
     {
+      "name": "riding-mastery",
+      "text": "EXODITE DRAGON MASTER\nFIREFIGHT PLOY\nRIDING MASTERY\nDragon Masters’ command of their drakesteeds is \npaired with the exceptional dexterity and athleticism \nof their own species. In defence of their clan’s future, \nDragon Masters can perform incredible feats of \nmanoeuvre while surging through hostile territory.\nUse this firefight ploy when a friendly EXODITE \nDRAGON MASTER MOUNTED operative \nperforms the Sprint action during its activation. \nDuring that action, that operative can perform the \nPick Up Marker, Place Marker or a mission action \n(you can determine control during that action \nto do so), and any remaining move distance it \nhad from that Sprint action can be used after it \ndoes so."
+    },
+    {
       "name": "survivalist-spirit",
       "text": "EXODITE DRAGON MASTER\nFIREFIGHT PLOY\nSURVIVALIST SPIRIT\nDragon Masters have endured long lives of gruelling \ntrials. Their deep reserves of spiritual resilience harden \nthem against many hurts.\nUse this firefight ploy during a friendly EXODITE \nDRAGON MASTER MOUNTED operative’s \nactivation or counteraction, before or after it \nperforms an action. Until the start of its next \nactivation, you can ignore any changes to that \noperative's weapon stats from being injured."
     },
@@ -330,10 +334,6 @@
     {
       "name": "feral-hunger",
       "text": "EXODITE DRAGON MASTER\nFIREFIGHT PLOY\nFERAL HUNGER\nWith the scent of blood and fear in the air, the Exodites \nwill willingly unleash their carnivorous dragons’ most \nvicious and feral instincts.\nUse this firefight ploy after rolling your \nattack dice for a friendly EXODITE DRAGON \nMASTER operative, if it’s fighting against a \nwounded enemy operative with its Drakesteed \nfangs & talons or fangs & talons. You can re-roll \nany of your attack dice."
-    },
-    {
-      "name": "riding-mastery",
-      "text": "EXODITE DRAGON MASTER\nFIREFIGHT PLOY\nRIDING MASTERY\nDragon Masters’ command of their drakesteeds is \npaired with the exceptional dexterity and athleticism \nof their own species. In defence of their clan’s future, \nDragon Masters can perform incredible feats of \nmanoeuvre while surging through hostile territory.\nUse this firefight ploy when a friendly EXODITE \nDRAGON MASTER MOUNTED operative \nperforms the Sprint action during its activation. \nDuring that action, that operative can perform the \nPick Up Marker, Place Marker or a mission action \n(you can determine control during that action \nto do so), and any remaining move distance it \nhad from that Sprint action can be used after it \ndoes so."
     }
   ],
   "operatives_selection": [

@@ -1,20 +1,20 @@
 {
   "team": "death-korps",
   "pipeline_version": "2.0",
-  "last_updated": "2026-07-29T12:35:06.094809+00:00",
+  "last_updated": "2026-11-13T21:25:06.017525+00:00",
   "steps": {
     "content_analysis": {
       "outputs": {
         "content.json": {
           "path": "layers/integration/death-korps/content/death-korps-content.json",
           "hash": "1e8416a49f90a486311b760d41839a0dcc0eab917fdc1373b39a96018bee58b8",
-          "modified": "2026-07-25T16:52:07.852667+00:00"
+          "modified": "2026-08-15T18:37:20.099303+00:00"
         }
       },
-      "completed": "2026-07-25T16:52:07.974081+00:00",
+      "completed": "2026-08-15T18:37:20.500987+00:00",
       "inputs": {
         "layers/integration/death-korps/manifest.json": "2809ab963323e6b86ef6cbe6306b0ae090721adbd15fd057de996d3e0b6cb5dc",
-        "config/team-config.yaml": "b8ca8191fcfbccdfb363ab8c3eaf7e4e95ef35b5a914828a1a2b4a62cd02c680",
+        "config/team-config.yaml": "3866486652c388d422dbad96f89458bc2172fbe12dfc202355763a69d3f798f5",
         "layers/integration/death-korps/death-korps-datacard-death-korps-bruiser.pdf": "13372f0979ee51fe194b6a94e2d348d8b734e03696cabd24be0934229ae9f3e4",
         "layers/integration/death-korps/death-korps-datacard-death-korps-confidant.pdf": "9bab0222d5256f880fb210cd9ba08b6609832391ceb074ba5f78f47fab66937a",
         "layers/integration/death-korps/death-korps-datacard-death-korps-gunner.pdf": "c60c5f082f05ca0dbef64bcced3ecf40004ab9a5cdb5a6391d860aee630c513d",
@@ -219,23 +219,23 @@
         "dice-light.jpg": {
           "path": "output/death-korps/dice/death-korps-dice-light.jpg",
           "hash": "4899676f10963a9730f2b0ce55ce44920c7cf7f3e91f5de791e1e4bc26b30c5a",
-          "modified": "2026-07-12T18:44:09.749505+00:00"
+          "modified": "2026-08-29T14:18:46.065843+00:00"
         },
         "dice-dark.jpg": {
           "path": "output/death-korps/dice/death-korps-dice-dark.jpg",
           "hash": "ffc2c203212aeebe9b60145c957ba4c30108e2f1358342d8f42edecd13e8a0f1",
-          "modified": "2026-07-12T18:44:09.751932+00:00"
+          "modified": "2026-08-29T14:18:46.094454+00:00"
         },
         "dice-team.jpg": {
           "path": "output/death-korps/dice/death-korps-dice-team.jpg",
-          "hash": "50a7cc0a56f42ccf0848381951331cecc26d2a8c1a6274a31ca51bf8c756b441",
-          "modified": "2026-07-12T18:44:14.238075+00:00"
+          "hash": "f11993a41e5570cf28be80ae4f97d6b384df8971eca592bd5c26f635ef33c077",
+          "modified": "2026-08-29T14:18:46.118675+00:00"
         }
       },
-      "completed": "2026-07-12T18:44:18.662744+00:00",
+      "completed": "2026-08-29T14:18:46.147818+00:00",
       "inputs": {
         "layers/integration/death-korps/artwork/icons/death-korps-icon-token-transparent.png": "59dd53668282a06d677bd0af47e70a270a8754e4ba717f96ea6c5f553615cf8d",
-        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41"
+        "config/team-config.yaml": "e2263ea46dfafed06ea1f431499917a2553a2e546c5adb41ce375b55bd774f5d"
       }
     },
     "generate_box_texture": {
@@ -614,13 +614,16 @@
       "outputs": {
         "team-data.json": {
           "path": "output/death-korps/data/death-korps-team-data.json",
-          "hash": "1e8416a49f90a486311b760d41839a0dcc0eab917fdc1373b39a96018bee58b8",
-          "modified": "2026-07-25T16:53:39.977333+00:00"
+          "hash": "6e75790cbe4da30f1f47a798f9f33d75dbb980055ae465048e83631798022477",
+          "modified": "2026-11-13T21:18:52.360774+00:00"
         }
       },
-      "completed": "2026-07-25T16:53:39.978604+00:00",
+      "completed": "2026-11-13T21:18:52.370333+00:00",
       "inputs": {
-        "layers/integration/death-korps/content/death-korps-content.json": "1e8416a49f90a486311b760d41839a0dcc0eab917fdc1373b39a96018bee58b8"
+        "layers/integration/death-korps/content/death-korps-content.json": "1e8416a49f90a486311b760d41839a0dcc0eab917fdc1373b39a96018bee58b8",
+        "config/weapon_rules.json": "4dd2e044dbd2dfdc8d1e035bd31d1fa7e72c70b6424a733ea315a392368848b9",
+        "pipeline/steps/extract_stats.py": "f29227a25a76a7f9e1a74c882454f13539c4733462e64abd034469eb2a3bef83",
+        "pipeline/steps/tts_impl.py": "2fd98b5d7b04687525be043fa87b3adb0d8d90763305755aa8c6e0c062f4320b"
       }
     },
     "generate_tts": {
@@ -632,13 +635,13 @@
         },
         "tts_objects/Death Korps.json": {
           "path": "output/death-korps/tts_objects/Death Korps.json",
-          "hash": "44494644f24149b0e6f1e98ff283fa7c0141b5819d49a7e619ac159d54276e80",
-          "modified": "2026-07-29T12:35:05.998893+00:00"
+          "hash": "806e9699f64614ec3348a08983a2c9a17cbed70c45fce2500c0e931a59a3d6d2",
+          "modified": "2026-11-13T21:25:05.837318+00:00"
         }
       },
-      "completed": "2026-07-29T12:35:06.094797+00:00",
+      "completed": "2026-11-13T21:25:06.017494+00:00",
       "inputs": {
-        "config/team-config.yaml": "81bac78914c95effe29896c5f18bf0f292c23d41f48a6dbe84ea996de2c16482",
+        "config/team-config.yaml": "b1b298df3441797113db36d9524566fa76c836df085b140b54eaac01e26fd9f9",
         "config/team-guids.json": "906473ddbf256345a4150df497def05ec513f95948b27d6fc98fa6dba00bb7d0",
         "output/death-korps/cards/datacards/death-korps-bruiser-back.jpg": "71574ea2552fb1701e9e677444f5e20912e1963f011cfcf4d90b89c284bb7fc8",
         "output/death-korps/cards/datacards/death-korps-bruiser-front.jpg": "98a3c9372a25285d8db13501f13d8b3377c28a2d1ad453ace1e93fb802fba84a",
@@ -724,17 +727,18 @@
         "output/death-korps/tokens/tokenbag/death-korps-token-bag.obj": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
         "output/death-korps/dice/death-korps-dice-dark.jpg": "ffc2c203212aeebe9b60145c957ba4c30108e2f1358342d8f42edecd13e8a0f1",
         "output/death-korps/dice/death-korps-dice-light.jpg": "4899676f10963a9730f2b0ce55ce44920c7cf7f3e91f5de791e1e4bc26b30c5a",
-        "output/death-korps/dice/death-korps-dice-team.jpg": "50a7cc0a56f42ccf0848381951331cecc26d2a8c1a6274a31ca51bf8c756b441",
-        "output/death-korps/data/death-korps-team-data.json": "1e8416a49f90a486311b760d41839a0dcc0eab917fdc1373b39a96018bee58b8",
+        "output/death-korps/dice/death-korps-dice-team.jpg": "f11993a41e5570cf28be80ae4f97d6b384df8971eca592bd5c26f635ef33c077",
+        "output/death-korps/data/death-korps-team-data.json": "6e75790cbe4da30f1f47a798f9f33d75dbb980055ae465048e83631798022477",
         "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
-        "config/defaults/tts-script/datacard-load-stats.lua": "a6693f511ecce4b5f4f3101f319837a8a0cda0561b66d4ea9a154b7524429c0d",
+        "config/defaults/tts-script/datacard-load-stats.lua": "e163a1c2bbf015020a7ffe5ee861e9e78e7127ed99661187805c247862108260",
         "config/defaults/tts-script/display-table-manager-script.lua": "846de299f8e2c925e63cc77c4991fedd07ae75e9bde375f3b3c991c8730b891b",
         "config/defaults/tts-script/faction-rule-chapter-tactics.lua": "c906742268076fb91f7cb4a92c6b588e1122ccddb692688f635c8dd4f7110ad0",
         "config/defaults/tts-script/intermediate-updater.lua": "1a2d6dbc1a8c9c57ba6a3e7a3d4bc4b7a38a6c242a93f6ef3dae698123384d35",
-        "config/defaults/tts-script/ktui-mini-modelscript.lua": "60c2404aad548eb9a39eb5edc353c8b1049276da1bdc332e9774eeaa38ee690c",
-        "config/defaults/tts-script/move-tool.lua": "5aaab1f1e60c830fa509822ab989984a8c8da9ca71af8ef6ec3b02424a597305",
+        "config/defaults/tts-script/ktui-extender-modelscript.lua": "efaa258acaadc765e64e274a97c327161d6d9f3f1068582b8e097bdbb87318f7",
+        "config/defaults/tts-script/ktui-extension.lua": "3e7ec3dad8556d351dcb9a7fc399592f582b08434bc22ed45b6735cafabfad9b",
+        "config/defaults/tts-script/move-tool.lua": "68059b5fd1b60ab7037930223b7d64863c0619e12719d1866853b010c651b34e",
         "config/defaults/tts-script/single-object-updater.lua": "3613b85169e986a8e50ebe221482079e27c18037e3f48920aa0f7e138c0ccacc",
-        "config/defaults/tts-script/sprint-movement-tool.lua": "fa25a2f86cf8a29b659c43700644e41fe129a52872f0793c2511519cb2bafd63",
+        "config/defaults/tts-script/sprint-movement-tool.lua": "c0b96cbf193785c64dc6cb4bb90b4730d872214581c3973e9fbf30a01e8c5fd8",
         "config/defaults/tts-script/team-spawner-clean-script.lua": "12457bff3961eee2293c42d81cf4f4eb8b103177245a1ab8b46fd65da40672a2",
         "config/defaults/tts-script/team-spawner-script.lua": "a51ff45c8622923db909fb465781801511f235412f099f83dff728d4027650db",
         "config/defaults/tts-script/tts-update-rules-in-box-script.lua": "84f7f9b260f4e4968d208953b534bdbb7ab0b2f475e13264a2407f6c4d4d2b03",

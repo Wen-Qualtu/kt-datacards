@@ -1,6 +1,6 @@
 {
   "team": "wolf-scouts",
-  "generated_at": "2026-07-25T17:15:28.485572+00:00",
+  "generated_at": "2026-08-26T15:18:16.965479+00:00",
   "datacards": [
     {
       "name": "WOLF SCOUT PACK LEADER",
@@ -50,7 +50,19 @@
         "SPACE WOLVES",
         "PACK",
         "LEADER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Piercing x",
+          "Range x",
+          "Hot"
+        ]
+      }
     },
     {
       "name": "WOLF SCOUT FANGBEARER",
@@ -65,7 +77,7 @@
           "attacks": "4",
           "hit": "3+",
           "damage": "4/5",
-          "special_rules": "Range 9\", Piercing Crits 1"
+          "special_rules": "Range 8\", Piercing Crits 1"
         },
         {
           "name": "Combat blade",
@@ -83,7 +95,7 @@
       "unique_actions": [
         {
           "name": "HEALING BALMS (1AP)",
-          "description": "Select one friendly WOLF SCOUT operative within this operative’s control range to regain up to D3+3 lost wounds. This operative cannot perform this action while within control range of an enemy operative."
+          "description": "Select one friendly WOLF SCOUT operative within this operative’s control range to regain up to D3+3 lost wounds. This operative cannot perform this action while within control range of an enemy operative, or more than once per turning point."
         }
       ],
       "keywords": [
@@ -92,7 +104,17 @@
         "ADEPTUS ASTARTES",
         "SPACE WOLVES",
         "FANGBEARER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Piercing x",
+          "Range x"
+        ]
+      }
     },
     {
       "name": "WOLF SCOUT FROSTEYE",
@@ -119,7 +141,7 @@
       "passive_abilities": [
         {
           "name": "Storm-veiled Execution",
-          "description": "Whenever this operative is within your STORM:\n• It can perform the Guard action regardless of the killzone (see close quarters rules, Kill Team Core Book).\n• It can perform the Guard action while it has a Conceal order."
+          "description": "Whenever this operative is wholly within your STORM:\n• It can perform the Guard action regardless of the killzone (see close quarters rules, Kill Team Core Book).\n• It can perform the Guard action while it has a Conceal order."
         }
       ],
       "unique_actions": [
@@ -134,7 +156,17 @@
         "ADEPTUS ASTARTES",
         "SPACE WOLVES",
         "FROSTEYE"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Piercing x",
+          "Silent"
+        ]
+      }
     },
     {
       "name": "WOLF SCOUT GUNNER",
@@ -168,7 +200,7 @@
       "passive_abilities": [
         {
           "name": "Tempest’s Fury",
-          "description": "Whenever this operative is within your STORM:\n• All profiles of its plasma gun have the Punishing weapon rule.\n• Its plasma gun (supercharge) doesn’t have the Hot weapon rule."
+          "description": "Whenever this operative is wholly within your STORM:\n• All profiles of its plasma gun have the Punishing weapon rule.\n• Its plasma gun (supercharge) doesn’t have the Hot weapon rule."
         }
       ],
       "unique_actions": [],
@@ -178,7 +210,18 @@
         "ADEPTUS ASTARTES",
         "SPACE WOLVES",
         "GUNNER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Piercing x",
+          "Hot"
+        ]
+      }
     },
     {
       "name": "WOLF SCOUT HUNTER",
@@ -212,7 +255,7 @@
       "passive_abilities": [
         {
           "name": "Fierce Temperament",
-          "description": "Whenever this operative is within your STORM, its weapons have the Severe weapon rule."
+          "description": "Whenever this operative is wholly within your STORM, its weapons have the Severe weapon rule."
         }
       ],
       "unique_actions": [],
@@ -222,7 +265,19 @@
         "ADEPTUS ASTARTES",
         "SPACE WOLVES",
         "HUNTER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Piercing x",
+          "Range x",
+          "Hot"
+        ]
+      }
     },
     {
       "name": "WOLF SCOUT RUNE PRIEST SKJALD",
@@ -241,7 +296,7 @@
         },
         {
           "name": "Jaws of the World Wolf",
-          "attacks": "5",
+          "attacks": "4",
           "hit": "3+",
           "damage": "3/5",
           "special_rules": "PSYCHIC, Blast 2\", Severe"
@@ -264,13 +319,13 @@
       "passive_abilities": [
         {
           "name": "Cast the Runes",
-          "description": "After selecting this operative, before the battle, roll three D6 and put them to one side. For each result of 1-4, you can use the Command Re-roll firefight ploy for OCP once during the turning point that matches the result. For each result of 5-6, you gain 1CP. For example, if you roll 2, 2 and 5, you gain 1CP and twice during the second turning point you can use Command Re-roll for 0CP."
+          "description": "After selecting this operative, before the battle, roll three D6 and put them to one side. For each result of 1-4, you can use the Command Re-roll firefight ploy for OCP once during the turning point that matches the result. If one or more results are 5-6, you gain 1CP. For example, if you roll 2, 2 and 5, you gain 1CP and twice during the second turning point you can use Command Re-roll for 0CP."
         }
       ],
       "unique_actions": [
         {
           "name": "CALL THE STORM (1AP)",
-          "description": "PSYCHIC. Remove your Storm marker from the killzone (if any), then place it in the killzone. PSYCHIC. Alternatively, instead of resolving the above effect, select one friendly WOLF SCOUT operative. Until the start of this operative’s next activation, until it’s incapacitated or until it performs this action again (whichever comes first), whenever that friendly operative is within your STORM and more than 3\" from the active operative, it’s obscured."
+          "description": "PSYCHIC. Remove your Storm marker from the killzone (if any), then place it in the killzone. PSYCHIC. Alternatively, instead of resolving the above effect, select one friendly WOLF SCOUT operative. Until the start of this operative’s next activation, until it’s incapacitated or until it performs this action again (whichever comes first), whenever that friendly operative is wholly within your STORM and more than 3\" from the active operative, it’s obscured."
         }
       ],
       "keywords": [
@@ -280,7 +335,25 @@
         "SPACE WOLVES",
         "PSYKER",
         "RUNE PRIEST SKJALD"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Range x",
+          "Blast x",
+          "Severe",
+          "Saturate",
+          "Seek",
+          "Stun",
+          "Torrent x",
+          "Shock"
+        ]
+      }
     },
     {
       "name": "WOLF SCOUT TRAPMASTER",
@@ -328,7 +401,19 @@
         "ADEPTUS ASTARTES",
         "SPACE WOLVES",
         "TRAPMASTER"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "ranged",
+          "ranged",
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Piercing x",
+          "Range x",
+          "Hot"
+        ]
+      }
     },
     {
       "name": "WOLF SCOUT FENRISIAN WOLF",
@@ -340,7 +425,7 @@
       "weapons": [
         {
           "name": "Fangs",
-          "attacks": "5",
+          "attacks": "4",
           "hit": "3+",
           "damage": "4/5",
           "special_rules": "Rending"
@@ -363,7 +448,15 @@
         "ADEPTUS ASTARTES",
         "SPACE WOLVES",
         "FENRISIAN WOLF"
-      ]
+      ],
+      "node": {
+        "weapon_types": [
+          "melee"
+        ],
+        "weapon_rule_names": [
+          "Rending"
+        ]
+      }
     }
   ],
   "equipment": [
@@ -387,7 +480,7 @@
   "faction_rules": [
     {
       "name": "elemental-storm",
-      "text": "WOLF SCOUT\nFACTION RULE\nELEMENTAL STORM\nIt is said by some battle-brothers that their Chapter’s \nWolf Scouts take the storm with them. In many cases, \nthese tempestuous upheavals truly are supernatural, \ncalled into being by accompanying Rune Priest Skjalds. \nAt other times, Wolf Scouts skilfully time their hunts to \ncoincide with local atmospheric phenomena or instigate \nthem with arcane technologies. Wolf Scouts can operate \nfor extended periods hidden by such storms; using the \ncover to mask their movements and confuse the senses \nof their prey, their enemies feel they are fighting the \nvery elements themselves.\nSTRATEGIC GAMBIT. Remove your Storm marker \nfrom the killzone (if any), then place it in the \nkillzone. Whenever an operative is within 6\" \nhorizontally of your Storm marker, it’s within \nyour STORM.\nEach friendly WOLF SCOUT operative can \nperform the Charge action while it has a Conceal \norder if it ends that action within your STORM."
+      "text": "WOLF SCOUT\nFACTION RULE\nELEMENTAL STORM\nIt is said by some battle-brothers that their Chapter’s \nWolf Scouts take the storm with them. In many cases, \nthese tempestuous upheavals truly are supernatural, \ncalled into being by accompanying Rune Priest Skjalds. \nAt other times, Wolf Scouts skilfully time their hunts to \ncoincide with local atmospheric phenomena or instigate \nthem with arcane technologies. Wolf Scouts can operate \nfor extended periods hidden by such storms; using the \ncover to mask their movements and confuse the senses \nof their prey, their enemies feel they are fighting the \nvery elements themselves.\nSTRATEGIC GAMBIT. Remove your Storm marker \nfrom the killzone (if any), then place it in the \nkillzone. Whenever an operative is wholly within \n6\" horizontally of your Storm marker, it’s wholly \nwithin your STORM.\nEach friendly WOLF SCOUT operative can \nperform the Charge action while it has a \nConceal order if it ends that action wholly within \nyour STORM."
     },
     {
       "name": "hunting-astartes",
@@ -430,19 +523,33 @@
   "strategy_ploys": [
     {
       "name": "cloaked-by-the-storm",
-      "text": "WOLF SCOUT\nSTRATEGY PLOY\nCLOAKED BY THE STORM\nWolf Scouts are expert in using the uncanny tempests \naround them to their advantage, ensuring their \ndesperate prey rarely get a clean shot.\nWhenever an operative is shooting a friendly \nWOLF SCOUT operative that’s within your \nSTORM, you can re-roll one of your defence dice."
+      "text": "WOLF SCOUT\nSTRATEGY PLOY\nCLOAKED BY THE STORM\nWolf Scouts are expert in using the uncanny tempests \naround them to their advantage, ensuring their \ndesperate prey rarely get a clean shot.\nWhenever an operative is shooting a friendly \nWOLF SCOUT operative that’s wholly within your \nSTORM, you can re-roll one of your defence dice."
     },
     {
       "name": "tempestuous-wrath",
-      "text": "WOLF SCOUT\nSTRATEGY PLOY\nTEMPESTUOUS WRATH\nWhen roused, the elemental fury of Wolf Scouts is \nas ferocious as that of Fenris’ winter storms or the \ncrackling lightning of its Season of Fire.\nWhenever a friendly WOLF SCOUT operative is \nfighting or retaliating, if it’s within your STORM \nor was within your STORM at the start of the \nactivation, its melee weapons have the Balanced \nweapon rule."
+      "text": "WOLF SCOUT\nSTRATEGY PLOY\nTEMPESTUOUS WRATH\nWhen roused, the elemental fury of Wolf Scouts is \nas ferocious as that of Fenris’ winter storms or the \ncrackling lightning of its Season of Fire.\nWhenever a friendly WOLF SCOUT operative \nis fighting or retaliating, if it’s wholly within your \nSTORM or was wholly within your STORM at the \nstart of the activation, its melee weapons have \nthe Balanced weapon rule."
     },
     {
       "name": "storms-bite",
-      "text": "WOLF SCOUT\nSTRATEGY PLOY\nSTORM’S BITE\nSubjected to numbing temperatures, flying debris or the \nempyric lash of a Rune Priest Skjald, the Wolf Scouts’ \nenemies struggle to focus their wrath and skill.\nWhenever a friendly WOLF SCOUT operative is \nfighting against an enemy operative that’s within \nyour STORM, subtract 1 from the Atk stat of that \nenemy operative’s melee weapons (to a minimum \nof 3)."
+      "text": "WOLF SCOUT\nSTRATEGY PLOY\nSTORM’S BITE\nSubjected to numbing temperatures, flying debris or the \nempyric lash of a Rune Priest Skjald, the Wolf Scouts’ \nenemies struggle to focus their wrath and skill.\nWhenever a friendly WOLF SCOUT operative is \nfighting against an enemy operative that’s wholly \nwithin your STORM, subtract 1 from the Atk stat \nof that enemy operative’s melee weapons (to a \nminimum of 3)."
     },
     {
       "name": "savage-fighters",
-      "text": "WOLF SCOUT\nSTRATEGY PLOY\nSAVAGE FIGHTERS\nOnce their prey have been cornered, the Wolf Scouts \nsavagely sustain the pressure, ensuring no opportunity \nis missed to weaken their quarry.\nWhenever a friendly WOLF SCOUT operative \nfinishes retaliating, if it wasn’t incapacitated, you \ncan inflict D3+1 damage on the enemy operative \nin that sequence."
+      "text": "WOLF SCOUT\nSTRATEGY PLOY\nSAVAGE FIGHTERS\nOnce their prey have been cornered, the Wolf Scouts \nsavagely sustain the pressure, ensuring no opportunity \nis missed to weaken their quarry.\nWhenever a friendly WOLF SCOUT operative \nfinishes retaliating, if it wasn’t incapacitated and \nis still within control range of the enemy operative \nin that sequence, you can inflict D3+1 damage on \nthat enemy operative."
     }
-  ]
+  ],
+  "node_weapon_rules": {
+    "Piercing x": "The defender collects x less defence dice, e.g. Piercing 1. If the rule is Piercing Crits x, this only comes into effect if you retain any critical successes.",
+    "Range x": "Only operatives within x of the active operative can be valid targets, e.g. Range 9\".",
+    "Hot": "After an operative uses this weapon, roll one D6: if the result is less than the weapon's Hit stat, inflict damage on that operative equal to the result multiplied by two. If it's used multiple times in one action (e.g. Blast), still only roll one D6.",
+    "Silent": "An operative can perform the Shoot action with this weapon while it has a Conceal order.",
+    "Blast x": "The target you select is the primary target. After shooting the primary target, shoot with this weapon against each secondary target in an order of your choice (roll each sequence separately). Secondary targets are other operatives visible to and within x of the primary target, e.g. Blast 2\" (they are all valid targets, regardless of a Conceal order). Secondary targets are in cover and obscured if the primary target was.",
+    "Severe": "If you don't retain any critical successes, you can change one of your normal successes to a critical success. The Devastating and Piercing Crits weapon rules still take effect, but Punishing and Rending don't.",
+    "Saturate": "The defender cannot retain cover saves.",
+    "Seek": "When selecting a valid target, operatives with a Conceal order cannot use terrain for cover. If the rule is Seek Light, they cannot use Light terrain for cover. While this can allow operatives to be targeted (assuming they're visible), it doesn't remove their cover save (if any).",
+    "Stun": "If you retain any critical successes, subtract 1 from the APL stat of the operative this weapon is being used against until the end of its next activation.",
+    "Torrent x": "Select a valid target as normal as the primary target, then select any number of other valid targets within x of the first valid target, but not within control range of friendly operatives, as secondary targets, e.g. Torrent 2\". Shoot with this weapon against all of them in an order of your choice (roll each sequence separately).",
+    "Shock": "The first time you strike with a critical success in each sequence, also discard one of your opponent's unresolved normal successes (or one of their critical successes if there are none).",
+    "Rending": "If you retain any critical successes, you can retain one of your normal successes as a critical success instead."
+  }
 }

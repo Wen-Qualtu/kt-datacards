@@ -1,7 +1,15 @@
 """Front-end (warcom track): scrape + coordinate-map per-card split.
 
-scrape site  ->  layers/warcom/staging/*.pdf
+scrape site  ->  layers/warcom/staging/*.pdf          (an inbox)
                  ->  layers/warcom/extracted/{team}/cards/*.pdf  (per-card split)
+                 ->  layers/warcom/staging_archive/*.pdf         (processed source)
+
+``staging`` is treated as an inbox: a PDF is downloaded, split, then moved to
+``staging_archive`` so the inbox only ever holds not-yet-processed files. A
+re-run skips downloading anything already in staging or the archive, so an
+unchanged team is never re-fetched; only a new/renamed dataslate PDF flows in.
+``extract_artwork`` reads from staging AND the archive so art extraction still
+finds each team's source after the split has archived it.
 
 Standalone implementation. The low-level work lives in the local
 ``warcom`` package:
@@ -11,7 +19,7 @@ Standalone implementation. The low-level work lives in the local
 
 The scrape downloads ALL team-rules PDFs from the kill-team page; team identity is
 read from PDF content afterwards. When --teams is given we filter the scraped URLs
-by team slug (the slug appears in the PDF filename) to avoid pulling every team.
+by configured team identity (including aliases) to avoid pulling every team.
 
 Token extraction is intentionally NOT done here. Tokens are produced once per team
 by the shared ``extract_tokens`` step.
@@ -63,42 +71,119 @@ def _team_from_filename(pdf: Path, team_config: dict) -> Optional[str]:
     return best
 
 
-def _scrape(teams: Optional[List[str]], force: bool) -> List[Path]:
+def recent_team_slugs(teams: Optional[List[str]] = None) -> List[str]:
+    """Team slugs whose rules appear in the site's "Recently Added" section.
+
+    Scrapes only the Recently Added accordion and maps each PDF filename to a
+    team-config slug (non-team files — update logs, mission packs, companions —
+    map to None and are dropped). When ``teams`` is given, the result is
+    intersected with it. Used to drive a "process only the latest dataslate"
+    pipeline run without hand-listing the changed teams.
+    """
+    team_config = card_extractor.load_team_config(paths.TEAM_CONFIG)
+    try:
+        urls = asyncio.run(
+            scraper.extract_pdf_urls_from_page(DEFAULT_URL, section="Recently Added")
+        )
+    except Exception as e:
+        logger.error(f"Recently Added scrape failed: {e}")
+        return []
+
+    slugs: List[str] = []
+    for url in urls:
+        team = _team_from_filename(Path(url), team_config)
+        if team:
+            slugs.append(team)
+    result = sorted(set(slugs))
+
+    if teams:
+        wanted = {_slug(t) for t in teams}
+        result = [s for s in result if s in wanted]
+    return result
+
+
+def _purge_stale_staging(staging: Path, keep: List[Path], team_config: dict) -> int:
+    """Delete staging PDFs superseded by a freshly-downloaded one for the same team.
+
+    GW renames a team's download between releases (``eng_28-01_kt_teamrules_x`` →
+    ``eng_x_online_rules``), so the new file does not overwrite the old and both
+    linger — front_end would then split the stale one. For every team that has a
+    kept (current) PDF, remove any other staging PDF mapping to that team.
+    """
+    keep_set = {p.resolve() for p in keep}
+    kept_teams = {}
+    for p in keep:
+        t = _team_from_filename(p, team_config)
+        if t:
+            kept_teams[t] = p
+    removed = 0
+    for pdf in staging.glob("*.pdf"):
+        if pdf.resolve() in keep_set:
+            continue
+        t = _team_from_filename(pdf, team_config)
+        if t and t in kept_teams:
+            try:
+                pdf.unlink()
+                removed += 1
+                logger.info(f"  purged stale staging (superseded): {pdf.name}")
+            except OSError:
+                pass
+    return removed
+
+
+def _scrape(teams: Optional[List[str]], force: bool, section: str = "Team Rules") -> List[Path]:
     """Scrape + download team-rules PDFs into the staging dir.
 
+    ``section`` selects the downloads-page accordion to read: ``"Team Rules"``
+    (all teams) or ``"Recently Added"`` (only the latest balance/dataslate PDFs).
+    After downloading, stale same-team PDFs from prior releases are purged so
+    exactly one staging PDF per team remains.
     Returns the list of staging PDF paths relevant to this run.
     """
     staging = paths.staging_dir(TRACK)
     staging.mkdir(parents=True, exist_ok=True)
 
     try:
-        urls = asyncio.run(scraper.extract_pdf_urls_from_page(DEFAULT_URL))
+        urls = asyncio.run(scraper.extract_pdf_urls_from_page(DEFAULT_URL, section=section))
     except Exception as e:
         logger.error(f"Scrape failed: {e}")
         return []
 
     if teams:
         wanted = {_slug(t) for t in teams}
-        filtered = []
-        for url in urls:
-            fname = _slug(Path(url).stem)
-            if any(w in fname for w in wanted):
-                filtered.append(url)
+        team_config = card_extractor.load_team_config(paths.TEAM_CONFIG)
+        filtered = [
+            url for url in urls
+            if _team_from_filename(Path(url), team_config) in wanted
+        ]
         logger.info(f"Filtered {len(urls)} scraped URLs down to {len(filtered)} for teams={sorted(wanted)}")
         urls = filtered
 
     downloaded: List[Path] = []
+    archive = paths.staging_archive_dir(TRACK)
     for url in urls:
-        out = staging / Path(url).name
+        name = Path(url).name
+        out = staging / name
+        archived = archive / name
         if out.exists() and not force:
-            logger.info(f"  staging exists, skipping download: {out.name}")
+            logger.info(f"  staging exists, skipping download: {name}")
             downloaded.append(out)
             continue
-        logger.info(f"  downloading {out.name}")
+        if archived.exists() and not force:
+            # Already processed in a prior run — don't re-download. Still hand it
+            # to _extract so its change-detection gate can heal a missing split.
+            logger.info(f"  already processed (archived), skipping download: {name}")
+            downloaded.append(archived)
+            continue
+        logger.info(f"  downloading {name}")
         if scraper.download_pdf(url, out):
             downloaded.append(out)
         else:
             logger.warning(f"  failed to download {url}")
+
+    if downloaded:
+        team_config = card_extractor.load_team_config(paths.TEAM_CONFIG)
+        _purge_stale_staging(staging, downloaded, team_config)
     return downloaded
 
 
@@ -139,6 +224,7 @@ def _extract(staging_pdfs: List[Path], teams: Optional[List[str]], force: bool, 
             pdf_hash = StateManager._compute_hash(pdf)
             if state.source_can_skip("front_end", "cards", pdf_hash, force):
                 logger.info(f"  = {team_name}: unchanged (skip split)")
+                paths.archive_staging(pdf, TRACK)  # inbox: processed, move out of staging
                 stat["skipped"] = 1
                 return stat
 
@@ -157,6 +243,7 @@ def _extract(staging_pdfs: List[Path], teams: Optional[List[str]], force: bool, 
                                 sorted(team_cards_dir.glob("*.pdf")))
             state.mark_complete("front_end")
             state.save()
+            paths.archive_staging(pdf, TRACK)  # inbox: processed, move out of staging
             stat["processed"] = 1
             stat["cards"] = result["total_cards"]
         except Exception as e:
@@ -168,6 +255,12 @@ def _extract(staging_pdfs: List[Path], teams: Optional[List[str]], force: bool, 
     for stat in map_items(worker, staging_pdfs, jobs=jobs):
         for k in stats:
             stats[k] += stat[k]
+
+    # Keep the archive an at-most-one-per-team store (drop superseded versions).
+    archive = paths.staging_archive_dir(TRACK)
+    archived = [archive / p.name for p in staging_pdfs if (archive / p.name).exists()]
+    if archived:
+        _purge_stale_staging(archive, archived, team_config)
 
     StateIndex().rebuild_and_save()
     return stats

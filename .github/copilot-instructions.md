@@ -14,6 +14,10 @@ python -m pipeline.main --source kt-app|warcom [--step X | --from X --to Y] [--t
 python -m pipeline.main --list
 ```
 
+Run **without `--force`** by default: inputs are hash-tracked, so a plain run processes
+exactly what changed. `--force` re-renders unchanged outputs (tokens, artwork, cards), which
+can churn their TTS `?v=` URLs — only use it when you deliberately want them regenerated.
+
 Two interchangeable extraction front-ends (**tracks**) converge on a shared,
 source-agnostic integration layer, then share the rest of asset/TTS generation:
 - `--source kt-app` — PDFs exported from the Kill Team mobile app (`input/`).
@@ -101,6 +105,13 @@ Order prefix (`[FF5500]E[-]`) + wounds (`{8/8}`) + operative name
   replace-in-place or append for old models); movement embeds via `MOVE_TOOL_CODE`/`SPRINT_TOOL_CODE`
 - Movement tools: `move-tool.lua` (Move + Dash) and `sprint-movement-tool.lua`
   (Sprint/Turn/Leap, MOUNTED only) — both step the model per leg with a centred click-catcher
+- **Base facing (`kt_front`)** — Sprint/Turn/Leap derive the start heading from the model's
+  transform-forward + `sprint-movement-tool.lua`'s `KTUI_FACING_OFFSET` (now **0** = head-first
+  by default) + a per-model `kt_front` offset (0/90/180/270) stored in the KTUI mini's
+  `script_state`. **Special: Rotate base 90** bumps `kt_front` (and swaps the KTUI base `x/z`
+  for the ring shape) so mirrored/proxy models are corrected in-game with a couple of clicks;
+  KTUI has NO native facing field — this is our addition and it round-trips through KTUI's
+  state. Rotating the model *transform* can't fix it (the heading turns with the mesh). (PR #72)
 
 ## Key Conventions
 
@@ -147,6 +158,21 @@ Order prefix (`[FF5500]E[-]`) + wounds (`{8/8}`) + operative name
 **Implementation**: `pipeline/steps/` (extract_tokens) + `pipeline/utils/artwork.py`
 - `remove_background()` threshold adjustments
 - Hard template boundary cleanup during token processing
+
+### Generated Counter Tokens (numbered per-value tokens)
+**Feature**: A team's `team-config.yaml` `operative_counters` entry can carry a `generate`
+block (min/max + a background image); the pipeline renders one numbered token per value.
+
+**Key facts**:
+- Code: `pipeline/utils/counter_tokens.py` (`generated_counter_states`, `generate_counter_tokens`,
+  `counter_slug`), invoked by `pipeline/steps/extract_tokens.py` (`_generate_counter_tokens_for_team`).
+- Background lives at `config/teams/{team}/custom-tokens/counters/{bg}.png` (derive it from a
+  cut output token so it inherits the exact operative cutter alpha); output goes to
+  `output/{team}/tokens/counters/{slug}-{value}.png`.
+- The **dispenser scan is non-recursive** (`tokens_dir.glob('*.obj')`), so the `counters/`
+  subfolder is auto-excluded — generated counters are art-only, no box token bags.
+- TTS: `tts_impl._build_operative_counters_lua` positions the panels; Exodite MOUNTED riders
+  get a Movement Remaining 0-12 counter (starts at 12) beside Speed + Remaining Actions. (PR #69)
 
 ### Metadata JSON
 - `extraction_metadata.json` per team — some teams have malformed JSON (battleclade, deathwatch, exaction-squad), always wrap in try/except

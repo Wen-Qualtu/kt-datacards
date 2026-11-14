@@ -1,20 +1,20 @@
 {
   "team": "blades-of-khaine",
   "pipeline_version": "2.0",
-  "last_updated": "2026-07-29T12:35:05.340843+00:00",
+  "last_updated": "2026-11-13T21:25:04.337624+00:00",
   "steps": {
     "content_analysis": {
       "outputs": {
         "content.json": {
           "path": "layers/integration/blades-of-khaine/content/blades-of-khaine-content.json",
-          "hash": "087aec0716256c36d43e004537f00fb3a7968e25e28f705ecabd183385b76339",
-          "modified": "2026-07-25T17:11:32.041942+00:00"
+          "hash": "560c385d717a2460e018518817fad42f6c51ecab628641a7da6c490a7e9a15c6",
+          "modified": "2026-08-15T18:37:20.091680+00:00"
         }
       },
-      "completed": "2026-07-25T17:11:32.453838+00:00",
+      "completed": "2026-08-15T18:37:20.536085+00:00",
       "inputs": {
         "layers/integration/blades-of-khaine/manifest.json": "d9e19b535ba34c042b54f3e1ae5881bcca91740dc7057b337cdcb46b1d504631",
-        "config/team-config.yaml": "b8ca8191fcfbccdfb363ab8c3eaf7e4e95ef35b5a914828a1a2b4a62cd02c680",
+        "config/team-config.yaml": "3866486652c388d422dbad96f89458bc2172fbe12dfc202355763a69d3f798f5",
         "layers/integration/blades-of-khaine/blades-of-khaine-datacard-dire-avenger-exarch.pdf": "f967364c1c07a94648f0958bb2602ad44de64b4bbfaf394dd51d7b3ac4019b5f",
         "layers/integration/blades-of-khaine/blades-of-khaine-datacard-dire-avenger-warrior.pdf": "068157089aef0f71e868cd9e22300fc1abd448c3f4196c87a929a51f10fa5b8c",
         "layers/integration/blades-of-khaine/blades-of-khaine-datacard-howling-banshee-exarch.pdf": "44476f01c52875d631a1a5e2b8a9976db79d85dbc7ff6bca2ffca057c9bf3273",
@@ -163,23 +163,23 @@
         "dice-light.jpg": {
           "path": "output/blades-of-khaine/dice/blades-of-khaine-dice-light.jpg",
           "hash": "95aefaf9936131ca05cda93cf4e8d809f1637ccba537698851f4e89766d4dd7c",
-          "modified": "2026-07-12T18:43:42.713185+00:00"
+          "modified": "2026-08-29T14:18:45.442304+00:00"
         },
         "dice-dark.jpg": {
           "path": "output/blades-of-khaine/dice/blades-of-khaine-dice-dark.jpg",
           "hash": "45956331cc9471f94265446bdc057b80a12e44e23d137410ff8a88faea2d989e",
-          "modified": "2026-07-12T18:43:42.722014+00:00"
+          "modified": "2026-08-29T14:18:45.463999+00:00"
         },
         "dice-team.jpg": {
           "path": "output/blades-of-khaine/dice/blades-of-khaine-dice-team.jpg",
-          "hash": "140ef09c97c247497aad2eb588cb6b9a0787745a931c96abfdfe3faa2c3cfd9b",
-          "modified": "2026-07-12T18:43:42.724546+00:00"
+          "hash": "c7f4efd050ee6762c322cd80de63adf4ae8a0e667312bc11cf85b9e1692f3a08",
+          "modified": "2026-08-29T14:18:45.465275+00:00"
         }
       },
-      "completed": "2026-07-12T18:43:42.728982+00:00",
+      "completed": "2026-08-29T14:18:45.468989+00:00",
       "inputs": {
         "layers/integration/blades-of-khaine/artwork/icons/blades-of-khaine-icon-token-transparent.png": "fb0d1daa3c6c8dfb74889f94bcc2cab9effd624a4f86a48b7711e25fa258fec4",
-        "config/team-config.yaml": "de34c56f77a00f03ce3468a30d2ccb3477ef9c2a19dcef05ab33fa8f97148a41"
+        "config/team-config.yaml": "e2263ea46dfafed06ea1f431499917a2553a2e546c5adb41ce375b55bd774f5d"
       }
     },
     "generate_box_texture": {
@@ -785,13 +785,16 @@
       "outputs": {
         "team-data.json": {
           "path": "output/blades-of-khaine/data/blades-of-khaine-team-data.json",
-          "hash": "087aec0716256c36d43e004537f00fb3a7968e25e28f705ecabd183385b76339",
-          "modified": "2026-07-25T17:15:59.945226+00:00"
+          "hash": "a66a4f548b60664ffa43dc3db67fb594c6b27dd04e9795b3a5650cdf0e5c5594",
+          "modified": "2026-11-13T21:18:51.491420+00:00"
         }
       },
-      "completed": "2026-07-25T17:15:59.946083+00:00",
+      "completed": "2026-11-13T21:18:51.506657+00:00",
       "inputs": {
-        "layers/integration/blades-of-khaine/content/blades-of-khaine-content.json": "087aec0716256c36d43e004537f00fb3a7968e25e28f705ecabd183385b76339"
+        "layers/integration/blades-of-khaine/content/blades-of-khaine-content.json": "560c385d717a2460e018518817fad42f6c51ecab628641a7da6c490a7e9a15c6",
+        "config/weapon_rules.json": "4dd2e044dbd2dfdc8d1e035bd31d1fa7e72c70b6424a733ea315a392368848b9",
+        "pipeline/steps/extract_stats.py": "f29227a25a76a7f9e1a74c882454f13539c4733462e64abd034469eb2a3bef83",
+        "pipeline/steps/tts_impl.py": "2fd98b5d7b04687525be043fa87b3adb0d8d90763305755aa8c6e0c062f4320b"
       }
     },
     "generate_tts": {
@@ -803,13 +806,13 @@
         },
         "tts_objects/Blades Of Khaine.json": {
           "path": "output/blades-of-khaine/tts_objects/Blades Of Khaine.json",
-          "hash": "e97a3282e7135cdf19983ee9c0d0243db3fa9ef91c5d2d0b043b2f07e329e86d",
-          "modified": "2026-07-29T12:35:05.246829+00:00"
+          "hash": "bb3d460d940b6b64f341b6d52d0b17abfdbbce783078a9be5abf3ea28d70b71c",
+          "modified": "2026-11-13T21:25:04.043518+00:00"
         }
       },
-      "completed": "2026-07-29T12:35:05.340830+00:00",
+      "completed": "2026-11-13T21:25:04.337589+00:00",
       "inputs": {
-        "config/team-config.yaml": "81bac78914c95effe29896c5f18bf0f292c23d41f48a6dbe84ea996de2c16482",
+        "config/team-config.yaml": "b1b298df3441797113db36d9524566fa76c836df085b140b54eaac01e26fd9f9",
         "config/team-guids.json": "906473ddbf256345a4150df497def05ec513f95948b27d6fc98fa6dba00bb7d0",
         "output/blades-of-khaine/cards/datacards/dire-avenger-exarch-back.jpg": "76d455b0b9695744fe3a9df3e3c5dc024f18fa052f327c8689e904ff22ec2e17",
         "output/blades-of-khaine/cards/datacards/dire-avenger-exarch-front.jpg": "f6bbd21cc0f062dc6296595e164b9d5e7d14bb07c7d0afec3c69ed630228d29d",
@@ -927,17 +930,18 @@
         "output/blades-of-khaine/tokens/tokenbag/blades-of-khaine-token-bag.obj": "7ac7494c9641babc1f89e53053206d677b0792cbc10b8d960fa89383f44dafeb",
         "output/blades-of-khaine/dice/blades-of-khaine-dice-dark.jpg": "45956331cc9471f94265446bdc057b80a12e44e23d137410ff8a88faea2d989e",
         "output/blades-of-khaine/dice/blades-of-khaine-dice-light.jpg": "95aefaf9936131ca05cda93cf4e8d809f1637ccba537698851f4e89766d4dd7c",
-        "output/blades-of-khaine/dice/blades-of-khaine-dice-team.jpg": "140ef09c97c247497aad2eb588cb6b9a0787745a931c96abfdfe3faa2c3cfd9b",
-        "output/blades-of-khaine/data/blades-of-khaine-team-data.json": "087aec0716256c36d43e004537f00fb3a7968e25e28f705ecabd183385b76339",
+        "output/blades-of-khaine/dice/blades-of-khaine-dice-team.jpg": "c7f4efd050ee6762c322cd80de63adf4ae8a0e667312bc11cf85b9e1692f3a08",
+        "output/blades-of-khaine/data/blades-of-khaine-team-data.json": "a66a4f548b60664ffa43dc3db67fb594c6b27dd04e9795b3a5650cdf0e5c5594",
         "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
-        "config/defaults/tts-script/datacard-load-stats.lua": "a6693f511ecce4b5f4f3101f319837a8a0cda0561b66d4ea9a154b7524429c0d",
+        "config/defaults/tts-script/datacard-load-stats.lua": "e163a1c2bbf015020a7ffe5ee861e9e78e7127ed99661187805c247862108260",
         "config/defaults/tts-script/display-table-manager-script.lua": "846de299f8e2c925e63cc77c4991fedd07ae75e9bde375f3b3c991c8730b891b",
         "config/defaults/tts-script/faction-rule-chapter-tactics.lua": "c906742268076fb91f7cb4a92c6b588e1122ccddb692688f635c8dd4f7110ad0",
         "config/defaults/tts-script/intermediate-updater.lua": "1a2d6dbc1a8c9c57ba6a3e7a3d4bc4b7a38a6c242a93f6ef3dae698123384d35",
-        "config/defaults/tts-script/ktui-mini-modelscript.lua": "60c2404aad548eb9a39eb5edc353c8b1049276da1bdc332e9774eeaa38ee690c",
-        "config/defaults/tts-script/move-tool.lua": "5aaab1f1e60c830fa509822ab989984a8c8da9ca71af8ef6ec3b02424a597305",
+        "config/defaults/tts-script/ktui-extender-modelscript.lua": "efaa258acaadc765e64e274a97c327161d6d9f3f1068582b8e097bdbb87318f7",
+        "config/defaults/tts-script/ktui-extension.lua": "3e7ec3dad8556d351dcb9a7fc399592f582b08434bc22ed45b6735cafabfad9b",
+        "config/defaults/tts-script/move-tool.lua": "68059b5fd1b60ab7037930223b7d64863c0619e12719d1866853b010c651b34e",
         "config/defaults/tts-script/single-object-updater.lua": "3613b85169e986a8e50ebe221482079e27c18037e3f48920aa0f7e138c0ccacc",
-        "config/defaults/tts-script/sprint-movement-tool.lua": "fa25a2f86cf8a29b659c43700644e41fe129a52872f0793c2511519cb2bafd63",
+        "config/defaults/tts-script/sprint-movement-tool.lua": "c0b96cbf193785c64dc6cb4bb90b4730d872214581c3973e9fbf30a01e8c5fd8",
         "config/defaults/tts-script/team-spawner-clean-script.lua": "12457bff3961eee2293c42d81cf4f4eb8b103177245a1ab8b46fd65da40672a2",
         "config/defaults/tts-script/team-spawner-script.lua": "a51ff45c8622923db909fb465781801511f235412f099f83dff728d4027650db",
         "config/defaults/tts-script/tts-update-rules-in-box-script.lua": "84f7f9b260f4e4968d208953b534bdbb7ab0b2f475e13264a2407f6c4d4d2b03",

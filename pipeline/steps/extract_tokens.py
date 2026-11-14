@@ -17,6 +17,7 @@ from __future__ import annotations
 import json
 import logging
 import shutil
+import yaml
 from pathlib import Path
 from typing import Dict, List, Optional
 
@@ -137,6 +138,11 @@ def _remove_background(img: np.ndarray) -> np.ndarray:
     is_white = ((v > 235) & (s < 25)) | (
         (bgr[:, :, 0] > 235) & (bgr[:, :, 1] > 235) & (bgr[:, :, 2] > 235)
     )
+    # Treat fully/near-transparent pixels as background too. Custom-token sources
+    # can be camo-on-TRANSPARENT (not camo-on-white); without this the transparent
+    # RGB (0,0,0 once alpha is dropped) survives as opaque black around the token.
+    if img.ndim == 3 and img.shape[2] == 4:
+        is_white = is_white | (img[:, :, 3] < 16)
     mask = (~is_white).astype(np.uint8) * 255
 
     num_labels, labels, stats, _ = cv2.connectedComponentsWithStats(mask, connectivity=8)
@@ -374,9 +380,55 @@ def _extract_team(team: str) -> bool:
         return False
 
     _emit_token_meshes(team, output_tokens_dir)
+    _generate_counter_tokens_for_team(team, output_tokens_dir)
 
     logger.info(f"  {team}: {count} tokens -> output/{team}/tokens/")
     return True
+
+
+def _generate_counter_tokens_for_team(team: str, output_tokens_dir: Path) -> int:
+    """Render min..max numbered images for any operative_counter that has a
+    ``generate`` block, into output/{team}/tokens/counters/ -- a subfolder the box
+    dispenser scan ignores (glob is non-recursive), so they stay counter-only art
+    and never become physical box tokens. Authoritative: clears the subfolder first.
+    """
+    try:
+        cfg = yaml.safe_load(paths.TEAM_CONFIG.read_text(encoding="utf-8")) or {}
+    except Exception as e:
+        logger.warning(f"  {team}: could not read team config for counters: {e}")
+        return 0
+    team_info = (cfg.get("teams") or {}).get(team) or {}
+    counters = team_info.get("operative_counters") or []
+    gen = [c for c in counters if isinstance(c, dict) and c.get("generate")]
+    if not gen:
+        return 0
+
+    from ..utils.counter_tokens import (
+        generate_counter_tokens, counter_slug, COUNTERS_SUBDIR, _style_kwargs,
+    )
+    counters_dir = output_tokens_dir / COUNTERS_SUBDIR
+    if counters_dir.exists():
+        for stale in counters_dir.glob("*.png"):
+            try:
+                stale.unlink()
+            except Exception:
+                pass
+    custom_dir = paths.team_config_dir(team) / "custom-tokens" / COUNTERS_SUBDIR
+    total = 0
+    for c in gen:
+        g = c["generate"] or {}
+        bg = custom_dir / str(g.get("background", ""))
+        if not bg.exists():
+            logger.warning(f"  {team}: counter '{c.get('name')}' background not found: {bg}")
+            continue
+        lo = int(c.get("min", 1))
+        hi = int(c.get("max", lo))
+        slug = counter_slug(c.get("name", "counter"))
+        written = generate_counter_tokens(bg, range(lo, hi + 1), counters_dir, slug, **_style_kwargs(g))
+        total += len(written)
+    if total:
+        logger.info(f"  {team}: {total} counter tokens -> output/{team}/tokens/{COUNTERS_SUBDIR}/")
+    return total
 
 
 def _emit_token_meshes(team: str, output_tokens_dir: Path) -> None:
@@ -454,13 +506,19 @@ def run(teams: Optional[list] = None, source=None, force: bool = False):
     logger.info(f"extract_tokens: {len(teams)} team(s)")
 
     processed = failed = skipped = 0
+    newly_ready: list = []  # teams confirmed complete this run -> flag tokens_ready
     for team in teams:
         logger.info(f"[{team}]")
+        if team_config.asset_ready(team, "tokens") and not force:
+            logger.info("  tokens_ready in config, skip")
+            skipped += 1
+            continue
         state = StateManager(team)
         inputs = _inputs_for(team)
         if state.can_skip("extract_tokens", inputs, force):
             logger.info("  unchanged, skip")
             skipped += 1
+            newly_ready.append(team)  # asset present -> mark done
             continue
 
         try:
@@ -476,6 +534,7 @@ def run(teams: Optional[list] = None, source=None, force: bool = False):
 
         if ok is None:
             skipped += 1  # no token guide -> nothing to do (not a failure)
+            newly_ready.append(team)  # nothing to make -> done
             continue
         if not ok:
             failed += 1
@@ -494,7 +553,11 @@ def run(teams: Optional[list] = None, source=None, force: bool = False):
         state.record_inputs("extract_tokens", inputs)
         state.mark_complete("extract_tokens")
         state.save()
+        newly_ready.append(team)
 
+    n = team_config.mark_ready((t, "tokens") for t in newly_ready)
+    if n:
+        logger.info(f"  set tokens_ready for {n} team(s)")
     StateIndex().rebuild_and_save()
     logger.info(f"extract_tokens done: processed={processed} skipped={skipped} failed={failed}")
     return {"processed": processed, "skipped": skipped, "failed": failed}

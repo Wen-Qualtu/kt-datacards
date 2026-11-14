@@ -218,7 +218,7 @@ warcom`). URL base/branch override via `KT_DATACARDS_URL_BASE` / `KT_DATACARDS_U
 Copy-Item "dev\{team}-datacards.pdf" -Destination "input\{team}-datacards.pdf" -Force
 
 # 2. Regenerate the team end-to-end (regenerates cards under output/{team}/cards/)
-python -m pipeline.main --source kt-app --teams {team} --force
+python -m pipeline.main --source kt-app --teams {team}
 
 # 3. (Or just regenerate the TTS objects if only stats/box changed)
 python -m pipeline.main --step generate_tts --teams {team}
