@@ -107,6 +107,22 @@ def test_node_fields_reuse_card_loadout_indexes_without_changing_existing_data()
         ]
 
 
+def test_canoptek_warrior_and_crawler_loadout_options_are_precomputed():
+    team = json.loads((ROOT / "output/canoptek-circle/data/canoptek-circle-team-data.json").read_text(encoding="utf-8"))
+    nodes = {
+        operative["name"]: operative["node"]["selection"]
+        for operative in team["datacards"]
+        if operative["name"] in {"CANOPTEK MACROCYTE WARRIOR", "CANOPTEK TOMB CRAWLER"}
+    }
+
+    assert [option["label"] for option in nodes["CANOPTEK MACROCYTE WARRIOR"]["groups"][0]] == [
+        "Gauss scalpel; claws and tail", "Tesla caster; claws and tail"
+    ]
+    assert [option["label"] for option in nodes["CANOPTEK TOMB CRAWLER"]["groups"][0]] == [
+        "Twin gauss reapers; claws", "Transdimensional isolator; claws"
+    ]
+
+
 def test_all_team_node_fields_match_existing_card_loadouts():
     rules = json.loads((CONFIG / "weapon_rules.json").read_text(encoding="utf-8"))
     for path in sorted((ROOT / "output").glob("*/data/*-team-data.json")):
@@ -141,7 +157,14 @@ def test_saved_object_embeds_current_node_script():
 
     assert save["SaveName"] == "Kill Team Command Node"
     assert len(save["ObjectStates"]) == 1
-    assert save["ObjectStates"][0]["Name"] == "BlockSquare"
+    node = save["ObjectStates"][0]
+    assert node["Name"] == "Custom_Tile"
+    assert node["CustomImage"]["CustomTile"] == {
+        "Type": 1, "Thickness": 0.2, "Stackable": False, "Stretch": True,
+    }
+    assert node["CustomImage"]["ImageURL"].endswith("C19BB145DB4C70E131F1184AC1C81EC5EC446D31/")
+    assert node["ColorDiffuse"] == {"r": 0.2, "g": 0.2, "b": 0.2}
+    assert node["Transform"]["scaleX"] == node["Transform"]["scaleZ"] == 1
     assert save["ObjectStates"][0]["LuaScript"] == script
     assert "function commandNodeConfirm" in script
     assert "NODE_TEAM_DATA" not in script
@@ -417,7 +440,11 @@ def test_builder_can_target_a_feature_branch_without_embedded_data(tmp_path):
     assert "refs/heads/feature/command-node" in node
     assert "NODE_TEAM_DATA" not in node
     assert "NODE_APPLY_SCRIPT" not in node
-    assert len(node.encode("utf-8")) < 30_000
+    assert "NODE_LOADER_FALLBACK" not in node
+    assert "KTUI_MODELSCRIPT =" not in node
+    assert "MOVE_TOOL_CODE =" not in node
+    assert "SPRINT_TOOL_CODE =" not in node
+    assert len(node.encode("utf-8")) < 45_000
 
 
 def test_shared_helper_includes_composed_model_and_card_loader():
@@ -427,6 +454,9 @@ def test_shared_helper_includes_composed_model_and_card_loader():
     assert "function diffAndApply" in helper
     assert "function rebuildDescription" in helper
     assert "function onLoad" in helper
+    scripts = CONFIG / "defaults" / "tts-script"
+    assert (scripts / "move-tool.lua").read_text(encoding="utf-8") in helper
+    assert (scripts / "sprint-movement-tool.lua").read_text(encoding="utf-8") in helper
 
 
 def test_pipeline_shared_loader_matches_existing_composition(tmp_path):
@@ -434,3 +464,15 @@ def test_pipeline_shared_loader_matches_existing_composition(tmp_path):
     assert target.read_text(encoding="utf-8") == compose_command_node_loader(CONFIG)
     timestamp = target.stat().st_mtime_ns
     assert tts_impl.write_command_node_loader(CONFIG, tmp_path).stat().st_mtime_ns == timestamp
+
+
+def test_standalone_token_bag_preserves_contents_and_script(tmp_path):
+    bag = {
+        "Name": "Custom_Model_Bag", "LuaScript": "bag script", "LuaScriptState": "saved layout",
+        "ContainedObjects": [{"Name": "Custom_Model_Infinite_Bag", "Nickname": "Team token"}],
+    }
+    target = tts_impl.write_token_bag_object("test-team", bag, tmp_path)
+    assert target.relative_to(tmp_path).as_posix() == "test-team/tts_objects/test-team-token-bag.json"
+    assert json.loads(target.read_text(encoding="utf-8")) == {"ObjectStates": [bag]}
+    timestamp = target.stat().st_mtime_ns
+    assert tts_impl.write_token_bag_object("test-team", bag, tmp_path).stat().st_mtime_ns == timestamp

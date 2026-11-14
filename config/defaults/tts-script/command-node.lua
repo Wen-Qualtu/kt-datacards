@@ -63,7 +63,7 @@ local function cleanText(value, normalize)
         for character, replacement in pairs(NORMALIZED_CHARACTERS) do
             value = value:gsub(character, replacement)
         end
-        value = value:match("^%s*(.-)%s*$")
+        value = value:gsub("^%s+", ""):gsub("%s+$", "")
     end
     local parts = {}
     for index = 1, #value do
@@ -148,7 +148,7 @@ local activeHelper = nil
 local loaderScript = nil
 local panelPage = 1
 local panelRender = nil
-local ROWS_PER_PAGE = 10
+local PANEL_MAX_HEIGHT = 550
 
 local MODEL_TYPES = {
     Custom_Model = true,
@@ -160,8 +160,35 @@ local MODEL_TYPES = {
 local APPLY_ADAPTER = [[
 function ktCommandNodeApply(params)
     if not params or not params.model or not params.data then return nil end
+    local mounted = false
+    for _, keyword in ipairs(params.data.keywords or {}) do
+        if tostring(keyword):upper() == "MOUNTED" then mounted = true end
+    end
+    local movement = mounted and SPRINT_TOOL_CODE or MOVE_TOOL_CODE
+    if type(movement) ~= "string" or movement == "" then
+        error("Movement tool missing from the command-node loader.")
+    end
+    local tag = mounted and "KT_SPRINT_TOOL_V1" or "KT_MOVE_TOOL_V1"
+    local modelScript = KTUI_MODELSCRIPT .. "\n\n-- START " .. tag .. " --\n"
+        .. movement .. "\n-- END " .. tag .. " --\n"
     params.data.description = rebuildDescription(params.data)
-    local changes = diffAndApply(params.model, params.data, params.playerColor)
+    local state = {}
+    local raw = params.model.script_state
+    if raw and raw ~= "" then
+        local ok, decoded = pcall(function() return JSON.decode(raw) end)
+        if ok and type(decoded) == "table" then state = decoded end
+    end
+    local rotation = params.model.getRotation()
+    local front = (params.heading - rotation.y) % 360
+    state.kt_front = front
+    state.uiAngle = (-front) % 360
+    state.uiPositionIndex = 1
+    state.kt_node_ui = true
+    params.model.script_state = JSON.encode(state)
+    params.model.clearButtons()
+    params.model.clearInputs()
+    params.model.UI.setXml("")
+    local changes = diffAndApply(params.model, params.data, params.playerColor, true, modelScript)
     return {applied = true, changes = #changes}
 end
 ]]
@@ -173,6 +200,23 @@ end
 
 local function displayName(slug)
     return (slug:gsub("-", " "):gsub("%f[%a]%l", string.upper))
+end
+
+local function slotLabel(index, name)
+    local lines = {}
+    local line = index .. "."
+    local longest = #line
+    for word in name:gmatch("%S+") do
+        if #line + #word + 1 > 16 then
+            lines[#lines + 1] = line
+            line = word
+        else
+            line = line .. " " .. word
+        end
+        longest = math.max(longest, #line)
+    end
+    lines[#lines + 1] = line
+    return table.concat(lines, "\n"), math.min(80, math.floor(1000 / longest))
 end
 
 local function notify(color, message, tint)
@@ -206,37 +250,76 @@ local function requestJson(url, callback)
     end)
 end
 
-local function panel(title, rows, footer)
-    local pageCount = math.max(1, math.ceil(#rows / ROWS_PER_PAGE))
-    panelPage = math.max(1, math.min(panelPage, pageCount))
-    local visibleRows = {}
-    local first = (panelPage - 1) * ROWS_PER_PAGE + 1
-    for index = first, math.min(first + ROWS_PER_PAGE - 1, #rows) do
-        visibleRows[#visibleRows + 1] = rows[index]
+local function compatibleLoader(script)
+    if type(script) ~= "string" or not script:find("function rebuildDescription", 1, true)
+        or not script:find("KTUI_MODELSCRIPT", 1, true) then return false end
+    local signature = script:match("function%s+diffAndApply%s*(%b())")
+    return signature and signature:find("replaceScript", 1, true) ~= nil
+        and signature:find("modelScript", 1, true) ~= nil
+end
+
+local function panel(title, rows, footer, rowHeight, rowGroups)
+    rowHeight = rowHeight or 34
+    local spacing = 6
+    local fixedHeight = 28 + 40 + 42 + spacing
+    local navigationHeight = 28 + spacing
+    local rowsPerPage = math.max(1, #rows)
+    if fixedHeight + #rows * (rowHeight + spacing) > PANEL_MAX_HEIGHT then
+        rowsPerPage = math.max(1, math.floor(
+            (PANEL_MAX_HEIGHT - fixedHeight - navigationHeight) / (rowHeight + spacing)))
     end
+    local pages = {{}}
+    local rowIndex = 1
+    while rowIndex <= #rows do
+        local count = rowGroups and rowGroups[rowIndex] or 1
+        local page = pages[#pages]
+        if count <= rowsPerPage and #page > 0 and #page + count > rowsPerPage then
+            page = {}
+            pages[#pages + 1] = page
+        end
+        for offset = 0, count - 1 do
+            if #page == rowsPerPage then
+                page = {}
+                pages[#pages + 1] = page
+            end
+            page[#page + 1] = rows[rowIndex + offset]
+        end
+        rowIndex = rowIndex + count
+    end
+    local pageCount = #pages
+    panelPage = math.max(1, math.min(panelPage, pageCount))
+    local visibleRows = pages[panelPage]
     local navigation = ""
     if pageCount > 1 then
         navigation = string.format([[
-    <HorizontalLayout spacing="6" preferredHeight="36">
-      <Button id="page_prev" onClick="commandNodePage" fontSize="16">Previous</Button>
-      <Text fontSize="16" color="#FFFFFF">%d / %d</Text>
-      <Button id="page_next" onClick="commandNodePage" fontSize="16">Next</Button>
-    </HorizontalLayout>]], panelPage, pageCount)
+        <HorizontalLayout spacing="6" minHeight="28" preferredHeight="28" flexibleHeight="0" childForceExpandHeight="false" childForceExpandWidth="false" childAlignment="MiddleCenter">
+            <Button id="page_prev" onClick="commandNodePage" tooltip="Previous page" preferredWidth="36" flexibleWidth="0" minHeight="28" preferredHeight="28" flexibleHeight="0" fontSize="16" colors="#34454A|#56686D|#293336|#333333" textColor="#FFFFFF" interactable="%s">&lt;</Button>
+            <Text preferredWidth="80" flexibleWidth="0" preferredHeight="28" flexibleHeight="0" fontSize="14" color="#FFFFFF">%d / %d</Text>
+            <Button id="page_next" onClick="commandNodePage" tooltip="Next page" preferredWidth="36" flexibleWidth="0" minHeight="28" preferredHeight="28" flexibleHeight="0" fontSize="16" colors="#34454A|#56686D|#293336|#333333" textColor="#FFFFFF" interactable="%s">&gt;</Button>
+        </HorizontalLayout>]], tostring(panelPage > 1), panelPage, pageCount, tostring(panelPage < pageCount))
     end
-    self.UI.setXml(string.format([[
-<Panel id="nodePanel" width="650" height="650" position="0 0 -80" rotation="0 0 180"
+    local nodeScale = self.getScale()
+    local halfDepth = self.getBoundsNormalized().size.z * 0.5
+    local panelHeight = fixedHeight + #visibleRows * (rowHeight + spacing)
+        + (pageCount > 1 and navigationHeight or 0)
+    local panelScale = 0.8
+    local panelPosition = halfDepth / nodeScale.z * 100 + panelHeight * panelScale * 0.5
+    local xml = string.format([[
+<Panel id="nodePanel" width="650" height="%d" position="0 %.3f -80" rotation="0 0 180" scale="%.2f %.2f 1"
        color="#171D1FF2" padding="14 14 14 14">
   <VerticalLayout spacing="6" childForceExpandWidth="true" childForceExpandHeight="false">
     <Text fontSize="25" fontStyle="Bold" color="#FFFFFF" preferredHeight="40">%s</Text>
     %s
     %s
-    <HorizontalLayout spacing="6" preferredHeight="42">%s</HorizontalLayout>
+        <HorizontalLayout spacing="6" preferredHeight="42" flexibleHeight="0" childForceExpandHeight="false">%s</HorizontalLayout>
   </VerticalLayout>
-</Panel>]], xmlEscape(title), table.concat(visibleRows), navigation, footer))
+</Panel>]], panelHeight, panelPosition, panelScale, panelScale,
+        xmlEscape(title), table.concat(visibleRows), navigation, footer)
+    self.UI.setXml(xml)
 end
 
 local function button(id, action, label, tint)
-    return string.format('<Button id="%s" onClick="%s" preferredHeight="34" fontSize="17" '
+    return string.format('<Button id="%s" onClick="%s" minHeight="34" preferredHeight="34" flexibleHeight="0" fontSize="17" '
         .. 'colors="%s|#56686D|#293336|#333333" textColor="#FFFFFF">%s</Button>',
         id, action, tint or "#34454A", xmlEscape(label))
 end
@@ -254,17 +337,26 @@ local function showRoster()
     panelRender = showRoster
     local rows = {}
     for index, operative in ipairs(operatives) do
-        rows[#rows + 1] = string.format('<HorizontalLayout preferredHeight="36" spacing="5">'
-            .. '<Text fontSize="17" color="#FFFFFF" alignment="MiddleLeft">%s</Text>'
-            .. '<Button id="minus_%d" onClick="commandNodeChangeCount" preferredWidth="40" fontSize="22">-</Button>'
-            .. '<Text preferredWidth="38" fontSize="18" color="#FFFFFF">%d</Text>'
-            .. '<Button id="plus_%d" onClick="commandNodeChangeCount" preferredWidth="40" fontSize="22">+</Button>'
-            .. '</HorizontalLayout>', xmlEscape(operative.name), index, counts[index] or 0, index)
+        rows[#rows + 1] = string.format(
+            '<HorizontalLayout preferredHeight="42" flexibleHeight="0" spacing="4" childForceExpandWidth="false" childForceExpandHeight="false">'
+            .. '<Text preferredWidth="310" flexibleWidth="0" fontSize="16" color="#FFFFFF" alignment="MiddleLeft" horizontalOverflow="Truncate">%s</Text>'
+            .. '<Button id="minus_%d" onClick="commandNodeChangeCount" preferredWidth="58" flexibleWidth="0" preferredHeight="36" fontSize="20">-</Button>'
+            .. '<Text preferredWidth="48" flexibleWidth="0" fontSize="16" color="#FFFFFF">%d</Text>'
+            .. '<Button id="plus_%d" onClick="commandNodeChangeCount" preferredWidth="58" flexibleWidth="0" preferredHeight="36" fontSize="20">+</Button>'
+            .. '</HorizontalLayout>',
+            xmlEscape(operative.name), index, counts[index] or 0, index)
+    end
+    local supplies = button("supplies", "commandNodeSpawnSupplies", "Tokens + dice")
+    if currentTeam.suppliesBusy or currentTeam.suppliesSpawned then
+        supplies = button("supplies", "commandNodeSpawnSupplies",
+            currentTeam.suppliesBusy and "Spawning..." or "Spawned")
+        supplies = supplies:gsub('onClick=', 'interactable="false" onClick=', 1)
     end
     panel(currentTeam.name, rows,
         button("back", "commandNodeBackToTeams", "Teams")
+        .. supplies
         .. button("next", "commandNodeCreateSlots", "Create slots", "#237A60")
-        .. button("cancel", "commandNodeCancel", "Cancel"))
+        .. button("cancel", "commandNodeCancel", "Cancel"), 42)
 end
 
 local function isSessionPlayer(player)
@@ -279,17 +371,29 @@ function commandNodePage(player, _, id)
 end
 
 local function setStartVisible(visible)
-    self.editButton({index = 0, label = visible and "Start" or "",
+    self.editButton({index = 0, label = visible and "New team" or "",
         width = visible and 900 or 0, height = visible and 320 or 0})
 end
 
 function onLoad()
     self.setName("Kill Team Command Node")
+    local scale = self.getScale()
+    local arrowHeight = (self.getBoundsNormalized().size.y * 0.5 + 0.05) / scale.y
+    self.setVectorLines({{
+        points = {
+            {0, arrowHeight, -0.35 / scale.z},
+            {0, arrowHeight, 0.45 / scale.z},
+            {-0.18 / scale.x, arrowHeight, 0.15 / scale.z},
+            {0, arrowHeight, 0.45 / scale.z},
+            {0.18 / scale.x, arrowHeight, 0.15 / scale.z},
+        },
+        color = {0.85, 1, 0.9}, thickness = 0.04,
+    }})
     for _, object in ipairs(getObjectsWithTag("KTCommandNodeSlot-" .. self.getGUID())) do
         object.destruct()
     end
-    self.createButton({label = "Start", click_function = "commandNodeStart", function_owner = self,
-        position = {0, 0.65, -1.2}, width = 900, height = 320, font_size = 180,
+    self.createButton({label = "New team", click_function = "commandNodeStart", function_owner = self,
+        position = {0, arrowHeight, -1.2}, width = 900, height = 320, font_size = 180,
         color = {0.15, 0.45, 0.36}, font_color = {1, 1, 1}})
 end
 
@@ -384,11 +488,86 @@ function commandNodeChooseTeam(player, _, id)
             table.sort(cards, function(left, right) return left.name:lower() < right.name:lower() end)
             operatives = cards
             currentTeam = team
+            currentTeam.hasTokenBag = false
+            for _, object in ipairs(metadata.objects or {}) do
+                if object.type == "token-bag" then currentTeam.hasTokenBag = true end
+            end
             counts = {}
             panelPage = 1
             showRoster()
         end)
     end)
+end
+
+function commandNodeSpawnSupplies(player)
+    if not isSessionPlayer(player) or not currentTeam or applying or building
+        or panelRender ~= showRoster then return end
+    local team = currentTeam
+    if team.suppliesBusy or team.suppliesSpawned then return end
+    local base = REPO_BASE_URL .. "/output/" .. team.slug .. "/tts_objects/"
+    local files = {}
+    if team.hasTokenBag then files[#files + 1] = {path = team.slug .. "-token-bag.json", optional = true} end
+    for _, suffix in ipairs({"-dice", "-light-dice", "-dark-dice"}) do
+        files[#files + 1] = {path = "dice/" .. team.slug .. suffix .. ".json"}
+    end
+    local version = sessionVersion
+    local color = sessionColor
+    local function refreshRoster()
+        if panelRender == showRoster then showRoster() end
+    end
+    team.suppliesBusy = true
+    showRoster()
+    local spawned, finished, hasTokens = {}, false, false
+    local function finish(errorMessage)
+        if finished then return end
+        finished = true
+        team.suppliesBusy = false
+        if errorMessage or version ~= sessionVersion then
+            for _, object in ipairs(spawned) do object.destruct() end
+        end
+        if version ~= sessionVersion then return end
+        if errorMessage then
+            notify(color, errorMessage, {1, 0.3, 0.3})
+        else
+            team.suppliesSpawned = true
+            notify(color, hasTokens and "Team token bag and dice spawned."
+                or "Team dice spawned; no standalone token bag is published for this team.", {0.3, 1, 0.5})
+        end
+        refreshRoster()
+    end
+    local function nextFile(index)
+        if finished then return end
+        if version ~= sessionVersion then finish(); return end
+        if index > #files then finish(); return end
+        local file = files[index]
+        requestText(base .. file.path .. "?v=" .. tostring(os.time()), function(text, errorMessage)
+            if finished then return end
+            if version ~= sessionVersion then finish(); return end
+            if not text then
+                if file.optional then nextFile(index + 1) else finish(errorMessage) end
+                return
+            end
+            local ok, payload = pcall(function() return JSON.decode(text) end)
+            local root = ok and type(payload) == "table" and (payload.ObjectStates and payload.ObjectStates[1] or payload)
+            if type(root) ~= "table" or type(root.Name) ~= "string" then
+                finish("Invalid team supply object: " .. file.path)
+                return
+            end
+            local scale = self.getScale()
+            local side = self.getBoundsNormalized().size.x * 0.5 + 10
+            local called, object = pcall(function()
+                return spawnObjectJSON({json = JSON.encode(root),
+                    position = self.positionToWorld({side / scale.x, 1 / scale.y, #spawned * 3 / scale.z}),
+                    rotation = self.getRotation()})
+            end)
+            if not called or not object then finish("Could not spawn team supplies; try again."); return end
+            spawned[#spawned + 1] = object
+            if file.optional then hasTokens = true end
+            nextFile(index + 1)
+        end)
+    end
+    Wait.time(function() finish("Team supplies timed out; please try again.") end, 30)
+    nextFile(1)
 end
 
 function commandNodeChangeCount(player, _, id)
@@ -421,14 +600,14 @@ local function baseDimensions(raw)
     return width / 25.4, depth / 25.4
 end
 
-local function drawBase(object, raw)
-    local width, depth = baseDimensions(raw)
-    local points = {}
-    for step = 0, 40 do
-        local angle = step * 2 * math.pi / 40
-        points[#points + 1] = {width * 0.5 * math.cos(angle), 0.6, depth * 0.5 * math.sin(angle)}
+local function slotDimensions(operative)
+    local mounted = false
+    for _, keyword in ipairs(operative.data.keywords or {}) do
+        if tostring(keyword):upper() == "MOUNTED" then mounted = true end
     end
-    object.setVectorLines({{points = points, color = {0.3, 0.95, 0.7}, thickness = 0.04}})
+    local width, depth = baseDimensions(operative.data.stats.Base)
+    if mounted then width, depth = math.min(width, depth), math.max(width, depth) end
+    return 60 / 25.4, (mounted and 70 or 60) / 25.4, width, depth
 end
 
 local function showSlots()
@@ -440,8 +619,18 @@ local function showSlots()
             prefix .. index .. ". " .. operatives[slot.operative].name,
             index == selectedSlot and "#237A60" or nil)
     end
+    panel("Place models on tiles: " .. currentTeam.name, rows,
+        button("confirm", "commandNodeConfirm", "Confirm", "#237A60")
+        .. button("cancel", "commandNodeCancel", "Cancel"))
+end
 
+local function showSlotLoadout()
+    panelRender = showSlotLoadout
     local slot = slots[selectedSlot]
+    local marker = getObjectFromGUID(slot.guid)
+    if not marker then return end
+    local rows = {}
+    local rowGroups = {}
     local selection = operatives[slot.operative].data.selection
     if selection and selection.groups and #selection.groups > 0 then
         rows[#rows + 1] = '<Text preferredHeight="32" fontSize="20" color="#FFFFFF">Loadout</Text>'
@@ -459,6 +648,7 @@ local function showSlots()
         end
         for groupIndex, group in ipairs(selection.groups) do
             if active[groupIndex] then
+                rowGroups[#rows + 1] = #group + 1
                 rows[#rows + 1] = '<Text preferredHeight="26" fontSize="16" color="#A8BEB7">Choose one</Text>'
                 for optionIndex, option in ipairs(group) do
                     local selected = (slot.choices[groupIndex] or 1) == optionIndex
@@ -468,9 +658,8 @@ local function showSlots()
             end
         end
     end
-    panel("Place models: " .. currentTeam.name, rows,
-        button("confirm", "commandNodeConfirm", "Confirm", "#237A60")
-        .. button("cancel", "commandNodeCancel", "Cancel"))
+    panel(selectedSlot .. ". " .. operatives[slot.operative].name, rows,
+        button("loadout_done", "commandNodeLoadoutDone", "Done", "#237A60"), nil, rowGroups)
 end
 
 function commandNodeCreateSlots(player)
@@ -485,6 +674,15 @@ function commandNodeCreateSlots(player)
         notify(sessionColor, "A setup can contain at most 24 models.")
         return
     end
+    local columnSpacing, rowSpacing = 0, 0
+    for index, operative in ipairs(operatives) do
+        if (counts[index] or 0) > 0 then
+            local tileWidth, tileDepth, width, depth = slotDimensions(operative)
+            columnSpacing = math.max(columnSpacing, tileWidth, width)
+            rowSpacing = math.max(rowSpacing, tileDepth, depth)
+        end
+    end
+    columnSpacing, rowSpacing = columnSpacing + 10 / 25.4, rowSpacing + 10 / 25.4
     clearSlots()
     building = true
     self.UI.setXml("")
@@ -495,21 +693,51 @@ function commandNodeCreateSlots(player)
             local index = #slots + 1
             local column = (index - 1) % 6
             local row = math.floor((index - 1) / 6)
-            local position = self.positionToWorld({(column - 2.5) * 3.5, 0.4, -4 - row * 3.5})
-            local slot = {operative = operativeIndex, choices = {}, selectedSet = 1}
+            local tileWidth, tileDepth, baseWidth, baseDepth = slotDimensions(operative)
+            local nodeScale = self.getScale()
+            local halfDepth = self.getBoundsNormalized().size.z * 0.5
+            local position = self.positionToWorld({
+                (column - 2.5) * columnSpacing / nodeScale.x,
+                0.4 / nodeScale.y,
+                -(halfDepth + (row + 0.5) * rowSpacing) / nodeScale.z,
+            })
+            local choices = {}
+            local selection = operative.data.selection
+            for groupIndex in ipairs((selection and selection.groups) or {}) do
+                choices[groupIndex] = 1
+            end
+            local slot = {
+                operative = operativeIndex,
+                choices = choices,
+                selectedSet = 1,
+                width = math.max(tileWidth, baseWidth),
+                depth = math.max(tileDepth, baseDepth),
+            }
             slots[index] = slot
             local object = spawnObject({type = "BlockSquare", position = position, scale = {1, 0.08, 1},
                 rotation = self.getRotation(), sound = false, callback_function = function(marker)
                     if version ~= sessionVersion then marker.destruct(); return end
+                    local bounds = marker.getBoundsNormalized().size
+                    local markerScale = marker.getScale()
+                    marker.setScale({markerScale.x * tileWidth / bounds.x, markerScale.y,
+                        markerScale.z * tileDepth / bounds.z})
+                    markerScale = marker.getScale()
                     marker.setLock(true)
                     marker.setName(index .. ". " .. operative.name)
-                    marker.setColorTint({0.18, 0.38, 0.32})
+                    marker.setColorTint({0, 0, 0})
                     marker.addTag("KTCommandNodeSlot-" .. self.getGUID())
-                    marker.createButton({label = index .. ". " .. operative.name,
+                    local label, fontSize = slotLabel(index, operative.name)
+                    marker.createButton({label = label,
                         click_function = "commandNodeSlotLabel", function_owner = self,
-                        position = {0, 0.7, 0}, width = 0, height = 0, font_size = 95,
-                        font_color = {1, 1, 1}, scale = {1, 12.5, 1}})
-                    drawBase(marker, operative.data.stats.Base)
+                        position = {0, 0.7, 0}, width = 0, height = 0, font_size = fontSize,
+                        font_color = {1, 1, 1}, scale = {1 / markerScale.x, 12.5, 1 / markerScale.z}})
+                    if selection and selection.groups and #selection.groups > 0 then
+                        marker.createButton({label = "Loadout",
+                            click_function = "commandNodeSlotLoadout", function_owner = self,
+                            position = {0, 0.8, 0.8 / markerScale.z}, width = 850, height = 280, font_size = 150,
+                            font_color = {1, 1, 1}, color = {0.14, 0.48, 0.38},
+                            scale = {1 / markerScale.x, 12.5, 1 / markerScale.z}})
+                    end
                     slot.guid = marker.getGUID()
                     remaining = remaining - 1
                     if remaining == 0 then
@@ -534,13 +762,30 @@ end
 function commandNodeSlotLabel() end
 
 function commandNodeSelectSlot(player, _, id)
-    if not isSessionPlayer(player) then return end
+    if not isSessionPlayer(player) or applying or building then return end
     local index = tonumber(id:match("^slot_(%d+)$"))
     if index and slots[index] then
         selectedSlot = index
-        panelPage = math.ceil((#slots + 1) / ROWS_PER_PAGE)
+        panelPage = 1
         showSlots()
+        local selection = operatives[slots[index].operative].data.selection
+        if selection and selection.groups and #selection.groups > 0 then showSlotLoadout() end
     end
+end
+
+function commandNodeSlotLoadout(marker, color)
+    for index, slot in ipairs(slots) do
+        if slot.guid == marker.getGUID() then
+            commandNodeSelectSlot({color = color}, nil, "slot_" .. index)
+            return
+        end
+    end
+end
+
+function commandNodeLoadoutDone(player)
+    if not isSessionPlayer(player) then return end
+    panelPage = 1
+    showSlots()
 end
 
 function commandNodeSelectSet(player, _, id)
@@ -548,7 +793,7 @@ function commandNodeSelectSet(player, _, id)
     local index = tonumber(id:match("^set_(%d+)$"))
     local slot = slots[selectedSlot]
     local selection = operatives[slot.operative].data.selection
-    if index and selection.exclusive_sets[index] then slot.selectedSet = index; showSlots() end
+    if index and selection.exclusive_sets[index] then slot.selectedSet = index; showSlotLoadout() end
 end
 
 function commandNodeSelectOption(player, _, id)
@@ -559,7 +804,7 @@ function commandNodeSelectOption(player, _, id)
     local selection = operatives[slot.operative].data.selection
     if group and option and selection.groups[group] and selection.groups[group][option] then
         slot.choices[group] = option
-        showSlots()
+        showSlotLoadout()
     end
 end
 
@@ -587,10 +832,9 @@ end
 local function findSlotModels(slot)
     local marker = getObjectFromGUID(slot.guid)
     if not marker then return nil, "Placement slot is missing." end
-    local width, depth = baseDimensions(operatives[slot.operative].data.stats.Base)
     local center = marker.getPosition()
     local hits = Physics.cast({origin = center + Vector(0, 1, 0), direction = {0, 1, 0}, type = 3,
-        size = {math.max(width + 0.4, 1.2), 3, math.max(depth + 0.4, 1.2)},
+        size = {slot.width, 3, slot.depth},
         orientation = marker.getRotation(), max_distance = 0})
     local models, seen = {}, {}
     for _, hit in ipairs(hits) do
@@ -659,7 +903,10 @@ local function applyNext(index, models)
                 return
             end
             local called, result = pcall(function()
-                return loaded.call("ktCommandNodeApply", {model = target, data = data, playerColor = sessionColor})
+                return loaded.call("ktCommandNodeApply", {
+                    model = target, data = data, playerColor = sessionColor,
+                    heading = self.getRotation().y,
+                })
             end)
             loaded.destruct()
             activeHelper = nil
@@ -667,9 +914,25 @@ local function applyNext(index, models)
                 finishApply("Slot " .. index .. ": failed to apply stats; check the TTS log.")
                 return
             end
-            slot.done = true
-            slot.modelGuid = targetGuid
-            applyNext(index + 1, models)
+            Wait.frames(function()
+                local refreshed = getObjectFromGUID(targetGuid)
+                if not refreshed then
+                    finishApply("Slot " .. index .. ": model is no longer available after reload.")
+                    return
+                end
+                local refreshedOk = pcall(function()
+                    refreshed.call("loadState")
+                    refreshed.call("refreshUI")
+                    refreshed.call("refreshVectors", true)
+                end)
+                if not refreshedOk then
+                    finishApply("Slot " .. index .. ": could not refresh model UI; check the TTS log.")
+                    return
+                end
+                slot.done = true
+                slot.modelGuid = targetGuid
+                applyNext(index + 1, models)
+            end, 10)
         end, 60)
     end})
     if not helper then finishApply("Slot " .. index .. ": could not create the stats helper."); return end
@@ -707,11 +970,8 @@ function commandNodeConfirm(player)
     local version = sessionVersion
     requestText(NODE_LOADER_URL .. "?v=" .. tostring(os.time()), function(script, errorMessage)
         if version ~= sessionVersion then return end
-        if not script then finishApply(errorMessage); return end
-        if not script:find("function diffAndApply", 1, true)
-            or not script:find("function rebuildDescription", 1, true)
-            or not script:find("KTUI_MODELSCRIPT", 1, true) then
-            finishApply("Invalid node loader script.")
+        if not compatibleLoader(script) then
+            finishApply(errorMessage or "Downloaded node loader is outdated; publish the updated shared loader to the feature branch.")
             return
         end
         loaderScript = script

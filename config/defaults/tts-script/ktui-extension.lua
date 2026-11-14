@@ -7,5 +7,20 @@
 -- onLoad: `local prev = onLoad; function onLoad(...) if prev then pcall(prev, ...) end ... end`.
 
 -- START KT_EXTENSION_V1 --
--- (no active extension code yet)
+local extenderGetUIPosition = getUIPosition
+
+function getUIPosition()
+	local position = extenderGetUIPosition()
+	if not state.kt_node_ui or not position then return position end
+	local horizontal, vertical, depth = position:match("^(%S+)%s+(%S+)%s+(%S+)$")
+	horizontal, vertical = tonumber(horizontal), tonumber(vertical)
+	local scale = self.getScale()
+	local angle = math.rad(state.uiAngle or 0)
+	local worldHorizontal = horizontal * scale.x
+	local worldVertical = vertical * scale.z
+	return string.format("%.6f %.6f %s",
+		(worldHorizontal * math.cos(angle) - worldVertical * math.sin(angle)) / scale.x,
+		(worldHorizontal * math.sin(angle) + worldVertical * math.cos(angle)) / scale.z,
+		depth)
+end
 -- END KT_EXTENSION_V1 --

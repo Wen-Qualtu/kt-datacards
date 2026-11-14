@@ -86,12 +86,17 @@ def compose_command_node_loader(config_dir: Path) -> str:
         raise ValueError("KTUI model script is not available")
     version = hashlib.sha1(model_script.encode("utf-8")).hexdigest()[:12]
     model_script = f'KT_MODELSCRIPT_VERSION = "{version}"\n\n' + model_script
-    equals = ""
-    while "]" + equals + "]" in model_script:
-        equals += "="
-    card_script = (config_dir / "defaults" / "tts-script" / "datacard-load-stats.lua").read_text(encoding="utf-8")
-    return (
-        f'KTUI_MODELSCRIPT_VERSION = "{version}"\n\n'
-        f"KTUI_MODELSCRIPT = [{equals}[{model_script}]{equals}]\n\n"
-        f"{card_script}"
-    )
+    script_dir = config_dir / "defaults" / "tts-script"
+    scripts = {
+        "KTUI_MODELSCRIPT": model_script,
+        "MOVE_TOOL_CODE": (script_dir / "move-tool.lua").read_text(encoding="utf-8"),
+        "SPRINT_TOOL_CODE": (script_dir / "sprint-movement-tool.lua").read_text(encoding="utf-8"),
+    }
+    parts = [f'KTUI_MODELSCRIPT_VERSION = "{version}"\n\n']
+    for name, script in scripts.items():
+        equals = ""
+        while "]" + equals + "]" in script:
+            equals += "="
+        parts.append(f"{name} = [{equals}[{script}]{equals}]\n\n")
+    parts.append((script_dir / "datacard-load-stats.lua").read_text(encoding="utf-8"))
+    return "".join(parts)
