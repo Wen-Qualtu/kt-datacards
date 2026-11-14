@@ -445,7 +445,7 @@ def test_builder_can_target_a_feature_branch_without_embedded_data(tmp_path):
     assert "MOVE_TOOL_CODE =" not in node
     assert "SPRINT_TOOL_CODE =" not in node
     assert "function ktCommandNodeAddCounters" not in node
-    assert len(node.encode("utf-8")) < 50_000
+    assert len(node.encode("utf-8")) < 55_000
 
 
 def test_shared_helper_includes_composed_model_and_card_loader():
@@ -458,6 +458,12 @@ def test_shared_helper_includes_composed_model_and_card_loader():
     assert "NODE_COUNTER_SETUP" in helper
     assert "function ktCommandNodeAddCounters" in helper
     assert "Gore Tank" in helper
+    setup = json.loads(helper.split("NODE_COUNTER_SETUP = [====[", 1)[1].split("]====]", 1)[0])
+    assert setup["angels-of-death"]["name"] == "Chapter Tactics"
+    assert setup["angels-of-death"]["kind"] == "choice"
+    assert setup["angels-of-death"]["select"] == 2
+    assert len(setup["angels-of-death"]["options"]) == 8
+    assert setup["goremongers"]["kind"] == "counter"
     scripts = CONFIG / "defaults" / "tts-script"
     assert (scripts / "move-tool.lua").read_text(encoding="utf-8") in helper
     assert (scripts / "sprint-movement-tool.lua").read_text(encoding="utf-8") in helper

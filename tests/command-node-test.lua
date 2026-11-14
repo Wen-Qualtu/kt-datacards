@@ -16,8 +16,16 @@ local spawnedSupplies = {}
 local supplyAttempts = 0
 local supplyFailAt
 local suppliesMissing = false
+local counterSupported = false
+local choicesSupported = false
+local tacticNames = {"Aggressive", "Dueller", "Resolute", "Stealthy", "Mobile", "Hardy", "Sharpshooter", "Siege Specialist"}
+local expectCardbox = false
+local rawCardbox = false
+local rawCardboxText = ' \r\n{"Name":"Custom_Model_Bag","Nickname":"Test cardbox","ContainedObjects":['
+    .. '{"Name":"Custom_Model_Bag"},{"Name":"Custom_Dice"},{"Name":"Custom_Dice"},'
+    .. '{"Name":"Custom_Dice"},{"Name":"Deck"}],"Description":"' .. string.rep("x", 600000) .. '"}'
 local supplyTimeouts = {}
-local supplyBox = {ContainedObjects = {
+local supplyBox = {Name = "Custom_Model_Bag", Nickname = "Test cardbox", ContainedObjects = {
     {Name = "Custom_Model_Bag", Nickname = "Team tokens", Tags = {"KTCardsTokenBag"},
         LuaScript = "token-bag-script", ContainedObjects = {{Name = "Custom_Model_Infinite_Bag", Nickname = "Token dispenser"}}},
     {Name = "Custom_Dice", Nickname = "Team dice", Tags = {"KTDice_Team"}, LuaScript = "dice-script"},
@@ -101,11 +109,23 @@ local function copy(value)
 end
 
 JSON = {
-    encode = copy,
+    encode = function(value)
+        assert(not (rawCardbox and type(value) == "table" and value.Nickname == "Test cardbox"),
+            "Bare cardbox must not be re-encoded in Lua")
+        return copy(value)
+    end,
     decode = function(value)
+        assert(value ~= rawCardboxText, "Bare cardbox must not be decoded in Lua")
         if value == "team-index" then return index end
         if value == "empty-index" then return {} end
-        if value == '{"test":{"name":"Gore Tank"}}' then return {test = {name = "Gore Tank"}} end
+        if value == '{"test":{"name":"Gore Tank"}}' then
+            if choicesSupported then
+                local options = {}
+                for _, name in ipairs(tacticNames) do options[#options + 1] = {name = name} end
+                return {test = {name = "Chapter Tactics", select = 2, kind = "choice", options = options}}
+            end
+            return counterSupported and {test = {name = "Gore Tank"}} or {}
+        end
         if value == "team-metadata" then return {
             team = "test", team_data = {url = "https://example.test/main/test-data", hash = "abc123"},
             box = {url = "https://example.test/main/output/test/tts_objects/Test.json", hash = "def456"},
@@ -116,11 +136,14 @@ JSON = {
             local object = copy(root.ContainedObjects[tonumber(value:match("%d+"))])
             return supplyBox.ObjectStates and {ObjectStates = {object}} or object
         end
+        if value == "cardbox" then return copy(supplyBox) end
         if value == "test-roster" then
             local cards = {copy(cardData)}
             if extraCard then cards[#cards + 1] = copy(extraCard) end
             for _, card in ipairs(extraCards) do cards[#cards + 1] = copy(card) end
-            return {team = "test", datacards = cards}
+            local options = {}
+            for index, name in ipairs(tacticNames) do options[#options + 1] = {name = name, text = "Tactic text " .. index} end
+            return {team = "test", datacards = cards, faction_rules = {{options = options}}}
         end
         return value
     end,
@@ -133,13 +156,15 @@ local loaderMissing = false
 local loaderOutdated = false
 local deferRequest = false
 WebRequest = {get = function(url, callback)
-    assert(not url:find("/tts_objects/Test.json", 1, true), "Must not download the full team box")
+    assert(expectCardbox or not url:find("/tts_objects/Test.json", 1, true), "Unselected cardbox must not be downloaded")
     requests[#requests + 1] = url
     local text
     if url:find("team%-urls%.json") and not indexMissing then
         text = indexEmpty and "empty-index" or "team-index"
     elseif url:find("/output/test/test-object-urls.json", 1, true) and not metadataMissing then text = "team-metadata"
     elseif url:find("/output/test/data/test-team-data.json", 1, true) then text = "test-roster"
+    elseif url:find("/output/test/tts_objects/Test.json", 1, true) and not suppliesMissing then
+        text = rawCardbox and rawCardboxText or "cardbox"
     elseif url:find("/output/test/tts_objects/", 1, true) and not suppliesMissing then
         local tags = {
             ["test-token-bag"] = "KTCardsTokenBag", ["dice/test-dice"] = "KTDice_Team",
@@ -263,8 +288,16 @@ end
 function spawnObjectJSON(parameters)
     supplyAttempts = supplyAttempts + 1
     if supplyAttempts == supplyFailAt then return nil end
-    local object = newObject(parameters.json.Name, parameters.position)
-    object.data = copy(parameters.json)
+    local data = parameters.json
+    if type(data) == "string" then
+        assert(data == rawCardboxText, "Raw downloaded JSON must reach TTS unchanged")
+        data = supplyBox
+    end
+    local object = newObject(data.Name, parameters.position)
+    object.spawnJson = parameters.json
+    local rotation = parameters.rotation
+    object.rotation = {x = rotation.x or rotation[1], y = rotation.y or rotation[2], z = rotation.z or rotation[3]}
+    object.data = copy(data)
     spawnedSupplies[#spawnedSupplies + 1] = object
     return object
 end
@@ -379,19 +412,33 @@ for _ = 1, 4 do commandNodePage({color = "White"}, nil, "page_prev") end
 commandNodeChooseTeam({color = "White"}, nil, "team_1")
 assert(requests[2]:find(NODE_REPO_BASE_URL .. "/output/test/test-object-urls.json", 1, true) == 1)
 assert(requests[3] == NODE_REPO_BASE_URL .. "/output/test/data/test-team-data.json?v=abc123")
-assert(#requests == 3)
-assert(lastXml:find('id="supplies"', 1, true))
+assert(#requests == 4)
+assert(not lastXml:find('id="supplies"', 1, true))
+assert(lastXml:find('id="setup_tokens"', 1, true))
+assert(lastXml:find('isOn="false">Tokens</Toggle>', 1, true))
+assert(lastXml:find('isOn="false">Dice</Toggle>', 1, true))
+assert(lastXml:find('isOn="false">Cardbox (includes tokens + dice)</Toggle>', 1, true))
+assert(lastXml:find('preferredWidth="330" flexibleWidth="0"', 1, true))
+assert(lastXml:find('<VerticalLayout preferredHeight="34" flexibleHeight="0" spacing="6"', 1, true))
+assert(not lastXml:find('id="setup_rules"', 1, true))
 commandNodeSpawnSupplies({color = "Red"})
-assert(#requests == 3 and #spawnedSupplies == 0)
+assert(#requests == 4 and #spawnedSupplies == 0)
 commandNodeSpawnSupplies({color = "White"})
-assert(requests[4]:find(NODE_REPO_BASE_URL .. "/output/test/tts_objects/test-token-bag.json?v=", 1, true) == 1)
+assert(#requests == 4 and #spawnedSupplies == 0)
+commandNodeSetupToggle({color = "White"}, "True", "setup_tokens")
+commandNodeSetupToggle({color = "White"}, "True", "setup_dice")
+commandNodeSpawnSupplies({color = "White"})
+assert(requests[5]:find(NODE_REPO_BASE_URL .. "/output/test/tts_objects/test-token-bag.json?v=", 1, true) == 1)
 assert(requests[#requests]:find("/tts_objects/dice/test-dark-dice.json?v=", 1, true))
 assert(#spawnedSupplies == 4)
 assert(spawnedSupplies[1].data.LuaScript == "token-bag-script")
 assert(#spawnedSupplies[1].data.ContainedObjects == 1)
 assert(spawnedSupplies[2].data.LuaScript == "dice-script")
 assert(spawnedSupplies[1].position.x > 5.2 and spawnedSupplies[1].position.x < 8)
-assert(spawnedSupplies[2].position.z - spawnedSupplies[1].position.z == 3)
+assert(spawnedSupplies[1].position.z == 1)
+assert(spawnedSupplies[2].position.z == 3)
+assert(spawnedSupplies[2].position.z - spawnedSupplies[1].position.z == 2)
+assert(spawnedSupplies[1].rotation.y == 180 and spawnedSupplies[2].rotation.y == 0)
 assert(spawnedSupplies[3].position.z - spawnedSupplies[2].position.z == 1.5)
 commandNodeSpawnSupplies({color = "White"})
 assert(#spawnedSupplies == 4)
@@ -728,8 +775,8 @@ for index = 1, 9 do
 end
 commandNodeStart(nil, "White")
 commandNodeChooseTeam({color = "White"}, nil, "team_1")
-assert(lastXml:find('id="plus_8"', 1, true))
-assert(not lastXml:find('id="plus_9"', 1, true))
+assert(lastXml:find('id="plus_7"', 1, true))
+assert(not lastXml:find('id="plus_8"', 1, true))
 local rosterPanelHeight = assertPanelAboveNode()
 commandNodePage({color = "White"}, nil, "page_next")
 assert(lastXml:find('id="plus_9"', 1, true))
@@ -744,6 +791,8 @@ local function startSupplySetup()
     spawnedSlots = {}
     commandNodeStart(nil, "White")
     commandNodeChooseTeam({color = "White"}, nil, "team_1")
+    commandNodeSetupToggle({color = "White"}, "True", "setup_tokens")
+    commandNodeSetupToggle({color = "White"}, "True", "setup_dice")
 end
 
 local initialSupplyCount = #spawnedSupplies
@@ -762,7 +811,7 @@ initialSupplyCount = #spawnedSupplies
 startSupplySetup()
 commandNodeSpawnSupplies({color = "White"})
 assert(#spawnedSupplies == initialSupplyCount + 3)
-assert(messages[#messages]:find("no standalone token bag", 1, true))
+assert(messages[#messages]:find("No standalone token bag", 1, true))
 commandNodeCancel({color = "White"})
 
 supplyBox = {ContainedObjects = {}}
@@ -826,18 +875,84 @@ commandNodeSpawnSupplies({color = "White"})
 assert(#spawnedSupplies == initialSupplyCount + 4)
 commandNodeCancel({color = "White"})
 
+local selections = {
+    {tokens = false, dice = false, box = false, count = 0},
+    {tokens = true, dice = false, box = false, count = 1},
+    {tokens = false, dice = true, box = false, count = 3},
+    {tokens = true, dice = true, box = false, count = 4},
+    {tokens = true, dice = true, box = true, count = 1},
+    {tokens = false, dice = false, box = true, count = 1, wrapped = true},
+}
+for _, selected in ipairs(selections) do
+    supplyBox = selected.wrapped and {ObjectStates = {originalSupplyBox}} or originalSupplyBox
+    spawnedSlots = {}
+    commandNodeStart(nil, "White")
+    commandNodeChooseTeam({color = "White"}, nil, "team_1")
+    assert(not lastXml:find('id="supplies"', 1, true))
+    assert(not lastXml:find('id="setup_supplies"', 1, true))
+    commandNodeSetupToggle({color = "White"}, selected.tokens and "True" or "False", "setup_tokens")
+    commandNodeSetupToggle({color = "White"}, selected.dice and "True" or "False", "setup_dice")
+    commandNodeSetupToggle({color = "White"}, selected.box and "True" or "False", "setup_cardbox")
+    if selected.box then
+        assert(lastXml:find('isOn="false">Tokens</Toggle>', 1, true))
+        assert(lastXml:find('isOn="false">Dice</Toggle>', 1, true))
+    end
+    local beforeRequests, beforeSupplies = #requests, #spawnedSupplies
+    commandNodeNext({color = "White"})
+    assert(#requests == beforeRequests and #spawnedSlots == 0)
+    commandNodeChangeCount({color = "White"}, nil, "plus_1")
+    expectCardbox = selected.box
+    rawCardbox = selected.box and not selected.wrapped
+    commandNodeNext({color = "White"})
+    commandNodeNext({color = "White"})
+    flushCallbacks()
+    assert(#spawnedSlots == 1 and #spawnedSupplies == beforeSupplies + selected.count)
+    assert(#requests == beforeRequests + selected.count)
+    assert(lastXml:find("Place models on tiles:", 1, true))
+    if selected.box then
+        local box = spawnedSupplies[#spawnedSupplies].data
+        assert(box.Nickname == "Test cardbox" and #box.ContainedObjects == 5)
+        assert(spawnedSupplies[#spawnedSupplies].position.z == 3)
+        assert(requests[#requests]:find("/tts_objects/Test.json?v=", 1, true))
+        if rawCardbox then
+            assert(spawnedSupplies[#spawnedSupplies].spawnJson == rawCardboxText)
+        else
+            assert(type(spawnedSupplies[#spawnedSupplies].spawnJson) == "table")
+        end
+    end
+    commandNodeCancel({color = "White"})
+    expectCardbox = false
+    rawCardbox = false
+end
+supplyBox = originalSupplyBox
+
+spawnedSlots = {}
+commandNodeStart(nil, "White")
+commandNodeChooseTeam({color = "White"}, nil, "team_1")
+commandNodeSetupToggle({color = "White"}, "True", "setup_cardbox")
+commandNodeSetupToggle({color = "White"}, "True", "setup_dice")
+assert(lastXml:find('isOn="false">Cardbox (includes tokens + dice)</Toggle>', 1, true))
+commandNodeSetupToggle({color = "White"}, "True", "setup_cardbox")
+commandNodeSetupToggle({color = "White"}, "True", "setup_tokens")
+assert(lastXml:find('isOn="false">Cardbox (includes tokens + dice)</Toggle>', 1, true))
+commandNodeCancel({color = "White"})
+
+counterSupported = true
 for _, enabled in ipairs({true, false}) do
     startSupplySetup()
     commandNodeChangeCount({color = "White"}, nil, "plus_1")
-    commandNodeSetup({color = "White"})
     assert(lastXml:find('id="setup_tokens"', 1, true))
     assert(lastXml:find('id="setup_rules"', 1, true))
     assert(lastXml:find('Special rules: Gore Tank', 1, true))
-    assert(lastXml:find('id="setup_supplies"', 1, true))
+    assert(lastXml:find('isOn="true">Special rules: Gore Tank</Toggle>', 1, true))
+    assert(lastXml:find('<VerticalLayout preferredHeight="74" flexibleHeight="0" spacing="6"', 1, true))
+    assertPanelAboveNode()
+    assert(not lastXml:find('id="setup_supplies"', 1, true))
     commandNodeSetupToggle({color = "White"}, "False", "setup_tokens")
     assert(not lastXml:find('id="setup_supplies"', 1, true))
     commandNodeSetupToggle({color = "White"}, enabled and "True" or "False", "setup_rules")
-    commandNodeCreateSlots({color = "White"})
+    commandNodeSetupToggle({color = "White"}, "False", "setup_dice")
+    commandNodeNext({color = "White"})
     flushCallbacks()
     local marker = spawnedSlots[1]
     local model = newObject("Figurine", Vector(0, 1, 0))
@@ -853,6 +968,49 @@ for _, enabled in ipairs({true, false}) do
         assert(model.frontReloads == 1)
     end
 end
+counterSupported = false
+
+choicesSupported = true
+for _, enabled in ipairs({true, false}) do
+    spawnedSlots = {}
+    commandNodeStart(nil, "White")
+    commandNodeChooseTeam({color = "White"}, nil, "team_1")
+    assert(lastXml:find('isOn="true">Special rules: Chapter Tactics</Toggle>', 1, true))
+    assert(lastXml:find('id="choose_rules"', 1, true))
+    if enabled then
+        commandNodeChooseRules({color = "White"})
+        assert(lastXml:find("Primary", 1, true))
+        commandNodeRuleOption({color = "White"}, nil, "rule_1_4")
+        commandNodePage({color = "White"}, nil, "page_next")
+        assert(lastXml:find("Secondary", 1, true))
+        commandNodeRuleOption({color = "White"}, nil, "rule_2_4")
+        assert(lastXml:find("[x] Stealthy", 1, true))
+        commandNodePage({color = "White"}, nil, "page_prev")
+        assert(lastXml:find("[x] Dueller", 1, true))
+        commandNodeRulesDone({color = "White"})
+    else
+        commandNodeSetupToggle({color = "White"}, "False", "setup_rules")
+        assert(not lastXml:find('id="choose_rules"', 1, true))
+    end
+    commandNodeChangeCount({color = "White"}, nil, "plus_1")
+    commandNodeNext({color = "White"})
+    flushCallbacks()
+    local marker = spawnedSlots[1]
+    local model = newObject("Figurine", Vector(0, 1, 0))
+    hits[string.format("%.1f,%.1f", marker.position.x, marker.position.z)] = {{hit_object = model}}
+    commandNodeConfirm({color = "White"})
+    flushCallbacks()
+    assert(model.uiVisible and not model.counterInstalls)
+    if enabled then
+        assert(model.applied.abilities[1].name == "Dueller (Primary)")
+        assert(model.applied.abilities[1].text == "Tactic text 2")
+        assert(model.applied.abilities[2].name == "Stealthy (Secondary)")
+        assert(model.applied.abilities[2].text == "Tactic text 4")
+    else
+        assert(#model.applied.abilities == 0)
+    end
+end
+choicesSupported = false
 
 metadataMissing = true
 commandNodeStart(nil, "White")

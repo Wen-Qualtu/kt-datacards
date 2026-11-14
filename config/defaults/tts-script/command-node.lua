@@ -148,7 +148,6 @@ local activeHelper = nil
 local loaderScript = nil
 local panelPage = 1
 local panelRender = nil
-local showSetup
 local PANEL_MAX_HEIGHT = 550
 
 local MODEL_TYPES = {
@@ -259,10 +258,25 @@ local function compatibleLoader(script)
         and signature:find("modelScript", 1, true) ~= nil
 end
 
-local function panel(title, rows, footer, rowHeight, rowGroups)
+local function isBareObjectText(text)
+    local index = 1
+    while index <= #text do
+        local byte = text:byte(index)
+        if byte ~= 32 and byte ~= 9 and byte ~= 10 and byte ~= 13 then break end
+        index = index + 1
+    end
+    if text:byte(index) ~= 123 then return false end
+    local opening = text:find('"', index + 1, true)
+    local closing = opening and text:find('"', opening + 1, true)
+    if not closing then return false end
+    local firstKey = text:sub(opening + 1, closing - 1)
+    return firstKey ~= "SaveName" and firstKey ~= "ObjectStates"
+end
+
+local function panel(title, rows, footer, rowHeight, rowGroups, controls, controlsHeight)
     rowHeight = rowHeight or 34
     local spacing = 6
-    local fixedHeight = 28 + 40 + 42 + spacing
+    local fixedHeight = 28 + 40 + 42 + spacing + (controls and (controlsHeight or 34) + spacing or 0)
     local navigationHeight = 28 + spacing
     local rowsPerPage = math.max(1, #rows)
     if fixedHeight + #rows * (rowHeight + spacing) > PANEL_MAX_HEIGHT then
@@ -312,10 +326,11 @@ local function panel(title, rows, footer, rowHeight, rowGroups)
     <Text fontSize="25" fontStyle="Bold" color="#FFFFFF" preferredHeight="40">%s</Text>
     %s
     %s
+    %s
         <HorizontalLayout spacing="6" preferredHeight="42" flexibleHeight="0" childForceExpandHeight="false">%s</HorizontalLayout>
   </VerticalLayout>
 </Panel>]], panelHeight, panelPosition, panelScale, panelScale,
-        xmlEscape(title), table.concat(visibleRows), navigation, footer)
+        xmlEscape(title), table.concat(visibleRows), controls or "", navigation, footer)
     self.UI.setXml(xml)
 end
 
@@ -347,82 +362,97 @@ local function showRoster()
             .. '</HorizontalLayout>',
             xmlEscape(operative.name), index, counts[index] or 0, index)
     end
-    local supplies = button("supplies", "commandNodeSpawnSupplies", "Tokens + dice")
-    if currentTeam.suppliesBusy or currentTeam.suppliesSpawned then
-        supplies = button("supplies", "commandNodeSpawnSupplies",
-            currentTeam.suppliesBusy and "Spawning..." or "Spawned")
-        supplies = supplies:gsub('onClick=', 'interactable="false" onClick=', 1)
+    local controlsHeight = currentTeam.counterRule and 74 or 34
+    local controls = '<VerticalLayout preferredHeight="' .. controlsHeight .. '" flexibleHeight="0" spacing="6" childForceExpandHeight="false">'
+        .. '<HorizontalLayout preferredHeight="34" flexibleHeight="0" spacing="6" childForceExpandHeight="false" childForceExpandWidth="false">'
+        .. '<Toggle id="setup_tokens" onValueChanged="commandNodeSetupToggle" preferredWidth="100" flexibleWidth="0" preferredHeight="34" fontSize="16" textColor="#FFFFFF" isOn="'
+        .. tostring(currentTeam.useTokens) .. '">Tokens</Toggle>'
+        .. '<Toggle id="setup_dice" onValueChanged="commandNodeSetupToggle" preferredWidth="90" flexibleWidth="0" preferredHeight="34" fontSize="16" textColor="#FFFFFF" isOn="'
+        .. tostring(currentTeam.useDice) .. '">Dice</Toggle>'
+        .. '<Toggle id="setup_cardbox" onValueChanged="commandNodeSetupToggle" preferredWidth="330" flexibleWidth="0" preferredHeight="34" fontSize="16" textColor="#FFFFFF" isOn="'
+        .. tostring(currentTeam.useCardbox) .. '">Cardbox (includes tokens + dice)</Toggle></HorizontalLayout>'
+    if currentTeam.counterRule then
+        controls = controls .. '<HorizontalLayout preferredHeight="34" flexibleHeight="0" spacing="6" childForceExpandHeight="false" childForceExpandWidth="false">'
+            .. '<Toggle id="setup_rules" onValueChanged="commandNodeSetupToggle" preferredWidth="260" flexibleWidth="0" preferredHeight="34" fontSize="16" textColor="#FFFFFF" isOn="'
+            .. tostring(currentTeam.useSpecialRules ~= false) .. '">Special rules: '
+            .. xmlEscape(currentTeam.counterRule.name) .. '</Toggle>'
+        if currentTeam.counterRule.options and currentTeam.useSpecialRules then
+            controls = controls .. button("choose_rules", "commandNodeChooseRules", "Choose " .. currentTeam.counterRule.name)
+        end
+        controls = controls .. '</HorizontalLayout>'
     end
+    controls = controls .. '</VerticalLayout>'
     panel(currentTeam.name, rows,
         button("back", "commandNodeBackToTeams", "Teams")
-        .. (currentTeam.useTokens ~= false and supplies or "")
-        .. button("next", "commandNodeSetup", "Next", "#237A60")
-        .. button("cancel", "commandNodeCancel", "Cancel"), 42)
+        .. button("next", "commandNodeNext", "Next", "#237A60")
+        .. button("cancel", "commandNodeCancel", "Cancel"), 42, nil, controls, controlsHeight)
 end
 
 local function isSessionPlayer(player)
     return player and player.color == sessionColor
 end
 
-showSetup = function()
-    panelRender = showSetup
-    local rows = {
-        '<Toggle id="setup_tokens" onValueChanged="commandNodeSetupToggle" preferredHeight="34" fontSize="17" textColor="#FFFFFF" isOn="'
-            .. tostring(currentTeam.useTokens ~= false) .. '">Team tokens + dice</Toggle>',
-    }
-    if currentTeam.useTokens ~= false then
-        local label = currentTeam.suppliesBusy and "Spawning..." or (currentTeam.suppliesSpawned and "Spawned" or "Spawn tokens + dice")
-        local control = button("setup_supplies", "commandNodeSpawnSupplies", label)
-        if currentTeam.suppliesBusy or currentTeam.suppliesSpawned then
-            control = control:gsub('onClick=', 'interactable="false" onClick=', 1)
+local function showRuleChoices()
+    panelRender = showRuleChoices
+    local rule = currentTeam.counterRule
+    local rows, groups = {}, {}
+    for choice = 1, rule.select or 1 do
+        groups[#rows + 1] = #rule.options + 1
+        local label = (rule.select or 1) == 1 and "Choose one" or (choice == 1 and "Primary" or "Secondary")
+        rows[#rows + 1] = '<Text preferredHeight="26" fontSize="16" color="#A8BEB7">' .. label .. '</Text>'
+        for index, option in ipairs(rule.options) do
+            rows[#rows + 1] = button("rule_" .. choice .. "_" .. index, "commandNodeRuleOption",
+                (currentTeam.ruleChoices[choice] == index and "[x] " or "[ ] ") .. option.name)
         end
-        rows[#rows + 1] = control
     end
-    if currentTeam.counterRule then
-        rows[#rows + 1] = '<Toggle id="setup_rules" onValueChanged="commandNodeSetupToggle" preferredHeight="34" fontSize="17" textColor="#FFFFFF" isOn="'
-            .. tostring(currentTeam.useSpecialRules ~= false) .. '">Special rules: '
-            .. xmlEscape(currentTeam.counterRule.name) .. '</Toggle>'
-    end
-    panel(currentTeam.name .. " setup", rows,
-        button("setup_back", "commandNodeSetupBack", "Back")
-        .. button("setup_create", "commandNodeCreateSlots", "Create slots", "#237A60")
-        .. button("cancel", "commandNodeCancel", "Cancel"))
+    panel(rule.name, rows, button("rules_done", "commandNodeRulesDone", "Done", "#237A60"), nil, groups)
 end
 
-function commandNodeSetupToggle(player, value, id)
-    if not isSessionPlayer(player) or panelRender ~= showSetup then return end
-    local enabled = value == "True" or value == "true" or value == true
-    if id == "setup_tokens" then currentTeam.useTokens = enabled end
-    if id == "setup_rules" then currentTeam.useSpecialRules = enabled end
-    showSetup()
+function commandNodeChooseRules(player)
+    if not isSessionPlayer(player) or panelRender ~= showRoster or not currentTeam.useSpecialRules then return end
+    if not currentTeam.counterRule or not currentTeam.counterRule.options then return end
+    panelPage = 1
+    showRuleChoices()
 end
 
-function commandNodeSetupBack(player)
-    if not isSessionPlayer(player) then return end
+function commandNodeRuleOption(player, _, id)
+    if not isSessionPlayer(player) or panelRender ~= showRuleChoices then return end
+    local choice, option = id:match("^rule_(%d+)_(%d+)$")
+    choice, option = tonumber(choice), tonumber(option)
+    local rule = currentTeam.counterRule
+    if not choice or not option or choice > (rule.select or 1) or not rule.options[option] then return end
+    local previous = currentTeam.ruleChoices[choice]
+    for index, selected in ipairs(currentTeam.ruleChoices) do
+        if index ~= choice and selected == option then currentTeam.ruleChoices[index] = previous end
+    end
+    currentTeam.ruleChoices[choice] = option
+    showRuleChoices()
+end
+
+function commandNodeRulesDone(player)
+    if not isSessionPlayer(player) or panelRender ~= showRuleChoices then return end
     panelPage = 1
     showRoster()
 end
 
-function commandNodeSetup(player)
-    if not isSessionPlayer(player) or applying or building or panelRender ~= showRoster then return end
-    local version = sessionVersion
-    local function loaded(script, errorMessage)
-        if version ~= sessionVersion then return end
-        local metadata = type(script) == "string" and script:match("NODE_COUNTER_SETUP%s*=%s*%[====%[(.-)%]====%]")
-        local ok, rules = pcall(function() return metadata and JSON.decode(metadata) end)
-        if not compatibleLoader(script) or not ok or type(rules) ~= "table" then
-            notify(sessionColor, errorMessage or "Published loader needs the special-rule setup update.", {1, 0.3, 0.3})
-            showRoster()
-            return
-        end
-        loaderScript = script
-        currentTeam.counterRule = rules[currentTeam.slug]
-        panelPage = 1
-        showSetup()
+function commandNodeSetupToggle(player, value, id)
+    if not isSessionPlayer(player) or panelRender ~= showRoster or building then return end
+    local enabled = value == "True" or value == "true" or value == true
+    if id == "setup_tokens" then currentTeam.useTokens = enabled end
+    if id == "setup_dice" then currentTeam.useDice = enabled end
+    if id == "setup_cardbox" then
+        currentTeam.useCardbox = enabled
+        if enabled then currentTeam.useTokens = false; currentTeam.useDice = false end
+    elseif enabled and (id == "setup_tokens" or id == "setup_dice") then
+        currentTeam.useCardbox = false
     end
-    if loaderScript then loaded(loaderScript); return end
-    panel("Loading team setup...", {}, button("cancel", "commandNodeCancel", "Cancel"))
-    requestText(NODE_LOADER_URL .. "?v=" .. tostring(os.time()), loaded)
+    if id == "setup_rules" then currentTeam.useSpecialRules = enabled end
+    showRoster()
+end
+
+function commandNodeNext(player)
+    if not isSessionPlayer(player) or applying or building or panelRender ~= showRoster then return end
+    if commandNodeCreateSlots(player) then commandNodeSpawnSupplies(player) end
 end
 
 function commandNodePage(player, _, id)
@@ -550,35 +580,81 @@ function commandNodeChooseTeam(player, _, id)
             table.sort(cards, function(left, right) return left.name:lower() < right.name:lower() end)
             operatives = cards
             currentTeam = team
+            currentTeam.useTokens = false
+            currentTeam.useDice = false
+            currentTeam.useCardbox = false
+            currentTeam.useSpecialRules = true
+            currentTeam.cardboxPath = type(metadata.box) == "table" and type(metadata.box.url) == "string"
+                and metadata.box.url:match("/output/([^?]+)") or nil
             currentTeam.hasTokenBag = false
             for _, object in ipairs(metadata.objects or {}) do
                 if object.type == "token-bag" then currentTeam.hasTokenBag = true end
             end
             counts = {}
             panelPage = 1
-            showRoster()
+            local function ready(script, loaderError)
+                if version ~= sessionVersion then return end
+                local metadata = type(script) == "string" and script:match("NODE_COUNTER_SETUP%s*=%s*%[====%[(.-)%]====%]")
+                local ok, rules = pcall(function() return metadata and JSON.decode(metadata) end)
+                if not compatibleLoader(script) or not ok or type(rules) ~= "table" then
+                    notify(sessionColor, loaderError or "Published loader needs the special-rule setup update.", {1, 0.3, 0.3})
+                    showTeams()
+                    return
+                end
+                loaderScript = script
+                currentTeam.counterRule = rules[currentTeam.slug]
+                currentTeam.ruleChoices = {}
+                local rule = currentTeam.counterRule
+                if rule and rule.options then
+                    local texts = {}
+                    for _, factionRule in ipairs(payload.faction_rules or {}) do
+                        for _, option in ipairs(factionRule.options or {}) do
+                            texts[cleanText(option.name, true):lower()] = option.text
+                        end
+                    end
+                    for _, option in ipairs(rule.options) do
+                        option.text = option.text or texts[cleanText(option.name, true):lower()] or ""
+                    end
+                    for choice = 1, rule.select or 1 do currentTeam.ruleChoices[choice] = choice end
+                end
+                showRoster()
+            end
+            requestText(NODE_LOADER_URL .. "?v=" .. tostring(os.time()), ready)
         end)
     end)
 end
 
 function commandNodeSpawnSupplies(player)
-    if not isSessionPlayer(player) or not currentTeam or applying or building
-        or (panelRender ~= showRoster and panelRender ~= showSetup) then return end
+    if not isSessionPlayer(player) or not currentTeam or applying then return end
     local team = currentTeam
     if team.suppliesBusy or team.suppliesSpawned then return end
     local base = REPO_BASE_URL .. "/output/" .. team.slug .. "/tts_objects/"
     local files = {}
-    if team.hasTokenBag then files[#files + 1] = {path = team.slug .. "-token-bag.json", optional = true} end
-    for _, suffix in ipairs({"-dice", "-light-dice", "-dark-dice"}) do
-        files[#files + 1] = {path = "dice/" .. team.slug .. suffix .. ".json"}
+    if team.useCardbox then
+        local path = team.cardboxPath
+        local prefix = team.slug .. "/tts_objects/"
+        if not path or path:sub(1, #prefix) ~= prefix or path:sub(-5) ~= ".json"
+            or path:find("..", 1, true) then
+            notify(sessionColor, "No published cardbox is available for this team.", {1, 0.3, 0.3})
+            return
+        end
+        files[#files + 1] = {path = path:sub(#prefix + 1), cardbox = true}
+    elseif team.useTokens and team.hasTokenBag then
+        files[#files + 1] = {path = team.slug .. "-token-bag.json", optional = true}
     end
+    if team.useDice and not team.useCardbox then
+        for _, suffix in ipairs({"-dice", "-light-dice", "-dark-dice"}) do
+            files[#files + 1] = {path = "dice/" .. team.slug .. suffix .. ".json"}
+        end
+    end
+    if #files == 0 then return end
     local version = sessionVersion
     local color = sessionColor
     local function refreshRoster()
-        if panelRender == showRoster or panelRender == showSetup then panelRender() end
+        if panelRender == showRoster and not building then showRoster() end
     end
     team.suppliesBusy = true
-    showRoster()
+    refreshRoster()
     local spawned, finished, hasTokens = {}, false, false
     local function finish(errorMessage)
         if finished then return end
@@ -592,8 +668,13 @@ function commandNodeSpawnSupplies(player)
             notify(color, errorMessage, {1, 0.3, 0.3})
         else
             team.suppliesSpawned = true
-            notify(color, hasTokens and "Team token bag and dice spawned."
-                or "Team dice spawned; no standalone token bag is published for this team.", {0.3, 1, 0.5})
+            local message = team.useCardbox and "Team cardbox spawned."
+                or (hasTokens and (team.useDice and "Team token bag and dice spawned." or "Team token bag spawned.")
+                or "Team dice spawned.")
+            if team.useTokens and not hasTokens and not team.useCardbox then
+                message = message .. " No standalone token bag is published for this team."
+            end
+            notify(color, message, {0.3, 1, 0.5})
         end
         refreshRoster()
     end
@@ -609,19 +690,29 @@ function commandNodeSpawnSupplies(player)
                 if file.optional then nextFile(index + 1) else finish(errorMessage) end
                 return
             end
-            local ok, payload = pcall(function() return JSON.decode(text) end)
-            local root = ok and type(payload) == "table" and (payload.ObjectStates and payload.ObjectStates[1] or payload)
-            if type(root) ~= "table" or type(root.Name) ~= "string" then
-                finish("Invalid team supply object: " .. file.path)
-                return
+            local spawnJson = text
+            if not isBareObjectText(text) then
+                local ok, payload = pcall(function() return JSON.decode(text) end)
+                local root = ok and type(payload) == "table" and (payload.ObjectStates and payload.ObjectStates[1] or payload)
+                if type(root) ~= "table" or type(root.Name) ~= "string" then
+                    finish("Invalid team supply object: " .. file.path)
+                    return
+                end
+                spawnJson = JSON.encode(root)
             end
             local scale = self.getScale()
             local side = math.max(self.getBoundsNormalized().size.x * 0.5, 2.6 * scale.x) + 1.5
             local depth = hasTokens and (3 + (#spawned - 1) * 1.5) or #spawned * 1.5
+            local rotation = self.getRotation()
+            if file.cardbox then depth = depth + 3 end
+            if file.optional then
+                depth = depth + 1
+                rotation = {rotation.x, (rotation.y + 180) % 360, rotation.z}
+            end
             local called, object = pcall(function()
-                return spawnObjectJSON({json = JSON.encode(root),
+                return spawnObjectJSON({json = spawnJson,
                     position = self.positionToWorld({side / scale.x, 1 / scale.y, depth / scale.z}),
-                    rotation = self.getRotation()})
+                    rotation = rotation})
             end)
             if not called or not object then finish("Could not spawn team supplies; try again."); return end
             spawned[#spawned + 1] = object
@@ -820,6 +911,7 @@ function commandNodeCreateSlots(player)
             end
         end
     end
+    return true
 end
 
 function commandNodeSlotLabel() end
@@ -951,6 +1043,23 @@ local function applyNext(index, models)
         return
     end
     data.weapons = weapons
+    local rule = currentTeam.counterRule
+    if currentTeam.useSpecialRules and rule and rule.options then
+        local applies = not rule.applies_to
+        for _, keyword in ipairs(rule.applies_to or {}) do
+            for _, operativeKeyword in ipairs(data.keywords or {}) do
+                if keyword:upper() == operativeKeyword:upper() then applies = true end
+            end
+        end
+        if applies then
+            for choice, selected in ipairs(currentTeam.ruleChoices) do
+                local option = rule.options[selected]
+                if not option then finishApply("Invalid special-rule choice."); return end
+                local suffix = (rule.select or 1) == 1 and "" or (choice == 1 and " (Primary)" or " (Secondary)")
+                data.abilities[#data.abilities + 1] = {name = option.name .. suffix, text = option.text}
+            end
+        end
+    end
 
     local position = self.getPosition() + Vector(0, 20, 0)
     local helper = spawnObject({type = "BlockSquare", position = position, scale = {0.1, 0.1, 0.1},
@@ -1001,7 +1110,7 @@ local function applyNext(index, models)
                 slot.modelGuid = targetGuid
                 applyNext(index + 1, models)
             end
-            if currentTeam.useSpecialRules ~= false and currentTeam.counterRule then
+            if currentTeam.useSpecialRules ~= false and currentTeam.counterRule and not currentTeam.counterRule.options then
                 Wait.frames(function()
                     local refreshed = getObjectFromGUID(targetGuid)
                     local counterOk, added = pcall(function()
@@ -1049,10 +1158,6 @@ function commandNodeConfirm(player)
     applying = true
     self.UI.setXml("")
     notify(sessionColor, "Applying stats and loadouts...", {0.5, 0.8, 1})
-    if loaderScript then
-        applyNext(1, models)
-        return
-    end
     local version = sessionVersion
     requestText(NODE_LOADER_URL .. "?v=" .. tostring(os.time()), function(script, errorMessage)
         if version ~= sessionVersion then return end

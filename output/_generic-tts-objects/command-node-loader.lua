@@ -6182,7 +6182,7 @@ function loadStatsToModel(playerColor)
     proceedLoad(playerColor, data, model, false)
 end
 
-NODE_COUNTER_SETUP = [====[{"goremongers": {"name": "Gore Tank"}}]====]
+NODE_COUNTER_SETUP = [====[{"goremongers": {"name": "Gore Tank", "kind": "counter"}, "angels-of-death": {"name": "Chapter Tactics", "select": 2, "options": [{"name": "Aggressive"}, {"name": "Dueller"}, {"name": "Resolute"}, {"name": "Stealthy"}, {"name": "Mobile"}, {"name": "Hardy"}, {"name": "Sharpshooter"}, {"name": "Siege Specialist"}], "kind": "choice"}, "chaos-cult": {"name": "Accursed Gifts", "select": 1, "applies_to": ["MUTANT", "TORMENT"], "operative_select_count": {"MUTANT": 1, "TORMENT": 2}, "options": [{"name": "Deformed Wings"}, {"name": "Fleet"}, {"name": "Chitinous"}, {"name": "Horned"}, {"name": "Sinewed"}, {"name": "Barbed"}], "kind": "choice"}, "legionaries": {"name": "Marks of Chaos", "select": 1, "options": [{"name": "Khorne"}, {"name": "Nurgle"}, {"name": "Slaanesh"}, {"name": "Tzeentch"}, {"name": "Undivided"}], "kind": "choice"}}]====]
 
 function ktCommandNodeAddCounters(params)
     local findModelOnCard = function() return params.model end

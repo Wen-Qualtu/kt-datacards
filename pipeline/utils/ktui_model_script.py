@@ -109,7 +109,12 @@ def compose_command_node_loader(config_dir: Path) -> str:
         team: info["operative_counter"] for team, info in config.get("teams", {}).items()
         if info.get("operative_counter")
     }
-    metadata = json.dumps({team: {"name": counter["name"]} for team, counter in counters.items()})
+    setups = {team: {"name": counter["name"], "kind": "counter"} for team, counter in counters.items()}
+    for team, info in config.get("teams", {}).items():
+        rule = info.get("faction_rule")
+        if team not in setups and rule and rule.get("options"):
+            setups[team] = {**rule, "kind": "choice"}
+    metadata = json.dumps(setups)
     parts.append(f"\nNODE_COUNTER_SETUP = [====[{metadata}]====]\n")
     parts.append("\nfunction ktCommandNodeAddCounters(params)\n"
                  "    local findModelOnCard = function() return params.model end\n")
