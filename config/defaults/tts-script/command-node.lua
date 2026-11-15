@@ -77,21 +77,47 @@ local function cleanText(value, normalize)
     return table.concat(parts)
 end
 
+-- TTS's string.match fails on values ending in the non-ASCII inch mark (U+2033).
+local function leadingNumber(value)
+    local text, digits = tostring(value or ""), ""
+    for index = 1, #text do
+        local byte = text:byte(index)
+        if byte >= 48 and byte <= 57 then
+            digits = digits .. string.char(byte)
+        elseif digits ~= "" then
+            break
+        end
+    end
+    return tonumber(digits)
+end
+
 function commandNodeModelData(operative, teamRules)
     local node = operative.node
     local prepared = type(operative.stats) == "table"
     if not prepared and (type(node) ~= "table" or type(node.weapon_types) ~= "table") then
         return nil, "Team data needs prepared model fields. Regenerate the team data."
     end
+    local stats = operative.stats
+    if not prepared then
+        stats = {
+            APL = tonumber(operative.apl),
+            Move = leadingNumber(operative.movement),
+            Save = leadingNumber(operative.save),
+            Wounds = tonumber(operative.wounds),
+            Base = operative.base_size,
+        }
+        local missing = {}
+        for _, key in ipairs({"APL", "Move", "Save", "Wounds"}) do
+            if not stats[key] then missing[#missing + 1] = key end
+        end
+        if #missing > 0 then
+            return nil, "Missing " .. table.concat(missing, ", ") .. " for "
+                .. cleanText(operative.name or "unnamed operative") .. ". Regenerate the team data."
+        end
+    end
     local data = {
         name = cleanText(operative.name or ""),
-        stats = operative.stats or {
-            APL = operative.apl or 2,
-            Move = tonumber(tostring(operative.movement or "6"):match("%d+")) or 6,
-            Save = tonumber(tostring(operative.save or "5+"):match("%d+")) or 5,
-            Wounds = operative.wounds or 1,
-            Base = operative.base_size,
-        },
+        stats = stats,
         keywords = {"Operative"}, weapons = {}, abilities = {}, actions = {},
         weapon_rules = {}, selection = operative.selection or (node and node.selection),
         upgrades = operative.upgrades,
@@ -157,7 +183,8 @@ local activeHelper = nil
 local loaderScript = nil
 local panelPage = 1
 local panelRender = nil
-local PANEL_MAX_HEIGHT = 550
+local PANEL_MAX_HEIGHT = 560
+local TITLE_HEIGHT = 48
 
 local MODEL_TYPES = {
     Custom_Model = true,
@@ -211,20 +238,23 @@ local function displayName(slug)
     return (slug:gsub("-", " "):gsub("%f[%a]%l", string.upper))
 end
 
-local function slotLabel(index, name)
-    local lines = {}
-    local line = index .. "."
-    local longest = #line
-    for word in name:gmatch("%S+") do
-        if #line + #word + 1 > 16 then
+local function wrapWords(text, width)
+    local lines, line, longest = {}, nil, 0
+    for word in text:gmatch("%S+") do
+        if line and #line + #word + 1 > width then
             lines[#lines + 1] = line
             line = word
         else
-            line = line .. " " .. word
+            line = line and line .. " " .. word or word
         end
         longest = math.max(longest, #line)
     end
     lines[#lines + 1] = line
+    return lines, longest
+end
+
+local function slotLabel(index, name)
+    local lines, longest = wrapWords(index .. ". " .. name, 16)
     return table.concat(lines, "\n"), math.min(80, math.floor(1000 / longest))
 end
 
@@ -288,7 +318,7 @@ end
 local function panel(title, rows, footer, rowHeight, rowGroups, controls, controlsHeight)
     rowHeight = rowHeight or 34
     local spacing = 6
-    local fixedHeight = 28 + 40 + 42 + spacing + (controls and (controlsHeight or 34) + spacing or 0)
+    local fixedHeight = 28 + TITLE_HEIGHT + 42 + spacing + (controls and (controlsHeight or 34) + spacing or 0)
     local navigationHeight = 28 + spacing
     local rowsPerPage = math.max(1, #rows)
     if fixedHeight + #rows * (rowHeight + spacing) > PANEL_MAX_HEIGHT then
@@ -320,9 +350,9 @@ local function panel(title, rows, footer, rowHeight, rowGroups, controls, contro
     if pageCount > 1 then
         navigation = string.format([[
         <HorizontalLayout spacing="6" minHeight="28" preferredHeight="28" flexibleHeight="0" childForceExpandHeight="false" childForceExpandWidth="false" childAlignment="MiddleCenter">
-            <Button id="page_prev" onClick="commandNodePage" tooltip="Previous page" preferredWidth="36" flexibleWidth="0" minHeight="28" preferredHeight="28" flexibleHeight="0" fontSize="16" colors="#34454A|#56686D|#293336|#333333" textColor="#FFFFFF" interactable="%s">&lt;</Button>
+            <Button id="page_prev" onClick="commandNodePage" preferredWidth="36" flexibleWidth="0" minHeight="28" preferredHeight="28" flexibleHeight="0" fontSize="16" colors="#34454A|#56686D|#293336|#333333" textColor="#FFFFFF" interactable="%s">&lt;</Button>
             <Text preferredWidth="80" flexibleWidth="0" preferredHeight="28" flexibleHeight="0" fontSize="14" color="#FFFFFF">%d / %d</Text>
-            <Button id="page_next" onClick="commandNodePage" tooltip="Next page" preferredWidth="36" flexibleWidth="0" minHeight="28" preferredHeight="28" flexibleHeight="0" fontSize="16" colors="#34454A|#56686D|#293336|#333333" textColor="#FFFFFF" interactable="%s">&gt;</Button>
+            <Button id="page_next" onClick="commandNodePage" preferredWidth="36" flexibleWidth="0" minHeight="28" preferredHeight="28" flexibleHeight="0" fontSize="16" colors="#34454A|#56686D|#293336|#333333" textColor="#FFFFFF" interactable="%s">&gt;</Button>
         </HorizontalLayout>]], tostring(panelPage > 1), panelPage, pageCount, tostring(panelPage < pageCount))
     end
     local nodeScale = self.getScale()
@@ -335,14 +365,14 @@ local function panel(title, rows, footer, rowHeight, rowGroups, controls, contro
 <Panel id="nodePanel" width="650" height="%d" position="0 %.3f -80" rotation="0 0 180" scale="%.2f %.2f 1"
        color="#171D1FF2" padding="14 14 14 14">
   <VerticalLayout spacing="6" childForceExpandWidth="true" childForceExpandHeight="false">
-    <Text fontSize="25" fontStyle="Bold" color="#FFFFFF" preferredHeight="40">%s</Text>
+    <Text fontSize="25" fontStyle="Bold" color="#FFFFFF" alignment="UpperCenter" preferredHeight="%d">%s</Text>
     %s
     %s
     %s
         <HorizontalLayout spacing="6" preferredHeight="42" flexibleHeight="0" childForceExpandHeight="false">%s</HorizontalLayout>
   </VerticalLayout>
 </Panel>]], panelHeight, panelPosition, panelScale, panelScale,
-        xmlEscape(title), table.concat(visibleRows), controls or "", navigation, footer)
+        TITLE_HEIGHT, xmlEscape(title), table.concat(visibleRows), navigation, controls or "", footer)
     self.UI.setXml(xml)
 end
 
@@ -352,11 +382,20 @@ local function button(id, action, label, tint)
         id, action, tint or "#34454A", xmlEscape(label))
 end
 
+local function listRow(index, content)
+    return string.format('<HorizontalLayout preferredHeight="42" flexibleHeight="0" spacing="4" padding="10 4 3 3" '
+        .. 'childForceExpandWidth="false" childForceExpandHeight="false" childAlignment="MiddleLeft" color="%s">%s</HorizontalLayout>',
+        index % 2 == 0 and "#FFFFFF14" or "#00000000", content)
+end
+
 local function showTeams()
     panelRender = showTeams
     local rows = {}
-    for index, team in ipairs(teams) do
-        rows[#rows + 1] = button("team_" .. index, "commandNodeChooseTeam", team.name)
+    for index = 1, #teams, 2 do
+        local right = teams[index + 1]
+            and button("team_" .. (index + 1), "commandNodeChooseTeam", teams[index + 1].name) or "<Text></Text>"
+        rows[#rows + 1] = '<HorizontalLayout spacing="6" preferredHeight="34" flexibleHeight="0" childForceExpandHeight="false">'
+            .. button("team_" .. index, "commandNodeChooseTeam", teams[index].name) .. right .. '</HorizontalLayout>'
     end
     panel("Choose a team", rows, button("cancel", "commandNodeCancel", "Cancel"))
 end
@@ -365,32 +404,26 @@ local function showRoster()
     panelRender = showRoster
     local rows = {}
     for index, operative in ipairs(operatives) do
-        rows[#rows + 1] = string.format(
-            '<HorizontalLayout preferredHeight="42" flexibleHeight="0" spacing="4" childForceExpandWidth="false" childForceExpandHeight="false">'
-            .. '<Text preferredWidth="310" flexibleWidth="0" fontSize="16" color="#FFFFFF" alignment="MiddleLeft" horizontalOverflow="Truncate">%s</Text>'
+        rows[#rows + 1] = listRow(index, string.format(
+            '<Text flexibleWidth="1" fontSize="16" color="#FFFFFF" alignment="MiddleLeft" horizontalOverflow="Truncate">%s</Text>'
             .. '<Button id="minus_%d" onClick="commandNodeChangeCount" preferredWidth="58" flexibleWidth="0" preferredHeight="36" fontSize="20">-</Button>'
             .. '<Text preferredWidth="48" flexibleWidth="0" fontSize="16" color="#FFFFFF">%d</Text>'
-            .. '<Button id="plus_%d" onClick="commandNodeChangeCount" preferredWidth="58" flexibleWidth="0" preferredHeight="36" fontSize="20">+</Button>'
-            .. '</HorizontalLayout>',
-            xmlEscape(operative.name), index, counts[index] or 0, index)
+            .. '<Button id="plus_%d" onClick="commandNodeChangeCount" preferredWidth="58" flexibleWidth="0" preferredHeight="36" fontSize="20">+</Button>',
+            xmlEscape(operative.name), index, counts[index] or 0, index))
     end
     local controlsHeight = currentTeam.counterRule and 74 or 34
     local controls = '<VerticalLayout preferredHeight="' .. controlsHeight .. '" flexibleHeight="0" spacing="6" childForceExpandHeight="false">'
-        .. '<HorizontalLayout preferredHeight="34" flexibleHeight="0" spacing="6" childForceExpandHeight="false" childForceExpandWidth="false">'
-        .. '<Toggle id="setup_tokens" onValueChanged="commandNodeSetupToggle" preferredWidth="100" flexibleWidth="0" preferredHeight="34" fontSize="16" textColor="#FFFFFF" isOn="'
-        .. tostring(currentTeam.useTokens) .. '">Tokens</Toggle>'
-        .. '<Toggle id="setup_dice" onValueChanged="commandNodeSetupToggle" preferredWidth="90" flexibleWidth="0" preferredHeight="34" fontSize="16" textColor="#FFFFFF" isOn="'
-        .. tostring(currentTeam.useDice) .. '">Dice</Toggle>'
-        .. '<Toggle id="setup_cardbox" onValueChanged="commandNodeSetupToggle" preferredWidth="330" flexibleWidth="0" preferredHeight="34" fontSize="16" textColor="#FFFFFF" isOn="'
-        .. tostring(currentTeam.useCardbox) .. '">Cardbox (includes tokens + dice)</Toggle></HorizontalLayout>'
+        .. button("setup_cardbox", "commandNodeToggleCardbox",
+            currentTeam.useCardbox and "Cardbox added (tokens + dice)" or "Add cardbox (tokens + dice)",
+            currentTeam.useCardbox and "#237A60" or nil)
     if currentTeam.counterRule then
-        controls = controls .. '<HorizontalLayout preferredHeight="34" flexibleHeight="0" spacing="6" childForceExpandHeight="false" childForceExpandWidth="false">'
-            .. '<Toggle id="setup_rules" onValueChanged="commandNodeSetupToggle" preferredWidth="260" flexibleWidth="0" preferredHeight="34" fontSize="16" textColor="#FFFFFF" isOn="'
-            .. tostring(currentTeam.useSpecialRules ~= false) .. '">Special rules: '
-            .. xmlEscape(currentTeam.counterRule.name) .. '</Toggle>'
+        local name = currentTeam.counterRule.name
+        controls = controls .. '<HorizontalLayout preferredHeight="34" flexibleHeight="0" spacing="6" childForceExpandHeight="false">'
+            .. button("setup_rules", "commandNodeToggleRules",
+                currentTeam.useSpecialRules and name .. " added" or "Add " .. name,
+                currentTeam.useSpecialRules and "#237A60" or nil)
         if currentTeam.counterRule.options and currentTeam.useSpecialRules then
-            local selector = button("choose_rules", "commandNodeChooseRules", "Select " .. currentTeam.counterRule.name)
-            controls = controls .. selector:gsub('preferredHeight=', 'preferredWidth="330" flexibleWidth="0" preferredHeight=', 1)
+            controls = controls .. button("choose_rules", "commandNodeChooseRules", "Select " .. name)
         end
         controls = controls .. '</HorizontalLayout>'
     end
@@ -454,18 +487,15 @@ function commandNodeRulesDone(player)
     showRoster()
 end
 
-function commandNodeSetupToggle(player, value, id)
+function commandNodeToggleRules(player)
     if not isSessionPlayer(player) or panelRender ~= showRoster or building then return end
-    local enabled = value == "True" or value == "true" or value == true
-    if id == "setup_tokens" then currentTeam.useTokens = enabled end
-    if id == "setup_dice" then currentTeam.useDice = enabled end
-    if id == "setup_cardbox" then
-        currentTeam.useCardbox = enabled
-        if enabled then currentTeam.useTokens = false; currentTeam.useDice = false end
-    elseif enabled and (id == "setup_tokens" or id == "setup_dice") then
-        currentTeam.useCardbox = false
-    end
-    if id == "setup_rules" then currentTeam.useSpecialRules = enabled end
+    currentTeam.useSpecialRules = not currentTeam.useSpecialRules
+    showRoster()
+end
+
+function commandNodeToggleCardbox(player)
+    if not isSessionPlayer(player) or panelRender ~= showRoster or building then return end
+    currentTeam.useCardbox = not currentTeam.useCardbox
     showRoster()
 end
 
@@ -599,16 +629,10 @@ function commandNodeChooseTeam(player, _, id)
             table.sort(cards, function(left, right) return left.name:lower() < right.name:lower() end)
             operatives = cards
             currentTeam = team
-            currentTeam.useTokens = false
-            currentTeam.useDice = false
             currentTeam.useCardbox = false
             currentTeam.useSpecialRules = true
             currentTeam.cardboxPath = type(metadata.box) == "table" and type(metadata.box.url) == "string"
                 and metadata.box.url:match("/output/([^?]+)") or nil
-            currentTeam.hasTokenBag = false
-            for _, object in ipairs(metadata.objects or {}) do
-                if object.type == "token-bag" then currentTeam.hasTokenBag = true end
-            end
             counts = {}
             panelPage = 1
             local function ready(script, loaderError)
@@ -655,27 +679,14 @@ end
 function commandNodeSpawnSupplies(player)
     if not isSessionPlayer(player) or not currentTeam or applying then return end
     local team = currentTeam
-    if team.suppliesBusy or team.suppliesSpawned then return end
-    local base = REPO_BASE_URL .. "/output/" .. team.slug .. "/tts_objects/"
-    local files = {}
-    if team.useCardbox then
-        local path = team.cardboxPath
-        local prefix = team.slug .. "/tts_objects/"
-        if not path or path:sub(1, #prefix) ~= prefix or path:sub(-5) ~= ".json"
-            or path:find("..", 1, true) then
-            notify(sessionColor, "No published cardbox is available for this team.", {1, 0.3, 0.3})
-            return
-        end
-        files[#files + 1] = {path = path:sub(#prefix + 1), cardbox = true}
-    elseif team.useTokens and team.hasTokenBag then
-        files[#files + 1] = {path = team.slug .. "-token-bag.json", optional = true}
+    if not team.useCardbox or team.suppliesBusy or team.suppliesSpawned then return end
+    local path = team.cardboxPath
+    local prefix = team.slug .. "/tts_objects/"
+    if not path or path:sub(1, #prefix) ~= prefix or path:sub(-5) ~= ".json"
+        or path:find("..", 1, true) then
+        notify(sessionColor, "No published cardbox is available for this team.", {1, 0.3, 0.3})
+        return
     end
-    if team.useDice and not team.useCardbox then
-        for _, suffix in ipairs({"-dice", "-light-dice", "-dark-dice"}) do
-            files[#files + 1] = {path = "dice/" .. team.slug .. suffix .. ".json"}
-        end
-    end
-    if #files == 0 then return end
     local version = sessionVersion
     local color = sessionColor
     local function refreshRoster()
@@ -683,73 +694,44 @@ function commandNodeSpawnSupplies(player)
     end
     team.suppliesBusy = true
     refreshRoster()
-    local spawned, finished, hasTokens = {}, false, false
+    local finished = false
     local function finish(errorMessage)
         if finished then return end
         finished = true
         team.suppliesBusy = false
-        if errorMessage or version ~= sessionVersion then
-            for _, object in ipairs(spawned) do object.destruct() end
-        end
         if version ~= sessionVersion then return end
         if errorMessage then
             notify(color, errorMessage, {1, 0.3, 0.3})
         else
             team.suppliesSpawned = true
-            local message = team.useCardbox and "Team cardbox spawned."
-                or (hasTokens and (team.useDice and "Team token bag and dice spawned." or "Team token bag spawned.")
-                or "Team dice spawned.")
-            if team.useTokens and not hasTokens and not team.useCardbox then
-                message = message .. " No standalone token bag is published for this team."
-            end
-            notify(color, message, {0.3, 1, 0.5})
+            notify(color, "Team cardbox spawned.", {0.3, 1, 0.5})
         end
         refreshRoster()
     end
-    local function nextFile(index)
+    requestText(REPO_BASE_URL .. "/output/" .. path .. "?v=" .. tostring(os.time()), function(text, errorMessage)
         if finished then return end
         if version ~= sessionVersion then finish(); return end
-        if index > #files then finish(); return end
-        local file = files[index]
-        requestText(base .. file.path .. "?v=" .. tostring(os.time()), function(text, errorMessage)
-            if finished then return end
-            if version ~= sessionVersion then finish(); return end
-            if not text then
-                if file.optional then nextFile(index + 1) else finish(errorMessage) end
+        if not text then finish(errorMessage); return end
+        local spawnJson = text
+        if not isBareObjectText(text) then
+            local ok, payload = pcall(function() return JSON.decode(text) end)
+            local root = ok and type(payload) == "table" and (payload.ObjectStates and payload.ObjectStates[1] or payload)
+            if type(root) ~= "table" or type(root.Name) ~= "string" then
+                finish("Invalid team cardbox object: " .. path)
                 return
             end
-            local spawnJson = text
-            if not isBareObjectText(text) then
-                local ok, payload = pcall(function() return JSON.decode(text) end)
-                local root = ok and type(payload) == "table" and (payload.ObjectStates and payload.ObjectStates[1] or payload)
-                if type(root) ~= "table" or type(root.Name) ~= "string" then
-                    finish("Invalid team supply object: " .. file.path)
-                    return
-                end
-                spawnJson = JSON.encode(root)
-            end
-            local scale = self.getScale()
-            local side = math.max(self.getBoundsNormalized().size.x * 0.5, 2.6 * scale.x) + 1.5
-            local depth = hasTokens and (3 + (#spawned - 1) * 1.5) or #spawned * 1.5
-            local rotation = self.getRotation()
-            if file.cardbox then depth = depth + 3 end
-            if file.optional then
-                depth = depth + 1
-                rotation = {rotation.x, (rotation.y + 180) % 360, rotation.z}
-            end
-            local called, object = pcall(function()
-                return spawnObjectJSON({json = spawnJson,
-                    position = self.positionToWorld({side / scale.x, 1 / scale.y, depth / scale.z}),
-                    rotation = rotation})
-            end)
-            if not called or not object then finish("Could not spawn team supplies; try again."); return end
-            spawned[#spawned + 1] = object
-            if file.optional then hasTokens = true end
-            nextFile(index + 1)
+            spawnJson = JSON.encode(root)
+        end
+        local scale = self.getScale()
+        local side = math.max(self.getBoundsNormalized().size.x * 0.5, 2.6 * scale.x) + 3
+        local called, object = pcall(function()
+            return spawnObjectJSON({json = spawnJson,
+                position = self.positionToWorld({side / scale.x, 1 / scale.y, 3 / scale.z}),
+                rotation = self.getRotation()})
         end)
-    end
-    Wait.time(function() finish("Team supplies timed out; please try again.") end, 30)
-    nextFile(1)
+        finish((not called or not object) and "Could not spawn the team cardbox; try again." or nil)
+    end)
+    Wait.time(function() finish("Team cardbox timed out; please try again.") end, 30)
 end
 
 function commandNodeChangeCount(player, _, id)
@@ -792,18 +774,67 @@ local function slotDimensions(operative)
     return 60 / 25.4, (mounted and 70 or 60) / 25.4, width, depth
 end
 
+local function hasLoadout(slot)
+    local selection = operatives[slot.operative].data.selection
+    return selection and selection.groups and #selection.groups > 0
+end
+
+local function loadoutButtonLabel(slot)
+    return slot.loadoutChosen and "Change loadout" or "Choose loadout"
+end
+
+local function activeGroups(slot, selection)
+    local active = {}
+    if selection.exclusive_sets and #selection.exclusive_sets > 0 then
+        for _, group in ipairs(selection.exclusive_sets[slot.selectedSet] or {}) do active[group + 1] = true end
+    else
+        for group in ipairs(selection.groups) do active[group] = true end
+    end
+    return active
+end
+
+local function loadoutSummary(slot)
+    local selection = operatives[slot.operative].data.selection
+    local active = activeGroups(slot, selection)
+    local lines, longest = {}, 1
+    for groupIndex, group in ipairs(selection.groups) do
+        local option = active[groupIndex] and group[slot.choices[groupIndex] or 1]
+        if option then
+            local wrapped, width = wrapWords(cleanText(option.label or "Option", true), 22)
+            for _, line in ipairs(wrapped) do lines[#lines + 1] = line end
+            longest = math.max(longest, width)
+        end
+    end
+    return table.concat(lines, "\n"), math.min(50, math.floor(1000 / longest))
+end
+
+local function refreshSlotTile(slot)
+    local marker = getObjectFromGUID(slot.guid)
+    if not marker then return end
+    local summary, fontSize = "All weapons", 50
+    if slot.loadoutChosen then summary, fontSize = loadoutSummary(slot) end
+    marker.editButton({index = 1, label = loadoutButtonLabel(slot)})
+    marker.editButton({index = 2, label = summary, font_size = fontSize})
+end
+
 local function showSlots()
     panelRender = showSlots
     local rows = {}
     for index, slot in ipairs(slots) do
-        local prefix = index == selectedSlot and "> " or ""
-        rows[#rows + 1] = button("slot_" .. index, "commandNodeSelectSlot",
-            prefix .. index .. ". " .. operatives[slot.operative].name,
-            index == selectedSlot and "#237A60" or nil)
+        local operative = operatives[slot.operative]
+        local loadout = ""
+        if hasLoadout(slot) then
+            loadout = button("slot_" .. index, "commandNodeSelectSlot", loadoutButtonLabel(slot))
+                :gsub('preferredHeight=', 'preferredWidth="170" flexibleWidth="0" preferredHeight=', 1)
+        end
+        rows[#rows + 1] = listRow(index, string.format(
+            '<Text flexibleWidth="1" fontSize="16" color="#FFFFFF" alignment="MiddleLeft" horizontalOverflow="Truncate">%s</Text>%s',
+            xmlEscape(index .. ". " .. operative.name), loadout))
     end
     panel("Place models on tiles: " .. currentTeam.name, rows,
-        button("confirm", "commandNodeConfirm", "Confirm", "#237A60")
-        .. button("cancel", "commandNodeCancel", "Cancel"))
+        button("slots_back", "commandNodeSlotsBack", "Back")
+        .. button("confirm", "commandNodeConfirm", "Confirm", "#237A60")
+        .. button("cancel", "commandNodeCancel", "Cancel"), 42)
 end
 
 local function showSlotLoadout()
@@ -815,25 +846,21 @@ local function showSlotLoadout()
     local rowGroups = {}
     local selection = operatives[slot.operative].data.selection
     if selection and selection.groups and #selection.groups > 0 then
-        rows[#rows + 1] = '<Text preferredHeight="32" fontSize="20" color="#FFFFFF">Loadout</Text>'
+        rows[#rows + 1] = '<Text preferredHeight="32" fontSize="20" color="#FFFFFF">'
+            .. (slot.loadoutChosen and "Loadout" or "Loadout: all weapons until you choose") .. '</Text>'
         if selection.exclusive_sets and #selection.exclusive_sets > 0 then
             for index in ipairs(selection.exclusive_sets) do
                 rows[#rows + 1] = button("set_" .. index, "commandNodeSelectSet",
-                    (index == slot.selectedSet and "[x] " or "[ ] ") .. "Alternative " .. index)
+                    (slot.loadoutChosen and index == slot.selectedSet and "[x] " or "[ ] ") .. "Alternative " .. index)
             end
         end
-        local active = {}
-        if selection.exclusive_sets and #selection.exclusive_sets > 0 then
-            for _, group in ipairs(selection.exclusive_sets[slot.selectedSet]) do active[group + 1] = true end
-        else
-            for group in ipairs(selection.groups) do active[group] = true end
-        end
+        local active = activeGroups(slot, selection)
         for groupIndex, group in ipairs(selection.groups) do
             if active[groupIndex] then
                 rowGroups[#rows + 1] = #group + 1
                 rows[#rows + 1] = '<Text preferredHeight="26" fontSize="16" color="#A8BEB7">Choose one</Text>'
                 for optionIndex, option in ipairs(group) do
-                    local selected = (slot.choices[groupIndex] or 1) == optionIndex
+                    local selected = slot.loadoutChosen and (slot.choices[groupIndex] or 1) == optionIndex
                     rows[#rows + 1] = button("option_" .. groupIndex .. "_" .. optionIndex,
                         "commandNodeSelectOption", (selected and "[x] " or "[ ] ") .. (option.label or "Option"))
                 end
@@ -841,7 +868,8 @@ local function showSlotLoadout()
         end
     end
     panel(selectedSlot .. ". " .. operatives[slot.operative].name, rows,
-        button("loadout_done", "commandNodeLoadoutDone", "Done", "#237A60"), nil, rowGroups)
+        button("loadout_all", "commandNodeLoadoutAll", "All weapons", not slot.loadoutChosen and "#237A60" or nil)
+        .. button("loadout_done", "commandNodeLoadoutDone", "Done", "#237A60"), nil, rowGroups)
 end
 
 function commandNodeCreateSlots(player)
@@ -905,20 +933,26 @@ function commandNodeCreateSlots(player)
                         markerScale.z * tileDepth / bounds.z})
                     markerScale = marker.getScale()
                     marker.setLock(true)
+                    marker.tooltip = false
                     marker.setName(index .. ". " .. operative.name)
                     marker.setColorTint({0, 0, 0})
                     marker.addTag("KTCommandNodeSlot-" .. self.getGUID())
                     local label, fontSize = slotLabel(index, operative.name)
+                    local loadout = selection and selection.groups and #selection.groups > 0
+                    local buttonScale = {1 / markerScale.x, 12.5, 1 / markerScale.z}
                     marker.createButton({label = label,
                         click_function = "commandNodeSlotLabel", function_owner = self,
-                        position = {0, 0.7, 0}, width = 0, height = 0, font_size = fontSize,
-                        font_color = {1, 1, 1}, scale = {1 / markerScale.x, 12.5, 1 / markerScale.z}})
-                    if selection and selection.groups and #selection.groups > 0 then
-                        marker.createButton({label = "Loadout",
+                        position = {0, 0.7, (loadout and -0.4 or 0) / markerScale.z}, width = 0, height = 0,
+                        font_size = fontSize, font_color = {1, 1, 1}, scale = buttonScale})
+                    if loadout then
+                        marker.createButton({label = loadoutButtonLabel(slot),
                             click_function = "commandNodeSlotLoadout", function_owner = self,
-                            position = {0, 0.8, 0.8 / markerScale.z}, width = 850, height = 280, font_size = 150,
-                            font_color = {1, 1, 1}, color = {0.14, 0.48, 0.38},
-                            scale = {1 / markerScale.x, 12.5, 1 / markerScale.z}})
+                            position = {0, 0.8, 0.8 / markerScale.z}, width = 1000, height = 280, font_size = 110,
+                            font_color = {1, 1, 1}, color = {0.14, 0.48, 0.38}, scale = buttonScale})
+                        marker.createButton({label = "All weapons",
+                            click_function = "commandNodeSlotLabel", function_owner = self,
+                            position = {0, 0.7, 0.25 / markerScale.z}, width = 0, height = 0, font_size = 50,
+                            font_color = {0.66, 0.75, 0.72}, scale = buttonScale})
                     end
                     slot.guid = marker.getGUID()
                     remaining = remaining - 1
@@ -947,12 +981,11 @@ function commandNodeSlotLabel() end
 function commandNodeSelectSlot(player, _, id)
     if not isSessionPlayer(player) or applying or building then return end
     local index = tonumber(id:match("^slot_(%d+)$"))
-    if index and slots[index] then
+    local slot = index and slots[index]
+    if slot and hasLoadout(slot) then
         selectedSlot = index
         panelPage = 1
-        showSlots()
-        local selection = operatives[slots[index].operative].data.selection
-        if selection and selection.groups and #selection.groups > 0 then showSlotLoadout() end
+        showSlotLoadout()
     end
 end
 
@@ -971,12 +1004,35 @@ function commandNodeLoadoutDone(player)
     showSlots()
 end
 
+function commandNodeLoadoutAll(player)
+    if not isSessionPlayer(player) or panelRender ~= showSlotLoadout then return end
+    local slot = slots[selectedSlot]
+    slot.loadoutChosen = false
+    slot.selectedSet = 1
+    for group in pairs(slot.choices) do slot.choices[group] = 1 end
+    refreshSlotTile(slot)
+    panelPage = 1
+    showSlots()
+end
+
+function commandNodeSlotsBack(player)
+    if not isSessionPlayer(player) or applying or building or panelRender ~= showSlots then return end
+    clearSlots()
+    panelPage = 1
+    showRoster()
+end
+
 function commandNodeSelectSet(player, _, id)
     if not isSessionPlayer(player) then return end
     local index = tonumber(id:match("^set_(%d+)$"))
     local slot = slots[selectedSlot]
     local selection = operatives[slot.operative].data.selection
-    if index and selection.exclusive_sets[index] then slot.selectedSet = index; showSlotLoadout() end
+    if index and selection.exclusive_sets[index] then
+        slot.selectedSet = index
+        slot.loadoutChosen = true
+        refreshSlotTile(slot)
+        showSlotLoadout()
+    end
 end
 
 function commandNodeSelectOption(player, _, id)
@@ -987,6 +1043,8 @@ function commandNodeSelectOption(player, _, id)
     local selection = operatives[slot.operative].data.selection
     if group and option and selection.groups[group] and selection.groups[group][option] then
         slot.choices[group] = option
+        slot.loadoutChosen = true
+        refreshSlotTile(slot)
         showSlotLoadout()
     end
 end
@@ -1065,12 +1123,14 @@ local function applyNext(index, models)
         finishApply("Slot " .. index .. ": could not prepare operative data.")
         return
     end
-    local weapons, selectionError = selectedLoadoutWeapons(data, slot.choices, slot.selectedSet)
-    if not weapons then
-        finishApply("Slot " .. index .. ": " .. selectionError)
-        return
+    if slot.loadoutChosen then
+        local weapons, selectionError = selectedLoadoutWeapons(data, slot.choices, slot.selectedSet)
+        if not weapons then
+            finishApply("Slot " .. index .. ": " .. selectionError)
+            return
+        end
+        data.weapons = weapons
     end
-    data.weapons = weapons
     local rule = currentTeam.counterRule
     if currentTeam.useSpecialRules and rule and rule.options then
         local applies = not rule.applies_to
@@ -1176,8 +1236,11 @@ function commandNodeConfirm(player)
         if slot.done then
             used[slot.modelGuid] = true
         else
-            local weapons, selectionError = selectedLoadoutWeapons(
-                operatives[slot.operative].data, slot.choices, slot.selectedSet)
+            local weapons, selectionError = true, nil
+            if slot.loadoutChosen then
+                weapons, selectionError = selectedLoadoutWeapons(
+                    operatives[slot.operative].data, slot.choices, slot.selectedSet)
+            end
             if not weapons then notify(sessionColor, "Slot " .. index .. ": " .. selectionError); return end
             local matches, errorMessage = findSlotModels(slot)
             if not matches then notify(sessionColor, "Slot " .. index .. ": " .. errorMessage); return end
