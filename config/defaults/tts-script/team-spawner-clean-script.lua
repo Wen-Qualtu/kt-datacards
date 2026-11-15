@@ -1,7 +1,7 @@
 -- Kill Team Spawner (clean) — spawns bare {Team}.json directly.
 --
 -- Reads output/team-urls.json (small index of clean per-team URLs), shows a
--- picker, downloads the chosen team's bare object JSON, hands it straight to
+-- searchable team menu, downloads the chosen team's bare object JSON, hands it straight to
 -- spawnObjectJSON. No save-file slicing, no manual URL cache-busting (the
 -- generated files already carry ?v= on every asset URL).
 
@@ -17,16 +17,16 @@ local function slugToName(slug)
 end
 
 function onLoad()
-    self.setName("Kill Team Spawner (clean)")
+    self.setName("Kill Team Spawner")
     self.setDescription("Loading teams from GitHub...")
+    local scale = self.getScale()
     self.createButton({
         label = "Spawn Team",
         click_function = "onSpawnClick",
         function_owner = self,
-        position = {0, 0.2, -1.3},
-        rotation = {0, 0, 0},
-        height = 220, width = 800, font_size = 120,
-        color = {0, 0.7, 0.2}, font_color = {1, 1, 1}
+        position = {0, (self.getBoundsNormalized().size.y * 0.5 + 0.05) / scale.y, -1.2},
+        width = 900, height = 320, font_size = 180,
+        color = {0.15, 0.45, 0.36}, font_color = {1, 1, 1}
     })
     loadTeamList()
 end
@@ -60,62 +60,101 @@ function loadTeamList()
 end
 
 function updateDescription()
-    local desc = "KILL TEAM SPAWNER (clean)\n\n"
-    desc = desc .. #allTeams .. " teams available\n"
-    desc = desc .. "Click button and enter:\n"
-    desc = desc .. "  - Team number (1-" .. #allTeams .. ")\n"
-    desc = desc .. "  - Partial name ('kas', 'death')"
-    self.setDescription(desc)
+    self.setDescription("KILL TEAM SPAWNER\n\n" .. #allTeams .. " teams available.\nClick Spawn Team to pick or search a team.")
+end
+
+local COLUMNS = 3
+local CELL_WIDTH, CELL_HEIGHT, CELL_SPACING = 290, 36, 6
+local PANEL_WIDTH = COLUMNS * CELL_WIDTH + (COLUMNS - 1) * CELL_SPACING + 28
+local menuOpen = false
+
+local function xmlEscape(value)
+    return tostring(value or ""):gsub("&", "&amp;"):gsub("<", "&lt;")
+        :gsub(">", "&gt;"):gsub('"', "&quot;"):gsub("'", "&apos;")
+end
+
+local function matches(team, needle)
+    return needle == "" or team.name:lower():find(needle, 1, true) ~= nil or team.slug:find(needle, 1, true) ~= nil
+end
+
+local function closeMenu()
+    menuOpen = false
+    self.UI.setXml("")
+end
+
+local function openMenu()
+    menuOpen = true
+    local buttons = {}
+    for index, team in ipairs(allTeams) do
+        buttons[#buttons + 1] = string.format('<Button id="team_%d" onClick="spawnerChooseTeam" fontSize="17" '
+            .. 'colors="#34454A|#56686D|#293336|#333333" textColor="#FFFFFF">%s</Button>', index, xmlEscape(team.name))
+    end
+    local rows = math.ceil(#allTeams / COLUMNS)
+    local gridHeight = rows * CELL_HEIGHT + math.max(0, rows - 1) * CELL_SPACING
+    local panelHeight = 28 + 48 + 8 + 40 + 8 + gridHeight
+    local scale = self.getScale()
+    local halfDepth = self.getBoundsNormalized().size.z * 0.5
+    local scaleX, scaleY = 0.8 / scale.x, 0.8 / scale.z
+    local position = halfDepth / scale.z * 100 + panelHeight * scaleY * 0.5
+    self.UI.setXml(string.format([[
+<Panel id="spawnerPanel" width="%d" height="%d" position="0 %.3f -80" rotation="0 0 180" scale="%.4f %.4f 1"
+       color="#171D1FF2" padding="14 14 14 14">
+  <VerticalLayout spacing="8" childForceExpandWidth="true" childForceExpandHeight="false">
+    <Text fontSize="25" fontStyle="Bold" color="#FFFFFF" alignment="UpperCenter" preferredHeight="48">Spawn a Kill Team</Text>
+    <HorizontalLayout spacing="8" preferredHeight="40" flexibleHeight="0" childForceExpandWidth="false" childForceExpandHeight="false">
+      <InputField id="spawner_search" onValueChanged="spawnerSearch" onSubmit="spawnerSubmit" placeholder="Search teams..."
+                  flexibleWidth="1" preferredHeight="40" fontSize="18"></InputField>
+      <Button id="spawner_close" onClick="spawnerClose" preferredWidth="120" flexibleWidth="0" preferredHeight="40" fontSize="17"
+              colors="#34454A|#56686D|#293336|#333333" textColor="#FFFFFF">Close</Button>
+    </HorizontalLayout>
+    <GridLayout cellSize="%d %d" spacing="%d %d" constraint="FixedColumnCount" constraintCount="%d"
+                preferredHeight="%d" flexibleHeight="0">%s</GridLayout>
+  </VerticalLayout>
+</Panel>]], PANEL_WIDTH, panelHeight, position, scaleX, scaleY,
+        CELL_WIDTH, CELL_HEIGHT, CELL_SPACING, CELL_SPACING, COLUMNS, gridHeight, table.concat(buttons)))
 end
 
 function onSpawnClick(_, playerColor)
+    if menuOpen then closeMenu(); return end
     if #allTeams == 0 then
-        Player[playerColor].broadcast("Team list not loaded yet", {1, 0.5, 0})
+        Player[playerColor].broadcast("Team list not loaded yet; trying again...", {1, 0.5, 0})
+        loadTeamList()
         return
     end
-    Player[playerColor].showInputDialog(
-        "Enter team number or partial name",
-        "",
-        function(input)
-            if not input or input == "" then return end
-            handleTeamInput(input, playerColor)
-        end
-    )
+    openMenu()
 end
 
-function handleTeamInput(input, playerColor)
-    local team
-    local n = tonumber(input)
-    if n and n >= 1 and n <= #allTeams then
-        team = allTeams[n]
+function spawnerClose()
+    closeMenu()
+end
+
+function spawnerSearch(_, value)
+    local needle = (value or ""):lower()
+    for index, team in ipairs(allTeams) do
+        self.UI.setAttribute("team_" .. index, "active", tostring(matches(team, needle)))
+    end
+end
+
+function spawnerSubmit(player, value)
+    local needle = (value or ""):lower()
+    local found = {}
+    for _, team in ipairs(allTeams) do
+        if matches(team, needle) then found[#found + 1] = team end
+    end
+    if #found == 1 then
+        closeMenu()
+        spawnTeam(found[1], player.color)
     else
-        local needle = input:lower()
-        local matches = {}
-        for _, t in ipairs(allTeams) do
-            if t.name:lower():find(needle, 1, true) or t.slug:find(needle, 1, true) then
-                matches[#matches + 1] = t
-            end
-        end
-        if #matches == 1 then
-            team = matches[1]
-        elseif #matches > 1 then
-            Player[playerColor].broadcast("Multiple matches for '" .. input .. "':", {1, 0.8, 0.3})
-            for _, t in ipairs(matches) do
-                for j, all in ipairs(allTeams) do
-                    if all.slug == t.slug then
-                        Player[playerColor].broadcast("  " .. j .. ". " .. t.name, {1, 1, 1})
-                        break
-                    end
-                end
-            end
-            return
-        end
+        player.broadcast(#found == 0 and "No team matches '" .. (value or "") .. "'."
+            or #found .. " teams match; type more or click one.", {1, 0.8, 0.3})
     end
-    if not team then
-        Player[playerColor].broadcast("No match for: '" .. input .. "'", {1, 0.3, 0.3})
-        return
-    end
-    spawnTeam(team, playerColor)
+end
+
+function spawnerChooseTeam(player, _, id)
+    local team = allTeams[tonumber(id:match("^team_(%d+)$"))]
+    if not team then return end
+    closeMenu()
+    spawnTeam(team, player.color)
 end
 
 local function findClearSpot(basePos)

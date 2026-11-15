@@ -1606,55 +1606,62 @@ def rebuild_kill_team_card_boxes_example(output_dir: Path) -> tuple[int, Optiona
     # Generate the per-team Kill Team Spawner (save-file wrapper) from the
     # current team-spawner-clean-script.lua. Small object users drop into TTS
     # to pick & spawn an individual team box without loading the full manager.
-    spawner_lua_path = PROJECT_ROOT / "config" / "defaults" / "tts-script" / "team-spawner-clean-script.lua"
-    if spawner_lua_path.exists():
-        try:
-            spawner_lua = spawner_lua_path.read_text(encoding="utf-8")
-            spawner_tile = {
-                "Name": "Custom_Tile",
-                "Transform": {
-                    "posX": 0.0, "posY": 1.0, "posZ": 0.0,
-                    "rotX": 0.0, "rotY": 180.0, "rotZ": 0.0,
-                    "scaleX": 3.5, "scaleY": 1.0, "scaleZ": 2.5,
-                },
-                "Nickname": "Kill Team Spawner",
-                "Description": "Click button to spawn a Kill Team card box.",
-                "GMNotes": "",
-                "ColorDiffuse": {"r": 0.2, "g": 0.8, "b": 0.3},
-                "Locked": False, "Grid": True, "Snap": True, "IgnoreFoW": False,
-                "MeasureMovement": False, "DragSelectable": True, "Autoraise": True,
-                "Sticky": True, "Tooltip": True, "GridProjection": False,
-                "HideWhenFaceDown": False, "Hands": False,
-                "CustomImage": {
-                    "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/_generic-tts-objects/team-spawner-image.png",
-                    "ImageSecondaryURL": "",
-                    "ImageScalar": 1.0,
-                    "WidthScale": 0.0,
-                    "CustomTile": {"Type": 0, "Thickness": 0.1, "Stackable": False, "Stretch": True},
-                },
-                "LuaScript": spawner_lua,
-                "LuaScriptState": "", "XmlUI": "", "States": {},
-                "GUID": "spawnc",
-            }
-            spawner_save = {
-                "SaveName": "Kill Team Spawner",
-                "Date": "", "VersionNumber": "", "GameMode": "", "GameType": "",
-                "GameComplexity": "", "Tags": [], "Gravity": 0.5, "PlayArea": 0.5,
-                "Table": "", "Sky": "", "Note": "", "Rules": "", "XmlUI": "",
-                "CustomUIAssets": [], "LuaScript": "", "LuaScriptState": "",
-                "ObjectStates": [spawner_tile],
-                "TabStates": {}, "Lighting": {}, "Hands": {}, "ComponentTags": {},
-                "Turns": {}, "Grid": {}, "CameraStates": [], "DecalPallet": [],
-                "VectorLines": [],
-            }
-            spawner_path = manager_output_dir / "Kill Team Spawner.json"
-            with open(spawner_path, "w", encoding="utf-8") as f:
-                json.dump(spawner_save, f, indent=2, ensure_ascii=False)
+    try:
+        spawner_path = write_team_spawner(manager_output_dir)
+        if spawner_path:
             logger.info(f"Wrote team spawner: {spawner_path}")
-        except Exception as e:
-            logger.warning(f"Could not write team spawner: {e}")
+    except Exception as e:
+        logger.warning(f"Could not write team spawner: {e}")
 
     return len(team_box_objects), manager_output_path
+
+
+def write_team_spawner(output_dir: Path, branch: str = "main") -> Optional[Path]:
+    spawner_lua_path = PROJECT_ROOT / "config" / "defaults" / "tts-script" / "team-spawner-clean-script.lua"
+    if not spawner_lua_path.exists():
+        return None
+    spawner_lua = spawner_lua_path.read_text(encoding="utf-8")
+    spawner_tile = {
+        "Name": "Custom_Tile",
+        "Transform": {
+            "posX": 0.0, "posY": 1.0, "posZ": 0.0,
+            "rotX": 0.0, "rotY": 0.0, "rotZ": 0.0,
+            "scaleX": 1.0, "scaleY": 1.0, "scaleZ": 1.0,
+        },
+        "Nickname": "Kill Team Spawner",
+        "Description": "Click Spawn Team to pick or search a Kill Team card box.",
+        "GMNotes": "",
+        "ColorDiffuse": {"r": 0.2, "g": 0.2, "b": 0.2},
+        "Locked": False, "Grid": True, "Snap": True, "IgnoreFoW": False,
+        "MeasureMovement": False, "DragSelectable": True, "Autoraise": True,
+        "Sticky": True, "Tooltip": True, "GridProjection": False,
+        "HideWhenFaceDown": False, "Hands": False,
+        "CustomImage": {
+            "ImageURL": f"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/{branch}/output/_generic-tts-objects/team-spawner-icon.png",
+            "ImageSecondaryURL": "",
+            "ImageScalar": 1.0,
+            "WidthScale": 0.0,
+            "CustomTile": {"Type": 1, "Thickness": 0.2, "Stackable": False, "Stretch": True},
+        },
+        "LuaScript": spawner_lua,
+        "LuaScriptState": "", "XmlUI": "", "States": {},
+        "GUID": "spawnc",
+    }
+    spawner_save = {
+        "SaveName": "Kill Team Spawner",
+        "Date": "", "VersionNumber": "", "GameMode": "", "GameType": "",
+        "GameComplexity": "", "Tags": [], "Gravity": 0.5, "PlayArea": 0.5,
+        "Table": "", "Sky": "", "Note": "", "Rules": "", "XmlUI": "",
+        "CustomUIAssets": [], "LuaScript": "", "LuaScriptState": "",
+        "ObjectStates": [spawner_tile],
+        "TabStates": {}, "Lighting": {}, "Hands": {}, "ComponentTags": {},
+        "Turns": {}, "Grid": {}, "CameraStates": [], "DecalPallet": [],
+        "VectorLines": [],
+    }
+    spawner_path = output_dir / "Kill Team Spawner.json"
+    with open(spawner_path, "w", encoding="utf-8") as f:
+        json.dump(spawner_save, f, indent=2, ensure_ascii=False)
+    return spawner_path
 
 
 def embed_datacard_stats(bag_obj: dict, team_name: str, output_dir: Path, config_dir: Path, single_object_updater_script: str = "") -> bool:
