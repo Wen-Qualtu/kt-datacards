@@ -488,7 +488,7 @@ assert(spawnedSlots[1].buttons[2].label == "Choose loadout" and spawnedSlots[1].
 assert(spawnedSlots[1].buttons[1].position[3] < 0 and spawnedSlots[1].buttons[3].position[3] > 0)
 assert(lastXml:find('childAlignment="MiddleLeft" color="#FFFFFF14">', 1, true))
 for line in spawnedSlots[1].buttons[1].label:gmatch("[^\n]+") do assert(#line <= 16) end
-assert(math.abs((spawnedSlots[2].position.x - spawnedSlots[1].position.x) - (70 / 25.4)) < 0.001)
+assert(math.abs((spawnedSlots[1].position.x - spawnedSlots[2].position.x) - (70 / 25.4)) < 0.001)
 assert(math.abs(spawnedSlots[1].position.x + spawnedSlots[2].position.x) < 0.001)
 assert(spawnedSlots[1].position.z + 30 / 25.4 < -self.getBoundsNormalized().size.z * 0.5)
 assertPanelAboveNode()
@@ -674,8 +674,8 @@ for _, marker in ipairs(spawnedSlots) do
     assert(marker.position.z + 30 / 25.4 < -self.getBoundsNormalized().size.z * 0.5)
 end
 assert(math.abs((spawnedSlots[1].position.z - spawnedSlots[7].position.z) - 70 / 25.4) < 0.001)
-assert(math.abs((spawnedSlots[2].position.x - spawnedSlots[1].position.x) - 70 / 25.4) < 0.001)
-assert(math.abs((spawnedSlots[7].position.x - spawnedSlots[1].position.x) - 35 / 25.4) < 0.001)
+assert(math.abs((spawnedSlots[1].position.x - spawnedSlots[2].position.x) - 70 / 25.4) < 0.001)
+assert(math.abs((spawnedSlots[1].position.x - spawnedSlots[7].position.x) - 35 / 25.4) < 0.001)
 assert(math.abs(spawnedSlots[7].position.x + spawnedSlots[11].position.x) < 0.001)
 assert(lastXml:find('id="slot_1"', 1, true))
 assert(not lastXml:find('id="slot_11"', 1, true))
@@ -729,7 +729,7 @@ for index, marker in ipairs(spawnedSlots) do
         assert(marker.position.z + 37.5 / 25.4 < -self.getBoundsNormalized().size.z * 0.5)
     end
 end
-assert(math.abs((spawnedSlots[2].position.x - spawnedSlots[1].position.x) * 25.4 - 70) < 0.001)
+assert(math.abs((spawnedSlots[1].position.x - spawnedSlots[2].position.x) * 25.4 - 70) < 0.001)
 assert(math.abs((spawnedSlots[1].position.z - spawnedSlots[7].position.z) * 25.4 - 85) < 0.001)
 hits = {}
 commandNodeConfirm({color = "White"})

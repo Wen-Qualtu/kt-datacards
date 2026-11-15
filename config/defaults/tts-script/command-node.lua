@@ -910,7 +910,7 @@ function commandNodeCreateSlots(player)
             local nodeScale = self.getScale()
             local halfDepth = self.getBoundsNormalized().size.z * 0.5
             local position = self.positionToWorld({
-                (column - (rowCount - 1) / 2) * columnSpacing / nodeScale.x,
+                ((rowCount - 1) / 2 - column) * columnSpacing / nodeScale.x,
                 0.4 / nodeScale.y,
                 -(halfDepth + (row + 0.5) * rowSpacing) / nodeScale.z,
             })
