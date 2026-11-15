@@ -84,6 +84,7 @@ end
 
 local cardData = {
     name = "ASSAULT INTERCESSOR GRENADIER",
+    apl = 3, movement = '6"', save = "3+", wounds = 14,
     base_size = 32,
     weapons = {{name = "fixed"}, {name = "plasma"}, {name = "flamer"}},
     node = {
@@ -131,13 +132,7 @@ JSON = {
         if value == "team-metadata" then return {
             team = "test", team_data = {url = "https://example.test/main/test-data", hash = "abc123"},
             box = {url = "https://example.test/main/output/test/tts_objects/Test.json", hash = "def456"},
-            objects = {{type = "token-bag"}},
         } end
-        if type(value) == "string" and value:match("^supply:") then
-            local root = supplyBox.ObjectStates and supplyBox.ObjectStates[1] or supplyBox
-            local object = copy(root.ContainedObjects[tonumber(value:match("%d+"))])
-            return supplyBox.ObjectStates and {ObjectStates = {object}} or object
-        end
         if value == "cardbox" then return copy(supplyBox) end
         if value == "test-roster" then
             local cards = {copy(cardData)}
@@ -169,18 +164,6 @@ WebRequest = {get = function(url, callback)
     elseif url:find("/output/test/data/test-team-data.json", 1, true) then text = "test-roster"
     elseif url:find("/output/test/tts_objects/Test.json", 1, true) and not suppliesMissing then
         text = rawCardbox and rawCardboxText or "cardbox"
-    elseif url:find("/output/test/tts_objects/", 1, true) and not suppliesMissing then
-        local tags = {
-            ["test-token-bag"] = "KTCardsTokenBag", ["dice/test-dice"] = "KTDice_Team",
-            ["dice/test-light-dice"] = "KTDice_Light", ["dice/test-dark-dice"] = "KTDice_Dark",
-        }
-        local wanted = tags[url:match("/tts_objects/(.-)%.json")]
-        local root = supplyBox.ObjectStates and supplyBox.ObjectStates[1] or supplyBox
-        for index, object in ipairs(root.ContainedObjects or {}) do
-            for _, tag in ipairs(object.Tags or {}) do
-                if tag == wanted then text = "supply:" .. index end
-            end
-        end
     elseif url:find("command%-node%-loader%.lua") and not loaderMissing then
         text = loaderOutdated and cardScript:gsub("color, replaceScript, modelScript%)", "color)") or cardScript
         if loaderMetadataTruncated then text = text:gsub("%]====%]", "") end
@@ -262,6 +245,9 @@ local function newObject(kind, position)
     object.setColorTint = function(tint) object.tint = tint end
     object.addTag = function() end
     object.createButton = function(parameters) object.buttons[#object.buttons + 1] = parameters end
+    object.editButton = function(parameters)
+        for key, value in pairs(parameters) do object.buttons[parameters.index + 1][key] = value end
+    end
     object.setVectorLines = function(lines) object.lines = lines end
     object.setInvisibleTo = function() end
     object.setGMNotes = function() end
@@ -351,7 +337,7 @@ local function assertPanelAboveNode()
     local nearEdge = (center - height * scale * 0.5) / 100 * nodeScale.z
     assert(math.abs(nearEdge - self.getBoundsNormalized().size.z * 0.5) < 0.001)
     assert(scale < 1)
-    assert(height >= 116 and height <= 550)
+    assert(height >= 124 and height <= 560)
     return height
 end
 
@@ -363,19 +349,25 @@ end
 
 dofile("config/defaults/tts-script/command-node.lua")
 local converted = assert(commandNodeModelData({
-    name = "GUNNER", apl = 2, movement = '6"', save = "4+", wounds = 8, base_size = 32,
+    name = "GUNNER", apl = 2, movement = '12\226\128\179', save = "4+", wounds = 8, base_size = 32,
     keywords = {"TEST"}, weapons = {{name = "Gun & blade", attacks = "4", hit = "3+", damage = "3/4"}},
     passive_abilities = {{name = " Steady ", description = " Ready "}},
     node = {weapon_types = {"ranged"}, weapon_rules = {}, selection = {groups = {}}},
 }))
-assert(converted.stats.Move == 6 and converted.stats.Base == 32)
+assert(converted.stats.Move == 12 and converted.stats.Save == 4 and converted.stats.Base == 32)
 assert(converted.weapons[1].name == "[1E87FF]R[-] Gun and blade")
 assert(converted.abilities[1].name == "Steady" and converted.abilities[1].text == "Ready")
 assert(commandNodeModelData({name = "Missing"}) == nil)
+local missingStats, missingReason = commandNodeModelData({
+    name = "NO MOVE", apl = 2, save = "4+", wounds = 8,
+    weapons = {}, node = {weapon_types = {}, weapon_rule_names = {}},
+})
+assert(missingStats == nil and missingReason:find("Missing Move for NO MOVE", 1, true))
 local longAbility = string.rep("Grit. ", 1200)
 local trimmedAbility = string.rep("Grit. ", 1199) .. "Grit."
 local unicodeData = assert(commandNodeModelData({
     name = "HEARTHKYN D\195\148ZR",
+    apl = 2, movement = '5"', save = "4+", wounds = 8,
     weapons = {},
     passive_abilities = {{name = "\226\128\152Ancient Oath\226\128\153", description = "  " .. longAbility .. "  "}},
     node = {weapon_types = {}, weapon_rule_names = {}},
@@ -409,56 +401,56 @@ assert(startButton.label == "" and startButton.width == 0 and startButton.height
 assert(not lastXml:find("<VerticalScrollView", 1, true))
 assert(not lastXml:find('allowDragging="true"', 1, true))
 local teamPanelHeight = assertPanelAboveNode()
-assert(teamPanelHeight == 550)
+assert(teamPanelHeight == 558)
+assert(lastXml:find('alignment="UpperCenter" preferredHeight="48">Choose a team</Text>', 1, true))
 assert(lastXml:find('minHeight="28" preferredHeight="28" flexibleHeight="0" childForceExpandHeight="false"', 1, true))
 assert(lastXml:find('preferredWidth="36" flexibleWidth="0" minHeight="28" preferredHeight="28" flexibleHeight="0"', 1, true))
 assert(lastXml:find('interactable="false">&lt;</Button>', 1, true))
-assert(lastXml:find('tooltip="Next page"', 1, true))
+assert(not lastXml:find('tooltip=', 1, true))
 assert(lastXml:find('id="team_1"', 1, true))
-assert(lastXml:find('id="team_10"', 1, true))
-assert(not lastXml:find('id="team_11"', 1, true))
-for _ = 1, 4 do commandNodePage({color = "White"}, nil, "page_next") end
+assert(lastXml:find('id="team_20"', 1, true))
+assert(not lastXml:find('id="team_21"', 1, true))
+local _, teamRows = lastXml:gsub('<HorizontalLayout spacing="6" preferredHeight="34"', "")
+assert(teamRows == 10)
+for _ = 1, 2 do commandNodePage({color = "White"}, nil, "page_next") end
 assert(lastXml:find('id="team_50"', 1, true))
 assert(not lastXml:find('id="team_51"', 1, true))
-for _ = 1, 4 do commandNodePage({color = "White"}, nil, "page_prev") end
+for _ = 1, 2 do commandNodePage({color = "White"}, nil, "page_prev") end
 commandNodeChooseTeam({color = "White"}, nil, "team_1")
 assert(requests[2]:find(NODE_REPO_BASE_URL .. "/output/test/test-object-urls.json", 1, true) == 1)
 assert(requests[3] == NODE_REPO_BASE_URL .. "/output/test/data/test-team-data.json?v=abc123")
 assert(#requests == 4)
 assert(not lastXml:find('id="supplies"', 1, true))
-assert(lastXml:find('id="setup_tokens"', 1, true))
-assert(lastXml:find('isOn="false">Tokens</Toggle>', 1, true))
-assert(lastXml:find('isOn="false">Dice</Toggle>', 1, true))
-assert(lastXml:find('isOn="false">Cardbox (includes tokens + dice)</Toggle>', 1, true))
-assert(lastXml:find('preferredWidth="330" flexibleWidth="0"', 1, true))
+assert(not lastXml:find('id="setup_tokens"', 1, true) and not lastXml:find('id="setup_dice"', 1, true))
+assert(lastXml:find('id="setup_cardbox" onClick="commandNodeToggleCardbox"', 1, true))
+assert(lastXml:find('colors="#34454A|#56686D|#293336|#333333" textColor="#FFFFFF">Add cardbox (tokens + dice)</Button>', 1, true))
 assert(lastXml:find('<VerticalLayout preferredHeight="34" flexibleHeight="0" spacing="6"', 1, true))
 assert(not lastXml:find('id="setup_rules"', 1, true))
 commandNodeSpawnSupplies({color = "Red"})
 assert(#requests == 4 and #spawnedSupplies == 0)
 commandNodeSpawnSupplies({color = "White"})
 assert(#requests == 4 and #spawnedSupplies == 0)
-commandNodeSetupToggle({color = "White"}, "True", "setup_tokens")
-commandNodeSetupToggle({color = "White"}, "True", "setup_dice")
+commandNodeToggleCardbox({color = "Red"})
+assert(lastXml:find('>Add cardbox (tokens + dice)</Button>', 1, true))
+commandNodeToggleCardbox({color = "White"})
+assert(lastXml:find('colors="#237A60|#56686D|#293336|#333333" textColor="#FFFFFF">Cardbox added (tokens + dice)</Button>', 1, true))
+expectCardbox = true
 commandNodeSpawnSupplies({color = "White"})
-assert(requests[5]:find(NODE_REPO_BASE_URL .. "/output/test/tts_objects/test-token-bag.json?v=", 1, true) == 1)
-assert(requests[#requests]:find("/tts_objects/dice/test-dark-dice.json?v=", 1, true))
-assert(#spawnedSupplies == 4)
-assert(spawnedSupplies[1].data.LuaScript == "token-bag-script")
-assert(#spawnedSupplies[1].data.ContainedObjects == 1)
-assert(spawnedSupplies[2].data.LuaScript == "dice-script")
-assert(spawnedSupplies[1].position.x > 5.2 and spawnedSupplies[1].position.x < 8)
-assert(spawnedSupplies[1].position.z == 1)
-assert(spawnedSupplies[2].position.z == 3)
-assert(spawnedSupplies[2].position.z - spawnedSupplies[1].position.z == 2)
-assert(spawnedSupplies[1].rotation.y == 180 and spawnedSupplies[2].rotation.y == 0)
-assert(spawnedSupplies[3].position.z - spawnedSupplies[2].position.z == 1.5)
+assert(requests[5]:find(NODE_REPO_BASE_URL .. "/output/test/tts_objects/Test.json?v=", 1, true) == 1)
+assert(#spawnedSupplies == 1)
+assert(spawnedSupplies[1].data.Nickname == "Test cardbox" and #spawnedSupplies[1].data.ContainedObjects == 5)
+assert(spawnedSupplies[1].position.x > 8 and spawnedSupplies[1].position.x < 9)
+assert(spawnedSupplies[1].position.z == 3 and spawnedSupplies[1].rotation.y == 0)
+assert(messages[#messages] == "Team cardbox spawned.")
 commandNodeSpawnSupplies({color = "White"})
-assert(#spawnedSupplies == 4)
+assert(#spawnedSupplies == 1)
+expectCardbox = false
 assert(assertPanelAboveNode() < teamPanelHeight)
 assert(not lastXml:find('id="page_next"', 1, true))
-assert(lastXml:find('<HorizontalLayout preferredHeight="42" flexibleHeight="0" spacing="4" childForceExpandWidth="false"', 1, true))
-assert(lastXml:find('preferredWidth="310" flexibleWidth="0"', 1, true))
+assert(lastXml:find('<HorizontalLayout preferredHeight="42" flexibleHeight="0" spacing="4" padding="10 4 3 3" childForceExpandWidth="false"', 1, true))
+assert(lastXml:find('<Text flexibleWidth="1" fontSize="16" color="#FFFFFF" alignment="MiddleLeft" horizontalOverflow="Truncate">ASSAULT INTERCESSOR GRENADIER</Text><Button id="minus_1"', 1, true))
 assert(lastXml:find('preferredWidth="48" flexibleWidth="0"', 1, true))
+assert(lastXml:find('childAlignment="MiddleLeft" color="#00000000">', 1, true))
 assert(lastXml:find('preferredHeight="42" flexibleHeight="0" childForceExpandHeight="false">', 1, true))
 assert(not lastXml:find('Loadout', 1, true))
 assert(not lastXml:find('id="option_', 1, true))
@@ -469,6 +461,7 @@ assert(#spawnedSlots == 2)
 flushCallbacks()
 assert(spawnedSlots[1].buttons[1].label == "1. ASSAULT\nINTERCESSOR\nGRENADIER")
 assert(spawnedSlots[1].buttons[1].font_size == 80)
+assert(spawnedSlots[1].tooltip == false)
 for _, marker in ipairs(spawnedSlots) do
     local bounds = marker.getBoundsNormalized().size
     assert(math.abs(bounds.x * 25.4 - 60) < 0.001 and math.abs(bounds.z * 25.4 - 60) < 0.001)
@@ -479,6 +472,13 @@ for _, marker in ipairs(spawnedSlots) do
     assert(marker.tint[1] == 0 and marker.tint[2] == 0 and marker.tint[3] == 0)
 end
 assert(lastXml:find("Place models on tiles:", 1, true))
+assert(lastXml:find('horizontalOverflow="Truncate">1. ASSAULT INTERCESSOR GRENADIER</Text><Button id="slot_1" onClick="commandNodeSelectSlot"', 1, true))
+assert(lastXml:find('id="slot_2" onClick="commandNodeSelectSlot" minHeight="34" preferredWidth="170" flexibleWidth="0"', 1, true))
+assert(lastXml:find('>Choose loadout</Button>', 1, true))
+assert(lastXml:find('id="slots_back" onClick="commandNodeSlotsBack"', 1, true))
+assert(spawnedSlots[1].buttons[2].label == "Choose loadout" and spawnedSlots[1].buttons[3].label == "All weapons")
+assert(spawnedSlots[1].buttons[1].position[3] < 0 and spawnedSlots[1].buttons[3].position[3] > 0)
+assert(lastXml:find('childAlignment="MiddleLeft" color="#FFFFFF14">', 1, true))
 for line in spawnedSlots[1].buttons[1].label:gmatch("[^\n]+") do assert(#line <= 16) end
 assert(math.abs((spawnedSlots[2].position.x - spawnedSlots[1].position.x) - (70 / 25.4)) < 0.001)
 assert(spawnedSlots[1].position.z + 30 / 25.4 < -self.getBoundsNormalized().size.z * 0.5)
@@ -493,14 +493,22 @@ assertPanelAboveNode()
 assert(assertPanelAboveNode() < teamPanelHeight)
 assert(not lastXml:find('id="page_next"', 1, true))
 assert(lastXml:find('onClick="commandNodeSelectOption"', 1, true))
+assert(lastXml:find(">Loadout: all weapons until you choose</Text>", 1, true) and not lastXml:find("[x]", 1, true))
+assert(lastXml:find('id="loadout_all" onClick="commandNodeLoadoutAll"', 1, true))
 commandNodeSelectOption({color = "White"}, nil, "option_1_2")
 assert(lastXml:find('[x] Flamer', 1, true))
+assert(spawnedSlots[1].buttons[2].label == "Change loadout" and spawnedSlots[1].buttons[3].label == "Flamer")
 commandNodeLoadoutDone({color = "White"})
 assert(lastXml:find('id="confirm"', 1, true))
+assert(lastXml:find('id="slot_1" onClick="commandNodeSelectSlot" minHeight="34" preferredWidth="170" flexibleWidth="0" preferredHeight="34" flexibleHeight="0" fontSize="17" colors="#34454A|#56686D|#293336|#333333" textColor="#FFFFFF">Change loadout</Button>', 1, true))
+assert(lastXml:find('>Choose loadout</Button>', 1, true))
 commandNodeSlotLoadout(spawnedSlots[2], "White")
-assert(lastXml:find('[x] Plasma', 1, true))
+assert(lastXml:find('[ ] Plasma', 1, true) and not lastXml:find('[x]', 1, true))
 commandNodeSelectOption({color = "White"}, nil, "option_1_1")
+assert(lastXml:find('[x] Plasma', 1, true))
 commandNodeLoadoutDone({color = "White"})
+assert(spawnedSlots[2].buttons[2].label == "Change loadout" and spawnedSlots[2].buttons[3].label == "Plasma")
+assert(not lastXml:find('>Choose loadout</Button>', 1, true))
 commandNodeSlotLoadout(spawnedSlots[1], "White")
 assert(lastXml:find('[x] Flamer', 1, true))
 commandNodeLoadoutDone({color = "White"})
@@ -661,11 +669,24 @@ assert(not lastXml:find('id="slot_11"', 1, true))
 commandNodeSelectSlot({color = "White"}, nil, "slot_1")
 assert(lastXml:find('id="option_1_2"', 1, true))
 assertPanelAboveNode()
+commandNodeSelectOption({color = "White"}, nil, "option_1_2")
+assert(spawnedSlots[1].buttons[3].label == "Flamer")
+commandNodeLoadoutAll({color = "White"})
+assert(spawnedSlots[1].buttons[2].label == "Choose loadout" and spawnedSlots[1].buttons[3].label == "All weapons")
+assert(lastXml:find("Place models on tiles:", 1, true))
+commandNodeSelectSlot({color = "White"}, nil, "slot_1")
+assert(not lastXml:find("[x]", 1, true))
 commandNodeLoadoutDone({color = "White"})
+assert(spawnedSlots[1].buttons[2].label == "Choose loadout")
 commandNodePage({color = "White"}, nil, "page_next")
 assert(lastXml:find('id="slot_11"', 1, true))
 assert(assertPanelAboveNode() < teamPanelHeight)
 assert(lastXml:find('interactable="false">&gt;</Button>', 1, true))
+commandNodeSlotsBack({color = "Red"})
+assert(objects[spawnedSlots[1].guid])
+commandNodeSlotsBack({color = "White"})
+assert(not objects[spawnedSlots[1].guid] and not objects[spawnedSlots[11].guid])
+assert(lastXml:find('id="plus_1"', 1, true) and lastXml:find('color="#FFFFFF">11</Text>', 1, true))
 commandNodeCancel({color = "White"})
 assert(startButton.label == "New team" and startButton.width == 900)
 
@@ -741,6 +762,8 @@ commandNodeChangeCount({color = "White"}, nil, "plus_1")
 commandNodeCreateSlots({color = "White"})
 flushCallbacks()
 assert(#spawnedSlots[1].buttons == 1)
+assert(lastXml:find('>1. UPDATED GUNNER</Text></HorizontalLayout>', 1, true))
+assert(not lastXml:find('id="slot_1"', 1, true) and not lastXml:find('loadout', 1, true))
 commandNodeSelectSlot({color = "White"}, nil, "slot_1")
 assert(lastXml:find('id="confirm"', 1, true))
 commandNodeCancel({color = "White"})
@@ -789,6 +812,7 @@ commandNodeStart(nil, "White")
 commandNodeChooseTeam({color = "White"}, nil, "team_1")
 assert(lastXml:find('id="plus_7"', 1, true))
 assert(not lastXml:find('id="plus_8"', 1, true))
+assert(lastXml:find('id="page_next"', 1, true) < lastXml:find('id="setup_cardbox"', 1, true))
 local rosterPanelHeight = assertPanelAboveNode()
 commandNodePage({color = "White"}, nil, "page_next")
 assert(lastXml:find('id="plus_9"', 1, true))
@@ -803,10 +827,10 @@ local function startSupplySetup()
     spawnedSlots = {}
     commandNodeStart(nil, "White")
     commandNodeChooseTeam({color = "White"}, nil, "team_1")
-    commandNodeSetupToggle({color = "White"}, "True", "setup_tokens")
-    commandNodeSetupToggle({color = "White"}, "True", "setup_dice")
+    commandNodeToggleCardbox({color = "White"})
 end
 
+expectCardbox = true
 local initialSupplyCount = #spawnedSupplies
 suppliesMissing = true
 startSupplySetup()
@@ -814,38 +838,30 @@ commandNodeSpawnSupplies({color = "White"})
 assert(#spawnedSupplies == initialSupplyCount and messages[#messages]:find("HTTP 404", 1, true))
 suppliesMissing = false
 commandNodeSpawnSupplies({color = "White"})
-assert(#spawnedSupplies == initialSupplyCount + 4)
+assert(#spawnedSupplies == initialSupplyCount + 1)
 commandNodeCancel({color = "White"})
 
 local originalSupplyBox = copy(supplyBox)
-table.remove(supplyBox.ContainedObjects, 1)
-initialSupplyCount = #spawnedSupplies
-startSupplySetup()
-commandNodeSpawnSupplies({color = "White"})
-assert(#spawnedSupplies == initialSupplyCount + 3)
-assert(messages[#messages]:find("No standalone token bag", 1, true))
-commandNodeCancel({color = "White"})
-
 supplyBox = {ContainedObjects = {}}
 initialSupplyCount = #spawnedSupplies
 startSupplySetup()
 commandNodeSpawnSupplies({color = "White"})
-assert(#spawnedSupplies == initialSupplyCount and messages[#messages]:find("HTTP 404", 1, true))
+assert(#spawnedSupplies == initialSupplyCount)
+assert(messages[#messages] == "Invalid team cardbox object: test/tts_objects/Test.json")
 supplyBox = {ObjectStates = {originalSupplyBox}}
 commandNodeSpawnSupplies({color = "White"})
-assert(#spawnedSupplies == initialSupplyCount + 4)
+assert(#spawnedSupplies == initialSupplyCount + 1)
 commandNodeCancel({color = "White"})
 supplyBox = originalSupplyBox
 
-supplyAttempts, supplyFailAt = 0, 2
+supplyAttempts, supplyFailAt = 0, 1
 initialSupplyCount = #spawnedSupplies
 startSupplySetup()
 commandNodeSpawnSupplies({color = "White"})
-assert(#spawnedSupplies == initialSupplyCount + 1)
-assert(objects[spawnedSupplies[#spawnedSupplies].guid] == nil)
+assert(#spawnedSupplies == initialSupplyCount and messages[#messages]:find("Could not spawn", 1, true))
 supplyFailAt = nil
 commandNodeSpawnSupplies({color = "White"})
-assert(#spawnedSupplies == initialSupplyCount + 5)
+assert(#spawnedSupplies == initialSupplyCount + 1)
 commandNodeCancel({color = "White"})
 
 initialSupplyCount = #spawnedSupplies
@@ -884,16 +900,14 @@ flushCallbacks()
 assert(#spawnedSupplies == initialSupplyCount)
 deferRequest = false
 commandNodeSpawnSupplies({color = "White"})
-assert(#spawnedSupplies == initialSupplyCount + 4)
+assert(#spawnedSupplies == initialSupplyCount + 1)
 commandNodeCancel({color = "White"})
+expectCardbox = false
 
 local selections = {
-    {tokens = false, dice = false, box = false, count = 0},
-    {tokens = true, dice = false, box = false, count = 1},
-    {tokens = false, dice = true, box = false, count = 3},
-    {tokens = true, dice = true, box = false, count = 4},
-    {tokens = true, dice = true, box = true, count = 1},
-    {tokens = false, dice = false, box = true, count = 1, wrapped = true},
+    {box = false, count = 0},
+    {box = true, count = 1},
+    {box = true, count = 1, wrapped = true},
 }
 for _, selected in ipairs(selections) do
     supplyBox = selected.wrapped and {ObjectStates = {originalSupplyBox}} or originalSupplyBox
@@ -902,13 +916,7 @@ for _, selected in ipairs(selections) do
     commandNodeChooseTeam({color = "White"}, nil, "team_1")
     assert(not lastXml:find('id="supplies"', 1, true))
     assert(not lastXml:find('id="setup_supplies"', 1, true))
-    commandNodeSetupToggle({color = "White"}, selected.tokens and "True" or "False", "setup_tokens")
-    commandNodeSetupToggle({color = "White"}, selected.dice and "True" or "False", "setup_dice")
-    commandNodeSetupToggle({color = "White"}, selected.box and "True" or "False", "setup_cardbox")
-    if selected.box then
-        assert(lastXml:find('isOn="false">Tokens</Toggle>', 1, true))
-        assert(lastXml:find('isOn="false">Dice</Toggle>', 1, true))
-    end
+    if selected.box then commandNodeToggleCardbox({color = "White"}) end
     local beforeRequests, beforeSupplies = #requests, #spawnedSupplies
     commandNodeNext({color = "White"})
     assert(#requests == beforeRequests and #spawnedSlots == 0)
@@ -941,29 +949,28 @@ supplyBox = originalSupplyBox
 spawnedSlots = {}
 commandNodeStart(nil, "White")
 commandNodeChooseTeam({color = "White"}, nil, "team_1")
-commandNodeSetupToggle({color = "White"}, "True", "setup_cardbox")
-commandNodeSetupToggle({color = "White"}, "True", "setup_dice")
-assert(lastXml:find('isOn="false">Cardbox (includes tokens + dice)</Toggle>', 1, true))
-commandNodeSetupToggle({color = "White"}, "True", "setup_cardbox")
-commandNodeSetupToggle({color = "White"}, "True", "setup_tokens")
-assert(lastXml:find('isOn="false">Cardbox (includes tokens + dice)</Toggle>', 1, true))
+commandNodeToggleCardbox({color = "White"})
+assert(lastXml:find('>Cardbox added (tokens + dice)</Button>', 1, true))
+commandNodeToggleCardbox({color = "White"})
+assert(lastXml:find('>Add cardbox (tokens + dice)</Button>', 1, true))
 commandNodeCancel({color = "White"})
 
 counterSupported = true
 for _, enabled in ipairs({true, false}) do
-    startSupplySetup()
+    spawnedSlots = {}
+    commandNodeStart(nil, "White")
+    commandNodeChooseTeam({color = "White"}, nil, "team_1")
     commandNodeChangeCount({color = "White"}, nil, "plus_1")
-    assert(lastXml:find('id="setup_tokens"', 1, true))
-    assert(lastXml:find('id="setup_rules"', 1, true))
-    assert(lastXml:find('Special rules: Gore Tank', 1, true))
-    assert(lastXml:find('isOn="true">Special rules: Gore Tank</Toggle>', 1, true))
+    assert(lastXml:find('id="setup_cardbox"', 1, true))
+    assert(lastXml:find('id="setup_rules" onClick="commandNodeToggleRules"', 1, true))
+    assert(lastXml:find('colors="#237A60|#56686D|#293336|#333333" textColor="#FFFFFF">Gore Tank added</Button>', 1, true))
     assert(lastXml:find('<VerticalLayout preferredHeight="74" flexibleHeight="0" spacing="6"', 1, true))
     assertPanelAboveNode()
     assert(not lastXml:find('id="setup_supplies"', 1, true))
-    commandNodeSetupToggle({color = "White"}, "False", "setup_tokens")
-    assert(not lastXml:find('id="setup_supplies"', 1, true))
-    commandNodeSetupToggle({color = "White"}, enabled and "True" or "False", "setup_rules")
-    commandNodeSetupToggle({color = "White"}, "False", "setup_dice")
+    if not enabled then
+        commandNodeToggleRules({color = "White"})
+        assert(lastXml:find('textColor="#FFFFFF">Add Gore Tank</Button>', 1, true))
+    end
     commandNodeNext({color = "White"})
     flushCallbacks()
     local marker = spawnedSlots[1]
@@ -972,6 +979,7 @@ for _, enabled in ipairs({true, false}) do
     commandNodeConfirm({color = "White"})
     flushCallbacks()
     assert(model.applied and model.uiVisible)
+    assert(#model.applied.weapons == 3)
     if enabled then
         assert(model.counterInstalls == 1 and model.script_state.operative_counter.name == "Gore Tank")
         assert(model.frontReloads == 2)
@@ -987,9 +995,8 @@ for _, enabled in ipairs({true, false}) do
     spawnedSlots = {}
     commandNodeStart(nil, "White")
     commandNodeChooseTeam({color = "White"}, nil, "team_1")
-    assert(lastXml:find('isOn="true">Special rules: Chapter Tactics</Toggle>', 1, true))
+    assert(lastXml:find('>Chapter Tactics added</Button>', 1, true))
     assert(lastXml:find('id="choose_rules"', 1, true))
-    assert(lastXml:find('preferredWidth="330" flexibleWidth="0" preferredHeight=', 1, true))
     assert(lastXml:find('>Select Chapter Tactics</Button>', 1, true))
     if enabled then
         commandNodeChooseRules({color = "White"})
@@ -1003,7 +1010,7 @@ for _, enabled in ipairs({true, false}) do
         assert(lastXml:find("[x] Dueller", 1, true))
         commandNodeRulesDone({color = "White"})
     else
-        commandNodeSetupToggle({color = "White"}, "False", "setup_rules")
+        commandNodeToggleRules({color = "White"})
         assert(not lastXml:find('id="choose_rules"', 1, true))
     end
     commandNodeChangeCount({color = "White"}, nil, "plus_1")

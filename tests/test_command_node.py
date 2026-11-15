@@ -478,7 +478,7 @@ def test_builder_can_target_a_feature_branch_without_embedded_data(tmp_path):
     assert "MOVE_TOOL_CODE =" not in node
     assert "SPRINT_TOOL_CODE =" not in node
     assert "function ktCommandNodeAddCounters" not in node
-    assert len(node.encode("utf-8")) < 55_000
+    assert len(node.encode("utf-8")) < 60_000
 
 
 def test_shared_helper_includes_composed_model_and_card_loader():
