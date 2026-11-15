@@ -644,19 +644,22 @@ function diffAndApply(model, data, playerColor, replaceScript, modelScript)
     -- playerColor (optional) is used to assign the KTUI owner on a (re)stamp.
     local installedScript = modelScript or KTUI_MODELSCRIPT
     local needsScript = (replaceScript or (not isKtui) or ktuiOutdated) and installedScript ~= nil and installedScript ~= ""
+    -- The player who loads stats always becomes the owner: table-level Save/Load Positions and
+    -- Ready Operatives skip models whose owner isn't a seated player.
+    local loader = playerColor and Player[playerColor]
+    if loader and (loader.steam_id or "") ~= "" and ms.owner ~= loader.steam_id then
+        ms.owner = loader.steam_id
+        table.insert(changes, "Owner: " .. playerColor)
+    end
     if #changes > 0 or needsScript then
-        -- Bake the KTUI owner into the persisted state (never a post-reload call).
-        -- The table-level Save/Load Positions + Ready Operatives SKIP any model whose
-        -- getOwningPlayer() is nil, so state.owner must be a seated player's steam_id
-        -- AND must survive every reload in the chain. Keep an existing owner, else
-        -- assign the loader; loadState restores it, so it persists (no race).
+        -- Bake the owner into the persisted state (never a post-reload call); loadState
+        -- restores it, so it survives every reload in the chain. Without a seated loader,
+        -- keep an existing owner.
         if not ms.owner or ms.owner == "" then
             local prev
             if isKtui then pcall(function() prev = model.call("getOwningPlayer") end) end
             if prev and prev.steam_id and prev.steam_id ~= "" then
                 ms.owner = prev.steam_id
-            elseif playerColor and Player[playerColor] and Player[playerColor].steam_id ~= "" then
-                ms.owner = Player[playerColor].steam_id
             end
         end
         model.script_state = JSON.encode(ms)

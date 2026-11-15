@@ -67,6 +67,11 @@ function ktCommandNodeAddCounters(params)
 end
 function rebuildDescription(data) return "Chosen loadout" end
 function diffAndApply(model, data, color, replaceScript, modelScript)
+    if not replaceScript then
+        assert(KTUI_MODELSCRIPT_VERSION == nil, "Updates must not re-stamp the model script")
+        model.updated = data
+        return {"stats"}
+    end
     assert(replaceScript == true)
     assert(type(modelScript) == "string")
     model.installedScript = modelScript
@@ -318,9 +323,11 @@ end
 local nodeScale = {x = 2, y = 0.2, z = 2}
 local nodeYaw = 0
 local nodeLines
+local nodeTag
 self = {
     UI = {setXml = function(xml) lastXml = xml end},
     getGUID = function() return "node" end,
+    addTag = function(tag) nodeTag = tag end,
     setName = function() end,
     createButton = function(parameters) startButton = parameters end,
     editButton = function(parameters)
@@ -399,6 +406,7 @@ assert(selectedLoadoutWeapons({weapons = {"one"}, selection = {
     groups = {{{weapons = {8}}}},
 }}, {}, 1) == nil)
 onLoad()
+assert(nodeTag == "KTCommandNode")
 assert(nodeLines[1].points[2][3] > nodeLines[1].points[1][3])
 assert(nodeLines[1].points[3][1] < 0 and nodeLines[1].points[5][1] > 0)
 assert(startButton.label == "New team")
@@ -488,7 +496,7 @@ assert(spawnedSlots[1].buttons[2].label == "Choose loadout" and spawnedSlots[1].
 assert(spawnedSlots[1].buttons[1].position[3] < 0 and spawnedSlots[1].buttons[3].position[3] > 0)
 assert(lastXml:find('childAlignment="MiddleLeft" color="#FFFFFF14">', 1, true))
 for line in spawnedSlots[1].buttons[1].label:gmatch("[^\n]+") do assert(#line <= 16) end
-assert(math.abs((spawnedSlots[2].position.x - spawnedSlots[1].position.x) - (70 / 25.4)) < 0.001)
+assert(math.abs((spawnedSlots[1].position.x - spawnedSlots[2].position.x) - (70 / 25.4)) < 0.001)
 assert(math.abs(spawnedSlots[1].position.x + spawnedSlots[2].position.x) < 0.001)
 assert(spawnedSlots[1].position.z + 30 / 25.4 < -self.getBoundsNormalized().size.z * 0.5)
 assertPanelAboveNode()
@@ -529,7 +537,8 @@ local modelOne = newObject("Custom_Model", Vector(0, 1, 0))
 local modelTwo = newObject("Figurine", Vector(0, 1, 0))
 modelOne.rotation = {x = 10, y = 27, z = 20}
 modelTwo.rotation = {x = 0, y = 47, z = 0}
-modelTwo.script_state = {kt_front = 180, base = {x = 32, z = 32}}
+modelTwo.script_state = {kt_front = 180, base = {x = 32, z = 32}, owner = "absent-steam"}
+modelOne.script_state = {owner = "white-steam"}
 modelTwo.buttons = {{label = "Old wounds UI"}}
 modelTwo.inputs = {{value = "Old input"}}
 modelTwo.xml = '<Panel id="old_layout" />'
@@ -575,6 +584,7 @@ assert(modelOne.installedScript:find("-- START KT_MOVE_TOOL_V1 --", 1, true))
 assert(modelOne.installedScript:find("move-dash-regression", 1, true))
 assert(not modelOne.installedScript:find("sprint-leap-regression", 1, true))
 assert(modelTwo.script_state.base.x == 32 and modelTwo.script_state.base.z == 32)
+assert(modelTwo.script_state.owner == nil and modelOne.script_state.owner == nil)
 assert(modelTwo.buttonsCleared and modelTwo.inputsCleared and modelTwo.xml == "")
 assert((modelOne.rotation.y + modelOne.script_state.kt_front) % 360 == nodeYaw)
 assert((modelTwo.rotation.y + modelTwo.script_state.kt_front) % 360 == nodeYaw)
@@ -585,6 +595,72 @@ assert(table.concat(refreshedModelTwo.refreshCalls, ",") == "loadState,refreshUI
 assert(modelOne.uiVisible and table.concat(modelOne.refreshCalls, ",") == "loadState,refreshUI,refreshVectors")
 assert(not objects[spawnedSlots[1].guid] and not objects[spawnedSlots[2].guid])
 assert(startButton.label == "New team" and startButton.width == 900)
+
+assert(modelOne.installedScript:find('node.call("commandNodeUpdateModel"', 1, true))
+assert(modelOne.installedScript:find("function updateStats", 1, true) < modelOne.installedScript:find("-- START KT_MOVE_TOOL_V1 --", 1, true))
+local hookStart = modelOne.installedScript:find("local extenderUpdateStats", 1, true)
+local hookCode = modelOne.installedScript:sub(hookStart, modelOne.installedScript:find("\n-- START KT_MOVE_TOOL_V1", 1, true))
+local hookCalls, hookMenu, hookOwner, nodeCalls = {}, {}, nil, {}
+local hookEnvironment = setmetatable({
+    updateStats = function(color) hookCalls[#hookCalls + 1] = "extender:" .. color end,
+    onLoad = function() hookMenu[#hookMenu + 1] = "Update stats" end,
+    getOwningPlayer = function() return hookOwner and {color = "White"} or nil end,
+    setOwningPlayer = function(owner) hookOwner = owner end,
+    saveState = function() hookCalls[#hookCalls + 1] = "save" end,
+    refreshVectors = function(norotate) assert(norotate == true) end,
+    Player = {White = {steam_id = "white-steam"}, Red = {steam_id = ""}},
+    getObjectsWithTag = function(tag)
+        assert(tag == "KTCommandNode")
+        return {{call = function(name, parameters) nodeCalls[#nodeCalls + 1] = {name, parameters} end}}
+    end,
+    self = {
+        getGUID = function() return "model-guid" end,
+        addContextMenuItem = function(label) hookMenu[#hookMenu + 1] = label end,
+    },
+}, {__index = _G})
+assert(load(hookCode, "hook", "t", hookEnvironment))()
+hookEnvironment.onLoad()
+assert(table.concat(hookMenu, ",") == "Update stats,Reload from description")
+hookEnvironment.reloadFromDescription("Red")
+assert(hookOwner == nil and hookCalls[1] == "extender:Red")
+hookEnvironment.reloadFromDescription("White")
+assert(hookOwner == "white-steam" and table.concat(hookCalls, ",") == "extender:Red,save,extender:White")
+hookEnvironment.updateStats("White")
+assert(#hookCalls == 3 and nodeCalls[1][1] == "commandNodeUpdateModel")
+assert(nodeCalls[1][2].guid == "model-guid" and nodeCalls[1][2].color == "White")
+local sourceOne = modelOne.script_state.kt_source
+assert(sourceOne.team == "test" and sourceOne.operative == "ASSAULT INTERCESSOR GRENADIER")
+assert(sourceOne.loadout.choices[1] == 2 and sourceOne.loadout.set == 1)
+assert(refreshedModelTwo.script_state.kt_source.loadout.choices[1] == 1)
+cardData.wounds = 15
+local requestsBeforeUpdate = #requests
+local replacementsBeforeUpdate = modelOne.scriptReplacements
+commandNodeUpdateModel({guid = modelOne.guid, color = "White"})
+assert(messages[#messages]:find("Updating ASSAULT INTERCESSOR GRENADIER", 1, true))
+flushCallbacks()
+assert(#requests == requestsBeforeUpdate + 3)
+assert(modelOne.updated.stats.Wounds == 15)
+assert(#modelOne.updated.weapons == 2 and modelOne.updated.weapons[2].plain_name == "flamer")
+assert(modelOne.updated.description == "Chosen loadout")
+assert(modelOne.scriptReplacements == replacementsBeforeUpdate)
+assert(messages[#messages] == "ASSAULT INTERCESSOR GRENADIER updated with the latest data.")
+cardData.wounds = 14
+local unlinkedModel = newObject("Figurine", Vector(0, 1, 0))
+unlinkedModel.script_state = {wounds = 3}
+commandNodeUpdateModel({guid = unlinkedModel.guid, color = "White"})
+assert(messages[#messages]:find("Set this model up once more", 1, true) and not unlinkedModel.updated)
+modelOne.script_state.kt_source.operative = "RETIRED OPERATIVE"
+commandNodeUpdateModel({guid = modelOne.guid, color = "White"})
+flushCallbacks()
+assert(messages[#messages] == "RETIRED OPERATIVE is no longer in the Test data.")
+modelOne.script_state.kt_source.operative = "ASSAULT INTERCESSOR GRENADIER"
+deferRequest = true
+commandNodeUpdateModel({guid = modelOne.guid, color = "White"})
+commandNodeUpdateModel({guid = modelOne.guid, color = "White"})
+assert(messages[#messages]:find("busy", 1, true))
+deferRequest = false
+flushCallbacks()
+assert(messages[#messages]:find("updated with the latest data", 1, true))
 
 local frontOnlyModel = newObject("Figurine", Vector(0, 1, 0))
 frontOnlyModel.rotation = {x = 0, y = 350, z = 0}
@@ -634,6 +710,7 @@ assert(uiEnvironment.getUIPosition() == "0 30 -200")
 local loaderEnvironment = setmetatable({
     KTUI_MODELSCRIPT = "latest composed extender",
     KTUI_MODELSCRIPT_VERSION = "latest",
+    Player = {White = {steam_id = "white-steam"}, Red = {steam_id = ""}},
 }, {__index = _G})
 assert(loadfile("config/defaults/tts-script/datacard-load-stats.lua", "t", loaderEnvironment))()
 for _, kind in ipairs({"plain", "managed", "extender"}) do
@@ -648,13 +725,13 @@ for _, kind in ipairs({"plain", "managed", "extender"}) do
     model.setLuaScript = function(script) model.script = script end
     model.reload = function() model.reloads = model.reloads + 1 end
     if kind ~= "plain" then
-        loaderEnvironment.diffAndApply(model, {stats = {}}, "White")
-        assert(not model.script and model.reloads == 0)
+        loaderEnvironment.diffAndApply(model, {stats = {}}, "Red")
+        assert(not model.script and model.reloads == 0 and model.script_state.owner == "existing-owner")
     end
     loaderEnvironment.diffAndApply(model, {stats = {}}, "White", true)
     assert(model.script == "latest composed extender" and model.reloads == 1)
     assert(model.tags.KTUIMini and model.tags.KTUIMiniDatacard)
-    assert(model.script_state.owner == "existing-owner" and model.script_state.wounds == 4)
+    assert(model.script_state.owner == "white-steam" and model.script_state.wounds == 4)
     assert(model.script_state.kt_front == 25 and model.script_state.uiAngle == 335)
     loaderEnvironment.diffAndApply(model, {stats = {}}, "White", true, "composed extender with movement")
     assert(model.reloads == 2 and model.script == "composed extender with movement")
@@ -674,8 +751,8 @@ for _, marker in ipairs(spawnedSlots) do
     assert(marker.position.z + 30 / 25.4 < -self.getBoundsNormalized().size.z * 0.5)
 end
 assert(math.abs((spawnedSlots[1].position.z - spawnedSlots[7].position.z) - 70 / 25.4) < 0.001)
-assert(math.abs((spawnedSlots[2].position.x - spawnedSlots[1].position.x) - 70 / 25.4) < 0.001)
-assert(math.abs((spawnedSlots[7].position.x - spawnedSlots[1].position.x) - 35 / 25.4) < 0.001)
+assert(math.abs((spawnedSlots[1].position.x - spawnedSlots[2].position.x) - 70 / 25.4) < 0.001)
+assert(math.abs((spawnedSlots[1].position.x - spawnedSlots[7].position.x) - 35 / 25.4) < 0.001)
 assert(math.abs(spawnedSlots[7].position.x + spawnedSlots[11].position.x) < 0.001)
 assert(lastXml:find('id="slot_1"', 1, true))
 assert(not lastXml:find('id="slot_11"', 1, true))
@@ -729,7 +806,7 @@ for index, marker in ipairs(spawnedSlots) do
         assert(marker.position.z + 37.5 / 25.4 < -self.getBoundsNormalized().size.z * 0.5)
     end
 end
-assert(math.abs((spawnedSlots[2].position.x - spawnedSlots[1].position.x) * 25.4 - 70) < 0.001)
+assert(math.abs((spawnedSlots[1].position.x - spawnedSlots[2].position.x) * 25.4 - 70) < 0.001)
 assert(math.abs((spawnedSlots[1].position.z - spawnedSlots[7].position.z) * 25.4 - 85) < 0.001)
 hits = {}
 commandNodeConfirm({color = "White"})
@@ -994,6 +1071,9 @@ for _, enabled in ipairs({true, false}) do
     flushCallbacks()
     assert(model.applied and model.uiVisible)
     assert(#model.applied.weapons == 3)
+    commandNodeUpdateModel({guid = model.guid, color = "White"})
+    flushCallbacks()
+    assert(#model.updated.weapons == 3 and model.script_state.kt_source.loadout == nil)
     if enabled then
         assert(model.counterInstalls == 1 and model.script_state.operative_counter.name == "Gore Tank")
         assert(model.frontReloads == 2)
@@ -1039,6 +1119,10 @@ for _, enabled in ipairs({true, false}) do
     if enabled then
         assert(model.applied.abilities[1].name == "Dueller (Primary)")
         assert(model.applied.abilities[1].text == "Tactic text 2")
+        commandNodeUpdateModel({guid = model.guid, color = "White"})
+        flushCallbacks()
+        assert(model.updated.abilities[1].name == "Dueller (Primary)")
+        assert(model.updated.abilities[2].name == "Stealthy (Secondary)")
         assert(model.applied.abilities[2].name == "Stealthy (Secondary)")
         assert(model.applied.abilities[2].text == "Tactic text 4")
     else

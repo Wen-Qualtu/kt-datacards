@@ -180,6 +180,8 @@ local applying = false
 local building = false
 local selectedSlot = 1
 local activeHelper = nil
+local updateHelper = nil
+local updating = false
 local loaderScript = nil
 local panelPage = 1
 local panelRender = nil
@@ -192,6 +194,39 @@ local MODEL_TYPES = {
     Custom_Assetbundle = true,
     Figurine = true,
 }
+
+-- "Update stats" pulls from the repo via the node; the extender's version stays as "Reload from description".
+local MODEL_UPDATE_HOOK = [[
+local extenderUpdateStats = updateStats
+
+local function claimOwner(color)
+    if getOwningPlayer() or not Player[color] or (Player[color].steam_id or "") == "" then return end
+    setOwningPlayer(Player[color].steam_id)
+    saveState()
+    refreshVectors(true)
+end
+
+function reloadFromDescription(color)
+    claimOwner(color)
+    extenderUpdateStats(color)
+end
+
+function updateStats(color)
+    claimOwner(color)
+    local node = getObjectsWithTag("KTCommandNode")[1]
+    if not node then
+        broadcastToColor("Put the Kill Team Command Node on the table to update stats.", color, {1, 0.8, 0.3})
+        return
+    end
+    node.call("commandNodeUpdateModel", {guid = self.getGUID(), color = color})
+end
+
+local nodeHookOnLoad = onLoad
+function onLoad(...)
+    nodeHookOnLoad(...)
+    self.addContextMenuItem("Reload from description", reloadFromDescription)
+end
+]]
 
 local APPLY_ADAPTER = [[
 KT_NODE_HELPER_READY = true
@@ -207,7 +242,7 @@ function ktCommandNodeApply(params)
         error("Movement tool missing from the command-node loader.")
     end
     local tag = mounted and "KT_SPRINT_TOOL_V1" or "KT_MOVE_TOOL_V1"
-    local modelScript = KTUI_MODELSCRIPT .. "\n\n-- START " .. tag .. " --\n"
+    local modelScript = KTUI_MODELSCRIPT .. "\n\n" .. (params.modelHook or "") .. "\n-- START " .. tag .. " --\n"
         .. movement .. "\n-- END " .. tag .. " --\n"
     params.data.description = rebuildDescription(params.data)
     local state = {}
@@ -216,18 +251,29 @@ function ktCommandNodeApply(params)
         local ok, decoded = pcall(function() return JSON.decode(raw) end)
         if ok and type(decoded) == "table" then state = decoded end
     end
+    -- The confirming player always becomes the owner (diffAndApply assigns it when empty).
+    state.owner = nil
     local rotation = params.model.getRotation()
     local front = (params.heading - rotation.y) % 360
     state.kt_front = front
     state.uiAngle = (-front) % 360
     state.uiPositionIndex = 1
     state.kt_node_ui = true
+    state.kt_source = params.source
     params.model.script_state = JSON.encode(state)
     params.model.clearButtons()
     params.model.clearInputs()
     params.model.UI.setXml("")
     local changes = diffAndApply(params.model, params.data, params.playerColor, true, modelScript)
     return {applied = true, changes = #changes}
+end
+
+function ktCommandNodeUpdate(params)
+    if not params or not params.model or not params.data then return nil end
+    params.data.description = rebuildDescription(params.data)
+    -- Data-only refresh: never re-stamp the script, which holds the movement and counter blocks.
+    KTUI_MODELSCRIPT_VERSION = nil
+    return {changes = #diffAndApply(params.model, params.data, params.playerColor, false)}
 end
 ]]
 
@@ -520,6 +566,7 @@ end
 
 function onLoad()
     self.setName("Kill Team Command Node")
+    self.addTag("KTCommandNode")
     local scale = self.getScale()
     local arrowHeight = (self.getBoundsNormalized().size.y * 0.5 + 0.05) / scale.y
     self.setVectorLines({{
@@ -580,85 +627,48 @@ function commandNodeStart(_, playerColor)
     end)
 end
 
-function commandNodeChooseTeam(player, _, id)
-    if not isSessionPlayer(player) then return end
-    local index = tonumber(id:match("^team_(%d+)$"))
-    local team = index and teams[index]
-    if not team then return end
-    sessionVersion = sessionVersion + 1
-    local version = sessionVersion
-    panel("Loading " .. team.name .. "...", {}, button("cancel", "commandNodeCancel", "Cancel"))
-    local teamBase = REPO_BASE_URL .. "/output/" .. team.slug
-    local metadataUrl = teamBase .. "/" .. team.slug .. "-object-urls.json?v=" .. tostring(os.time())
-    requestJson(metadataUrl, function(metadata, errorMessage)
-        if version ~= sessionVersion then return end
-        if not metadata then
-            notify(sessionColor, errorMessage, {1, 0.3, 0.3})
-            showTeams()
-            return
-        end
-        if metadata.team ~= team.slug or type(metadata.team_data) ~= "table"
+local function downloadTeam(slug, callback)
+    local teamName = displayName(slug)
+    local teamBase = REPO_BASE_URL .. "/output/" .. slug
+    requestJson(teamBase .. "/" .. slug .. "-object-urls.json?v=" .. tostring(os.time()), function(metadata, errorMessage)
+        if not metadata then callback(nil, errorMessage); return end
+        if metadata.team ~= slug or type(metadata.team_data) ~= "table"
             or type(metadata.team_data.url) ~= "string" or metadata.team_data.url == "" then
-            notify(sessionColor, "Team data is not published for " .. team.name .. ".", {1, 0.3, 0.3})
-            showTeams()
+            callback(nil, "Team data is not published for " .. teamName .. ".")
             return
         end
         local hash = metadata.team_data.hash
         local dataVersion = type(hash) == "string" and hash:match("^[a-fA-F0-9]+$") and hash or tostring(os.time())
-        local dataUrl = teamBase .. "/data/" .. team.slug .. "-team-data.json?v=" .. dataVersion
-        requestJson(dataUrl, function(payload, dataError)
-            if version ~= sessionVersion then return end
-            if not payload then
-                notify(sessionColor, dataError, {1, 0.3, 0.3})
-                showTeams()
-                return
-            end
-            if payload.team ~= team.slug or type(payload.datacards) ~= "table" or #payload.datacards == 0 then
-                notify(sessionColor, "Invalid operative data for " .. team.name .. ".", {1, 0.3, 0.3})
-                showTeams()
+        requestJson(teamBase .. "/data/" .. slug .. "-team-data.json?v=" .. dataVersion, function(payload, dataError)
+            if not payload then callback(nil, dataError); return end
+            if payload.team ~= slug or type(payload.datacards) ~= "table" or #payload.datacards == 0 then
+                callback(nil, "Invalid operative data for " .. teamName .. ".")
                 return
             end
             local cards = {}
             for _, operative in ipairs(payload.datacards) do
                 local data, conversionError = commandNodeModelData(operative, payload.node_weapon_rules)
-                if not data then
-                    notify(sessionColor, conversionError, {1, 0.3, 0.3})
-                    showTeams()
-                    return
-                end
+                if not data then callback(nil, conversionError); return end
                 cards[#cards + 1] = {name = data.name, data = data}
             end
             table.sort(cards, function(left, right) return left.name:lower() < right.name:lower() end)
-            operatives = cards
-            currentTeam = team
-            currentTeam.useCardbox = false
-            currentTeam.useSpecialRules = true
-            currentTeam.cardboxPath = type(metadata.box) == "table" and type(metadata.box.url) == "string"
-                and metadata.box.url:match("/output/([^?]+)") or nil
-            counts = {}
-            panelPage = 1
-            local function ready(script, loaderError)
-                if version ~= sessionVersion then return end
-                local metadata
+            requestText(NODE_LOADER_URL .. "?v=" .. tostring(os.time()), function(script, loaderError)
+                local setup
                 if type(script) == "string" then
                     local marker = "NODE_COUNTER_SETUP = [====["
                     local opening = script:find(marker, 1, true)
                     if opening then
                         local start = opening + #marker
                         local closing = script:find("]====]", start, true)
-                        if closing then metadata = script:sub(start, closing - 1) end
+                        if closing then setup = script:sub(start, closing - 1) end
                     end
                 end
-                local ok, rules = pcall(function() return metadata and JSON.decode(metadata) end)
+                local ok, rules = pcall(function() return setup and JSON.decode(setup) end)
                 if not compatibleLoader(script) or not ok or type(rules) ~= "table" then
-                    notify(sessionColor, loaderError or "Published loader needs the special-rule setup update.", {1, 0.3, 0.3})
-                    showTeams()
+                    callback(nil, loaderError or "Published loader needs the special-rule setup update.")
                     return
                 end
-                loaderScript = script
-                currentTeam.counterRule = rules[currentTeam.slug]
-                currentTeam.ruleChoices = {}
-                local rule = currentTeam.counterRule
+                local rule = rules[slug]
                 if rule and rule.options then
                     local texts = {}
                     for _, factionRule in ipairs(payload.faction_rules or {}) do
@@ -669,12 +679,43 @@ function commandNodeChooseTeam(player, _, id)
                     for _, option in ipairs(rule.options) do
                         option.text = option.text or texts[cleanText(option.name, true):lower()] or ""
                     end
-                    for choice = 1, ruleChoiceCount(rule) do currentTeam.ruleChoices[choice] = choice end
                 end
-                showRoster()
-            end
-            requestText(NODE_LOADER_URL .. "?v=" .. tostring(os.time()), ready)
+                callback({metadata = metadata, cards = cards, script = script, rule = rule})
+            end)
         end)
+    end)
+end
+
+function commandNodeChooseTeam(player, _, id)
+    if not isSessionPlayer(player) then return end
+    local index = tonumber(id:match("^team_(%d+)$"))
+    local team = index and teams[index]
+    if not team then return end
+    sessionVersion = sessionVersion + 1
+    local version = sessionVersion
+    panel("Loading " .. team.name .. "...", {}, button("cancel", "commandNodeCancel", "Cancel"))
+    downloadTeam(team.slug, function(result, errorMessage)
+        if version ~= sessionVersion then return end
+        if not result then
+            notify(sessionColor, errorMessage, {1, 0.3, 0.3})
+            showTeams()
+            return
+        end
+        operatives = result.cards
+        loaderScript = result.script
+        currentTeam = team
+        currentTeam.useCardbox = false
+        currentTeam.useSpecialRules = true
+        currentTeam.cardboxPath = type(result.metadata.box) == "table" and type(result.metadata.box.url) == "string"
+            and result.metadata.box.url:match("/output/([^?]+)") or nil
+        currentTeam.counterRule = result.rule
+        currentTeam.ruleChoices = {}
+        if result.rule and result.rule.options then
+            for choice = 1, ruleChoiceCount(result.rule) do currentTeam.ruleChoices[choice] = choice end
+        end
+        counts = {}
+        panelPage = 1
+        showRoster()
     end)
 end
 
@@ -910,7 +951,7 @@ function commandNodeCreateSlots(player)
             local nodeScale = self.getScale()
             local halfDepth = self.getBoundsNormalized().size.z * 0.5
             local position = self.positionToWorld({
-                (column - (rowCount - 1) / 2) * columnSpacing / nodeScale.x,
+                ((rowCount - 1) / 2 - column) * columnSpacing / nodeScale.x,
                 0.4 / nodeScale.y,
                 -(halfDepth + (row + 0.5) * rowSpacing) / nodeScale.z,
             })
@@ -1067,8 +1108,8 @@ end
 
 function onDestroy()
     clearSlots()
-    if activeHelper then
-        local helper = getObjectFromGUID(activeHelper)
+    for _, guid in pairs({activeHelper, updateHelper}) do
+        local helper = getObjectFromGUID(guid)
         if helper then helper.destruct() end
     end
 end
@@ -1114,16 +1155,16 @@ local function finishApply(errorMessage)
     notify(color, "Operative stats and loadouts applied.", {0.3, 1, 0.5})
 end
 
-local function prepareSlotData(index, slot)
-    local ok, data = pcall(function() return JSON.decode(JSON.encode(operatives[slot.operative].data)) end)
-    if not ok or not data then return nil, "Slot " .. index .. ": could not prepare operative data." end
-    if slot.loadoutChosen then
-        local weapons, selectionError = selectedLoadoutWeapons(data, slot.choices, slot.selectedSet)
-        if not weapons then return nil, "Slot " .. index .. ": " .. selectionError end
+local function buildModelData(base, team, loadout)
+    local ok, data = pcall(function() return JSON.decode(JSON.encode(base)) end)
+    if not ok or not data then return nil, "could not prepare operative data." end
+    if loadout then
+        local weapons, selectionError = selectedLoadoutWeapons(data, loadout.choices, loadout.set)
+        if not weapons then return nil, selectionError end
         data.weapons = weapons
     end
-    local rule = currentTeam.counterRule
-    if currentTeam.useSpecialRules and rule and rule.options then
+    local rule = team.counterRule
+    if team.useSpecialRules and rule and rule.options then
         local applies = not rule.applies_to
         for _, keyword in ipairs(rule.applies_to or {}) do
             for _, operativeKeyword in ipairs(data.keywords or {}) do
@@ -1138,7 +1179,7 @@ local function prepareSlotData(index, slot)
                 if override then overrideCount = math.max(overrideCount, override) end
             end
             if overrideCount > 0 then selectCount = overrideCount end
-            for choice, selected in ipairs(currentTeam.ruleChoices) do
+            for choice, selected in ipairs(team.ruleChoices or {}) do
                 if choice > selectCount then break end
                 local option = rule.options[selected]
                 if not option then return nil, "Invalid special-rule choice." end
@@ -1150,12 +1191,33 @@ local function prepareSlotData(index, slot)
     return data
 end
 
+local function spawnHelper(script, notes, onSpawn, onReady, onTimeout)
+    return spawnObject({type = "BlockSquare", position = self.getPosition() + Vector(0, 20, 0),
+        scale = {0.1, 0.1, 0.1}, sound = false, callback_function = function(ready)
+        ready.setLock(true)
+        ready.setInvisibleTo({"White", "Brown", "Red", "Orange", "Yellow", "Green", "Teal", "Blue", "Purple", "Pink", "Grey", "Black"})
+        ready.setGMNotes(notes)
+        ready.setLuaScript(script .. "\n" .. APPLY_ADAPTER)
+        local guid = ready.getGUID()
+        onSpawn(guid)
+        ready.reload()
+        Wait.condition(function() onReady(getObjectFromGUID(guid)) end, function()
+            local loaded = getObjectFromGUID(guid)
+            return loaded ~= nil and loaded.getVar("KT_NODE_HELPER_READY") == true
+        end, 15, onTimeout)
+    end})
+end
+
+local function slotLoadout(slot)
+    return slot.loadoutChosen and {set = slot.selectedSet, choices = slot.choices} or nil
+end
+
 local function applyAll(models)
     local pending = {}
     for index, slot in ipairs(slots) do
         if not slot.done then
-            local data, errorMessage = prepareSlotData(index, slot)
-            if not data then finishApply(errorMessage); return end
+            local data, errorMessage = buildModelData(operatives[slot.operative].data, currentTeam, slotLoadout(slot))
+            if not data then finishApply("Slot " .. index .. ": " .. errorMessage); return end
             pending[#pending + 1] = {index = index, slot = slot, guid = models[index].getGUID(), data = data}
         end
     end
@@ -1185,17 +1247,22 @@ local function applyAll(models)
         end
         finishApply(firstError)
     end
-    local function run()
-        local helper = getObjectFromGUID(activeHelper)
+    local function run(helper)
         local heading = self.getRotation().y
         for _, item in ipairs(pending) do
             local target = getObjectFromGUID(item.guid)
             if not target then
                 fail(item, "model is no longer available.")
             else
+                local source = {
+                    team = currentTeam.slug, operative = operatives[item.slot.operative].name,
+                    loadout = slotLoadout(item.slot), rulesEnabled = currentTeam.useSpecialRules,
+                    rules = currentTeam.ruleChoices,
+                }
                 local called, result = pcall(function()
                     return helper.call("ktCommandNodeApply", {
                         model = target, data = item.data, playerColor = sessionColor, heading = heading,
+                        source = source, modelHook = MODEL_UPDATE_HOOK,
                     })
                 end)
                 if not called or type(result) ~= "table" or not result.applied then
@@ -1224,25 +1291,68 @@ local function applyAll(models)
         end
     end
 
-    local position = self.getPosition() + Vector(0, 20, 0)
-    local helper = spawnObject({type = "BlockSquare", position = position, scale = {0.1, 0.1, 0.1},
-        sound = false, callback_function = function(ready)
-        ready.setLock(true)
-        ready.setInvisibleTo({"White", "Brown", "Red", "Orange", "Yellow", "Green", "Teal", "Blue", "Purple", "Pink", "Grey", "Black"})
-        ready.setGMNotes(JSON.encode(pending[1].data))
-        ready.setLuaScript(loaderScript .. "\n" .. APPLY_ADAPTER)
-        activeHelper = ready.getGUID()
-        ready.reload()
-        Wait.condition(run, function()
-            local loaded = getObjectFromGUID(activeHelper)
-            return loaded ~= nil and loaded.getVar("KT_NODE_HELPER_READY") == true
-        end, 15, function() finishApply("The stats helper did not load; please try again.") end)
-    end})
+    local helper = spawnHelper(loaderScript, JSON.encode(pending[1].data),
+        function(guid) activeHelper = guid end, run,
+        function() finishApply("The stats helper did not load; please try again.") end)
     if not helper then finishApply("Could not create the stats helper.") end
+end
+
+function commandNodeUpdateModel(params)
+    local color = params and params.color
+    local model = params and getObjectFromGUID(params.guid)
+    if not model then return end
+    if applying or updating then
+        notify(color, "The Command Node is busy; try again in a moment.")
+        return
+    end
+    local ok, state = pcall(function() return JSON.decode(model.script_state) end)
+    local source = ok and type(state) == "table" and state.kt_source or nil
+    if type(source) ~= "table" or type(source.team) ~= "string" or type(source.operative) ~= "string" then
+        notify(color, "Set this model up once more with the Command Node to enable updates.")
+        return
+    end
+    updating = true
+    local function done(message, tint)
+        updating = false
+        local helper = updateHelper and getObjectFromGUID(updateHelper)
+        if helper then helper.destruct() end
+        updateHelper = nil
+        notify(color, message, tint or {1, 0.3, 0.3})
+    end
+    notify(color, "Updating " .. source.operative .. "...", {0.5, 0.8, 1})
+    downloadTeam(source.team, function(result, errorMessage)
+        if not result then done(errorMessage); return end
+        local base
+        for _, card in ipairs(result.cards) do
+            if card.name == source.operative then base = card.data end
+        end
+        if not base then
+            done(source.operative .. " is no longer in the " .. displayName(source.team) .. " data.")
+            return
+        end
+        local team = {counterRule = result.rule, useSpecialRules = source.rulesEnabled, ruleChoices = source.rules}
+        local data, buildError = buildModelData(base, team, source.loadout)
+        if not data then done(source.operative .. ": " .. buildError); return end
+        local helper = spawnHelper(result.script, JSON.encode(data),
+            function(guid) updateHelper = guid end,
+            function(loaded)
+                local target = getObjectFromGUID(params.guid)
+                if not target then done("The model is no longer available."); return end
+                local called, outcome = pcall(function()
+                    return loaded.call("ktCommandNodeUpdate", {model = target, data = data, playerColor = color})
+                end)
+                if not called or type(outcome) ~= "table" then done("Update failed; check the TTS log."); return end
+                done(outcome.changes == 0 and source.operative .. " is already up to date."
+                    or source.operative .. " updated with the latest data.", {0.3, 1, 0.5})
+            end,
+            function() done("The stats helper did not load; please try again.") end)
+        if not helper then done("Could not create the stats helper.") end
+    end)
 end
 
 function commandNodeConfirm(player)
     if not isSessionPlayer(player) or applying then return end
+    if updating then notify(sessionColor, "A model update is running; try again in a moment."); return end
     local models, used = {}, {}
     for index, slot in ipairs(slots) do
         if slot.done then
