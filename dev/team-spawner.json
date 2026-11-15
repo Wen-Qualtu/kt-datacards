@@ -1,0 +1,81 @@
+{
+  "SaveName": "Kill Team Spawner",
+  "Date": "",
+  "VersionNumber": "",
+  "GameMode": "",
+  "GameType": "",
+  "GameComplexity": "",
+  "Tags": [],
+  "Gravity": 0.5,
+  "PlayArea": 0.5,
+  "Table": "",
+  "Sky": "",
+  "Note": "",
+  "Rules": "",
+  "XmlUI": "",
+  "CustomUIAssets": [],
+  "LuaScript": "",
+  "LuaScriptState": "",
+  "ObjectStates": [
+    {
+      "Name": "Custom_Tile",
+      "Transform": {
+        "posX": 0.0,
+        "posY": 1.0,
+        "posZ": 0.0,
+        "rotX": 0.0,
+        "rotY": 0.0,
+        "rotZ": 0.0,
+        "scaleX": 1.0,
+        "scaleY": 1.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "Kill Team Spawner",
+      "Description": "Click Spawn Team to pick or search a Kill Team card box.",
+      "GMNotes": "",
+      "ColorDiffuse": {
+        "r": 0.2,
+        "g": 0.2,
+        "b": 0.2
+      },
+      "Locked": false,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "CustomImage": {
+        "ImageURL": "https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/_generic-tts-objects/team-spawner-icon.png",
+        "ImageSecondaryURL": "",
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
+        "CustomTile": {
+          "Type": 1,
+          "Thickness": 0.2,
+          "Stackable": false,
+          "Stretch": true
+        }
+      },
+      "LuaScript": "-- Kill Team Spawner (clean) — spawns bare {Team}.json directly.\n--\n-- Reads output/team-urls.json (small index of clean per-team URLs), shows a\n-- searchable team menu, downloads the chosen team's bare object JSON, hands it straight to\n-- spawnObjectJSON. No save-file slicing, no manual URL cache-busting (the\n-- generated files already carry ?v= on every asset URL).\n\nlocal TEAM_URLS_URL = \"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/main/output/team-urls.json\"\nlocal allTeams = {}  -- { {slug, name, url}, ... } sorted by name\n\nlocal function slugToName(slug)\n    local out = {}\n    for word in string.gmatch(slug, \"[^-]+\") do\n        out[#out + 1] = word:sub(1,1):upper() .. word:sub(2)\n    end\n    return table.concat(out, \" \")\nend\n\nfunction onLoad()\n    self.setName(\"Kill Team Spawner\")\n    self.setDescription(\"Loading teams from GitHub...\")\n    local scale = self.getScale()\n    self.createButton({\n        label = \"Spawn Team\",\n        click_function = \"onSpawnClick\",\n        function_owner = self,\n        position = {0, (self.getBoundsNormalized().size.y * 0.5 + 0.05) / scale.y, -1.2},\n        width = 900, height = 320, font_size = 180,\n        color = {0.15, 0.45, 0.36}, font_color = {1, 1, 1}\n    })\n    loadTeamList()\nend\n\nfunction loadTeamList()\n    local url = TEAM_URLS_URL .. \"?v=\" .. tostring(os.time())\n    WebRequest.get(url, function(req)\n        if req.is_error or (tonumber(req.response_code) or 0) >= 400 then\n            broadcastToAll(\"Failed to load team list: \" .. (req.error or (\"HTTP \" .. tostring(req.response_code))), {1, 0.3, 0.3})\n            return\n        end\n        local ok, data = pcall(function() return JSON.decode(req.text) end)\n        if not ok or type(data) ~= \"table\" then\n            broadcastToAll(\"Failed to parse team list\", {1, 0.3, 0.3})\n            return\n        end\n        allTeams = {}\n        for slug, entry in pairs(data) do\n            if type(entry) == \"table\" and type(entry.box) == \"table\" and entry.box.url then\n                allTeams[#allTeams + 1] = {\n                    slug = slug,\n                    name = slugToName(slug),\n                    url = entry.box.url\n                }\n            end\n        end\n        table.sort(allTeams, function(a, b) return a.name:lower() < b.name:lower() end)\n        updateDescription()\n        print(\"[Spawner] Loaded \" .. #allTeams .. \" teams\")\n    end)\nend\n\nfunction updateDescription()\n    self.setDescription(\"KILL TEAM SPAWNER\\n\\n\" .. #allTeams .. \" teams available.\\nClick Spawn Team to pick or search a team.\")\nend\n\nlocal COLUMNS = 3\nlocal CELL_WIDTH, CELL_HEIGHT, CELL_SPACING = 290, 36, 6\nlocal PANEL_WIDTH = COLUMNS * CELL_WIDTH + (COLUMNS - 1) * CELL_SPACING + 28\nlocal menuOpen = false\n\nlocal function xmlEscape(value)\n    return tostring(value or \"\"):gsub(\"&\", \"&amp;\"):gsub(\"<\", \"&lt;\")\n        :gsub(\">\", \"&gt;\"):gsub('\"', \"&quot;\"):gsub(\"'\", \"&apos;\")\nend\n\nlocal function matches(team, needle)\n    return needle == \"\" or team.name:lower():find(needle, 1, true) ~= nil or team.slug:find(needle, 1, true) ~= nil\nend\n\nlocal function closeMenu()\n    menuOpen = false\n    self.UI.setXml(\"\")\nend\n\nlocal function openMenu()\n    menuOpen = true\n    local buttons = {}\n    for index, team in ipairs(allTeams) do\n        buttons[#buttons + 1] = string.format('<Button id=\"team_%d\" onClick=\"spawnerChooseTeam\" fontSize=\"17\" '\n            .. 'colors=\"#34454A|#56686D|#293336|#333333\" textColor=\"#FFFFFF\">%s</Button>', index, xmlEscape(team.name))\n    end\n    local rows = math.ceil(#allTeams / COLUMNS)\n    local gridHeight = rows * CELL_HEIGHT + math.max(0, rows - 1) * CELL_SPACING\n    local panelHeight = 28 + 48 + 8 + 40 + 8 + gridHeight\n    local scale = self.getScale()\n    local halfDepth = self.getBoundsNormalized().size.z * 0.5\n    local scaleX, scaleY = 0.8 / scale.x, 0.8 / scale.z\n    local position = halfDepth / scale.z * 100 + panelHeight * scaleY * 0.5\n    self.UI.setXml(string.format([[\n<Panel id=\"spawnerPanel\" width=\"%d\" height=\"%d\" position=\"0 %.3f -80\" rotation=\"0 0 180\" scale=\"%.4f %.4f 1\"\n       color=\"#171D1FF2\" padding=\"14 14 14 14\">\n  <VerticalLayout spacing=\"8\" childForceExpandWidth=\"true\" childForceExpandHeight=\"false\">\n    <Text fontSize=\"25\" fontStyle=\"Bold\" color=\"#FFFFFF\" alignment=\"UpperCenter\" preferredHeight=\"48\">Spawn a Kill Team</Text>\n    <HorizontalLayout spacing=\"8\" preferredHeight=\"40\" flexibleHeight=\"0\" childForceExpandWidth=\"false\" childForceExpandHeight=\"false\">\n      <InputField id=\"spawner_search\" onValueChanged=\"spawnerSearch\" onSubmit=\"spawnerSubmit\" placeholder=\"Search teams...\"\n                  flexibleWidth=\"1\" preferredHeight=\"40\" fontSize=\"18\"></InputField>\n      <Button id=\"spawner_close\" onClick=\"spawnerClose\" preferredWidth=\"120\" flexibleWidth=\"0\" preferredHeight=\"40\" fontSize=\"17\"\n              colors=\"#34454A|#56686D|#293336|#333333\" textColor=\"#FFFFFF\">Close</Button>\n    </HorizontalLayout>\n    <GridLayout cellSize=\"%d %d\" spacing=\"%d %d\" constraint=\"FixedColumnCount\" constraintCount=\"%d\"\n                preferredHeight=\"%d\" flexibleHeight=\"0\">%s</GridLayout>\n  </VerticalLayout>\n</Panel>]], PANEL_WIDTH, panelHeight, position, scaleX, scaleY,\n        CELL_WIDTH, CELL_HEIGHT, CELL_SPACING, CELL_SPACING, COLUMNS, gridHeight, table.concat(buttons)))\nend\n\nfunction onSpawnClick(_, playerColor)\n    if menuOpen then closeMenu(); return end\n    if #allTeams == 0 then\n        Player[playerColor].broadcast(\"Team list not loaded yet; trying again...\", {1, 0.5, 0})\n        loadTeamList()\n        return\n    end\n    openMenu()\nend\n\nfunction spawnerClose()\n    closeMenu()\nend\n\nfunction spawnerSearch(_, value)\n    local needle = (value or \"\"):lower()\n    for index, team in ipairs(allTeams) do\n        self.UI.setAttribute(\"team_\" .. index, \"active\", tostring(matches(team, needle)))\n    end\nend\n\nfunction spawnerSubmit(player, value)\n    local needle = (value or \"\"):lower()\n    local found = {}\n    for _, team in ipairs(allTeams) do\n        if matches(team, needle) then found[#found + 1] = team end\n    end\n    if #found == 1 then\n        closeMenu()\n        spawnTeam(found[1], player.color)\n    else\n        player.broadcast(#found == 0 and \"No team matches '\" .. (value or \"\") .. \"'.\"\n            or #found .. \" teams match; type more or click one.\", {1, 0.8, 0.3})\n    end\nend\n\nfunction spawnerChooseTeam(player, _, id)\n    local team = allTeams[tonumber(id:match(\"^team_(%d+)$\"))]\n    if not team then return end\n    closeMenu()\n    spawnTeam(team, player.color)\nend\n\nlocal function findClearSpot(basePos)\n    local hit = Physics.cast({origin = basePos, direction = {0,1,0}, type = 3, size = {3,3,3}, max_distance = 0})\n    if #hit == 0 then return basePos, true end\n    for i = 1, 5 do\n        local p = basePos + Vector(i * 5, 0, 0)\n        hit = Physics.cast({origin = p, direction = {0,1,0}, type = 3, size = {3,3,3}, max_distance = 0})\n        if #hit == 0 then return p, true end\n    end\n    return basePos, false\nend\n\nfunction spawnTeam(team, playerColor)\n    Player[playerColor].broadcast(\"Loading \" .. team.name .. \"...\", {0.2, 0.8, 1})\n    WebRequest.get(team.url, function(req)\n        local code = tonumber(req.response_code) or 0\n        if req.is_error or code >= 400 then\n            Player[playerColor].broadcast(\"Failed to load \" .. team.name .. \": \" .. (req.error ~= \"\" and req.error or (\"HTTP \" .. code)), {1, 0.3, 0.3})\n            return\n        end\n        local body = req.text or \"\"\n        local i = 1\n        while i <= #body and (body:byte(i) == 32 or body:byte(i) == 9 or body:byte(i) == 10 or body:byte(i) == 13) do\n            i = i + 1\n        end\n        if i > #body or body:byte(i) ~= 123 then  -- '{'\n            Player[playerColor].broadcast(\"Unexpected response format for \" .. team.name, {1, 0.3, 0.3})\n            return\n        end\n        local objJson = (i == 1) and body or body:sub(i)\n\n        local basePos = self.getPosition() + Vector(0, 2, -5)\n        local spawnPos, clear = findClearSpot(basePos)\n        if not clear then\n            Player[playerColor].broadcast(\"Spawn area blocked - move existing boxes first\", {1, 0.3, 0.3})\n            return\n        end\n\n        local spawned = spawnObjectJSON({\n            json = objJson,\n            position = spawnPos,\n            rotation = {0, 270, 0}\n        })\n        if spawned then\n            Player[playerColor].broadcast(\"Spawned \" .. team.name, {0, 1, 0})\n        else\n            Player[playerColor].broadcast(\"Failed to spawn \" .. team.name, {1, 0, 0})\n        end\n    end)\nend\n",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "States": {},
+      "GUID": "spawnc"
+    }
+  ],
+  "TabStates": {},
+  "Lighting": {},
+  "Hands": {},
+  "ComponentTags": {},
+  "Turns": {},
+  "Grid": {},
+  "CameraStates": [],
+  "DecalPallet": [],
+  "VectorLines": []
+}
