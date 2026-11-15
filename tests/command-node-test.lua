@@ -151,6 +151,7 @@ local indexEmpty = false
 local metadataMissing = false
 local loaderMissing = false
 local loaderOutdated = false
+local helperNeverReady = false
 local loaderMetadataTruncated = false
 local loaderPadding = string.rep("-- loader padding\n", 12000)
 local deferRequest = false
@@ -183,6 +184,12 @@ Physics = {cast = function(parameters)
 end}
 Wait = {
     frames = function(callback) callbacks[#callbacks + 1] = callback end,
+    condition = function(callback, check, timeout, onTimeout)
+        assert(timeout and onTimeout)
+        callbacks[#callbacks + 1] = function()
+            if check() then callback() else onTimeout() end
+        end
+    end,
     time = function(callback, seconds)
         assert(seconds == 30)
         supplyTimeouts[#supplyTimeouts + 1] = callback
@@ -272,6 +279,7 @@ local function newObject(kind, position)
         assert(load(object.script, "helper", "t", environment))()
         applyAdapter = environment.ktCommandNodeApply
         object.call = function(name, parameters) return environment[name](parameters) end
+        object.getVar = function(name) if not helperNeverReady then return environment[name] end end
     end
     object.destruct = function() objects[guid] = nil end
     return object
@@ -481,6 +489,7 @@ assert(spawnedSlots[1].buttons[1].position[3] < 0 and spawnedSlots[1].buttons[3]
 assert(lastXml:find('childAlignment="MiddleLeft" color="#FFFFFF14">', 1, true))
 for line in spawnedSlots[1].buttons[1].label:gmatch("[^\n]+") do assert(#line <= 16) end
 assert(math.abs((spawnedSlots[2].position.x - spawnedSlots[1].position.x) - (70 / 25.4)) < 0.001)
+assert(math.abs(spawnedSlots[1].position.x + spawnedSlots[2].position.x) < 0.001)
 assert(spawnedSlots[1].position.z + 30 / 25.4 < -self.getBoundsNormalized().size.z * 0.5)
 assertPanelAboveNode()
 assert(not lastXml:find('id="option_', 1, true))
@@ -536,18 +545,20 @@ commandNodeConfirm({color = "White"})
 assert(#applied == 0 and messages[#messages]:find("more than one slot", 1, true))
 
 hits[secondKey] = {{hit_object = modelTwo}}
-loaderMissing = true
-commandNodeConfirm({color = "White"})
-assert(#applied == 0 and messages[#messages]:find("HTTP 404", 1, true))
-assert(modelOne.rotation.y == 27 and modelTwo.rotation.y == 47)
-loaderMissing = false
-loaderOutdated = true
-commandNodeConfirm({color = "White"})
-assert(#applied == 0 and messages[#messages]:find("loader is outdated", 1, true))
-assert(#modelTwo.buttons == 1 and #modelTwo.inputs == 1 and not modelTwo.buttonsCleared)
-loaderOutdated = false
+local requestsBeforeConfirm = #requests
+helperNeverReady = true
 commandNodeConfirm({color = "White"})
 flushCallbacks()
+assert(#applied == 0 and messages[#messages]:find("helper did not load", 1, true))
+assert(modelOne.rotation.y == 27 and modelTwo.rotation.y == 47)
+assert(#modelTwo.buttons == 1 and #modelTwo.inputs == 1 and not modelTwo.buttonsCleared)
+assert(lastXml:find("Place models on tiles:", 1, true))
+helperNeverReady = false
+local helpersBeforeConfirm = #helperScripts
+commandNodeConfirm({color = "White"})
+flushCallbacks()
+assert(#helperScripts == helpersBeforeConfirm + 1, "All models must share one stats helper")
+assert(#requests == requestsBeforeConfirm, "Confirm must reuse the loader downloaded with the team")
 assert(#applied == 2, "Applied " .. #applied .. ": " .. tostring(messages[#messages]))
 assert(modelOne.applied.weapons[1].plain_name == "fixed" and modelOne.applied.weapons[2].plain_name == "flamer")
 assert(modelTwo.applied.weapons[1].plain_name == "fixed" and modelTwo.applied.weapons[2].plain_name == "plasma")
@@ -664,6 +675,8 @@ for _, marker in ipairs(spawnedSlots) do
 end
 assert(math.abs((spawnedSlots[1].position.z - spawnedSlots[7].position.z) - 70 / 25.4) < 0.001)
 assert(math.abs((spawnedSlots[2].position.x - spawnedSlots[1].position.x) - 70 / 25.4) < 0.001)
+assert(math.abs((spawnedSlots[7].position.x - spawnedSlots[1].position.x) - 35 / 25.4) < 0.001)
+assert(math.abs(spawnedSlots[7].position.x + spawnedSlots[11].position.x) < 0.001)
 assert(lastXml:find('id="slot_1"', 1, true))
 assert(not lastXml:find('id="slot_11"', 1, true))
 commandNodeSelectSlot({color = "White"}, nil, "slot_1")
@@ -762,6 +775,7 @@ commandNodeChangeCount({color = "White"}, nil, "plus_1")
 commandNodeCreateSlots({color = "White"})
 flushCallbacks()
 assert(#spawnedSlots[1].buttons == 1)
+assert(math.abs(spawnedSlots[1].position.x) < 0.001)
 assert(lastXml:find('>1. UPDATED GUNNER</Text></HorizontalLayout>', 1, true))
 assert(not lastXml:find('id="slot_1"', 1, true) and not lastXml:find('loadout', 1, true))
 commandNodeSelectSlot({color = "White"}, nil, "slot_1")
@@ -1085,6 +1099,22 @@ assert(messages[#messages]:find("special-rule setup update", 1, true))
 assert(lastXml:find('id="team_1"', 1, true))
 commandNodeCancel({color = "White"})
 loaderMetadataTruncated = false
+
+loaderOutdated = true
+commandNodeStart(nil, "White")
+commandNodeChooseTeam({color = "White"}, nil, "team_1")
+assert(messages[#messages]:find("special-rule setup update", 1, true))
+assert(lastXml:find('id="team_1"', 1, true))
+commandNodeCancel({color = "White"})
+loaderOutdated = false
+
+loaderMissing = true
+commandNodeStart(nil, "White")
+commandNodeChooseTeam({color = "White"}, nil, "team_1")
+assert(messages[#messages]:find("HTTP 404", 1, true))
+assert(lastXml:find('id="team_1"', 1, true))
+commandNodeCancel({color = "White"})
+loaderMissing = false
 
 metadataMissing = true
 commandNodeStart(nil, "White")

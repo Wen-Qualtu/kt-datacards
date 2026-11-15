@@ -194,6 +194,8 @@ local MODEL_TYPES = {
 }
 
 local APPLY_ADAPTER = [[
+KT_NODE_HELPER_READY = true
+
 function ktCommandNodeApply(params)
     if not params or not params.model or not params.data then return nil end
     local mounted = false
@@ -903,11 +905,12 @@ function commandNodeCreateSlots(player)
             local index = #slots + 1
             local column = (index - 1) % 6
             local row = math.floor((index - 1) / 6)
+            local rowCount = math.min(6, total - row * 6)
             local tileWidth, tileDepth, baseWidth, baseDepth = slotDimensions(operative)
             local nodeScale = self.getScale()
             local halfDepth = self.getBoundsNormalized().size.z * 0.5
             local position = self.positionToWorld({
-                (column - 2.5) * columnSpacing / nodeScale.x,
+                (column - (rowCount - 1) / 2) * columnSpacing / nodeScale.x,
                 0.4 / nodeScale.y,
                 -(halfDepth + (row + 0.5) * rowSpacing) / nodeScale.z,
             })
@@ -1111,24 +1114,12 @@ local function finishApply(errorMessage)
     notify(color, "Operative stats and loadouts applied.", {0.3, 1, 0.5})
 end
 
-local function applyNext(index, models)
-    if index > #slots then finishApply(); return end
-    local slot = slots[index]
-    if slot.done then applyNext(index + 1, models); return end
-    local model = models[index]
-    local targetGuid = model.getGUID()
-    local operative = operatives[slot.operative]
-    local ok, data = pcall(function() return JSON.decode(JSON.encode(operative.data)) end)
-    if not ok or not data then
-        finishApply("Slot " .. index .. ": could not prepare operative data.")
-        return
-    end
+local function prepareSlotData(index, slot)
+    local ok, data = pcall(function() return JSON.decode(JSON.encode(operatives[slot.operative].data)) end)
+    if not ok or not data then return nil, "Slot " .. index .. ": could not prepare operative data." end
     if slot.loadoutChosen then
         local weapons, selectionError = selectedLoadoutWeapons(data, slot.choices, slot.selectedSet)
-        if not weapons then
-            finishApply("Slot " .. index .. ": " .. selectionError)
-            return
-        end
+        if not weapons then return nil, "Slot " .. index .. ": " .. selectionError end
         data.weapons = weapons
     end
     local rule = currentTeam.counterRule
@@ -1150,10 +1141,86 @@ local function applyNext(index, models)
             for choice, selected in ipairs(currentTeam.ruleChoices) do
                 if choice > selectCount then break end
                 local option = rule.options[selected]
-                if not option then finishApply("Invalid special-rule choice."); return end
+                if not option then return nil, "Invalid special-rule choice." end
                 local suffix = selectCount == 1 and "" or (choice == 1 and " (Primary)" or " (Secondary)")
                 data.abilities[#data.abilities + 1] = {name = option.name .. suffix, text = option.text}
             end
+        end
+    end
+    return data
+end
+
+local function applyAll(models)
+    local pending = {}
+    for index, slot in ipairs(slots) do
+        if not slot.done then
+            local data, errorMessage = prepareSlotData(index, slot)
+            if not data then finishApply(errorMessage); return end
+            pending[#pending + 1] = {index = index, slot = slot, guid = models[index].getGUID(), data = data}
+        end
+    end
+    if #pending == 0 then finishApply(); return end
+
+    local firstError
+    local function fail(item, message)
+        item.failed = true
+        firstError = firstError or ("Slot " .. item.index .. ": " .. message)
+    end
+    local function refreshAll()
+        for _, item in ipairs(pending) do
+            if not item.failed then
+                local refreshed = getObjectFromGUID(item.guid)
+                local refreshedOk = refreshed ~= nil and pcall(function()
+                    refreshed.call("loadState")
+                    refreshed.call("refreshUI")
+                    refreshed.call("refreshVectors", true)
+                end)
+                if refreshedOk then
+                    item.slot.done = true
+                    item.slot.modelGuid = item.guid
+                else
+                    fail(item, "could not refresh model UI; check the TTS log.")
+                end
+            end
+        end
+        finishApply(firstError)
+    end
+    local function run()
+        local helper = getObjectFromGUID(activeHelper)
+        local heading = self.getRotation().y
+        for _, item in ipairs(pending) do
+            local target = getObjectFromGUID(item.guid)
+            if not target then
+                fail(item, "model is no longer available.")
+            else
+                local called, result = pcall(function()
+                    return helper.call("ktCommandNodeApply", {
+                        model = target, data = item.data, playerColor = sessionColor, heading = heading,
+                    })
+                end)
+                if not called or type(result) ~= "table" or not result.applied then
+                    fail(item, "failed to apply stats; check the TTS log.")
+                end
+            end
+        end
+        if currentTeam.useSpecialRules ~= false and currentTeam.counterRule and not currentTeam.counterRule.options then
+            Wait.frames(function()
+                for _, item in ipairs(pending) do
+                    if not item.failed then
+                        local refreshed = getObjectFromGUID(item.guid)
+                        local counterOk, added = pcall(function()
+                            if not refreshed then return false end
+                            return helper.call("ktCommandNodeAddCounters", {
+                                model = refreshed, team = currentTeam.slug, playerColor = sessionColor,
+                            })
+                        end)
+                        if not counterOk or not added then fail(item, "could not add special-rule counters.") end
+                    end
+                end
+                Wait.frames(refreshAll, 30)
+            end, 10)
+        else
+            Wait.frames(refreshAll, 10)
         end
     end
 
@@ -1162,71 +1229,16 @@ local function applyNext(index, models)
         sound = false, callback_function = function(ready)
         ready.setLock(true)
         ready.setInvisibleTo({"White", "Brown", "Red", "Orange", "Yellow", "Green", "Teal", "Blue", "Purple", "Pink", "Grey", "Black"})
-        ready.setGMNotes(JSON.encode(data))
+        ready.setGMNotes(JSON.encode(pending[1].data))
         ready.setLuaScript(loaderScript .. "\n" .. APPLY_ADAPTER)
         activeHelper = ready.getGUID()
         ready.reload()
-        Wait.frames(function()
+        Wait.condition(run, function()
             local loaded = getObjectFromGUID(activeHelper)
-            local target = getObjectFromGUID(targetGuid)
-            if not loaded or not target then
-                if loaded then loaded.destruct() end
-                activeHelper = nil
-                finishApply("Slot " .. index .. ": helper or model is no longer available.")
-                return
-            end
-            local called, result = pcall(function()
-                return loaded.call("ktCommandNodeApply", {
-                    model = target, data = data, playerColor = sessionColor,
-                    heading = self.getRotation().y,
-                })
-            end)
-            if not called or type(result) ~= "table" or not result.applied then
-                finishApply("Slot " .. index .. ": failed to apply stats; check the TTS log.")
-                return
-            end
-            local function finishModel()
-                local refreshed = getObjectFromGUID(targetGuid)
-                if not refreshed then
-                    finishApply("Slot " .. index .. ": model is no longer available after reload.")
-                    return
-                end
-                local refreshedOk = pcall(function()
-                    refreshed.call("loadState")
-                    refreshed.call("refreshUI")
-                    refreshed.call("refreshVectors", true)
-                end)
-                if not refreshedOk then
-                    finishApply("Slot " .. index .. ": could not refresh model UI; check the TTS log.")
-                    return
-                end
-                loaded.destruct()
-                activeHelper = nil
-                slot.done = true
-                slot.modelGuid = targetGuid
-                applyNext(index + 1, models)
-            end
-            if currentTeam.useSpecialRules ~= false and currentTeam.counterRule and not currentTeam.counterRule.options then
-                Wait.frames(function()
-                    local refreshed = getObjectFromGUID(targetGuid)
-                    local counterOk, added = pcall(function()
-                        if not refreshed then return false end
-                        return loaded.call("ktCommandNodeAddCounters", {
-                            model = refreshed, team = currentTeam.slug, playerColor = sessionColor,
-                        })
-                    end)
-                    if not counterOk or not added then
-                        finishApply("Slot " .. index .. ": could not add special-rule counters.")
-                        return
-                    end
-                    Wait.frames(finishModel, 30)
-                end, 10)
-            else
-                Wait.frames(finishModel, 10)
-            end
-        end, 60)
+            return loaded ~= nil and loaded.getVar("KT_NODE_HELPER_READY") == true
+        end, 15, function() finishApply("The stats helper did not load; please try again.") end)
     end})
-    if not helper then finishApply("Slot " .. index .. ": could not create the stats helper."); return end
+    if not helper then finishApply("Could not create the stats helper.") end
 end
 
 function commandNodeConfirm(player)
@@ -1257,14 +1269,9 @@ function commandNodeConfirm(player)
     applying = true
     self.UI.setXml("")
     notify(sessionColor, "Applying stats and loadouts...", {0.5, 0.8, 1})
-    local version = sessionVersion
-    requestText(NODE_LOADER_URL .. "?v=" .. tostring(os.time()), function(script, errorMessage)
-        if version ~= sessionVersion then return end
-        if not compatibleLoader(script) then
-            finishApply(errorMessage or "Downloaded node loader is outdated; publish the updated shared loader to the feature branch.")
-            return
-        end
-        loaderScript = script
-        applyNext(1, models)
-    end)
+    if not compatibleLoader(loaderScript) then
+        finishApply("The node loader is missing; choose the team again.")
+        return
+    end
+    applyAll(models)
 end
