@@ -1,6 +1,6 @@
-KTUI_MODELSCRIPT_VERSION = "47c4b9fbfa43"
+KTUI_MODELSCRIPT_VERSION = "277da70a1153"
 
-KTUI_MODELSCRIPT = [==[KT_MODELSCRIPT_VERSION = "47c4b9fbfa43"
+KTUI_MODELSCRIPT = [==[KT_MODELSCRIPT_VERSION = "277da70a1153"
 
 self.clearContextMenu()
 
@@ -16,13 +16,10 @@ KT_TARGET_CONE_CODE = [=[
 -- light, red heavy) and a purple arc + label marks it obscured.
 
 pickedUp = false
-clickPlayerColor = ""
 newX = 0
 newZ = 0
 posY = 0
 colorLinea = Color(1,1,1)
-state = nil
-baseModel = nil
 mtoi = 0.0393701
 estado_cono = 0
 ObjMiniTarget = nil
@@ -286,7 +283,6 @@ function analyseTerrain(target, sp)
 end
 
 function onPickUp(cp)
-	clickPlayerColor = cp
 	pickedUp = true
 	startLuaCoroutine(self, "movModel")
 end
@@ -294,8 +290,6 @@ end
 function movModel()
 	objModel = getObjectFromGUID(GUIDModel)
 	posY = objModel.getPosition().y + 0.5
-	state = objModel.getTable("state")
-	baseModel = state.base.x
 	while (pickedUp == true) do
 		posicionLock()
 		coroutine.yield(0)
