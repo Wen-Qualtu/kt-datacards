@@ -256,6 +256,10 @@ on never counts; the target's own
 terrain counts only when it is >0.5" higher than the shooter (shooting up at Vantage). Ignores operatives
 (`KTUIMini`), `KTUIToken*`, `KT24Token`, `KT_Objective`, cones, zones/table/cards/dice.
 Not yet: Vantage/height effects, name→type map for untyped pieces, Conceal-order validity.
+Stopgap (`HEIGHT_CHECK`): when the two base bottoms are >1" apart vertically the analysis is
+skipped -- cyan lines + HUD "Check cover yourself", since one Vantage object mixes heavy walls
+(below the platform) with light parapets (above). Proper fix = per-hit height zones
+(vantage floor height per piece, likely a mesh-URL map) + re-casting past each hit.
 Cone keys (hover): 1 = select target, 2 = lock/unlock to base, 3 = finish (R left free for the
 datacard popup). Test node: `python -m tools.build_test_node --tool targeting`.
 

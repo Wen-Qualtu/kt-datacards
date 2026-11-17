@@ -783,13 +783,20 @@ local function solid(name, x1, x2, z1, z2, y1, y2)
     o.minY = y1
     return o
 end
--- A low barricade near the target blocks a level shot, but a shot from a
--- Vantage point passes over it, so it doesn't count.
+-- A low barricade near the target blocks a level shot.
 check("portable barricade, level shot", 8, {solid("Portable barricade", -2, 2, 6.5, 6.8, 1, 1.3)}, "light", false)
 check("heavy barricade", 8, {solid("Heavy barricade", -2, 2, 6.5, 6.8, 1, 1.3)}, "heavy", false)
+-- More than 1" of height between the bases: no auto result, ask for a manual check.
 objModel = model(0, -0.6, 4)
-check("barricade, shot from above", 8, {solid("Portable barricade", -2, 2, 6.5, 6.8, 1, 1.3)}, nil, false)
+ObjMiniTarget = model(0, 8)
+boxes = {solid("Heavy Wall", -2, 2, 6.5, 6.8, 1, 5)}
+refrescaVectores()
+assert(checkState and coverState == nil and not obscuredState, "height gap: no auto cover")
+assert(lines[1].color[3] == 0.95 and lines[2] == nil, "height gap: check colour, no arc")
+assert(hud["ktmove_txt_Red"]:find("Check cover yourself", 1, true), "height gap readout: " .. hud["ktmove_txt_Red"])
 objModel = model(0, -0.6)
+check("back to level", 8, {}, nil, false)
+assert(not checkState, "level again: auto cover")
 local platform = solid("Heavy Walkway", -1, 1, 7.0, 9.0, 0, 2)
 ObjMiniTarget = model(0, 8, 2)
 boxes = {platform}
