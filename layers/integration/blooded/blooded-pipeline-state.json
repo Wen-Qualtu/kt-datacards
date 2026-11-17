@@ -1,7 +1,7 @@
 {
   "team": "blooded",
   "pipeline_version": "2.0",
-  "last_updated": "2026-11-13T21:25:04.657757+00:00",
+  "last_updated": "2026-11-17T10:20:18.626798+00:00",
   "steps": {
     "content_analysis": {
       "outputs": {
@@ -626,18 +626,18 @@
     },
     "generate_tts": {
       "outputs": {
-        "tts_objects/Blooded Box.json": {
-          "path": "output/blooded/tts_objects/Blooded Box.json",
-          "hash": "ad4d743aee5c4dd1b3f8c83b2b6b41f5991224a6a3a02f2b066246f173c541b4",
-          "modified": "2026-07-24T19:23:45.522200+00:00"
-        },
         "tts_objects/Blooded.json": {
           "path": "output/blooded/tts_objects/Blooded.json",
-          "hash": "be1695de9d0b05b6f76571fb648d0da1a87e70a418b6ebbbefceb0b791493145",
-          "modified": "2026-11-13T21:25:04.407177+00:00"
+          "hash": "41afd92b74d6a4e09b68745b2b9082379b2a73ddabe0b30f7413671c87c9d499",
+          "modified": "2026-11-17T10:20:18.525757+00:00"
+        },
+        "tts_objects/blooded-token-bag.json": {
+          "path": "output/blooded/tts_objects/blooded-token-bag.json",
+          "hash": "9ddc99c9b5e39cc451b6f29c5aee703394d79fef970129ffa4a8bd679c44ba14",
+          "modified": "2026-11-17T10:20:18.511830+00:00"
         }
       },
-      "completed": "2026-11-13T21:25:04.657727+00:00",
+      "completed": "2026-11-17T10:20:18.626787+00:00",
       "inputs": {
         "config/team-config.yaml": "b1b298df3441797113db36d9524566fa76c836df085b140b54eaac01e26fd9f9",
         "config/team-guids.json": "906473ddbf256345a4150df497def05ec513f95948b27d6fc98fa6dba00bb7d0",
@@ -726,16 +726,18 @@
         "output/blooded/dice/blooded-dice-team.jpg": "2c9652c6602b257e4513a3ce6f4f8f60166013a0a91bf8f31b0ba31a6ce48920",
         "output/blooded/data/blooded-team-data.json": "7b2c53ef5eaf63313ed9ed76e7785342668ac52b107f21f07184e45721d604c4",
         "config/defaults/tts-script/bag-of-bags-reload-script.lua": "0568079805699a7d3b5f6e93807c0420a7c9fe2c3b297f2273f4dcc4e2aea2b0",
-        "config/defaults/tts-script/datacard-load-stats.lua": "e163a1c2bbf015020a7ffe5ee861e9e78e7127ed99661187805c247862108260",
+        "config/defaults/tts-script/datacard-load-stats.lua": "b8365c7671b7227161e3b038a8e00c46d93ce4f74dca6784833c1da85cab11fa",
         "config/defaults/tts-script/display-table-manager-script.lua": "846de299f8e2c925e63cc77c4991fedd07ae75e9bde375f3b3c991c8730b891b",
         "config/defaults/tts-script/faction-rule-chapter-tactics.lua": "c906742268076fb91f7cb4a92c6b588e1122ccddb692688f635c8dd4f7110ad0",
         "config/defaults/tts-script/intermediate-updater.lua": "1a2d6dbc1a8c9c57ba6a3e7a3d4bc4b7a38a6c242a93f6ef3dae698123384d35",
+        "config/defaults/tts-script/ktui-extender-board.lua": "667f280120d410ec02e94a26516b4cf2462fc6642b4a76bd075cf631d76c3868",
         "config/defaults/tts-script/ktui-extender-modelscript.lua": "efaa258acaadc765e64e274a97c327161d6d9f3f1068582b8e097bdbb87318f7",
-        "config/defaults/tts-script/ktui-extension.lua": "3e7ec3dad8556d351dcb9a7fc399592f582b08434bc22ed45b6735cafabfad9b",
+        "config/defaults/tts-script/ktui-extension.lua": "017de74d5de240378ffdc6944d364076ed406e90e48cbaf9391f2c6ebc1dc74f",
+        "config/defaults/tts-script/ktui-target-cone.lua": "b873fa911bef949f73da6f3246888dff557203e76fb663a691d516c697b9a653",
         "config/defaults/tts-script/move-tool.lua": "68059b5fd1b60ab7037930223b7d64863c0619e12719d1866853b010c651b34e",
         "config/defaults/tts-script/single-object-updater.lua": "3613b85169e986a8e50ebe221482079e27c18037e3f48920aa0f7e138c0ccacc",
-        "config/defaults/tts-script/sprint-movement-tool.lua": "c0b96cbf193785c64dc6cb4bb90b4730d872214581c3973e9fbf30a01e8c5fd8",
-        "config/defaults/tts-script/team-spawner-clean-script.lua": "12457bff3961eee2293c42d81cf4f4eb8b103177245a1ab8b46fd65da40672a2",
+        "config/defaults/tts-script/sprint-movement-tool.lua": "10c2d3aa6ca13c8e997efd9be0261abf1c96cf46e1641a78abe1bfb8b9b9173f",
+        "config/defaults/tts-script/team-spawner-clean-script.lua": "3d076eed62353b0073ab9ec4810aa141cb4e7e2b385a336b4be5dfb6efb4a756",
         "config/defaults/tts-script/team-spawner-script.lua": "a51ff45c8622923db909fb465781801511f235412f099f83dff728d4027650db",
         "config/defaults/tts-script/tts-update-rules-in-box-script.lua": "84f7f9b260f4e4968d208953b534bdbb7ab0b2f475e13264a2407f6c4d4d2b03",
         "config/defaults/tts-image/default-icon.png": "892aff2628b9685c813e77be05c66afc1dc4247bc1dc9ce6fe54f006c2608271",

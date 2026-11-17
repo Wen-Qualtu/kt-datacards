@@ -11,6 +11,7 @@ Patch layer (deterministic, anchor-based, each verified -- raises on drift):
   1. heal getWoundPanelWidth (bare `if` -> `elseif`)  -- append-safety, bar-neutral
   2. remove the "Movement" context item                -- we load our own movement
   3. guard the unguarded game-log call                 -- bare-table safety
+  4. targeting cone uses our embedded oval-aware script (ktui-target-cone.lua)
 
 Owner assignment is card-side (baked into script_state in datacard-load-stats.lua).
 """
@@ -25,6 +26,7 @@ import yaml
 
 _EXTENDER = "ktui-extender-modelscript.lua"
 _EXTENSION = "ktui-extension.lua"
+_TARGET_CONE = "ktui-target-cone.lua"
 
 _COMMAND_NODE_OVAL_RENDERER = r'''
 local nodeGetCircleVectorPoints = getCircleVectorPoints
@@ -91,14 +93,59 @@ def compose_ktui_model_script(config_dir: Path) -> str:
         'local _kt_gl = getObjectFromGUID(gamelogGuid)\n'
         '    if _kt_gl then _kt_gl.call("gameLogAppendOperativeChangedState", event) end')
 
+    # 4) install our oval-aware targeting cone instead of fetching the upstream
+    #    circle-only "KTMT Target Cone.lua" (callback shape kept, so the rest of
+    #    agregaCono is untouched).
+    base = _sub_once(
+        base, "local-target-cone-script",
+        r'WebRequest\.get\("https://raw\.githubusercontent\.com/xSpaghettyx/KT24-Table-The-Killzone-Mod/'
+        r'refs/heads/main/KTMT%20Target%20Cone\.lua",\s*function\(req\)',
+        "ktLocalScript(KT_TARGET_CONE_CODE, function(req)")
+    cone = (tdir / _TARGET_CONE).read_text(encoding="utf-8").replace("\r\n", "\n")
+    equals = "="
+    while "]" + equals + "]" in cone:
+        equals += "="
+    targeting = (
+        f"KT_TARGET_CONE_CODE = [{equals}[\n{cone}]{equals}]\n\n"
+        "function ktLocalScript(code, callback)\n"
+        "    Wait.frames(function() callback({text = code}) end, 1)\n"
+        "end"
+    )
+
     # Clear the context menu first: TTS keeps runtime-added items across a script
     # swap/reload, so a re-stamp would otherwise leave stale items (e.g. an old
     # proof button) behind. Runs before the extender re-adds its own items.
     base = "self.clearContextMenu()\n\n" + base
 
+    # Every part sits in its own START/END block so each can be found and
+    # replaced in place later (movement blocks are appended by the loaders).
+    parts = [_tagged("KT_MODELSCRIPT_V1", base), _tagged("KT_TARGETING_V1", targeting)]
     ext_path = tdir / _EXTENSION
     ext = ext_path.read_text(encoding="utf-8").replace("\r\n", "\n") if ext_path.exists() else ""
-    return base.rstrip("\n") + ("\n\n" + ext.rstrip("\n") + "\n" if ext.strip() else "\n")
+    if ext.strip():
+        parts.append(ext.strip("\n"))
+    return "\n\n".join(parts) + "\n"
+
+
+def _tagged(tag: str, body: str) -> str:
+    return f"-- START {tag} --\n{body.strip(chr(10))}\n-- END {tag} --"
+
+
+def compose_model_scripts_bundle(config_dir: Path) -> dict:
+    """Scripts our KTUI extender stamps onto models: the versioned model script
+    (same version as the cards' KTUI_MODELSCRIPT) plus one tagged movement block
+    per kind, chosen per model by the MOUNTED keyword."""
+    model = compose_ktui_model_script(config_dir)
+    if not model:
+        raise ValueError("KTUI model script is not available")
+    version = hashlib.sha1(model.encode("utf-8")).hexdigest()[:12]
+    tdir = config_dir / "defaults" / "tts-script"
+    return {
+        "version": version,
+        "model": f'KT_MODELSCRIPT_VERSION = "{version}"\n\n' + model,
+        "move": _tagged("KT_MOVE_TOOL_V1", (tdir / "move-tool.lua").read_text(encoding="utf-8")),
+        "sprint": _tagged("KT_SPRINT_TOOL_V1", (tdir / "sprint-movement-tool.lua").read_text(encoding="utf-8")),
+    }
 
 
 def compose_command_node_loader(config_dir: Path) -> str:
@@ -109,7 +156,7 @@ def compose_command_node_loader(config_dir: Path) -> str:
     model_script = compose_ktui_model_script(config_dir)
     if not model_script:
         raise ValueError("KTUI model script is not available")
-    model_script += "\n" + _COMMAND_NODE_OVAL_RENDERER
+    model_script += "\n" + _tagged("KT_NODE_OVAL_V1", _COMMAND_NODE_OVAL_RENDERER) + "\n"
     version = hashlib.sha1(model_script.encode("utf-8")).hexdigest()[:12]
     model_script = f'KT_MODELSCRIPT_VERSION = "{version}"\n\n' + model_script
     script_dir = config_dir / "defaults" / "tts-script"

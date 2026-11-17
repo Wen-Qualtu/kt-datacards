@@ -1,0 +1,81 @@
+{
+  "SaveName": "UI Extender + Tools (KT Datacards)",
+  "Date": "",
+  "VersionNumber": "",
+  "GameMode": "",
+  "GameType": "",
+  "GameComplexity": "",
+  "Tags": [],
+  "Gravity": 0.5,
+  "PlayArea": 0.5,
+  "Table": "",
+  "Sky": "",
+  "Note": "",
+  "Rules": "",
+  "XmlUI": "",
+  "CustomUIAssets": [],
+  "LuaScript": "",
+  "LuaScriptState": "",
+  "ObjectStates": [
+    {
+      "Name": "Custom_Board",
+      "Transform": {
+        "posX": 0.0,
+        "posY": 1.0,
+        "posZ": 0.0,
+        "rotX": 9.660665e-06,
+        "rotY": 4.521599e-06,
+        "rotZ": -5.336662e-07,
+        "scaleX": 1.0,
+        "scaleY": 1.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "UI Extender + Tools (KT Datacards)",
+      "Description": "- Place scripted miniatures on this board and press \"Extend KT UI\"\n- Access movement (Move/Dash or Sprint/Turn/Leap) and targeting lines through the context menu by right-clicking the extended miniatures",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 0.0,
+        "g": 0.0,
+        "b": 0.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": false,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "CustomImage": {
+        "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/18043544186498254803/23F107CB690DA006A26930270FB9FE8F887C9D0C/",
+        "ImageSecondaryURL": "",
+        "ImageScalar": 1.0,
+        "WidthScale": 0.634053767
+      },
+      "XmlUI": "<Button position=\"520 670 -60\"   rotation=\"0 0 -90\"  width=\"300\" height=\"50\" color=\"#00EB03FF\" textColor=\"#000000\" fontSize=\"30\"  fontStyle=\"Bold\" onClick=\"ExtendUI\"> Extend KT UI </Button>\n<Button position=\"520 -670 -60\"  rotation=\"0 0 -90\"  width=\"300\" height=\"50\" color=\"#FCEB03FF\" textColor=\"#000000\" fontSize=\"30\"  fontStyle=\"BoldAndItalic\" onClick=\"KTUI_ResetScripts\"> Fix Display Issues </Button>\n\n<Text position=\"-670 670 -60\"   rotation=\"0 0 -90\" width=\"300\" height=\"50\" fontSize=\"30\" color=\"#ffffff\" text=\"TABLE CONTROLS:\"></Text>\n<Button position=\"-780 350 -60\"  rotation=\"0 0 -90\"  width=\"300\" height=\"50\" fontSize=\"30\" fontStyle=\"Bold\" onClick=\"SaveAllPositions\"> Save Positions </Button>\n<Button position=\"-720 350 -60\"  rotation=\"0 0 -90\"  width=\"300\" height=\"50\" fontSize=\"30\" fontStyle=\"BoldAndItalic\" onClick=\"LoadAllPositions\"> Load Positions </Button>\n<Button position=\"-780 670 -60\"  rotation=\"0 0 -90\"  width=\"300\" height=\"50\" fontSize=\"30\" fontStyle=\"Bold\" onClick=\"ReadyAllOperatives\"> Ready Operatives </Button>\n\n<Text position=\"-590 -670 -60\"   rotation=\"0 0 -90\" width=\"300\" height=\"50\" fontSize=\"30\" color=\"#ffffff\" text=\"MAT CONTROLS:\"></Text>\n<Button position=\"-640 -670 -60\" rotation=\"0 0 -90\"  width=\"300\" height=\"50\" fontSize=\"30\" fontStyle=\"Bold\" onClick=\"EngageAllOperatives\"> All Engage </Button>\n<Button position=\"-700 -670 -60\" rotation=\"0 0 -90\"  width=\"300\" height=\"50\" fontSize=\"30\" fontStyle=\"Bold\" onClick=\"ConcealAllOperatives\"> All Conceal </Button>\n\n<Button position=\"-780 -670 -60\" rotation=\"0 0 -90\"  width=\"300\" height=\"50\" color=\"#e98c4c\" fontSize=\"30\" fontStyle=\"Bold\" onClick=\"CleanAllOperatives\"> Remove All Tokens </Button>",
+      "GUID": "e7e7d0",
+      "LuaScript": "KT_SCRIPTS_URL = \"https://raw.githubusercontent.com/Wen-Qualtu/kt-datacards/refs/heads/main/output/_generic-tts-objects/ktui-model-scripts.json\"\n\n-- KT Datacards UI Extender board.\n-- Does what the \"UI Extender + Tools\" board of the KT Command Node UI Extender\n-- does (original authors: Nyirsh, Feuerfritas, Ixidior, Mal20k), but stamps OUR\n-- composed KTUI model script -- tagged START/END blocks, oval-aware targeting\n-- with cover/obscured, and our Move/Dash (or Sprint/Turn/Leap for MOUNTED\n-- operatives) instead of the KTMT Movement tool -- downloaded from the\n-- kt-datacards repo. tools/build_ktui_extender.py prepends KT_SCRIPTS_URL.\n\n-- Non-player operatives leaving an \"_NPO bag\" are extended too. The original\n-- NPO autoextender may also be on the table and re-stamps them ~0.3 s + a\n-- download later, so ours runs after it.\nlocal NPO_DELAY = 2.5\n\nlocal scripts = nil   -- downloaded {version, model, move, sprint}\nlocal pending = {}    -- callbacks waiting for that download\n\nlocal function withScripts(callback)\n  if scripts then return callback(scripts) end\n  table.insert(pending, callback)\n  if #pending > 1 then return end\n  WebRequest.get(KT_SCRIPTS_URL, function(req)\n    local waiting = pending\n    pending = {}\n    if req.is_error then\n      log(req.error)\n      broadcastToAll(\"KT UI Extender: could not download the model script.\", {1, 0.5, 0})\n      return\n    end\n    local ok, data = pcall(function() return JSON.decode(req.text) end)\n    if not ok or type(data) ~= \"table\" or type(data.model) ~= \"string\" then\n      broadcastToAll(\"KT UI Extender: the downloaded model script is invalid.\", {1, 0.5, 0})\n      return\n    end\n    scripts = data\n    for _, cb in ipairs(waiting) do cb(scripts) end\n  end)\nend\n\nlocal function isMounted(model)\n  local ok, state = pcall(function() return JSON.decode(model.script_state or \"\") end)\n  local categories = ok and type(state) == \"table\" and type(state.info) == \"table\" and state.info.categories\n  for _, keyword in ipairs(type(categories) == \"table\" and categories or {}) do\n    if tostring(keyword):upper() == \"MOUNTED\" then return true end\n  end\n  return false\nend\n\n-- Our script + the model's movement block; saved state (stats, wounds, base,\n-- owner) lives in script_state and survives the swap.\nfunction extendModel(model, steamId)\n  local movement = isMounted(model) and scripts.sprint or scripts.move\n  model.setLuaScript(scripts.model .. \"\\n\\n\" .. movement)\n  model = model.reload()\n  model.addTag(\"KTUIMini\")\n  model.addTag(\"KTUIMiniDatacard\")\n  if steamId then\n    Wait.frames(function() model.call(\"setOwningPlayer\", steamId) end, 1)\n  end\n  return model\nend\n\nfunction KTUI_ResetScripts()\n  broadcastToAll(\"Reloading KT UI Extender\")\n  local r = 0\n  for _, obj in ipairs(getAllObjects()) do\n    if obj.hasTag('KTUIMini') then\n      obj.reload()\n      r = r+1\n    end\n  end\n  broadcastToAll(\"Reloaded \"..r..\" items\")\nend\n\nfunction detectItemOnTop()\n  local pos = self.getPosition()\n  return Physics.cast({\n    origin       = {pos[1], pos[2]+3.1, pos[3]},\n    direction    = {0,1,0},\n    type         = 2,\n    size         = {15,15,15},\n    max_distance = 3,\n  })\nend\n\nfunction ExtendUI(player)\n  withScripts(function()\n    local extended = 0\n    for _, hit in ipairs(detectItemOnTop()) do\n      local object = hit.hit_object\n      if object.tag == \"Figurine\" then\n        extendModel(object, player.steam_id)\n        extended = extended + 1\n      end\n    end\n    player.broadcast(\"Extended KT UI on \"..extended..\" model(s)\")\n  end)\nend\n\nfunction onObjectLeaveContainer(container, object)\n  if container.hasTag('_NPO bag') and object.hasTag('KTUIMini') and object.hasTag('Operative') then\n    local guid = object.getGUID()\n    Wait.time(function()\n      withScripts(function()\n        local npo = getObjectFromGUID(guid)\n        if npo then extendModel(npo, nil) end\n      end)\n    end, NPO_DELAY)\n  end\nend\n\nlocal function forOwned(objects, fn)\n  for _, obj in ipairs(objects) do\n    if obj.hasTag('KTUIMini') and obj.call(\"getOwningPlayer\") ~= nil then fn(obj) end\n  end\nend\n\nlocal function onBoard()\n  local found = {}\n  for _, hit in ipairs(detectItemOnTop()) do table.insert(found, hit.hit_object) end\n  return found\nend\n\nfunction SaveAllPositions(player)\n  forOwned(getAllObjects(), function(obj) obj.call(\"savePosition\") end)\n  player.broadcast(\"All positions saved\")\nend\n\nfunction LoadAllPositions(player)\n  forOwned(getAllObjects(), function(obj) obj.call(\"loadPosition\") end)\n  player.broadcast(\"All positions loaded\")\nend\n\nfunction ReadyAllOperatives(player)\n  forOwned(getAllObjects(), function(obj) obj.call(\"KTUI_ReadyOperative\") end)\n  player.broadcast(\"All operatives have been readied\")\nend\n\nfunction CleanAllOperatives(player)\n  forOwned(onBoard(), function(obj) obj.call(\"KTUI_CleanOperative\") end)\n  player.broadcast(\"All operatives have been cleaned of their tokens\")\nend\n\nfunction EngageAllOperatives()\n  forOwned(onBoard(), function(obj) obj.call(\"setEngage\") end)\nend\n\nfunction ConcealAllOperatives()\n  forOwned(onBoard(), function(obj) obj.call(\"setConceal\") end)\nend\n",
+      "LuaScriptState": ""
+    }
+  ],
+  "TabStates": {},
+  "Lighting": {},
+  "Hands": {},
+  "ComponentTags": {},
+  "Turns": {},
+  "Grid": {},
+  "CameraStates": [],
+  "DecalPallet": [],
+  "VectorLines": []
+}

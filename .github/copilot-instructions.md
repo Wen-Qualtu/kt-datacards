@@ -103,8 +103,11 @@ Order prefix (`[FF5500]E[-]`) + wounds (`{8/8}`) + operative name
 - `findModelOnCard()` uses `Physics.cast` to find models on card
 - `injectBlock()` installs/updates a tagged block on the model (`-- START/END KT_<NAME> --`,
   replace-in-place or append for old models); movement embeds via `MOVE_TOOL_CODE`/`SPRINT_TOOL_CODE`
-- Movement tools: `move-tool.lua` (Move + Dash) and `sprint-movement-tool.lua`
-  (Sprint/Turn/Leap, MOUNTED only) — both step the model per leg with a centred click-catcher
+- Movement tools: `move-tool.lua` (Move + Dash) steps the model per leg with a centred
+  click-catcher; `sprint-movement-tool.lua` (Sprint/Turn/Leap, MOUNTED only) keeps the model
+  put until the action finishes (ghost-only preview, so it can pivot "through" models) and places
+  its catcher at the committed sprint point via `positionToLocal`. Sprint enforces the errata
+  direction lock: the first moving leg fixes forward-only or backward-only for the rest
 - **Base facing (`kt_front`)** — Sprint/Turn/Leap derive the start heading from the model's
   transform-forward + `sprint-movement-tool.lua`'s `KTUI_FACING_OFFSET` (now **0** = head-first
   by default) + a per-model `kt_front` offset (0/90/180/270) stored in the KTUI mini's
@@ -112,6 +115,17 @@ Order prefix (`[FF5500]E[-]`) + wounds (`{8/8}`) + operative name
   for the ring shape) so mirrored/proxy models are corrected in-game with a couple of clicks;
   KTUI has NO native facing field — this is our addition and it round-trips through KTUI's
   state. Rotating the model *transform* can't fix it (the heading turns with the mesh). (PR #72)
+- **KTUI model script** — composed by `pipeline/utils/ktui_model_script.py` from the vendored
+  extender script as tagged blocks `KT_MODELSCRIPT` (patched base), `KT_TARGETING`
+  (`ktui-target-cone.lua`: oval-aware lines, light/heavy cover + obscured, keys 1/2/3) and
+  `KT_EXTENSION`; loaders append one `KT_MOVE_TOOL`/`KT_SPRINT_TOOL` block. Cards, the command
+  node and our extender board all stamp it; card **Load stats** also replaces scripts from the
+  original extender (KTUIMini without our `KTUIMiniDatacard` tag).
+- **Our KTUI extender board** — `ktui-extender-board.lua` on a copy of the base table's
+  "UI Extender + Tools" board (`config/defaults/ktui-extender-board.json`), built by
+  `python -m tools.build_ktui_extender [--branch X]`. Same buttons; **Extend KT UI** stamps
+  `output/_generic-tts-objects/ktui-model-scripts.json` (written by `generate_tts`) + movement by
+  MOUNTED keyword, and NPOs leaving an `_NPO bag` are extended too.
 
 ## Key Conventions
 

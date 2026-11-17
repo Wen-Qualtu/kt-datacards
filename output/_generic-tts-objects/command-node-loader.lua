@@ -1,7 +1,8 @@
-KTUI_MODELSCRIPT_VERSION = "a856c18392d0"
+KTUI_MODELSCRIPT_VERSION = "43bb55941a77"
 
-KTUI_MODELSCRIPT = [==[KT_MODELSCRIPT_VERSION = "a856c18392d0"
+KTUI_MODELSCRIPT = [==[KT_MODELSCRIPT_VERSION = "43bb55941a77"
 
+-- START KT_MODELSCRIPT_V1 --
 self.clearContextMenu()
 
 -- KTUI EXTENDER + KTMT Spaghetty mod--
@@ -183,7 +184,7 @@ if CONO == nill then
 
 end
 
- WebRequest.get("https://raw.githubusercontent.com/xSpaghettyx/KT24-Table-The-Killzone-Mod/refs/heads/main/KTMT%20Target%20Cone.lua", function(req)
+ ktLocalScript(KT_TARGET_CONE_CODE, function(req)
 
 local script = req.text
 
@@ -2413,6 +2414,524 @@ function getUIPosition()
     end
 
 end
+-- END KT_MODELSCRIPT_V1 --
+
+-- START KT_TARGETING_V1 --
+KT_TARGET_CONE_CODE = [=[
+-- KTUI targeting cone ("Targeting lines" context item on KTUI minis).
+-- Derived from "KTMT Target Cone" (KT24 Table / KTMT by xSpaghettyx & Ixidior),
+-- which treated every base as a circle of diameter base.x. This version models
+-- each base as the oval KTUI draws: base.x wide, base.z long along the model's
+-- facing (transform forward, plus kt_front on command-node models). The lines
+-- run to the two outermost points of the target base as seen from the origin
+-- (the tangents), the cone stays on the origin's base edge, and the range is
+-- measured base edge to base edge. Line colour shows the target's cover (orange
+-- light, red heavy), a purple arc marks it obscured, and the state is shown in
+-- the top-centre HUD.
+
+pickedUp = false
+newX = 0
+newZ = 0
+posY = 0
+colorLinea = Color(1,1,1)
+mtoi = 0.0393701
+estado_cono = 0
+ObjMiniTarget = nil
+objModel = nil
+
+lockEnabled = true
+
+local SAMPLES = 72
+local atan2 = math.atan2 or math.atan
+
+-- Base footprint of a model as an oval: centre, half-width a (side-to-side),
+-- half-length b (front-to-back) and heading h (radians, TTS yaw convention:
+-- forward = (sin h, cos h)). Non-KTUI objects fall back to a circle from bounds.
+local function baseEllipse(obj)
+	local pos = obj.getPosition()
+	local st = obj.getTable("state")
+	local bx, bz
+	if type(st) == "table" and type(st.base) == "table" then
+		bx = tonumber(st.base.x)
+		bz = tonumber(st.base.z) or bx
+	end
+	if not bx or not bz or bx <= 0 or bz <= 0 then
+		local size = obj.getBoundsNormalized().size
+		local r = math.max(size.x, size.z) * 0.5
+		return { x = pos.x, z = pos.z, a = r, b = r, h = 0 }
+	end
+	local heading = obj.getRotation().y
+	if st.kt_node_ui then heading = heading + (tonumber(st.kt_front) or 0) end
+	return { x = pos.x, z = pos.z, a = bx * mtoi * 0.5, b = bz * mtoi * 0.5, h = math.rad(heading) }
+end
+
+local function shrink(e, by)
+	return { x = e.x, z = e.z, a = math.max(0.01, e.a - by), b = math.max(0.01, e.b - by), h = e.h }
+end
+
+local function toLocal(e, wx, wz)
+	local dx, dz = wx - e.x, wz - e.z
+	local c, s = math.cos(e.h), math.sin(e.h)
+	return dx * c - dz * s, dx * s + dz * c
+end
+
+local function toWorld(e, u, v)
+	local c, s = math.cos(e.h), math.sin(e.h)
+	return e.x + u * c + v * s, e.z - u * s + v * c
+end
+
+local function pointAt(e, t)
+	return toWorld(e, e.a * math.cos(t), e.b * math.sin(t))
+end
+
+-- Point on the oval's edge along the ray from its centre towards (wx, wz).
+local function edgeToward(e, wx, wz)
+	local u, v = toLocal(e, wx, wz)
+	local k = math.sqrt((u / e.a) ^ 2 + (v / e.b) ^ 2)
+	if k < 1e-9 then return toWorld(e, e.a, 0) end
+	return toWorld(e, u / k, v / k)
+end
+
+-- The two points of the oval that bound it as seen from (px, pz): the tangent
+-- points. Scaling the oval to a unit circle keeps tangency, so solve it there.
+local function tangentPoints(e, px, pz)
+	local u, v = toLocal(e, px, pz)
+	local U, V = u / e.a, v / e.b
+	local d = math.sqrt(U * U + V * V)
+	if d <= 1 + 1e-6 then
+		-- Viewer inside the base: use the extremes across the line of sight.
+		local nu, nv = -v, u
+		if math.abs(nu) + math.abs(nv) < 1e-9 then nu, nv = 1, 0 end
+		local k = math.sqrt(e.a * e.a * nu * nu + e.b * e.b * nv * nv)
+		local su, sv = e.a * e.a * nu / k, e.b * e.b * nv / k
+		local x1, z1 = toWorld(e, su, sv)
+		local x2, z2 = toWorld(e, -su, -sv)
+		return x1, z1, x2, z2
+	end
+	local phi, alpha = atan2(V, U), math.acos(1 / d)
+	local x1, z1 = pointAt(e, phi + alpha)
+	local x2, z2 = pointAt(e, phi - alpha)
+	return x1, z1, x2, z2
+end
+
+-- Parameter of the point on the oval closest to (px, pz): start at the point's
+-- own angle in the oval's scaled frame (on the near side, so in the right
+-- basin), then a shrinking pattern search so the ceil()'d range is exact.
+local function closestT(e, px, pz, t0, span)
+	local function dist2(t)
+		local x, z = pointAt(e, t)
+		return (x - px) ^ 2 + (z - pz) ^ 2
+	end
+	if not t0 then
+		local u, v = toLocal(e, px, pz)
+		t0, span = atan2(v / e.b, u / e.a), 0.25
+	end
+	local best, bestD = t0, dist2(t0)
+	for _ = 1, 24 do
+		local l, r = dist2(best - span), dist2(best + span)
+		if l < bestD then best, bestD = best - span, l
+		elseif r < bestD then best, bestD = best + span, r
+		else span = span * 0.5 end
+	end
+	return best, math.sqrt(bestD)
+end
+
+-- Edge-to-edge gap between two ovals (0 when they touch or overlap).
+local function ovalGap(e1, e2)
+	local u, v = toLocal(e1, e2.x, e2.z)
+	if (u / e1.a) ^ 2 + (v / e1.b) ^ 2 <= 1 then return 0 end
+	u, v = toLocal(e2, e1.x, e1.z)
+	if (u / e2.a) ^ 2 + (v / e2.b) ^ 2 <= 1 then return 0 end
+	for i = 0, SAMPLES - 1 do
+		local x, z = pointAt(e1, i * 2 * math.pi / SAMPLES)
+		local inU, inV = toLocal(e2, x, z)
+		if (inU / e2.a) ^ 2 + (inV / e2.b) ^ 2 <= 1 then return 0 end
+	end
+	local t1 = closestT(e1, e2.x, e2.z)
+	local t2, gap
+	for _ = 1, 6 do
+		local x1, z1 = pointAt(e1, t1)
+		t2 = closestT(e2, x1, z1, t2, 0.2)
+		local x2, z2 = pointAt(e2, t2)
+		t1, gap = closestT(e1, x2, z2, t1, 0.2)
+	end
+	return gap
+end
+
+local function pointGap(px, pz, e)
+	local u, v = toLocal(e, px, pz)
+	if (u / e.a) ^ 2 + (v / e.b) ^ 2 <= 1 then return 0 end
+	local _, gap = closestT(e, px, pz)
+	return gap
+end
+
+-- Cover / obscured. Rays fan from the cone tip to points across the facing part
+-- of the target base, just above both bases; each is cast both ways so every
+-- piece of terrain it crosses yields the stretch of the line inside it (a ray
+-- only reports where it enters a collider). Operatives, tokens and tools are
+-- ignored. Per stretch (so one piece can do both):
+--   light/heavy within 1" of the target  -> light/heavy cover (heavy wins),
+--                                            none if the bases are within 2"
+--   heavy more than 1" from BOTH bases    -> obscured
+-- Terrain type comes from the name or description ("Light Rubble",
+-- "Capillary Tower (Heavy)"); untyped terrain is treated as heavy.
+local FAN_RAYS = 9
+local RAY_LIFT = 0.25
+local CONTROL_RANGE = 1
+local COVER_DENIED_WITHIN = 2
+local ANALYSE_EVERY = 6          -- frames between terrain checks while dragging
+local COL_LIGHT = { 1, 0.55, 0 }
+local COL_HEAVY = { 0.95, 0.1, 0.1 }
+local COL_OBSCURED = { 0.7, 0.3, 1 }
+local IGNORE_TYPES = { Scripting = true, Surface = true, Hand = true, Card = true, Deck = true, Dice = true }
+local IGNORE_TAGS = { "KTUIMini", "KTUI_ToolActive", "KT24Token", "KT_Objective" }
+-- Light terrain whose name doesn't say so (e.g. the Portable Barricade equipment).
+local LIGHT_WORDS = { "light", "barricade" }
+
+coverState = nil      -- nil | "light" | "heavy"
+obscuredState = false
+activeColor = nil     -- player using the cone (gets the HUD readout)
+local dragFrames = 0
+
+local function facingPoints(e, px, pz)
+	local u, v = toLocal(e, px, pz)
+	local U, V = u / e.a, v / e.b
+	local d = math.sqrt(U * U + V * V)
+	if d <= 1 + 1e-6 then
+		local x1, z1, x2, z2 = tangentPoints(e, px, pz)
+		return { { x1, z1 }, { x2, z2 } }
+	end
+	local phi, alpha = atan2(V, U), math.acos(1 / d)
+	local pts = {}
+	for i = 0, FAN_RAYS - 1 do
+		local x, z = pointAt(e, phi - alpha + 2 * alpha * i / (FAN_RAYS - 1))
+		pts[#pts + 1] = { x, z }
+	end
+	return pts
+end
+
+local function isIgnored(obj)
+	if obj == nil or obj == self or obj == objModel or obj == ObjMiniTarget then return true end
+	if IGNORE_TYPES[obj.type] then return true end
+	for _, tag in ipairs(IGNORE_TAGS) do
+		if obj.hasTag(tag) then return true end
+	end
+	for _, tag in ipairs(obj.getTags() or {}) do
+		if tostring(tag):find("KTUIToken", 1, true) == 1 then return true end
+	end
+	return false
+end
+
+local function terrainKind(obj)
+	local text = (tostring(obj.getName() or "") .. " " .. tostring(obj.getDescription() or "")):lower()
+	if text:find("heavy", 1, true) then return "heavy" end
+	for _, word in ipairs(LIGHT_WORDS) do
+		if text:find(word, 1, true) then return "light" end
+	end
+	return "heavy"
+end
+
+local function baseBottom(obj)
+	local b = obj.getBounds()
+	return b.center.y - b.size.y * 0.5
+end
+
+-- Stretches of one ray inside each terrain piece: { [guid] = {obj=, sIn=, sOut=} }
+-- with s measured along the ray from `a` (0..len).
+local function rayStretches(a, b)
+	local d = { x = b.x - a.x, y = b.y - a.y, z = b.z - a.z }
+	local len = math.sqrt(d.x * d.x + d.y * d.y + d.z * d.z)
+	local pieces = {}
+	if len < 1e-6 then return pieces, len, d end
+	local u = { x = d.x / len, y = d.y / len, z = d.z / len }
+	local function record(hits)
+		for _, hit in ipairs(hits or {}) do
+			local obj = hit.hit_object
+			if not isIgnored(obj) and hit.point then
+				local p = hit.point
+				local s = (p.x - a.x) * u.x + (p.y - a.y) * u.y + (p.z - a.z) * u.z
+				s = math.max(0, math.min(len, s))
+				local key = obj.getGUID and obj.getGUID() or tostring(obj)
+				local piece = pieces[key]
+				if piece then
+					piece.sIn, piece.sOut = math.min(piece.sIn, s), math.max(piece.sOut, s)
+				else
+					pieces[key] = { obj = obj, sIn = s, sOut = s }
+				end
+			end
+		end
+	end
+	record(Physics.cast({ origin = a, direction = d, type = 1, max_distance = len }))
+	record(Physics.cast({ origin = b, direction = { x = -d.x, y = -d.y, z = -d.z }, type = 1, max_distance = len }))
+	return pieces, len, d
+end
+
+-- Where a ray from (ax, az) with planar step (dx, dz) per unit s enters and
+-- leaves the oval grown by `grow` (the 1" zone around a base; exact for round
+-- bases, within a few hundredths of an inch for ovals). nil if it misses.
+local function rayThroughZone(e, ax, az, dx, dz, grow)
+	local A, B = e.a + grow, e.b + grow
+	local u0, v0 = toLocal(e, ax, az)
+	local c, s = math.cos(e.h), math.sin(e.h)
+	local du, dv = dx * c - dz * s, dx * s + dz * c
+	local qa = (du / A) ^ 2 + (dv / B) ^ 2
+	local qb = 2 * (u0 * du / (A * A) + v0 * dv / (B * B))
+	local qc = (u0 / A) ^ 2 + (v0 / B) ^ 2 - 1
+	local disc = qb * qb - 4 * qa * qc
+	if qa < 1e-12 or disc < 0 then return nil end
+	local r = math.sqrt(disc)
+	return (-qb - r) / (2 * qa), (-qb + r) / (2 * qa)
+end
+
+-- Sets coverState / obscuredState for the current shooter (objModel, sight
+-- lines from the cone at `sp`) and target.
+function analyseTerrain(target, sp)
+	coverState, obscuredState = nil, false
+	local shooter = baseEllipse(objModel)
+	local fullTarget = baseEllipse(ObjMiniTarget)
+	local coverAllowed = ovalGap(shooter, fullTarget) > COVER_DENIED_WITHIN
+	local a = { x = sp.x, y = baseBottom(objModel) + RAY_LIFT, z = sp.z }
+	local ty = baseBottom(ObjMiniTarget) + RAY_LIFT
+	local light, heavy = false, false
+	for _, p in ipairs(facingPoints(target, sp.x, sp.z)) do
+		local pieces, len, d = rayStretches(a, { x = p[1], y = ty, z = p[2] })
+		if next(pieces) then
+			local dx, dz = d.x / len, d.z / len
+			-- Within 1" of the target from nearTarget on; more than 1" from the
+			-- shooter from leaveShooter on.
+			local tIn = rayThroughZone(fullTarget, a.x, a.z, dx, dz, CONTROL_RANGE)
+			local _, sOut = rayThroughZone(shooter, a.x, a.z, dx, dz, CONTROL_RANGE)
+			local nearTarget = tIn and math.max(0, tIn) or len
+			local leaveShooter = sOut and math.max(0, sOut) or 0
+			for _, piece in pairs(pieces) do
+				local kind = terrainKind(piece.obj)
+				if coverAllowed and piece.sOut >= nearTarget then
+					if kind == "heavy" then heavy = true else light = true end
+				end
+				if kind == "heavy" and math.max(piece.sIn, leaveShooter) < math.min(piece.sOut, nearTarget) then
+					obscuredState = true
+				end
+			end
+		end
+	end
+	coverState = heavy and "heavy" or (light and "light" or nil)
+end
+
+-- Cover/obscured readout in the shared top-centre HUD the move tools use
+-- (ktmove_hud in the Global UI), shown to the player using the cone.
+local HUD_COLORS = { "White", "Brown", "Red", "Orange", "Yellow",
+                     "Green", "Teal", "Blue", "Purple", "Pink" }
+local hudColor, hudText = nil, nil
+
+local function ensureHud()
+	local cur = ""
+	pcall(function() cur = Global.UI.getXml() or "" end)
+	if type(cur) ~= "string" then cur = "" end
+	if cur:find("ktmove_hud", 1, true) then return end
+	local rows = ""
+	for _, c in ipairs(HUD_COLORS) do
+		local col = Color.fromString(c):lerp(Color.White, 0.25)
+		rows = rows .. string.format(
+			'<Text id="ktmove_txt_%s" active="false" color="#%s" fontSize="26" '
+			.. 'fontStyle="Bold" alignment="Center" preferredHeight="32" '
+			.. 'outline="#000000" outlineSize="2 -2" raycastTarget="false"> </Text>', c, col:toHex(false))
+	end
+	pcall(function() Global.UI.setXml(cur
+		.. '<Panel id="ktmove_hud" active="true" rectAlignment="UpperCenter" '
+		.. 'width="600" height="120" offsetXY="0 -80" color="#00000000" raycastTarget="false">'
+		.. '<VerticalLayout childAlignment="UpperCenter" childForceExpandWidth="true" '
+		.. 'childForceExpandHeight="false" spacing="2" raycastTarget="false">'
+		.. rows .. '</VerticalLayout></Panel>') end)
+end
+
+local function hudSet(color, text)
+	if hudColor and (color ~= hudColor or not text) then
+		local old = hudColor
+		pcall(function()
+			Global.UI.setAttribute("ktmove_txt_" .. old, "active", "false")
+			Global.UI.setValue("ktmove_txt_" .. old, " ")
+		end)
+		hudColor, hudText = nil, nil
+	end
+	if not color or not text or text == hudText then return end
+	if not hudColor then ensureHud() end
+	hudColor, hudText = color, text
+	pcall(function()
+		Global.UI.setAttribute("ktmove_txt_" .. color, "active", "true")
+		Global.UI.setValue("ktmove_txt_" .. color, text)
+	end)
+end
+
+local function stateText()
+	local text = coverState == "heavy" and "Heavy cover" or (coverState == "light" and "Light cover" or "No cover")
+	if obscuredState then text = text .. "  +  Obscured" end
+	return text
+end
+
+function onPickUp(cp)
+	activeColor = cp
+	pickedUp = true
+	startLuaCoroutine(self, "movModel")
+end
+
+function movModel()
+	objModel = getObjectFromGUID(GUIDModel)
+	posY = objModel.getPosition().y + 0.5
+	while (pickedUp == true) do
+		posicionLock()
+		coroutine.yield(0)
+	end
+	return 1
+end
+
+function posicionLock()
+	local mouse = self.getPosition()
+	newX, newZ = mouse.x, mouse.z
+
+	if lockEnabled then
+		newX, newZ = edgeToward(baseEllipse(objModel), mouse.x, mouse.z)
+		self.setPosition({x=newX, y=posY, z=newZ})
+	else
+		self.setPosition({x=newX, y=mouse.y, z=newZ})
+	end
+
+	self.setVelocity({0,0,0})
+	self.setAngularVelocity({0,0,0})
+	self.setRotation({0,0,0})
+	refrescaVectores()
+end
+
+function onDropped(cp)
+	if pickedUp == true then
+		pickedUp = false
+
+		if lockEnabled then
+			self.setPosition({x=newX, y=posY, z=newZ})
+		else
+			local mouseY = self.getPosition().y
+			self.setPosition({x=newX, y=mouseY, z=newZ})
+		end
+
+		self.setVelocity({0,0,0})
+		self.setAngularVelocity({0,0,0})
+		self.setRotation({0,0,0})
+		refrescaVectores()
+	end
+end
+
+function refrescaVectores()
+	if estado_cono ~= 2 then return end
+	local lambda = 1
+	local ancho_linea = 0.04
+	local sp = self.getPosition()
+	local target = shrink(baseEllipse(ObjMiniTarget), ancho_linea * 0.5)
+	local pY = ObjMiniTarget.getPosition().y - sp.y + 0.05
+	local x1, z1, x2, z2 = tangentPoints(target, sp.x, sp.z)
+
+	-- Line points are local to the cone (unrotated, unit scale); each line runs
+	-- from the cone tip (0, -0.45, 0) past its tangent point by `lambda`.
+	local function extended(wx, wz)
+		local sX, sZ = wx - sp.x, wz - sp.z
+		local Cy = pY + 0.45
+		local mag = math.sqrt(sX * sX + Cy * Cy + sZ * sZ)
+		return { x = sX + lambda * sX / mag, y = pY + lambda * Cy / mag, z = sZ + lambda * sZ / mag }
+	end
+
+	dragFrames = pickedUp and dragFrames + 1 or 0
+	if dragFrames % ANALYSE_EVERY == 0 then
+		analyseTerrain(target, sp)
+		hudSet(activeColor, stateText())
+		refrescaTextoRango()
+	end
+	local lineColor = colorLinea
+	if coverState == "heavy" then lineColor = COL_HEAVY elseif coverState == "light" then lineColor = COL_LIGHT end
+	local vectorLines = {{
+		points = { extended(x1, z1), { x = 0, y = -0.45, z = 0 }, extended(x2, z2) },
+		color = lineColor,
+		thickness = ancho_linea,
+		rotation = {0, 0, 0},
+	}}
+	if obscuredState then
+		local arc = {}
+		for _, p in ipairs(facingPoints(target, sp.x, sp.z)) do
+			arc[#arc + 1] = { x = p[1] - sp.x, y = pY + 0.05, z = p[2] - sp.z }
+		end
+		vectorLines[2] = { points = arc, color = COL_OBSCURED, thickness = 0.12, rotation = {0, 0, 0} }
+	end
+	self.setVectorLines(vectorLines)
+end
+
+function onNumberTyped( pc, n )
+	if n == 1 then
+		estado_cono = 1
+		broadcastToColor("Select Target", pc, {r=1, g=1, b=1})
+	elseif n == 2 then
+		lockEnabled = not lockEnabled
+		if lockEnabled then
+			broadcastToColor("Targeting Tool locked to base", pc, {1,1,1})
+		else
+			broadcastToColor("Targeting Tool unlocked", pc, {1,1,1})
+		end
+	elseif n == 3 then
+		hudSet(nil)
+		self.destruct()
+	end
+	return true
+end
+
+function onDestroy()
+	hudSet(nil)
+end
+
+function onLoad(ls)
+	self.setName(
+	"Hover over and press these buttons:\n" ..
+	"- 1 to select a target\n" ..
+	"- 2 to unlock or lock to base\n" ..
+	"- 3 to finish"
+	)
+	self.max_typed_number=9
+	self.clearButtons()
+	local rango = {['function_owner'] = self, ['click_function'] = 'gg', ['label'] = "0''", ['position'] = {0, 0.5, 0}, ['rotation'] =  {0,0,0}, ['width'] = 5, ['height'] = 5, ['font_size'] = 150, ['font_color'] = {1,1,1}}
+	self.createButton(rango)
+	pickedUp = true
+	startLuaCoroutine(self, "movModel")
+	pickedUp = false
+	self.setVectorLines(nil)
+	self.setTags({"KTUI_ToolActive"})
+end
+
+function refrescaTextoRango()
+	local target = baseEllipse(ObjMiniTarget)
+	local lhip, cat3
+	if lockEnabled then
+		lhip = ovalGap(baseEllipse(objModel), target)
+		cat3 = objModel.getPosition().y - objModel.getBounds().offset.y
+			- ObjMiniTarget.getPosition().y - ObjMiniTarget.getBounds().offset.y
+	else
+		local sp = self.getPosition()
+		lhip = pointGap(sp.x, sp.z, target)
+		cat3 = ObjMiniTarget.getPosition().y - ObjMiniTarget.getBounds().offset.y
+			- sp.y - self.getBounds().offset.y
+	end
+	local hip = math.ceil(math.sqrt((lhip * lhip) + (cat3 * cat3)))
+	self.editButton({index=0, label=hip.."''"})
+end
+
+function onObjectPickUp(selfpc, targetObj)
+	if estado_cono == 1 then
+		ObjMiniTarget = targetObj
+		activeColor = selfpc
+		estado_cono = 2
+		refrescaVectores()
+	end
+end
+]=]
+
+function ktLocalScript(code, callback)
+    Wait.frames(function() callback({text = code}) end, 1)
+end
+-- END KT_TARGETING_V1 --
 
 -- KT model-side extension (appended AFTER the healed KTUI extender script).
 -- This is OUR code that rides on top of the real extender model script, composed
@@ -2441,7 +2960,7 @@ function getUIPosition()
 end
 -- END KT_EXTENSION_V1 --
 
-
+-- START KT_NODE_OVAL_V1 --
 local nodeGetCircleVectorPoints = getCircleVectorPoints
 
 function getCircleVectorPoints(...)
@@ -2457,6 +2976,7 @@ function getCircleVectorPoints(...)
     end
     return points
 end
+-- END KT_NODE_OVAL_V1 --
 ]==]
 
 MOVE_TOOL_CODE = [=[--[[ ============================================================================
@@ -3514,7 +4034,14 @@ SPRINT_TOOL_CODE = [=[--[[ =====================================================
 
   Straight steps support BACKWARD movement: drag the line behind the model to
   reverse. Backward is capped at 3" total for the whole sprint (forward still
-  uses the separate 9" budget).
+  uses the separate 9" budget). Per the errata a sprint can't move BOTH forward
+  and backward: the first straight leg that moves locks the direction, so if it
+  went backward the second leg can only go backward (and vice versa).
+
+  The model itself does NOT move mid-sprint: committed legs/pivots are shown as
+  corridors + a ghost and the model lands in one go when the sprint finishes.
+  So it can pivot "through" other models/terrain between the legs (Exodite FAQ)
+  without having to be physically placed at the pivot point.
 
   Step flow
   ---------
@@ -3564,11 +4091,13 @@ local UNITS_PER_INCH = 1        -- world units per inch (KT-UI table = 1)
 -- Click-catcher: a transparent button pinned to the model, covering ONLY the area
 -- the model can actually travel this step -- a NARROW rectangle aligned to the
 -- model's facing that runs the forward budget (+ margin) ahead and the backward
--- budget (+ margin) behind, base-width wide. Because it is a button ON the model,
--- hovering it counts as hovering the model, so the number ROW (onNumberTyped)
--- works across the reach with NO key binding. It locks only this slim corridor,
--- not a big disc over the whole table. It is rebuilt ONLY when the reach changes
--- (a leg is committed or a step-back happens), NOT every frame -- so no lag.
+-- budget (+ margin) behind, base-width wide, centred on the committed sprint
+-- point (the model itself stays put until the end). Because it is a button ON
+-- the model, hovering it counts as hovering the model, so the number ROW
+-- (onNumberTyped) works across the reach with NO key binding. It locks only
+-- this slim corridor, not a big disc over the whole table. It is rebuilt ONLY
+-- when the reach/committed point changes (a leg is committed or a step-back
+-- happens), NOT every frame -- so no lag.
 local CATCHER_MARGIN_IN    = 2           -- inches of catch area past the reach (~1" felt short at 1)
 local CATCHER_SIDE_MARGIN_IN = 2.5       -- inches of catch area either side of the base (corridor width)
 -- button-units per inch. TUNING KNOB: raise = bigger catcher, lower = smaller.
@@ -3644,6 +4173,7 @@ local backSpent    = 0          -- BACKWARD straight distance used (raw inches)
 local rawStraight  = 0          -- exact straight distance travelled (for readout)
 local facingOffset = 0          -- deg added to transform-forward -> visual facing
 local committedLegs = {}         -- { {a=,b=,heading=}, ... } straight corridors
+local legDir       = 0          -- direction lock: 0 = none yet, 1 = forward only, -1 = backward only
 
 -- current step's selected mode
 --   S1:    "straight" | "pivotFront" | "pivotCenter" | "pivotBack"
@@ -3675,11 +4205,9 @@ local loopHandle    = nil
 local lastReport    = nil
 local catcherActive = false
 local catcherTooltip = nil       -- tooltip for the current catcher (varies by Sprint/Turn/Leap)
-local lastCatcherKind = nil      -- guard: pivot(true)/straight(false) shape currently built
-local lastCatcherFwd  = nil      -- guard: only rebuild the catcher when the reach changes
-local lastCatcherBack = nil      -- guard: only rebuild the catcher when the reach changes
+local lastCatcherKey = nil       -- guard: only rebuild the catcher when its shape/placement changes
 local syncCatcher                -- fwd decl; defined with the catcher, called from tick()
-local applyToModel               -- fwd decl; steps/rotates the model to the current leg
+local applyToModel               -- fwd decl; places the model at the final sprint result
 
 -- --------------------------------------------------------------- utilities ---
 local function toUnits(inches) return inches * UNITS_PER_INCH end
@@ -3770,7 +4298,7 @@ local function refreshBaseDims()
 			local bx = tonumber(data.base.x)   -- width  (side-to-side)
 			local bz = tonumber(data.base.z)   -- length (front-to-back)
 			if bx and bx > 0 and bz and bz > 0 then
-				BASE_MM_WIDE, BASE_MM_LONG = bx, bz
+				BASE_MM_WIDE, BASE_MM_LONG = math.min(bx, bz), math.max(bx, bz)
 				-- Facing = transform-forward + KTUI_FACING_OFFSET (default 0, i.e.
 				-- correct sculpts run head-first) + a per-model kt_front offset
 				-- (0/90/180/270, cycled by the "Rotate base 90" menu item) that
@@ -3778,13 +4306,11 @@ local function refreshBaseDims()
 				-- tail-first. Absent kt_front = 0 = no change.
 				local ktf = tonumber(data.kt_front) or 0
 				facingOffset = KTUI_FACING_OFFSET + ktf
-				-- "Rotate base 90" also SWAPS base.x/base.z in state (to rotate the
-				-- KTUI ring). At odd quarters (90/270) that moves the long axis onto
-				-- the OTHER dimension, so re-label LONG(front-to-back)/WIDE(side-to-
-				-- side) here to keep the ghost + corridor drawn long-along-heading.
-				if (math.floor(ktf / 90) % 2) == 1 then
-					BASE_MM_WIDE, BASE_MM_LONG = BASE_MM_LONG, BASE_MM_WIDE
-				end
+				-- The ghost + corridor always run long-along-heading (an oval's
+				-- front is on its long axis), so LONG/WIDE come from max/min rather
+				-- than x/z: "Rotate base 90" swaps x/z in state, while the command
+				-- node sets an arbitrary kt_front from its own heading without
+				-- swapping, so x/z can't tell which one runs along the front.
 				return
 			end
 		end
@@ -3817,15 +4343,28 @@ local function halfWide() return (BASE_MM_WIDE * 0.5) * MM_TO_INCH * UNITS_PER_I
 -- --------------------------------------------------------------- geometry ----
 local function remainingInches() return math.max(0, MAX_INCHES - spentInches) end
 
+-- Remaining budget usable in each direction, honouring the errata lock: a
+-- sprint can't mix forward and backward legs, so once a straight leg has moved
+-- one way the other direction's budget is 0.
+local function fwdAvail()
+	if legDir < 0 then return 0 end
+	return remainingInches()
+end
+local function backAvail()
+	if legDir > 0 then return 0 end
+	return math.max(0, MAX_BACK_INCHES - backSpent)
+end
+
 -- Straight leg preview from curPos along curHeading toward the pointer. Allows
 -- BACKWARD movement (negative projection); magnitude clamped to the remaining
--- budget. Returns signed inches, the end Vector, and the (unchanged) heading.
+-- budget in the allowed direction(s). Returns signed inches, the end Vector,
+-- and the (unchanged) heading.
 local function straightPreview(pointer)
 	local fdir  = dirFromHeading(curHeading)
 	local px, pz = pointer.x - curPos.x, pointer.z - curPos.z
 	local proj  = px * fdir.x + pz * fdir.z          -- signed world units
-	local remFwdU  = toUnits(remainingInches())
-	local remBackU = toUnits(math.max(0, MAX_BACK_INCHES - backSpent))
+	local remFwdU  = toUnits(fwdAvail())
+	local remBackU = toUnits(backAvail())
 	local d        = clamp(proj, -remBackU, remFwdU)
 	local endPos = { x = curPos.x + fdir.x * d, y = curPos.y, z = curPos.z + fdir.z * d }
 	return toInches(d), endPos, curHeading
@@ -4069,6 +4608,11 @@ local function redraw(active, endPos, endHeading)
 	for _, leg in ipairs(committedLegs) do
 		appendCorridor(lines, leg.a, leg.b, leg.heading, COL_LEG_DONE)
 	end
+	-- The model stays at its start until the sprint ends, so mark the committed
+	-- mid-sprint footprint (where the pivot / second leg starts from).
+	if (phase == PHASE_PIVOT or phase == PHASE_S2) and not turnOnly then
+		appendGhost(lines, curPos.x, curPos.y, curPos.z, curHeading, COL_LEG_DONE)
+	end
 	for _, l in ipairs(active or {}) do table.insert(lines, l) end
 	if endPos then
 		appendGhost(lines, endPos.x, endPos.y or curPos.y, endPos.z, endHeading)
@@ -4161,6 +4705,22 @@ local function destroyDistText()
 end
 
 -- ------------------------------------------------------------- update loop ---
+-- Grey reach cones from a pivot anchor: pivot +/-45, then spend the remaining
+-- straight budget forward and/or backward. A direction the lock has ruled out
+-- (or with no budget left) gets no cone.
+local function appendPivotReach(out, anchor)
+	local fdir = dirFromHeading(curHeading)
+	local anchorFwdU = (anchor.x - curPos.x) * fdir.x + (anchor.z - curPos.z) * fdir.z
+	local fwd, back = fwdAvail(), backAvail()
+	if fwd > 0 then
+		appendReachCone(out, anchor, curHeading, MAX_PIVOT_DEG,
+			fwd + toInches(halfLong() - anchorFwdU), COL_LIMIT)
+	end
+	if back > 0 then
+		appendReachCone(out, anchor, curHeading + 180, MAX_PIVOT_DEG,
+			back + toInches(halfLong() + anchorFwdU), COL_LIMIT)
+	end
+end
 local function s1Origin()
 	if s1Mode == "pivotFront" then return "front" end
 	if s1Mode == "pivotBack" then return "back" end
@@ -4179,8 +4739,7 @@ local function tick()
 
 	if phase == PHASE_S1 and s1Mode == "straight" then
 		-- Grey full-range guide: the whole straight budget you could still spend.
-		appendRangeGuide(active, curPos, curHeading, remainingInches(),
-			math.max(0, MAX_BACK_INCHES - backSpent), COL_LIMIT)
+		appendRangeGuide(active, curPos, curHeading, fwdAvail(), backAvail(), COL_LIMIT)
 		local d, e, h = straightPreview(pointer)
 		prevStraight, prevEndPos, prevHeading = d, e, h
 		appendCorridor(active, curPos, e, h, COL_LEG)
@@ -4192,13 +4751,7 @@ local function tick()
 		local nh, np, anchor, delta, valid = pivotPreview(pointer, s1Origin(), curPos, curHeading)
 		-- Grey reachable cones from the pivot anchor (moves with the mode): pivot
 		-- +/-45, then spend the straight budget FORWARD or BACKWARD.
-		local fdir = dirFromHeading(curHeading)
-		local anchorFwdU = (anchor.x - curPos.x) * fdir.x + (anchor.z - curPos.z) * fdir.z
-		local backRem = math.max(0, MAX_BACK_INCHES - backSpent)
-		appendReachCone(active, anchor, curHeading, MAX_PIVOT_DEG,
-			remainingInches() + toInches(halfLong() - anchorFwdU), COL_LIMIT)
-		appendReachCone(active, anchor, curHeading + 180, MAX_PIVOT_DEG,
-			backRem + toInches(halfLong() + anchorFwdU), COL_LIMIT)
+		appendPivotReach(active, anchor)
 		appendPivotGuides(active, anchor, curHeading, curPos.y)
 		if valid then
 			prevStraight, prevEndPos, prevHeading = 0, np, nh
@@ -4210,14 +4763,8 @@ local function tick()
 	elseif phase == PHASE_PIVOT then
 		local nh, np, anchor, delta, valid = pivotPreview(pointer, pivotOrigin, curPos, curHeading)
 		-- Reach cones from the pivot anchor (moves with the chosen mode): forward
-		-- (remaining straight budget) and backward (remaining backward budget).
-		local fdir = dirFromHeading(curHeading)
-		local anchorFwdU = (anchor.x - curPos.x) * fdir.x + (anchor.z - curPos.z) * fdir.z
-		local backRem = math.max(0, MAX_BACK_INCHES - backSpent)
-		appendReachCone(active, anchor, curHeading, MAX_PIVOT_DEG,
-			remainingInches() + toInches(halfLong() - anchorFwdU), COL_LIMIT)
-		appendReachCone(active, anchor, curHeading + 180, MAX_PIVOT_DEG,
-			backRem + toInches(halfLong() + anchorFwdU), COL_LIMIT)
+		-- and/or backward, only in the direction(s) the lock still allows.
+		appendPivotReach(active, anchor)
 		appendPivotGuides(active, anchor, curHeading, curPos.y)
 		if valid then
 			prevStraight, prevEndPos, prevHeading = 0, np, nh
@@ -4227,8 +4774,7 @@ local function tick()
 		end
 
 	elseif phase == PHASE_S2 then
-		appendRangeGuide(active, curPos, curHeading, remainingInches(),
-			math.max(0, MAX_BACK_INCHES - backSpent), COL_LIMIT)
+		appendRangeGuide(active, curPos, curHeading, fwdAvail(), backAvail(), COL_LIMIT)
 		local d, e, h = straightPreview(pointer)
 		prevStraight, prevEndPos, prevHeading = d, e, h
 		appendCorridor(active, curPos, e, h, COL_LEG)
@@ -4269,15 +4815,21 @@ local function stopLoop()
 end
 
 -- --------------------------------------------------------- click catcher ----
--- A static transparent RECTANGLE pinned to the model, aligned to its facing and
--- sized to the area the model can actually travel THIS step: the forward budget
--- (+ margin) ahead of it and the backward budget (+ margin) behind it, only a
--- base-width-ish corridor wide. This is far smaller than the old full-envelope
--- disc, so it no longer locks a big bubble over the whole table -- it only
--- covers where the model can move. LEFT-click = apply, RIGHT-click = back.
--- Because it is a button ON the model, hovering it counts as hovering the model,
--- so the number ROW works with no binding. It is rebuilt only when the reach
--- changes (a leg commits / step-back), never per frame -- so there is no lag.
+-- A static transparent RECTANGLE button on the model, aligned to the sprint's
+-- CURRENT heading and sized to the area the base can actually travel THIS step:
+-- the forward budget (+ margin) ahead and the backward budget (+ margin) behind,
+-- only a base-width-ish corridor wide (pivot steps use a square over the swing).
+-- LEFT-click = apply, RIGHT-click = back. Because it is a button ON the model,
+-- hovering it counts as hovering the model, so the number ROW works with no
+-- binding. It is rebuilt only when the reach or the sprint's committed position/
+-- heading changes (a leg commits / step-back), never per frame -- so no lag.
+--
+-- The model itself stays put until the sprint finishes (so it can "pivot
+-- through" other models/terrain mid-sprint). The button therefore can't simply
+-- ride along at the model's origin: it is placed at the committed sprint point
+-- (curPos/curHeading) via TTS's own positionToLocal, and its rotation is derived
+-- from the SAME conversion, so position and rotation always agree on the local
+-- frame (no hand-rolled axis math that can come out mirrored).
 
 -- Remove every catcher button currently on the model (high->low: removeButton
 -- reshuffles indices, so removing while iterating by index can skip one).
@@ -4291,11 +4843,11 @@ local function clearCatcherButtons()
 end
 
 -- Forward / backward reach (inches) of the catch rectangle for a STRAIGHT step:
--- the remaining forward / backward budget + margin, each floored so a nearly-
--- spent sprint still has a clickable area.
+-- the remaining forward / backward budget (honouring the direction lock) +
+-- margin, each floored so a nearly-spent sprint still has a clickable area.
 local function catcherReach()
-	local fwd  = remainingInches() + CATCHER_MARGIN_IN
-	local back = math.max(0, MAX_BACK_INCHES - backSpent) + CATCHER_MARGIN_IN
+	local fwd  = fwdAvail() + CATCHER_MARGIN_IN
+	local back = backAvail() + CATCHER_MARGIN_IN
 	if fwd  < 3 then fwd  = 3 end
 	if back < 2 then back = 2 end
 	return fwd, back
@@ -4311,92 +4863,109 @@ local function catcherIsPivot()
 end
 
 -- Half-span (inches) of the centred square used while aiming a pivot: the
--- forward budget (+ margin) plus a base half-length, so the +/-45 cones and the
--- base tips all stay inside the clickable area. Floored so a spent sprint still
--- has room to click.
+-- larger remaining budget (+ margin) plus a base half-length, so the +/-45 cones
+-- and the base tips all stay inside the clickable area. Floored so a spent
+-- sprint still has room to click.
 local function catcherPivotReach()
-	local r = remainingInches() + CATCHER_MARGIN_IN + toInches(halfLong())
+	local r = math.max(fwdAvail(), backAvail()) + CATCHER_MARGIN_IN + toInches(halfLong())
 	return (r < 4) and 4 or r
 end
 
+-- The world point / heading the catcher is centred on. Leap keeps the catcher
+-- on the original footprint (its aim is relative to that, and rotate taps must
+-- not rebuild it); Sprint/Turn use the committed sprint point.
+local function catcherAnchor()
+	if phase == PHASE_LEAP then return startPos.x, startPos.z, startHeading end
+	return curPos.x, curPos.z, curHeading
+end
+
+-- Convert a world point + heading into the model's LOCAL button frame. The
+-- rotation is measured by converting a second point one inch along the heading,
+-- so it is expressed in exactly the same (possibly mirrored) frame as the
+-- position. Scale is multiplied back out of the direction so a non-unit model
+-- scale doesn't skew the angle.
+local function toButtonFrame(wx, wz, heading)
+	local sc = self.getScale()
+	local d  = dirFromHeading(heading)
+	local lp = self.positionToLocal(Vector(wx, startY, wz))
+	local lq = self.positionToLocal(Vector(wx + d.x, startY, wz + d.z))
+	local dx = (lq.x - lp.x) * sc.x
+	local dz = (lq.z - lp.z) * sc.z
+	return lp, headingOf(dx, dz)
+end
+
 -- (Re)create the catcher as a FRESH button sized to the CURRENT step:
---   * straight leg -> a NARROW rectangle aligned to the model's VISUAL facing
---     (button rotation = facingOffset), pushed forward so it runs `fwd` inches
---     ahead and `back` inches behind -- covering only the travel corridor.
---   * pivot/turn   -> a CENTRED square covering the full +/-45 swing, so you can
---     click anywhere in the front OR rear cone out to the reach.
--- The model steps/rotates to each committed leg (see applyToModel) and the button
--- rides along in local space, so it always tracks the operative's current spot and
--- facing -- no offset math. remove+recreate because editing a button does not
--- reliably rebuild its invisible click hitbox in TTS.
+--   * straight leg -> a NARROW rectangle aligned to the sprint's current heading,
+--     shifted so it runs `fwd` inches ahead and `back` inches behind the
+--     committed point -- covering only the travel corridor.
+--   * pivot/turn   -> a square centred on the committed point covering the full
+--     +/-45 swing, so you can click anywhere in the front OR rear cone.
+-- remove+recreate because editing a button does not reliably rebuild its
+-- invisible click hitbox in TTS.
 local function placeCatcher()
 	clearCatcherButtons()
 	local sc     = self.getScale()
+	local sx     = (sc.x ~= 0 and sc.x or 1)
+	local sy     = (sc.y ~= 0 and sc.y or 1)
+	local sz     = (sc.z ~= 0 and sc.z or 1)
 	local uPerIn = CATCHER_UNITS_PER_IN
+	local ax, az, heading = catcherAnchor()
+	local widthIn, depthIn, offIn
 	if catcherIsPivot() then
-		-- Centred, rotation-proof square covering the pivot swing (both cones).
-		local span = 2 * catcherPivotReach() * uPerIn
-		self.createButton({
-			click_function = "sprintCatcherClick",
-			function_owner = self,
-			label          = "",
-			position       = { 0, 0.6 / (sc.y ~= 0 and sc.y or 1), 0 },
-			rotation       = { 0, 0, 0 },
-			width          = span / (sc.x ~= 0 and sc.x or 1),
-			height         = span / (sc.z ~= 0 and sc.z or 1),
-			font_size      = 100,
-			color          = { 0, 0, 0, 0 },
-			tooltip        = catcherTooltip,
-		})
-		return
+		local r = catcherPivotReach()
+		widthIn, depthIn, offIn = 2 * r, 2 * r, 0
+	else
+		local fwd, back = catcherReach()
+		widthIn = 2 * halfWide() + 2 * CATCHER_SIDE_MARGIN_IN   -- side-to-side corridor
+		depthIn = fwd + back                                    -- front-to-back run
+		offIn   = (fwd - back) * 0.5                            -- shift forward of centre
 	end
-	local fwd, back = catcherReach()
-	local widthIn   = 2 * halfWide() + 2 * CATCHER_SIDE_MARGIN_IN   -- side-to-side corridor
-	local depthIn   = fwd + back                                    -- front-to-back run
-	local offIn     = (fwd - back) * 0.5                            -- shift forward of centre
-	local fdir      = dirFromHeading(facingOffset)                  -- visual-forward in local space
-	-- NB: button POSITION is in the object's local units (like the 0.6 y lift),
-	-- but button WIDTH/HEIGHT use a separate UI scale (hence CATCHER_UNITS_PER_IN).
-	-- So the forward shift must NOT be multiplied by uPerIn, or the hitbox flies
-	-- far off the model and nothing is clickable.
+	-- Centre of the hitbox in WORLD space, then into the model's local frame.
+	-- NB: button POSITION is in the object's local units (positionToLocal already
+	-- divides out scale), but WIDTH/HEIGHT use a separate UI scale (hence
+	-- CATCHER_UNITS_PER_IN), so the shift must NOT be multiplied by uPerIn.
+	local fdir = dirFromHeading(heading)
+	local lp, rotY = toButtonFrame(ax + fdir.x * toUnits(offIn), az + fdir.z * toUnits(offIn), heading)
 	self.createButton({
 		click_function = "sprintCatcherClick",
 		function_owner = self,
 		label          = "",
-		position       = {
-			(fdir.x * offIn) / (sc.x ~= 0 and sc.x or 1),
-			0.6 / (sc.y ~= 0 and sc.y or 1),
-			(fdir.z * offIn) / (sc.z ~= 0 and sc.z or 1),
-		},
-		rotation       = { 0, facingOffset, 0 },
-		width          = (widthIn * uPerIn) / (sc.x ~= 0 and sc.x or 1),
-		height         = (depthIn * uPerIn) / (sc.z ~= 0 and sc.z or 1),
+		position       = { lp.x, 0.6 / sy, lp.z },
+		rotation       = { 0, rotY, 0 },
+		width          = (widthIn * uPerIn) / sx,
+		height         = (depthIn * uPerIn) / sz,
 		font_size      = 100,
 		color          = { 0, 0, 0, 0 },
 		tooltip        = catcherTooltip,
 	})
 end
 
+-- Signature of everything the catcher's shape/placement depends on; the catcher
+-- is only rebuilt when this changes.
+local function catcherKey()
+	local fwd, back = catcherReach()
+	local ax, az, heading = catcherAnchor()
+	return string.format("%s|%.3f|%.3f|%.3f|%.3f|%.2f",
+		tostring(catcherIsPivot()), fwd, back, ax, az, heading)
+end
+
 local function createCatcher(tooltip)
 	if catcherActive then return end
 	catcherTooltip = tooltip or "Left: apply   Right: back   1/2/3/4: mode   9: finish   0: cancel"
 	placeCatcher()
-	catcherActive    = true
-	lastCatcherKind  = catcherIsPivot()
-	lastCatcherFwd, lastCatcherBack = catcherReach()
+	catcherActive  = true
+	lastCatcherKey = catcherKey()
 end
 
--- Resize/reshape the catcher for the current step. Guarded so it only rebuilds
--- when the reach OR the shape (straight corridor vs pivot swing) actually
--- changes -- e.g. a leg commits, a step-back, or switching to/from a pivot mode
--- -- never per frame, so there is no lag.
+-- Resize/reshape/re-place the catcher for the current step. Guarded so it only
+-- rebuilds when the reach, the shape (straight corridor vs pivot swing) or the
+-- committed sprint point actually changes -- e.g. a leg commits, a step-back,
+-- or switching to/from a pivot mode -- never per frame, so there is no lag.
 syncCatcher = function()
 	if not catcherActive then return end
-	local pivot     = catcherIsPivot()
-	local fwd, back = catcherReach()
-	if pivot == lastCatcherKind and fwd == lastCatcherFwd and back == lastCatcherBack then return end
-	lastCatcherKind = pivot
-	lastCatcherFwd, lastCatcherBack = fwd, back
+	local key = catcherKey()
+	if key == lastCatcherKey then return end
+	lastCatcherKey = key
 	placeCatcher()
 end
 
@@ -4416,6 +4985,7 @@ local function pushHistory()
 		back        = backSpent,
 		raw         = rawStraight,
 		legs        = #committedLegs,
+		legDir      = legDir,
 		s1Mode      = s1Mode,
 		pivotOrigin = pivotOrigin,
 	})
@@ -4427,15 +4997,17 @@ local function restoreFrom(s)
 	spentInches = s.spent
 	backSpent   = s.back
 	rawStraight = s.raw
+	legDir      = s.legDir
 	while #committedLegs > s.legs do table.remove(committedLegs) end
 	phase        = s.phase
 	s1Mode       = s.s1Mode
 	pivotOrigin  = s.pivotOrigin
-	-- move/rotate the model back to the restored step (it steps with each leg)
-	applyToModel()
 end
 
 -- ------------------------------------------------------------ state changes --
+-- Only called when the action FINISHES: mid-sprint the model never moves (the
+-- ghost/corridors show the committed path), so it can pivot "through" other
+-- models or terrain and continue, and lands in one go at the end.
 applyToModel = function()
 	local r = self.getRotation()
 	self.setPosition({ curPos.x, startY, curPos.z })
@@ -4463,7 +5035,7 @@ local function cancelSprint(pc)
 	removeCatcher()
 	destroyDistText()
 	setActiveSprint(pc or controlColor, false)
-	-- the model stepped along the sprint; put it back where it started
+	-- the model never moved mid-sprint, but restore defensively (e.g. physics nudge)
 	if startPos then
 		local r = self.getRotation()
 		self.setPosition({ startPos.x, startY, startPos.z })
@@ -4489,6 +5061,7 @@ local function beginSprint(pc)
 	backSpent    = 0
 	rawStraight  = 0
 	committedLegs = {}
+	legDir       = 0
 	history      = {}
 	s1Mode       = "straight"
 	pivotOrigin  = "center"
@@ -4519,6 +5092,7 @@ local function beginTurn(pc)
 	backSpent    = 0
 	rawStraight  = 0
 	committedLegs = {}
+	legDir       = 0
 	history      = {}
 	s1Mode       = "straight"
 	pivotOrigin  = "center"
@@ -4555,6 +5129,7 @@ local function beginLeap(pc)
 	backSpent    = 0
 	rawStraight  = 0
 	committedLegs = {}
+	legDir       = 0
 	history      = {}
 	phase        = PHASE_LEAP
 	lastReport   = nil
@@ -4579,13 +5154,16 @@ local function commitStraight(d, endPos)
 	else
 		spentInches = spentInches + math.ceil(math.abs(d) - 1e-6)
 	end
-	applyToModel()   -- step the model to the committed point (catcher rides centred)
+	-- Errata: a sprint can't move both forward and backward. The first leg that
+	-- actually moves locks the direction for the rest of the sprint.
+	if legDir == 0 and math.abs(d) > 1e-3 then
+		legDir = (d < 0) and -1 or 1
+	end
 end
 
 local function commitPivot(newHeading, newPos)
 	curPos     = { x = newPos.x, y = curPos.y, z = newPos.z }
 	curHeading = newHeading
-	applyToModel()   -- rotate/step the model to the pivot result
 end
 
 -- LEFT-click: apply the current step and advance.
@@ -4619,7 +5197,8 @@ local function advance(pc)
 		lastReport = nil
 		if turnOnly then
 			finishSprint(pc, "Turn complete.")
-		elseif remainingInches() < 1 then
+		elseif fwdAvail() < 1 and backAvail() < 0.1 then
+			-- nothing left to move in the allowed direction
 			finishSprint(pc, string.format('Sprint complete: %.1f" total.', rawStraight))
 		else
 			phase = PHASE_S2
@@ -5447,18 +6026,13 @@ function diffAndApply(model, data, playerColor, replaceScript, modelScript)
     end
 
     -- What kind of model is this?
-    --  * isKtui    : already a KTUI mini of ANY kind (our bundled one OR the real
-    --                KT UI extender). Card loading preserves its script; the
-    --                command node explicitly opts into replacement.
-    --  * isManaged : specifically OUR bundled mini (we tag those "KTUIMiniDatacard").
-    --                Only our own mini is safe to hard-reload() as a fallback,
-    --                because its onLoad tolerates a missing owner.
-    -- A truly plain model (neither tag) gets our bundled script installed.
+    --  * isKtui    : already a KTUI mini of ANY kind (ours OR the original
+    --                KT UI extender's).
+    --  * isManaged : specifically OUR mini (we tag those "KTUIMiniDatacard").
+    -- Plain models and original-extender minis get our script installed; our own
+    -- mini is only re-stamped when its script version is out of date.
     local isKtui    = model.hasTag("KTUIMini")
     local isManaged = model.hasTag("KTUIMiniDatacard")
-    -- Our OWN managed mini carrying an older script version -> re-stamp (upgrade),
-    -- mirroring how the real extender re-applies its latest. Real extender minis
-    -- (KTUIMini but NOT managed) are never re-stamped -- only their state updates.
     local ktuiOutdated = false
     if isManaged and type(KTUI_MODELSCRIPT_VERSION) == "string" then
         local modelVer
@@ -5605,13 +6179,16 @@ function diffAndApply(model, data, playerColor, replaceScript, modelScript)
     end
 
     -- Write back
-    -- A plain model (no KTUI tag) OR our OWN managed mini on an OLD version gets
-    -- the current composed script (re)installed. Command-node replacement also
-    -- reinstalls current scripts and real extender minis; ordinary card loading
-    -- preserves real extender scripts and refreshes their state in place.
-    -- playerColor (optional) is used to assign the KTUI owner on a (re)stamp.
-    local installedScript = modelScript or KTUI_MODELSCRIPT
-    local needsScript = (replaceScript or (not isKtui) or ktuiOutdated) and installedScript ~= nil and installedScript ~= ""
+    -- A plain model (no KTUI tag), a model scripted by the ORIGINAL extender
+    -- (KTUIMini without our KTUIMiniDatacard tag) or our OWN managed mini on an
+    -- old version gets the current composed script + this card's movement block
+    -- (re)installed, so "Load stats" alone fully scripts a model. Our script is a
+    -- superset of the original extender's. Command-node replacement always
+    -- reinstalls. playerColor (optional) assigns the KTUI owner on a (re)stamp.
+    local installedScript = modelScript or withMovementBlock(KTUI_MODELSCRIPT)
+    local isForeign = isKtui and not isManaged
+    local needsScript = (replaceScript or (not isKtui) or isForeign or ktuiOutdated)
+        and installedScript ~= nil and installedScript ~= ""
     if #changes > 0 or needsScript then
         -- Bake the KTUI owner into the persisted state (never a post-reload call).
         -- The table-level Save/Load Positions + Ready Operatives SKIP any model whose
@@ -5636,7 +6213,7 @@ function diffAndApply(model, data, playerColor, replaceScript, modelScript)
             if not model.hasTag("KTUIMini") then model.addTag("KTUIMini") end
             model.addTag("KTUIMiniDatacard")
             table.insert(changes, replaceScript and "Installed command-node model script"
-                or (ktuiOutdated and "Upgraded KTUI script" or "Prepared model for KTUI extender"))
+                or ((ktuiOutdated or isForeign) and "Upgraded KTUI script" or "Prepared model for KTUI extender"))
             model.reload()
         else
             -- Already a KTUI mini (ours OR the real extender): refresh in place so
@@ -5744,6 +6321,15 @@ function hasKeyword(kw)
         if tostring(k):upper() == kw then return true end
     end
     return false
+end
+
+-- The card's model script plus its movement block (Sprint/Turn/Leap for
+-- MOUNTED operatives, else Move/Dash), as stamped by "Load stats".
+function withMovementBlock(script)
+    if type(script) ~= "string" or script == "" then return script end
+    local movement = (hasKeyword("MOUNTED") and SPRINT_TOOL_CODE) or MOVE_TOOL_CODE
+    if type(movement) ~= "string" or movement == "" then return script end
+    return script .. "\n\n" .. movement
 end
 
 -- Generic in-place injector/updater for a TAGGED block of Lua on a MODEL.

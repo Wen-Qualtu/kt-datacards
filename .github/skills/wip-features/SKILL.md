@@ -42,8 +42,25 @@ That composed script REPLACES the mimic as the `KTUI_MODELSCRIPT` our cards stam
    swallow anything appended below. Bar-neutral.
 2. remove the `Movement` context item (+ dead `agregaRuta`) — we load our own movement.
 3. guard the one unguarded game-log call (`gameLogAppendOperativeChangedState`, bare-table safety).
+4. targeting cone: `agregaCono` installs our embedded `ktui-target-cone.lua` (KT_TARGETING block)
+   instead of downloading the upstream circle-only cone.
 - `owner` (`state.owner`) is set **card-side** on load (only the card knows who clicked).
 - Keep `agregaCono` (targeting lines), Change UI position, Update stats.
+- Output is tagged blocks: `KT_MODELSCRIPT` / `KT_TARGETING` / `KT_EXTENSION` (+ the loader's
+  `KT_MOVE_TOOL` or `KT_SPRINT_TOOL`). Vendored base verified identical (bar blank lines) to the
+  live `KT UI extender 24 Spaghetty Mod.lua` the original board downloads (2026-11-17).
+
+### Our extender board (2026-11-17, `feature/sprint-direction-lock`)
+The base table's "UI Extender + Tools" board (and the "NPO KTUI autoextender" token) re-stamp
+models with the UPSTREAM script downloaded from xSpaghettyx's GitHub, wiping our blocks. Our
+replacement: `config/defaults/ktui-extender-board.json` (cloned board: image, XmlUI buttons) +
+`config/defaults/tts-script/ktui-extender-board.lua`, built by `python -m tools.build_ktui_extender`
+(-> `dev/ktui-extender.json`). Same 8 buttons (Extend KT UI, Fix Display Issues, Save/Load
+Positions, Ready Operatives, All Engage/Conceal, Remove All Tokens); Extend stamps
+`output/_generic-tts-objects/ktui-model-scripts.json` {version, model, move, sprint} from main +
+movement by MOUNTED (`state.info.categories`), tags KTUIMini + KTUIMiniDatacard, owner via
+`setOwningPlayer` like the original. NPO autoextend runs 2.5 s after leaving an `_NPO bag` (after
+the original token). Card Load stats now also replaces original-extender scripts.
 
 ### STATUS: DEPLOYED to all 48 boxes (2026-08-19)
 Composed by the pipeline as the DEFAULT `KTUI_MODELSCRIPT`; the mimic
@@ -221,7 +238,21 @@ crosses/near; we already use ray, sphere, and box casts (`move-tool.lua` L275,
   set-tag OR terrain nickname, EXCLUDING `KTUIMini`/`Operative`/`KTUIToken*`/`KT24Token`/`KT_Objective`.
 - Survey scripts (temp, not committed): `$TEMP/kt-split/survey_terrain.py`, `seed_terrain_map.py`.
 
-**Status:** idea only, not started. Verdict = worth building later; NOT binned.
+**Status:** MVP built on `feature/sprint-direction-lock` (2026-11-17), in
+`config/defaults/tts-script/ktui-target-cone.lua` (our embedded, oval-aware cone; patch 4 in
+`ktui_model_script.py`). A 9-ray fan from the cone tip to the facing arc of the target base,
+0.25" above both bases, cast BOTH ways so each terrain piece yields the stretch of the line
+inside it (TTS rays only report the entry point). Per stretch: light/heavy within 1" of the
+target -> light/heavy cover (orange/red lines, heavy wins; none if bases within 2"); heavy
+>1" from BOTH bases -> obscured (purple arc on the target's facing edge). State text goes to the
+shared top-centre `ktmove_hud` (same Global UI container as the move tools), not the cone label.
+1" zones = base oval grown by 1" (analytic ray/oval quadratic; exact for round bases). Terrain
+check + range label run every 6th frame while dragging (~10 Hz), always on drop/target pick.
+Type from name OR description ("heavy" > "light"/"barricade"); untyped = heavy. Ignores operatives
+(`KTUIMini`), `KTUIToken*`, `KT24Token`, `KT_Objective`, cones, zones/table/cards/dice.
+Not yet: Vantage/height effects, name→type map for untyped pieces, Conceal-order validity.
+Cone keys (hover): 1 = select target, 2 = lock/unlock to base, 3 = finish (R left free for the
+datacard popup). Test node: `python -m tools.build_test_node --tool targeting`.
 
 ---
 

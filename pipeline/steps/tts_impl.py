@@ -43,7 +43,9 @@ from .templates.tts_templates import (
 )
 from ..utils import paths as _paths
 from ..utils import naming
-from ..utils.ktui_model_script import compose_command_node_loader, compose_ktui_model_script
+from ..utils.ktui_model_script import (
+    compose_command_node_loader, compose_ktui_model_script, compose_model_scripts_bundle,
+)
 
 # Setup logging
 logging.basicConfig(
@@ -1433,10 +1435,25 @@ def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Pa
 def write_token_bag_object(team_name: str, token_bag: dict, output_dir: Path) -> Path:
     target = output_dir / team_name / "tts_objects" / f"{team_name}-token-bag.json"
     target.parent.mkdir(parents=True, exist_ok=True)
+    # Written before the team box mirrors MeshURL -> ColliderURL, so mirror here.
+    token_bag = json.loads(json.dumps(token_bag))
+    _mirror_collider_urls(token_bag)
     contents = (json.dumps({"ObjectStates": [token_bag]}, indent=2) + "\n").encode("utf-8")
     if not target.exists() or target.read_bytes() != contents:
         target.write_bytes(contents)
     return target
+
+
+def _mirror_collider_urls(obj) -> None:
+    if isinstance(obj, dict):
+        for key, value in obj.items():
+            if key == "MeshURL" and isinstance(value, str) and value:
+                obj["ColliderURL"] = value
+            else:
+                _mirror_collider_urls(value)
+    elif isinstance(obj, list):
+        for item in obj:
+            _mirror_collider_urls(item)
 
 
 def load_dice_objects(team_name: str, sample_url: Optional[str], output_dir: Path, repo_branch: str = URL_BRANCH) -> list:
@@ -1864,6 +1881,16 @@ def write_command_node_loader(config_dir: Path, output_dir: Path) -> Path:
     target = output_dir / "_generic-tts-objects" / "command-node-loader.lua"
     target.parent.mkdir(parents=True, exist_ok=True)
     contents = compose_command_node_loader(config_dir).encode("utf-8")
+    if not target.exists() or target.read_bytes() != contents:
+        target.write_bytes(contents)
+    return target
+
+
+def write_ktui_model_scripts(config_dir: Path, output_dir: Path) -> Path:
+    """Publish the scripts our KTUI extender board downloads and stamps."""
+    target = output_dir / "_generic-tts-objects" / "ktui-model-scripts.json"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    contents = (json.dumps(compose_model_scripts_bundle(config_dir), ensure_ascii=False, indent=1) + "\n").encode("utf-8")
     if not target.exists() or target.read_bytes() != contents:
         target.write_bytes(contents)
     return target

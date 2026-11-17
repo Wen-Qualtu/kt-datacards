@@ -479,18 +479,13 @@ function diffAndApply(model, data, playerColor, replaceScript, modelScript)
     end
 
     -- What kind of model is this?
-    --  * isKtui    : already a KTUI mini of ANY kind (our bundled one OR the real
-    --                KT UI extender). Card loading preserves its script; the
-    --                command node explicitly opts into replacement.
-    --  * isManaged : specifically OUR bundled mini (we tag those "KTUIMiniDatacard").
-    --                Only our own mini is safe to hard-reload() as a fallback,
-    --                because its onLoad tolerates a missing owner.
-    -- A truly plain model (neither tag) gets our bundled script installed.
+    --  * isKtui    : already a KTUI mini of ANY kind (ours OR the original
+    --                KT UI extender's).
+    --  * isManaged : specifically OUR mini (we tag those "KTUIMiniDatacard").
+    -- Plain models and original-extender minis get our script installed; our own
+    -- mini is only re-stamped when its script version is out of date.
     local isKtui    = model.hasTag("KTUIMini")
     local isManaged = model.hasTag("KTUIMiniDatacard")
-    -- Our OWN managed mini carrying an older script version -> re-stamp (upgrade),
-    -- mirroring how the real extender re-applies its latest. Real extender minis
-    -- (KTUIMini but NOT managed) are never re-stamped -- only their state updates.
     local ktuiOutdated = false
     if isManaged and type(KTUI_MODELSCRIPT_VERSION) == "string" then
         local modelVer
@@ -637,13 +632,16 @@ function diffAndApply(model, data, playerColor, replaceScript, modelScript)
     end
 
     -- Write back
-    -- A plain model (no KTUI tag) OR our OWN managed mini on an OLD version gets
-    -- the current composed script (re)installed. Command-node replacement also
-    -- reinstalls current scripts and real extender minis; ordinary card loading
-    -- preserves real extender scripts and refreshes their state in place.
-    -- playerColor (optional) is used to assign the KTUI owner on a (re)stamp.
-    local installedScript = modelScript or KTUI_MODELSCRIPT
-    local needsScript = (replaceScript or (not isKtui) or ktuiOutdated) and installedScript ~= nil and installedScript ~= ""
+    -- A plain model (no KTUI tag), a model scripted by the ORIGINAL extender
+    -- (KTUIMini without our KTUIMiniDatacard tag) or our OWN managed mini on an
+    -- old version gets the current composed script + this card's movement block
+    -- (re)installed, so "Load stats" alone fully scripts a model. Our script is a
+    -- superset of the original extender's. Command-node replacement always
+    -- reinstalls. playerColor (optional) assigns the KTUI owner on a (re)stamp.
+    local installedScript = modelScript or withMovementBlock(KTUI_MODELSCRIPT)
+    local isForeign = isKtui and not isManaged
+    local needsScript = (replaceScript or (not isKtui) or isForeign or ktuiOutdated)
+        and installedScript ~= nil and installedScript ~= ""
     if #changes > 0 or needsScript then
         -- Bake the KTUI owner into the persisted state (never a post-reload call).
         -- The table-level Save/Load Positions + Ready Operatives SKIP any model whose
@@ -668,7 +666,7 @@ function diffAndApply(model, data, playerColor, replaceScript, modelScript)
             if not model.hasTag("KTUIMini") then model.addTag("KTUIMini") end
             model.addTag("KTUIMiniDatacard")
             table.insert(changes, replaceScript and "Installed command-node model script"
-                or (ktuiOutdated and "Upgraded KTUI script" or "Prepared model for KTUI extender"))
+                or ((ktuiOutdated or isForeign) and "Upgraded KTUI script" or "Prepared model for KTUI extender"))
             model.reload()
         else
             -- Already a KTUI mini (ours OR the real extender): refresh in place so
@@ -776,6 +774,15 @@ function hasKeyword(kw)
         if tostring(k):upper() == kw then return true end
     end
     return false
+end
+
+-- The card's model script plus its movement block (Sprint/Turn/Leap for
+-- MOUNTED operatives, else Move/Dash), as stamped by "Load stats".
+function withMovementBlock(script)
+    if type(script) ~= "string" or script == "" then return script end
+    local movement = (hasKeyword("MOUNTED") and SPRINT_TOOL_CODE) or MOVE_TOOL_CODE
+    if type(movement) ~= "string" or movement == "" then return script end
+    return script .. "\n\n" .. movement
 end
 
 -- Generic in-place injector/updater for a TAGGED block of Lua on a MODEL.

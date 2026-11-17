@@ -613,6 +613,271 @@ def test_oval_renderer_is_only_in_command_node_model_scripts():
     assert "nodeGetCircleVectorPoints" in node_loader
 
 
+def test_targeting_cone_is_embedded_instead_of_fetched():
+    shared = compose_ktui_model_script(CONFIG)
+    assert "KTMT%20Target%20Cone.lua" not in shared
+    assert "ktLocalScript(KT_TARGET_CONE_CODE, function(req)" in shared
+    assert (CONFIG / "defaults" / "tts-script" / "ktui-target-cone.lua").read_text(encoding="utf-8") in shared
+
+
+@pytest.mark.skipif(not shutil.which("npx"), reason="npx is required for Lua geometry integration")
+def test_targeting_lines_touch_the_outer_points_of_an_oval_target():
+    cone = (CONFIG / "defaults" / "tts-script" / "ktui-target-cone.lua").read_text(encoding="utf-8")
+    script = "Color = function() return {} end\nmath.atan2 = math.atan2 or math.atan\n" + cone + r'''
+local function model(x, z, rotY, st)
+    return {
+        getPosition = function() return {x = x, y = 1, z = z} end,
+        getRotation = function() return {x = 0, y = rotY, z = 0} end,
+        getTable = function() return st end,
+        getBounds = function() return {offset = {y = 0}, center = {y = 1.25}, size = {y = 0.5}} end,
+    }
+end
+Physics = {cast = function() return {} end}
+local lines, label
+local conePos = {x = 0, y = 1, z = 0}
+self = {
+    getPosition = function() return conePos end,
+    getBounds = function() return {offset = {y = 0}} end,
+    setVectorLines = function(l) lines = l end,
+    editButton = function(b) label = b.label end,
+}
+local mm = 0.0393701
+-- {target x, z, rotY, state, heading the long axis should run along}
+local cases = {
+    {6, 0, 0, {base = {x = 42, z = 75}}, 0},
+    {5, 4, 30, {base = {x = 42, z = 75}}, 30},
+    {-3, 7, 90, {base = {x = 42, z = 75}, kt_node_ui = true, kt_front = 45}, 135},
+    {4, -5, 200, {base = {x = 42, z = 75}, kt_front = 90}, 200},
+    {5, 0, 0, {base = {x = 32, z = 32}}, 0},
+}
+for i, c in ipairs(cases) do
+    local tx, tz, rotY, st, heading = c[1], c[2], c[3], c[4], c[5]
+    ObjMiniTarget = model(tx, tz, rotY, st)
+    objModel = model(-0.63, 0, 0, {base = {x = 32, z = 32}})
+    estado_cono = 2
+    refrescaVectores()
+    local pts = lines[1].points
+    local center = math.atan2(tx, tz)
+    local function rel(a) return (a - center + math.pi) % (2 * math.pi) - math.pi end
+    local h = math.rad(heading)
+    local a, b = st.base.x * mm / 2 - 0.02, st.base.z * mm / 2 - 0.02
+    local lo, hi, gap = math.huge, -math.huge, math.huge
+    for k = 0, 19999 do
+        local t = k * 2 * math.pi / 20000
+        local u, v = a * math.cos(t), b * math.sin(t)
+        local x = tx + u * math.cos(h) + v * math.sin(h)
+        local z = tz - u * math.sin(h) + v * math.cos(h)
+        local ang = rel(math.atan2(x, z))
+        lo, hi = math.min(lo, ang), math.max(hi, ang)
+        local fu, fv = (a + 0.02) * math.cos(t), (b + 0.02) * math.sin(t)
+        local fx = tx + fu * math.cos(h) + fv * math.sin(h)
+        local fz = tz - fu * math.sin(h) + fv * math.cos(h)
+        gap = math.min(gap, math.sqrt((fx + 0.63) ^ 2 + fz ^ 2) - 16 * mm)
+    end
+    local e1, e2 = rel(math.atan2(pts[1].x, pts[1].z)), rel(math.atan2(pts[3].x, pts[3].z))
+    assert(math.abs(math.max(e1, e2) - hi) < 1e-3, "case " .. i .. " upper tangent")
+    assert(math.abs(math.min(e1, e2) - lo) < 1e-3, "case " .. i .. " lower tangent")
+    assert(pts[2].x == 0 and pts[2].z == 0, "case " .. i .. " apex")
+    assert(label == math.ceil(gap) .. "''", "case " .. i .. " range " .. label .. " vs " .. gap)
+end
+print("oval targeting passed")
+'''
+    result = subprocess.run(
+        [shutil.which("npx"), "--yes", "--package=fengari-node-cli", "fengari", "-"],
+        input=script, cwd=ROOT, capture_output=True, text=True, encoding="utf-8", check=True,
+    )
+    assert result.stdout.strip() == "oval targeting passed", result.stderr
+    assert not result.stderr
+
+
+@pytest.mark.skipif(not shutil.which("npx"), reason="npx is required for Lua geometry integration")
+def test_targeting_lines_show_cover_and_obscured_from_terrain():
+    cone = (CONFIG / "defaults" / "tts-script" / "ktui-target-cone.lua").read_text(encoding="utf-8")
+    script = "Color = function() return {} end\nmath.atan2 = math.atan2 or math.atan\n" + cone + r'''
+local function model(x, z)
+    return {
+        getPosition = function() return {x = x, y = 1, z = z} end,
+        getRotation = function() return {x = 0, y = 0, z = 0} end,
+        getTable = function() return {base = {x = 32, z = 32}} end,
+        getBounds = function() return {offset = {y = 0}, center = {y = 1.25}, size = {y = 0.5}} end,
+    }
+end
+local function terrain(name, z1, z2, opts)
+    opts = opts or {}
+    local set = {}
+    for _, t in ipairs(opts.tags or {}) do set[t] = true end
+    return {type = opts.kind or "Generic", minX = -3, maxX = 3, minZ = z1, maxZ = z2,
+        getName = function() return name end, getDescription = function() return opts.description or "" end,
+        getGUID = function() return name .. z1 end,
+        hasTag = function(t) return set[t] == true end, getTags = function() return opts.tags or {} end}
+end
+-- Mock TTS ray: one hit per box, where the ray ENTERS it (none if it starts inside).
+local boxes = {}
+Physics = {cast = function(p)
+    local o, d = p.origin, p.direction
+    local m = math.sqrt(d.x * d.x + d.y * d.y + d.z * d.z)
+    local u = {x = d.x / m, y = d.y / m, z = d.z / m}
+    local hits = {}
+    for _, b in ipairs(boxes) do
+        local lo, hi = -math.huge, math.huge
+        local ok = true
+        for _, ax in ipairs({{"x", b.minX, b.maxX}, {"z", b.minZ, b.maxZ}}) do
+            local k, mn, mx = ax[1], ax[2], ax[3]
+            if math.abs(u[k]) < 1e-12 then
+                if o[k] < mn or o[k] > mx then ok = false end
+            else
+                local t1, t2 = (mn - o[k]) / u[k], (mx - o[k]) / u[k]
+                lo, hi = math.max(lo, math.min(t1, t2)), math.min(hi, math.max(t1, t2))
+            end
+        end
+        if ok and lo <= hi and lo > 0 and lo <= p.max_distance then
+            hits[#hits + 1] = {hit_object = b, point = {x = o.x + u.x * lo, y = o.y + u.y * lo, z = o.z + u.z * lo}}
+        end
+    end
+    return hits
+end}
+local lines, label
+local hud = {}
+Color = setmetatable({fromString = function() return {lerp = function(c) return c end, toHex = function() return "FFFFFF" end} end,
+    White = {}}, {__call = function() return {} end})
+Global = {UI = {getXml = function() return "" end, setXml = function() end,
+    setAttribute = function(id, k, v) hud[id .. "." .. k] = v end, setValue = function(id, v) hud[id] = v end}}
+activeColor = "Red"
+self = {
+    getPosition = function() return {x = 0, y = 1.5, z = 0.03} end,
+    setVectorLines = function(l) lines = l end,
+    editButton = function(b) label = b.label end,
+}
+objModel = model(0, -0.6)
+estado_cono = 2
+colorLinea = "user"
+local function check(name, targetZ, pieces, cover, obscured)
+    ObjMiniTarget = model(0, targetZ)
+    boxes = pieces
+    refrescaVectores()
+    assert(coverState == cover, name .. ": cover " .. tostring(coverState))
+    assert(obscuredState == obscured, name .. ": obscured " .. tostring(obscuredState))
+    local want = cover == "heavy" and 0.1 or (cover == "light" and 0.55 or nil)
+    if want then assert(lines[1].color[2] == want, name .. ": colour") else assert(lines[1].color == "user", name .. ": colour") end
+    assert((lines[2] ~= nil) == obscured, name .. ": obscured arc")
+    assert(label:find("^%d+''$"), name .. ": range-only label " .. label)
+    assert(hud["ktmove_txt_Red.active"] == "true", name .. ": hud shown")
+    assert((hud["ktmove_txt_Red"]:find("Obscured", 1, true) ~= nil) == obscured, name .. ": hud obscured")
+end
+check("clear", 8, {}, nil, false)
+check("light near target", 8, {terrain("Light Rubble", 6.6, 6.8)}, "light", false)
+check("light half way", 8, {terrain("Light Rubble", 4.0, 4.2)}, nil, false)
+check("heavy half way", 8, {terrain("Heavy Wall", 4.0, 4.2)}, nil, true)
+check("heavy near target", 8, {terrain("Heavy Wall", 6.6, 6.8)}, "heavy", false)
+check("thick heavy", 8, {terrain("Heavy Block", 3.0, 6.8)}, "heavy", true)
+check("heavy near shooter", 8, {terrain("Heavy Wall", 0.4, 0.7)}, nil, false)
+check("heavy beats light", 8, {terrain("Light Rubble", 6.6, 6.7), terrain("Heavy Wall", 6.9, 7.0)}, "heavy", false)
+check("light in description", 8, {terrain("", 6.6, 6.8, {description = "Light terrain"})}, "light", false)
+check("portable barricade is light", 8, {terrain("Portable Barricade", 6.6, 6.8)}, "light", false)
+check("untyped is heavy", 8, {terrain("Crate", 6.6, 6.8)}, "heavy", false)
+check("operatives ignored", 8, {terrain("Ork", 4.0, 6.8, {tags = {"KTUIMini"}})}, nil, false)
+check("within 2 inches", 2.5, {terrain("Light Rubble", 1.0, 1.2)}, nil, false)
+assert(hud["ktmove_txt_Red"] == "No cover", "clear readout: " .. hud["ktmove_txt_Red"])
+check("both shown", 8, {terrain("Heavy Block", 3.0, 6.8)}, "heavy", true)
+assert(hud["ktmove_txt_Red"] == "Heavy cover  +  Obscured", "readout lists both")
+onDestroy()
+assert(hud["ktmove_txt_Red.active"] == "false", "hud hidden when the cone goes")
+function broadcastToColor() end
+local destroyed = false
+self.destruct = function() destroyed = true end
+onNumberTyped("Red", 1)
+assert(estado_cono == 1, "1 selects a target")
+local locked = lockEnabled
+onNumberTyped("Red", 2)
+assert(lockEnabled == not locked, "2 toggles the base lock")
+onNumberTyped("Red", 3)
+assert(destroyed, "3 finishes")
+assert(tryRandomize == nil, "R is left free")
+print("cover and obscured passed")
+'''
+    result = subprocess.run(
+        [shutil.which("npx"), "--yes", "--package=fengari-node-cli", "fengari", "-"],
+        input=script, cwd=ROOT, capture_output=True, text=True, encoding="utf-8", check=True,
+    )
+    assert result.stdout.strip() == "cover and obscured passed", result.stderr
+    assert not result.stderr
+
+
+def test_model_scripts_bundle_is_tagged_and_published(tmp_path):
+    from pipeline.utils.ktui_model_script import compose_model_scripts_bundle
+    bundle = compose_model_scripts_bundle(CONFIG)
+    model = bundle["model"]
+    assert model.startswith(f'KT_MODELSCRIPT_VERSION = "{bundle["version"]}"')
+    order = [model.index(f"-- {edge} {tag} --") for tag in ("KT_MODELSCRIPT_V1", "KT_TARGETING_V1", "KT_EXTENSION_V1")
+             for edge in ("START", "END")]
+    assert order == sorted(order)
+    assert bundle["move"].startswith("-- START KT_MOVE_TOOL_V1 --") and bundle["move"].endswith("-- END KT_MOVE_TOOL_V1 --")
+    assert bundle["sprint"].startswith("-- START KT_SPRINT_TOOL_V1 --")
+    target = tts_impl.write_ktui_model_scripts(CONFIG, tmp_path)
+    assert json.loads(target.read_text(encoding="utf-8")) == bundle
+
+
+@pytest.mark.skipif(not shutil.which("npx"), reason="npx is required for Lua integration")
+def test_extender_board_stamps_our_script_with_movement_and_owner():
+    from tools.build_ktui_extender import build_board
+    board = build_board("main")
+    assert "ktui-model-scripts.json" in board["LuaScript"] and "xSpaghettyx" not in board["LuaScript"]
+    assert "onClick=\"ExtendUI\"" in board["XmlUI"]
+    script = r"""
+local downloads, broadcasts, waits = 0, {}, {}
+WebRequest = {get = function(url, cb) downloads = downloads + 1; cb({text = "bundle"}) end}
+JSON = {decode = function(text)
+    if text == "bundle" then return {version = "v", model = "MODEL", move = "MOVE", sprint = "SPRINT"} end
+    return text
+end}
+Wait = {frames = function(fn) fn() end, time = function(fn) table.insert(waits, fn) end}
+function broadcastToAll(m) broadcasts[#broadcasts + 1] = m end
+local function figurine(guid, state, kind)
+    local m = {tag = kind or "Figurine", tags = {}, guid = guid, script_state = state}
+    m.setLuaScript = function(s) m.script = s end
+    m.reload = function() m.reloaded = (m.reloaded or 0) + 1; return m end
+    m.addTag = function(t) m.tags[t] = true end
+    m.hasTag = function(t) return m.tags[t] == true end
+    m.getGUID = function() return guid end
+    m.call = function(fn, arg) if fn == "setOwningPlayer" then m.owner = arg end end
+    return m
+end
+local rider = figurine("r", {info = {categories = {"Exodite", "Mounted"}}})
+local trooper = figurine("t", {info = {categories = {"Trooper"}}})
+local tile = figurine("x", nil, "Tile")
+self = {getPosition = function() return {0, 1, 0} end}
+Physics = {cast = function() return {{hit_object = rider}, {hit_object = trooper}, {hit_object = tile}} end}
+local said
+local player = {steam_id = "123", broadcast = function(m) said = m end}
+ExtendUI(player)
+assert(rider.script == "MODEL\n\nSPRINT" and trooper.script == "MODEL\n\nMOVE", "movement by keyword")
+assert(rider.tags.KTUIMini and rider.tags.KTUIMiniDatacard and rider.reloaded == 1, "tags + reload")
+assert(rider.owner == "123" and trooper.owner == "123", "owner set")
+assert(tile.script == nil, "only figurines")
+assert(said == "Extended KT UI on 2 model(s)", said)
+local npo = figurine("n", {})
+npo.tags = {KTUIMini = true, Operative = true}
+local objects = {n = npo}
+function getObjectFromGUID(g) return objects[g] end
+local bag = {hasTag = function(t) return t == "_NPO bag" end}
+onObjectLeaveContainer(bag, npo)
+assert(npo.script == nil and #waits == 1, "NPO waits for the original autoextender")
+waits[1]()
+assert(npo.script == "MODEL\n\nMOVE" and npo.owner == nil, "NPO extended without owner")
+onObjectLeaveContainer({hasTag = function() return false end}, npo)
+assert(#waits == 1, "other bags ignored")
+assert(downloads == 1, "scripts downloaded once")
+print("extender board passed")
+"""
+    lua = board["LuaScript"].replace("KT_SCRIPTS_URL", "KT_SCRIPTS_URL", 1) + "\n" + script
+    result = subprocess.run(
+        [shutil.which("npx"), "--yes", "--package=fengari-node-cli", "fengari", "-"],
+        input=lua, cwd=ROOT, capture_output=True, text=True, encoding="utf-8", check=True,
+    )
+    assert result.stdout.strip() == "extender board passed", result.stderr
+    assert not result.stderr
+
+
 def test_standalone_token_bag_preserves_contents_and_script(tmp_path):
     bag = {
         "Name": "Custom_Model_Bag", "LuaScript": "bag script", "LuaScriptState": "saved layout",
@@ -623,3 +888,12 @@ def test_standalone_token_bag_preserves_contents_and_script(tmp_path):
     assert json.loads(target.read_text(encoding="utf-8")) == {"ObjectStates": [bag]}
     timestamp = target.stat().st_mtime_ns
     assert tts_impl.write_token_bag_object("test-team", bag, tmp_path).stat().st_mtime_ns == timestamp
+
+
+def test_standalone_token_bag_mirrors_mesh_into_collider(tmp_path):
+    mesh = {"MeshURL": "https://example/token.obj?v=1", "ColliderURL": ""}
+    bag = {"Name": "Custom_Model_Bag", "ContainedObjects": [{"CustomMesh": mesh}]}
+    target = tts_impl.write_token_bag_object("test-team", bag, tmp_path)
+    written = json.loads(target.read_text(encoding="utf-8"))["ObjectStates"][0]
+    assert written["ContainedObjects"][0]["CustomMesh"]["ColliderURL"] == "https://example/token.obj?v=1"
+    assert mesh["ColliderURL"] == ""
