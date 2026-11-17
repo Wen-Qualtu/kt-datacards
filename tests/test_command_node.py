@@ -713,7 +713,10 @@ local function terrain(name, z1, z2, opts)
         getName = function() return name end, getDescription = function() return opts.description or "" end,
         getGUID = function() return name .. z1 end,
         hasTag = function(t) return set[t] == true end, getTags = function() return opts.tags or {} end}
-    o.getPosition = function() return {x = (o.minX + o.maxX) / 2, y = 0, z = (o.minZ + o.maxZ) / 2} end
+    o.getPosition = function()
+        -- originAtEnd: like the Tomb World doors, whose mesh origin is at one end
+        return {x = opts.originAtEnd and o.minX or (o.minX + o.maxX) / 2, y = 0, z = (o.minZ + o.maxZ) / 2}
+    end
     o.getBounds = function() return {center = {x = (o.minX + o.maxX) / 2, y = (o.minY + o.maxY) / 2, z = (o.minZ + o.maxZ) / 2},
         size = {x = o.maxX - o.minX, y = o.maxY - o.minY, z = o.maxZ - o.minZ}} end
     o.noCollider = opts.noCollider
@@ -831,7 +834,7 @@ check("G4 marker beside the lines", 9, {terrain("G4: Objective Marker", 5.9, 7.7
 check("objective token still ignored", 8, {terrain("Objective", 6.6, 6.8, {tags = {"KT_Objective"}})}, nil, false)
 -- Open doors: lines through the centred access point (25% of the long side)
 -- are clear; lines through the wall either side still give cover.
-check("through an open door", 8, {terrain("Open Door 3", 6.6, 6.8)}, nil, false)
+check("through an open door", 8, {terrain("Open Door 3", 6.6, 6.8, {originAtEnd = true})}, nil, false)
 -- Key 4 explains every object on the sight lines.
 local printed = {}
 printToColor = function(text) printed[#printed + 1] = text end

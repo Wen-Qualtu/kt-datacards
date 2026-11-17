@@ -1,6 +1,6 @@
-KTUI_MODELSCRIPT_VERSION = "19061759a4ea"
+KTUI_MODELSCRIPT_VERSION = "5200811d8f1e"
 
-KTUI_MODELSCRIPT = [==[KT_MODELSCRIPT_VERSION = "19061759a4ea"
+KTUI_MODELSCRIPT = [==[KT_MODELSCRIPT_VERSION = "5200811d8f1e"
 
 -- START KT_MODELSCRIPT_V1 --
 self.clearContextMenu()
@@ -2674,15 +2674,16 @@ local function terrainKind(obj)
 end
 
 -- Position of world (x, z) along an open piece's long side, measured from the
--- middle, and the half-width of its access point there.
+-- middle of its world bounds (the piece's origin can sit at one end), and the
+-- half-width of its access point there.
 local function openingPos(obj, x, z)
-	local nb = obj.getBoundsNormalized()
-	local u, v = toLocal({ x = obj.getPosition().x, z = obj.getPosition().z,
-		h = math.rad(obj.getRotation().y) }, x, z)
-	if nb.size.x >= nb.size.z then
-		return u - nb.offset.x, nb.size.x * OPENING_FRACTION * 0.5
+	local size = obj.getBoundsNormalized().size
+	local c = obj.getBounds().center
+	local u, v = toLocal({ x = c.x, z = c.z, h = math.rad(obj.getRotation().y) }, x, z)
+	if size.x >= size.z then
+		return u, size.x * OPENING_FRACTION * 0.5
 	end
-	return v - nb.offset.z, nb.size.z * OPENING_FRACTION * 0.5
+	return v, size.z * OPENING_FRACTION * 0.5
 end
 
 -- Whether the sight line crosses an open piece (OPENING_NAMES) at world (x, z)
