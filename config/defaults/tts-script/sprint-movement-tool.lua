@@ -43,7 +43,14 @@
 
   Straight steps support BACKWARD movement: drag the line behind the model to
   reverse. Backward is capped at 3" total for the whole sprint (forward still
-  uses the separate 9" budget).
+  uses the separate 9" budget). Per the errata a sprint can't move BOTH forward
+  and backward: the first straight leg that moves locks the direction, so if it
+  went backward the second leg can only go backward (and vice versa).
+
+  The model itself does NOT move mid-sprint: committed legs/pivots are shown as
+  corridors + a ghost and the model lands in one go when the sprint finishes.
+  So it can pivot "through" other models/terrain between the legs (Exodite FAQ)
+  without having to be physically placed at the pivot point.
 
   Step flow
   ---------
@@ -93,11 +100,13 @@ local UNITS_PER_INCH = 1        -- world units per inch (KT-UI table = 1)
 -- Click-catcher: a transparent button pinned to the model, covering ONLY the area
 -- the model can actually travel this step -- a NARROW rectangle aligned to the
 -- model's facing that runs the forward budget (+ margin) ahead and the backward
--- budget (+ margin) behind, base-width wide. Because it is a button ON the model,
--- hovering it counts as hovering the model, so the number ROW (onNumberTyped)
--- works across the reach with NO key binding. It locks only this slim corridor,
--- not a big disc over the whole table. It is rebuilt ONLY when the reach changes
--- (a leg is committed or a step-back happens), NOT every frame -- so no lag.
+-- budget (+ margin) behind, base-width wide, centred on the committed sprint
+-- point (the model itself stays put until the end). Because it is a button ON
+-- the model, hovering it counts as hovering the model, so the number ROW
+-- (onNumberTyped) works across the reach with NO key binding. It locks only
+-- this slim corridor, not a big disc over the whole table. It is rebuilt ONLY
+-- when the reach/committed point changes (a leg is committed or a step-back
+-- happens), NOT every frame -- so no lag.
 local CATCHER_MARGIN_IN    = 2           -- inches of catch area past the reach (~1" felt short at 1)
 local CATCHER_SIDE_MARGIN_IN = 2.5       -- inches of catch area either side of the base (corridor width)
 -- button-units per inch. TUNING KNOB: raise = bigger catcher, lower = smaller.
@@ -173,6 +182,7 @@ local backSpent    = 0          -- BACKWARD straight distance used (raw inches)
 local rawStraight  = 0          -- exact straight distance travelled (for readout)
 local facingOffset = 0          -- deg added to transform-forward -> visual facing
 local committedLegs = {}         -- { {a=,b=,heading=}, ... } straight corridors
+local legDir       = 0          -- direction lock: 0 = none yet, 1 = forward only, -1 = backward only
 
 -- current step's selected mode
 --   S1:    "straight" | "pivotFront" | "pivotCenter" | "pivotBack"
@@ -204,11 +214,9 @@ local loopHandle    = nil
 local lastReport    = nil
 local catcherActive = false
 local catcherTooltip = nil       -- tooltip for the current catcher (varies by Sprint/Turn/Leap)
-local lastCatcherKind = nil      -- guard: pivot(true)/straight(false) shape currently built
-local lastCatcherFwd  = nil      -- guard: only rebuild the catcher when the reach changes
-local lastCatcherBack = nil      -- guard: only rebuild the catcher when the reach changes
+local lastCatcherKey = nil       -- guard: only rebuild the catcher when its shape/placement changes
 local syncCatcher                -- fwd decl; defined with the catcher, called from tick()
-local applyToModel               -- fwd decl; steps/rotates the model to the current leg
+local applyToModel               -- fwd decl; places the model at the final sprint result
 
 -- --------------------------------------------------------------- utilities ---
 local function toUnits(inches) return inches * UNITS_PER_INCH end
@@ -346,15 +354,28 @@ local function halfWide() return (BASE_MM_WIDE * 0.5) * MM_TO_INCH * UNITS_PER_I
 -- --------------------------------------------------------------- geometry ----
 local function remainingInches() return math.max(0, MAX_INCHES - spentInches) end
 
+-- Remaining budget usable in each direction, honouring the errata lock: a
+-- sprint can't mix forward and backward legs, so once a straight leg has moved
+-- one way the other direction's budget is 0.
+local function fwdAvail()
+	if legDir < 0 then return 0 end
+	return remainingInches()
+end
+local function backAvail()
+	if legDir > 0 then return 0 end
+	return math.max(0, MAX_BACK_INCHES - backSpent)
+end
+
 -- Straight leg preview from curPos along curHeading toward the pointer. Allows
 -- BACKWARD movement (negative projection); magnitude clamped to the remaining
--- budget. Returns signed inches, the end Vector, and the (unchanged) heading.
+-- budget in the allowed direction(s). Returns signed inches, the end Vector,
+-- and the (unchanged) heading.
 local function straightPreview(pointer)
 	local fdir  = dirFromHeading(curHeading)
 	local px, pz = pointer.x - curPos.x, pointer.z - curPos.z
 	local proj  = px * fdir.x + pz * fdir.z          -- signed world units
-	local remFwdU  = toUnits(remainingInches())
-	local remBackU = toUnits(math.max(0, MAX_BACK_INCHES - backSpent))
+	local remFwdU  = toUnits(fwdAvail())
+	local remBackU = toUnits(backAvail())
 	local d        = clamp(proj, -remBackU, remFwdU)
 	local endPos = { x = curPos.x + fdir.x * d, y = curPos.y, z = curPos.z + fdir.z * d }
 	return toInches(d), endPos, curHeading
@@ -598,6 +619,11 @@ local function redraw(active, endPos, endHeading)
 	for _, leg in ipairs(committedLegs) do
 		appendCorridor(lines, leg.a, leg.b, leg.heading, COL_LEG_DONE)
 	end
+	-- The model stays at its start until the sprint ends, so mark the committed
+	-- mid-sprint footprint (where the pivot / second leg starts from).
+	if (phase == PHASE_PIVOT or phase == PHASE_S2) and not turnOnly then
+		appendGhost(lines, curPos.x, curPos.y, curPos.z, curHeading, COL_LEG_DONE)
+	end
 	for _, l in ipairs(active or {}) do table.insert(lines, l) end
 	if endPos then
 		appendGhost(lines, endPos.x, endPos.y or curPos.y, endPos.z, endHeading)
@@ -690,6 +716,22 @@ local function destroyDistText()
 end
 
 -- ------------------------------------------------------------- update loop ---
+-- Grey reach cones from a pivot anchor: pivot +/-45, then spend the remaining
+-- straight budget forward and/or backward. A direction the lock has ruled out
+-- (or with no budget left) gets no cone.
+local function appendPivotReach(out, anchor)
+	local fdir = dirFromHeading(curHeading)
+	local anchorFwdU = (anchor.x - curPos.x) * fdir.x + (anchor.z - curPos.z) * fdir.z
+	local fwd, back = fwdAvail(), backAvail()
+	if fwd > 0 then
+		appendReachCone(out, anchor, curHeading, MAX_PIVOT_DEG,
+			fwd + toInches(halfLong() - anchorFwdU), COL_LIMIT)
+	end
+	if back > 0 then
+		appendReachCone(out, anchor, curHeading + 180, MAX_PIVOT_DEG,
+			back + toInches(halfLong() + anchorFwdU), COL_LIMIT)
+	end
+end
 local function s1Origin()
 	if s1Mode == "pivotFront" then return "front" end
 	if s1Mode == "pivotBack" then return "back" end
@@ -708,8 +750,7 @@ local function tick()
 
 	if phase == PHASE_S1 and s1Mode == "straight" then
 		-- Grey full-range guide: the whole straight budget you could still spend.
-		appendRangeGuide(active, curPos, curHeading, remainingInches(),
-			math.max(0, MAX_BACK_INCHES - backSpent), COL_LIMIT)
+		appendRangeGuide(active, curPos, curHeading, fwdAvail(), backAvail(), COL_LIMIT)
 		local d, e, h = straightPreview(pointer)
 		prevStraight, prevEndPos, prevHeading = d, e, h
 		appendCorridor(active, curPos, e, h, COL_LEG)
@@ -721,13 +762,7 @@ local function tick()
 		local nh, np, anchor, delta, valid = pivotPreview(pointer, s1Origin(), curPos, curHeading)
 		-- Grey reachable cones from the pivot anchor (moves with the mode): pivot
 		-- +/-45, then spend the straight budget FORWARD or BACKWARD.
-		local fdir = dirFromHeading(curHeading)
-		local anchorFwdU = (anchor.x - curPos.x) * fdir.x + (anchor.z - curPos.z) * fdir.z
-		local backRem = math.max(0, MAX_BACK_INCHES - backSpent)
-		appendReachCone(active, anchor, curHeading, MAX_PIVOT_DEG,
-			remainingInches() + toInches(halfLong() - anchorFwdU), COL_LIMIT)
-		appendReachCone(active, anchor, curHeading + 180, MAX_PIVOT_DEG,
-			backRem + toInches(halfLong() + anchorFwdU), COL_LIMIT)
+		appendPivotReach(active, anchor)
 		appendPivotGuides(active, anchor, curHeading, curPos.y)
 		if valid then
 			prevStraight, prevEndPos, prevHeading = 0, np, nh
@@ -739,14 +774,8 @@ local function tick()
 	elseif phase == PHASE_PIVOT then
 		local nh, np, anchor, delta, valid = pivotPreview(pointer, pivotOrigin, curPos, curHeading)
 		-- Reach cones from the pivot anchor (moves with the chosen mode): forward
-		-- (remaining straight budget) and backward (remaining backward budget).
-		local fdir = dirFromHeading(curHeading)
-		local anchorFwdU = (anchor.x - curPos.x) * fdir.x + (anchor.z - curPos.z) * fdir.z
-		local backRem = math.max(0, MAX_BACK_INCHES - backSpent)
-		appendReachCone(active, anchor, curHeading, MAX_PIVOT_DEG,
-			remainingInches() + toInches(halfLong() - anchorFwdU), COL_LIMIT)
-		appendReachCone(active, anchor, curHeading + 180, MAX_PIVOT_DEG,
-			backRem + toInches(halfLong() + anchorFwdU), COL_LIMIT)
+		-- and/or backward, only in the direction(s) the lock still allows.
+		appendPivotReach(active, anchor)
 		appendPivotGuides(active, anchor, curHeading, curPos.y)
 		if valid then
 			prevStraight, prevEndPos, prevHeading = 0, np, nh
@@ -756,8 +785,7 @@ local function tick()
 		end
 
 	elseif phase == PHASE_S2 then
-		appendRangeGuide(active, curPos, curHeading, remainingInches(),
-			math.max(0, MAX_BACK_INCHES - backSpent), COL_LIMIT)
+		appendRangeGuide(active, curPos, curHeading, fwdAvail(), backAvail(), COL_LIMIT)
 		local d, e, h = straightPreview(pointer)
 		prevStraight, prevEndPos, prevHeading = d, e, h
 		appendCorridor(active, curPos, e, h, COL_LEG)
@@ -798,15 +826,21 @@ local function stopLoop()
 end
 
 -- --------------------------------------------------------- click catcher ----
--- A static transparent RECTANGLE pinned to the model, aligned to its facing and
--- sized to the area the model can actually travel THIS step: the forward budget
--- (+ margin) ahead of it and the backward budget (+ margin) behind it, only a
--- base-width-ish corridor wide. This is far smaller than the old full-envelope
--- disc, so it no longer locks a big bubble over the whole table -- it only
--- covers where the model can move. LEFT-click = apply, RIGHT-click = back.
--- Because it is a button ON the model, hovering it counts as hovering the model,
--- so the number ROW works with no binding. It is rebuilt only when the reach
--- changes (a leg commits / step-back), never per frame -- so there is no lag.
+-- A static transparent RECTANGLE button on the model, aligned to the sprint's
+-- CURRENT heading and sized to the area the base can actually travel THIS step:
+-- the forward budget (+ margin) ahead and the backward budget (+ margin) behind,
+-- only a base-width-ish corridor wide (pivot steps use a square over the swing).
+-- LEFT-click = apply, RIGHT-click = back. Because it is a button ON the model,
+-- hovering it counts as hovering the model, so the number ROW works with no
+-- binding. It is rebuilt only when the reach or the sprint's committed position/
+-- heading changes (a leg commits / step-back), never per frame -- so no lag.
+--
+-- The model itself stays put until the sprint finishes (so it can "pivot
+-- through" other models/terrain mid-sprint). The button therefore can't simply
+-- ride along at the model's origin: it is placed at the committed sprint point
+-- (curPos/curHeading) via TTS's own positionToLocal, and its rotation is derived
+-- from the SAME conversion, so position and rotation always agree on the local
+-- frame (no hand-rolled axis math that can come out mirrored).
 
 -- Remove every catcher button currently on the model (high->low: removeButton
 -- reshuffles indices, so removing while iterating by index can skip one).
@@ -820,11 +854,11 @@ local function clearCatcherButtons()
 end
 
 -- Forward / backward reach (inches) of the catch rectangle for a STRAIGHT step:
--- the remaining forward / backward budget + margin, each floored so a nearly-
--- spent sprint still has a clickable area.
+-- the remaining forward / backward budget (honouring the direction lock) +
+-- margin, each floored so a nearly-spent sprint still has a clickable area.
 local function catcherReach()
-	local fwd  = remainingInches() + CATCHER_MARGIN_IN
-	local back = math.max(0, MAX_BACK_INCHES - backSpent) + CATCHER_MARGIN_IN
+	local fwd  = fwdAvail() + CATCHER_MARGIN_IN
+	local back = backAvail() + CATCHER_MARGIN_IN
 	if fwd  < 3 then fwd  = 3 end
 	if back < 2 then back = 2 end
 	return fwd, back
@@ -840,92 +874,109 @@ local function catcherIsPivot()
 end
 
 -- Half-span (inches) of the centred square used while aiming a pivot: the
--- forward budget (+ margin) plus a base half-length, so the +/-45 cones and the
--- base tips all stay inside the clickable area. Floored so a spent sprint still
--- has room to click.
+-- larger remaining budget (+ margin) plus a base half-length, so the +/-45 cones
+-- and the base tips all stay inside the clickable area. Floored so a spent
+-- sprint still has room to click.
 local function catcherPivotReach()
-	local r = remainingInches() + CATCHER_MARGIN_IN + toInches(halfLong())
+	local r = math.max(fwdAvail(), backAvail()) + CATCHER_MARGIN_IN + toInches(halfLong())
 	return (r < 4) and 4 or r
 end
 
+-- The world point / heading the catcher is centred on. Leap keeps the catcher
+-- on the original footprint (its aim is relative to that, and rotate taps must
+-- not rebuild it); Sprint/Turn use the committed sprint point.
+local function catcherAnchor()
+	if phase == PHASE_LEAP then return startPos.x, startPos.z, startHeading end
+	return curPos.x, curPos.z, curHeading
+end
+
+-- Convert a world point + heading into the model's LOCAL button frame. The
+-- rotation is measured by converting a second point one inch along the heading,
+-- so it is expressed in exactly the same (possibly mirrored) frame as the
+-- position. Scale is multiplied back out of the direction so a non-unit model
+-- scale doesn't skew the angle.
+local function toButtonFrame(wx, wz, heading)
+	local sc = self.getScale()
+	local d  = dirFromHeading(heading)
+	local lp = self.positionToLocal(Vector(wx, startY, wz))
+	local lq = self.positionToLocal(Vector(wx + d.x, startY, wz + d.z))
+	local dx = (lq.x - lp.x) * sc.x
+	local dz = (lq.z - lp.z) * sc.z
+	return lp, headingOf(dx, dz)
+end
+
 -- (Re)create the catcher as a FRESH button sized to the CURRENT step:
---   * straight leg -> a NARROW rectangle aligned to the model's VISUAL facing
---     (button rotation = facingOffset), pushed forward so it runs `fwd` inches
---     ahead and `back` inches behind -- covering only the travel corridor.
---   * pivot/turn   -> a CENTRED square covering the full +/-45 swing, so you can
---     click anywhere in the front OR rear cone out to the reach.
--- The model steps/rotates to each committed leg (see applyToModel) and the button
--- rides along in local space, so it always tracks the operative's current spot and
--- facing -- no offset math. remove+recreate because editing a button does not
--- reliably rebuild its invisible click hitbox in TTS.
+--   * straight leg -> a NARROW rectangle aligned to the sprint's current heading,
+--     shifted so it runs `fwd` inches ahead and `back` inches behind the
+--     committed point -- covering only the travel corridor.
+--   * pivot/turn   -> a square centred on the committed point covering the full
+--     +/-45 swing, so you can click anywhere in the front OR rear cone.
+-- remove+recreate because editing a button does not reliably rebuild its
+-- invisible click hitbox in TTS.
 local function placeCatcher()
 	clearCatcherButtons()
 	local sc     = self.getScale()
+	local sx     = (sc.x ~= 0 and sc.x or 1)
+	local sy     = (sc.y ~= 0 and sc.y or 1)
+	local sz     = (sc.z ~= 0 and sc.z or 1)
 	local uPerIn = CATCHER_UNITS_PER_IN
+	local ax, az, heading = catcherAnchor()
+	local widthIn, depthIn, offIn
 	if catcherIsPivot() then
-		-- Centred, rotation-proof square covering the pivot swing (both cones).
-		local span = 2 * catcherPivotReach() * uPerIn
-		self.createButton({
-			click_function = "sprintCatcherClick",
-			function_owner = self,
-			label          = "",
-			position       = { 0, 0.6 / (sc.y ~= 0 and sc.y or 1), 0 },
-			rotation       = { 0, 0, 0 },
-			width          = span / (sc.x ~= 0 and sc.x or 1),
-			height         = span / (sc.z ~= 0 and sc.z or 1),
-			font_size      = 100,
-			color          = { 0, 0, 0, 0 },
-			tooltip        = catcherTooltip,
-		})
-		return
+		local r = catcherPivotReach()
+		widthIn, depthIn, offIn = 2 * r, 2 * r, 0
+	else
+		local fwd, back = catcherReach()
+		widthIn = 2 * halfWide() + 2 * CATCHER_SIDE_MARGIN_IN   -- side-to-side corridor
+		depthIn = fwd + back                                    -- front-to-back run
+		offIn   = (fwd - back) * 0.5                            -- shift forward of centre
 	end
-	local fwd, back = catcherReach()
-	local widthIn   = 2 * halfWide() + 2 * CATCHER_SIDE_MARGIN_IN   -- side-to-side corridor
-	local depthIn   = fwd + back                                    -- front-to-back run
-	local offIn     = (fwd - back) * 0.5                            -- shift forward of centre
-	local fdir      = dirFromHeading(facingOffset)                  -- visual-forward in local space
-	-- NB: button POSITION is in the object's local units (like the 0.6 y lift),
-	-- but button WIDTH/HEIGHT use a separate UI scale (hence CATCHER_UNITS_PER_IN).
-	-- So the forward shift must NOT be multiplied by uPerIn, or the hitbox flies
-	-- far off the model and nothing is clickable.
+	-- Centre of the hitbox in WORLD space, then into the model's local frame.
+	-- NB: button POSITION is in the object's local units (positionToLocal already
+	-- divides out scale), but WIDTH/HEIGHT use a separate UI scale (hence
+	-- CATCHER_UNITS_PER_IN), so the shift must NOT be multiplied by uPerIn.
+	local fdir = dirFromHeading(heading)
+	local lp, rotY = toButtonFrame(ax + fdir.x * toUnits(offIn), az + fdir.z * toUnits(offIn), heading)
 	self.createButton({
 		click_function = "sprintCatcherClick",
 		function_owner = self,
 		label          = "",
-		position       = {
-			(fdir.x * offIn) / (sc.x ~= 0 and sc.x or 1),
-			0.6 / (sc.y ~= 0 and sc.y or 1),
-			(fdir.z * offIn) / (sc.z ~= 0 and sc.z or 1),
-		},
-		rotation       = { 0, facingOffset, 0 },
-		width          = (widthIn * uPerIn) / (sc.x ~= 0 and sc.x or 1),
-		height         = (depthIn * uPerIn) / (sc.z ~= 0 and sc.z or 1),
+		position       = { lp.x, 0.6 / sy, lp.z },
+		rotation       = { 0, rotY, 0 },
+		width          = (widthIn * uPerIn) / sx,
+		height         = (depthIn * uPerIn) / sz,
 		font_size      = 100,
 		color          = { 0, 0, 0, 0 },
 		tooltip        = catcherTooltip,
 	})
 end
 
+-- Signature of everything the catcher's shape/placement depends on; the catcher
+-- is only rebuilt when this changes.
+local function catcherKey()
+	local fwd, back = catcherReach()
+	local ax, az, heading = catcherAnchor()
+	return string.format("%s|%.3f|%.3f|%.3f|%.3f|%.2f",
+		tostring(catcherIsPivot()), fwd, back, ax, az, heading)
+end
+
 local function createCatcher(tooltip)
 	if catcherActive then return end
 	catcherTooltip = tooltip or "Left: apply   Right: back   1/2/3/4: mode   9: finish   0: cancel"
 	placeCatcher()
-	catcherActive    = true
-	lastCatcherKind  = catcherIsPivot()
-	lastCatcherFwd, lastCatcherBack = catcherReach()
+	catcherActive  = true
+	lastCatcherKey = catcherKey()
 end
 
--- Resize/reshape the catcher for the current step. Guarded so it only rebuilds
--- when the reach OR the shape (straight corridor vs pivot swing) actually
--- changes -- e.g. a leg commits, a step-back, or switching to/from a pivot mode
--- -- never per frame, so there is no lag.
+-- Resize/reshape/re-place the catcher for the current step. Guarded so it only
+-- rebuilds when the reach, the shape (straight corridor vs pivot swing) or the
+-- committed sprint point actually changes -- e.g. a leg commits, a step-back,
+-- or switching to/from a pivot mode -- never per frame, so there is no lag.
 syncCatcher = function()
 	if not catcherActive then return end
-	local pivot     = catcherIsPivot()
-	local fwd, back = catcherReach()
-	if pivot == lastCatcherKind and fwd == lastCatcherFwd and back == lastCatcherBack then return end
-	lastCatcherKind = pivot
-	lastCatcherFwd, lastCatcherBack = fwd, back
+	local key = catcherKey()
+	if key == lastCatcherKey then return end
+	lastCatcherKey = key
 	placeCatcher()
 end
 
@@ -945,6 +996,7 @@ local function pushHistory()
 		back        = backSpent,
 		raw         = rawStraight,
 		legs        = #committedLegs,
+		legDir      = legDir,
 		s1Mode      = s1Mode,
 		pivotOrigin = pivotOrigin,
 	})
@@ -956,15 +1008,17 @@ local function restoreFrom(s)
 	spentInches = s.spent
 	backSpent   = s.back
 	rawStraight = s.raw
+	legDir      = s.legDir
 	while #committedLegs > s.legs do table.remove(committedLegs) end
 	phase        = s.phase
 	s1Mode       = s.s1Mode
 	pivotOrigin  = s.pivotOrigin
-	-- move/rotate the model back to the restored step (it steps with each leg)
-	applyToModel()
 end
 
 -- ------------------------------------------------------------ state changes --
+-- Only called when the action FINISHES: mid-sprint the model never moves (the
+-- ghost/corridors show the committed path), so it can pivot "through" other
+-- models or terrain and continue, and lands in one go at the end.
 applyToModel = function()
 	local r = self.getRotation()
 	self.setPosition({ curPos.x, startY, curPos.z })
@@ -992,7 +1046,7 @@ local function cancelSprint(pc)
 	removeCatcher()
 	destroyDistText()
 	setActiveSprint(pc or controlColor, false)
-	-- the model stepped along the sprint; put it back where it started
+	-- the model never moved mid-sprint, but restore defensively (e.g. physics nudge)
 	if startPos then
 		local r = self.getRotation()
 		self.setPosition({ startPos.x, startY, startPos.z })
@@ -1018,6 +1072,7 @@ local function beginSprint(pc)
 	backSpent    = 0
 	rawStraight  = 0
 	committedLegs = {}
+	legDir       = 0
 	history      = {}
 	s1Mode       = "straight"
 	pivotOrigin  = "center"
@@ -1048,6 +1103,7 @@ local function beginTurn(pc)
 	backSpent    = 0
 	rawStraight  = 0
 	committedLegs = {}
+	legDir       = 0
 	history      = {}
 	s1Mode       = "straight"
 	pivotOrigin  = "center"
@@ -1084,6 +1140,7 @@ local function beginLeap(pc)
 	backSpent    = 0
 	rawStraight  = 0
 	committedLegs = {}
+	legDir       = 0
 	history      = {}
 	phase        = PHASE_LEAP
 	lastReport   = nil
@@ -1108,13 +1165,16 @@ local function commitStraight(d, endPos)
 	else
 		spentInches = spentInches + math.ceil(math.abs(d) - 1e-6)
 	end
-	applyToModel()   -- step the model to the committed point (catcher rides centred)
+	-- Errata: a sprint can't move both forward and backward. The first leg that
+	-- actually moves locks the direction for the rest of the sprint.
+	if legDir == 0 and math.abs(d) > 1e-3 then
+		legDir = (d < 0) and -1 or 1
+	end
 end
 
 local function commitPivot(newHeading, newPos)
 	curPos     = { x = newPos.x, y = curPos.y, z = newPos.z }
 	curHeading = newHeading
-	applyToModel()   -- rotate/step the model to the pivot result
 end
 
 -- LEFT-click: apply the current step and advance.
@@ -1148,7 +1208,8 @@ local function advance(pc)
 		lastReport = nil
 		if turnOnly then
 			finishSprint(pc, "Turn complete.")
-		elseif remainingInches() < 1 then
+		elseif fwdAvail() < 1 and backAvail() < 0.1 then
+			-- nothing left to move in the allowed direction
 			finishSprint(pc, string.format('Sprint complete: %.1f" total.', rawStraight))
 		else
 			phase = PHASE_S2
