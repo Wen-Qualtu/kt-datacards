@@ -5,7 +5,8 @@
 -- facing (transform forward, plus kt_front on command-node models). The lines
 -- run to the two outermost points of the target base as seen from the origin
 -- (the tangents), the cone stays on the origin's base edge, and the range is
--- measured base edge to base edge.
+-- measured base edge to base edge. The lines turn orange (light) or red (heavy
+-- or untyped) when terrain intervenes between the bases.
 
 pickedUp = false
 clickPlayerColor = ""
@@ -152,6 +153,81 @@ local function pointGap(px, pz, e)
 	return gap
 end
 
+-- Intervening terrain. Rays fan from the cone tip to points across the facing
+-- part of the target base, just above both bases. Anything they cross other
+-- than operatives, tokens and tools counts. Terrain type is only known from
+-- nicknames ("Light Rubble", "Capillary Tower (Heavy)"), so pieces named Light
+-- (and not Heavy) are light; everything else, including unnamed terrain, is heavy.
+local FAN_RAYS = 9
+local RAY_LIFT = 0.25
+local COL_LIGHT = { 1, 0.55, 0 }
+local COL_HEAVY = { 0.95, 0.1, 0.1 }
+local IGNORE_TYPES = { Scripting = true, Surface = true, Hand = true, Card = true, Deck = true, Dice = true }
+local IGNORE_TAGS = { "KTUIMini", "KTUI_ToolActive", "KT24Token", "KT_Objective" }
+
+local function facingPoints(e, px, pz)
+	local u, v = toLocal(e, px, pz)
+	local U, V = u / e.a, v / e.b
+	local d = math.sqrt(U * U + V * V)
+	if d <= 1 + 1e-6 then
+		local x1, z1, x2, z2 = tangentPoints(e, px, pz)
+		return { { x1, z1 }, { x2, z2 } }
+	end
+	local phi, alpha = atan2(V, U), math.acos(1 / d)
+	local pts = {}
+	for i = 0, FAN_RAYS - 1 do
+		local x, z = pointAt(e, phi - alpha + 2 * alpha * i / (FAN_RAYS - 1))
+		pts[#pts + 1] = { x, z }
+	end
+	return pts
+end
+
+local function isIgnored(obj)
+	if obj == nil or obj == self or obj == objModel or obj == ObjMiniTarget then return true end
+	if IGNORE_TYPES[obj.type] then return true end
+	for _, tag in ipairs(IGNORE_TAGS) do
+		if obj.hasTag(tag) then return true end
+	end
+	for _, tag in ipairs(obj.getTags() or {}) do
+		if tostring(tag):find("KTUIToken", 1, true) == 1 then return true end
+	end
+	return false
+end
+
+local function baseBottom(obj)
+	local b = obj.getBounds()
+	return b.center.y - b.size.y * 0.5
+end
+
+function interveningColor(target, sp)
+	local oy = baseBottom(objModel) + RAY_LIFT
+	local ty = baseBottom(ObjMiniTarget) + RAY_LIFT
+	local light, heavy = false, false
+	for _, p in ipairs(facingPoints(target, sp.x, sp.z)) do
+		local dir = { x = p[1] - sp.x, y = ty - oy, z = p[2] - sp.z }
+		local len = math.sqrt(dir.x * dir.x + dir.y * dir.y + dir.z * dir.z)
+		if len > 1e-6 then
+			local hits = Physics.cast({
+				origin = { x = sp.x, y = oy, z = sp.z }, direction = dir, type = 1, max_distance = len,
+			}) or {}
+			for _, hit in ipairs(hits) do
+				local obj = hit.hit_object
+				if not isIgnored(obj) then
+					local name = tostring(obj.getName() or ""):lower()
+					if name:find("light", 1, true) and not name:find("heavy", 1, true) then
+						light = true
+					else
+						heavy = true
+					end
+				end
+			end
+		end
+	end
+	if heavy then return COL_HEAVY end
+	if light then return COL_LIGHT end
+	return nil
+end
+
 function onPickUp(cp)
 	clickPlayerColor = cp
 	pickedUp = true
@@ -225,7 +301,7 @@ function refrescaVectores()
 
 	self.setVectorLines({{
 		points = { extended(x1, z1), { x = 0, y = -0.45, z = 0 }, extended(x2, z2) },
-		color = colorLinea,
+		color = interveningColor(target, sp) or colorLinea,
 		thickness = ancho_linea,
 		rotation = {0, 0, 0},
 	}})

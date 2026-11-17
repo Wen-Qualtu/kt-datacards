@@ -629,9 +629,10 @@ local function model(x, z, rotY, st)
         getPosition = function() return {x = x, y = 1, z = z} end,
         getRotation = function() return {x = 0, y = rotY, z = 0} end,
         getTable = function() return st end,
-        getBounds = function() return {offset = {y = 0}} end,
+        getBounds = function() return {offset = {y = 0}, center = {y = 1.25}, size = {y = 0.5}} end,
     }
 end
+Physics = {cast = function() return {} end}
 local lines, label
 local conePos = {x = 0, y = 1, z = 0}
 self = {
@@ -686,6 +687,65 @@ print("oval targeting passed")
         input=script, cwd=ROOT, capture_output=True, text=True, encoding="utf-8", check=True,
     )
     assert result.stdout.strip() == "oval targeting passed", result.stderr
+    assert not result.stderr
+
+
+@pytest.mark.skipif(not shutil.which("npx"), reason="npx is required for Lua geometry integration")
+def test_targeting_lines_colour_by_intervening_terrain():
+    cone = (CONFIG / "defaults" / "tts-script" / "ktui-target-cone.lua").read_text(encoding="utf-8")
+    script = "Color = function() return {} end\nmath.atan2 = math.atan2 or math.atan\n" + cone + r'''
+local function model(x, z, tags)
+    return {
+        getPosition = function() return {x = x, y = 1, z = z} end,
+        getRotation = function() return {x = 0, y = 0, z = 0} end,
+        getTable = function() return {base = {x = 42, z = 75}} end,
+        getBounds = function() return {offset = {y = 0}, center = {y = 1.25}, size = {y = 0.5}} end,
+    }
+end
+local function thing(name, tags, kind)
+    local set = {}
+    for _, t in ipairs(tags or {}) do set[t] = true end
+    return {type = kind or "Generic", getName = function() return name end,
+        hasTag = function(t) return set[t] == true end, getTags = function() return tags or {} end}
+end
+local lines, casts, blockers
+self = {
+    getPosition = function() return {x = 0, y = 1.5, z = 0} end,
+    setVectorLines = function(l) lines = l end,
+    editButton = function() end,
+}
+Physics = {cast = function(p)
+    casts[#casts + 1] = p
+    -- only the middle ray of the fan is blocked: one crossing line is enough
+    if #casts == 5 then return blockers end
+    return {}
+end}
+objModel = model(0, -0.6)
+ObjMiniTarget = model(0, 8)
+estado_cono = 2
+colorLinea = "user"
+local function colourWith(list)
+    casts, blockers = {}, {}
+    for _, obj in ipairs(list) do blockers[#blockers + 1] = {hit_object = obj} end
+    refrescaVectores()
+    return lines[1].color, casts
+end
+local col, rays = colourWith({})
+assert(col == "user" and #rays == 9, "clear")
+assert(math.abs(rays[1].origin.y - 1.25) < 1e-9 and rays[1].type == 1, "ray height")
+assert(colourWith({ObjMiniTarget, objModel, self, thing("Ork", {"KTUIMini"}), thing("", {"KTUIToken_Order"}),
+    thing("zone", nil, "Scripting")}) == "user", "ignored objects")
+local light = colourWith({thing("Light Rubble")})
+assert(light[1] == 1 and light[2] == 0.55, "light")
+assert(colourWith({thing("Light Rubble"), thing("Capillary Tower (Heavy)")})[2] == 0.1, "heavy wins")
+assert(colourWith({thing("")})[2] == 0.1, "untyped is heavy")
+print("intervening terrain passed")
+'''
+    result = subprocess.run(
+        [shutil.which("npx"), "--yes", "--package=fengari-node-cli", "fengari", "-"],
+        input=script, cwd=ROOT, capture_output=True, text=True, encoding="utf-8", check=True,
+    )
+    assert result.stdout.strip() == "intervening terrain passed", result.stderr
     assert not result.stderr
 
 
