@@ -1435,10 +1435,25 @@ def load_token_bag(team_name: str, faction: str, sample_url: str, config_dir: Pa
 def write_token_bag_object(team_name: str, token_bag: dict, output_dir: Path) -> Path:
     target = output_dir / team_name / "tts_objects" / f"{team_name}-token-bag.json"
     target.parent.mkdir(parents=True, exist_ok=True)
+    # Written before the team box mirrors MeshURL -> ColliderURL, so mirror here.
+    token_bag = json.loads(json.dumps(token_bag))
+    _mirror_collider_urls(token_bag)
     contents = (json.dumps({"ObjectStates": [token_bag]}, indent=2) + "\n").encode("utf-8")
     if not target.exists() or target.read_bytes() != contents:
         target.write_bytes(contents)
     return target
+
+
+def _mirror_collider_urls(obj) -> None:
+    if isinstance(obj, dict):
+        for key, value in obj.items():
+            if key == "MeshURL" and isinstance(value, str) and value:
+                obj["ColliderURL"] = value
+            else:
+                _mirror_collider_urls(value)
+    elif isinstance(obj, list):
+        for item in obj:
+            _mirror_collider_urls(item)
 
 
 def load_dice_objects(team_name: str, sample_url: Optional[str], output_dir: Path, repo_branch: str = URL_BRANCH) -> list:

@@ -888,3 +888,12 @@ def test_standalone_token_bag_preserves_contents_and_script(tmp_path):
     assert json.loads(target.read_text(encoding="utf-8")) == {"ObjectStates": [bag]}
     timestamp = target.stat().st_mtime_ns
     assert tts_impl.write_token_bag_object("test-team", bag, tmp_path).stat().st_mtime_ns == timestamp
+
+
+def test_standalone_token_bag_mirrors_mesh_into_collider(tmp_path):
+    mesh = {"MeshURL": "https://example/token.obj?v=1", "ColliderURL": ""}
+    bag = {"Name": "Custom_Model_Bag", "ContainedObjects": [{"CustomMesh": mesh}]}
+    target = tts_impl.write_token_bag_object("test-team", bag, tmp_path)
+    written = json.loads(target.read_text(encoding="utf-8"))["ObjectStates"][0]
+    assert written["ContainedObjects"][0]["CustomMesh"]["ColliderURL"] == "https://example/token.obj?v=1"
+    assert mesh["ColliderURL"] == ""
