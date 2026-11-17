@@ -1,6 +1,6 @@
-KTUI_MODELSCRIPT_VERSION = "c7dd42526016"
+KTUI_MODELSCRIPT_VERSION = "47c4b9fbfa43"
 
-KTUI_MODELSCRIPT = [==[KT_MODELSCRIPT_VERSION = "c7dd42526016"
+KTUI_MODELSCRIPT = [==[KT_MODELSCRIPT_VERSION = "47c4b9fbfa43"
 
 self.clearContextMenu()
 
@@ -20,7 +20,6 @@ clickPlayerColor = ""
 newX = 0
 newZ = 0
 posY = 0
-txtMax = ""
 colorLinea = Color(1,1,1)
 state = nil
 baseModel = nil
@@ -378,37 +377,14 @@ function refrescaVectores()
 end
 
 function onNumberTyped( pc, n )
-
-	if n > 0 and n <= 1 then
-		txtMax = "\n(max "..n.."'')"
-		colorLinea =Color(0.10,0.10,0.09)
-		posicionLock()
-	elseif  n > 0 and n <= 2 then
-		txtMax = "\n(max "..n.."'')"
-		colorLinea =Color(1,1,1)
-		posicionLock()
-	elseif  n > 0 and n <= 3 then
-		txtMax = "\n(max "..n.."'')"
-		colorLinea =Color(0,0.36,0.62)
-		posicionLock()
-	elseif  n > 0 and n <= 6 then
-		txtMax = "\n(max "..n.."'')"
-		colorLinea =Color(0.80,0.08,0.09)
-		posicionLock()
-	elseif n == 7 then
-
-	elseif n == 8 then
-
-	elseif n == 9 then
+	if n == 9 then
 		lockEnabled = not lockEnabled
 		if lockEnabled then
 			broadcastToColor("Targeting Tool locked to base", pc, {1,1,1})
 		else
 			broadcastToColor("Targeting Tool unlocked", pc, {1,1,1})
 		end
-		return
-
-	else
+	elseif n == 0 then
 		self.destruct()
 	end
 end
@@ -417,12 +393,10 @@ function onLoad(ls)
 	self.setName(
 	"Hover over and press these buttons:\n" ..
 	"- R to select a target\n" ..
-	"- 1-4 to change the line color\n" ..
 	"- 9 to unlock or lock to base\n" ..
 	"- 0 to finish"
 	)
 	self.max_typed_number=9
-	txtMax = "\n(max 1'')"
 	self.clearButtons()
 	local rango = {['function_owner'] = self, ['click_function'] = 'gg', ['label'] = "0''", ['position'] = {0, 0.5, 0}, ['rotation'] =  {0,0,0}, ['width'] = 5, ['height'] = 5, ['font_size'] = 150, ['font_color'] = {1,1,1}}
 	self.createButton(rango)
