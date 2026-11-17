@@ -694,19 +694,21 @@ print("oval targeting passed")
 def test_targeting_lines_show_cover_and_obscured_from_terrain():
     cone = (CONFIG / "defaults" / "tts-script" / "ktui-target-cone.lua").read_text(encoding="utf-8")
     script = "Color = function() return {} end\nmath.atan2 = math.atan2 or math.atan\n" + cone + r'''
-local function model(x, z)
+local function model(x, z, bottom)
+    bottom = bottom or 1
     return {
-        getPosition = function() return {x = x, y = 1, z = z} end,
+        getPosition = function() return {x = x, y = bottom, z = z} end,
         getRotation = function() return {x = 0, y = 0, z = 0} end,
         getTable = function() return {base = {x = 32, z = 32}} end,
-        getBounds = function() return {offset = {y = 0}, center = {y = 1.25}, size = {y = 0.5}} end,
+        getBounds = function() return {offset = {y = 0}, center = {y = bottom + 0.25}, size = {y = 0.5}} end,
     }
 end
 local function terrain(name, z1, z2, opts)
     opts = opts or {}
     local set = {}
     for _, t in ipairs(opts.tags or {}) do set[t] = true end
-    return {type = opts.kind or "Generic", minX = -3, maxX = 3, minZ = z1, maxZ = z2,
+    return {type = opts.kind or "Generic", minX = opts.minX or -3, maxX = opts.maxX or 3, minZ = z1, maxZ = z2,
+        minY = 0, maxY = opts.top or 3,
         getName = function() return name end, getDescription = function() return opts.description or "" end,
         getGUID = function() return name .. z1 end,
         hasTag = function(t) return set[t] == true end, getTags = function() return opts.tags or {} end}
@@ -721,7 +723,7 @@ Physics = {cast = function(p)
     for _, b in ipairs(boxes) do
         local lo, hi = -math.huge, math.huge
         local ok = true
-        for _, ax in ipairs({{"x", b.minX, b.maxX}, {"z", b.minZ, b.maxZ}}) do
+        for _, ax in ipairs({{"x", b.minX, b.maxX}, {"y", b.minY, b.maxY}, {"z", b.minZ, b.maxZ}}) do
             local k, mn, mx = ax[1], ax[2], ax[3]
             if math.abs(u[k]) < 1e-12 then
                 if o[k] < mn or o[k] > mx then ok = false end
@@ -773,10 +775,38 @@ check("thick heavy", 8, {terrain("Heavy Block", 3.0, 6.8)}, "heavy", true)
 check("heavy near shooter", 8, {terrain("Heavy Wall", 0.4, 0.7)}, nil, false)
 check("heavy beats light", 8, {terrain("Light Rubble", 6.6, 6.7), terrain("Heavy Wall", 6.9, 7.0)}, "heavy", false)
 check("light in description", 8, {terrain("", 6.6, 6.8, {description = "Light terrain"})}, "light", false)
-check("portable barricade is light", 8, {terrain("Portable Barricade", 6.6, 6.8)}, "light", false)
 check("untyped is heavy", 8, {terrain("Crate", 6.6, 6.8)}, "heavy", false)
 check("operatives ignored", 8, {terrain("Ork", 4.0, 6.8, {tags = {"KTUIMini"}})}, nil, false)
 check("within 2 inches", 2.5, {terrain("Light Rubble", 1.0, 1.2)}, nil, false)
+local function solid(name, x1, x2, z1, z2, y1, y2)
+    local o = terrain(name, z1, z2, {minX = x1, maxX = x2, top = y2})
+    o.minY = y1
+    return o
+end
+-- A low barricade near the target blocks a level shot, but a shot from a
+-- Vantage point passes over it, so it doesn't count.
+check("portable barricade, level shot", 8, {solid("Portable barricade", -2, 2, 6.5, 6.8, 1, 1.3)}, "light", false)
+check("heavy barricade", 8, {solid("Heavy barricade", -2, 2, 6.5, 6.8, 1, 1.3)}, "heavy", false)
+objModel = model(0, -0.6, 4)
+check("barricade, shot from above", 8, {solid("Portable barricade", -2, 2, 6.5, 6.8, 1, 1.3)}, nil, false)
+objModel = model(0, -0.6)
+local platform = solid("Heavy Walkway", -1, 1, 7.0, 9.0, 0, 2)
+ObjMiniTarget = model(0, 8, 2)
+boxes = {platform}
+refrescaVectores()
+assert(coverState == "heavy" and not obscuredState, "shooting up: target's platform intervenes")
+-- Shooting down from a platform: the shooter's own terrain never counts.
+local perch = solid("Heavy Walkway", -1, 1, -1.5, 0.3, 0, 2)
+boxes = {perch}
+objModel, ObjMiniTarget = model(0, -0.6, 2), model(0, 8)
+refrescaVectores()
+assert(coverState == nil and not obscuredState, "shooting down: own platform ignored")
+-- Both up on separate platforms at the same height: neither counts.
+boxes = {perch, platform}
+ObjMiniTarget = model(0, 8, 2)
+refrescaVectores()
+assert(coverState == nil and not obscuredState, "same level: target's platform ignored")
+objModel = model(0, -0.6)
 assert(hud["ktmove_txt_Red"] == "No cover", "clear readout: " .. hud["ktmove_txt_Red"])
 check("both shown", 8, {terrain("Heavy Block", 3.0, 6.8)}, "heavy", true)
 assert(hud["ktmove_txt_Red"] == "Heavy cover  +  Obscured", "readout lists both")
