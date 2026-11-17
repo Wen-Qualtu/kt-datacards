@@ -737,6 +737,12 @@ Physics = {cast = function(p)
     return hits
 end}
 local lines, label
+local hud = {}
+Color = setmetatable({fromString = function() return {lerp = function(c) return c end, toHex = function() return "FFFFFF" end} end,
+    White = {}}, {__call = function() return {} end})
+Global = {UI = {getXml = function() return "" end, setXml = function() end,
+    setAttribute = function(id, k, v) hud[id .. "." .. k] = v end, setValue = function(id, v) hud[id] = v end}}
+activeColor = "Red"
 self = {
     getPosition = function() return {x = 0, y = 1.5, z = 0.03} end,
     setVectorLines = function(l) lines = l end,
@@ -754,7 +760,9 @@ local function check(name, targetZ, pieces, cover, obscured)
     local want = cover == "heavy" and 0.1 or (cover == "light" and 0.55 or nil)
     if want then assert(lines[1].color[2] == want, name .. ": colour") else assert(lines[1].color == "user", name .. ": colour") end
     assert((lines[2] ~= nil) == obscured, name .. ": obscured arc")
-    assert((label:find("Obscured", 1, true) ~= nil) == obscured, name .. ": label")
+    assert(label:find("^%d+''$"), name .. ": range-only label " .. label)
+    assert(hud["ktmove_txt_Red.active"] == "true", name .. ": hud shown")
+    assert((hud["ktmove_txt_Red"]:find("Obscured", 1, true) ~= nil) == obscured, name .. ": hud obscured")
 end
 check("clear", 8, {}, nil, false)
 check("light near target", 8, {terrain("Light Rubble", 6.6, 6.8)}, "light", false)
@@ -765,12 +773,15 @@ check("thick heavy", 8, {terrain("Heavy Block", 3.0, 6.8)}, "heavy", true)
 check("heavy near shooter", 8, {terrain("Heavy Wall", 0.4, 0.7)}, nil, false)
 check("heavy beats light", 8, {terrain("Light Rubble", 6.6, 6.7), terrain("Heavy Wall", 6.9, 7.0)}, "heavy", false)
 check("light in description", 8, {terrain("", 6.6, 6.8, {description = "Light terrain"})}, "light", false)
+check("portable barricade is light", 8, {terrain("Portable Barricade", 6.6, 6.8)}, "light", false)
 check("untyped is heavy", 8, {terrain("Crate", 6.6, 6.8)}, "heavy", false)
 check("operatives ignored", 8, {terrain("Ork", 4.0, 6.8, {tags = {"KTUIMini"}})}, nil, false)
 check("within 2 inches", 2.5, {terrain("Light Rubble", 1.0, 1.2)}, nil, false)
-assert(label:find("^%d+''$"), "plain range label when clear: " .. label)
+assert(hud["ktmove_txt_Red"] == "No cover", "clear readout: " .. hud["ktmove_txt_Red"])
 check("both shown", 8, {terrain("Heavy Block", 3.0, 6.8)}, "heavy", true)
-assert(label:find("Heavy cover\nObscured", 1, true), "label lists both")
+assert(hud["ktmove_txt_Red"] == "Heavy cover  +  Obscured", "readout lists both")
+onDestroy()
+assert(hud["ktmove_txt_Red.active"] == "false", "hud hidden when the cone goes")
 print("cover and obscured passed")
 '''
     result = subprocess.run(

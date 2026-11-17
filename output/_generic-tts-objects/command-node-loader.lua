@@ -1,6 +1,6 @@
-KTUI_MODELSCRIPT_VERSION = "277da70a1153"
+KTUI_MODELSCRIPT_VERSION = "0cadec07b749"
 
-KTUI_MODELSCRIPT = [==[KT_MODELSCRIPT_VERSION = "277da70a1153"
+KTUI_MODELSCRIPT = [==[KT_MODELSCRIPT_VERSION = "0cadec07b749"
 
 self.clearContextMenu()
 
@@ -13,7 +13,8 @@ KT_TARGET_CONE_CODE = [=[
 -- run to the two outermost points of the target base as seen from the origin
 -- (the tangents), the cone stays on the origin's base edge, and the range is
 -- measured base edge to base edge. Line colour shows the target's cover (orange
--- light, red heavy) and a purple arc + label marks it obscured.
+-- light, red heavy), a purple arc marks it obscured, and the state is shown in
+-- the top-centre HUD.
 
 pickedUp = false
 newX = 0
@@ -100,25 +101,20 @@ local function tangentPoints(e, px, pz)
 	return x1, z1, x2, z2
 end
 
--- Parameter of the point on the oval closest to (px, pz): coarse scan, then a
--- shrinking pattern search so the ceil()'d range isn't nudged up by sampling.
+-- Parameter of the point on the oval closest to (px, pz): start at the point's
+-- own angle in the oval's scaled frame (on the near side, so in the right
+-- basin), then a shrinking pattern search so the ceil()'d range is exact.
 local function closestT(e, px, pz, t0, span)
 	local function dist2(t)
 		local x, z = pointAt(e, t)
 		return (x - px) ^ 2 + (z - pz) ^ 2
 	end
-	local best, bestD
-	if t0 then
-		best, bestD = t0, dist2(t0)
-	else
-		for i = 0, SAMPLES - 1 do
-			local t = i * 2 * math.pi / SAMPLES
-			local dd = dist2(t)
-			if not bestD or dd < bestD then best, bestD = t, dd end
-		end
-		span = 2 * math.pi / SAMPLES
+	if not t0 then
+		local u, v = toLocal(e, px, pz)
+		t0, span = atan2(v / e.b, u / e.a), 0.25
 	end
-	for _ = 1, 30 do
+	local best, bestD = t0, dist2(t0)
+	for _ = 1, 24 do
 		local l, r = dist2(best - span), dist2(best + span)
 		if l < bestD then best, bestD = best - span, l
 		elseif r < bestD then best, bestD = best + span, r
@@ -140,7 +136,7 @@ local function ovalGap(e1, e2)
 	end
 	local t1 = closestT(e1, e2.x, e2.z)
 	local t2, gap
-	for _ = 1, 12 do
+	for _ = 1, 6 do
 		local x1, z1 = pointAt(e1, t1)
 		t2 = closestT(e2, x1, z1, t2, 0.2)
 		local x2, z2 = pointAt(e2, t2)
@@ -168,17 +164,21 @@ end
 -- "Capillary Tower (Heavy)"); untyped terrain is treated as heavy.
 local FAN_RAYS = 9
 local RAY_LIFT = 0.25
-local STRETCH_SAMPLES = 8
 local CONTROL_RANGE = 1
 local COVER_DENIED_WITHIN = 2
+local ANALYSE_EVERY = 6          -- frames between terrain checks while dragging
 local COL_LIGHT = { 1, 0.55, 0 }
 local COL_HEAVY = { 0.95, 0.1, 0.1 }
 local COL_OBSCURED = { 0.7, 0.3, 1 }
 local IGNORE_TYPES = { Scripting = true, Surface = true, Hand = true, Card = true, Deck = true, Dice = true }
 local IGNORE_TAGS = { "KTUIMini", "KTUI_ToolActive", "KT24Token", "KT_Objective" }
+-- Light terrain whose name doesn't say so (e.g. the Portable Barricade equipment).
+local LIGHT_WORDS = { "light", "barricade" }
 
 coverState = nil      -- nil | "light" | "heavy"
 obscuredState = false
+activeColor = nil     -- player using the cone (gets the HUD readout)
+local dragFrames = 0
 
 local function facingPoints(e, px, pz)
 	local u, v = toLocal(e, px, pz)
@@ -212,7 +212,9 @@ end
 local function terrainKind(obj)
 	local text = (tostring(obj.getName() or "") .. " " .. tostring(obj.getDescription() or "")):lower()
 	if text:find("heavy", 1, true) then return "heavy" end
-	if text:find("light", 1, true) then return "light" end
+	for _, word in ipairs(LIGHT_WORDS) do
+		if text:find(word, 1, true) then return "light" end
+	end
 	return "heavy"
 end
 
@@ -251,6 +253,23 @@ local function rayStretches(a, b)
 	return pieces, len, d
 end
 
+-- Where a ray from (ax, az) with planar step (dx, dz) per unit s enters and
+-- leaves the oval grown by `grow` (the 1" zone around a base; exact for round
+-- bases, within a few hundredths of an inch for ovals). nil if it misses.
+local function rayThroughZone(e, ax, az, dx, dz, grow)
+	local A, B = e.a + grow, e.b + grow
+	local u0, v0 = toLocal(e, ax, az)
+	local c, s = math.cos(e.h), math.sin(e.h)
+	local du, dv = dx * c - dz * s, dx * s + dz * c
+	local qa = (du / A) ^ 2 + (dv / B) ^ 2
+	local qb = 2 * (u0 * du / (A * A) + v0 * dv / (B * B))
+	local qc = (u0 / A) ^ 2 + (v0 / B) ^ 2 - 1
+	local disc = qb * qb - 4 * qa * qc
+	if qa < 1e-12 or disc < 0 then return nil end
+	local r = math.sqrt(disc)
+	return (-qb - r) / (2 * qa), (-qb + r) / (2 * qa)
+end
+
 -- Sets coverState / obscuredState for the current shooter (objModel, sight
 -- lines from the cone at `sp`) and target.
 function analyseTerrain(target, sp)
@@ -263,26 +282,81 @@ function analyseTerrain(target, sp)
 	local light, heavy = false, false
 	for _, p in ipairs(facingPoints(target, sp.x, sp.z)) do
 		local pieces, len, d = rayStretches(a, { x = p[1], y = ty, z = p[2] })
-		for _, piece in pairs(pieces) do
-			local kind = terrainKind(piece.obj)
-			local nearTarget, farFromBoth = false, false
-			for i = 0, STRETCH_SAMPLES do
-				local s = piece.sIn + (piece.sOut - piece.sIn) * i / STRETCH_SAMPLES
-				local x, z = a.x + d.x * s / len, a.z + d.z * s / len
-				local toTarget = pointGap(x, z, fullTarget)
-				if toTarget <= CONTROL_RANGE then nearTarget = true end
-				if toTarget > CONTROL_RANGE and pointGap(x, z, shooter) > CONTROL_RANGE then farFromBoth = true end
+		if next(pieces) then
+			local dx, dz = d.x / len, d.z / len
+			-- Within 1" of the target from nearTarget on; more than 1" from the
+			-- shooter from leaveShooter on.
+			local tIn = rayThroughZone(fullTarget, a.x, a.z, dx, dz, CONTROL_RANGE)
+			local _, sOut = rayThroughZone(shooter, a.x, a.z, dx, dz, CONTROL_RANGE)
+			local nearTarget = tIn and math.max(0, tIn) or len
+			local leaveShooter = sOut and math.max(0, sOut) or 0
+			for _, piece in pairs(pieces) do
+				local kind = terrainKind(piece.obj)
+				if coverAllowed and piece.sOut >= nearTarget then
+					if kind == "heavy" then heavy = true else light = true end
+				end
+				if kind == "heavy" and math.max(piece.sIn, leaveShooter) < math.min(piece.sOut, nearTarget) then
+					obscuredState = true
+				end
 			end
-			if nearTarget and coverAllowed then
-				if kind == "heavy" then heavy = true else light = true end
-			end
-			if farFromBoth and kind == "heavy" then obscuredState = true end
 		end
 	end
 	coverState = heavy and "heavy" or (light and "light" or nil)
 end
 
+-- Cover/obscured readout in the shared top-centre HUD the move tools use
+-- (ktmove_hud in the Global UI), shown to the player using the cone.
+local HUD_COLORS = { "White", "Brown", "Red", "Orange", "Yellow",
+                     "Green", "Teal", "Blue", "Purple", "Pink" }
+local hudColor, hudText = nil, nil
+
+local function ensureHud()
+	local cur = ""
+	pcall(function() cur = Global.UI.getXml() or "" end)
+	if type(cur) ~= "string" then cur = "" end
+	if cur:find("ktmove_hud", 1, true) then return end
+	local rows = ""
+	for _, c in ipairs(HUD_COLORS) do
+		local col = Color.fromString(c):lerp(Color.White, 0.25)
+		rows = rows .. string.format(
+			'<Text id="ktmove_txt_%s" active="false" color="#%s" fontSize="26" '
+			.. 'fontStyle="Bold" alignment="Center" preferredHeight="32" '
+			.. 'outline="#000000" outlineSize="2 -2" raycastTarget="false"> </Text>', c, col:toHex(false))
+	end
+	pcall(function() Global.UI.setXml(cur
+		.. '<Panel id="ktmove_hud" active="true" rectAlignment="UpperCenter" '
+		.. 'width="600" height="120" offsetXY="0 -80" color="#00000000" raycastTarget="false">'
+		.. '<VerticalLayout childAlignment="UpperCenter" childForceExpandWidth="true" '
+		.. 'childForceExpandHeight="false" spacing="2" raycastTarget="false">'
+		.. rows .. '</VerticalLayout></Panel>') end)
+end
+
+local function hudSet(color, text)
+	if hudColor and (color ~= hudColor or not text) then
+		local old = hudColor
+		pcall(function()
+			Global.UI.setAttribute("ktmove_txt_" .. old, "active", "false")
+			Global.UI.setValue("ktmove_txt_" .. old, " ")
+		end)
+		hudColor, hudText = nil, nil
+	end
+	if not color or not text or text == hudText then return end
+	if not hudColor then ensureHud() end
+	hudColor, hudText = color, text
+	pcall(function()
+		Global.UI.setAttribute("ktmove_txt_" .. color, "active", "true")
+		Global.UI.setValue("ktmove_txt_" .. color, text)
+	end)
+end
+
+local function stateText()
+	local text = coverState == "heavy" and "Heavy cover" or (coverState == "light" and "Light cover" or "No cover")
+	if obscuredState then text = text .. "  +  Obscured" end
+	return text
+end
+
 function onPickUp(cp)
+	activeColor = cp
 	pickedUp = true
 	startLuaCoroutine(self, "movModel")
 end
@@ -350,7 +424,12 @@ function refrescaVectores()
 		return { x = sX + lambda * sX / mag, y = pY + lambda * Cy / mag, z = sZ + lambda * sZ / mag }
 	end
 
-	analyseTerrain(target, sp)
+	dragFrames = pickedUp and dragFrames + 1 or 0
+	if dragFrames % ANALYSE_EVERY == 0 then
+		analyseTerrain(target, sp)
+		hudSet(activeColor, stateText())
+		refrescaTextoRango()
+	end
 	local lineColor = colorLinea
 	if coverState == "heavy" then lineColor = COL_HEAVY elseif coverState == "light" then lineColor = COL_LIGHT end
 	local vectorLines = {{
@@ -367,7 +446,6 @@ function refrescaVectores()
 		vectorLines[2] = { points = arc, color = COL_OBSCURED, thickness = 0.12, rotation = {0, 0, 0} }
 	end
 	self.setVectorLines(vectorLines)
-	refrescaTextoRango()
 end
 
 function onNumberTyped( pc, n )
@@ -379,8 +457,13 @@ function onNumberTyped( pc, n )
 			broadcastToColor("Targeting Tool unlocked", pc, {1,1,1})
 		end
 	elseif n == 0 then
+		hudSet(nil)
 		self.destruct()
 	end
+end
+
+function onDestroy()
+	hudSet(nil)
 end
 
 function onLoad(ls)
@@ -415,10 +498,7 @@ function refrescaTextoRango()
 			- sp.y - self.getBounds().offset.y
 	end
 	local hip = math.ceil(math.sqrt((lhip * lhip) + (cat3 * cat3)))
-	local status = ""
-	if coverState == "heavy" then status = "\nHeavy cover" elseif coverState == "light" then status = "\nLight cover" end
-	if obscuredState then status = status .. "\nObscured" end
-	self.editButton({index=0, label=hip.."''"..status})
+	self.editButton({index=0, label=hip.."''"})
 end
 
 function tryRandomize(pc)
@@ -430,6 +510,7 @@ end
 function onObjectPickUp(selfpc, targetObj)
 	if estado_cono == 1 then
 		ObjMiniTarget = targetObj
+		activeColor = selfpc
 		estado_cono = 2
 		refrescaVectores()
 	end

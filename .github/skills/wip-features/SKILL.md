@@ -227,8 +227,11 @@ crosses/near; we already use ray, sphere, and box casts (`move-tool.lua` L275,
 0.25" above both bases, cast BOTH ways so each terrain piece yields the stretch of the line
 inside it (TTS rays only report the entry point). Per stretch: light/heavy within 1" of the
 target -> light/heavy cover (orange/red lines, heavy wins; none if bases within 2"); heavy
->1" from BOTH bases -> obscured (purple arc on the target's facing edge + "Obscured" label).
-Type from name OR description ("heavy" > "light"); untyped = heavy. Ignores operatives
+>1" from BOTH bases -> obscured (purple arc on the target's facing edge). State text goes to the
+shared top-centre `ktmove_hud` (same Global UI container as the move tools), not the cone label.
+1" zones = base oval grown by 1" (analytic ray/oval quadratic; exact for round bases). Terrain
+check + range label run every 6th frame while dragging (~10 Hz), always on drop/target pick.
+Type from name OR description ("heavy" > "light"/"barricade"); untyped = heavy. Ignores operatives
 (`KTUIMini`), `KTUIToken*`, `KT24Token`, `KT_Objective`, cones, zones/table/cards/dice.
 Not yet: Vantage/height effects, name→type map for untyped pieces, Conceal-order validity.
 Test node: `python -m tools.build_test_node --tool targeting`.
