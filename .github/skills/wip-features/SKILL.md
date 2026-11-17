@@ -224,11 +224,14 @@ crosses/near; we already use ray, sphere, and box casts (`move-tool.lua` L275,
 **Status:** MVP built on `feature/sprint-direction-lock` (2026-11-17), in
 `config/defaults/tts-script/ktui-target-cone.lua` (our embedded, oval-aware cone; patch 4 in
 `ktui_model_script.py`). A 9-ray fan from the cone tip to the facing arc of the target base,
-0.25" above both bases, colours the lines ORANGE when every intervening piece is named Light
-(and not Heavy), RED for anything else (Heavy or untyped), else the player's colour. Ignores
-operatives (`KTUIMini`), `KTUIToken*`, `KT24Token`, `KT_Objective`, cones, zones/table/cards/dice.
-Not yet: cover (1" of target) / obscured (>1" from both) distance rules, 2" exception, name→type
-map for untyped pieces. Test node: `python -m tools.build_test_node --tool targeting`.
+0.25" above both bases, cast BOTH ways so each terrain piece yields the stretch of the line
+inside it (TTS rays only report the entry point). Per stretch: light/heavy within 1" of the
+target -> light/heavy cover (orange/red lines, heavy wins; none if bases within 2"); heavy
+>1" from BOTH bases -> obscured (purple arc on the target's facing edge + "Obscured" label).
+Type from name OR description ("heavy" > "light"); untyped = heavy. Ignores operatives
+(`KTUIMini`), `KTUIToken*`, `KT24Token`, `KT_Objective`, cones, zones/table/cards/dice.
+Not yet: Vantage/height effects, name→type map for untyped pieces, Conceal-order validity.
+Test node: `python -m tools.build_test_node --tool targeting`.
 
 ---
 

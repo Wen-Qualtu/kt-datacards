@@ -691,61 +691,93 @@ print("oval targeting passed")
 
 
 @pytest.mark.skipif(not shutil.which("npx"), reason="npx is required for Lua geometry integration")
-def test_targeting_lines_colour_by_intervening_terrain():
+def test_targeting_lines_show_cover_and_obscured_from_terrain():
     cone = (CONFIG / "defaults" / "tts-script" / "ktui-target-cone.lua").read_text(encoding="utf-8")
     script = "Color = function() return {} end\nmath.atan2 = math.atan2 or math.atan\n" + cone + r'''
-local function model(x, z, tags)
+local function model(x, z)
     return {
         getPosition = function() return {x = x, y = 1, z = z} end,
         getRotation = function() return {x = 0, y = 0, z = 0} end,
-        getTable = function() return {base = {x = 42, z = 75}} end,
+        getTable = function() return {base = {x = 32, z = 32}} end,
         getBounds = function() return {offset = {y = 0}, center = {y = 1.25}, size = {y = 0.5}} end,
     }
 end
-local function thing(name, tags, kind)
+local function terrain(name, z1, z2, opts)
+    opts = opts or {}
     local set = {}
-    for _, t in ipairs(tags or {}) do set[t] = true end
-    return {type = kind or "Generic", getName = function() return name end,
-        hasTag = function(t) return set[t] == true end, getTags = function() return tags or {} end}
+    for _, t in ipairs(opts.tags or {}) do set[t] = true end
+    return {type = opts.kind or "Generic", minX = -3, maxX = 3, minZ = z1, maxZ = z2,
+        getName = function() return name end, getDescription = function() return opts.description or "" end,
+        getGUID = function() return name .. z1 end,
+        hasTag = function(t) return set[t] == true end, getTags = function() return opts.tags or {} end}
 end
-local lines, casts, blockers
-self = {
-    getPosition = function() return {x = 0, y = 1.5, z = 0} end,
-    setVectorLines = function(l) lines = l end,
-    editButton = function() end,
-}
+-- Mock TTS ray: one hit per box, where the ray ENTERS it (none if it starts inside).
+local boxes = {}
 Physics = {cast = function(p)
-    casts[#casts + 1] = p
-    -- only the middle ray of the fan is blocked: one crossing line is enough
-    if #casts == 5 then return blockers end
-    return {}
+    local o, d = p.origin, p.direction
+    local m = math.sqrt(d.x * d.x + d.y * d.y + d.z * d.z)
+    local u = {x = d.x / m, y = d.y / m, z = d.z / m}
+    local hits = {}
+    for _, b in ipairs(boxes) do
+        local lo, hi = -math.huge, math.huge
+        local ok = true
+        for _, ax in ipairs({{"x", b.minX, b.maxX}, {"z", b.minZ, b.maxZ}}) do
+            local k, mn, mx = ax[1], ax[2], ax[3]
+            if math.abs(u[k]) < 1e-12 then
+                if o[k] < mn or o[k] > mx then ok = false end
+            else
+                local t1, t2 = (mn - o[k]) / u[k], (mx - o[k]) / u[k]
+                lo, hi = math.max(lo, math.min(t1, t2)), math.min(hi, math.max(t1, t2))
+            end
+        end
+        if ok and lo <= hi and lo > 0 and lo <= p.max_distance then
+            hits[#hits + 1] = {hit_object = b, point = {x = o.x + u.x * lo, y = o.y + u.y * lo, z = o.z + u.z * lo}}
+        end
+    end
+    return hits
 end}
+local lines, label
+self = {
+    getPosition = function() return {x = 0, y = 1.5, z = 0.03} end,
+    setVectorLines = function(l) lines = l end,
+    editButton = function(b) label = b.label end,
+}
 objModel = model(0, -0.6)
-ObjMiniTarget = model(0, 8)
 estado_cono = 2
 colorLinea = "user"
-local function colourWith(list)
-    casts, blockers = {}, {}
-    for _, obj in ipairs(list) do blockers[#blockers + 1] = {hit_object = obj} end
+local function check(name, targetZ, pieces, cover, obscured)
+    ObjMiniTarget = model(0, targetZ)
+    boxes = pieces
     refrescaVectores()
-    return lines[1].color, casts
+    assert(coverState == cover, name .. ": cover " .. tostring(coverState))
+    assert(obscuredState == obscured, name .. ": obscured " .. tostring(obscuredState))
+    local want = cover == "heavy" and 0.1 or (cover == "light" and 0.55 or nil)
+    if want then assert(lines[1].color[2] == want, name .. ": colour") else assert(lines[1].color == "user", name .. ": colour") end
+    assert((lines[2] ~= nil) == obscured, name .. ": obscured arc")
+    assert((label:find("Obscured", 1, true) ~= nil) == obscured, name .. ": label")
 end
-local col, rays = colourWith({})
-assert(col == "user" and #rays == 9, "clear")
-assert(math.abs(rays[1].origin.y - 1.25) < 1e-9 and rays[1].type == 1, "ray height")
-assert(colourWith({ObjMiniTarget, objModel, self, thing("Ork", {"KTUIMini"}), thing("", {"KTUIToken_Order"}),
-    thing("zone", nil, "Scripting")}) == "user", "ignored objects")
-local light = colourWith({thing("Light Rubble")})
-assert(light[1] == 1 and light[2] == 0.55, "light")
-assert(colourWith({thing("Light Rubble"), thing("Capillary Tower (Heavy)")})[2] == 0.1, "heavy wins")
-assert(colourWith({thing("")})[2] == 0.1, "untyped is heavy")
-print("intervening terrain passed")
+check("clear", 8, {}, nil, false)
+check("light near target", 8, {terrain("Light Rubble", 6.6, 6.8)}, "light", false)
+check("light half way", 8, {terrain("Light Rubble", 4.0, 4.2)}, nil, false)
+check("heavy half way", 8, {terrain("Heavy Wall", 4.0, 4.2)}, nil, true)
+check("heavy near target", 8, {terrain("Heavy Wall", 6.6, 6.8)}, "heavy", false)
+check("thick heavy", 8, {terrain("Heavy Block", 3.0, 6.8)}, "heavy", true)
+check("heavy near shooter", 8, {terrain("Heavy Wall", 0.4, 0.7)}, nil, false)
+check("heavy beats light", 8, {terrain("Light Rubble", 6.6, 6.7), terrain("Heavy Wall", 6.9, 7.0)}, "heavy", false)
+check("light in description", 8, {terrain("", 6.6, 6.8, {description = "Light terrain"})}, "light", false)
+check("untyped is heavy", 8, {terrain("Crate", 6.6, 6.8)}, "heavy", false)
+check("operatives ignored", 8, {terrain("Ork", 4.0, 6.8, {tags = {"KTUIMini"}})}, nil, false)
+check("within 2 inches", 2.5, {terrain("Light Rubble", 1.0, 1.2)}, nil, false)
+assert(label:find("^%d+''$"), "plain range label when clear: " .. label)
+check("both shown", 8, {terrain("Heavy Block", 3.0, 6.8)}, "heavy", true)
+assert(label:find("Heavy cover\nObscured", 1, true), "label lists both")
+print("cover and obscured passed")
 '''
     result = subprocess.run(
         [shutil.which("npx"), "--yes", "--package=fengari-node-cli", "fengari", "-"],
         input=script, cwd=ROOT, capture_output=True, text=True, encoding="utf-8", check=True,
     )
-    assert result.stdout.strip() == "intervening terrain passed", result.stderr
+    assert result.stdout.strip() == "cover and obscured passed", result.stderr
     assert not result.stderr
 
 

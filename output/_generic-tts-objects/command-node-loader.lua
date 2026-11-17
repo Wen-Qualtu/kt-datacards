@@ -1,6 +1,6 @@
-KTUI_MODELSCRIPT_VERSION = "9b36b6565fe7"
+KTUI_MODELSCRIPT_VERSION = "c7dd42526016"
 
-KTUI_MODELSCRIPT = [==[KT_MODELSCRIPT_VERSION = "9b36b6565fe7"
+KTUI_MODELSCRIPT = [==[KT_MODELSCRIPT_VERSION = "c7dd42526016"
 
 self.clearContextMenu()
 
@@ -12,8 +12,8 @@ KT_TARGET_CONE_CODE = [=[
 -- facing (transform forward, plus kt_front on command-node models). The lines
 -- run to the two outermost points of the target base as seen from the origin
 -- (the tangents), the cone stays on the origin's base edge, and the range is
--- measured base edge to base edge. The lines turn orange (light) or red (heavy
--- or untyped) when terrain intervenes between the bases.
+-- measured base edge to base edge. Line colour shows the target's cover (orange
+-- light, red heavy) and a purple arc + label marks it obscured.
 
 pickedUp = false
 clickPlayerColor = ""
@@ -160,17 +160,29 @@ local function pointGap(px, pz, e)
 	return gap
 end
 
--- Intervening terrain. Rays fan from the cone tip to points across the facing
--- part of the target base, just above both bases. Anything they cross other
--- than operatives, tokens and tools counts. Terrain type is only known from
--- nicknames ("Light Rubble", "Capillary Tower (Heavy)"), so pieces named Light
--- (and not Heavy) are light; everything else, including unnamed terrain, is heavy.
+-- Cover / obscured. Rays fan from the cone tip to points across the facing part
+-- of the target base, just above both bases; each is cast both ways so every
+-- piece of terrain it crosses yields the stretch of the line inside it (a ray
+-- only reports where it enters a collider). Operatives, tokens and tools are
+-- ignored. Per stretch (so one piece can do both):
+--   light/heavy within 1" of the target  -> light/heavy cover (heavy wins),
+--                                            none if the bases are within 2"
+--   heavy more than 1" from BOTH bases    -> obscured
+-- Terrain type comes from the name or description ("Light Rubble",
+-- "Capillary Tower (Heavy)"); untyped terrain is treated as heavy.
 local FAN_RAYS = 9
 local RAY_LIFT = 0.25
+local STRETCH_SAMPLES = 8
+local CONTROL_RANGE = 1
+local COVER_DENIED_WITHIN = 2
 local COL_LIGHT = { 1, 0.55, 0 }
 local COL_HEAVY = { 0.95, 0.1, 0.1 }
+local COL_OBSCURED = { 0.7, 0.3, 1 }
 local IGNORE_TYPES = { Scripting = true, Surface = true, Hand = true, Card = true, Deck = true, Dice = true }
 local IGNORE_TAGS = { "KTUIMini", "KTUI_ToolActive", "KT24Token", "KT_Objective" }
+
+coverState = nil      -- nil | "light" | "heavy"
+obscuredState = false
 
 local function facingPoints(e, px, pz)
 	local u, v = toLocal(e, px, pz)
@@ -201,38 +213,77 @@ local function isIgnored(obj)
 	return false
 end
 
+local function terrainKind(obj)
+	local text = (tostring(obj.getName() or "") .. " " .. tostring(obj.getDescription() or "")):lower()
+	if text:find("heavy", 1, true) then return "heavy" end
+	if text:find("light", 1, true) then return "light" end
+	return "heavy"
+end
+
 local function baseBottom(obj)
 	local b = obj.getBounds()
 	return b.center.y - b.size.y * 0.5
 end
 
-function interveningColor(target, sp)
-	local oy = baseBottom(objModel) + RAY_LIFT
-	local ty = baseBottom(ObjMiniTarget) + RAY_LIFT
-	local light, heavy = false, false
-	for _, p in ipairs(facingPoints(target, sp.x, sp.z)) do
-		local dir = { x = p[1] - sp.x, y = ty - oy, z = p[2] - sp.z }
-		local len = math.sqrt(dir.x * dir.x + dir.y * dir.y + dir.z * dir.z)
-		if len > 1e-6 then
-			local hits = Physics.cast({
-				origin = { x = sp.x, y = oy, z = sp.z }, direction = dir, type = 1, max_distance = len,
-			}) or {}
-			for _, hit in ipairs(hits) do
-				local obj = hit.hit_object
-				if not isIgnored(obj) then
-					local name = tostring(obj.getName() or ""):lower()
-					if name:find("light", 1, true) and not name:find("heavy", 1, true) then
-						light = true
-					else
-						heavy = true
-					end
+-- Stretches of one ray inside each terrain piece: { [guid] = {obj=, sIn=, sOut=} }
+-- with s measured along the ray from `a` (0..len).
+local function rayStretches(a, b)
+	local d = { x = b.x - a.x, y = b.y - a.y, z = b.z - a.z }
+	local len = math.sqrt(d.x * d.x + d.y * d.y + d.z * d.z)
+	local pieces = {}
+	if len < 1e-6 then return pieces, len, d end
+	local u = { x = d.x / len, y = d.y / len, z = d.z / len }
+	local function record(hits)
+		for _, hit in ipairs(hits or {}) do
+			local obj = hit.hit_object
+			if not isIgnored(obj) and hit.point then
+				local p = hit.point
+				local s = (p.x - a.x) * u.x + (p.y - a.y) * u.y + (p.z - a.z) * u.z
+				s = math.max(0, math.min(len, s))
+				local key = obj.getGUID and obj.getGUID() or tostring(obj)
+				local piece = pieces[key]
+				if piece then
+					piece.sIn, piece.sOut = math.min(piece.sIn, s), math.max(piece.sOut, s)
+				else
+					pieces[key] = { obj = obj, sIn = s, sOut = s }
 				end
 			end
 		end
 	end
-	if heavy then return COL_HEAVY end
-	if light then return COL_LIGHT end
-	return nil
+	record(Physics.cast({ origin = a, direction = d, type = 1, max_distance = len }))
+	record(Physics.cast({ origin = b, direction = { x = -d.x, y = -d.y, z = -d.z }, type = 1, max_distance = len }))
+	return pieces, len, d
+end
+
+-- Sets coverState / obscuredState for the current shooter (objModel, sight
+-- lines from the cone at `sp`) and target.
+function analyseTerrain(target, sp)
+	coverState, obscuredState = nil, false
+	local shooter = baseEllipse(objModel)
+	local fullTarget = baseEllipse(ObjMiniTarget)
+	local coverAllowed = ovalGap(shooter, fullTarget) > COVER_DENIED_WITHIN
+	local a = { x = sp.x, y = baseBottom(objModel) + RAY_LIFT, z = sp.z }
+	local ty = baseBottom(ObjMiniTarget) + RAY_LIFT
+	local light, heavy = false, false
+	for _, p in ipairs(facingPoints(target, sp.x, sp.z)) do
+		local pieces, len, d = rayStretches(a, { x = p[1], y = ty, z = p[2] })
+		for _, piece in pairs(pieces) do
+			local kind = terrainKind(piece.obj)
+			local nearTarget, farFromBoth = false, false
+			for i = 0, STRETCH_SAMPLES do
+				local s = piece.sIn + (piece.sOut - piece.sIn) * i / STRETCH_SAMPLES
+				local x, z = a.x + d.x * s / len, a.z + d.z * s / len
+				local toTarget = pointGap(x, z, fullTarget)
+				if toTarget <= CONTROL_RANGE then nearTarget = true end
+				if toTarget > CONTROL_RANGE and pointGap(x, z, shooter) > CONTROL_RANGE then farFromBoth = true end
+			end
+			if nearTarget and coverAllowed then
+				if kind == "heavy" then heavy = true else light = true end
+			end
+			if farFromBoth and kind == "heavy" then obscuredState = true end
+		end
+	end
+	coverState = heavy and "heavy" or (light and "light" or nil)
 end
 
 function onPickUp(cp)
@@ -306,12 +357,23 @@ function refrescaVectores()
 		return { x = sX + lambda * sX / mag, y = pY + lambda * Cy / mag, z = sZ + lambda * sZ / mag }
 	end
 
-	self.setVectorLines({{
+	analyseTerrain(target, sp)
+	local lineColor = colorLinea
+	if coverState == "heavy" then lineColor = COL_HEAVY elseif coverState == "light" then lineColor = COL_LIGHT end
+	local vectorLines = {{
 		points = { extended(x1, z1), { x = 0, y = -0.45, z = 0 }, extended(x2, z2) },
-		color = interveningColor(target, sp) or colorLinea,
+		color = lineColor,
 		thickness = ancho_linea,
 		rotation = {0, 0, 0},
-	}})
+	}}
+	if obscuredState then
+		local arc = {}
+		for _, p in ipairs(facingPoints(target, sp.x, sp.z)) do
+			arc[#arc + 1] = { x = p[1] - sp.x, y = pY + 0.05, z = p[2] - sp.z }
+		end
+		vectorLines[2] = { points = arc, color = COL_OBSCURED, thickness = 0.12, rotation = {0, 0, 0} }
+	end
+	self.setVectorLines(vectorLines)
 	refrescaTextoRango()
 end
 
@@ -385,7 +447,10 @@ function refrescaTextoRango()
 			- sp.y - self.getBounds().offset.y
 	end
 	local hip = math.ceil(math.sqrt((lhip * lhip) + (cat3 * cat3)))
-	self.editButton({index=0, label=hip.."''"})
+	local status = ""
+	if coverState == "heavy" then status = "\nHeavy cover" elseif coverState == "light" then status = "\nLight cover" end
+	if obscuredState then status = status .. "\nObscured" end
+	self.editButton({index=0, label=hip.."''"..status})
 end
 
 function tryRandomize(pc)
