@@ -258,7 +258,9 @@ Board-type objects >= 12" on their short side (mats/gameboards; Board-type TERRA
 many KT24-table pieces are Board type).
 Name lists (start of the lower-cased name; bridge until the table tags its terrain -- then swap to
 tag filters): `NO_COVER_NAMES` teleport/fire step/razor wire/ladder = ignored; `TERRAIN_NAMES`
-"g4: objective marker" = terrain despite `KT_Objective`; `OPENING_NAMES` open door/breached
+"g4: objective marker" = terrain despite `KT_Objective`, tested as an upright CYLINDER from its
+bounds (found via `getAllObjects`, cached per target pick) because sight rays don't hit it in-game
+(its collider is only the antenna; the round base is an attached child); `OPENING_NAMES` open door/breached
 wall/open hatchway = a ray crossing the centred 25% of the long side (`OPENING_FRACTION`, measured
 on the Tomb World meshes; open and closed share one mesh) is ignored, the wall either side counts.
 Mechelen doors/windows are unnamed -> not handled. All of this lives in the cone Lua, so models get

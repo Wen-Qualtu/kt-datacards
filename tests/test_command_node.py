@@ -633,6 +633,7 @@ local function model(x, z, rotY, st)
     }
 end
 Physics = {cast = function() return {} end}
+getAllObjects = function() return {} end
 local lines, label
 local conePos = {x = 0, y = 1, z = 0}
 self = {
@@ -713,7 +714,9 @@ local function terrain(name, z1, z2, opts)
         getGUID = function() return name .. z1 end,
         hasTag = function(t) return set[t] == true end, getTags = function() return opts.tags or {} end}
     o.getPosition = function() return {x = (o.minX + o.maxX) / 2, y = 0, z = (o.minZ + o.maxZ) / 2} end
-    o.getBounds = function() return {center = {y = (o.minY + o.maxY) / 2}, size = {y = o.maxY - o.minY}} end
+    o.getBounds = function() return {center = {x = (o.minX + o.maxX) / 2, y = (o.minY + o.maxY) / 2, z = (o.minZ + o.maxZ) / 2},
+        size = {x = o.maxX - o.minX, y = o.maxY - o.minY, z = o.maxZ - o.minZ}} end
+    o.noCollider = opts.noCollider
     o.getRotation = function() return {x = 0, y = opts.rotY or 0, z = 0} end
     -- Unrotated size: x/z swap for a piece turned 90 degrees.
     o.getBoundsNormalized = function()
@@ -732,7 +735,7 @@ Physics = {cast = function(p)
     local hits = {}
     for _, b in ipairs(boxes) do
         local lo, hi = -math.huge, math.huge
-        local ok = true
+        local ok = not b.noCollider
         for _, ax in ipairs({{"x", b.minX, b.maxX}, {"y", b.minY, b.maxY}, {"z", b.minZ, b.maxZ}}) do
             local k, mn, mx = ax[1], ax[2], ax[3]
             if math.abs(u[k]) < 1e-12 then
@@ -763,10 +766,11 @@ self = {
 objModel = model(0, -0.6)
 estado_cono = 2
 colorLinea = "user"
+getAllObjects = function() return boxes end
 local function check(name, targetZ, pieces, cover, obscured)
-    ObjMiniTarget = model(0, targetZ)
     boxes = pieces
-    refrescaVectores()
+    estado_cono = 1
+    onObjectPickUp("Red", model(0, targetZ))
     assert(coverState == cover, name .. ": cover " .. tostring(coverState))
     assert(obscuredState == obscured, name .. ": obscured " .. tostring(obscuredState))
     local want = cover == "heavy" and 0.1 or (cover == "light" and 0.55 or nil)
@@ -819,6 +823,11 @@ for _, n in ipairs({"Teleport pad", "Fire Steps", "Razor Wire", "Ladders"}) do
 end
 check("ladder later in the name", 8, {terrain("Heavy, Vantage, Console: Insignificant / Ladder:  Heavy, Scalable", 6.6, 6.8, {kind = "Board"})}, "heavy", false)
 check("objective-tagged G4 terrain", 8, {terrain("G4: Objective Marker", 6.6, 6.8, {tags = {"KT_Objective"}, description = "Light, Insignificant, Vantage"})}, "light", false)
+-- The table's G4 marker isn't seen by sight rays; it is tested as a cylinder from its bounds.
+local g4 = {tags = {"KT_Objective"}, description = "Light, Insignificant, Vantage", noCollider = true, minX = -0.9, maxX = 0.9}
+check("G4 marker without a hit collider", 9, {terrain("G4: Objective Marker", 5.9, 7.7, g4)}, "light", false)
+g4.minX, g4.maxX = 2.0, 3.8
+check("G4 marker beside the lines", 9, {terrain("G4: Objective Marker", 5.9, 7.7, g4)}, nil, false)
 check("objective token still ignored", 8, {terrain("Objective", 6.6, 6.8, {tags = {"KT_Objective"}})}, nil, false)
 -- Open doors: lines through the centred access point (25% of the long side)
 -- are clear; lines through the wall either side still give cover.

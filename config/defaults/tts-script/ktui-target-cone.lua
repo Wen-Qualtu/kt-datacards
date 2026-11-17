@@ -253,17 +253,24 @@ local function terrainKind(obj)
 	return "heavy"
 end
 
--- Whether the sight line crosses an open piece (OPENING_NAMES) at world (x, z)
--- inside its access point: the centred OPENING_FRACTION of its long side.
-local function throughOpening(obj, x, z)
-	if not nameStarts(obj, OPENING_NAMES) then return false end
+-- Position of world (x, z) along an open piece's long side, measured from the
+-- middle, and the half-width of its access point there.
+local function openingPos(obj, x, z)
 	local nb = obj.getBoundsNormalized()
 	local u, v = toLocal({ x = obj.getPosition().x, z = obj.getPosition().z,
 		h = math.rad(obj.getRotation().y) }, x, z)
 	if nb.size.x >= nb.size.z then
-		return math.abs(u - nb.offset.x) < nb.size.x * OPENING_FRACTION * 0.5
+		return u - nb.offset.x, nb.size.x * OPENING_FRACTION * 0.5
 	end
-	return math.abs(v - nb.offset.z) < nb.size.z * OPENING_FRACTION * 0.5
+	return v - nb.offset.z, nb.size.z * OPENING_FRACTION * 0.5
+end
+
+-- Whether the sight line crosses an open piece (OPENING_NAMES) at world (x, z)
+-- inside its access point: the centred OPENING_FRACTION of its long side.
+local function throughOpening(obj, x, z)
+	if not nameStarts(obj, OPENING_NAMES) then return false end
+	local along, half = openingPos(obj, x, z)
+	return math.abs(along) < half
 end
 
 local function baseBottom(obj)
@@ -295,6 +302,43 @@ local function supportsOf(model, skip)
 	end
 end
 
+-- TERRAIN_NAMES pieces are round markers whose colliders the sight rays don't
+-- reliably hit (the base table's G4 marker collides with its antenna only), so
+-- they are tested as an upright cylinder from their bounds instead.
+local markerCache = nil
+local function namedMarkers()
+	if markerCache == nil then
+		markerCache = {}
+		for _, obj in ipairs(getAllObjects() or {}) do
+			if nameStarts(obj, TERRAIN_NAMES) then markerCache[#markerCache + 1] = obj end
+		end
+	end
+	return markerCache
+end
+
+-- Adds the stretch where the segment from `a` (unit direction u, length len)
+-- crosses obj's bounds cylinder; true if it does.
+local function markerStretch(pieces, obj, a, u, len)
+	local b = obj.getBounds()
+	local r = math.min(b.size.x, b.size.z) * 0.5
+	local ox, oz = a.x - b.center.x, a.z - b.center.z
+	local qa = u.x * u.x + u.z * u.z
+	if qa < 1e-12 then return false end
+	local qb = 2 * (ox * u.x + oz * u.z)
+	local disc = qb * qb - 4 * qa * (ox * ox + oz * oz - r * r)
+	if disc < 0 then return false end
+	local sq = math.sqrt(disc)
+	local s1, s2 = math.max(0, (-qb - sq) / (2 * qa)), math.min(len, (-qb + sq) / (2 * qa))
+	if s1 > s2 then return false end
+	local y1, y2 = a.y + u.y * s1, a.y + u.y * s2
+	if math.max(y1, y2) < b.center.y - b.size.y * 0.5 or math.min(y1, y2) > b.center.y + b.size.y * 0.5 then
+		return false
+	end
+	addStretch(pieces, obj, s1)
+	addStretch(pieces, obj, s2)
+	return true
+end
+
 -- Stretches of one ray inside each terrain piece: { [guid] = {obj=, sIn=, sOut=} }
 -- with s measured along the ray from `a` (0..len).
 local function rayStretches(a, b, skip)
@@ -315,6 +359,9 @@ local function rayStretches(a, b, skip)
 	end
 	record(Physics.cast({ origin = a, direction = d, type = 1, max_distance = len }))
 	record(Physics.cast({ origin = b, direction = { x = -d.x, y = -d.y, z = -d.z }, type = 1, max_distance = len }))
+	for _, obj in ipairs(namedMarkers()) do
+		if obj ~= nil and not skip[guidOf(obj)] then markerStretch(pieces, obj, a, u, len) end
+	end
 	return pieces, len, d
 end
 
@@ -453,6 +500,16 @@ function explainTerrain(pc)
 	supportsOf(objModel, shooterOn)
 	supportsOf(ObjMiniTarget, targetOn)
 	local rows, order, casts = {}, {}, 0
+	local function rowFor(obj)
+		local key = guidOf(obj)
+		local row = rows[key]
+		if not row then
+			row = { obj = obj, hits = 0, opening = 0 }
+			rows[key] = row
+			order[#order + 1] = key
+		end
+		return row
+	end
 	for _, p in ipairs(facingPoints(target, sp.x, sp.z)) do
 		local b = { x = p[1], y = ty, z = p[2] }
 		local d = { x = b.x - a.x, y = b.y - a.y, z = b.z - a.z }
@@ -462,21 +519,29 @@ function explainTerrain(pc)
 			for _, hit in ipairs(Physics.cast({ origin = c[1], direction = c[2], type = 1, max_distance = len }) or {}) do
 				local obj = hit.hit_object
 				if obj ~= nil and obj ~= self and obj ~= objModel and obj ~= ObjMiniTarget then
-					local key = guidOf(obj)
-					local row = rows[key]
-					if not row then
-						row = { obj = obj, hits = 0, opening = 0 }
-						rows[key] = row
-						order[#order + 1] = key
-					end
+					local row = rowFor(obj)
 					row.hits = row.hits + 1
-					if hit.point and throughOpening(obj, hit.point.x, hit.point.z) then row.opening = row.opening + 1 end
+					if hit.point and nameStarts(obj, OPENING_NAMES) then
+						local along, half = openingPos(obj, hit.point.x, hit.point.z)
+						if math.abs(along) < half then row.opening = row.opening + 1 end
+						row.lo, row.hi = math.min(row.lo or along, along), math.max(row.hi or along, along)
+						row.half = half
+					end
+				end
+			end
+		end
+		if len > 1e-6 then
+			local u = { x = d.x / len, y = d.y / len, z = d.z / len }
+			for _, obj in ipairs(namedMarkers()) do
+				if obj ~= nil and markerStretch({}, obj, a, u, len) then
+					local row = rowFor(obj)
+					row.marker = true
 				end
 			end
 		end
 	end
-	printToColor(string.format("Targeting: %s | rays %.2f -> %.2f high, %d casts",
-		stateText(), a.y, ty, casts), pc, { 1, 1, 1 })
+	printToColor(string.format("Targeting: %s | rays %.2f -> %.2f high, %d casts, %d named markers",
+		stateText(), a.y, ty, casts, #namedMarkers()), pc, { 1, 1, 1 })
 	if #order == 0 then
 		printToColor("  nothing on the sight lines", pc, { 0.8, 0.8, 0.8 })
 	end
@@ -489,7 +554,14 @@ function explainTerrain(pc)
 		elseif targetOn[key] and targetBottom <= shooterBottom + SHOOTING_UP then why = "ignored: target stands on it"
 		else
 			why = terrainKind(obj)
-			if row.opening > 0 then why = why .. string.format(", %d/%d hits in its opening", row.opening, row.hits) end
+			if row.half then
+				why = why .. string.format(", %d/%d hits in its opening (hits at %.2f..%.2f along, opening +-%.2f)",
+					row.opening, row.hits, row.lo, row.hi, row.half)
+			end
+			if row.marker then
+				local bb = obj.getBounds()
+				why = why .. string.format(", marker cylinder r %.2f", math.min(bb.size.x, bb.size.z) * 0.5)
+			end
 		end
 		local bb = obj.getBounds()
 		printToColor(string.format("  %s [%s] %s  (y %.2f-%.2f, %d hits)",
@@ -655,6 +727,7 @@ function onObjectPickUp(selfpc, targetObj)
 		ObjMiniTarget = targetObj
 		activeColor = selfpc
 		estado_cono = 2
+		markerCache = nil
 		refrescaVectores()
 	end
 end
