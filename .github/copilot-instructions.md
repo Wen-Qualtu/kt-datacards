@@ -115,6 +115,17 @@ Order prefix (`[FF5500]E[-]`) + wounds (`{8/8}`) + operative name
   for the ring shape) so mirrored/proxy models are corrected in-game with a couple of clicks;
   KTUI has NO native facing field — this is our addition and it round-trips through KTUI's
   state. Rotating the model *transform* can't fix it (the heading turns with the mesh). (PR #72)
+- **KTUI model script** — composed by `pipeline/utils/ktui_model_script.py` from the vendored
+  extender script as tagged blocks `KT_MODELSCRIPT` (patched base), `KT_TARGETING`
+  (`ktui-target-cone.lua`: oval-aware lines, light/heavy cover + obscured, keys 1/2/3) and
+  `KT_EXTENSION`; loaders append one `KT_MOVE_TOOL`/`KT_SPRINT_TOOL` block. Cards, the command
+  node and our extender board all stamp it; card **Load stats** also replaces scripts from the
+  original extender (KTUIMini without our `KTUIMiniDatacard` tag).
+- **Our KTUI extender board** — `ktui-extender-board.lua` on a copy of the base table's
+  "UI Extender + Tools" board (`config/defaults/ktui-extender-board.json`), built by
+  `python -m tools.build_ktui_extender [--branch X]`. Same buttons; **Extend KT UI** stamps
+  `output/_generic-tts-objects/ktui-model-scripts.json` (written by `generate_tts`) + movement by
+  MOUNTED keyword, and NPOs leaving an `_NPO bag` are extended too.
 
 ## Key Conventions
 

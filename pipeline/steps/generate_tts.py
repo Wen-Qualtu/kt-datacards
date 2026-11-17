@@ -144,6 +144,7 @@ def run(teams: Optional[list] = None, source=None, force: bool = False):
             state.save()
 
     tts_impl.write_command_node_loader(paths.CONFIG, paths.OUTPUT)
+    tts_impl.write_ktui_model_scripts(paths.CONFIG, paths.OUTPUT)
 
     # Finalization (runs across ALL output teams, not just the filtered set):
     # per-team {team}-object-urls.json + a global team-urls.json summary. These

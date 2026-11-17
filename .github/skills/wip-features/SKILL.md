@@ -42,8 +42,25 @@ That composed script REPLACES the mimic as the `KTUI_MODELSCRIPT` our cards stam
    swallow anything appended below. Bar-neutral.
 2. remove the `Movement` context item (+ dead `agregaRuta`) — we load our own movement.
 3. guard the one unguarded game-log call (`gameLogAppendOperativeChangedState`, bare-table safety).
+4. targeting cone: `agregaCono` installs our embedded `ktui-target-cone.lua` (KT_TARGETING block)
+   instead of downloading the upstream circle-only cone.
 - `owner` (`state.owner`) is set **card-side** on load (only the card knows who clicked).
 - Keep `agregaCono` (targeting lines), Change UI position, Update stats.
+- Output is tagged blocks: `KT_MODELSCRIPT` / `KT_TARGETING` / `KT_EXTENSION` (+ the loader's
+  `KT_MOVE_TOOL` or `KT_SPRINT_TOOL`). Vendored base verified identical (bar blank lines) to the
+  live `KT UI extender 24 Spaghetty Mod.lua` the original board downloads (2026-11-17).
+
+### Our extender board (2026-11-17, `feature/sprint-direction-lock`)
+The base table's "UI Extender + Tools" board (and the "NPO KTUI autoextender" token) re-stamp
+models with the UPSTREAM script downloaded from xSpaghettyx's GitHub, wiping our blocks. Our
+replacement: `config/defaults/ktui-extender-board.json` (cloned board: image, XmlUI buttons) +
+`config/defaults/tts-script/ktui-extender-board.lua`, built by `python -m tools.build_ktui_extender`
+(-> `dev/ktui-extender.json`). Same 8 buttons (Extend KT UI, Fix Display Issues, Save/Load
+Positions, Ready Operatives, All Engage/Conceal, Remove All Tokens); Extend stamps
+`output/_generic-tts-objects/ktui-model-scripts.json` {version, model, move, sprint} from main +
+movement by MOUNTED (`state.info.categories`), tags KTUIMini + KTUIMiniDatacard, owner via
+`setOwningPlayer` like the original. NPO autoextend runs 2.5 s after leaving an `_NPO bag` (after
+the original token). Card Load stats now also replaces original-extender scripts.
 
 ### STATUS: DEPLOYED to all 48 boxes (2026-08-19)
 Composed by the pipeline as the DEFAULT `KTUI_MODELSCRIPT`; the mimic

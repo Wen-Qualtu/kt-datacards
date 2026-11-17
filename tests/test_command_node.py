@@ -803,6 +803,81 @@ print("cover and obscured passed")
     assert not result.stderr
 
 
+def test_model_scripts_bundle_is_tagged_and_published(tmp_path):
+    from pipeline.utils.ktui_model_script import compose_model_scripts_bundle
+    bundle = compose_model_scripts_bundle(CONFIG)
+    model = bundle["model"]
+    assert model.startswith(f'KT_MODELSCRIPT_VERSION = "{bundle["version"]}"')
+    order = [model.index(f"-- {edge} {tag} --") for tag in ("KT_MODELSCRIPT_V1", "KT_TARGETING_V1", "KT_EXTENSION_V1")
+             for edge in ("START", "END")]
+    assert order == sorted(order)
+    assert bundle["move"].startswith("-- START KT_MOVE_TOOL_V1 --") and bundle["move"].endswith("-- END KT_MOVE_TOOL_V1 --")
+    assert bundle["sprint"].startswith("-- START KT_SPRINT_TOOL_V1 --")
+    target = tts_impl.write_ktui_model_scripts(CONFIG, tmp_path)
+    assert json.loads(target.read_text(encoding="utf-8")) == bundle
+
+
+@pytest.mark.skipif(not shutil.which("npx"), reason="npx is required for Lua integration")
+def test_extender_board_stamps_our_script_with_movement_and_owner():
+    from tools.build_ktui_extender import build_board
+    board = build_board("main")
+    assert "ktui-model-scripts.json" in board["LuaScript"] and "xSpaghettyx" not in board["LuaScript"]
+    assert "onClick=\"ExtendUI\"" in board["XmlUI"]
+    script = r"""
+local downloads, broadcasts, waits = 0, {}, {}
+WebRequest = {get = function(url, cb) downloads = downloads + 1; cb({text = "bundle"}) end}
+JSON = {decode = function(text)
+    if text == "bundle" then return {version = "v", model = "MODEL", move = "MOVE", sprint = "SPRINT"} end
+    return text
+end}
+Wait = {frames = function(fn) fn() end, time = function(fn) table.insert(waits, fn) end}
+function broadcastToAll(m) broadcasts[#broadcasts + 1] = m end
+local function figurine(guid, state, kind)
+    local m = {tag = kind or "Figurine", tags = {}, guid = guid, script_state = state}
+    m.setLuaScript = function(s) m.script = s end
+    m.reload = function() m.reloaded = (m.reloaded or 0) + 1; return m end
+    m.addTag = function(t) m.tags[t] = true end
+    m.hasTag = function(t) return m.tags[t] == true end
+    m.getGUID = function() return guid end
+    m.call = function(fn, arg) if fn == "setOwningPlayer" then m.owner = arg end end
+    return m
+end
+local rider = figurine("r", {info = {categories = {"Exodite", "Mounted"}}})
+local trooper = figurine("t", {info = {categories = {"Trooper"}}})
+local tile = figurine("x", nil, "Tile")
+self = {getPosition = function() return {0, 1, 0} end}
+Physics = {cast = function() return {{hit_object = rider}, {hit_object = trooper}, {hit_object = tile}} end}
+local said
+local player = {steam_id = "123", broadcast = function(m) said = m end}
+ExtendUI(player)
+assert(rider.script == "MODEL\n\nSPRINT" and trooper.script == "MODEL\n\nMOVE", "movement by keyword")
+assert(rider.tags.KTUIMini and rider.tags.KTUIMiniDatacard and rider.reloaded == 1, "tags + reload")
+assert(rider.owner == "123" and trooper.owner == "123", "owner set")
+assert(tile.script == nil, "only figurines")
+assert(said == "Extended KT UI on 2 model(s)", said)
+local npo = figurine("n", {})
+npo.tags = {KTUIMini = true, Operative = true}
+local objects = {n = npo}
+function getObjectFromGUID(g) return objects[g] end
+local bag = {hasTag = function(t) return t == "_NPO bag" end}
+onObjectLeaveContainer(bag, npo)
+assert(npo.script == nil and #waits == 1, "NPO waits for the original autoextender")
+waits[1]()
+assert(npo.script == "MODEL\n\nMOVE" and npo.owner == nil, "NPO extended without owner")
+onObjectLeaveContainer({hasTag = function() return false end}, npo)
+assert(#waits == 1, "other bags ignored")
+assert(downloads == 1, "scripts downloaded once")
+print("extender board passed")
+"""
+    lua = board["LuaScript"].replace("KT_SCRIPTS_URL", "KT_SCRIPTS_URL", 1) + "\n" + script
+    result = subprocess.run(
+        [shutil.which("npx"), "--yes", "--package=fengari-node-cli", "fengari", "-"],
+        input=lua, cwd=ROOT, capture_output=True, text=True, encoding="utf-8", check=True,
+    )
+    assert result.stdout.strip() == "extender board passed", result.stderr
+    assert not result.stderr
+
+
 def test_standalone_token_bag_preserves_contents_and_script(tmp_path):
     bag = {
         "Name": "Custom_Model_Bag", "LuaScript": "bag script", "LuaScriptState": "saved layout",

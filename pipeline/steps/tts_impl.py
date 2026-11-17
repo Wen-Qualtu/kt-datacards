@@ -43,7 +43,9 @@ from .templates.tts_templates import (
 )
 from ..utils import paths as _paths
 from ..utils import naming
-from ..utils.ktui_model_script import compose_command_node_loader, compose_ktui_model_script
+from ..utils.ktui_model_script import (
+    compose_command_node_loader, compose_ktui_model_script, compose_model_scripts_bundle,
+)
 
 # Setup logging
 logging.basicConfig(
@@ -1864,6 +1866,16 @@ def write_command_node_loader(config_dir: Path, output_dir: Path) -> Path:
     target = output_dir / "_generic-tts-objects" / "command-node-loader.lua"
     target.parent.mkdir(parents=True, exist_ok=True)
     contents = compose_command_node_loader(config_dir).encode("utf-8")
+    if not target.exists() or target.read_bytes() != contents:
+        target.write_bytes(contents)
+    return target
+
+
+def write_ktui_model_scripts(config_dir: Path, output_dir: Path) -> Path:
+    """Publish the scripts our KTUI extender board downloads and stamps."""
+    target = output_dir / "_generic-tts-objects" / "ktui-model-scripts.json"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    contents = (json.dumps(compose_model_scripts_bundle(config_dir), ensure_ascii=False, indent=1) + "\n").encode("utf-8")
     if not target.exists() or target.read_bytes() != contents:
         target.write_bytes(contents)
     return target

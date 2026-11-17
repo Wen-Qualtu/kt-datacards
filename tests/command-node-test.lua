@@ -647,18 +647,34 @@ for _, kind in ipairs({"plain", "managed", "extender"}) do
     model.getVar = function() return "latest" end
     model.setLuaScript = function(script) model.script = script end
     model.reload = function() model.reloads = model.reloads + 1 end
-    if kind ~= "plain" then
+    local reloads = 0
+    if kind == "managed" then
         loaderEnvironment.diffAndApply(model, {stats = {}}, "White")
         assert(not model.script and model.reloads == 0)
+    elseif kind == "extender" then
+        -- Original-extender minis are upgraded to our script by plain card loading.
+        loaderEnvironment.diffAndApply(model, {stats = {}}, "White")
+        reloads = 1
+        assert(model.script == "latest composed extender" and model.reloads == reloads)
+        assert(model.tags.KTUIMiniDatacard and model.script_state.owner == "existing-owner")
     end
     loaderEnvironment.diffAndApply(model, {stats = {}}, "White", true)
-    assert(model.script == "latest composed extender" and model.reloads == 1)
+    assert(model.script == "latest composed extender" and model.reloads == reloads + 1)
     assert(model.tags.KTUIMini and model.tags.KTUIMiniDatacard)
     assert(model.script_state.owner == "existing-owner" and model.script_state.wounds == 4)
     assert(model.script_state.kt_front == 25 and model.script_state.uiAngle == 335)
     loaderEnvironment.diffAndApply(model, {stats = {}}, "White", true, "composed extender with movement")
-    assert(model.reloads == 2 and model.script == "composed extender with movement")
+    assert(model.reloads == reloads + 2 and model.script == "composed extender with movement")
 end
+loaderEnvironment.MOVE_TOOL_CODE = "-- START KT_MOVE_TOOL_V1\nmove\n-- END KT_MOVE_TOOL_V1"
+local plainModel = {script_state = {owner = "existing-owner"}, tags = {}}
+plainModel.hasTag = function(tag) return plainModel.tags[tag] end
+plainModel.addTag = function(tag) plainModel.tags[tag] = true end
+plainModel.setLuaScript = function(script) plainModel.script = script end
+plainModel.reload = function() end
+loaderEnvironment.diffAndApply(plainModel, {stats = {}}, "White")
+assert(plainModel.script == "latest composed extender\n\n" .. loaderEnvironment.MOVE_TOOL_CODE)
+loaderEnvironment.MOVE_TOOL_CODE = nil
 
 spawnedSlots = {}
 nodeScale = {x = 3, y = 0.2, z = 1.5}

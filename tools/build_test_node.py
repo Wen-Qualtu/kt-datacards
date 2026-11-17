@@ -64,7 +64,7 @@ TOOLS = {
     },
     "targeting": {
         "label": "Targeting",
-        "marker": "KT_TARGETING_",
+        "marker": "KT_TARGETING_TEST_",
         "code": targeting_code,
         "sources": ["ktui-target-cone.lua", "ktui-extender-modelscript.lua"],
         "hint": "Right-click model -> Targeting lines.",
