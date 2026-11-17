@@ -249,17 +249,26 @@ shared top-centre `ktmove_hud` (same Global UI container as the move tools), not
 1" zones = base oval grown by 1" (analytic ray/oval quadratic; exact for round bases). Terrain
 check + range label run every 6th frame while dragging (~10 Hz), always on drop/target pick.
 Type from name OR description ("heavy" > "light"/"portable"); untyped = heavy. Detection is
-colliders ONLY (one generic path, no per-object specials): wrong colliders are fixed on the table,
-not in code -- e.g. the base table's Light Rubble has its wall-sized BoxCollider DISABLED (only two
-~0.16" boxes at one end), so it shows no cover until the table fixes it. Terrain the SHOOTER stands
+colliders (one generic path); wrong colliders are fixed on the table by its owner, not in code
+(e.g. the base table's Light Rubble collider). Terrain the SHOOTER stands
 on never counts; the target's own
 terrain counts only when it is >0.5" higher than the shooter (shooting up at Vantage). Ignores operatives
-(`KTUIMini`), `KTUIToken*`, `KT24Token`, `KT_Objective`, cones, zones/table/cards/dice.
+(`KTUIMini`), `KTUIToken*`, `KT24Token`, `KT_Objective`, cones, zones/table/cards/dice/tiles, and
+Board-type objects >= 12" on their short side (mats/gameboards; Board-type TERRAIN counts --
+many KT24-table pieces are Board type).
+Name lists (start of the lower-cased name; bridge until the table tags its terrain -- then swap to
+tag filters): `NO_COVER_NAMES` teleport/fire step/razor wire/ladder = ignored; `TERRAIN_NAMES`
+"g4: objective marker" = terrain despite `KT_Objective`; `OPENING_NAMES` open door/breached
+wall/open hatchway = a ray crossing the centred 25% of the long side (`OPENING_FRACTION`, measured
+on the Tomb World meshes; open and closed share one mesh) is ignored, the wall either side counts.
+Mechelen doors/windows are unnamed -> not handled. All of this lives in the cone Lua, so models get
+it via the published `ktui-model-scripts.json` bundle / cards / command node.
 Not yet: Vantage/height effects, name→type map for untyped pieces, Conceal-order validity.
 Stopgap (`HEIGHT_CHECK`): when the two base bottoms are >1" apart vertically the analysis is
-skipped -- cyan lines + HUD "Check cover yourself", since one Vantage object mixes heavy walls
-(below the platform) with light parapets (above). Proper fix = per-hit height zones
-(vantage floor height per piece, likely a mesh-URL map) + re-casting past each hit.
+skipped -- default lines + HUD "Cover check doesn't currently work with Vantage", since one Vantage
+object mixes heavy walls (below the platform) with light parapets (above). Bases within 2": HUD
+"Target within 2" - all cover is ignored". Proper Vantage fix = per-hit height zones
+(vantage floor height per piece) + re-casting past each hit.
 Cone keys (hover): 1 = select target, 2 = lock/unlock to base, 3 = finish (R left free for the
 datacard popup). Test node: `python -m tools.build_test_node --tool targeting`.
 

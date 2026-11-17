@@ -1,6 +1,6 @@
-KTUI_MODELSCRIPT_VERSION = "ba3593bfd708"
+KTUI_MODELSCRIPT_VERSION = "2a7c6e1c6ea0"
 
-KTUI_MODELSCRIPT = [==[KT_MODELSCRIPT_VERSION = "ba3593bfd708"
+KTUI_MODELSCRIPT = [==[KT_MODELSCRIPT_VERSION = "2a7c6e1c6ea0"
 
 -- START KT_MODELSCRIPT_V1 --
 self.clearContextMenu()
@@ -2427,8 +2427,9 @@ KT_TARGET_CONE_CODE = [=[
 -- (the tangents), the cone stays on the origin's base edge, and the range is
 -- measured base edge to base edge. Line colour shows the target's cover (orange
 -- light, red heavy), a purple arc marks it obscured, and the state is shown in
--- the top-centre HUD. Bases more than 1" apart vertically get cyan lines and a
--- "Check cover yourself" readout instead (Vantage pieces mix heavy and light).
+-- the top-centre HUD. Bases more than 1" apart vertically keep the default
+-- lines and the HUD says Vantage isn't supported yet (one Vantage piece mixes
+-- heavy walls below the platform with light walls above it).
 
 pickedUp = false
 newX = 0
@@ -2570,20 +2571,23 @@ end
 -- of the target base, just above both bases; each is cast both ways so every
 -- piece of terrain it crosses yields the stretch of the line inside it (a ray
 -- only reports where it enters a collider). Operatives,
--- tokens, tools and mats/tiles are ignored, and so is the terrain the shooter
--- stands on (and the target's, unless the target is shot at from below).
+-- tokens, tools and mats/boards/tiles are ignored, and so is the terrain the
+-- shooter stands on (and the target's, unless the target is shot at from below).
 -- Per stretch (so one piece can do both):
 --   light/heavy within 1" of the target  -> light/heavy cover (heavy wins),
 --                                            none if the bases are within 2"
 --   heavy more than 1" from BOTH bases    -> obscured
 -- Terrain type comes from the name or description ("Light Rubble",
 -- "Capillary Tower (Heavy)", "Portable barricade" = light); untyped is heavy.
+-- Name lists below are matched against the START of the lower-cased name (so
+-- "Heavy, Vantage ... / Ladder: Heavy" is not a ladder). They bridge tables
+-- whose terrain isn't tagged yet.
 local FAN_RAYS = 9
 local RAY_LIFT = 0.1             -- sight rays run this far above each base
 local SHOOTING_UP = 0.5          -- target this much higher: its own terrain intervenes
 -- Stopgap until Vantage-aware detection: one terrain object mixes heavy walls
 -- below the Vantage with light walls above it, so beyond this height gap
--- between the bases the auto result is unreliable and we ask for a manual check.
+-- between the bases there is no auto result.
 local HEIGHT_CHECK = 1
 local CONTROL_RANGE = 1
 local COVER_DENIED_WITHIN = 2
@@ -2591,14 +2595,26 @@ local ANALYSE_EVERY = 6          -- frames between terrain checks while dragging
 local COL_LIGHT = { 1, 0.55, 0 }
 local COL_HEAVY = { 0.95, 0.1, 0.1 }
 local COL_OBSCURED = { 0.7, 0.3, 1 }
-local COL_CHECK = { 0.1, 0.85, 0.95 }
 local IGNORE_TYPES = { Scripting = true, Surface = true, Hand = true, Card = true, Deck = true, Dice = true,
-                       Board = true, Tile = true }
+                       Tile = true }
 local IGNORE_TAGS = { "KTUIMini", "KTUI_ToolActive", "KT24Token", "KT_Objective" }
+-- Board-type objects are terrain unless this wide on their shorter side
+-- (game boards/mats; the base table's are >= 14.8", its terrain <= 8.8").
+local BOARD_MIN_SIDE = 12
+-- Exposed / insignificant pieces: never cover, never obscure.
+local NO_COVER_NAMES = { "teleport", "fire step", "razor wire", "ladder" }
+-- Real terrain that carries an ignored tag (KT_Objective).
+local TERRAIN_NAMES = { "g4: objective marker" }
+-- Open states: the middle OPENING_FRACTION of the long side is an exposed
+-- access point (measured ~25% on the Tomb World door and breach meshes); the
+-- wall either side still gives cover / obscures.
+local OPENING_NAMES = { "open door", "breached wall", "open hatchway" }
+local OPENING_FRACTION = 0.25
 
 coverState = nil      -- nil | "light" | "heavy"
 obscuredState = false
-checkState = false    -- bases too far apart vertically: no auto cover/obscured
+vantageState = false  -- bases too far apart vertically: no auto cover/obscured
+tooCloseState = false -- bases within 2": cover is ignored
 activeColor = nil     -- player using the cone (gets the HUD readout)
 local dragFrames = 0
 
@@ -2619,9 +2635,23 @@ local function facingPoints(e, px, pz)
 	return pts
 end
 
+local function nameStarts(obj, list)
+	local name = tostring(obj.getName() or ""):lower():match("^%s*(.-)%s*$")
+	for _, prefix in ipairs(list) do
+		if name:sub(1, #prefix) == prefix then return true end
+	end
+	return false
+end
+
 local function isIgnored(obj)
 	if obj == nil or obj == self or obj == objModel or obj == ObjMiniTarget then return true end
 	if IGNORE_TYPES[obj.type] then return true end
+	if nameStarts(obj, TERRAIN_NAMES) then return false end
+	if nameStarts(obj, NO_COVER_NAMES) then return true end
+	if obj.type == "Board" then
+		local size = obj.getBoundsNormalized().size
+		if math.min(size.x, size.z) >= BOARD_MIN_SIDE then return true end
+	end
 	for _, tag in ipairs(IGNORE_TAGS) do
 		if obj.hasTag(tag) then return true end
 	end
@@ -2636,6 +2666,19 @@ local function terrainKind(obj)
 	if text:find("heavy", 1, true) then return "heavy" end
 	if text:find("light", 1, true) or text:find("portable", 1, true) then return "light" end
 	return "heavy"
+end
+
+-- Whether the sight line crosses an open piece (OPENING_NAMES) at world (x, z)
+-- inside its access point: the centred OPENING_FRACTION of its long side.
+local function throughOpening(obj, x, z)
+	if not nameStarts(obj, OPENING_NAMES) then return false end
+	local nb = obj.getBoundsNormalized()
+	local u, v = toLocal({ x = obj.getPosition().x, z = obj.getPosition().z,
+		h = math.rad(obj.getRotation().y) }, x, z)
+	if nb.size.x >= nb.size.z then
+		return math.abs(u - nb.offset.x) < nb.size.x * OPENING_FRACTION * 0.5
+	end
+	return math.abs(v - nb.offset.z) < nb.size.z * OPENING_FRACTION * 0.5
 end
 
 local function baseBottom(obj)
@@ -2710,15 +2753,16 @@ end
 -- Sets coverState / obscuredState for the current shooter (objModel, sight
 -- lines from the cone at `sp`) and target.
 function analyseTerrain(target, sp)
-	coverState, obscuredState, checkState = nil, false, false
+	coverState, obscuredState, vantageState, tooCloseState = nil, false, false, false
 	local shooterBottom, targetBottom = baseBottom(objModel), baseBottom(ObjMiniTarget)
 	if math.abs(targetBottom - shooterBottom) > HEIGHT_CHECK then
-		checkState = true
+		vantageState = true
 		return
 	end
 	local shooter = baseEllipse(objModel)
 	local fullTarget = baseEllipse(ObjMiniTarget)
 	local coverAllowed = ovalGap(shooter, fullTarget) > COVER_DENIED_WITHIN
+	tooCloseState = not coverAllowed
 	local a = { x = sp.x, y = shooterBottom + RAY_LIFT, z = sp.z }
 	local ty = targetBottom + RAY_LIFT
 	local skip = {}
@@ -2738,12 +2782,15 @@ function analyseTerrain(target, sp)
 			local nearTarget = tIn and math.max(0, tIn) or len
 			local leaveShooter = sOut and math.max(0, sOut) or 0
 			for _, piece in pairs(pieces) do
-				local kind = terrainKind(piece.obj)
-				if coverAllowed and piece.sOut >= nearTarget then
-					if kind == "heavy" then heavy = true else light = true end
-				end
-				if kind == "heavy" and math.max(piece.sIn, leaveShooter) < math.min(piece.sOut, nearTarget) then
-					obscuredState = true
+				local mid = (piece.sIn + piece.sOut) * 0.5
+				if not throughOpening(piece.obj, a.x + dx * mid, a.z + dz * mid) then
+					local kind = terrainKind(piece.obj)
+					if coverAllowed and piece.sOut >= nearTarget then
+						if kind == "heavy" then heavy = true else light = true end
+					end
+					if kind == "heavy" and math.max(piece.sIn, leaveShooter) < math.min(piece.sOut, nearTarget) then
+						obscuredState = true
+					end
 				end
 			end
 		end
@@ -2797,8 +2844,9 @@ local function hudSet(color, text)
 end
 
 local function stateText()
-	if checkState then return "Check cover yourself  (height difference > 1\")" end
+	if vantageState then return "Cover check doesn't currently work with Vantage" end
 	local text = coverState == "heavy" and "Heavy cover" or (coverState == "light" and "Light cover" or "No cover")
+	if tooCloseState then text = "Target within 2\" - all cover is ignored" end
 	if obscuredState then text = text .. "  +  Obscured" end
 	return text
 end
@@ -2879,8 +2927,7 @@ function refrescaVectores()
 		refrescaTextoRango()
 	end
 	local lineColor = colorLinea
-	if checkState then lineColor = COL_CHECK
-	elseif coverState == "heavy" then lineColor = COL_HEAVY elseif coverState == "light" then lineColor = COL_LIGHT end
+	if coverState == "heavy" then lineColor = COL_HEAVY elseif coverState == "light" then lineColor = COL_LIGHT end
 	local vectorLines = {{
 		points = { extended(x1, z1), { x = 0, y = -0.45, z = 0 }, extended(x2, z2) },
 		color = lineColor,
