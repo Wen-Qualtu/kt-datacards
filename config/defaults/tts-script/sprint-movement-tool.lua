@@ -307,7 +307,7 @@ local function refreshBaseDims()
 			local bx = tonumber(data.base.x)   -- width  (side-to-side)
 			local bz = tonumber(data.base.z)   -- length (front-to-back)
 			if bx and bx > 0 and bz and bz > 0 then
-				BASE_MM_WIDE, BASE_MM_LONG = bx, bz
+				BASE_MM_WIDE, BASE_MM_LONG = math.min(bx, bz), math.max(bx, bz)
 				-- Facing = transform-forward + KTUI_FACING_OFFSET (default 0, i.e.
 				-- correct sculpts run head-first) + a per-model kt_front offset
 				-- (0/90/180/270, cycled by the "Rotate base 90" menu item) that
@@ -315,13 +315,11 @@ local function refreshBaseDims()
 				-- tail-first. Absent kt_front = 0 = no change.
 				local ktf = tonumber(data.kt_front) or 0
 				facingOffset = KTUI_FACING_OFFSET + ktf
-				-- "Rotate base 90" also SWAPS base.x/base.z in state (to rotate the
-				-- KTUI ring). At odd quarters (90/270) that moves the long axis onto
-				-- the OTHER dimension, so re-label LONG(front-to-back)/WIDE(side-to-
-				-- side) here to keep the ghost + corridor drawn long-along-heading.
-				if (math.floor(ktf / 90) % 2) == 1 then
-					BASE_MM_WIDE, BASE_MM_LONG = BASE_MM_LONG, BASE_MM_WIDE
-				end
+				-- The ghost + corridor always run long-along-heading (an oval's
+				-- front is on its long axis), so LONG/WIDE come from max/min rather
+				-- than x/z: "Rotate base 90" swaps x/z in state, while the command
+				-- node sets an arbitrary kt_front from its own heading without
+				-- swapping, so x/z can't tell which one runs along the front.
 				return
 			end
 		end
