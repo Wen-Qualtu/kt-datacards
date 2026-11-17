@@ -713,6 +713,7 @@ local function terrain(name, z1, z2, opts)
         getGUID = function() return name .. z1 end,
         hasTag = function(t) return set[t] == true end, getTags = function() return opts.tags or {} end}
     o.getPosition = function() return {x = (o.minX + o.maxX) / 2, y = 0, z = (o.minZ + o.maxZ) / 2} end
+    o.getBounds = function() return {center = {y = (o.minY + o.maxY) / 2}, size = {y = o.maxY - o.minY}} end
     o.getRotation = function() return {x = 0, y = opts.rotY or 0, z = 0} end
     -- Unrotated size: x/z swap for a piece turned 90 degrees.
     o.getBoundsNormalized = function()
@@ -822,6 +823,15 @@ check("objective token still ignored", 8, {terrain("Objective", 6.6, 6.8, {tags 
 -- Open doors: lines through the centred access point (25% of the long side)
 -- are clear; lines through the wall either side still give cover.
 check("through an open door", 8, {terrain("Open Door 3", 6.6, 6.8)}, nil, false)
+-- Key 4 explains every object on the sight lines.
+local printed = {}
+printToColor = function(text) printed[#printed + 1] = text end
+boxes = {terrain("Open Door 3", 6.6, 6.8), terrain("Objective", 4.0, 4.2, {tags = {"KT_Objective"}})}
+onNumberTyped("Red", 4)
+local out = table.concat(printed, "\n")
+assert(out:find("Targeting: No cover", 1, true), "explain header: " .. out)
+assert(out:find("Open Door 3 [Generic] heavy, 18/18 hits in its opening", 1, true), "explain opening: " .. out)
+assert(out:find("Objective [Generic] ignored: tag KT_Objective", 1, true), "explain ignored: " .. out)
 check("closed door", 8, {terrain("Closed Door 3", 6.6, 6.8)}, "heavy", false)
 ObjMiniTarget = model(2, 8)
 boxes = {terrain("Open Hatchway", 6.6, 6.8)}

@@ -223,22 +223,27 @@ local function nameStarts(obj, list)
 	return false
 end
 
-local function isIgnored(obj)
-	if obj == nil or obj == self or obj == objModel or obj == ObjMiniTarget then return true end
-	if IGNORE_TYPES[obj.type] then return true end
-	if nameStarts(obj, TERRAIN_NAMES) then return false end
-	if nameStarts(obj, NO_COVER_NAMES) then return true end
+-- Why an object never counts as terrain (nil = it can).
+local function ignoreReason(obj)
+	if obj == nil or obj == self or obj == objModel or obj == ObjMiniTarget then return "model/cone" end
+	if IGNORE_TYPES[obj.type] then return "type " .. tostring(obj.type) end
+	if nameStarts(obj, TERRAIN_NAMES) then return nil end
+	if nameStarts(obj, NO_COVER_NAMES) then return "no-cover name" end
 	if obj.type == "Board" then
 		local size = obj.getBoundsNormalized().size
-		if math.min(size.x, size.z) >= BOARD_MIN_SIDE then return true end
+		if math.min(size.x, size.z) >= BOARD_MIN_SIDE then return "board/mat" end
 	end
 	for _, tag in ipairs(IGNORE_TAGS) do
-		if obj.hasTag(tag) then return true end
+		if obj.hasTag(tag) then return "tag " .. tag end
 	end
 	for _, tag in ipairs(obj.getTags() or {}) do
-		if tostring(tag):find("KTUIToken", 1, true) == 1 then return true end
+		if tostring(tag):find("KTUIToken", 1, true) == 1 then return "tag " .. tostring(tag) end
 	end
-	return false
+	return nil
+end
+
+local function isIgnored(obj)
+	return ignoreReason(obj) ~= nil
 end
 
 local function terrainKind(obj)
@@ -431,6 +436,68 @@ local function stateText()
 	return text
 end
 
+-- Key 4: lists every object the sight lines hit and whether/why it counts, so
+-- table terrain can be diagnosed in-game.
+function explainTerrain(pc)
+	if estado_cono ~= 2 or ObjMiniTarget == nil or objModel == nil then
+		printToColor("Targeting: select a target first (key 1).", pc, { 1, 1, 1 })
+		return
+	end
+	local sp = self.getPosition()
+	local target = shrink(baseEllipse(ObjMiniTarget), 0.02)
+	analyseTerrain(target, sp)
+	local shooterBottom, targetBottom = baseBottom(objModel), baseBottom(ObjMiniTarget)
+	local a = { x = sp.x, y = shooterBottom + RAY_LIFT, z = sp.z }
+	local ty = targetBottom + RAY_LIFT
+	local shooterOn, targetOn = {}, {}
+	supportsOf(objModel, shooterOn)
+	supportsOf(ObjMiniTarget, targetOn)
+	local rows, order, casts = {}, {}, 0
+	for _, p in ipairs(facingPoints(target, sp.x, sp.z)) do
+		local b = { x = p[1], y = ty, z = p[2] }
+		local d = { x = b.x - a.x, y = b.y - a.y, z = b.z - a.z }
+		local len = math.sqrt(d.x * d.x + d.y * d.y + d.z * d.z)
+		for _, c in ipairs({ { a, d }, { b, { x = -d.x, y = -d.y, z = -d.z } } }) do
+			casts = casts + 1
+			for _, hit in ipairs(Physics.cast({ origin = c[1], direction = c[2], type = 1, max_distance = len }) or {}) do
+				local obj = hit.hit_object
+				if obj ~= nil and obj ~= self and obj ~= objModel and obj ~= ObjMiniTarget then
+					local key = guidOf(obj)
+					local row = rows[key]
+					if not row then
+						row = { obj = obj, hits = 0, opening = 0 }
+						rows[key] = row
+						order[#order + 1] = key
+					end
+					row.hits = row.hits + 1
+					if hit.point and throughOpening(obj, hit.point.x, hit.point.z) then row.opening = row.opening + 1 end
+				end
+			end
+		end
+	end
+	printToColor(string.format("Targeting: %s | rays %.2f -> %.2f high, %d casts",
+		stateText(), a.y, ty, casts), pc, { 1, 1, 1 })
+	if #order == 0 then
+		printToColor("  nothing on the sight lines", pc, { 0.8, 0.8, 0.8 })
+	end
+	for _, key in ipairs(order) do
+		local row = rows[key]
+		local obj = row.obj
+		local why = ignoreReason(obj)
+		if why then why = "ignored: " .. why
+		elseif shooterOn[key] then why = "ignored: shooter stands on it"
+		elseif targetOn[key] and targetBottom <= shooterBottom + SHOOTING_UP then why = "ignored: target stands on it"
+		else
+			why = terrainKind(obj)
+			if row.opening > 0 then why = why .. string.format(", %d/%d hits in its opening", row.opening, row.hits) end
+		end
+		local bb = obj.getBounds()
+		printToColor(string.format("  %s [%s] %s  (y %.2f-%.2f, %d hits)",
+			tostring(obj.getName() ~= "" and obj.getName() or key), tostring(obj.type), why,
+			bb.center.y - bb.size.y * 0.5, bb.center.y + bb.size.y * 0.5, row.hits), pc, { 0.8, 0.8, 0.8 })
+	end
+end
+
 function onPickUp(cp)
 	activeColor = cp
 	pickedUp = true
@@ -538,6 +605,8 @@ function onNumberTyped( pc, n )
 	elseif n == 3 then
 		hudSet(nil)
 		self.destruct()
+	elseif n == 4 then
+		explainTerrain(pc)
 	end
 	return true
 end

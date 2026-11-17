@@ -269,7 +269,9 @@ skipped -- default lines + HUD "Cover check doesn't currently work with Vantage"
 object mixes heavy walls (below the platform) with light parapets (above). Bases within 2": HUD
 "Target within 2" - all cover is ignored". Proper Vantage fix = per-hit height zones
 (vantage floor height per piece) + re-casting past each hit.
-Cone keys (hover): 1 = select target, 2 = lock/unlock to base, 3 = finish (R left free for the
+Cone keys (hover): 1 = select target, 2 = lock/unlock to base, 3 = finish, 4 = explain (chat
+list of every object the sight lines hit + why it counts/is ignored; the in-game diagnostic for
+table terrain) (R left free for the
 datacard popup). Test node: `python -m tools.build_test_node --tool targeting`.
 
 ---
