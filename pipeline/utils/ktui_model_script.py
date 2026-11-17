@@ -11,6 +11,7 @@ Patch layer (deterministic, anchor-based, each verified -- raises on drift):
   1. heal getWoundPanelWidth (bare `if` -> `elseif`)  -- append-safety, bar-neutral
   2. remove the "Movement" context item                -- we load our own movement
   3. guard the unguarded game-log call                 -- bare-table safety
+  4. targeting cone uses our embedded oval-aware script (ktui-target-cone.lua)
 
 Owner assignment is card-side (baked into script_state in datacard-load-stats.lua).
 """
@@ -25,6 +26,7 @@ import yaml
 
 _EXTENDER = "ktui-extender-modelscript.lua"
 _EXTENSION = "ktui-extension.lua"
+_TARGET_CONE = "ktui-target-cone.lua"
 
 _COMMAND_NODE_OVAL_RENDERER = r'''
 local nodeGetCircleVectorPoints = getCircleVectorPoints
@@ -90,6 +92,25 @@ def compose_ktui_model_script(config_dir: Path) -> str:
         r'getObjectFromGUID\(gamelogGuid\)\.call\("gameLogAppendOperativeChangedState",\s*event\)',
         'local _kt_gl = getObjectFromGUID(gamelogGuid)\n'
         '    if _kt_gl then _kt_gl.call("gameLogAppendOperativeChangedState", event) end')
+
+    # 4) install our oval-aware targeting cone instead of fetching the upstream
+    #    circle-only "KTMT Target Cone.lua" (callback shape kept, so the rest of
+    #    agregaCono is untouched).
+    base = _sub_once(
+        base, "local-target-cone-script",
+        r'WebRequest\.get\("https://raw\.githubusercontent\.com/xSpaghettyx/KT24-Table-The-Killzone-Mod/'
+        r'refs/heads/main/KTMT%20Target%20Cone\.lua",\s*function\(req\)',
+        "ktLocalScript(KT_TARGET_CONE_CODE, function(req)")
+    cone = (tdir / _TARGET_CONE).read_text(encoding="utf-8").replace("\r\n", "\n")
+    equals = "="
+    while "]" + equals + "]" in cone:
+        equals += "="
+    base = (
+        f"KT_TARGET_CONE_CODE = [{equals}[\n{cone}]{equals}]\n\n"
+        "function ktLocalScript(code, callback)\n"
+        "    Wait.frames(function() callback({text = code}) end, 1)\n"
+        "end\n\n" + base
+    )
 
     # Clear the context menu first: TTS keeps runtime-added items across a script
     # swap/reload, so a re-stamp would otherwise leave stale items (e.g. an old

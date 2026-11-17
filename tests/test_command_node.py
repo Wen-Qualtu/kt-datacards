@@ -613,6 +613,82 @@ def test_oval_renderer_is_only_in_command_node_model_scripts():
     assert "nodeGetCircleVectorPoints" in node_loader
 
 
+def test_targeting_cone_is_embedded_instead_of_fetched():
+    shared = compose_ktui_model_script(CONFIG)
+    assert "KTMT%20Target%20Cone.lua" not in shared
+    assert "ktLocalScript(KT_TARGET_CONE_CODE, function(req)" in shared
+    assert (CONFIG / "defaults" / "tts-script" / "ktui-target-cone.lua").read_text(encoding="utf-8") in shared
+
+
+@pytest.mark.skipif(not shutil.which("npx"), reason="npx is required for Lua geometry integration")
+def test_targeting_lines_touch_the_outer_points_of_an_oval_target():
+    cone = (CONFIG / "defaults" / "tts-script" / "ktui-target-cone.lua").read_text(encoding="utf-8")
+    script = "Color = function() return {} end\nmath.atan2 = math.atan2 or math.atan\n" + cone + r'''
+local function model(x, z, rotY, st)
+    return {
+        getPosition = function() return {x = x, y = 1, z = z} end,
+        getRotation = function() return {x = 0, y = rotY, z = 0} end,
+        getTable = function() return st end,
+        getBounds = function() return {offset = {y = 0}} end,
+    }
+end
+local lines, label
+local conePos = {x = 0, y = 1, z = 0}
+self = {
+    getPosition = function() return conePos end,
+    getBounds = function() return {offset = {y = 0}} end,
+    setVectorLines = function(l) lines = l end,
+    editButton = function(b) label = b.label end,
+}
+local mm = 0.0393701
+-- {target x, z, rotY, state, heading the long axis should run along}
+local cases = {
+    {6, 0, 0, {base = {x = 42, z = 75}}, 0},
+    {5, 4, 30, {base = {x = 42, z = 75}}, 30},
+    {-3, 7, 90, {base = {x = 42, z = 75}, kt_node_ui = true, kt_front = 45}, 135},
+    {4, -5, 200, {base = {x = 42, z = 75}, kt_front = 90}, 200},
+    {5, 0, 0, {base = {x = 32, z = 32}}, 0},
+}
+for i, c in ipairs(cases) do
+    local tx, tz, rotY, st, heading = c[1], c[2], c[3], c[4], c[5]
+    ObjMiniTarget = model(tx, tz, rotY, st)
+    objModel = model(-0.63, 0, 0, {base = {x = 32, z = 32}})
+    estado_cono = 2
+    refrescaVectores()
+    local pts = lines[1].points
+    local center = math.atan2(tx, tz)
+    local function rel(a) return (a - center + math.pi) % (2 * math.pi) - math.pi end
+    local h = math.rad(heading)
+    local a, b = st.base.x * mm / 2 - 0.02, st.base.z * mm / 2 - 0.02
+    local lo, hi, gap = math.huge, -math.huge, math.huge
+    for k = 0, 19999 do
+        local t = k * 2 * math.pi / 20000
+        local u, v = a * math.cos(t), b * math.sin(t)
+        local x = tx + u * math.cos(h) + v * math.sin(h)
+        local z = tz - u * math.sin(h) + v * math.cos(h)
+        local ang = rel(math.atan2(x, z))
+        lo, hi = math.min(lo, ang), math.max(hi, ang)
+        local fu, fv = (a + 0.02) * math.cos(t), (b + 0.02) * math.sin(t)
+        local fx = tx + fu * math.cos(h) + fv * math.sin(h)
+        local fz = tz - fu * math.sin(h) + fv * math.cos(h)
+        gap = math.min(gap, math.sqrt((fx + 0.63) ^ 2 + fz ^ 2) - 16 * mm)
+    end
+    local e1, e2 = rel(math.atan2(pts[1].x, pts[1].z)), rel(math.atan2(pts[3].x, pts[3].z))
+    assert(math.abs(math.max(e1, e2) - hi) < 1e-3, "case " .. i .. " upper tangent")
+    assert(math.abs(math.min(e1, e2) - lo) < 1e-3, "case " .. i .. " lower tangent")
+    assert(pts[2].x == 0 and pts[2].z == 0, "case " .. i .. " apex")
+    assert(label == math.ceil(gap) .. "''", "case " .. i .. " range " .. label .. " vs " .. gap)
+end
+print("oval targeting passed")
+'''
+    result = subprocess.run(
+        [shutil.which("npx"), "--yes", "--package=fengari-node-cli", "fengari", "-"],
+        input=script, cwd=ROOT, capture_output=True, text=True, encoding="utf-8", check=True,
+    )
+    assert result.stdout.strip() == "oval targeting passed", result.stderr
+    assert not result.stderr
+
+
 def test_standalone_token_bag_preserves_contents_and_script(tmp_path):
     bag = {
         "Name": "Custom_Model_Bag", "LuaScript": "bag script", "LuaScriptState": "saved layout",
