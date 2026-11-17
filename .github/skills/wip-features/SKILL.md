@@ -248,7 +248,12 @@ target -> light/heavy cover (orange/red lines, heavy wins; none if bases within 
 shared top-centre `ktmove_hud` (same Global UI container as the move tools), not the cone label.
 1" zones = base oval grown by 1" (analytic ray/oval quadratic; exact for round bases). Terrain
 check + range label run every 6th frame while dragging (~10 Hz), always on drop/target pick.
-Type from name OR description ("heavy" > "light"/"barricade"); untyped = heavy. Ignores operatives
+Type from name OR description ("heavy" > "light"/"portable"); untyped = heavy. Detection is
+colliders ONLY (one generic path, no per-object specials): wrong colliders are fixed on the table,
+not in code -- e.g. the base table's Light Rubble has its wall-sized BoxCollider DISABLED (only two
+~0.16" boxes at one end), so it shows no cover until the table fixes it. Terrain the SHOOTER stands
+on never counts; the target's own
+terrain counts only when it is >0.5" higher than the shooter (shooting up at Vantage). Ignores operatives
 (`KTUIMini`), `KTUIToken*`, `KT24Token`, `KT_Objective`, cones, zones/table/cards/dice.
 Not yet: Vantage/height effects, name→type map for untyped pieces, Conceal-order validity.
 Cone keys (hover): 1 = select target, 2 = lock/unlock to base, 3 = finish (R left free for the

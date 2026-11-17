@@ -1,6 +1,6 @@
-KTUI_MODELSCRIPT_VERSION = "43bb55941a77"
+KTUI_MODELSCRIPT_VERSION = "aa181cbe2f35"
 
-KTUI_MODELSCRIPT = [==[KT_MODELSCRIPT_VERSION = "43bb55941a77"
+KTUI_MODELSCRIPT = [==[KT_MODELSCRIPT_VERSION = "aa181cbe2f35"
 
 -- START KT_MODELSCRIPT_V1 --
 self.clearContextMenu()
@@ -2568,25 +2568,27 @@ end
 -- Cover / obscured. Rays fan from the cone tip to points across the facing part
 -- of the target base, just above both bases; each is cast both ways so every
 -- piece of terrain it crosses yields the stretch of the line inside it (a ray
--- only reports where it enters a collider). Operatives, tokens and tools are
--- ignored. Per stretch (so one piece can do both):
+-- only reports where it enters a collider). Operatives,
+-- tokens, tools and mats/tiles are ignored, and so is the terrain the shooter
+-- stands on (and the target's, unless the target is shot at from below).
+-- Per stretch (so one piece can do both):
 --   light/heavy within 1" of the target  -> light/heavy cover (heavy wins),
 --                                            none if the bases are within 2"
 --   heavy more than 1" from BOTH bases    -> obscured
 -- Terrain type comes from the name or description ("Light Rubble",
--- "Capillary Tower (Heavy)"); untyped terrain is treated as heavy.
+-- "Capillary Tower (Heavy)", "Portable barricade" = light); untyped is heavy.
 local FAN_RAYS = 9
-local RAY_LIFT = 0.25
+local RAY_LIFT = 0.1             -- sight rays run this far above each base
+local SHOOTING_UP = 0.5          -- target this much higher: its own terrain intervenes
 local CONTROL_RANGE = 1
 local COVER_DENIED_WITHIN = 2
 local ANALYSE_EVERY = 6          -- frames between terrain checks while dragging
 local COL_LIGHT = { 1, 0.55, 0 }
 local COL_HEAVY = { 0.95, 0.1, 0.1 }
 local COL_OBSCURED = { 0.7, 0.3, 1 }
-local IGNORE_TYPES = { Scripting = true, Surface = true, Hand = true, Card = true, Deck = true, Dice = true }
+local IGNORE_TYPES = { Scripting = true, Surface = true, Hand = true, Card = true, Deck = true, Dice = true,
+                       Board = true, Tile = true }
 local IGNORE_TAGS = { "KTUIMini", "KTUI_ToolActive", "KT24Token", "KT_Objective" }
--- Light terrain whose name doesn't say so (e.g. the Portable Barricade equipment).
-local LIGHT_WORDS = { "light", "barricade" }
 
 coverState = nil      -- nil | "light" | "heavy"
 obscuredState = false
@@ -2625,9 +2627,7 @@ end
 local function terrainKind(obj)
 	local text = (tostring(obj.getName() or "") .. " " .. tostring(obj.getDescription() or "")):lower()
 	if text:find("heavy", 1, true) then return "heavy" end
-	for _, word in ipairs(LIGHT_WORDS) do
-		if text:find(word, 1, true) then return "light" end
-	end
+	if text:find("light", 1, true) or text:find("portable", 1, true) then return "light" end
 	return "heavy"
 end
 
@@ -2636,9 +2636,33 @@ local function baseBottom(obj)
 	return b.center.y - b.size.y * 0.5
 end
 
+local function guidOf(obj)
+	return obj.getGUID and obj.getGUID() or tostring(obj)
+end
+
+local function addStretch(pieces, obj, s)
+	local key = guidOf(obj)
+	local piece = pieces[key]
+	if piece then
+		piece.sIn, piece.sOut = math.min(piece.sIn, s), math.max(piece.sOut, s)
+	else
+		pieces[key] = { obj = obj, sIn = s, sOut = s }
+	end
+end
+
+-- What a model stands on (a platform, a floor tile).
+local function supportsOf(model, skip)
+	local pos, bottom = model.getPosition(), baseBottom(model)
+	local hits = Physics.cast({ origin = { x = pos.x, y = bottom + 0.5, z = pos.z },
+		direction = { x = 0, y = -1, z = 0 }, type = 1, max_distance = 1.5 }) or {}
+	for _, hit in ipairs(hits) do
+		if not isIgnored(hit.hit_object) then skip[guidOf(hit.hit_object)] = true end
+	end
+end
+
 -- Stretches of one ray inside each terrain piece: { [guid] = {obj=, sIn=, sOut=} }
 -- with s measured along the ray from `a` (0..len).
-local function rayStretches(a, b)
+local function rayStretches(a, b, skip)
 	local d = { x = b.x - a.x, y = b.y - a.y, z = b.z - a.z }
 	local len = math.sqrt(d.x * d.x + d.y * d.y + d.z * d.z)
 	local pieces = {}
@@ -2647,17 +2671,10 @@ local function rayStretches(a, b)
 	local function record(hits)
 		for _, hit in ipairs(hits or {}) do
 			local obj = hit.hit_object
-			if not isIgnored(obj) and hit.point then
+			if not isIgnored(obj) and not skip[guidOf(obj)] and hit.point then
 				local p = hit.point
 				local s = (p.x - a.x) * u.x + (p.y - a.y) * u.y + (p.z - a.z) * u.z
-				s = math.max(0, math.min(len, s))
-				local key = obj.getGUID and obj.getGUID() or tostring(obj)
-				local piece = pieces[key]
-				if piece then
-					piece.sIn, piece.sOut = math.min(piece.sIn, s), math.max(piece.sOut, s)
-				else
-					pieces[key] = { obj = obj, sIn = s, sOut = s }
-				end
+				addStretch(pieces, obj, math.max(0, math.min(len, s)))
 			end
 		end
 	end
@@ -2690,11 +2707,17 @@ function analyseTerrain(target, sp)
 	local shooter = baseEllipse(objModel)
 	local fullTarget = baseEllipse(ObjMiniTarget)
 	local coverAllowed = ovalGap(shooter, fullTarget) > COVER_DENIED_WITHIN
-	local a = { x = sp.x, y = baseBottom(objModel) + RAY_LIFT, z = sp.z }
-	local ty = baseBottom(ObjMiniTarget) + RAY_LIFT
+	local shooterBottom, targetBottom = baseBottom(objModel), baseBottom(ObjMiniTarget)
+	local a = { x = sp.x, y = shooterBottom + RAY_LIFT, z = sp.z }
+	local ty = targetBottom + RAY_LIFT
+	local skip = {}
+	-- The shooter's own terrain never intervenes. The target's does when it is
+	-- shot at from below (Vantage: the platform is between them), else not.
+	supportsOf(objModel, skip)
+	if targetBottom <= shooterBottom + SHOOTING_UP then supportsOf(ObjMiniTarget, skip) end
 	local light, heavy = false, false
 	for _, p in ipairs(facingPoints(target, sp.x, sp.z)) do
-		local pieces, len, d = rayStretches(a, { x = p[1], y = ty, z = p[2] })
+		local pieces, len, d = rayStretches(a, { x = p[1], y = ty, z = p[2] }, skip)
 		if next(pieces) then
 			local dx, dz = d.x / len, d.z / len
 			-- Within 1" of the target from nearTarget on; more than 1" from the
