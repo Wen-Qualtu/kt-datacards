@@ -8,7 +8,7 @@ import re
 import subprocess
 from pathlib import Path
 
-from pipeline.utils.ktui_model_script import compose_ktui_model_script
+from pipeline.utils.ktui_model_script import compose_ktui_model_script, compose_self_selecting_model_script
 from tools.build_command_node import build_save
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -71,6 +71,17 @@ TOOLS = {
         "color": {"r": 0.6, "g": 0.2, "b": 0.15},
         "guid": "7a6e70",
     },
+    "ktui": {
+        "label": "KTUI Script",
+        "marker": "KT_MODELSCRIPT_",
+        "code": lambda: compose_self_selecting_model_script(CONFIG_DIR),
+        "sources": ["ktui-movement-select.lua", "move-tool.lua", "sprint-movement-tool.lua",
+                    "ktui-target-cone.lua", "ktui-extender-modelscript.lua", "ktui-extension.lua"],
+        "hint": "One script; movement picked per model (MOUNTED -> Sprint/Turn/Leap, else Move/Dash).",
+        "color": {"r": 0.2, "g": 0.5, "b": 0.25},
+        "guid": "c7e5e1",
+        "replace": True,
+    },
 }
 
 
@@ -87,11 +98,12 @@ def build_label(sources: list[str]) -> str:
 
 def build_script(tool: dict, label: str) -> str:
     start, end = f"-- START {tool['marker']}", f"-- END {tool['marker']}"
-    block = f"{start}V1\n{tool['code']()}\n{end}V1"
+    block = tool["code"]() if tool.get("replace") else f"{start}V1\n{tool['code']()}\n{end}V1"
     return (
         f"NODE_TOOL = {json.dumps(tool['label'])}\n"
         f"NODE_BUILD = {json.dumps(label)}\n"
         f"NODE_HINT = {json.dumps(tool['hint'])}\n"
+        f"NODE_REPLACE = {'true' if tool.get('replace') else 'false'}\n"
         f"NODE_BLOCK_START = {json.dumps(start)}\n"
         f"NODE_BLOCK_END = {json.dumps(end)}\n\n"
         f"NODE_BLOCK_CODE = {long_string(block)}\n\n"

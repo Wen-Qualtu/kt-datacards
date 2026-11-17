@@ -1,5 +1,6 @@
 import hashlib
 import json
+import re
 import os
 import shutil
 import subprocess
@@ -906,6 +907,36 @@ print("extender board passed")
     )
     assert result.stdout.strip() == "extender board passed", result.stderr
     assert not result.stderr
+
+
+@pytest.mark.skipif(not shutil.which("npx"), reason="npx is required for Lua integration")
+def test_self_selecting_movement_runs_only_the_keyword_tool():
+    from pipeline.utils.ktui_model_script import compose_self_selecting_model_script
+    script = compose_self_selecting_model_script(CONFIG)
+    start = script.index("-- START KT_MOVEMENT_V1 --")
+    block = script[start:script.index("-- END KT_MOVEMENT_V1 --", start)]
+    assert not re.search(r"(?<![\w.:])load\(", block), "TTS has no load(): no runtime compiling"
+    lua = "local BLOCK = " + "[=======[" + block + "]=======]" + r"""
+JSON = {decode = function(s) return s end}
+local function run(state)
+    -- Each TTS object script has its own globals; give each model its own.
+    local env = setmetatable({self = {script_state = state}, JSON = JSON}, {__index = _G})
+    assert(load(BLOCK, "block", "t", env))()
+    return env
+end
+local rider = run({info = {categories = {"Exodite", "Mounted"}}})
+assert(rider.setupSprintTool and not rider.setupMoveTool, "mounted gets sprint only")
+for _, state in ipairs({{info = {categories = {"Trooper"}}}, {}, ""}) do
+    local trooper = run(state)
+    assert(trooper.setupMoveTool and not trooper.setupSprintTool, "others get move only")
+end
+print("movement selection passed")
+"""
+    result = subprocess.run(
+        [shutil.which("npx"), "--yes", "--package=fengari-node-cli", "fengari", "-"],
+        input=lua, cwd=ROOT, capture_output=True, text=True, encoding="utf-8", check=True,
+    )
+    assert result.stdout.strip() == "movement selection passed", result.stderr
 
 
 def test_standalone_token_bag_preserves_contents_and_script(tmp_path):

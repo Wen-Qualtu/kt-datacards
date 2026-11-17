@@ -131,6 +131,23 @@ def _tagged(tag: str, body: str) -> str:
     return f"-- START {tag} --\n{body.strip(chr(10))}\n-- END {tag} --"
 
 
+def compose_self_selecting_model_script(config_dir: Path) -> str:
+    """The KTUI model script with BOTH movement tools inside one KT_MOVEMENT
+    block; at load the model runs only the one its keywords call for. One file
+    that works the same wherever it is stamped (prototype)."""
+    model = compose_ktui_model_script(config_dir)
+    if not model:
+        raise ValueError("KTUI model script is not available")
+    tdir = config_dir / "defaults" / "tts-script"
+    read = lambda name: (tdir / name).read_text(encoding="utf-8").replace("\r\n", "\n")
+    movement = (
+        f"local function ktMoveTool()\n{read('move-tool.lua')}\nend\n\n"
+        f"local function ktSprintTool()\n{read('sprint-movement-tool.lua')}\nend\n\n"
+        + read("ktui-movement-select.lua")
+    )
+    return model + "\n" + _tagged("KT_MOVEMENT_V1", movement) + "\n"
+
+
 def compose_model_scripts_bundle(config_dir: Path) -> dict:
     """Scripts our KTUI extender stamps onto models: the versioned model script
     (same version as the cards' KTUI_MODELSCRIPT) plus one tagged movement block

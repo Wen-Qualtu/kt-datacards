@@ -62,6 +62,16 @@ movement by MOUNTED (`state.info.categories`), tags KTUIMini + KTUIMiniDatacard,
 `setOwningPlayer` like the original. NPO autoextend runs 2.5 s after leaving an `_NPO bag` (after
 the original token). Card Load stats now also replaces original-extender scripts.
 
+### Self-selecting movement (prototype, `feat/self-selecting-movement`, TTS-verified 2026-11-17)
+Goal: ONE model script that works the same wherever it is stamped (incl. as a suggested
+replacement for upstream `KT UI extender 24 Spaghetty Mod.lua`, whose board can't pick movement).
+`compose_self_selecting_model_script()` appends a `KT_MOVEMENT` block: both tools wrapped as
+`local function ktMoveTool()` / `ktSprintTool()` + `ktui-movement-select.lua`, which calls only one
+at load (MOUNTED in `state.info.categories` -> sprint, else move). TTS has NO `load()` (sandboxed),
+so tools can't be kept as strings; wrapping fits Lua's 200-locals-per-function limit (~103 / ~142).
+~160 KB per model. Test node: `python -m tools.build_test_node --tool ktui` (replaces whole script).
+Not yet wired into cards / board / command node / pipeline outputs.
+
 ### STATUS: DEPLOYED to all 48 boxes (2026-08-19)
 Composed by the pipeline as the DEFAULT `KTUI_MODELSCRIPT`; the mimic
 (`ktui-mini-modelscript.lua`) and the env-var override are removed. Still on

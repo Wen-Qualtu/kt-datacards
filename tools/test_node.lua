@@ -44,10 +44,28 @@ function targetModels(playerColor)
     return found
 end
 
+-- Replace mode (NODE_REPLACE): swap the model's whole script for NODE_BLOCK_CODE,
+-- as the original extender's "Extend KT UI" does. Saved state is kept.
+function replaceScript(model, playerColor)
+    model.setLuaScript(NODE_BLOCK_CODE)
+    model = model.reload()
+    model.addTag("KTUIMini")
+    local player = Player[playerColor]
+    if player and player.steam_id then
+        Wait.frames(function() model.call("setOwningPlayer", player.steam_id) end, 1)
+    end
+end
+
 function installTool(playerColor)
     local models = targetModels(playerColor)
     if #models == 0 then
         broadcastToColor("Place a model on the node, or select models, then load again.", playerColor, Color.Orange)
+        return
+    end
+    if NODE_REPLACE then
+        for _, model in ipairs(models) do replaceScript(model, playerColor) end
+        broadcastToColor(string.format("%s test (%s): replaced the script on %d model(s). %s",
+            NODE_TOOL, NODE_BUILD, #models, NODE_HINT), playerColor, {0.2, 0.85, 0.3})
         return
     end
     local added, updated = 0, 0
@@ -85,7 +103,9 @@ end
 
 function onLoad()
     self.addContextMenuItem("Load " .. NODE_TOOL:lower() .. " onto model", function(pc) installTool(pc) end)
-    self.addContextMenuItem("Remove " .. NODE_TOOL:lower() .. " from model", function(pc) removeTool(pc) end)
+    if not NODE_REPLACE then
+        self.addContextMenuItem("Remove " .. NODE_TOOL:lower() .. " from model", function(pc) removeTool(pc) end)
+    end
     self.createButton({
         click_function = "onLoadButton",
         function_owner = self,
