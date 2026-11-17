@@ -234,7 +234,8 @@ check + range label run every 6th frame while dragging (~10 Hz), always on drop/
 Type from name OR description ("heavy" > "light"/"barricade"); untyped = heavy. Ignores operatives
 (`KTUIMini`), `KTUIToken*`, `KT24Token`, `KT_Objective`, cones, zones/table/cards/dice.
 Not yet: Vantage/height effects, name→type map for untyped pieces, Conceal-order validity.
-Test node: `python -m tools.build_test_node --tool targeting`.
+Cone keys (hover): 1 = select target, 2 = lock/unlock to base, 3 = finish (R left free for the
+datacard popup). Test node: `python -m tools.build_test_node --tool targeting`.
 
 ---
 

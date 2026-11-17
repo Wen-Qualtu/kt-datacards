@@ -782,6 +782,17 @@ check("both shown", 8, {terrain("Heavy Block", 3.0, 6.8)}, "heavy", true)
 assert(hud["ktmove_txt_Red"] == "Heavy cover  +  Obscured", "readout lists both")
 onDestroy()
 assert(hud["ktmove_txt_Red.active"] == "false", "hud hidden when the cone goes")
+function broadcastToColor() end
+local destroyed = false
+self.destruct = function() destroyed = true end
+onNumberTyped("Red", 1)
+assert(estado_cono == 1, "1 selects a target")
+local locked = lockEnabled
+onNumberTyped("Red", 2)
+assert(lockEnabled == not locked, "2 toggles the base lock")
+onNumberTyped("Red", 3)
+assert(destroyed, "3 finishes")
+assert(tryRandomize == nil, "R is left free")
 print("cover and obscured passed")
 '''
     result = subprocess.run(

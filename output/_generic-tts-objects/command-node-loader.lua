@@ -1,6 +1,6 @@
-KTUI_MODELSCRIPT_VERSION = "0cadec07b749"
+KTUI_MODELSCRIPT_VERSION = "abccb6e38662"
 
-KTUI_MODELSCRIPT = [==[KT_MODELSCRIPT_VERSION = "0cadec07b749"
+KTUI_MODELSCRIPT = [==[KT_MODELSCRIPT_VERSION = "abccb6e38662"
 
 self.clearContextMenu()
 
@@ -449,17 +449,21 @@ function refrescaVectores()
 end
 
 function onNumberTyped( pc, n )
-	if n == 9 then
+	if n == 1 then
+		estado_cono = 1
+		broadcastToColor("Select Target", pc, {r=1, g=1, b=1})
+	elseif n == 2 then
 		lockEnabled = not lockEnabled
 		if lockEnabled then
 			broadcastToColor("Targeting Tool locked to base", pc, {1,1,1})
 		else
 			broadcastToColor("Targeting Tool unlocked", pc, {1,1,1})
 		end
-	elseif n == 0 then
+	elseif n == 3 then
 		hudSet(nil)
 		self.destruct()
 	end
+	return true
 end
 
 function onDestroy()
@@ -469,9 +473,9 @@ end
 function onLoad(ls)
 	self.setName(
 	"Hover over and press these buttons:\n" ..
-	"- R to select a target\n" ..
-	"- 9 to unlock or lock to base\n" ..
-	"- 0 to finish"
+	"- 1 to select a target\n" ..
+	"- 2 to unlock or lock to base\n" ..
+	"- 3 to finish"
 	)
 	self.max_typed_number=9
 	self.clearButtons()
@@ -499,12 +503,6 @@ function refrescaTextoRango()
 	end
 	local hip = math.ceil(math.sqrt((lhip * lhip) + (cat3 * cat3)))
 	self.editButton({index=0, label=hip.."''"})
-end
-
-function tryRandomize(pc)
-	estado_cono = 1
-	broadcastToColor("Select Target", pc, {r=1, g=1, b=1})
-	return false
 end
 
 function onObjectPickUp(selfpc, targetObj)
