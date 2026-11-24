@@ -238,7 +238,26 @@ crosses/near; we already use ray, sphere, and box casts (`move-tool.lua` L275,
   set-tag OR terrain nickname, EXCLUDING `KTUIMini`/`Operative`/`KTUIToken*`/`KT24Token`/`KT_Objective`.
 - Survey scripts (temp, not committed): `$TEMP/kt-split/survey_terrain.py`, `seed_terrain_map.py`.
 
-**Status:** MVP built on `feature/sprint-direction-lock` (2026-11-17), in
+**RESUME HERE (2026-11-24, branch `fix/targeting-initial-draw`).**
+- Production is being reverted to the ORIGINAL upstream cone on `fix/revert-targeting-to-upstream`
+  (PR to main, `EMBED_TARGET_CONE = False` in `pipeline/utils/ktui_model_script.py`). When this
+  branch merges main, keep that switch and set it True to re-ship the smart cone, then run
+  `generate_tts` (composer is a generate_tts input there, so all boxes rebuild without --force).
+- This branch = `fix/targeting-height-check` (Vantage warning, 2" message, doors/boards/G4 marker,
+  key 4) + first-draw fix (`GUIDModel` baked in before the cone loads; `nameStarts` no longer uses
+  `^%s*(.-)%s*$`, which threw "pattern too complex" on long table names) -- verified in TTS.
+- NEXT: door openings -- `OPENING_FRACTION` now 0.5 (0.25 too small, 0.58 too big; untested in
+  game) for Tomb World + Gallowdark. Then the Bheta-Decima objective.
+- Test: `python -m tools.build_test_node --tool targeting` -> `dev/targeting-test-node.json`.
+  Live-debug trick: TTS external editor API (localhost:39999, execute Lua with messageID 3,
+  reply via `sendExternalMessage` on a :39998 listener) surfaces real Lua errors.
+
+**Status:** MVP merged to `main` in #94 (2026-11-17), with the collider/Vantage
+follow-up in #95 the same day. Both included regenerated production scripts.
+The later Vantage warning, explicit 2" message, terrain exceptions and key-4
+diagnostics originated on `fix/targeting-height-check`, not `main`; the current
+targeting source retains that newer implementation alongside the startup fix.
+Source:
 `config/defaults/tts-script/ktui-target-cone.lua` (our embedded, oval-aware cone; patch 4 in
 `ktui_model_script.py`). A 9-ray fan from the cone tip to the facing arc of the target base,
 0.25" above both bases, cast BOTH ways so each terrain piece yields the stretch of the line
@@ -249,15 +268,39 @@ shared top-centre `ktmove_hud` (same Global UI container as the move tools), not
 1" zones = base oval grown by 1" (analytic ray/oval quadratic; exact for round bases). Terrain
 check + range label run every 6th frame while dragging (~10 Hz), always on drop/target pick.
 Type from name OR description ("heavy" > "light"/"portable"); untyped = heavy. Detection is
-colliders ONLY (one generic path, no per-object specials): wrong colliders are fixed on the table,
-not in code -- e.g. the base table's Light Rubble has its wall-sized BoxCollider DISABLED (only two
-~0.16" boxes at one end), so it shows no cover until the table fixes it. Terrain the SHOOTER stands
+colliders (one generic path); wrong colliders are fixed on the table by its owner, not in code
+(e.g. the base table's Light Rubble collider). Terrain the SHOOTER stands
 on never counts; the target's own
 terrain counts only when it is >0.5" higher than the shooter (shooting up at Vantage). Ignores operatives
-(`KTUIMini`), `KTUIToken*`, `KT24Token`, `KT_Objective`, cones, zones/table/cards/dice.
+(`KTUIMini`), `KTUIToken*`, `KT24Token`, `KT_Objective`, cones, zones/table/cards/dice/tiles, and
+Board-type objects >= 12" on their short side (mats/gameboards; Board-type TERRAIN counts --
+many KT24-table pieces are Board type).
+Name lists (start of the lower-cased name; bridge until the table tags its terrain -- then swap to
+tag filters): `NO_COVER_NAMES` teleport/fire step/razor wire/ladder = ignored; `TERRAIN_NAMES`
+"g4: objective marker" = terrain despite `KT_Objective`, tested as an upright CYLINDER from its
+bounds (found via `getAllObjects`, cached per target pick) because sight rays don't hit it in-game
+(its collider is only the antenna; the round base is an attached child); `OPENING_NAMES` open door/breached
+wall/open hatchway = a ray crossing the centred 50% of the long side (`OPENING_FRACTION`, tuned in-game
+on Tomb World + Gallowdark; open and closed share one mesh) is ignored, the wall either side counts.
+Mechelen doors/windows are unnamed -> not handled. All of this lives in the cone Lua, so models get
+it via the published `ktui-model-scripts.json` bundle / cards / command node.
 Not yet: Vantage/height effects, name→type map for untyped pieces, Conceal-order validity.
-Cone keys (hover): 1 = select target, 2 = lock/unlock to base, 3 = finish (R left free for the
+Stopgap (`HEIGHT_CHECK`): when the two base bottoms are >1" apart vertically the analysis is
+skipped -- default lines + HUD "Cover check doesn't currently work with Vantage", since one Vantage
+object mixes heavy walls (below the platform) with light parapets (above). Bases within 2": HUD
+"Target within 2" - all cover is ignored". Proper Vantage fix = per-hit height zones
+(vantage floor height per piece) + re-casting past each hit.
+Cone keys (hover): 1 = select target, 2 = lock/unlock to base, 3 = finish, 4 = explain (chat
+list of every object the sight lines hit + why it counts/is ignored; the in-game diagnostic for
+table terrain) (R left free for the
 datacard popup). Test node: `python -m tools.build_test_node --tool targeting`.
+The composed loader embeds `GUIDModel` before the cone script runs, so `onLoad`
+can position the cone on the shooter's base immediately. Selecting a target
+resolves the origin again and forces a terrain/range refresh even between
+throttled drag frames. It must draw without requiring the cone to be moved.
+Terrain prefix matching skips leading whitespace with `%S`, not the whole-name
+trim pattern `^%s*(.-)%s*$`: long object names on the real table cause MoonSharp's
+"pattern too complex" error and abort the first terrain scan before lines draw.
 
 ---
 
