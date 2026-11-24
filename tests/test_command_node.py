@@ -613,11 +613,16 @@ def test_oval_renderer_is_only_in_command_node_model_scripts():
     assert "nodeGetCircleVectorPoints" in node_loader
 
 
-def test_targeting_cone_is_embedded_instead_of_fetched():
+@pytest.mark.parametrize("embedded", [False, True])
+def test_targeting_cone_source_follows_the_embed_switch(monkeypatch, embedded):
+    from pipeline.utils import ktui_model_script
+    monkeypatch.setattr(ktui_model_script, "EMBED_TARGET_CONE", embedded)
     shared = compose_ktui_model_script(CONFIG)
-    assert "KTMT%20Target%20Cone.lua" not in shared
-    assert "ktLocalScript(KT_TARGET_CONE_CODE, function(req)" in shared
-    assert (CONFIG / "defaults" / "tts-script" / "ktui-target-cone.lua").read_text(encoding="utf-8") in shared
+    cone = (CONFIG / "defaults" / "tts-script" / "ktui-target-cone.lua").read_text(encoding="utf-8")
+    assert ("KTMT%20Target%20Cone.lua" in shared) is not embedded
+    assert ("ktLocalScript(KT_TARGET_CONE_CODE, function(req)" in shared) is embedded
+    assert (cone in shared) is embedded
+    assert ("-- START KT_TARGETING_V1 --" in shared) is embedded
 
 
 @pytest.mark.skipif(not shutil.which("npx"), reason="npx is required for Lua geometry integration")
@@ -838,8 +843,10 @@ def test_model_scripts_bundle_is_tagged_and_published(tmp_path):
     bundle = compose_model_scripts_bundle(CONFIG)
     model = bundle["model"]
     assert model.startswith(f'KT_MODELSCRIPT_VERSION = "{bundle["version"]}"')
-    order = [model.index(f"-- {edge} {tag} --") for tag in ("KT_MODELSCRIPT_V1", "KT_TARGETING_V1", "KT_EXTENSION_V1")
-             for edge in ("START", "END")]
+    tags = ["KT_MODELSCRIPT_V1", "KT_EXTENSION_V1"]
+    if "-- START KT_TARGETING_V1 --" in model:
+        tags.insert(1, "KT_TARGETING_V1")
+    order = [model.index(f"-- {edge} {tag} --") for tag in tags for edge in ("START", "END")]
     assert order == sorted(order)
     assert bundle["move"].startswith("-- START KT_MOVE_TOOL_V1 --") and bundle["move"].endswith("-- END KT_MOVE_TOOL_V1 --")
     assert bundle["sprint"].startswith("-- START KT_SPRINT_TOOL_V1 --")

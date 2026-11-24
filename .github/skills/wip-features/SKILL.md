@@ -238,6 +238,13 @@ crosses/near; we already use ray, sphere, and box casts (`move-tool.lua` L275,
   set-tag OR terrain nickname, EXCLUDING `KTUIMini`/`Operative`/`KTUIToken*`/`KT24Token`/`KT_Objective`.
 - Survey scripts (temp, not committed): `$TEMP/kt-split/survey_terrain.py`, `seed_terrain_map.py`.
 
+**DEPLOYED STATE (2026-11-24): OFF.** `EMBED_TARGET_CONE = False` in `pipeline/utils/ktui_model_script.py`
+-- all boxes ship the original upstream "KTMT Target Cone.lua" again (main's smart cone failed to
+draw until the cone was moved). Fine-tuning continues on `fix/targeting-initial-draw` (local stash
+"targeting fine-tuning": initial-draw fix, newer terrain rules from `fix/targeting-height-check`,
+50% door openings). To re-enable: set the flag True, run `generate_tts` (the composer is a
+generate_tts input, so all 48 boxes rebuild without `--force`).
+
 **Status:** MVP built on `feature/sprint-direction-lock` (2026-11-17), in
 `config/defaults/tts-script/ktui-target-cone.lua` (our embedded, oval-aware cone; patch 4 in
 `ktui_model_script.py`). A 9-ray fan from the cone tip to the facing arc of the target base,

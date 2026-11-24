@@ -32,9 +32,10 @@ IMPLEMENTATION NOTES:
 from __future__ import annotations
 
 import logging
+from pathlib import Path
 from typing import Optional
 
-from ..utils import paths
+from ..utils import ktui_model_script, paths
 from ..utils.state import StateIndex, StateManager
 from . import tts_impl
 
@@ -71,6 +72,8 @@ def _inputs_for(team: str) -> list:
                 p for p in d.rglob("*")
                 if p.is_file() and p != paths.DEFAULTS / "tts-script" / "command-node.lua"
             ))
+    # The composer patches the embedded KTUI model script (e.g. EMBED_TARGET_CONE).
+    inputs.append(Path(ktui_model_script.__file__))
     return inputs
 
 

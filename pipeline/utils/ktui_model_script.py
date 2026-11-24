@@ -11,7 +11,8 @@ Patch layer (deterministic, anchor-based, each verified -- raises on drift):
   1. heal getWoundPanelWidth (bare `if` -> `elseif`)  -- append-safety, bar-neutral
   2. remove the "Movement" context item                -- we load our own movement
   3. guard the unguarded game-log call                 -- bare-table safety
-  4. targeting cone uses our embedded oval-aware script (ktui-target-cone.lua)
+  4. targeting cone uses our embedded oval-aware script (ktui-target-cone.lua),
+     only when EMBED_TARGET_CONE is on; otherwise the upstream cone is fetched
 
 Owner assignment is card-side (baked into script_state in datacard-load-stats.lua).
 """
@@ -27,6 +28,9 @@ import yaml
 _EXTENDER = "ktui-extender-modelscript.lua"
 _EXTENSION = "ktui-extension.lua"
 _TARGET_CONE = "ktui-target-cone.lua"
+# Off while the smart targeting cone is being fine-tuned: models fetch the
+# original upstream "KTMT Target Cone.lua" instead.
+EMBED_TARGET_CONE = False
 
 _COMMAND_NODE_OVAL_RENDERER = r'''
 local nodeGetCircleVectorPoints = getCircleVectorPoints
@@ -96,21 +100,23 @@ def compose_ktui_model_script(config_dir: Path) -> str:
     # 4) install our oval-aware targeting cone instead of fetching the upstream
     #    circle-only "KTMT Target Cone.lua" (callback shape kept, so the rest of
     #    agregaCono is untouched).
-    base = _sub_once(
-        base, "local-target-cone-script",
-        r'WebRequest\.get\("https://raw\.githubusercontent\.com/xSpaghettyx/KT24-Table-The-Killzone-Mod/'
-        r'refs/heads/main/KTMT%20Target%20Cone\.lua",\s*function\(req\)',
-        "ktLocalScript(KT_TARGET_CONE_CODE, function(req)")
-    cone = (tdir / _TARGET_CONE).read_text(encoding="utf-8").replace("\r\n", "\n")
-    equals = "="
-    while "]" + equals + "]" in cone:
-        equals += "="
-    targeting = (
-        f"KT_TARGET_CONE_CODE = [{equals}[\n{cone}]{equals}]\n\n"
-        "function ktLocalScript(code, callback)\n"
-        "    Wait.frames(function() callback({text = code}) end, 1)\n"
-        "end"
-    )
+    targeting = ""
+    if EMBED_TARGET_CONE:
+        base = _sub_once(
+            base, "local-target-cone-script",
+            r'WebRequest\.get\("https://raw\.githubusercontent\.com/xSpaghettyx/KT24-Table-The-Killzone-Mod/'
+            r'refs/heads/main/KTMT%20Target%20Cone\.lua",\s*function\(req\)',
+            "ktLocalScript(KT_TARGET_CONE_CODE, function(req)")
+        cone = (tdir / _TARGET_CONE).read_text(encoding="utf-8").replace("\r\n", "\n")
+        equals = "="
+        while "]" + equals + "]" in cone:
+            equals += "="
+        targeting = (
+            f"KT_TARGET_CONE_CODE = [{equals}[\n{cone}]{equals}]\n\n"
+            "function ktLocalScript(code, callback)\n"
+            "    Wait.frames(function() callback({text = code}) end, 1)\n"
+            "end"
+        )
 
     # Clear the context menu first: TTS keeps runtime-added items across a script
     # swap/reload, so a re-stamp would otherwise leave stale items (e.g. an old
@@ -119,7 +125,9 @@ def compose_ktui_model_script(config_dir: Path) -> str:
 
     # Every part sits in its own START/END block so each can be found and
     # replaced in place later (movement blocks are appended by the loaders).
-    parts = [_tagged("KT_MODELSCRIPT_V1", base), _tagged("KT_TARGETING_V1", targeting)]
+    parts = [_tagged("KT_MODELSCRIPT_V1", base)]
+    if targeting:
+        parts.append(_tagged("KT_TARGETING_V1", targeting))
     ext_path = tdir / _EXTENSION
     ext = ext_path.read_text(encoding="utf-8").replace("\r\n", "\n") if ext_path.exists() else ""
     if ext.strip():
