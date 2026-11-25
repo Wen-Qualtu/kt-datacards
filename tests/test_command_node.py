@@ -633,6 +633,7 @@ local function model(x, z, rotY, st)
     }
 end
 Physics = {cast = function() return {} end}
+getAllObjects = function() return {} end
 local lines, label
 local conePos = {x = 0, y = 1, z = 0}
 self = {
@@ -707,11 +708,26 @@ local function terrain(name, z1, z2, opts)
     opts = opts or {}
     local set = {}
     for _, t in ipairs(opts.tags or {}) do set[t] = true end
-    return {type = opts.kind or "Generic", minX = opts.minX or -3, maxX = opts.maxX or 3, minZ = z1, maxZ = z2,
+    local o = {type = opts.kind or "Generic", minX = opts.minX or -3, maxX = opts.maxX or 3, minZ = z1, maxZ = z2,
         minY = 0, maxY = opts.top or 3,
         getName = function() return name end, getDescription = function() return opts.description or "" end,
         getGUID = function() return name .. z1 end,
         hasTag = function(t) return set[t] == true end, getTags = function() return opts.tags or {} end}
+    o.getPosition = function()
+        -- originAtEnd: like the Tomb World doors, whose mesh origin is at one end
+        return {x = opts.originAtEnd and o.minX or (o.minX + o.maxX) / 2, y = 0, z = (o.minZ + o.maxZ) / 2}
+    end
+    o.getBounds = function() return {center = {x = (o.minX + o.maxX) / 2, y = (o.minY + o.maxY) / 2, z = (o.minZ + o.maxZ) / 2},
+        size = {x = o.maxX - o.minX, y = o.maxY - o.minY, z = o.maxZ - o.minZ}} end
+    o.noCollider = opts.noCollider
+    o.getRotation = function() return {x = 0, y = opts.rotY or 0, z = 0} end
+    -- Unrotated size: x/z swap for a piece turned 90 degrees.
+    o.getBoundsNormalized = function()
+        local sx, sz = o.maxX - o.minX, o.maxZ - o.minZ
+        if (opts.rotY or 0) % 180 == 90 then sx, sz = sz, sx end
+        return {offset = {x = 0, y = 0, z = 0}, size = {x = sx, y = o.maxY - o.minY, z = sz}}
+    end
+    return o
 end
 -- Mock TTS ray: one hit per box, where the ray ENTERS it (none if it starts inside).
 local boxes = {}
@@ -722,7 +738,7 @@ Physics = {cast = function(p)
     local hits = {}
     for _, b in ipairs(boxes) do
         local lo, hi = -math.huge, math.huge
-        local ok = true
+        local ok = not b.noCollider
         for _, ax in ipairs({{"x", b.minX, b.maxX}, {"y", b.minY, b.maxY}, {"z", b.minZ, b.maxZ}}) do
             local k, mn, mx = ax[1], ax[2], ax[3]
             if math.abs(u[k]) < 1e-12 then
@@ -753,10 +769,11 @@ self = {
 objModel = model(0, -0.6)
 estado_cono = 2
 colorLinea = "user"
+getAllObjects = function() return boxes end
 local function check(name, targetZ, pieces, cover, obscured)
-    ObjMiniTarget = model(0, targetZ)
     boxes = pieces
-    refrescaVectores()
+    estado_cono = 1
+    onObjectPickUp("Red", model(0, targetZ))
     assert(coverState == cover, name .. ": cover " .. tostring(coverState))
     assert(obscuredState == obscured, name .. ": obscured " .. tostring(obscuredState))
     local want = cover == "heavy" and 0.1 or (cover == "light" and 0.55 or nil)
@@ -783,13 +800,68 @@ local function solid(name, x1, x2, z1, z2, y1, y2)
     o.minY = y1
     return o
 end
--- A low barricade near the target blocks a level shot, but a shot from a
--- Vantage point passes over it, so it doesn't count.
+-- A low barricade near the target blocks a level shot.
 check("portable barricade, level shot", 8, {solid("Portable barricade", -2, 2, 6.5, 6.8, 1, 1.3)}, "light", false)
 check("heavy barricade", 8, {solid("Heavy barricade", -2, 2, 6.5, 6.8, 1, 1.3)}, "heavy", false)
+-- More than 1" of height between the bases: no auto result, default lines.
 objModel = model(0, -0.6, 4)
-check("barricade, shot from above", 8, {solid("Portable barricade", -2, 2, 6.5, 6.8, 1, 1.3)}, nil, false)
+ObjMiniTarget = model(0, 8)
+boxes = {solid("Heavy Wall", -2, 2, 6.5, 6.8, 1, 5)}
+refrescaVectores()
+assert(vantageState and coverState == nil and not obscuredState, "height gap: no auto cover")
+assert(lines[1].color == "user" and lines[2] == nil, "height gap: default colour, no arc")
+assert(hud["ktmove_txt_Red"] == "Cover check doesn't currently work with Vantage", "height gap readout: " .. hud["ktmove_txt_Red"])
 objModel = model(0, -0.6)
+check("back to level", 8, {}, nil, false)
+assert(not vantageState, "level again: auto cover")
+check("within 2 inches, explained", 2.5, {terrain("Heavy Wall", 1.0, 1.2)}, nil, false)
+assert(hud["ktmove_txt_Red"] == "Target within 2\" - all cover is ignored", "2in readout: " .. hud["ktmove_txt_Red"])
+-- Board-type custom models are terrain; game boards/mats (Board, >= 12" both ways) are not.
+check("board-type terrain", 8, {terrain("Heavy", 6.6, 6.8, {kind = "Board"})}, "heavy", false)
+check("board-type antenna", 8, {terrain("Antenna", 6.6, 6.8, {kind = "Board", description = "Light, Insignificant"})}, "light", false)
+check("game mat ignored", 8, {terrain("matObjSurface", 3, 20, {kind = "Board", minX = -10, maxX = 10})}, nil, false)
+-- Exposed pieces by name (start of the name only).
+for _, n in ipairs({"Teleport pad", "Fire Steps", "Razor Wire", "Ladders"}) do
+    check(n, 8, {terrain(n, 6.6, 6.8)}, nil, false)
+end
+check("ladder later in the name", 8, {terrain("Heavy, Vantage, Console: Insignificant / Ladder:  Heavy, Scalable", 6.6, 6.8, {kind = "Board"})}, "heavy", false)
+check("objective-tagged G4 terrain", 8, {terrain("G4: Objective Marker", 6.6, 6.8, {tags = {"KT_Objective"}, description = "Light, Insignificant, Vantage"})}, "light", false)
+-- The table's G4 marker isn't seen by sight rays; it is tested as a cylinder from its bounds.
+local g4 = {tags = {"KT_Objective"}, description = "Light, Insignificant, Vantage", noCollider = true, minX = -0.9, maxX = 0.9}
+check("G4 marker without a hit collider", 9, {terrain("G4: Objective Marker", 5.9, 7.7, g4)}, "light", false)
+g4.minX, g4.maxX = 2.0, 3.8
+check("G4 marker beside the lines", 9, {terrain("G4: Objective Marker", 5.9, 7.7, g4)}, nil, false)
+check("objective token still ignored", 8, {terrain("Objective", 6.6, 6.8, {tags = {"KT_Objective"}})}, nil, false)
+-- Open doors: lines through the centred access point (25% of the long side)
+-- are clear; lines through the wall either side still give cover.
+check("through an open door", 8, {terrain("Open Door 3", 6.6, 6.8, {originAtEnd = true})}, nil, false)
+-- Key 4 explains every object on the sight lines.
+local printed = {}
+printToColor = function(text) printed[#printed + 1] = text end
+boxes = {terrain("Open Door 3", 6.6, 6.8), terrain("Objective", 4.0, 4.2, {tags = {"KT_Objective"}})}
+onNumberTyped("Red", 4)
+local out = table.concat(printed, "\n")
+assert(out:find("Targeting: No cover", 1, true), "explain header: " .. out)
+assert(out:find("Open Door 3 [Generic] heavy, 18/18 hits in its opening", 1, true), "explain opening: " .. out)
+assert(out:find("Objective [Generic] ignored: tag KT_Objective", 1, true), "explain ignored: " .. out)
+check("closed door", 8, {terrain("Closed Door 3", 6.6, 6.8)}, "heavy", false)
+ObjMiniTarget = model(2, 8)
+boxes = {terrain("Open Hatchway", 6.6, 6.8)}
+refrescaVectores()
+assert(coverState == "heavy", "beside the opening: wall gives cover")
+-- Same wall turned 90 degrees, shot along x.
+local conePos = self.getPosition
+self.getPosition = function() return {x = -3.4, y = 1.5, z = 0} end
+objModel = model(-4, 0)
+boxes = {terrain("Breached Wall 1", -3, 3, {minX = 2.9, maxX = 3.1, rotY = 90})}
+ObjMiniTarget = model(4, 0)
+refrescaVectores()
+assert(coverState == nil and not obscuredState, "rotated: through the breach")
+ObjMiniTarget = model(4, 2.5)
+refrescaVectores()
+assert(coverState == "heavy", "rotated: beside the breach")
+self.getPosition = conePos
+ObjMiniTarget = model(0, 8)
 local platform = solid("Heavy Walkway", -1, 1, 7.0, 9.0, 0, 2)
 ObjMiniTarget = model(0, 8, 2)
 boxes = {platform}

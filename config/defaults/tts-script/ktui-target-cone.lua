@@ -7,7 +7,9 @@
 -- (the tangents), the cone stays on the origin's base edge, and the range is
 -- measured base edge to base edge. Line colour shows the target's cover (orange
 -- light, red heavy), a purple arc marks it obscured, and the state is shown in
--- the top-centre HUD.
+-- the top-centre HUD. Bases more than 1" apart vertically keep the default
+-- lines and the HUD says Vantage isn't supported yet (one Vantage piece mixes
+-- heavy walls below the platform with light walls above it).
 
 pickedUp = false
 newX = 0
@@ -149,17 +151,24 @@ end
 -- of the target base, just above both bases; each is cast both ways so every
 -- piece of terrain it crosses yields the stretch of the line inside it (a ray
 -- only reports where it enters a collider). Operatives,
--- tokens, tools and mats/tiles are ignored, and so is the terrain the shooter
--- stands on (and the target's, unless the target is shot at from below).
+-- tokens, tools and mats/boards/tiles are ignored, and so is the terrain the
+-- shooter stands on (and the target's, unless the target is shot at from below).
 -- Per stretch (so one piece can do both):
 --   light/heavy within 1" of the target  -> light/heavy cover (heavy wins),
 --                                            none if the bases are within 2"
 --   heavy more than 1" from BOTH bases    -> obscured
 -- Terrain type comes from the name or description ("Light Rubble",
 -- "Capillary Tower (Heavy)", "Portable barricade" = light); untyped is heavy.
+-- Name lists below are matched against the START of the lower-cased name (so
+-- "Heavy, Vantage ... / Ladder: Heavy" is not a ladder). They bridge tables
+-- whose terrain isn't tagged yet.
 local FAN_RAYS = 9
 local RAY_LIFT = 0.1             -- sight rays run this far above each base
 local SHOOTING_UP = 0.5          -- target this much higher: its own terrain intervenes
+-- Stopgap until Vantage-aware detection: one terrain object mixes heavy walls
+-- below the Vantage with light walls above it, so beyond this height gap
+-- between the bases there is no auto result.
+local HEIGHT_CHECK = 1
 local CONTROL_RANGE = 1
 local COVER_DENIED_WITHIN = 2
 local ANALYSE_EVERY = 6          -- frames between terrain checks while dragging
@@ -167,11 +176,25 @@ local COL_LIGHT = { 1, 0.55, 0 }
 local COL_HEAVY = { 0.95, 0.1, 0.1 }
 local COL_OBSCURED = { 0.7, 0.3, 1 }
 local IGNORE_TYPES = { Scripting = true, Surface = true, Hand = true, Card = true, Deck = true, Dice = true,
-                       Board = true, Tile = true }
+                       Tile = true }
 local IGNORE_TAGS = { "KTUIMini", "KTUI_ToolActive", "KT24Token", "KT_Objective" }
+-- Board-type objects are terrain unless this wide on their shorter side
+-- (game boards/mats; the base table's are >= 14.8", its terrain <= 8.8").
+local BOARD_MIN_SIDE = 12
+-- Exposed / insignificant pieces: never cover, never obscure.
+local NO_COVER_NAMES = { "teleport", "fire step", "razor wire", "ladder" }
+-- Real terrain that carries an ignored tag (KT_Objective).
+local TERRAIN_NAMES = { "g4: objective marker" }
+-- Open states: the middle OPENING_FRACTION of the long side is an exposed
+-- access point (measured ~25% on the Tomb World door and breach meshes); the
+-- wall either side still gives cover / obscures.
+local OPENING_NAMES = { "open door", "breached wall", "open hatchway" }
+local OPENING_FRACTION = 0.25
 
 coverState = nil      -- nil | "light" | "heavy"
 obscuredState = false
+vantageState = false  -- bases too far apart vertically: no auto cover/obscured
+tooCloseState = false -- bases within 2": cover is ignored
 activeColor = nil     -- player using the cone (gets the HUD readout)
 local dragFrames = 0
 
@@ -192,16 +215,35 @@ local function facingPoints(e, px, pz)
 	return pts
 end
 
-local function isIgnored(obj)
-	if obj == nil or obj == self or obj == objModel or obj == ObjMiniTarget then return true end
-	if IGNORE_TYPES[obj.type] then return true end
-	for _, tag in ipairs(IGNORE_TAGS) do
-		if obj.hasTag(tag) then return true end
-	end
-	for _, tag in ipairs(obj.getTags() or {}) do
-		if tostring(tag):find("KTUIToken", 1, true) == 1 then return true end
+local function nameStarts(obj, list)
+	local name = tostring(obj.getName() or ""):lower():match("^%s*(.-)%s*$")
+	for _, prefix in ipairs(list) do
+		if name:sub(1, #prefix) == prefix then return true end
 	end
 	return false
+end
+
+-- Why an object never counts as terrain (nil = it can).
+local function ignoreReason(obj)
+	if obj == nil or obj == self or obj == objModel or obj == ObjMiniTarget then return "model/cone" end
+	if IGNORE_TYPES[obj.type] then return "type " .. tostring(obj.type) end
+	if nameStarts(obj, TERRAIN_NAMES) then return nil end
+	if nameStarts(obj, NO_COVER_NAMES) then return "no-cover name" end
+	if obj.type == "Board" then
+		local size = obj.getBoundsNormalized().size
+		if math.min(size.x, size.z) >= BOARD_MIN_SIDE then return "board/mat" end
+	end
+	for _, tag in ipairs(IGNORE_TAGS) do
+		if obj.hasTag(tag) then return "tag " .. tag end
+	end
+	for _, tag in ipairs(obj.getTags() or {}) do
+		if tostring(tag):find("KTUIToken", 1, true) == 1 then return "tag " .. tostring(tag) end
+	end
+	return nil
+end
+
+local function isIgnored(obj)
+	return ignoreReason(obj) ~= nil
 end
 
 local function terrainKind(obj)
@@ -209,6 +251,27 @@ local function terrainKind(obj)
 	if text:find("heavy", 1, true) then return "heavy" end
 	if text:find("light", 1, true) or text:find("portable", 1, true) then return "light" end
 	return "heavy"
+end
+
+-- Position of world (x, z) along an open piece's long side, measured from the
+-- middle of its world bounds (the piece's origin can sit at one end), and the
+-- half-width of its access point there.
+local function openingPos(obj, x, z)
+	local size = obj.getBoundsNormalized().size
+	local c = obj.getBounds().center
+	local u, v = toLocal({ x = c.x, z = c.z, h = math.rad(obj.getRotation().y) }, x, z)
+	if size.x >= size.z then
+		return u, size.x * OPENING_FRACTION * 0.5
+	end
+	return v, size.z * OPENING_FRACTION * 0.5
+end
+
+-- Whether the sight line crosses an open piece (OPENING_NAMES) at world (x, z)
+-- inside its access point: the centred OPENING_FRACTION of its long side.
+local function throughOpening(obj, x, z)
+	if not nameStarts(obj, OPENING_NAMES) then return false end
+	local along, half = openingPos(obj, x, z)
+	return math.abs(along) < half
 end
 
 local function baseBottom(obj)
@@ -240,6 +303,43 @@ local function supportsOf(model, skip)
 	end
 end
 
+-- TERRAIN_NAMES pieces are round markers whose colliders the sight rays don't
+-- reliably hit (the base table's G4 marker collides with its antenna only), so
+-- they are tested as an upright cylinder from their bounds instead.
+local markerCache = nil
+local function namedMarkers()
+	if markerCache == nil then
+		markerCache = {}
+		for _, obj in ipairs(getAllObjects() or {}) do
+			if nameStarts(obj, TERRAIN_NAMES) then markerCache[#markerCache + 1] = obj end
+		end
+	end
+	return markerCache
+end
+
+-- Adds the stretch where the segment from `a` (unit direction u, length len)
+-- crosses obj's bounds cylinder; true if it does.
+local function markerStretch(pieces, obj, a, u, len)
+	local b = obj.getBounds()
+	local r = math.min(b.size.x, b.size.z) * 0.5
+	local ox, oz = a.x - b.center.x, a.z - b.center.z
+	local qa = u.x * u.x + u.z * u.z
+	if qa < 1e-12 then return false end
+	local qb = 2 * (ox * u.x + oz * u.z)
+	local disc = qb * qb - 4 * qa * (ox * ox + oz * oz - r * r)
+	if disc < 0 then return false end
+	local sq = math.sqrt(disc)
+	local s1, s2 = math.max(0, (-qb - sq) / (2 * qa)), math.min(len, (-qb + sq) / (2 * qa))
+	if s1 > s2 then return false end
+	local y1, y2 = a.y + u.y * s1, a.y + u.y * s2
+	if math.max(y1, y2) < b.center.y - b.size.y * 0.5 or math.min(y1, y2) > b.center.y + b.size.y * 0.5 then
+		return false
+	end
+	addStretch(pieces, obj, s1)
+	addStretch(pieces, obj, s2)
+	return true
+end
+
 -- Stretches of one ray inside each terrain piece: { [guid] = {obj=, sIn=, sOut=} }
 -- with s measured along the ray from `a` (0..len).
 local function rayStretches(a, b, skip)
@@ -260,6 +360,9 @@ local function rayStretches(a, b, skip)
 	end
 	record(Physics.cast({ origin = a, direction = d, type = 1, max_distance = len }))
 	record(Physics.cast({ origin = b, direction = { x = -d.x, y = -d.y, z = -d.z }, type = 1, max_distance = len }))
+	for _, obj in ipairs(namedMarkers()) do
+		if obj ~= nil and not skip[guidOf(obj)] then markerStretch(pieces, obj, a, u, len) end
+	end
 	return pieces, len, d
 end
 
@@ -283,11 +386,16 @@ end
 -- Sets coverState / obscuredState for the current shooter (objModel, sight
 -- lines from the cone at `sp`) and target.
 function analyseTerrain(target, sp)
-	coverState, obscuredState = nil, false
+	coverState, obscuredState, vantageState, tooCloseState = nil, false, false, false
+	local shooterBottom, targetBottom = baseBottom(objModel), baseBottom(ObjMiniTarget)
+	if math.abs(targetBottom - shooterBottom) > HEIGHT_CHECK then
+		vantageState = true
+		return
+	end
 	local shooter = baseEllipse(objModel)
 	local fullTarget = baseEllipse(ObjMiniTarget)
 	local coverAllowed = ovalGap(shooter, fullTarget) > COVER_DENIED_WITHIN
-	local shooterBottom, targetBottom = baseBottom(objModel), baseBottom(ObjMiniTarget)
+	tooCloseState = not coverAllowed
 	local a = { x = sp.x, y = shooterBottom + RAY_LIFT, z = sp.z }
 	local ty = targetBottom + RAY_LIFT
 	local skip = {}
@@ -307,12 +415,15 @@ function analyseTerrain(target, sp)
 			local nearTarget = tIn and math.max(0, tIn) or len
 			local leaveShooter = sOut and math.max(0, sOut) or 0
 			for _, piece in pairs(pieces) do
-				local kind = terrainKind(piece.obj)
-				if coverAllowed and piece.sOut >= nearTarget then
-					if kind == "heavy" then heavy = true else light = true end
-				end
-				if kind == "heavy" and math.max(piece.sIn, leaveShooter) < math.min(piece.sOut, nearTarget) then
-					obscuredState = true
+				local mid = (piece.sIn + piece.sOut) * 0.5
+				if not throughOpening(piece.obj, a.x + dx * mid, a.z + dz * mid) then
+					local kind = terrainKind(piece.obj)
+					if coverAllowed and piece.sOut >= nearTarget then
+						if kind == "heavy" then heavy = true else light = true end
+					end
+					if kind == "heavy" and math.max(piece.sIn, leaveShooter) < math.min(piece.sOut, nearTarget) then
+						obscuredState = true
+					end
 				end
 			end
 		end
@@ -366,9 +477,98 @@ local function hudSet(color, text)
 end
 
 local function stateText()
+	if vantageState then return "Cover check doesn't currently work with Vantage" end
 	local text = coverState == "heavy" and "Heavy cover" or (coverState == "light" and "Light cover" or "No cover")
+	if tooCloseState then text = "Target within 2\" - all cover is ignored" end
 	if obscuredState then text = text .. "  +  Obscured" end
 	return text
+end
+
+-- Key 4: lists every object the sight lines hit and whether/why it counts, so
+-- table terrain can be diagnosed in-game.
+function explainTerrain(pc)
+	if estado_cono ~= 2 or ObjMiniTarget == nil or objModel == nil then
+		printToColor("Targeting: select a target first (key 1).", pc, { 1, 1, 1 })
+		return
+	end
+	local sp = self.getPosition()
+	local target = shrink(baseEllipse(ObjMiniTarget), 0.02)
+	analyseTerrain(target, sp)
+	local shooterBottom, targetBottom = baseBottom(objModel), baseBottom(ObjMiniTarget)
+	local a = { x = sp.x, y = shooterBottom + RAY_LIFT, z = sp.z }
+	local ty = targetBottom + RAY_LIFT
+	local shooterOn, targetOn = {}, {}
+	supportsOf(objModel, shooterOn)
+	supportsOf(ObjMiniTarget, targetOn)
+	local rows, order, casts = {}, {}, 0
+	local function rowFor(obj)
+		local key = guidOf(obj)
+		local row = rows[key]
+		if not row then
+			row = { obj = obj, hits = 0, opening = 0 }
+			rows[key] = row
+			order[#order + 1] = key
+		end
+		return row
+	end
+	for _, p in ipairs(facingPoints(target, sp.x, sp.z)) do
+		local b = { x = p[1], y = ty, z = p[2] }
+		local d = { x = b.x - a.x, y = b.y - a.y, z = b.z - a.z }
+		local len = math.sqrt(d.x * d.x + d.y * d.y + d.z * d.z)
+		for _, c in ipairs({ { a, d }, { b, { x = -d.x, y = -d.y, z = -d.z } } }) do
+			casts = casts + 1
+			for _, hit in ipairs(Physics.cast({ origin = c[1], direction = c[2], type = 1, max_distance = len }) or {}) do
+				local obj = hit.hit_object
+				if obj ~= nil and obj ~= self and obj ~= objModel and obj ~= ObjMiniTarget then
+					local row = rowFor(obj)
+					row.hits = row.hits + 1
+					if hit.point and nameStarts(obj, OPENING_NAMES) then
+						local along, half = openingPos(obj, hit.point.x, hit.point.z)
+						if math.abs(along) < half then row.opening = row.opening + 1 end
+						row.lo, row.hi = math.min(row.lo or along, along), math.max(row.hi or along, along)
+						row.half = half
+					end
+				end
+			end
+		end
+		if len > 1e-6 then
+			local u = { x = d.x / len, y = d.y / len, z = d.z / len }
+			for _, obj in ipairs(namedMarkers()) do
+				if obj ~= nil and markerStretch({}, obj, a, u, len) then
+					local row = rowFor(obj)
+					row.marker = true
+				end
+			end
+		end
+	end
+	printToColor(string.format("Targeting: %s | rays %.2f -> %.2f high, %d casts, %d named markers",
+		stateText(), a.y, ty, casts, #namedMarkers()), pc, { 1, 1, 1 })
+	if #order == 0 then
+		printToColor("  nothing on the sight lines", pc, { 0.8, 0.8, 0.8 })
+	end
+	for _, key in ipairs(order) do
+		local row = rows[key]
+		local obj = row.obj
+		local why = ignoreReason(obj)
+		if why then why = "ignored: " .. why
+		elseif shooterOn[key] then why = "ignored: shooter stands on it"
+		elseif targetOn[key] and targetBottom <= shooterBottom + SHOOTING_UP then why = "ignored: target stands on it"
+		else
+			why = terrainKind(obj)
+			if row.half then
+				why = why .. string.format(", %d/%d hits in its opening (hits at %.2f..%.2f along, opening +-%.2f)",
+					row.opening, row.hits, row.lo, row.hi, row.half)
+			end
+			if row.marker then
+				local bb = obj.getBounds()
+				why = why .. string.format(", marker cylinder r %.2f", math.min(bb.size.x, bb.size.z) * 0.5)
+			end
+		end
+		local bb = obj.getBounds()
+		printToColor(string.format("  %s [%s] %s  (y %.2f-%.2f, %d hits)",
+			tostring(obj.getName() ~= "" and obj.getName() or key), tostring(obj.type), why,
+			bb.center.y - bb.size.y * 0.5, bb.center.y + bb.size.y * 0.5, row.hits), pc, { 0.8, 0.8, 0.8 })
+	end
 end
 
 function onPickUp(cp)
@@ -478,6 +678,8 @@ function onNumberTyped( pc, n )
 	elseif n == 3 then
 		hudSet(nil)
 		self.destruct()
+	elseif n == 4 then
+		explainTerrain(pc)
 	end
 	return true
 end
@@ -526,6 +728,7 @@ function onObjectPickUp(selfpc, targetObj)
 		ObjMiniTarget = targetObj
 		activeColor = selfpc
 		estado_cono = 2
+		markerCache = nil
 		refrescaVectores()
 	end
 end
