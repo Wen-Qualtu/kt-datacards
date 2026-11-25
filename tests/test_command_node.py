@@ -621,6 +621,118 @@ def test_targeting_cone_is_embedded_instead_of_fetched():
 
 
 @pytest.mark.skipif(not shutil.which("npx"), reason="npx is required for Lua geometry integration")
+def test_targeting_lines_draw_on_selection_before_the_cone_is_moved():
+    from tools.build_test_node import targeting_code
+
+    script = "Color = function() return {} end\nmath.atan2 = math.atan2 or math.atan\n" + targeting_code() + r'''
+local function model(x, z, bottom)
+    bottom = bottom or 1
+    return {
+        getPosition = function() return {x = x, y = bottom, z = z} end,
+        getRotation = function() return {y = 0} end,
+        getTable = function() return {base = {x = 32, z = 32}} end,
+        getBounds = function() return {offset = {y = 0}, center = {y = bottom + 0.25}, size = {y = 0.5}} end,
+    }
+end
+local shooter, target = model(10, 10), model(10, 18)
+local pos, lines, label = {x = 0, y = 2, z = 0}, nil, nil
+local coroutineStarts = 0
+getObjectFromGUID = function(guid)
+    assert(guid == "shooter", "origin must be embedded before the cone script loads")
+    return shooter
+end
+local env = setmetatable({}, {__index = _G})
+startLuaCoroutine = function(_, name)
+    coroutineStarts = coroutineStarts + 1
+    local co = coroutine.create(env[name])
+    local ok, err = coroutine.resume(co)
+    assert(ok, err)
+end
+Physics = {cast = function() return {} end}
+getAllObjects = function() return {} end
+local hudText
+Global = {UI = {getXml = function() return "ktmove_hud" end,
+    setAttribute = function() end, setValue = function(_, text) hudText = text end}}
+function broadcastToColor() end
+local cone = {
+    setName = function() end, clearButtons = function() end,
+    createButton = function() end, setTags = function() end,
+    getPosition = function() return pos end,
+    setPosition = function(p) pos = p end,
+    setVelocity = function() end, setAngularVelocity = function() end,
+    setRotation = function() end,
+    setVectorLines = function(value) lines = value end,
+    editButton = function(button) label = button.label end,
+}
+env.self = cone
+cone.setCustomObject = function() end
+cone.setVar = function(name, value) env[name] = value end
+cone.setLuaScript = function(source)
+    assert(load(source, "target cone", "t", env))()
+    env.onLoad("")
+end
+local callbacks = {}
+Wait = {frames = function(fn, frames)
+    assert(frames == 1, "loader should install the cone on the next frame")
+    callbacks[#callbacks + 1] = fn
+end}
+local function nextFrame()
+    local queued = callbacks
+    callbacks = {}
+    for _, fn in ipairs(queued) do fn() end
+end
+local function selectTarget(obj)
+    env.onNumberTyped("Red", 1)
+    env.onObjectPickUp("Red", obj)
+    assert(#callbacks == 0, "selection draws immediately without a deferred callback")
+end
+self = {getGUID = function() return "shooter" end}
+spawnObject = function(params)
+    assert(params.position[1] == 0 and params.position[2] == 2, "original spawn location")
+    return cone
+end
+agregaCono()
+assert(#callbacks == 1, "model schedules cone installation")
+nextFrame()
+assert(coroutineStarts == 0, "loading must position the cone without starting a drag")
+local radius = 16 * env.mtoi
+assert(math.abs((pos.x - 10)^2 + (pos.z - 10)^2 - radius^2) < 1e-6,
+    "spawning places the cone on the shooter base before target selection")
+assert(pos.y == 1.5, "spawning sets origin height")
+assert(lines == nil, "no target lines before selection")
+selectTarget(target)
+assert(env.objModel == shooter and env.ObjMiniTarget == target, "selection resolves both models")
+assert(lines and #lines[1].points == 3, "selection draws lines without moving the cone")
+assert(label == "7''", "selection refreshes range")
+-- Retargeting must redraw immediately too.
+lines = nil
+selectTarget(model(10, 22))
+assert(lines and label == "11''", "retargeting refreshes lines and range")
+env.pickedUp = true
+selectTarget(model(10, 12.5))
+assert(env.tooCloseState and hudText == 'Target within 2" - all cover is ignored',
+    "selection forces analysis even between throttled drag frames")
+env.pickedUp = false
+selectTarget(model(10, 18, 3))
+assert(env.vantageState and hudText == "Cover check doesn't currently work with Vantage",
+    "installed cone warns about Vantage on selection")
+assert(coroutineStarts == 0, "selection never requires a cone drag")
+selectTarget(model(10, 22))
+env.onPickUp("Red")
+assert(env.pickedUp and coroutineStarts == 1, "dragging still starts normally")
+env.onDropped("Red")
+assert(not env.pickedUp and lines, "dropping retains the lines")
+print("target selection lifecycle passed")
+'''
+    result = subprocess.run(
+        [shutil.which("npx"), "--yes", "--package=fengari-node-cli", "fengari", "-"],
+        input=script, cwd=ROOT, capture_output=True, text=True, encoding="utf-8", check=True,
+    )
+    assert result.stdout.strip() == "target selection lifecycle passed", result.stderr
+    assert not result.stderr
+
+
+@pytest.mark.skipif(not shutil.which("npx"), reason="npx is required for Lua geometry integration")
 def test_targeting_lines_touch_the_outer_points_of_an_oval_target():
     cone = (CONFIG / "defaults" / "tts-script" / "ktui-target-cone.lua").read_text(encoding="utf-8")
     script = "Color = function() return {} end\nmath.atan2 = math.atan2 or math.atan\n" + cone + r'''
@@ -761,12 +873,17 @@ Color = setmetatable({fromString = function() return {lerp = function(c) return 
 Global = {UI = {getXml = function() return "" end, setXml = function() end,
     setAttribute = function(id, k, v) hud[id .. "." .. k] = v end, setValue = function(id, v) hud[id] = v end}}
 activeColor = "Red"
+local conePosition = {x = 0, y = 1.5, z = 0.03}
 self = {
-    getPosition = function() return {x = 0, y = 1.5, z = 0.03} end,
+    getPosition = function() return conePosition end,
+    setPosition = function(position) conePosition = position end,
+    setVelocity = function() end, setAngularVelocity = function() end,
+    setRotation = function() end,
     setVectorLines = function(l) lines = l end,
     editButton = function(b) label = b.label end,
 }
 objModel = model(0, -0.6)
+getObjectFromGUID = function() return objModel end
 estado_cono = 2
 colorLinea = "user"
 getAllObjects = function() return boxes end
@@ -794,6 +911,8 @@ check("heavy beats light", 8, {terrain("Light Rubble", 6.6, 6.7), terrain("Heavy
 check("light in description", 8, {terrain("", 6.6, 6.8, {description = "Light terrain"})}, "light", false)
 check("untyped is heavy", 8, {terrain("Crate", 6.6, 6.8)}, "heavy", false)
 check("operatives ignored", 8, {terrain("Ork", 4.0, 6.8, {tags = {"KTUIMini"}})}, nil, false)
+check("long terrain name", 8, {terrain("  Heavy Wall " .. string.rep("x", 8192) .. "  ", 6.6, 6.8)}, "heavy", false)
+check("long no-cover name", 8, {terrain(" \tTeleport " .. string.rep("x", 8192) .. "\n  ", 6.6, 6.8)}, nil, false)
 check("within 2 inches", 2.5, {terrain("Light Rubble", 1.0, 1.2)}, nil, false)
 local function solid(name, x1, x2, z1, z2, y1, y2)
     local o = terrain(name, z1, z2, {minX = x1, maxX = x2, top = y2})
@@ -814,6 +933,17 @@ assert(hud["ktmove_txt_Red"] == "Cover check doesn't currently work with Vantage
 objModel = model(0, -0.6)
 check("back to level", 8, {}, nil, false)
 assert(not vantageState, "level again: auto cover")
+-- Both bases on Vantage at the same height above the table: still no auto result.
+local tableTop = terrain("Table", -20, 20, {kind = "Surface", minX = -20, maxX = 20, top = 1})
+objModel = model(0, -0.6, 4)
+ObjMiniTarget = model(0, 8, 4)
+boxes = {tableTop, solid("Light parapet", -2, 2, 6.5, 6.8, 4, 4.5)}
+refrescaVectores()
+assert(vantageState and coverState == nil, "both on Vantage: no auto cover")
+assert(hud["ktmove_txt_Red"] == "Cover check doesn't currently work with Vantage", "both on Vantage readout")
+-- Both on the table itself: normal analysis.
+objModel = model(0, -0.6)
+check("level on a table", 8, {tableTop, terrain("Light Rubble", 6.6, 6.8)}, "light", false)
 check("within 2 inches, explained", 2.5, {terrain("Heavy Wall", 1.0, 1.2)}, nil, false)
 assert(hud["ktmove_txt_Red"] == "Target within 2\" - all cover is ignored", "2in readout: " .. hud["ktmove_txt_Red"])
 -- Board-type custom models are terrain; game boards/mats (Board, >= 12" both ways) are not.
@@ -831,19 +961,41 @@ local g4 = {tags = {"KT_Objective"}, description = "Light, Insignificant, Vantag
 check("G4 marker without a hit collider", 9, {terrain("G4: Objective Marker", 5.9, 7.7, g4)}, "light", false)
 g4.minX, g4.maxX = 2.0, 3.8
 check("G4 marker beside the lines", 9, {terrain("G4: Objective Marker", 5.9, 7.7, g4)}, nil, false)
+-- Bounds that include the 3.68" control-range decal don't widen the marker
+-- (capped at a 40mm base); a long rules description is fine.
+local decal = {tags = {"KT_Objective"}, noCollider = true, minX = -0.24, maxX = 3.44,
+    description = "Light, Insignificant, Vantage\n\n" .. string.rep("Beacon: this terrain feature provides Heavy. ", 400)}
+check("G4 control-range bounds", 9, {terrain("G4: Objective Marker", 5.06, 8.74, decal)}, nil, false)
+g4.minX, g4.maxX = -0.9, 0.9
+-- The target stands inside the G4's control-range disc (part of its collider):
+-- that is not standing on the marker, so the beacon still gives cover. Its
+-- type is the description's first line, though the rules text says "Heavy".
+local inRange = terrain("G4: Objective Marker", 5.76, 9.44, {tags = {"KT_Objective"},
+    description = "Light, Insignificant, Vantage\n\nBeacon: this terrain feature provides the Heavy rule.",
+    minX = -1.84, maxX = 1.84, top = 1.01})
+inRange.minY = 1
+check("target in the G4 control range", 9, {inRange}, "light", false)
 check("objective token still ignored", 8, {terrain("Objective", 6.6, 6.8, {tags = {"KT_Objective"}})}, nil, false)
--- Open doors: lines through the centred access point (25% of the long side)
--- are clear; lines through the wall either side still give cover.
+-- Open doors: lines through the centred access point (OPENING_FRACTIONS of the
+-- long side) are clear; lines through the wall either side still give cover.
 check("through an open door", 8, {terrain("Open Door 3", 6.6, 6.8, {originAtEnd = true})}, nil, false)
--- Key 4 explains every object on the sight lines.
+-- Key 4 reports the result and what each terrain piece on the sight lines does.
 local printed = {}
 printToColor = function(text) printed[#printed + 1] = text end
 boxes = {terrain("Open Door 3", 6.6, 6.8), terrain("Objective", 4.0, 4.2, {tags = {"KT_Objective"}})}
 onNumberTyped("Red", 4)
 local out = table.concat(printed, "\n")
 assert(out:find("Targeting: No cover", 1, true), "explain header: " .. out)
-assert(out:find("Open Door 3 [Generic] heavy, 18/18 hits in its opening", 1, true), "explain opening: " .. out)
-assert(out:find("Objective [Generic] ignored: tag KT_Objective", 1, true), "explain ignored: " .. out)
+assert(out:find("Open Door 3: no cover, the line goes through the open doorway", 1, true), "explain opening: " .. out)
+assert(not out:find("Objective", 1, true), "objective tokens are not listed: " .. out)
+printed = {}
+boxes = {terrain("Light Rubble", 6.6, 6.8), terrain("Heavy Wall", 4.0, 4.2), terrain("Teleport pad", 2.0, 2.2)}
+onNumberTyped("Red", 4)
+out = table.concat(printed, "\n")
+assert(out:find("Targeting: Light cover  +  Obscured", 1, true), "explain result: " .. out)
+assert(out:find("Light Rubble: light cover", 1, true), "explain cover: " .. out)
+assert(out:find("Heavy Wall: obscures the target", 1, true), "explain obscured: " .. out)
+assert(out:find("Teleport pad: no cover (exposed terrain)", 1, true), "explain exposed: " .. out)
 check("closed door", 8, {terrain("Closed Door 3", 6.6, 6.8)}, "heavy", false)
 ObjMiniTarget = model(2, 8)
 boxes = {terrain("Open Hatchway", 6.6, 6.8)}

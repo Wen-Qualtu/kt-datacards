@@ -93,14 +93,16 @@ def compose_ktui_model_script(config_dir: Path) -> str:
         'local _kt_gl = getObjectFromGUID(gamelogGuid)\n'
         '    if _kt_gl then _kt_gl.call("gameLogAppendOperativeChangedState", event) end')
 
-    # 4) install our oval-aware targeting cone instead of fetching the upstream
-    #    circle-only "KTMT Target Cone.lua" (callback shape kept, so the rest of
-    #    agregaCono is untouched).
+    # 4) install our oval-aware targeting cone with its origin available onLoad.
     base = _sub_once(
         base, "local-target-cone-script",
         r'WebRequest\.get\("https://raw\.githubusercontent\.com/xSpaghettyx/KT24-Table-The-Killzone-Mod/'
         r'refs/heads/main/KTMT%20Target%20Cone\.lua",\s*function\(req\)',
         "ktLocalScript(KT_TARGET_CONE_CODE, function(req)")
+    base = _sub_once(
+        base, "target-cone-origin-before-load",
+        r'(ktLocalScript\(KT_TARGET_CONE_CODE, function\(req\)\s*local script = )req\.text',
+        r"""\g<1>'GUIDModel = "' .. self.getGUID() .. '"\\n' .. req.text""")
     cone = (tdir / _TARGET_CONE).read_text(encoding="utf-8").replace("\r\n", "\n")
     equals = "="
     while "]" + equals + "]" in cone:
