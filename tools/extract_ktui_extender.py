@@ -19,7 +19,7 @@ The extractor is anchor-based and FAILS LOUDLY if the upstream shape changes,
 so a silent bad extraction can't slip into the vendored base.
 
 Usage:
-    python dev/extract_ktui_extender.py [path/to/mod.json]
+    python -m tools.extract_ktui_extender [path/to/mod.json]
 
 Attribution: the extracted script is the work of the KT Command Node UI Extender
 authors (Nyirsh, Feuerfritas, Ixidior, Mal20k); kept in the provenance header.
@@ -85,7 +85,7 @@ def provenance_header(script: str) -> str:
         "-- KTUI Extender model script -- VENDORED EXTRACTION (generated; do not hand-edit)\n"
         f"-- Source: Steam Workshop mod {SOURCE_ID} (KT Command Node UI Extender)\n"
         "-- Original authors: Nyirsh, Feuerfritas, Ixidior, Mal20k\n"
-        "-- Extracted by dev/extract_ktui_extender.py -- re-run to refresh.\n"
+        "-- Extracted by tools/extract_ktui_extender.py -- re-run to refresh.\n"
         f"-- Provenance: {len(script)} chars, sha1 {h}\n"
         "-- Verbatim (full mimic). Downstream integration removes the \"Movement\"\n"
         "-- context item + its lua and appends our KT tool blocks (like the cards).\n"

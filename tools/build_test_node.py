@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 import subprocess
@@ -80,7 +81,11 @@ def build_label(sources: list[str]) -> str:
         branch = subprocess.check_output([*git, "rev-parse", "--abbrev-ref", "HEAD"], text=True).strip()
         commit = subprocess.check_output([*git, "rev-parse", "--short", "HEAD"], text=True).strip()
         dirty = subprocess.run([*git, "diff", "--quiet", "HEAD", "--", *(str(SCRIPT_DIR / s) for s in sources)]).returncode
-        return f"{branch}@{commit}{'+local' if dirty else ''}"
+        if not dirty:
+            return f"{branch}@{commit}"
+        # Distinguishes successive local rebuilds in-game.
+        digest = hashlib.sha1(b"".join((SCRIPT_DIR / s).read_bytes() for s in sources)).hexdigest()[:6]
+        return f"{branch}@{commit}+local.{digest}"
     except (OSError, subprocess.CalledProcessError):
         return "local"
 

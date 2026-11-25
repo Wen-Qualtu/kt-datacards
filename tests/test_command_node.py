@@ -933,6 +933,17 @@ assert(hud["ktmove_txt_Red"] == "Cover check doesn't currently work with Vantage
 objModel = model(0, -0.6)
 check("back to level", 8, {}, nil, false)
 assert(not vantageState, "level again: auto cover")
+-- Both bases on Vantage at the same height above the table: still no auto result.
+local tableTop = terrain("Table", -20, 20, {kind = "Surface", minX = -20, maxX = 20, top = 1})
+objModel = model(0, -0.6, 4)
+ObjMiniTarget = model(0, 8, 4)
+boxes = {tableTop, solid("Light parapet", -2, 2, 6.5, 6.8, 4, 4.5)}
+refrescaVectores()
+assert(vantageState and coverState == nil, "both on Vantage: no auto cover")
+assert(hud["ktmove_txt_Red"] == "Cover check doesn't currently work with Vantage", "both on Vantage readout")
+-- Both on the table itself: normal analysis.
+objModel = model(0, -0.6)
+check("level on a table", 8, {tableTop, terrain("Light Rubble", 6.6, 6.8)}, "light", false)
 check("within 2 inches, explained", 2.5, {terrain("Heavy Wall", 1.0, 1.2)}, nil, false)
 assert(hud["ktmove_txt_Red"] == "Target within 2\" - all cover is ignored", "2in readout: " .. hud["ktmove_txt_Red"])
 -- Board-type custom models are terrain; game boards/mats (Board, >= 12" both ways) are not.
@@ -950,19 +961,41 @@ local g4 = {tags = {"KT_Objective"}, description = "Light, Insignificant, Vantag
 check("G4 marker without a hit collider", 9, {terrain("G4: Objective Marker", 5.9, 7.7, g4)}, "light", false)
 g4.minX, g4.maxX = 2.0, 3.8
 check("G4 marker beside the lines", 9, {terrain("G4: Objective Marker", 5.9, 7.7, g4)}, nil, false)
+-- Bounds that include the 3.68" control-range decal don't widen the marker
+-- (capped at a 40mm base); a long rules description is fine.
+local decal = {tags = {"KT_Objective"}, noCollider = true, minX = -0.24, maxX = 3.44,
+    description = "Light, Insignificant, Vantage\n\n" .. string.rep("Beacon: this terrain feature provides Heavy. ", 400)}
+check("G4 control-range bounds", 9, {terrain("G4: Objective Marker", 5.06, 8.74, decal)}, nil, false)
+g4.minX, g4.maxX = -0.9, 0.9
+-- The target stands inside the G4's control-range disc (part of its collider):
+-- that is not standing on the marker, so the beacon still gives cover. Its
+-- type is the description's first line, though the rules text says "Heavy".
+local inRange = terrain("G4: Objective Marker", 5.76, 9.44, {tags = {"KT_Objective"},
+    description = "Light, Insignificant, Vantage\n\nBeacon: this terrain feature provides the Heavy rule.",
+    minX = -1.84, maxX = 1.84, top = 1.01})
+inRange.minY = 1
+check("target in the G4 control range", 9, {inRange}, "light", false)
 check("objective token still ignored", 8, {terrain("Objective", 6.6, 6.8, {tags = {"KT_Objective"}})}, nil, false)
--- Open doors: lines through the centred access point (50% of the long side)
--- are clear; lines through the wall either side still give cover.
+-- Open doors: lines through the centred access point (OPENING_FRACTIONS of the
+-- long side) are clear; lines through the wall either side still give cover.
 check("through an open door", 8, {terrain("Open Door 3", 6.6, 6.8, {originAtEnd = true})}, nil, false)
--- Key 4 explains every object on the sight lines.
+-- Key 4 reports the result and what each terrain piece on the sight lines does.
 local printed = {}
 printToColor = function(text) printed[#printed + 1] = text end
 boxes = {terrain("Open Door 3", 6.6, 6.8), terrain("Objective", 4.0, 4.2, {tags = {"KT_Objective"}})}
 onNumberTyped("Red", 4)
 local out = table.concat(printed, "\n")
 assert(out:find("Targeting: No cover", 1, true), "explain header: " .. out)
-assert(out:find("Open Door 3 [Generic] heavy, 18/18 hits in its opening", 1, true), "explain opening: " .. out)
-assert(out:find("Objective [Generic] ignored: tag KT_Objective", 1, true), "explain ignored: " .. out)
+assert(out:find("Open Door 3: no cover, the line goes through the open doorway", 1, true), "explain opening: " .. out)
+assert(not out:find("Objective", 1, true), "objective tokens are not listed: " .. out)
+printed = {}
+boxes = {terrain("Light Rubble", 6.6, 6.8), terrain("Heavy Wall", 4.0, 4.2), terrain("Teleport pad", 2.0, 2.2)}
+onNumberTyped("Red", 4)
+out = table.concat(printed, "\n")
+assert(out:find("Targeting: Light cover  +  Obscured", 1, true), "explain result: " .. out)
+assert(out:find("Light Rubble: light cover", 1, true), "explain cover: " .. out)
+assert(out:find("Heavy Wall: obscures the target", 1, true), "explain obscured: " .. out)
+assert(out:find("Teleport pad: no cover (exposed terrain)", 1, true), "explain exposed: " .. out)
 check("closed door", 8, {terrain("Closed Door 3", 6.6, 6.8)}, "heavy", false)
 ObjMiniTarget = model(2, 8)
 boxes = {terrain("Open Hatchway", 6.6, 6.8)}
