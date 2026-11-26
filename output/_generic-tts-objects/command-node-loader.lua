@@ -1,6 +1,6 @@
-KTUI_MODELSCRIPT_VERSION = "8fab10a9efa4"
+KTUI_MODELSCRIPT_VERSION = "0033188e4cb5"
 
-KTUI_MODELSCRIPT = [==[KT_MODELSCRIPT_VERSION = "8fab10a9efa4"
+KTUI_MODELSCRIPT = [==[KT_MODELSCRIPT_VERSION = "0033188e4cb5"
 
 -- START KT_MODELSCRIPT_V1 --
 self.clearContextMenu()
@@ -2610,14 +2610,11 @@ local TERRAIN_NAMES = { "g4: objective marker" }
 -- least this tall.
 local MARKER_MIN_HEIGHT = 1
 local MARKER_MAX_RADIUS = 20 * 0.0393701
--- Open states: the centred fraction of the long side is an exposed access
--- point; the wall either side still gives cover / obscures. Calibrated from
--- in-game screenshots against the 50% edge: Tomb World door ~41% (mesh gap
--- 36-40%), breach ~46% (a V: 26% at the floor to ~45% at the rim), Gallowdark
--- hatchway estimated from screenshots.
-local OPENING_FRACTIONS = { ["open door"] = 0.40, ["breached wall"] = 0.45, ["open hatchway"] = 0.45 }
-local OPENING_NAMES = {}
-for prefix in pairs(OPENING_FRACTIONS) do OPENING_NAMES[#OPENING_NAMES + 1] = prefix end
+-- Open states whose access point is the outline their terrain script draws
+-- under the opening (Tomb World doors/breaches, Gallowdark hatchways). Closed
+-- states draw the same outline, hence the names. Without an outline the piece
+-- is a plain wall.
+local OPENING_NAMES = { "open door", "breached wall", "open hatchway" }
 
 coverState = nil      -- nil | "light" | "heavy"
 obscuredState = false
@@ -2701,29 +2698,40 @@ local function terrainKind(obj)
 	return "heavy"
 end
 
--- Position of world (x, z) along an open piece's long side, measured from the
--- middle of its world bounds (the piece's origin can sit at one end), and the
--- half-width of its access point there.
-local function openingPos(obj, x, z)
-	local fraction = 0
-	for prefix, f in pairs(OPENING_FRACTIONS) do
-		if nameStarts(obj, { prefix }) then fraction = f end
+-- An open piece's access point: the span along its long side covered by the
+-- outline its script draws (first vector line, in local coordinates that
+-- compensate for scale; drawn on demand if not shown yet). nil = no opening.
+local function openingGeometry(obj)
+	if not nameStarts(obj, OPENING_NAMES) then return nil end
+	local script = obj.script_code or ""
+	if not obj.getVectorLines or not obj.positionToWorld or
+		not script:find('__bundle_register("base-board/hatchway"', 1, true) or
+		not script:find("function refreshVectors()", 1, true) then return nil end
+	local lines = obj.getVectorLines() or {}
+	if not lines[1] and obj.call then
+		obj.call("refreshVectors")
+		lines = obj.getVectorLines() or {}
 	end
+	local points = lines[1] and lines[1].points
+	if not points or #points < 4 then return nil end
 	local size = obj.getBoundsNormalized().size
 	local c = obj.getBounds().center
-	local u, v = toLocal({ x = c.x, z = c.z, h = math.rad(obj.getRotation().y) }, x, z)
-	if size.x >= size.z then
-		return u, size.x * fraction * 0.5
+	local geometry = { frame = { x = c.x, z = c.z, h = math.rad(obj.getRotation().y) }, alongX = size.x >= size.z }
+	local lo, hi = math.huge, -math.huge
+	for _, point in ipairs(points) do
+		local world = obj.positionToWorld(point)
+		local u, v = toLocal(geometry.frame, world.x, world.z)
+		local along = geometry.alongX and u or v
+		lo, hi = math.min(lo, along), math.max(hi, along)
 	end
-	return v, size.z * fraction * 0.5
+	if hi <= lo then return nil end
+	geometry.lo, geometry.hi = lo, hi
+	return geometry
 end
 
--- Whether the sight line crosses an open piece (OPENING_NAMES) at world (x, z)
--- inside its access point: the centred OPENING_FRACTIONS share of its long side.
-local function throughOpening(obj, x, z)
-	if not nameStarts(obj, OPENING_NAMES) then return false end
-	local along, half = openingPos(obj, x, z)
-	return math.abs(along) < half
+local function openingAlong(geometry, x, z)
+	local u, v = toLocal(geometry.frame, x, z)
+	return geometry.alongX and u or v
 end
 
 local function baseBottom(obj)
@@ -2901,6 +2909,7 @@ function analyseTerrain(target, sp)
 	supportsOf(objModel, skip)
 	if targetBottom <= shooterBottom + SHOOTING_UP then supportsOf(ObjMiniTarget, skip) end
 	local light, heavy = false, false
+	local openings = {}
 	local function entryFor(obj)
 		local key = guidOf(obj)
 		local entry = lastReport.pieces[key]
@@ -2923,13 +2932,13 @@ function analyseTerrain(target, sp)
 			local leaveShooter = sOut and math.max(0, sOut) or 0
 			for _, piece in pairs(pieces) do
 				local entry = entryFor(piece.obj)
-				local mid = (piece.sIn + piece.sOut) * 0.5
-				if throughOpening(piece.obj, a.x + dx * mid, a.z + dz * mid) then
-					entry.opening = true
-				else
+				local key = guidOf(piece.obj)
+				if openings[key] == nil then openings[key] = openingGeometry(piece.obj) or false end
+				local opening = openings[key]
+				local function solid(sIn, sOut)
 					entry.solid = true
 					local kind = entry.kind
-					if piece.sOut >= nearTarget then
+					if sOut >= nearTarget then
 						if not coverAllowed then
 							entry.coverDenied = true
 						elseif kind == "heavy" then
@@ -2939,9 +2948,31 @@ function analyseTerrain(target, sp)
 							if entry.cover ~= "heavy" then entry.cover = "light" end
 						end
 					end
-					if kind == "heavy" and math.max(piece.sIn, leaveShooter) < math.min(piece.sOut, nearTarget) then
+					if kind == "heavy" and math.max(sIn, leaveShooter) < math.min(sOut, nearTarget) then
 						obscuredState, entry.obscures = true, true
 					end
+				end
+				if opening then
+					local start = openingAlong(opening, a.x, a.z)
+					local slope = openingAlong(opening, a.x + dx, a.z + dz) - start
+					if math.abs(slope) < 1e-9 then
+						if start > opening.lo and start < opening.hi then entry.opening = true
+						else solid(piece.sIn, piece.sOut) end
+					else
+						local s1 = (opening.lo - start) / slope
+						local s2 = (opening.hi - start) / slope
+						local openIn = math.max(piece.sIn, math.min(s1, s2))
+						local openOut = math.min(piece.sOut, math.max(s1, s2))
+						if openIn < openOut then
+							entry.opening = true
+							if openIn > piece.sIn then solid(piece.sIn, openIn) end
+							if openOut < piece.sOut then solid(openOut, piece.sOut) end
+						else
+							solid(piece.sIn, piece.sOut)
+						end
+					end
+				else
+					solid(piece.sIn, piece.sOut)
 				end
 			end
 		end
