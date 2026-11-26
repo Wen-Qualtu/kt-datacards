@@ -39,6 +39,10 @@ The Kill Team mobile app exports datacards as PDFs with random UUID filenames, c
   - Display table grid layout with all teams
 - **Metadata Tracking**: Maintains comprehensive card metadata (card IDs, types, dimensions, extraction quality)
 - **Reproducible**: Locked dependencies and clear workflows ensure consistent results across machines
+- **Targeting lines**: Checks cover and obscured using terrain colliders. Open doors,
+  breaches and hatchways count as open only within the outline their terrain draws
+  under the opening; without that outline they are treated as walls. Missing
+  colliders can still affect results.
 
 ## 🔧 How It Works
 

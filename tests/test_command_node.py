@@ -839,6 +839,18 @@ local function terrain(name, z1, z2, opts)
         if (opts.rotY or 0) % 180 == 90 then sx, sz = sz, sx end
         return {offset = {x = 0, y = 0, z = 0}, size = {x = sx, y = o.maxY - o.minY, z = sz}}
     end
+    if opts.outline then
+        o.script_code = '__bundle_register("base-board/hatchway", function refreshVectors()'
+        local drawn = not opts.initiallyHidden
+        o.getVectorLines = function() return drawn and {{points = opts.outline}} or {} end
+        o.call = function(fn) assert(fn == "refreshVectors"); drawn = true; o.initialized = true end
+        o.positionToWorld = function(p)
+            local pos, h = o.getPosition(), math.rad(opts.rotY or 0)
+            local x, z = p.x * (opts.scaleX or 1), p.z * (opts.scaleZ or 1)
+            return {x = pos.x + x * math.cos(h) + z * math.sin(h), y = pos.y + p.y,
+                z = pos.z - x * math.sin(h) + z * math.cos(h)}
+        end
+    end
     return o
 end
 -- Mock TTS ray: one hit per box, where the ray ENTERS it (none if it starts inside).
@@ -976,13 +988,57 @@ local inRange = terrain("G4: Objective Marker", 5.76, 9.44, {tags = {"KT_Objecti
 inRange.minY = 1
 check("target in the G4 control range", 9, {inRange}, "light", false)
 check("objective token still ignored", 8, {terrain("Objective", 6.6, 6.8, {tags = {"KT_Objective"}})}, nil, false)
--- Open doors: lines through the centred access point (OPENING_FRACTIONS of the
--- long side) are clear; lines through the wall either side still give cover.
-check("through an open door", 8, {terrain("Open Door 3", 6.6, 6.8, {originAtEnd = true})}, nil, false)
+-- Open doors: lines through the outline the piece draws under its opening are
+-- clear; lines through the wall either side still give cover.
+local mm = 0.0393701
+local function span(lo, hi)
+    return {{x = lo, y = 0, z = -0.05}, {x = hi, y = 0, z = -0.05},
+        {x = hi, y = 0, z = 0.05}, {x = lo, y = 0, z = 0.05}}
+end
+local doorway = span(-1.2, 1.2)
+check("through an open door", 8, {terrain("Open Door 3", 6.6, 6.8, {outline = doorway})}, nil, false)
+check("open door without an outline is a wall", 8, {terrain("Open Door 3", 6.6, 6.8)}, "heavy", false)
+check("closed door outline is not an opening", 8, {terrain("Closed Door 3", 6.6, 6.8, {outline = doorway})}, "heavy", false)
+-- The real Tomb World outline spans local x=24..59.3 mm from the piece's
+-- end-placed origin, compensating for scale.
+local outline = {{x = 24 * mm / 0.4, y = 0, z = 0},
+    {x = 59.3 * mm / 0.4, y = 0, z = 0},
+    {x = 59.3 * mm / 0.4, y = 0, z = 0.2},
+    {x = 24 * mm / 0.4, y = 0, z = 0.2}}
+local measured = terrain("Breached Wall 1", 4, 4.2,
+    {originAtEnd = true, scaleX = 0.4, outline = outline, initiallyHidden = true})
+local geometry = openingGeometry(measured)
+assert(measured.initialized, "missing outline initialized")
+assert(math.abs(geometry.lo - (-3 + 24 * mm)) < 1e-6, "outline start")
+assert(math.abs(geometry.hi - (-3 + 59.3 * mm)) < 1e-6, "outline end")
+check("measured off-centre breach obscures", 8, {measured}, nil, true)
+local centered = {{x = -0.15, y = 0, z = 0}, {x = 0.15, y = 0, z = 0},
+    {x = 0.15, y = 0, z = 0.1}, {x = -0.15, y = 0, z = 0.1}}
+check("narrow measured opening obscures", 8, {terrain("Open Door", 4, 4.2, {outline = centered})}, nil, true)
+local broad = {{x = -2, y = 0, z = 0}, {x = 2, y = 0, z = 0},
+    {x = 2, y = 0, z = 0.1}, {x = -2, y = 0, z = 0.1}}
+check("wide measured opening is clear", 8, {terrain("Open Door", 4, 4.2, {outline = broad})}, nil, false)
+-- Gallowdark hatchway: a centred 35.4 x 6.1 outline (4 corners, drawn
+-- open so only 3 sides show), on a mirrored (scaleX = -1) asset bundle.
+local hx, hz = 35.4 / 2 * mm, 6.1 / 2 * mm
+local hatchway = {{x = -hx, y = 0, z = hz}, {x = hx, y = 0, z = hz},
+    {x = hx, y = 0, z = -hz}, {x = -hx, y = 0, z = -hz}}
+local rotated = terrain("Open Hatchway", -3, 3,
+    {minX = 2.9, maxX = 3.1, rotY = 90, scaleX = -1, outline = hatchway})
+local rotatedGeometry = openingGeometry(rotated)
+assert(math.abs(rotatedGeometry.lo + hx) < 1e-6 and math.abs(rotatedGeometry.hi - hx) < 1e-6,
+    "rotated mirrored hatchway outline")
+local angled = {{x = -2, y = 0, z = 0}, {x = 3, y = 0, z = 0},
+    {x = 3, y = 0, z = 0.1}, {x = -2, y = 0, z = 0.1}}
+boxes = {terrain("Open Door", 3, 7, {minX = -6, maxX = 6, outline = angled})}
+ObjMiniTarget = model(4, 8)
+analyseTerrain({x = 4, z = 8, a = 0.01, b = 0.01, h = 0}, {x = 0, z = 0.03})
+assert(coverState == "heavy" and obscuredState, "angled line leaves opening before reaching target")
+check("opening tests reset", 8, {}, nil, false)
 -- Key 4 reports the result and what each terrain piece on the sight lines does.
 local printed = {}
 printToColor = function(text) printed[#printed + 1] = text end
-boxes = {terrain("Open Door 3", 6.6, 6.8), terrain("Objective", 4.0, 4.2, {tags = {"KT_Objective"}})}
+boxes = {terrain("Open Door 3", 6.6, 6.8, {outline = doorway}), terrain("Objective", 4.0, 4.2, {tags = {"KT_Objective"}})}
 onNumberTyped("Red", 4)
 local out = table.concat(printed, "\n")
 assert(out:find("Targeting: No cover", 1, true), "explain header: " .. out)
@@ -998,14 +1054,14 @@ assert(out:find("Heavy Wall: obscures the target", 1, true), "explain obscured: 
 assert(out:find("Teleport pad: no cover (exposed terrain)", 1, true), "explain exposed: " .. out)
 check("closed door", 8, {terrain("Closed Door 3", 6.6, 6.8)}, "heavy", false)
 ObjMiniTarget = model(2, 8)
-boxes = {terrain("Open Hatchway", 6.6, 6.8)}
+boxes = {terrain("Open Hatchway", 6.6, 6.8, {outline = span(-1.35, 1.35)})}
 refrescaVectores()
 assert(coverState == "heavy", "beside the opening: wall gives cover")
 -- Same wall turned 90 degrees, shot along x.
 local conePos = self.getPosition
 self.getPosition = function() return {x = -3.4, y = 1.5, z = 0} end
 objModel = model(-4, 0)
-boxes = {terrain("Breached Wall 1", -3, 3, {minX = 2.9, maxX = 3.1, rotY = 90})}
+boxes = {terrain("Breached Wall 1", -3, 3, {minX = 2.9, maxX = 3.1, rotY = 90, outline = span(-1.35, 1.35)})}
 ObjMiniTarget = model(4, 0)
 refrescaVectores()
 assert(coverState == nil and not obscuredState, "rotated: through the breach")
