@@ -3280,9 +3280,13 @@ MOVE_TOOL_CODE = [=[--[[ =======================================================
     2 = +1" to the max move   (charge, terrain bonus, etc.)
     9 = finish (commits the current leg, applies the move)
     0 = cancel the whole move
-  Mouse (via an invisible click catcher pinned to the model):
+  Mouse (via an invisible click catcher over the reach area, shown ONLY to the
+  driving player -- the opponent clicks straight through it):
     LEFT-click  = commit the current leg and start the next one
     RIGHT-click = undo the last leg (or cancel from the first leg)
+  In the default per-player catcher mode the number ROW only reaches the model
+  while hovering the model itself; the numpad (scripting keys) and the bindable
+  "KT: Move ..." game keys work from anywhere.
   You aim with your pointer the whole time; the ghost follows the cursor,
   clamped to the remaining budget. Hovering the ghost over a building places it
   on top (the pointer already returns the surface under the cursor), and the
@@ -3298,11 +3302,12 @@ MOVE_TOOL_CODE = [=[--[[ =======================================================
   Injection-safe loading
   -----------------------
   Can be APPENDED to a model that already has its own script:
-    * onLoad / onPickUp / onScriptingButtonDown / onNumberTyped are CHAINED.
+    * onLoad / onPickUp / onDestroy / onScriptingButtonDown / onNumberTyped are CHAINED.
     * It never WRITES self.script_state (only reads it to size the base ghost).
-    * The click catcher is a transparent button pinned to the model, sized to the
-      current reach (resized live as the 1/2 keys change it) and removed by its
-      own click_function, so it never calls clearButtons().
+    * The click catcher lives on its OWN tiny, hidden, non-interactable helper
+      object (per-player XML UI), so it never touches the model's self.UI (owned
+      by KTUI) or its buttons. The legacy "button" mode only removes its own
+      button, so it never calls clearButtons().
     * Globals it adds are uniquely named (setupMoveTool, moveOnPickUp,
       moveCatcherClick, moveScriptingButton + chained handlers).
 
@@ -3314,15 +3319,33 @@ local MOVE_DEFAULT   = 6        -- fallback Move stat when none can be read (inc
 local DASH_INCHES    = 3        -- Dash action always starts from this budget (inches)
 local UNITS_PER_INCH = 1        -- world units per inch (KT-UI table = 1)
 
--- Click-catcher: a transparent button pinned to the model, covering the CURRENT
--- leg's REMAINING reach + a margin (a disc centred on curPos), so hovering it
--- counts as hovering the model (the number ROW works with no key binding) and it
--- only locks a small area, not the table. As budget is spent (or the 1/2 keys
--- change it) the catcher re-centres and shrinks (resizeCatcher) to what's left.
+-- Click-catcher: covers the CURRENT leg's REMAINING reach + a margin (centred on
+-- curPos). As budget is spent (or the 1/2 keys change it) it re-centres and
+-- shrinks (resizeCatcher) to what's left.
+--   "player_ui" -- a transparent XML UI square on a tiny hidden helper object,
+--                  with visibility = the driving player. It is INACTIVE for
+--                  everyone else, so opponents click straight through it.
+--   "button"    -- legacy: a transparent button on the model. Hovering it counts
+--                  as hovering the model (number row works), but buttons are
+--                  shared, so it blocks that area of the table for EVERY player.
+local CATCHER_MODE         = "player_ui"
 local CATCHER_MARGIN_IN    = 1           -- inches of catch area past the reach
--- button-units per inch. TUNING KNOB: raise = bigger catcher, lower = smaller.
+local CATCHER_LIFT_IN      = 0.6         -- catcher height above the current point
+-- "button" mode: button-units per inch. TUNING KNOB: raise = bigger, lower = smaller.
 -- (14000/9 rendered ~2-3x too wide -- 40" for an 8" move; ~450 targets it.)
 local CATCHER_UNITS_PER_IN = 450
+-- "player_ui" mode: the helper is a locked, non-interactable BlockSquare this
+-- small (invisible under the base); its UI is scaled back up by 1/scale.
+local CATCHER_HELPER_SCALE = 0.05
+local CATCHER_HELPER_TAG   = "KTMoveCatcher"
+local CATCHER_TOOLTIP      = "Left: step (double=finish)  Right: undo  1: -1in  2: +1in  3: 3D range  9: finish  0: cancel"
+
+-- Network smoothing. Global vector lines are re-sent to EVERY client on each
+-- change and rebuilt there, so a stream of tiny updates flickers for the other
+-- players. Redraw only when the pointer moved at least VECTOR_GRID_IN, and at
+-- most once every DRAW_EVERY_N_TICKS ticks (30 Hz / 2 = ~15 updates/s).
+local VECTOR_GRID_IN     = 0.05
+local DRAW_EVERY_N_TICKS = 2
 
 -- Default base footprint (mm); used only when a model exposes no base metadata.
 local DEF_BASE_MM_LONG = 32
@@ -3388,12 +3411,16 @@ local prevEndPos   = nil            -- Vector end of the active leg
 
 local loopHandle    = nil
 local catcherActive = false
+local catcherHelper = nil       -- "player_ui" mode: the spawned helper object
+local catcherSpawning = false   -- helper spawn in flight (spawnObject is async)
 local lastMoveKey   = nil       -- guard: only edit the catcher when the reach/centre changes
 local resizeCatcher  -- fwd decl; defined with the catcher, called from tick()
 
 -- readout
 local readoutText = nil
 local lastSig     = nil             -- last draw signature (skip identical frames)
+local ticksSinceDraw = 0            -- draw throttle (see DRAW_EVERY_N_TICKS)
+local hudText     = nil             -- last HUD text sent (skip identical updates)
 
 -- --------------------------------------------------------------- utilities ---
 local function toUnits(inches) return inches * UNITS_PER_INCH end
@@ -3545,7 +3572,7 @@ local function surfaceY(x, z, fallbackY, aimY)
 	})
 	local best = nil
 	for _, h in ipairs(hits or {}) do
-		if h.hit_object ~= self and h.point then
+		if h.hit_object ~= self and h.hit_object ~= catcherHelper and h.point then
 			if aimY == nil then
 				if best == nil or h.point.y > best then best = h.point.y end
 			elseif best == nil or math.abs(h.point.y - aimY) < math.abs(best - aimY) then
@@ -3736,15 +3763,23 @@ local function ensureHud()
 	pcall(function() Global.UI.setXml(cur .. buildHudXml()) end)
 end
 
+-- Show/update this player's HUD row. Global UI changes are synced to every
+-- client, so only switch the row on once and only push text that changed --
+-- re-sending identical attributes every tick made the HUD flicker remotely.
 local function hudShow(color, text)
 	if not color then return end
+	text = text or " "
+	if text == hudText then return end
+	local first = (hudText == nil)
+	hudText = text
 	pcall(function()
-		Global.UI.setAttribute("ktmove_txt_" .. color, "active", "true")
-		Global.UI.setValue("ktmove_txt_" .. color, text or " ")
+		if first then Global.UI.setAttribute("ktmove_txt_" .. color, "active", "true") end
+		Global.UI.setValue("ktmove_txt_" .. color, text)
 	end)
 end
 
 local function hudHide(color)
+	hudText = nil
 	if not color then return end
 	pcall(function()
 		Global.UI.setAttribute("ktmove_txt_" .. color, "active", "false")
@@ -3780,10 +3815,17 @@ local function tick()
 	-- heights must NOT rebuild the draw or make the ghost bob up/down.
 	local px, py, pz = pointer.x, pointer.y, pointer.z
 	if remainingInches() <= 1e-6 then px, py, pz = 0, 0, 0 end
-	local sig = string.format("%.2f_%.2f_%.2f_%d_%d_%s_%d",
-		px, py, pz, usedInches, modifier, rangeMode, #committedLegs)
+	-- Snap the pointer to a coarse grid so sub-grid jitter doesn't re-send lines.
+	local g = toUnits(VECTOR_GRID_IN)
+	local sig = string.format("%d_%d_%d_%d_%d_%s_%d",
+		math.floor(px / g + 0.5), math.floor(py / g + 0.5), math.floor(pz / g + 0.5),
+		usedInches, modifier, rangeMode, #committedLegs)
+	ticksSinceDraw = ticksSinceDraw + 1
 	if sig == lastSig then return end
+	-- Throttle: leave lastSig untouched so the change is drawn on a later tick.
+	if lastSig ~= nil and ticksSinceDraw < DRAW_EVERY_N_TICKS then return end
 	lastSig = sig
+	ticksSinceDraw = 0
 
 	local active = {}
 	readoutText = nil
@@ -3829,14 +3871,12 @@ local function stopLoop()
 end
 
 -- --------------------------------------------------------- click catcher ----
--- A transparent button pinned to the model, covering the CURRENT leg's reach (a
--- disc of radius = REMAINING budget + margin, centred on curPos). LEFT-click =
--- step, RIGHT-click = undo. Because it is a button ON the model, hovering it
--- counts as hovering the model, so the number ROW works with no binding. It only
--- locks that small area (not the table); as you spend budget it re-centres on
--- the new point and shrinks to what's left, so it never claims more than needed.
+-- An invisible catch area over the CURRENT leg's reach (a square of half-size =
+-- REMAINING budget + margin, centred on curPos). LEFT-click = step, RIGHT-click =
+-- undo. As you spend budget it re-centres on the new point and shrinks to what's
+-- left, so it never claims more than needed. See CATCHER_MODE for the two kinds.
 
--- Half-reach (inches) of the catch disc for the CURRENT leg: remaining budget +
+-- Half-reach (inches) of the catch area for the CURRENT leg: remaining budget +
 -- margin, floored so a nearly-spent move still has a clickable area.
 local function catcherReachIn()
 	local r = remainingInches() + CATCHER_MARGIN_IN
@@ -3851,6 +3891,7 @@ end
 -- Remove every catcher button currently on the model. Collect indices first and
 -- remove high->low: removeButton(index) reshuffles the remaining indices, so
 -- removing while iterating by index can skip a button (leaving a stale catcher).
+-- Also used in "player_ui" mode to clear a stale button left by an older version.
 local function clearCatcherButtons()
 	local idx = {}
 	for _, b in ipairs(self.getButtons() or {}) do
@@ -3860,13 +3901,14 @@ local function clearCatcherButtons()
 	for _, i in ipairs(idx) do self.removeButton(i) end
 end
 
--- (Re)create the catcher as a FRESH button at the model CENTRE, sized to the
--- current leg's remaining reach. The model steps to each committed leg (see
--- commitLeg), so a CENTRED button always sits on the operative's current spot --
--- rotation/scale-proof, no offset math, and the catch area stays the reachable
--- bubble. We remove+recreate rather than editButton because editing a button's
--- size/position does not reliably rebuild its invisible click hitbox in TTS.
-local function placeCatcher()
+-- "button" mode: (re)create the catcher as a FRESH button at the model CENTRE.
+-- The model steps to each committed leg (see commitLeg), so a CENTRED button
+-- always sits on the operative's current spot -- rotation/scale-proof. We
+-- remove+recreate rather than editButton because editing a button's size/position
+-- does not reliably rebuild its invisible click hitbox in TTS. hover/press colours
+-- are fully transparent too: the defaults tint the area whenever ANY player's
+-- mouse passes over it, which reads as flicker for the opponent.
+local function placeCatcherButton()
 	clearCatcherButtons()
 	local sc   = self.getScale()
 	local span = 2 * catcherReachIn() * CATCHER_UNITS_PER_IN
@@ -3874,28 +3916,102 @@ local function placeCatcher()
 		click_function = "moveCatcherClick",
 		function_owner = self,
 		label          = "",
-		position       = { 0, 0.6 / (sc.y ~= 0 and sc.y or 1), 0 },
+		position       = { 0, CATCHER_LIFT_IN / (sc.y ~= 0 and sc.y or 1), 0 },
 		rotation       = { 0, 0, 0 },
 		width          = span / (sc.x ~= 0 and sc.x or 1),
 		height         = span / (sc.z ~= 0 and sc.z or 1),
 		font_size      = 100,
 		color          = { 0, 0, 0, 0 },
-		tooltip        = "Left: step (double=finish)  Right: undo  1:-1\"  2:+1\"  3:3D range  0:cancel",
+		hover_color    = { 0, 0, 0, 0 },
+		press_color    = { 0, 0, 0, 0 },
+		tooltip        = CATCHER_TOOLTIP,
 	})
+end
+
+-- "player_ui" mode: the catch area is object XML UI on a helper object. Object UI
+-- uses 100 UI units per local unit; the helper is scaled by CATCHER_HELPER_SCALE,
+-- so the element is scaled back up by 1/scale and its lift divided by the scale.
+-- visibility = the driving player makes it INACTIVE (no raycast) for everyone
+-- else. onClick is routed to THIS model's script via the "GUID/function" prefix.
+local function catcherUiXml()
+	local inv  = 1 / CATCHER_HELPER_SCALE
+	local span = math.floor(2 * toUnits(catcherReachIn()) * 100 + 0.5)
+	return string.format(
+		'<Image id="ktMoveCatcher" visibility="%s" color="#00000001" raycastTarget="true" '
+		.. 'width="%d" height="%d" position="0 0 %.2f" rotation="0 0 0" scale="%.4f %.4f 1" '
+		.. 'onClick="%s/moveCatcherUIClick" tooltip="%s" />',
+		controlColor or "", span, span, -toUnits(CATCHER_LIFT_IN) * 100 * inv,
+		inv, inv, self.getGUID(), CATCHER_TOOLTIP)
+end
+
+-- Destroy helpers this model spawned that are still around (e.g. the table was
+-- saved mid-move and reloaded). Helpers carry the owner GUID in their memo.
+local function destroyOwnHelpers()
+	local me = self.getGUID()
+	local ok, list = pcall(getObjectsWithTag, CATCHER_HELPER_TAG)
+	if not ok or type(list) ~= "table" then return end
+	for _, o in ipairs(list) do
+		if o ~= nil and o ~= catcherHelper and o.getMemo() == me then o.destruct() end
+	end
+end
+
+local function placeCatcherHelper()
+	if catcherHelper ~= nil then
+		catcherHelper.setPosition({ curPos.x, curPos.y, curPos.z })
+		catcherHelper.UI.setXml(catcherUiXml())
+		return
+	end
+	if catcherSpawning then return end
+	catcherSpawning = true
+	local s = CATCHER_HELPER_SCALE
+	spawnObject({
+		type              = "BlockSquare",
+		position          = { curPos.x, curPos.y, curPos.z },
+		rotation          = { 0, 0, 0 },
+		scale             = { s, s, s },
+		sound             = false,
+		callback_function = function(o)
+			catcherSpawning = false
+			-- The move ended while the spawn was in flight: don't leave it behind.
+			if not catcherActive or not curPos then o.destruct(); return end
+			o.setLock(true)
+			o.interactable = false
+			o.setColorTint({ 0, 0, 0, 0 })
+			o.setName("KT move catcher")
+			o.setMemo(self.getGUID())
+			o.addTag(CATCHER_HELPER_TAG)
+			catcherHelper = o
+			-- A leg may have been committed while spawning: use the CURRENT point.
+			o.setPosition({ curPos.x, curPos.y, curPos.z })
+			o.UI.setXml(catcherUiXml())
+		end,
+	})
+end
+
+local function placeCatcher()
+	if CATCHER_MODE == "button" then
+		placeCatcherButton()
+	else
+		placeCatcherHelper()
+	end
 end
 
 local function createCatcher()
 	if catcherActive then return end
-	placeCatcher()
 	catcherActive = true
+	if CATCHER_MODE ~= "button" then
+		clearCatcherButtons()
+		destroyOwnHelpers()
+	end
+	placeCatcher()
 	lastMoveKey   = catcherKey()
 end
 
--- Re-centre + resize the catcher to the CURRENT leg's reachable area (a disc of
--- radius = remaining budget around curPos). Guarded so it only rebuilds when the
--- reach/centre actually changes (a leg commits, a 1/2 budget change, or a
--- step-back), never per frame -- so there is no cursor-follow lag. Assigns the
--- forward-declared upvalue so tick() (defined earlier) can call it.
+-- Re-centre + resize the catcher to the CURRENT leg's reachable area (remaining
+-- budget around curPos). Guarded so it only rebuilds when the reach/centre
+-- actually changes (a leg commits, a 1/2 budget change, or a step-back), never
+-- per frame -- so there is no cursor-follow lag. Assigns the forward-declared
+-- upvalue so tick() (defined earlier) can call it.
 resizeCatcher = function()
 	if not catcherActive or not curPos then return end
 	local key = catcherKey()
@@ -3906,8 +4022,10 @@ end
 
 local function removeCatcher()
 	if not catcherActive then return end
-	clearCatcherButtons()
 	catcherActive = false
+	clearCatcherButtons()
+	if catcherHelper ~= nil then catcherHelper.destruct() end
+	catcherHelper = nil
 end
 
 -- ------------------------------------------------------------ history/undo ---
@@ -3995,6 +4113,8 @@ local function beginMove(pc, forcedBase)
 	committedLegs = {}
 	history      = {}
 	lastSig      = nil
+	ticksSinceDraw = 0
+	hudText      = nil
 	lastLeftClickAt = -1
 	phase        = PHASE_MOVE
 	startLoop()
@@ -4106,6 +4226,13 @@ function moveCatcherClick(_, playerColor, altClick)
 	end
 end
 
+-- Per-player XML catcher handler ("player_ui" mode). UI events pass (player,
+-- mouseButton, id): "-1" left = step, "-2" right = undo, "-3" middle = ignored.
+function moveCatcherUIClick(player, mouseButton, _id)
+	if mouseButton == "-3" then return end
+	moveCatcherClick(nil, player and player.color, mouseButton == "-2")
+end
+
 function moveScriptingButton(index, playerColor)
 	handleDigit(playerColor, index == 10 and 0 or index)
 end
@@ -4172,6 +4299,7 @@ local function moveAdjustDispatch(color, hovered, fn)
 end
 
 function setupMoveTool()
+	destroyOwnHelpers()
 	self.addContextMenuItem("Move", function(pc)
 		if phase == PHASE_IDLE then beginMove(pc) end
 	end, false)
@@ -4253,6 +4381,13 @@ local _move_prev_onPickUp = onPickUp
 function onPickUp(...)
 	if _move_prev_onPickUp then _move_prev_onPickUp(...) end
 	moveOnPickUp(...)
+end
+
+local _move_prev_onDestroy = onDestroy
+function onDestroy(...)
+	if _move_prev_onDestroy then pcall(_move_prev_onDestroy, ...) end
+	-- Deleting the model mid-move: take the helper (and HUD row) with it.
+	if phase ~= PHASE_IDLE then abortMove() end
 end
 
 local _move_prev_onScriptingButtonDown = onScriptingButtonDown
