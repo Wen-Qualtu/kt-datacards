@@ -285,21 +285,27 @@ marker, `MARKER_MAX_RADIUS`, since the bounds include the 3.68" control-range de
 in that decal are NOT "standing on" the marker -- `supportsOf` never returns terrain markers) from its
 bounds (found via `getAllObjects`, cached per target pick) because sight rays don't hit it in-game
 (its collider is only the antenna; the round base is an attached child); `OPENING_NAMES` open door/breached
-wall/open hatchway = a ray crossing the centred share of the long side (`OPENING_FRACTIONS`, per
-prefix: Tomb World "open door" 40%, "breached wall" 45%, Gallowdark "open hatchway" 45% (estimate)
--- calibrated from in-game screenshots against the earlier 50% edge; mesh slices of the cached
-Tomb World .obj: door ~36-40%, breach a V of 26% at the floor to ~45% at the rim; open and closed
-share one mesh) is ignored, the wall either side counts.
+wall/open hatchway = the span of the outline the piece's `base-board/hatchway` script draws under the
+opening (first vector line, drawn on demand via `refreshVectors`, read with `positionToWorld`) is open,
+the wall either side counts; an open piece without that outline is a wall (closed states draw the same
+outline, hence the names).
 Mechelen doors/windows are unnamed -> not handled. All of this lives in the cone Lua, so models get
 it via the published `ktui-model-scripts.json` bundle / cards / command node.
-Not yet: Vantage/height effects, name→type map for untyped pieces, Conceal-order validity.
-Stopgap (`HEIGHT_CHECK`): when EITHER base is >1" above the floor (`heightAboveFloor`: downward
-ray, highest table/tile/mat >= `BOARD_MIN_SIDE` under the model; no floor found -> the lower base
-is the floor) the analysis is
-skipped -- default lines + HUD "Cover check doesn't currently work with Vantage", since one Vantage
-object mixes heavy walls (below the platform) with light parapets (above). Bases within 2": HUD
-"Target within 2" - all cover is ignored". Proper Vantage fix = per-hit height zones
-(vantage floor height per piece) + re-casting past each hit.
+Vantage (`fix/targeting-vantage`): a base > `VANTAGE_HEIGHT` (1") above the killzone floor
+(`heightAboveFloor`) is on Vantage; the piece under it (`supportsOf`) is its Vantage. Wall a line
+crosses above a Vantage floor (`throughRampart`: a downward probe 0.3" either side of the stretch
+finds a floor > 1" up and <= 2.5" below) is a rampart: Light unless the description says "other
+parts of it are Heavy" without "rampart is Light" (Volkus stronghold Heavy, large ruin / Octarius
+"On Top" Light). The target's Vantage never obscures; from below it is Light cover ("the Vantage")
+where the lines cross it within 1", walls under the target's floor are hidden, and a second pass
+of lines at the target's floor level (from its 1" zone) finds ramparts above the targeting line
+(errata "Fourthly"). Same level: the target's Vantage only counts via its rampart.
+Light/portable barricades only count where the top-down line crosses their long centre line
+(`crossesPanel`; the feet are Insignificant + Exposed).
+Not yet: name→type map for untyped pieces; Conceal/Engage orders (incl. the Vantage rule that a
+Conceal target 2"+ lower can't use Light cover); Accurate from Vantage; "connected"
+means only the piece under the base (modular buildings made of several pieces aren't joined).
+Bases within 2": HUD "Target within 2" - all cover is ignored".
 Cone keys (hover): 1 = select target, 2 = lock/unlock to base, 3 = finish, 4 = explain (player-
 facing chat report built from `analyseTerrain`'s `lastReport`: the result, then one line per terrain
 piece crossed -- light/heavy cover, obscures, open doorway, no effect, exposed; operatives, tokens,

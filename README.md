@@ -39,6 +39,13 @@ The Kill Team mobile app exports datacards as PDFs with random UUID filenames, c
   - Display table grid layout with all teams
 - **Metadata Tracking**: Maintains comprehensive card metadata (card IDs, types, dimensions, extraction quality)
 - **Reproducible**: Locked dependencies and clear workflows ensure consistent results across machines
+- **Targeting lines**: Checks cover and obscured using terrain colliders. Open doors,
+  breaches and hatchways count as open only within the outline their terrain draws
+  under the opening; without that outline they are treated as walls. Vantage follows
+  the core rules and errata: a target shot at from below is in Light cover from its
+  Vantage and in its rampart's cover; ramparts are Light unless the terrain says its
+  other parts are Heavy; terrain connected to either model's Vantage never obscures.
+  Light and portable barricade feet are ignored. Missing colliders can still affect results.
 
 ## 🔧 How It Works
 

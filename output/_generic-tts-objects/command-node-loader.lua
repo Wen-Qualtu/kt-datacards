@@ -1,6 +1,6 @@
-KTUI_MODELSCRIPT_VERSION = "8fab10a9efa4"
+KTUI_MODELSCRIPT_VERSION = "bc6d0fa6d467"
 
-KTUI_MODELSCRIPT = [==[KT_MODELSCRIPT_VERSION = "8fab10a9efa4"
+KTUI_MODELSCRIPT = [==[KT_MODELSCRIPT_VERSION = "bc6d0fa6d467"
 
 -- START KT_MODELSCRIPT_V1 --
 self.clearContextMenu()
@@ -2427,9 +2427,7 @@ KT_TARGET_CONE_CODE = [=[
 -- (the tangents), the cone stays on the origin's base edge, and the range is
 -- measured base edge to base edge. Line colour shows the target's cover (orange
 -- light, red heavy), a purple arc marks it obscured, and the state is shown in
--- the top-centre HUD. When either base is more than 1" above the floor, the
--- default lines stay and the HUD says Vantage isn't supported yet (one Vantage piece mixes
--- heavy walls below the platform with light walls above it).
+-- the top-centre HUD.
 
 pickedUp = false
 newX = 0
@@ -2583,13 +2581,26 @@ end
 -- Name lists below are matched against the START of the lower-cased name (so
 -- "Heavy, Vantage ... / Ladder: Heavy" is not a ladder). They bridge tables
 -- whose terrain isn't tagged yet.
+--
+-- Vantage (a base more than VANTAGE_HEIGHT above the killzone floor):
+--   * Wall above a Vantage floor is a rampart: Light, unless the piece's
+--     description says its other parts are Heavy without calling the rampart
+--     Light (Volkus stronghold Heavy; large ruin, Octarius "On Top" Light).
+--   * Heavy terrain connected to the Vantage either operative is on (the
+--     piece under its base) never obscures.
+--   * Target on Vantage shot at from below: its Vantage is Light cover where
+--     the lines cross it within 1"; walls below its floor aren't visible to it,
+--     so don't give cover. Instead lines at the target's floor level find what
+--     is above the targeting lines within 1" (its rampart: errata "Fourthly").
 local FAN_RAYS = 9
 local RAY_LIFT = 0.1             -- sight rays run this far above each base
 local SHOOTING_UP = 0.5          -- target this much higher: its own terrain intervenes
--- Stopgap until Vantage-aware detection: one terrain object mixes heavy walls
--- below the Vantage with light walls above it, so when either base is more
--- than this above the floor (on Vantage) there is no auto result.
-local HEIGHT_CHECK = 1
+local VANTAGE_HEIGHT = 1
+local RAMPART_PROBE = 0.3        -- look for a floor this far either side of a wall
+local RAMPART_MAX = 2.5          -- a rampart rises at most this far above its floor
+-- Equipment barricades whose feet are Insignificant and Exposed: they only
+-- count where the line crosses the panel (top-down, its long centre line).
+local BARRICADE_NAMES = { "light barricade", "portable barricade" }
 local CONTROL_RANGE = 1
 local COVER_DENIED_WITHIN = 2
 local ANALYSE_EVERY = 6          -- frames between terrain checks while dragging
@@ -2610,18 +2621,14 @@ local TERRAIN_NAMES = { "g4: objective marker" }
 -- least this tall.
 local MARKER_MIN_HEIGHT = 1
 local MARKER_MAX_RADIUS = 20 * 0.0393701
--- Open states: the centred fraction of the long side is an exposed access
--- point; the wall either side still gives cover / obscures. Calibrated from
--- in-game screenshots against the 50% edge: Tomb World door ~41% (mesh gap
--- 36-40%), breach ~46% (a V: 26% at the floor to ~45% at the rim), Gallowdark
--- hatchway estimated from screenshots.
-local OPENING_FRACTIONS = { ["open door"] = 0.40, ["breached wall"] = 0.45, ["open hatchway"] = 0.45 }
-local OPENING_NAMES = {}
-for prefix in pairs(OPENING_FRACTIONS) do OPENING_NAMES[#OPENING_NAMES + 1] = prefix end
+-- Open states whose access point is the outline their terrain script draws
+-- under the opening (Tomb World doors/breaches, Gallowdark hatchways). Closed
+-- states draw the same outline, hence the names. Without an outline the piece
+-- is a plain wall.
+local OPENING_NAMES = { "open door", "breached wall", "open hatchway" }
 
 coverState = nil      -- nil | "light" | "heavy"
 obscuredState = false
-vantageState = false  -- a base is on Vantage (above the floor): no auto cover/obscured
 tooCloseState = false -- bases within 2": cover is ignored
 activeColor = nil     -- player using the cone (gets the HUD readout)
 local dragFrames = 0
@@ -2701,29 +2708,40 @@ local function terrainKind(obj)
 	return "heavy"
 end
 
--- Position of world (x, z) along an open piece's long side, measured from the
--- middle of its world bounds (the piece's origin can sit at one end), and the
--- half-width of its access point there.
-local function openingPos(obj, x, z)
-	local fraction = 0
-	for prefix, f in pairs(OPENING_FRACTIONS) do
-		if nameStarts(obj, { prefix }) then fraction = f end
+-- An open piece's access point: the span along its long side covered by the
+-- outline its script draws (first vector line, in local coordinates that
+-- compensate for scale; drawn on demand if not shown yet). nil = no opening.
+local function openingGeometry(obj)
+	if not nameStarts(obj, OPENING_NAMES) then return nil end
+	local script = obj.script_code or ""
+	if not obj.getVectorLines or not obj.positionToWorld or
+		not script:find('__bundle_register("base-board/hatchway"', 1, true) or
+		not script:find("function refreshVectors()", 1, true) then return nil end
+	local lines = obj.getVectorLines() or {}
+	if not lines[1] and obj.call then
+		obj.call("refreshVectors")
+		lines = obj.getVectorLines() or {}
 	end
+	local points = lines[1] and lines[1].points
+	if not points or #points < 4 then return nil end
 	local size = obj.getBoundsNormalized().size
 	local c = obj.getBounds().center
-	local u, v = toLocal({ x = c.x, z = c.z, h = math.rad(obj.getRotation().y) }, x, z)
-	if size.x >= size.z then
-		return u, size.x * fraction * 0.5
+	local geometry = { frame = { x = c.x, z = c.z, h = math.rad(obj.getRotation().y) }, alongX = size.x >= size.z }
+	local lo, hi = math.huge, -math.huge
+	for _, point in ipairs(points) do
+		local world = obj.positionToWorld(point)
+		local u, v = toLocal(geometry.frame, world.x, world.z)
+		local along = geometry.alongX and u or v
+		lo, hi = math.min(lo, along), math.max(hi, along)
 	end
-	return v, size.z * fraction * 0.5
+	if hi <= lo then return nil end
+	geometry.lo, geometry.hi = lo, hi
+	return geometry
 end
 
--- Whether the sight line crosses an open piece (OPENING_NAMES) at world (x, z)
--- inside its access point: the centred OPENING_FRACTIONS share of its long side.
-local function throughOpening(obj, x, z)
-	if not nameStarts(obj, OPENING_NAMES) then return false end
-	local along, half = openingPos(obj, x, z)
-	return math.abs(along) < half
+local function openingAlong(geometry, x, z)
+	local u, v = toLocal(geometry.frame, x, z)
+	return geometry.alongX and u or v
 end
 
 local function baseBottom(obj)
@@ -2781,10 +2799,56 @@ local function heightAboveFloor(model, fallbackFloor)
 	return math.max(0, bottom - floor)
 end
 
--- Whether either model is on Vantage (its base > HEIGHT_CHECK above the floor).
-local function onVantage()
-	local low = math.min(baseBottom(objModel), baseBottom(ObjMiniTarget))
-	return heightAboveFloor(objModel, low) > HEIGHT_CHECK or heightAboveFloor(ObjMiniTarget, low) > HEIGHT_CHECK
+-- Rampart type (see the Vantage notes at the top): Light unless the piece says
+-- its other parts are Heavy and doesn't call the rampart Light.
+local function rampartKind(obj)
+	local desc = tostring(obj.getDescription() or ""):lower()
+	if desc:find("rampart is light", 1, true) or desc:find("ramparts are light", 1, true) then return "light" end
+	if desc:find("other parts of it are heavy", 1, true) then return "heavy" end
+	return "light"
+end
+
+-- Whether something can be a floor under a wall: terrain, a tile or board,
+-- but not an operative, token or tool.
+local function canBeFloor(obj)
+	local why = ignoreReason(obj)
+	return why == nil or why:sub(1, 5) == "type " or why == "board/mat" or why == "no-cover name"
+end
+
+-- Whether the stretch sIn..sOut of the ray from `a` (unit u) runs through a
+-- rampart: a floor more than VANTAGE_HEIGHT above the killzone floor (floorY)
+-- lies just before or after it, at most RAMPART_MAX below the line.
+local function throughRampart(a, u, sIn, sOut, floorY)
+	for _, s in ipairs({ sIn - RAMPART_PROBE, sOut + RAMPART_PROBE }) do
+		local p = { x = a.x + u.x * s, y = a.y + u.y * s, z = a.z + u.z * s }
+		if p.y > floorY + VANTAGE_HEIGHT then
+			local hits = Physics.cast({ origin = p, direction = { x = 0, y = -1, z = 0 }, type = 1,
+				max_distance = RAMPART_MAX }) or {}
+			for _, hit in ipairs(hits) do
+				if hit.point and hit.point.y > floorY + VANTAGE_HEIGHT and canBeFloor(hit.hit_object) then
+					return true
+				end
+			end
+		end
+	end
+	return false
+end
+
+-- Whether the top-down segment (ax, az)-(bx, bz) crosses obj's long centre
+-- line (through its bounds centre, as long as its long side).
+local function crossesPanel(obj, ax, az, bx, bz)
+	local size = obj.getBoundsNormalized().size
+	local c = obj.getBounds().center
+	local frame = { x = c.x, z = c.z, h = math.rad(obj.getRotation().y) }
+	local u1, v1 = toLocal(frame, ax, az)
+	local u2, v2 = toLocal(frame, bx, bz)
+	local half = size.x * 0.5
+	if size.x < size.z then
+		u1, v1, u2, v2, half = v1, u1, v2, u2, size.z * 0.5
+	end
+	if (v1 > 0) == (v2 > 0) or v1 == v2 then return false end
+	local t = v1 / (v1 - v2)
+	return math.abs(u1 + (u2 - u1) * t) <= half
 end
 
 -- TERRAIN_NAMES pieces are round markers whose colliders the sight rays don't
@@ -2875,32 +2939,41 @@ local function rayThroughZone(e, ax, az, dx, dz, grow)
 end
 
 -- What each crossed piece did in the last analysis, for key 4:
--- { order = {guid...}, pieces = {[guid] = {obj, kind, cover, coverDenied, obscures, solid, opening}},
---   exposed = {[guid] = obj} }
+-- { order = {guid...}, pieces = {[guid] = {obj, kind, cover, why, coverDenied, obscures,
+--   solid, opening, connected, hidden, rampart}}, exposed = {[guid] = obj} }
 local lastReport = { order = {}, pieces = {}, exposed = {} }
 
 -- Sets coverState / obscuredState for the current shooter (objModel, sight
 -- lines from the cone at `sp`) and target.
 function analyseTerrain(target, sp)
-	coverState, obscuredState, vantageState, tooCloseState = nil, false, false, false
+	coverState, obscuredState, tooCloseState = nil, false, false
 	lastReport = { order = {}, pieces = {}, exposed = {} }
 	local shooterBottom, targetBottom = baseBottom(objModel), baseBottom(ObjMiniTarget)
-	if onVantage() then
-		vantageState = true
-		return
-	end
+	local low = math.min(shooterBottom, targetBottom)
+	local shooterUp = heightAboveFloor(objModel, low)
+	local targetUp = heightAboveFloor(ObjMiniTarget, low)
+	local floorY = math.min(shooterBottom - shooterUp, targetBottom - targetUp)
+	local targetOnVantage = targetUp > VANTAGE_HEIGHT
+	local fromBelow = targetOnVantage and targetBottom > shooterBottom + SHOOTING_UP
 	local shooter = baseEllipse(objModel)
 	local fullTarget = baseEllipse(ObjMiniTarget)
 	local coverAllowed = ovalGap(shooter, fullTarget) > COVER_DENIED_WITHIN
 	tooCloseState = not coverAllowed
 	local a = { x = sp.x, y = shooterBottom + RAY_LIFT, z = sp.z }
 	local ty = targetBottom + RAY_LIFT
-	local skip = {}
-	-- The shooter's own terrain never intervenes. The target's does when it is
-	-- shot at from below (Vantage: the platform is between them), else not.
+	-- The shooter's own terrain never intervenes. The target's Vantage is
+	-- judged on its own (targetSupport); off Vantage the target's terrain
+	-- intervenes only when the target is higher than the shooter.
+	local skip, targetSupport = {}, {}
 	supportsOf(objModel, skip)
-	if targetBottom <= shooterBottom + SHOOTING_UP then supportsOf(ObjMiniTarget, skip) end
+	if targetOnVantage then
+		supportsOf(ObjMiniTarget, targetSupport)
+		for key in pairs(skip) do targetSupport[key] = nil end
+	elseif targetBottom <= shooterBottom + SHOOTING_UP then
+		supportsOf(ObjMiniTarget, skip)
+	end
 	local light, heavy = false, false
+	local openings = {}
 	local function entryFor(obj)
 		local key = guidOf(obj)
 		local entry = lastReport.pieces[key]
@@ -2911,38 +2984,105 @@ function analyseTerrain(target, sp)
 		end
 		return entry
 	end
+	local function giveCover(entry, kind, why)
+		if not coverAllowed then
+			entry.coverDenied = true
+		elseif kind == "heavy" then
+			heavy, entry.cover, entry.why = true, "heavy", why
+		else
+			light = true
+			if entry.cover ~= "heavy" then entry.cover, entry.why = "light", why end
+		end
+	end
+	-- One solid stretch of a ray (from `o`, unit u). ctx: nearTarget (within 1"
+	-- of the target from here on), leaveShooter (more than 1" from the shooter
+	-- from here on), level (a line at the target's floor level, all of it
+	-- within 1" of the target).
+	local function judge(entry, o, u, sIn, sOut, ctx)
+		local obj = entry.obj
+		if targetSupport[guidOf(obj)] then
+			entry.connected = true
+			if sOut >= ctx.nearTarget then
+				if fromBelow and not ctx.level then
+					giveCover(entry, "light", "vantage")
+				else
+					entry.rampart = rampartKind(obj)
+					giveCover(entry, entry.rampart, "rampart")
+				end
+			end
+			return
+		end
+		entry.solid = true
+		local kind = entry.kind
+		local yIn, yOut = o.y + u.y * sIn, o.y + u.y * sOut
+		if math.max(yIn, yOut) > floorY + VANTAGE_HEIGHT and throughRampart(o, u, sIn, sOut, floorY) then
+			kind = rampartKind(obj)
+			entry.rampart = kind
+		end
+		if sOut >= ctx.nearTarget then
+			-- From below, what is under the target's floor isn't visible to it.
+			if fromBelow and not ctx.level and math.max(yIn, yOut) < targetBottom - 0.05 then
+				entry.hidden = true
+			else
+				giveCover(entry, kind, entry.rampart and "rampart" or nil)
+			end
+		end
+		if not ctx.level and kind == "heavy" and math.max(sIn, ctx.leaveShooter) < math.min(sOut, ctx.nearTarget) then
+			obscuredState, entry.obscures = true, true
+		end
+	end
+	local function walk(o, b, ctx)
+		local pieces, len, d = rayStretches(o, b, skip, lastReport.exposed)
+		if len < 1e-6 then return end
+		local u = { x = d.x / len, y = d.y / len, z = d.z / len }
+		for _, piece in pairs(pieces) do
+			local obj = piece.obj
+			local key = guidOf(obj)
+			if nameStarts(obj, BARRICADE_NAMES) and not crossesPanel(obj, o.x, o.z, b.x, b.z) then
+				-- Only the feet are crossed: Insignificant and Exposed.
+				lastReport.exposed[key] = obj
+			else
+				local entry = entryFor(obj)
+				if openings[key] == nil then openings[key] = openingGeometry(obj) or false end
+				local opening = openings[key]
+				if opening then
+					local start = openingAlong(opening, o.x, o.z)
+					local slope = openingAlong(opening, o.x + u.x, o.z + u.z) - start
+					if math.abs(slope) < 1e-9 then
+						if start > opening.lo and start < opening.hi then entry.opening = true
+						else judge(entry, o, u, piece.sIn, piece.sOut, ctx) end
+					else
+						local s1 = (opening.lo - start) / slope
+						local s2 = (opening.hi - start) / slope
+						local openIn = math.max(piece.sIn, math.min(s1, s2))
+						local openOut = math.min(piece.sOut, math.max(s1, s2))
+						if openIn < openOut then
+							entry.opening = true
+							if openIn > piece.sIn then judge(entry, o, u, piece.sIn, openIn, ctx) end
+							if openOut < piece.sOut then judge(entry, o, u, openOut, piece.sOut, ctx) end
+						else
+							judge(entry, o, u, piece.sIn, piece.sOut, ctx)
+						end
+					end
+				else
+					judge(entry, o, u, piece.sIn, piece.sOut, ctx)
+				end
+			end
+		end
+	end
 	for _, p in ipairs(facingPoints(target, sp.x, sp.z)) do
-		local pieces, len, d = rayStretches(a, { x = p[1], y = ty, z = p[2] }, skip, lastReport.exposed)
-		if next(pieces) then
-			local dx, dz = d.x / len, d.z / len
-			-- Within 1" of the target from nearTarget on; more than 1" from the
-			-- shooter from leaveShooter on.
+		local b = { x = p[1], y = ty, z = p[2] }
+		local dx, dy, dz = b.x - a.x, b.y - a.y, b.z - a.z
+		local len = math.sqrt(dx * dx + dy * dy + dz * dz)
+		if len > 1e-6 then
+			dx, dz = dx / len, dz / len
 			local tIn = rayThroughZone(fullTarget, a.x, a.z, dx, dz, CONTROL_RANGE)
 			local _, sOut = rayThroughZone(shooter, a.x, a.z, dx, dz, CONTROL_RANGE)
 			local nearTarget = tIn and math.max(0, tIn) or len
-			local leaveShooter = sOut and math.max(0, sOut) or 0
-			for _, piece in pairs(pieces) do
-				local entry = entryFor(piece.obj)
-				local mid = (piece.sIn + piece.sOut) * 0.5
-				if throughOpening(piece.obj, a.x + dx * mid, a.z + dz * mid) then
-					entry.opening = true
-				else
-					entry.solid = true
-					local kind = entry.kind
-					if piece.sOut >= nearTarget then
-						if not coverAllowed then
-							entry.coverDenied = true
-						elseif kind == "heavy" then
-							heavy, entry.cover = true, "heavy"
-						else
-							light = true
-							if entry.cover ~= "heavy" then entry.cover = "light" end
-						end
-					end
-					if kind == "heavy" and math.max(piece.sIn, leaveShooter) < math.min(piece.sOut, nearTarget) then
-						obscuredState, entry.obscures = true, true
-					end
-				end
+			walk(a, b, { nearTarget = nearTarget, leaveShooter = sOut and math.max(0, sOut) or 0 })
+			if fromBelow and nearTarget < len then
+				local o = { x = a.x + dx * nearTarget, y = ty, z = a.z + dz * nearTarget }
+				walk(o, b, { nearTarget = 0, leaveShooter = math.huge, level = true })
 			end
 		end
 	end
@@ -2995,7 +3135,6 @@ local function hudSet(color, text)
 end
 
 local function stateText()
-	if vantageState then return "Cover check doesn't currently work with Vantage" end
 	local text = coverState == "heavy" and "Heavy cover" or (coverState == "light" and "Light cover" or "No cover")
 	if tooCloseState then text = "Target within 2\" - all cover is ignored" end
 	if obscuredState then text = text .. "  +  Obscured" end
@@ -3005,12 +3144,16 @@ end
 -- Key 4: the result plus what each terrain piece on the sight lines does.
 local REPORT_COLORS = { heavy = COL_HEAVY, light = COL_LIGHT, obscures = COL_OBSCURED, none = { 0.8, 0.8, 0.8 } }
 
+local COVER_WHY = { vantage = " (the Vantage the target is on)", rampart = " (rampart)" }
+
 local function pieceText(entry)
 	local parts = {}
-	if entry.cover then parts[#parts + 1] = entry.cover .. " cover" end
+	if entry.cover then parts[#parts + 1] = entry.cover .. " cover" .. (COVER_WHY[entry.why] or "") end
 	if entry.obscures then parts[#parts + 1] = "obscures the target" end
 	if #parts > 0 then return table.concat(parts, ", "), entry.cover or "obscures" end
 	if entry.coverDenied then return "no cover, the target is within 2\"", "none" end
+	if entry.connected then return "no effect (part of the target's Vantage terrain)", "none" end
+	if entry.hidden then return "no cover (below the target's Vantage, not visible to it)", "none" end
 	if entry.solid then
 		return entry.kind .. " terrain, no effect (not within 1\" of the target"
 			.. (entry.kind == "heavy" and " and within 1\" of the shooter)" or ")"), "none"
@@ -3025,10 +3168,6 @@ function explainTerrain(pc)
 	end
 	analyseTerrain(shrink(baseEllipse(ObjMiniTarget), 0.02), self.getPosition())
 	printToColor("Targeting: " .. stateText(), pc, { 1, 1, 1 })
-	if vantageState then
-		printToColor("  A model is on Vantage: check cover manually.", pc, REPORT_COLORS.none)
-		return
-	end
 	local function name(obj)
 		local n = tostring(obj.getName() or "")
 		return n:find("%S") and n or "Unnamed terrain"

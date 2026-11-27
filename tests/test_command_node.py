@@ -714,8 +714,7 @@ assert(env.tooCloseState and hudText == 'Target within 2" - all cover is ignored
     "selection forces analysis even between throttled drag frames")
 env.pickedUp = false
 selectTarget(model(10, 18, 3))
-assert(env.vantageState and hudText == "Cover check doesn't currently work with Vantage",
-    "installed cone warns about Vantage on selection")
+assert(hudText == "No cover", "installed cone checks cover for a raised target on selection: " .. tostring(hudText))
 assert(coroutineStarts == 0, "selection never requires a cone drag")
 selectTarget(model(10, 22))
 env.onPickUp("Red")
@@ -839,6 +838,18 @@ local function terrain(name, z1, z2, opts)
         if (opts.rotY or 0) % 180 == 90 then sx, sz = sz, sx end
         return {offset = {x = 0, y = 0, z = 0}, size = {x = sx, y = o.maxY - o.minY, z = sz}}
     end
+    if opts.outline then
+        o.script_code = '__bundle_register("base-board/hatchway", function refreshVectors()'
+        local drawn = not opts.initiallyHidden
+        o.getVectorLines = function() return drawn and {{points = opts.outline}} or {} end
+        o.call = function(fn) assert(fn == "refreshVectors"); drawn = true; o.initialized = true end
+        o.positionToWorld = function(p)
+            local pos, h = o.getPosition(), math.rad(opts.rotY or 0)
+            local x, z = p.x * (opts.scaleX or 1), p.z * (opts.scaleZ or 1)
+            return {x = pos.x + x * math.cos(h) + z * math.sin(h), y = pos.y + p.y,
+                z = pos.z - x * math.sin(h) + z * math.cos(h)}
+        end
+    end
     return o
 end
 -- Mock TTS ray: one hit per box, where the ray ENTERS it (none if it starts inside).
@@ -861,7 +872,7 @@ Physics = {cast = function(p)
             end
         end
         if ok and lo <= hi and lo > 0 and lo <= p.max_distance then
-            hits[#hits + 1] = {hit_object = b, point = {x = o.x + u.x * lo, y = o.y + u.y * lo, z = o.z + u.z * lo}}
+            hits[#hits + 1] = {hit_object = b.owner or b, point = {x = o.x + u.x * lo, y = o.y + u.y * lo, z = o.z + u.z * lo}}
         end
     end
     return hits
@@ -922,25 +933,72 @@ end
 -- A low barricade near the target blocks a level shot.
 check("portable barricade, level shot", 8, {solid("Portable barricade", -2, 2, 6.5, 6.8, 1, 1.3)}, "light", false)
 check("heavy barricade", 8, {solid("Heavy barricade", -2, 2, 6.5, 6.8, 1, 1.3)}, "heavy", false)
--- More than 1" of height between the bases: no auto result, default lines.
-objModel = model(0, -0.6, 4)
-ObjMiniTarget = model(0, 8)
-boxes = {solid("Heavy Wall", -2, 2, 6.5, 6.8, 1, 5)}
-refrescaVectores()
-assert(vantageState and coverState == nil and not obscuredState, "height gap: no auto cover")
-assert(lines[1].color == "user" and lines[2] == nil, "height gap: default colour, no arc")
-assert(hud["ktmove_txt_Red"] == "Cover check doesn't currently work with Vantage", "height gap readout: " .. hud["ktmove_txt_Red"])
-objModel = model(0, -0.6)
-check("back to level", 8, {}, nil, false)
-assert(not vantageState, "level again: auto cover")
--- Both bases on Vantage at the same height above the table: still no auto result.
+-- Vantage. The killzone floor is the table top (y = 1); a building is a solid
+-- block up to its Vantage floor at y = 4 plus optional rampart boxes above it.
 local tableTop = terrain("Table", -20, 20, {kind = "Surface", minX = -20, maxX = 20, top = 1})
-objModel = model(0, -0.6, 4)
-ObjMiniTarget = model(0, 8, 4)
-boxes = {tableTop, solid("Light parapet", -2, 2, 6.5, 6.8, 4, 4.5)}
-refrescaVectores()
-assert(vantageState and coverState == nil, "both on Vantage: no auto cover")
-assert(hud["ktmove_txt_Red"] == "Cover check doesn't currently work with Vantage", "both on Vantage readout")
+local LARGE_RUIN = "Large Ruin\nA The upper level is Vantage terrain.\nB The upper rampart is Light terrain.\nAll other parts of it are Heavy terrain."
+local STRONGHOLD = "Stronghold\nA The upper level(s) is Vantage terrain.\nAll other parts of it are Heavy terrain."
+local function building(name, description, z1, z2, ramparts)
+    local o = solid(name, -3, 3, z1, z2, 1, 4)
+    o.getDescription = function() return description or "" end
+    local list = {o}
+    for _, r in ipairs(ramparts or {}) do
+        list[#list + 1] = {owner = o, minX = -3, maxX = 3, minZ = r[1], maxZ = r[2], minY = 4, maxY = 5.5}
+    end
+    return list
+end
+local function scene(...)
+    local all = {tableTop}
+    for _, group in ipairs({...}) do for _, b in ipairs(group) do all[#all + 1] = b end end
+    return all
+end
+local function vantage(name, shooter, target, pieces, cover, obscured, hudText)
+    boxes, objModel, ObjMiniTarget = pieces, shooter, target
+    refrescaVectores(true)
+    assert(coverState == cover, name .. ": cover " .. tostring(coverState))
+    assert(obscuredState == obscured, name .. ": obscured " .. tostring(obscuredState))
+    if hudText then assert(hud["ktmove_txt_Red"] == hudText, name .. ": readout " .. hud["ktmove_txt_Red"]) end
+end
+local ground = model(0, -0.6)
+-- Shot at from below (errata examples): the target's Vantage is Light cover,
+-- its own Heavy walls neither give cover nor obscure...
+vantage("from below: light from the Vantage", ground, model(0, 7.5, 4),
+    scene(building("Large Ruin", LARGE_RUIN, 6, 10)), "light", false, "Light cover")
+-- ...a Heavy rampart above the lines within its 1" makes it Heavy cover...
+vantage("from below: heavy rampart", ground, model(0, 7.2, 4),
+    scene(building("Stronghold", STRONGHOLD, 6, 10, {{6, 6.2}})), "heavy", false)
+-- ...a Light one (large ruin) stays Light.
+vantage("from below: light rampart", ground, model(0, 7.2, 4),
+    scene(building("Large Ruin", LARGE_RUIN, 6, 10, {{6, 6.2}})), "light", false)
+-- A separate wall below the target's floor isn't visible to it: no cover.
+vantage("from below: wall under the floor", ground, model(0, 7.2, 4),
+    scene(building("Heavy, Vantage", nil, 6.2, 10), {solid("Heavy Wall", -3, 3, 5.9, 6.1, 1, 3.9)}), "light", false)
+-- Vantage to Vantage at the same height: the target's rampart decides.
+local perched = model(0, -0.6, 4)
+local home = building("Heavy, Vantage", nil, -2, 1)
+vantage("vantage to vantage: light rampart", perched, model(0, 7.2, 4),
+    scene(home, building("Large Ruin", LARGE_RUIN, 6, 10, {{6, 6.2}})), "light", false)
+vantage("vantage to vantage: heavy rampart", perched, model(0, 7.2, 4),
+    scene(home, building("Stronghold", STRONGHOLD, 6, 10, {{6, 6.2}})), "heavy", false)
+-- A rampart of another building in between is Light: it doesn't obscure...
+vantage("vantage to vantage: rampart between", perched, model(0, 7.2, 4),
+    scene(home, building("Heavy, Vantage", nil, 3.2, 4, {{3, 3.2}}), building("Large Ruin", LARGE_RUIN, 6, 10, {{6, 6.2}})),
+    "light", false)
+-- ...but a full-height Heavy wall in between still does.
+vantage("vantage to vantage: heavy wall between", perched, model(0, 7.2, 4),
+    scene(home, {solid("Heavy Wall", -3, 3, 3, 3.2, 1, 5.5)}, building("Large Ruin", LARGE_RUIN, 6, 10, {{6, 6.2}})),
+    "light", true)
+-- Shooting down from Vantage: normal cover near the target.
+vantage("down from vantage: light", perched, model(0, 8),
+    scene(home, {terrain("Light Rubble", 6.6, 6.8)}), "light", false, "Light cover")
+objModel = model(0, -0.6)
+-- Equipment barricades: lines through the feet only (not across the panel) are
+-- Exposed. The panel runs along z at x = 0.6; the lines here stay left of it.
+local feet = terrain("Portable barricade", 6.2, 7.2, {minX = 0.45, maxX = 0.75, rotY = 90})
+check("barricade feet only", 8, {feet}, nil, false)
+boxes, ObjMiniTarget = {feet}, model(0.75, 8)
+refrescaVectores(true)
+assert(coverState == "light", "line across the barricade panel: light cover")
 -- Both on the table itself: normal analysis.
 objModel = model(0, -0.6)
 check("level on a table", 8, {tableTop, terrain("Light Rubble", 6.6, 6.8)}, "light", false)
@@ -976,13 +1034,57 @@ local inRange = terrain("G4: Objective Marker", 5.76, 9.44, {tags = {"KT_Objecti
 inRange.minY = 1
 check("target in the G4 control range", 9, {inRange}, "light", false)
 check("objective token still ignored", 8, {terrain("Objective", 6.6, 6.8, {tags = {"KT_Objective"}})}, nil, false)
--- Open doors: lines through the centred access point (OPENING_FRACTIONS of the
--- long side) are clear; lines through the wall either side still give cover.
-check("through an open door", 8, {terrain("Open Door 3", 6.6, 6.8, {originAtEnd = true})}, nil, false)
+-- Open doors: lines through the outline the piece draws under its opening are
+-- clear; lines through the wall either side still give cover.
+local mm = 0.0393701
+local function span(lo, hi)
+    return {{x = lo, y = 0, z = -0.05}, {x = hi, y = 0, z = -0.05},
+        {x = hi, y = 0, z = 0.05}, {x = lo, y = 0, z = 0.05}}
+end
+local doorway = span(-1.2, 1.2)
+check("through an open door", 8, {terrain("Open Door 3", 6.6, 6.8, {outline = doorway})}, nil, false)
+check("open door without an outline is a wall", 8, {terrain("Open Door 3", 6.6, 6.8)}, "heavy", false)
+check("closed door outline is not an opening", 8, {terrain("Closed Door 3", 6.6, 6.8, {outline = doorway})}, "heavy", false)
+-- The real Tomb World outline spans local x=24..59.3 mm from the piece's
+-- end-placed origin, compensating for scale.
+local outline = {{x = 24 * mm / 0.4, y = 0, z = 0},
+    {x = 59.3 * mm / 0.4, y = 0, z = 0},
+    {x = 59.3 * mm / 0.4, y = 0, z = 0.2},
+    {x = 24 * mm / 0.4, y = 0, z = 0.2}}
+local measured = terrain("Breached Wall 1", 4, 4.2,
+    {originAtEnd = true, scaleX = 0.4, outline = outline, initiallyHidden = true})
+local geometry = openingGeometry(measured)
+assert(measured.initialized, "missing outline initialized")
+assert(math.abs(geometry.lo - (-3 + 24 * mm)) < 1e-6, "outline start")
+assert(math.abs(geometry.hi - (-3 + 59.3 * mm)) < 1e-6, "outline end")
+check("measured off-centre breach obscures", 8, {measured}, nil, true)
+local centered = {{x = -0.15, y = 0, z = 0}, {x = 0.15, y = 0, z = 0},
+    {x = 0.15, y = 0, z = 0.1}, {x = -0.15, y = 0, z = 0.1}}
+check("narrow measured opening obscures", 8, {terrain("Open Door", 4, 4.2, {outline = centered})}, nil, true)
+local broad = {{x = -2, y = 0, z = 0}, {x = 2, y = 0, z = 0},
+    {x = 2, y = 0, z = 0.1}, {x = -2, y = 0, z = 0.1}}
+check("wide measured opening is clear", 8, {terrain("Open Door", 4, 4.2, {outline = broad})}, nil, false)
+-- Gallowdark hatchway: a centred 35.4 x 6.1 outline (4 corners, drawn
+-- open so only 3 sides show), on a mirrored (scaleX = -1) asset bundle.
+local hx, hz = 35.4 / 2 * mm, 6.1 / 2 * mm
+local hatchway = {{x = -hx, y = 0, z = hz}, {x = hx, y = 0, z = hz},
+    {x = hx, y = 0, z = -hz}, {x = -hx, y = 0, z = -hz}}
+local rotated = terrain("Open Hatchway", -3, 3,
+    {minX = 2.9, maxX = 3.1, rotY = 90, scaleX = -1, outline = hatchway})
+local rotatedGeometry = openingGeometry(rotated)
+assert(math.abs(rotatedGeometry.lo + hx) < 1e-6 and math.abs(rotatedGeometry.hi - hx) < 1e-6,
+    "rotated mirrored hatchway outline")
+local angled = {{x = -2, y = 0, z = 0}, {x = 3, y = 0, z = 0},
+    {x = 3, y = 0, z = 0.1}, {x = -2, y = 0, z = 0.1}}
+boxes = {terrain("Open Door", 3, 7, {minX = -6, maxX = 6, outline = angled})}
+ObjMiniTarget = model(4, 8)
+analyseTerrain({x = 4, z = 8, a = 0.01, b = 0.01, h = 0}, {x = 0, z = 0.03})
+assert(coverState == "heavy" and obscuredState, "angled line leaves opening before reaching target")
+check("opening tests reset", 8, {}, nil, false)
 -- Key 4 reports the result and what each terrain piece on the sight lines does.
 local printed = {}
 printToColor = function(text) printed[#printed + 1] = text end
-boxes = {terrain("Open Door 3", 6.6, 6.8), terrain("Objective", 4.0, 4.2, {tags = {"KT_Objective"}})}
+boxes = {terrain("Open Door 3", 6.6, 6.8, {outline = doorway}), terrain("Objective", 4.0, 4.2, {tags = {"KT_Objective"}})}
 onNumberTyped("Red", 4)
 local out = table.concat(printed, "\n")
 assert(out:find("Targeting: No cover", 1, true), "explain header: " .. out)
@@ -998,14 +1100,14 @@ assert(out:find("Heavy Wall: obscures the target", 1, true), "explain obscured: 
 assert(out:find("Teleport pad: no cover (exposed terrain)", 1, true), "explain exposed: " .. out)
 check("closed door", 8, {terrain("Closed Door 3", 6.6, 6.8)}, "heavy", false)
 ObjMiniTarget = model(2, 8)
-boxes = {terrain("Open Hatchway", 6.6, 6.8)}
+boxes = {terrain("Open Hatchway", 6.6, 6.8, {outline = span(-1.35, 1.35)})}
 refrescaVectores()
 assert(coverState == "heavy", "beside the opening: wall gives cover")
 -- Same wall turned 90 degrees, shot along x.
 local conePos = self.getPosition
 self.getPosition = function() return {x = -3.4, y = 1.5, z = 0} end
 objModel = model(-4, 0)
-boxes = {terrain("Breached Wall 1", -3, 3, {minX = 2.9, maxX = 3.1, rotY = 90})}
+boxes = {terrain("Breached Wall 1", -3, 3, {minX = 2.9, maxX = 3.1, rotY = 90, outline = span(-1.35, 1.35)})}
 ObjMiniTarget = model(4, 0)
 refrescaVectores()
 assert(coverState == nil and not obscuredState, "rotated: through the breach")
