@@ -1,7 +1,7 @@
--- Test node: installs one embedded tool block (NODE_BLOCK_CODE) onto models so a
--- tool can be tested without regenerating any datacards.
+-- Test node: installs the embedded tool blocks (NODE_BLOCKS) onto models so tools
+-- can be tested without regenerating any datacards.
 -- Built by tools/build_test_node.py, which prepends NODE_TOOL, NODE_BUILD,
--- NODE_BLOCK_START/END, NODE_BLOCK_CODE, NODE_HINT and the shared
+-- NODE_HINT, NODE_BLOCKS ({start, finish, code} per block) and the shared
 -- injectBlock/healExtenderScript helpers.
 
 function isModelLike(obj)
@@ -44,6 +44,25 @@ function targetModels(playerColor)
     return found
 end
 
+-- Apply every block to the script TEXT, then set it and reload once. injectBlock
+-- sets the script and schedules its own reload, so it runs against a plain-table
+-- stand-in here; calling it on the model per block would reload it repeatedly.
+function installBlocks(model)
+    local text = model.getLuaScript() or ""
+    local proxy = {
+        getLuaScript = function() return text end,
+        setLuaScript = function(s) text = s end,
+        reload = function() end,
+    }
+    local existed = false
+    for _, b in ipairs(NODE_BLOCKS) do
+        if injectBlock(proxy, b.start, b.finish, b.code) then existed = true end
+    end
+    model.setLuaScript(text)
+    Wait.frames(function() if model ~= nil then model.reload() end end, 10)
+    return existed
+end
+
 function installTool(playerColor)
     local models = targetModels(playerColor)
     if #models == 0 then
@@ -52,7 +71,7 @@ function installTool(playerColor)
     end
     local added, updated = 0, 0
     for _, model in ipairs(models) do
-        if injectBlock(model, NODE_BLOCK_START, NODE_BLOCK_END, NODE_BLOCK_CODE) then
+        if installBlocks(model) then
             updated = updated + 1
         else
             added = added + 1
@@ -66,11 +85,17 @@ function removeTool(playerColor)
     local removed = 0
     for _, model in ipairs(targetModels(playerColor)) do
         local lua = model.getLuaScript() or ""
-        local s = lua:find(NODE_BLOCK_START, 1, true)
-        if s then
-            local e = lua:find(NODE_BLOCK_END, s, true)
-            local nl = e and lua:find("\n", e, true)
-            lua = (lua:sub(1, s - 1) .. (nl and lua:sub(nl + 1) or "")):gsub("%s+$", "")
+        local changed = false
+        for _, b in ipairs(NODE_BLOCKS) do
+            local s = lua:find(b.start, 1, true)
+            if s then
+                local e = lua:find(b.finish, s, true)
+                local nl = e and lua:find("\n", e, true)
+                lua = (lua:sub(1, s - 1) .. (nl and lua:sub(nl + 1) or "")):gsub("%s+$", "")
+                changed = true
+            end
+        end
+        if changed then
             model.setLuaScript(lua)
             Wait.frames(function() if model ~= nil then model.reload() end end, 10)
             removed = removed + 1
@@ -83,9 +108,43 @@ function onLoadButton(_, playerColor)
     installTool(playerColor)
 end
 
+-- Move-tool catcher debug switches (Global vars read by move-tool.lua at the
+-- start of each Move/Dash). Take effect on the NEXT move.
+function moveDebugReport(playerColor)
+    broadcastToColor(string.format("Move catcher: mode=%s  visible=%s  helper interactable=%s  (applies to the next move)",
+        tostring(Global.getVar("KT_MOVE_CATCHER_MODE") or "player_ui"),
+        tostring(Global.getVar("KT_MOVE_CATCHER_DEBUG") == true),
+        tostring(Global.getVar("KT_MOVE_HELPER_INTERACTABLE") == true)), playerColor, {0.6, 1, 0.6})
+end
+
+function addMoveDebugItems()
+    self.addContextMenuItem("Debug: catcher visible", function(pc)
+        Global.setVar("KT_MOVE_CATCHER_DEBUG", Global.getVar("KT_MOVE_CATCHER_DEBUG") ~= true)
+        moveDebugReport(pc)
+    end, true)
+    self.addContextMenuItem("Debug: catcher mode", function(pc)
+        local m = Global.getVar("KT_MOVE_CATCHER_MODE")
+        Global.setVar("KT_MOVE_CATCHER_MODE", (m == "button") and "player_ui" or "button")
+        moveDebugReport(pc)
+    end, true)
+    self.addContextMenuItem("Debug: helper interactable", function(pc)
+        Global.setVar("KT_MOVE_HELPER_INTERACTABLE", Global.getVar("KT_MOVE_HELPER_INTERACTABLE") ~= true)
+        moveDebugReport(pc)
+    end, true)
+    self.addContextMenuItem("Debug: remove stray catchers", function(pc)
+        local n = 0
+        for _, o in ipairs(getObjectsWithTag("KTMoveCatcher")) do
+            o.destruct()
+            n = n + 1
+        end
+        broadcastToColor(string.format("Removed %d move-catcher helper(s).", n), pc, {0.6, 1, 0.6})
+    end)
+end
+
 function onLoad()
     self.addContextMenuItem("Load " .. NODE_TOOL:lower() .. " onto model", function(pc) installTool(pc) end)
     self.addContextMenuItem("Remove " .. NODE_TOOL:lower() .. " from model", function(pc) removeTool(pc) end)
+    if NODE_MOVE_DEBUG then addMoveDebugItems() end
     self.createButton({
         click_function = "onLoadButton",
         function_owner = self,

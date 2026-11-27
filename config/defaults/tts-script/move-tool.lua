@@ -21,9 +21,11 @@
   driving player -- the opponent clicks straight through it):
     LEFT-click  = commit the current leg and start the next one
     RIGHT-click = undo the last leg (or cancel from the first leg)
-  In the default per-player catcher mode the number ROW only reaches the model
-  while hovering the model itself; the numpad (scripting keys) and the bindable
-  "KT: Move ..." game keys work from anywhere.
+  The number ROW reaches the model only while it is HOVERED. Over the catch area
+  (object UI) no object counts as hovered, so a small invisible button on the
+  model follows the driver's cursor (see CURSOR_CATCHER_IN): hovering it counts
+  as hovering the model, so 1/2/3/9/0 work wherever you aim. The numpad
+  (scripting keys) and the bindable "KT: Move ..." game keys work from anywhere.
   You aim with your pointer the whole time; the ghost follows the cursor,
   clamped to the remaining budget. Hovering the ghost over a building places it
   on top (the pointer already returns the surface under the cursor), and the
@@ -34,7 +36,11 @@
   -------
   A grey circle shows the remaining reach from the current point. Committed legs
   are drawn dim; the active leg is green; a cyan ghost of the base (with a front
-  marker) shows where the model lands.
+  marker) shows where the model lands. The model itself stays put until the move
+  FINISHES (like the sprint tool): a dim ghost marks the last committed point,
+  undo just moves that back, and cancel leaves the model where it started. The
+  circle + committed legs + that ghost are drawn on the catcher helper and only
+  re-sent when a step changes them; only the active leg + ghost follow the cursor.
 
   Injection-safe loading
   -----------------------
@@ -66,16 +72,54 @@ local UNITS_PER_INCH = 1        -- world units per inch (KT-UI table = 1)
 --                  as hovering the model (number row works), but buttons are
 --                  shared, so it blocks that area of the table for EVERY player.
 local CATCHER_MODE         = "player_ui"
-local CATCHER_MARGIN_IN    = 1           -- inches of catch area past the reach
+local CATCHER_MARGIN_IN    = 0.25        -- inches of catch area past the grey reach circle
+local CATCHER_MIN_REACH_IN = 1.5         -- smallest catch radius (to click "finish" when spent)
+-- "player_ui" mode shape: "round" = a stack of horizontal strips following the
+-- reach circle; "square" = one square covering it (known-good fallback).
+local CATCHER_SHAPE        = "round"
+local CATCHER_STRIPS       = 12
 local CATCHER_LIFT_IN      = 0.6         -- catcher height above the current point
 -- "button" mode: button-units per inch. TUNING KNOB: raise = bigger, lower = smaller.
 -- (14000/9 rendered ~2-3x too wide -- 40" for an 8" move; ~450 targets it.)
 local CATCHER_UNITS_PER_IN = 450
 -- "player_ui" mode: the helper is a locked, non-interactable BlockSquare this
 -- small (invisible under the base); its UI is scaled back up by 1/scale.
-local CATCHER_HELPER_SCALE = 0.05
+local CATCHER_HELPER_SCALE = 0.4
+-- In-game the object UI was CLIPPED to a fixed square (~5.5" on a 0.05-scale
+-- helper), whatever the element size; the clip appears to grow with the helper's
+-- scale (~110" per unit of scale), so 0.4 leaves ~44" of room. A BlockSquare is
+-- big: at 0.4 it is ~5" across (seen in-game as black boxes poking through the
+-- table and blocking models when sunk only 1"). So the helper is sunk this far
+-- BELOW the current point (it is locked, so it stays put) to sit entirely under
+-- the table; the UI is lifted back above the table.
+local CATCHER_HELPER_SINK_IN = 6.0
+-- "player_ui" mode: the catch area is ONE square Panel (the KTUI model script's
+-- proven pattern: a top-level Panel with width/height + scale = 1/object scale).
+-- UI units per inch of Panel size. TUNING KNOB: raise = bigger area.
+local CATCHER_UI_UNITS_PER_IN = 100
 local CATCHER_HELPER_TAG   = "KTMoveCatcher"
-local CATCHER_TOOLTIP      = "Left: step (double=finish)  Right: undo  1: -1in  2: +1in  3: 3D range  9: finish  0: cancel"
+-- "player_ui" mode: number-row keys only reach the HOVERED object, and the UI
+-- area is no object. So a small invisible button on the MODEL follows the
+-- driver's cursor: hovering a model's button counts as hovering the model, so
+-- 1/2/3/9/0 work wherever you aim. It only blocks the opponent on that small
+-- spot. It is re-placed only when the cursor drifts CURSOR_RECENTER_IN from its
+-- centre, at most once per CURSOR_MIN_INTERVAL s (buttons sync to every client).
+local CURSOR_CATCHER_IN   = 2.0
+local CURSOR_RECENTER_IN  = 0.6
+local CURSOR_MIN_INTERVAL = 0.1
+local CATCHER_TOOLTIP      = "Left click: step (click again = finish)\nRight click: undo\n1: -1\"   2: +1\"\n3: 3D range\n9: finish   0: cancel"
+
+-- Debug overrides, read from Global vars at move start (the dev test node toggles
+-- them), so catcher variants can be compared in-game without rebuilding:
+--   KT_MOVE_CATCHER_MODE         "button" | "player_ui"  (overrides CATCHER_MODE)
+--   KT_MOVE_CATCHER_DEBUG        true -> catcher lightly visible + helper tinted red
+--   KT_MOVE_HELPER_INTERACTABLE  true -> helper object stays interactable
+local function catcherModeNow()
+	local m = Global.getVar("KT_MOVE_CATCHER_MODE")
+	if m == "button" or m == "player_ui" then return m end
+	return CATCHER_MODE
+end
+local function catcherDebug() return Global.getVar("KT_MOVE_CATCHER_DEBUG") == true end
 
 -- Network smoothing. Global vector lines are re-sent to EVERY client on each
 -- change and rebuilt there, so a stream of tiny updates flickers for the other
@@ -150,14 +194,18 @@ local loopHandle    = nil
 local catcherActive = false
 local catcherHelper = nil       -- "player_ui" mode: the spawned helper object
 local catcherSpawning = false   -- helper spawn in flight (spawnObject is async)
+local activeCatcherMode = nil   -- catcher mode fixed for the current move
 local lastMoveKey   = nil       -- guard: only edit the catcher when the reach/centre changes
 local resizeCatcher  -- fwd decl; defined with the catcher, called from tick()
+local followCursor   -- fwd decl; cursor-following number-key button, called from tick()
 
 -- readout
 local readoutText = nil
 local lastSig     = nil             -- last draw signature (skip identical frames)
 local ticksSinceDraw = 0            -- draw throttle (see DRAW_EVERY_N_TICKS)
 local hudText     = nil             -- last HUD text sent (skip identical updates)
+local lastAreaKey = nil             -- last area drawn on the helper (see areaLines)
+local lastAreaOnHelper = false      -- whether the area is drawn on the helper
 
 -- --------------------------------------------------------------- utilities ---
 local function toUnits(inches) return inches * UNITS_PER_INCH end
@@ -435,11 +483,53 @@ local function appendGhost(out, cx, cy, cz, heading, color)
 	table.insert(out, { points = pts, color = color or COL_GHOST, thickness = LINE_THICKNESS * 0.8 })
 end
 
-local function redraw(active, endPos)
+-- The static "area": the remaining-reach range (flat circle or 3D column) plus
+-- the committed legs. It only changes when a step commits / is undone, the 1/2
+-- keys change the budget or 3 toggles the range mode -- not when the cursor moves.
+-- Range shows where the base EDGE can reach: the centre's travel budget plus the
+-- base half-length, so the ring lands at the operative's max footprint.
+local function areaLines()
 	local lines = {}
 	for _, leg in ipairs(committedLegs) do
 		appendLegCorridor(lines, leg.a, leg.b, COL_LEG_DONE)
 	end
+	local reach = remainingInches() + toInches(halfLong())
+	if rangeMode == "3d" then
+		appendRangeVolume(lines, curPos, reach, VERT_RANGE, COL_RANGE)
+	else
+		appendCircle(lines, curPos, reach, COL_RANGE)
+	end
+	-- The model only moves when the move finishes: mark the committed point
+	-- (where the model will be) with a dim ghost base.
+	if #committedLegs > 0 then
+		appendGhost(lines, curPos.x, curPos.y, curPos.z, baseHeading, COL_LEG_DONE)
+	end
+	return lines
+end
+
+-- Draw world-space lines as the helper object's OWN vector lines. Object lines
+-- are in the object's local (scaled) space, so points and thickness are divided
+-- by the helper scale (it is never rotated). Only re-sent when the area changes,
+-- so other players don't receive the whole range circle / 3D column every time
+-- the driver's cursor moves.
+local function drawAreaOnHelper(helper, lines)
+	local p   = helper.getPosition()
+	local inv = 1 / CATCHER_HELPER_SCALE
+	local out = {}
+	for _, l in ipairs(lines) do
+		local pts = {}
+		for i, q in ipairs(l.points) do
+			pts[i] = { (q[1] - p.x) * inv, (q[2] - p.y) * inv, (q[3] - p.z) * inv }
+		end
+		out[#out + 1] = { points = pts, color = l.color, thickness = (l.thickness or LINE_THICKNESS) * inv }
+	end
+	helper.setVectorLines(out)
+end
+
+-- Global lines carry only what follows the cursor (active leg + ghost), plus the
+-- area when it can't live on the helper (button mode / helper still spawning).
+local function redraw(active, endPos, includeArea)
+	local lines = includeArea and areaLines() or {}
 	for _, l in ipairs(active or {}) do table.insert(lines, l) end
 	if endPos then
 		appendGhost(lines, endPos.x, endPos.y, endPos.z, baseHeading)
@@ -498,19 +588,31 @@ local function ensureHud()
 	if type(cur) ~= "string" then cur = "" end
 	if cur:find("ktmove_hud", 1, true) then return end
 	pcall(function() Global.UI.setXml(cur .. buildHudXml()) end)
+	-- The new XML loads a few frames later; updates sent before then are lost,
+	-- so re-apply the current readout once it is there.
+	Wait.frames(function()
+		if controlColor and hudText then
+			local c, t = controlColor, hudText
+			pcall(function()
+				Global.UI.setAttribute("ktmove_txt_" .. c, "active", "true")
+				Global.UI.setValue("ktmove_txt_" .. c, t)
+			end)
+		end
+	end, 5)
 end
 
 -- Show/update this player's HUD row. Global UI changes are synced to every
--- client, so only switch the row on once and only push text that changed --
--- re-sending identical attributes every tick made the HUD flicker remotely.
+-- client, so only push when the text changed -- re-sending identical attributes
+-- every tick made the HUD flicker remotely. "active" is re-asserted with each
+-- change: a freshly appended HUD (ensureHud) only loads a few frames later, so a
+-- one-off activation could be lost and leave the row hidden.
 local function hudShow(color, text)
 	if not color then return end
 	text = text or " "
 	if text == hudText then return end
-	local first = (hudText == nil)
 	hudText = text
 	pcall(function()
-		if first then Global.UI.setAttribute("ktmove_txt_" .. color, "active", "true") end
+		Global.UI.setAttribute("ktmove_txt_" .. color, "active", "true")
 		Global.UI.setValue("ktmove_txt_" .. color, text)
 	end)
 end
@@ -543,6 +645,24 @@ local function tick()
 	local pointer = Player[controlColor].getPointerPosition()
 	if not pointer then return end
 	resizeCatcher()   -- match the catch area to the CURRENT leg's remaining reach (no-op unless it changed)
+	followCursor(pointer)
+
+	-- The area lives on the helper and is redrawn only when it changes. When it
+	-- moves on/off the helper (spawn finished), force a Global redraw so it isn't
+	-- drawn twice or dropped.
+	local areaOnHelper = (catcherHelper ~= nil)
+	if areaOnHelper then
+		local areaKey = string.format("%.3f_%.3f_%.3f_%d_%d_%s_%d",
+			curPos.x, curPos.y, curPos.z, usedInches, modifier, rangeMode, #committedLegs)
+		if areaKey ~= lastAreaKey then
+			lastAreaKey = areaKey
+			drawAreaOnHelper(catcherHelper, areaLines())
+		end
+	end
+	if areaOnHelper ~= lastAreaOnHelper then
+		lastAreaOnHelper = areaOnHelper
+		lastSig = nil
+	end
 
 	-- Skip the whole rebuild when nothing that affects the drawing changed
 	-- (pointer still + no budget / leg / mode change). This keeps the tool light
@@ -567,17 +687,6 @@ local function tick()
 	local active = {}
 	readoutText = nil
 
-	-- Remaining-reach range from the current point (flat circle, or a 3D column).
-	-- Range shows where the base EDGE can reach: the centre's travel budget plus
-	-- the base half-length, so the ring lands at the operative's max footprint
-	-- rather than where the centre stops.
-	local reach = remainingInches() + toInches(halfLong())
-	if rangeMode == "3d" then
-		appendRangeVolume(active, curPos, reach, VERT_RANGE, COL_RANGE)
-	else
-		appendCircle(active, curPos, reach, COL_RANGE)
-	end
-
 	local raw, e = legPreview(pointer)
 	prevRaw, prevEndPos = raw, e
 	appendLegCorridor(active, curPos, e, COL_LEG)
@@ -585,13 +694,13 @@ local function tick()
 	-- Live total shows the distance CEIL'd to one decimal (committed whole inches +
 	-- the current leg). A leg below FINISH_EPS_IN reads as 0 here because a click
 	-- there FINISHES (no step), so a sub-threshold hover doesn't look like it costs
-	-- the next whole inch -- you can bring the ghost back onto the model to cancel.
+	-- the next whole inch -- you can bring the ghost back onto the committed point to cancel.
 	local legShown = (raw < FINISH_EPS_IN) and 0 or ceilToShown(raw)
 	local liveTotal = usedInches + legShown
 	readoutText = string.format('%.1f" / %d"', liveTotal, maxInches())
 		.. (modifier ~= 0 and string.format(" (%+d)", modifier) or "")
 
-	redraw(active, e)
+	redraw(active, e, not areaOnHelper)
 	hudShow(controlColor, readoutText)
 end
 
@@ -613,11 +722,12 @@ end
 -- undo. As you spend budget it re-centres on the new point and shrinks to what's
 -- left, so it never claims more than needed. See CATCHER_MODE for the two kinds.
 
--- Half-reach (inches) of the catch area for the CURRENT leg: remaining budget +
--- margin, floored so a nearly-spent move still has a clickable area.
+-- Half-reach (inches) of the catch area for the CURRENT leg: the same radius as
+-- the grey reach circle (remaining budget + base half-length) plus a small
+-- margin, floored so a nearly-spent move still has a clickable area to finish.
 local function catcherReachIn()
-	local r = remainingInches() + CATCHER_MARGIN_IN
-	return (r < 3) and 3 or r
+	local r = remainingInches() + toInches(halfLong()) + CATCHER_MARGIN_IN
+	return (r < CATCHER_MIN_REACH_IN) and CATCHER_MIN_REACH_IN or r
 end
 
 local function catcherKey()
@@ -625,108 +735,174 @@ local function catcherKey()
 	return string.format("%.2f:%.2f:%.2f", curPos.x, curPos.z, catcherReachIn())
 end
 
--- Remove every catcher button currently on the model. Collect indices first and
--- remove high->low: removeButton(index) reshuffles the remaining indices, so
--- removing while iterating by index can skip a button (leaving a stale catcher).
--- Also used in "player_ui" mode to clear a stale button left by an older version.
+-- Remove every catcher/follower button currently on the model. Collect indices
+-- first and remove high->low: removeButton(index) reshuffles the remaining
+-- indices, so removing while iterating by index can skip a button (leaving a
+-- stale catcher). Also clears a stale button left by an older version.
 local function clearCatcherButtons()
 	local idx = {}
 	for _, b in ipairs(self.getButtons() or {}) do
-		if b.click_function == "moveCatcherClick" then idx[#idx + 1] = b.index end
+		if b.click_function == "moveCatcherClick" or b.click_function == "moveFollowerClick" then
+			idx[#idx + 1] = b.index
+		end
 	end
 	table.sort(idx, function(a, b) return a > b end)
 	for _, i in ipairs(idx) do self.removeButton(i) end
 end
 
--- "button" mode: (re)create the catcher as a FRESH button at the model CENTRE.
--- The model steps to each committed leg (see commitLeg), so a CENTRED button
--- always sits on the operative's current spot -- rotation/scale-proof. We
--- remove+recreate rather than editButton because editing a button's size/position
--- does not reliably rebuild its invisible click hitbox in TTS. hover/press colours
--- are fully transparent too: the defaults tint the area whenever ANY player's
--- mouse passes over it, which reads as flicker for the opponent.
+-- "button" mode: (re)create the catcher as a FRESH square button centred on the
+-- current committed point (curPos -- the model itself only moves on finish).
+-- We remove+recreate rather than editButton because editing a button's
+-- size/position does not reliably rebuild its invisible click hitbox in TTS.
+-- hover/press colours are fully transparent too: the defaults tint the area
+-- whenever ANY player's mouse passes over it, which reads as flicker for the
+-- opponent.
 local function placeCatcherButton()
 	clearCatcherButtons()
 	local sc   = self.getScale()
 	local span = 2 * catcherReachIn() * CATCHER_UNITS_PER_IN
+	-- Debug: a light green tint shows the exact catch area (visible to everyone --
+	-- buttons can't be per-player).
+	local col  = catcherDebug() and { 0.2, 1, 0.2, 0.25 } or { 0, 0, 0, 0 }
+	local lp   = self.positionToLocal({ curPos.x, curPos.y + toUnits(CATCHER_LIFT_IN), curPos.z })
 	self.createButton({
 		click_function = "moveCatcherClick",
 		function_owner = self,
 		label          = "",
-		position       = { 0, CATCHER_LIFT_IN / (sc.y ~= 0 and sc.y or 1), 0 },
+		-- Button positions mirror x vs positionToLocal (see followCursor).
+		position       = { -lp.x, lp.y, lp.z },
 		rotation       = { 0, 0, 0 },
 		width          = span / (sc.x ~= 0 and sc.x or 1),
 		height         = span / (sc.z ~= 0 and sc.z or 1),
 		font_size      = 100,
-		color          = { 0, 0, 0, 0 },
-		hover_color    = { 0, 0, 0, 0 },
-		press_color    = { 0, 0, 0, 0 },
+		color          = col,
+		hover_color    = col,
+		press_color    = col,
 		tooltip        = CATCHER_TOOLTIP,
 	})
 end
 
--- "player_ui" mode: the catch area is object XML UI on a helper object. Object UI
--- uses 100 UI units per local unit; the helper is scaled by CATCHER_HELPER_SCALE,
--- so the element is scaled back up by 1/scale and its lift divided by the scale.
--- visibility = the driving player makes it INACTIVE (no raycast) for everyone
--- else. onClick is routed to THIS model's script via the "GUID/function" prefix.
-local function catcherUiXml()
-	local inv  = 1 / CATCHER_HELPER_SCALE
-	local span = math.floor(2 * toUnits(catcherReachIn()) * 100 + 0.5)
-	return string.format(
-		'<Image id="ktMoveCatcher" visibility="%s" color="#00000001" raycastTarget="true" '
-		.. 'width="%d" height="%d" position="0 0 %.2f" rotation="0 0 0" scale="%.4f %.4f 1" '
-		.. 'onClick="%s/moveCatcherUIClick" tooltip="%s" />',
-		controlColor or "", span, span, -toUnits(CATCHER_LIFT_IN) * 100 * inv,
-		inv, inv, self.getGUID(), CATCHER_TOOLTIP)
+-- "player_ui" mode: the catch area is object XML UI on a helper object, scale =
+-- 1/helper scale (UI units per inch: CATCHER_UI_UNITS_PER_IN). "square": one
+-- Panel covering the reach circle. "round": CATCHER_STRIPS horizontal Panels,
+-- each as wide as the circle at its widest point within the strip, so the whole
+-- circle is covered with only small steps past its edge (strips overlap a
+-- little: no gaps). A resize re-sends the XML. visibility = the driving player
+-- makes it INACTIVE (no raycast) for everyone else. onClick is routed to THIS
+-- model's script via the "GUID/function" prefix.
+local function catcherRects(r)
+	if CATCHER_SHAPE ~= "round" then
+		return { { z = 0, width = 2 * r, depth = 2 * r } }
+	end
+	local n, out = CATCHER_STRIPS, {}
+	local h = 2 * r / n
+	for i = 0, n - 1 do
+		local y0, y1 = -r + i * h, -r + (i + 1) * h
+		local ym = (y0 <= 0 and y1 >= 0) and 0 or math.min(math.abs(y0), math.abs(y1))
+		out[#out + 1] = {
+			z     = (y0 + y1) / 2,
+			width = 2 * math.sqrt(math.max(0, r * r - ym * ym)),
+			depth = h * 1.04,
+		}
+	end
+	return out
 end
 
--- Destroy helpers this model spawned that are still around (e.g. the table was
--- saved mid-move and reloaded). Helpers carry the owner GUID in their memo.
+local function catcherUiXml()
+	local inv  = 1 / CATCHER_HELPER_SCALE
+	local u    = CATCHER_UI_UNITS_PER_IN
+	local col  = catcherDebug() and "#33FF3340" or "#00000001"
+	-- Negative z = up; lift from the sunk helper to CATCHER_LIFT_IN above the point.
+	local lift = -toUnits(CATCHER_HELPER_SINK_IN + CATCHER_LIFT_IN) * u * inv
+	local parts = {}
+	for i, s in ipairs(catcherRects(catcherReachIn())) do
+		parts[#parts + 1] = string.format(
+			'<Panel id="ktMoveCatcher%d" visibility="%s" color="%s" raycastTarget="true" '
+			.. 'width="%d" height="%d" position="0 %.1f %.1f" rotation="0 0 0" scale="%.4f %.4f %.4f" '
+			.. 'onClick="%s/moveCatcherUIClick" tooltip="%s"></Panel>',
+			i, controlColor or "", col,
+			math.floor(toUnits(s.width) * u + 0.5), math.floor(toUnits(s.depth) * u + 0.5),
+			toUnits(s.z) * u * inv, lift, inv, inv, inv, self.getGUID(),
+			(CATCHER_TOOLTIP:gsub('"', "&quot;"):gsub("\n", "&#10;")))
+	end
+	return table.concat(parts)
+end
+
+-- Destroy stray helpers: any tagged helper that isn't the one this model is using
+-- AND whose owner (memo = owner GUID) isn't moving right now (per the
+-- KT_MOVE_ACTIVE_<color> registry). Catches helpers left by a save/reload
+-- mid-move or by a model that was respawned with a new GUID.
 local function destroyOwnHelpers()
-	local me = self.getGUID()
 	local ok, list = pcall(getObjectsWithTag, CATCHER_HELPER_TAG)
 	if not ok or type(list) ~= "table" then return end
-	for _, o in ipairs(list) do
-		if o ~= nil and o ~= catcherHelper and o.getMemo() == me then o.destruct() end
+	local me, active = self.getGUID(), {}
+	for _, c in ipairs(HUD_COLORS) do
+		local g = Global.getVar("KT_MOVE_ACTIVE_" .. c)
+		if type(g) == "string" and g ~= "" then active[g] = true end
 	end
+	for _, o in ipairs(list) do
+		if o ~= nil and o ~= catcherHelper then
+			local owner = o.getMemo()
+			if owner == me or not active[owner] then o.destruct() end
+		end
+	end
+end
+
+-- Where the helper sits: under the current point, sunk below the surface.
+local function helperSpot()
+	return { curPos.x, curPos.y - toUnits(CATCHER_HELPER_SINK_IN), curPos.z }
 end
 
 local function placeCatcherHelper()
 	if catcherHelper ~= nil then
-		catcherHelper.setPosition({ curPos.x, curPos.y, curPos.z })
+		catcherHelper.setPosition(helperSpot())
 		catcherHelper.UI.setXml(catcherUiXml())
 		return
 	end
 	if catcherSpawning then return end
 	catcherSpawning = true
-	local s = CATCHER_HELPER_SCALE
-	spawnObject({
-		type              = "BlockSquare",
-		position          = { curPos.x, curPos.y, curPos.z },
-		rotation          = { 0, 0, 0 },
-		scale             = { s, s, s },
-		sound             = false,
+	local s   = CATCHER_HELPER_SCALE
+	local pos = helperSpot()
+	spawnObjectData({
+		data = {
+			Name      = "BlockSquare",
+			Transform = { posX = pos[1], posY = pos[2], posZ = pos[3], rotX = 0, rotY = 0, rotZ = 0,
+			              scaleX = s, scaleY = s, scaleZ = s },
+			Nickname  = "KT move catcher",
+			Memo      = self.getGUID(),
+			Tags      = { CATCHER_HELPER_TAG },
+			Locked    = true,
+			Tooltip   = false,
+			DragSelectable = false,
+		},
 		callback_function = function(o)
 			catcherSpawning = false
 			-- The move ended while the spawn was in flight: don't leave it behind.
 			if not catcherActive or not curPos then o.destruct(); return end
 			o.setLock(true)
-			o.interactable = false
-			o.setColorTint({ 0, 0, 0, 0 })
+			local debug = catcherDebug()
+			o.interactable = (Global.getVar("KT_MOVE_HELPER_INTERACTABLE") == true)
+			o.setColorTint(debug and { 1, 0.1, 0.1, 0.8 } or { 0, 0, 0, 0 })
 			o.setName("KT move catcher")
 			o.setMemo(self.getGUID())
 			o.addTag(CATCHER_HELPER_TAG)
 			catcherHelper = o
 			-- A leg may have been committed while spawning: use the CURRENT point.
-			o.setPosition({ curPos.x, curPos.y, curPos.z })
+			o.setPosition(helperSpot())
 			o.UI.setXml(catcherUiXml())
+			if debug then
+				local hp = o.getPosition()
+				msg(controlColor, string.format(
+					"[move debug] helper %s at %.2f, %.2f, %.2f  scale %.2f  interactable=%s  catch %.1f\" wide",
+					o.getGUID(), hp.x, hp.y, hp.z, CATCHER_HELPER_SCALE, tostring(o.interactable),
+					2 * catcherReachIn()), { 0.6, 1, 0.6 })
+			end
 		end,
 	})
 end
 
 local function placeCatcher()
-	if CATCHER_MODE == "button" then
+	if activeCatcherMode == "button" then
 		placeCatcherButton()
 	else
 		placeCatcherHelper()
@@ -736,9 +912,11 @@ end
 local function createCatcher()
 	if catcherActive then return end
 	catcherActive = true
-	if CATCHER_MODE ~= "button" then
-		clearCatcherButtons()
-		destroyOwnHelpers()
+	activeCatcherMode = catcherModeNow()
+	clearCatcherButtons()
+	destroyOwnHelpers()
+	if catcherDebug() then
+		msg(controlColor, "[move debug] catcher mode: " .. activeCatcherMode, { 0.6, 1, 0.6 })
 	end
 	placeCatcher()
 	lastMoveKey   = catcherKey()
@@ -755,12 +933,75 @@ resizeCatcher = function()
 	if key == lastMoveKey then return end   -- nothing changed -> no rebuild (no lag)
 	lastMoveKey = key
 	placeCatcher()
+	if catcherDebug() then
+		msg(controlColor, string.format("[move debug] catch area should now be %.1f\" wide", 2 * catcherReachIn()), { 0.6, 1, 0.6 })
+	end
+end
+
+-- Cursor follower (player_ui mode only; see CURSOR_CATCHER_IN). Created ONCE
+-- per move and then only MOVED with editButton: removing + recreating it each
+-- time left a trail of stale buttons for the other players (the removals reach
+-- them late), blocking those spots of the table. Its click does the same
+-- step/undo as the catcher. It carries the key-help tooltip: it is always under
+-- the cursor, so the help pops up just like it did on the old shared button.
+local followerAt, followerKey, followerTime = nil, nil, -1
+
+local function followerIndex()
+	for _, b in ipairs(self.getButtons() or {}) do
+		if b.click_function == "moveFollowerClick" then return b.index end
+	end
+	return nil
+end
+
+local function clearFollower()
+	followerAt, followerKey = nil, nil
+	clearCatcherButtons()
+end
+
+followCursor = function(pointer)
+	if not catcherActive or activeCatcherMode == "button" or not pointer then return end
+	local key = catcherKey()   -- the committed point changes on commit/undo: re-place
+	if followerAt and key == followerKey then
+		local dx, dz = pointer.x - followerAt.x, pointer.z - followerAt.z
+		if dx * dx + dz * dz < toUnits(CURSOR_RECENTER_IN) ^ 2 then return end
+	end
+	local now = os.clock()
+	if followerAt and key == followerKey and now - followerTime < CURSOR_MIN_INTERVAL then return end
+	followerTime = now
+	followerAt   = { x = pointer.x, z = pointer.z }
+	followerKey  = key
+	local lp  = self.positionToLocal({ pointer.x, pointer.y + toUnits(CATCHER_LIFT_IN + 0.1), pointer.z })
+	-- Button positions use a MIRRORED x axis vs positionToLocal (seen in-game:
+	-- unflipped, the follower moved away from the cursor sideways).
+	local pos = { -lp.x, lp.y, lp.z }
+	local idx = followerIndex()
+	if idx then
+		self.editButton({ index = idx, position = pos })
+		return
+	end
+	local sc   = self.getScale()
+	local span = CURSOR_CATCHER_IN * CATCHER_UNITS_PER_IN
+	local col  = catcherDebug() and { 0.2, 0.5, 1, 0.35 } or { 0, 0, 0, 0 }
+	self.createButton({
+		click_function = "moveFollowerClick",
+		function_owner = self,
+		label          = "",
+		position       = pos,
+		rotation       = { 0, 0, 0 },
+		width          = span / ((sc.x ~= 0) and sc.x or 1),
+		height         = span / ((sc.z ~= 0) and sc.z or 1),
+		font_size      = 100,
+		color          = col,
+		hover_color    = col,
+		press_color    = col,
+		tooltip        = CATCHER_TOOLTIP,
+	})
 end
 
 local function removeCatcher()
 	if not catcherActive then return end
 	catcherActive = false
-	clearCatcherButtons()
+	clearFollower()
 	if catcherHelper ~= nil then catcherHelper.destruct() end
 	catcherHelper = nil
 end
@@ -777,8 +1018,6 @@ end
 
 local function restoreFrom(s)
 	curPos      = { x = s.pos.x, y = s.pos.y, z = s.pos.z }
-	-- Move the model back to the restored point (it steps with each leg).
-	self.setPosition({ curPos.x, curPos.y, curPos.z })
 	usedInches  = s.used
 	modifier    = s.modifier
 	while #committedLegs > s.legs do table.remove(committedLegs) end
@@ -810,8 +1049,7 @@ local function cancelMove(pc)
 	removeCatcher()
 	hudHide(pc or controlColor)
 	setActiveMove(pc or controlColor, false)
-	-- Return the model to where the move began (it steps with each committed leg).
-	if startPos then self.setPosition({ startPos.x, startPos.y, startPos.z }) end
+	-- The model never left its start point (only the ghost moved): nothing to undo.
 	phase        = PHASE_IDLE
 	controlColor = nil
 	history      = {}
@@ -852,6 +1090,8 @@ local function beginMove(pc, forcedBase)
 	lastSig      = nil
 	ticksSinceDraw = 0
 	hudText      = nil
+	lastAreaKey  = nil
+	lastAreaOnHelper = false
 	lastLeftClickAt = -1
 	phase        = PHASE_MOVE
 	startLoop()
@@ -869,9 +1109,8 @@ local function commitLeg(rawIn, endPos)
 	})
 	usedInches = usedInches + math.ceil(ceilToShown(rawIn) - 1e-6)
 	curPos     = { x = endPos.x, y = endPos.y, z = endPos.z }
-	-- Step the model to the committed point so the (centred) catcher rides with
-	-- it -- keeps the catch area on the operative's real spot, rotation-proof.
-	self.setPosition({ curPos.x, curPos.y, curPos.z })
+	-- The model itself stays put until the move finishes (applyToModel); a ghost
+	-- marks the committed point (areaLines) and the catcher follows curPos.
 	-- Each committed step lands flat; the next increment starts in 2D again.
 	-- (3D is only needed while measuring a climb/drop; re-toggle with 3 if so.)
 	rangeMode  = "flat"
@@ -968,6 +1207,11 @@ end
 function moveCatcherUIClick(player, mouseButton, _id)
 	if mouseButton == "-3" then return end
 	moveCatcherClick(nil, player and player.color, mouseButton == "-2")
+end
+
+-- Cursor-follower button click (see followCursor): same as the catcher.
+function moveFollowerClick(obj, playerColor, altClick)
+	moveCatcherClick(obj, playerColor, altClick)
 end
 
 function moveScriptingButton(index, playerColor)

@@ -881,8 +881,12 @@ local lines, label
 local hud = {}
 Color = setmetatable({fromString = function() return {lerp = function(c) return c end, toHex = function() return "FFFFFF" end} end,
     White = {}}, {__call = function() return {} end})
-Global = {UI = {getXml = function() return "" end, setXml = function() end,
-    setAttribute = function(id, k, v) hud[id .. "." .. k] = v end, setValue = function(id, v) hud[id] = v end}}
+-- Like TTS: writes right after setXml are lost until the new XML has loaded.
+local hudLoading = false
+Global = {UI = {getXml = function() return "" end, setXml = function() hudLoading = true end,
+    setAttribute = function(id, k, v) if not hudLoading then hud[id .. "." .. k] = v end end,
+    setValue = function(id, v) if not hudLoading then hud[id] = v end end}}
+Wait = {frames = function(fn) hudLoading = false; fn() end}
 activeColor = "Red"
 local conePosition = {x = 0, y = 1.5, z = 0.03}
 self = {

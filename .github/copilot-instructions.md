@@ -103,7 +103,8 @@ Order prefix (`[FF5500]E[-]`) + wounds (`{8/8}`) + operative name
 - `findModelOnCard()` uses `Physics.cast` to find models on card
 - `injectBlock()` installs/updates a tagged block on the model (`-- START/END KT_<NAME> --`,
   replace-in-place or append for old models); movement embeds via `MOVE_TOOL_CODE`/`SPRINT_TOOL_CODE`
-- Movement tools: `move-tool.lua` (Move + Dash) steps the model per leg; its click-catcher is
+- Movement tools: `move-tool.lua` (Move + Dash) keeps the model put until the move finishes
+  (ghost-only preview of committed legs, like Sprint); its click-catcher is
   per-player object XML UI (`visibility` = driver) on a tiny hidden, non-interactable helper
   object (tag `KTMoveCatcher`), so opponents click through it (`CATCHER_MODE = "button"` is the
   legacy shared-button fallback); `sprint-movement-tool.lua` (Sprint/Turn/Leap, MOUNTED only) keeps the model

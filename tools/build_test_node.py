@@ -1,4 +1,4 @@
-"""Package a TTS test node that installs a current model tool (sprint or targeting) on models."""
+"""Package a TTS test node that installs current model tools (sprint, move, targeting) on models."""
 
 from __future__ import annotations
 
@@ -37,6 +37,10 @@ def sprint_code() -> str:
     return (SCRIPT_DIR / "sprint-movement-tool.lua").read_text(encoding="utf-8")
 
 
+def move_code() -> str:
+    return (SCRIPT_DIR / "move-tool.lua").read_text(encoding="utf-8")
+
+
 def targeting_code() -> str:
     # Redefines agregaCono (called by the model's "Targeting lines" item) with the
     # composed, oval-aware version, so it also upgrades models with an old script.
@@ -53,11 +57,18 @@ def targeting_code() -> str:
     )
 
 
+# Each block is (marker, code). Markers match the pipeline's tagged blocks where
+# one exists (KT_MOVE_TOOL_ / KT_SPRINT_TOOL_), so the node REPLACES the block a
+# card already installed instead of stacking a second copy.
+SPRINT_BLOCK = ("KT_SPRINT_TOOL_", sprint_code)
+MOVE_BLOCK = ("KT_MOVE_TOOL_", move_code)
+TARGETING_BLOCK = ("KT_TARGETING_TEST_", targeting_code)
+TARGETING_SOURCES = ["ktui-target-cone.lua", "ktui-extender-modelscript.lua"]
+
 TOOLS = {
     "sprint": {
         "label": "Sprint",
-        "marker": "KT_SPRINT_TOOL_",
-        "code": sprint_code,
+        "blocks": [SPRINT_BLOCK],
         "sources": ["sprint-movement-tool.lua"],
         "hint": "Right-click model -> Sprint / Turn / Leap.",
         "color": {"r": 0.15, "g": 0.35, "b": 0.6},
@@ -65,12 +76,27 @@ TOOLS = {
     },
     "targeting": {
         "label": "Targeting",
-        "marker": "KT_TARGETING_TEST_",
-        "code": targeting_code,
-        "sources": ["ktui-target-cone.lua", "ktui-extender-modelscript.lua"],
+        "blocks": [TARGETING_BLOCK],
+        "sources": TARGETING_SOURCES,
         "hint": "Right-click model -> Targeting lines.",
         "color": {"r": 0.6, "g": 0.2, "b": 0.15},
         "guid": "7a6e70",
+    },
+    "move": {
+        "label": "Move",
+        "blocks": [MOVE_BLOCK],
+        "sources": ["move-tool.lua"],
+        "hint": "Right-click model -> Move / Dash.",
+        "color": {"r": 0.15, "g": 0.55, "b": 0.25},
+        "guid": "30e7c1",
+    },
+    "move-targeting": {
+        "label": "Move + Targeting",
+        "blocks": [MOVE_BLOCK, TARGETING_BLOCK],
+        "sources": ["move-tool.lua", *TARGETING_SOURCES],
+        "hint": "Right-click model -> Move / Dash / Targeting lines.",
+        "color": {"r": 0.55, "g": 0.45, "b": 0.1},
+        "guid": "3e77a9",
     },
 }
 
@@ -90,16 +116,26 @@ def build_label(sources: list[str]) -> str:
         return "local"
 
 
+def build_blocks(tool: dict) -> str:
+    entries = []
+    for marker, code in tool["blocks"]:
+        start, end = f"-- START {marker}", f"-- END {marker}"
+        block = f"{start}V1 --\n{code().strip(chr(10))}\n{end}V1 --"
+        entries.append(
+            f"    {{start = {json.dumps(start)}, finish = {json.dumps(end)},\n"
+            f"     code = {long_string(block)}}},"
+        )
+    return "NODE_BLOCKS = {\n" + "\n".join(entries) + "\n}"
+
+
 def build_script(tool: dict, label: str) -> str:
-    start, end = f"-- START {tool['marker']}", f"-- END {tool['marker']}"
-    block = f"{start}V1\n{tool['code']()}\n{end}V1"
+    move_debug = MOVE_BLOCK in tool["blocks"]
     return (
         f"NODE_TOOL = {json.dumps(tool['label'])}\n"
         f"NODE_BUILD = {json.dumps(label)}\n"
         f"NODE_HINT = {json.dumps(tool['hint'])}\n"
-        f"NODE_BLOCK_START = {json.dumps(start)}\n"
-        f"NODE_BLOCK_END = {json.dumps(end)}\n\n"
-        f"NODE_BLOCK_CODE = {long_string(block)}\n\n"
+        f"NODE_MOVE_DEBUG = {'true' if move_debug else 'false'}\n\n"
+        f"{build_blocks(tool)}\n\n"
         f"{inject_helpers()}\n"
         f"{NODE_SCRIPT.read_text(encoding='utf-8')}"
     )
@@ -118,7 +154,7 @@ def main() -> None:
     save["SaveName"] = obj["Nickname"] = f"{tool['label']} Test Node ({label})"
     obj["GUID"] = tool["guid"]
     obj["Description"] = (
-        f"Right-click or press Load {tool['label']} to install the {tool['label'].lower()} tool "
+        f"Right-click or press Load to install the {tool['label'].lower()} tool(s) "
         "on selected models or models on this node."
     )
     obj["Tags"] = [f"{tool['label']} Test Node"]

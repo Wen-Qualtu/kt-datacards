@@ -675,11 +675,14 @@ local HUD_COLORS = { "White", "Brown", "Red", "Orange", "Yellow",
                      "Green", "Teal", "Blue", "Purple", "Pink" }
 local hudColor, hudText = nil, nil
 
+-- Returns true when it had to CREATE the HUD. Global.UI.setXml only takes effect
+-- a few frames later, so setAttribute/setValue calls made right after it are
+-- lost -- which hid the very first readout on each table.
 local function ensureHud()
 	local cur = ""
 	pcall(function() cur = Global.UI.getXml() or "" end)
 	if type(cur) ~= "string" then cur = "" end
-	if cur:find("ktmove_hud", 1, true) then return end
+	if cur:find("ktmove_hud", 1, true) then return false end
 	local rows = ""
 	for _, c in ipairs(HUD_COLORS) do
 		local col = Color.fromString(c):lerp(Color.White, 0.25)
@@ -694,6 +697,14 @@ local function ensureHud()
 		.. '<VerticalLayout childAlignment="UpperCenter" childForceExpandWidth="true" '
 		.. 'childForceExpandHeight="false" spacing="2" raycastTarget="false">'
 		.. rows .. '</VerticalLayout></Panel>') end)
+	return true
+end
+
+local function hudApply(color, text)
+	pcall(function()
+		Global.UI.setAttribute("ktmove_txt_" .. color, "active", "true")
+		Global.UI.setValue("ktmove_txt_" .. color, text)
+	end)
 end
 
 local function hudSet(color, text)
@@ -706,12 +717,15 @@ local function hudSet(color, text)
 		hudColor, hudText = nil, nil
 	end
 	if not color or not text or text == hudText then return end
-	if not hudColor then ensureHud() end
+	local created = (not hudColor) and ensureHud()
 	hudColor, hudText = color, text
-	pcall(function()
-		Global.UI.setAttribute("ktmove_txt_" .. color, "active", "true")
-		Global.UI.setValue("ktmove_txt_" .. color, text)
-	end)
+	hudApply(color, text)
+	if created then
+		-- Re-apply once the new HUD XML has loaded (if it is still current).
+		Wait.frames(function()
+			if hudColor == color and hudText then hudApply(color, hudText) end
+		end, 5)
+	end
 end
 
 local function stateText()
